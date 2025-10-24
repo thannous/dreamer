@@ -5,6 +5,12 @@ Configure API base URL
 - Or set `extra.apiUrl` in `app.json`
 - Default fallback if unset: `http://localhost:3000`
 
+Supabase Edge Functions
+- You can deploy a single function named `api` and route inside it. Then set:
+  - `EXPO_PUBLIC_API_URL=https://<project-ref>.functions.supabase.co/api`
+  - Requests will go to `/api/analyzeDream`, `/api/generateImage`, etc.
+  - See `supabase/functions/api/index.ts` and `docs/supabase-setup.md`.
+
 Expected endpoints
 - POST `/analyzeDream`
   - Request JSON: `{ "transcript": string }`
@@ -58,4 +64,3 @@ app.post('/tts', (req, res) => {
 
 app.listen(3000, () => console.log('API on http://localhost:3000'));
 ```
-

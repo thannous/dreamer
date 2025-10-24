@@ -18,7 +18,8 @@ export default function RootLayout() {
       <DreamsProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="recording" options={{ title: 'Record Dream' }} />
+          <Stack.Screen name="recording" options={{ headerShown: false }} />
+          <Stack.Screen name="dream-review" options={{ headerShown: false }} />
           <Stack.Screen name="journal/[id]" options={{ title: 'Dream' }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         </Stack>

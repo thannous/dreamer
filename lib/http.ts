@@ -5,16 +5,30 @@ export type HttpOptions = {
   timeoutMs?: number;
 };
 
+import { getAccessToken } from './auth';
+
 export async function fetchJSON<T = any>(url: string, options: HttpOptions = {}): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? 30000);
   try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    };
+
+    // Attach Supabase access token if present and not explicitly overridden
+    try {
+      if (!headers.Authorization) {
+        const token = await getAccessToken();
+        if (token) headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // ignore token retrieval errors; proceed without auth
+    }
+
     const res = await fetch(url, {
       method: options.method ?? 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {}),
-      },
+      headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
       signal: controller.signal,
     } as RequestInit);
@@ -28,4 +42,3 @@ export async function fetchJSON<T = any>(url: string, options: HttpOptions = {})
     clearTimeout(timeout);
   }
 }
-

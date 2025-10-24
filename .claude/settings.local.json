@@ -1,6 +1,8 @@
 {
   "permissions": {
     "allow": [
+      "mcp__expo-mcp__add_library",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

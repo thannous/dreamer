@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dream Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=Lora:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#6c4ef7",
+              "background-light": "#f6f6f8",
+              "background-dark": "#131022",
+              "surreal-purple": "#4A3B5F",
+              "ethereal-blue": "#8C9EFF",
+              "dream-mist": "#CFCFEA",
+            },
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              serif: ["Lora", "serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+<style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+      background: linear-gradient(180deg, #131022 0%, #4A3B5F 100%);
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+    .dream-image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease-in-out;
+    }
+    .dream-image-container:hover {
+      transform: scale(1.02);
+    }
+    .dream-image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(140, 158, 255, 0.1);mix-blend-mode: overlay;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .dream-image-container:hover::before {
+      opacity: 1;
+    }
+    .reveal-analysis {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      line-height: 1.6;
+    }
+    .dream-image-container.revealed .reveal-analysis {
+      opacity: 1;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark">
+<div class="group/design-root relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden font-display text-white">
+<div class="flex items-center justify-between bg-transparent p-4 pb-2">
+<div class="flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined text-2xl text-dream-mist">arrow_back</span>
+</div>
+<h2 class="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-dream-mist">Dream Analysis</h2>
+<div class="flex w-12 items-center justify-end">
+<p class="shrink-0 text-base font-bold leading-normal tracking-[0.015em] text-dream-mist">Share</p>
+</div>
+</div>
+<div class="@container">
+<div class="px-4 py-3">
+<div class="dream-image-container flex min-h-80 w-full flex-col justify-end overflow-hidden rounded-xl bg-cover bg-center bg-no-repeat" data-alt="Surrealist art depicting a crimson labyrinth within a human mind silhouette." onclick="this.classList.toggle('revealed')" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB9xFWzKzXGvcc1eEAAaIYtfNW03ClTcsuSYaBxBKOO1vRQUItP8sIeSb3KbEiuwrdvsfoZrUyijUgNvngUntYblCP6uJ-krKPSLwche39Xm2zL0tr6fkRkHwenhG7L5K7krstopFTVMSCsKxApRK_qFWHNBN9UClgnu_Fp_vn2HcWUDY6hLQe7SObg2QWzYzKNDxg-Jb-OYbrnZRs3TgNQn-AKg88aMs3wRKSqCJU0Ru_7bW9L9g055Xkbt4EX0XCLMghZb68iFQ");'>
+<div class="reveal-analysis hidden sm:flex">
+<p>Tap to reveal deeper insights into the dream's core themes and symbolic representations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="-mt-10 rounded-t-xl bg-surreal-purple/70 backdrop-blur-sm px-4 py-6">
+<h1 class="pb-3 text-left font-serif text-3xl font-bold leading-tight text-dream-mist">The Crimson Labyrinth of the Mind</h1>
+<p class="pb-4 font-display text-base font-normal leading-relaxed text-ethereal-blue">This dream represents a journey through the complex corridors of your own psyche. The winding crimson walls symbolize the intricate and sometimes challenging paths of self-discovery. You are navigating your own thoughts and emotions, seeking clarity and understanding in a world of your own making.</p>
+<blockquote class="my-4 border-l-4 border-ethereal-blue py-2 pl-4">
+<p class="font-serif text-lg italic leading-relaxed text-dream-mist">"Within the labyrinth of the mind, every turn is a choice, and every choice, a revelation."</p>
+</blockquote>
+<div class="flex flex-wrap gap-2 pt-4 pb-6">
+<div class="flex items-center rounded-full bg-ethereal-blue/30 px-3 py-1.5 text-sm font-medium text-dream-mist">
+<span>Dream Type: Lucid</span>
+</div>
+<div class="flex items-center rounded-full bg-ethereal-blue/30 px-3 py-1.5 text-sm font-medium text-dream-mist">
+<span>Theme: Transformation</span>
+</div>
+</div>
+<button class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-4 px-4 font-bold text-dream-mist transition-colors duration-300 hover:bg-primary/80">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span>Explore Dream Further</span>
+</button>
+</div>
+</div>
+
+</body></html>

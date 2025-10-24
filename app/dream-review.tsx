@@ -13,42 +13,41 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { Audio } from 'expo-av';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from '@/hooks/useTranslation';
-import { analyzeDream, generateImageForDream } from '@/services/geminiService';
+import { generateImageForDream } from '@/services/geminiService';
 import { useDreams } from '@/context/DreamsContext';
 import type { DreamAnalysis } from '@/lib/types';
 import { SurrealTheme } from '@/constants/theme';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 
-export default function RecordingScreen() {
+export default function DreamReviewScreen() {
   const { t } = useTranslation();
   const { addDream } = useDreams();
-  const [transcript, setTranscript] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const params = useLocalSearchParams();
 
-  // Request microphone permissions on mount
-  useEffect(() => {
-    (async () => {
-      const { status } = await Audio.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert(
-          'Permission Required',
-          'Microphone permission is required to record dreams.'
-        );
-      }
-    })();
-  }, []);
+  // Parse the analysis results from route params
+  const [transcript, setTranscript] = useState(
+    typeof params.transcript === 'string' ? params.transcript : ''
+  );
+  const [analysisData] = useState({
+    title: typeof params.title === 'string' ? params.title : '',
+    interpretation: typeof params.interpretation === 'string' ? params.interpretation : '',
+    shareableQuote: typeof params.shareableQuote === 'string' ? params.shareableQuote : '',
+    theme: typeof params.theme === 'string' ? params.theme : 'surreal',
+    dreamType: typeof params.dreamType === 'string' ? params.dreamType : '',
+    imagePrompt: typeof params.imagePrompt === 'string' ? params.imagePrompt : '',
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Track unsaved changes
   useEffect(() => {
-    setHasUnsavedChanges(transcript.trim().length > 0);
-  }, [transcript]);
+    const originalTranscript = typeof params.transcript === 'string' ? params.transcript : '';
+    setHasUnsavedChanges(transcript !== originalTranscript);
+  }, [transcript, params.transcript]);
 
   const getCurrentTimestamp = () => {
     const now = new Date();
@@ -63,81 +62,11 @@ export default function RecordingScreen() {
     return `Cycle of the Moon: ${now.toLocaleDateString('en-US', options)}`;
   };
 
-  const startRecording = async () => {
-    try {
-      const { granted } = await Audio.requestPermissionsAsync();
-      if (!granted) {
-        Alert.alert(
-          'Permission Required',
-          'Microphone permission is required to record dreams.'
-        );
-        return;
-      }
-
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-
-      const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-
-      setRecording(newRecording);
-      setIsRecording(true);
-    } catch (err) {
-      console.error('Failed to start recording:', err);
-      Alert.alert('Error', 'Failed to start recording. Please try again.');
-    }
-  };
-
-  const stopRecording = async () => {
-    if (!recording) return;
-
-    try {
-      setIsRecording(false);
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
-      setRecording(null);
-
-      if (uri) {
-        // In a real implementation, you would:
-        // 1. Send the audio file to a speech-to-text service
-        // 2. Get the transcription back
-        // 3. Update the transcript state
-
-        // For now, we'll show a placeholder message
-        Alert.alert(
-          'Recording Complete',
-          'Speech-to-text transcription is not yet implemented. Please use the text area to enter your dream manually.',
-          [{ text: 'OK' }]
-        );
-
-        // TODO: Implement speech-to-text using a service like:
-        // - Google Cloud Speech-to-Text
-        // - Azure Speech Service
-        // - AWS Transcribe
-        // - OpenAI Whisper API
-      }
-    } catch (err) {
-      console.error('Failed to stop recording:', err);
-      Alert.alert('Error', 'Failed to stop recording.');
-    }
-  };
-
-  const toggleRecording = async () => {
-    if (isRecording) {
-      await stopRecording();
-    } else {
-      await startRecording();
-    }
-  };
-
   const handleClose = () => {
     if (hasUnsavedChanges) {
       Alert.alert(
         'Unsaved Changes',
-        'You have unsaved changes. Are you sure you want to leave?',
+        'You have edited the transcript. Are you sure you want to discard these changes?',
         [
           { text: 'Cancel', style: 'cancel' },
           {
@@ -154,32 +83,36 @@ export default function RecordingScreen() {
 
   const handleSave = async () => {
     if (!transcript.trim()) {
-      Alert.alert('Empty Dream', 'Please record or write your dream first.');
+      Alert.alert('Empty Dream', 'Please enter your dream text.');
       return;
     }
 
     setLoading(true);
     try {
-      // Step 1: Analyze the dream to get title, quote, interpretation, etc.
-      const analysis = await analyzeDream(transcript);
+      // Generate image using the prompt from analysis
+      const imageUrl = await generateImageForDream(analysisData.imagePrompt);
 
-      // Step 2: Navigate to review screen with analysis results
+      // Create the final dream object
+      const newDream: DreamAnalysis = {
+        id: Date.now(),
+        transcript,
+        title: analysisData.title,
+        interpretation: analysisData.interpretation,
+        shareableQuote: analysisData.shareableQuote,
+        theme: analysisData.theme as 'surreal' | 'mystical' | 'calm' | 'noir',
+        dreamType: analysisData.dreamType,
+        imageUrl,
+        chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
+      };
+
+      await addDream(newDream);
       setHasUnsavedChanges(false);
-      router.push({
-        pathname: '/dream-review',
-        params: {
-          transcript,
-          title: analysis.title,
-          interpretation: analysis.interpretation,
-          shareableQuote: analysis.shareableQuote,
-          theme: analysis.theme,
-          dreamType: analysis.dreamType,
-          imagePrompt: analysis.imagePrompt,
-        },
-      });
+
+      // Navigate to dream detail
+      router.replace(`/journal/${newDream.id}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
-      Alert.alert('Analysis Error', msg);
+      Alert.alert('Error', `Failed to save dream: ${msg}`);
     } finally {
       setLoading(false);
     }
@@ -227,20 +160,23 @@ export default function RecordingScreen() {
           </View>
 
           {/* Main Content */}
-          <View style={styles.mainContent}>
+          <View style={styles.flexGrow}>
+            {/* Recording Section - Centered */}
             <View style={styles.recordingSection}>
               <Text style={styles.instructionText}>
                 Whisper your dream into the ether...
               </Text>
 
-              <MicButton isRecording={isRecording} onPress={toggleRecording} />
+              {/* Decorative Mic Button with pulse animation */}
+              <MicButton isRecording={false} onPress={() => {}} />
 
-              <Waveform isActive={isRecording} />
+              {/* Decorative Waveform */}
+              <Waveform isActive={false} />
 
               <Text style={styles.timestampText}>{getCurrentTimestamp()}</Text>
             </View>
 
-            {/* Text Input */}
+            {/* Text Input Section */}
             <View style={styles.textInputSection}>
               <TextInput
                 value={transcript}
@@ -250,28 +186,8 @@ export default function RecordingScreen() {
                 style={styles.textInput}
                 multiline
                 editable={!loading}
+                textAlignVertical="top"
               />
-
-              {/* Submit Button */}
-              <Pressable
-                onPress={handleSave}
-                disabled={loading || !transcript.trim()}
-                style={[
-                  styles.submitButton,
-                  (!transcript.trim() || loading) && styles.submitButtonDisabled
-                ]}
-              >
-                {loading ? (
-                  <View style={styles.buttonContent}>
-                    <ActivityIndicator size="small" color="#fff" />
-                    <Text style={styles.submitButtonText}>Analyzing...</Text>
-                  </View>
-                ) : (
-                  <Text style={styles.submitButtonText}>
-                    ✨ Analyze My Dream
-                  </Text>
-                )}
-              </Pressable>
             </View>
           </View>
         </ScrollView>
@@ -319,7 +235,7 @@ const styles = StyleSheet.create({
   saveTextDisabled: {
     opacity: 0.5,
   },
-  mainContent: {
+  flexGrow: {
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
@@ -348,7 +264,6 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 512,
     alignSelf: 'center',
-    gap: 16,
   },
   textInput: {
     minHeight: 160,
@@ -359,41 +274,10 @@ const styles = StyleSheet.create({
     padding: 20,
     fontSize: 16,
     fontStyle: 'italic',
-    textAlignVertical: 'top',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 4,
-  },
-  submitButton: {
-    backgroundColor: SurrealTheme.accent,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: SurrealTheme.accent,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  submitButtonDisabled: {
-    backgroundColor: SurrealTheme.textMuted,
-    opacity: 0.5,
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: 0.5,
   },
 });

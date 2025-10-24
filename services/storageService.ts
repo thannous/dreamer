@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import type { DreamAnalysis, NotificationSettings } from '@/lib/types';
 
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
@@ -6,12 +8,23 @@ const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 
 // In-memory fallback if AsyncStorage is not installed yet
 const memoryStore: Record<string, string> = {};
-let AsyncStorageRef: any | null = null;
+let AsyncStorageRef: any | null | undefined;
+
+type StorageLike = {
+  getItem(key: string): string | null;
+  setItem(key: string, value: string): void;
+  removeItem(key: string): void;
+};
+
+const webStorage: StorageLike | null =
+  Platform.OS === 'web' && typeof globalThis !== 'undefined' && 'localStorage' in globalThis
+    ? ((globalThis as unknown as { localStorage?: StorageLike }).localStorage ?? null)
+    : null;
 
 async function getAsyncStorage(): Promise<any | null> {
-  if (AsyncStorageRef) return AsyncStorageRef;
+  if (AsyncStorageRef !== undefined) return AsyncStorageRef;
   try {
-    const mod = await import('@react-native-async-storage/async-storage');
+    const mod = require('@react-native-async-storage/async-storage');
     AsyncStorageRef = (mod as any)?.default ?? mod;
   } catch {
     AsyncStorageRef = null;
@@ -22,18 +35,27 @@ async function getAsyncStorage(): Promise<any | null> {
 async function getItem(key: string): Promise<string | null> {
   const AS = await getAsyncStorage();
   if (AS) return AS.getItem(key);
+  if (webStorage) return webStorage.getItem(key);
   return memoryStore[key] ?? null;
 }
 
 async function setItem(key: string, value: string): Promise<void> {
   const AS = await getAsyncStorage();
   if (AS) return AS.setItem(key, value);
+  if (webStorage) {
+    webStorage.setItem(key, value);
+    return;
+  }
   memoryStore[key] = value;
 }
 
 async function removeItem(key: string): Promise<void> {
   const AS = await getAsyncStorage();
   if (AS) return AS.removeItem(key);
+  if (webStorage) {
+    webStorage.removeItem(key);
+    return;
+  }
   delete memoryStore[key];
 }
 
@@ -105,4 +127,3 @@ export async function saveNotificationSettings(settings: NotificationSettings): 
     console.error('Failed to save notification settings:', error);
   }
 }
-

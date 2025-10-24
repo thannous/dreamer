@@ -51,3 +51,13 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const SurrealTheme = {
+  bgStart: '#1a0f2b',
+  bgEnd: '#3b2a50',
+  textLight: '#e0d9f0',
+  textMuted: '#a097b8',
+  accent: '#6b5a8e',
+  shape: '#4f3d6b',
+  darkAccent: '#2e1d47',
+};
