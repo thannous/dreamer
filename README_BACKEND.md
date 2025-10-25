@@ -13,6 +13,10 @@ Supabase Edge Functions
   - See `supabase/functions/api/index.ts` and `docs/supabase-setup.md`.
 
 Expected endpoints
+- POST `/transcribe`
+  - Request JSON: `{ "contentBase64": string, "encoding": "LINEAR16"|"AMR_WB"|"WEBM_OPUS", "languageCode": string, "sampleRateHertz"?: number }`
+  - Response JSON: `{ "transcript": string }`
+
 - POST `/analyzeDream`
   - Request JSON: `{ "transcript": string }`
   - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string }`

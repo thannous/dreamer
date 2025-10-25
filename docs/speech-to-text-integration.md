@@ -2,143 +2,78 @@
 
 ## Current Implementation
 
-The recording screen (`app/recording.tsx`) currently supports audio recording using `expo-av`, but speech-to-text transcription is not yet implemented. The audio is successfully captured and stored, but requires a third-party service to convert speech to text.
+The recording screen (`app/recording.tsx`) records audio using `expo-av` with formats optimized for Speech-to-Text:
+- iOS: WAV Linear PCM (`LINEAR16`, 16kHz, mono)
+- Android: 3GP AMR-WB (`AMR_WB`, 16kHz, mono)
+- Web: WebM/Opus (`WEBM_OPUS`)
+
+Transcription is implemented via a secure backend proxy (Supabase Edge Function) that calls Google Cloud Speech-to-Text. The mobile/web client never exposes a Google API key.
 
 ## Recommended Integration Options
 
-### Option 1: OpenAI Whisper API (Recommended)
-OpenAI's Whisper is highly accurate for transcription and supports multiple languages.
+### Option 1: OpenAI Whisper API
+Still an excellent option for accuracy and multi-language support. Use a backend proxy to keep keys secure.
 
-```typescript
-import { Audio } from 'expo-av';
+### Option 2: Google Cloud Speech-to-Text (Implemented)
+We route recordings to a Supabase Edge Function at `/transcribe`, which forwards to Google STT and returns the recognized text.
 
-async function transcribeAudio(audioUri: string): Promise<string> {
-  const formData = new FormData();
-  formData.append('file', {
-    uri: audioUri,
-    type: 'audio/m4a',
-    name: 'dream-recording.m4a',
-  } as any);
-  formData.append('model', 'whisper-1');
+Client (`services/speechToText.ts`):
+```ts
+import * as FileSystem from 'expo-file-system';
+import { getApiBaseUrl } from '@/lib/config';
+import { fetchJSON } from '@/lib/http';
 
-  const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+export async function transcribeAudio({ uri, languageCode = 'fr-FR' }) {
+  const contentBase64 = await FileSystem.readAsStringAsync(uri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+  const base = getApiBaseUrl();
+  const res = await fetchJSON(`${base}/transcribe`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.EXPO_PUBLIC_OPENAI_API_KEY}`,
-    },
-    body: formData,
+    body: { contentBase64, encoding: 'LINEAR16', languageCode, sampleRateHertz: 16000 },
   });
-
-  const result = await response.json();
-  return result.text;
+  return res.transcript ?? '';
 }
 ```
 
-### Option 2: Google Cloud Speech-to-Text
-Google Cloud provides highly accurate transcription with support for many languages.
-
-```typescript
-async function transcribeWithGoogle(audioUri: string): Promise<string> {
-  // Convert audio to base64
-  const audioBase64 = await FileSystem.readAsStringAsync(audioUri, {
-    encoding: FileSystem.EncodingType.Base64,
+Supabase Edge Function (`supabase/functions/api/index.ts`):
+```ts
+if (req.method === 'POST' && subPath === '/transcribe') {
+  const { contentBase64, encoding, languageCode, sampleRateHertz } = await req.json();
+  const apiKey = Deno.env.get('GOOGLE_CLOUD_STT_API_KEY');
+  const config: any = { encoding, languageCode, enableAutomaticPunctuation: true };
+  if (sampleRateHertz) config.sampleRateHertz = sampleRateHertz;
+  const sttRes = await fetch(`https://speech.googleapis.com/v1/speech:recognize?key=${apiKey}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ config, audio: { content: contentBase64 } }),
   });
-
-  const response = await fetch(
-    `https://speech.googleapis.com/v1/speech:recognize?key=${process.env.EXPO_PUBLIC_GOOGLE_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        config: {
-          encoding: 'LINEAR16',
-          sampleRateHertz: 16000,
-          languageCode: 'en-US',
-        },
-        audio: { content: audioBase64 },
-      }),
-    }
-  );
-
-  const result = await response.json();
-  return result.results?.[0]?.alternatives?.[0]?.transcript || '';
-}
-```
-
-### Option 3: Azure Speech Service
-Microsoft Azure offers robust speech-to-text capabilities.
-
-```typescript
-async function transcribeWithAzure(audioUri: string): Promise<string> {
-  const audioData = await FileSystem.readAsStringAsync(audioUri, {
-    encoding: FileSystem.EncodingType.Base64,
-  });
-
-  const response = await fetch(
-    `https://${region}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US`,
-    {
-      method: 'POST',
-      headers: {
-        'Ocp-Apim-Subscription-Key': process.env.EXPO_PUBLIC_AZURE_SPEECH_KEY,
-        'Content-Type': 'audio/wav',
-      },
-      body: audioData,
-    }
-  );
-
-  const result = await response.json();
-  return result.DisplayText;
+  const json = await sttRes.json();
+  const transcript = json?.results?.[0]?.alternatives?.[0]?.transcript ?? '';
+  return new Response(JSON.stringify({ transcript }), { status: 200, headers: { 'Content-Type': 'application/json' } });
 }
 ```
 
 ## Integration Steps
 
-1. Choose a speech-to-text service provider
-2. Add API key to `.env` file:
+1. Ensure API base URL is set (env `EXPO_PUBLIC_API_URL` or `app.json` `extra.apiUrl`).
+2. Set Google key as a Supabase secret (never in the client):
    ```
-   EXPO_PUBLIC_OPENAI_API_KEY=your_key_here
-   # or
-   EXPO_PUBLIC_GOOGLE_API_KEY=your_key_here
-   # or
-   EXPO_PUBLIC_AZURE_SPEECH_KEY=your_key_here
+   supabase secrets set GOOGLE_CLOUD_STT_API_KEY=your_google_api_key
    ```
-
-3. Update the `stopRecording` function in `app/recording.tsx`:
-   ```typescript
-   const stopRecording = async () => {
-     if (!recording) return;
-
-     try {
-       setIsRecording(false);
-       await recording.stopAndUnloadAsync();
-       const uri = recording.getURI();
-       setRecording(null);
-
-       if (uri) {
-         // Add transcription here
-         const transcribedText = await transcribeAudio(uri);
-         setTranscript(prevTranscript =>
-           prevTranscript ? `${prevTranscript}\n${transcribedText}` : transcribedText
-         );
-       }
-     } catch (err) {
-       console.error('Failed to stop recording:', err);
-       Alert.alert('Error', 'Failed to process recording.');
-     }
-   };
-   ```
-
-4. Create a service file `services/speechToText.ts` to centralize transcription logic
+3. Deploy/update the `api` Edge Function.
+4. Use the recording screen: stop recording triggers `/transcribe` and fills the dream text.
 
 ## Cost Considerations
 
-- **OpenAI Whisper**: $0.006 per minute of audio
-- **Google Cloud**: First 60 minutes free per month, then $0.006-$0.024 per 15 seconds
-- **Azure**: First 5 hours free per month, then $1.00 per audio hour
+- Google Cloud: First 60 minutes free per month, then billed per 15 seconds
+- OpenAI Whisper/Azure: similar cost profiles; choose based on language/accuracy needs
 
 ## Notes
 
-- Audio quality affects transcription accuracy
-- Consider adding a loading indicator during transcription
+- Audio format matters for STT compatibility:
+  - iOS recorded as `LINEAR16` (WAV) 16kHz mono
+  - Android recorded as `AMR_WB` (3GP) 16kHz mono
+  - Web recorded as `WEBM_OPUS`
+- Consider a loading indicator during transcription
 - Handle network errors gracefully
-- May want to cache/store recordings for retry scenarios
+- Cache/store recordings for retries
