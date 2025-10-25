@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Animated } from 'react-native';
+import { Pressable, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SurrealTheme } from '@/constants/theme';
 
@@ -20,12 +20,12 @@ export function MicButton({ isRecording, onPress }: MicButtonProps) {
           Animated.timing(pulseAnim, {
             toValue: 1.1,
             duration: 800,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }),
           Animated.timing(pulseAnim, {
             toValue: 1,
             duration: 800,
-            useNativeDriver: true,
+            useNativeDriver: Platform.OS !== 'web',
           }),
         ])
       ).start();

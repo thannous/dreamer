@@ -16,10 +16,16 @@ Expected endpoints
 - POST `/transcribe`
   - Request JSON: `{ "contentBase64": string, "encoding": "LINEAR16"|"AMR_WB"|"WEBM_OPUS", "languageCode": string, "sampleRateHertz"?: number }`
   - Response JSON: `{ "transcript": string }`
+  - Auth: public (no Supabase JWT required)
 
 - POST `/analyzeDream`
   - Request JSON: `{ "transcript": string }`
   - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string }`
+  - Env required: `GEMINI_API_KEY`
+  - Optional env overrides:
+    - `GEMINI_API_BASE` (default `https://generativelanguage.googleapis.com`)
+    - `GEMINI_API_VERSION` (default `v1`)
+    - `GEMINI_MODEL` (default `gemini-1.5-flash-002`; fallback to `gemini-1.5-flash-latest` on 404)
 
 - POST `/generateImage`
   - Request JSON: `{ "prompt": string }`

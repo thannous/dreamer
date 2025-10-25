@@ -13,8 +13,15 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { Audio } from 'expo-av';
-import { useTranslation } from '@/hooks/useTranslation';
+import {
+  useAudioRecorder,
+  AudioModule,
+  setAudioModeAsync,
+  RecordingPresets,
+  IOSOutputFormat,
+  AudioQuality,
+  type RecordingOptions,
+} from 'expo-audio';
 import { analyzeDream, generateImageForDream } from '@/services/geminiService';
 import { useDreams } from '@/context/DreamsContext';
 import type { DreamAnalysis } from '@/lib/types';
@@ -23,19 +30,48 @@ import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 import { transcribeAudio } from '@/services/speechToText';
 
+const RECORDING_OPTIONS: RecordingOptions = {
+  ...RecordingPresets.HIGH_QUALITY,
+  isMeteringEnabled: true,
+  extension: '.caf',
+  sampleRate: 16000,
+  numberOfChannels: 1,
+  bitRate: 128000,
+  android: {
+    ...RecordingPresets.HIGH_QUALITY.android,
+    extension: '.amr',
+    outputFormat: 'amrwb',
+    audioEncoder: 'amr_wb',
+    sampleRate: 16000,
+  },
+  ios: {
+    ...RecordingPresets.HIGH_QUALITY.ios,
+    extension: '.caf',
+    outputFormat: IOSOutputFormat.LINEARPCM,
+    audioQuality: AudioQuality.MEDIUM,
+    sampleRate: 16000,
+    linearPCMBitDepth: 16,
+    linearPCMIsBigEndian: false,
+    linearPCMIsFloat: false,
+  },
+  web: {
+    mimeType: 'audio/webm',
+    bitsPerSecond: 128000,
+  },
+};
+
 export default function RecordingScreen() {
-  const { t } = useTranslation();
   const { addDream } = useDreams();
   const [transcript, setTranscript] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
 
   // Request microphone permissions on mount
   useEffect(() => {
     (async () => {
-      const { status } = await Audio.requestPermissionsAsync();
-      if (status !== 'granted') {
+      const status = await AudioModule.requestRecordingPermissionsAsync();
+      if (!status.granted) {
         Alert.alert(
           'Permission Required',
           'Microphone permission is required to record dreams.'
@@ -59,7 +95,7 @@ export default function RecordingScreen() {
 
   const startRecording = async () => {
     try {
-      const { granted } = await Audio.requestPermissionsAsync();
+      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
       if (!granted) {
         Alert.alert(
           'Permission Required',
@@ -68,42 +104,13 @@ export default function RecordingScreen() {
         return;
       }
 
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
+      await setAudioModeAsync({
+        allowsRecording: true,
+        playsInSilentMode: true,
       });
 
-      const recordingOptions: Audio.RecordingOptions = {
-        isMeteringEnabled: true,
-        android: {
-          extension: '.3gp',
-          outputFormat: Audio.AndroidOutputFormat.AMR_WB,
-          audioEncoder: Audio.AndroidAudioEncoder.AMR_WB,
-          sampleRate: 16000,
-          numberOfChannels: 1,
-        },
-        ios: {
-          extension: '.wav',
-          outputFormat: Audio.IOSOutputFormat.LINEARPCM,
-          audioQuality: Audio.IOSAudioQuality.MEDIUM,
-          sampleRate: 16000,
-          numberOfChannels: 1,
-          bitRate: 256000,
-          linearPCMBitDepth: 16,
-          linearPCMIsBigEndian: false,
-          linearPCMIsFloat: false,
-        },
-        web: {
-          mimeType: 'audio/webm',
-          bitsPerSecond: 128000,
-        },
-      };
-
-      const { recording: newRecording } = await Audio.Recording.createAsync(
-        recordingOptions
-      );
-
-      setRecording(newRecording);
+      await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
+      audioRecorder.record();
       setIsRecording(true);
     } catch (err) {
       console.error('Failed to start recording:', err);
@@ -112,13 +119,10 @@ export default function RecordingScreen() {
   };
 
   const stopRecording = async () => {
-    if (!recording) return;
-
     try {
       setIsRecording(false);
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
-      setRecording(null);
+      await audioRecorder.stop();
+      const uri = audioRecorder.uri ?? undefined;
 
       if (uri) {
         try {
@@ -132,6 +136,8 @@ export default function RecordingScreen() {
           const msg = e instanceof Error ? e.message : 'Unknown transcription error';
           Alert.alert('Transcription Failed', msg);
         }
+      } else {
+        Alert.alert('Recording Invalid', 'No audio file was produced. Please try again and speak for at least 2 seconds.');
       }
     } catch (err) {
       console.error('Failed to stop recording:', err);

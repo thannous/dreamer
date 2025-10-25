@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system';
+import { File } from 'expo-file-system';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
 
@@ -8,14 +9,51 @@ type TranscribeParams = {
   languageCode?: string;
 };
 
+async function readAudioAsBase64(uri: string): Promise<string> {
+  if (Platform.OS === 'web') {
+    const response = await fetch(uri);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch recording blob: ${response.status}`);
+    }
+    const blob = await response.blob();
+    const reader = new FileReader();
+    return await new Promise((resolve, reject) => {
+      reader.onerror = () => reject(new Error('Failed to read blob as base64'));
+      reader.onloadend = () => {
+        const result = reader.result;
+        if (typeof result === 'string') {
+          const base64 = result.split(',')[1] ?? '';
+          resolve(base64);
+        } else {
+          reject(new Error('Unexpected FileReader result'));
+        }
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  try {
+    const file = new File(uri);
+    const base64 = file.base64();
+    if (typeof base64 === 'string') {
+      return base64;
+    }
+    return await base64; // handle potential promise
+  } catch (error) {
+    console.warn('[speechToText] File API failed, falling back to readAsStringAsync', error);
+    return FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+  }
+}
+
 export async function transcribeAudio({
   uri,
   languageCode = 'fr-FR',
 }: TranscribeParams): Promise<string> {
-  // Read the recorded file as base64
-  const contentBase64 = await FileSystem.readAsStringAsync(uri, {
-    encoding: FileSystem.EncodingType.Base64,
-  });
+  console.log('[speechToText] reading file', uri);
+  const contentBase64 = await readAudioAsBase64(uri);
+  console.log('[speechToText] file size (base64 chars)', contentBase64.length);
 
   // Pick encoding/sample hints based on platform + our recording options
   // - iOS: WAV Linear PCM -> LINEAR16 @ 16000 Hz
@@ -33,18 +71,24 @@ export async function transcribeAudio({
   }
 
   const base = getApiBaseUrl();
-  const res = await fetchJSON<{ transcript?: string }>(`${base}/transcribe`, {
-    method: 'POST',
-    body: {
-      contentBase64,
-      encoding,
-      languageCode,
-      sampleRateHertz,
-    },
-    // Transcription can take a bit longer
-    timeoutMs: 60000,
-  });
+  console.log('[speechToText] POST', `${base}/transcribe`, { encoding, languageCode, sampleRateHertz });
+  try {
+    const res = await fetchJSON<{ transcript?: string }>(`${base}/transcribe`, {
+      method: 'POST',
+      body: {
+        contentBase64,
+        encoding,
+        languageCode,
+        sampleRateHertz,
+      },
+      // Transcription can take a bit longer
+      timeoutMs: 60000,
+    });
+    console.log('[speechToText] response', res);
+    return res.transcript ?? '';
+  } catch (error) {
+    console.error('[speechToText] fetch failed', error);
+    throw error;
+  }
 
-  return res.transcript ?? '';
 }
-
