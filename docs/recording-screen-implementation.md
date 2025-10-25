@@ -38,11 +38,14 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 - Static display when not recording
 
 ### 3. Recording Functionality
-- **Microphone permissions**: Properly requested on mount
-- **Audio recording**: Using expo-av's Audio.Recording API
+- **Microphone permissions**: Properly requested on mount via `AudioModule.requestRecordingPermissionsAsync()` (expo-audio)
+- **Audio recording**: Using `expo-audio` `useAudioRecorder`
 - **Start/Stop toggle**: Single button controls recording state
-- **High-quality recording**: Using RecordingOptionsPresets.HIGH_QUALITY
-- **iOS audio mode**: Configured for recording with `allowsRecordingIOS: true`
+- **Recording options tuned for STT**:
+  - iOS: Linear PCM (`.caf`, 16kHz, mono)
+  - Android: AMR_WB (`.amr`, 16kHz, mono)
+  - Web: WebM/Opus (128 kbps)
+- **Audio mode**: Configured with `setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true })`
 
 ### 4. Text Input
 - Manual text entry via textarea
@@ -80,7 +83,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 2. `/mnt/c/Users/thann/WebstormProjects/dream-app/components/recording/Waveform.tsx`
    - Animated audio waveform visualization
 
-3. `/mnt/c/Users/thann/WebstormProjects/dream-app/docs/speech-to-text-integration.md`
+3. `docs/speech-to-text-integration.md`
    - Guide for implementing speech-to-text transcription
 
 4. `/mnt/c/Users/thann/WebstormProjects/dream-app/docs/recording-screen-implementation.md`
@@ -90,14 +93,14 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 1. `/mnt/c/Users/thann/WebstormProjects/dream-app/constants/theme.ts`
    - Added SurrealTheme color constants
 
-2. `/mnt/c/Users/thann/WebstormProjects/dream-app/app/recording.tsx`
+2. `app/recording.tsx`
    - Complete rewrite with new UI and functionality
 
-3. `/mnt/c/Users/thann/WebstormProjects/dream-app/app.json`
-   - Added expo-av plugin with microphone permission message
+3. `app.json`
+   - Added expo-audio plugin with microphone permission message
 
 ## Dependencies Installed
-- `expo-av` - Audio recording functionality
+- `expo-audio` - Audio recording functionality (replaces deprecated expo-av)
 - `expo-speech` - Text-to-speech (for future features)
 - `expo-linear-gradient` - Gradient backgrounds
 - `@react-native-async-storage/async-storage` - Already present, used for persistence

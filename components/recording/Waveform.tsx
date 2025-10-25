@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet, Animated, Platform } from 'react-native';
 import { SurrealTheme } from '@/constants/theme';
 
 interface WaveformProps {
@@ -41,12 +41,12 @@ export function Waveform({ isActive }: WaveformProps) {
             Animated.timing(anim, {
               toValue: 0.3 + Math.random() * 0.7,
               duration: 300 + Math.random() * 400,
-              useNativeDriver: true,
+              useNativeDriver: Platform.OS !== 'web',
             }),
             Animated.timing(anim, {
               toValue: 1,
               duration: 300 + Math.random() * 400,
-              useNativeDriver: true,
+              useNativeDriver: Platform.OS !== 'web',
             }),
           ])
         )
