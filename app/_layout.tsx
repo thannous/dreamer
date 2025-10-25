@@ -1,10 +1,27 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import {
+  SpaceGrotesk_400Regular,
+  SpaceGrotesk_500Medium,
+  SpaceGrotesk_700Bold,
+} from '@expo-google-fonts/space-grotesk';
+import {
+  Lora_400Regular,
+  Lora_400Regular_Italic,
+  Lora_700Bold,
+  Lora_700Bold_Italic,
+} from '@expo-google-fonts/lora';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { DreamsProvider } from '@/context/DreamsContext';
+
+// Prevent the splash screen from auto-hiding before fonts are loaded
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -13,14 +30,34 @@ export const unstable_settings = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
+  const [fontsLoaded, fontError] = useFonts({
+    SpaceGrotesk_400Regular,
+    SpaceGrotesk_500Medium,
+    SpaceGrotesk_700Bold,
+    Lora_400Regular,
+    Lora_400Regular_Italic,
+    Lora_700Bold,
+    Lora_700Bold_Italic,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      // Hide the splash screen after fonts are loaded
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <DreamsProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="recording" options={{ headerShown: false }} />
-          <Stack.Screen name="dream-review" options={{ headerShown: false }} />
-          <Stack.Screen name="journal/[id]" options={{ title: 'Dream' }} />
+          <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         </Stack>
       </DreamsProvider>

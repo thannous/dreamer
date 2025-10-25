@@ -19,7 +19,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { analyzeDream, generateImageForDream } from '@/services/geminiService';
 import { useDreams } from '@/context/DreamsContext';
 import type { DreamAnalysis } from '@/lib/types';
-import { SurrealTheme } from '@/constants/theme';
+import { SurrealTheme, Fonts } from '@/constants/theme';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 
@@ -160,23 +160,30 @@ export default function RecordingScreen() {
 
     setLoading(true);
     try {
-      // Step 1: Analyze the dream to get title, quote, interpretation, etc.
+      // Analyze the dream
       const analysis = await analyzeDream(transcript);
 
-      // Step 2: Navigate to review screen with analysis results
+      // Generate image
+      const imageUrl = await generateImageForDream(analysis.imagePrompt);
+
+      // Create and save the dream
+      const newDream: DreamAnalysis = {
+        id: Date.now(),
+        transcript,
+        title: analysis.title,
+        interpretation: analysis.interpretation,
+        shareableQuote: analysis.shareableQuote,
+        theme: analysis.theme,
+        dreamType: analysis.dreamType,
+        imageUrl,
+        chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
+      };
+
+      await addDream(newDream);
       setHasUnsavedChanges(false);
-      router.push({
-        pathname: '/dream-review',
-        params: {
-          transcript,
-          title: analysis.title,
-          interpretation: analysis.interpretation,
-          shareableQuote: analysis.shareableQuote,
-          theme: analysis.theme,
-          dreamType: analysis.dreamType,
-          imagePrompt: analysis.imagePrompt,
-        },
-      });
+
+      // Navigate directly to dream detail
+      router.replace(`/journal/${newDream.id}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
       Alert.alert('Analysis Error', msg);
@@ -306,14 +313,14 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: Fonts.spaceGrotesk.bold,
     color: SurrealTheme.textLight,
     flex: 1,
     textAlign: 'center',
   },
   saveText: {
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: Fonts.spaceGrotesk.bold,
     color: SurrealTheme.accent,
   },
   saveTextDisabled: {
@@ -334,12 +341,13 @@ const styles = StyleSheet.create({
   },
   instructionText: {
     fontSize: 18,
-    fontStyle: 'italic',
+    fontFamily: Fonts.lora.regularItalic,
     color: SurrealTheme.textMuted,
     textAlign: 'center',
   },
   timestampText: {
     fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.regular,
     color: SurrealTheme.textMuted,
     opacity: 0.8,
     textAlign: 'center',
@@ -358,7 +366,7 @@ const styles = StyleSheet.create({
     color: SurrealTheme.textLight,
     padding: 20,
     fontSize: 16,
-    fontStyle: 'italic',
+    fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -393,7 +401,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '700',
+    fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.5,
   },
 });

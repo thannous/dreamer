@@ -7,7 +7,7 @@ Overview
 
 1) Create project
 - Go to supabase.com, create a new project.
-- Note the `Project URL` and `anon` key (Settings → API).
+- Note the `Project URL` and `anon` key (Settings > API).
 
 2) Create table and RLS
 Run this SQL in the Supabase SQL editor:
@@ -42,18 +42,26 @@ create policy "dreams delete own" on public.dreams
 
 3) Edge Function: `api`
 - Requires the Supabase CLI: https://supabase.com/docs/guides/cli
-- Initialize functions in a separate folder or clone the `supabase/functions/api/index.ts` from this repo.
-- Set Gemini secret: `supabase functions secrets set GEMINI_API_KEY=your_key`.
+- Initialize functions in a separate folder or clone `supabase/functions/api/index.ts` from this repo.
+- Set Gemini secret: `supabase secrets set GEMINI_API_KEY="your_key" --project-ref <project-ref>`.
 
 Key points
-- Deploy with: `supabase functions deploy api`.
+- Link project if needed: `supabase link --project-ref <project-ref>`.
+- Deploy: `supabase functions deploy api`.
 - Endpoint base: `https://<project-ref>.functions.supabase.co/api`.
 - Set Expo env var: `EXPO_PUBLIC_API_URL` to that base.
 
 4) Configure Expo env
-- Add in your shell before `npm run start`:
-  - macOS/Linux: `EXPO_PUBLIC_SUPABASE_URL=... EXPO_PUBLIC_SUPABASE_ANON_KEY=... EXPO_PUBLIC_API_URL=https://<ref>.functions.supabase.co/api npm run web`
-  - Windows PowerShell: `$Env:EXPO_PUBLIC_SUPABASE_URL='...'; $Env:EXPO_PUBLIC_SUPABASE_ANON_KEY='...'; $Env:EXPO_PUBLIC_API_URL='https://<ref>.functions.supabase.co/api'; npm run web`
+- Create `.env.supabase` in the project root:
+  ```env
+  EXPO_PUBLIC_SUPABASE_URL=...
+  EXPO_PUBLIC_SUPABASE_ANON_KEY=...
+  SUPABASE_PROJECT_REF=usuyppgsmmowzizhaoqj
+  # Optional override if you prefer not to derive it from the project ref
+  # EXPO_PUBLIC_API_URL=https://usuyppgsmmowzizhaoqj.functions.supabase.co/api
+  ```
+- Run `npm run start:supabase` (loads `.env.supabase` then launches Expo).
+- Alternative: set env vars manually as before or configure `app.json` `expo.extra` values.
 
 5) Try the flow
 - In the app Settings tab, sign up or sign in with email/password.
@@ -63,4 +71,3 @@ Key points
 Notes
 - You can expand with additional endpoints later (chat, TTS) using the same pattern.
 - If you need image generation, swap the placeholder with an API like Replicate or Stable Diffusion (store API key as a secret).
-

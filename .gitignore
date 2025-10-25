@@ -32,6 +32,9 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env.supabase
+supabase.exe
+supabase_windows_amd64.tar.gz
 
 # typescript
 *.tsbuildinfo

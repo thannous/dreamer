@@ -27,30 +27,36 @@ export const Colors = {
   },
 };
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+export const Fonts = {
+  // Space Grotesk - for display/body text
+  spaceGrotesk: {
+    regular: 'SpaceGrotesk_400Regular',
+    medium: 'SpaceGrotesk_500Medium',
+    bold: 'SpaceGrotesk_700Bold',
   },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+  // Lora - for serif/quotes
+  lora: {
+    regular: 'Lora_400Regular',
+    regularItalic: 'Lora_400Regular_Italic',
+    bold: 'Lora_700Bold',
+    boldItalic: 'Lora_700Bold_Italic',
   },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
-});
+  // Platform fallbacks
+  ...Platform.select({
+    ios: {
+      system: 'system-ui',
+      mono: 'ui-monospace',
+    },
+    default: {
+      system: 'normal',
+      mono: 'monospace',
+    },
+    web: {
+      system: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+      mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    },
+  }),
+};
 
 export const SurrealTheme = {
   bgStart: '#1a0f2b',
