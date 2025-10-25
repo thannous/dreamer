@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Audio } from 'expo-av';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -22,6 +21,7 @@ import type { DreamAnalysis } from '@/lib/types';
 import { SurrealTheme, Fonts } from '@/constants/theme';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
+import { transcribeAudio } from '@/services/speechToText';
 
 export default function RecordingScreen() {
   const { t } = useTranslation();
@@ -30,7 +30,6 @@ export default function RecordingScreen() {
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Request microphone permissions on mount
   useEffect(() => {
@@ -44,11 +43,6 @@ export default function RecordingScreen() {
       }
     })();
   }, []);
-
-  // Track unsaved changes
-  useEffect(() => {
-    setHasUnsavedChanges(transcript.trim().length > 0);
-  }, [transcript]);
 
   const getCurrentTimestamp = () => {
     const now = new Date();
@@ -79,8 +73,34 @@ export default function RecordingScreen() {
         playsInSilentModeIOS: true,
       });
 
+      const recordingOptions: Audio.RecordingOptions = {
+        isMeteringEnabled: true,
+        android: {
+          extension: '.3gp',
+          outputFormat: Audio.AndroidOutputFormat.AMR_WB,
+          audioEncoder: Audio.AndroidAudioEncoder.AMR_WB,
+          sampleRate: 16000,
+          numberOfChannels: 1,
+        },
+        ios: {
+          extension: '.wav',
+          outputFormat: Audio.IOSOutputFormat.LINEARPCM,
+          audioQuality: Audio.IOSAudioQuality.MEDIUM,
+          sampleRate: 16000,
+          numberOfChannels: 1,
+          bitRate: 256000,
+          linearPCMBitDepth: 16,
+          linearPCMIsBigEndian: false,
+          linearPCMIsFloat: false,
+        },
+        web: {
+          mimeType: 'audio/webm',
+          bitsPerSecond: 128000,
+        },
+      };
+
       const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
+        recordingOptions
       );
 
       setRecording(newRecording);
@@ -101,23 +121,17 @@ export default function RecordingScreen() {
       setRecording(null);
 
       if (uri) {
-        // In a real implementation, you would:
-        // 1. Send the audio file to a speech-to-text service
-        // 2. Get the transcription back
-        // 3. Update the transcript state
-
-        // For now, we'll show a placeholder message
-        Alert.alert(
-          'Recording Complete',
-          'Speech-to-text transcription is not yet implemented. Please use the text area to enter your dream manually.',
-          [{ text: 'OK' }]
-        );
-
-        // TODO: Implement speech-to-text using a service like:
-        // - Google Cloud Speech-to-Text
-        // - Azure Speech Service
-        // - AWS Transcribe
-        // - OpenAI Whisper API
+        try {
+          const transcribedText = await transcribeAudio({ uri, languageCode: 'fr-FR' });
+          if (transcribedText) {
+            setTranscript((prev) => (prev ? `${prev}\n${transcribedText}` : transcribedText));
+          } else {
+            Alert.alert('No Speech Detected', 'No transcript returned for this recording.');
+          }
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : 'Unknown transcription error';
+          Alert.alert('Transcription Failed', msg);
+        }
       }
     } catch (err) {
       console.error('Failed to stop recording:', err);
@@ -130,25 +144,6 @@ export default function RecordingScreen() {
       await stopRecording();
     } else {
       await startRecording();
-    }
-  };
-
-  const handleClose = () => {
-    if (hasUnsavedChanges) {
-      Alert.alert(
-        'Unsaved Changes',
-        'You have unsaved changes. Are you sure you want to leave?',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Discard',
-            style: 'destructive',
-            onPress: () => router.back(),
-          },
-        ]
-      );
-    } else {
-      router.back();
     }
   };
 
@@ -180,7 +175,6 @@ export default function RecordingScreen() {
       };
 
       await addDream(newDream);
-      setHasUnsavedChanges(false);
 
       // Navigate directly to dream detail
       router.replace(`/journal/${newDream.id}`);
@@ -190,6 +184,10 @@ export default function RecordingScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoToJournal = () => {
+    router.push('/(tabs)/journal');
   };
 
   return (
@@ -209,32 +207,17 @@ export default function RecordingScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Pressable onPress={handleClose} style={styles.headerButton}>
-              <Ionicons name="close" size={28} color={SurrealTheme.textMuted} />
-            </Pressable>
-            <Text style={styles.headerTitle}>New Dream</Text>
             <Pressable
-              onPress={handleSave}
-              disabled={loading || !transcript.trim()}
+              onPress={handleGoToJournal}
               style={styles.headerButton}
             >
-              {loading ? (
-                <ActivityIndicator size="small" color={SurrealTheme.accent} />
-              ) : (
-                <Text
-                  style={[
-                    styles.saveText,
-                    !transcript.trim() && styles.saveTextDisabled,
-                  ]}
-                >
-                  Save
-                </Text>
-              )}
+              <Text style={styles.saveText}>My Dream</Text>
             </Pressable>
           </View>
 
           {/* Main Content */}
           <View style={styles.mainContent}>
+            <Text style={styles.pageTitle}>New Dream</Text>
             <View style={styles.recordingSection}>
               <Text style={styles.instructionText}>
                 Whisper your dream into the ether...
@@ -300,7 +283,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     paddingHorizontal: 16,
     paddingVertical: 12,
     paddingTop: Platform.OS === 'ios' ? 60 : 12,
@@ -311,26 +294,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    color: SurrealTheme.textLight,
-    flex: 1,
-    textAlign: 'center',
-  },
   saveText: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
     color: SurrealTheme.accent,
-  },
-  saveTextDisabled: {
-    opacity: 0.5,
   },
   mainContent: {
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingBottom: 16,
+    paddingTop: 16,
+  },
+  pageTitle: {
+    fontSize: 32,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    color: SurrealTheme.textLight,
+    textAlign: 'center',
+    marginBottom: 8,
   },
   recordingSection: {
     flex: 1,
