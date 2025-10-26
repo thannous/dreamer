@@ -1,13 +1,13 @@
+import { getAccessToken } from './auth';
+
 export type HttpOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   timeoutMs?: number;
 };
 
-import { getAccessToken } from './auth';
-
-export async function fetchJSON<T = any>(url: string, options: HttpOptions = {}): Promise<T> {
+export async function fetchJSON<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? 30000);
   try {
