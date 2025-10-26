@@ -1,0 +1,109 @@
+import { DreamAnalysis } from './types';
+
+/**
+ * Filter dreams by search query
+ * Searches in title, transcript, and interpretation
+ */
+export function filterBySearch(dreams: DreamAnalysis[], query: string): DreamAnalysis[] {
+  if (!query.trim()) return dreams;
+
+  const normalizedQuery = query.toLowerCase();
+
+  return dreams.filter((dream) => {
+    const searchableText = [
+      dream.title,
+      dream.transcript,
+      dream.interpretation,
+      dream.dreamType,
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return searchableText.includes(normalizedQuery);
+  });
+}
+
+/**
+ * Filter dreams by theme
+ */
+export function filterByTheme(
+  dreams: DreamAnalysis[],
+  theme: string | null,
+): DreamAnalysis[] {
+  if (!theme) return dreams;
+
+  return dreams.filter((dream) => dream.theme === theme);
+}
+
+/**
+ * Filter dreams by date range
+ */
+export function filterByDateRange(
+  dreams: DreamAnalysis[],
+  startDate: Date | null,
+  endDate: Date | null,
+): DreamAnalysis[] {
+  if (!startDate && !endDate) return dreams;
+
+  return dreams.filter((dream) => {
+    const dreamDate = new Date(dream.id);
+
+    if (startDate && dreamDate < startDate) return false;
+    if (endDate) {
+      // Set end date to end of day
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      if (dreamDate > endOfDay) return false;
+    }
+
+    return true;
+  });
+}
+
+/**
+ * Combined filter function
+ */
+export interface DreamFilters {
+  searchQuery?: string;
+  theme?: string | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
+}
+
+export function applyFilters(dreams: DreamAnalysis[], filters: DreamFilters): DreamAnalysis[] {
+  let filtered = [...dreams];
+
+  if (filters.searchQuery) {
+    filtered = filterBySearch(filtered, filters.searchQuery);
+  }
+
+  if (filters.theme) {
+    filtered = filterByTheme(filtered, filters.theme);
+  }
+
+  if (filters.startDate || filters.endDate) {
+    filtered = filterByDateRange(filtered, filters.startDate || null, filters.endDate || null);
+  }
+
+  return filtered;
+}
+
+/**
+ * Sort dreams by date (newest first)
+ */
+export function sortDreamsByDate(dreams: DreamAnalysis[], ascending = false): DreamAnalysis[] {
+  return [...dreams].sort((a, b) => {
+    return ascending ? a.id - b.id : b.id - a.id;
+  });
+}
+
+/**
+ * Get unique themes from dreams
+ */
+export function getUniqueThemes(dreams: DreamAnalysis[]): string[] {
+  const themes = new Set<string>();
+  dreams.forEach((dream) => {
+    if (dream.theme) themes.add(dream.theme);
+  });
+  return Array.from(themes).sort();
+}
