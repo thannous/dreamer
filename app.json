@@ -22,6 +22,8 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
       "package": "com.tanuki75.dreamapp"
@@ -63,6 +65,12 @@
         "projectId": "942327eb-bbba-4b13-a38a-23bbf64936b8"
       }
     },
-    "owner": "tanuki75"
+    "owner": "tanuki75",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/942327eb-bbba-4b13-a38a-23bbf64936b8"
+    }
   }
 }

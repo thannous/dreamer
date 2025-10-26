@@ -11,12 +11,31 @@
       "developmentClient": true,
       "distribution": "internal"
     },
-    "preview": { "android": { "buildType": "apk" } },
+    "preview": {
+      "channel": "preview",
+      "android": { "buildType": "apk" }
+    },
     "production": {
-      "autoIncrement": true
+      "channel": "production",
+      "autoIncrement": true,
+      "android": { "buildType": "app-bundle" },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "internal": {
+      "android": {
+        "track": "internal",
+        "serviceAccountKeyPath": "./.eas/keys/google-service-account.json"
+      }
+    },
+    "production": {
+      "android": {
+        "track": "production",
+        "serviceAccountKeyPath": "./.eas/keys/google-service-account.json"
+      }
+    }
   }
 }

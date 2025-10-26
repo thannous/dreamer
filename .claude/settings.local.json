@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__expo-mcp__add_library",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx expo install:*)"
     ],
     "deny": [],
     "ask": []

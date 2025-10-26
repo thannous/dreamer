@@ -2,9 +2,11 @@
 // Routes:
 // - POST /api/analyzeDream { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt }
 // - POST /api/generateImage { prompt } -> { imageUrl }
+// - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { GoogleGenerativeAI } from 'https://esm.sh/@google/generative-ai@0.21.0?target=deno';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -114,48 +116,30 @@ serve(async (req: Request) => {
         snippet: transcript.slice(0, 80),
       });
 
-      // Ask the model to return strict JSON to avoid schema features
+      // Ask the model to return strict JSON (no schema fields here to keep compatibility)
       const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string}.\nDream transcript:\n${transcript}`;
 
-      const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const apiVersion = Deno.env.get('GEMINI_API_VERSION') ?? 'v1';
-      const model = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
-      const endpoint = `${apiBase}/${apiVersion}/models/${model}:generateContent?key=${apiKey}`;
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
 
-      let gemRes = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      let text = '';
+      try {
+        const model = genAI.getGenerativeModel({ model: primaryModel });
+        const result = await model.generateContent({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: {
-            // responseMimeType/responseSchema are not supported on some endpoints; rely on prompt-enforced JSON
-            temperature: 0.7,
-          },
-        }),
-      });
-      // Fallbacks if model or version not found
-      if (!gemRes.ok && gemRes.status === 404) {
-        const fallbackModel = 'gemini-2.5-flash';
-        const fallbackEndpoint = `${apiBase}/${apiVersion}/models/${fallbackModel}:generateContent?key=${apiKey}`;
-        console.warn('[api] /analyzeDream retry with', fallbackModel);
-        gemRes = await fetch(fallbackEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.7,
-            },
-          }),
+          generationConfig: { temperature: 0.7 },
         });
+        text = result.response.text();
+      } catch (err) {
+        console.warn('[api] /analyzeDream primary model failed, retrying with flash', primaryModel, err);
+        const fallbackModel = 'gemini-2.5-flash';
+        const model = genAI.getGenerativeModel({ model: fallbackModel });
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7 },
+        });
+        text = result.response.text();
       }
-      if (!gemRes.ok) {
-        const t = await gemRes.text();
-        console.error('[api] /analyzeDream gemini error', gemRes.status, t);
-        throw new Error(`Gemini error ${gemRes.status}: ${t}`);
-      }
-      const gemJson = (await gemRes.json()) as any;
-      const text: string = gemJson?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 
       console.log('[api] /analyzeDream model raw length', text.length);
 
@@ -214,16 +198,9 @@ serve(async (req: Request) => {
     }
   }
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
-  }
-
-  try {
-
-    if (req.method === 'POST' && subPath === '/analyzeDream') {
+  // Combined: analyze dream and generate image in one call (public)
+  if (req.method === 'POST' && subPath === '/analyzeDreamFull') {
+    try {
       const body = (await req.json()) as { transcript?: string };
       const transcript = String(body?.transcript ?? '').trim();
       if (!transcript) throw new Error('Missing transcript');
@@ -231,31 +208,43 @@ serve(async (req: Request) => {
       const apiKey = Deno.env.get('GEMINI_API_KEY');
       if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-      // Ask Gemini to return strict JSON with our fields
-      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: 
-{"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string}.
-Dream transcript: \n${transcript}`;
+      console.log('[api] /analyzeDreamFull request', {
+        userId: user?.id ?? null,
+        transcriptLength: transcript.length,
+        snippet: transcript.slice(0, 80),
+      });
 
-      const gemRes = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] }),
-        }
-      );
-      if (!gemRes.ok) {
-        const t = await gemRes.text();
-        throw new Error(`Gemini error ${gemRes.status}: ${t}`);
+      // 1) Analyze the dream
+      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string}.\nDream transcript:\n${transcript}`;
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
+
+      let text = '';
+      try {
+        const model = genAI.getGenerativeModel({ model: primaryModel });
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7 },
+        });
+        text = result.response.text();
+      } catch (err) {
+        console.warn('[api] /analyzeDreamFull primary model failed, retrying with flash', primaryModel, err);
+        const fallbackModel = 'gemini-2.5-flash';
+        const model = genAI.getGenerativeModel({ model: fallbackModel });
+        const result = await model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7 },
+        });
+        text = result.response.text();
       }
-      const gemJson = (await gemRes.json()) as any;
-      const text: string = gemJson?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+
+      console.log('[api] /analyzeDreamFull model raw length', text.length);
 
       let analysis: any;
       try {
         analysis = JSON.parse(text);
       } catch {
-        // Fallback if model wrapped JSON in code fences
         const match = text.match(/\{[\s\S]*\}/);
         if (match) analysis = JSON.parse(match[0]);
       }
@@ -265,18 +254,64 @@ Dream transcript: \n${transcript}`;
         ? analysis.theme
         : 'surreal';
 
-      // Store in DB (best-effort)
-      await supabase.from('dreams').insert({
-        user_id: user.id,
-        transcript,
-        title: String(analysis.title ?? ''),
-        interpretation: String(analysis.interpretation ?? ''),
-        shareable_quote: String(analysis.shareableQuote ?? ''),
-        theme,
-        dream_type: String(analysis.dreamType ?? 'Dream'),
-        image_url: null,
-        chat_history: [],
+      // 2) Generate image from the prompt
+      const imagePrompt = String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere');
+
+      const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
+      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-4.0-generate-001';
+      const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
+
+      const imgRes = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
+        body: JSON.stringify({
+          instances: [{ prompt: imagePrompt }],
+          parameters: {
+            sampleCount: 1,
+            aspectRatio: '9:16',
+          },
+        }),
       });
+      if (!imgRes.ok) {
+        const t = await imgRes.text();
+        throw new Error(`Imagen error ${imgRes.status}: ${t}`);
+      }
+      const imgJson = (await imgRes.json()) as any;
+
+      let imageBase64: string | undefined;
+      const firstPred = imgJson?.predictions?.[0];
+      if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
+      const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
+      if (!imageBase64 && gen0) imageBase64 = gen0;
+
+      if (!imageBase64) {
+        return new Response(JSON.stringify({ error: 'No image returned', raw: imgJson }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      // Optional DB insert if user is authenticated (store the dream with image if desired)
+      if (user) {
+        try {
+          await supabase.from('dreams').insert({
+            user_id: user.id,
+            transcript,
+            title: String(analysis.title ?? ''),
+            interpretation: String(analysis.interpretation ?? ''),
+            shareable_quote: String(analysis.shareableQuote ?? ''),
+            theme,
+            dream_type: String(analysis.dreamType ?? 'Dream'),
+            image_url: null, // storing raw bytes is not ideal; leave null or upload to storage in future
+            chat_history: [],
+          });
+        } catch (dbErr) {
+          console.warn('[api] /analyzeDreamFull insert failed (non-fatal)', dbErr);
+        }
+      }
 
       return new Response(
         JSON.stringify({
@@ -285,13 +320,23 @@ Dream transcript: \n${transcript}`;
           shareableQuote: String(analysis.shareableQuote ?? ''),
           theme,
           dreamType: String(analysis.dreamType ?? 'Dream'),
-          imagePrompt: String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere'),
+          imagePrompt,
+          imageBytes: imageBase64,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
+    } catch (e) {
+      console.error('[api] /analyzeDreamFull error', e);
+      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
     }
+  }
 
-    if (req.method === 'POST' && subPath === '/generateImage') {
+  // Public generateImage (temporary public access)
+  if (req.method === 'POST' && subPath === '/generateImage') {
+    try {
       const body = (await req.json()) as { prompt?: string };
       const prompt = String(body?.prompt ?? '').trim();
       if (!prompt) {
@@ -304,7 +349,6 @@ Dream transcript: \n${transcript}`;
       const apiKey = Deno.env.get('GEMINI_API_KEY');
       if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-      // Use Imagen 4, same as your React setup
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
       const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-4.0-generate-001';
       const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
@@ -320,7 +364,6 @@ Dream transcript: \n${transcript}`;
           parameters: {
             sampleCount: 1,
             aspectRatio: '9:16',
-            // Some SDKs support outputMimeType; backend may infer PNG/JPEG. We'll accept imageBytes as base64.
           },
         }),
       });
@@ -330,7 +373,6 @@ Dream transcript: \n${transcript}`;
       }
       const imgJson = (await imgRes.json()) as any;
 
-      // Try multiple shapes depending on response format
       let imageBase64: string | undefined;
       const firstPred = imgJson?.predictions?.[0];
       if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
@@ -338,8 +380,6 @@ Dream transcript: \n${transcript}`;
       if (!imageBase64 && gen0) imageBase64 = gen0;
 
       if (!imageBase64) {
-        // Return raw response for debugging if needed
-        console.warn('[api] /generateImage unknown response shape');
         return new Response(JSON.stringify({ error: 'No image returned', raw: imgJson }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -350,8 +390,23 @@ Dream transcript: \n${transcript}`;
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
+    } catch (e) {
+      console.error('[api] /generateImage error', e);
+      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
     }
+  }
 
+  if (!user) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+
+  try {
     return new Response(JSON.stringify({ error: 'Not found' }), {
       status: 404,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

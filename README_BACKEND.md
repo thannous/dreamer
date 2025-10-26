@@ -23,13 +23,19 @@ Expected endpoints
   - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string }`
   - Env required: `GEMINI_API_KEY`
   - Optional env overrides:
-    - `GEMINI_API_BASE` (default `https://generativelanguage.googleapis.com`)
-    - `GEMINI_API_VERSION` (default `v1`)
-    - `GEMINI_MODEL` (default `gemini-1.5-flash-002`; fallback to `gemini-1.5-flash-latest` on 404)
+    - `GEMINI_API_BASE` (SDK uses default `https://generativelanguage.googleapis.com`)
+    - `GEMINI_API_VERSION` (not used with SDK)
+    - `GEMINI_MODEL` (default `gemini-2.5-pro`; fallback to `gemini-2.5-flash` on failure)
 
 - POST `/generateImage`
   - Request JSON: `{ "prompt": string }`
   - Response JSON: either `{ "imageUrl": string }` or `{ "imageBytes": base64-string }`
+  - Auth: public (temporary)
+
+- POST `/analyzeDreamFull`
+  - Request JSON: `{ "transcript": string }`
+  - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string, "imageBytes": base64-string }`
+  - Notes: Combines analysis and image generation in one call. Client can build a data URL as `data:image/jpeg;base64,${imageBytes}`.
 
 - POST `/chat`
   - Request JSON: `{ "history": [{ "role": "user"|"model", "text": string }], "message": string, "lang": string }`
