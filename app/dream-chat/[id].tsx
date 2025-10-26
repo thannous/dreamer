@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Pressable,
   ScrollView,
@@ -11,15 +10,28 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useDreams } from '@/context/DreamsContext';
 import { Fonts } from '@/constants/theme';
 import { startOrContinueChat } from '@/services/geminiService';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
+import { GradientColors } from '@/constants/gradients';
+import { getImageConfig } from '@/lib/imageUtils';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
+
+const getCategoryQuestion = (category: CategoryType): string => {
+  const categoryQuestions: Record<CategoryType, string> = {
+    symbols: 'Tell me about the symbolic meanings in my dream. What do the key symbols represent?',
+    emotions: 'Help me understand the emotional landscape of this dream. What emotions am I processing?',
+    growth: 'What insights for personal growth can you share based on this dream?',
+    general: '',
+  };
+  return categoryQuestions[category];
+};
 
 const buildCategoryPrompt = (category: CategoryType, dream: DreamAnalysis): string => {
   if (category === 'general') return '';
@@ -42,14 +54,8 @@ Key Quote: "${dream.shareableQuote}"
 
 `;
 
-  const categoryQuestions: Record<CategoryType, string> = {
-    symbols: 'Now, tell me about the symbolic meanings in my dream. What do the key symbols represent?',
-    emotions: 'Now, help me understand the emotional landscape of this dream. What emotions am I processing?',
-    growth: 'Now, what insights for personal growth can you share based on this dream?',
-    general: '',
-  };
-
-  return dreamContext + categoryQuestions[category];
+  const question = getCategoryQuestion(category);
+  return dreamContext + 'Now, ' + question.charAt(0).toLowerCase() + question.slice(1);
 };
 
 const QUICK_CATEGORIES = [
@@ -61,119 +67,151 @@ const QUICK_CATEGORIES = [
 export default function DreamChatScreen() {
   const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
   const { dreams, updateDream } = useDreams();
-  const dream = dreams.find((d) => d.id === Number(id));
+  const dreamId = useMemo(() => Number(id), [id]);
+  const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const hasSentCategoryRef = useRef(false);
 
+  // Use full-resolution image config for chat view
+  const imageConfig = useMemo(() => getImageConfig('full'), []);
+
+  // Initialize chat messages from dream history
   useEffect(() => {
-    if (dream) {
-      // Initialize with existing chat history or start new conversation
-      if (dream.chatHistory && dream.chatHistory.length > 0) {
-        setMessages(dream.chatHistory);
-      } else {
-        // Start with initial AI greeting
-        const initialMessage: ChatMessage = {
-          role: 'model',
-          text: `I'm here to help you explore deeper insights about your dream "${dream.title}". What would you like to know?`,
-        };
-        setMessages([initialMessage]);
-      }
+    if (!dream) return;
 
-      // If a category was selected, auto-send that question with dream context
-      if (category && category !== 'general') {
-        const categoryPrompt = buildCategoryPrompt(category as CategoryType, dream);
-        if (categoryPrompt) {
-          setTimeout(() => sendMessage(categoryPrompt), 500);
-        }
-      }
+    // Initialize with existing chat history or start new conversation
+    if (dream.chatHistory && dream.chatHistory.length > 0) {
+      setMessages(dream.chatHistory);
+    } else {
+      // Start with initial AI greeting
+      const initialMessage: ChatMessage = {
+        role: 'model',
+        text: `I'm here to help you explore deeper insights about your dream "${dream.title}". What would you like to know?`,
+      };
+      setMessages([initialMessage]);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dream?.id]);
+
+  // Send category-specific question if category is provided
+  useEffect(() => {
+    if (!dream || !category || category === 'general' || hasSentCategoryRef.current) {
+      return;
+    }
+
+    const categoryPrompt = buildCategoryPrompt(category as CategoryType, dream);
+    const question = getCategoryQuestion(category as CategoryType);
+
+    if (categoryPrompt) {
+      hasSentCategoryRef.current = true;
+      const timeoutId = setTimeout(() => {
+        sendMessage(categoryPrompt, question);
+      }, 500);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, dream]); // sendMessage has stable dependencies via useCallback
 
   useEffect(() => {
     // Auto-scroll to bottom when messages change
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [messages]);
 
-  const sendMessage = async (messageText?: string) => {
-    const textToSend = messageText || inputText.trim();
-    if (!textToSend || !dream) return;
+  const sendMessage = useCallback(
+    async (messageText?: string, displayText?: string) => {
+      const textToSend = messageText || inputText.trim();
+      if (!textToSend || !dream) return;
 
-    // Add user message
-    const userMessage: ChatMessage = { role: 'user', text: textToSend };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInputText('');
-    setIsLoading(true);
+      // Add user message (use displayText if provided, otherwise use textToSend)
+      const userMessage: ChatMessage = { role: 'user', text: displayText || textToSend };
+      const updatedMessages = [...messages, userMessage];
+      setMessages(updatedMessages);
+      setInputText('');
+      setIsLoading(true);
 
-    try {
-      // Build conversation history for API
-      const history = updatedMessages.map((msg) => ({
-        role: msg.role,
-        text: msg.text,
-      }));
+      try {
+        // Build conversation history for API
+        const history = updatedMessages.map((msg) => ({
+          role: msg.role,
+          text: msg.text,
+        }));
 
-      // Get AI response
-      const aiResponseText = await startOrContinueChat(history, textToSend, 'en');
+        // Get AI response
+        const aiResponseText = await startOrContinueChat(history, textToSend, 'en');
 
-      const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
-      const finalMessages = [...updatedMessages, aiMessage];
+        const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
+        const finalMessages = [...updatedMessages, aiMessage];
 
-      setMessages(finalMessages);
+        setMessages(finalMessages);
 
-      // Persist to dream
-      await updateDream(dream.id, { chatHistory: finalMessages });
-    } catch (error) {
-      console.error('Chat error:', error);
-      const errorMessage: ChatMessage = {
-        role: 'model',
-        text: 'Sorry, I encountered an error. Please try again.',
-      };
-      setMessages([...updatedMessages, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        // Persist to dream
+        await updateDream({ ...dream, chatHistory: finalMessages });
+      } catch (error) {
+        if (__DEV__) {
+          console.error('Chat error:', error);
+        }
+        const errorMessage: ChatMessage = {
+          role: 'model',
+          text: 'Sorry, I encountered an error. Please try again.',
+        };
+        setMessages([...updatedMessages, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [inputText, dream, messages, updateDream]
+  );
 
   const handleQuickCategory = (categoryId: string) => {
     if (!dream) return;
     const prompt = buildCategoryPrompt(categoryId as CategoryType, dream);
+    const question = getCategoryQuestion(categoryId as CategoryType);
     if (prompt) {
-      sendMessage(prompt);
+      sendMessage(prompt, question);
     }
   };
 
   if (!dream) {
     return (
-      <LinearGradient colors={['#131022', '#4A3B5F']} style={styles.container}>
+      <LinearGradient colors={GradientColors.dreamJournal} style={styles.container}>
         <Text style={styles.errorText}>Dream not found.</Text>
       </LinearGradient>
     );
   }
 
   return (
-    <LinearGradient colors={['#131022', '#131022']} style={styles.gradient}>
+    <LinearGradient colors={GradientColors.darkBase} style={styles.gradient}>
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <MaterialCommunityIcons name="arrow-left" size={24} color="#CFCFEA" />
-          </Pressable>
-          <Text style={styles.headerTitle}>Dream Analysis</Text>
-          <View style={styles.headerSpacer} />
-        </View>
+
 
         {/* Dream Image with Title */}
         <View style={styles.imageContainer}>
-          <Image source={{ uri: dream.imageUrl }} style={styles.dreamImage} resizeMode="cover" />
+          <Image
+            source={{ uri: dream.imageUrl }}
+            style={styles.dreamImage}
+            contentFit={imageConfig.contentFit}
+            transition={imageConfig.transition}
+            cachePolicy={imageConfig.cachePolicy}
+            priority={imageConfig.priority}
+            placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+          />
           <LinearGradient
             colors={['transparent', 'rgba(19, 16, 34, 0.9)', '#131022']}
             style={styles.imageGradient}
