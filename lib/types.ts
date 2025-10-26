@@ -9,7 +9,8 @@ export interface DreamAnalysis {
   title: string;
   interpretation: string;
   shareableQuote: string;
-  imageUrl: string;
+  imageUrl: string; // Full-resolution image for detail views
+  thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
   chatHistory: ChatMessage[];
   theme?: string;
   dreamType: string;
