@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import type { User } from '@supabase/supabase-js';
 import { onAuthChange, signInWithEmailPassword, signOut, signUpWithEmailPassword } from '@/lib/auth';
+import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 
 export default function SettingsScreen() {
   const [user, setUser] = useState<User | null>(null);
@@ -92,7 +93,7 @@ export default function SettingsScreen() {
         </View>
       )}
 
-      <Text style={{ color: '#666' }}>Notifications and voice features to be added.</Text>
+      <NotificationSettingsCard />
     </View>
   );
 }
