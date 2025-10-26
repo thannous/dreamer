@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -22,13 +22,15 @@ import {
   AudioQuality,
   type RecordingOptions,
 } from 'expo-audio';
-import { analyzeDream, generateImageForDream } from '@/services/geminiService';
+import { analyzeDreamWithImage } from '@/services/geminiService';
 import { useDreams } from '@/context/DreamsContext';
 import type { DreamAnalysis } from '@/lib/types';
 import { SurrealTheme, Fonts } from '@/constants/theme';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 import { transcribeAudio } from '@/services/speechToText';
+import { getCurrentMoonCycleTimestamp } from '@/lib/dateUtils';
+import { GradientColors } from '@/constants/gradients';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -80,20 +82,7 @@ export default function RecordingScreen() {
     })();
   }, []);
 
-  const getCurrentTimestamp = () => {
-    const now = new Date();
-    const options: Intl.DateTimeFormatOptions = {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    };
-    return `Cycle of the Moon: ${now.toLocaleDateString('en-US', options)}`;
-  };
-
-  const startRecording = async () => {
+  const startRecording = useCallback(async () => {
     try {
       const { granted } = await AudioModule.requestRecordingPermissionsAsync();
       if (!granted) {
@@ -113,12 +102,14 @@ export default function RecordingScreen() {
       audioRecorder.record();
       setIsRecording(true);
     } catch (err) {
-      console.error('Failed to start recording:', err);
+      if (__DEV__) {
+        console.error('Failed to start recording:', err);
+      }
       Alert.alert('Error', 'Failed to start recording. Please try again.');
     }
-  };
+  }, [audioRecorder]);
 
-  const stopRecording = async () => {
+  const stopRecording = useCallback(async () => {
     try {
       setIsRecording(false);
       await audioRecorder.stop();
@@ -140,20 +131,22 @@ export default function RecordingScreen() {
         Alert.alert('Recording Invalid', 'No audio file was produced. Please try again and speak for at least 2 seconds.');
       }
     } catch (err) {
-      console.error('Failed to stop recording:', err);
+      if (__DEV__) {
+        console.error('Failed to stop recording:', err);
+      }
       Alert.alert('Error', 'Failed to stop recording.');
     }
-  };
+  }, [audioRecorder]);
 
-  const toggleRecording = async () => {
+  const toggleRecording = useCallback(async () => {
     if (isRecording) {
       await stopRecording();
     } else {
       await startRecording();
     }
-  };
+  }, [isRecording, stopRecording, startRecording]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!transcript.trim()) {
       Alert.alert('Empty Dream', 'Please record or write your dream first.');
       return;
@@ -161,11 +154,8 @@ export default function RecordingScreen() {
 
     setLoading(true);
     try {
-      // Analyze the dream
-      const analysis = await analyzeDream(transcript);
-
-      // Generate image
-      const imageUrl = await generateImageForDream(analysis.imagePrompt);
+      // Analyze the dream and generate image in a single call
+      const analysis = await analyzeDreamWithImage(transcript);
 
       // Create and save the dream
       const newDream: DreamAnalysis = {
@@ -176,7 +166,7 @@ export default function RecordingScreen() {
         shareableQuote: analysis.shareableQuote,
         theme: analysis.theme,
         dreamType: analysis.dreamType,
-        imageUrl,
+        imageUrl: analysis.imageUrl,
         chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
       };
 
@@ -190,15 +180,15 @@ export default function RecordingScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [transcript, addDream]);
 
-  const handleGoToJournal = () => {
+  const handleGoToJournal = useCallback(() => {
     router.push('/(tabs)/journal');
-  };
+  }, []);
 
   return (
     <LinearGradient
-      colors={[SurrealTheme.bgStart, SurrealTheme.bgEnd]}
+      colors={GradientColors.surreal}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
@@ -233,7 +223,7 @@ export default function RecordingScreen() {
 
               <Waveform isActive={isRecording} />
 
-              <Text style={styles.timestampText}>{getCurrentTimestamp()}</Text>
+              <Text style={styles.timestampText}>{getCurrentMoonCycleTimestamp()}</Text>
             </View>
 
             {/* Text Input */}

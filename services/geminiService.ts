@@ -2,6 +2,7 @@
 // or app.json extra.apiUrl. Endpoints expected:
 // - POST /analyzeDream { transcript } -> AnalysisResult
 // - POST /generateImage { prompt } -> { imageUrl?: string, imageBytes?: string }
+// - POST /analyzeDreamFull { transcript } -> AnalysisResult & { imageBytes?: string, imageUrl?: string }
 // - POST /chat { history, message, lang } -> { text: string }
 // - POST /tts { text } -> { audioBase64: string }
 
@@ -23,6 +24,18 @@ export async function analyzeDream(transcript: string): Promise<AnalysisResult> 
     method: 'POST',
     body: { transcript },
   });
+}
+
+export async function analyzeDreamWithImage(transcript: string): Promise<AnalysisResult & { imageUrl: string }> {
+  const base = getApiBaseUrl();
+  const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
+    method: 'POST',
+    body: { transcript },
+  });
+  const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/jpeg;base64,${res.imageBytes}` : undefined);
+  if (!imageUrl) throw new Error('Invalid combined response from backend');
+  // Return merged object with a guaranteed imageUrl
+  return { ...res, imageUrl };
 }
 
 export async function generateImageForDream(prompt: string): Promise<string> {

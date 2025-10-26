@@ -51,9 +51,15 @@ export async function transcribeAudio({
   uri,
   languageCode = 'fr-FR',
 }: TranscribeParams): Promise<string> {
-  console.log('[speechToText] reading file', uri);
+  if (__DEV__) {
+    console.log('[speechToText] reading file', uri);
+  }
+
   const contentBase64 = await readAudioAsBase64(uri);
-  console.log('[speechToText] file size (base64 chars)', contentBase64.length);
+
+  if (__DEV__) {
+    console.log('[speechToText] file size (base64 chars)', contentBase64.length);
+  }
 
   // Pick encoding/sample hints based on platform + our recording options
   // - iOS: WAV Linear PCM -> LINEAR16 @ 16000 Hz
@@ -71,7 +77,11 @@ export async function transcribeAudio({
   }
 
   const base = getApiBaseUrl();
-  console.log('[speechToText] POST', `${base}/transcribe`, { encoding, languageCode, sampleRateHertz });
+
+  if (__DEV__) {
+    console.log('[speechToText] POST', `${base}/transcribe`, { encoding, languageCode, sampleRateHertz });
+  }
+
   try {
     const res = await fetchJSON<{ transcript?: string }>(`${base}/transcribe`, {
       method: 'POST',
@@ -84,11 +94,16 @@ export async function transcribeAudio({
       // Transcription can take a bit longer
       timeoutMs: 60000,
     });
-    console.log('[speechToText] response', res);
+
+    if (__DEV__) {
+      console.log('[speechToText] response', res);
+    }
+
     return res.transcript ?? '';
   } catch (error) {
-    console.error('[speechToText] fetch failed', error);
-    throw error;
+    if (__DEV__) {
+      console.error('[speechToText] fetch failed', error);
+    }
+    throw new Error('Failed to transcribe audio. Please try again.');
   }
-
 }
