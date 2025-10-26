@@ -1,22 +1,27 @@
-import React, { useMemo } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, Share, Alert, ScrollView } from 'react-native';
+import React, { useMemo, useCallback } from 'react';
+import { View, Text, StyleSheet, Pressable, Share, Alert, ScrollView } from 'react-native';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useDreams } from '@/context/DreamsContext';
-import { useTranslation } from '@/hooks/useTranslation';
 import { Fonts } from '@/constants/theme';
+import { formatDreamDate, formatDreamTime } from '@/lib/dateUtils';
+import { GradientColors } from '@/constants/gradients';
+import { getImageConfig } from '@/lib/imageUtils';
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
   const { dreams, deleteDream, toggleFavorite } = useDreams();
-  const { t } = useTranslation();
 
-  const dream = dreams.find((d) => d.id === dreamId);
+  const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+
+  // Use full-resolution image config for detail view
+  const imageConfig = useMemo(() => getImageConfig('full'), []);
   if (!dream) {
     return (
-      <LinearGradient colors={['#131022', '#4A3B5F']} style={styles.container}>
+      <LinearGradient colors={GradientColors.dreamJournal} style={styles.container}>
         <Text style={{ color: '#CFCFEA', fontSize: 18 }}>Dream not found.</Text>
         <Pressable onPress={() => router.replace('/(tabs)/journal')} style={styles.backButton}>
           <Text style={styles.backButtonText}>Go Back</Text>
@@ -25,15 +30,17 @@ export default function JournalDetailScreen() {
     );
   }
 
-  const onShare = async () => {
+  const onShare = useCallback(async () => {
+    if (!dream) return;
     try {
       await Share.share({ message: `"${dream.shareableQuote}" - From my dream journal.` });
-    } catch (e) {
+    } catch {
       Alert.alert('Share failed');
     }
-  };
+  }, [dream]);
 
-  const onDelete = async () => {
+  const onDelete = useCallback(async () => {
+    if (!dream) return;
     Alert.alert(
       'Delete Dream',
       'Are you sure you want to delete this dream?',
@@ -49,10 +56,10 @@ export default function JournalDetailScreen() {
         },
       ]
     );
-  };
+  }, [dream, deleteDream]);
 
   return (
-    <LinearGradient colors={['#131022', '#4A3B5F']} style={styles.gradient}>
+    <LinearGradient colors={GradientColors.dreamJournal} style={styles.gradient}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Premium Header with Glassmorphism */}
         <View style={styles.headerContainer}>
@@ -70,7 +77,15 @@ export default function JournalDetailScreen() {
         {/* Dream Image */}
         <View style={styles.imageContainer}>
           <View style={styles.imageFrame}>
-            <Image source={{ uri: dream.imageUrl }} style={styles.dreamImage} resizeMode="cover" />
+            <Image
+              source={{ uri: dream.imageUrl }}
+              style={styles.dreamImage}
+              contentFit={imageConfig.contentFit}
+              transition={imageConfig.transition}
+              cachePolicy={imageConfig.cachePolicy}
+              priority={imageConfig.priority}
+              placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+            />
             <View style={styles.imageOverlay} />
           </View>
         </View>
@@ -82,24 +97,11 @@ export default function JournalDetailScreen() {
             <View style={styles.metadataHeader}>
               <View style={styles.dateContainer}>
                 <Ionicons name="calendar-outline" size={16} color="#8C9EFF" />
-                <Text style={styles.dateText}>
-                  {new Date(dream.id).toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </Text>
+                <Text style={styles.dateText}>{formatDreamDate(dream.id)}</Text>
               </View>
               <View style={styles.timeContainer}>
                 <Ionicons name="time-outline" size={16} color="#8C9EFF" />
-                <Text style={styles.timeText}>
-                  {new Date(dream.id).toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true,
-                  })}
-                </Text>
+                <Text style={styles.timeText}>{formatDreamTime(dream.id)}</Text>
               </View>
             </View>
             <View style={styles.divider} />
