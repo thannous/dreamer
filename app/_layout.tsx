@@ -20,6 +20,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { configureNotificationHandler } from '@/services/notificationService';
 
 // Prevent the splash screen from auto-hiding before fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -47,6 +48,11 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    // Configure notification handler on app startup
+    configureNotificationHandler();
+  }, []);
 
   if (!fontsLoaded && !fontError) {
     return null;
