@@ -1,12 +1,13 @@
 // Deno Deploy / Supabase Edge Function (name: api)
 // Routes:
 // - POST /api/analyzeDream { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt }
-// - POST /api/generateImage { prompt } -> { imageUrl }
+// - POST /api/generateImage { prompt } -> { imageUrl | imageBytes }
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
+// - POST /api/chat { history, message, lang } -> { text }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { GoogleGenerativeAI } from 'https://esm.sh/@google/generative-ai@0.21.0?target=deno';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -100,6 +101,77 @@ serve(async (req: Request) => {
     }
   }
 
+  // Public chat endpoint: conversational follow-ups about dreams
+  if (req.method === 'POST' && subPath === '/chat') {
+    try {
+      const body = (await req.json()) as {
+        history?: { role: 'user' | 'model'; text: string }[];
+        message?: string;
+        lang?: string;
+      };
+
+      const apiKey = Deno.env.get('GEMINI_API_KEY');
+      if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+      // Build conversation
+      const history = Array.isArray(body?.history) ? body!.history! : [];
+      const message = String(body?.message ?? '').trim();
+      const lang = String(body?.lang ?? 'en');
+
+      // Compose chat contents in Gemini format
+      const systemPreamble =
+        lang === 'fr'
+          ? 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.'
+          : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in the requested language.';
+
+      const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
+      contents.push({ role: 'user', parts: [{ text: systemPreamble }] });
+      for (const turn of history) {
+        const r = turn.role === 'model' ? 'model' : 'user';
+        const t = String(turn.text ?? '');
+        if (t) contents.push({ role: r, parts: [{ text: t }] });
+      }
+      if (message) contents.push({ role: 'user', parts: [{ text: message }] });
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
+
+      let reply = '';
+      try {
+        const model = genAI.getGenerativeModel({ model: primaryModel });
+        const result = await model.generateContent({
+          contents,
+          generationConfig: { temperature: 0.7 },
+        });
+        reply = result.response.text();
+      } catch (err) {
+        console.warn('[api] /chat primary model failed, retrying with flash', primaryModel, err);
+        const fallbackModel = 'gemini-2.5-flash';
+        const model = genAI.getGenerativeModel({ model: fallbackModel });
+        const result = await model.generateContent({
+          contents,
+          generationConfig: { temperature: 0.7 },
+        });
+        reply = result.response.text();
+      }
+
+      if (typeof reply !== 'string' || !reply.trim()) {
+        throw new Error('Empty model response');
+      }
+
+      return new Response(JSON.stringify({ text: reply.trim() }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    } catch (e) {
+      console.error('[api] /chat error', e);
+      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+  }
+
   // Public analyzeDream: allow without auth (skip DB insert when user is null)
   if (req.method === 'POST' && subPath === '/analyzeDream') {
     try {
@@ -120,7 +192,7 @@ serve(async (req: Request) => {
       const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string}.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
 
       let text = '';
       try {
@@ -258,7 +330,7 @@ serve(async (req: Request) => {
       const imagePrompt = String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere');
 
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-4.0-generate-001';
+      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-4.0-fast-generate-001';
       const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
 
       const imgRes = await fetch(endpoint, {

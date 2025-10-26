@@ -40,6 +40,7 @@ Expected endpoints
 - POST `/chat`
   - Request JSON: `{ "history": [{ "role": "user"|"model", "text": string }], "message": string, "lang": string }`
   - Response JSON: `{ "text": string }`
+  - Auth: public (no Supabase JWT required)
 
 - POST `/tts`
   - Request JSON: `{ "text": string }`
