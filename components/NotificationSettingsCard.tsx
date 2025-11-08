@@ -10,6 +10,7 @@ import {
   hasNotificationPermissions,
 } from '@/services/notificationService';
 import { getNotificationSettings, saveNotificationSettings } from '@/services/storageService';
+import { JournalTheme } from '@/constants/journalTheme';
 
 export default function NotificationSettingsCard() {
   const [settings, setSettings] = useState<NotificationSettings>({
@@ -116,7 +117,7 @@ export default function NotificationSettingsCard() {
     return (
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Notifications</Text>
-        <Text style={styles.muted}>Loading...</Text>
+        <Text style={styles.description}>Loading...</Text>
       </View>
     );
   }
@@ -125,7 +126,7 @@ export default function NotificationSettingsCard() {
     return (
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Notifications</Text>
-        <Text style={styles.muted}>Push notifications are not available on web.</Text>
+        <Text style={styles.description}>Push notifications are not available on web.</Text>
       </View>
     );
   }
@@ -149,8 +150,8 @@ export default function NotificationSettingsCard() {
         <Switch
           value={settings.isEnabled}
           onValueChange={handleToggle}
-          trackColor={{ false: '#ddd', true: '#93c5fd' }}
-          thumbColor={settings.isEnabled ? '#2563eb' : '#f4f3f4'}
+          trackColor={{ false: JournalTheme.backgroundSecondary, true: JournalTheme.accentLight }}
+          thumbColor={settings.isEnabled ? JournalTheme.accent : '#f4f3f4'}
         />
       </View>
 
@@ -201,30 +202,29 @@ export default function NotificationSettingsCard() {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#eee',
-    borderRadius: 12,
-    marginBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: JournalTheme.backgroundCard,
+    borderRadius: JournalTheme.borderRadius.md,
+    padding: JournalTheme.spacing.md,
+    marginBottom: JournalTheme.spacing.md,
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 6,
-    color: '#111',
+    fontFamily: 'SpaceGrotesk_700Bold',
+    color: JournalTheme.textPrimary,
+    marginBottom: JournalTheme.spacing.xs,
   },
   description: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: JournalTheme.textSecondary,
+    marginBottom: JournalTheme.spacing.md,
     lineHeight: 20,
   },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: JournalTheme.spacing.sm,
   },
   settingInfo: {
     flex: 1,
@@ -232,59 +232,55 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111',
+    fontFamily: 'SpaceGrotesk_500Medium',
+    color: JournalTheme.textPrimary,
     marginBottom: 2,
   },
   settingHint: {
     fontSize: 13,
-    color: '#888',
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: JournalTheme.textSecondary,
   },
   divider: {
     height: 1,
-    backgroundColor: '#eee',
+    backgroundColor: JournalTheme.divider,
     marginVertical: 12,
   },
   timeButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
+    paddingHorizontal: JournalTheme.spacing.md,
+    paddingVertical: JournalTheme.spacing.sm,
+    backgroundColor: JournalTheme.backgroundSecondary,
+    borderRadius: JournalTheme.borderRadius.sm,
   },
   timeButtonText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#2563eb',
+    fontFamily: 'SpaceGrotesk_700Bold',
+    color: JournalTheme.accent,
   },
   doneButton: {
     marginTop: 12,
     paddingVertical: 10,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
+    backgroundColor: JournalTheme.accent,
+    borderRadius: JournalTheme.borderRadius.sm,
     alignItems: 'center',
   },
   doneButtonText: {
-    color: '#fff',
-    fontWeight: '700',
+    color: JournalTheme.backgroundCard,
+    fontFamily: 'SpaceGrotesk_700Bold',
     fontSize: 16,
   },
   warningBox: {
     marginTop: 12,
     padding: 12,
-    backgroundColor: '#fef3c7',
-    borderRadius: 8,
+    backgroundColor: 'rgba(254, 243, 199, 0.1)',
+    borderRadius: JournalTheme.borderRadius.sm,
     borderWidth: 1,
-    borderColor: '#fde047',
+    borderColor: JournalTheme.accent,
   },
   warningText: {
     fontSize: 13,
-    color: '#92400e',
+    fontFamily: 'SpaceGrotesk_400Regular',
+    color: JournalTheme.accentLight,
     lineHeight: 18,
-  },
-  muted: {
-    color: '#666',
-    fontSize: 14,
   },
 });

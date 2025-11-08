@@ -4,7 +4,9 @@
       "mcp__expo-mcp__add_library",
       "Bash(npx tsc:*)",
       "Bash(npm run lint:*)",
-      "Bash(npx expo install:*)"
+      "Bash(npx expo install:*)",
+      "mcp__expo-mcp__search_documentation",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

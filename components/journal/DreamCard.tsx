@@ -1,5 +1,5 @@
 import React, { memo, useState, useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import Animated, { FadeInUp, FadeIn } from 'react-native-reanimated';
 import { JournalTheme, getTagColor } from '@/constants/journalTheme';
@@ -13,6 +13,8 @@ interface DreamCardProps {
   index: number;
   shouldLoadImage?: boolean;
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const DreamCard = memo(function DreamCard({ dream, onPress, index, shouldLoadImage = true }: DreamCardProps) {
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
@@ -31,7 +33,7 @@ export const DreamCard = memo(function DreamCard({ dream, onPress, index, should
       entering={FadeInUp.delay(index * 50).springify().damping(20)}
       style={animatedStyle}
     >
-      <Animated.Pressable
+      <AnimatedPressable
         style={styles.card}
         onPress={onPress}
         onPressIn={onPressIn}
@@ -78,7 +80,7 @@ export const DreamCard = memo(function DreamCard({ dream, onPress, index, should
           </View>
         )}
       </View>
-    </Animated.Pressable>
+    </AnimatedPressable>
     </Animated.View>
   );
 });
