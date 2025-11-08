@@ -1,35 +1,29 @@
-import React, { useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, Share, Alert, ScrollView } from 'react-native';
+import { ImageRetry } from '@/components/journal/ImageRetry';
+import { GradientColors } from '@/constants/gradients';
+import { Fonts } from '@/constants/theme';
+import { useDreams } from '@/context/DreamsContext';
+import { formatDreamDate, formatDreamTime } from '@/lib/dateUtils';
+import { getImageConfig } from '@/lib/imageUtils';
+import { generateImageForDream } from '@/services/geminiService';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, router } from 'expo-router';
-import { useDreams } from '@/context/DreamsContext';
-import { Fonts } from '@/constants/theme';
-import { formatDreamDate, formatDreamTime } from '@/lib/dateUtils';
-import { GradientColors } from '@/constants/gradients';
-import { getImageConfig } from '@/lib/imageUtils';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
-  const { dreams, deleteDream, toggleFavorite } = useDreams();
+  const { dreams, toggleFavorite, updateDream, deleteDream } = useDreams();
+  const [isRetryingImage, setIsRetryingImage] = useState(false);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
 
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
-  if (!dream) {
-    return (
-      <LinearGradient colors={GradientColors.dreamJournal} style={styles.container}>
-        <Text style={{ color: '#CFCFEA', fontSize: 18 }}>Dream not found.</Text>
-        <Pressable onPress={() => router.replace('/(tabs)/journal')} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Go Back</Text>
-        </Pressable>
-      </LinearGradient>
-    );
-  }
 
+  // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
     if (!dream) return;
     try {
@@ -58,35 +52,78 @@ export default function JournalDetailScreen() {
     );
   }, [dream, deleteDream]);
 
+  const onRetryImage = useCallback(async () => {
+    if (!dream) return;
+
+    setIsRetryingImage(true);
+    try {
+      // Get the image prompt from the dream's analysis
+      // We need to reconstruct it or store it - for now we'll use a generic approach
+      // In a real scenario, you'd want to store the imagePrompt in the DreamAnalysis type
+      const imageUrl = await generateImageForDream(dream.interpretation);
+
+      // Update the dream with the new image
+      const updatedDream = {
+        ...dream,
+        imageUrl,
+        imageGenerationFailed: false,
+      };
+
+      await updateDream(updatedDream);
+      Alert.alert('Success', 'Dream image generated successfully!');
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Unknown error';
+      Alert.alert('Image Generation Failed', msg);
+    } finally {
+      setIsRetryingImage(false);
+    }
+  }, [dream, updateDream]);
+
+  const handleBackPress = useCallback(() => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)/journal');
+    }
+  }, []);
+
+  if (!dream) {
+    return (
+      <LinearGradient colors={GradientColors.dreamJournal} style={styles.container}>
+        <Text style={{ color: '#CFCFEA', fontSize: 18 }}>Dream not found.</Text>
+        <Pressable onPress={handleBackPress} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Go Back</Text>
+        </Pressable>
+      </LinearGradient>
+    );
+  }
+
   return (
     <LinearGradient colors={GradientColors.dreamJournal} style={styles.gradient}>
+      <Pressable onPress={handleBackPress} style={styles.floatingBackButton}>
+        <Ionicons name="arrow-back" size={22} color="#0F0A1D" />
+      </Pressable>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* Premium Header with Glassmorphism */}
-        <View style={styles.headerContainer}>
-          <View style={styles.header}>
-            <Pressable onPress={() => router.back()} style={styles.headerButton}>
-              <Ionicons name="arrow-back" size={24} color="#CFCFEA" />
-            </Pressable>
-            <Text style={styles.headerTitle}>Dream Analysis</Text>
-            <Pressable onPress={onShare} style={styles.headerButton}>
-              <Ionicons name="share-outline" size={22} color="#CFCFEA" />
-            </Pressable>
-          </View>
-        </View>
 
         {/* Dream Image */}
         <View style={styles.imageContainer}>
           <View style={styles.imageFrame}>
-            <Image
-              source={{ uri: dream.imageUrl }}
-              style={styles.dreamImage}
-              contentFit={imageConfig.contentFit}
-              transition={imageConfig.transition}
-              cachePolicy={imageConfig.cachePolicy}
-              priority={imageConfig.priority}
-              placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-            />
-            <View style={styles.imageOverlay} />
+            {dream.imageGenerationFailed ? (
+              <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+            ) : (
+              <>
+                <Image
+                  source={{ uri: dream.imageUrl }}
+                  style={styles.dreamImage}
+                  contentFit={imageConfig.contentFit}
+                  transition={imageConfig.transition}
+                  cachePolicy={imageConfig.cachePolicy}
+                  priority={imageConfig.priority}
+                  placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+                />
+                <View style={styles.imageOverlay} />
+              </>
+            )}
           </View>
         </View>
 
@@ -151,9 +188,9 @@ export default function JournalDetailScreen() {
                 {dream.isFavorite ? 'Favorited' : 'Favorite'}
               </Text>
             </Pressable>
-            <Pressable onPress={onDelete} style={styles.actionButton}>
-              <Ionicons name="trash-outline" size={24} color="#EF4444" />
-              <Text style={[styles.actionButtonText, { color: '#EF4444' }]}>Delete</Text>
+            <Pressable onPress={onShare} style={styles.actionButton}>
+              <Ionicons name="share-outline" size={24} color="#8C9EFF" />
+              <Text style={[styles.actionButtonText, { color: '#8C9EFF' }]}>Share</Text>
             </Pressable>
           </View>
 
@@ -162,6 +199,11 @@ export default function JournalDetailScreen() {
             <Text style={styles.transcriptTitle}>Original Transcript</Text>
             <Text style={styles.transcript}>{dream.transcript}</Text>
           </View>
+
+          <Pressable onPress={onDelete} style={styles.deleteButton}>
+            <Ionicons name="trash-outline" size={22} color="#fff" />
+            <Text style={styles.deleteButtonText}>Delete Dream</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </LinearGradient>
@@ -171,6 +213,23 @@ export default function JournalDetailScreen() {
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
+  },
+  floatingBackButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 50,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#CFCFEA',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
   },
   scrollView: {
     flex: 1,
@@ -196,63 +255,23 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
   },
-  headerContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 100,
-    paddingTop: 50,
-    paddingBottom: 12,
-    backgroundColor: 'rgba(19, 16, 34, 0.7)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(207, 207, 234, 0.1)',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  headerButton: {
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
-    flex: 1,
-    textAlign: 'center',
-    letterSpacing: -0.015,
-  },
-  shareText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
-    letterSpacing: 0.015,
-  },
   imageContainer: {
     width: '100%',
-    paddingHorizontal: 16,
-    paddingTop: 100,
-    paddingBottom: 12,
+    paddingHorizontal: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   imageFrame: {
     width: '100%',
     maxWidth: 480,
     alignSelf: 'center',
     aspectRatio: 2 / 3,
-    borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',
   },
   dreamImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 16,
   },
   imageOverlay: {
     position: 'absolute',
@@ -264,10 +283,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(140, 158, 255, 0.05)',
   },
   contentCard: {
-    marginTop: -160,
+    marginTop: -24,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    backgroundColor: 'rgba(74, 59, 95, 0.85)',
+    backgroundColor: 'rgba(74, 59, 95, 1)',
     paddingHorizontal: 16,
     paddingVertical: 24,
     shadowColor: '#000',
@@ -434,12 +453,12 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingTop: 24,
     paddingHorizontal: 16,
+    
     paddingBottom: 16,
     borderTopWidth: 1,
     borderTopColor: 'rgba(140, 158, 255, 0.2)',
     backgroundColor: 'rgba(19, 16, 34, 0.3)',
     borderRadius: 12,
-    marginHorizontal: -16,
   },
   transcriptTitle: {
     fontSize: 18,
@@ -453,5 +472,26 @@ const styles = StyleSheet.create({
     color: '#8C9EFF',
     lineHeight: 24,
     opacity: 0.9,
+  },
+  deleteButton: {
+    marginTop: 28,
+    paddingVertical: 16,
+    borderRadius: 14,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#EF4444',
+    shadowColor: '#EF4444',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    letterSpacing: 0.3,
   },
 });

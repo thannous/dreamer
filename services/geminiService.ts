@@ -1,78 +1,31 @@
-// Backend proxy integration for RN app. Configure base URL via EXPO_PUBLIC_API_URL
-// or app.json extra.apiUrl. Endpoints expected:
-// - POST /analyzeDream { transcript } -> AnalysisResult
-// - POST /generateImage { prompt } -> { imageUrl?: string, imageBytes?: string }
-// - POST /analyzeDreamFull { transcript } -> AnalysisResult & { imageBytes?: string, imageUrl?: string }
-// - POST /chat { history, message, lang } -> { text: string }
-// - POST /tts { text } -> { audioBase64: string }
+/**
+ * Conditional export for geminiService
+ * Uses mock implementation if EXPO_PUBLIC_MOCK_MODE is enabled,
+ * otherwise uses real implementation
+ */
 
-import { getApiBaseUrl } from '@/lib/config';
-import { fetchJSON } from '@/lib/http';
+// Import both implementations
+import * as realService from './geminiServiceReal';
+import * as mockService from './mocks/geminiServiceMock';
 
-export type AnalysisResult = {
-  title: string;
-  interpretation: string;
-  shareableQuote: string;
-  theme: 'surreal' | 'mystical' | 'calm' | 'noir';
-  dreamType: string;
-  imagePrompt: string;
-};
+// Export type that's shared between both implementations
+export type { AnalysisResult } from './geminiServiceReal';
 
-export async function analyzeDream(transcript: string): Promise<AnalysisResult> {
-  const base = getApiBaseUrl();
-  return fetchJSON<AnalysisResult>(`${base}/analyzeDream`, {
-    method: 'POST',
-    body: { transcript },
-  });
+// Select which implementation to use based on environment
+const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
+const service = isMockMode ? mockService : realService;
+
+if (isMockMode) {
+  console.log('[GEMINI SERVICE] Using MOCK implementation');
+} else {
+  console.log('[GEMINI SERVICE] Using REAL implementation');
 }
 
-export async function analyzeDreamWithImage(transcript: string): Promise<AnalysisResult & { imageUrl: string }> {
-  const base = getApiBaseUrl();
-  const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
-    method: 'POST',
-    body: { transcript },
-  });
-  const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/jpeg;base64,${res.imageBytes}` : undefined);
-  if (!imageUrl) throw new Error('Invalid combined response from backend');
-  // Return merged object with a guaranteed imageUrl
-  return { ...res, imageUrl };
-}
-
-export async function generateImageForDream(prompt: string): Promise<string> {
-  const base = getApiBaseUrl();
-  const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImage`, {
-    method: 'POST',
-    body: { prompt },
-  });
-  if (res.imageUrl) return res.imageUrl;
-  if (res.imageBytes) return `data:image/jpeg;base64,${res.imageBytes}`;
-  throw new Error('Invalid image response from backend');
-}
-
-export async function startOrContinueChat(
-  history: { role: 'user' | 'model'; text: string }[],
-  message: string,
-  lang: string,
-): Promise<string> {
-  const base = getApiBaseUrl();
-  const res = await fetchJSON<{ text: string }>(`${base}/chat`, {
-    method: 'POST',
-    body: { history, message, lang },
-  });
-  return res.text;
-}
-
-export function resetChat() {
-  // stateless backend; nothing to do here
-}
-
-export async function generateSpeechForText(text: string): Promise<string> {
-  const base = getApiBaseUrl();
-  const res = await fetchJSON<{ audioBase64: string }>(`${base}/tts`, {
-    method: 'POST',
-    body: { text },
-    timeoutMs: 60000,
-  });
-  if (!res.audioBase64) throw new Error('No audio returned');
-  return res.audioBase64;
-}
+// Re-export all functions from the selected service
+export const analyzeDream = service.analyzeDream;
+export const analyzeDreamWithImage = service.analyzeDreamWithImage;
+export const analyzeDreamWithImageResilient = service.analyzeDreamWithImageResilient;
+export const generateImageForDream = service.generateImageForDream;
+export const startOrContinueChat = service.startOrContinueChat;
+export const resetChat = service.resetChat;
+export const generateSpeechForText = service.generateSpeechForText;

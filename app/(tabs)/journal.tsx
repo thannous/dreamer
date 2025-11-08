@@ -1,27 +1,28 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { DateRangePicker } from '@/components/journal/DateRangePicker';
+import { DreamCard } from '@/components/journal/DreamCard';
+import { FilterBar } from '@/components/journal/FilterBar';
+import { SearchBar } from '@/components/journal/SearchBar';
+import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
+import { JournalTheme } from '@/constants/journalTheme';
+import { useDreams } from '@/context/DreamsContext';
+import { useModalSlide } from '@/hooks/useJournalAnimations';
+import { formatShortDate } from '@/lib/dateUtils';
+import { applyFilters, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
+import type { DreamAnalysis } from '@/lib/types';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { router } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  View,
-  Text,
   FlatList,
-  Pressable,
-  StyleSheet,
   Modal,
   Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { router } from 'expo-router';
-import { useDreams } from '@/context/DreamsContext';
-import { formatShortDate } from '@/lib/dateUtils';
-import { applyFilters, sortDreamsByDate, getUniqueThemes } from '@/lib/dreamFilters';
-import { JournalTheme } from '@/constants/journalTheme';
-import { SearchBar } from '@/components/journal/SearchBar';
-import { FilterBar } from '@/components/journal/FilterBar';
-import { DreamCard } from '@/components/journal/DreamCard';
-import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
-import { DateRangePicker } from '@/components/journal/DateRangePicker';
-import { useModalSlide, usePulseAnimation, useScalePress } from '@/hooks/useJournalAnimations';
 import Svg, { Path } from 'react-native-svg';
-import type { DreamAnalysis } from '@/lib/types';
 
 function AddIcon({ size = 24, color = '#1a0f2b' }) {
   return (
@@ -32,6 +33,7 @@ function AddIcon({ size = 24, color = '#1a0f2b' }) {
 }
 
 export default function JournalListScreen() {
+  const tabBarHeight = useBottomTabBarHeight();
   const { dreams } = useDreams();
   const flatListRef = useRef<FlatList>(null);
 
@@ -57,8 +59,8 @@ export default function JournalListScreen() {
   // Animations
   const themeModalAnim = useModalSlide(showThemeModal);
   const dateModalAnim = useModalSlide(showDateModal);
-  const pulseAnim = usePulseAnimation();
-  const addButtonScale = useScalePress();
+  const floatingOffset = tabBarHeight + JournalTheme.spacing.xl;
+  const listBottomPadding = floatingOffset + 132;
 
   // Get available themes
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
@@ -224,7 +226,7 @@ export default function JournalListScreen() {
         keyExtractor={keyExtractor}
         renderItem={renderDreamItem}
         getItemLayout={getItemLayout}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
         removeClippedSubviews={true}
@@ -237,24 +239,20 @@ export default function JournalListScreen() {
       />
 
       {/* Add Dream Button */}
-      <View style={styles.floatingButtonContainer}>
-        <Animated.View style={pulseAnim}>
-          <Animated.Pressable
-            style={[styles.addButton, addButtonScale.animatedStyle]}
-            onPress={() => router.push('/recording')}
-            onPressIn={addButtonScale.onPressIn}
-            onPressOut={addButtonScale.onPressOut}
-          >
-            <AddIcon size={24} color={JournalTheme.backgroundCard} />
-            <Text style={styles.addButtonText}>Add New Dream</Text>
-          </Animated.Pressable>
-        </Animated.View>
+      <View style={[styles.floatingButtonContainer, { bottom: floatingOffset }]}>
+        <Pressable
+          style={styles.addButton}
+          onPress={() => router.push('/recording')}
+          accessibilityRole="button"
+        >
+          <AddIcon size={24} color={JournalTheme.backgroundCard} />
+          <Text style={styles.addButtonText}>Add New Dream</Text>
+        </Pressable>
       </View>
 
       {/* Theme Selection Modal */}
       <Modal
         visible={showThemeModal}
-        transparent
         animationType="none"
         onRequestClose={() => setShowThemeModal(false)}
       >
@@ -291,7 +289,6 @@ export default function JournalListScreen() {
       {/* Date Range Modal */}
       <Modal
         visible={showDateModal}
-        transparent
         animationType="none"
         onRequestClose={() => setShowDateModal(false)}
       >
@@ -321,7 +318,6 @@ const styles = StyleSheet.create({
     backgroundColor: JournalTheme.backgroundDark,
   },
   header: {
-    backgroundColor: JournalTheme.backgroundCard,
     paddingHorizontal: JournalTheme.spacing.md,
     paddingTop: Platform.OS === 'ios' ? 60 : 20,
     paddingBottom: JournalTheme.spacing.sm,
@@ -340,7 +336,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: JournalTheme.spacing.md,
-    paddingBottom: 100, // Space for floating button
+    paddingBottom: JournalTheme.spacing.xl,
   },
   timelineItem: {
     flexDirection: 'row',
@@ -380,11 +376,10 @@ const styles = StyleSheet.create({
   },
   floatingButtonContainer: {
     position: 'absolute',
-    bottom: 0,
     left: 0,
     right: 0,
     padding: JournalTheme.spacing.md,
-    backgroundColor: JournalTheme.overlay,
+    backgroundColor: 'transparent',
   },
   addButton: {
     backgroundColor: JournalTheme.accent,
@@ -408,7 +403,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: JournalTheme.backgroundDark,
     justifyContent: 'center',
     alignItems: 'center',
     padding: JournalTheme.spacing.lg,

@@ -15,6 +15,7 @@ export interface DreamAnalysis {
   theme?: string;
   dreamType: string;
   isFavorite?: boolean;
+  imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
 }
 
 export interface NotificationSettings {

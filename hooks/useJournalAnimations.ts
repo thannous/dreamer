@@ -92,7 +92,7 @@ export function useModalSlide(visible: boolean) {
     opacity: interpolate(
       opacity.value,
       [0, 1],
-      [0, 0.7],
+      [0, 1],
       Extrapolation.CLAMP
     ),
   }));

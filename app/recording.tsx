@@ -1,36 +1,37 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import {
-  useAudioRecorder,
-  AudioModule,
-  setAudioModeAsync,
-  RecordingPresets,
-  IOSOutputFormat,
-  AudioQuality,
-  type RecordingOptions,
-} from 'expo-audio';
-import { analyzeDreamWithImage } from '@/services/geminiService';
-import { useDreams } from '@/context/DreamsContext';
-import type { DreamAnalysis } from '@/lib/types';
-import { SurrealTheme, Fonts } from '@/constants/theme';
+import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
-import { transcribeAudio } from '@/services/speechToText';
-import { getCurrentMoonCycleTimestamp } from '@/lib/dateUtils';
 import { GradientColors } from '@/constants/gradients';
+import { Fonts, SurrealTheme } from '@/constants/theme';
+import { useDreams } from '@/context/DreamsContext';
+import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
+import { classifyError } from '@/lib/errors';
+import type { DreamAnalysis } from '@/lib/types';
+import { analyzeDreamWithImageResilient } from '@/services/geminiService';
+import { transcribeAudio } from '@/services/speechToText';
+import {
+  AudioModule,
+  AudioQuality,
+  IOSOutputFormat,
+  RecordingPresets,
+  setAudioModeAsync,
+  useAudioRecorder,
+  type RecordingOptions,
+} from 'expo-audio';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -65,9 +66,9 @@ const RECORDING_OPTIONS: RecordingOptions = {
 export default function RecordingScreen() {
   const { addDream } = useDreams();
   const [transcript, setTranscript] = useState('');
-  const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
+  const analysisProgress = useAnalysisProgress();
 
   // Request microphone permissions on mount
   useEffect(() => {
@@ -152,10 +153,22 @@ export default function RecordingScreen() {
       return;
     }
 
-    setLoading(true);
+    // Reset progress and start analysis
+    analysisProgress.reset();
+    analysisProgress.setStep(AnalysisStep.ANALYZING);
+
     try {
-      // Analyze the dream and generate image in a single call
-      const analysis = await analyzeDreamWithImage(transcript);
+      // Analyze the dream with resilient image generation
+      const analysis = await analyzeDreamWithImageResilient(transcript);
+
+      // Update progress to image generation step
+      analysisProgress.setStep(AnalysisStep.GENERATING_IMAGE);
+
+      // Brief delay to show the progress update
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Finalize
+      analysisProgress.setStep(AnalysisStep.FINALIZING);
 
       // Create and save the dream
       const newDream: DreamAnalysis = {
@@ -166,21 +179,27 @@ export default function RecordingScreen() {
         shareableQuote: analysis.shareableQuote,
         theme: analysis.theme,
         dreamType: analysis.dreamType,
-        imageUrl: analysis.imageUrl,
+        imageUrl: analysis.imageUrl || '', // Empty string if no image
+        imageGenerationFailed: analysis.imageGenerationFailed,
         chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
       };
 
       await addDream(newDream);
 
+      // Mark as complete
+      analysisProgress.setStep(AnalysisStep.COMPLETE);
+
+      // Brief delay to show completion
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       // Navigate directly to dream detail
       router.replace(`/journal/${newDream.id}`);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Unknown error';
-      Alert.alert('Analysis Error', msg);
-    } finally {
-      setLoading(false);
+      const error = err instanceof Error ? err : new Error(String(err));
+      const classified = classifyError(error);
+      analysisProgress.setError(classified);
     }
-  }, [transcript, addDream]);
+  }, [transcript, addDream, analysisProgress]);
 
   const handleGoToJournal = useCallback(() => {
     router.push('/(tabs)/journal');
@@ -207,7 +226,9 @@ export default function RecordingScreen() {
               onPress={handleGoToJournal}
               style={styles.headerButton}
             >
-              <Text style={styles.saveText}>My Dream</Text>
+              <Text style={styles.saveText} numberOfLines={1}>
+                Dream Journal
+              </Text>
             </Pressable>
           </View>
 
@@ -222,8 +243,6 @@ export default function RecordingScreen() {
               <MicButton isRecording={isRecording} onPress={toggleRecording} />
 
               <Waveform isActive={isRecording} />
-
-              <Text style={styles.timestampText}>{getCurrentMoonCycleTimestamp()}</Text>
             </View>
 
             {/* Text Input */}
@@ -235,29 +254,35 @@ export default function RecordingScreen() {
                 placeholderTextColor={SurrealTheme.textMuted}
                 style={styles.textInput}
                 multiline
-                editable={!loading}
+                editable={analysisProgress.step === AnalysisStep.IDLE}
               />
 
+              {/* Analysis Progress */}
+              {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
+                <AnalysisProgress
+                  step={analysisProgress.step}
+                  progress={analysisProgress.progress}
+                  message={analysisProgress.message}
+                  error={analysisProgress.error}
+                  onRetry={handleSave}
+                />
+              )}
+
               {/* Submit Button */}
-              <Pressable
-                onPress={handleSave}
-                disabled={loading || !transcript.trim()}
-                style={[
-                  styles.submitButton,
-                  (!transcript.trim() || loading) && styles.submitButtonDisabled
-                ]}
-              >
-                {loading ? (
-                  <View style={styles.buttonContent}>
-                    <ActivityIndicator size="small" color="#fff" />
-                    <Text style={styles.submitButtonText}>Analyzing...</Text>
-                  </View>
-                ) : (
+              {analysisProgress.step === AnalysisStep.IDLE && (
+                <Pressable
+                  onPress={handleSave}
+                  disabled={!transcript.trim()}
+                  style={[
+                    styles.submitButton,
+                    !transcript.trim() && styles.submitButtonDisabled
+                  ]}
+                >
                   <Text style={styles.submitButtonText}>
                     ✨ Analyze My Dream
                   </Text>
-                )}
-              </Pressable>
+                </Pressable>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -285,8 +310,8 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'ios' ? 60 : 12,
   },
   headerButton: {
-    width: 48,
-    height: 48,
+    paddingHorizontal: 12,
+    minHeight: 48,
     alignItems: 'center',
     justifyContent: 'center',
   },
