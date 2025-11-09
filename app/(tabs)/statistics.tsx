@@ -1,6 +1,9 @@
-import { JournalTheme } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useDreamStatistics } from '@/hooks/useDreamStatistics';
+import { useTranslation } from '@/hooks/useTranslation';
+import type { ThemeColors } from '@/constants/journalTheme';
 import React from 'react';
 import {
   Dimensions,
@@ -13,20 +16,21 @@ import {
 import { BarChart, LineChart, PieChart } from 'react-native-gifted-charts';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const CHART_WIDTH = SCREEN_WIDTH - JournalTheme.spacing.md * 4;
+const CHART_WIDTH = SCREEN_WIDTH - ThemeLayout.spacing.md * 4;
 
 interface StatCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
+  colors: ThemeColors;
 }
 
-function StatCard({ title, value, subtitle }: StatCardProps) {
+function StatCard({ title, value, subtitle, colors }: StatCardProps) {
   return (
-    <View style={styles.statCard}>
-      <Text style={styles.statTitle}>{title}</Text>
-      <Text style={styles.statValue}>{value}</Text>
-      {subtitle && <Text style={styles.statSubtitle}>{subtitle}</Text>}
+    <View style={[styles.statCard, { backgroundColor: colors.backgroundCard }]}>
+      <Text style={[styles.statTitle, { color: colors.textSecondary }]}>{title}</Text>
+      <Text style={[styles.statValue, { color: colors.accent }]}>{value}</Text>
+      {subtitle && <Text style={[styles.statSubtitle, { color: colors.textTertiary }]}>{subtitle}</Text>}
     </View>
   );
 }
@@ -34,12 +38,13 @@ function StatCard({ title, value, subtitle }: StatCardProps) {
 interface ChartSectionProps {
   title: string;
   children: React.ReactNode;
+  colors: ThemeColors;
 }
 
-function ChartSection({ title, children }: ChartSectionProps) {
+function ChartSection({ title, children, colors }: ChartSectionProps) {
   return (
     <View style={styles.chartSection}>
-      <Text style={styles.chartTitle}>{title}</Text>
+      <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
       {children}
     </View>
   );
@@ -48,15 +53,17 @@ function ChartSection({ title, children }: ChartSectionProps) {
 export default function StatisticsScreen() {
   const { dreams, loaded } = useDreams();
   const stats = useDreamStatistics(dreams);
+  const { t } = useTranslation();
+  const { colors } = useTheme();
 
   if (!loaded) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Statistics</Text>
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
         </View>
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading statistics...</Text>
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('stats.loading')}</Text>
         </View>
       </View>
     );
@@ -64,14 +71,12 @@ export default function StatisticsScreen() {
 
   if (dreams.length === 0) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Statistics</Text>
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
         </View>
         <View style={styles.emptyState}>
-          <Text style={styles.emptyStateText}>
-            No dreams yet.{'\n'}Start recording to see your statistics!
-          </Text>
+          <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>{t('stats.empty')}</Text>
         </View>
       </View>
     );
@@ -80,7 +85,7 @@ export default function StatisticsScreen() {
   const barChartData = stats.dreamsByDay.map((item) => ({
     value: item.count,
     label: item.day,
-    frontColor: JournalTheme.accent,
+    frontColor: colors.accent,
   }));
 
   const lineChartData = stats.dreamsOverTime.map((item) => ({
@@ -89,26 +94,26 @@ export default function StatisticsScreen() {
   }));
 
   const pieChartData = stats.dreamTypeDistribution.slice(0, 5).map((item, index) => {
-    const colors = [
-      JournalTheme.accent,
-      '#9D84B7',
-      '#6B5A8E',
-      '#4f3d6b',
-      '#a097b8',
+    const chartColors = [
+      colors.accent,
+      colors.accentDark,
+      colors.timeline,
+      colors.backgroundSecondary,
+      colors.textSecondary,
     ];
     return {
       value: item.count,
-      color: colors[index % colors.length],
+      color: chartColors[index % chartColors.length],
       text: `${item.percentage}%`,
       label: item.type,
     };
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Statistics</Text>
+        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
       </View>
 
       <ScrollView
@@ -118,53 +123,60 @@ export default function StatisticsScreen() {
       >
         {/* Overview Cards */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Overview</Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.overview')}</Text>
           <View style={styles.statsGrid}>
             <StatCard
-              title="Total Dreams"
+              title={t('stats.card.total_dreams')}
               value={stats.totalDreams}
+              colors={colors}
             />
             <StatCard
-              title="Favorites"
+              title={t('stats.card.favorites')}
               value={stats.favoriteDreams}
+              colors={colors}
             />
             <StatCard
-              title="This Week"
+              title={t('stats.card.this_week')}
               value={stats.dreamsThisWeek}
+              colors={colors}
             />
             <StatCard
-              title="This Month"
+              title={t('stats.card.this_month')}
               value={stats.dreamsThisMonth}
+              colors={colors}
             />
           </View>
         </View>
 
         {/* Streaks */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Streaks</Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.streaks')}</Text>
           <View style={styles.statsRow}>
             <StatCard
-              title="Current Streak"
+              title={t('stats.card.current_streak')}
               value={stats.currentStreak}
-              subtitle={stats.currentStreak === 1 ? 'day' : 'days'}
+              subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
+              colors={colors}
             />
             <StatCard
-              title="Longest Streak"
+              title={t('stats.card.longest_streak')}
               value={stats.longestStreak}
-              subtitle={stats.longestStreak === 1 ? 'day' : 'days'}
+              subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
+              colors={colors}
             />
           </View>
           <View style={styles.singleStatCard}>
             <StatCard
-              title="Average Dreams Per Week"
+              title={t('stats.card.average_per_week')}
               value={stats.averageDreamsPerWeek.toFixed(1)}
+              colors={colors}
             />
           </View>
         </View>
 
         {/* Dreams by Day of Week */}
         {stats.dreamsByDay.some(d => d.count > 0) && (
-          <ChartSection title="Dreams by Day of Week">
+          <ChartSection title={t('stats.section.dreams_by_day')} colors={colors}>
             <View style={styles.chartContainer}>
               <BarChart
                 data={barChartData}
@@ -177,13 +189,13 @@ export default function StatisticsScreen() {
                 hideRules
                 xAxisThickness={0}
                 yAxisThickness={0}
-                yAxisTextStyle={styles.chartAxisText}
-                xAxisLabelTextStyle={styles.chartLabelText}
+                yAxisTextStyle={[styles.chartAxisText, { color: colors.textSecondary }]}
+                xAxisLabelTextStyle={[styles.chartLabelText, { color: colors.textSecondary }]}
                 noOfSections={4}
                 maxValue={Math.max(...stats.dreamsByDay.map(d => d.count)) + 1}
-                backgroundColor={JournalTheme.backgroundCard}
+                backgroundColor={colors.backgroundCard}
                 showGradient
-                gradientColor={JournalTheme.accentDark}
+                gradientColor={colors.accentDark}
               />
             </View>
           </ChartSection>
@@ -191,17 +203,17 @@ export default function StatisticsScreen() {
 
         {/* Dreams Over Time (Last 30 Days) */}
         {stats.dreamsOverTime.some(d => d.count > 0) && (
-          <ChartSection title="Dreams Over Time (Last 30 Days)">
+          <ChartSection title={t('stats.section.dreams_over_time')} colors={colors}>
             <View style={styles.chartContainer}>
               <LineChart
                 data={lineChartData}
                 width={CHART_WIDTH}
                 height={200}
                 spacing={CHART_WIDTH / lineChartData.length}
-                color={JournalTheme.accent}
+                color={colors.accent}
                 thickness={3}
-                startFillColor={JournalTheme.accent}
-                endFillColor={JournalTheme.backgroundCard}
+                startFillColor={colors.accent}
+                endFillColor={colors.backgroundCard}
                 startOpacity={0.4}
                 endOpacity={0.1}
                 areaChart
@@ -209,10 +221,10 @@ export default function StatisticsScreen() {
                 hideRules
                 xAxisThickness={0}
                 yAxisThickness={0}
-                yAxisTextStyle={styles.chartAxisText}
+                yAxisTextStyle={[styles.chartAxisText, { color: colors.textSecondary }]}
                 noOfSections={4}
                 maxValue={Math.max(...stats.dreamsOverTime.map(d => d.count)) + 1}
-                backgroundColor={JournalTheme.backgroundCard}
+                backgroundColor={colors.backgroundCard}
                 curved
               />
             </View>
@@ -221,7 +233,7 @@ export default function StatisticsScreen() {
 
         {/* Dream Type Distribution */}
         {stats.dreamTypeDistribution.length > 0 && (
-          <ChartSection title="Dream Types">
+          <ChartSection title={t('stats.section.dream_types')} colors={colors}>
             <View style={styles.chartContainer}>
               <View style={styles.pieChartWrapper}>
                 <PieChart
@@ -232,30 +244,30 @@ export default function StatisticsScreen() {
                   centerLabelComponent={() => (
                     <View>
                       <Text style={styles.pieChartCenterText}>{stats.totalDreams}</Text>
-                      <Text style={styles.pieChartCenterSubtext}>Total</Text>
+                      <Text style={styles.pieChartCenterSubtext}>{t('stats.chart.pie_center')}</Text>
                     </View>
                   )}
                 />
               </View>
               <View style={styles.legendContainer}>
                 {stats.dreamTypeDistribution.slice(0, 5).map((item, index) => {
-                  const colors = [
-                    JournalTheme.accent,
-                    '#9D84B7',
-                    '#6B5A8E',
-                    '#4f3d6b',
-                    '#a097b8',
+                  const chartColors = [
+                    colors.accent,
+                    colors.accentDark,
+                    colors.timeline,
+                    colors.backgroundSecondary,
+                    colors.textSecondary,
                   ];
                   return (
                     <View key={item.type} style={styles.legendItem}>
                       <View
                         style={[
                           styles.legendColor,
-                          { backgroundColor: colors[index % colors.length] },
+                          { backgroundColor: chartColors[index % chartColors.length] },
                         ]}
                       />
-                      <Text style={styles.legendText}>
-                        {item.type} ({item.count})
+                      <Text style={[styles.legendText, { color: colors.textPrimary }]}>
+                        {item.type} ({t('stats.legend.count', { count: item.count })})
                       </Text>
                     </View>
                   );
@@ -268,16 +280,16 @@ export default function StatisticsScreen() {
         {/* Top Themes */}
         {stats.topThemes.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Top Themes</Text>
+            <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.top_themes')}</Text>
             <View style={styles.themesContainer}>
               {stats.topThemes.map((theme, index) => (
-                <View key={theme.theme} style={styles.themeItem}>
-                  <View style={styles.themeRank}>
-                    <Text style={styles.themeRankText}>{index + 1}</Text>
+                <View key={theme.theme} style={[styles.themeItem, { backgroundColor: colors.backgroundCard }]}>
+                  <View style={[styles.themeRank, { backgroundColor: colors.accent }]}>
+                    <Text style={[styles.themeRankText, { color: colors.backgroundCard }]}>{index + 1}</Text>
                   </View>
                   <View style={styles.themeContent}>
-                    <Text style={styles.themeText}>{theme.theme}</Text>
-                    <Text style={styles.themeCount}>{theme.count} dreams</Text>
+                    <Text style={[styles.themeText, { color: colors.textPrimary }]}>{theme.theme}</Text>
+                    <Text style={[styles.themeCount, { color: colors.textSecondary }]}>{t('stats.legend.count', { count: theme.count })}</Text>
                   </View>
                 </View>
               ))}
@@ -287,25 +299,29 @@ export default function StatisticsScreen() {
 
         {/* Engagement */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Engagement</Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.engagement')}</Text>
           <View style={styles.statsRow}>
             <StatCard
-              title="Total Chats"
+              title={t('stats.engagement.total_chats')}
               value={stats.totalChatMessages}
+              colors={colors}
             />
             <StatCard
-              title="Dreams with Chat"
+              title={t('stats.engagement.dreams_with_chat')}
               value={stats.dreamsWithChat}
+              colors={colors}
             />
           </View>
           {stats.mostDiscussedDream && (
-            <View style={styles.mostDiscussedCard}>
-              <Text style={styles.mostDiscussedTitle}>Most Discussed Dream</Text>
-              <Text style={styles.mostDiscussedDreamTitle} numberOfLines={1}>
+            <View style={[styles.mostDiscussedCard, { backgroundColor: colors.backgroundCard }]}>
+              <Text style={[styles.mostDiscussedTitle, { color: colors.textSecondary }]}>{t('stats.engagement.most_discussed')}</Text>
+              <Text style={[styles.mostDiscussedDreamTitle, { color: colors.textPrimary }]} numberOfLines={1}>
                 {stats.mostDiscussedDream.title}
               </Text>
-              <Text style={styles.mostDiscussedCount}>
-                {stats.mostDiscussedDream.chatHistory.length} messages
+              <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
+                {t('stats.engagement.messages', {
+                  count: stats.mostDiscussedDream.chatHistory.length,
+                })}
               </Text>
             </View>
           )}
@@ -321,120 +337,107 @@ export default function StatisticsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: JournalTheme.backgroundDark,
   },
   header: {
-    paddingHorizontal: JournalTheme.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.md,
     paddingTop: Platform.OS === 'ios' ? 60 : 20,
-    paddingBottom: JournalTheme.spacing.sm,
+    paddingBottom: ThemeLayout.spacing.sm,
     alignItems: 'center',
   },
   headerTitle: {
     fontSize: 18,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.textPrimary,
     letterSpacing: -0.3,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: JournalTheme.spacing.md,
+    padding: ThemeLayout.spacing.md,
   },
   section: {
-    marginBottom: JournalTheme.spacing.lg,
+    marginBottom: ThemeLayout.spacing.lg,
   },
   sectionTitle: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.textPrimary,
-    marginBottom: JournalTheme.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: JournalTheme.spacing.sm,
+    gap: ThemeLayout.spacing.sm,
   },
   statsRow: {
     flexDirection: 'row',
-    gap: JournalTheme.spacing.sm,
+    gap: ThemeLayout.spacing.sm,
   },
   singleStatCard: {
-    marginTop: JournalTheme.spacing.sm,
+    marginTop: ThemeLayout.spacing.sm,
   },
   statCard: {
     flex: 1,
-    backgroundColor: JournalTheme.backgroundCard,
-    borderRadius: JournalTheme.borderRadius.md,
-    padding: JournalTheme.spacing.md,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
     minWidth: '48%',
   },
   statTitle: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
-    marginBottom: JournalTheme.spacing.xs,
+    marginBottom: ThemeLayout.spacing.xs,
   },
   statValue: {
     fontSize: 28,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.accent,
   },
   statSubtitle: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textTertiary,
-    marginTop: JournalTheme.spacing.xs,
+    marginTop: ThemeLayout.spacing.xs,
   },
   chartSection: {
-    marginBottom: JournalTheme.spacing.lg,
+    marginBottom: ThemeLayout.spacing.lg,
   },
   chartTitle: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.textPrimary,
-    marginBottom: JournalTheme.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
   },
   chartContainer: {
-    backgroundColor: JournalTheme.backgroundCard,
-    borderRadius: JournalTheme.borderRadius.md,
-    padding: JournalTheme.spacing.md,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
     alignItems: 'center',
   },
   chartAxisText: {
-    color: JournalTheme.textSecondary,
     fontSize: 10,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
   chartLabelText: {
-    color: JournalTheme.textSecondary,
     fontSize: 11,
     fontFamily: 'SpaceGrotesk_500Medium',
   },
   pieChartWrapper: {
     alignItems: 'center',
-    marginBottom: JournalTheme.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
   },
   pieChartCenterText: {
     fontSize: 24,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.textPrimary,
     textAlign: 'center',
   },
   pieChartCenterSubtext: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
     textAlign: 'center',
   },
   legendContainer: {
     width: '100%',
-    gap: JournalTheme.spacing.sm,
+    gap: ThemeLayout.spacing.sm,
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: JournalTheme.spacing.sm,
+    gap: ThemeLayout.spacing.sm,
   },
   legendColor: {
     width: 16,
@@ -444,32 +447,28 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textPrimary,
     textTransform: 'capitalize',
   },
   themesContainer: {
-    gap: JournalTheme.spacing.sm,
+    gap: ThemeLayout.spacing.sm,
   },
   themeItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: JournalTheme.backgroundCard,
-    borderRadius: JournalTheme.borderRadius.md,
-    padding: JournalTheme.spacing.md,
-    gap: JournalTheme.spacing.md,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
+    gap: ThemeLayout.spacing.md,
   },
   themeRank: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: JournalTheme.accent,
     alignItems: 'center',
     justifyContent: 'center',
   },
   themeRankText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.backgroundCard,
   },
   themeContent: {
     flex: 1,
@@ -477,37 +476,31 @@ const styles = StyleSheet.create({
   themeText: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.textPrimary,
     textTransform: 'capitalize',
     marginBottom: 2,
   },
   themeCount: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
   },
   mostDiscussedCard: {
-    marginTop: JournalTheme.spacing.sm,
-    backgroundColor: JournalTheme.backgroundCard,
-    borderRadius: JournalTheme.borderRadius.md,
-    padding: JournalTheme.spacing.md,
+    marginTop: ThemeLayout.spacing.sm,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
   },
   mostDiscussedTitle: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
-    marginBottom: JournalTheme.spacing.xs,
+    marginBottom: ThemeLayout.spacing.xs,
   },
   mostDiscussedDreamTitle: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.textPrimary,
-    marginBottom: JournalTheme.spacing.xs,
+    marginBottom: ThemeLayout.spacing.xs,
   },
   mostDiscussedCount: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.accent,
   },
   loadingContainer: {
     flex: 1,
@@ -517,22 +510,20 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
   },
   emptyState: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: JournalTheme.spacing.lg,
+    padding: ThemeLayout.spacing.lg,
   },
   emptyStateText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
     textAlign: 'center',
     lineHeight: 24,
   },
   bottomPadding: {
-    height: JournalTheme.spacing.xl,
+    height: ThemeLayout.spacing.xl,
   },
 });

@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import type { ClassifiedError } from '@/lib/errors';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export enum AnalysisStep {
   IDLE = 'idle',
@@ -10,45 +11,47 @@ export enum AnalysisStep {
   ERROR = 'error',
 }
 
-export interface AnalysisProgress {
+type AnalysisProgressState = {
   step: AnalysisStep;
-  progress: number; // 0-100
-  message: string;
+  progress: number;
+  messageKey: string;
   error: ClassifiedError | null;
-}
+  customMessage?: string;
+};
 
-const STEP_CONFIG: Record<AnalysisStep, { progress: number; message: string }> = {
+const STEP_CONFIG: Record<AnalysisStep, { progress: number; messageKey: string }> = {
   [AnalysisStep.IDLE]: {
     progress: 0,
-    message: 'Ready to analyze',
+    messageKey: 'analysis.step.ready',
   },
   [AnalysisStep.ANALYZING]: {
     progress: 25,
-    message: 'Analyzing your dream...',
+    messageKey: 'analysis.step.analyzing',
   },
   [AnalysisStep.GENERATING_IMAGE]: {
     progress: 65,
-    message: 'Generating dream imagery...',
+    messageKey: 'analysis.step.generating_image',
   },
   [AnalysisStep.FINALIZING]: {
     progress: 90,
-    message: 'Almost done...',
+    messageKey: 'analysis.step.finalizing',
   },
   [AnalysisStep.COMPLETE]: {
     progress: 100,
-    message: 'Complete',
+    messageKey: 'analysis.step.complete',
   },
   [AnalysisStep.ERROR]: {
     progress: 0,
-    message: 'Error occurred',
+    messageKey: 'analysis.step.error',
   },
 };
 
 export function useAnalysisProgress() {
-  const [state, setState] = useState<AnalysisProgress>({
+  const { t } = useTranslation();
+  const [state, setState] = useState<AnalysisProgressState>({
     step: AnalysisStep.IDLE,
     progress: 0,
-    message: STEP_CONFIG[AnalysisStep.IDLE].message,
+    messageKey: STEP_CONFIG[AnalysisStep.IDLE].messageKey,
     error: null,
   });
 
@@ -91,8 +94,9 @@ export function useAnalysisProgress() {
       setState((prev) => ({
         ...prev,
         step,
-        message: config.message,
+        messageKey: config.messageKey,
         error: null,
+        customMessage: undefined,
       }));
       animateProgress(config.progress);
     },
@@ -107,8 +111,9 @@ export function useAnalysisProgress() {
     setState({
       step: AnalysisStep.ERROR,
       progress: 0,
-      message: error.userMessage,
+      messageKey: STEP_CONFIG[AnalysisStep.ERROR].messageKey,
       error,
+      customMessage: error.userMessage,
     });
   }, []);
 
@@ -120,13 +125,17 @@ export function useAnalysisProgress() {
     setState({
       step: AnalysisStep.IDLE,
       progress: 0,
-      message: STEP_CONFIG[AnalysisStep.IDLE].message,
+      messageKey: STEP_CONFIG[AnalysisStep.IDLE].messageKey,
       error: null,
+      customMessage: undefined,
     });
   }, []);
 
   return {
-    ...state,
+    step: state.step,
+    progress: state.progress,
+    message: state.customMessage ?? t(state.messageKey),
+    error: state.error,
     setStep,
     setError,
     reset,

@@ -24,3 +24,8 @@ export interface NotificationSettings {
   weekendTime: string; // "HH:MM"
 }
 
+export type ThemePreference = 'light' | 'dark' | 'auto';
+
+export type ThemeMode = 'light' | 'dark';
+
+export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es';

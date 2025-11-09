@@ -2,23 +2,34 @@ import React, { memo, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import Animated, { FadeInUp, FadeIn } from 'react-native-reanimated';
-import { JournalTheme, getTagColor } from '@/constants/journalTheme';
+import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
 import { DreamAnalysis } from '@/lib/types';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { getThumbnailUrl, getImageConfig } from '@/lib/imageUtils';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: () => void;
   index: number;
   shouldLoadImage?: boolean;
+  testID?: string;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-export const DreamCard = memo(function DreamCard({ dream, onPress, index, shouldLoadImage = true }: DreamCardProps) {
+export const DreamCard = memo(function DreamCard({
+  dream,
+  onPress,
+  index,
+  shouldLoadImage = true,
+  testID,
+}: DreamCardProps) {
+  const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { t } = useTranslation();
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const thumbnailUri = useMemo(() => {
@@ -34,17 +45,20 @@ export const DreamCard = memo(function DreamCard({ dream, onPress, index, should
       style={animatedStyle}
     >
       <AnimatedPressable
-        style={styles.card}
+        style={[styles.card, { backgroundColor: colors.backgroundCard }]}
         onPress={onPress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
+        accessibilityRole="button"
+        accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
+        testID={testID}
       >
       {dream.imageUrl && (
         <View style={styles.imageContainer}>
           {/* Placeholder */}
           {!imageLoaded && (
-            <View style={[styles.image, styles.imagePlaceholder]}>
-              <View style={styles.placeholderShimmer} />
+            <View style={[styles.image, styles.imagePlaceholder, { backgroundColor: colors.backgroundSecondary }]}>
+              <View style={[styles.placeholderShimmer, { backgroundColor: colors.backgroundSecondary }]} />
             </View>
           )}
           {/* Actual Thumbnail - only load if shouldLoadImage is true */}
@@ -66,16 +80,16 @@ export const DreamCard = memo(function DreamCard({ dream, onPress, index, should
         </View>
       )}
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
           {dream.title}
         </Text>
-        <Text style={styles.description} numberOfLines={2}>
+        <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
           {dream.interpretation || dream.transcript}
         </Text>
         {dream.theme && (
           <View style={styles.tagContainer}>
-            <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme) }]}>
-              <Text style={styles.tagText}>{dream.theme}</Text>
+            <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
+              <Text style={[styles.tagText, { color: colors.textPrimary }]}>{dream.theme}</Text>
             </View>
           </View>
         )}
@@ -87,11 +101,10 @@ export const DreamCard = memo(function DreamCard({ dream, onPress, index, should
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: JournalTheme.backgroundCard,
-    borderRadius: JournalTheme.borderRadius.md,
-    padding: JournalTheme.spacing.md,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
     flexDirection: 'row',
-    gap: JournalTheme.spacing.md,
+    gap: ThemeLayout.spacing.md,
   },
   imageContainer: {
     width: 80,
@@ -101,9 +114,8 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     height: 80,
-    borderRadius: JournalTheme.borderRadius.sm,
+    borderRadius: ThemeLayout.borderRadius.sm,
     flexShrink: 0,
-    backgroundColor: JournalTheme.backgroundSecondary,
   },
   imagePlaceholder: {
     position: 'absolute',
@@ -114,7 +126,6 @@ const styles = StyleSheet.create({
   placeholderShimmer: {
     width: '100%',
     height: '100%',
-    backgroundColor: JournalTheme.backgroundSecondary,
     opacity: 0.6,
   },
   content: {
@@ -124,13 +135,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.textPrimary,
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
     lineHeight: 20,
     marginBottom: 8,
   },
@@ -142,11 +151,10 @@ const styles = StyleSheet.create({
   tag: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: JournalTheme.borderRadius.full,
+    borderRadius: ThemeLayout.borderRadius.full,
   },
   tagText: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textPrimary,
   },
 });

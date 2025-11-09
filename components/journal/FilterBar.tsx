@@ -1,7 +1,9 @@
 import React, { memo } from 'react';
 import { Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { JournalTheme } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface FilterBarProps {
   onThemePress: () => void;
@@ -16,6 +18,9 @@ interface FilterBarProps {
     end: Date | null;
   };
   selectedTheme?: string | null;
+  themeButtonTestID?: string;
+  dateButtonTestID?: string;
+  clearButtonTestID?: string;
 }
 
 function CategoryIcon({ size = 16, color = '#FFFFFF' }) {
@@ -51,30 +56,10 @@ function CloseIcon({ size = 16, color = '#FFFFFF' }) {
   );
 }
 
-interface FilterButtonProps {
-  icon: React.ReactNode;
-  label: string;
-  onPress: () => void;
-  isActive?: boolean;
-  badge?: string;
-}
-
-function FilterButton({ icon, label, onPress, isActive, badge }: FilterButtonProps) {
-  return (
-    <Pressable
-      style={[styles.filterButton, isActive && styles.filterButtonActive]}
-      onPress={onPress}
-    >
-      {icon}
-      <Text style={[styles.filterButtonText, isActive && styles.filterButtonTextActive]}>
-        {label}
-        {badge && ` • ${badge}`}
-      </Text>
-    </Pressable>
-  );
-}
-
-function getDateRangeBadge(dateRange?: { start: Date | null; end: Date | null }): string | undefined {
+function getDateRangeBadge(
+  dateRange: { start: Date | null; end: Date | null } | undefined,
+  t: (key: string) => string
+): string | undefined {
   if (!dateRange?.start && !dateRange?.end) return undefined;
 
   const now = new Date();
@@ -85,12 +70,12 @@ function getDateRangeBadge(dateRange?: { start: Date | null; end: Date | null })
 
     const daysDiff = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
-    if (daysDiff === 0) return 'Today';
-    if (daysDiff === 7) return '7 days';
-    if (daysDiff === 30) return '30 days';
+    if (daysDiff === 0) return t('journal.filter.badge.today');
+    if (daysDiff === 7) return t('journal.filter.badge.7days');
+    if (daysDiff === 30) return t('journal.filter.badge.30days');
   }
 
-  return 'Custom';
+  return t('journal.filter.badge.custom');
 }
 
 export const FilterBar = memo(function FilterBar({
@@ -100,11 +85,16 @@ export const FilterBar = memo(function FilterBar({
   activeFilters,
   dateRange,
   selectedTheme,
+  themeButtonTestID,
+  dateButtonTestID,
+  clearButtonTestID,
 }: FilterBarProps) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
   const hasActiveFilters = activeFilters.theme || activeFilters.date;
-  const dateRangeBadge = getDateRangeBadge(dateRange);
-  const iconColor = JournalTheme.textPrimary;
-  const activeIconColor = JournalTheme.backgroundCard;
+  const dateRangeBadge = getDateRangeBadge(dateRange, t);
+  const iconColor = colors.textPrimary;
+  const activeIconColor = colors.backgroundCard;
 
   return (
     <ScrollView
@@ -112,26 +102,51 @@ export const FilterBar = memo(function FilterBar({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      <FilterButton
-        icon={<CategoryIcon size={16} color={activeFilters.theme ? activeIconColor : iconColor} />}
-        label="Theme"
+      <Pressable
+        style={[
+          styles.filterButton,
+          { backgroundColor: activeFilters.theme ? colors.accent : colors.backgroundSecondary },
+        ]}
         onPress={onThemePress}
-        isActive={activeFilters.theme}
-        badge={selectedTheme || undefined}
-      />
-      <FilterButton
-        icon={<CalendarIcon size={16} color={activeFilters.date ? activeIconColor : iconColor} />}
-        label="Date"
+        accessibilityRole="button"
+        accessibilityLabel={t('journal.filter.accessibility.theme')}
+        testID={themeButtonTestID}
+      >
+        <CategoryIcon size={16} color={activeFilters.theme ? activeIconColor : iconColor} />
+        <Text style={[styles.filterButtonText, { color: activeFilters.theme ? activeIconColor : iconColor }]}>
+          {t('journal.filter.theme')}
+          {selectedTheme && ` • ${selectedTheme}`}
+        </Text>
+      </Pressable>
+
+      <Pressable
+        style={[
+          styles.filterButton,
+          { backgroundColor: activeFilters.date ? colors.accent : colors.backgroundSecondary },
+        ]}
         onPress={onDatePress}
-        isActive={activeFilters.date}
-        badge={dateRangeBadge}
-      />
+        accessibilityRole="button"
+        accessibilityLabel={t('journal.filter.accessibility.date')}
+        testID={dateButtonTestID}
+      >
+        <CalendarIcon size={16} color={activeFilters.date ? activeIconColor : iconColor} />
+        <Text style={[styles.filterButtonText, { color: activeFilters.date ? activeIconColor : iconColor }]}>
+          {t('journal.filter.date')}
+          {dateRangeBadge && ` • ${dateRangeBadge}`}
+        </Text>
+      </Pressable>
+
       {hasActiveFilters && (
-        <FilterButton
-          icon={<CloseIcon size={16} color={iconColor} />}
-          label="Clear"
+        <Pressable
+          style={[styles.filterButton, { backgroundColor: colors.backgroundSecondary }]}
           onPress={onClearPress}
-        />
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.filter.accessibility.clear')}
+          testID={clearButtonTestID}
+        >
+          <CloseIcon size={16} color={iconColor} />
+          <Text style={[styles.filterButtonText, { color: iconColor }]}>{t('journal.filter.clear')}</Text>
+        </Pressable>
       )}
     </ScrollView>
   );
@@ -140,27 +155,19 @@ export const FilterBar = memo(function FilterBar({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: JournalTheme.spacing.sm,
-    paddingRight: JournalTheme.spacing.md,
+    gap: ThemeLayout.spacing.sm,
+    paddingRight: ThemeLayout.spacing.md,
   },
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: JournalTheme.backgroundSecondary,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: JournalTheme.borderRadius.full,
-  },
-  filterButtonActive: {
-    backgroundColor: JournalTheme.accent,
+    borderRadius: ThemeLayout.borderRadius.full,
   },
   filterButtonText: {
-    color: JournalTheme.textPrimary,
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_500Medium',
-  },
-  filterButtonTextActive: {
-    color: JournalTheme.backgroundCard,
   },
 });

@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { JournalTheme } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
 import { getDreamIcon, DreamIconType } from '@/constants/dreamIcons';
 import {
   PlaneIcon,
@@ -31,13 +32,14 @@ const ICON_COMPONENTS: Record<DreamIconType, React.ComponentType<{ size?: number
 };
 
 export const TimelineIndicator = memo(function TimelineIndicator({ dreamType }: TimelineIndicatorProps) {
+  const { colors } = useTheme();
   const iconType = getDreamIcon(dreamType);
   const IconComponent = ICON_COMPONENTS[iconType];
 
   return (
     <View style={styles.container}>
-      <View style={styles.iconCircle}>
-        <IconComponent size={18} color={JournalTheme.backgroundCard} />
+      <View style={[styles.iconCircle, { backgroundColor: colors.accent }]}>
+        <IconComponent size={18} color={colors.backgroundCard} />
       </View>
     </View>
   );
@@ -49,10 +51,9 @@ const styles = StyleSheet.create({
     paddingTop: 6,
   },
   iconCircle: {
-    width: JournalTheme.timelineIconContainerSize,
-    height: JournalTheme.timelineIconContainerSize,
-    borderRadius: JournalTheme.timelineIconContainerSize / 2,
-    backgroundColor: JournalTheme.accent,
+    width: ThemeLayout.timelineIconContainerSize,
+    height: ThemeLayout.timelineIconContainerSize,
+    borderRadius: ThemeLayout.timelineIconContainerSize / 2,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,

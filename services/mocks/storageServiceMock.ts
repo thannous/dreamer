@@ -3,7 +3,7 @@
  * Uses in-memory storage with predefined dreams pre-loaded
  */
 
-import type { DreamAnalysis, NotificationSettings } from '@/lib/types';
+import type { DreamAnalysis, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
 // In-memory storage
@@ -17,6 +17,9 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   weekdayTime: '07:00',
   weekendTime: '10:00',
 };
+
+const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
+const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 
 /**
  * Pre-load predefined dreams on first access
@@ -142,6 +145,72 @@ export async function saveNotificationSettings(settings: NotificationSettings): 
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save notification settings:', error);
     throw new Error('Failed to save notification settings');
+  }
+}
+
+/**
+ * Mock get theme preference
+ */
+export async function getThemePreference(): Promise<ThemePreference> {
+  console.log('[MOCK STORAGE] getThemePreference called');
+  try {
+    const savedPreference = mockStorage['gemini_dream_journal_theme_preference'];
+    if (savedPreference) {
+      const preference = JSON.parse(savedPreference) as ThemePreference;
+      console.log('[MOCK STORAGE] Returning saved theme preference:', preference);
+      return preference;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve theme preference:', error);
+  }
+  console.log('[MOCK STORAGE] Returning default theme preference');
+  return DEFAULT_THEME_PREFERENCE;
+}
+
+/**
+ * Mock save theme preference
+ */
+export async function saveThemePreference(preference: ThemePreference): Promise<void> {
+  console.log('[MOCK STORAGE] saveThemePreference called:', preference);
+  try {
+    mockStorage['gemini_dream_journal_theme_preference'] = JSON.stringify(preference);
+    console.log('[MOCK STORAGE] Theme preference saved');
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save theme preference:', error);
+    throw new Error('Failed to save theme preference');
+  }
+}
+
+/**
+ * Mock get language preference
+ */
+export async function getLanguagePreference(): Promise<LanguagePreference> {
+  console.log('[MOCK STORAGE] getLanguagePreference called');
+  try {
+    const savedPreference = mockStorage['gemini_dream_journal_language_preference'];
+    if (savedPreference) {
+      const preference = JSON.parse(savedPreference) as LanguagePreference;
+      console.log('[MOCK STORAGE] Returning saved language preference:', preference);
+      return preference;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve language preference:', error);
+  }
+  console.log('[MOCK STORAGE] Returning default language preference');
+  return DEFAULT_LANGUAGE_PREFERENCE;
+}
+
+/**
+ * Mock save language preference
+ */
+export async function saveLanguagePreference(preference: LanguagePreference): Promise<void> {
+  console.log('[MOCK STORAGE] saveLanguagePreference called:', preference);
+  try {
+    mockStorage['gemini_dream_journal_language_preference'] = JSON.stringify(preference);
+    console.log('[MOCK STORAGE] Language preference saved');
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save language preference:', error);
+    throw new Error('Failed to save language preference');
   }
 }
 

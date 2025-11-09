@@ -26,3 +26,7 @@ export const saveTranscript = service.saveTranscript;
 export const clearSavedTranscript = service.clearSavedTranscript;
 export const getNotificationSettings = service.getNotificationSettings;
 export const saveNotificationSettings = service.saveNotificationSettings;
+export const getThemePreference = service.getThemePreference;
+export const saveThemePreference = service.saveThemePreference;
+export const getLanguagePreference = service.getLanguagePreference;
+export const saveLanguagePreference = service.saveLanguagePreference;

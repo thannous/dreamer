@@ -4,40 +4,30 @@ import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { JournalTheme } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
 type TabPalette = {
   barBg: string;
   barBorder: string;
-  itemBg: string;
-  itemActiveBg: string;
   iconBg: string;
   iconActiveBg: string;
   text: string;
   textActive: string;
 };
 
-function TabBarItem({
-  label,
-  icon,
-  focused,
-  palette,
-}: {
+function TabBarItem({ label, icon, focused, palette, colors }: {
   label: string;
   icon: IconName;
   focused: boolean;
   palette: TabPalette;
+  colors: ReturnType<typeof useTheme>['colors'];
 }) {
   return (
-    <View
-      style={[
-        styles.tabItem,
-        { backgroundColor: focused ? palette.itemActiveBg : palette.itemBg },
-      ]}>
+    <View style={styles.tabItem}>
       <View
         style={[
           styles.iconBadge,
@@ -46,7 +36,7 @@ function TabBarItem({
         <IconSymbol
           size={20}
           name={icon}
-          color={focused ? JournalTheme.backgroundCard : palette.text}
+          color={focused ? colors.backgroundCard : palette.text}
         />
       </View>
       <Text
@@ -61,27 +51,23 @@ function TabBarItem({
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { colors, mode } = useTheme();
+  const { t } = useTranslation();
 
-  const palette: TabPalette = isDark
+  const palette: TabPalette = mode === 'dark'
     ? {
         barBg: '#120721',
         barBorder: '#2f2147',
-        itemBg: '#1b1230',
-        itemActiveBg: '#2d1a45',
         iconBg: '#35224f',
-        iconActiveBg: JournalTheme.accent,
-        text: JournalTheme.textSecondary,
-        textActive: JournalTheme.textPrimary,
+        iconActiveBg: colors.accent,
+        text: colors.textSecondary,
+        textActive: colors.textPrimary,
       }
     : {
         barBg: '#f2ecff',
         barBorder: '#cdbbf0',
-        itemBg: '#e1d5f6',
-        itemActiveBg: '#cbb7ef',
         iconBg: '#bea5e5',
-        iconActiveBg: JournalTheme.accent,
+        iconActiveBg: colors.accent,
         text: '#463368',
         textActive: '#1f1230',
       };
@@ -93,11 +79,12 @@ export default function TabLayout() {
     borderRadius: 28,
     marginHorizontal: 20,
     marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    height: 58,
     borderWidth: 1,
     borderColor: palette.barBorder,
-    shadowColor: isDark ? '#000' : '#3d2561',
+    shadowColor: mode === 'dark' ? '#000' : '#3d2561',
     shadowOpacity: 0.35,
     shadowRadius: 28,
     shadowOffset: { width: 0, height: 12 },
@@ -119,9 +106,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('nav.home'),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house.fill" label="Home" focused={focused} palette={palette} />
+            <TabBarItem icon="house.fill" label={t('nav.home')} focused={focused} palette={palette} colors={colors} />
           ),
           tabBarStyle: { display: 'none' },
         }}
@@ -129,27 +116,27 @@ export default function TabLayout() {
       <Tabs.Screen
         name="journal"
         options={{
-          title: 'Journal',
+          title: t('nav.journal'),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book.fill" label="Journal" focused={focused} palette={palette} />
+            <TabBarItem icon="book.fill" label={t('nav.journal')} focused={focused} palette={palette} colors={colors} />
           ),
         }}
       />
       <Tabs.Screen
         name="statistics"
         options={{
-          title: 'Stats',
+          title: t('nav.stats'),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar.fill" label="Stats" focused={focused} palette={palette} />
+            <TabBarItem icon="chart.bar.fill" label={t('nav.stats')} focused={focused} palette={palette} colors={colors} />
           ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('nav.settings'),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="gear" label="Settings" focused={focused} palette={palette} />
+            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} colors={colors} />
           ),
         }}
       />

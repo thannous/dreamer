@@ -1,37 +1,108 @@
 /**
  * Journal-specific theme constants
- * Adapted from SurrealTheme to match the journal mockup design
+ * Supports both dark and light themes with soft, gentle colors for morning use
  */
 
-export const JournalTheme = {
+export interface ThemeColors {
+  // Background colors
+  backgroundDark: string;
+  backgroundCard: string;
+  backgroundSecondary: string;
+
+  // Text colors
+  textPrimary: string;
+  textSecondary: string;
+  textTertiary: string;
+
+  // Accent colors
+  accent: string;
+  accentDark: string;
+  accentLight: string;
+
+  // UI elements
+  timeline: string;
+  divider: string;
+  overlay: string;
+
+  // Tag colors
+  tags: {
+    surreal: string;
+    mystical: string;
+    calm: string;
+    noir: string;
+  };
+}
+
+/**
+ * Dark theme - original purple and gold theme
+ */
+export const DarkTheme: ThemeColors = {
   // Background colors
   backgroundDark: '#131022', // Main background
-  backgroundCard: '#1a0f2b', // Card background (from SurrealTheme.bgStart)
+  backgroundCard: '#1a0f2b', // Card background
   backgroundSecondary: '#4B3F72', // Secondary elements (buttons, inputs)
 
   // Text colors
   textPrimary: '#FFFFFF', // Main text
-  textSecondary: '#a097b8', // Secondary/muted text (from SurrealTheme.textMuted)
+  textSecondary: '#a097b8', // Secondary/muted text
   textTertiary: '#6B6B8D', // Even more muted
 
   // Accent colors
-  accent: '#FFD700', // Golden accent for icons and highlights
-  accentDark: '#D4AF37', // Darker gold for pressed states
-  accentLight: '#FFE55C', // Lighter gold for hover states
+  accent: '#6B5A8E', // Surreal purple accent for CTAs
+  accentDark: '#4F3D6B', // Deeper purple for pressed states
+  accentLight: '#A097B8', // Muted lilac for subtle highlights
 
   // UI elements
-  timeline: '#4f3d6b', // Timeline line color (from SurrealTheme.shape)
-  divider: '#2e1d47', // Dividers (from SurrealTheme.darkAccent)
-  overlay: 'rgba(19, 16, 34, 0.8)', // Semi-transparent overlay for bottom button
+  timeline: '#4f3d6b', // Timeline line color
+  divider: '#2e1d47', // Dividers
+  overlay: 'rgba(19, 16, 34, 0.8)', // Semi-transparent overlay
 
-  // Tag colors (using theme as base)
+  // Tag colors
   tags: {
     surreal: '#6b5a8e',
     mystical: '#5d4b7a',
     calm: '#4a6fa5',
     noir: '#3d3d5c',
   },
+};
 
+/**
+ * Light theme - soft cream and champagne gold for gentle morning viewing
+ */
+export const LightTheme: ThemeColors = {
+  // Background colors
+  backgroundDark: '#F8F6F2', // Main background - soft cream
+  backgroundCard: '#FFFDFB', // Card background - off-white
+  backgroundSecondary: '#EEEBE6', // Secondary elements - light beige
+
+  // Text colors
+  textPrimary: '#2A2838', // Main text - deep purple-gray
+  textSecondary: '#6B6880', // Secondary text - muted purple-gray
+  textTertiary: '#9B98AC', // Tertiary text - lighter gray
+
+  // Accent colors
+  accent: '#D4A574', // Champagne gold accent
+  accentDark: '#C9A567', // Darker champagne
+  accentLight: '#E3C592', // Lighter champagne
+
+  // UI elements
+  timeline: '#D4CFBF', // Timeline - soft beige
+  divider: '#E8E4DC', // Dividers - very light beige
+  overlay: 'rgba(248, 246, 242, 0.9)', // Semi-transparent cream overlay
+
+  // Tag colors - pastel versions
+  tags: {
+    surreal: '#B8AECB',
+    mystical: '#C5B8D8',
+    calm: '#A5C4E0',
+    noir: '#A8A8C0',
+  },
+};
+
+/**
+ * Common theme properties (non-color)
+ */
+export const ThemeLayout = {
   // Spacing and sizes
   spacing: {
     xs: 4,
@@ -64,11 +135,26 @@ export const JournalTheme = {
 };
 
 /**
- * Get tag color based on theme
+ * Legacy export for backward compatibility
+ * @deprecated Use DarkTheme or LightTheme directly
  */
-export function getTagColor(theme?: string): string {
-  if (!theme) return JournalTheme.tags.surreal;
+// Backward-compatible theme that includes both colors and layout tokens
+// Many components import `JournalTheme` and expect spacing/borderRadius, so
+// we merge color palette with layout tokens here.
+export type JournalThemeType = ThemeColors & typeof ThemeLayout;
+export const JournalTheme: JournalThemeType = {
+  ...DarkTheme,
+  ...ThemeLayout,
+};
 
-  const themeKey = theme.toLowerCase() as keyof typeof JournalTheme.tags;
-  return JournalTheme.tags[themeKey] || JournalTheme.tags.surreal;
+/**
+ * Get tag color based on theme type and color mode
+ * @param theme - The dream theme type (surreal, mystical, calm, noir)
+ * @param colors - The theme colors to use (DarkTheme or LightTheme)
+ */
+export function getTagColor(theme?: string, colors: ThemeColors = DarkTheme): string {
+  if (!theme) return colors.tags.surreal;
+
+  const themeKey = theme.toLowerCase() as keyof typeof colors.tags;
+  return colors.tags[themeKey] || colors.tags.surreal;
 }

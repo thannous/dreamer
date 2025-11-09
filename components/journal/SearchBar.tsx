@@ -1,12 +1,16 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { JournalTheme } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
+  testID?: string;
+  inputTestID?: string;
 }
 
 function SearchIcon({ size = 20, color = '#a097b8' }) {
@@ -20,18 +24,30 @@ function SearchIcon({ size = 20, color = '#a097b8' }) {
   );
 }
 
-export const SearchBar = memo(function SearchBar({ value, onChangeText, placeholder = 'Search your dream journey...' }: SearchBarProps) {
+export const SearchBar = memo(function SearchBar({
+  value,
+  onChangeText,
+  placeholder,
+  testID,
+  inputTestID,
+}: SearchBarProps) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
+  const placeholderText = useMemo(() => placeholder ?? t('journal.search_placeholder'), [placeholder, t]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundSecondary }]} testID={testID}>
       <View style={styles.iconContainer}>
-        <SearchIcon size={20} color={JournalTheme.textSecondary} />
+        <SearchIcon size={20} color={colors.textSecondary} />
       </View>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: colors.textPrimary }]}
+        testID={inputTestID}
         value={value}
         onChangeText={onChangeText}
-        placeholder={placeholder}
-        placeholderTextColor={JournalTheme.textSecondary}
+        placeholder={placeholderText}
+        placeholderTextColor={colors.textSecondary}
+        accessibilityLabel={placeholderText}
         autoCapitalize="none"
         autoCorrect={false}
       />
@@ -43,17 +59,15 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: JournalTheme.backgroundSecondary,
-    borderRadius: JournalTheme.borderRadius.md,
-    paddingHorizontal: JournalTheme.spacing.md,
+    borderRadius: ThemeLayout.borderRadius.md,
+    paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
   },
   iconContainer: {
-    marginRight: JournalTheme.spacing.sm,
+    marginRight: ThemeLayout.spacing.sm,
   },
   input: {
     flex: 1,
-    color: JournalTheme.textPrimary,
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
