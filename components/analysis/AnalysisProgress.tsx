@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SurrealTheme, Fonts } from '@/constants/theme';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
 import type { ClassifiedError } from '@/lib/errors';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface AnalysisProgressProps {
   step: AnalysisStep;
@@ -14,6 +15,7 @@ interface AnalysisProgressProps {
 }
 
 export function AnalysisProgress({ step, progress, message, error, onRetry }: AnalysisProgressProps) {
+  const { t } = useTranslation();
   const showError = step === AnalysisStep.ERROR && error;
 
   return (
@@ -56,7 +58,7 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
       {showError && onRetry && error?.canRetry && (
         <Pressable style={styles.retryButton} onPress={onRetry}>
           <Ionicons name="refresh" size={20} color="#fff" />
-          <Text style={styles.retryButtonText}>Try Again</Text>
+          <Text style={styles.retryButtonText}>{t('analysis.retry')}</Text>
         </Pressable>
       )}
     </View>

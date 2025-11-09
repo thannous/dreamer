@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { JournalTheme } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface DateRangePickerProps {
   startDate: Date | null;
@@ -16,6 +19,20 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   const [localStartDate, setLocalStartDate] = useState<Date | null>(startDate);
   const [localEndDate, setLocalEndDate] = useState<Date | null>(endDate);
   const [pickerMode, setPickerMode] = useState<PickerMode>('none');
+  const { colors, mode } = useTheme();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
+  const locale = useMemo(() => {
+    switch (language) {
+      case 'fr':
+        return 'fr-FR';
+      case 'es':
+        return 'es-ES';
+      default:
+        return 'en-US';
+    }
+  }, [language]);
 
   const handleStartDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
@@ -72,8 +89,8 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   };
 
   const formatDate = (date: Date | null) => {
-    if (!date) return 'Not set';
-    return date.toLocaleDateString('en-US', {
+    if (!date) return t('journal.date_picker.not_set');
+    return date.toLocaleDateString(locale, {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
@@ -81,57 +98,57 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Select Date Range</Text>
+    <View style={[styles.container, { backgroundColor: colors.backgroundCard }]}>
+      <Text style={[styles.title, { color: colors.textPrimary }]}>{t('journal.date_picker.title')}</Text>
 
       {/* Quick select buttons */}
       <View style={styles.quickSelectContainer}>
-        <Text style={styles.sectionLabel}>Quick Select</Text>
+        <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.quick_select')}</Text>
         <View style={styles.quickButtons}>
           <Pressable
-            style={styles.quickButton}
+            style={[styles.quickButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => handleQuickSelect(0)}
           >
-            <Text style={styles.quickButtonText}>Today</Text>
+            <Text style={[styles.quickButtonText, { color: colors.textPrimary }]}>{t('journal.date_picker.quick.today')}</Text>
           </Pressable>
           <Pressable
-            style={styles.quickButton}
+            style={[styles.quickButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => handleQuickSelect(7)}
           >
-            <Text style={styles.quickButtonText}>Last 7 days</Text>
+            <Text style={[styles.quickButtonText, { color: colors.textPrimary }]}>{t('journal.date_picker.quick.last7')}</Text>
           </Pressable>
           <Pressable
-            style={styles.quickButton}
+            style={[styles.quickButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => handleQuickSelect(30)}
           >
-            <Text style={styles.quickButtonText}>Last 30 days</Text>
+            <Text style={[styles.quickButtonText, { color: colors.textPrimary }]}>{t('journal.date_picker.quick.last30')}</Text>
           </Pressable>
         </View>
       </View>
 
       {/* Custom range */}
       <View style={styles.customRangeContainer}>
-        <Text style={styles.sectionLabel}>Custom Range</Text>
+        <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.custom_range')}</Text>
 
         {/* Start Date */}
         <View style={styles.dateRow}>
-          <Text style={styles.dateLabel}>From:</Text>
+          <Text style={[styles.dateLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.from')}</Text>
           <Pressable
-            style={styles.dateButton}
+            style={[styles.dateButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => setPickerMode('start')}
           >
-            <Text style={styles.dateButtonText}>{formatDate(localStartDate)}</Text>
+            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatDate(localStartDate)}</Text>
           </Pressable>
         </View>
 
         {/* End Date */}
         <View style={styles.dateRow}>
-          <Text style={styles.dateLabel}>To:</Text>
+          <Text style={[styles.dateLabel, { color: colors.textSecondary }]}>{t('journal.date_picker.to')}</Text>
           <Pressable
-            style={styles.dateButton}
+            style={[styles.dateButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => setPickerMode('end')}
           >
-            <Text style={styles.dateButtonText}>{formatDate(localEndDate)}</Text>
+            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatDate(localEndDate)}</Text>
           </Pressable>
         </View>
       </View>
@@ -144,7 +161,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleStartDateChange}
           maximumDate={new Date()}
-          themeVariant="dark"
+          themeVariant={mode}
         />
       )}
 
@@ -156,23 +173,23 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
           onChange={handleEndDateChange}
           minimumDate={localStartDate || undefined}
           maximumDate={new Date()}
-          themeVariant="dark"
+          themeVariant={mode}
         />
       )}
 
       {/* Action buttons */}
       <View style={styles.actionButtons}>
         <Pressable
-          style={[styles.actionButton, styles.clearButton]}
+          style={[styles.actionButton, styles.clearButton, { backgroundColor: colors.backgroundSecondary }]}
           onPress={handleClear}
         >
-          <Text style={styles.clearButtonText}>Clear</Text>
+          <Text style={[styles.clearButtonText, { color: colors.textPrimary }]}>{t('common.clear')}</Text>
         </Pressable>
         <Pressable
-          style={[styles.actionButton, styles.applyButton]}
+          style={[styles.actionButton, styles.applyButton, { backgroundColor: colors.accent }]}
           onPress={handleApply}
         >
-          <Text style={styles.applyButtonText}>Apply</Text>
+          <Text style={[styles.applyButtonText, { color: colors.backgroundCard }]}>{t('common.apply')}</Text>
         </Pressable>
       </View>
 
@@ -180,7 +197,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
         style={styles.cancelButton}
         onPress={onClose}
       >
-        <Text style={styles.cancelButtonText}>Cancel</Text>
+        <Text style={[styles.cancelButtonText, { color: colors.textSecondary }]}>{t('common.cancel')}</Text>
       </Pressable>
     </View>
   );
@@ -188,27 +205,24 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: JournalTheme.backgroundCard,
-    borderRadius: JournalTheme.borderRadius.lg,
-    padding: JournalTheme.spacing.lg,
+    borderRadius: ThemeLayout.borderRadius.lg,
+    padding: ThemeLayout.spacing.lg,
     width: '100%',
     maxWidth: 400,
   },
   title: {
     fontSize: 20,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.textPrimary,
-    marginBottom: JournalTheme.spacing.lg,
+    marginBottom: ThemeLayout.spacing.lg,
     textAlign: 'center',
   },
   sectionLabel: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.textSecondary,
-    marginBottom: JournalTheme.spacing.sm,
+    marginBottom: ThemeLayout.spacing.sm,
   },
   quickSelectContainer: {
-    marginBottom: JournalTheme.spacing.lg,
+    marginBottom: ThemeLayout.spacing.lg,
   },
   quickButtons: {
     flexDirection: 'row',
@@ -216,68 +230,57 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   quickButton: {
-    backgroundColor: JournalTheme.backgroundSecondary,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: JournalTheme.borderRadius.sm,
+    borderRadius: ThemeLayout.borderRadius.sm,
   },
   quickButtonText: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textPrimary,
   },
   customRangeContainer: {
-    marginBottom: JournalTheme.spacing.lg,
+    marginBottom: ThemeLayout.spacing.lg,
   },
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: JournalTheme.spacing.sm,
+    marginBottom: ThemeLayout.spacing.sm,
   },
   dateLabel: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
-    color: JournalTheme.textSecondary,
     width: 60,
   },
   dateButton: {
     flex: 1,
-    backgroundColor: JournalTheme.backgroundSecondary,
-    paddingHorizontal: JournalTheme.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
-    borderRadius: JournalTheme.borderRadius.sm,
+    borderRadius: ThemeLayout.borderRadius.sm,
   },
   dateButtonText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.textPrimary,
   },
   actionButtons: {
     flexDirection: 'row',
-    gap: JournalTheme.spacing.sm,
-    marginBottom: JournalTheme.spacing.md,
+    gap: ThemeLayout.spacing.sm,
+    marginBottom: ThemeLayout.spacing.md,
   },
   actionButton: {
     flex: 1,
     paddingVertical: 12,
-    borderRadius: JournalTheme.borderRadius.sm,
+    borderRadius: ThemeLayout.borderRadius.sm,
     alignItems: 'center',
   },
-  clearButton: {
-    backgroundColor: JournalTheme.backgroundSecondary,
-  },
+  clearButton: {},
   clearButtonText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.textPrimary,
   },
-  applyButton: {
-    backgroundColor: JournalTheme.accent,
-  },
+  applyButton: {},
   applyButtonText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-    color: JournalTheme.backgroundCard,
   },
   cancelButton: {
     paddingVertical: 12,
@@ -286,6 +289,5 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_500Medium',
-    color: JournalTheme.textSecondary,
   },
 });

@@ -1,10 +1,12 @@
 import { Platform } from 'react-native';
 
-import type { DreamAnalysis, NotificationSettings } from '@/lib/types';
+import type { DreamAnalysis, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
 
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
+const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
+const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -188,6 +190,9 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   weekendTime: '10:00',
 };
 
+const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
+const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
+
 export async function getSavedDreams(): Promise<DreamAnalysis[]> {
   try {
     const savedDreams = await getItem(DREAMS_STORAGE_KEY);
@@ -274,5 +279,55 @@ export async function saveNotificationSettings(settings: NotificationSettings): 
       console.error('Failed to save notification settings:', error);
     }
     throw new Error('Failed to save notification settings');
+  }
+}
+
+export async function getThemePreference(): Promise<ThemePreference> {
+  try {
+    const savedPreference = await getItem(THEME_PREFERENCE_KEY);
+    if (savedPreference) {
+      return JSON.parse(savedPreference) as ThemePreference;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve theme preference:', error);
+    }
+  }
+  return DEFAULT_THEME_PREFERENCE;
+}
+
+export async function saveThemePreference(preference: ThemePreference): Promise<void> {
+  try {
+    await setItem(THEME_PREFERENCE_KEY, JSON.stringify(preference));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save theme preference:', error);
+    }
+    throw new Error('Failed to save theme preference');
+  }
+}
+
+export async function getLanguagePreference(): Promise<LanguagePreference> {
+  try {
+    const savedPreference = await getItem(LANGUAGE_PREFERENCE_KEY);
+    if (savedPreference) {
+      return JSON.parse(savedPreference) as LanguagePreference;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve language preference:', error);
+    }
+  }
+  return DEFAULT_LANGUAGE_PREFERENCE;
+}
+
+export async function saveLanguagePreference(preference: LanguagePreference): Promise<void> {
+  try {
+    await setItem(LANGUAGE_PREFERENCE_KEY, JSON.stringify(preference));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save language preference:', error);
+    }
+    throw new Error('Failed to save language preference');
   }
 }

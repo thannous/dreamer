@@ -2,13 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SurrealTheme } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface MicButtonProps {
   isRecording: boolean;
   onPress: () => void;
+  testID?: string;
+  accessibilityLabel?: string;
 }
 
-export function MicButton({ isRecording, onPress }: MicButtonProps) {
+export function MicButton({ isRecording, onPress, testID, accessibilityLabel }: MicButtonProps) {
+  const { t } = useTranslation();
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
 
@@ -58,7 +62,15 @@ export function MicButton({ isRecording, onPress }: MicButtonProps) {
   });
 
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable
+      onPress={onPress}
+      style={styles.container}
+      accessibilityRole="button"
+      accessibilityLabel={
+        accessibilityLabel ?? (isRecording ? t('recording.mic.stop') : t('recording.mic.start'))
+      }
+      testID={testID}
+    >
       {isRecording && (
         <Animated.View
           style={[

@@ -1,4 +1,4 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
@@ -17,8 +17,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { DreamsProvider } from '@/context/DreamsContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { LanguageProvider } from '@/context/LanguageContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { configureNotificationHandler } from '@/services/notificationService';
 
@@ -29,8 +30,27 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+function RootLayoutNav() {
+  const { mode } = useTheme();
+
+  return (
+    <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
+      <DreamsProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="recording" options={{ headerShown: false }} />
+          <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
+        </Stack>
+      </DreamsProvider>
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+    </NavigationThemeProvider>
+  );
+}
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
 
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,
@@ -60,19 +80,11 @@ export default function RootLayout() {
 
   return (
     <ErrorBoundary>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <DreamsProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="recording" options={{ headerShown: false }} />
-            <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
-            <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
-            <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
-          </Stack>
-        </DreamsProvider>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          <RootLayoutNav />
+        </ThemeProvider>
+      </LanguageProvider>
     </ErrorBoundary>
   );
 }
