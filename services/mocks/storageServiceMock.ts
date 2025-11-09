@@ -3,7 +3,7 @@
  * Uses in-memory storage with predefined dreams pre-loaded
  */
 
-import type { DreamAnalysis, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
+import type { DreamAnalysis, DreamMutation, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
 // In-memory storage
@@ -12,6 +12,9 @@ const mockStorage: Record<string, string> = {};
 // Flag to track if we've pre-loaded dreams
 let dreamsPreloaded = false;
 
+const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
+const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
+
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   isEnabled: false,
   weekdayTime: '07:00',
@@ -19,6 +22,7 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 };
 
 const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
+
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 
 /**
@@ -211,6 +215,52 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save language preference:', error);
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
+  console.log('[MOCK STORAGE] getCachedRemoteDreams called');
+  try {
+    const cached = mockStorage[REMOTE_DREAMS_CACHE_KEY];
+    if (cached) {
+      return JSON.parse(cached) as DreamAnalysis[];
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to read cached remote dreams:', error);
+  }
+  return [];
+}
+
+export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<void> {
+  console.log('[MOCK STORAGE] saveCachedRemoteDreams called with', dreams.length, 'dreams');
+  try {
+    mockStorage[REMOTE_DREAMS_CACHE_KEY] = JSON.stringify(dreams);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to cache remote dreams:', error);
+    throw new Error('Failed to cache remote dreams');
+  }
+}
+
+export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
+  console.log('[MOCK STORAGE] getPendingDreamMutations called');
+  try {
+    const pending = mockStorage[DREAM_MUTATIONS_KEY];
+    if (pending) {
+      return JSON.parse(pending) as DreamMutation[];
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to read pending dream mutations:', error);
+  }
+  return [];
+}
+
+export async function savePendingDreamMutations(mutations: DreamMutation[]): Promise<void> {
+  console.log('[MOCK STORAGE] savePendingDreamMutations called with', mutations.length, 'mutations');
+  try {
+    mockStorage[DREAM_MUTATIONS_KEY] = JSON.stringify(mutations);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save pending dream mutations:', error);
+    throw new Error('Failed to save pending dream mutations');
   }
 }
 

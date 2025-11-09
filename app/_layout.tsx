@@ -22,6 +22,8 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { configureNotificationHandler } from '@/services/notificationService';
+import { initializeGoogleSignIn } from '@/lib/auth';
+import { AuthProvider } from '@/context/AuthContext';
 
 // Prevent the splash screen from auto-hiding before fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -51,7 +53,6 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,
     SpaceGrotesk_500Medium,
@@ -72,6 +73,8 @@ export default function RootLayout() {
   useEffect(() => {
     // Configure notification handler on app startup
     configureNotificationHandler();
+    // Initialize Google Sign-In configuration early (native platforms)
+    initializeGoogleSignIn();
   }, []);
 
   if (!fontsLoaded && !fontError) {
@@ -82,7 +85,9 @@ export default function RootLayout() {
     <ErrorBoundary>
       <LanguageProvider>
         <ThemeProvider>
-          <RootLayoutNav />
+          <AuthProvider>
+            <RootLayoutNav />
+          </AuthProvider>
         </ThemeProvider>
       </LanguageProvider>
     </ErrorBoundary>

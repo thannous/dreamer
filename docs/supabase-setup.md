@@ -25,6 +25,7 @@ create table if not exists public.dreams (
   theme text,
   dream_type text not null,
   is_favorite boolean default false,
+  image_generation_failed boolean default false,
   created_at timestamptz default now()
 );
 
@@ -38,6 +39,13 @@ create policy "dreams update own" on public.dreams
   for update using (auth.uid() = user_id);
 create policy "dreams delete own" on public.dreams
   for delete using (auth.uid() = user_id);
+```
+
+If you already created the table earlier, run:
+
+```sql
+alter table public.dreams
+add column if not exists image_generation_failed boolean default false;
 ```
 
 3) Edge Function: `api`
@@ -67,6 +75,7 @@ Key points
 - In the app Settings tab, sign up or sign in with email/password.
 - Go to Recording, write a dream, tap Save.
 - Backend calls Gemini to analyze and stores in `public.dreams`. Image endpoint returns a placeholder URL.
+- Guests can create exactly one dream (stored locally). Once authenticated, new dreams are persisted to `public.dreams` via Supabase and synced back into the journal automatically.
 
 Notes
 - You can expand with additional endpoints later (chat, TTS) using the same pattern.

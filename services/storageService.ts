@@ -30,3 +30,7 @@ export const getThemePreference = service.getThemePreference;
 export const saveThemePreference = service.saveThemePreference;
 export const getLanguagePreference = service.getLanguagePreference;
 export const saveLanguagePreference = service.saveLanguagePreference;
+export const getCachedRemoteDreams = service.getCachedRemoteDreams;
+export const saveCachedRemoteDreams = service.saveCachedRemoteDreams;
+export const getPendingDreamMutations = service.getPendingDreamMutations;
+export const savePendingDreamMutations = service.savePendingDreamMutations;

@@ -1,8 +1,10 @@
 import { Platform } from 'react-native';
 
-import type { DreamAnalysis, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
+import type { DreamAnalysis, DreamMutation, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
 
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
+const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
+const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
 const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
@@ -191,6 +193,7 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 };
 
 const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
+
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 
 export async function getSavedDreams(): Promise<DreamAnalysis[]> {
@@ -329,5 +332,55 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
       console.error('Failed to save language preference:', error);
     }
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
+  try {
+    const cachedDreams = await getItem(REMOTE_DREAMS_CACHE_KEY);
+    if (cachedDreams) {
+      return JSON.parse(cachedDreams) as DreamAnalysis[];
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to read cached remote dreams:', error);
+    }
+  }
+  return [];
+}
+
+export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<void> {
+  try {
+    await setItem(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(dreams));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to cache remote dreams:', error);
+    }
+    throw new Error('Failed to cache remote dreams');
+  }
+}
+
+export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
+  try {
+    const pending = await getItem(DREAM_MUTATIONS_KEY);
+    if (pending) {
+      return JSON.parse(pending) as DreamMutation[];
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to read pending dream mutations:', error);
+    }
+  }
+  return [];
+}
+
+export async function savePendingDreamMutations(mutations: DreamMutation[]): Promise<void> {
+  try {
+    await setItem(DREAM_MUTATIONS_KEY, JSON.stringify(mutations));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save pending dream mutations:', error);
+    }
+    throw new Error('Failed to save pending dream mutations');
   }
 }

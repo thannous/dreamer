@@ -5,6 +5,7 @@ export interface ChatMessage {
 
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
+  remoteId?: number; // Supabase row id when persisted online
   transcript: string;
   title: string;
   interpretation: string;
@@ -16,6 +17,7 @@ export interface DreamAnalysis {
   dreamType: string;
   isFavorite?: boolean;
   imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
+  pendingSync?: boolean;
 }
 
 export interface NotificationSettings {
@@ -29,3 +31,24 @@ export type ThemePreference = 'light' | 'dark' | 'auto';
 export type ThemeMode = 'light' | 'dark';
 
 export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es';
+
+export type DreamMutation =
+  | {
+      id: string;
+      type: 'create';
+      createdAt: number;
+      dream: DreamAnalysis;
+    }
+  | {
+      id: string;
+      type: 'update';
+      createdAt: number;
+      dream: DreamAnalysis;
+    }
+  | {
+      id: string;
+      type: 'delete';
+      createdAt: number;
+      dreamId: number;
+      remoteId?: number;
+    };
