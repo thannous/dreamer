@@ -2,11 +2,13 @@ import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 import { GradientColors } from '@/constants/gradients';
-import { Fonts, SurrealTheme } from '@/constants/theme';
+import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
+import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { classifyError } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
+import { TID } from '@/lib/testIDs';
 import { analyzeDreamWithImageResilient } from '@/services/geminiService';
 import { transcribeAudio } from '@/services/speechToText';
 import {
@@ -20,7 +22,7 @@ import {
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -32,6 +34,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/context/AuthContext';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -64,11 +69,26 @@ const RECORDING_OPTIONS: RecordingOptions = {
 };
 
 export default function RecordingScreen() {
-  const { addDream } = useDreams();
+  const { guestLimitReached, addDream } = useDreams();
+  const { colors, mode } = useTheme();
   const [transcript, setTranscript] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const analysisProgress = useAnalysisProgress();
+  const { language } = useLanguage();
+  const { t } = useTranslation();
+  const { user } = useAuth();
+
+  const transcriptionLocale = useMemo(() => {
+    switch (language) {
+      case 'fr':
+        return 'fr-FR';
+      case 'es':
+        return 'es-ES';
+      default:
+        return 'en-US';
+    }
+  }, [language]);
 
   // Request microphone permissions on mount
   useEffect(() => {
@@ -76,20 +96,20 @@ export default function RecordingScreen() {
       const status = await AudioModule.requestRecordingPermissionsAsync();
       if (!status.granted) {
         Alert.alert(
-          'Permission Required',
-          'Microphone permission is required to record dreams.'
+          t('recording.alert.permission_required.title'),
+          t('recording.alert.permission_required.message')
         );
       }
     })();
-  }, []);
+  }, [t]);
 
   const startRecording = useCallback(async () => {
     try {
       const { granted } = await AudioModule.requestRecordingPermissionsAsync();
       if (!granted) {
         Alert.alert(
-          'Permission Required',
-          'Microphone permission is required to record dreams.'
+          t('recording.alert.permission_required.title'),
+          t('recording.alert.permission_required.message')
         );
         return;
       }
@@ -106,9 +126,9 @@ export default function RecordingScreen() {
       if (__DEV__) {
         console.error('Failed to start recording:', err);
       }
-      Alert.alert('Error', 'Failed to start recording. Please try again.');
+      Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
-  }, [audioRecorder]);
+  }, [audioRecorder, t]);
 
   const stopRecording = useCallback(async () => {
     try {
@@ -118,26 +138,32 @@ export default function RecordingScreen() {
 
       if (uri) {
         try {
-          const transcribedText = await transcribeAudio({ uri, languageCode: 'fr-FR' });
+          const transcribedText = await transcribeAudio({ uri, languageCode: transcriptionLocale });
           if (transcribedText) {
             setTranscript((prev) => (prev ? `${prev}\n${transcribedText}` : transcribedText));
           } else {
-            Alert.alert('No Speech Detected', 'No transcript returned for this recording.');
+            Alert.alert(
+              t('recording.alert.no_speech.title'),
+              t('recording.alert.no_speech.message')
+            );
           }
         } catch (e) {
           const msg = e instanceof Error ? e.message : 'Unknown transcription error';
-          Alert.alert('Transcription Failed', msg);
+          Alert.alert(t('recording.alert.transcription_failed.title'), msg);
         }
       } else {
-        Alert.alert('Recording Invalid', 'No audio file was produced. Please try again and speak for at least 2 seconds.');
+        Alert.alert(
+          t('recording.alert.recording_invalid.title'),
+          t('recording.alert.recording_invalid.message')
+        );
       }
     } catch (err) {
       if (__DEV__) {
         console.error('Failed to stop recording:', err);
       }
-      Alert.alert('Error', 'Failed to stop recording.');
+      Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
     }
-  }, [audioRecorder]);
+  }, [audioRecorder, transcriptionLocale, t]);
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -149,7 +175,22 @@ export default function RecordingScreen() {
 
   const handleSave = useCallback(async () => {
     if (!transcript.trim()) {
-      Alert.alert('Empty Dream', 'Please record or write your dream first.');
+      Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
+      return;
+    }
+
+    if (!user && guestLimitReached) {
+      Alert.alert(
+        t('recording.alert.limit.title'),
+        t('recording.alert.limit.message'),
+        [
+          {
+            text: t('recording.alert.limit.cta'),
+            onPress: () => router.push('/(tabs)/settings'),
+          },
+          { text: t('common.cancel'), style: 'cancel' },
+        ]
+      );
       return;
     }
 
@@ -184,7 +225,7 @@ export default function RecordingScreen() {
         chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
       };
 
-      await addDream(newDream);
+      const savedDream = await addDream(newDream);
 
       // Mark as complete
       analysisProgress.setStep(AnalysisStep.COMPLETE);
@@ -193,21 +234,40 @@ export default function RecordingScreen() {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       // Navigate directly to dream detail
-      router.replace(`/journal/${newDream.id}`);
+      router.replace(`/journal/${savedDream.id}`);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
+      if ((error as Error & { code?: string }).code === 'GUEST_LIMIT_REACHED') {
+        Alert.alert(
+          t('recording.alert.limit.title'),
+          t('recording.alert.limit.message'),
+          [
+            {
+              text: t('recording.alert.limit.cta'),
+              onPress: () => router.push('/(tabs)/settings'),
+            },
+            { text: t('common.cancel'), style: 'cancel' },
+          ]
+        );
+        analysisProgress.reset();
+        return;
+      }
       const classified = classifyError(error);
       analysisProgress.setError(classified);
     }
-  }, [transcript, addDream, analysisProgress]);
+  }, [transcript, addDream, analysisProgress, t, user, guestLimitReached]);
 
   const handleGoToJournal = useCallback(() => {
     router.push('/(tabs)/journal');
   }, []);
 
+  const gradientColors = mode === 'dark'
+    ? GradientColors.surreal
+    : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
+
   return (
     <LinearGradient
-      colors={GradientColors.surreal}
+      colors={gradientColors}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
@@ -219,28 +279,36 @@ export default function RecordingScreen() {
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
+          testID={TID.Screen.Recording}
         >
           {/* Header */}
           <View style={styles.header}>
             <Pressable
               onPress={handleGoToJournal}
               style={styles.headerButton}
+              testID={TID.Button.NavigateJournal}
+              accessibilityRole="button"
+              accessibilityLabel={t('recording.nav_button.accessibility')}
             >
-              <Text style={styles.saveText} numberOfLines={1}>
-                Dream Journal
+              <Text style={[styles.saveText, { color: colors.accent }]} numberOfLines={1}>
+                {t('recording.nav_button')}
               </Text>
             </Pressable>
           </View>
 
           {/* Main Content */}
           <View style={styles.mainContent}>
-            <Text style={styles.pageTitle}>New Dream</Text>
+            <Text style={[styles.pageTitle, { color: colors.textPrimary }]}>{t('recording.title')}</Text>
             <View style={styles.recordingSection}>
-              <Text style={styles.instructionText}>
-                Whisper your dream into the ether...
+              <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
+                {t('recording.instructions')}
               </Text>
 
-              <MicButton isRecording={isRecording} onPress={toggleRecording} />
+              <MicButton
+                isRecording={isRecording}
+                onPress={toggleRecording}
+                testID={TID.Button.RecordToggle}
+              />
 
               <Waveform isActive={isRecording} />
             </View>
@@ -250,11 +318,19 @@ export default function RecordingScreen() {
               <TextInput
                 value={transcript}
                 onChangeText={setTranscript}
-                placeholder="Or transcribe the whispers of your subconscious here..."
-                placeholderTextColor={SurrealTheme.textMuted}
-                style={styles.textInput}
+                placeholder={t('recording.placeholder')}
+                placeholderTextColor={colors.textSecondary}
+                style={[
+                  styles.textInput,
+                  {
+                    backgroundColor: colors.backgroundSecondary,
+                    color: colors.textPrimary,
+                  },
+                ]}
                 multiline
                 editable={analysisProgress.step === AnalysisStep.IDLE}
+                testID={TID.Input.DreamTranscript}
+                accessibilityLabel={t('recording.placeholder.accessibility')}
               />
 
               {/* Analysis Progress */}
@@ -275,11 +351,15 @@ export default function RecordingScreen() {
                   disabled={!transcript.trim()}
                   style={[
                     styles.submitButton,
-                    !transcript.trim() && styles.submitButtonDisabled
+                    { backgroundColor: colors.accent },
+                    !transcript.trim() && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }]
                   ]}
+                  testID={TID.Button.SaveDream}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('recording.button.accessibility')}
                 >
                   <Text style={styles.submitButtonText}>
-                    ✨ Analyze My Dream
+                    ✨ {t('recording.button.analyze')}
                   </Text>
                 </Pressable>
               )}
@@ -318,7 +398,7 @@ const styles = StyleSheet.create({
   saveText: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: SurrealTheme.accent,
+    // color: set dynamically in component
   },
   mainContent: {
     flex: 1,
@@ -330,7 +410,7 @@ const styles = StyleSheet.create({
   pageTitle: {
     fontSize: 32,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: SurrealTheme.textLight,
+    // color: set dynamically in component
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -344,13 +424,13 @@ const styles = StyleSheet.create({
   instructionText: {
     fontSize: 18,
     fontFamily: Fonts.lora.regularItalic,
-    color: SurrealTheme.textMuted,
+    // color: set dynamically in component
     textAlign: 'center',
   },
   timestampText: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: SurrealTheme.textMuted,
+    // color: set dynamically in component
     opacity: 0.8,
     textAlign: 'center',
   },
@@ -364,8 +444,7 @@ const styles = StyleSheet.create({
     minHeight: 160,
     maxHeight: 240,
     borderRadius: 16,
-    backgroundColor: SurrealTheme.darkAccent,
-    color: SurrealTheme.textLight,
+    // backgroundColor and color: set dynamically in component
     padding: 20,
     fontSize: 16,
     fontFamily: Fonts.lora.regularItalic,
@@ -377,20 +456,20 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   submitButton: {
-    backgroundColor: SurrealTheme.accent,
+    // backgroundColor: set dynamically in component
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: SurrealTheme.accent,
+    // shadowColor: set dynamically in component
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
   },
   submitButtonDisabled: {
-    backgroundColor: SurrealTheme.textMuted,
+    // backgroundColor: set dynamically in component
     opacity: 0.5,
     shadowOpacity: 0,
     elevation: 0,

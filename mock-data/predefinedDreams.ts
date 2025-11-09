@@ -140,11 +140,18 @@ export const PREDEFINED_DREAMS: Array<Omit<DreamAnalysis, 'id'>> = [
 export function getPredefinedDreamsWithTimestamps(): DreamAnalysis[] {
   const now = Date.now();
   const dayInMs = 24 * 60 * 60 * 1000;
+  const usedTimestamps = new Set<number>();
 
   return PREDEFINED_DREAMS.map((dream, index) => {
-    // Space dreams out over the last 30 days, with some randomness
-    const daysAgo = Math.floor(Math.random() * 30) + index * 2;
-    const timestamp = now - (daysAgo * dayInMs);
+    // Space dreams out over the last ~30 days while keeping each timestamp unique
+    const daysAgo = index * 2 + Math.random(); // disjoint ranges avoid collisions
+    let timestamp = Math.round(now - daysAgo * dayInMs);
+
+    // Ensure uniqueness in case Math.random() produces the same fractional part
+    while (usedTimestamps.has(timestamp)) {
+      timestamp -= 1000; // move back one second to preserve ordering
+    }
+    usedTimestamps.add(timestamp);
 
     return {
       ...dream,

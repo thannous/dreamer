@@ -1,5 +1,31 @@
 import type { User } from '@supabase/supabase-js';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { Platform } from 'react-native';
 import { supabase } from './supabase';
+
+/**
+ * Initialize Google Sign-In with web client ID
+ * Should be called once at app startup
+ */
+export function initializeGoogleSignIn() {
+  if (Platform.OS === 'web') {
+    // Google Sign-In is handled differently on web
+    return;
+  }
+
+  const webClientId = (process?.env as any)?.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID as string | undefined;
+
+  if (!webClientId) {
+    console.warn('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured. Google Sign-In will not work.');
+    return;
+  }
+
+  GoogleSignin.configure({
+    webClientId,
+    scopes: ['openid', 'email', 'profile'],
+    offlineAccess: false,
+  });
+}
 
 export async function getAccessToken(): Promise<string | null> {
   try {
@@ -29,8 +55,86 @@ export async function signUpWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
+/**
+ * Sign in with Google using native Google Sign-In
+ * Returns the authenticated user from Supabase
+ */
+export async function signInWithGoogle(): Promise<User> {
+  if (Platform.OS === 'web') {
+    throw new Error('Google Sign-In on web should use the web-specific implementation');
+  }
+
+  try {
+    // Check for Play Services availability (Android)
+    await GoogleSignin.hasPlayServices();
+
+    // Sign in with Google
+    const userInfo = await GoogleSignin.signIn();
+
+    if (!userInfo.data?.idToken) {
+      throw new Error('No ID token received from Google');
+    }
+
+    // Sign in to Supabase with the Google ID token
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: userInfo.data.idToken,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data.user) {
+      throw new Error('No user data received from Supabase');
+    }
+
+    return data.user;
+  } catch (error: any) {
+    // Re-throw with more context for specific error codes
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      throw new Error('SIGN_IN_CANCELLED');
+    } else if (error.code === statusCodes.IN_PROGRESS) {
+      throw new Error('Sign-in already in progress');
+    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      throw new Error('Google Play Services not available or outdated');
+    }
+    throw error;
+  }
+}
+
+/**
+ * Web-only Google Sign-In using Supabase OAuth popup
+ */
+export async function signInWithGoogleWeb(): Promise<void> {
+  if (Platform.OS !== 'web') return;
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      scopes: 'openid email profile',
+    },
+  });
   if (error) throw error;
 }
 
+/**
+ * Complete sign out from both Google and Supabase
+ */
+export async function signOut() {
+  try {
+    // Sign out from Google if signed in
+    if (Platform.OS !== 'web') {
+      const isSignedIn = await GoogleSignin.isSignedIn();
+      if (isSignedIn) {
+        await GoogleSignin.signOut();
+      }
+    }
+
+    // Sign out from Supabase
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  } catch (error) {
+    console.error('Error during sign out:', error);
+    throw error;
+  }
+}

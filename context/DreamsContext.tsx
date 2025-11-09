@@ -5,7 +5,8 @@ import type { DreamAnalysis } from '@/lib/types';
 export type DreamsContextValue = {
   dreams: DreamAnalysis[];
   loaded: boolean;
-  addDream: (dream: DreamAnalysis) => Promise<void>;
+  guestLimitReached: boolean;
+  addDream: (dream: DreamAnalysis) => Promise<DreamAnalysis>;
   updateDream: (dream: DreamAnalysis) => Promise<void>;
   deleteDream: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<void>;
@@ -20,11 +21,20 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const value = useMemo(() => ({
     dreams: journal.dreams,
     loaded: journal.loaded,
+    guestLimitReached: journal.guestLimitReached,
     addDream: journal.addDream,
     updateDream: journal.updateDream,
     deleteDream: journal.deleteDream,
     toggleFavorite: journal.toggleFavorite,
-  }), [journal.dreams, journal.loaded, journal.addDream, journal.updateDream, journal.deleteDream, journal.toggleFavorite]);
+  }), [
+    journal.dreams,
+    journal.loaded,
+    journal.guestLimitReached,
+    journal.addDream,
+    journal.updateDream,
+    journal.deleteDream,
+    journal.toggleFavorite,
+  ]);
 
   return <DreamsContext.Provider value={value}>{children}</DreamsContext.Provider>;
 };
@@ -36,4 +46,3 @@ export const useDreams = (): DreamsContextValue => {
   }
   return ctx;
 };
-

@@ -1,0 +1,18 @@
+# Update the appId if your build uses a different bundle identifier.
+appId: com.tanuki75.dreamapp
+---
+- launchApp
+- assertVisible:
+    id: screen.recording
+- tapOn:
+    id: btn.navigateJournal
+- assertVisible:
+    id: screen.journal
+- tapOn:
+    id: input.searchDreams
+- inputText: Lucide
+- eraseText
+- tapOn:
+    id: btn.addDream
+- assertVisible:
+    id: screen.recording

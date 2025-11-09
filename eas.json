@@ -15,6 +15,11 @@
       "channel": "preview",
       "android": { "buildType": "apk" }
     },
+    "e2e-test": {
+      "withoutCredentials": true,
+      "ios": { "simulator": true },
+      "android": { "buildType": "apk" }
+    },
     "production": {
       "channel": "production",
       "autoIncrement": true,
