@@ -45,3 +45,4 @@ app-example
 /ios
 /android
 .eas/keys/*.json
+eas-sumit.json
