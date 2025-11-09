@@ -6,7 +6,8 @@
       "Bash(npm run lint:*)",
       "Bash(npx expo install:*)",
       "mcp__expo-mcp__search_documentation",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []
