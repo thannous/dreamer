@@ -33,6 +33,7 @@ yarn-error.*
 # local env files
 .env*.local
 .env.supabase
+.env.google.template
 supabase.exe
 supabase_windows_amd64.tar.gz
 
