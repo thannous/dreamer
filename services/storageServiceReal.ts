@@ -135,6 +135,14 @@ const webStorage: StorageLike | null =
     : null;
 
 async function getAsyncStorage(): Promise<AsyncStorageModule | null> {
+  // The web implementation of AsyncStorage is a thin wrapper around localStorage,
+  // which does not have enough quota for storing dream images. Force the web
+  // platform to use the IndexedDB pathway instead so we can persist large payloads.
+  if (Platform.OS === 'web') {
+    AsyncStorageRef = null;
+    return AsyncStorageRef;
+  }
+
   if (AsyncStorageRef !== undefined) return AsyncStorageRef;
   try {
     const mod = require('@react-native-async-storage/async-storage') as
@@ -151,7 +159,28 @@ async function getItem(key: string): Promise<string | null> {
   const AS = await getAsyncStorage();
   if (AS) return AS.getItem(key);
   const idb = await getIndexedDBStorage();
-  if (idb) return idb.getItem(key);
+  if (idb) {
+    const value = await idb.getItem(key);
+    if (value != null) {
+      return value;
+    }
+
+    if (webStorage) {
+      const legacyValue = webStorage.getItem(key);
+      if (legacyValue != null) {
+        try {
+          await idb.setItem(key, legacyValue);
+          webStorage.removeItem(key);
+        } catch (migrationError) {
+          if (__DEV__) {
+            console.warn('Failed to migrate localStorage value to IndexedDB', migrationError);
+          }
+        }
+        return legacyValue;
+      }
+    }
+    return null;
+  }
   if (webStorage) return webStorage.getItem(key);
   return memoryStore[key] ?? null;
 }

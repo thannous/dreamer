@@ -75,7 +75,7 @@ Key points
 - In the app Settings tab, sign up or sign in with email/password.
 - Go to Recording, write a dream, tap Save.
 - Backend calls Gemini to analyze and stores in `public.dreams`. Image endpoint returns a placeholder URL.
-- Guests can create exactly one dream (stored locally). Once authenticated, new dreams are persisted to `public.dreams` via Supabase and synced back into the journal automatically.
+- Guests can create up to two dreams (stored locally). Once authenticated, new dreams are persisted to `public.dreams` via Supabase and synced back into the journal automatically.
 
 Notes
 - You can expand with additional endpoints later (chat, TTS) using the same pattern.

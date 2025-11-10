@@ -13,6 +13,7 @@ export interface ThemeColors {
   textPrimary: string;
   textSecondary: string;
   textTertiary: string;
+  textOnAccentSurface: string;
 
   // Accent colors
   accent: string;
@@ -38,14 +39,15 @@ export interface ThemeColors {
  */
 export const DarkTheme: ThemeColors = {
   // Background colors
-  backgroundDark: '#131022', // Main background
-  backgroundCard: '#1a0f2b', // Card background
-  backgroundSecondary: '#4B3F72', // Secondary elements (buttons, inputs)
+  backgroundDark: 'rgb(26, 15, 43)', // Main background softened for better readability
+  backgroundCard: '#231a3f', // Card background with higher lift above main background
+  backgroundSecondary: '#5A4B89', // Secondary elements (buttons, inputs)
 
   // Text colors
   textPrimary: '#FFFFFF', // Main text
   textSecondary: '#a097b8', // Secondary/muted text
   textTertiary: '#6B6B8D', // Even more muted
+  textOnAccentSurface: '#F2EDFF', // High-contrast lavender for tinted cards
 
   // Accent colors
   accent: '#6B5A8E', // Surreal purple accent for CTAs
@@ -53,9 +55,9 @@ export const DarkTheme: ThemeColors = {
   accentLight: '#A097B8', // Muted lilac for subtle highlights
 
   // UI elements
-  timeline: '#4f3d6b', // Timeline line color
-  divider: '#2e1d47', // Dividers
-  overlay: 'rgba(19, 16, 34, 0.8)', // Semi-transparent overlay
+  timeline: '#5a4b89', // Timeline line color
+  divider: '#2f2153', // Dividers
+  overlay: 'rgba(27, 21, 51, 0.85)', // Semi-transparent overlay
 
   // Tag colors
   tags: {
@@ -72,13 +74,14 @@ export const DarkTheme: ThemeColors = {
 export const LightTheme: ThemeColors = {
   // Background colors
   backgroundDark: '#F8F6F2', // Main background - soft cream
-  backgroundCard: '#FFFDFB', // Card background - off-white
+  backgroundCard: '#E3DACC', // Card background - beige sable
   backgroundSecondary: '#EEEBE6', // Secondary elements - light beige
 
   // Text colors
   textPrimary: '#2A2838', // Main text - deep purple-gray
   textSecondary: '#6B6880', // Secondary text - muted purple-gray
   textTertiary: '#9B98AC', // Tertiary text - lighter gray
+  textOnAccentSurface: '#7A4B1F', // Rich amber for better contrast on warm cards
 
   // Accent colors
   accent: '#D4A574', // Champagne gold accent
@@ -96,6 +99,80 @@ export const LightTheme: ThemeColors = {
     mystical: '#C5B8D8',
     calm: '#A5C4E0',
     noir: '#A8A8C0',
+  },
+};
+
+/**
+ * Shadow system - adapted for light and dark themes
+ */
+export const Shadows = {
+  dark: {
+    // Subtle elevation for cards and small elements
+    sm: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 2,
+    },
+    // Normal elevation for buttons and interactive elements
+    md: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    // Elevated elements like floating buttons
+    lg: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.25,
+      shadowRadius: 12,
+      elevation: 6,
+    },
+    // High elevation for modals and overlays
+    xl: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.3,
+      shadowRadius: 16,
+      elevation: 8,
+    },
+  },
+  light: {
+    // Subtle elevation for cards and small elements
+    sm: {
+      shadowColor: '#2A2838',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.08,
+      shadowRadius: 3,
+      elevation: 1,
+    },
+    // Normal elevation for buttons and interactive elements
+    md: {
+      shadowColor: '#2A2838',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 3,
+    },
+    // Elevated elements like floating buttons
+    lg: {
+      shadowColor: '#2A2838',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.12,
+      shadowRadius: 10,
+      elevation: 5,
+    },
+    // High elevation for modals and overlays
+    xl: {
+      shadowColor: '#2A2838',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.15,
+      shadowRadius: 14,
+      elevation: 7,
+    },
   },
 };
 

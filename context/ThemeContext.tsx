@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { DarkTheme, LightTheme, type ThemeColors } from '@/constants/journalTheme';
+import { DarkTheme, LightTheme, Shadows, type ThemeColors } from '@/constants/journalTheme';
 import { getThemePreference, saveThemePreference } from '@/services/storageService';
 import type { ThemePreference, ThemeMode } from '@/lib/types';
 
 export type ThemeContextValue = {
   /** Current theme colors (DarkTheme or LightTheme) */
   colors: ThemeColors;
+  /** Current theme shadows (dark or light) */
+  shadows: typeof Shadows.dark | typeof Shadows.light;
   /** Current effective theme mode ('light' or 'dark') */
   mode: ThemeMode;
   /** Current system-derived theme mode */
@@ -69,6 +71,11 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
     return mode === 'dark' ? DarkTheme : LightTheme;
   }, [mode]);
 
+  // Select theme shadows based on mode
+  const shadows = useMemo(() => {
+    return mode === 'dark' ? Shadows.dark : Shadows.light;
+  }, [mode]);
+
   // Update preference and save to storage
   const setPreference = useCallback(async (newPreference: ThemePreference) => {
     try {
@@ -86,13 +93,14 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
   const value = useMemo(
     () => ({
       colors,
+      shadows,
       mode,
       systemMode,
       preference,
       setPreference,
       loaded,
     }),
-    [colors, mode, systemMode, preference, setPreference, loaded]
+    [colors, shadows, mode, systemMode, preference, setPreference, loaded]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
@@ -100,7 +108,7 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
 
 /**
  * Hook to access theme context
- * @returns Current theme colors, mode, preference, and setter
+ * @returns Current theme colors, shadows, mode, preference, and setter
  * @throws Error if used outside ThemeProvider
  */
 export const useTheme = (): ThemeContextValue => {

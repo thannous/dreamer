@@ -34,7 +34,7 @@ const THEME_OPTIONS: {
 ];
 
 export default function ThemeSettingsCard() {
-  const { colors, preference, setPreference, systemMode } = useTheme();
+  const { colors, preference, setPreference, systemMode, mode } = useTheme();
   const { t } = useTranslation();
 
   const handleSelectTheme = async (value: ThemePreference) => {
@@ -57,6 +57,12 @@ export default function ThemeSettingsCard() {
       {THEME_OPTIONS.map((option, index) => {
         const isSelected = preference === option.value;
 
+        const iconColor = isSelected
+          ? colors.textOnAccentSurface
+          : mode === 'dark'
+            ? colors.textOnAccentSurface
+            : colors.accent;
+
         return (
           <View key={option.value}>
             {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
@@ -77,11 +83,7 @@ export default function ThemeSettingsCard() {
                     },
                   ]}
                 >
-                  <Ionicons
-                    name={option.icon as any}
-                    size={20}
-                    color={isSelected ? colors.backgroundCard : colors.accent}
-                  />
+                  <Ionicons name={option.icon as any} size={20} color={iconColor} />
                 </View>
                 <View style={styles.optionInfo}>
                   <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>

@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 
 interface DateRangePickerProps {
   startDate: Date | null;
@@ -21,18 +21,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
   const [pickerMode, setPickerMode] = useState<PickerMode>('none');
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
-  const { language } = useLanguage();
-
-  const locale = useMemo(() => {
-    switch (language) {
-      case 'fr':
-        return 'fr-FR';
-      case 'es':
-        return 'es-ES';
-      default:
-        return 'en-US';
-    }
-  }, [language]);
+  const { formatDate } = useLocaleFormatting();
 
   const handleStartDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
@@ -88,12 +77,12 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
     onRangeChange(null, null);
   };
 
-  const formatDate = (date: Date | null) => {
+  const formatPickerDate = (date: Date | null) => {
     if (!date) return t('journal.date_picker.not_set');
-    return date.toLocaleDateString(locale, {
+    return formatDate(date, {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
@@ -137,7 +126,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
             style={[styles.dateButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => setPickerMode('start')}
           >
-            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatDate(localStartDate)}</Text>
+            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatPickerDate(localStartDate)}</Text>
           </Pressable>
         </View>
 
@@ -148,7 +137,7 @@ export function DateRangePicker({ startDate, endDate, onRangeChange, onClose }: 
             style={[styles.dateButton, { backgroundColor: colors.backgroundSecondary }]}
             onPress={() => setPickerMode('end')}
           >
-            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatDate(localEndDate)}</Text>
+            <Text style={[styles.dateButtonText, { color: colors.textPrimary }]}>{formatPickerDate(localEndDate)}</Text>
           </Pressable>
         </View>
       </View>

@@ -1,0 +1,2 @@
+-- Placeholder migration representing remote schema state as of 2025-10-19.
+-- Contents unknown; this file exists so local history matches the remote Supabase project.

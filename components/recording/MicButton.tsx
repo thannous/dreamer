@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SurrealTheme } from '@/constants/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface MicButtonProps {
@@ -9,10 +9,12 @@ interface MicButtonProps {
   onPress: () => void;
   testID?: string;
   accessibilityLabel?: string;
+  disabled?: boolean;
 }
 
-export function MicButton({ isRecording, onPress, testID, accessibilityLabel }: MicButtonProps) {
+export function MicButton({ isRecording, onPress, testID, accessibilityLabel, disabled }: MicButtonProps) {
   const { t } = useTranslation();
+  const { colors, shadows, mode } = useTheme();
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
 
@@ -56,15 +58,23 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel }: 
     }
   }, [isRecording, pulseAnim, glowAnim]);
 
+  // Dynamic glow colors based on theme
   const glowColor = glowAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [SurrealTheme.accent, '#9d7bc8'],
+    outputRange: mode === 'dark'
+      ? [colors.accent, '#9d7bc8']
+      : [colors.accent, colors.accentLight],
   });
+
+  // Dynamic button colors
+  const buttonBackground = mode === 'dark' ? '#4f3d6b' : colors.accent;
+  const buttonRecordingBackground = mode === 'dark' ? '#5a3d7b' : colors.accentDark;
 
   return (
     <Pressable
       onPress={onPress}
-      style={styles.container}
+      disabled={disabled}
+      style={[styles.container, disabled && styles.disabled]}
       accessibilityRole="button"
       accessibilityLabel={
         accessibilityLabel ?? (isRecording ? t('recording.mic.stop') : t('recording.mic.start'))
@@ -85,8 +95,10 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel }: 
       <Animated.View
         style={[
           styles.button,
-          isRecording && styles.buttonRecording,
+          shadows.xl,
           {
+            backgroundColor: isRecording ? buttonRecordingBackground : buttonBackground,
+            borderColor: colors.accent,
             transform: [{ scale: pulseAnim }],
           },
         ]}
@@ -94,7 +106,7 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel }: 
         <Ionicons
           name={isRecording ? 'stop' : 'mic'}
           size={72}
-          color={SurrealTheme.textLight}
+          color={colors.textPrimary}
         />
       </Animated.View>
     </Pressable>
@@ -107,23 +119,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
+  disabled: {
+    opacity: 0.5,
+  },
   button: {
     width: 144,
     height: 144,
     borderRadius: 72,
-    backgroundColor: SurrealTheme.shape,
+    // backgroundColor and borderColor: set dynamically
     borderWidth: 2,
-    borderColor: SurrealTheme.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 24,
-    elevation: 8,
-  },
-  buttonRecording: {
-    backgroundColor: '#5a3d7b',
+    // shadow: applied via theme shadows.xl
   },
   glow: {
     position: 'absolute',

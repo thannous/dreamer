@@ -7,10 +7,10 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useModalSlide } from '@/hooks/useJournalAnimations';
-import { formatShortDate } from '@/lib/dateUtils';
 import { applyFilters, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -26,6 +26,7 @@ import {
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { useTranslation } from '@/hooks/useTranslation';
+import { UpsellCard } from '@/components/guest/UpsellCard';
 
 function AddIcon({ size = 24, color = '#1a0f2b' }) {
   return (
@@ -37,9 +38,10 @@ function AddIcon({ size = 24, color = '#1a0f2b' }) {
 
 export default function JournalListScreen() {
   const tabBarHeight = useBottomTabBarHeight();
-  const { dreams } = useDreams();
-  const { colors } = useTheme();
+  const { dreams, guestLimitReached } = useDreams();
+  const { colors, shadows } = useTheme();
   const { t } = useTranslation();
+  const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlatList>(null);
 
   // Filter states
@@ -65,7 +67,8 @@ export default function JournalListScreen() {
   const themeModalAnim = useModalSlide(showThemeModal);
   const dateModalAnim = useModalSlide(showDateModal);
   const floatingOffset = tabBarHeight + ThemeLayout.spacing.xl;
-  const listBottomPadding = floatingOffset + 132;
+  const showAddButton = !guestLimitReached;
+  const listBottomPadding = floatingOffset + (showAddButton ? 132 : 0);
 
   // Get available themes
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
@@ -167,7 +170,7 @@ export default function JournalListScreen() {
 
         {/* Content column */}
         <View style={styles.contentColumn}>
-          <Text style={[styles.date, { color: colors.textSecondary }]}>{formatShortDate(item.id)}</Text>
+          <Text style={[styles.date, { color: colors.textSecondary }]}>{formatDreamListDate(item.id)}</Text>
           <DreamCard
             dream={item}
             onPress={() => router.push(`/journal/${item.id}`)}
@@ -178,7 +181,7 @@ export default function JournalListScreen() {
         </View>
       </View>
     );
-  }, [filteredDreams.length, visibleItemIds, colors]);
+  }, [filteredDreams.length, visibleItemIds, colors, formatDreamListDate]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -230,11 +233,17 @@ export default function JournalListScreen() {
         />
       </View>
 
+      {/* Guest Upsell */}
+      <View style={{ paddingHorizontal: ThemeLayout.spacing.md, marginBottom: ThemeLayout.spacing.sm }}>
+        <UpsellCard />
+      </View>
+
       {/* Timeline List */}
       <FlatList
         testID={TID.List.Dreams}
         ref={flatListRef}
         data={filteredDreams}
+        extraData={visibleItemIds}
         keyExtractor={keyExtractor}
         renderItem={renderDreamItem}
         getItemLayout={getItemLayout}
@@ -251,20 +260,22 @@ export default function JournalListScreen() {
       />
 
       {/* Add Dream Button */}
-      <View style={[styles.floatingButtonContainer, { bottom: floatingOffset }]}>
-        <Pressable
-          style={[styles.addButton, { backgroundColor: colors.accent }]}
-          onPress={() => router.push('/recording')}
-          accessibilityRole="button"
-          testID={TID.Button.AddDream}
-          accessibilityLabel={t('journal.add_button.accessibility')}
-        >
-          <AddIcon size={24} color={colors.backgroundCard} />
-          <Text style={[styles.addButtonText, { color: colors.backgroundCard }]}>
-            {t('journal.add_button.label')}
-          </Text>
-        </Pressable>
-      </View>
+      {showAddButton && (
+        <View style={[styles.floatingButtonContainer, { bottom: floatingOffset }]}>
+          <Pressable
+            style={[styles.addButton, shadows.xl, { backgroundColor: colors.accent }]}
+            onPress={() => router.push('/recording')}
+            accessibilityRole="button"
+            testID={TID.Button.AddDream}
+            accessibilityLabel={t('journal.add_button.accessibility')}
+          >
+            <AddIcon size={24} color={colors.backgroundCard} />
+            <Text style={[styles.addButtonText, { color: colors.backgroundCard }]}>
+              {t('journal.add_button.label')}
+            </Text>
+          </Pressable>
+        </View>
+      )}
 
       {/* Theme Selection Modal */}
       <Modal
@@ -406,11 +417,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    // shadow: applied via theme shadows.xl
   },
   addButtonText: {
     fontSize: 16,
