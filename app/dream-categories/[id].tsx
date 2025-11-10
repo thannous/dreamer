@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useDreams } from '@/context/DreamsContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Fonts } from '@/constants/theme';
 
 type Category = {
@@ -41,12 +42,17 @@ const CATEGORIES: Category[] = [
 export default function DreamCategoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { dreams } = useDreams();
+  const { colors, shadows, mode } = useTheme();
   const dream = dreams.find((d) => d.id === Number(id));
+
+  const gradientColors = mode === 'dark'
+    ? (['#131022', '#4A3B5F'] as const)
+    : ([colors.backgroundSecondary, colors.backgroundDark] as const);
 
   if (!dream) {
     return (
-      <LinearGradient colors={['#131022', '#4A3B5F']} style={styles.container}>
-        <Text style={styles.errorText}>Dream not found.</Text>
+      <LinearGradient colors={gradientColors} style={styles.container}>
+        <Text style={[styles.errorText, { color: colors.textPrimary }]}>Dream not found.</Text>
       </LinearGradient>
     );
   }
@@ -59,21 +65,24 @@ export default function DreamCategoriesScreen() {
   };
 
   return (
-    <LinearGradient colors={['#131022', '#4A3B5F']} style={styles.gradient}>
+    <LinearGradient colors={gradientColors} style={styles.gradient}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <MaterialCommunityIcons name="arrow-left" size={24} color="#CFCFEA" />
+            <MaterialCommunityIcons name="arrow-left" size={24} color={colors.textPrimary} />
           </Pressable>
-          <Text style={styles.headerTitle}>Explore Your Dream</Text>
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>Explore Your Dream</Text>
           <View style={styles.headerSpacer} />
         </View>
 
         {/* Dream Title */}
-        <View style={styles.dreamTitleContainer}>
-          <Text style={styles.dreamTitle}>{dream.title}</Text>
-          <Text style={styles.dreamSubtitle}>
+        <View style={[styles.dreamTitleContainer, {
+          backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
+          borderColor: colors.divider
+        }]}>
+          <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
+          <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
             Choose a theme to explore deeper insights
           </Text>
         </View>
@@ -85,6 +94,8 @@ export default function DreamCategoriesScreen() {
               key={category.id}
               style={({ pressed }) => [
                 styles.categoryCard,
+                shadows.lg,
+                { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
                 pressed && styles.categoryCardPressed,
               ]}
               onPress={() => handleCategoryPress(category.id)}
@@ -97,10 +108,10 @@ export default function DreamCategoriesScreen() {
                 />
               </View>
               <View style={styles.categoryContent}>
-                <Text style={styles.categoryTitle}>{category.title}</Text>
-                <Text style={styles.categoryDescription}>{category.description}</Text>
+                <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>{category.title}</Text>
+                <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>{category.description}</Text>
               </View>
-              <MaterialCommunityIcons name="chevron-right" size={24} color="#9b92c9" />
+              <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textSecondary} />
             </Pressable>
           ))}
         </View>
@@ -109,12 +120,14 @@ export default function DreamCategoriesScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.freeChatButton,
+            shadows.xl,
+            { backgroundColor: colors.accent },
             pressed && styles.freeChatButtonPressed,
           ]}
           onPress={() => handleCategoryPress('general')}
         >
-          <MaterialCommunityIcons name="chat-processing-outline" size={24} color="#CFCFEA" />
-          <Text style={styles.freeChatText}>Ask anything about this dream</Text>
+          <MaterialCommunityIcons name="chat-processing-outline" size={24} color={colors.textPrimary} />
+          <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>Ask anything about this dream</Text>
         </Pressable>
       </ScrollView>
     </LinearGradient>
@@ -131,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    color: '#CFCFEA',
+    // color: set dynamically
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.medium,
   },
@@ -158,7 +171,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     flex: 1,
     textAlign: 'center',
   },
@@ -170,22 +183,21 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginHorizontal: 16,
     marginBottom: 24,
-    backgroundColor: 'rgba(140, 158, 255, 0.15)',
+    // backgroundColor and borderColor: set dynamically
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(207, 207, 234, 0.2)',
   },
   dreamTitle: {
     fontSize: 24,
     fontFamily: Fonts.lora.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     marginBottom: 8,
     lineHeight: 32,
   },
   dreamSubtitle: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#9b92c9',
+    // color: set dynamically
     lineHeight: 20,
   },
   categoriesContainer: {
@@ -195,16 +207,11 @@ const styles = StyleSheet.create({
   categoryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(26, 22, 53, 0.8)',
+    // backgroundColor and borderColor: set dynamically
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(207, 207, 234, 0.2)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    // shadow: applied via theme shadows.lg
   },
   categoryCardPressed: {
     opacity: 0.8,
@@ -225,13 +232,13 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     marginBottom: 6,
   },
   categoryDescription: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#9b92c9',
+    // color: set dynamically
     lineHeight: 18,
   },
   freeChatButton: {
@@ -239,16 +246,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    backgroundColor: '#6c4ef7',
+    // backgroundColor: set dynamically
     marginHorizontal: 16,
     marginTop: 24,
     paddingVertical: 18,
     borderRadius: 14,
-    shadowColor: '#6c4ef7',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    // shadow: applied via theme shadows.xl
   },
   freeChatButtonPressed: {
     opacity: 0.8,
@@ -256,6 +259,6 @@ const styles = StyleSheet.create({
   freeChatText: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
   },
 });

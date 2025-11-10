@@ -53,48 +53,48 @@ export const DreamCard = memo(function DreamCard({
         accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
         testID={testID}
       >
-      {dream.imageUrl && (
-        <View style={styles.imageContainer}>
-          {/* Placeholder */}
-          {!imageLoaded && (
-            <View style={[styles.image, styles.imagePlaceholder, { backgroundColor: colors.backgroundSecondary }]}>
-              <View style={[styles.placeholderShimmer, { backgroundColor: colors.backgroundSecondary }]} />
-            </View>
-          )}
-          {/* Actual Thumbnail - only load if shouldLoadImage is true */}
-          {shouldLoadImage && (
-            <Animated.View entering={FadeIn.duration(300)}>
-              <Image
-                source={{ uri: thumbnailUri }}
-                style={styles.image}
-                contentFit={imageConfig.contentFit}
-                transition={imageConfig.transition}
-                cachePolicy={imageConfig.cachePolicy}
-                priority={imageConfig.priority}
-                onLoad={() => setImageLoaded(true)}
-                // Placeholder with blur hash for smoother loading
-                placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-              />
-            </Animated.View>
-          )}
-        </View>
-      )}
-      <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
-          {dream.title}
-        </Text>
-        <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
-          {dream.interpretation || dream.transcript}
-        </Text>
-        {dream.theme && (
-          <View style={styles.tagContainer}>
-            <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-              <Text style={[styles.tagText, { color: colors.textPrimary }]}>{dream.theme}</Text>
-            </View>
+        {dream.imageUrl && (
+          <View style={styles.imageContainer}>
+            {/* Placeholder */}
+            {!imageLoaded && (
+              <View style={[styles.imagePlaceholder, { backgroundColor: colors.backgroundSecondary }]}>
+                <View style={[styles.placeholderShimmer, { backgroundColor: colors.backgroundSecondary }]} />
+              </View>
+            )}
+            {/* Actual Thumbnail - only load if shouldLoadImage is true */}
+            {shouldLoadImage && (
+              <Animated.View entering={FadeIn.duration(300)} style={styles.imageWrapper}>
+                <Image
+                  source={{ uri: thumbnailUri }}
+                  style={styles.image}
+                  contentFit={imageConfig.contentFit}
+                  transition={imageConfig.transition}
+                  cachePolicy={imageConfig.cachePolicy}
+                  priority={imageConfig.priority}
+                  onLoad={() => setImageLoaded(true)}
+                  // Placeholder with blur hash for smoother loading
+                  placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+                />
+              </Animated.View>
+            )}
           </View>
         )}
-      </View>
-    </AnimatedPressable>
+        <View style={styles.content}>
+          <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
+            {dream.title}
+          </Text>
+          <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
+            {dream.interpretation || dream.transcript}
+          </Text>
+          {dream.theme && (
+            <View style={styles.tagContainer}>
+              <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
+                <Text style={[styles.tagText, { color: colors.textPrimary }]}>{dream.theme}</Text>
+              </View>
+            </View>
+          )}
+        </View>
+      </AnimatedPressable>
     </Animated.View>
   );
 });
@@ -102,26 +102,29 @@ export const DreamCard = memo(function DreamCard({
 const styles = StyleSheet.create({
   card: {
     borderRadius: ThemeLayout.borderRadius.md,
-    padding: ThemeLayout.spacing.md,
     flexDirection: 'row',
-    gap: ThemeLayout.spacing.md,
+    alignItems: 'stretch',
+    overflow: 'hidden',
+    minHeight: 96,
   },
   imageContainer: {
-    width: 80,
-    height: 80,
+    width: 96,
+    flexShrink: 0,
+    alignSelf: 'stretch',
+    minHeight: 96,
+    overflow: 'hidden',
     position: 'relative',
   },
+  imageWrapper: {
+    ...StyleSheet.absoluteFillObject,
+  },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: ThemeLayout.borderRadius.sm,
-    flexShrink: 0,
+    width: '100%',
+    height: '100%',
   },
   imagePlaceholder: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    overflow: 'hidden',
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
   },
   placeholderShimmer: {
     width: '100%',
@@ -131,6 +134,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingVertical: ThemeLayout.spacing.md,
   },
   title: {
     fontSize: 16,

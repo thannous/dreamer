@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -51,8 +52,13 @@ function TabBarItem({ label, icon, focused, palette, colors }: {
 }
 
 export default function TabLayout() {
-  const { colors, mode } = useTheme();
+  const { colors, shadows, mode } = useTheme();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+
+  const TAB_BAR_HEIGHT = 58;
+  const TAB_BAR_MARGIN = 24;
+  const bottomSpacing = TAB_BAR_MARGIN + insets.bottom;
 
   const palette: TabPalette = mode === 'dark'
     ? {
@@ -64,12 +70,12 @@ export default function TabLayout() {
         textActive: colors.textPrimary,
       }
     : {
-        barBg: '#f2ecff',
-        barBorder: '#cdbbf0',
-        iconBg: '#bea5e5',
+        barBg: colors.backgroundCard,
+        barBorder: colors.divider,
+        iconBg: colors.accentLight,
         iconActiveBg: colors.accent,
-        text: '#463368',
-        textActive: '#1f1230',
+        text: colors.textSecondary,
+        textActive: colors.textPrimary,
       };
 
   const tabBarStyle: ViewStyle = {
@@ -78,21 +84,20 @@ export default function TabLayout() {
     backgroundColor: palette.barBg,
     borderRadius: 28,
     marginHorizontal: 20,
-    marginBottom: 24,
+    marginBottom: bottomSpacing,
     paddingHorizontal: 20,
     paddingVertical: 8,
-    height: 58,
+    height: TAB_BAR_HEIGHT,
     borderWidth: 1,
     borderColor: palette.barBorder,
-    shadowColor: mode === 'dark' ? '#000' : '#3d2561',
-    shadowOpacity: 0.35,
-    shadowRadius: 28,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 24,
+    ...shadows.xl,
   };
 
   return (
     <Tabs
+      sceneContainerStyle={{
+        paddingBottom: TAB_BAR_HEIGHT + bottomSpacing,
+      }}
       screenOptions={{
         headerShown: false,
         tabBarButton: HapticTab,

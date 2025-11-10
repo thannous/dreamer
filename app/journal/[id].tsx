@@ -2,7 +2,7 @@ import { ImageRetry } from '@/components/journal/ImageRetry';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
-import { formatDreamDate, formatDreamTime } from '@/lib/dateUtils';
+import { useTheme } from '@/context/ThemeContext';
 import { getImageConfig } from '@/lib/imageUtils';
 import { generateImageForDream } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,12 +11,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
   const { dreams, toggleFavorite, updateDream, deleteDream } = useDreams();
+  const { colors, shadows, mode } = useTheme();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
+  const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
 
@@ -87,21 +90,25 @@ export default function JournalDetailScreen() {
     }
   }, []);
 
+  const gradientColors = mode === 'dark'
+    ? GradientColors.dreamJournal
+    : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+
   if (!dream) {
     return (
-      <LinearGradient colors={GradientColors.dreamJournal} style={styles.container}>
-        <Text style={{ color: '#CFCFEA', fontSize: 18 }}>Dream not found.</Text>
-        <Pressable onPress={handleBackPress} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+      <LinearGradient colors={gradientColors} style={styles.container}>
+        <Text style={{ color: colors.textPrimary, fontSize: 18 }}>Dream not found.</Text>
+        <Pressable onPress={handleBackPress} style={[styles.backButton, { backgroundColor: colors.accent }]}>
+          <Text style={[styles.backButtonText, { color: colors.textPrimary }]}>Go Back</Text>
         </Pressable>
       </LinearGradient>
     );
   }
 
   return (
-    <LinearGradient colors={GradientColors.dreamJournal} style={styles.gradient}>
-      <Pressable onPress={handleBackPress} style={styles.floatingBackButton}>
-        <Ionicons name="arrow-back" size={22} color="#0F0A1D" />
+    <LinearGradient colors={gradientColors} style={styles.gradient}>
+      <Pressable onPress={handleBackPress} style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}>
+        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
       </Pressable>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
 
@@ -128,81 +135,101 @@ export default function JournalDetailScreen() {
         </View>
 
         {/* Content Card - Overlaps image */}
-        <View style={styles.contentCard}>
+        <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
           {/* Premium Metadata Card */}
-          <View style={styles.metadataCard}>
+          <View style={[styles.metadataCard, shadows.md, {
+            backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
+            borderColor: mode === 'dark' ? 'rgba(207, 207, 234, 0.2)' : 'rgba(212, 165, 116, 0.3)'
+          }]}>
             <View style={styles.metadataHeader}>
               <View style={styles.dateContainer}>
-                <Ionicons name="calendar-outline" size={16} color="#8C9EFF" />
-                <Text style={styles.dateText}>{formatDreamDate(dream.id)}</Text>
+                <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
+                <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
               </View>
               <View style={styles.timeContainer}>
-                <Ionicons name="time-outline" size={16} color="#8C9EFF" />
-                <Text style={styles.timeText}>{formatDreamTime(dream.id)}</Text>
+                <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
+                <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
               </View>
             </View>
-            <View style={styles.divider} />
-            <Text style={styles.metadataTitle}>{dream.title}</Text>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+            <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
             {dream.dreamType && (
               <View style={styles.metadataRow}>
-                <Ionicons name="moon-outline" size={18} color="#CFCFEA" />
-                <Text style={styles.metadataLabel}>Dream Type:</Text>
-                <Text style={styles.metadataValue}>{dream.dreamType}</Text>
+                <Ionicons name="moon-outline" size={18} color={colors.textPrimary} />
+                <Text style={[styles.metadataLabel, { color: colors.textPrimary }]}>Dream Type:</Text>
+                <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
               </View>
             )}
             {dream.theme && (
               <View style={styles.metadataRow}>
-                <Ionicons name="color-palette-outline" size={18} color="#CFCFEA" />
-                <Text style={styles.metadataLabel}>Theme:</Text>
-                <Text style={styles.metadataValue}>{dream.theme}</Text>
+                <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} />
+                <Text style={[styles.metadataLabel, { color: colors.textPrimary }]}>Theme:</Text>
+                <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.theme}</Text>
               </View>
             )}
           </View>
 
           {/* Quote */}
-          <View style={styles.quoteBox}>
-            <Text style={styles.quote}>
+          <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
+            <Text style={[styles.quote, { color: colors.textPrimary }]}>
               &quot;{dream.shareableQuote}&quot;
             </Text>
           </View>
 
-          <Text style={styles.interpretation}>{dream.interpretation}</Text>
+          <Text style={[styles.interpretation, { color: colors.textSecondary }]}>{dream.interpretation}</Text>
 
           {/* Action Buttons */}
-          <Pressable style={styles.exploreButton} onPress={() => {
+          <Pressable style={[styles.exploreButton, shadows.xl, {
+            backgroundColor: colors.accent,
+            borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)'
+          }]} onPress={() => {
             router.push(`/dream-categories/${dream.id}`);
           }}>
-            <Ionicons name="sparkles" size={24} color="#CFCFEA" />
-            <Text style={styles.exploreButtonText}>Explore Dream Further</Text>
+            <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+            <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>Explore Dream Further</Text>
           </Pressable>
 
           {/* Additional Actions */}
           <View style={styles.actionsRow}>
-            <Pressable onPress={() => toggleFavorite(dream.id)} style={styles.actionButton}>
+            <Pressable onPress={() => toggleFavorite(dream.id)} style={[styles.actionButton, shadows.sm, {
+              backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
+              borderColor: colors.divider
+            }]}>
               <Ionicons
                 name={dream.isFavorite ? 'heart' : 'heart-outline'}
                 size={24}
-                color={dream.isFavorite ? '#F59E0B' : '#CFCFEA'}
+                color={dream.isFavorite ? '#F59E0B' : colors.textPrimary}
               />
-              <Text style={styles.actionButtonText}>
+              <Text style={[styles.actionButtonText, { color: colors.textPrimary }]}>
                 {dream.isFavorite ? 'Favorited' : 'Favorite'}
               </Text>
             </Pressable>
-            <Pressable onPress={onShare} style={styles.actionButton}>
-              <Ionicons name="share-outline" size={24} color="#8C9EFF" />
-              <Text style={[styles.actionButtonText, { color: '#8C9EFF' }]}>Share</Text>
+            <Pressable onPress={onShare} style={[styles.actionButton, shadows.sm, {
+              backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
+              borderColor: colors.divider
+            }]}>
+              <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
+              <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}>Share</Text>
             </Pressable>
           </View>
 
           {/* Transcript Section */}
-          <View style={styles.transcriptSection}>
-            <Text style={styles.transcriptTitle}>Original Transcript</Text>
-            <Text style={styles.transcript}>{dream.transcript}</Text>
+          <View style={[styles.transcriptSection, {
+            borderTopColor: colors.divider,
+            backgroundColor: mode === 'dark' ? 'rgba(19, 16, 34, 0.3)' : 'rgba(0, 0, 0, 0.03)'
+          }]}>
+            <Text style={[styles.transcriptTitle, { color: colors.textPrimary }]}>Original Transcript</Text>
+            <Text style={[styles.transcript, { color: colors.textSecondary }]}>{dream.transcript}</Text>
           </View>
 
-          <Pressable onPress={onDelete} style={styles.deleteButton}>
-            <Ionicons name="trash-outline" size={22} color="#fff" />
-            <Text style={styles.deleteButtonText}>Delete Dream</Text>
+          <Pressable
+            onPress={onDelete}
+            style={styles.deleteLink}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="link"
+          >
+            <Ionicons name="trash-outline" size={18} color="#EF4444" />
+            <Text style={styles.deleteLinkText}>Delete Dream</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -222,14 +249,10 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#CFCFEA',
+    // backgroundColor: set dynamically
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 6,
+    // shadow: applied via theme shadows.lg
   },
   scrollView: {
     flex: 1,
@@ -247,11 +270,11 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    backgroundColor: '#6c4ef7',
+    // backgroundColor: set dynamically
     borderRadius: 8,
   },
   backButtonText: {
-    color: '#CFCFEA',
+    // color: set dynamically
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
   },
@@ -286,28 +309,19 @@ const styles = StyleSheet.create({
     marginTop: -24,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    backgroundColor: 'rgba(74, 59, 95, 1)',
+    // backgroundColor: set dynamically
     paddingHorizontal: 16,
     paddingVertical: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 12,
+    // shadow: applied via theme shadows.xl
   },
   // Premium Metadata Card with Glassmorphism
   metadataCard: {
-    backgroundColor: 'rgba(140, 158, 255, 0.15)',
+    // backgroundColor and borderColor: set dynamically
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(207, 207, 234, 0.2)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    // shadow: applied via theme shadows.md
   },
   metadataHeader: {
     flexDirection: 'row',
@@ -324,7 +338,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.medium,
-    color: '#8C9EFF',
+    // color: set dynamically
     letterSpacing: 0.3,
   },
   timeContainer: {
@@ -335,18 +349,18 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.medium,
-    color: '#8C9EFF',
+    // color: set dynamically
     letterSpacing: 0.3,
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(207, 207, 234, 0.2)',
+    // backgroundColor: set dynamically
     marginVertical: 12,
   },
   metadataTitle: {
     fontSize: 24,
     fontFamily: Fonts.lora.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     marginBottom: 12,
     lineHeight: 32,
   },
@@ -359,32 +373,32 @@ const styles = StyleSheet.create({
   metadataLabel: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
-    color: '#CFCFEA',
+    // color: set dynamically
     opacity: 0.7,
   },
   metadataValue: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     textTransform: 'capitalize',
   },
   title: {
     fontSize: 28,
     fontFamily: Fonts.lora.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     marginBottom: 12,
     lineHeight: 36,
   },
   interpretation: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#8C9EFF',
+    // color: set dynamically
     lineHeight: 24,
     marginBottom: 16,
   },
   quoteBox: {
     borderLeftWidth: 4,
-    borderLeftColor: '#8C9EFF',
+    // borderLeftColor: set dynamically
     paddingLeft: 16,
     paddingVertical: 8,
     marginVertical: 16,
@@ -392,7 +406,7 @@ const styles = StyleSheet.create({
   quote: {
     fontSize: 18,
     fontFamily: Fonts.lora.regularItalic,
-    color: '#CFCFEA',
+    // color: set dynamically
     lineHeight: 28,
   },
   exploreButton: {
@@ -400,24 +414,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#6c4ef7',
+    // backgroundColor and borderColor: set dynamically
     paddingVertical: 18,
     paddingHorizontal: 24,
     borderRadius: 14,
     marginTop: 20,
     marginBottom: 20,
-    shadowColor: '#6c4ef7',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    // shadow: applied via theme shadows.xl
     borderWidth: 1,
-    borderColor: 'rgba(140, 158, 255, 0.3)',
   },
   exploreButtonText: {
     fontSize: 17,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     letterSpacing: 0.5,
   },
   actionsRow: {
@@ -432,66 +441,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: 'rgba(140, 158, 255, 0.15)',
+    // backgroundColor and borderColor: set dynamically
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(207, 207, 234, 0.2)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 3,
+    // shadow: applied via theme shadows.sm
   },
   actionButtonText: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.medium,
-    color: '#CFCFEA',
+    // color: set dynamically
   },
   transcriptSection: {
     marginTop: 24,
     paddingTop: 24,
     paddingHorizontal: 16,
-    
+
     paddingBottom: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(140, 158, 255, 0.2)',
-    backgroundColor: 'rgba(19, 16, 34, 0.3)',
+    // borderTopColor and backgroundColor: set dynamically
     borderRadius: 12,
   },
   transcriptTitle: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     marginBottom: 12,
   },
   transcript: {
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#8C9EFF',
+    // color: set dynamically
     lineHeight: 24,
     opacity: 0.9,
   },
-  deleteButton: {
-    marginTop: 28,
-    paddingVertical: 16,
-    borderRadius: 14,
+  deleteLink: {
+    marginTop: 24,
+    alignSelf: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
-    backgroundColor: '#EF4444',
-    shadowColor: '#EF4444',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 6,
+    gap: 6,
   },
-  deleteButtonText: {
-    color: '#fff',
+  deleteLinkText: {
+    color: '#EF4444',
     fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontSize: 15,
     letterSpacing: 0.3,
   },
 });

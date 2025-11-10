@@ -15,7 +15,7 @@ const LANGUAGE_LABEL_KEYS: Record<Exclude<LanguagePreference, 'auto'>, string> =
 };
 
 export default function LanguageSettingsCard() {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const { preference, setPreference, systemLanguage } = useLanguage();
   const { t } = useTranslation();
   const systemLanguageLabel = t(LANGUAGE_LABEL_KEYS[systemLanguage]);
@@ -76,6 +76,12 @@ export default function LanguageSettingsCard() {
       {languageOptions.map((option, index) => {
         const isSelected = preference === option.value;
 
+        const iconColor = isSelected
+          ? colors.textOnAccentSurface
+          : mode === 'dark'
+            ? colors.textOnAccentSurface
+            : colors.accent;
+
         return (
           <View key={option.value}>
             {index > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}
@@ -96,11 +102,7 @@ export default function LanguageSettingsCard() {
                     },
                   ]}
                 >
-                  <Ionicons
-                    name={option.icon as any}
-                    size={20}
-                    color={isSelected ? colors.backgroundCard : colors.accent}
-                  />
+                  <Ionicons name={option.icon as any} size={20} color={iconColor} />
                 </View>
                 <View style={styles.optionInfo}>
                   <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>

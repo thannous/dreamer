@@ -37,6 +37,8 @@ import {
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
+import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { GuestLimitBanner } from '@/components/guest/GuestLimitBanner';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -69,8 +71,8 @@ const RECORDING_OPTIONS: RecordingOptions = {
 };
 
 export default function RecordingScreen() {
-  const { guestLimitReached, addDream } = useDreams();
-  const { colors, mode } = useTheme();
+  const { guestLimitReached, addDream, dreams } = useDreams();
+  const { colors, shadows, mode } = useTheme();
   const [transcript, setTranscript] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
@@ -78,6 +80,7 @@ export default function RecordingScreen() {
   const { language } = useLanguage();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const limitLock = !user && guestLimitReached;
 
   const transcriptionLocale = useMemo(() => {
     switch (language) {
@@ -182,7 +185,7 @@ export default function RecordingScreen() {
     if (!user && guestLimitReached) {
       Alert.alert(
         t('recording.alert.limit.title'),
-        t('recording.alert.limit.message'),
+        t('recording.alert.limit.message', { limit: GUEST_DREAM_LIMIT }),
         [
           {
             text: t('recording.alert.limit.cta'),
@@ -225,6 +228,7 @@ export default function RecordingScreen() {
         chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
       };
 
+      const preCount = dreams.length;
       const savedDream = await addDream(newDream);
 
       // Mark as complete
@@ -233,14 +237,51 @@ export default function RecordingScreen() {
       // Brief delay to show completion
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // Navigate directly to dream detail
+      // After 1st dream for guests, show upsell
+      if (!user && preCount === 0) {
+        const upsellTitle = t('guest.upsell.after1.title');
+        const upsellMessage = t('guest.upsell.after1.message', { limit: GUEST_DREAM_LIMIT });
+        const upsellCta = t('guest.upsell.after1.cta');
+        const upsellLater = t('guest.upsell.after1.later');
+
+        if (Platform.OS === 'web') {
+          const goToSettings = typeof window !== 'undefined'
+            && window.confirm(
+              `${upsellTitle}\n\n${upsellMessage}\n\nOK ▸ ${upsellCta}\n${t('common.cancel')} ▸ ${upsellLater}`
+            );
+          if (goToSettings) {
+            router.push('/(tabs)/settings');
+          } else {
+            router.replace(`/journal/${savedDream.id}`);
+          }
+        } else {
+          Alert.alert(
+            upsellTitle,
+            upsellMessage,
+            [
+              {
+                text: upsellCta,
+                onPress: () => router.push('/(tabs)/settings'),
+              },
+              {
+                text: upsellLater,
+                style: 'cancel',
+                onPress: () => router.replace(`/journal/${savedDream.id}`),
+              },
+            ]
+          );
+        }
+        return;
+      }
+
+      // Navigate directly to dream detail (default)
       router.replace(`/journal/${savedDream.id}`);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       if ((error as Error & { code?: string }).code === 'GUEST_LIMIT_REACHED') {
         Alert.alert(
           t('recording.alert.limit.title'),
-          t('recording.alert.limit.message'),
+          t('recording.alert.limit.message', { limit: GUEST_DREAM_LIMIT }),
           [
             {
               text: t('recording.alert.limit.cta'),
@@ -255,7 +296,7 @@ export default function RecordingScreen() {
       const classified = classifyError(error);
       analysisProgress.setError(classified);
     }
-  }, [transcript, addDream, analysisProgress, t, user, guestLimitReached]);
+  }, [transcript, addDream, analysisProgress, t, user, guestLimitReached, dreams.length]);
 
   const handleGoToJournal = useCallback(() => {
     router.push('/(tabs)/journal');
@@ -264,6 +305,10 @@ export default function RecordingScreen() {
   const gradientColors = mode === 'dark'
     ? GradientColors.surreal
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
+
+  const overlayColor = mode === 'dark'
+    ? 'rgba(24, 24, 28, 0.78)'
+    : 'rgba(170, 170, 180, 0.6)';
 
   return (
     <LinearGradient
@@ -281,24 +326,9 @@ export default function RecordingScreen() {
           keyboardShouldPersistTaps="handled"
           testID={TID.Screen.Recording}
         >
-          {/* Header */}
-          <View style={styles.header}>
-            <Pressable
-              onPress={handleGoToJournal}
-              style={styles.headerButton}
-              testID={TID.Button.NavigateJournal}
-              accessibilityRole="button"
-              accessibilityLabel={t('recording.nav_button.accessibility')}
-            >
-              <Text style={[styles.saveText, { color: colors.accent }]} numberOfLines={1}>
-                {t('recording.nav_button')}
-              </Text>
-            </Pressable>
-          </View>
-
           {/* Main Content */}
           <View style={styles.mainContent}>
-            <Text style={[styles.pageTitle, { color: colors.textPrimary }]}>{t('recording.title')}</Text>
+            <GuestLimitBanner />
             <View style={styles.recordingSection}>
               <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
                 {t('recording.instructions')}
@@ -307,6 +337,7 @@ export default function RecordingScreen() {
               <MicButton
                 isRecording={isRecording}
                 onPress={toggleRecording}
+                disabled={limitLock}
                 testID={TID.Button.RecordToggle}
               />
 
@@ -322,13 +353,14 @@ export default function RecordingScreen() {
                 placeholderTextColor={colors.textSecondary}
                 style={[
                   styles.textInput,
+                  shadows.md,
                   {
                     backgroundColor: colors.backgroundSecondary,
                     color: colors.textPrimary,
                   },
                 ]}
                 multiline
-                editable={analysisProgress.step === AnalysisStep.IDLE}
+                editable={!limitLock && analysisProgress.step === AnalysisStep.IDLE}
                 testID={TID.Input.DreamTranscript}
                 accessibilityLabel={t('recording.placeholder.accessibility')}
               />
@@ -348,11 +380,12 @@ export default function RecordingScreen() {
               {analysisProgress.step === AnalysisStep.IDLE && (
                 <Pressable
                   onPress={handleSave}
-                  disabled={!transcript.trim()}
+                  disabled={!transcript.trim() || limitLock}
                   style={[
                     styles.submitButton,
+                    shadows.lg,
                     { backgroundColor: colors.accent },
-                    !transcript.trim() && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }]
+                    (!transcript.trim() || limitLock) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }]
                   ]}
                   testID={TID.Button.SaveDream}
                   accessibilityRole="button"
@@ -363,7 +396,28 @@ export default function RecordingScreen() {
                   </Text>
                 </Pressable>
               )}
+
+              <Pressable
+                onPress={handleGoToJournal}
+                style={[styles.journalLinkButton, limitLock && styles.onTop]}
+                testID={TID.Button.NavigateJournal}
+                accessibilityRole="link"
+                accessibilityLabel={t('recording.nav_button.accessibility')}
+              >
+                <Text style={[styles.journalLinkText, { color: colors.accent }]}>
+                  {t('recording.nav_button')}
+                </Text>
+              </Pressable>
             </View>
+
+            {limitLock && (
+              <View
+                pointerEvents="none"
+                style={[styles.disabledOverlay, { backgroundColor: overlayColor }]}
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+              />
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -381,38 +435,13 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    paddingTop: Platform.OS === 'ios' ? 60 : 12,
-  },
-  headerButton: {
-    paddingHorizontal: 12,
-    minHeight: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveText: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically in component
-  },
   mainContent: {
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingBottom: 16,
     paddingTop: 16,
-  },
-  pageTitle: {
-    fontSize: 32,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically in component
-    textAlign: 'center',
-    marginBottom: 8,
+    position: 'relative',
   },
   recordingSection: {
     flex: 1,
@@ -422,7 +451,8 @@ const styles = StyleSheet.create({
     gap: 32,
   },
   instructionText: {
-    fontSize: 18,
+    fontSize: 22,
+    lineHeight: 32,
     fontFamily: Fonts.lora.regularItalic,
     // color: set dynamically in component
     textAlign: 'center',
@@ -449,11 +479,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 4,
+    // shadow: applied via theme shadows.md
   },
   submitButton: {
     // backgroundColor: set dynamically in component
@@ -462,11 +488,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    // shadowColor: set dynamically in component
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    // shadow: applied via theme shadows.lg
   },
   submitButtonDisabled: {
     // backgroundColor: set dynamically in component
@@ -484,5 +506,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.5,
+  },
+  journalLinkButton: {
+    paddingVertical: 12,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  journalLinkText: {
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  disabledOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 72,
+    borderRadius: 0,
+    zIndex: 5,
+  },
+  onTop: {
+    zIndex: 50,
+    position: 'relative',
   },
 });

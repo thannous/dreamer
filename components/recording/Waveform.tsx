@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, Platform } from 'react-native';
-import { SurrealTheme } from '@/constants/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 interface WaveformProps {
   isActive: boolean;
@@ -28,6 +28,7 @@ const BARS = [
 ];
 
 export function Waveform({ isActive }: WaveformProps) {
+  const { colors } = useTheme();
   const animations = useRef(
     BARS.map(() => new Animated.Value(1))
   ).current;
@@ -77,8 +78,8 @@ export function Waveform({ isActive }: WaveformProps) {
               {
                 height: bar.height,
                 backgroundColor: isAccent
-                  ? SurrealTheme.accent
-                  : SurrealTheme.textMuted,
+                  ? colors.accent
+                  : colors.textSecondary,
                 opacity: bar.opacity,
                 transform: [{ scaleY: animations[index] }],
               },

@@ -17,8 +17,9 @@ import {
   updateDreamInSupabase,
 } from '@/services/supabaseDreamService';
 import { useAuth } from '@/context/AuthContext';
+import { GUEST_DREAM_LIMIT } from '@/constants/limits';
 
-const GUEST_DREAM_LIMIT = 1;
+// Guest limit centralized in constants/limits
 
 type DreamListUpdater = DreamAnalysis[] | ((list: DreamAnalysis[]) => DreamAnalysis[]);
 

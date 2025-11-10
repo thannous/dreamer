@@ -12,9 +12,10 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useDreams } from '@/context/DreamsContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Fonts } from '@/constants/theme';
 import { startOrContinueChat } from '@/services/geminiService';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
@@ -67,6 +68,7 @@ const QUICK_CATEGORIES = [
 export default function DreamChatScreen() {
   const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
   const { dreams, updateDream } = useDreams();
+  const { colors, mode, shadows } = useTheme();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
 
@@ -184,16 +186,46 @@ export default function DreamChatScreen() {
     }
   };
 
+  const gradientColors = mode === 'dark'
+    ? GradientColors.darkBase
+    : ([colors.backgroundDark, colors.backgroundDark] as const);
+
+  const imageGradientColors = mode === 'dark'
+    ? (['transparent', 'rgba(19, 16, 34, 0.9)', '#131022'] as const)
+    : (['transparent', colors.backgroundDark + 'E6', colors.backgroundDark] as const);
+
+  const handleBackPress = useCallback(() => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/(tabs)/journal');
+    }
+  }, []);
+
   if (!dream) {
     return (
-      <LinearGradient colors={GradientColors.dreamJournal} style={styles.container}>
-        <Text style={styles.errorText}>Dream not found.</Text>
+      <LinearGradient colors={gradientColors} style={styles.container}>
+        <Text style={[styles.errorText, { color: colors.textPrimary }]}>Dream not found.</Text>
+        <Pressable
+          onPress={handleBackPress}
+          style={[styles.missingDreamBackButton, { backgroundColor: colors.accent }]}
+        >
+          <Text style={[styles.missingDreamBackButtonText, { color: colors.textPrimary }]}>Go Back</Text>
+        </Pressable>
       </LinearGradient>
     );
   }
 
   return (
-    <LinearGradient colors={GradientColors.darkBase} style={styles.gradient}>
+    <LinearGradient colors={gradientColors} style={styles.gradient}>
+      <Pressable
+        onPress={handleBackPress}
+        style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+        accessibilityRole="button"
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
+        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+      </Pressable>
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -213,10 +245,10 @@ export default function DreamChatScreen() {
             placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
           />
           <LinearGradient
-            colors={['transparent', 'rgba(19, 16, 34, 0.9)', '#131022']}
+            colors={imageGradientColors}
             style={styles.imageGradient}
           >
-            <Text style={styles.dreamTitle} numberOfLines={2}>
+            <Text style={[styles.dreamTitle, { color: colors.textPrimary }]} numberOfLines={2}>
               {dream.title}
             </Text>
           </LinearGradient>
@@ -225,7 +257,7 @@ export default function DreamChatScreen() {
         {/* Chat Messages */}
         <ScrollView
           ref={scrollViewRef}
-          style={styles.messagesContainer}
+          style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
           contentContainerStyle={styles.messagesContent}
           showsVerticalScrollIndicator={false}
         >
@@ -238,19 +270,22 @@ export default function DreamChatScreen() {
               ]}
             >
               {message.role === 'model' && (
-                <View style={styles.avatarAI}>
-                  <MaterialCommunityIcons name="brain" size={20} color="#CFCFEA" />
+                <View style={[styles.avatarAI, { backgroundColor: colors.accent }]}>
+                  <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
                 </View>
               )}
               <View
                 style={[
                   styles.messageBubble,
-                  message.role === 'user' ? styles.messageBubbleUser : styles.messageBubbleAI,
+                  message.role === 'user'
+                    ? [styles.messageBubbleUser, { backgroundColor: colors.accent }]
+                    : [styles.messageBubbleAI, { backgroundColor: colors.backgroundSecondary }],
                 ]}
               >
                 <Text
                   style={[
                     styles.messageText,
+                    { color: colors.textPrimary },
                     message.role === 'user' && styles.messageTextUser,
                   ]}
                 >
@@ -258,8 +293,8 @@ export default function DreamChatScreen() {
                 </Text>
               </View>
               {message.role === 'user' && (
-                <View style={styles.avatarUser}>
-                  <MaterialCommunityIcons name="account" size={20} color="#CFCFEA" />
+                <View style={[styles.avatarUser, { backgroundColor: colors.backgroundSecondary }]}>
+                  <MaterialCommunityIcons name="account" size={20} color={colors.textPrimary} />
                 </View>
               )}
             </View>
@@ -267,28 +302,32 @@ export default function DreamChatScreen() {
 
           {isLoading && (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#8C9EFF" />
-              <Text style={styles.loadingText}>Thinking...</Text>
+              <ActivityIndicator size="small" color={colors.accent} />
+              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>Thinking...</Text>
             </View>
           )}
 
           {/* Quick Category Buttons */}
           {messages.length <= 2 && (
             <View style={styles.quickCategoriesContainer}>
-              <Text style={styles.quickCategoriesLabel}>Quick Topics:</Text>
+              <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>Quick Topics:</Text>
               <View style={styles.quickCategories}>
                 {QUICK_CATEGORIES.map((cat) => (
                   <Pressable
                     key={cat.id}
                     style={({ pressed }) => [
                       styles.quickCategoryButton,
+                      {
+                        backgroundColor: mode === 'dark' ? 'rgba(50, 17, 212, 0.2)' : colors.backgroundSecondary,
+                        borderColor: colors.divider
+                      },
                       pressed && styles.quickCategoryButtonPressed,
                     ]}
                     onPress={() => handleQuickCategory(cat.id)}
                     disabled={isLoading}
                   >
-                    <MaterialCommunityIcons name={cat.icon} size={16} color="#e0d9ff" />
-                    <Text style={styles.quickCategoryText}>{cat.label}</Text>
+                    <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
+                    <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>{cat.label}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -297,12 +336,12 @@ export default function DreamChatScreen() {
         </ScrollView>
 
         {/* Input Area */}
-        <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
+        <View style={[styles.inputContainer, { backgroundColor: colors.backgroundDark, borderTopColor: colors.divider }]}>
+          <View style={[styles.inputWrapper, { backgroundColor: colors.backgroundSecondary }]}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.textPrimary }]}
               placeholder="Type your response..."
-              placeholderTextColor="#9b92c9"
+              placeholderTextColor={colors.textSecondary}
               value={inputText}
               onChangeText={setInputText}
               multiline
@@ -310,11 +349,11 @@ export default function DreamChatScreen() {
               editable={!isLoading}
             />
             <Pressable
-              style={[styles.sendButton, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
+              style={[styles.sendButton, { backgroundColor: colors.accent }, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
               onPress={() => sendMessage()}
               disabled={!inputText.trim() || isLoading}
             >
-              <MaterialCommunityIcons name="send" size={20} color="#CFCFEA" />
+              <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
             </Pressable>
           </View>
         </View>
@@ -327,13 +366,24 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
+  floatingBackButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 50,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   errorText: {
-    color: '#CFCFEA',
+    // color: set dynamically
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.medium,
   },
@@ -347,9 +397,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 50,
     paddingBottom: 12,
-    backgroundColor: 'rgba(19, 16, 34, 0.95)',
+    // backgroundColor and borderBottomColor: set dynamically
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(207, 207, 234, 0.1)',
   },
   backButton: {
     width: 48,
@@ -360,7 +409,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     flex: 1,
     textAlign: 'center',
   },
@@ -389,12 +438,12 @@ const styles = StyleSheet.create({
   dreamTitle: {
     fontSize: 20,
     fontFamily: Fonts.lora.bold,
-    color: '#CFCFEA',
+    // color: set dynamically
     lineHeight: 28,
   },
   messagesContainer: {
     flex: 1,
-    backgroundColor: '#131022',
+    // backgroundColor: set dynamically
   },
   messagesContent: {
     padding: 16,
@@ -415,7 +464,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#3211d4',
+    // backgroundColor: set dynamically
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -423,7 +472,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#3d385f',
+    // backgroundColor: set dynamically
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -433,19 +482,19 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   messageBubbleAI: {
-    backgroundColor: '#2a263d',
+    // backgroundColor: set dynamically
   },
   messageBubbleUser: {
-    backgroundColor: '#3211d4',
+    // backgroundColor: set dynamically
   },
   messageText: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#d9d5f2',
+    // color: set dynamically
     lineHeight: 20,
   },
   messageTextUser: {
-    color: '#CFCFEA',
+    // color: set dynamically
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -456,7 +505,7 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#9b92c9',
+    // color: set dynamically
   },
   quickCategoriesContainer: {
     marginTop: 16,
@@ -465,7 +514,7 @@ const styles = StyleSheet.create({
   quickCategoriesLabel: {
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.medium,
-    color: '#9b92c9',
+    // color: set dynamically
     marginBottom: 8,
   },
   quickCategories: {
@@ -477,12 +526,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(50, 17, 212, 0.2)',
+    // backgroundColor and borderColor: set dynamically
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(224, 217, 255, 0.2)',
   },
   quickCategoryButtonPressed: {
     opacity: 0.6,
@@ -490,12 +538,21 @@ const styles = StyleSheet.create({
   quickCategoryText: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.medium,
-    color: '#e0d9ff',
+    // color: set dynamically
+  },
+  missingDreamBackButton: {
+    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  missingDreamBackButtonText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
   },
   inputContainer: {
-    backgroundColor: '#131022',
+    // backgroundColor and borderTopColor: set dynamically
     borderTopWidth: 1,
-    borderTopColor: 'rgba(207, 207, 234, 0.1)',
     paddingHorizontal: 16,
     paddingVertical: 12,
     paddingBottom: Platform.OS === 'ios' ? 24 : 12,
@@ -504,7 +561,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     gap: 8,
-    backgroundColor: '#2a263d',
+    // backgroundColor: set dynamically
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -513,7 +570,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.regular,
-    color: '#d9d5f2',
+    // color: set dynamically
     maxHeight: 100,
     paddingVertical: 8,
   },
@@ -521,7 +578,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#3211d4',
+    // backgroundColor: set dynamically
     alignItems: 'center',
     justifyContent: 'center',
   },

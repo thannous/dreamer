@@ -11,8 +11,8 @@ export interface DreamStatistics {
   averageDreamsPerWeek: number;
 
   // Time-based data
-  dreamsByDay: { day: string; count: number }[];
-  dreamsOverTime: { date: string; count: number }[];
+  dreamsByDay: { weekday: number; count: number }[];
+  dreamsOverTime: { timestamp: number; count: number }[];
 
   // Content analysis
   dreamTypeDistribution: { type: string; count: number; percentage: number }[];
@@ -24,14 +24,12 @@ export interface DreamStatistics {
   mostDiscussedDream: DreamAnalysis | null;
 }
 
-const getDayOfWeek = (timestamp: number): string => {
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  return days[new Date(timestamp).getDay()];
-};
+const ORDERED_WEEKDAYS = [1, 2, 3, 4, 5, 6, 0];
 
-const getDateString = (timestamp: number): string => {
+const startOfDay = (timestamp: number): Date => {
   const date = new Date(timestamp);
-  return `${date.getMonth() + 1}/${date.getDate()}`;
+  date.setHours(0, 0, 0, 0);
+  return date;
 };
 
 const isWithinDays = (timestamp: number, days: number): boolean => {
@@ -122,33 +120,33 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
     const weeksSinceFirst = Math.max(1, Math.floor((Date.now() - firstDreamDate) / (7 * 24 * 60 * 60 * 1000)));
     const averageDreamsPerWeek = totalDreams / weeksSinceFirst;
 
-    const dayCount = new Map<string, number>();
+    const dayCount = new Map<number, number>();
     dreams.forEach(dream => {
-      const day = getDayOfWeek(dream.id);
+      const day = new Date(dream.id).getDay();
       dayCount.set(day, (dayCount.get(day) || 0) + 1);
     });
 
-    const dreamsByDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => ({
-      day,
-      count: dayCount.get(day) || 0,
+    const dreamsByDay = ORDERED_WEEKDAYS.map(weekday => ({
+      weekday,
+      count: dayCount.get(weekday) || 0,
     }));
 
-    const dateCount = new Map<string, number>();
+    const dateCount = new Map<number, number>();
     const last30Days = dreams.filter(d => isWithinDays(d.id, 30));
     last30Days.forEach(dream => {
-      const date = getDateString(dream.id);
-      dateCount.set(date, (dateCount.get(date) || 0) + 1);
+      const date = startOfDay(dream.id);
+      const dayTimestamp = date.getTime();
+      dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
     });
 
-    const today = new Date();
+    const today = startOfDay(Date.now());
     const dreamsOverTime = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      const dateStr = getDateString(date.getTime());
       dreamsOverTime.push({
-        date: dateStr,
-        count: dateCount.get(dateStr) || 0,
+        timestamp: date.getTime(),
+        count: dateCount.get(date.getTime()) || 0,
       });
     }
 

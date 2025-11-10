@@ -2,8 +2,14 @@
  * Utility functions for date formatting
  */
 
-export function formatDreamDate(timestamp: number): string {
-  return new Date(timestamp).toLocaleDateString('en-US', {
+const DEFAULT_LOCALE = 'en-US';
+
+const toDate = (value: number | Date): Date => {
+  return typeof value === 'number' ? new Date(value) : value;
+};
+
+export function formatDreamDate(timestamp: number, locale: string = DEFAULT_LOCALE): string {
+  return toDate(timestamp).toLocaleDateString(locale, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -11,19 +17,22 @@ export function formatDreamDate(timestamp: number): string {
   });
 }
 
-export function formatDreamTime(timestamp: number): string {
-  return new Date(timestamp).toLocaleTimeString('en-US', {
+export function formatDreamTime(timestamp: number, locale: string = DEFAULT_LOCALE): string {
+  return toDate(timestamp).toLocaleTimeString(locale, {
     hour: 'numeric',
     minute: '2-digit',
-    hour12: true,
   });
 }
 
-export function formatShortDate(timestamp: number): string {
-  return new Date(timestamp).toDateString();
+export function formatShortDate(timestamp: number, locale: string = DEFAULT_LOCALE): string {
+  return toDate(timestamp).toLocaleDateString(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 }
 
-export function getCurrentMoonCycleTimestamp(): string {
+export function getCurrentMoonCycleTimestamp(locale: string = DEFAULT_LOCALE): string {
   const now = new Date();
   const options: Intl.DateTimeFormatOptions = {
     month: 'long',
@@ -31,7 +40,6 @@ export function getCurrentMoonCycleTimestamp(): string {
     year: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-    hour12: true,
   };
-  return `Cycle of the Moon: ${now.toLocaleDateString('en-US', options)}`;
+  return `Cycle of the Moon: ${now.toLocaleDateString(locale, options)}`;
 }
