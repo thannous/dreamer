@@ -1,6 +1,6 @@
 /**
  * Mock implementation of storageService for development mode
- * Uses in-memory storage with predefined dreams pre-loaded
+ * Uses in-memory storage and can optionally preload predefined dreams
  */
 
 import type { DreamAnalysis, DreamMutation, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
@@ -11,6 +11,7 @@ const mockStorage: Record<string, string> = {};
 
 // Flag to track if we've pre-loaded dreams
 let dreamsPreloaded = false;
+let shouldPreloadDreams = false;
 
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
@@ -25,11 +26,27 @@ const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 
+export function setPreloadDreamsEnabled(enabled: boolean): void {
+  shouldPreloadDreams = enabled;
+  if (!enabled) {
+    dreamsPreloaded = false;
+  }
+  console.log('[MOCK STORAGE] Dream preloading', enabled ? 'enabled' : 'disabled');
+}
+
+export function preloadDreamsNow(): void {
+  if (!shouldPreloadDreams) {
+    console.log('[MOCK STORAGE] Skipping preload because it is disabled');
+    return;
+  }
+  ensureDreamsPreloaded();
+}
+
 /**
  * Pre-load predefined dreams on first access
  */
 function ensureDreamsPreloaded(): void {
-  if (dreamsPreloaded) return;
+  if (dreamsPreloaded || !shouldPreloadDreams) return;
 
   console.log('[MOCK STORAGE] Pre-loading predefined dreams...');
   const predefinedDreams = getPredefinedDreamsWithTimestamps();

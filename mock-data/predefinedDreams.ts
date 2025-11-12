@@ -6,7 +6,7 @@ import type { DreamAnalysis } from '@/lib/types';
 
 /**
  * Collection of predefined dreams with realistic content
- * These will be pre-loaded into mock storage on app start
+ * These can be injected into mock storage when the "existing user" profile is selected
  */
 export const PREDEFINED_DREAMS: Array<Omit<DreamAnalysis, 'id'>> = [
   {
@@ -133,6 +133,9 @@ export const PREDEFINED_DREAMS: Array<Omit<DreamAnalysis, 'id'>> = [
   },
 ];
 
+const PRELOADED_ANALYSIS_USAGE = 2;
+const PRELOADED_EXPLORATION_USAGE = 1;
+
 /**
  * Generate timestamps for predefined dreams
  * Spreads them over the last 30 days
@@ -141,6 +144,8 @@ export function getPredefinedDreamsWithTimestamps(): DreamAnalysis[] {
   const now = Date.now();
   const dayInMs = 24 * 60 * 60 * 1000;
   const usedTimestamps = new Set<number>();
+  let seededAnalyses = 0;
+  let seededExplorations = 0;
 
   return PREDEFINED_DREAMS.map((dream, index) => {
     // Space dreams out over the last ~30 days while keeping each timestamp unique
@@ -153,9 +158,24 @@ export function getPredefinedDreamsWithTimestamps(): DreamAnalysis[] {
     }
     usedTimestamps.add(timestamp);
 
-    return {
+    const baseDream: DreamAnalysis = {
       ...dream,
       id: timestamp, // Use number timestamp as ID
+      isAnalyzed: dream.isAnalyzed ?? true,
+      analysisStatus: dream.analysisStatus ?? 'done',
     };
+
+    if (baseDream.isAnalyzed && baseDream.analyzedAt == null && seededAnalyses < PRELOADED_ANALYSIS_USAGE) {
+      baseDream.analyzedAt = timestamp;
+      seededAnalyses += 1;
+    }
+
+    const hasChatHistory = Array.isArray(baseDream.chatHistory) && baseDream.chatHistory.length > 0;
+    if (hasChatHistory && baseDream.explorationStartedAt == null && seededExplorations < PRELOADED_EXPLORATION_USAGE) {
+      baseDream.explorationStartedAt = timestamp + 15 * 60 * 1000; // 15 minutes after recording
+      seededExplorations += 1;
+    }
+
+    return baseDream;
   });
 }

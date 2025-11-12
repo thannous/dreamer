@@ -22,9 +22,19 @@ This will:
 ### 2. What You'll See
 
 When the app launches in mock mode:
-- **Journal screen** will show 8 pre-loaded realistic dreams
+- **Journal screen** starts empty (like a brand new guest) until you choose a mock profile
 - **Console logs** will show `[MOCK]` prefixed messages for all service calls
 - All features work exactly as in production
+
+### Quick Auth Profiles
+
+Open **Settings → Account** and use the *Quick sign-in (mock mode)* card to jump into common scenarios:
+
+- **New user** – fresh account with empty storage so you can test onboarding flows.
+- **Existing user** – automatically loads the predefined dreams for “returning user” journeys.
+- **Premium user** – same as new, but with unlimited quotas to test paywalled features.
+
+Switching profiles resets the in-memory storage so each scenario starts clean.
 
 ### 3. Try These Features
 
@@ -99,6 +109,7 @@ Edit `mock-data/assets.ts` to change the image URLs.
 - Restart the Expo dev server (clear cache: Shift+R in terminal)
 
 **"No dreams showing up"**
+- This is expected for guests; pick **Existing user** in Settings → Account to load the sample dreams
 - Check console for `[MOCK STORAGE] Pre-loading predefined dreams...`
 - Make sure you're looking at the Journal tab
 
