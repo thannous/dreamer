@@ -112,3 +112,68 @@ export function getUserErrorMessage(error: Error): string {
 export function canRetryError(error: Error): boolean {
   return classifyError(error).canRetry;
 }
+
+/**
+ * Quota error codes
+ */
+export enum QuotaErrorCode {
+  ANALYSIS_LIMIT_REACHED = 'ANALYSIS_LIMIT_REACHED',
+  EXPLORATION_LIMIT_REACHED = 'EXPLORATION_LIMIT_REACHED',
+  MESSAGE_LIMIT_REACHED = 'MESSAGE_LIMIT_REACHED',
+  GUEST_LIMIT_REACHED = 'GUEST_LIMIT_REACHED', // Backward compatibility
+}
+
+/**
+ * Custom error for quota violations
+ */
+export class QuotaError extends Error {
+  public readonly code: QuotaErrorCode;
+  public readonly tier: 'guest' | 'free' | 'premium';
+  public readonly userMessage: string;
+  public readonly canUpgrade: boolean;
+
+  constructor(
+    code: QuotaErrorCode,
+    tier: 'guest' | 'free' | 'premium',
+    userMessage?: string
+  ) {
+    super(userMessage || QuotaError.getDefaultMessage(code, tier));
+    this.name = 'QuotaError';
+    this.code = code;
+    this.tier = tier;
+    this.userMessage = userMessage || QuotaError.getDefaultMessage(code, tier);
+    this.canUpgrade = tier !== 'premium';
+  }
+
+  private static getDefaultMessage(code: QuotaErrorCode, tier: 'guest' | 'free' | 'premium'): string {
+    switch (code) {
+      case QuotaErrorCode.ANALYSIS_LIMIT_REACHED:
+        if (tier === 'guest') {
+          return 'You have reached the limit of 2 analyses in guest mode. Create a free account to get 3 more analyses!';
+        } else if (tier === 'free') {
+          return 'You have used all 5 free analyses. Upgrade to premium for unlimited analyses!';
+        }
+        return 'Analysis limit reached.';
+
+      case QuotaErrorCode.EXPLORATION_LIMIT_REACHED:
+        if (tier === 'guest') {
+          return 'You have explored 2 dreams in guest mode. Create a free account to continue exploring!';
+        } else if (tier === 'free') {
+          return 'You have reached the exploration limit. Upgrade to premium for unlimited dream exploration!';
+        }
+        return 'Exploration limit reached.';
+
+      case QuotaErrorCode.MESSAGE_LIMIT_REACHED:
+        if (tier === 'guest' || tier === 'free') {
+          return 'You have reached the limit of 20 messages for this dream. Upgrade to premium for unlimited conversations!';
+        }
+        return 'Message limit reached.';
+
+      case QuotaErrorCode.GUEST_LIMIT_REACHED:
+        return 'You have reached the limit of 2 dreams in guest mode. Create a free account to continue!';
+
+      default:
+        return 'Quota limit reached.';
+    }
+  }
+}

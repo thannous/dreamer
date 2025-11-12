@@ -8,6 +8,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -112,6 +113,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: t('nav.home'),
+          tabBarButton: (props) => (
+            <HapticTab {...props} testID={TID.Tab.Home} accessibilityLabel={t('nav.home')} />
+          ),
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="house.fill" label={t('nav.home')} focused={focused} palette={palette} colors={colors} />
           ),
@@ -122,6 +126,9 @@ export default function TabLayout() {
         name="journal"
         options={{
           title: t('nav.journal'),
+          tabBarButton: (props) => (
+            <HapticTab {...props} testID={TID.Tab.Journal} accessibilityLabel={t('nav.journal')} />
+          ),
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="book.fill" label={t('nav.journal')} focused={focused} palette={palette} colors={colors} />
           ),
@@ -131,6 +138,9 @@ export default function TabLayout() {
         name="statistics"
         options={{
           title: t('nav.stats'),
+          tabBarButton: (props) => (
+            <HapticTab {...props} testID={TID.Tab.Stats} accessibilityLabel={t('nav.stats')} />
+          ),
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="chart.bar.fill" label={t('nav.stats')} focused={focused} palette={palette} colors={colors} />
           ),
@@ -140,6 +150,9 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: t('nav.settings'),
+          tabBarButton: (props) => (
+            <HapticTab {...props} testID={TID.Tab.Settings} accessibilityLabel={t('nav.settings')} />
+          ),
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} colors={colors} />
           ),

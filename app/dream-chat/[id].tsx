@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,6 +22,10 @@ import { startOrContinueChat } from '@/services/geminiService';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
 import { GradientColors } from '@/constants/gradients';
 import { getImageConfig } from '@/lib/imageUtils';
+import { useQuota } from '@/hooks/useQuota';
+import { QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { quotaService } from '@/services/quotaService';
+import { useAuth } from '@/context/AuthContext';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
 
@@ -69,17 +74,39 @@ export default function DreamChatScreen() {
   const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
   const { dreams, updateDream } = useDreams();
   const { colors, mode, shadows } = useTheme();
+  const { user } = useAuth();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const { quotaStatus, canExplore, canChat } = useQuota({ dreamId, dream });
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [explorationBlocked, setExplorationBlocked] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const hasSentCategoryRef = useRef(false);
 
   // Use full-resolution image config for chat view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
+
+  // Count user messages for quota display
+  const userMessageCount = useMemo(() => {
+    return messages.filter((msg) => msg.role === 'user').length;
+  }, [messages]);
+
+  // Check exploration quota on mount
+  useEffect(() => {
+    const checkExplorationQuota = async () => {
+      if (!dream) return;
+
+      const canExploreDream = await canExplore();
+      if (!canExploreDream) {
+        setExplorationBlocked(true);
+      }
+    };
+
+    checkExplorationQuota();
+  }, [dream, dreamId, canExplore]);
 
   // Initialize chat messages from dream history
   useEffect(() => {
@@ -137,6 +164,28 @@ export default function DreamChatScreen() {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
 
+      // Check message quota before sending
+      const canSendMessage = await canChat();
+      if (!canSendMessage) {
+        const tier = user ? 'free' : 'guest';
+        const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
+        Alert.alert(
+          'Message Limit Reached',
+          limitError.userMessage,
+          [
+            { text: 'OK' },
+            {
+              text: 'Upgrade',
+              onPress: () => router.push('/(tabs)/settings'),
+            },
+          ]
+        );
+        return;
+      }
+
+      // Check if this is the first user message (mark as explored)
+      const isFirstUserMessage = messages.filter((msg) => msg.role === 'user').length === 0;
+
       // Add user message (use displayText if provided, otherwise use textToSend)
       const userMessage: ChatMessage = { role: 'user', text: displayText || textToSend };
       const updatedMessages = [...messages, userMessage];
@@ -159,8 +208,23 @@ export default function DreamChatScreen() {
 
         setMessages(finalMessages);
 
+        // Mark dream as explored if this is the first user message
+        const dreamUpdate: Partial<DreamAnalysis> = {
+          ...dream,
+          chatHistory: finalMessages,
+        };
+
+        if (isFirstUserMessage && !dream.explorationStartedAt) {
+          dreamUpdate.explorationStartedAt = Date.now();
+        }
+
         // Persist to dream
-        await updateDream({ ...dream, chatHistory: finalMessages });
+        await updateDream(dreamUpdate as DreamAnalysis);
+
+        // Invalidate quota cache if this was the first message
+        if (isFirstUserMessage) {
+          quotaService.invalidate(user);
+        }
       } catch (error) {
         if (__DEV__) {
           console.error('Chat error:', error);
@@ -174,7 +238,7 @@ export default function DreamChatScreen() {
         setIsLoading(false);
       }
     },
-    [inputText, dream, messages, updateDream]
+    [inputText, dream, messages, updateDream, canChat, dreamId, user, quotaService]
   );
 
   const handleQuickCategory = (categoryId: string) => {
@@ -215,6 +279,47 @@ export default function DreamChatScreen() {
       </LinearGradient>
     );
   }
+
+  // If exploration is blocked, show upgrade screen
+  if (explorationBlocked) {
+    const tier = user ? 'free' : 'guest';
+    return (
+      <LinearGradient colors={gradientColors} style={styles.container}>
+        <Pressable
+          onPress={handleBackPress}
+          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+        >
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+        </Pressable>
+
+        <View style={[styles.blockedContainer]}>
+          <Ionicons name="lock-closed" size={64} color={colors.accent} />
+          <Text style={[styles.blockedTitle, { color: colors.textPrimary }]}>
+            Exploration Limit Reached
+          </Text>
+          <Text style={[styles.blockedMessage, { color: colors.textSecondary }]}>
+            {tier === 'guest'
+              ? `You've reached the limit of 2 dream explorations in guest mode. Create a free account to continue exploring your dreams!`
+              : `You've reached the exploration limit. Upgrade to premium for unlimited dream exploration!`}
+          </Text>
+          <Pressable
+            style={[styles.upgradeButton, shadows.lg, { backgroundColor: colors.accent }]}
+            onPress={() => router.push('/(tabs)/settings')}
+          >
+            <Ionicons name="arrow-up-circle-outline" size={24} color={colors.textPrimary} />
+            <Text style={[styles.upgradeButtonText, { color: colors.textPrimary }]}>
+              {tier === 'guest' ? 'Create Free Account' : 'Upgrade to Premium'}
+            </Text>
+          </Pressable>
+        </View>
+      </LinearGradient>
+    );
+  }
+
+  // Calculate if message limit is reached
+  const messageLimit = quotaStatus?.usage.messages.limit ?? 20;
+  const messagesRemaining = quotaStatus?.usage.messages.remaining ?? (messageLimit - userMessageCount);
+  const messageLimitReached = messagesRemaining <= 0;
 
   return (
     <LinearGradient colors={gradientColors} style={styles.gradient}>
@@ -337,21 +442,52 @@ export default function DreamChatScreen() {
 
         {/* Input Area */}
         <View style={[styles.inputContainer, { backgroundColor: colors.backgroundDark, borderTopColor: colors.divider }]}>
+          {/* Message Counter */}
+          {messageLimit && (
+            <View style={[styles.messageCounterContainer]}>
+              <Ionicons
+                name="chatbubble-outline"
+                size={14}
+                color={messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary}
+              />
+              <Text style={[
+                styles.messageCounter,
+                { color: messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary }
+              ]}>
+                {userMessageCount}/{messageLimit} messages
+              </Text>
+              {messageLimitReached && (
+                <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
+                  • Limit reached
+                </Text>
+              )}
+            </View>
+          )}
+
+          {messageLimitReached && (
+            <View style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}>
+              <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
+              <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
+                You&apos;ve reached the message limit for this dream. Upgrade to continue the conversation.
+              </Text>
+            </View>
+          )}
+
           <View style={[styles.inputWrapper, { backgroundColor: colors.backgroundSecondary }]}>
             <TextInput
               style={[styles.input, { color: colors.textPrimary }]}
-              placeholder="Type your response..."
+              placeholder={messageLimitReached ? "Message limit reached..." : "Type your response..."}
               placeholderTextColor={colors.textSecondary}
               value={inputText}
               onChangeText={setInputText}
               multiline
               maxLength={500}
-              editable={!isLoading}
+              editable={!isLoading && !messageLimitReached}
             />
             <Pressable
-              style={[styles.sendButton, { backgroundColor: colors.accent }, (!inputText.trim() || isLoading) && styles.sendButtonDisabled]}
+              style={[styles.sendButton, { backgroundColor: colors.accent }, (!inputText.trim() || isLoading || messageLimitReached) && styles.sendButtonDisabled]}
               onPress={() => sendMessage()}
-              disabled={!inputText.trim() || isLoading}
+              disabled={!inputText.trim() || isLoading || messageLimitReached}
             >
               <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
             </Pressable>
@@ -584,5 +720,75 @@ const styles = StyleSheet.create({
   },
   sendButtonDisabled: {
     opacity: 0.4,
+  },
+  // Exploration blocked screen
+  blockedContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+    gap: 20,
+  },
+  blockedTitle: {
+    fontFamily: Fonts.lora.bold,
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  blockedMessage: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+    maxWidth: 320,
+  },
+  upgradeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 16,
+  },
+  upgradeButtonText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
+  // Message counter
+  messageCounterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  messageCounter: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    letterSpacing: 0.3,
+  },
+  limitReachedText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 11,
+    letterSpacing: 0.5,
+  },
+  limitWarningBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  limitWarningText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    flex: 1,
+    lineHeight: 18,
   },
 });

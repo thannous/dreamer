@@ -15,6 +15,14 @@ export const TID = {
     FilterTheme: 'btn.filterTheme',
     FilterDate: 'btn.filterDate',
     ClearFilters: 'btn.clearFilters',
+    NavigateSettings: 'btn.navigateSettings',
+    MockProfile: (profile: string) => `btn.mockProfile.${profile}`,
+  },
+  Tab: {
+    Home: 'tab.home',
+    Journal: 'tab.journal',
+    Stats: 'tab.stats',
+    Settings: 'tab.settings',
   },
   List: {
     Dreams: 'list.dreams',
@@ -26,6 +34,9 @@ export const TID = {
   },
   Component: {
     SearchBar: 'component.searchBar',
+  },
+  Text: {
+    AuthEmail: 'text.auth.email',
   },
 } as const;
 

@@ -1,15 +1,21 @@
 import type { User } from '@supabase/supabase-js';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { Platform } from 'react-native';
+
 import { supabase } from './supabase';
+import * as mockAuth from './mockAuth';
+
+export type { MockProfile } from './mockAuth';
+
+const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
 
 /**
  * Initialize Google Sign-In with web client ID
  * Should be called once at app startup
  */
 export function initializeGoogleSignIn() {
-  if (Platform.OS === 'web') {
-    // Google Sign-In is handled differently on web
+  if (isMockMode || Platform.OS === 'web') {
+    // No-op in mock mode or web (handled elsewhere)
     return;
   }
 
@@ -28,6 +34,10 @@ export function initializeGoogleSignIn() {
 }
 
 export async function getAccessToken(): Promise<string | null> {
+  if (isMockMode) {
+    return mockAuth.getAccessToken();
+  }
+
   try {
     const { data } = await supabase.auth.getSession();
     return data.session?.access_token ?? null;
@@ -37,19 +47,44 @@ export async function getAccessToken(): Promise<string | null> {
 }
 
 export function onAuthChange(cb: (user: User | null) => void) {
+  if (isMockMode) {
+    return mockAuth.onAuthChange(cb);
+  }
+
   const { data } = supabase.auth.onAuthStateChange((_event, session) => {
     cb(session?.user ?? null);
   });
   return () => data.subscription.unsubscribe();
 }
 
+export async function getCurrentUser(): Promise<User | null> {
+  if (isMockMode) {
+    return mockAuth.getCurrentUser();
+  }
+
+  try {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.user ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function signInWithEmailPassword(email: string, password: string) {
+  if (isMockMode) {
+    return mockAuth.signInWithEmailPassword(email);
+  }
+
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data.user;
 }
 
 export async function signUpWithEmailPassword(email: string, password: string) {
+  if (isMockMode) {
+    return mockAuth.signUpWithEmailPassword(email);
+  }
+
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) throw error;
   return data.user;
@@ -60,6 +95,10 @@ export async function signUpWithEmailPassword(email: string, password: string) {
  * Returns the authenticated user from Supabase
  */
 export async function signInWithGoogle(): Promise<User> {
+  if (isMockMode) {
+    return mockAuth.signInWithGoogle();
+  }
+
   if (Platform.OS === 'web') {
     throw new Error('Google Sign-In on web should use the web-specific implementation');
   }
@@ -107,6 +146,11 @@ export async function signInWithGoogle(): Promise<User> {
  * Web-only Google Sign-In using Supabase OAuth popup
  */
 export async function signInWithGoogleWeb(): Promise<void> {
+  if (isMockMode) {
+    await mockAuth.signInWithGoogleWeb();
+    return;
+  }
+
   if (Platform.OS !== 'web') return;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
@@ -121,6 +165,11 @@ export async function signInWithGoogleWeb(): Promise<void> {
  * Complete sign out from both Google and Supabase
  */
 export async function signOut() {
+  if (isMockMode) {
+    await mockAuth.signOut();
+    return;
+  }
+
   try {
     // Sign out from Google if signed in
     if (Platform.OS !== 'web') {
@@ -137,4 +186,11 @@ export async function signOut() {
     console.error('Error during sign out:', error);
     throw error;
   }
+}
+
+export async function signInMock(profile: mockAuth.MockProfile): Promise<User> {
+  if (!isMockMode) {
+    throw new Error('Mock sign-in is only available while running in mock mode.');
+  }
+  return mockAuth.signInWithProfile(profile);
 }

@@ -10,6 +10,7 @@ export type DreamsContextValue = {
   updateDream: (dream: DreamAnalysis) => Promise<void>;
   deleteDream: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<void>;
+  analyzeDream: (dreamId: number, transcript: string) => Promise<DreamAnalysis>;
 };
 
 const DreamsContext = createContext<DreamsContextValue | null>(null);
@@ -26,6 +27,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     updateDream: journal.updateDream,
     deleteDream: journal.deleteDream,
     toggleFavorite: journal.toggleFavorite,
+    analyzeDream: journal.analyzeDream,
   }), [
     journal.dreams,
     journal.loaded,
@@ -34,6 +36,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     journal.updateDream,
     journal.deleteDream,
     journal.toggleFavorite,
+    journal.analyzeDream,
   ]);
 
   return <DreamsContext.Provider value={value}>{children}</DreamsContext.Provider>;
