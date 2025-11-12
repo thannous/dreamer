@@ -3,13 +3,14 @@ import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
+import { ThemeLayout } from '@/constants/journalTheme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
-import { classifyError } from '@/lib/errors';
+import { classifyError, QuotaError } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
-import { analyzeDreamWithImageResilient } from '@/services/geminiService';
+import { useQuota } from '@/hooks/useQuota';
 import { transcribeAudio } from '@/services/speechToText';
 import {
   AudioModule,
@@ -38,7 +39,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
 import { GUEST_DREAM_LIMIT } from '@/constants/limits';
-import { GuestLimitBanner } from '@/components/guest/GuestLimitBanner';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -71,16 +71,21 @@ const RECORDING_OPTIONS: RecordingOptions = {
 };
 
 export default function RecordingScreen() {
-  const { guestLimitReached, addDream, dreams } = useDreams();
+  const { addDream, dreams, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
   const [transcript, setTranscript] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
+  const [isPersisting, setIsPersisting] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const analysisProgress = useAnalysisProgress();
   const { language } = useLanguage();
   const { t } = useTranslation();
   const { user } = useAuth();
-  const limitLock = !user && guestLimitReached;
+  const { canAnalyzeNow } = useQuota();
+  const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
+  const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
+  const interactionDisabled = isPersisting || isAnalyzing;
 
   const transcriptionLocale = useMemo(() => {
     switch (language) {
@@ -105,6 +110,97 @@ export default function RecordingScreen() {
       }
     })();
   }, [t]);
+
+  const deriveDraftTitle = useCallback(() => {
+    if (!trimmedTranscript) {
+      return t('recording.draft.default_title');
+    }
+    const firstLine = trimmedTranscript.split('\n')[0]?.trim() ?? '';
+    if (!firstLine) {
+      return t('recording.draft.default_title');
+    }
+    return firstLine.length > 64 ? `${firstLine.slice(0, 64)}…` : firstLine;
+  }, [trimmedTranscript, t]);
+
+  const buildDraftDream = useCallback((): DreamAnalysis => {
+    const title = deriveDraftTitle();
+    return {
+      id: Date.now(),
+      transcript: trimmedTranscript,
+      title,
+      interpretation: '',
+      shareableQuote: '',
+      theme: undefined,
+      dreamType: 'Dream',
+      imageUrl: '',
+      thumbnailUrl: undefined,
+      chatHistory: trimmedTranscript
+        ? [{ role: 'user', text: `Here is my dream: ${trimmedTranscript}` }]
+        : [],
+      isFavorite: false,
+      imageGenerationFailed: false,
+      isAnalyzed: false,
+      analysisStatus: 'none',
+    };
+  }, [deriveDraftTitle, trimmedTranscript]);
+
+  const ensureDraftSaved = useCallback(async () => {
+    if (draftDream && draftDream.transcript === trimmedTranscript) {
+      return draftDream;
+    }
+    const draft = buildDraftDream();
+    const saved = await addDream(draft);
+    setDraftDream(saved);
+    return saved;
+  }, [draftDream, trimmedTranscript, buildDraftDream, addDream]);
+
+  const resetComposer = useCallback(() => {
+    setTranscript('');
+    setDraftDream(null);
+    analysisProgress.reset();
+  }, [analysisProgress]);
+
+  const navigateAfterSave = useCallback(
+    (savedDream: DreamAnalysis, previousDreamCount: number) => {
+      if (!user && previousDreamCount === 0) {
+        const upsellTitle = t('guest.upsell.after1.title');
+        const upsellMessage = t('guest.upsell.after1.message', { limit: GUEST_DREAM_LIMIT });
+        const upsellCta = t('guest.upsell.after1.cta');
+        const upsellLater = t('guest.upsell.after1.later');
+
+        if (Platform.OS === 'web') {
+          const goToSettings = typeof window !== 'undefined'
+            && window.confirm(
+              `${upsellTitle}\n\n${upsellMessage}\n\nOK ▸ ${upsellCta}\n${t('common.cancel')} ▸ ${upsellLater}`
+            );
+          if (goToSettings) {
+            router.push('/(tabs)/settings');
+            return;
+          }
+        } else {
+          Alert.alert(
+            upsellTitle,
+            upsellMessage,
+            [
+              {
+                text: upsellCta,
+                onPress: () => router.push('/(tabs)/settings'),
+              },
+              {
+                text: upsellLater,
+                style: 'cancel',
+                onPress: () => router.replace(`/journal/${savedDream.id}`),
+              },
+            ]
+          );
+          return;
+        }
+      }
+
+      router.replace(`/journal/${savedDream.id}`);
+    },
+    [router, t, user]
+  );
 
   const startRecording = useCallback(async () => {
     try {
@@ -176,16 +272,45 @@ export default function RecordingScreen() {
     }
   }, [isRecording, stopRecording, startRecording]);
 
-  const handleSave = useCallback(async () => {
-    if (!transcript.trim()) {
+  const handleSaveDraft = useCallback(async () => {
+    if (!trimmedTranscript) {
       Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
       return;
     }
 
-    if (!user && guestLimitReached) {
+    setIsPersisting(true);
+    try {
+      const preCount = dreams.length;
+      const savedDream = await ensureDraftSaved();
+      resetComposer();
+      navigateAfterSave(savedDream, preCount);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
+      Alert.alert(t('common.error_title'), message);
+    } finally {
+      setIsPersisting(false);
+    }
+  }, [trimmedTranscript, dreams.length, ensureDraftSaved, navigateAfterSave, resetComposer, t]);
+
+  const handleAnalyzeNow = useCallback(async () => {
+    if (!trimmedTranscript) {
+      Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
+      return;
+    }
+
+    if (!canAnalyzeNow) {
+      const tier = user ? 'free' : 'guest';
+      const limit = tier === 'guest' ? 2 : 5;
+      const title = tier === 'guest'
+        ? t('recording.alert.analysis_limit.title_guest')
+        : t('recording.alert.analysis_limit.title_free');
+      const message = tier === 'guest'
+        ? t('recording.alert.analysis_limit.message_guest', { limit })
+        : t('recording.alert.analysis_limit.message_free', { limit });
+
       Alert.alert(
-        t('recording.alert.limit.title'),
-        t('recording.alert.limit.message', { limit: GUEST_DREAM_LIMIT }),
+        title,
+        message,
         [
           {
             text: t('recording.alert.limit.cta'),
@@ -197,91 +322,27 @@ export default function RecordingScreen() {
       return;
     }
 
-    // Reset progress and start analysis
-    analysisProgress.reset();
-    analysisProgress.setStep(AnalysisStep.ANALYZING);
-
+    setIsPersisting(true);
+    const preCount = dreams.length;
     try {
-      // Analyze the dream with resilient image generation
-      const analysis = await analyzeDreamWithImageResilient(transcript);
+      const savedDream = await ensureDraftSaved();
+      analysisProgress.reset();
+      analysisProgress.setStep(AnalysisStep.ANALYZING);
 
-      // Update progress to image generation step
-      analysisProgress.setStep(AnalysisStep.GENERATING_IMAGE);
+      const analyzedDream = await analyzeDream(savedDream.id, savedDream.transcript);
 
-      // Brief delay to show the progress update
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Finalize
-      analysisProgress.setStep(AnalysisStep.FINALIZING);
-
-      // Create and save the dream
-      const newDream: DreamAnalysis = {
-        id: Date.now(),
-        transcript,
-        title: analysis.title,
-        interpretation: analysis.interpretation,
-        shareableQuote: analysis.shareableQuote,
-        theme: analysis.theme,
-        dreamType: analysis.dreamType,
-        imageUrl: analysis.imageUrl || '', // Empty string if no image
-        imageGenerationFailed: analysis.imageGenerationFailed,
-        chatHistory: [{ role: 'user', text: `Here is my dream: ${transcript}` }],
-      };
-
-      const preCount = dreams.length;
-      const savedDream = await addDream(newDream);
-
-      // Mark as complete
       analysisProgress.setStep(AnalysisStep.COMPLETE);
-
-      // Brief delay to show completion
+      resetComposer();
       await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // After 1st dream for guests, show upsell
-      if (!user && preCount === 0) {
-        const upsellTitle = t('guest.upsell.after1.title');
-        const upsellMessage = t('guest.upsell.after1.message', { limit: GUEST_DREAM_LIMIT });
-        const upsellCta = t('guest.upsell.after1.cta');
-        const upsellLater = t('guest.upsell.after1.later');
-
-        if (Platform.OS === 'web') {
-          const goToSettings = typeof window !== 'undefined'
-            && window.confirm(
-              `${upsellTitle}\n\n${upsellMessage}\n\nOK ▸ ${upsellCta}\n${t('common.cancel')} ▸ ${upsellLater}`
-            );
-          if (goToSettings) {
-            router.push('/(tabs)/settings');
-          } else {
-            router.replace(`/journal/${savedDream.id}`);
-          }
-        } else {
-          Alert.alert(
-            upsellTitle,
-            upsellMessage,
-            [
-              {
-                text: upsellCta,
-                onPress: () => router.push('/(tabs)/settings'),
-              },
-              {
-                text: upsellLater,
-                style: 'cancel',
-                onPress: () => router.replace(`/journal/${savedDream.id}`),
-              },
-            ]
-          );
-        }
-        return;
-      }
-
-      // Navigate directly to dream detail (default)
-      router.replace(`/journal/${savedDream.id}`);
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error(String(err));
-      if ((error as Error & { code?: string }).code === 'GUEST_LIMIT_REACHED') {
+      navigateAfterSave(analyzedDream, preCount);
+    } catch (error) {
+      if (error instanceof QuotaError) {
+        const title = error.tier === 'guest'
+          ? t('recording.alert.analysis_limit.title_guest')
+          : t('recording.alert.analysis_limit.title_free');
         Alert.alert(
-          t('recording.alert.limit.title'),
-          t('recording.alert.limit.message', { limit: GUEST_DREAM_LIMIT }),
+          title,
+          error.userMessage,
           [
             {
               text: t('recording.alert.limit.cta'),
@@ -291,12 +352,26 @@ export default function RecordingScreen() {
           ]
         );
         analysisProgress.reset();
-        return;
+      } else {
+        const classified = classifyError(error as Error);
+        analysisProgress.setError(classified);
       }
-      const classified = classifyError(error);
-      analysisProgress.setError(classified);
+    } finally {
+      setIsPersisting(false);
     }
-  }, [transcript, addDream, analysisProgress, t, user, guestLimitReached, dreams.length]);
+  }, [
+    trimmedTranscript,
+    canAnalyzeNow,
+    user,
+    t,
+    dreams.length,
+    ensureDraftSaved,
+    analysisProgress,
+    analyzeDream,
+    navigateAfterSave,
+    resetComposer,
+    router,
+  ]);
 
   const handleGoToJournal = useCallback(() => {
     router.push('/(tabs)/journal');
@@ -305,10 +380,6 @@ export default function RecordingScreen() {
   const gradientColors = mode === 'dark'
     ? GradientColors.surreal
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
-
-  const overlayColor = mode === 'dark'
-    ? 'rgba(24, 24, 28, 0.78)'
-    : 'rgba(170, 170, 180, 0.6)';
 
   return (
     <LinearGradient
@@ -328,7 +399,6 @@ export default function RecordingScreen() {
         >
           {/* Main Content */}
           <View style={styles.mainContent}>
-            <GuestLimitBanner />
             <View style={styles.recordingSection}>
               <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
                 {t('recording.instructions')}
@@ -337,7 +407,7 @@ export default function RecordingScreen() {
               <MicButton
                 isRecording={isRecording}
                 onPress={toggleRecording}
-                disabled={limitLock}
+                disabled={interactionDisabled}
                 testID={TID.Button.RecordToggle}
               />
 
@@ -360,10 +430,16 @@ export default function RecordingScreen() {
                   },
                 ]}
                 multiline
-                editable={!limitLock && analysisProgress.step === AnalysisStep.IDLE}
+                editable={!interactionDisabled}
                 testID={TID.Input.DreamTranscript}
                 accessibilityLabel={t('recording.placeholder.accessibility')}
               />
+
+              {!canAnalyzeNow && (
+                <Text style={[styles.inlineQuotaWarning, { color: colors.accent }]}>
+                  {user ? t('recording.alert.analysis_limit.title_free') : t('recording.alert.analysis_limit.title_guest')}
+                </Text>
+              )}
 
               {/* Analysis Progress */}
               {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
@@ -372,34 +448,49 @@ export default function RecordingScreen() {
                   progress={analysisProgress.progress}
                   message={analysisProgress.message}
                   error={analysisProgress.error}
-                  onRetry={handleSave}
+                  onRetry={handleAnalyzeNow}
                 />
               )}
 
-              {/* Submit Button */}
-              {analysisProgress.step === AnalysisStep.IDLE && (
+              {/* Actions */}
+              <View style={styles.actionButtons}>
                 <Pressable
-                  onPress={handleSave}
-                  disabled={!transcript.trim() || limitLock}
+                  onPress={handleAnalyzeNow}
+                  disabled={!trimmedTranscript || interactionDisabled || !canAnalyzeNow}
                   style={[
                     styles.submitButton,
                     shadows.lg,
                     { backgroundColor: colors.accent },
-                    (!transcript.trim() || limitLock) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }]
+                    (!trimmedTranscript || interactionDisabled || !canAnalyzeNow) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }],
                   ]}
                   testID={TID.Button.SaveDream}
                   accessibilityRole="button"
-                  accessibilityLabel={t('recording.button.accessibility')}
+                  accessibilityLabel={t('recording.button.analyze_now_accessibility', { defaultValue: t('recording.button.analyze') })}
                 >
                   <Text style={styles.submitButtonText}>
-                    ✨ {t('recording.button.analyze')}
+                    ✨ {t('recording.button.analyze_now', { defaultValue: t('recording.button.analyze') })}
                   </Text>
                 </Pressable>
-              )}
+                <Pressable
+                  onPress={handleSaveDraft}
+                  disabled={!trimmedTranscript || interactionDisabled}
+                  style={[
+                    styles.secondaryButton,
+                    { borderColor: colors.divider },
+                    (!trimmedTranscript || interactionDisabled) && styles.secondaryButtonDisabled,
+                  ]}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('recording.button.save_draft_accessibility', { defaultValue: t('recording.button.save_draft') })}
+                >
+                  <Text style={[styles.secondaryButtonText, { color: colors.textPrimary }]}>
+                    💾 {t('recording.button.save_draft')}
+                  </Text>
+                </Pressable>
+              </View>
 
               <Pressable
                 onPress={handleGoToJournal}
-                style={[styles.journalLinkButton, limitLock && styles.onTop]}
+                style={styles.journalLinkButton}
                 testID={TID.Button.NavigateJournal}
                 accessibilityRole="link"
                 accessibilityLabel={t('recording.nav_button.accessibility')}
@@ -410,14 +501,6 @@ export default function RecordingScreen() {
               </Pressable>
             </View>
 
-            {limitLock && (
-              <View
-                pointerEvents="none"
-                style={[styles.disabledOverlay, { backgroundColor: overlayColor }]}
-                accessibilityElementsHidden
-                importantForAccessibility="no-hide-descendants"
-              />
-            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -470,6 +553,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     gap: 16,
   },
+  inlineQuotaWarning: {
+    marginTop: ThemeLayout.spacing.xs,
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textAlign: 'center',
+  },
   textInput: {
     minHeight: 160,
     maxHeight: 240,
@@ -496,9 +585,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  actionButtons: {
     gap: 12,
   },
   submitButtonText: {
@@ -506,6 +593,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.5,
+  },
+  secondaryButton: {
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButtonDisabled: {
+    opacity: 0.5,
+  },
+  secondaryButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   journalLinkButton: {
     paddingVertical: 12,
@@ -515,18 +616,5 @@ const styles = StyleSheet.create({
   journalLinkText: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  disabledOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 72,
-    borderRadius: 0,
-    zIndex: 5,
-  },
-  onTop: {
-    zIndex: 50,
-    position: 'relative',
   },
 });

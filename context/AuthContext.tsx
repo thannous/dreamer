@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 
-import { onAuthChange } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
+import { getCurrentUser, onAuthChange } from '@/lib/auth';
 
 export type AuthContextValue = {
   user: User | null;
@@ -20,9 +19,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     const bootstrap = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        const sessionUser = await getCurrentUser();
         if (mounted) {
-          setUser(data.session?.user ?? null);
+          setUser(sessionUser);
           setLoading(false);
         }
       } catch (error) {

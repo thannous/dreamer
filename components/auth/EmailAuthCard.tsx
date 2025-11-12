@@ -14,10 +14,32 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
-import { signInWithEmailPassword, signOut, signUpWithEmailPassword } from '@/lib/auth';
+import { signInMock, signInWithEmailPassword, signOut, signUpWithEmailPassword } from '@/lib/auth';
+import { TID } from '@/lib/testIDs';
+import type { MockProfile } from '@/lib/auth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
+const isMockModeEnabled =
+  ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+
+const mockProfiles: { profile: MockProfile; titleKey: string; subtitleKey: string }[] = [
+  {
+    profile: 'new',
+    titleKey: 'settings.account.mock.profile.new',
+    subtitleKey: 'settings.account.mock.profile.new_hint',
+  },
+  {
+    profile: 'existing',
+    titleKey: 'settings.account.mock.profile.existing',
+    subtitleKey: 'settings.account.mock.profile.existing_hint',
+  },
+  {
+    profile: 'premium',
+    titleKey: 'settings.account.mock.profile.premium',
+    subtitleKey: 'settings.account.mock.profile.premium_hint',
+  },
+];
 
 type Props = {
   isCompact?: boolean;
@@ -32,6 +54,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const [password, setPassword] = useState('');
   const [touched, setTouched] = useState({ email: false, password: false });
   const [submitting, setSubmitting] = useState<'signin' | 'signup' | 'signout' | null>(null);
+  const [mockProfileLoading, setMockProfileLoading] = useState<MockProfile | null>(null);
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
@@ -40,7 +63,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const showEmailError = touched.email && trimmedEmail.length > 0 && !emailValid;
   const showPasswordError = touched.password && password.length > 0 && !passwordValid;
 
-  const isBusy = submitting !== null || authLoading;
+  const isMockBusy = mockProfileLoading !== null;
+  const isBusy = submitting !== null || authLoading || isMockBusy;
   const emailActionsDisabled = isBusy || !emailValid || !passwordValid;
 
   const resetSensitiveInputs = () => {
@@ -96,6 +120,18 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
   };
 
+  const handleMockSignIn = async (profile: MockProfile) => {
+    if (!isMockModeEnabled) return;
+    setMockProfileLoading(profile);
+    try {
+      await signInMock(profile);
+    } catch (error) {
+      handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
+    } finally {
+      setMockProfileLoading((current) => (current === profile ? null : current));
+    }
+  };
+
   if (user) {
     return (
       <View
@@ -114,7 +150,12 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
             {t('settings.account.label.email')}
           </Text>
-          <Text style={[styles.userEmail, { color: colors.textPrimary }]}>{user.email}</Text>
+          <Text
+            testID={TID.Text.AuthEmail}
+            style={[styles.userEmail, { color: colors.textPrimary }]}
+          >
+            {user.email}
+          </Text>
         </View>
 
         <Pressable
@@ -148,13 +189,66 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         {t('settings.account.description_signed_out')}
       </Text>
 
-      <GoogleSignInButton />
+      {isMockModeEnabled ? (
+        <>
+          <View style={[styles.mockSection, { backgroundColor: colors.backgroundSecondary }]}>
+            <Text style={[styles.mockSectionTitle, { color: colors.textPrimary }]}>
+              {t('settings.account.mock.quick_title')}
+            </Text>
+            <Text style={[styles.mockSectionSubtitle, { color: colors.textSecondary }]}>
+              {t('settings.account.mock.quick_description')}
+            </Text>
+            <View style={styles.mockButtonsColumn}>
+              {mockProfiles.map(({ profile, titleKey, subtitleKey }) => {
+                const loading = mockProfileLoading === profile;
+                return (
+                  <Pressable
+                    key={profile}
+                    testID={TID.Button.MockProfile(profile)}
+                    style={({ pressed }) => [
+                      styles.mockButton,
+                      { borderColor: colors.divider, backgroundColor: colors.backgroundCard },
+                      pressed && styles.mockButtonPressed,
+                      (loading || isBusy) && styles.mockButtonDisabled,
+                    ]}
+                    onPress={() => handleMockSignIn(profile)}
+                    disabled={loading || isBusy}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color={colors.textPrimary} size="small" />
+                    ) : (
+                      <>
+                        <Text style={[styles.mockButtonTitle, { color: colors.textPrimary }]}>
+                          {t(titleKey)}
+                        </Text>
+                        <Text style={[styles.mockButtonSubtitle, { color: colors.textSecondary }]}>
+                          {t(subtitleKey)}
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </View>
+          </View>
 
-      <View style={styles.divider}>
-        <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
-        <Text style={[styles.dividerText, { color: colors.textSecondary }]}>{t('common.or')}</Text>
-        <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
-      </View>
+          <View style={styles.divider}>
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+            <Text style={[styles.dividerText, { color: colors.textSecondary }]}>{t('common.or')}</Text>
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+          </View>
+        </>
+      ) : (
+        <>
+          <GoogleSignInButton />
+
+          <View style={styles.divider}>
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+            <Text style={[styles.dividerText, { color: colors.textSecondary }]}>{t('common.or')}</Text>
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+          </View>
+        </>
+      )}
 
       <TextInput
         style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
@@ -354,6 +448,43 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_500Medium',
     marginBottom: ThemeLayout.spacing.xs,
+  },
+  mockSection: {
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
+  },
+  mockSectionTitle: {
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: 16,
+  },
+  mockSectionSubtitle: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 13,
+    marginTop: 4,
+  },
+  mockButtonsColumn: {
+    marginTop: ThemeLayout.spacing.sm,
+    gap: ThemeLayout.spacing.xs,
+  },
+  mockButton: {
+    borderRadius: ThemeLayout.borderRadius.sm,
+    borderWidth: 1,
+    padding: ThemeLayout.spacing.sm,
+  },
+  mockButtonPressed: {
+    opacity: 0.9,
+  },
+  mockButtonDisabled: {
+    opacity: 0.6,
+  },
+  mockButtonTitle: {
+    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: 15,
+  },
+  mockButtonSubtitle: {
+    fontFamily: 'SpaceGrotesk_400Regular',
+    fontSize: 13,
+    marginTop: 2,
   },
 });
 

@@ -17,7 +17,9 @@ import {
   updateDreamInSupabase,
 } from '@/services/supabaseDreamService';
 import { useAuth } from '@/context/AuthContext';
-import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { quotaService } from '@/services/quotaService';
+import { QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { analyzeDreamWithImageResilient } from '@/services/geminiService';
 
 // Guest limit centralized in constants/limits
 
@@ -26,6 +28,17 @@ type DreamListUpdater = DreamAnalysis[] | ((list: DreamAnalysis[]) => DreamAnaly
 const sortDreams = (list: DreamAnalysis[]): DreamAnalysis[] => [...list].sort((a, b) => b.id - a.id);
 
 const generateMutationId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+/**
+ * Generate a simple UUID v4-like string for analysis request idempotence
+ */
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
 
 const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamAnalysis[] => {
   const index = list.findIndex(
@@ -75,6 +88,9 @@ const applyPendingMutations = (source: DreamAnalysis[], mutations: DreamMutation
 export const useDreamJournal = () => {
   const { user } = useAuth();
   const isAuthenticated = Boolean(user);
+  const isMockMode =
+    ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+  const canUseRemoteSync = isAuthenticated && !isMockMode;
   const networkState = useNetworkState();
   const hasNetwork = useMemo(() => {
     if (networkState.isInternetReachable != null) {
@@ -104,21 +120,22 @@ export const useDreamJournal = () => {
 
   const persistRemoteDreams = useCallback(
     async (updater: DreamListUpdater) => {
-      if (!isAuthenticated) return;
+      if (!canUseRemoteSync) return;
       const resolved = typeof updater === 'function' ? updater(dreamsRef.current) : updater;
       const sorted = sortDreams(resolved);
       setDreams(sorted);
       await saveCachedRemoteDreams(sorted);
     },
-    [isAuthenticated, saveCachedRemoteDreams]
+    [canUseRemoteSync, saveCachedRemoteDreams]
   );
 
   const persistPendingMutations = useCallback(
     async (mutations: DreamMutation[]) => {
       pendingMutationsRef.current = mutations;
+      if (!canUseRemoteSync) return;
       await savePendingDreamMutations(mutations);
     },
-    [savePendingDreamMutations]
+    [canUseRemoteSync, savePendingDreamMutations]
   );
 
   const appendPendingMutation = useCallback(
@@ -157,7 +174,7 @@ export const useDreamJournal = () => {
   );
 
   const migrateGuestDreamsToSupabase = useCallback(async () => {
-    if (!user) return;
+    if (!canUseRemoteSync || !user) return;
     const localDreams = await getSavedDreams();
     const unsynced = localDreams.filter((dream) => !dream.remoteId);
     if (!unsynced.length) return;
@@ -167,7 +184,7 @@ export const useDreamJournal = () => {
     }
 
     await saveDreams([]);
-  }, [user]);
+  }, [canUseRemoteSync, user]);
 
   useEffect(() => {
     let mounted = true;
@@ -175,7 +192,7 @@ export const useDreamJournal = () => {
     const loadDreams = async () => {
       setLoaded(false);
       try {
-        if (!isAuthenticated) {
+        if (!canUseRemoteSync) {
           pendingMutationsRef.current = [];
           const localDreams = await getSavedDreams();
           if (mounted) {
@@ -186,13 +203,11 @@ export const useDreamJournal = () => {
 
         const pending = await getPendingDreamMutations();
         pendingMutationsRef.current = pending;
-        if (isAuthenticated) {
-          try {
-            await migrateGuestDreamsToSupabase();
-          } catch (migrationError) {
-            if (__DEV__) {
-              console.warn('Failed to migrate guest dreams', migrationError);
-            }
+        try {
+          await migrateGuestDreamsToSupabase();
+        } catch (migrationError) {
+          if (__DEV__) {
+            console.warn('Failed to migrate guest dreams', migrationError);
           }
         }
 
@@ -232,18 +247,17 @@ export const useDreamJournal = () => {
     return () => {
       mounted = false;
     };
-  }, [isAuthenticated, migrateGuestDreamsToSupabase]);
+  }, [canUseRemoteSync, migrateGuestDreamsToSupabase]);
 
   const addDream = useCallback(
     async (dream: DreamAnalysis): Promise<DreamAnalysis> => {
       const currentDreams = dreamsRef.current;
 
-      if (!isAuthenticated) {
-        if (currentDreams.length >= GUEST_DREAM_LIMIT) {
-          const limitError = new Error('Guest limit reached');
-          (limitError as Error & { code?: string }).code = 'GUEST_LIMIT_REACHED';
-          throw limitError;
-        }
+      // Note: Guest dream limit has been removed.
+      // Quota is now enforced on analysis (not recording).
+      // See quotaService for analysis quota enforcement.
+
+      if (!canUseRemoteSync) {
         await persistLocalDreams([dream, ...currentDreams]);
         return dream;
       }
@@ -277,7 +291,7 @@ export const useDreamJournal = () => {
         return queueAndPersist();
       }
     },
-    [appendPendingMutation, hasNetwork, isAuthenticated, persistLocalDreams, persistRemoteDreams, queueOfflineOperation, user]
+    [appendPendingMutation, canUseRemoteSync, hasNetwork, persistLocalDreams, persistRemoteDreams, queueOfflineOperation, user]
   );
 
   const resolveRemoteId = useCallback((dreamId: number): number | undefined => {
@@ -289,7 +303,7 @@ export const useDreamJournal = () => {
     async (updatedDream: DreamAnalysis) => {
       const currentDreams = dreamsRef.current;
 
-      if (!isAuthenticated) {
+      if (!canUseRemoteSync) {
         const newDreams = currentDreams.map((d) => (d.id === updatedDream.id ? updatedDream : d));
         await persistLocalDreams(newDreams);
         return;
@@ -328,14 +342,14 @@ export const useDreamJournal = () => {
         await queueAndPersist();
       }
     },
-    [clearQueuedMutationsForDream, hasNetwork, isAuthenticated, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
+    [canUseRemoteSync, clearQueuedMutationsForDream, hasNetwork, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
   );
 
   const deleteDream = useCallback(
     async (dreamId: number) => {
       const currentDreams = dreamsRef.current;
 
-      if (!isAuthenticated) {
+      if (!canUseRemoteSync) {
         const newDreams = currentDreams.filter((d) => d.id !== dreamId);
         await persistLocalDreams(newDreams);
         return;
@@ -381,7 +395,7 @@ export const useDreamJournal = () => {
         await queueAndPersist();
       }
     },
-    [hasNetwork, isAuthenticated, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
+    [canUseRemoteSync, hasNetwork, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
   );
 
   const toggleFavorite = useCallback(
@@ -391,7 +405,7 @@ export const useDreamJournal = () => {
         d.id === dreamId ? { ...d, isFavorite: !d.isFavorite } : d
       );
 
-      if (!isAuthenticated) {
+      if (!canUseRemoteSync) {
         await persistLocalDreams(newDreams);
         return;
       }
@@ -433,11 +447,11 @@ export const useDreamJournal = () => {
         await queueAndPersist(pendingVersion);
       }
     },
-    [hasNetwork, isAuthenticated, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
+    [canUseRemoteSync, hasNetwork, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
   );
 
   const syncPendingMutations = useCallback(async () => {
-    if (!isAuthenticated || !user || !hasNetwork) return;
+    if (!canUseRemoteSync || !user || !hasNetwork) return;
     if (!pendingMutationsRef.current.length || syncingRef.current) return;
     syncingRef.current = true;
     try {
@@ -506,13 +520,94 @@ export const useDreamJournal = () => {
     } finally {
       syncingRef.current = false;
     }
-  }, [hasNetwork, isAuthenticated, persistPendingMutations, persistRemoteDreams, resolveRemoteId, user]);
+  }, [canUseRemoteSync, hasNetwork, persistPendingMutations, persistRemoteDreams, resolveRemoteId, user]);
 
   useEffect(() => {
     syncPendingMutations();
   }, [syncPendingMutations]);
 
-  const guestLimitReached = !isAuthenticated && dreams.length >= GUEST_DREAM_LIMIT;
+  /**
+   * Analyze a dream (separate from recording)
+   * Checks quota, calls AI analysis API, and updates dream with results
+   */
+  const analyzeDream = useCallback(
+    async (dreamId: number, transcript: string): Promise<DreamAnalysis> => {
+      // Check quota before analyzing
+      const canAnalyze = await quotaService.canAnalyzeDream(user);
+      if (!canAnalyze) {
+        const tier = user ? 'free' : 'guest';
+        throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+      }
 
-  return { dreams, loaded, guestLimitReached, addDream, updateDream, deleteDream, toggleFavorite };
+      // Find the dream to update
+      const dream = dreamsRef.current.find((d) => d.id === dreamId);
+      if (!dream) {
+        throw new Error(`Dream with id ${dreamId} not found`);
+      }
+
+      // Generate request ID for idempotence
+      const requestId = generateUUID();
+
+      // Update dream status to pending
+      const pendingDream: DreamAnalysis = {
+        ...dream,
+        analysisStatus: 'pending',
+        analysisRequestId: requestId,
+      };
+      await updateDream(pendingDream);
+
+      try {
+        // Call AI analysis API
+        const analysis = await analyzeDreamWithImageResilient(transcript);
+
+        // Update dream with analysis results
+        const analyzedDream: DreamAnalysis = {
+          ...dream,
+          title: analysis.title,
+          interpretation: analysis.interpretation,
+          shareableQuote: analysis.shareableQuote,
+          imageUrl: analysis.imageUrl,
+          thumbnailUrl: analysis.imageUrl,
+          theme: analysis.theme,
+          dreamType: analysis.dreamType,
+          imageGenerationFailed: analysis.imageGenerationFailed,
+          isAnalyzed: true,
+          analyzedAt: Date.now(),
+          analysisStatus: 'done',
+          analysisRequestId: requestId,
+        };
+
+        await updateDream(analyzedDream);
+
+        // Invalidate quota cache
+        quotaService.invalidate(user);
+
+        return analyzedDream;
+      } catch (error) {
+        // Mark analysis as failed
+        const failedDream: DreamAnalysis = {
+          ...dream,
+          analysisStatus: 'failed',
+          analysisRequestId: requestId,
+        };
+        await updateDream(failedDream);
+
+        throw error;
+      }
+    },
+    [user, updateDream]
+  );
+
+  const guestLimitReached = false;
+
+  return {
+    dreams,
+    loaded,
+    guestLimitReached,
+    addDream,
+    updateDream,
+    deleteDream,
+    toggleFavorite,
+    analyzeDream,
+  };
 };

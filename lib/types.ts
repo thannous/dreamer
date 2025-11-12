@@ -3,6 +3,11 @@ export interface ChatMessage {
   text: string;
 }
 
+/**
+ * Analysis status for tracking async operations and offline queue
+ */
+export type AnalysisStatus = 'none' | 'pending' | 'done' | 'failed';
+
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
@@ -18,6 +23,13 @@ export interface DreamAnalysis {
   isFavorite?: boolean;
   imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
   pendingSync?: boolean;
+
+  // Quota-related fields
+  isAnalyzed?: boolean; // Whether AI analysis has been performed (separates recording from analysis)
+  analyzedAt?: number; // Timestamp when analysis was completed
+  analysisStatus?: AnalysisStatus; // Current status of analysis (for offline queue, idempotence)
+  analysisRequestId?: string; // UUID for server-side idempotence
+  explorationStartedAt?: number; // Timestamp when first chat message was sent (marks dream as "explored")
 }
 
 export interface NotificationSettings {
@@ -51,4 +63,58 @@ export type DreamMutation =
       createdAt: number;
       dreamId: number;
       remoteId?: number;
+    };
+
+/**
+ * Quota usage information
+ */
+export interface QuotaUsage {
+  analysis: {
+    used: number;
+    limit: number | null; // null = unlimited
+    remaining: number | null; // null = unlimited
+  };
+  exploration: {
+    used: number;
+    limit: number | null;
+    remaining: number | null;
+  };
+  messages: {
+    used: number; // For a specific dream
+    limit: number | null;
+    remaining: number | null;
+  };
+}
+
+/**
+ * Complete quota status for a user
+ */
+export interface QuotaStatus {
+  tier: 'guest' | 'free' | 'premium';
+  usage: QuotaUsage;
+  canAnalyze: boolean;
+  canExplore: boolean;
+  reasons?: string[]; // Reasons why an action is blocked
+}
+
+/**
+ * Offline action queue item types
+ */
+export type OfflineAction =
+  | {
+      id: string;
+      type: 'ANALYZE';
+      dreamId: number;
+      requestId: string;
+      transcript: string;
+      timestamp: number;
+      retries?: number;
+    }
+  | {
+      id: string;
+      type: 'CHAT_MESSAGE';
+      dreamId: number;
+      message: string;
+      timestamp: number;
+      retries?: number;
     };

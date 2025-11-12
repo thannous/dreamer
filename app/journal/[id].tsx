@@ -10,16 +10,20 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useQuota } from '@/hooks/useQuota';
+import { QuotaError } from '@/lib/errors';
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
-  const { dreams, toggleFavorite, updateDream, deleteDream } = useDreams();
+  const { dreams, toggleFavorite, updateDream, deleteDream, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
+  const { canAnalyzeNow } = useQuota();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
 
@@ -90,6 +94,35 @@ export default function JournalDetailScreen() {
     }
   }, []);
 
+  const handleAnalyze = useCallback(async () => {
+    if (!dream) return;
+
+    // Check quota
+    if (!canAnalyzeNow) {
+      Alert.alert(
+        'Analysis Limit Reached',
+        'You have reached your analysis limit. Please upgrade to analyze more dreams.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      await analyzeDream(dream.id, dream.transcript);
+      Alert.alert('Success', 'Dream analyzed successfully!');
+    } catch (error) {
+      if (error instanceof QuotaError) {
+        Alert.alert('Quota Exceeded', error.userMessage);
+      } else {
+        const msg = error instanceof Error ? error.message : 'Unknown error';
+        Alert.alert('Analysis Failed', msg);
+      }
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }, [dream, canAnalyzeNow, analyzeDream]);
+
   const gradientColors = mode === 'dark'
     ? GradientColors.dreamJournal
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
@@ -136,23 +169,82 @@ export default function JournalDetailScreen() {
 
         {/* Content Card - Overlaps image */}
         <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
-          {/* Premium Metadata Card */}
-          <View style={[styles.metadataCard, shadows.md, {
-            backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
-            borderColor: mode === 'dark' ? 'rgba(207, 207, 234, 0.2)' : 'rgba(212, 165, 116, 0.3)'
-          }]}>
-            <View style={styles.metadataHeader}>
-              <View style={styles.dateContainer}>
-                <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
-                <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
+
+          {/* Not Analyzed / Pending / Failed State */}
+          {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && (
+            <View style={[styles.statusCard, shadows.md, { backgroundColor: colors.backgroundSecondary }]}>
+              <View style={styles.statusHeader}>
+                <Ionicons
+                  name={dream.analysisStatus === 'pending' ? 'hourglass-outline' : dream.analysisStatus === 'failed' ? 'alert-circle-outline' : 'information-circle-outline'}
+                  size={32}
+                  color={dream.analysisStatus === 'failed' ? '#EF4444' : colors.accent}
+                />
+                <Text style={[styles.statusTitle, { color: colors.textPrimary }]}>
+                  {dream.analysisStatus === 'pending' ? 'Analysis in Progress...' :
+                   dream.analysisStatus === 'failed' ? 'Analysis Failed' :
+                   'Not Analyzed'}
+                </Text>
               </View>
-              <View style={styles.timeContainer}>
-                <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
-                <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
+
+              <Text style={[styles.statusMessage, { color: colors.textSecondary }]}>
+                {dream.analysisStatus === 'pending' ? 'Your dream is being analyzed. Please wait...' :
+                 dream.analysisStatus === 'failed' ? 'The analysis failed. Please try again.' :
+                 'This dream has not been analyzed yet. Tap the button below to analyze it with AI.'}
+              </Text>
+
+              {dream.analysisStatus !== 'pending' && (
+                <Pressable
+                  onPress={handleAnalyze}
+                  disabled={isAnalyzing}
+                  style={[styles.analyzeButton, shadows.md, { backgroundColor: colors.accent }]}
+                >
+                  {isAnalyzing ? (
+                    <ActivityIndicator color={colors.textPrimary} />
+                  ) : (
+                    <>
+                      <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
+                      <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}>
+                        {dream.analysisStatus === 'failed' ? 'Retry Analysis' : 'Analyze Dream'}
+                      </Text>
+                    </>
+                  )}
+                </Pressable>
+              )}
+
+              {dream.analysisStatus === 'pending' && (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color={colors.accent} />
+                </View>
+              )}
+
+              {/* Show transcript */}
+              <View style={[styles.transcriptContainer, { borderColor: colors.divider }]}>
+                <Text style={[styles.transcriptLabel, { color: colors.textSecondary }]}>Transcript:</Text>
+                <Text style={[styles.transcriptText, { color: colors.textPrimary }]}>{dream.transcript}</Text>
               </View>
             </View>
-            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
+          )}
+
+          {/* Regular analyzed content */}
+          {dream.isAnalyzed && dream.analysisStatus === 'done' && (
+            <>
+              {/* Premium Metadata Card */}
+              <View style={[styles.metadataCard, shadows.md, {
+                backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
+                borderColor: mode === 'dark' ? 'rgba(207, 207, 234, 0.2)' : 'rgba(212, 165, 116, 0.3)'
+              }]}>
+                <View style={styles.metadataHeader}>
+                  <View style={styles.dateContainer}>
+                    <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
+                    <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
+                  </View>
+                  <View style={styles.timeContainer}>
+                    <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
+                    <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
+                  </View>
+                </View>
+                <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+                <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
             {dream.dreamType && (
               <View style={styles.metadataRow}>
                 <Ionicons name="moon-outline" size={18} color={colors.textPrimary} />
@@ -231,6 +323,8 @@ export default function JournalDetailScreen() {
             <Ionicons name="trash-outline" size={18} color="#EF4444" />
             <Text style={styles.deleteLinkText}>Delete Dream</Text>
           </Pressable>
+            </>
+          )}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -488,5 +582,63 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
     letterSpacing: 0.3,
+  },
+  // Status card for unanalyzed/pending/failed dreams
+  statusCard: {
+    padding: 24,
+    borderRadius: 16,
+    marginBottom: 16,
+  },
+  statusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 12,
+  },
+  statusTitle: {
+    fontFamily: Fonts.lora.semiBold,
+    fontSize: 22,
+    flex: 1,
+  },
+  statusMessage: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+  analyzeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  analyzeButtonText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+    letterSpacing: 0.5,
+  },
+  loadingContainer: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  transcriptContainer: {
+    borderTopWidth: 1,
+    paddingTop: 16,
+    marginTop: 8,
+  },
+  transcriptLabel: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 13,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 8,
+  },
+  transcriptText: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    lineHeight: 24,
   },
 });

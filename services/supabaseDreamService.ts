@@ -20,6 +20,11 @@ type SupabaseDreamRow = {
   dream_type: string;
   is_favorite: boolean | null;
   image_generation_failed?: boolean | null;
+  is_analyzed?: boolean | null;
+  analyzed_at?: string | null;
+  analysis_status?: 'none' | 'pending' | 'done' | 'failed' | null;
+  analysis_request_id?: string | null;
+  exploration_started_at?: string | null;
 };
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
@@ -38,6 +43,11 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     dreamType: row.dream_type ?? 'Dream',
     isFavorite: row.is_favorite ?? false,
     imageGenerationFailed: row.image_generation_failed ?? false,
+    isAnalyzed: row.is_analyzed ?? undefined,
+    analyzedAt: row.analyzed_at ? Date.parse(row.analyzed_at) : undefined,
+    analysisStatus: row.analysis_status ?? undefined,
+    analysisRequestId: row.analysis_request_id ?? undefined,
+    explorationStartedAt: row.exploration_started_at ? Date.parse(row.exploration_started_at) : undefined,
   };
 };
 
@@ -53,6 +63,11 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageGenera
     theme: dream.theme ?? null,
     dream_type: dream.dreamType,
     is_favorite: dream.isFavorite ?? false,
+    is_analyzed: dream.isAnalyzed ?? false,
+    analyzed_at: dream.analyzedAt ? new Date(dream.analyzedAt).toISOString() : null,
+    analysis_status: dream.analysisStatus ?? 'none',
+    analysis_request_id: dream.analysisRequestId ?? null,
+    exploration_started_at: dream.explorationStartedAt ? new Date(dream.explorationStartedAt).toISOString() : null,
   };
 
   return includeImageGenerationFailed
