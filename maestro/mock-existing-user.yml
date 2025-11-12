@@ -1,0 +1,12 @@
+# Ensure the bundle identifier matches the local dev build (Expo Go / dev client).
+appId: com.tanuki75.dreamapp
+---
+- launchApp
+- tapOn:
+    id: btn.navigateJournal
+- waitForAnimationToEnd
+- tapOn: "Settings|Paramètres"
+- tapOn: "Utilisateur existant|Existing user"
+- assertVisible: "mock.existing@dreamer.app"
+- tapOn: "Journal"
+- assertVisible: "The Infinite Library"
