@@ -134,7 +134,7 @@ npm run start:real
 | **Chat AI** | 1-2s contextual responses | Real Gemini chat |
 | **Storage** | In-memory (session-only) | AsyncStorage (persistent) |
 | **Notifications** | Console logs only | Real scheduled notifications |
-| **Initial Data** | 8 pre-loaded dreams | Empty journal |
+| **Initial Data** | Empty journal (select “Existing user” to load 8 sample dreams) | Empty journal |
 
 ### 📊 Mock Data
 
@@ -178,7 +178,7 @@ Expected output:
 
 1. **Start in mock mode:** `npm run start:mock`
 2. **Check console logs:** Look for `[MOCK]` and `[MOCK STORAGE]` prefixes
-3. **Journal tab:** Should show 8 pre-loaded dreams
+3. **Journal tab:** Should be empty until you pick **Existing user** from Settings → Account (then shows 8 sample dreams)
 4. **Record new dream:** Should work with simulated 3-5s delay
 5. **Chat with dream:** Should get contextual responses
 6. **Statistics tab:** Should show charts based on mock data
@@ -206,7 +206,7 @@ Expected: No errors in services/ or mock-data/ (only unrelated errors allowed)
 
 ## Console Output Examples
 
-When running in mock mode:
+When running in mock mode (after selecting the **Existing user** profile if you want sample data):
 
 ```
 [GEMINI SERVICE] Using MOCK implementation

@@ -13,7 +13,7 @@ Contains 8 curated, realistic dream entries with:
 - Dream types (Lucid, Recurring, Nightmare, etc.)
 - Some dreams include chat histories to showcase the chat feature
 
-These dreams are automatically pre-loaded when the app starts in mock mode.
+These dreams can be pre-loaded by selecting the **Existing user** profile from the mock quick sign-in card.
 
 ### `generators.ts`
 Provides functions to generate random dream content:
