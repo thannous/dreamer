@@ -15,6 +15,13 @@
       "channel": "preview",
       "android": { "buildType": "apk" }
     },
+    "production-apk": {
+      "channel": "production",
+      "android": { "buildType": "apk" },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api"
+      }
+    },
     "e2e-test": {
       "withoutCredentials": true,
       "ios": { "simulator": true },
