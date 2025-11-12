@@ -8,10 +8,15 @@
     "start:real": "rm -f .env.local && expo start",
     "start:supabase": "node ./scripts/start-supabase.js",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test": "vitest",
+    "test:e2e": "maestro test maestro/mock-existing-user.yml",
+    "build:apk": "echo 'Usage: npm run build:apk:mock | npm run build:apk:prod'",
+    "build:apk:mock": "EXPO_PUBLIC_MOCK_MODE=true EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile preview --local",
+    "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local"
   },
   "dependencies": {
     "@expo-google-fonts/lora": "^0.4.2",
@@ -66,6 +71,8 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "supabase": "^2.54.11",
+    "vite-tsconfig-paths": "^5.1.1",
+    "vitest": "^2.1.2",
     "typescript": "~5.9.2"
   },
   "private": true
