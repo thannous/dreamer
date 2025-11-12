@@ -1,0 +1,207 @@
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useQuota } from '@/hooks/useQuota';
+import type { QuotaUsage } from '@/lib/types';
+import { router } from 'expo-router';
+import { Fonts } from '@/constants/theme';
+
+type Props = {
+  onUpgradePress?: () => void;
+};
+
+const formatUsage = (usage?: QuotaUsage[keyof QuotaUsage], unlimitedLabel?: string) => {
+  if (!usage) return '—';
+  if (usage.limit === null) {
+    return unlimitedLabel ?? 'Unlimited';
+  }
+  const used = usage.used ?? 0;
+  return `${Math.max(used, 0)} / ${usage.limit}`;
+};
+
+const getProgress = (usage?: QuotaUsage[keyof QuotaUsage]) => {
+  if (!usage || usage.limit === null || usage.limit === 0) {
+    return 0;
+  }
+  return Math.min(100, (usage.used / usage.limit) * 100);
+};
+
+export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
+  const { colors, shadows } = useTheme();
+  const { t } = useTranslation();
+  const { quotaStatus, loading, error, refetch } = useQuota();
+
+  const rows = useMemo(() => ([
+    {
+      key: 'analysis',
+      label: t('settings.quota.analysis_label'),
+      usage: quotaStatus?.usage.analysis,
+    },
+    {
+      key: 'exploration',
+      label: t('settings.quota.exploration_label'),
+      usage: quotaStatus?.usage.exploration,
+    },
+  ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, t]);
+
+  const showCta = quotaStatus && quotaStatus.tier !== 'premium';
+  const ctaLabel = quotaStatus?.tier === 'guest'
+    ? t('settings.quota.cta_guest')
+    : t('settings.quota.cta_upgrade');
+  const tierLabel = quotaStatus
+    ? t(`settings.quota.tier.${quotaStatus.tier}` as const)
+    : t('settings.quota.tier.guest');
+
+  const handleUpgrade = () => {
+    if (onUpgradePress) {
+      onUpgradePress();
+      return;
+    }
+    router.push('/(tabs)/settings?section=account');
+  };
+
+  return (
+    <View style={[styles.card, { backgroundColor: colors.backgroundCard }, shadows.md]}>
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={[styles.title, { color: colors.textPrimary }]}>
+            {t('settings.quota.title')}
+          </Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+            {t('settings.quota.subtitle', { tier: tierLabel })}
+          </Text>
+        </View>
+        {loading && <ActivityIndicator color={colors.accent} />}
+      </View>
+
+      {error && (
+        <Pressable accessibilityRole="button" onPress={refetch} style={styles.errorBanner}>
+          <Text style={[styles.errorText, { color: colors.textPrimary }]}>
+            {t('settings.quota.error')}
+          </Text>
+        </Pressable>
+      )}
+
+      {rows.map((row) => (
+        <View key={row.key} style={styles.row}>
+          <View style={styles.rowHeader}>
+            <Text style={[styles.rowLabel, { color: colors.textSecondary }]}>
+              {row.label}
+            </Text>
+            <Text style={[styles.rowValue, { color: colors.textPrimary }]}>
+              {formatUsage(row.usage, t('recording.quota.unlimited'))}
+            </Text>
+          </View>
+          {row.usage && row.usage.limit !== null && (
+            <View style={[styles.progressTrack, { backgroundColor: colors.backgroundSecondary }] }>
+              <View
+                style={[
+                  styles.progressFill,
+                  {
+                    backgroundColor: colors.accent,
+                    width: `${getProgress(row.usage)}%`,
+                  },
+                ]}
+              />
+            </View>
+          )}
+        </View>
+      ))}
+
+      {quotaStatus?.tier === 'premium' && (
+        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
+          <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
+            {t('settings.quota.premium_message')}
+          </Text>
+        </View>
+      )}
+
+      {showCta && (
+        <Pressable
+          style={[styles.ctaButton, { backgroundColor: colors.accent }, shadows.sm]}
+          accessibilityRole="button"
+          onPress={handleUpgrade}
+        >
+          <Text style={[styles.ctaText, { color: colors.textPrimary }]}>{ctaLabel}</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 20,
+    padding: 20,
+    gap: 16,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 16,
+  },
+  title: {
+    fontSize: 18,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  errorBanner: {
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: '#EF444422',
+  },
+  errorText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+  },
+  row: {
+    gap: 8,
+  },
+  rowHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  rowLabel: {
+    fontSize: 13,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    fontFamily: Fonts.spaceGrotesk.medium,
+  },
+  rowValue: {
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  progressTrack: {
+    height: 8,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  notice: {
+    borderRadius: 12,
+    padding: 12,
+  },
+  noticeText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+  },
+  ctaButton: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+  },
+  ctaText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    letterSpacing: 0.5,
+  },
+});
