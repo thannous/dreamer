@@ -26,6 +26,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { quotaService } from '@/services/quotaService';
 import { useAuth } from '@/context/AuthContext';
+import { TID } from '@/lib/testIDs';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
 
@@ -292,7 +293,7 @@ export default function DreamChatScreen() {
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </Pressable>
 
-        <View style={[styles.blockedContainer]}>
+        <View style={[styles.blockedContainer]} testID={TID.Chat.ScreenBlocked}>
           <Ionicons name="lock-closed" size={64} color={colors.accent} />
           <Text style={[styles.blockedTitle, { color: colors.textPrimary }]}>
             Exploration Limit Reached
@@ -317,9 +318,20 @@ export default function DreamChatScreen() {
   }
 
   // Calculate if message limit is reached
-  const messageLimit = quotaStatus?.usage.messages.limit ?? 20;
-  const messagesRemaining = quotaStatus?.usage.messages.remaining ?? (messageLimit - userMessageCount);
-  const messageLimitReached = messagesRemaining <= 0;
+  const quotaMessages = quotaStatus?.usage.messages;
+  const rawMessageLimit = quotaMessages?.limit;
+  const messageLimit = typeof rawMessageLimit === 'number'
+    ? rawMessageLimit
+    : rawMessageLimit === null
+      ? null
+      : 20;
+  const fallbackRemaining = messageLimit === null
+    ? Number.POSITIVE_INFINITY
+    : messageLimit - userMessageCount;
+  const messagesRemaining = typeof quotaMessages?.remaining === 'number'
+    ? quotaMessages.remaining
+    : fallbackRemaining;
+  const messageLimitReached = messageLimit !== null && messagesRemaining <= 0;
 
   return (
     <LinearGradient colors={gradientColors} style={styles.gradient}>
@@ -443,7 +455,7 @@ export default function DreamChatScreen() {
         {/* Input Area */}
         <View style={[styles.inputContainer, { backgroundColor: colors.backgroundDark, borderTopColor: colors.divider }]}>
           {/* Message Counter */}
-          {messageLimit && (
+          {typeof messageLimit === 'number' && (
             <View style={[styles.messageCounterContainer]}>
               <Ionicons
                 name="chatbubble-outline"
@@ -465,7 +477,10 @@ export default function DreamChatScreen() {
           )}
 
           {messageLimitReached && (
-            <View style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}>
+            <View
+              testID={TID.Text.ChatLimitBanner}
+              style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}
+            >
               <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
               <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
                 You&apos;ve reached the message limit for this dream. Upgrade to continue the conversation.
@@ -475,6 +490,7 @@ export default function DreamChatScreen() {
 
           <View style={[styles.inputWrapper, { backgroundColor: colors.backgroundSecondary }]}>
             <TextInput
+              testID={TID.Chat.Input}
               style={[styles.input, { color: colors.textPrimary }]}
               placeholder={messageLimitReached ? "Message limit reached..." : "Type your response..."}
               placeholderTextColor={colors.textSecondary}
@@ -485,6 +501,7 @@ export default function DreamChatScreen() {
               editable={!isLoading && !messageLimitReached}
             />
             <Pressable
+              testID={TID.Chat.Send}
               style={[styles.sendButton, { backgroundColor: colors.accent }, (!inputText.trim() || isLoading || messageLimitReached) && styles.sendButtonDisabled]}
               onPress={() => sendMessage()}
               disabled={!inputText.trim() || isLoading || messageLimitReached}

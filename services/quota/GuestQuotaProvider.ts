@@ -2,7 +2,7 @@ import type { User } from '@supabase/supabase-js';
 import type { QuotaProvider, CacheEntry, QuotaDreamTarget } from './types';
 import type { QuotaStatus, DreamAnalysis } from '@/lib/types';
 import { QUOTAS } from '@/constants/limits';
-import { storageService } from '@/services/storageServiceReal';
+import { getSavedDreams } from '@/services/storageServiceReal';
 
 /**
  * Guest quota provider - counts quotas from local AsyncStorage
@@ -23,7 +23,7 @@ export class GuestQuotaProvider implements QuotaProvider {
       return cached.value;
     }
 
-    const dreams = await storageService.getDreams();
+    const dreams = await getSavedDreams();
     this.cache.set(cacheKey, {
       value: dreams,
       expiresAt: Date.now() + this.CACHE_TTL,

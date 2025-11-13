@@ -6,17 +6,24 @@ export const TID = {
   Input: {
     SearchDreams: 'input.searchDreams',
     DreamTranscript: 'input.dreamTranscript',
+    AuthEmail: 'input.auth.email',
+    AuthPassword: 'input.auth.password',
   },
   Button: {
     AddDream: 'btn.addDream',
     RecordToggle: 'btn.recordToggle',
     SaveDream: 'btn.saveDream',
     NavigateJournal: 'btn.navigateJournal',
+    NavigateSettings: 'btn.navigateSettings',
     FilterTheme: 'btn.filterTheme',
     FilterDate: 'btn.filterDate',
     ClearFilters: 'btn.clearFilters',
-    NavigateSettings: 'btn.navigateSettings',
     MockProfile: (profile: string) => `btn.mockProfile.${profile}`,
+    ExploreDream: 'btn.exploreDream',
+    DreamCategory: (id: string) => `btn.dreamCategory.${id}`,
+    AuthSignIn: 'btn.auth.signIn',
+    AuthSignUp: 'btn.auth.signUp',
+    AuthSignOut: 'btn.auth.signOut',
   },
   Tab: {
     Home: 'tab.home',
@@ -37,6 +44,13 @@ export const TID = {
   },
   Text: {
     AuthEmail: 'text.auth.email',
+    AnalysisLimitBanner: 'text.analysisLimit',
+    ChatLimitBanner: 'text.chat.limit',
+  },
+  Chat: {
+    Input: 'chat.input.message',
+    Send: 'chat.button.send',
+    ScreenBlocked: 'chat.screen.blocked',
   },
 } as const;
 

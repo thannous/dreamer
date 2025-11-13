@@ -1,0 +1,125 @@
+appId: com.tanuki75.dreamapp
+---
+# Guest dream 1 - analyze and explore, hit chat message limit
+- launchApp
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest Dream 1"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.symbols
+- assertVisible:
+    id: chat.input.message
+- repeat:
+    times: 20
+    commands:
+      - tapOn:
+          id: chat.input.message
+      - inputText: "Hello from guest"
+      - tapOn:
+          id: chat.button.send
+      - waitForAnimationToEnd
+- tapOn:
+    id: chat.input.message
+- inputText: "Should block"
+- assertVisible:
+    id: text.chat.limit
+- tapOn: "Journal"
+- tapOn: "Accueil|Home"
+
+# Guest dream 2 - second analysis and exploration
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest Dream 2"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.emotions
+- assertVisible:
+    id: chat.input.message
+- tapOn: "Journal"
+- tapOn:
+    id: btn.addDream
+
+# Guest dream 3 - analysis limit hit, exploration blocked
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest Dream 3"
+- assertVisible:
+    id: text.analysisLimit
+- tapOn: "Enregistrer sans analyser|Save without analysis"
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.symbols
+- assertVisible:
+    id: chat.screen.blocked
+- tapOn: "Journal"
+
+# Create account to migrate guest quotas
+- tapOn: "Paramètres|Settings"
+- tapOn:
+    id: input.auth.email
+- inputText: "mock.guest@dreamer.test"
+- tapOn:
+    id: input.auth.password
+- inputText: "mockpass"
+- tapOn:
+    id: btn.auth.signUp
+- tapOn: "OK"
+- assertVisible:
+    id: text.auth.email
+- assertVisible: "2 / 5"
+- assertVisible: "2 / 2"
+
+# Authenticated analyses (three more to reach five total)
+- tapOn: "Accueil|Home"
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Auth Dream 1"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn: "Accueil|Home"
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Auth Dream 2"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn: "Accueil|Home"
+
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Auth Dream 3"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn: "Accueil|Home"
+- assertVisible:
+    id: text.analysisLimit
+
+# Verify quotas show 5/5 analyses after upgrading
+- tapOn: "Paramètres|Settings"
+- assertVisible: "5 / 5"

@@ -144,8 +144,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           {t('settings.account.description_signed_in')}
         </Text>
 
-        <View
-          style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
+      <View
+        style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
         >
           <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
             {t('settings.account.label.email')}
@@ -162,6 +162,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           style={[styles.btn, styles.danger, isCompact && styles.btnCompact, isBusy && styles.btnDisabled]}
           onPress={attemptSignOut}
           disabled={isBusy}
+          testID={TID.Button.AuthSignOut}
         >
           {submitting === 'signout' ? (
             <ActivityIndicator color={colors.backgroundCard} />
@@ -251,6 +252,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       )}
 
       <TextInput
+        testID={TID.Input.AuthEmail}
         style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
         placeholder={t('settings.account.placeholder.email')}
         placeholderTextColor={colors.textSecondary}
@@ -274,6 +276,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       )}
 
       <TextInput
+        testID={TID.Input.AuthPassword}
         style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
         placeholder={t('settings.account.placeholder.password')}
         placeholderTextColor={colors.textSecondary}
@@ -296,6 +299,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
       <View style={[styles.row, isCompact && styles.rowCompact]}>
         <Pressable
+          testID={TID.Button.AuthSignIn}
           style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.accent }, (emailActionsDisabled || submitting === 'signup') && styles.btnDisabled]}
           onPress={attemptSignIn}
           disabled={emailActionsDisabled}
@@ -313,6 +317,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         </Pressable>
 
         <Pressable
+          testID={TID.Button.AuthSignUp}
           style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.backgroundSecondary }, (emailActionsDisabled || submitting === 'signin') && styles.btnDisabled]}
           onPress={attemptSignUp}
           disabled={emailActionsDisabled}

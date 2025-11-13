@@ -1,6 +1,7 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -35,10 +36,10 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuth } from '@/context/AuthContext';
-import { GUEST_DREAM_LIMIT } from '@/constants/limits';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -73,9 +74,12 @@ const RECORDING_OPTIONS: RecordingOptions = {
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
+  const insets = useSafeAreaInsets();
   const [transcript, setTranscript] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
+  const [firstDreamPrompt, setFirstDreamPrompt] = useState<DreamAnalysis | null>(null);
+  const [pendingAnalysisDream, setPendingAnalysisDream] = useState<DreamAnalysis | null>(null);
   const [isPersisting, setIsPersisting] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const analysisProgress = useAnalysisProgress();
@@ -161,45 +165,15 @@ export default function RecordingScreen() {
   }, [analysisProgress]);
 
   const navigateAfterSave = useCallback(
-    (savedDream: DreamAnalysis, previousDreamCount: number) => {
-      if (!user && previousDreamCount === 0) {
-        const upsellTitle = t('guest.upsell.after1.title');
-        const upsellMessage = t('guest.upsell.after1.message', { limit: GUEST_DREAM_LIMIT });
-        const upsellCta = t('guest.upsell.after1.cta');
-        const upsellLater = t('guest.upsell.after1.later');
-
-        if (Platform.OS === 'web') {
-          const goToSettings = typeof window !== 'undefined'
-            && window.confirm(
-              `${upsellTitle}\n\n${upsellMessage}\n\nOK ▸ ${upsellCta}\n${t('common.cancel')} ▸ ${upsellLater}`
-            );
-          if (goToSettings) {
-            router.push('/(tabs)/settings');
-            return;
-          }
-        } else {
-          Alert.alert(
-            upsellTitle,
-            upsellMessage,
-            [
-              {
-                text: upsellCta,
-                onPress: () => router.push('/(tabs)/settings'),
-              },
-              {
-                text: upsellLater,
-                style: 'cancel',
-                onPress: () => router.replace(`/journal/${savedDream.id}`),
-              },
-            ]
-          );
-          return;
-        }
+    (savedDream: DreamAnalysis, previousDreamCount: number, options?: { skipFirstDreamSheet?: boolean }) => {
+      if (!user && previousDreamCount === 0 && !options?.skipFirstDreamSheet) {
+        setFirstDreamPrompt(savedDream);
+        return;
       }
 
       router.replace(`/journal/${savedDream.id}`);
     },
-    [router, t, user]
+    [user]
   );
 
   const startRecording = useCallback(async () => {
@@ -272,7 +246,7 @@ export default function RecordingScreen() {
     }
   }, [isRecording, stopRecording, startRecording]);
 
-  const handleSaveDraft = useCallback(async () => {
+  const handleSaveDream = useCallback(async () => {
     if (!trimmedTranscript) {
       Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
       return;
@@ -292,12 +266,35 @@ export default function RecordingScreen() {
     }
   }, [trimmedTranscript, dreams.length, ensureDraftSaved, navigateAfterSave, resetComposer, t]);
 
-  const handleAnalyzeNow = useCallback(async () => {
-    if (!trimmedTranscript) {
-      Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
+
+  const handleGoToJournal = useCallback(() => {
+    router.push('/(tabs)/journal');
+  }, []);
+
+  const handleFirstDreamDismiss = useCallback(() => {
+    if (!firstDreamPrompt) {
       return;
     }
+    const dreamId = firstDreamPrompt.id;
+    setFirstDreamPrompt(null);
+    setPendingAnalysisDream(null);
+    router.replace(`/journal/${dreamId}`);
+  }, [firstDreamPrompt]);
 
+  const handleFirstDreamJournal = useCallback(() => {
+    if (!firstDreamPrompt) {
+      return;
+    }
+    setFirstDreamPrompt(null);
+    setPendingAnalysisDream(null);
+    router.replace('/(tabs)/journal');
+  }, [firstDreamPrompt]);
+
+  const handleFirstDreamAnalyze = useCallback(async () => {
+    const dream = firstDreamPrompt ?? pendingAnalysisDream;
+    if (!dream) {
+      return;
+    }
     if (!canAnalyzeNow) {
       const tier = user ? 'free' : 'guest';
       const limit = tier === 'guest' ? 2 : 5;
@@ -322,19 +319,24 @@ export default function RecordingScreen() {
       return;
     }
 
+    if (firstDreamPrompt) {
+      setFirstDreamPrompt(null);
+    }
+    setPendingAnalysisDream(dream);
+
     setIsPersisting(true);
     const preCount = dreams.length;
     try {
-      const savedDream = await ensureDraftSaved();
       analysisProgress.reset();
       analysisProgress.setStep(AnalysisStep.ANALYZING);
 
-      const analyzedDream = await analyzeDream(savedDream.id, savedDream.transcript);
+      const analyzedDream = await analyzeDream(dream.id, dream.transcript);
 
       analysisProgress.setStep(AnalysisStep.COMPLETE);
+      setPendingAnalysisDream(null);
       resetComposer();
       await new Promise((resolve) => setTimeout(resolve, 300));
-      navigateAfterSave(analyzedDream, preCount);
+      navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
     } catch (error) {
       if (error instanceof QuotaError) {
         const title = error.tier === 'guest'
@@ -360,38 +362,34 @@ export default function RecordingScreen() {
       setIsPersisting(false);
     }
   }, [
-    trimmedTranscript,
-    canAnalyzeNow,
-    user,
-    t,
-    dreams.length,
-    ensureDraftSaved,
     analysisProgress,
     analyzeDream,
+    canAnalyzeNow,
+    dreams.length,
+    firstDreamPrompt,
+    pendingAnalysisDream,
     navigateAfterSave,
     resetComposer,
-    router,
+    t,
+    user,
   ]);
-
-  const handleGoToJournal = useCallback(() => {
-    router.push('/(tabs)/journal');
-  }, []);
 
   const gradientColors = mode === 'dark'
     ? GradientColors.surreal
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
 
   return (
-    <LinearGradient
-      colors={gradientColors}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.gradient}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+    <>
+      <LinearGradient
+        colors={gradientColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradient}
       >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
+        >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
@@ -434,13 +432,6 @@ export default function RecordingScreen() {
                 testID={TID.Input.DreamTranscript}
                 accessibilityLabel={t('recording.placeholder.accessibility')}
               />
-
-              {!canAnalyzeNow && (
-                <Text style={[styles.inlineQuotaWarning, { color: colors.accent }]}>
-                  {user ? t('recording.alert.analysis_limit.title_free') : t('recording.alert.analysis_limit.title_guest')}
-                </Text>
-              )}
-
               {/* Analysis Progress */}
               {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
                 <AnalysisProgress
@@ -448,42 +439,27 @@ export default function RecordingScreen() {
                   progress={analysisProgress.progress}
                   message={analysisProgress.message}
                   error={analysisProgress.error}
-                  onRetry={handleAnalyzeNow}
+                  onRetry={pendingAnalysisDream ? handleFirstDreamAnalyze : undefined}
                 />
               )}
 
               {/* Actions */}
               <View style={styles.actionButtons}>
                 <Pressable
-                  onPress={handleAnalyzeNow}
-                  disabled={!trimmedTranscript || interactionDisabled || !canAnalyzeNow}
+                  onPress={handleSaveDream}
+                  disabled={!trimmedTranscript || interactionDisabled}
                   style={[
                     styles.submitButton,
                     shadows.lg,
                     { backgroundColor: colors.accent },
-                    (!trimmedTranscript || interactionDisabled || !canAnalyzeNow) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }],
+                    (!trimmedTranscript || interactionDisabled) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }],
                   ]}
                   testID={TID.Button.SaveDream}
                   accessibilityRole="button"
-                  accessibilityLabel={t('recording.button.analyze_now_accessibility', { defaultValue: t('recording.button.analyze') })}
+                  accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
                 >
                   <Text style={styles.submitButtonText}>
-                    ✨ {t('recording.button.analyze_now', { defaultValue: t('recording.button.analyze') })}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={handleSaveDraft}
-                  disabled={!trimmedTranscript || interactionDisabled}
-                  style={[
-                    styles.secondaryButton,
-                    { borderColor: colors.divider },
-                    (!trimmedTranscript || interactionDisabled) && styles.secondaryButtonDisabled,
-                  ]}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('recording.button.save_draft_accessibility', { defaultValue: t('recording.button.save_draft') })}
-                >
-                  <Text style={[styles.secondaryButtonText, { color: colors.textPrimary }]}>
-                    💾 {t('recording.button.save_draft')}
+                    💾 {t('recording.button.save_dream')}
                   </Text>
                 </Pressable>
               </View>
@@ -505,6 +481,61 @@ export default function RecordingScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
     </LinearGradient>
+      <BottomSheet
+        visible={Boolean(firstDreamPrompt)}
+        onClose={handleFirstDreamDismiss}
+        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+        style={[
+          styles.firstDreamSheet,
+          {
+            backgroundColor: colors.backgroundCard,
+            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
+          },
+          shadows.xl,
+        ]}
+      >
+        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+          {t('guest.first_dream.sheet.title')}
+        </Text>
+        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+          {t('guest.first_dream.sheet.subtitle')}
+        </Text>
+        <View style={styles.sheetButtons}>
+          <Pressable
+            style={[
+              styles.sheetPrimaryButton,
+              { backgroundColor: colors.accent },
+              isPersisting && styles.sheetDisabledButton,
+            ]}
+            onPress={handleFirstDreamAnalyze}
+            disabled={isPersisting}
+          >
+            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+              {t('guest.first_dream.sheet.analyze')}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.sheetSecondaryButton,
+              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+              isPersisting && styles.sheetDisabledButton,
+            ]}
+            onPress={handleFirstDreamJournal}
+            disabled={isPersisting}
+          >
+            <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+              {t('guest.first_dream.sheet.journal')}
+            </Text>
+          </Pressable>
+        </View>
+        <Pressable onPress={handleFirstDreamDismiss} style={styles.sheetLinkButton}>
+          <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
+            {t('guest.first_dream.sheet.dismiss')}
+          </Text>
+        </Pressable>
+      </BottomSheet>
+    </>
   );
 }
 
@@ -553,12 +584,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     gap: 16,
   },
-  inlineQuotaWarning: {
-    marginTop: ThemeLayout.spacing.xs,
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textAlign: 'center',
-  },
   textInput: {
     minHeight: 160,
     maxHeight: 240,
@@ -594,20 +619,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.5,
   },
-  secondaryButton: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  secondaryButtonDisabled: {
-    opacity: 0.5,
-  },
-  secondaryButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
   journalLinkButton: {
     paddingVertical: 12,
     alignItems: 'center',
@@ -616,5 +627,66 @@ const styles = StyleSheet.create({
   journalLinkText: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  firstDreamSheet: {
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    gap: ThemeLayout.spacing.md,
+  },
+  sheetHandle: {
+    alignSelf: 'center',
+    width: 56,
+    height: 5,
+    borderRadius: ThemeLayout.borderRadius.full,
+    opacity: 0.6,
+    marginBottom: ThemeLayout.spacing.sm,
+  },
+  sheetTitle: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 22,
+    textAlign: 'center',
+  },
+  sheetSubtitle: {
+    fontFamily: Fonts.lora.regular,
+    fontSize: 16,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
+  sheetButtons: {
+    width: '100%',
+    gap: 12,
+  },
+  sheetPrimaryButton: {
+    borderRadius: ThemeLayout.borderRadius.lg,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetPrimaryButtonText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 16,
+  },
+  sheetSecondaryButton: {
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.lg,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetSecondaryButtonText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 16,
+  },
+  sheetLinkButton: {
+    paddingVertical: ThemeLayout.spacing.xs,
+    alignItems: 'center',
+  },
+  sheetLinkText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+  },
+  sheetDisabledButton: {
+    opacity: 0.6,
   },
 });

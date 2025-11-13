@@ -250,7 +250,8 @@ export default function JournalListScreen() {
         contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
-        removeClippedSubviews={true}
+        // Fabric + Reanimated entering animations crash on Android when clipping is enabled.
+        removeClippedSubviews={Platform.OS !== 'android'}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={50}
         initialNumToRender={10}

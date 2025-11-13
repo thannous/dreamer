@@ -6,6 +6,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { Fonts } from '@/constants/theme';
+import { TID } from '@/lib/testIDs';
 
 type Category = {
   id: string;
@@ -91,6 +92,7 @@ export default function DreamCategoriesScreen() {
         <View style={styles.categoriesContainer}>
           {CATEGORIES.map((category) => (
             <Pressable
+              testID={TID.Button.DreamCategory(category.id)}
               key={category.id}
               style={({ pressed }) => [
                 styles.categoryCard,

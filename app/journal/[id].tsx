@@ -14,6 +14,7 @@ import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View, ActivityIn
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { QuotaError } from '@/lib/errors';
+import { TID } from '@/lib/testIDs';
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -271,10 +272,13 @@ export default function JournalDetailScreen() {
           <Text style={[styles.interpretation, { color: colors.textSecondary }]}>{dream.interpretation}</Text>
 
           {/* Action Buttons */}
-          <Pressable style={[styles.exploreButton, shadows.xl, {
+          <Pressable
+            testID={TID.Button.ExploreDream}
+            style={[styles.exploreButton, shadows.xl, {
             backgroundColor: colors.accent,
             borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)'
-          }]} onPress={() => {
+          }]}
+          onPress={() => {
             router.push(`/dream-categories/${dream.id}`);
           }}>
             <Ionicons name="sparkles" size={24} color={colors.textPrimary} />

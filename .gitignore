@@ -3,9 +3,12 @@
 # dependencies
 node_modules/
 .cache/
+.gradle-user-home/
 
 # Expo
 .expo/
+.eas-local-work/
+eas-local-build.log
 dist/
 web-build/
 expo-env.d.ts
