@@ -62,8 +62,14 @@ function buildMockUser(params: { email: string; displayName: string; tier: UserT
   } as User;
 }
 
-function applyProfile(profile: MockProfile, emailOverride?: string): User {
-  resetMockStorage();
+type ApplyProfileOptions = {
+  preserveStorage?: boolean;
+};
+
+function applyProfile(profile: MockProfile, emailOverride?: string, options?: ApplyProfileOptions): User {
+  if (!options?.preserveStorage) {
+    resetMockStorage();
+  }
 
   const config = PROFILE_CONFIG[profile];
   setPreloadDreamsEnabled(config.preloadDreams);
@@ -91,7 +97,7 @@ export async function signInWithEmailPassword(email: string): Promise<User> {
 }
 
 export async function signUpWithEmailPassword(email: string): Promise<User> {
-  return applyProfile('new', email);
+  return applyProfile('new', email, { preserveStorage: true });
 }
 
 export async function signInWithGoogle(): Promise<User> {

@@ -1,6 +1,8 @@
 type Translations = { [key: string]: string };
 type LanguagePack = { [lang: string]: Translations };
 
+const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const translations: LanguagePack = {
   en: {
     'common.or': 'OR',
@@ -60,10 +62,8 @@ const translations: LanguagePack = {
     'recording.placeholder.accessibility': 'Dream transcript input',
     'recording.button.analyze': 'Analyze My Dream',
     'recording.button.accessibility': 'Analyze my dream',
-    'recording.button.analyze_now': 'Analyze now',
-    'recording.button.analyze_now_accessibility': 'Analyze this dream now',
-    'recording.button.save_draft': 'Save without analysis',
-    'recording.button.save_draft_accessibility': 'Save this dream without analyzing it yet',
+    'recording.button.save_dream': 'Save dream',
+    'recording.button.save_dream_accessibility': 'Save this dream to your journal',
     'recording.draft.default_title': 'Untitled dream',
     'recording.quota.analysis_label': 'Analyses left',
     'recording.quota.exploration_label': 'Explorations left',
@@ -84,6 +84,10 @@ const translations: LanguagePack = {
     'recording.alert.limit.title': 'Create an account',
     'recording.alert.limit.message': 'You can only save {limit} dreams without an account. Create yours to keep exploring.',
     'recording.alert.limit.cta': 'Go to account',
+    'recording.alert.analysis_limit.title_guest': 'Analysis limit reached',
+    'recording.alert.analysis_limit.title_free': 'Analysis limit reached',
+    'recording.alert.analysis_limit.message_guest': 'You have used your {limit} guest analyses. Create a free account to unlock 3 more credits.',
+    'recording.alert.analysis_limit.message_free': 'You have used all {limit} analyses on the free plan. Upgrade to keep analyzing.',
     'guest.limit.banner.title': 'Free plan: {limit} dreams',
     'guest.limit.banner.counter': '{used}/{limit} used',
     'guest.limit.banner.hint': 'Create a free account to save more dreams',
@@ -99,6 +103,11 @@ const translations: LanguagePack = {
     'guest.upsell.after1.message': 'You’ve saved your first dream. Create your free account to save up to {limit} and keep your journey in sync.',
     'guest.upsell.after1.cta': 'Create my account',
     'guest.upsell.after1.later': 'Later',
+    'guest.first_dream.sheet.title': 'Great start!',
+    'guest.first_dream.sheet.subtitle': 'Your first dream is saved. What would you like to do next?',
+    'guest.first_dream.sheet.analyze': 'Analyze this dream',
+    'guest.first_dream.sheet.journal': 'See dream journal',
+    'guest.first_dream.sheet.dismiss': 'Not now',
     'analysis.step.ready': 'Ready to analyze',
     'analysis.step.analyzing': 'Analyzing your dream...',
     'analysis.step.generating_image': 'Generating dream imagery...',
@@ -270,10 +279,8 @@ const translations: LanguagePack = {
     'recording.placeholder.accessibility': 'Zone de texte du rêve',
     'recording.button.analyze': 'Analyser mon rêve',
     'recording.button.accessibility': 'Analyser mon rêve',
-    'recording.button.analyze_now': 'Analyser maintenant',
-    'recording.button.analyze_now_accessibility': 'Analyser ce rêve maintenant',
-    'recording.button.save_draft': 'Enregistrer sans analyser',
-    'recording.button.save_draft_accessibility': 'Enregistrer ce rêve sans l’analyser',
+    'recording.button.save_dream': 'Enregistrer le rêve',
+    'recording.button.save_dream_accessibility': 'Enregistrer ce rêve dans votre journal',
     'recording.draft.default_title': 'Rêve sans titre',
     'recording.quota.analysis_label': 'Analyses restantes',
     'recording.quota.exploration_label': 'Explorations restantes',
@@ -294,6 +301,10 @@ const translations: LanguagePack = {
     'recording.alert.limit.title': 'Créez un compte',
     'recording.alert.limit.message': 'Vous pouvez enregistrer {limit} rêves sans compte. Créez le vôtre pour continuer à explorer.',
     'recording.alert.limit.cta': 'Ouvrir mon compte',
+    'recording.alert.analysis_limit.title_guest': 'Limite d’analyse atteinte',
+    'recording.alert.analysis_limit.title_free': 'Limite d’analyse atteinte',
+    'recording.alert.analysis_limit.message_guest': 'Vous avez utilisé vos {limit} analyses invitées. Créez un compte gratuit pour en obtenir 3 de plus.',
+    'recording.alert.analysis_limit.message_free': 'Vous avez utilisé vos {limit} analyses gratuites. Passez au premium pour continuer.',
     'guest.limit.banner.title': 'Offre gratuite : {limit} rêves',
     'guest.limit.banner.counter': '{used}/{limit} utilisé(s)',
     'guest.limit.banner.hint': 'Créez un compte gratuit pour enregistrer plus de rêves',
@@ -309,6 +320,11 @@ const translations: LanguagePack = {
     'guest.upsell.after1.message': 'Vous avez enregistré votre premier rêve. Créez votre compte gratuit pour en sauvegarder jusqu’à {limit} et synchroniser votre parcours.',
     'guest.upsell.after1.cta': 'Créer mon compte',
     'guest.upsell.after1.later': 'Plus tard',
+    'guest.first_dream.sheet.title': 'Beau début !',
+    'guest.first_dream.sheet.subtitle': 'Votre premier rêve est sauvegardé. Que voulez-vous faire ensuite ?',
+    'guest.first_dream.sheet.analyze': 'Analyser ce rêve',
+    'guest.first_dream.sheet.journal': 'Voir le journal des rêves',
+    'guest.first_dream.sheet.dismiss': 'Pas maintenant',
     'analysis.step.ready': 'Prêt à analyser',
     'analysis.step.analyzing': 'Analyse de votre rêve...',
     'analysis.step.generating_image': 'Génération des images oniriques...',
@@ -480,10 +496,8 @@ const translations: LanguagePack = {
     'recording.placeholder.accessibility': 'Entrada del sueño',
     'recording.button.analyze': 'Analizar mi sueño',
     'recording.button.accessibility': 'Analizar mi sueño',
-    'recording.button.analyze_now': 'Analizar ahora',
-    'recording.button.analyze_now_accessibility': 'Analizar este sueño ahora',
-    'recording.button.save_draft': 'Guardar sin analizar',
-    'recording.button.save_draft_accessibility': 'Guardar este sueño sin analizarlo',
+    'recording.button.save_dream': 'Guardar el sueño',
+    'recording.button.save_dream_accessibility': 'Guardar este sueño en tu diario',
     'recording.draft.default_title': 'Sueño sin título',
     'recording.quota.analysis_label': 'Análisis restantes',
     'recording.quota.exploration_label': 'Exploraciones restantes',
@@ -504,6 +518,10 @@ const translations: LanguagePack = {
     'recording.alert.limit.title': 'Crea una cuenta',
     'recording.alert.limit.message': 'Solo puedes guardar {limit} sueños sin cuenta. Crea la tuya para seguir explorando.',
     'recording.alert.limit.cta': 'Ir a mi cuenta',
+    'recording.alert.analysis_limit.title_guest': 'Límite de análisis alcanzado',
+    'recording.alert.analysis_limit.title_free': 'Límite de análisis alcanzado',
+    'recording.alert.analysis_limit.message_guest': 'Has usado tus {limit} análisis como invitado. Crea una cuenta gratis para obtener 3 más.',
+    'recording.alert.analysis_limit.message_free': 'Has usado los {limit} análisis del plan gratis. Mejora tu plan para seguir analizando.',
     'guest.limit.banner.title': 'Plan gratis: {limit} sueños',
     'guest.limit.banner.counter': '{used}/{limit} usado(s)',
     'guest.limit.banner.hint': 'Crea una cuenta gratis para guardar más sueños',
@@ -519,6 +537,11 @@ const translations: LanguagePack = {
     'guest.upsell.after1.message': 'Has guardado tu primer sueño. Crea tu cuenta gratis para guardar hasta {limit} y mantener tu viaje sincronizado.',
     'guest.upsell.after1.cta': 'Crear mi cuenta',
     'guest.upsell.after1.later': 'Más tarde',
+    'guest.first_dream.sheet.title': '¡Buen comienzo!',
+    'guest.first_dream.sheet.subtitle': 'Tu primer sueño está guardado. ¿Qué quieres hacer ahora?',
+    'guest.first_dream.sheet.analyze': 'Analizar este sueño',
+    'guest.first_dream.sheet.journal': 'Ver el diario de sueños',
+    'guest.first_dream.sheet.dismiss': 'Ahora no',
     'analysis.step.ready': 'Listo para analizar',
     'analysis.step.analyzing': 'Analizando tu sueño...',
     'analysis.step.generating_image': 'Generando imágenes del sueño...',
@@ -639,8 +662,12 @@ export const getTranslator = (lang?: string) => {
   return (key: string, replacements?: { [k: string]: string | number }): string => {
     let s = translations[language][key] ?? key;
     if (replacements) {
-      for (const k of Object.keys(replacements)) {
-        s = s.replace(`{${k}}`, String(replacements[k]));
+      for (const [k, value] of Object.entries(replacements)) {
+        const escapedKey = escapeRegex(k);
+        const replacement = String(value);
+        const doubleBracePattern = new RegExp(`\\{\\{\\s*${escapedKey}\\s*\\}\\}`, 'g');
+        const singleBracePattern = new RegExp(`\\{${escapedKey}\\}`, 'g');
+        s = s.replace(doubleBracePattern, replacement).replace(singleBracePattern, replacement);
       }
     }
     return s;

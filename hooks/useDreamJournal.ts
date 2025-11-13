@@ -310,12 +310,8 @@ export const useDreamJournal = () => {
       }
 
       const remoteId = updatedDream.remoteId ?? resolveRemoteId(updatedDream.id);
-      if (!remoteId) {
-        throw new Error('Missing remote id for Supabase dream update');
-      }
 
-      const queueAndPersist = async () => {
-        const pendingVersion = { ...updatedDream, pendingSync: true };
+      const queueAndPersist = async (pendingVersion: DreamAnalysis) => {
         await queueOfflineOperation(
           {
             id: generateMutationId(),
@@ -327,8 +323,15 @@ export const useDreamJournal = () => {
         );
       };
 
+      if (!remoteId) {
+        const pendingVersion = { ...updatedDream, pendingSync: true };
+        await queueAndPersist(pendingVersion);
+        return;
+      }
+
       if (!hasNetwork) {
-        await queueAndPersist();
+        const pendingVersion = { ...updatedDream, pendingSync: true, remoteId };
+        await queueAndPersist(pendingVersion);
         return;
       }
 
@@ -339,7 +342,8 @@ export const useDreamJournal = () => {
         if (__DEV__) {
           console.warn('Falling back to offline dream update', error);
         }
-        await queueAndPersist();
+        const pendingVersion = { ...updatedDream, pendingSync: true, remoteId };
+        await queueAndPersist(pendingVersion);
       }
     },
     [canUseRemoteSync, clearQueuedMutationsForDream, hasNetwork, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
