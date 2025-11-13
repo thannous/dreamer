@@ -55,3 +55,4 @@ app-example
 .eas/keys/*.json
 eas-sumit.json
 gen-lang-client-0336445544-fc3b036c6e41.json
+.claude/settings.local.json

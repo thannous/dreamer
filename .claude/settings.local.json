@@ -7,7 +7,8 @@
       "Bash(npx expo install:*)",
       "mcp__expo-mcp__search_documentation",
       "Bash(cat:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
