@@ -21,6 +21,14 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  'sparkles': 'auto-awesome',
+  'lightbulb.fill': 'lightbulb',
+  'moon.stars.fill': 'nights-stay',
+  'quote.opening': 'format-quote',
+  'figure.walk': 'directions-walk',
+  calendar: 'event',
+  pencil: 'edit',
+  'arrow.triangle.2.circlepath': 'autorenew',
 } as IconMapping;
 
 /**

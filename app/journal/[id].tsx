@@ -10,11 +10,25 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View, ActivityIndicator, Platform, Modal } from 'react-native';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { QuotaError } from '@/lib/errors';
 import { TID } from '@/lib/testIDs';
+
+type ShareNavigator = Navigator & {
+  share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
+  clipboard?: {
+    writeText?: (text: string) => Promise<void>;
+  };
+};
+
+const getShareNavigator = (): ShareNavigator | undefined => {
+  if (typeof navigator === 'undefined') {
+    return undefined;
+  }
+  return navigator as ShareNavigator;
+};
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,10 +37,47 @@ export default function JournalDetailScreen() {
   const { colors, shadows, mode } = useTheme();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [isShareModalVisible, setShareModalVisible] = useState(false);
+  const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const { canAnalyzeNow } = useQuota();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const shareMessage = useMemo(() => {
+    if (!dream) return '';
+    const quote = dream.shareableQuote?.trim();
+    if (quote) {
+      return `"${quote}" - From my dream journal.`;
+    }
+    if (dream.title) {
+      return `Check out my dream "${dream.title}" from my journal.`;
+    }
+    return 'I just captured a dream in my journal.';
+  }, [dream]);
+  const shareTitle = useMemo(() => (dream?.title ? dream.title : 'Dream Journal'), [dream]);
+  const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
+  const openShareModal = useCallback(() => {
+    setShareCopyStatus('idle');
+    setShareModalVisible(true);
+  }, []);
+  const closeShareModal = useCallback(() => {
+    setShareModalVisible(false);
+    setShareCopyStatus('idle');
+  }, []);
+  const handleCopyShareText = useCallback(async () => {
+    const webNavigator = getShareNavigator();
+    if (!webNavigator?.clipboard?.writeText) {
+      setShareCopyStatus('error');
+      return;
+    }
+    try {
+      await webNavigator.clipboard.writeText(shareMessage || '');
+      setShareCopyStatus('success');
+    } catch {
+      setShareCopyStatus('error');
+    }
+  }, [shareMessage]);
 
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
@@ -34,31 +85,69 @@ export default function JournalDetailScreen() {
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
     if (!dream) return;
+    setIsSharing(true);
     try {
-      await Share.share({ message: `"${dream.shareableQuote}" - From my dream journal.` });
-    } catch {
-      Alert.alert('Share failed');
-    }
-  }, [dream]);
+      if (Platform.OS === 'web') {
+        const webNavigator = getShareNavigator();
+        if (webNavigator?.share) {
+          try {
+            await webNavigator.share({ text: shareMessage, title: shareTitle });
+            return;
+          } catch (error) {
+            if (error instanceof DOMException && error.name === 'AbortError') {
+              return;
+            }
+          }
+        }
+        openShareModal();
+        return;
+      }
 
-  const onDelete = useCallback(async () => {
+      await Share.share({ message: shareMessage, title: shareTitle });
+    } catch {
+      if (Platform.OS === 'web') {
+        openShareModal();
+      } else {
+        Alert.alert('Share failed');
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  }, [dream, shareMessage, shareTitle, openShareModal]);
+
+  const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
+    await deleteDream(dream.id);
+    router.replace('/(tabs)/journal');
+  }, [dream, deleteDream]);
+
+  const onDelete = useCallback(() => {
+    if (!dream) return;
+    const confirmMessage = 'Are you sure you want to delete this dream?';
+
+    if (Platform.OS === 'web') {
+      const confirmed = typeof window !== 'undefined' ? window.confirm(confirmMessage) : false;
+      if (confirmed) {
+        void deleteAndNavigate();
+      }
+      return;
+    }
+
     Alert.alert(
       'Delete Dream',
-      'Are you sure you want to delete this dream?',
+      confirmMessage,
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: async () => {
-            await deleteDream(dream.id);
-            router.replace('/(tabs)/journal');
+          onPress: () => {
+            void deleteAndNavigate();
           },
         },
       ]
     );
-  }, [dream, deleteDream]);
+  }, [dream, deleteAndNavigate]);
 
   const onRetryImage = useCallback(async () => {
     if (!dream) return;
@@ -127,6 +216,14 @@ export default function JournalDetailScreen() {
   const gradientColors = mode === 'dark'
     ? GradientColors.dreamJournal
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+
+  // Use a single surface color for the main content card and its inner accent cards/buttons
+  // so we don't get a darker band/padding effect on Android where slight
+  // alpha tints can look like a different background.
+  const accentSurfaceBorderColor =
+    mode === 'dark'
+      ? 'rgba(207, 207, 234, 0.2)'
+      : 'rgba(212, 165, 116, 0.3)';
 
   if (!dream) {
     return (
@@ -231,8 +328,10 @@ export default function JournalDetailScreen() {
             <>
               {/* Premium Metadata Card */}
               <View style={[styles.metadataCard, shadows.md, {
-                backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
-                borderColor: mode === 'dark' ? 'rgba(207, 207, 234, 0.2)' : 'rgba(212, 165, 116, 0.3)'
+                // Keep the same background as the parent content card so the
+                // whole surface appears uniform, and only the border is tinted.
+                backgroundColor: colors.backgroundCard,
+                borderColor: accentSurfaceBorderColor,
               }]}>
                 <View style={styles.metadataHeader}>
                   <View style={styles.dateContainer}>
@@ -287,10 +386,19 @@ export default function JournalDetailScreen() {
 
           {/* Additional Actions */}
           <View style={styles.actionsRow}>
-            <Pressable onPress={() => toggleFavorite(dream.id)} style={[styles.actionButton, shadows.sm, {
-              backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
-              borderColor: colors.divider
-            }]}>
+            <Pressable
+              onPress={() => toggleFavorite(dream.id)}
+              style={[
+                styles.actionButton,
+                shadows.sm,
+                {
+                  // Match the main card surface so the padding around the
+                  // button doesn't look like a darker band on Android.
+                  backgroundColor: colors.backgroundCard,
+                  borderColor: accentSurfaceBorderColor,
+                },
+              ]}
+            >
               <Ionicons
                 name={dream.isFavorite ? 'heart' : 'heart-outline'}
                 size={24}
@@ -300,12 +408,27 @@ export default function JournalDetailScreen() {
                 {dream.isFavorite ? 'Favorited' : 'Favorite'}
               </Text>
             </Pressable>
-            <Pressable onPress={onShare} style={[styles.actionButton, shadows.sm, {
-              backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
-              borderColor: colors.divider
-            }]}>
-              <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
-              <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}>Share</Text>
+            <Pressable
+              onPress={onShare}
+              disabled={isSharing}
+              style={[
+                styles.actionButton,
+                shadows.sm,
+                {
+                  backgroundColor: colors.backgroundCard,
+                  borderColor: accentSurfaceBorderColor,
+                  opacity: isSharing ? 0.7 : 1,
+                },
+              ]}
+            >
+              {isSharing ? (
+                <ActivityIndicator size="small" color={colors.textOnAccentSurface} />
+              ) : (
+                <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
+              )}
+              <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}>
+                {isSharing ? 'Sharing...' : 'Share'}
+              </Text>
             </Pressable>
           </View>
 
@@ -331,6 +454,60 @@ export default function JournalDetailScreen() {
           )}
         </View>
       </ScrollView>
+      <Modal
+        visible={isShareModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeShareModal}
+      >
+        <View style={styles.shareModalOverlay}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={closeShareModal} />
+          <View style={[styles.shareModalContent, { backgroundColor: colors.backgroundCard }]}>
+            <Text style={[styles.shareModalTitle, { color: colors.textPrimary }]}>Share your dream</Text>
+            <Text style={[styles.shareModalDescription, { color: colors.textSecondary }]}>
+              {clipboardSupported
+                ? 'Copy this quote and share it anywhere.'
+                : 'Select the quote below to copy it manually.'}
+            </Text>
+            <View
+              style={[
+                styles.shareMessageBox,
+                { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
+              ]}
+            >
+              <Text selectable style={[styles.shareMessageText, { color: colors.textPrimary }]}>
+                {shareMessage || 'No shareable content yet.'}
+              </Text>
+            </View>
+            {clipboardSupported && (
+              <Pressable
+                style={[styles.shareCopyButton, { backgroundColor: colors.accent }]}
+                onPress={handleCopyShareText}
+              >
+                <Ionicons
+                  name={shareCopyStatus === 'success' ? 'checkmark' : 'copy-outline'}
+                  size={18}
+                  color={colors.textPrimary}
+                />
+                <Text style={[styles.shareCopyButtonText, { color: colors.textPrimary }]}>
+                  {shareCopyStatus === 'success' ? 'Copied!' : 'Copy quote'}
+                </Text>
+              </Pressable>
+            )}
+            {shareCopyStatus === 'error' && (
+              <Text style={[styles.shareFeedbackText, { color: '#EF4444' }]}>
+                Copy failed. Please select the text above manually.
+              </Text>
+            )}
+            <Pressable
+              style={[styles.shareCloseButton, { borderColor: colors.divider }]}
+              onPress={closeShareModal}
+            >
+              <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 }
@@ -586,6 +763,66 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
     letterSpacing: 0.3,
+  },
+  shareModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 24,
+  },
+  shareModalContent: {
+    width: '100%',
+    maxWidth: 420,
+    borderRadius: 20,
+    padding: 24,
+    gap: 16,
+  },
+  shareModalTitle: {
+    fontSize: 20,
+    fontFamily: Fonts.lora.semiBold,
+  },
+  shareModalDescription: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 22,
+  },
+  shareMessageBox: {
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+  },
+  shareMessageText: {
+    fontSize: 16,
+    fontFamily: Fonts.lora.regular,
+    lineHeight: 24,
+  },
+  shareCopyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 999,
+  },
+  shareCopyButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  shareFeedbackText: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textAlign: 'center',
+  },
+  shareCloseButton: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  shareCloseButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   // Status card for unanalyzed/pending/failed dreams
   statusCard: {

@@ -1,14 +1,15 @@
-import React, { useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, Platform, ScrollView, useWindowDimensions } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import React, { useCallback, useRef } from 'react';
+import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import EmailAuthCard from '@/components/auth/EmailAuthCard';
-import NotificationSettingsCard from '@/components/NotificationSettingsCard';
-import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
+import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
-import { useTheme } from '@/context/ThemeContext';
+import { ScreenContainer } from '@/components/ScreenContainer';
+import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export default function SettingsScreen() {
@@ -19,6 +20,7 @@ export default function SettingsScreen() {
   const scrollRef = useRef<ScrollView>(null);
 
   const isCompactLayout = width <= 375;
+  const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
 
   const handleUpgradeScroll = useCallback(() => {
     scrollRef.current?.scrollTo({ y: 0, animated: true });
@@ -26,9 +28,11 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-      <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('settings.title')}</Text>
-      </View>
+      <ScreenContainer>
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('settings.title')}</Text>
+        </View>
+      </ScreenContainer>
 
       <ScrollView
         ref={scrollRef}
@@ -39,14 +43,25 @@ export default function SettingsScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <EmailAuthCard isCompact={isCompactLayout} />
-        <View style={styles.cardSpacing}>
-          <QuotaStatusCard onUpgradePress={handleUpgradeScroll} />
-        </View>
-
-        <ThemeSettingsCard />
-        <LanguageSettingsCard />
-        <NotificationSettingsCard />
+        <ScreenContainer>
+          <View style={[styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop]}>
+            <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+              <EmailAuthCard isCompact={isCompactLayout} />
+            </View>
+            <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
+              <QuotaStatusCard onUpgradePress={handleUpgradeScroll} />
+            </View>
+            <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
+              <ThemeSettingsCard />
+            </View>
+            <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
+              <LanguageSettingsCard />
+            </View>
+            <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
+              <NotificationSettingsCard />
+            </View>
+          </View>
+        </ScreenContainer>
       </ScrollView>
     </View>
   );
@@ -73,7 +88,20 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: ThemeLayout.spacing.md,
   },
-  cardSpacing: {
+  sectionsContainer: {
+    flexDirection: 'column',
+  },
+  sectionsContainerDesktop: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -ThemeLayout.spacing.sm,
+  },
+  sectionItemDesktop: {
+    width: '50%',
+    minWidth: 320,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+  },
+  sectionSpacing: {
     marginTop: ThemeLayout.spacing.md,
   },
 });

@@ -1,10 +1,4 @@
-import { ThemeLayout } from '@/constants/journalTheme';
-import { useTheme } from '@/context/ThemeContext';
-import { useDreams } from '@/context/DreamsContext';
-import { useDreamStatistics } from '@/hooks/useDreamStatistics';
-import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
-import { useTranslation } from '@/hooks/useTranslation';
-import type { ThemeColors } from '@/constants/journalTheme';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {
   Dimensions,
@@ -13,20 +7,34 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
+  type ViewStyle,
 } from 'react-native';
-import { Rect, Text as SvgText } from 'react-native-svg';
-import { PieChart } from 'react-native-gifted-charts';
+
+import { ScreenContainer } from '@/components/ScreenContainer';
+import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
+import { PieChart } from 'react-native-gifted-charts';
+import { Rect, Text as SvgText } from 'react-native-svg';
+
+import type { ThemeColors } from '@/constants/journalTheme';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { useDreams } from '@/context/DreamsContext';
+import { useTheme } from '@/context/ThemeContext';
+import { useDreamStatistics } from '@/hooks/useDreamStatistics';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const CHART_WIDTH = SCREEN_WIDTH - ThemeLayout.spacing.md * 4;
+const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
+const CHART_WIDTH = SCREEN_WIDTH - CHART_HORIZONTAL_INSET;
 const PIE_LABEL_MARGIN = ThemeLayout.spacing.sm;
-const LABEL_TEXT_MARGIN = ThemeLayout.spacing.xs;
+const LABEL_TEXT_MARGIN = ThemeLayout.spacing.sm;
 const LABEL_VERTICAL_PADDING = ThemeLayout.spacing.xs;
 const LABEL_TEXT_LINE_HEIGHT = 14;
 const LABEL_DETAIL_LINE_HEIGHT = 13;
 const MAX_LABEL_LINES = 3;
-const MAX_LABEL_CHARS_PER_LINE = 18;
+const MAX_LABEL_CHARS_PER_LINE = 10;
 const PIE_LABEL_HEIGHT = getLabelHeight(1);
 const MIN_PIE_RADIUS = 62;
 const MAX_PIE_RADIUS = 90;
@@ -119,9 +127,8 @@ if (piePaddingPerSide > maxPaddingPerSide) {
 
 const PIE_LABEL_WIDTH = pieLabelWidth;
 const PIE_LABEL_LINE_LENGTH = pieLabelLineLength;
-const PIE_PADDING_HORIZONTAL = piePaddingPerSide * 2;
-
-const PIE_RADIUS = clamp((CHART_WIDTH - PIE_PADDING_HORIZONTAL) / 2, MIN_PIE_RADIUS, MAX_PIE_RADIUS);
+const PIE_EXTRA_RADIUS = piePaddingPerSide;
+const PIE_RADIUS = clamp(CHART_WIDTH / 2 - PIE_EXTRA_RADIUS, MIN_PIE_RADIUS, MAX_PIE_RADIUS);
 const PIE_INNER_RADIUS = PIE_RADIUS * 0.62;
 const PIE_LABEL_TAIL_LENGTH = Math.max(10, Math.min(PIE_LABEL_LINE_LENGTH * 0.45, PIE_LABEL_LINE_LENGTH - 4));
 
@@ -156,9 +163,9 @@ interface ChartSectionProps {
   colors: ThemeColors;
 }
 
-function ChartSection({ title, children, colors }: ChartSectionProps) {
+function ChartSection({ title, children, colors, style }: ChartSectionProps & { style?: ViewStyle }) {
   return (
-    <View style={styles.chartSection}>
+    <View style={[styles.chartSection, style]}>
       <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
       {children}
     </View>
@@ -168,16 +175,21 @@ function ChartSection({ title, children, colors }: ChartSectionProps) {
 export default function StatisticsScreen() {
   const { dreams, loaded } = useDreams();
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const { width } = useWindowDimensions();
   const { formatNumber, formatDate, formatPercent } = useLocaleFormatting();
+  const tabBarHeight = useBottomTabBarHeight();
   const stats = useDreamStatistics(dreams);
+  const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   if (!loaded) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-        <View style={styles.header}>
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
-        </View>
+        <ScreenContainer>
+          <View style={styles.header}>
+            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
+          </View>
+        </ScreenContainer>
         <View style={styles.loadingContainer}>
           <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('stats.loading')}</Text>
         </View>
@@ -188,9 +200,11 @@ export default function StatisticsScreen() {
   if (dreams.length === 0) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-        <View style={styles.header}>
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
-        </View>
+        <ScreenContainer>
+          <View style={styles.header}>
+            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
+          </View>
+        </ScreenContainer>
         <View style={styles.emptyState}>
           <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>{t('stats.empty')}</Text>
         </View>
@@ -198,13 +212,10 @@ export default function StatisticsScreen() {
     );
   }
 
-  const dreamTypeColors = [
-    colors.accent,
-    colors.accentDark,
-    colors.timeline,
-    colors.backgroundSecondary,
-    colors.textSecondary,
-  ];
+  const dreamTypeColors =
+    mode === 'dark'
+      ? ['#B8A4FF', '#D3B8FF', '#9683E2', '#C2A0FF', '#8770CF']
+      : ['#AD96E0', '#D9B28A', '#9BC6B3', '#A1B8E0', '#DCC48C'];
 
   const pieLabelLineConfig: LabelLineConfig = {
     length: PIE_LABEL_LINE_LENGTH,
@@ -291,167 +302,177 @@ export default function StatisticsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
-      </View>
+      <ScreenContainer>
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
+        </View>
+      </ScreenContainer>
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{
+          paddingBottom: tabBarHeight + ThemeLayout.spacing.xl,
+        }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Overview Cards */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.overview')}</Text>
-          <View style={styles.statsGrid}>
-            <StatCard
-              title={t('stats.card.total_dreams')}
-              value={formatNumber(stats.totalDreams)}
-              colors={colors}
-            />
-            <StatCard
-              title={t('stats.card.favorites')}
-              value={formatNumber(stats.favoriteDreams)}
-              colors={colors}
-            />
-            <StatCard
-              title={t('stats.card.this_week')}
-              value={formatNumber(stats.dreamsThisWeek)}
-              colors={colors}
-            />
-            <StatCard
-              title={t('stats.card.this_month')}
-              value={formatNumber(stats.dreamsThisMonth)}
-              colors={colors}
-            />
-          </View>
-        </View>
-
-        {/* Streaks */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.streaks')}</Text>
-          <View style={styles.statsRow}>
-            <StatCard
-              title={t('stats.card.current_streak')}
-              value={formatNumber(stats.currentStreak)}
-              subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-              colors={colors}
-            />
-            <StatCard
-              title={t('stats.card.longest_streak')}
-              value={formatNumber(stats.longestStreak)}
-              subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-              colors={colors}
-            />
-          </View>
-          <View style={styles.singleStatCard}>
-            <StatCard
-              title={t('stats.card.average_per_week')}
-              value={formatNumber(stats.averageDreamsPerWeek, {
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1,
-              })}
-              colors={colors}
-            />
-          </View>
-        </View>
-
-        {/* Dream Type Distribution */}
-        {stats.dreamTypeDistribution.length > 0 && (
-          <ChartSection title={t('stats.section.dream_types')} colors={colors}>
-            <View style={styles.chartContainer}>
-              <View style={styles.pieChartWrapper}>
-                <PieChart
-                  data={pieChartData}
-                  donut
-                  radius={PIE_RADIUS}
-                  innerRadius={PIE_INNER_RADIUS}
-                  paddingHorizontal={PIE_PADDING_HORIZONTAL}
-                  showExternalLabels
-                  labelLineConfig={pieLabelLineConfig}
-                  externalLabelComponent={renderPieExternalLabel}
-                  centerLabelComponent={() => (
-                    <View>
-                      <Text style={styles.pieChartCenterText}>{formatNumber(stats.totalDreams)}</Text>
-                      <Text style={styles.pieChartCenterSubtext}>{t('stats.chart.pie_center')}</Text>
-                    </View>
-                  )}
+        <ScreenContainer>
+          <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
+            {/* Overview Cards */}
+            <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
+              <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.overview')}</Text>
+              <View style={styles.statsGrid}>
+                <StatCard
+                  title={t('stats.card.total_dreams')}
+                  value={formatNumber(stats.totalDreams)}
+                  colors={colors}
+                />
+                <StatCard
+                  title={t('stats.card.favorites')}
+                  value={formatNumber(stats.favoriteDreams)}
+                  colors={colors}
+                />
+                <StatCard
+                  title={t('stats.card.this_week')}
+                  value={formatNumber(stats.dreamsThisWeek)}
+                  colors={colors}
+                />
+                <StatCard
+                  title={t('stats.card.this_month')}
+                  value={formatNumber(stats.dreamsThisMonth)}
+                  colors={colors}
                 />
               </View>
-              <View style={styles.legendContainer}>
-                {topDreamTypes.map((item, index) => (
-                  <View key={item.type} style={styles.legendItem}>
-                    <View
-                      style={[
-                        styles.legendColor,
-                        { backgroundColor: dreamTypeColors[index % dreamTypeColors.length] },
-                      ]}
-                    />
-                    <Text style={[styles.legendText, { color: colors.textPrimary }]}>
-                      {item.type} ({t('stats.legend.count', { count: formatNumber(item.count) })})
-                    </Text>
-                  </View>
-                ))}
+            </View>
+
+            {/* Streaks */}
+            <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
+              <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.streaks')}</Text>
+              <View style={styles.statsRow}>
+                <StatCard
+                  title={t('stats.card.current_streak')}
+                  value={formatNumber(stats.currentStreak)}
+                  subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
+                  colors={colors}
+                />
+                <StatCard
+                  title={t('stats.card.longest_streak')}
+                  value={formatNumber(stats.longestStreak)}
+                  subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
+                  colors={colors}
+                />
+              </View>
+              <View style={styles.singleStatCard}>
+                <StatCard
+                  title={t('stats.card.average_per_week')}
+                  value={formatNumber(stats.averageDreamsPerWeek, {
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1,
+                  })}
+                  colors={colors}
+                />
               </View>
             </View>
-          </ChartSection>
-        )}
 
-        {/* Top Themes */}
-        {stats.topThemes.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.top_themes')}</Text>
-            <View style={styles.themesContainer}>
-              {stats.topThemes.map((theme, index) => (
-                <View key={theme.theme} style={[styles.themeItem, { backgroundColor: colors.backgroundCard }]}>
-                  <View style={[styles.themeRank, { backgroundColor: colors.accent }]}>
-                    <Text style={[styles.themeRankText, { color: colors.backgroundCard }]}>{index + 1}</Text>
+            {/* Dream Type Distribution */}
+            {stats.dreamTypeDistribution.length > 0 && (
+              <ChartSection
+                title={t('stats.section.dream_types')}
+                colors={colors}
+                style={isDesktopLayout ? styles.sectionChartDesktop : undefined}
+              >
+                <View style={styles.chartContainer}>
+                  <View style={styles.pieChartWrapper}>
+                    <PieChart
+                      data={pieChartData}
+                      donut
+                      radius={PIE_RADIUS}
+                      innerRadius={PIE_INNER_RADIUS}
+                      extraRadius={PIE_EXTRA_RADIUS}
+                      strokeWidth={1.5}
+                      strokeColor={colors.backgroundDark}
+                      showExternalLabels
+                      labelLineConfig={pieLabelLineConfig}
+                      externalLabelComponent={renderPieExternalLabel}
+                      centerLabelComponent={() => (
+                        <View>
+                          <Text style={styles.pieChartCenterText}>{formatNumber(stats.totalDreams)}</Text>
+                          <Text style={styles.pieChartCenterSubtext}>{t('stats.chart.pie_center')}</Text>
+                        </View>
+                      )}
+                    />
                   </View>
-                  <View style={styles.themeContent}>
-                    <Text style={[styles.themeText, { color: colors.textPrimary }]}>{theme.theme}</Text>
-                    <Text style={[styles.themeCount, { color: colors.textSecondary }]}>
-                      {t('stats.legend.count', { count: formatNumber(theme.count) })}
-                    </Text>
+                  <View style={styles.legendContainer}>
+                    {topDreamTypes.map((item, index) => (
+                      <View key={item.type} style={styles.legendItem}>
+                        <View
+                          style={[
+                            styles.legendColor,
+                            { backgroundColor: dreamTypeColors[index % dreamTypeColors.length] },
+                          ]}
+                        />
+                        <Text style={[styles.legendText, { color: colors.textPrimary }]}>
+                          {item.type} ({t('stats.legend.count', { count: formatNumber(item.count) })})
+                        </Text>
+                      </View>
+                    ))}
                   </View>
                 </View>
-              ))}
+              </ChartSection>
+            )}
+
+            {/* Top Themes */}
+            {stats.topThemes.length > 0 && (
+              <View style={[styles.section, isDesktopLayout && styles.sectionTopThemesDesktop]}>
+                <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.top_themes')}</Text>
+                <View style={styles.themesContainer}>
+                  {stats.topThemes.map((theme, index) => (
+                    <View key={theme.theme} style={[styles.themeItem, { backgroundColor: colors.backgroundCard }]}>
+                      <View style={[styles.themeRank, { backgroundColor: colors.accent }]}>
+                        <Text style={[styles.themeRankText, { color: colors.backgroundCard }]}>{index + 1}</Text>
+                      </View>
+                      <View style={styles.themeContent}>
+                        <Text style={[styles.themeText, { color: colors.textPrimary }]}>{theme.theme}</Text>
+                        <Text style={[styles.themeCount, { color: colors.textSecondary }]}>
+                          {t('stats.legend.count', { count: formatNumber(theme.count) })}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Engagement */}
+            <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
+              <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.engagement')}</Text>
+              <View style={styles.statsRow}>
+                <StatCard
+                  title={t('stats.engagement.total_chats')}
+                  value={formatNumber(stats.totalChatMessages)}
+                  colors={colors}
+                />
+                <StatCard
+                  title={t('stats.engagement.dreams_with_chat')}
+                  value={formatNumber(stats.dreamsWithChat)}
+                  colors={colors}
+                />
+              </View>
+              {stats.mostDiscussedDream && (
+                <View style={[styles.mostDiscussedCard, { backgroundColor: colors.backgroundCard }]}>
+                  <Text style={[styles.mostDiscussedTitle, { color: colors.textSecondary }]}>{t('stats.engagement.most_discussed')}</Text>
+                  <Text style={[styles.mostDiscussedDreamTitle, { color: colors.textPrimary }]} numberOfLines={1}>
+                    {stats.mostDiscussedDream.title}
+                  </Text>
+                  <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
+                    {t('stats.engagement.messages', {
+                      count: formatNumber(stats.mostDiscussedDream.chatHistory.length),
+                    })}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
-        )}
-
-        {/* Engagement */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.engagement')}</Text>
-          <View style={styles.statsRow}>
-            <StatCard
-              title={t('stats.engagement.total_chats')}
-              value={formatNumber(stats.totalChatMessages)}
-              colors={colors}
-            />
-            <StatCard
-              title={t('stats.engagement.dreams_with_chat')}
-              value={formatNumber(stats.dreamsWithChat)}
-              colors={colors}
-            />
-          </View>
-          {stats.mostDiscussedDream && (
-            <View style={[styles.mostDiscussedCard, { backgroundColor: colors.backgroundCard }]}>
-              <Text style={[styles.mostDiscussedTitle, { color: colors.textSecondary }]}>{t('stats.engagement.most_discussed')}</Text>
-              <Text style={[styles.mostDiscussedDreamTitle, { color: colors.textPrimary }]} numberOfLines={1}>
-                {stats.mostDiscussedDream.title}
-              </Text>
-              <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
-                {t('stats.engagement.messages', {
-                  count: formatNumber(stats.mostDiscussedDream.chatHistory.length),
-                })}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        {/* Bottom padding */}
-        <View style={styles.bottomPadding} />
+        </ScreenContainer>
       </ScrollView>
     </View>
   );
@@ -478,8 +499,31 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: ThemeLayout.spacing.md,
   },
+  scrollContentDesktop: {
+    paddingHorizontal: ThemeLayout.spacing.md,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: ThemeLayout.spacing.md,
+  },
   section: {
-    marginBottom: ThemeLayout.spacing.lg,
+    marginBottom: ThemeLayout.spacing.sm,
+  },
+  sectionOverviewDesktop: {
+    width: '100%',
+  },
+  sectionStreaksDesktop: {
+    width: '100%',
+  },
+  sectionChartDesktop: {
+    width: '60%',
+    minWidth: 420,
+  },
+  sectionTopThemesDesktop: {
+    width: '40%',
+    minWidth: 320,
+  },
+  sectionEngagementDesktop: {
+    width: '100%',
   },
   sectionTitle: {
     fontSize: 16,
@@ -519,16 +563,17 @@ const styles = StyleSheet.create({
     marginTop: ThemeLayout.spacing.xs,
   },
   chartSection: {
-    marginBottom: ThemeLayout.spacing.lg,
+    marginBottom: ThemeLayout.spacing.sm,
   },
   chartTitle: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-    marginBottom: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.xs,
   },
   chartContainer: {
     borderRadius: ThemeLayout.borderRadius.md,
-    padding: ThemeLayout.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingVertical: ThemeLayout.spacing.xs,
     alignItems: 'center',
   },
   chartAxisText: {
@@ -541,7 +586,7 @@ const styles = StyleSheet.create({
   },
   pieChartWrapper: {
     alignItems: 'center',
-    marginBottom: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.sm,
   },
   pieChartCenterText: {
     fontSize: 24,
@@ -645,8 +690,5 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk_400Regular',
     textAlign: 'center',
     lineHeight: 24,
-  },
-  bottomPadding: {
-    height: ThemeLayout.spacing.xl,
   },
 });

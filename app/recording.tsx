@@ -3,15 +3,19 @@ import { MicButton } from '@/components/recording/MicButton';
 import { Waveform } from '@/components/recording/Waveform';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
-import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
-import { classifyError, QuotaError } from '@/lib/errors';
-import type { DreamAnalysis } from '@/lib/types';
-import { TID } from '@/lib/testIDs';
 import { useQuota } from '@/hooks/useQuota';
+import { useTranslation } from '@/hooks/useTranslation';
+import { classifyError, QuotaError } from '@/lib/errors';
+import { TID } from '@/lib/testIDs';
+import type { DreamAnalysis } from '@/lib/types';
 import { transcribeAudio } from '@/services/speechToText';
 import {
   AudioModule,
@@ -37,9 +41,6 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useLanguage } from '@/context/LanguageContext';
-import { useTranslation } from '@/hooks/useTranslation';
-import { useAuth } from '@/context/AuthContext';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -81,6 +82,8 @@ export default function RecordingScreen() {
   const [firstDreamPrompt, setFirstDreamPrompt] = useState<DreamAnalysis | null>(null);
   const [pendingAnalysisDream, setPendingAnalysisDream] = useState<DreamAnalysis | null>(null);
   const [isPersisting, setIsPersisting] = useState(false);
+  const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
+  const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const analysisProgress = useAnalysisProgress();
   const { language } = useLanguage();
@@ -166,15 +169,54 @@ export default function RecordingScreen() {
 
   const navigateAfterSave = useCallback(
     (savedDream: DreamAnalysis, previousDreamCount: number, options?: { skipFirstDreamSheet?: boolean }) => {
-      if (!user && previousDreamCount === 0 && !options?.skipFirstDreamSheet) {
+      if (!options?.skipFirstDreamSheet) {
         setFirstDreamPrompt(savedDream);
         return;
       }
 
       router.replace(`/journal/${savedDream.id}`);
     },
-    [user]
+    []
   );
+
+  useEffect(() => {
+    if (!user || !pendingGuestLimitDream) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const persistPendingGuestDream = async () => {
+      try {
+        setIsPersisting(true);
+        const preCount = dreams.length;
+        const savedDream = await addDream(pendingGuestLimitDream);
+        if (cancelled) {
+          return;
+        }
+        resetComposer();
+        setPendingGuestLimitDream(null);
+        navigateAfterSave(savedDream, preCount, { skipFirstDreamSheet: true });
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+        const message =
+          error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
+        Alert.alert(t('common.error_title'), message);
+      } finally {
+        if (!cancelled) {
+          setIsPersisting(false);
+        }
+      }
+    };
+
+    void persistPendingGuestDream();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, pendingGuestLimitDream, addDream, dreams.length, navigateAfterSave, resetComposer, t]);
 
   const startRecording = useCallback(async () => {
     try {
@@ -252,6 +294,16 @@ export default function RecordingScreen() {
       return;
     }
 
+    if (!user && dreams.length >= GUEST_DREAM_LIMIT - 1) {
+      const draft =
+        draftDream && draftDream.transcript === trimmedTranscript
+          ? draftDream
+          : buildDraftDream();
+      setPendingGuestLimitDream(draft);
+      setShowGuestLimitSheet(true);
+      return;
+    }
+
     setIsPersisting(true);
     try {
       const preCount = dreams.length;
@@ -264,7 +316,17 @@ export default function RecordingScreen() {
     } finally {
       setIsPersisting(false);
     }
-  }, [trimmedTranscript, dreams.length, ensureDraftSaved, navigateAfterSave, resetComposer, t]);
+  }, [
+    trimmedTranscript,
+    dreams.length,
+    draftDream,
+    buildDraftDream,
+    ensureDraftSaved,
+    navigateAfterSave,
+    resetComposer,
+    t,
+    user,
+  ]);
 
 
   const handleGoToJournal = useCallback(() => {
@@ -275,10 +337,8 @@ export default function RecordingScreen() {
     if (!firstDreamPrompt) {
       return;
     }
-    const dreamId = firstDreamPrompt.id;
     setFirstDreamPrompt(null);
     setPendingAnalysisDream(null);
-    router.replace(`/journal/${dreamId}`);
   }, [firstDreamPrompt]);
 
   const handleFirstDreamJournal = useCallback(() => {
@@ -534,6 +594,46 @@ export default function RecordingScreen() {
             {t('guest.first_dream.sheet.dismiss')}
           </Text>
         </Pressable>
+      </BottomSheet>
+      <BottomSheet
+        visible={showGuestLimitSheet}
+        onClose={() => {
+          setShowGuestLimitSheet(false);
+          setPendingGuestLimitDream(null);
+        }}
+        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+        style={[
+          styles.firstDreamSheet,
+          {
+            backgroundColor: colors.backgroundCard,
+            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
+          },
+          shadows.xl,
+        ]}
+      >
+        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+          {t('recording.guest_limit_sheet.title')}
+        </Text>
+        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+          {t('recording.guest_limit_sheet.message')}
+        </Text>
+        <View style={styles.sheetButtons}>
+          <Pressable
+            style={[
+              styles.sheetPrimaryButton,
+              { backgroundColor: colors.accent },
+            ]}
+            onPress={() => {
+              setShowGuestLimitSheet(false);
+              router.push('/(tabs)/settings');
+            }}
+          >
+            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+              {t('recording.guest_limit_sheet.cta')}
+            </Text>
+          </Pressable>
+        </View>
       </BottomSheet>
     </>
   );
