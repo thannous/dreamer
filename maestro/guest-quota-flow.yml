@@ -8,6 +8,10 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
+# First-dream bottom sheet appears (multi-language title)
+- assertVisible: "Great start!|Beau début !|¡Buen comienzo!"
+- tapOn: "Analyze this dream|Analyser ce rêve|Analizar este sueño"
+- waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
 - tapOn:
@@ -35,12 +39,15 @@ appId: com.tanuki75.dreamapp
 - tapOn: "Journal"
 - tapOn: "Accueil|Home"
 
-# Guest dream 2 - second analysis and exploration
+# Guest dream 2 - second analysis and exploration via analyze prompt
 - tapOn:
     id: input.dreamTranscript
 - inputText: "Guest Dream 2"
 - tapOn:
     id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
+- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
@@ -105,6 +112,9 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
+- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
+- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
 - tapOn: "Accueil|Home"
@@ -115,6 +125,9 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
+- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
+- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
 - tapOn: "Accueil|Home"
@@ -124,6 +137,9 @@ appId: com.tanuki75.dreamapp
 - inputText: "Auth Dream 3"
 - tapOn:
     id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
+- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream

@@ -1,9 +1,10 @@
-import type { User } from '@supabase/supabase-js';
-import type { QuotaProvider, CacheEntry, QuotaDreamTarget } from './types';
-import type { QuotaStatus } from '@/lib/types';
-import { QUOTAS, type UserTier } from '@/constants/limits';
+import { QUOTAS, QUOTA_CONFIG, type UserTier } from '@/constants/limits';
+import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 import { supabase } from '@/lib/supabase';
+import type { QuotaStatus } from '@/lib/types';
 import { getCachedRemoteDreams } from '@/services/storageService';
+import type { User } from '@supabase/supabase-js';
+import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
 
 /**
  * Supabase quota provider - counts quotas from Supabase database
@@ -49,6 +50,56 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     });
 
     return value;
+  }
+
+  private getMonthlyCacheKey(prefix: string, user: User): string {
+    const now = new Date();
+    const monthKey = `${now.getUTCFullYear()}-${now.getUTCMonth() + 1}`;
+    return `${prefix}_${user.id}_${monthKey}`;
+  }
+
+  private async getMonthlyAnalysisCount(user: User): Promise<number> {
+    const cacheKey = this.getMonthlyCacheKey('analysis_monthly_count', user);
+
+    return this.getOrCache(cacheKey, async () => {
+      const { periodStart, periodEnd } = getMonthlyQuotaPeriod();
+      const { count, error } = await supabase
+        .from('dreams')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('is_analyzed', true)
+        .gte('analyzed_at', periodStart.toISOString())
+        .lt('analyzed_at', periodEnd.toISOString());
+
+      if (error) {
+        console.error('Error counting monthly analyses:', error);
+        return 0;
+      }
+
+      return count ?? 0;
+    });
+  }
+
+  private async getMonthlyExplorationCount(user: User): Promise<number> {
+    const cacheKey = this.getMonthlyCacheKey('exploration_monthly_count', user);
+
+    return this.getOrCache(cacheKey, async () => {
+      const { periodStart, periodEnd } = getMonthlyQuotaPeriod();
+      const { count, error } = await supabase
+        .from('dreams')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .not('exploration_started_at', 'is', null)
+        .gte('exploration_started_at', periodStart.toISOString())
+        .lt('exploration_started_at', periodEnd.toISOString());
+
+      if (error) {
+        console.error('Error counting monthly explorations:', error);
+        return 0;
+      }
+
+      return count ?? 0;
+    });
   }
 
   async getUsedAnalysisCount(user: User | null): Promise<number> {
@@ -132,24 +183,39 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   }
 
   async canAnalyzeDream(user: User | null): Promise<boolean> {
-    if (!user) return false; // Guest handled by GuestQuotaProvider
+    if (!user) return false;
 
     const tier = this.getUserTier(user);
-    const limit = QUOTAS[tier].analysis;
+    const limits = QUOTAS[tier];
 
-    if (limit === null) return true; // Unlimited
+    if (limits.analysis === null) return true;
 
-    const used = await this.getUsedAnalysisCount(user);
-    return used < limit;
+    if (tier !== 'free') {
+      const used = await this.getUsedAnalysisCount(user);
+      return used < (limits.analysis ?? 0);
+    }
+
+    const initial = QUOTA_CONFIG.free.initial.analysis;
+    const monthly = QUOTA_CONFIG.free.monthly.analysis;
+    const totalUsed = await this.getUsedAnalysisCount(user);
+
+    if (initial !== null && totalUsed < initial) {
+      return true;
+    }
+
+    if (monthly === null) return true;
+
+    const monthlyUsed = await this.getMonthlyAnalysisCount(user);
+    return monthlyUsed < monthly;
   }
 
   async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
     if (!user) return false;
 
     const tier = this.getUserTier(user);
-    const limit = QUOTAS[tier].exploration;
+    const limits = QUOTAS[tier];
 
-    if (limit === null) return true; // Unlimited
+    if (limits.exploration === null) return true;
 
     const dream = await this.resolveDream(target);
 
@@ -175,9 +241,23 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       }
     }
 
-    // Check if user can start exploring a new dream
     const used = await this.getUsedExplorationCount(user);
-    return used < limit;
+
+    if (tier !== 'free') {
+      return used < (limits.exploration ?? 0);
+    }
+
+    const initial = QUOTA_CONFIG.free.initial.exploration;
+    const monthly = QUOTA_CONFIG.free.monthly.exploration;
+
+    if (initial !== null && used < initial) {
+      return true;
+    }
+
+    if (monthly === null) return true;
+
+    const monthlyUsed = await this.getMonthlyExplorationCount(user);
+    return monthlyUsed < monthly;
   }
 
   async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
@@ -208,12 +288,36 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     }
 
     const tier = this.getUserTier(user);
-    const analysisUsed = await this.getUsedAnalysisCount(user);
-    const explorationUsed = await this.getUsedExplorationCount(user);
+    const totalAnalysisUsed = await this.getUsedAnalysisCount(user);
+    const totalExplorationUsed = await this.getUsedExplorationCount(user);
     const messagesUsed = target ? await this.getUsedMessagesCount(target, user) : 0;
 
-    const analysisLimit = QUOTAS[tier].analysis;
-    const explorationLimit = QUOTAS[tier].exploration;
+    let analysisUsed = totalAnalysisUsed;
+    let explorationUsed = totalExplorationUsed;
+    let analysisLimit = QUOTAS[tier].analysis;
+    let explorationLimit = QUOTAS[tier].exploration;
+
+    if (tier === 'free') {
+      const initial = QUOTA_CONFIG.free.initial;
+      const monthly = QUOTA_CONFIG.free.monthly;
+
+      if (initial.analysis !== null && totalAnalysisUsed >= initial.analysis) {
+        const monthlyAnalysisUsed = await this.getMonthlyAnalysisCount(user);
+        analysisUsed = monthlyAnalysisUsed;
+        analysisLimit = monthly.analysis;
+      } else {
+        analysisLimit = initial.analysis;
+      }
+
+      if (initial.exploration !== null && totalExplorationUsed >= initial.exploration) {
+        const monthlyExplorationUsed = await this.getMonthlyExplorationCount(user);
+        explorationUsed = monthlyExplorationUsed;
+        explorationLimit = monthly.exploration;
+      } else {
+        explorationLimit = initial.exploration;
+      }
+    }
+
     const messagesLimit = QUOTAS[tier].messagesPerDream;
 
     const canAnalyze = await this.canAnalyzeDream(user);

@@ -1,29 +1,37 @@
-import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useFonts } from 'expo-font';
 import {
-  SpaceGrotesk_400Regular,
-  SpaceGrotesk_500Medium,
-  SpaceGrotesk_700Bold,
-} from '@expo-google-fonts/space-grotesk';
-import {
-  Lora_400Regular,
-  Lora_400Regular_Italic,
-  Lora_700Bold,
-  Lora_700Bold_Italic,
+    Lora_400Regular,
+    Lora_400Regular_Italic,
+    Lora_700Bold,
+    Lora_700Bold_Italic,
 } from '@expo-google-fonts/lora';
+import {
+    SpaceGrotesk_400Regular,
+    SpaceGrotesk_500Medium,
+    SpaceGrotesk_700Bold,
+} from '@expo-google-fonts/space-grotesk';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
+import * as NavigationBar from 'expo-navigation-bar';
+import * as Notifications from 'expo-notifications';
+import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import 'react-native-reanimated';
 
-import { DreamsProvider } from '@/context/DreamsContext';
-import { ThemeProvider, useTheme } from '@/context/ThemeContext';
-import { LanguageProvider } from '@/context/LanguageContext';
+import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { configureNotificationHandler } from '@/services/notificationService';
-import { initializeGoogleSignIn } from '@/lib/auth';
+import { SurrealTheme } from '@/constants/theme';
 import { AuthProvider } from '@/context/AuthContext';
+import { DreamsProvider } from '@/context/DreamsContext';
+import { LanguageProvider } from '@/context/LanguageContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
+import { useSubscriptionMonitor } from '@/hooks/useSubscriptionMonitor';
+import { initializeGoogleSignIn } from '@/lib/auth';
+import { configureNotificationHandler } from '@/services/notificationService';
+import { getFirstLaunchCompleted, saveFirstLaunchCompleted } from '@/services/storageService';
 
 // Prevent the splash screen from auto-hiding before fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -35,6 +43,33 @@ export const unstable_settings = {
 function RootLayoutNav() {
   const { mode } = useTheme();
 
+  useSubscriptionInitialize();
+  useSubscriptionMonitor();
+
+  useEffect(() => {
+    function redirect(notification: Notifications.Notification) {
+      const url = notification.request.content.data?.url;
+
+      // For now we only support deep linking into the recording screen
+      if (url === '/recording') {
+        router.push('/recording');
+      }
+    }
+
+    const response = Notifications.getLastNotificationResponse();
+    if (response?.notification) {
+      redirect(response.notification);
+    }
+
+    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      redirect(response.notification);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
       <DreamsProvider>
@@ -44,6 +79,7 @@ function RootLayoutNav() {
           <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="paywall" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
         </Stack>
       </DreamsProvider>
@@ -62,19 +98,84 @@ export default function RootLayout() {
     Lora_700Bold,
     Lora_700Bold_Italic,
   });
+  const [showCustomSplash, setShowCustomSplash] = useState(true);
+  const [shouldFadeSplash, setShouldFadeSplash] = useState(false);
+  const [hasHandledFirstLaunch, setHasHandledFirstLaunch] = useState(false);
 
   useEffect(() => {
-    if (fontsLoaded || fontError) {
-      // Hide the splash screen after fonts are loaded
-      SplashScreen.hideAsync();
+    if (!fontsLoaded && !fontError) {
+      return;
     }
-  }, [fontsLoaded, fontError]);
+
+    let outroTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const hideAsync = async () => {
+      try {
+        await SplashScreen.hideAsync();
+      } catch (error) {
+        console.warn('Unable to hide native splash screen', error);
+      } finally {
+        outroTimer = setTimeout(() => setShouldFadeSplash(true), 1200);
+      }
+    };
+
+    hideAsync();
+
+    return () => {
+      if (outroTimer) {
+        clearTimeout(outroTimer);
+      }
+    };
+  }, [fontError, fontsLoaded]);
 
   useEffect(() => {
     // Configure notification handler on app startup
     configureNotificationHandler();
     // Initialize Google Sign-In configuration early (native platforms)
     initializeGoogleSignIn();
+
+    // Configure Android navigation bar to match app theme
+    if (Platform.OS === 'android') {
+      NavigationBar.setBackgroundColorAsync(SurrealTheme.bgStart);
+      NavigationBar.setButtonStyleAsync('light');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!fontsLoaded || fontError || hasHandledFirstLaunch) {
+      return;
+    }
+
+    let isMounted = true;
+
+    (async () => {
+      try {
+        const completed = await getFirstLaunchCompleted();
+        if (!isMounted) return;
+
+        if (!completed) {
+          await saveFirstLaunchCompleted(true);
+          if (!isMounted) return;
+          router.replace('/recording');
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.error('[RootLayout] Failed to handle first launch redirect', error);
+        }
+      } finally {
+        if (isMounted) {
+          setHasHandledFirstLaunch(true);
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fontsLoaded, fontError, hasHandledFirstLaunch]);
+
+  const handleSplashFinished = useCallback(() => {
+    setShowCustomSplash(false);
   }, []);
 
   if (!fontsLoaded && !fontError) {
@@ -82,14 +183,19 @@ export default function RootLayout() {
   }
 
   return (
-    <ErrorBoundary>
-      <LanguageProvider>
-        <ThemeProvider>
-          <AuthProvider>
-            <RootLayoutNav />
-          </AuthProvider>
-        </ThemeProvider>
-      </LanguageProvider>
-    </ErrorBoundary>
+    <>
+      <ErrorBoundary>
+        <LanguageProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <RootLayoutNav />
+            </AuthProvider>
+          </ThemeProvider>
+        </LanguageProvider>
+      </ErrorBoundary>
+      {showCustomSplash && (
+        <AnimatedSplashScreen status={shouldFadeSplash ? 'outro' : 'intro'} onAnimationEnd={handleSplashFinished} />
+      )}
+    </>
   );
 }

@@ -86,11 +86,31 @@ export interface QuotaUsage {
   };
 }
 
+export type SubscriptionTier = 'guest' | 'free' | 'premium';
+
+export interface SubscriptionStatus {
+  tier: SubscriptionTier;
+  isActive: boolean;
+  expiryDate?: string | null;
+  productId?: string | null;
+}
+
+export type PurchaseInterval = 'monthly' | 'annual';
+
+export interface PurchasePackage {
+  id: string;
+  interval: PurchaseInterval;
+  priceFormatted: string;
+  currency: string;
+  title?: string;
+  description?: string;
+}
+
 /**
  * Complete quota status for a user
  */
 export interface QuotaStatus {
-  tier: 'guest' | 'free' | 'premium';
+  tier: SubscriptionTier;
   usage: QuotaUsage;
   canAnalyze: boolean;
   canExplore: boolean;

@@ -177,3 +177,38 @@ export class QuotaError extends Error {
     }
   }
 }
+
+export enum SubscriptionErrorCode {
+  PURCHASE_FAILED = 'PURCHASE_FAILED',
+  RESTORE_FAILED = 'RESTORE_FAILED',
+  NOT_ELIGIBLE = 'NOT_ELIGIBLE',
+  NOT_AVAILABLE = 'NOT_AVAILABLE',
+}
+
+export class SubscriptionError extends Error {
+  public readonly code: SubscriptionErrorCode;
+  public readonly userMessage: string;
+
+  constructor(code: SubscriptionErrorCode, userMessage?: string) {
+    const message = userMessage || SubscriptionError.getDefaultMessage(code);
+    super(message);
+    this.name = 'SubscriptionError';
+    this.code = code;
+    this.userMessage = message;
+  }
+
+  private static getDefaultMessage(code: SubscriptionErrorCode): string {
+    switch (code) {
+      case SubscriptionErrorCode.PURCHASE_FAILED:
+        return 'Payment failed. Please try again or use a different payment method.';
+      case SubscriptionErrorCode.RESTORE_FAILED:
+        return 'We could not restore your purchases. Please try again later.';
+      case SubscriptionErrorCode.NOT_ELIGIBLE:
+        return 'You are not eligible for this subscription.';
+      case SubscriptionErrorCode.NOT_AVAILABLE:
+        return 'Subscriptions are not available on this device or platform.';
+      default:
+        return 'Subscription error.';
+    }
+  }
+}

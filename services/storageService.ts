@@ -5,8 +5,8 @@
  */
 
 // Import both implementations
-import * as realService from './storageServiceReal';
 import * as mockService from './mocks/storageServiceMock';
+import * as realService from './storageServiceReal';
 
 // Select which implementation to use based on environment
 const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
@@ -36,3 +36,5 @@ export const getPendingDreamMutations = service.getPendingDreamMutations;
 export const savePendingDreamMutations = service.savePendingDreamMutations;
 export const getRitualPreference = service.getRitualPreference;
 export const saveRitualPreference = service.saveRitualPreference;
+export const getFirstLaunchCompleted = service.getFirstLaunchCompleted;
+export const saveFirstLaunchCompleted = service.saveFirstLaunchCompleted;

@@ -30,8 +30,8 @@ describe('GuestQuotaProvider', () => {
 
   it('blocks analysis when guest limit is reached', async () => {
     const analyzedDreams: DreamAnalysis[] = [
-      buildDream({ id: 1, isAnalyzed: true }),
-      buildDream({ id: 2, isAnalyzed: true }),
+      buildDream({ id: 1, isAnalyzed: true, analyzedAt: Date.now() }),
+      buildDream({ id: 2, isAnalyzed: true, analyzedAt: Date.now() }),
     ];
     mockGetDreams.mockResolvedValueOnce(analyzedDreams);
 
@@ -48,8 +48,8 @@ describe('GuestQuotaProvider', () => {
   });
 
   it('returns detailed quota status with reasons', async () => {
-    const dreamA = buildDream({ id: 10, isAnalyzed: true });
-    const dreamB = buildDream({ id: 11, isAnalyzed: true, explorationStartedAt: Date.now(), chatHistory: [
+    const dreamA = buildDream({ id: 10, isAnalyzed: true, analyzedAt: Date.now() });
+    const dreamB = buildDream({ id: 11, isAnalyzed: true, analyzedAt: Date.now(), explorationStartedAt: Date.now(), chatHistory: [
       { role: 'user', text: 'hello' },
       { role: 'model', text: 'hi' },
       { role: 'user', text: 'follow-up' },
