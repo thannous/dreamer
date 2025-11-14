@@ -1,10 +1,11 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DESKTOP_BREAKPOINT, TAB_BAR_MAX_WIDTH } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -56,10 +57,14 @@ export default function TabLayout() {
   const { colors, shadows, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
 
   const TAB_BAR_HEIGHT = 58;
-  const TAB_BAR_MARGIN = 24;
+  const TAB_BAR_MARGIN = Platform.OS === 'android' ? 4 : 24;
+  const CONTENT_BOTTOM_PADDING = Platform.OS === 'android' ? 40 : 16;
   const bottomSpacing = TAB_BAR_MARGIN + insets.bottom;
+  const sceneBottomPadding = TAB_BAR_HEIGHT + bottomSpacing + CONTENT_BOTTOM_PADDING;
+  const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   const palette: TabPalette = mode === 'dark'
     ? {
@@ -79,13 +84,13 @@ export default function TabLayout() {
         textActive: colors.textPrimary,
       };
 
-  const tabBarStyle: ViewStyle = {
+  const baseTabBarStyle: ViewStyle = {
     position: 'absolute',
     borderTopWidth: 0,
     backgroundColor: palette.barBg,
     borderRadius: 28,
     marginHorizontal: 20,
-    marginBottom: bottomSpacing,
+    bottom: bottomSpacing,
     paddingHorizontal: 20,
     paddingVertical: 8,
     height: TAB_BAR_HEIGHT,
@@ -94,13 +99,36 @@ export default function TabLayout() {
     ...shadows.xl,
   };
 
+  const tabBarStyle: ViewStyle = isDesktopWeb
+    ? (() => {
+        const desiredWidth = Math.min(width, TAB_BAR_MAX_WIDTH);
+        const sideInset = (width - desiredWidth) / 2;
+
+        return {
+          ...baseTabBarStyle,
+          marginHorizontal: 0,
+          left: sideInset,
+          right: sideInset,
+        };
+      })()
+    : baseTabBarStyle;
+
   return (
     <Tabs
       sceneContainerStyle={{
-        paddingBottom: TAB_BAR_HEIGHT + bottomSpacing,
+        paddingBottom: sceneBottomPadding,
       }}
       screenOptions={{
         headerShown: false,
+        // On Android, the default icon wrapper from @react-navigation/bottom-tabs
+        // has a very small fixed width (~24), which was causing our custom
+        // TabBarItem (icon + label) to be clipped and labels to appear truncated.
+        // Expanding the icon container fixes this while keeping iOS/Web behavior.
+        tabBarIconStyle: {
+          flex: 1,
+          width: '100%',
+          height: '100%',
+        },
         tabBarButton: HapticTab,
         tabBarHideOnKeyboard: true,
         tabBarShowLabel: false,
@@ -119,7 +147,6 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabBarItem icon="house.fill" label={t('nav.home')} focused={focused} palette={palette} colors={colors} />
           ),
-          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
