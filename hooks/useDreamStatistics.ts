@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount } from '@/lib/dreamUsage';
 import type { DreamAnalysis } from '@/lib/types';
 
 export interface DreamStatistics {
@@ -21,7 +22,9 @@ export interface DreamStatistics {
   // Engagement
   totalChatMessages: number;
   dreamsWithChat: number;
+  analyzedDreams: number;
   mostDiscussedDream: DreamAnalysis | null;
+  mostDiscussedDreamUserMessages: number;
 }
 
 const ORDERED_WEEKDAYS = [1, 2, 3, 4, 5, 6, 0];
@@ -176,17 +179,23 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
-    const totalChatMessages = dreams.reduce((sum, dream) =>
-      sum + dream.chatHistory.length, 0
-    );
+    const totalChatMessages = dreams.reduce((sum, dream) => sum + getUserChatMessageCount(dream), 0);
+    const dreamsWithChat = getExploredDreamCount(dreams);
+    const analyzedDreams = getAnalyzedDreamCount(dreams);
 
-    const dreamsWithChat = dreams.filter(d => d.chatHistory.length > 0).length;
+    let mostDiscussedDream: DreamAnalysis | null = null;
+    let mostDiscussedDreamUserMessages = 0;
+    dreams.forEach((dream) => {
+      const userMessages = getUserChatMessageCount(dream);
+      if (userMessages > mostDiscussedDreamUserMessages) {
+        mostDiscussedDream = dream;
+        mostDiscussedDreamUserMessages = userMessages;
+      }
+    });
 
-    const mostDiscussedDream = dreams.length > 0
-      ? dreams.reduce((max, dream) =>
-          dream.chatHistory.length > (max?.chatHistory.length || 0) ? dream : max
-        , dreams[0])
-      : null;
+    if (mostDiscussedDreamUserMessages === 0) {
+      mostDiscussedDream = null;
+    }
 
     return {
       totalDreams,
@@ -202,9 +211,9 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       topThemes,
       totalChatMessages,
       dreamsWithChat,
-      mostDiscussedDream: mostDiscussedDream && mostDiscussedDream.chatHistory.length > 0
-        ? mostDiscussedDream
-        : null,
+      analyzedDreams,
+      mostDiscussedDream,
+      mostDiscussedDreamUserMessages,
     };
   }, [dreams]);
 };

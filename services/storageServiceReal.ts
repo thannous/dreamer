@@ -10,6 +10,7 @@ const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
+const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -387,6 +388,31 @@ export async function saveRitualPreference(preference: string): Promise<void> {
       console.error('Failed to save ritual preference:', error);
     }
     throw new Error('Failed to save ritual preference');
+  }
+}
+
+export async function getFirstLaunchCompleted(): Promise<boolean> {
+  try {
+    const savedFlag = await getItem(FIRST_LAUNCH_COMPLETED_KEY);
+    if (savedFlag) {
+      return JSON.parse(savedFlag) as boolean;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve first launch flag:', error);
+    }
+  }
+  return false;
+}
+
+export async function saveFirstLaunchCompleted(completed: boolean): Promise<void> {
+  try {
+    await setItem(FIRST_LAUNCH_COMPLETED_KEY, JSON.stringify(completed));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save first launch flag:', error);
+    }
+    throw new Error('Failed to save first launch flag');
   }
 }
 

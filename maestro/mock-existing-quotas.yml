@@ -1,0 +1,24 @@
+# Validate quota + stats numbers for the mock existing user profile
+appId: com.tanuki75.dreamapp
+---
+- launchApp
+# Go to settings and pick the existing mock profile
+- tapOn:
+    id: tab.settings
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.mockProfile.existing
+- waitForAnimationToEnd
+- assertVisible: "mock.existing@dreamer.app"
+
+# Quota card should reflect the seeded usage (2 analyses used, 1 exploration used)
+- assertVisible: "Dream analyses: 2 / 5|Analyses de rêves: 2 / 5|Análisis de sueños: 2 / 5"
+- assertVisible: "Dream explorations: 1 / 2|Explorations de rêves: 1 / 2|Exploraciones de sueños: 1 / 2"
+
+# Navigate to the statistics tab and verify the engagement cards match
+- tapOn:
+    id: tab.stats
+- waitForAnimationToEnd
+- assertVisible: "Dreams with Chat: 1|Rêves avec discussion: 1|Sueños con chat: 1"
+- assertVisible: "Analyzed Dreams: 2|Rêves analysés: 2|Sueños analizados: 2"
+- assertVisible: "Total Chats: 2|Total des discussions: 2|Total de chats: 2"

@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 
 import { QUOTAS, type UserTier } from '@/constants/limits';
+import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { getSavedDreams } from '@/services/storageService';
 
@@ -37,22 +38,19 @@ export class MockQuotaProvider implements QuotaProvider {
 
   async getUsedAnalysisCount(_user: User | null): Promise<number> {
     const dreams = await this.getDreams();
-    return dreams.filter((dream) => dream.isAnalyzed === true && dream.analyzedAt != null).length;
+    return getAnalyzedDreamCount(dreams);
   }
 
   async getUsedExplorationCount(_user: User | null): Promise<number> {
     const dreams = await this.getDreams();
-    return dreams.filter((dream) => dream.explorationStartedAt !== undefined).length;
+    return getExploredDreamCount(dreams);
   }
 
   async getUsedMessagesCount(target: QuotaDreamTarget | undefined, _user: User | null): Promise<number> {
     const dreams = await this.getDreams();
     const dreamId = target?.dream?.id ?? target?.dreamId;
     const dream = dreamId ? dreams.find((item) => item.id === dreamId) : undefined;
-    if (!dream || !dream.chatHistory) {
-      return 0;
-    }
-    return dream.chatHistory.filter((message) => message.role === 'user').length;
+    return getUserChatMessageCount(dream);
   }
 
   async canAnalyzeDream(user: User | null): Promise<boolean> {
@@ -73,7 +71,7 @@ export class MockQuotaProvider implements QuotaProvider {
       const dreams = await this.getDreams();
       const dreamId = target?.dream?.id ?? target?.dreamId;
       const dream = dreamId ? dreams.find((d) => d.id === dreamId) : undefined;
-      if (dream?.explorationStartedAt) {
+      if (isDreamExplored(dream)) {
         return true;
       }
     }

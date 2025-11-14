@@ -13,6 +13,11 @@ export interface TierQuotas {
   messagesPerDream: number | null; // Max chat messages per dream
 }
 
+export interface TierQuotaConfig {
+  initial: TierQuotas;
+  monthly: TierQuotas;
+}
+
 /**
  * Quota configuration by tier
  */
@@ -24,13 +29,32 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
   },
   free: {
     analysis: 5, // 5 dream analyses total (includes guest analyses)
-    exploration: 2, // Can explore 2 dreams total (includes guest explorations)
+    exploration: 2, // 2 explorations total (includes guest explorations)
     messagesPerDream: 20, // 20 messages per dream
   },
   premium: {
     analysis: null, // Unlimited analyses
     exploration: null, // Unlimited explorations
     messagesPerDream: null, // Unlimited messages
+  },
+};
+
+export const QUOTA_CONFIG: Record<UserTier, TierQuotaConfig> = {
+  guest: {
+    initial: QUOTAS.guest,
+    monthly: QUOTAS.guest,
+  },
+  free: {
+    initial: QUOTAS.free,
+    monthly: {
+      analysis: 2,
+      exploration: 1,
+      messagesPerDream: QUOTAS.free.messagesPerDream,
+    },
+  },
+  premium: {
+    initial: QUOTAS.premium,
+    monthly: QUOTAS.premium,
   },
 };
 

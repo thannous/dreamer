@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { router } from 'expo-router';
 
 import { getCurrentUser, onAuthChange } from '@/lib/auth';
+import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
 
 export type AuthContextValue = {
   user: User | null;
@@ -14,6 +16,15 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const ensureSettingsTab = (nextUser: User | null) => {
+    if (!nextUser) {
+      return;
+    }
+    if (consumeStayOnSettingsIntent()) {
+      router.replace('/(tabs)/settings');
+    }
+  };
+
   useEffect(() => {
     let mounted = true;
 
@@ -23,6 +34,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         if (mounted) {
           setUser(sessionUser);
           setLoading(false);
+          ensureSettingsTab(sessionUser);
         }
       } catch (error) {
         if (__DEV__) {
@@ -39,6 +51,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     const unsubscribe = onAuthChange((nextUser) => {
       setUser(nextUser);
       setLoading(false);
+      ensureSettingsTab(nextUser);
     });
 
     return () => {

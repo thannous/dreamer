@@ -1,0 +1,24 @@
+appId: com.tanuki75.dreamapp
+---
+# Verify that after saving a dream from the recording screen
+# the first-dream bottom sheet appears with next-step actions
+- launchApp
+- assertVisible:
+    id: screen.recording
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Bottom sheet e2e dream"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+# Bottom sheet should be visible (multi-language title)
+- assertVisible: "Great start!|Beau début !|¡Buen comienzo!"
+
+# Use the journal CTA to open the dream journal
+- tapOn: "See dream journal|Voir le journal des rêves|Ver el diario de sueños"
+- waitForAnimationToEnd
+
+# We should land on the journal screen and see the dream title in the list
+- assertVisible:
+    id: screen.journal
+- assertVisible: "Bottom sheet e2e dream"

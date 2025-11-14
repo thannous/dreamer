@@ -26,6 +26,7 @@ const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
+const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 
 export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
@@ -260,6 +261,33 @@ export async function saveRitualPreference(preference: string): Promise<void> {
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save ritual preference:', error);
     throw new Error('Failed to save ritual preference');
+  }
+}
+
+export async function getFirstLaunchCompleted(): Promise<boolean> {
+  console.log('[MOCK STORAGE] getFirstLaunchCompleted called');
+  try {
+    const savedFlag = mockStorage[FIRST_LAUNCH_COMPLETED_KEY];
+    if (savedFlag) {
+      const completed = JSON.parse(savedFlag) as boolean;
+      console.log('[MOCK STORAGE] Returning first launch flag:', completed);
+      return completed;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve first launch flag:', error);
+  }
+  console.log('[MOCK STORAGE] No first launch flag set yet, defaulting to false');
+  return false;
+}
+
+export async function saveFirstLaunchCompleted(completed: boolean): Promise<void> {
+  console.log('[MOCK STORAGE] saveFirstLaunchCompleted called:', completed);
+  try {
+    mockStorage[FIRST_LAUNCH_COMPLETED_KEY] = JSON.stringify(completed);
+    console.log('[MOCK STORAGE] First launch flag saved');
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save first launch flag:', error);
+    throw new Error('Failed to save first launch flag');
   }
 }
 

@@ -2,6 +2,7 @@ import type { User } from '@supabase/supabase-js';
 import type { QuotaProvider, CacheEntry, QuotaDreamTarget } from './types';
 import type { QuotaStatus, DreamAnalysis } from '@/lib/types';
 import { QUOTAS } from '@/constants/limits';
+import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
 import { getSavedDreams } from '@/services/storageServiceReal';
 
 /**
@@ -36,16 +37,14 @@ export class GuestQuotaProvider implements QuotaProvider {
     if (user) return 0; // Not a guest
 
     const dreams = await this.getGuestDreams();
-    // Count dreams that have been analyzed
-    return dreams.filter((d) => d.isAnalyzed === true).length;
+    return getAnalyzedDreamCount(dreams);
   }
 
   async getUsedExplorationCount(user: User | null): Promise<number> {
     if (user) return 0; // Not a guest
 
     const dreams = await this.getGuestDreams();
-    // Count dreams that have been explored (chat started)
-    return dreams.filter((d) => d.explorationStartedAt !== undefined).length;
+    return getExploredDreamCount(dreams);
   }
 
   private resolveDreamId(target: QuotaDreamTarget | undefined): number | undefined {
@@ -61,10 +60,7 @@ export class GuestQuotaProvider implements QuotaProvider {
     const dreams = await this.getGuestDreams();
     const dream = dreams.find((d) => d.id === dreamId);
 
-    if (!dream || !dream.chatHistory) return 0;
-
-    // Count only user messages (exclude model/assistant messages)
-    return dream.chatHistory.filter((msg) => msg.role === 'user').length;
+    return getUserChatMessageCount(dream);
   }
 
   async canAnalyzeDream(user: User | null): Promise<boolean> {
@@ -87,7 +83,7 @@ export class GuestQuotaProvider implements QuotaProvider {
     const dream = dreams.find((d) => d.id === dreamId);
 
     // If this dream is already explored, allow continued exploration
-    if (dream && dream.explorationStartedAt !== undefined) {
+    if (dream && isDreamExplored(dream)) {
       return true;
     }
 

@@ -2,6 +2,7 @@ export const TID = {
   Screen: {
     Recording: 'screen.recording',
     Journal: 'screen.journal',
+    Paywall: 'screen.paywall',
   },
   Input: {
     SearchDreams: 'input.searchDreams',
@@ -32,6 +33,11 @@ export const TID = {
     InspirationRitualCta: 'btn.inspiration.ritualCta',
     InspirationTipNext: 'btn.inspiration.tipNext',
     InspirationQuickAction: (id: string) => `btn.inspiration.quick.${id}`,
+    PaywallSelectMonthly: 'btn.paywall.selectMonthly',
+    PaywallSelectAnnual: 'btn.paywall.selectAnnual',
+    PaywallPurchase: 'btn.paywall.purchase',
+    PaywallRestore: 'btn.paywall.restore',
+    PaywallClose: 'btn.paywall.close',
   },
   Tab: {
     Home: 'tab.home',
@@ -62,6 +68,15 @@ export const TID = {
     Input: 'chat.input.message',
     Send: 'chat.button.send',
     ScreenBlocked: 'chat.screen.blocked',
+  },
+  Quota: {
+    AnalysisValue: 'quota.analysisValue',
+    ExplorationValue: 'quota.explorationValue',
+  },
+  Stats: {
+    TotalChatsValue: 'stats.totalChats',
+    DreamsWithChatValue: 'stats.dreamsWithChat',
+    AnalyzedDreamsValue: 'stats.analyzedDreams',
   },
 } as const;
 
