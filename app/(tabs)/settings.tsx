@@ -1,6 +1,7 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import React, { useCallback, useRef } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import EmailAuthCard from '@/components/auth/EmailAuthCard';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
@@ -17,6 +18,7 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
   const isCompactLayout = width <= 375;
@@ -29,7 +31,12 @@ export default function SettingsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
       <ScreenContainer>
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            { paddingTop: insets.top + ThemeLayout.spacing.sm },
+          ]}
+        >
           <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('settings.title')}</Text>
         </View>
       </ScreenContainer>
