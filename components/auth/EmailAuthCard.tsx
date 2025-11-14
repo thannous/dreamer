@@ -14,6 +14,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
+import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import { signInMock, signInWithEmailPassword, signOut, signUpWithEmailPassword } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
@@ -144,8 +145,10 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
           {t('settings.account.description_signed_in')}
         </Text>
 
-      <View
-        style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
+        <EmailVerificationBanner isCompact={isCompact} />
+
+        <View
+          style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
         >
           <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
             {t('settings.account.label.email')}
