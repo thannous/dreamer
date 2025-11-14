@@ -1,6 +1,7 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { router } from 'expo-router';
 import React, { useCallback, useRef } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import EmailAuthCard from '@/components/auth/EmailAuthCard';
@@ -8,9 +9,11 @@ import LanguageSettingsCard from '@/components/LanguageSettingsCard';
 import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export default function SettingsScreen() {
@@ -21,11 +24,17 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
+   const { isActive, loading: subscriptionLoading } = useSubscription();
+
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
 
   const handleUpgradeScroll = useCallback(() => {
     scrollRef.current?.scrollTo({ y: 0, animated: true });
+  }, []);
+
+  const handleOpenPaywall = useCallback(() => {
+    router.push('/paywall' as any);
   }, []);
 
   return (
@@ -54,6 +63,25 @@ export default function SettingsScreen() {
           <View style={[styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop]}>
             <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
               <EmailAuthCard isCompact={isCompactLayout} />
+            </View>
+            <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
+              <SubscriptionCard
+                title={isActive ? 'Dreamer Premium' : 'Upgrade to Dreamer Premium'}
+                subtitle={
+                  isActive
+                    ? 'Premium is active on your account.'
+                    : 'Unlock unlimited dream analyses and explorations.'
+                }
+                badge={isActive ? 'Active' : undefined}
+                features={[
+                  'Unlimited AI dream analyses',
+                  'Unlimited explorations and chat',
+                ]}
+                loading={subscriptionLoading}
+                ctaLabel={isActive ? 'Manage subscription' : 'See premium options'}
+                onPress={handleOpenPaywall}
+                disabled={subscriptionLoading}
+              />
             </View>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
               <QuotaStatusCard onUpgradePress={handleUpgradeScroll} />
