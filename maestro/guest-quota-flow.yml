@@ -30,6 +30,8 @@ appId: com.tanuki75.dreamapp
 - inputText: "Should block"
 - assertVisible:
     id: text.chat.limit
+- assertVisible: "20/20 messages"
+- assertVisible: "You've reached the message limit for this dream. Upgrade to continue the conversation."
 - tapOn: "Journal"
 - tapOn: "Accueil|Home"
 
@@ -68,6 +70,8 @@ appId: com.tanuki75.dreamapp
     id: btn.dreamCategory.symbols
 - assertVisible:
     id: chat.screen.blocked
+- assertVisible: "Exploration Limit Reached"
+- assertVisible: "Create Free Account"
 - tapOn: "Journal"
 
 # Create account to migrate guest quotas
@@ -81,6 +85,13 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.auth.signUp
 - tapOn: "OK"
+- assertVisible:
+    id: component.emailVerificationBanner
+- tapOn:
+    id: btn.auth.resendVerification
+- waitForAnimationToEnd
+- assertNotVisible:
+    id: component.emailVerificationBanner
 - assertVisible:
     id: text.auth.email
 - assertVisible: "2 / 5"
