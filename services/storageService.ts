@@ -34,3 +34,5 @@ export const getCachedRemoteDreams = service.getCachedRemoteDreams;
 export const saveCachedRemoteDreams = service.saveCachedRemoteDreams;
 export const getPendingDreamMutations = service.getPendingDreamMutations;
 export const savePendingDreamMutations = service.savePendingDreamMutations;
+export const getRitualPreference = service.getRitualPreference;
+export const saveRitualPreference = service.saveRitualPreference;
