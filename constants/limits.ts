@@ -38,4 +38,4 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
  * @deprecated Use QUOTAS.guest.analysis instead
  * Kept for backward compatibility
  */
-export const GUEST_DREAM_LIMIT = 2;
+export const GUEST_DREAM_LIMIT = 3;
