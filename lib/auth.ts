@@ -90,6 +90,16 @@ export async function signUpWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
+export async function resendVerificationEmail(email: string) {
+  if (isMockMode) {
+    await mockAuth.resendVerificationEmail(email);
+    return;
+  }
+
+  const { error } = await supabase.auth.resend({ type: 'signup', email });
+  if (error) throw error;
+}
+
 /**
  * Sign in with Google using native Google Sign-In
  * Returns the authenticated user from Supabase

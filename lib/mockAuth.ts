@@ -10,6 +10,7 @@ type ProfileConfig = {
   displayName: string;
   preloadDreams: boolean;
   tier: UserTier;
+  emailConfirmed: boolean;
 };
 
 const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
@@ -18,18 +19,21 @@ const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
     displayName: 'New Dreamer',
     preloadDreams: false,
     tier: 'free',
+    emailConfirmed: false,
   },
   existing: {
     email: 'mock.existing@dreamer.app',
     displayName: 'Existing Dreamer',
     preloadDreams: true,
     tier: 'free',
+    emailConfirmed: true,
   },
   premium: {
     email: 'mock.premium@dreamer.app',
     displayName: 'Premium Dreamer',
     preloadDreams: false,
     tier: 'premium',
+    emailConfirmed: true,
   },
 };
 
@@ -42,7 +46,13 @@ function emitAuthChange(): void {
   });
 }
 
-function buildMockUser(params: { email: string; displayName: string; tier: UserTier; profile: MockProfile }): User {
+function buildMockUser(params: {
+  email: string;
+  displayName: string;
+  tier: UserTier;
+  profile: MockProfile;
+  emailConfirmed: boolean;
+}): User {
   const timestamp = new Date().toISOString();
 
   return {
@@ -57,6 +67,7 @@ function buildMockUser(params: { email: string; displayName: string; tier: UserT
     email: params.email,
     created_at: timestamp,
     last_sign_in_at: timestamp,
+    email_confirmed_at: params.emailConfirmed ? timestamp : null,
     role: 'authenticated',
     identities: [],
   } as User;
@@ -82,6 +93,7 @@ function applyProfile(profile: MockProfile, emailOverride?: string, options?: Ap
     displayName: config.displayName,
     tier: config.tier,
     profile,
+    emailConfirmed: config.emailConfirmed,
   });
 
   emitAuthChange();
@@ -112,6 +124,18 @@ export async function signOut(): Promise<void> {
   currentUser = null;
   resetMockStorage();
   setPreloadDreamsEnabled(false);
+  emitAuthChange();
+}
+
+// Simulate verification after resending so automated tests can cover both states.
+export async function resendVerificationEmail(_email?: string): Promise<void> {
+  if (!currentUser) {
+    return;
+  }
+  currentUser = {
+    ...currentUser,
+    email_confirmed_at: new Date().toISOString(),
+  } as User;
   emitAuthChange();
 }
 
