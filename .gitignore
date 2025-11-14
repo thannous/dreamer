@@ -13,6 +13,9 @@ dist/
 web-build/
 expo-env.d.ts
 
+# JetBrains IDE
+.idea/caches/
+
 # Native
 .kotlin/
 *.orig.*
