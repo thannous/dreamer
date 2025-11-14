@@ -5,9 +5,7 @@ import { GuestQuotaProvider } from '../GuestQuotaProvider';
 const mockGetDreams = vi.fn();
 
 vi.mock('@/services/storageServiceReal', () => ({
-  storageService: {
-    getDreams: (...args: unknown[]) => mockGetDreams(...args),
-  },
+  getSavedDreams: (...args: unknown[]) => mockGetDreams(...args),
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis>): DreamAnalysis => ({
