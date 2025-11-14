@@ -42,3 +42,47 @@
 - Backend URL: Prefer `EXPO_PUBLIC_API_URL` or `app.json` `expo.extra.apiUrl` (see `lib/config.ts`).
 - Never commit secrets; `EXPO_PUBLIC_*` values are exposed to the client.
 - Network calls: Use `lib/http.ts` (`fetchJSON`) and respect timeouts.
+
+---
+## Expo MCP / AI Agent Guide
+### Project Overview
+This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+
+### Documentation Resources
+Use these Expo and React Native docs (AI-friendly) as primary references:
+- https://docs.expo.dev/llms.txt
+- https://docs.expo.dev/llms-full.txt
+- https://docs.expo.dev/llms-eas.txt
+- https://docs.expo.dev/llms-sdk.txt
+- https://reactnative.dev/docs/getting-started
+
+### Essential Expo & EAS Commands
+```bash
+npx expo start                  # Start dev server
+npx expo start --clear          # Clear cache and start dev server
+npx expo install <package>      # Install packages with compatible versions
+npx expo install --check        # Check which installed packages need to be updated
+npx expo install --fix          # Automatically update any invalid package versions
+npx expo prebuild               # Generate native projects
+npx expo run:ios                # Build and run on iOS device/simulator
+npx expo run:android            # Build and run on Android device/emulator
+npx expo doctor                 # Check project health and dependencies
+```
+
+### Development Principles for Agents
+- Prefer TypeScript with strict types for all new code.
+- Follow modern React patterns (function components + hooks, proper dependency arrays, memoization when needed).
+- Reuse existing patterns in `app/`, `components/`, `hooks/`, and `lib/` before introducing new ones.
+- Keep changes small, cohesive, and aligned with the current architecture and guidelines above.
+
+### Using Expo MCP Tools
+- Use `open_devtools` to launch React Native DevTools when debugging.
+- Use `automation_take_screenshot` to capture UI for visual checks.
+- Use `automation_tap_by_testid` and `automation_find_view_by_testid` when writing or validating automated flows.
+- Prefer adding `testID` props on interactive components that need automation.
+
+### AI Agent Workflow
+1. Consult the relevant Expo docs (full, EAS, or SDK) before adding or modifying features.
+2. Check this `AGENTS.md` and existing code to match project conventions.
+3. When in doubt, ask for clarification rather than introducing new patterns or dependencies.
+4. Avoid committing temporary debugging code or logs; keep the codebase clean.
