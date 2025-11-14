@@ -1,11 +1,17 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { router } from 'expo-router';
+import { MotiView, MotiText } from 'moti';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { DreamIcon } from '@/components/icons/DreamIcons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT } from '@/constants/layout';
+import { ThemeLayout } from '@/constants/journalTheme';
+import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
+import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
@@ -91,10 +97,17 @@ export default function InspirationScreen() {
   const { colors, shadows, mode } = useTheme();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const { guestLimitReached } = useDreams();
+  const tabBarHeight = useBottomTabBarHeight();
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIP_KEYS.length));
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+
+  const floatingOffset = tabBarHeight + ThemeLayout.spacing.xl;
+  const showAddButton = !guestLimitReached;
+  const scrollContentBottomPadding = floatingOffset + (showAddButton ? 132 : 0);
 
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
   const prompts = useMemo(
@@ -165,87 +178,171 @@ export default function InspirationScreen() {
   };
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.backgroundDark }}
-      contentContainerStyle={{ paddingBottom: 64 }}
-    >
-      <ScreenContainer style={styles.contentContainer}>
-        <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
-          <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHeroSection]}>
-            <RitualCard
-              colors={colors}
-              shadows={shadows}
-              mode={mode}
-              rituals={RITUALS}
-              activeRitual={activeRitual}
-              selectedRitualId={selectedRitualId}
-              onChangeRitual={handleRitualChange}
-            />
-          </View>
-
-          <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopSideSection]}>
-            <TipCard
-              colors={colors}
-              shadows={shadows}
-              tip={tips[tipIndex]}
-              onNext={() => setTipIndex((prev) => (prev + 1) % tips.length)}
-              title={t('inspiration.tip.title')}
-              subtitle={t('inspiration.tip.subtitle')}
-              nextLabel={t('inspiration.tip.next')}
-            />
-          </View>
-
-          <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHalfSection]}>
-            <SectionHeading
-              title={t('inspiration.prompts.title')}
-              subtitle={t('inspiration.prompts.subtitle')}
-              colors={colors}
-            />
-            <View style={styles.stack16}>
-              {prompts.map((prompt) => (
-                <InfoCard key={prompt.id} colors={colors} icon={prompt.icon} title={prompt.title} body={prompt.body} />
-              ))}
-            </View>
-          </View>
-
-          <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHalfSection]}>
-            <SectionHeading
-              title={t('inspiration.exercises.title')}
-              subtitle={t('inspiration.exercises.subtitle')}
-              colors={colors}
-            />
-            <View style={styles.stack16}>
-              {exercises.map((exercise) => (
-                <InfoCard
-                  key={exercise.id}
-                  colors={colors}
-                  icon={exercise.icon}
-                  title={exercise.title}
-                  body={exercise.body}
-                />
-              ))}
-            </View>
-          </View>
-
-          <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHalfSection]}>
-            <SectionHeading
-              title={t('inspiration.myths.title')}
-              subtitle={t('inspiration.myths.subtitle')}
-              colors={colors}
-            />
-            <View style={styles.stack16}>
-              {myths.map((myth) => (
-                <InfoCard key={myth.id} colors={colors} icon={myth.icon} title={myth.title} body={myth.body} />
-              ))}
-            </View>
-          </View>
-
-          <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHalfSection]}>
-            <QuoteCard colors={colors} />
-          </View>
+    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+      <ScreenContainer>
+        <View
+          style={[
+            styles.header,
+            { paddingTop: insets.top + ThemeLayout.spacing.sm },
+          ]}
+        >
+          <MotiText
+            from={{ opacity: 0, translateY: 12 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 650 }}
+            style={[styles.headerTitle, { color: colors.textPrimary }]}
+          >
+            {t('inspiration.title')}
+          </MotiText>
         </View>
       </ScreenContainer>
-    </ScrollView>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={{ paddingBottom: scrollContentBottomPadding }}
+      >
+        <ScreenContainer
+          style={[
+            styles.contentContainer,
+            !isDesktopLayout && styles.mobileRootContainer,
+          ]}
+        >
+          <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
+            <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHeroSection]}>
+              <MotiView
+                from={{ opacity: 0, translateY: 12, scale: 0.98 }}
+                animate={{ opacity: 1, translateY: 0, scale: 1 }}
+                transition={{ type: 'timing', duration: 700 }}
+              >
+                <RitualCard
+                  colors={colors}
+                  shadows={shadows}
+                  mode={mode}
+                  rituals={RITUALS}
+                  activeRitual={activeRitual}
+                  selectedRitualId={selectedRitualId}
+                  onChangeRitual={handleRitualChange}
+                />
+              </MotiView>
+            </View>
+
+            <View
+              style={[
+                styles.sectionSpacing,
+                !isDesktopLayout && styles.mobileSectionPadding,
+                isDesktopLayout && styles.desktopSideSection,
+              ]}
+            >
+              <TipCard
+                colors={colors}
+                shadows={shadows}
+                tip={tips[tipIndex]}
+                onNext={() => setTipIndex((prev) => (prev + 1) % tips.length)}
+                title={t('inspiration.tip.title')}
+                subtitle={t('inspiration.tip.subtitle')}
+                nextLabel={t('inspiration.tip.next')}
+              />
+            </View>
+
+            <View
+              style={[
+                styles.sectionSpacing,
+                !isDesktopLayout && styles.mobileSectionPadding,
+                isDesktopLayout && styles.desktopHalfSection,
+              ]}
+            >
+              <SectionHeading
+                title={t('inspiration.prompts.title')}
+                subtitle={t('inspiration.prompts.subtitle')}
+                colors={colors}
+              />
+              <View style={styles.stack16}>
+                {prompts.map((prompt) => (
+                  <InfoCard key={prompt.id} colors={colors} icon={prompt.icon} title={prompt.title} body={prompt.body} />
+                ))}
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.sectionSpacing,
+                !isDesktopLayout && styles.mobileSectionPadding,
+                isDesktopLayout && styles.desktopHalfSection,
+              ]}
+            >
+              <SectionHeading
+                title={t('inspiration.exercises.title')}
+                subtitle={t('inspiration.exercises.subtitle')}
+                colors={colors}
+              />
+              <View style={styles.stack16}>
+                {exercises.map((exercise) => (
+                  <InfoCard
+                    key={exercise.id}
+                    colors={colors}
+                    icon={exercise.icon}
+                    title={exercise.title}
+                    body={exercise.body}
+                  />
+                ))}
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.sectionSpacing,
+                !isDesktopLayout && styles.mobileSectionPadding,
+                isDesktopLayout && styles.desktopHalfSection,
+              ]}
+            >
+              <SectionHeading
+                title={t('inspiration.myths.title')}
+                subtitle={t('inspiration.myths.subtitle')}
+                colors={colors}
+              />
+              <View style={styles.stack16}>
+                {myths.map((myth) => (
+                  <InfoCard key={myth.id} colors={colors} icon={myth.icon} title={myth.title} body={myth.body} />
+                ))}
+              </View>
+            </View>
+
+            <View
+              style={[
+                styles.sectionSpacing,
+                !isDesktopLayout && styles.mobileSectionPadding,
+                isDesktopLayout && styles.desktopHalfSection,
+              ]}
+            >
+              <QuoteCard colors={colors} />
+            </View>
+          </View>
+        </ScreenContainer>
+      </ScrollView>
+
+      {showAddButton && (
+        <View
+          style={[
+            styles.floatingButtonContainer,
+            isDesktopLayout && styles.floatingButtonDesktop,
+            { bottom: floatingOffset },
+          ]}
+        >
+          <Pressable
+            style={[styles.addButton, shadows.xl, { backgroundColor: colors.accent }]}
+            onPress={() => router.push('/recording')}
+            accessibilityRole="button"
+            testID={TID.Button.AddDream}
+            accessibilityLabel={t('journal.add_button.accessibility')}
+          >
+            <DreamIcon size={24} color={colors.backgroundCard} />
+            <Text style={[styles.addButtonText, { color: colors.backgroundCard }]}>
+              {t('journal.add_button.label')}
+            </Text>
+          </Pressable>
+        </View>
+      )}
+    </View>
   );
 }
 
@@ -292,8 +389,13 @@ function RitualCard({ colors, shadows, mode, rituals, activeRitual, selectedRitu
   const checkboxBorderColor = mode === 'dark' ? colors.divider : colors.textSecondary;
 
   return (
-    <View style={[styles.heroCard, { backgroundColor: colors.backgroundCard }, shadows.lg]}>
-      <Text style={[styles.overline, { color: colors.textSecondary }]}>{t('inspiration.title')}</Text>
+    <View
+      style={[
+        styles.heroCard,
+        { backgroundColor: colors.backgroundCard },
+        shadows.lg,
+      ]}
+    >
       <Text style={[styles.heroTitle, { color: colors.textPrimary }]}>{t('inspiration.ritual.title')}</Text>
       <Text style={[styles.heroSubtitle, { color: colors.textSecondary }]}>{t('inspiration.ritual.subtitle')}</Text>
 
@@ -372,27 +474,6 @@ function RitualCard({ colors, shadows, mode, rituals, activeRitual, selectedRitu
           );
         })}
       </View>
-
-      <View style={styles.ritualActions}>
-        <Pressable
-          onPress={() => router.push('/recording')}
-          style={({ pressed }) => [
-            styles.ritualCta,
-            {
-              backgroundColor: colors.accent,
-              opacity: pressed ? 0.85 : 1,
-            },
-            shadows.md,
-          ]}
-          testID={TID.Button.InspirationRitualCta}
-          accessibilityRole="button"
-          accessibilityLabel={t('inspiration.ritual.cta')}
-        >
-          <Text style={[styles.ritualCtaText, { color: colors.textOnAccentSurface }]}>
-            {t('inspiration.ritual.cta')}
-          </Text>
-        </Pressable>
-      </View>
     </View>
   );
 }
@@ -410,12 +491,10 @@ type TipCardProps = {
 function TipCard({ colors, shadows, title, subtitle, tip, nextLabel, onNext }: TipCardProps) {
   return (
     <View style={[styles.tipCard, { backgroundColor: colors.backgroundCard }, shadows.md]} testID={TID.Component.InspirationTip}>
+      <IconSymbol name="sparkles" size={24} color={colors.accent} style={styles.tipBadge} />
       <View style={styles.tipHeader}>
-        <View>
-          <Text style={[styles.tipTitle, { color: colors.textPrimary }]}>{title}</Text>
-          <Text style={[styles.tipSubtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
-        </View>
-        <IconSymbol name="sparkles" size={24} color={colors.accent} />
+        <Text style={[styles.tipTitle, { color: colors.textPrimary }]}>{title}</Text>
+        <Text style={[styles.tipSubtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
       </View>
       <Text style={[styles.tipBody, { color: colors.textPrimary }]}>{tip}</Text>
       <Pressable
@@ -466,9 +545,32 @@ function QuoteCard({ colors }: { colors: ReturnType<typeof useTheme>['colors'] }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingTop: Platform.OS === 'ios' ? 60 : 20,
+    paddingBottom: ThemeLayout.spacing.sm,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: 'SpaceGrotesk_700Bold',
+    letterSpacing: -0.3,
+  },
+  scrollView: {
+    flex: 1,
+  },
   contentContainer: {
     paddingHorizontal: 20,
-    paddingTop: 32,
+    paddingTop: ThemeLayout.spacing.sm,
+  },
+  mobileRootContainer: {
+    paddingHorizontal: 0,
+  },
+  mobileSectionPadding: {
+    paddingHorizontal: 20,
   },
   desktopGrid: {
     flexDirection: 'row',
@@ -545,15 +647,53 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 15,
   },
+  heroButtonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: ThemeLayout.spacing.lg,
+    gap: 12,
+  },
+  heroPrimaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: ThemeLayout.borderRadius.xl,
+    flex: 1,
+    gap: 8,
+  },
+  heroPrimaryLabel: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 15,
+  },
+  heroSecondaryPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: ThemeLayout.borderRadius.full,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    gap: 6,
+  },
+  heroSecondaryText: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+  },
   tipCard: {
     borderRadius: 20,
     padding: 20,
+    position: 'relative',
   },
   tipHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 12,
+    paddingRight: 36,
+  },
+  tipBadge: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
   tipTitle: {
     fontFamily: Fonts.spaceGrotesk.bold,
@@ -578,6 +718,30 @@ const styles = StyleSheet.create({
   tipButtonLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 14,
+  },
+  floatingButtonContainer: {
+    position: 'absolute',
+    width: '100%',
+    padding: ThemeLayout.spacing.md,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  floatingButtonDesktop: {
+    alignSelf: 'center',
+    maxWidth: LAYOUT_MAX_WIDTH,
+  },
+  addButton: {
+    borderRadius: ThemeLayout.borderRadius.full,
+    paddingVertical: ThemeLayout.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  addButtonText: {
+    fontSize: 16,
+    fontFamily: 'SpaceGrotesk_700Bold',
   },
   ritualSteps: {
     marginTop: 8,

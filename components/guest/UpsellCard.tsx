@@ -25,9 +25,8 @@ export const UpsellCard: React.FC<Props> = ({ testID }) => {
       <Text style={[styles.title, { color: colors.textPrimary }]}>{t('guest.upsell.title')}</Text>
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{t('guest.upsell.subtitle')}</Text>
       <View style={styles.benefits}>
-        <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.sync')}</Text>
         <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.unlimited')}</Text>
-        <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.security')}</Text>
+        <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.analysis')}</Text>
       </View>
       <Pressable style={[styles.cta, { backgroundColor: colors.accent }]} onPress={() => router.push('/(tabs)/settings')}>
         <Text style={styles.ctaText}>{t('guest.upsell.cta')}</Text>

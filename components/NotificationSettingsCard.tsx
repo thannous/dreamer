@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Switch, Pressable, Platform, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import React, { useEffect, useState } from 'react';
+import { Alert, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
-import type { NotificationSettings } from '@/lib/types';
-import {
-  requestNotificationPermissions,
-  scheduleDailyNotification,
-  cancelAllNotifications,
-  hasNotificationPermissions,
-} from '@/services/notificationService';
-import { getNotificationSettings, saveNotificationSettings } from '@/services/storageService';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { NotificationSettings } from '@/lib/types';
+import {
+    cancelAllNotifications,
+    hasNotificationPermissions,
+    requestNotificationPermissions,
+    scheduleDailyNotification,
+    sendTestNotification,
+} from '@/services/notificationService';
+import { getNotificationSettings, saveNotificationSettings } from '@/services/storageService';
 
 export default function NotificationSettingsCard() {
   const [settings, setSettings] = useState<NotificationSettings>({
@@ -112,6 +113,38 @@ export default function NotificationSettingsCard() {
     }
   };
 
+  const handleTestNotification = async () => {
+    if (!hasPermissions) {
+      const granted = await requestNotificationPermissions();
+      if (!granted) {
+        Alert.alert(
+          t('notifications.alert.permission_required.title'),
+          t('notifications.alert.permission_required.message'),
+          [{ text: t('common.done') }]
+        );
+        return;
+      }
+      setHasPermissions(true);
+    }
+
+    try {
+      await sendTestNotification();
+      Alert.alert(
+        t('notifications.alert.test_scheduled.title'),
+        t('notifications.alert.test_scheduled.message'),
+        [{ text: t('common.done') }]
+      );
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to send test notification:', error);
+      }
+      Alert.alert(
+        t('notifications.alert.update_failed.title'),
+        t('notifications.alert.update_failed.message')
+      );
+    }
+  };
+
   const getDateFromTime = (timeString: string): Date => {
     const [hours, minutes] = timeString.split(':').map(Number);
     const date = new Date();
@@ -191,6 +224,17 @@ export default function NotificationSettingsCard() {
               <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
             </Pressable>
           )}
+
+          <View style={styles.testButtonContainer}>
+            <Pressable
+              style={[styles.testButton, { backgroundColor: colors.backgroundSecondary }]}
+              onPress={handleTestNotification}
+            >
+              <Text style={[styles.testButtonText, { color: colors.accent }]}>
+                {t('notifications.button.test')}
+              </Text>
+            </Pressable>
+          </View>
         </>
       )}
 
@@ -261,6 +305,18 @@ const styles = StyleSheet.create({
   doneButtonText: {
     fontFamily: 'SpaceGrotesk_700Bold',
     fontSize: 16,
+  },
+  testButtonContainer: {
+    marginTop: ThemeLayout.spacing.sm,
+  },
+  testButton: {
+    paddingVertical: ThemeLayout.spacing.sm,
+    borderRadius: ThemeLayout.borderRadius.sm,
+    alignItems: 'center',
+  },
+  testButtonText: {
+    fontSize: 14,
+    fontFamily: 'SpaceGrotesk_500Medium',
   },
   warningBox: {
     marginTop: 12,

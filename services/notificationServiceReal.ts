@@ -104,6 +104,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     content: {
       title: 'Dream Journal Reminder',
       body: getRandomPrompt(),
+      data: { url: '/recording' },
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
     },
@@ -119,6 +120,30 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
 
   if (__DEV__) {
     console.log(`Scheduled daily notification for ${timeToUse}`);
+  }
+}
+
+export async function sendTestNotification(): Promise<void> {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Dream Journal Reminder',
+      body: getRandomPrompt(),
+      data: { url: '/recording', test: true },
+      sound: true,
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      seconds: 5,
+    },
+  });
+
+  if (__DEV__) {
+    console.log('Scheduled test notification in 5 seconds');
   }
 }
 

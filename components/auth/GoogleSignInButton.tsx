@@ -5,6 +5,7 @@ import { signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 
 export default function GoogleSignInButton() {
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ export default function GoogleSignInButton() {
     setLoading(true);
     try {
       if (Platform.OS === 'web') {
+        requestStayOnSettingsIntent({ persist: true });
         await signInWithGoogleWeb();
         // Supabase handles redirect/popup; session will be captured via onAuthChange
         return;
@@ -22,8 +24,10 @@ export default function GoogleSignInButton() {
 
       const user = await signInWithGoogle();
       console.log('Successfully signed in with Google:', user.email);
+      requestStayOnSettingsIntent();
       // Navigation is handled by auth state listener in settings screen
     } catch (error: any) {
+      clearStayOnSettingsIntent();
       // Don't show error if user cancelled
       if (error.message === 'SIGN_IN_CANCELLED') {
         console.log('User cancelled Google Sign-In');

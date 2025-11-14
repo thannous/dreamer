@@ -1,0 +1,20 @@
+# Ensure the bundle identifier matches the local dev build.
+appId: com.tanuki75.dreamapp
+---
+- launchApp
+- tapOn:
+    id: tab.home
+- assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
+
+# Switch to the memory / recall ritual and verify one of its steps
+- tapOn: "Se souvenir|Dream recall|Memoria de sueños"
+- assertVisible: "Préparer la mémoire|Prime your recall|Preparar el recuerdo"
+
+# Switch to lucid dream ritual and verify a lucid-specific step
+- tapOn: "Rêve lucide|Lucid dream|Sueño lúcido"
+- assertVisible: "Intention lucide|Lucid intention|Intención lúcida"
+
+# Switch back to starter ritual and ensure the calm evening step is shown
+- tapOn: "Rêver|Getting started|Empezar"
+- assertVisible: "Soir calme|Calm evening|Noche tranquila"
+

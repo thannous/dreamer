@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
   type ViewStyle,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
@@ -24,6 +25,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useDreamStatistics } from '@/hooks/useDreamStatistics';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
@@ -145,13 +147,22 @@ interface StatCardProps {
   value: string | number;
   subtitle?: string;
   colors: ThemeColors;
+  valueTestID?: string;
 }
 
-function StatCard({ title, value, subtitle, colors }: StatCardProps) {
+function StatCard({ title, value, subtitle, colors, valueTestID }: StatCardProps) {
+  const valueText = typeof value === 'number' ? String(value) : value;
+  const accessibilityLabel = `${title}: ${valueText}`;
   return (
     <View style={[styles.statCard, { backgroundColor: colors.backgroundCard }]}>
       <Text style={[styles.statTitle, { color: colors.textSecondary }]}>{title}</Text>
-      <Text style={[styles.statValue, { color: colors.accent }]}>{value}</Text>
+      <Text
+        style={[styles.statValue, { color: colors.accent }]}
+        testID={valueTestID}
+        accessibilityLabel={accessibilityLabel}
+      >
+        {value}
+      </Text>
       {subtitle && <Text style={[styles.statSubtitle, { color: colors.textTertiary }]}>{subtitle}</Text>}
     </View>
   );
@@ -179,6 +190,7 @@ export default function StatisticsScreen() {
   const { width } = useWindowDimensions();
   const { formatNumber, formatDate, formatPercent } = useLocaleFormatting();
   const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   const stats = useDreamStatistics(dreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
@@ -186,7 +198,12 @@ export default function StatisticsScreen() {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
         <ScreenContainer>
-          <View style={styles.header}>
+          <View
+            style={[
+              styles.header,
+              { paddingTop: insets.top + ThemeLayout.spacing.sm },
+            ]}
+          >
             <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
           </View>
         </ScreenContainer>
@@ -201,7 +218,12 @@ export default function StatisticsScreen() {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
         <ScreenContainer>
-          <View style={styles.header}>
+          <View
+            style={[
+              styles.header,
+              { paddingTop: insets.top + ThemeLayout.spacing.sm },
+            ]}
+          >
             <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
           </View>
         </ScreenContainer>
@@ -303,7 +325,12 @@ export default function StatisticsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
       <ScreenContainer>
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            { paddingTop: insets.top + ThemeLayout.spacing.sm },
+          ]}
+        >
           <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
         </View>
       </ScreenContainer>
@@ -450,11 +477,21 @@ export default function StatisticsScreen() {
                   title={t('stats.engagement.total_chats')}
                   value={formatNumber(stats.totalChatMessages)}
                   colors={colors}
+                  valueTestID={TID.Stats.TotalChatsValue}
                 />
                 <StatCard
                   title={t('stats.engagement.dreams_with_chat')}
                   value={formatNumber(stats.dreamsWithChat)}
                   colors={colors}
+                  valueTestID={TID.Stats.DreamsWithChatValue}
+                />
+              </View>
+              <View style={styles.singleStatCard}>
+                <StatCard
+                  title={t('stats.engagement.analyzed_dreams')}
+                  value={formatNumber(stats.analyzedDreams)}
+                  colors={colors}
+                  valueTestID={TID.Stats.AnalyzedDreamsValue}
                 />
               </View>
               {stats.mostDiscussedDream && (
@@ -465,7 +502,7 @@ export default function StatisticsScreen() {
                   </Text>
                   <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
                     {t('stats.engagement.messages', {
-                      count: formatNumber(stats.mostDiscussedDream.chatHistory.length),
+                      count: formatNumber(stats.mostDiscussedDreamUserMessages),
                     })}
                   </Text>
                 </View>
