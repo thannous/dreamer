@@ -6,6 +6,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     setupFiles: ['vitest.setup.ts'],
-    exclude: ['node_modules', '.expo', 'expo', 'dist'],
+    exclude: ['node_modules', '.expo', 'expo', 'dist', '.eas-local-work'],
   },
 });
