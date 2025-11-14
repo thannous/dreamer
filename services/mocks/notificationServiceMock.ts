@@ -78,6 +78,11 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
   console.log('[MOCK NOTIFICATIONS] Mock notification details:', mockNotification);
 }
 
+export async function sendTestNotification(): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] sendTestNotification called');
+  console.log('[MOCK NOTIFICATIONS] Would schedule a test notification in 5 seconds (mock)');
+}
+
 /**
  * Mock cancel all notifications
  */

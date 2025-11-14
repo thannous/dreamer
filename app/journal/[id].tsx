@@ -3,18 +3,32 @@ import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useQuota } from '@/hooks/useQuota';
+import { isDreamExplored } from '@/lib/dreamUsage';
+import { QuotaError } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
+import { TID } from '@/lib/testIDs';
 import { generateImageForDream } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, View, ActivityIndicator, Platform, Modal } from 'react-native';
-import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
-import { useQuota } from '@/hooks/useQuota';
-import { QuotaError } from '@/lib/errors';
-import { TID } from '@/lib/testIDs';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+    ActivityIndicator,
+    Alert,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    Share,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
+} from 'react-native';
 
 type ShareNavigator = Navigator & {
   share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
@@ -23,11 +37,41 @@ type ShareNavigator = Navigator & {
   };
 };
 
+interface ShareImageData {
+  source: string;
+  extension: string;
+  mimeType: string;
+}
+
 const getShareNavigator = (): ShareNavigator | undefined => {
   if (typeof navigator === 'undefined') {
     return undefined;
   }
   return navigator as ShareNavigator;
+};
+
+const SHARE_IMAGE_FALLBACK_EXTENSION = 'jpg';
+
+const getFileExtensionFromUrl = (url?: string): string => {
+  if (!url) return SHARE_IMAGE_FALLBACK_EXTENSION;
+  const cleanUrl = url.split('?')[0] ?? '';
+  const match = cleanUrl.match(/\.([a-z0-9]+)$/i);
+  if (!match) return SHARE_IMAGE_FALLBACK_EXTENSION;
+  const ext = match[1].toLowerCase();
+  if (ext === 'jpeg') return 'jpg';
+  return ext;
+};
+
+const getMimeTypeFromExtension = (ext: string): string => {
+  switch (ext) {
+    case 'png':
+      return 'image/png';
+    case 'webp':
+      return 'image/webp';
+    case 'jpg':
+    default:
+      return 'image/jpeg';
+  }
 };
 
 export default function JournalDetailScreen() {
@@ -44,19 +88,125 @@ export default function JournalDetailScreen() {
   const { canAnalyzeNow } = useQuota();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const [editableTitle, setEditableTitle] = useState('');
+  const [editableTheme, setEditableTheme] = useState('');
+  const [isPickingImage, setIsPickingImage] = useState(false);
+
+  useEffect(() => {
+    if (!dream) {
+      setEditableTitle('');
+      setEditableTheme('');
+      return;
+    }
+    setEditableTitle(dream.title || '');
+    setEditableTheme(dream.theme || '');
+  }, [dream]);
+  const hasExistingChat = useMemo(() => {
+    if (!dream) {
+      return false;
+    }
+    if (isDreamExplored(dream)) {
+      return true;
+    }
+    return dream.chatHistory.some((message) => message.role === 'model');
+  }, [dream]);
+  const exploreButtonLabel = hasExistingChat ? 'Continuer à analyser' : 'Explore Dream Further';
   const shareMessage = useMemo(() => {
     if (!dream) return '';
+    const sections: string[] = [];
+    if (dream.title) {
+      sections.push(`🌙 ${dream.title}`);
+    }
     const quote = dream.shareableQuote?.trim();
     if (quote) {
-      return `"${quote}" - From my dream journal.`;
+      sections.push(`“${quote}”`);
     }
-    if (dream.title) {
-      return `Check out my dream "${dream.title}" from my journal.`;
+    if (dream.interpretation?.trim()) {
+      sections.push(`Interpretation: ${dream.interpretation.trim()}`);
     }
-    return 'I just captured a dream in my journal.';
+    const metadata: string[] = [];
+    if (dream.dreamType) {
+      metadata.push(`Type: ${dream.dreamType}`);
+    }
+    if (dream.theme) {
+      metadata.push(`Theme: ${dream.theme}`);
+    }
+    if (metadata.length) {
+      sections.push(metadata.join(' • '));
+    }
+    sections.push('Shared from my Dreamer journal.');
+    return sections.join('\n\n');
   }, [dream]);
   const shareTitle = useMemo(() => (dream?.title ? dream.title : 'Dream Journal'), [dream]);
+  const shareImage = useMemo<ShareImageData | undefined>(() => {
+    if (!dream) return undefined;
+    const source = dream.imageUrl || dream.thumbnailUrl;
+    if (!source) return undefined;
+    const extension = getFileExtensionFromUrl(source);
+    return {
+      source,
+      extension,
+      mimeType: getMimeTypeFromExtension(extension),
+    };
+  }, [dream]);
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
+
+  const handleTitleBlur = useCallback(async () => {
+    if (!dream) return;
+    if (editableTitle === dream.title) return;
+    const updatedDream = {
+      ...dream,
+      title: editableTitle.trim() || dream.title,
+    };
+    await updateDream(updatedDream);
+  }, [dream, editableTitle, updateDream]);
+
+  const handleThemeBlur = useCallback(async () => {
+    if (!dream) return;
+    const nextTheme = editableTheme.trim() || undefined;
+    if (nextTheme === dream.theme) return;
+    const updatedDream = {
+      ...dream,
+      theme: nextTheme,
+    };
+    await updateDream(updatedDream);
+  }, [dream, editableTheme, updateDream]);
+
+  const handlePickImage = useCallback(async () => {
+    if (!dream) return;
+    try {
+      setIsPickingImage(true);
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [2, 3],
+        quality: 0.9,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        return;
+      }
+
+      const asset = result.assets[0];
+      if (!asset?.uri) {
+        return;
+      }
+
+      const updatedDream = {
+        ...dream,
+        imageUrl: asset.uri,
+        thumbnailUrl: asset.uri,
+        imageGenerationFailed: false,
+      };
+
+      await updateDream(updatedDream);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Unknown error';
+      Alert.alert('Image selection failed', msg);
+    } finally {
+      setIsPickingImage(false);
+    }
+  }, [dream, updateDream]);
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
     setShareModalVisible(true);
@@ -82,6 +232,14 @@ export default function JournalDetailScreen() {
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
 
+  const getShareableImageUri = useCallback(async () => {
+    if (!shareImage) {
+      // If getInfo fails, we'll re-download the file.
+      return undefined;
+    }
+    return shareImage.source;
+  }, [shareImage]);
+
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
     if (!dream) return;
@@ -103,17 +261,36 @@ export default function JournalDetailScreen() {
         return;
       }
 
-      await Share.share({ message: shareMessage, title: shareTitle });
+      let localImageUri: string | undefined;
+      if (shareImage) {
+        localImageUri = await getShareableImageUri();
+      }
+
+      const sharePayload: {
+        message: string;
+        title?: string;
+        url?: string;
+      } = {
+        message: shareMessage,
+        title: shareTitle,
+      };
+
+      if (localImageUri) {
+        sharePayload.url = localImageUri;
+      }
+
+      await Share.share(sharePayload);
+      return;
     } catch {
       if (Platform.OS === 'web') {
         openShareModal();
       } else {
-        Alert.alert('Share failed');
+        Alert.alert('Share failed', 'Unable to share your dream right now. Please try again.');
       }
     } finally {
       setIsSharing(false);
     }
-  }, [dream, shareMessage, shareTitle, openShareModal]);
+  }, [dream, shareImage, shareMessage, shareTitle, openShareModal, getShareableImageUri]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
@@ -184,6 +361,15 @@ export default function JournalDetailScreen() {
     }
   }, []);
 
+  const handleExplorePress = useCallback(() => {
+    if (!dream) return;
+    if (hasExistingChat) {
+      router.push(`/dream-chat/${dream.id}`);
+      return;
+    }
+    router.push(`/dream-categories/${dream.id}`);
+  }, [dream, hasExistingChat]);
+
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
 
@@ -248,7 +434,7 @@ export default function JournalDetailScreen() {
           <View style={styles.imageFrame}>
             {dream.imageGenerationFailed ? (
               <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
-            ) : (
+            ) : dream.imageUrl ? (
               <>
                 <Image
                   source={{ uri: dream.imageUrl }}
@@ -261,6 +447,38 @@ export default function JournalDetailScreen() {
                 />
                 <View style={styles.imageOverlay} />
               </>
+            ) : (
+              <Pressable
+                onPress={handlePickImage}
+                disabled={isPickingImage}
+                style={[
+                  styles.dreamImage,
+                  {
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: colors.backgroundSecondary,
+                    flexDirection: 'column',
+                  },
+                ]}
+              >
+                {isPickingImage ? (
+                  <ActivityIndicator color={colors.textPrimary} />
+                ) : (
+                  <>
+                    <Ionicons name="image-outline" size={28} color={colors.textSecondary} />
+                    <Text
+                      style={{
+                        marginTop: 8,
+                        color: colors.textSecondary,
+                        fontFamily: Fonts.spaceGrotesk.medium,
+                        fontSize: 14,
+                      }}
+                    >
+                      Add an image
+                    </Text>
+                  </>
+                )}
+              </Pressable>
             )}
           </View>
         </View>
@@ -277,17 +495,19 @@ export default function JournalDetailScreen() {
                   size={32}
                   color={dream.analysisStatus === 'failed' ? '#EF4444' : colors.accent}
                 />
-                <Text style={[styles.statusTitle, { color: colors.textPrimary }]}>
-                  {dream.analysisStatus === 'pending' ? 'Analysis in Progress...' :
-                   dream.analysisStatus === 'failed' ? 'Analysis Failed' :
-                   'Not Analyzed'}
+                <Text style={[styles.statusTitle, { color: colors.textPrimary }]}
+                >
+                  {dream.analysisStatus === 'pending' ? 'Analyzing your dream...' :
+                   dream.analysisStatus === 'failed' ? 'Analysis unavailable' :
+                   'AI Analysis (optional)'}
                 </Text>
               </View>
 
-              <Text style={[styles.statusMessage, { color: colors.textSecondary }]}>
-                {dream.analysisStatus === 'pending' ? 'Your dream is being analyzed. Please wait...' :
-                 dream.analysisStatus === 'failed' ? 'The analysis failed. Please try again.' :
-                 'This dream has not been analyzed yet. Tap the button below to analyze it with AI.'}
+              <Text style={[styles.statusMessage, { color: colors.textSecondary }]}
+              >
+                {dream.analysisStatus === 'pending' ? 'Your dream is being analyzed. This only takes a few moments.' :
+                 dream.analysisStatus === 'failed' ? 'The analysis could not be completed. You can try again in a moment.' :
+                 'Get an interpretation, symbols and gentle prompts to reflect on this dream.'}
               </Text>
 
               {dream.analysisStatus !== 'pending' && (
@@ -301,8 +521,9 @@ export default function JournalDetailScreen() {
                   ) : (
                     <>
                       <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
-                      <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}>
-                        {dream.analysisStatus === 'failed' ? 'Retry Analysis' : 'Analyze Dream'}
+                      <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
+                      >
+                        {dream.analysisStatus === 'failed' ? 'Retry analysis' : 'Analyze dream'}
                       </Text>
                     </>
                   )}
@@ -314,37 +535,37 @@ export default function JournalDetailScreen() {
                   <ActivityIndicator size="large" color={colors.accent} />
                 </View>
               )}
-
-              {/* Show transcript */}
-              <View style={[styles.transcriptContainer, { borderColor: colors.divider }]}>
-                <Text style={[styles.transcriptLabel, { color: colors.textSecondary }]}>Transcript:</Text>
-                <Text style={[styles.transcriptText, { color: colors.textPrimary }]}>{dream.transcript}</Text>
-              </View>
             </View>
           )}
 
-          {/* Regular analyzed content */}
-          {dream.isAnalyzed && dream.analysisStatus === 'done' && (
-            <>
-              {/* Premium Metadata Card */}
-              <View style={[styles.metadataCard, shadows.md, {
-                // Keep the same background as the parent content card so the
-                // whole surface appears uniform, and only the border is tinted.
-                backgroundColor: colors.backgroundCard,
-                borderColor: accentSurfaceBorderColor,
-              }]}>
-                <View style={styles.metadataHeader}>
-                  <View style={styles.dateContainer}>
-                    <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
-                    <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
-                  </View>
-                  <View style={styles.timeContainer}>
-                    <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
-                    <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
-                  </View>
-                </View>
-                <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-                <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
+          {/* Premium Metadata Card */}
+          <View
+            style={[styles.metadataCard, shadows.md, {
+              // Keep the same background as the parent content card so the
+              // whole surface appears uniform, and only the border is tinted.
+              backgroundColor: colors.backgroundCard,
+              borderColor: accentSurfaceBorderColor,
+            }]}
+          >
+            <View style={styles.metadataHeader}>
+              <View style={styles.dateContainer}>
+                <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
+                <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
+              </View>
+              <View style={styles.timeContainer}>
+                <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
+                <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
+              </View>
+            </View>
+            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+            <TextInput
+              style={[styles.metadataTitle, { color: colors.textPrimary }]}
+              value={editableTitle}
+              onChangeText={setEditableTitle}
+              onBlur={handleTitleBlur}
+              placeholder="Add a title to this dream"
+              placeholderTextColor={colors.textSecondary}
+            />
             {dream.dreamType && (
               <View style={styles.metadataRow}>
                 <Ionicons name="moon-outline" size={18} color={colors.textPrimary} />
@@ -352,37 +573,46 @@ export default function JournalDetailScreen() {
                 <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
               </View>
             )}
-            {dream.theme && (
-              <View style={styles.metadataRow}>
-                <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} />
-                <Text style={[styles.metadataLabel, { color: colors.textPrimary }]}>Theme:</Text>
-                <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.theme}</Text>
+            <View style={styles.metadataRow}>
+              <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} />
+              <Text style={[styles.metadataLabel, { color: colors.textPrimary }]}>Theme:</Text>
+              <TextInput
+                style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}
+                value={editableTheme}
+                onChangeText={setEditableTheme}
+                onBlur={handleThemeBlur}
+                placeholder="Add a theme"
+                placeholderTextColor={colors.textSecondary}
+              />
+            </View>
+          </View>
+
+          {dream.isAnalyzed && dream.analysisStatus === 'done' && (
+            <>
+              {/* Quote */}
+              <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
+                <Text style={[styles.quote, { color: colors.textPrimary }]}
+                >
+                  &quot;{dream.shareableQuote}&quot;
+                </Text>
               </View>
-            )}
-          </View>
 
-          {/* Quote */}
-          <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
-            <Text style={[styles.quote, { color: colors.textPrimary }]}>
-              &quot;{dream.shareableQuote}&quot;
-            </Text>
-          </View>
+              <Text style={[styles.interpretation, { color: colors.textSecondary }]}>{dream.interpretation}</Text>
 
-          <Text style={[styles.interpretation, { color: colors.textSecondary }]}>{dream.interpretation}</Text>
-
-          {/* Action Buttons */}
-          <Pressable
-            testID={TID.Button.ExploreDream}
-            style={[styles.exploreButton, shadows.xl, {
-            backgroundColor: colors.accent,
-            borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)'
-          }]}
-          onPress={() => {
-            router.push(`/dream-categories/${dream.id}`);
-          }}>
-            <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
-            <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>Explore Dream Further</Text>
-          </Pressable>
+              {/* Action Buttons */}
+              <Pressable
+                testID={TID.Button.ExploreDream}
+                style={[styles.exploreButton, shadows.xl, {
+                  backgroundColor: colors.accent,
+                  borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+                }]}
+                onPress={handleExplorePress}
+              >
+                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
+              </Pressable>
+            </>
+          )}
 
           {/* Additional Actions */}
           <View style={styles.actionsRow}>
@@ -404,7 +634,8 @@ export default function JournalDetailScreen() {
                 size={24}
                 color={dream.isFavorite ? '#F59E0B' : colors.textPrimary}
               />
-              <Text style={[styles.actionButtonText, { color: colors.textPrimary }]}>
+              <Text style={[styles.actionButtonText, { color: colors.textPrimary }]}
+              >
                 {dream.isFavorite ? 'Favorited' : 'Favorite'}
               </Text>
             </Pressable>
@@ -426,17 +657,20 @@ export default function JournalDetailScreen() {
               ) : (
                 <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
               )}
-              <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}>
+              <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}
+              >
                 {isSharing ? 'Sharing...' : 'Share'}
               </Text>
             </Pressable>
           </View>
 
           {/* Transcript Section */}
-          <View style={[styles.transcriptSection, {
-            borderTopColor: colors.divider,
-            backgroundColor: mode === 'dark' ? 'rgba(19, 16, 34, 0.3)' : 'rgba(0, 0, 0, 0.03)'
-          }]}>
+          <View
+            style={[styles.transcriptSection, {
+              borderTopColor: colors.divider,
+              backgroundColor: mode === 'dark' ? 'rgba(19, 16, 34, 0.3)' : 'rgba(0, 0, 0, 0.03)',
+            }]}
+          >
             <Text style={[styles.transcriptTitle, { color: colors.textPrimary }]}>Original Transcript</Text>
             <Text style={[styles.transcript, { color: colors.textSecondary }]}>{dream.transcript}</Text>
           </View>
@@ -450,8 +684,6 @@ export default function JournalDetailScreen() {
             <Ionicons name="trash-outline" size={18} color="#EF4444" />
             <Text style={styles.deleteLinkText}>Delete Dream</Text>
           </Pressable>
-            </>
-          )}
         </View>
       </ScrollView>
       <Modal
@@ -462,9 +694,11 @@ export default function JournalDetailScreen() {
       >
         <View style={styles.shareModalOverlay}>
           <Pressable style={StyleSheet.absoluteFill} onPress={closeShareModal} />
-          <View style={[styles.shareModalContent, { backgroundColor: colors.backgroundCard }]}>
+          <View style={[styles.shareModalContent, { backgroundColor: colors.backgroundCard }]}
+          >
             <Text style={[styles.shareModalTitle, { color: colors.textPrimary }]}>Share your dream</Text>
-            <Text style={[styles.shareModalDescription, { color: colors.textSecondary }]}>
+            <Text style={[styles.shareModalDescription, { color: colors.textSecondary }]}
+            >
               {clipboardSupported
                 ? 'Copy this quote and share it anywhere.'
                 : 'Select the quote below to copy it manually.'}
@@ -475,7 +709,8 @@ export default function JournalDetailScreen() {
                 { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
               ]}
             >
-              <Text selectable style={[styles.shareMessageText, { color: colors.textPrimary }]}>
+              <Text selectable style={[styles.shareMessageText, { color: colors.textPrimary }]}
+              >
                 {shareMessage || 'No shareable content yet.'}
               </Text>
             </View>
@@ -489,13 +724,15 @@ export default function JournalDetailScreen() {
                   size={18}
                   color={colors.textPrimary}
                 />
-                <Text style={[styles.shareCopyButtonText, { color: colors.textPrimary }]}>
+                <Text style={[styles.shareCopyButtonText, { color: colors.textPrimary }]}
+                >
                   {shareCopyStatus === 'success' ? 'Copied!' : 'Copy quote'}
                 </Text>
               </Pressable>
             )}
             {shareCopyStatus === 'error' && (
-              <Text style={[styles.shareFeedbackText, { color: '#EF4444' }]}>
+              <Text style={[styles.shareFeedbackText, { color: '#EF4444' }]}
+              >
                 Copy failed. Please select the text above manually.
               </Text>
             )}
@@ -503,7 +740,10 @@ export default function JournalDetailScreen() {
               style={[styles.shareCloseButton, { borderColor: colors.divider }]}
               onPress={closeShareModal}
             >
-              <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}>Close</Text>
+              <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}
+              >
+                Close
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -780,7 +1020,7 @@ const styles = StyleSheet.create({
   },
   shareModalTitle: {
     fontSize: 20,
-    fontFamily: Fonts.lora.semiBold,
+    fontFamily: Fonts.lora.bold,
   },
   shareModalDescription: {
     fontSize: 15,
@@ -796,6 +1036,42 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.lora.regular,
     lineHeight: 24,
+  },
+  shareModalSubtitle: {
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  shareImagePreviewContainer: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 12,
+    gap: 12,
+  },
+  shareImagePreview: {
+    width: '100%',
+    height: 180,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+  },
+  shareImageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  shareImageButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  shareImageCaption: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+    lineHeight: 18,
   },
   shareCopyButton: {
     flexDirection: 'row',
@@ -837,7 +1113,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   statusTitle: {
-    fontFamily: Fonts.lora.semiBold,
+    fontFamily: Fonts.lora.bold,
     fontSize: 22,
     flex: 1,
   },

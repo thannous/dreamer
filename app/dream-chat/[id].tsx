@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -76,6 +77,7 @@ export default function DreamChatScreen() {
   const { dreams, updateDream } = useDreams();
   const { colors, mode, shadows } = useTheme();
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat } = useQuota({ dreamId, dream });
@@ -453,7 +455,7 @@ export default function DreamChatScreen() {
         </ScrollView>
 
         {/* Input Area */}
-        <View style={[styles.inputContainer, { backgroundColor: colors.backgroundDark, borderTopColor: colors.divider }]}>
+        <View style={[styles.inputContainer, { backgroundColor: colors.backgroundDark, borderTopColor: colors.divider, paddingBottom: insets.bottom + 12 }]}>
           {/* Message Counter */}
           {typeof messageLimit === 'number' && (
             <View style={[styles.messageCounterContainer]}>
@@ -708,7 +710,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 12,
+    // paddingBottom is set dynamically with safe area insets
   },
   inputWrapper: {
     flexDirection: 'row',

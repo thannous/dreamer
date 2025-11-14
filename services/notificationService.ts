@@ -5,8 +5,8 @@
  */
 
 // Import both implementations
-import * as realService from './notificationServiceReal';
 import * as mockService from './mocks/notificationServiceMock';
+import * as realService from './notificationServiceReal';
 
 // Select which implementation to use based on environment
 const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
@@ -25,3 +25,4 @@ export const scheduleDailyNotification = service.scheduleDailyNotification;
 export const cancelAllNotifications = service.cancelAllNotifications;
 export const getScheduledNotifications = service.getScheduledNotifications;
 export const hasNotificationPermissions = service.hasNotificationPermissions;
+export const sendTestNotification = service.sendTestNotification;

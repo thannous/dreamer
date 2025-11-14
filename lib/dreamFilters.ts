@@ -1,3 +1,4 @@
+import { isDreamAnalyzed, isDreamExplored } from './dreamUsage';
 import { DreamAnalysis } from './types';
 
 /**
@@ -98,11 +99,11 @@ export function applyFilters(dreams: DreamAnalysis[], filters: DreamFilters): Dr
   }
 
   if (filters.analyzedOnly) {
-    filtered = filtered.filter((dream) => dream.isAnalyzed);
+    filtered = filtered.filter((dream) => isDreamAnalyzed(dream));
   }
 
   if (filters.exploredOnly) {
-    filtered = filtered.filter((dream) => dream.explorationStartedAt);
+    filtered = filtered.filter((dream) => isDreamExplored(dream));
   }
 
   if (filters.startDate || filters.endDate) {

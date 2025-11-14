@@ -18,27 +18,27 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { transcribeAudio } from '@/services/speechToText';
 import {
-  AudioModule,
-  AudioQuality,
-  IOSOutputFormat,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorder,
-  type RecordingOptions,
+    AudioModule,
+    AudioQuality,
+    IOSOutputFormat,
+    RecordingPresets,
+    setAudioModeAsync,
+    useAudioRecorder,
+    type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -80,6 +80,7 @@ export default function RecordingScreen() {
   const [isRecording, setIsRecording] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
   const [firstDreamPrompt, setFirstDreamPrompt] = useState<DreamAnalysis | null>(null);
+  const [analyzePromptDream, setAnalyzePromptDream] = useState<DreamAnalysis | null>(null);
   const [pendingAnalysisDream, setPendingAnalysisDream] = useState<DreamAnalysis | null>(null);
   const [isPersisting, setIsPersisting] = useState(false);
   const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
@@ -169,12 +170,17 @@ export default function RecordingScreen() {
 
   const navigateAfterSave = useCallback(
     (savedDream: DreamAnalysis, previousDreamCount: number, options?: { skipFirstDreamSheet?: boolean }) => {
-      if (!options?.skipFirstDreamSheet) {
+      if (options?.skipFirstDreamSheet) {
+        router.replace(`/journal/${savedDream.id}`);
+        return;
+      }
+
+      if (previousDreamCount === 0) {
         setFirstDreamPrompt(savedDream);
         return;
       }
 
-      router.replace(`/journal/${savedDream.id}`);
+      setAnalyzePromptDream(savedDream);
     },
     []
   );
@@ -347,11 +353,28 @@ export default function RecordingScreen() {
     }
     setFirstDreamPrompt(null);
     setPendingAnalysisDream(null);
-    router.replace('/(tabs)/journal');
+    router.push('/(tabs)/journal');
   }, [firstDreamPrompt]);
 
+  const handleAnalyzePromptDismiss = useCallback(() => {
+    if (!analyzePromptDream) {
+      return;
+    }
+    setAnalyzePromptDream(null);
+    setPendingAnalysisDream(null);
+  }, [analyzePromptDream]);
+
+  const handleAnalyzePromptJournal = useCallback(() => {
+    if (!analyzePromptDream) {
+      return;
+    }
+    setAnalyzePromptDream(null);
+    setPendingAnalysisDream(null);
+    router.push('/(tabs)/journal');
+  }, [analyzePromptDream]);
+
   const handleFirstDreamAnalyze = useCallback(async () => {
-    const dream = firstDreamPrompt ?? pendingAnalysisDream;
+    const dream = firstDreamPrompt ?? analyzePromptDream ?? pendingAnalysisDream;
     if (!dream) {
       return;
     }
@@ -381,6 +404,9 @@ export default function RecordingScreen() {
 
     if (firstDreamPrompt) {
       setFirstDreamPrompt(null);
+    }
+    if (analyzePromptDream) {
+      setAnalyzePromptDream(null);
     }
     setPendingAnalysisDream(dream);
 
@@ -424,6 +450,7 @@ export default function RecordingScreen() {
   }, [
     analysisProgress,
     analyzeDream,
+    analyzePromptDream,
     canAnalyzeNow,
     dreams.length,
     firstDreamPrompt,
@@ -592,6 +619,60 @@ export default function RecordingScreen() {
         <Pressable onPress={handleFirstDreamDismiss} style={styles.sheetLinkButton}>
           <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
             {t('guest.first_dream.sheet.dismiss')}
+          </Text>
+        </Pressable>
+      </BottomSheet>
+      <BottomSheet
+        visible={Boolean(analyzePromptDream)}
+        onClose={handleAnalyzePromptDismiss}
+        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+        style={[
+          styles.firstDreamSheet,
+          {
+            backgroundColor: colors.backgroundCard,
+            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
+          },
+          shadows.xl,
+        ]}
+      >
+        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+          {t('recording.analyze_prompt.sheet.title')}
+        </Text>
+        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+          {t('recording.analyze_prompt.sheet.subtitle')}
+        </Text>
+        <View style={styles.sheetButtons}>
+          <Pressable
+            style={[
+              styles.sheetPrimaryButton,
+              { backgroundColor: colors.accent },
+              isPersisting && styles.sheetDisabledButton,
+            ]}
+            onPress={handleFirstDreamAnalyze}
+            disabled={isPersisting}
+          >
+            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+              {t('recording.analyze_prompt.sheet.analyze')}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.sheetSecondaryButton,
+              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+              isPersisting && styles.sheetDisabledButton,
+            ]}
+            onPress={handleAnalyzePromptJournal}
+            disabled={isPersisting}
+          >
+            <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+              {t('recording.analyze_prompt.sheet.journal')}
+            </Text>
+          </Pressable>
+        </View>
+        <Pressable onPress={handleAnalyzePromptDismiss} style={styles.sheetLinkButton}>
+          <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
+            {t('recording.analyze_prompt.sheet.dismiss')}
           </Text>
         </Pressable>
       </BottomSheet>

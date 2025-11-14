@@ -4,6 +4,7 @@ import { DreamCard } from '@/components/journal/DreamCard';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
 import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
+import { DreamIcon } from '@/components/icons/DreamIcons';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
@@ -12,32 +13,24 @@ import { useModalSlide } from '@/hooks/useJournalAnimations';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { applyFilters, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
+import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    FlatList,
-    Modal,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-    useWindowDimensions,
+  FlatList,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import Svg, { Path } from 'react-native-svg';
-
-function AddIcon({ size = 24, color = '#1a0f2b' }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill={color} />
-    </Svg>
-  );
-}
-
 export default function JournalListScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { dreams, guestLimitReached } = useDreams();
@@ -46,6 +39,7 @@ export default function JournalListScreen() {
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlatList>(null);
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
@@ -187,8 +181,8 @@ export default function JournalListScreen() {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < 5; // Load first 5 immediately
 
     const isFavorite = !!item.isFavorite;
-    const isAnalyzed = !!item.isAnalyzed;
-    const isExplored = !!item.explorationStartedAt;
+    const isAnalyzed = isDreamAnalyzed(item);
+    const isExplored = isDreamExplored(item);
 
     const mobileBadges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
 
@@ -244,8 +238,8 @@ export default function JournalListScreen() {
     const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
-    const isAnalyzed = !!item.isAnalyzed;
-    const isExplored = !!item.explorationStartedAt;
+    const isAnalyzed = isDreamAnalyzed(item);
+    const isExplored = isDreamExplored(item);
 
     const isHero = isRecent && hasImage;
     const badges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
@@ -320,7 +314,13 @@ export default function JournalListScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
       {/* Header */}
-      <View style={[styles.header, isDesktopLayout && styles.headerDesktop]}>
+      <View
+        style={[
+          styles.header,
+          isDesktopLayout && styles.headerDesktop,
+          { paddingTop: insets.top + ThemeLayout.spacing.sm },
+        ]}
+      >
         <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('journal.title')}</Text>
       </View>
 
@@ -435,7 +435,7 @@ export default function JournalListScreen() {
             testID={TID.Button.AddDream}
             accessibilityLabel={t('journal.add_button.accessibility')}
           >
-            <AddIcon size={24} color={colors.backgroundCard} />
+            <DreamIcon size={24} color={colors.backgroundCard} />
             <Text style={[styles.addButtonText, { color: colors.backgroundCard }]}>
               {t('journal.add_button.label')}
             </Text>
@@ -637,6 +637,7 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: ThemeLayout.spacing.md,
     backgroundColor: 'transparent',
+    alignItems: 'center',
   },
   floatingButtonDesktop: {
     alignSelf: 'center',

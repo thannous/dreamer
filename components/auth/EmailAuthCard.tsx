@@ -18,6 +18,7 @@ import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import { signInMock, signInWithEmailPassword, signOut, signUpWithEmailPassword } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
+import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
@@ -83,6 +84,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setSubmitting('signin');
     try {
       await signInWithEmailPassword(trimmedEmail, password);
+      requestStayOnSettingsIntent();
       resetSensitiveInputs();
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
@@ -97,6 +99,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setSubmitting('signup');
     try {
       await signUpWithEmailPassword(trimmedEmail, password);
+      requestStayOnSettingsIntent();
       Alert.alert(
         t('settings.account.alert.signup_success.title'),
         t('settings.account.alert.signup_success.message')
@@ -126,6 +129,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setMockProfileLoading(profile);
     try {
       await signInMock(profile);
+      requestStayOnSettingsIntent();
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
     } finally {
