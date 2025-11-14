@@ -4,6 +4,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
 import type { QuotaUsage } from '@/lib/types';
+import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/theme';
 
@@ -37,11 +38,13 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       key: 'analysis',
       label: t('settings.quota.analysis_label'),
       usage: quotaStatus?.usage.analysis,
+      testID: TID.Quota.AnalysisValue,
     },
     {
       key: 'exploration',
       label: t('settings.quota.exploration_label'),
       usage: quotaStatus?.usage.exploration,
+      testID: TID.Quota.ExplorationValue,
     },
   ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, t]);
 
@@ -64,7 +67,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   return (
     <View style={[styles.card, { backgroundColor: colors.backgroundCard }, shadows.md]}>
       <View style={styles.headerRow}>
-        <View>
+        <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>
             {t('settings.quota.title')}
           </Text>
@@ -83,31 +86,38 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         </Pressable>
       )}
 
-      {rows.map((row) => (
-        <View key={row.key} style={styles.row}>
-          <View style={styles.rowHeader}>
-            <Text style={[styles.rowLabel, { color: colors.textSecondary }]}>
-              {row.label}
-            </Text>
-            <Text style={[styles.rowValue, { color: colors.textPrimary }]}>
-              {formatUsage(row.usage, t('recording.quota.unlimited'))}
-            </Text>
-          </View>
-          {row.usage && row.usage.limit !== null && (
-            <View style={[styles.progressTrack, { backgroundColor: colors.backgroundSecondary }] }>
-              <View
-                style={[
-                  styles.progressFill,
-                  {
-                    backgroundColor: colors.accent,
-                    width: `${getProgress(row.usage)}%`,
-                  },
-                ]}
-              />
+      {rows.map((row) => {
+        const formattedValue = formatUsage(row.usage, t('recording.quota.unlimited'));
+        return (
+          <View key={row.key} style={styles.row}>
+            <View style={styles.rowHeader}>
+              <Text style={[styles.rowLabel, { color: colors.textSecondary }]}>
+                {row.label}
+              </Text>
+              <Text
+                style={[styles.rowValue, { color: colors.textPrimary }]}
+                testID={row.testID}
+                accessibilityLabel={`${row.label}: ${formattedValue}`}
+              >
+                {formattedValue}
+              </Text>
             </View>
-          )}
-        </View>
-      ))}
+            {row.usage && row.usage.limit !== null && (
+              <View style={[styles.progressTrack, { backgroundColor: colors.backgroundSecondary }] }>
+                <View
+                  style={[
+                    styles.progressFill,
+                    {
+                      backgroundColor: colors.accent,
+                      width: `${getProgress(row.usage)}%`,
+                    },
+                  ]}
+                />
+              </View>
+            )}
+          </View>
+        );
+      })}
 
       {quotaStatus?.tier === 'premium' && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
@@ -141,6 +151,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 16,
+  },
+  headerTextContainer: {
+    flex: 1,
+    minWidth: 0,
   },
   title: {
     fontSize: 18,
