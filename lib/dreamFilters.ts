@@ -36,6 +36,15 @@ export function filterByTheme(
 }
 
 /**
+ * Filter dreams by favorite flag
+ */
+export function filterByFavorites(dreams: DreamAnalysis[], favoritesOnly: boolean): DreamAnalysis[] {
+  if (!favoritesOnly) return dreams;
+
+  return dreams.filter((dream) => dream.isFavorite);
+}
+
+/**
  * Filter dreams by date range
  */
 export function filterByDateRange(
@@ -68,6 +77,9 @@ export interface DreamFilters {
   theme?: string | null;
   startDate?: Date | null;
   endDate?: Date | null;
+  favoritesOnly?: boolean;
+  analyzedOnly?: boolean;
+  exploredOnly?: boolean;
 }
 
 export function applyFilters(dreams: DreamAnalysis[], filters: DreamFilters): DreamAnalysis[] {
@@ -79,6 +91,18 @@ export function applyFilters(dreams: DreamAnalysis[], filters: DreamFilters): Dr
 
   if (filters.theme) {
     filtered = filterByTheme(filtered, filters.theme);
+  }
+
+  if (filters.favoritesOnly) {
+    filtered = filterByFavorites(filtered, filters.favoritesOnly);
+  }
+
+  if (filters.analyzedOnly) {
+    filtered = filtered.filter((dream) => dream.isAnalyzed);
+  }
+
+  if (filters.exploredOnly) {
+    filtered = filtered.filter((dream) => dream.explorationStartedAt);
   }
 
   if (filters.startDate || filters.endDate) {

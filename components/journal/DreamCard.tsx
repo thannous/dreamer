@@ -1,13 +1,14 @@
-import React, { memo, useState, useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Image } from 'expo-image';
-import Animated, { FadeInUp, FadeIn } from 'react-native-reanimated';
 import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
-import { DreamAnalysis } from '@/lib/types';
 import { useScalePress } from '@/hooks/useJournalAnimations';
-import { getThumbnailUrl, getImageConfig } from '@/lib/imageUtils';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
+import { DreamAnalysis } from '@/lib/types';
+import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import React, { memo, useMemo, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
@@ -15,6 +16,7 @@ interface DreamCardProps {
   index: number;
   shouldLoadImage?: boolean;
   testID?: string;
+  badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -25,6 +27,7 @@ export const DreamCard = memo(function DreamCard({
   index,
   shouldLoadImage = true,
   testID,
+  badges,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
@@ -86,11 +89,51 @@ export const DreamCard = memo(function DreamCard({
           <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
             {dream.interpretation || dream.transcript}
           </Text>
-          {dream.theme && (
+          {(dream.theme || (badges && badges.length > 0)) && (
             <View style={styles.tagContainer}>
-              <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                <Text style={[styles.tagText, { color: colors.textPrimary }]}>{dream.theme}</Text>
-              </View>
+              {dream.theme && (
+                <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
+                  <Text style={[styles.tagText, { color: colors.textPrimary }]}>{dream.theme}</Text>
+                </View>
+              )}
+              {badges?.map((badge, i) => {
+                const isAccent = badge.variant === 'accent';
+                const key = badge.label || badge.icon || String(i);
+
+                return (
+                  <View
+                    key={key}
+                    style={[
+                      styles.stateBadge,
+                      {
+                        backgroundColor: isAccent ? colors.accent : colors.backgroundSecondary,
+                      },
+                    ]}
+                    accessibilityLabel={badge.label}
+                    accessible={!!badge.label}
+                  >
+                    {badge.icon && (
+                      <Ionicons
+                        name={badge.icon as any}
+                        size={14}
+                        color={isAccent ? colors.textOnAccentSurface : colors.textPrimary}
+                      />
+                    )}
+                    {!badge.icon && badge.label && (
+                      <Text
+                        style={[
+                          styles.stateBadgeText,
+                          {
+                            color: isAccent ? colors.textOnAccentSurface : colors.textPrimary,
+                          },
+                        ]}
+                      >
+                        {badge.label}
+                      </Text>
+                    )}
+                  </View>
+                );
+              })}
             </View>
           )}
         </View>
@@ -161,5 +204,16 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  stateBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: ThemeLayout.borderRadius.full,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  stateBadgeText: {
+    fontSize: 11,
+    fontFamily: 'SpaceGrotesk_500Medium',
   },
 });
