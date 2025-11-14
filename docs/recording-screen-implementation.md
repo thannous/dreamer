@@ -56,11 +56,12 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 ### 5. Save Functionality
 - Validates that dream text exists before saving
 - Integrates with existing DreamsContext
-- Calls backend API for dream analysis (analyzeDream)
-- Generates dream imagery (generateImageForDream)
-- Creates complete DreamAnalysis object
-- Navigates to dream detail screen after save
-- Shows loading state during processing
+- Persists a draft `DreamAnalysis` in the journal
+- After save, opens a **first-dream bottom sheet** that lets the user choose what to do next:
+  - Analyze this dream (triggers AI analysis + imagery generation)
+  - See dream journal (go back to the journal list)
+  - Not now (dismiss the sheet and return to the recording screen)
+- Shows loading state during processing and analysis
 
 ### 6. Close Functionality
 - Warns user about unsaved changes
