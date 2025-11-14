@@ -9,6 +9,7 @@ const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
+const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -361,6 +362,31 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
       console.error('Failed to save language preference:', error);
     }
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getRitualPreference(): Promise<string | null> {
+  try {
+    const savedPreference = await getItem(RITUAL_PREFERENCE_KEY);
+    if (savedPreference) {
+      return JSON.parse(savedPreference) as string;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve ritual preference:', error);
+    }
+  }
+  return null;
+}
+
+export async function saveRitualPreference(preference: string): Promise<void> {
+  try {
+    await setItem(RITUAL_PREFERENCE_KEY, JSON.stringify(preference));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save ritual preference:', error);
+    }
+    throw new Error('Failed to save ritual preference');
   }
 }
 

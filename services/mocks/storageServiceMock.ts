@@ -25,6 +25,7 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
+const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 
 export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
@@ -232,6 +233,33 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save language preference:', error);
     throw new Error('Failed to save language preference');
+  }
+}
+
+export async function getRitualPreference(): Promise<string | null> {
+  console.log('[MOCK STORAGE] getRitualPreference called');
+  try {
+    const savedPreference = mockStorage[RITUAL_PREFERENCE_KEY];
+    if (savedPreference) {
+      const preference = JSON.parse(savedPreference) as string;
+      console.log('[MOCK STORAGE] Returning saved ritual preference:', preference);
+      return preference;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve ritual preference:', error);
+  }
+  console.log('[MOCK STORAGE] No ritual preference set yet');
+  return null;
+}
+
+export async function saveRitualPreference(preference: string): Promise<void> {
+  console.log('[MOCK STORAGE] saveRitualPreference called:', preference);
+  try {
+    mockStorage[RITUAL_PREFERENCE_KEY] = JSON.stringify(preference);
+    console.log('[MOCK STORAGE] Ritual preference saved');
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save ritual preference:', error);
+    throw new Error('Failed to save ritual preference');
   }
 }
 
