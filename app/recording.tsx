@@ -28,9 +28,10 @@ import {
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     Alert,
+    AppState,
     KeyboardAvoidingView,
     Platform,
     Pressable,
@@ -87,6 +88,7 @@ export default function RecordingScreen() {
   const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const analysisProgress = useAnalysisProgress();
+  const hasAutoStoppedRecordingRef = useRef(false);
   const { language } = useLanguage();
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -283,6 +285,14 @@ export default function RecordingScreen() {
         console.error('Failed to stop recording:', err);
       }
       Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
+    } finally {
+      try {
+        await setAudioModeAsync({ allowsRecording: false });
+      } catch (err) {
+        if (__DEV__) {
+          console.warn('Failed to reset audio mode after recording:', err);
+        }
+      }
     }
   }, [audioRecorder, transcriptionLocale, t]);
 
@@ -293,6 +303,25 @@ export default function RecordingScreen() {
       await startRecording();
     }
   }, [isRecording, stopRecording, startRecording]);
+
+  useEffect(() => {
+    hasAutoStoppedRecordingRef.current = false;
+
+    const subscription = AppState.addEventListener('change', (state) => {
+      if ((state === 'background' || state === 'inactive') && audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+        hasAutoStoppedRecordingRef.current = true;
+        void stopRecording();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+      if (audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+        hasAutoStoppedRecordingRef.current = true;
+        void stopRecording();
+      }
+    };
+  }, [audioRecorder, stopRecording]);
 
   const handleSaveDream = useCallback(async () => {
     if (!trimmedTranscript) {
