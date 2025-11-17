@@ -1,0 +1,40 @@
+appId: com.tanuki75.dreamapp
+---
+# Validate subscription paywall flow in mock mode
+- launchApp
+
+# Go to Settings
+- tapOn:
+    id: tab.settings
+- waitForAnimationToEnd
+
+# Subscription card should be visible for free user
+- assertVisible: "Upgrade to Dreamer Premium"
+- assertVisible: "Unlock unlimited dream analyses and explorations."
+
+# Open the paywall from the subscription card
+- tapOn: "See premium options"
+- waitForAnimationToEnd
+
+# Paywall screen should show free state
+- assertVisible: "Unlock Dreamer Premium"
+- assertVisible: "Premium dream analysis"
+- assertVisible: "Monthly"
+- assertVisible: "Annual"
+
+# Select the monthly option and purchase
+- tapOn:
+    id: btn.paywall.selectMonthly
+- tapOn:
+    id: btn.paywall.purchase
+- waitForAnimationToEnd
+
+# After mock purchase, header should reflect premium state
+- assertVisible: "You are Premium"
+
+# Close paywall and verify subscription card reflects active state
+- tapOn:
+    id: btn.paywall.close
+- waitForAnimationToEnd
+- assertVisible: "Dreamer Premium"
+- assertVisible: "Premium is active on your account."
