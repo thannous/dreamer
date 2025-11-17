@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ClassifiedError } from '@/lib/errors';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -57,6 +57,16 @@ export function useAnalysisProgress() {
 
   // Track the target progress for smooth animation
   const animationRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Ensure we clean up any running interval when the hook's owner unmounts
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        clearInterval(animationRef.current);
+        animationRef.current = null;
+      }
+    };
+  }, []);
 
   const animateProgress = useCallback((targetProgress: number) => {
     if (animationRef.current) {
