@@ -66,19 +66,27 @@ export default function SettingsScreen() {
             </View>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
               <SubscriptionCard
-                title={isActive ? 'Dreamer Premium' : 'Upgrade to Dreamer Premium'}
-                subtitle={
+                title={t(
                   isActive
-                    ? 'Premium is active on your account.'
-                    : 'Unlock unlimited dream analyses and explorations.'
-                }
-                badge={isActive ? 'Active' : undefined}
+                    ? 'subscription.settings.title.premium'
+                    : 'subscription.settings.title.free'
+                )}
+                subtitle={t(
+                  isActive
+                    ? 'subscription.settings.subtitle.premium'
+                    : 'subscription.settings.subtitle.free'
+                )}
+                badge={isActive ? t('subscription.paywall.card.badge.premium') : undefined}
                 features={[
-                  'Unlimited AI dream analyses',
-                  'Unlimited explorations and chat',
+                  t('subscription.paywall.card.feature.unlimited_analyses'),
+                  t('subscription.paywall.card.feature.unlimited_explorations'),
                 ]}
                 loading={subscriptionLoading}
-                ctaLabel={isActive ? 'Manage subscription' : 'See premium options'}
+                ctaLabel={t(
+                  isActive
+                    ? 'subscription.settings.cta.premium'
+                    : 'subscription.settings.cta.free'
+                )}
                 onPress={handleOpenPaywall}
                 disabled={subscriptionLoading}
               />

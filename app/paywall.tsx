@@ -8,6 +8,7 @@ import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import type { PurchasePackage } from '@/lib/types';
 
@@ -21,6 +22,7 @@ function sortPackages(packages: PurchasePackage[]): PurchasePackage[] {
 
 export default function PaywallScreen() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const { isActive, loading, processing, error, packages, purchase, restore } = useSubscription();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -55,10 +57,12 @@ export default function PaywallScreen() {
     }
   };
 
-  const headerTitle = isActive ? 'You are Premium' : 'Unlock Dreamer Premium';
+  const headerTitle = isActive
+    ? t('subscription.paywall.header.premium')
+    : t('subscription.paywall.header.free');
   const headerSubtitle = isActive
-    ? 'Thank you for supporting Dreamer. Enjoy unlimited analyses and explorations.'
-    : 'Get more from your dreams with unlimited analyses, explorations and richer insights.';
+    ? t('subscription.paywall.header.subtitle.premium')
+    : t('subscription.paywall.header.subtitle.free');
 
   return (
     <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
@@ -71,14 +75,18 @@ export default function PaywallScreen() {
             accessibilityRole="button"
             testID={TID.Button.PaywallClose}
           >
-            <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>Close</Text>
+            <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>
+              {t('subscription.paywall.button.close')}
+            </Text>
           </Pressable>
         </View>
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
         {loading && (
           <View style={styles.loadingRow}>
             <ActivityIndicator color={colors.accent} />
-            <Text style={[styles.loadingLabel, { color: colors.textSecondary }]}>Loading options…</Text>
+            <Text style={[styles.loadingLabel, { color: colors.textSecondary }]}>
+              {t('subscription.paywall.loading')}
+            </Text>
           </View>
         )}
         {error && (
@@ -89,13 +97,17 @@ export default function PaywallScreen() {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <ScreenContainer>
           <SubscriptionCard
-            title="Premium dream analysis"
-            subtitle="Unlimited AI analyses, explorations and deeper insights into your night stories."
-            badge={isActive ? 'Active' : 'Most popular'}
+            title={t('subscription.paywall.card.title')}
+            subtitle={t('subscription.paywall.card.subtitle')}
+            badge={t(
+              isActive
+                ? 'subscription.paywall.card.badge.premium'
+                : 'subscription.paywall.card.badge.free'
+            )}
             features={[
-              'Unlimited AI dream analyses',
-              'Unlimited explorations and chat sessions',
-              'Higher priority processing when demand is high',
+              t('subscription.paywall.card.feature.unlimited_analyses'),
+              t('subscription.paywall.card.feature.unlimited_explorations'),
+              t('subscription.paywall.card.feature.priority'),
             ]}
             loading={processing}
           />
@@ -104,11 +116,26 @@ export default function PaywallScreen() {
             <PricingOption
               key={pkg.id}
               id={pkg.id}
-              title={pkg.title || (pkg.interval === 'monthly' ? 'Monthly' : 'Annual')}
+              title={
+                pkg.title ||
+                t(
+                  pkg.interval === 'monthly'
+                    ? 'subscription.paywall.option.title.monthly'
+                    : 'subscription.paywall.option.title.annual'
+                )
+              }
               subtitle={pkg.description}
               price={pkg.priceFormatted}
-              intervalLabel={pkg.interval === 'monthly' ? 'per month' : 'per year'}
-              badge={pkg.interval === 'annual' ? 'Best value' : undefined}
+              intervalLabel={t(
+                pkg.interval === 'monthly'
+                  ? 'subscription.paywall.option.interval.monthly'
+                  : 'subscription.paywall.option.interval.annual'
+              )}
+              badge={
+                pkg.interval === 'annual'
+                  ? t('subscription.paywall.option.badge.annual')
+                  : undefined
+              }
               selected={effectiveSelectedId === pkg.id}
               disabled={processing || loading || isActive}
               onPress={handleSelect}
@@ -136,7 +163,11 @@ export default function PaywallScreen() {
                     { color: canPurchase ? colors.textOnAccentSurface : colors.textSecondary },
                   ]}
                 >
-                  {isActive ? 'Already active' : 'Continue'}
+                  {t(
+                    isActive
+                      ? 'subscription.paywall.button.primary.premium'
+                      : 'subscription.paywall.button.primary.free'
+                  )}
                 </Text>
               )}
             </Pressable>
@@ -147,9 +178,15 @@ export default function PaywallScreen() {
               disabled={processing}
               testID={TID.Button.PaywallRestore}
             >
-              <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>Restore purchases</Text>
+              <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                {t('subscription.paywall.button.restore')}
+              </Text>
             </Pressable>
           </View>
+
+          <Text style={[styles.notice, { color: colors.textSecondary }]}>
+            {t('subscription.paywall.notice.store')}
+          </Text>
         </ScreenContainer>
       </ScrollView>
     </View>
@@ -240,5 +277,10 @@ const styles = StyleSheet.create({
   secondaryLabel: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_500Medium',
+  },
+  notice: {
+    marginTop: 8,
+    fontSize: 12,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
 });
