@@ -14,6 +14,11 @@ let lastUserId: string | null = null;
 let cachedStatus: SubscriptionStatus | null = null;
 let cachedPackages: InternalPackage[] = [];
 
+function resetCachedState(): void {
+  cachedStatus = null;
+  cachedPackages = [];
+}
+
 function resolveApiKey(): string | null {
   const env = process?.env as Record<string, string> | undefined;
   if (Platform.OS === 'android') {
@@ -30,15 +35,25 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
   if (!apiKey) {
     throw new Error('Missing RevenueCat API key');
   }
+  const normalizedUserId = userId ?? null;
   if (!initialized) {
-    Purchases.configure({ apiKey, appUserID: userId ?? undefined });
+    Purchases.configure({ apiKey, appUserID: normalizedUserId ?? undefined });
     initialized = true;
-    lastUserId = userId ?? null;
+    lastUserId = normalizedUserId;
     return;
   }
-  if (userId && userId !== lastUserId) {
-    await Purchases.logIn(userId);
-    lastUserId = userId;
+  if (!normalizedUserId) {
+    if (lastUserId !== null) {
+      await Purchases.logOut();
+    }
+    lastUserId = null;
+    resetCachedState();
+    return;
+  }
+  if (normalizedUserId !== lastUserId) {
+    await Purchases.logIn(normalizedUserId);
+    lastUserId = normalizedUserId;
+    resetCachedState();
   }
 }
 
