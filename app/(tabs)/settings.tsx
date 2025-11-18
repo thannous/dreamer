@@ -1,6 +1,6 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,7 +24,32 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
-   const { isActive, loading: subscriptionLoading } = useSubscription();
+  const { isActive, loading: subscriptionLoading } = useSubscription();
+
+  const subscriptionCopy = useMemo(() => {
+    if (isActive) {
+      return {
+        title: t('subscription.settings.title.premium'),
+        subtitle: t('subscription.settings.subtitle.premium'),
+        badge: t('subscription.paywall.card.badge.premium'),
+        cta: t('subscription.settings.cta.premium'),
+      };
+    }
+    return {
+      title: t('subscription.settings.title.free'),
+      subtitle: t('subscription.settings.subtitle.free'),
+      badge: t('subscription.paywall.card.badge.free'),
+      cta: t('subscription.settings.cta.free'),
+    };
+  }, [isActive, t]);
+
+  const subscriptionFeatures = useMemo(
+    () => [
+      t('subscription.paywall.card.feature.unlimited_analyses'),
+      t('subscription.paywall.card.feature.unlimited_explorations'),
+    ],
+    [t],
+  );
 
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
@@ -66,27 +91,12 @@ export default function SettingsScreen() {
             </View>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
               <SubscriptionCard
-                title={t(
-                  isActive
-                    ? 'subscription.settings.title.premium'
-                    : 'subscription.settings.title.free'
-                )}
-                subtitle={t(
-                  isActive
-                    ? 'subscription.settings.subtitle.premium'
-                    : 'subscription.settings.subtitle.free'
-                )}
-                badge={isActive ? t('subscription.paywall.card.badge.premium') : undefined}
-                features={[
-                  t('subscription.paywall.card.feature.unlimited_analyses'),
-                  t('subscription.paywall.card.feature.unlimited_explorations'),
-                ]}
+                title={subscriptionCopy.title}
+                subtitle={subscriptionCopy.subtitle}
+                badge={subscriptionCopy.badge}
+                features={subscriptionFeatures}
                 loading={subscriptionLoading}
-                ctaLabel={t(
-                  isActive
-                    ? 'subscription.settings.cta.premium'
-                    : 'subscription.settings.cta.free'
-                )}
+                ctaLabel={subscriptionCopy.cta}
                 onPress={handleOpenPaywall}
                 disabled={subscriptionLoading}
               />

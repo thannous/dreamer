@@ -980,6 +980,7 @@ const translations: LanguagePack = {
     'settings.account.banner.unverified.action': 'Reenviar correo de verificación',
     'settings.account.banner.unverified.success': 'Correo de verificación enviado. Revisa tu bandeja de entrada.',
     'settings.account.banner.unverified.error': 'No se pudo enviar el correo. Inténtalo más tarde.',
+    'settings.account.alert.signup_success.title': 'Revisa tu correo',
     'settings.account.alert.signup_success.message': 'Confirma tu cuenta si es necesario.',
     'settings.account.alert.signup_failed.title': 'Fallo al registrarse',
     'settings.account.alert.signin_failed.title': 'Fallo al iniciar sesión',

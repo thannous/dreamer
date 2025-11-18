@@ -242,6 +242,7 @@ export default function RecordingScreen() {
         playsInSilentMode: true,
       });
 
+      hasAutoStoppedRecordingRef.current = false;
       await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
       audioRecorder.record();
       setIsRecording(true);
@@ -293,6 +294,7 @@ export default function RecordingScreen() {
           console.warn('Failed to reset audio mode after recording:', err);
         }
       }
+      hasAutoStoppedRecordingRef.current = false;
     }
   }, [audioRecorder, transcriptionLocale, t]);
 
