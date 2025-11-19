@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 
 import { supabase } from './supabase';
 import * as mockAuth from './mockAuth';
+import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
 
@@ -203,4 +204,23 @@ export async function signInMock(profile: mockAuth.MockProfile): Promise<User> {
     throw new Error('Mock sign-in is only available while running in mock mode.');
   }
   return mockAuth.signInWithProfile(profile);
+}
+
+export async function updateUserTier(tier: SubscriptionTier): Promise<User | null> {
+  if (isMockMode) {
+    return mockAuth.updateUserTier(tier);
+  }
+
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      data: { tier },
+    });
+    if (error) {
+      throw error;
+    }
+    return data.user ?? null;
+  } catch (error) {
+    console.error('Failed to update user tier', error);
+    throw error;
+  }
 }

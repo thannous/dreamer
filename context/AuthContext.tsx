@@ -1,16 +1,19 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { router } from 'expo-router';
 
 import { getCurrentUser, onAuthChange } from '@/lib/auth';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
+import type { SubscriptionTier } from '@/lib/types';
 
 export type AuthContextValue = {
   user: User | null;
   loading: boolean;
+  refreshUser: () => Promise<User | null>;
+  setUserTierLocally: (tier: SubscriptionTier) => void;
 };
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+export const AuthContext = createContext<AuthContextValue | null>(null);
 
 export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -60,7 +63,37 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     };
   }, []);
 
-  const value = useMemo(() => ({ user, loading }), [user, loading]);
+  const refreshUser = useCallback(async () => {
+    try {
+      const current = await getCurrentUser();
+      setUser(current);
+      setLoading(false);
+      return current;
+    } catch (err) {
+      if (__DEV__) {
+        console.warn('Failed to refresh user', err);
+      }
+      return null;
+    }
+  }, []);
+
+  const setUserTierLocally = useCallback((tier: SubscriptionTier) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        user_metadata: {
+          ...(prev.user_metadata ?? {}),
+          tier,
+        },
+      } as User;
+    });
+  }, []);
+
+  const value = useMemo(
+    () => ({ user, loading, refreshUser, setUserTierLocally }),
+    [user, loading, refreshUser, setUserTierLocally]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
