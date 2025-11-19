@@ -1,14 +1,14 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {
-    Dimensions,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-    useWindowDimensions,
-    type ViewStyle,
+  Dimensions,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+  type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,7 +16,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
 import { PieChart } from 'react-native-gifted-charts';
-import { Rect, Text as SvgText } from 'react-native-svg';
+import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
 
 import type { ThemeColors } from '@/constants/journalTheme';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -31,6 +31,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
 const CHART_WIDTH = SCREEN_WIDTH - CHART_HORIZONTAL_INSET;
 const PIE_LABEL_MARGIN = ThemeLayout.spacing.sm;
+const PIE_LABEL_VERTICAL_MARGIN = ThemeLayout.spacing.md;
 const LABEL_TEXT_MARGIN = ThemeLayout.spacing.sm;
 const LABEL_VERTICAL_PADDING = ThemeLayout.spacing.xs;
 const LABEL_TEXT_LINE_HEIGHT = 14;
@@ -133,6 +134,8 @@ const PIE_EXTRA_RADIUS = piePaddingPerSide;
 const PIE_RADIUS = clamp(CHART_WIDTH / 2 - PIE_EXTRA_RADIUS, MIN_PIE_RADIUS, MAX_PIE_RADIUS);
 const PIE_INNER_RADIUS = PIE_RADIUS * 0.62;
 const PIE_LABEL_TAIL_LENGTH = Math.max(10, Math.min(PIE_LABEL_LINE_LENGTH * 0.45, PIE_LABEL_LINE_LENGTH - 4));
+const PIE_CHART_DIMENSION = PIE_RADIUS * 2 + PIE_EXTRA_RADIUS * 2;
+const PIE_CHART_CENTER = PIE_RADIUS + PIE_EXTRA_RADIUS;
 
 type DreamPieDataItem = pieDataItem & {
   typeLabel: string;
@@ -140,6 +143,94 @@ type DreamPieDataItem = pieDataItem & {
   percentage: number;
   typeLines: string[];
   labelHeight: number;
+};
+
+type PieLabelLayout = {
+  anchorX: number;
+  anchorY: number;
+  isRightHalf: boolean;
+  labelCenterY: number;
+  midAngle: number;
+  item: DreamPieDataItem;
+};
+
+const distributeLabelsOnSide = (labels: PieLabelLayout[], chartHeight: number) => {
+  if (labels.length === 0) return [];
+
+  const sorted = labels
+    .map((label) => ({ ...label }))
+    .sort((a, b) => a.anchorY - b.anchorY);
+
+  sorted.forEach((label, index) => {
+    const previous = sorted[index - 1];
+    const minCenterY =
+      previous && previous.item
+        ? previous.labelCenterY + previous.item.labelHeight / 2 + label.item.labelHeight / 2 + PIE_LABEL_VERTICAL_MARGIN
+        : label.anchorY;
+
+    const topBound = PIE_LABEL_VERTICAL_MARGIN + label.item.labelHeight / 2;
+    label.labelCenterY = Math.max(label.anchorY, minCenterY, topBound);
+  });
+
+  const bottomLimit = chartHeight - PIE_LABEL_VERTICAL_MARGIN;
+  const last = sorted[sorted.length - 1];
+  const overflow = last.labelCenterY + last.item.labelHeight / 2 - bottomLimit;
+
+  if (overflow > 0) {
+    last.labelCenterY -= overflow;
+    for (let i = sorted.length - 2; i >= 0; i -= 1) {
+      const next = sorted[i + 1];
+      const maxCenterY =
+        next.labelCenterY - next.item.labelHeight / 2 - sorted[i].item.labelHeight / 2 - PIE_LABEL_VERTICAL_MARGIN;
+      sorted[i].labelCenterY = Math.min(sorted[i].labelCenterY, maxCenterY);
+    }
+  }
+
+  const first = sorted[0];
+  const topOverflow = first.labelCenterY - first.item.labelHeight / 2 - PIE_LABEL_VERTICAL_MARGIN;
+  if (topOverflow < 0) {
+    sorted.forEach((label) => {
+      label.labelCenterY -= topOverflow;
+    });
+  }
+
+  return sorted;
+};
+
+const buildPieLabelLayouts = (data: DreamPieDataItem[]): PieLabelLayout[] => {
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+  if (!total) return [];
+
+  let accumulated = 0;
+  const rawLayouts: PieLabelLayout[] = data.map((item) => {
+    const sliceAngle = (item.value / total) * Math.PI * 2;
+    const midAngle = accumulated + sliceAngle / 2;
+    accumulated += sliceAngle;
+
+    const anchorX = PIE_CHART_CENTER + PIE_RADIUS * Math.sin(midAngle);
+    const anchorY = PIE_CHART_CENTER - PIE_RADIUS * Math.cos(midAngle);
+    const isRightHalf = anchorX >= PIE_CHART_CENTER;
+
+    return {
+      anchorX,
+      anchorY,
+      isRightHalf,
+      labelCenterY: anchorY,
+      midAngle,
+      item,
+    };
+  });
+
+  const left = distributeLabelsOnSide(
+    rawLayouts.filter((layout) => !layout.isRightHalf),
+    PIE_CHART_DIMENSION,
+  );
+  const right = distributeLabelsOnSide(
+    rawLayouts.filter((layout) => layout.isRightHalf),
+    PIE_CHART_DIMENSION,
+  );
+
+  return [...left, ...right];
 };
 
 interface StatCardProps {
@@ -246,7 +337,7 @@ export default function StatisticsScreen() {
     thickness: 1,
     labelComponentWidth: PIE_LABEL_WIDTH,
     labelComponentHeight: PIE_LABEL_HEIGHT,
-    labelComponentMargin: PIE_LABEL_MARGIN,
+    labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
     avoidOverlappingOfLabels: true,
   };
 
@@ -271,56 +362,7 @@ export default function StatisticsScreen() {
     };
   });
 
-  const renderPieExternalLabel = (pieItem?: pieDataItem) => {
-    if (!pieItem) return null;
-    const typedItem = pieItem as DreamPieDataItem;
-    const labelHeight = typedItem.labelHeight || PIE_LABEL_HEIGHT;
-    const labelTop = -labelHeight;
-    const textX = LABEL_TEXT_MARGIN;
-    const typeLines = typedItem.typeLines?.length ? typedItem.typeLines : [typedItem.typeLabel];
-    const typeStartY = labelTop + LABEL_VERTICAL_PADDING + 12;
-    const detailY =
-      labelTop + LABEL_VERTICAL_PADDING + typeLines.length * LABEL_TEXT_LINE_HEIGHT + LABEL_DETAIL_LINE_HEIGHT - 2;
-    const detailText = `${formatNumber(typedItem.count)} · ${formatPercent(typedItem.percentage / 100)}`;
-
-    return (
-      <>
-        <Rect
-          x={0}
-          y={labelTop}
-          width={PIE_LABEL_WIDTH}
-          height={labelHeight}
-          rx={ThemeLayout.borderRadius.sm}
-          ry={ThemeLayout.borderRadius.sm}
-          fill={colors.backgroundCard}
-          stroke={colors.divider}
-          strokeWidth={1}
-          opacity={0.95}
-        />
-        {typeLines.map((line, lineIndex) => (
-          <SvgText
-            key={`${typedItem.typeLabel}-${line}-${lineIndex}`}
-            fill={colors.textPrimary}
-            fontSize={12}
-            fontFamily="SpaceGrotesk_500Medium"
-            x={textX}
-            y={typeStartY + lineIndex * LABEL_TEXT_LINE_HEIGHT}
-          >
-            {line}
-          </SvgText>
-        ))}
-        <SvgText
-          fill={colors.textSecondary}
-          fontSize={11}
-          fontFamily="SpaceGrotesk_400Regular"
-          x={textX}
-          y={detailY}
-        >
-          {detailText}
-        </SvgText>
-      </>
-    );
-  };
+  const pieLabelLayouts = React.useMemo(() => buildPieLabelLayouts(pieChartData), [pieChartData]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
@@ -409,24 +451,108 @@ export default function StatisticsScreen() {
               >
                 <View style={styles.chartContainer}>
                   <View style={styles.pieChartWrapper}>
-                    <PieChart
-                      data={pieChartData}
-                      donut
-                      radius={PIE_RADIUS}
-                      innerRadius={PIE_INNER_RADIUS}
-                      extraRadius={PIE_EXTRA_RADIUS}
-                      strokeWidth={1.5}
-                      strokeColor={colors.backgroundDark}
-                      showExternalLabels
-                      labelLineConfig={pieLabelLineConfig}
-                      externalLabelComponent={renderPieExternalLabel}
-                      centerLabelComponent={() => (
-                        <View>
-                          <Text style={styles.pieChartCenterText}>{formatNumber(stats.totalDreams)}</Text>
-                          <Text style={styles.pieChartCenterSubtext}>{t('stats.chart.pie_center')}</Text>
-                        </View>
-                      )}
-                    />
+                    <View style={{ width: PIE_CHART_DIMENSION, height: PIE_CHART_DIMENSION }}>
+                      <PieChart
+                        data={pieChartData}
+                        donut
+                        radius={PIE_RADIUS}
+                        innerRadius={PIE_INNER_RADIUS}
+                        extraRadius={PIE_EXTRA_RADIUS}
+                        strokeWidth={1.5}
+                        strokeColor={colors.backgroundDark}
+                        showExternalLabels={false}
+                        centerLabelComponent={() => (
+                          <View>
+                            <Text style={styles.pieChartCenterText}>{formatNumber(stats.totalDreams)}</Text>
+                            <Text style={styles.pieChartCenterSubtext}>{t('stats.chart.pie_center')}</Text>
+                          </View>
+                        )}
+                      />
+                      <Svg
+                        width={PIE_CHART_DIMENSION}
+                        height={PIE_CHART_DIMENSION}
+                        style={StyleSheet.absoluteFill}
+                      >
+                        {pieLabelLayouts.map((layout) => {
+                          const labelWidth = PIE_LABEL_WIDTH;
+                          const labelHeight = layout.item.labelHeight || PIE_LABEL_HEIGHT;
+                          const labelX = layout.isRightHalf
+                            ? PIE_CHART_CENTER + PIE_RADIUS + PIE_LABEL_MARGIN
+                            : PIE_CHART_CENTER - PIE_RADIUS - PIE_LABEL_MARGIN - labelWidth;
+                          const labelY = layout.labelCenterY - labelHeight / 2;
+                          const textX = labelX + LABEL_TEXT_MARGIN;
+                          const typeLines = layout.item.typeLines?.length
+                            ? layout.item.typeLines
+                            : [layout.item.typeLabel];
+                          const detailText = `${formatNumber(layout.item.count)} · ${formatPercent(layout.item.percentage / 100)}`;
+                          const typeStartY = labelY + LABEL_VERTICAL_PADDING + 12;
+                          const detailY =
+                            labelY +
+                            LABEL_VERTICAL_PADDING +
+                            typeLines.length * LABEL_TEXT_LINE_HEIGHT +
+                            LABEL_DETAIL_LINE_HEIGHT -
+                            2;
+                          const connectorBendX =
+                            PIE_CHART_CENTER +
+                            (layout.isRightHalf ? 1 : -1) * (PIE_RADIUS + PIE_LABEL_TAIL_LENGTH);
+                          const connectorEndX = layout.isRightHalf ? labelX : labelX + labelWidth;
+
+                          return (
+                            <React.Fragment key={`${layout.item.typeLabel}-${layout.item.count}`}>
+                              <Line
+                                x1={layout.anchorX}
+                                y1={layout.anchorY}
+                                x2={connectorBendX}
+                                y2={layout.labelCenterY}
+                                stroke={colors.textSecondary}
+                                strokeWidth={1}
+                              />
+                              <Line
+                                x1={connectorBendX}
+                                y1={layout.labelCenterY}
+                                x2={connectorEndX}
+                                y2={layout.labelCenterY}
+                                stroke={colors.textSecondary}
+                                strokeWidth={1}
+                              />
+                              <Rect
+                                x={labelX}
+                                y={labelY}
+                                width={labelWidth}
+                                height={labelHeight}
+                                rx={ThemeLayout.borderRadius.sm}
+                                ry={ThemeLayout.borderRadius.sm}
+                                fill={colors.backgroundCard}
+                                stroke={colors.divider}
+                                strokeWidth={1}
+                                opacity={0.95}
+                              />
+                              {typeLines.map((line, lineIndex) => (
+                                <SvgText
+                                  key={`${layout.item.typeLabel}-${line}-${lineIndex}`}
+                                  fill={colors.textPrimary}
+                                  fontSize={12}
+                                  fontFamily="SpaceGrotesk_500Medium"
+                                  x={textX}
+                                  y={typeStartY + lineIndex * LABEL_TEXT_LINE_HEIGHT}
+                                >
+                                  {line}
+                                </SvgText>
+                              ))}
+                              <SvgText
+                                fill={colors.textSecondary}
+                                fontSize={11}
+                                fontFamily="SpaceGrotesk_400Regular"
+                                x={textX}
+                                y={detailY}
+                              >
+                                {detailText}
+                              </SvgText>
+                            </React.Fragment>
+                          );
+                        })}
+                      </Svg>
+                    </View>
                   </View>
                   <View style={styles.legendContainer}>
                     {topDreamTypes.map((item, index) => (
