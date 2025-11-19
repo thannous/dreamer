@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount } from '@/lib/dreamUsage';
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
 export interface DreamStatistics {
   totalDreams: number;
@@ -17,7 +17,7 @@ export interface DreamStatistics {
 
   // Content analysis
   dreamTypeDistribution: { type: string; count: number; percentage: number }[];
-  topThemes: { theme: string; count: number }[];
+  topThemes: { theme: DreamTheme; count: number }[];
 
   // Engagement
   totalChatMessages: number;
@@ -167,7 +167,7 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       }))
       .sort((a, b) => b.count - a.count);
 
-    const themeCount = new Map<string, number>();
+    const themeCount = new Map<DreamTheme, number>();
     dreams.forEach(dream => {
       if (dream.theme) {
         themeCount.set(dream.theme, (themeCount.get(dream.theme) || 0) + 1);

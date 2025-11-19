@@ -1,5 +1,5 @@
 import { isDreamAnalyzed, isDreamExplored } from './dreamUsage';
-import { DreamAnalysis } from './types';
+import type { DreamAnalysis, DreamTheme, DreamType } from './types';
 
 /**
  * Filter dreams by search query
@@ -29,11 +29,23 @@ export function filterBySearch(dreams: DreamAnalysis[], query: string): DreamAna
  */
 export function filterByTheme(
   dreams: DreamAnalysis[],
-  theme: string | null,
+  theme: DreamTheme | null,
 ): DreamAnalysis[] {
   if (!theme) return dreams;
 
   return dreams.filter((dream) => dream.theme === theme);
+}
+
+/**
+ * Filter dreams by dream type
+ */
+export function filterByDreamType(
+  dreams: DreamAnalysis[],
+  dreamType: DreamType | null,
+): DreamAnalysis[] {
+  if (!dreamType) return dreams;
+
+  return dreams.filter((dream) => dream.dreamType === dreamType);
 }
 
 /**
@@ -75,7 +87,8 @@ export function filterByDateRange(
  */
 export interface DreamFilters {
   searchQuery?: string;
-  theme?: string | null;
+  theme?: DreamTheme | null;
+  dreamType?: DreamType | null;
   startDate?: Date | null;
   endDate?: Date | null;
   favoritesOnly?: boolean;
@@ -92,6 +105,10 @@ export function applyFilters(dreams: DreamAnalysis[], filters: DreamFilters): Dr
 
   if (filters.theme) {
     filtered = filterByTheme(filtered, filters.theme);
+  }
+
+  if (filters.dreamType) {
+    filtered = filterByDreamType(filtered, filters.dreamType);
   }
 
   if (filters.favoritesOnly) {
@@ -126,9 +143,20 @@ export function sortDreamsByDate(dreams: DreamAnalysis[], ascending = false): Dr
  * Get unique themes from dreams
  */
 export function getUniqueThemes(dreams: DreamAnalysis[]): string[] {
-  const themes = new Set<string>();
+  const themes = new Set<DreamTheme>();
   dreams.forEach((dream) => {
     if (dream.theme) themes.add(dream.theme);
   });
   return Array.from(themes).sort();
+}
+
+/**
+ * Get unique dream types from dreams
+ */
+export function getUniqueDreamTypes(dreams: DreamAnalysis[]): DreamType[] {
+  const types = new Set<DreamType>();
+  dreams.forEach((dream) => {
+    if (dream.dreamType) types.add(dream.dreamType);
+  });
+  return Array.from(types).sort();
 }

@@ -8,6 +8,17 @@ export interface ChatMessage {
  */
 export type AnalysisStatus = 'none' | 'pending' | 'done' | 'failed';
 
+/**
+ * Canonical dream type categories used in the app.
+ * The AI/backend should always return one of these values.
+ */
+export type DreamType = 'Lucid Dream' | 'Recurring Dream' | 'Nightmare' | 'Symbolic Dream';
+
+/**
+ * Canonical dream visual/emotional themes.
+ */
+export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir';
+
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
@@ -18,8 +29,8 @@ export interface DreamAnalysis {
   imageUrl: string; // Full-resolution image for detail views
   thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
   chatHistory: ChatMessage[];
-  theme?: string;
-  dreamType: string;
+  theme?: DreamTheme;
+  dreamType: DreamType;
   isFavorite?: boolean;
   imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
   pendingSync?: boolean;

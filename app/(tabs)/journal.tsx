@@ -1,10 +1,10 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
+import { DreamIcon } from '@/components/icons/DreamIcons';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
 import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
-import { DreamIcon } from '@/components/icons/DreamIcons';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
@@ -15,7 +15,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { applyFilters, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -29,8 +29,8 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function JournalListScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { dreams, guestLimitReached } = useDreams();
@@ -46,7 +46,7 @@ export default function JournalListScreen() {
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
   const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>({
     start: null,
     end: null,
@@ -115,7 +115,7 @@ export default function JournalListScreen() {
     setShowExploredOnly(false);
   }, []);
 
-  const handleThemeSelect = useCallback((theme: string) => {
+  const handleThemeSelect = useCallback((theme: DreamTheme) => {
     setSelectedTheme(theme === selectedTheme ? null : theme);
     setShowThemeModal(false);
   }, [selectedTheme]);

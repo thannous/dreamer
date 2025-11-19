@@ -28,7 +28,7 @@ export const PREDEFINED_DREAMS: Array<Omit<DreamAnalysis, 'id'>> = [
     interpretation: 'Swimming in a cosmic ocean symbolizes diving deep into your unconscious mind and spiritual self. The stars and galaxies represent infinite possibilities and cosmic consciousness. The light-fish are positive energies guiding you. This dream reflects a period of spiritual growth and inner peace. You\'re exploring dimensions of yourself beyond the physical.',
     shareableQuote: 'We are all made of stardust, swimming in the cosmic ocean of existence.',
     theme: 'surreal',
-    dreamType: 'Epic Dream',
+    dreamType: 'Symbolic Dream',
     imageUrl: 'https://picsum.photos/seed/ocean-stars/800/600',
     thumbnailUrl: 'https://picsum.photos/seed/ocean-stars/400/300',
     chatHistory: [
@@ -89,7 +89,7 @@ export const PREDEFINED_DREAMS: Array<Omit<DreamAnalysis, 'id'>> = [
     interpretation: 'Meeting your future self is a powerful symbol of self-guidance and wisdom. This dream suggests your subconscious is trying to reassure you about your path forward. The older you represents your potential and the wisdom you\'ll gain. The message that "everything\'s going to be okay" is your inner voice providing comfort during uncertain times. The untold adventures hint at exciting possibilities ahead.',
     shareableQuote: 'The future self we meet in dreams is the person we are becoming.',
     theme: 'mystical',
-    dreamType: 'Prophetic Dream',
+    dreamType: 'Symbolic Dream',
     imageUrl: 'https://picsum.photos/seed/future-self/800/600',
     thumbnailUrl: 'https://picsum.photos/seed/future-self/400/300',
     chatHistory: [

@@ -5,13 +5,14 @@
 
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 import { getRandomImageForTheme, getThumbnailUrl } from '@/mock-data/assets';
+import type { DreamTheme, DreamType } from '@/lib/types';
 
 export type AnalysisResult = {
   title: string;
   interpretation: string;
   shareableQuote: string;
-  theme: 'surreal' | 'mystical' | 'calm' | 'noir';
-  dreamType: string;
+  theme: DreamTheme;
+  dreamType: DreamType;
   imagePrompt: string;
 };
 
@@ -81,8 +82,8 @@ export async function generateImageForDream(prompt: string): Promise<string> {
   await delay(2000 + Math.random() * 2000); // 2-4 seconds
 
   // Extract theme from prompt if possible, otherwise use random
-  const themes: Array<'surreal' | 'mystical' | 'calm' | 'noir'> = ['surreal', 'mystical', 'calm', 'noir'];
-  let theme: 'surreal' | 'mystical' | 'calm' | 'noir' = 'surreal';
+  const themes: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
+  let theme: DreamTheme = 'surreal';
 
   for (const t of themes) {
     if (prompt.toLowerCase().includes(t)) {

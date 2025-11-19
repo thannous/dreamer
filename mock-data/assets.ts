@@ -3,6 +3,8 @@
  * Uses picsum.photos for placeholder images
  */
 
+import type { DreamTheme } from '@/lib/types';
+
 export const MOCK_IMAGES = {
   surreal: [
     'https://picsum.photos/seed/dream1/800/600',
@@ -29,7 +31,7 @@ export const MOCK_IMAGES = {
 /**
  * Get a random image URL for a given theme
  */
-export function getRandomImageForTheme(theme: keyof typeof MOCK_IMAGES): string {
+export function getRandomImageForTheme(theme: DreamTheme): string {
   const images = MOCK_IMAGES[theme] || MOCK_IMAGES.surreal;
   return images[Math.floor(Math.random() * images.length)];
 }

@@ -2,7 +2,7 @@
  * Generators for random mock data
  */
 
-import type { DreamAnalysis, ChatMessage } from '@/lib/types';
+import type { DreamAnalysis, ChatMessage, DreamTheme, DreamType } from '@/lib/types';
 import { getRandomImageForTheme, getThumbnailUrl } from './assets';
 
 const DREAM_TITLES = [
@@ -44,23 +44,14 @@ const SHAREABLE_QUOTES = [
   'The night reveals what day conceals.',
 ];
 
-const THEMES: Array<'surreal' | 'mystical' | 'calm' | 'noir'> = [
+const THEMES: DreamTheme[] = [
   'surreal',
   'mystical',
   'calm',
   'noir',
 ];
 
-const DREAM_TYPES = [
-  'Lucid Dream',
-  'Recurring Dream',
-  'Nightmare',
-  'Prophetic Dream',
-  'Symbolic Dream',
-  'Epic Dream',
-  'Progressive Dream',
-  'Mutual Dream',
-];
+const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 
 const TRANSCRIPTS = [
   'I was flying high above the ocean, feeling completely free. The water was crystal clear below me.',

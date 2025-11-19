@@ -1,6 +1,7 @@
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { DreamTheme } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { memo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
@@ -24,7 +25,7 @@ interface FilterBarProps {
     start: Date | null;
     end: Date | null;
   };
-  selectedTheme?: string | null;
+  selectedTheme?: DreamTheme | null;
   themeButtonTestID?: string;
   dateButtonTestID?: string;
   favoritesButtonTestID?: string;

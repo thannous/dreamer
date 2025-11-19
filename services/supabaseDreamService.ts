@@ -1,7 +1,7 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
 import { supabase } from '@/lib/supabase';
-import type { ChatMessage, DreamAnalysis } from '@/lib/types';
+import type { ChatMessage, DreamAnalysis, DreamType, DreamTheme } from '@/lib/types';
 
 const DREAMS_TABLE = 'dreams';
 let imageGenerationFailedColumnAvailable = true;
@@ -16,7 +16,7 @@ type SupabaseDreamRow = {
   shareable_quote: string;
   image_url: string | null;
   chat_history: ChatMessage[] | null;
-  theme: string | null;
+  theme: DreamTheme | null;
   dream_type: string;
   is_favorite: boolean | null;
   image_generation_failed?: boolean | null;
@@ -40,7 +40,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     thumbnailUrl: row.image_url ?? undefined,
     chatHistory: Array.isArray(row.chat_history) ? row.chat_history : [],
     theme: row.theme ?? undefined,
-    dreamType: row.dream_type ?? 'Dream',
+    dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
     isFavorite: row.is_favorite ?? false,
     imageGenerationFailed: row.image_generation_failed ?? false,
     isAnalyzed: row.is_analyzed ?? undefined,
