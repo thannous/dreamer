@@ -58,6 +58,9 @@ export const TID = {
     EmailVerificationBanner: 'component.emailVerificationBanner',
     InspirationTip: 'component.inspiration.tip',
   },
+  Toast: {
+    PaywallSuccess: 'toast.paywall.success',
+  },
   Text: {
     AuthEmail: 'text.auth.email',
     AuthEmailVerificationStatus: 'text.auth.emailVerificationStatus',

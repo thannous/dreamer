@@ -1,7 +1,7 @@
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import type { DreamTheme } from '@/lib/types';
+import type { DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { memo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
@@ -26,6 +26,7 @@ interface FilterBarProps {
     end: Date | null;
   };
   selectedTheme?: DreamTheme | null;
+  selectedDreamType?: DreamType | null;
   themeButtonTestID?: string;
   dateButtonTestID?: string;
   favoritesButtonTestID?: string;
@@ -118,6 +119,7 @@ export const FilterBar = memo(function FilterBar({
   activeFilters,
   dateRange,
   selectedTheme,
+  selectedDreamType,
   themeButtonTestID,
   dateButtonTestID,
   favoritesButtonTestID,
@@ -136,6 +138,11 @@ export const FilterBar = memo(function FilterBar({
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
   const iconColor = colors.textPrimary;
   const activeIconColor = colors.backgroundCard;
+
+  const themeLabelParts: string[] = [];
+  if (selectedTheme) themeLabelParts.push(selectedTheme);
+  if (selectedDreamType) themeLabelParts.push(selectedDreamType);
+  const themeFilterSuffix = themeLabelParts.length ? ` • ${themeLabelParts.join(' • ')}` : '';
 
   return (
     <ScrollView
@@ -156,7 +163,7 @@ export const FilterBar = memo(function FilterBar({
         <CategoryIcon size={16} color={activeFilters.theme ? activeIconColor : iconColor} />
         <Text style={[styles.filterButtonText, { color: activeFilters.theme ? activeIconColor : iconColor }]}>
           {t('journal.filter.theme')}
-          {selectedTheme && ` • ${selectedTheme}`}
+          {themeFilterSuffix}
         </Text>
       </Pressable>
 
