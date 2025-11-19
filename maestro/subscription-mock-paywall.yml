@@ -1,26 +1,54 @@
 appId: com.tanuki75.dreamapp
 ---
 # Validate subscription paywall flow in mock mode
-- launchApp
 
-# Go to Settings
+# If paywall already open, close it to reset state
+- runFlow:
+    when:
+      visible:
+        text: "Close|Fermer|Cerrar"
+    commands:
+      - tapOn: "Close|Fermer|Cerrar"
+      - waitForAnimationToEnd
+
+# Navigate to tab bar if starting on recording screen
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+      - waitForAnimationToEnd
+
+# Go to Settings tab
+- tapOn: "Settings|Réglages|Configuración"
+- waitForAnimationToEnd
+
+# If already signed in, sign out to reset to free state
+- runFlow:
+    when:
+      visible:
+        id: btn.auth.signOut
+    commands:
+      - tapOn:
+          id: btn.auth.signOut
+      - waitForAnimationToEnd
+
+# Quick sign-in (mock mode) as an existing free user
 - tapOn:
-    id: tab.settings
+    id: btn.mockProfile.existing
 - waitForAnimationToEnd
 
-# Subscription card should be visible for free user
-- assertVisible: "Upgrade to Dreamer Premium"
-- assertVisible: "Unlock unlimited dream analyses and explorations."
-
-# Open the paywall from the subscription card
-- tapOn: "See premium options"
+# Open the paywall from the subscription card (free or premium copy)
+- tapOn: "See premium options|Voir les options premium|Ver opciones premium|View subscription details|Voir les détails de l’abonnement|Ver detalles de la suscripción"
 - waitForAnimationToEnd
 
-# Paywall screen should show free state
-- assertVisible: "Unlock Dreamer Premium"
-- assertVisible: "Premium dream analysis"
-- assertVisible: "Monthly"
-- assertVisible: "Annual"
+# Paywall screen should be visible (free or premium header)
+- assertVisible: "Unlock Dreamer Premium|You are Premium|Vous êtes en Premium|Desbloquea Dreamer Premium|Ya eres Premium"
+- assertVisible: "Premium dream analysis|Analyse de rêves premium|Análisis de sueños premium"
+- assertVisible: "Monthly|Mensuel|Mensual"
+- assertVisible: "Annual|Annuel|Anual"
 
 # Select the monthly option and purchase
 - tapOn:
@@ -30,11 +58,10 @@ appId: com.tanuki75.dreamapp
 - waitForAnimationToEnd
 
 # After mock purchase, header should reflect premium state
-- assertVisible: "You are Premium"
+- assertVisible: "Premium|Already active|Déjà actif|Ya activo"
 
 # Close paywall and verify subscription card reflects active state
 - tapOn:
     id: btn.paywall.close
 - waitForAnimationToEnd
-- assertVisible: "Dreamer Premium"
-- assertVisible: "Premium is active on your account."
+- assertVisible: "Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."

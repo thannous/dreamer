@@ -1,6 +1,5 @@
 appId: com.tanuki75.dreamapp
 ---
-- launchApp
 # Navigate to Journal
 - tapOn:
     id: btn.navigateJournal

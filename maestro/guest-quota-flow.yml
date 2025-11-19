@@ -1,7 +1,6 @@
 appId: com.tanuki75.dreamapp
 ---
 # Guest dream 1 - analyze and explore, hit chat message limit
-- launchApp
 - tapOn:
     id: input.dreamTranscript
 - inputText: "Guest Dream 1"

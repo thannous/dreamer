@@ -2,7 +2,28 @@ appId: com.tanuki75.dreamapp
 ---
 # Verify that after saving a dream from the recording screen
 # the first-dream bottom sheet appears with next-step actions
+
 - launchApp
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - pressKey: back
+      - scrollUntilVisible:
+          element:
+            text: "Add New Dream|Ajouter un rêve|Añadir nuevo sueño"
+          direction: DOWN
+      - tapOn: "Add New Dream|Ajouter un rêve|Añadir nuevo sueño"
+      - waitForAnimationToEnd
 - assertVisible:
     id: screen.recording
 - tapOn:

@@ -2,7 +2,6 @@ appId: com.tanuki75.dreamapp
 clearState: true
 ---
 # Guest dream limit with signup - third dream saved to account on signup
-- launchApp
 
 # Guest dream 1 - save successfully as guest
 - tapOn:
