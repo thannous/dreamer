@@ -20,19 +20,20 @@ function resetCachedState(): void {
 }
 
 function resolveApiKey(): string | null {
-  const env = process?.env as Record<string, string> | undefined;
+  const env = process.env;
   if (Platform.OS === 'android') {
-    return env?.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
+    return env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
   }
   if (Platform.OS === 'ios') {
-    return env?.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? null;
+    return env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? null;
   }
-  return env?.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? null;
+  return env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? null;
 }
 
 async function ensureConfigured(userId?: string | null): Promise<void> {
   const apiKey = resolveApiKey();
   if (!apiKey) {
+    console.error('[RevenueCat] Missing API key for platform:', Platform.OS);
     throw new Error('Missing RevenueCat API key');
   }
   const normalizedUserId = userId ?? null;
@@ -77,7 +78,14 @@ function mapStatus(info: CustomerInfo | null): SubscriptionStatus {
   };
 }
 
-function mapIntervalFromId(id: string): PurchasePackage['interval'] {
+function mapIntervalFromId(id: string, pkg?: PurchasesPackage): PurchasePackage['interval'] {
+  if (pkg?.packageType === 'ANNUAL') {
+    return 'annual';
+  }
+  if (pkg?.packageType === 'MONTHLY') {
+    return 'monthly';
+  }
+
   const lower = id.toLowerCase();
   if (lower.includes('year') || lower.includes('annual') || lower.includes('annuel')) {
     return 'annual';
@@ -88,7 +96,7 @@ function mapIntervalFromId(id: string): PurchasePackage['interval'] {
 function mapPackage(pkg: PurchasesPackage): InternalPackage {
   const id = pkg.identifier;
   const product = pkg.product;
-  const interval = mapIntervalFromId(id);
+  const interval = mapIntervalFromId(id, pkg);
   const mapped: PurchasePackage = {
     id,
     interval,

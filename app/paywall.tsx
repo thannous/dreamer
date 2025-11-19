@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { PricingOption } from '@/components/subscription/PricingOption';
@@ -24,6 +25,7 @@ export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { isActive, loading, processing, error, packages, purchase, restore } = useSubscription();
+  const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -64,9 +66,17 @@ export default function PaywallScreen() {
     ? t('subscription.paywall.header.subtitle.premium')
     : t('subscription.paywall.header.subtitle.free');
 
+  const translateWithFallback = (key: string, fallback?: string) => {
+    const translated = t(key);
+    if (translated === key) {
+      return fallback ?? key;
+    }
+    return translated;
+  };
+
   return (
     <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
-      <ScreenContainer style={styles.headerContainer}>
+      <ScreenContainer style={[styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }]}>
         <View style={styles.headerRow}>
           <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{headerTitle}</Text>
           <Pressable
@@ -112,36 +122,40 @@ export default function PaywallScreen() {
             loading={processing}
           />
 
-          {sortedPackages.map((pkg) => (
-            <PricingOption
-              key={pkg.id}
-              id={pkg.id}
-              title={
-                pkg.title ||
-                t(
+          {sortedPackages.map((pkg) => {
+            const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
+            return (
+              <PricingOption
+                key={pkg.id}
+                id={pkg.id}
+                title={translateWithFallback(
+                  `subscription.paywall.option.title.${optionKey}`,
+                  pkg.title
+                )}
+                subtitle={translateWithFallback(
+                  `subscription.paywall.option.description.${optionKey}`,
+                  pkg.description
+                )}
+                price={pkg.priceFormatted}
+                intervalLabel={translateWithFallback(
+                  `subscription.paywall.option.interval.${optionKey}`
+                )}
+                badge={
+                  pkg.interval === 'annual'
+                    ? t('subscription.paywall.option.badge.annual')
+                    : undefined
+                }
+                selected={effectiveSelectedId === pkg.id}
+                disabled={processing || loading || isActive}
+                onPress={handleSelect}
+                testID={
                   pkg.interval === 'monthly'
-                    ? 'subscription.paywall.option.title.monthly'
-                    : 'subscription.paywall.option.title.annual'
-                )
-              }
-              subtitle={pkg.description}
-              price={pkg.priceFormatted}
-              intervalLabel={t(
-                pkg.interval === 'monthly'
-                  ? 'subscription.paywall.option.interval.monthly'
-                  : 'subscription.paywall.option.interval.annual'
-              )}
-              badge={
-                pkg.interval === 'annual'
-                  ? t('subscription.paywall.option.badge.annual')
-                  : undefined
-              }
-              selected={effectiveSelectedId === pkg.id}
-              disabled={processing || loading || isActive}
-              onPress={handleSelect}
-              testID={pkg.interval === 'monthly' ? TID.Button.PaywallSelectMonthly : TID.Button.PaywallSelectAnnual}
-            />
-          ))}
+                    ? TID.Button.PaywallSelectMonthly
+                    : TID.Button.PaywallSelectAnnual
+                }
+              />
+            );
+          })}
 
           <View style={styles.actions}>
             <Pressable
