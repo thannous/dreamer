@@ -2,17 +2,17 @@
  * Custom hooks for journal animations using react-native-reanimated
  */
 
+import { OPACITY, SCALE, SLIDE_DISTANCE, SPRING_CONFIGS, TIMING_CONFIGS } from '@/constants/animations';
 import { useEffect } from 'react';
 import {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  withDelay,
-  interpolate,
-  Extrapolation,
+    Extrapolation,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withSpring,
+    withTiming,
 } from 'react-native-reanimated';
-import { SPRING_CONFIGS, TIMING_CONFIGS, SCALE, OPACITY, SLIDE_DISTANCE } from '@/constants/animations';
 
 /**
  * Hook for scale press animation on touchable elements
@@ -139,7 +139,7 @@ export function useStaggeredAnimation(index: number, staggerDelay = 50) {
 /**
  * Hook for pulse animation (for "Add Dream" button)
  */
-export function usePulseAnimation() {
+export function usePulseAnimation(idleTimeoutMs = 15000) {
   const scale = useSharedValue(1);
 
   useEffect(() => {
@@ -152,8 +152,14 @@ export function usePulseAnimation() {
 
     // Pulse every 3 seconds
     const interval = setInterval(pulse, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, idleTimeoutMs);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [idleTimeoutMs, scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

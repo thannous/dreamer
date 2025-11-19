@@ -18,13 +18,13 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { transcribeAudio } from '@/services/speechToText';
 import {
-  AudioModule,
-  AudioQuality,
-  IOSOutputFormat,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorder,
-  type RecordingOptions,
+    AudioModule,
+    AudioQuality,
+    IOSOutputFormat,
+    RecordingPresets,
+    setAudioModeAsync,
+    useAudioRecorder,
+    type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -45,11 +45,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
-  isMeteringEnabled: true,
+  isMeteringEnabled: false,
   extension: '.caf',
   sampleRate: 16000,
   numberOfChannels: 1,
-  bitRate: 128000,
+  bitRate: 64000,
   android: {
     ...RecordingPresets.HIGH_QUALITY.android,
     extension: '.amr',
@@ -69,7 +69,7 @@ const RECORDING_OPTIONS: RecordingOptions = {
   },
   web: {
     mimeType: 'audio/webm',
-    bitsPerSecond: 128000,
+    bitsPerSecond: 64000,
   },
 };
 
