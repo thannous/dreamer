@@ -46,7 +46,7 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
+- assertVisible: "Analyze this dream|Analyser ce rêve|¿Analizar este sueño"
 - tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
 - waitForAnimationToEnd
 - assertVisible:
