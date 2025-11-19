@@ -3,13 +3,25 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
 import {
-    getSubscriptionStatus,
-    initializeSubscription,
-    isSubscriptionInitialized,
-    loadSubscriptionPackages,
-    purchaseSubscriptionPackage,
-    restoreSubscriptionPurchases,
+  getSubscriptionStatus,
+  initializeSubscription,
+  isSubscriptionInitialized,
+  loadSubscriptionPackages,
+  purchaseSubscriptionPackage,
+  restoreSubscriptionPurchases,
 } from '@/services/subscriptionService';
+
+function formatError(e: unknown): Error {
+  if (e instanceof Error) {
+    // RevenueCat errors often have a 'code' or 'userInfo' property, but we'll keep it simple for now
+    // and just ensure we have a readable message.
+    if (e.message.includes('Purchases not initialized')) {
+      return new Error('Service des achats non initialisé. Veuillez redémarrer l\'application.');
+    }
+    return e;
+  }
+  return new Error('Une erreur inconnue est survenue.');
+}
 
 export function useSubscription() {
   const { user } = useAuth();
@@ -39,7 +51,7 @@ export function useSubscription() {
         }
       } catch (e) {
         if (mounted) {
-          setError(e as Error);
+          setError(formatError(e));
         }
       } finally {
         if (mounted) {
@@ -63,7 +75,7 @@ export function useSubscription() {
       setStatus(nextStatus);
       return nextStatus;
     } catch (e) {
-      setError(e as Error);
+      setError(formatError(e));
       throw e;
     } finally {
       setProcessing(false);
@@ -78,7 +90,7 @@ export function useSubscription() {
       setStatus(nextStatus);
       return nextStatus;
     } catch (e) {
-      setError(e as Error);
+      setError(formatError(e));
       throw e;
     } finally {
       setProcessing(false);
