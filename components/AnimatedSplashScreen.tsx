@@ -1,20 +1,65 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useEffect } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
-  Easing,
-  cancelAnimation,
-  runOnJS,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
+    Easing,
+    interpolate,
+    interpolateColor,
+    runOnJS,
+    useAnimatedProps,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withTiming,
+    type SharedValue
 } from 'react-native-reanimated';
+import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { Fonts, SurrealTheme } from '@/constants/theme';
-import { FloatingCloudRow } from '@/components/animations/FloatingCloudRow';
+import { Fonts } from '@/constants/theme';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+
+// --- Configuration ---
+const PARTICLE_COUNT = 30;
+
+const COLORS = {
+  bgStart: '#000000',
+  bgEnd: '#1e1b4b', // Indigo 950
+  gold: '#FCD34D', // Amber 300 - Pale Gold
+  cyan: '#22D3EE', // Cyan 400 - Bioluminescent
+  moonFill: '#0f172a', // Slate 900/Midnight Blue
+  text: '#F8FAFC', // Slate 50
+};
+
+// --- Logo Paths ---
+// Canvas: 280x280
+// Center: 140, 140
+
+// Crescent Moon / Eye Shape
+// Starts at top tip, curves left and down to bottom tip, then curves up inner edge.
+const MOON_PATH = `
+  M 140 50
+  C 80 50, 50 140, 140 230
+  C 95 180, 95 100, 140 50
+  Z
+`;
+const MOON_LENGTH = 500;
+
+// 4-Pointed Star (Pupil)
+// Center at approx 140, 140
+const STAR_PATH = `
+  M 140 110
+  Q 150 140, 170 140
+  Q 150 140, 140 170
+  Q 130 140, 110 140
+  Q 130 140, 140 110
+  Z
+`;
+const STAR_LENGTH = 200;
+
+// --- Components ---
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 type AnimatedSplashScreenProps = {
   status?: 'intro' | 'outro';
@@ -22,149 +67,289 @@ type AnimatedSplashScreenProps = {
 };
 
 const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSplashScreenProps) => {
+  // Shared values
+  const phase = useSharedValue(0); // 0 to 4
+  // 0-1: Ether
+  // 1-2: Draw Moon
+  // 2-3: Draw Star
+  // 3-4: Fill & Glow & Text
+  
   const containerOpacity = useSharedValue(1);
-  const gradientShift = useSharedValue(0);
-  const orbPulse = useSharedValue(0);
-  const titleFloat = useSharedValue(0);
 
   useEffect(() => {
-    gradientShift.value = withRepeat(withTiming(1, { duration: 14000, easing: Easing.linear }), -1, true);
-    orbPulse.value = withRepeat(
-      withTiming(1, { duration: 7000, easing: Easing.inOut(Easing.quad) }),
-      -1,
-      true,
+    // Start the animation sequence
+    phase.value = withSequence(
+      // Phase 1: Ether - Wait/Float
+      withTiming(1, { duration: 800, easing: Easing.linear }),
+      // Phase 2: Draw Moon (0.8s -> 1.8s)
+      withTiming(2, { duration: 1000, easing: Easing.inOut(Easing.cubic) }),
+      // Phase 3: Draw Star (1.8s -> 2.4s)
+      withTiming(3, { duration: 600, easing: Easing.inOut(Easing.cubic) }),
+      // Phase 4: Fill, Glow, Text (2.4s -> 3.4s)
+      withTiming(4, { duration: 1000, easing: Easing.out(Easing.quad) })
     );
-    titleFloat.value = withRepeat(
-      withTiming(1, { duration: 9000, easing: Easing.inOut(Easing.quad) }),
-      -1,
-      true,
-    );
-
-    return () => {
-      cancelAnimation(gradientShift);
-      cancelAnimation(orbPulse);
-      cancelAnimation(titleFloat);
-    };
-  }, [gradientShift, orbPulse, titleFloat]);
+  }, [phase]);
 
   useEffect(() => {
     if (status === 'outro') {
+      // Fade out the whole screen
       containerOpacity.value = withTiming(
         0,
-        { duration: 650, easing: Easing.out(Easing.cubic) },
+        { duration: 800, easing: Easing.out(Easing.cubic) },
         (finished) => {
           if (finished && onAnimationEnd) {
             runOnJS(onAnimationEnd)();
           }
-        },
+        }
       );
-    } else {
-      containerOpacity.value = withTiming(1, { duration: 400, easing: Easing.out(Easing.cubic) });
     }
-  }, [containerOpacity, onAnimationEnd, status]);
+  }, [status, onAnimationEnd, containerOpacity]);
+
+  // --- Styles & Props ---
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: containerOpacity.value,
   }));
 
-  const gradientOverlayStyle = useAnimatedStyle(() => ({
-    opacity: 0.5 + gradientShift.value * 0.3,
-    transform: [
-      { translateY: (gradientShift.value - 0.5) * 30 },
-      { rotate: `${gradientShift.value * 8}deg` },
-    ],
-  }));
+  // Moon Drawing Animation
+  const moonPathProps = useAnimatedProps(() => {
+    // Draw from phase 1 to 2
+    const drawProgress = interpolate(phase.value, [1, 2], [0, 1], 'clamp');
+    
+    // Fill Opacity: Increases in Phase 3-4
+    const fillOpacity = interpolate(phase.value, [3, 3.8], [0, 1], 'clamp');
 
-  const orbStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: 1 + orbPulse.value * 0.04 }],
-    opacity: 0.55 + orbPulse.value * 0.2,
-    shadowRadius: 40 + orbPulse.value * 16,
-  }));
+    return {
+      strokeDashoffset: MOON_LENGTH * (1 - drawProgress),
+      stroke: COLORS.gold,
+      strokeWidth: 2,
+      fill: COLORS.moonFill,
+      fillOpacity: fillOpacity,
+      opacity: interpolate(phase.value, [0.5, 1], [0, 1], 'clamp'),
+    };
+  });
 
-  const titleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: (titleFloat.value - 0.5) * 4 }],
-  }));
+  // Star Drawing Animation
+  const starPathProps = useAnimatedProps(() => {
+    // Draw from phase 2 to 3
+    const drawProgress = interpolate(phase.value, [2, 3], [0, 1], 'clamp');
+    
+    // Color transition: Gold -> Cyan
+    const strokeColor = interpolateColor(
+      phase.value,
+      [2.8, 3.5],
+      [COLORS.gold, COLORS.cyan]
+    );
+    
+    const fillOpacity = interpolate(phase.value, [3, 3.5], [0, 1], 'clamp');
+
+    return {
+      strokeDashoffset: STAR_LENGTH * (1 - drawProgress),
+      stroke: strokeColor,
+      strokeWidth: 2,
+      fill: COLORS.cyan, // Star fills with Cyan
+      fillOpacity: fillOpacity, 
+      opacity: interpolate(phase.value, [1.8, 2], [0, 1], 'clamp'),
+    };
+  });
+
+  // Ripple Effect (At end of star drawing / fill start)
+  const rippleStyle = useAnimatedStyle(() => {
+    const rippleProgress = interpolate(phase.value, [3, 4], [0, 1], 'clamp');
+    return {
+      transform: [{ scale: interpolate(rippleProgress, [0, 1], [0.2, 2.5]) }],
+      opacity: interpolate(rippleProgress, [0, 0.2, 1], [0, 0.6, 0]),
+    };
+  });
+
+  // Text & Final Glow
+  const textStyle = useAnimatedStyle(() => {
+    const textProgress = interpolate(phase.value, [3.2, 4], [0, 1], 'clamp');
+    return {
+      opacity: textProgress,
+      transform: [{ translateY: interpolate(textProgress, [0, 1], [10, 0]) }],
+    };
+  });
+  
+  const glowStyle = useAnimatedStyle(() => {
+     // Glow appears when star fills
+     const baseOpacity = interpolate(phase.value, [3, 4], [0, 0.8], 'clamp');
+     return {
+       opacity: baseOpacity,
+     };
+  });
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFillObject, styles.container, containerStyle]} pointerEvents="auto">
+    <Animated.View style={[StyleSheet.absoluteFillObject, styles.container, containerStyle]}>
+      {/* Background */}
       <LinearGradient
-        colors={[SurrealTheme.bgStart, SurrealTheme.bgEnd, '#090513']}
-        start={{ x: 0.1, y: 0 }}
-        end={{ x: 0.9, y: 1 }}
+        colors={[COLORS.bgStart, COLORS.bgEnd]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
 
-      <Animated.View style={[styles.gradientOverlay, gradientOverlayStyle]}>
-        <LinearGradient
-          colors={['rgba(255,255,255,0.18)', 'rgba(255,255,255,0)']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
-        />
-      </Animated.View>
-
-      <Animated.View style={[styles.glowOrb, orbStyle]} />
-
-      <View style={styles.content}>
-        <Animated.View style={titleStyle}>
-          <Text style={styles.title}>Dreamer</Text>
-          <Text style={styles.tagline}>Conversez avec vos rêves, laissez-les vous guider.</Text>
-        </Animated.View>
+      {/* Particles */}
+      <View style={StyleSheet.absoluteFill}>
+        {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
+          <Particle key={i} index={i} phase={phase} />
+        ))}
       </View>
 
-      <View style={StyleSheet.absoluteFill}>
-        <FloatingCloudRow top={140} opacity={0.5} />
-        <FloatingCloudRow top={220} delay={3000} opacity={0.32} reverse />
-        <FloatingCloudRow top={310} delay={6000} opacity={0.4} />
+      {/* Central Content */}
+      <View style={styles.content}>
+         {/* Glow behind Star */}
+         <Animated.View style={[styles.starGlowContainer, glowStyle]}>
+           <Svg height="100%" width="100%" viewBox="0 0 100 100">
+             <Defs>
+               <RadialGradient id="cyanGlow" cx="50%" cy="50%" rx="50%" ry="50%">
+                 <Stop offset="0%" stopColor={COLORS.cyan} stopOpacity="0.8" />
+                 <Stop offset="100%" stopColor={COLORS.cyan} stopOpacity="0" />
+               </RadialGradient>
+             </Defs>
+             <Rect x="0" y="0" width="100" height="100" fill="url(#cyanGlow)" />
+           </Svg>
+         </Animated.View>
+
+         {/* Ripple Effect */}
+         <Animated.View style={[styles.ripple, rippleStyle]} />
+
+        {/* Logo SVG */}
+        <View style={styles.logoContainer}>
+          <Svg width={280} height={280} viewBox="0 0 280 280" style={styles.svg}>
+            <Defs>
+                {/* Optional Defs */}
+            </Defs>
+            
+            {/* Moon */}
+            <AnimatedPath
+              d={MOON_PATH}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={MOON_LENGTH}
+              animatedProps={moonPathProps}
+            />
+
+            {/* Star */}
+            <AnimatedPath
+              d={STAR_PATH}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray={STAR_LENGTH}
+              animatedProps={starPathProps}
+            />
+          </Svg>
+        </View>
+
+        {/* Text */}
+        <Animated.View style={[styles.textContainer, textStyle]}>
+          <Text style={styles.title}>NOCTALIA</Text>
+        </Animated.View>
       </View>
     </Animated.View>
   );
 };
 
+// --- Helper Components ---
+
+const Particle = ({ index, phase }: { index: number; phase: SharedValue<number> }) => {
+  // Random initial positions
+  const randomX = Math.random() * width;
+  const randomY = Math.random() * height;
+  const size = Math.random() * 2 + 1;
+  
+  const style = useAnimatedStyle(() => {
+    // Floating movement
+    const floatY = Math.sin(Date.now() / 1000 + index) * 15;
+    
+    // Convergence to center in Phase 1-2
+    const progress = interpolate(phase.value, [0, 2], [0, 1], 'clamp');
+    
+    const targetX = width / 2;
+    const targetY = height / 2 - 20; // Approx logo center
+    
+    // Interpolate position
+    const currentX = interpolate(progress, [0, 1], [randomX, targetX]);
+    const currentY = interpolate(progress, [0, 1], [randomY, targetY]);
+    
+    // Fade out as they converge
+    const opacity = interpolate(progress, [0, 0.8, 1], [0, 0.6, 0]);
+
+    return {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: size,
+      height: size,
+      borderRadius: size / 2,
+      backgroundColor: COLORS.gold, // Stardust gold
+      opacity, 
+      transform: [
+        { translateX: currentX },
+        { translateY: currentY + floatY },
+      ],
+    };
+  });
+
+  return <Animated.View style={style} />;
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: SurrealTheme.bgStart,
+    zIndex: 999,
+    backgroundColor: COLORS.bgStart,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 20,
-  },
-  gradientOverlay: {
-    position: 'absolute',
-    width: width * 1.4,
-    height: width * 1.4,
-    top: -width * 0.2,
-    left: -width * 0.2,
-  },
-  glowOrb: {
-    position: 'absolute',
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    shadowColor: '#9b7cf4',
-    top: '32%',
   },
   content: {
     alignItems: 'center',
-    paddingHorizontal: 32,
+    justifyContent: 'center',
+    width: 300,
+    height: 400,
+  },
+  logoContainer: {
+    width: 280,
+    height: 280,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  svg: {
+    // Overflow visible?
+  },
+  textContainer: {
+    marginTop: -40, // Pull up closer to logo bottom
+    alignItems: 'center',
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 46,
-    letterSpacing: 0.5,
-    color: '#F8F5FF',
+    fontFamily: Fonts.spaceGrotesk.regular, 
+    fontSize: 36,
+    letterSpacing: 8, // Wide tracking for "Light" feel
+    color: COLORS.text,
     textAlign: 'center',
+    textTransform: 'uppercase',
   },
-  tagline: {
-    marginTop: 8,
-    fontFamily: Fonts.lora.regularItalic,
-    fontSize: 16,
-    color: SurrealTheme.textMuted,
-    textAlign: 'center',
-  },
-  cloud: {
+  starGlowContainer: {
     position: 'absolute',
-    left: -110,
+    width: 120,
+    height: 120,
+    zIndex: 5,
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -60 }, { translateY: -80 }], // Adjust Y to match visual star center
+  },
+  ripple: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: COLORS.cyan,
+    zIndex: 5,
+    top: '50%',
+    left: '50%',
+    marginLeft: -50,
+    marginTop: -70, // Align with star
   },
 });
 

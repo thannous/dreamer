@@ -11,7 +11,6 @@ import {
 } from '@expo-google-fonts/space-grotesk';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import * as NavigationBar from 'expo-navigation-bar';
 import * as Notifications from 'expo-notifications';
 import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -56,18 +55,20 @@ function RootLayoutNav() {
       }
     }
 
-    const response = Notifications.getLastNotificationResponse();
-    if (response?.notification) {
-      redirect(response.notification);
+    if (Platform.OS !== 'web') {
+      const response = Notifications.getLastNotificationResponse();
+      if (response?.notification) {
+        redirect(response.notification);
+      }
+
+      const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+        redirect(response.notification);
+      });
+
+      return () => {
+        subscription.remove();
+      };
     }
-
-    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-      redirect(response.notification);
-    });
-
-    return () => {
-      subscription.remove();
-    };
   }, []);
 
   return (
@@ -115,7 +116,8 @@ export default function RootLayout() {
       } catch (error) {
         console.warn('Unable to hide native splash screen', error);
       } finally {
-        outroTimer = setTimeout(() => setShouldFadeSplash(true), 1200);
+        // Wait for the new 3s animation to mostly complete (Phase 1+2 = 1.8s, + part of 3)
+        outroTimer = setTimeout(() => setShouldFadeSplash(true), 2800);
       }
     };
 
@@ -129,16 +131,35 @@ export default function RootLayout() {
   }, [fontError, fontsLoaded]);
 
   useEffect(() => {
+    let isMounted = true;
+
     // Configure notification handler on app startup
     configureNotificationHandler();
     // Initialize Google Sign-In configuration early (native platforms)
     initializeGoogleSignIn();
 
-    // Configure Android navigation bar to match app theme
+    // Configure Android navigation bar to match app theme lazily to avoid importing
+    // native-only modules on unsupported platforms (e.g., web builds).
     if (Platform.OS === 'android') {
-      NavigationBar.setBackgroundColorAsync(SurrealTheme.bgStart);
-      NavigationBar.setButtonStyleAsync('light');
+      (async () => {
+        try {
+          const NavigationBar = await import('expo-navigation-bar');
+          if (!isMounted) {
+            return;
+          }
+          await NavigationBar.setBackgroundColorAsync(SurrealTheme.bgStart);
+          await NavigationBar.setButtonStyleAsync('light');
+        } catch (error) {
+          if (__DEV__) {
+            console.warn('[RootLayout] Failed to configure Android navigation bar', error);
+          }
+        }
+      })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
