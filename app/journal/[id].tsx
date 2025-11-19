@@ -5,20 +5,24 @@ import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
+import { useTranslation } from '@/hooks/useTranslation';
 import { isDreamExplored } from '@/lib/dreamUsage';
 import { QuotaError } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
+import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
+import type { DreamAnalysis } from '@/lib/types';
 import { generateImageForDream } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
+    Keyboard,
+    KeyboardAvoidingView,
     Modal,
     Platform,
     Pressable,
@@ -74,6 +78,9 @@ const getMimeTypeFromExtension = (ext: string): string => {
   }
 };
 
+const DREAM_TYPES = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
+const DREAM_THEMES = ['surreal', 'mystical', 'calm', 'noir'];
+
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
@@ -86,21 +93,68 @@ export default function JournalDetailScreen() {
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const { canAnalyzeNow } = useQuota();
+  const { t } = useTranslation();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const [editableTitle, setEditableTitle] = useState('');
   const [editableTheme, setEditableTheme] = useState('');
+  const [editableDreamType, setEditableDreamType] = useState('');
+  const [editableTranscript, setEditableTranscript] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
+  const [isEditingTranscript, setIsEditingTranscript] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
+  const sortedDreamTypes = useMemo(() => {
+    return sortWithSelectionFirst(DREAM_TYPES, dream?.dreamType);
+  }, [dream?.dreamType]);
+
+  const sortedDreamThemes = useMemo(() => {
+    return sortWithSelectionFirst(DREAM_THEMES, dream?.theme);
+  }, [dream?.theme]);
 
   useEffect(() => {
     if (!dream) {
       setEditableTitle('');
       setEditableTheme('');
+      setEditableDreamType('');
+      setEditableTranscript('');
+      setIsEditing(false);
+      setIsEditingTranscript(false);
       return;
     }
     setEditableTitle(dream.title || '');
     setEditableTheme(dream.theme || '');
+    setEditableDreamType(dream.dreamType || '');
+    setEditableTranscript(dream.transcript || '');
+    setIsEditing(false);
+    setIsEditingTranscript(false);
   }, [dream]);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
+    const hideSub = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isEditingTranscript || !scrollViewRef.current) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      scrollViewRef.current?.scrollTo({ y: Math.max(transcriptSectionOffset - 32, 0), animated: true });
+    });
+  }, [isEditingTranscript, transcriptSectionOffset]);
+
   const hasExistingChat = useMemo(() => {
     if (!dream) {
       return false;
@@ -110,7 +164,9 @@ export default function JournalDetailScreen() {
     }
     return dream.chatHistory.some((message) => message.role === 'model');
   }, [dream]);
-  const exploreButtonLabel = hasExistingChat ? 'Continuer à analyser' : 'Explore Dream Further';
+  const exploreButtonLabel = hasExistingChat
+    ? t('journal.detail.explore_button.continue')
+    : t('journal.detail.explore_button.new');
   const shareMessage = useMemo(() => {
     if (!dream) return '';
     const sections: string[] = [];
@@ -122,22 +178,27 @@ export default function JournalDetailScreen() {
       sections.push(`“${quote}”`);
     }
     if (dream.interpretation?.trim()) {
-      sections.push(`Interpretation: ${dream.interpretation.trim()}`);
+      sections.push(
+        `${t('journal.detail.share.interpretation_label')} ${dream.interpretation.trim()}`,
+      );
     }
     const metadata: string[] = [];
     if (dream.dreamType) {
-      metadata.push(`Type: ${dream.dreamType}`);
+      metadata.push(t('journal.detail.share.type_label', { type: dream.dreamType }));
     }
     if (dream.theme) {
-      metadata.push(`Theme: ${dream.theme}`);
+      metadata.push(t('journal.detail.share.theme_label', { theme: dream.theme }));
     }
     if (metadata.length) {
       sections.push(metadata.join(' • '));
     }
-    sections.push('Shared from my Dreamer journal.');
+    sections.push(t('journal.detail.share.footer'));
     return sections.join('\n\n');
-  }, [dream]);
-  const shareTitle = useMemo(() => (dream?.title ? dream.title : 'Dream Journal'), [dream]);
+  }, [dream, t]);
+  const shareTitle = useMemo(
+    () => (dream?.title ? dream.title : t('journal.title')),
+    [dream, t],
+  );
   const shareImage = useMemo<ShareImageData | undefined>(() => {
     if (!dream) return undefined;
     const source = dream.imageUrl || dream.thumbnailUrl;
@@ -151,31 +212,39 @@ export default function JournalDetailScreen() {
   }, [dream]);
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
-  const handleTitleBlur = useCallback(async () => {
+  const handleSave = useCallback(async () => {
     if (!dream) return;
-    if (editableTitle === dream.title) return;
-    const updatedDream = {
-      ...dream,
-      title: editableTitle.trim() || dream.title,
-    };
-    await updateDream(updatedDream);
-  }, [dream, editableTitle, updateDream]);
 
-  const handleThemeBlur = useCallback(async () => {
-    if (!dream) return;
-    const nextTheme = editableTheme.trim() || undefined;
-    if (nextTheme === dream.theme) return;
-    const updatedDream = {
+    const normalizedTitle = editableTitle.trim() || dream.title;
+    const normalizedTheme = editableTheme.trim() || dream.theme;
+    const normalizedDreamType = editableDreamType.trim() || dream.dreamType;
+
+    const updatedDream: DreamAnalysis = {
       ...dream,
-      theme: nextTheme,
+      title: normalizedTitle,
+      // User can only meaningfully choose among the known themes/types today,
+      // but we keep runtime flexible and trust persisted values here.
+      theme: normalizedTheme as DreamAnalysis['theme'],
+      dreamType: normalizedDreamType as DreamAnalysis['dreamType'],
     };
+
     await updateDream(updatedDream);
-  }, [dream, editableTheme, updateDream]);
+    setIsEditing(false);
+  }, [dream, editableTitle, editableTheme, editableDreamType, updateDream]);
 
   const handlePickImage = useCallback(async () => {
     if (!dream) return;
+    if (Platform.OS === 'web') {
+      Alert.alert(
+        t('journal.detail.image_picker.web_unavailable.title'),
+        t('journal.detail.image_picker.web_unavailable.message'),
+      );
+      return;
+    }
+
     try {
       setIsPickingImage(true);
+      const ImagePicker = await import('expo-image-picker');
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -201,12 +270,25 @@ export default function JournalDetailScreen() {
 
       await updateDream(updatedDream);
     } catch (error) {
-      const msg = error instanceof Error ? error.message : 'Unknown error';
-      Alert.alert('Image selection failed', msg);
+      const msg = error instanceof Error ? error.message : t('common.unknown_error');
+      Alert.alert(t('common.error_title'), msg);
     } finally {
       setIsPickingImage(false);
     }
-  }, [dream, updateDream]);
+  }, [dream, updateDream, t]);
+
+  const handleTranscriptSave = useCallback(async () => {
+    if (!dream) return;
+    const normalizedTranscript = editableTranscript.trim().length === 0
+      ? dream.transcript
+      : editableTranscript;
+    const updatedDream: DreamAnalysis = {
+      ...dream,
+      transcript: normalizedTranscript,
+    };
+    await updateDream(updatedDream);
+    setIsEditingTranscript(false);
+  }, [dream, editableTranscript, updateDream]);
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
     setShareModalVisible(true);
@@ -285,12 +367,12 @@ export default function JournalDetailScreen() {
       if (Platform.OS === 'web') {
         openShareModal();
       } else {
-        Alert.alert('Share failed', 'Unable to share your dream right now. Please try again.');
+        Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
       }
     } finally {
       setIsSharing(false);
     }
-  }, [dream, shareImage, shareMessage, shareTitle, openShareModal, getShareableImageUri]);
+  }, [dream, shareImage, shareMessage, shareTitle, openShareModal, getShareableImageUri, t]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
@@ -300,10 +382,11 @@ export default function JournalDetailScreen() {
 
   const onDelete = useCallback(() => {
     if (!dream) return;
-    const confirmMessage = 'Are you sure you want to delete this dream?';
+    const confirmMessage = t('journal.detail.delete_confirm.message');
 
     if (Platform.OS === 'web') {
-      const confirmed = typeof window !== 'undefined' ? window.confirm(confirmMessage) : false;
+      const confirmed =
+        typeof window !== 'undefined' ? window.confirm(confirmMessage) : false;
       if (confirmed) {
         void deleteAndNavigate();
       }
@@ -311,20 +394,20 @@ export default function JournalDetailScreen() {
     }
 
     Alert.alert(
-      'Delete Dream',
+      t('journal.detail.delete_confirm.title'),
       confirmMessage,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('journal.detail.delete_confirm.confirm'),
           style: 'destructive',
           onPress: () => {
             void deleteAndNavigate();
           },
         },
-      ]
+      ],
     );
-  }, [dream, deleteAndNavigate]);
+  }, [dream, deleteAndNavigate, t]);
 
   const onRetryImage = useCallback(async () => {
     if (!dream) return;
@@ -344,21 +427,17 @@ export default function JournalDetailScreen() {
       };
 
       await updateDream(updatedDream);
-      Alert.alert('Success', 'Dream image generated successfully!');
+      Alert.alert(t('common.success'), t('journal.detail.image.success_message'));
     } catch (error) {
-      const msg = error instanceof Error ? error.message : 'Unknown error';
-      Alert.alert('Image Generation Failed', msg);
+      const msg = error instanceof Error ? error.message : t('common.unknown_error');
+      Alert.alert(t('common.error_title'), msg);
     } finally {
       setIsRetryingImage(false);
     }
-  }, [dream, updateDream]);
+  }, [dream, updateDream, t]);
 
   const handleBackPress = useCallback(() => {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.replace('/(tabs)/journal');
-    }
+    router.replace('/(tabs)/journal');
   }, []);
 
   const handleExplorePress = useCallback(() => {
@@ -376,9 +455,9 @@ export default function JournalDetailScreen() {
     // Check quota
     if (!canAnalyzeNow) {
       Alert.alert(
-        'Analysis Limit Reached',
-        'You have reached your analysis limit. Please upgrade to analyze more dreams.',
-        [{ text: 'OK' }]
+        t('journal.detail.analysis_limit.title'),
+        t('journal.detail.analysis_limit.message'),
+        [{ text: t('common.ok') }],
       );
       return;
     }
@@ -386,22 +465,34 @@ export default function JournalDetailScreen() {
     setIsAnalyzing(true);
     try {
       await analyzeDream(dream.id, dream.transcript);
-      Alert.alert('Success', 'Dream analyzed successfully!');
+      Alert.alert(t('common.success'), t('journal.detail.analysis.success_message'));
     } catch (error) {
       if (error instanceof QuotaError) {
-        Alert.alert('Quota Exceeded', error.userMessage);
+        Alert.alert(t('journal.detail.quota_exceeded.title'), error.userMessage);
       } else {
-        const msg = error instanceof Error ? error.message : 'Unknown error';
-        Alert.alert('Analysis Failed', msg);
+        const msg = error instanceof Error ? error.message : t('common.unknown_error');
+        Alert.alert(t('analysis_error.title'), msg);
       }
     } finally {
       setIsAnalyzing(false);
     }
-  }, [dream, canAnalyzeNow, analyzeDream]);
+  }, [dream, canAnalyzeNow, analyzeDream, t]);
 
   const gradientColors = mode === 'dark'
     ? GradientColors.dreamJournal
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+
+  const keyboardBehavior: 'padding' | 'height' | undefined = Platform.select({
+    ios: 'padding',
+    android: 'height',
+    default: undefined,
+  });
+  const keyboardVerticalOffset = Platform.select({ ios: 0, android: 0, web: 0 }) ?? 0;
+  const shouldHideHeroMedia = isKeyboardVisible && (isEditing || isEditingTranscript);
+  const transcriptBackgroundColor = mode === 'dark'
+    ? 'rgba(19, 16, 34, 0.3)'
+    : 'rgba(0, 0, 0, 0.03)';
+  const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
 
   // Use a single surface color for the main content card and its inner accent cards/buttons
   // so we don't get a darker band/padding effect on Android where slight
@@ -413,130 +504,290 @@ export default function JournalDetailScreen() {
 
   if (!dream) {
     return (
-      <LinearGradient colors={gradientColors} style={styles.container}>
-        <Text style={{ color: colors.textPrimary, fontSize: 18 }}>Dream not found.</Text>
-        <Pressable onPress={handleBackPress} style={[styles.backButton, { backgroundColor: colors.accent }]}>
-          <Text style={[styles.backButtonText, { color: colors.textPrimary }]}>Go Back</Text>
-        </Pressable>
-      </LinearGradient>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoiding}
+        behavior={keyboardBehavior}
+        keyboardVerticalOffset={keyboardVerticalOffset}
+      >
+        <LinearGradient colors={gradientColors} style={styles.container}>
+          <Text style={{ color: colors.textPrimary, fontSize: 18 }}>
+            {t('journal.detail.not_found.title')}
+          </Text>
+          <Pressable onPress={handleBackPress} style={[styles.backButton, { backgroundColor: colors.accent }]}>
+            <Text style={[styles.backButtonText, { color: colors.textPrimary }]}>
+              {t('journal.detail.not_found.back')}
+            </Text>
+          </Pressable>
+        </LinearGradient>
+      </KeyboardAvoidingView>
     );
   }
 
+  const renderTranscriptBody = () => (
+    <>
+      <View style={styles.transcriptHeader}>
+        <Text style={[styles.transcriptTitle, { color: colors.textPrimary }]}>
+          {t('journal.original_transcript')}
+        </Text>
+        <Pressable
+          onPress={isEditingTranscript ? handleTranscriptSave : () => {
+            setEditableTranscript(dream.transcript || '');
+            setIsEditingTranscript(true);
+          }}
+          testID="btn.editTranscript"
+          style={({ pressed }) => [
+            styles.transcriptEditButton,
+            {
+              opacity: pressed ? 0.7 : 1,
+              backgroundColor: isEditingTranscript ? colors.accent : 'transparent',
+              borderColor: colors.divider,
+            },
+          ]}
+          hitSlop={8}
+        >
+          <Ionicons
+            name={isEditingTranscript ? 'checkmark' : 'pencil'}
+            size={18}
+            color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
+          />
+        </Pressable>
+      </View>
+      {isEditingTranscript ? (
+        <TextInput
+          style={[styles.transcriptInput, {
+            color: colors.textPrimary,
+            borderColor: colors.divider,
+            backgroundColor: colors.backgroundSecondary,
+          }]}
+          multiline
+          value={editableTranscript}
+          onChangeText={setEditableTranscript}
+          placeholder={t('journal.transcript.placeholder') || 'Edit transcript...'}
+          placeholderTextColor={colors.textSecondary}
+          textAlignVertical="top"
+          autoFocus
+        />
+      ) : (
+        <Text style={[styles.transcript, { color: colors.textSecondary }]}>{dream.transcript}</Text>
+      )}
+    </>
+  );
+
+  const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => (
+    <View
+      style={[
+        styles.metadataCard,
+        variant === 'floating' && styles.metadataFloatingCard,
+        variant === 'floating' ? shadows.xl : shadows.md,
+        {
+          backgroundColor: colors.backgroundCard,
+          borderColor: variant === 'floating' ? colors.divider : accentSurfaceBorderColor,
+        },
+      ]}
+    >
+      <View style={styles.metadataHeader}>
+        <View style={styles.dateContainer}>
+          <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
+          <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
+        </View>
+        <View style={styles.timeContainer}>
+          <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
+          <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
+        </View>
+      </View>
+      <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+      {isEditing ? (
+        <TextInput
+          style={[styles.metadataTitleInput, { color: colors.textPrimary, borderColor: colors.divider }]}
+          selectTextOnFocus
+          value={editableTitle}
+          onChangeText={setEditableTitle}
+          placeholder="Add a title to this dream"
+          placeholderTextColor={colors.textSecondary}
+        />
+      ) : (
+        <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>
+          {dream.title || 'Untitled Dream'}
+        </Text>
+      )}
+
+      {(isEditing || dream.dreamType) && (
+        <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}
+        >
+          <Ionicons name="moon-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
+          <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Dream Type:</Text>
+          {isEditing ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
+              <View style={styles.chipsContainer}>
+                {sortedDreamTypes.map((type) => (
+                  <Pressable
+                    key={type}
+                    testID={`chip.type.${type}`}
+                    onPress={() => setEditableDreamType(type)}
+                    style={[
+                      styles.chip,
+                      { borderColor: colors.divider },
+                      editableDreamType === type && { backgroundColor: colors.accent, borderColor: colors.accent }
+                    ]}
+                  >
+                    <Text style={[
+                      styles.chipText,
+                      { color: colors.textPrimary },
+                      editableDreamType === type && styles.chipTextSelected
+                    ]}
+                    >
+                      {type}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </ScrollView>
+          ) : (
+            <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
+          )}
+        </View>
+      )}
+
+      <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
+        <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
+        <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Theme:</Text>
+        {isEditing ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
+            <View style={styles.chipsContainer}>
+              {sortedDreamThemes.map((theme) => (
+                <Pressable
+                  key={theme}
+                  testID={`chip.theme.${theme}`}
+                  onPress={() => setEditableTheme(theme)}
+                  style={[
+                    styles.chip,
+                    { borderColor: colors.divider },
+                    editableTheme === theme && { backgroundColor: colors.accent, borderColor: colors.accent }
+                  ]}
+                >
+                  <Text style={[
+                    styles.chipText,
+                    { color: colors.textPrimary },
+                    editableTheme === theme && styles.chipTextSelected
+                  ]}
+                  >
+                    {theme}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
+        ) : (
+          <Text style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}>
+            {dream.theme || 'No theme'}
+          </Text>
+        )}
+      </View>
+
+      <Pressable
+        onPress={isEditing ? handleSave : () => setIsEditing(true)}
+        testID="btn.editMetadata"
+        style={({ pressed }) => [
+          styles.editButton,
+          {
+            opacity: pressed ? 0.7 : 1,
+            backgroundColor: isEditing ? colors.accent : colors.backgroundSecondary,
+          },
+        ]}
+        hitSlop={8}
+      >
+        <Ionicons
+          name={isEditing ? 'checkmark' : 'pencil'}
+          size={16}
+          color={isEditing ? colors.textPrimary : colors.textSecondary}
+        />
+      </Pressable>
+    </View>
+  );
+
   return (
-    <LinearGradient colors={gradientColors} style={styles.gradient}>
-      <Pressable onPress={handleBackPress} style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}>
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoiding}
+      behavior={keyboardBehavior}
+      keyboardVerticalOffset={keyboardVerticalOffset}
+    >
+      <LinearGradient colors={gradientColors} style={styles.gradient}>
+      <Pressable
+        onPress={handleBackPress}
+        style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+        testID={TID.Button.NavigateJournal}
+      >
         <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
       </Pressable>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        ref={scrollViewRef}
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          (isEditing || isEditingTranscript) && { paddingBottom: 220 },
+        ]}
+        keyboardShouldPersistTaps="handled"
+      >
 
         {/* Dream Image */}
-        <View style={styles.imageContainer}>
-          <View style={styles.imageFrame}>
-            {dream.imageGenerationFailed ? (
-              <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
-            ) : dream.imageUrl ? (
-              <>
-                <Image
-                  source={{ uri: dream.imageUrl }}
-                  style={styles.dreamImage}
-                  contentFit={imageConfig.contentFit}
-                  transition={imageConfig.transition}
-                  cachePolicy={imageConfig.cachePolicy}
-                  priority={imageConfig.priority}
-                  placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-                />
-                <View style={styles.imageOverlay} />
-              </>
-            ) : (
-              <Pressable
-                onPress={handlePickImage}
-                disabled={isPickingImage}
-                style={[
-                  styles.dreamImage,
-                  {
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: colors.backgroundSecondary,
-                    flexDirection: 'column',
-                  },
-                ]}
-              >
-                {isPickingImage ? (
-                  <ActivityIndicator color={colors.textPrimary} />
-                ) : (
-                  <>
-                    <Ionicons name="image-outline" size={28} color={colors.textSecondary} />
-                    <Text
-                      style={{
-                        marginTop: 8,
-                        color: colors.textSecondary,
-                        fontFamily: Fonts.spaceGrotesk.medium,
-                        fontSize: 14,
-                      }}
-                    >
-                      Add an image
-                    </Text>
-                  </>
-                )}
-              </Pressable>
-            )}
-          </View>
-        </View>
-
-        {/* Content Card - Overlaps image */}
-        <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
-
-          {/* Not Analyzed / Pending / Failed State */}
-          {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && (
-            <View style={[styles.statusCard, shadows.md, { backgroundColor: colors.backgroundSecondary }]}>
-              <View style={styles.statusHeader}>
-                <Ionicons
-                  name={dream.analysisStatus === 'pending' ? 'hourglass-outline' : dream.analysisStatus === 'failed' ? 'alert-circle-outline' : 'information-circle-outline'}
-                  size={32}
-                  color={dream.analysisStatus === 'failed' ? '#EF4444' : colors.accent}
-                />
-                <Text style={[styles.statusTitle, { color: colors.textPrimary }]}
-                >
-                  {dream.analysisStatus === 'pending' ? 'Analyzing your dream...' :
-                   dream.analysisStatus === 'failed' ? 'Analysis unavailable' :
-                   'AI Analysis (optional)'}
-                </Text>
-              </View>
-
-              <Text style={[styles.statusMessage, { color: colors.textSecondary }]}
-              >
-                {dream.analysisStatus === 'pending' ? 'Your dream is being analyzed. This only takes a few moments.' :
-                 dream.analysisStatus === 'failed' ? 'The analysis could not be completed. You can try again in a moment.' :
-                 'Get an interpretation, symbols and gentle prompts to reflect on this dream.'}
-              </Text>
-
-              {dream.analysisStatus !== 'pending' && (
+        {!shouldHideHeroMedia && (
+          <View style={styles.imageContainer}>
+            <View style={styles.imageFrame}>
+              {dream.imageGenerationFailed ? (
+                <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+              ) : dream.imageUrl ? (
+                <>
+                  <Image
+                    source={{ uri: dream.imageUrl }}
+                    style={styles.dreamImage}
+                    contentFit={imageConfig.contentFit}
+                    transition={imageConfig.transition}
+                    cachePolicy={imageConfig.cachePolicy}
+                    priority={imageConfig.priority}
+                    placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+                  />
+                  <View style={styles.imageOverlay} />
+                </>
+              ) : (
                 <Pressable
-                  onPress={handleAnalyze}
-                  disabled={isAnalyzing}
-                  style={[styles.analyzeButton, shadows.md, { backgroundColor: colors.accent }]}
+                  onPress={handlePickImage}
+                  disabled={isPickingImage}
+                  style={[
+                    styles.dreamImage,
+                    {
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: colors.backgroundSecondary,
+                      flexDirection: 'column',
+                    },
+                  ]}
                 >
-                  {isAnalyzing ? (
+                  {isPickingImage ? (
                     <ActivityIndicator color={colors.textPrimary} />
                   ) : (
                     <>
-                      <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
-                      <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
+                      <Ionicons name="image-outline" size={28} color={colors.textSecondary} />
+                      <Text
+                        style={{
+                          marginTop: 8,
+                          color: colors.textSecondary,
+                          fontFamily: Fonts.spaceGrotesk.medium,
+                          fontSize: 14,
+                        }}
                       >
-                        {dream.analysisStatus === 'failed' ? 'Retry analysis' : 'Analyze dream'}
+                        {t('journal.detail.add_image')}
                       </Text>
                     </>
                   )}
                 </Pressable>
               )}
-
-              {dream.analysisStatus === 'pending' && (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="large" color={colors.accent} />
-                </View>
-              )}
             </View>
-          )}
+          </View>
+        )}
+
+        {/* Content Card - Overlaps image */}
+        <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
 
           {/* Premium Metadata Card */}
           <View
@@ -558,33 +809,110 @@ export default function JournalDetailScreen() {
               </View>
             </View>
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            <TextInput
-              style={[styles.metadataTitle, { color: colors.textPrimary }]}
-              value={editableTitle}
-              onChangeText={setEditableTitle}
-              onBlur={handleTitleBlur}
-              placeholder="Add a title to this dream"
-              placeholderTextColor={colors.textSecondary}
-            />
-            {dream.dreamType && (
-              <View style={styles.metadataRow}>
-                <Ionicons name="moon-outline" size={18} color={colors.textPrimary} />
-                <Text style={[styles.metadataLabel, { color: colors.textPrimary }]}>Dream Type:</Text>
-                <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
-              </View>
-            )}
-            <View style={styles.metadataRow}>
-              <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} />
-              <Text style={[styles.metadataLabel, { color: colors.textPrimary }]}>Theme:</Text>
+            
+            {isEditing ? (
               <TextInput
-                style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}
-                value={editableTheme}
-                onChangeText={setEditableTheme}
-                onBlur={handleThemeBlur}
-                placeholder="Add a theme"
+                style={[styles.metadataTitleInput, { color: colors.textPrimary, borderColor: colors.divider }]}
+                selectTextOnFocus
+                value={editableTitle}
+                onChangeText={setEditableTitle}
+                placeholder="Add a title to this dream"
                 placeholderTextColor={colors.textSecondary}
               />
+            ) : (
+              <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>
+                {dream.title || 'Untitled Dream'}
+              </Text>
+            )}
+
+            {(isEditing || dream.dreamType) && (
+              <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
+                <Ionicons name="moon-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
+                <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Dream Type:</Text>
+                {isEditing ? (
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
+                    <View style={styles.chipsContainer}>
+                      {sortedDreamTypes.map((type) => (
+                        <Pressable
+                          key={type}
+                          testID={`chip.type.${type}`}
+                          onPress={() => setEditableDreamType(type)}
+                          style={[
+                            styles.chip,
+                            { borderColor: colors.divider },
+                            editableDreamType === type && { backgroundColor: colors.accent, borderColor: colors.accent }
+                          ]}
+                        >
+                          <Text style={[
+                            styles.chipText,
+                            { color: colors.textPrimary },
+                            editableDreamType === type && styles.chipTextSelected
+                          ]}>
+                            {type}
+                          </Text>
+                        </Pressable>
+                      ))}
+                    </View>
+                  </ScrollView>
+                ) : (
+                  <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
+                )}
+              </View>
+            )}
+            
+            <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
+              <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
+              <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Theme:</Text>
+              {isEditing ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
+                  <View style={styles.chipsContainer}>
+                    {sortedDreamThemes.map((theme) => (
+                      <Pressable
+                        key={theme}
+                        testID={`chip.theme.${theme}`}
+                        onPress={() => setEditableTheme(theme)}
+                        style={[
+                          styles.chip,
+                          { borderColor: colors.divider },
+                          editableTheme === theme && { backgroundColor: colors.accent, borderColor: colors.accent }
+                        ]}
+                      >
+                        <Text style={[
+                          styles.chipText,
+                          { color: colors.textPrimary },
+                          editableTheme === theme && styles.chipTextSelected
+                        ]}>
+                          {theme}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </ScrollView>
+              ) : (
+                <Text style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}>
+                  {dream.theme || 'No theme'}
+                </Text>
+              )}
             </View>
+
+            <Pressable
+              onPress={isEditing ? handleSave : () => setIsEditing(true)}
+              testID="btn.editMetadata"
+              style={({ pressed }) => [
+                styles.editButton,
+                { 
+                  opacity: pressed ? 0.7 : 1, 
+                  backgroundColor: isEditing ? colors.accent : colors.backgroundSecondary 
+                }
+              ]}
+              hitSlop={8}
+            >
+              <Ionicons
+                name={isEditing ? 'checkmark' : 'pencil'}
+                size={16}
+                color={isEditing ? colors.textPrimary : colors.textSecondary}
+              />
+            </Pressable>
           </View>
 
           {dream.isAnalyzed && dream.analysisStatus === 'done' && (
@@ -615,6 +943,28 @@ export default function JournalDetailScreen() {
           )}
 
           {/* Additional Actions */}
+          {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && (
+            <Pressable
+              onPress={handleAnalyze}
+              disabled={isAnalyzing || dream.analysisStatus === 'pending'}
+              style={[styles.analyzeButton, shadows.md, { backgroundColor: colors.accent }]}
+            >
+              {isAnalyzing || dream.analysisStatus === 'pending' ? (
+                <ActivityIndicator color={colors.textPrimary} />
+              ) : (
+                <>
+                  <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
+                  <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
+                  >
+                    {dream.analysisStatus === 'failed'
+                      ? t('journal.detail.analyze_button.retry')
+                      : t('journal.detail.analyze_button.default')}
+                  </Text>
+                </>
+              )}
+            </Pressable>
+          )}
+
           <View style={styles.actionsRow}>
             <Pressable
               onPress={() => toggleFavorite(dream.id)}
@@ -636,7 +986,9 @@ export default function JournalDetailScreen() {
               />
               <Text style={[styles.actionButtonText, { color: colors.textPrimary }]}
               >
-                {dream.isFavorite ? 'Favorited' : 'Favorite'}
+                {dream.isFavorite
+                  ? t('journal.detail.favorite.on')
+                  : t('journal.detail.favorite.off')}
               </Text>
             </Pressable>
             <Pressable
@@ -659,21 +1011,25 @@ export default function JournalDetailScreen() {
               )}
               <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}
               >
-                {isSharing ? 'Sharing...' : 'Share'}
+                {isSharing
+                  ? t('journal.detail.share.button_loading')
+                  : t('journal.detail.share.button_default')}
               </Text>
             </Pressable>
           </View>
 
           {/* Transcript Section */}
-          <View
-            style={[styles.transcriptSection, {
-              borderTopColor: colors.divider,
-              backgroundColor: mode === 'dark' ? 'rgba(19, 16, 34, 0.3)' : 'rgba(0, 0, 0, 0.03)',
-            }]}
-          >
-            <Text style={[styles.transcriptTitle, { color: colors.textPrimary }]}>Original Transcript</Text>
-            <Text style={[styles.transcript, { color: colors.textSecondary }]}>{dream.transcript}</Text>
-          </View>
+          {!isEditingTranscript && (
+            <View
+              style={[styles.transcriptSection, {
+                borderTopColor: colors.divider,
+                backgroundColor: transcriptBackgroundColor,
+              }]}
+              onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
+            >
+              {renderTranscriptBody()}
+            </View>
+          )}
 
           <Pressable
             onPress={onDelete}
@@ -682,10 +1038,28 @@ export default function JournalDetailScreen() {
             accessibilityRole="link"
           >
             <Ionicons name="trash-outline" size={18} color="#EF4444" />
-            <Text style={styles.deleteLinkText}>Delete Dream</Text>
+            <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
           </Pressable>
         </View>
       </ScrollView>
+      {isEditingTranscript && (
+        <View pointerEvents="box-none" style={styles.transcriptOverlay}>
+          <View
+            style={[
+              styles.transcriptSection,
+              styles.transcriptFloatingCard,
+              shadows.xl,
+              {
+                backgroundColor: colors.backgroundCard,
+                borderColor: colors.divider,
+                marginBottom: floatingTranscriptBottom,
+              },
+            ]}
+          >
+            {renderTranscriptBody()}
+          </View>
+        </View>
+      )}
       <Modal
         visible={isShareModalVisible}
         transparent
@@ -696,12 +1070,14 @@ export default function JournalDetailScreen() {
           <Pressable style={StyleSheet.absoluteFill} onPress={closeShareModal} />
           <View style={[styles.shareModalContent, { backgroundColor: colors.backgroundCard }]}
           >
-            <Text style={[styles.shareModalTitle, { color: colors.textPrimary }]}>Share your dream</Text>
+            <Text style={[styles.shareModalTitle, { color: colors.textPrimary }]}>
+              {t('journal.detail.share_modal.title')}
+            </Text>
             <Text style={[styles.shareModalDescription, { color: colors.textSecondary }]}
             >
               {clipboardSupported
-                ? 'Copy this quote and share it anywhere.'
-                : 'Select the quote below to copy it manually.'}
+                ? t('journal.detail.share_modal.description.clipboard')
+                : t('journal.detail.share_modal.description.manual')}
             </Text>
             <View
               style={[
@@ -711,7 +1087,7 @@ export default function JournalDetailScreen() {
             >
               <Text selectable style={[styles.shareMessageText, { color: colors.textPrimary }]}
               >
-                {shareMessage || 'No shareable content yet.'}
+                {shareMessage || t('journal.detail.share_modal.empty')}
               </Text>
             </View>
             {clipboardSupported && (
@@ -726,14 +1102,16 @@ export default function JournalDetailScreen() {
                 />
                 <Text style={[styles.shareCopyButtonText, { color: colors.textPrimary }]}
                 >
-                  {shareCopyStatus === 'success' ? 'Copied!' : 'Copy quote'}
+                  {shareCopyStatus === 'success'
+                    ? t('journal.detail.share_modal.copied')
+                    : t('journal.detail.share_modal.copy')}
                 </Text>
               </Pressable>
             )}
             {shareCopyStatus === 'error' && (
               <Text style={[styles.shareFeedbackText, { color: '#EF4444' }]}
               >
-                Copy failed. Please select the text above manually.
+                {t('journal.detail.share_modal.copy_failed')}
               </Text>
             )}
             <Pressable
@@ -742,17 +1120,21 @@ export default function JournalDetailScreen() {
             >
               <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}
               >
-                Close
+                {t('journal.detail.share_modal.close')}
               </Text>
             </Pressable>
           </View>
         </View>
       </Modal>
     </LinearGradient>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoiding: {
+    flex: 1,
+  },
   gradient: {
     flex: 1,
   },
@@ -978,11 +1360,27 @@ const styles = StyleSheet.create({
     // borderTopColor and backgroundColor: set dynamically
     borderRadius: 12,
   },
+  transcriptOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingTop: 24,
+  },
+  transcriptFloatingCard: {
+    borderWidth: 1,
+    borderRadius: 16,
+  },
+  transcriptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
   transcriptTitle: {
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
     // color: set dynamically
-    marginBottom: 12,
+    marginBottom: 0,
   },
   transcript: {
     fontSize: 15,
@@ -990,6 +1388,23 @@ const styles = StyleSheet.create({
     // color: set dynamically
     lineHeight: 24,
     opacity: 0.9,
+  },
+  transcriptEditButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  transcriptInput: {
+    minHeight: 140,
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 22,
   },
   deleteLink: {
     marginTop: 24,
@@ -1157,5 +1572,53 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 15,
     lineHeight: 24,
+  },
+  editButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: set dynamically
+  },
+  metadataTitleInput: {
+    fontSize: 24,
+    fontFamily: Fonts.lora.bold,
+    marginBottom: 12,
+    lineHeight: 32,
+    borderBottomWidth: 1,
+    paddingBottom: 4,
+  },
+  metadataValueInput: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    borderBottomWidth: 1,
+    paddingBottom: 2,
+    flex: 1,
+  },
+  chipsScroll: {
+    flexGrow: 0,
+  },
+  chipsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 2,
+  },
+  chip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  chipText: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textTransform: 'capitalize',
+  },
+  chipTextSelected: {
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
 });
