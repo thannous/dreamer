@@ -12,10 +12,10 @@ import { useTheme } from '@/context/ThemeContext';
 import { useModalSlide } from '@/hooks/useJournalAnimations';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
-import { applyFilters, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
+import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamTheme } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -47,6 +47,7 @@ export default function JournalListScreen() {
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
+  const [selectedDreamType, setSelectedDreamType] = useState<DreamType | null>(null);
   const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>({
     start: null,
     end: null,
@@ -75,12 +76,14 @@ export default function JournalListScreen() {
 
   // Get available themes
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
+  const availableDreamTypes = useMemo(() => getUniqueDreamTypes(dreams), [dreams]);
 
   // Apply filters and sort
   const filteredDreams = useMemo(() => {
     const filtered = applyFilters(dreams, {
       searchQuery,
       theme: selectedTheme,
+      dreamType: selectedDreamType,
       startDate: dateRange.start,
       endDate: dateRange.end,
       favoritesOnly: showFavoritesOnly,
@@ -88,7 +91,7 @@ export default function JournalListScreen() {
       exploredOnly: showExploredOnly,
     });
     return sortDreamsByDate(filtered, false); // Newest first
-  }, [dreams, searchQuery, selectedTheme, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
+  }, [dreams, searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
 
   // Initialize visible items with first 5 dreams for immediate loading
   useEffect(() => {
@@ -104,11 +107,12 @@ export default function JournalListScreen() {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, selectedTheme, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
+  }, [searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
 
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedTheme(null);
+    setSelectedDreamType(null);
     setDateRange({ start: null, end: null });
     setShowFavoritesOnly(false);
     setShowAnalyzedOnly(false);
@@ -119,6 +123,11 @@ export default function JournalListScreen() {
     setSelectedTheme(theme === selectedTheme ? null : theme);
     setShowThemeModal(false);
   }, [selectedTheme]);
+
+  const handleDreamTypeSelect = useCallback((dreamType: DreamType) => {
+    setSelectedDreamType((current) => (dreamType === current ? null : dreamType));
+    setShowThemeModal(false);
+  }, []);
 
   const handleDateRangeChange = useCallback((start: Date | null, end: Date | null) => {
     setDateRange({ start, end });
@@ -219,7 +228,10 @@ export default function JournalListScreen() {
 
         {/* Content column */}
         <View style={styles.contentColumn}>
-          <Text style={[styles.date, { color: colors.textSecondary }]}>{formatDreamListDate(item.id)}</Text>
+          <Text style={[styles.date, { color: colors.textSecondary }]}>
+            {formatDreamListDate(item.id)}
+            {item.dreamType ? ` • ${item.dreamType}` : ''}
+          </Text>
           <DreamCard
             dream={item}
             onPress={() => router.push(`/journal/${item.id}`)}
@@ -279,6 +291,7 @@ export default function JournalListScreen() {
         <View style={styles.desktopMetaRow}> 
           <Text style={[styles.desktopDate, { color: colors.textSecondary }] }>
             {formatDreamListDate(item.id)}
+            {item.dreamType ? ` • ${item.dreamType}` : ''}
           </Text>
         </View>
         <DreamCard
@@ -347,7 +360,7 @@ export default function JournalListScreen() {
           onExploredPress={handleExploredToggle}
           onClearPress={handleClearFilters}
           activeFilters={{
-            theme: selectedTheme !== null,
+            theme: selectedTheme !== null || selectedDreamType !== null,
             date: dateRange.start !== null || dateRange.end !== null,
             favorites: showFavoritesOnly,
             analyzed: showAnalyzedOnly,
@@ -355,6 +368,7 @@ export default function JournalListScreen() {
           }}
           dateRange={dateRange}
           selectedTheme={selectedTheme}
+          selectedDreamType={selectedDreamType}
           themeButtonTestID={TID.Button.FilterTheme}
           dateButtonTestID={TID.Button.FilterDate}
           favoritesButtonTestID={TID.Button.FilterFavorites}
@@ -462,6 +476,9 @@ export default function JournalListScreen() {
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
               {t('journal.theme_modal.title')}
             </Text>
+            <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+              {t('journal.detail.theme_label')}
+            </Text>
             {availableThemes.map((theme) => (
               <Pressable
                 key={theme}
@@ -472,6 +489,22 @@ export default function JournalListScreen() {
                 onPress={() => handleThemeSelect(theme)}
               >
                 <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>{theme}</Text>
+              </Pressable>
+            ))}
+            <View style={{ height: 16 }} />
+            <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+              {t('journal.detail.dream_type_label')}
+            </Text>
+            {availableDreamTypes.map((dreamType) => (
+              <Pressable
+                key={dreamType}
+                style={[
+                  styles.modalOption,
+                  { backgroundColor: selectedDreamType === dreamType ? colors.accent : colors.backgroundSecondary },
+                ]}
+                onPress={() => handleDreamTypeSelect(dreamType)}
+              >
+                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>{dreamType}</Text>
               </Pressable>
             ))}
             <Pressable

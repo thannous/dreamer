@@ -21,6 +21,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
     ActivityIndicator,
     Alert,
+    Animated,
+    Easing,
     Keyboard,
     KeyboardAvoidingView,
     Modal,
@@ -106,6 +108,8 @@ export default function JournalDetailScreen() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const scrollViewRef = useRef<ScrollView | null>(null);
+  const metadataPulse = useRef(new Animated.Value(0)).current;
+  const transcriptPulse = useRef(new Animated.Value(0)).current;
 
   const sortedDreamTypes = useMemo(() => {
     return sortWithSelectionFirst(DREAM_TYPES, dream?.dreamType);
@@ -154,6 +158,64 @@ export default function JournalDetailScreen() {
       scrollViewRef.current?.scrollTo({ y: Math.max(transcriptSectionOffset - 32, 0), animated: true });
     });
   }, [isEditingTranscript, transcriptSectionOffset]);
+
+  useEffect(() => {
+    let animation: Animated.CompositeAnimation | undefined;
+    if (isEditing) {
+      animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(metadataPulse, {
+            toValue: 1,
+            duration: 900,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(metadataPulse, {
+            toValue: 0,
+            duration: 900,
+            easing: Easing.in(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      animation.start();
+    } else {
+      metadataPulse.stopAnimation();
+      metadataPulse.setValue(0);
+    }
+    return () => {
+      animation?.stop();
+    };
+  }, [isEditing, metadataPulse]);
+
+  useEffect(() => {
+    let animation: Animated.CompositeAnimation | undefined;
+    if (isEditingTranscript) {
+      animation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(transcriptPulse, {
+            toValue: 1,
+            duration: 900,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(transcriptPulse, {
+            toValue: 0,
+            duration: 900,
+            easing: Easing.in(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      animation.start();
+    } else {
+      transcriptPulse.stopAnimation();
+      transcriptPulse.setValue(0);
+    }
+    return () => {
+      animation?.stop();
+    };
+  }, [isEditingTranscript, transcriptPulse]);
 
   const hasExistingChat = useMemo(() => {
     if (!dream) {
@@ -493,6 +555,22 @@ export default function JournalDetailScreen() {
     ? 'rgba(19, 16, 34, 0.3)'
     : 'rgba(0, 0, 0, 0.03)';
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
+  const metadataSaveAnimatedStyle = useMemo(() => ({
+    transform: [
+      {
+        scale: metadataPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] }),
+      },
+    ],
+    opacity: metadataPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 0.85] }),
+  }), [metadataPulse]);
+  const transcriptSaveAnimatedStyle = useMemo(() => ({
+    transform: [
+      {
+        scale: transcriptPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] }),
+      },
+    ],
+    opacity: transcriptPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 0.85] }),
+  }), [transcriptPulse]);
 
   // Use a single surface color for the main content card and its inner accent cards/buttons
   // so we don't get a darker band/padding effect on Android where slight
@@ -545,11 +623,13 @@ export default function JournalDetailScreen() {
           ]}
           hitSlop={8}
         >
-          <Ionicons
-            name={isEditingTranscript ? 'checkmark' : 'pencil'}
-            size={18}
-            color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
-          />
+          <Animated.View style={transcriptSaveAnimatedStyle}>
+            <Ionicons
+              name={isEditingTranscript ? 'checkmark' : 'pencil'}
+              size={18}
+              color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
+            />
+          </Animated.View>
         </Pressable>
       </View>
       {isEditingTranscript ? (
@@ -697,11 +777,13 @@ export default function JournalDetailScreen() {
         ]}
         hitSlop={8}
       >
-        <Ionicons
-          name={isEditing ? 'checkmark' : 'pencil'}
-          size={16}
-          color={isEditing ? colors.textPrimary : colors.textSecondary}
-        />
+        <Animated.View style={metadataSaveAnimatedStyle}>
+          <Ionicons
+            name={isEditing ? 'checkmark' : 'pencil'}
+            size={16}
+            color={isEditing ? colors.textPrimary : colors.textSecondary}
+          />
+        </Animated.View>
       </Pressable>
     </View>
   );
@@ -790,130 +872,7 @@ export default function JournalDetailScreen() {
         <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
 
           {/* Premium Metadata Card */}
-          <View
-            style={[styles.metadataCard, shadows.md, {
-              // Keep the same background as the parent content card so the
-              // whole surface appears uniform, and only the border is tinted.
-              backgroundColor: colors.backgroundCard,
-              borderColor: accentSurfaceBorderColor,
-            }]}
-          >
-            <View style={styles.metadataHeader}>
-              <View style={styles.dateContainer}>
-                <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
-                <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
-              </View>
-              <View style={styles.timeContainer}>
-                <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
-                <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
-              </View>
-            </View>
-            <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            
-            {isEditing ? (
-              <TextInput
-                style={[styles.metadataTitleInput, { color: colors.textPrimary, borderColor: colors.divider }]}
-                selectTextOnFocus
-                value={editableTitle}
-                onChangeText={setEditableTitle}
-                placeholder="Add a title to this dream"
-                placeholderTextColor={colors.textSecondary}
-              />
-            ) : (
-              <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>
-                {dream.title || 'Untitled Dream'}
-              </Text>
-            )}
-
-            {(isEditing || dream.dreamType) && (
-              <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
-                <Ionicons name="moon-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
-                <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Dream Type:</Text>
-                {isEditing ? (
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
-                    <View style={styles.chipsContainer}>
-                      {sortedDreamTypes.map((type) => (
-                        <Pressable
-                          key={type}
-                          testID={`chip.type.${type}`}
-                          onPress={() => setEditableDreamType(type)}
-                          style={[
-                            styles.chip,
-                            { borderColor: colors.divider },
-                            editableDreamType === type && { backgroundColor: colors.accent, borderColor: colors.accent }
-                          ]}
-                        >
-                          <Text style={[
-                            styles.chipText,
-                            { color: colors.textPrimary },
-                            editableDreamType === type && styles.chipTextSelected
-                          ]}>
-                            {type}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                  </ScrollView>
-                ) : (
-                  <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
-                )}
-              </View>
-            )}
-            
-            <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
-              <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
-              <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Theme:</Text>
-              {isEditing ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
-                  <View style={styles.chipsContainer}>
-                    {sortedDreamThemes.map((theme) => (
-                      <Pressable
-                        key={theme}
-                        testID={`chip.theme.${theme}`}
-                        onPress={() => setEditableTheme(theme)}
-                        style={[
-                          styles.chip,
-                          { borderColor: colors.divider },
-                          editableTheme === theme && { backgroundColor: colors.accent, borderColor: colors.accent }
-                        ]}
-                      >
-                        <Text style={[
-                          styles.chipText,
-                          { color: colors.textPrimary },
-                          editableTheme === theme && styles.chipTextSelected
-                        ]}>
-                          {theme}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                </ScrollView>
-              ) : (
-                <Text style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}>
-                  {dream.theme || 'No theme'}
-                </Text>
-              )}
-            </View>
-
-            <Pressable
-              onPress={isEditing ? handleSave : () => setIsEditing(true)}
-              testID="btn.editMetadata"
-              style={({ pressed }) => [
-                styles.editButton,
-                { 
-                  opacity: pressed ? 0.7 : 1, 
-                  backgroundColor: isEditing ? colors.accent : colors.backgroundSecondary 
-                }
-              ]}
-              hitSlop={8}
-            >
-              <Ionicons
-                name={isEditing ? 'checkmark' : 'pencil'}
-                size={16}
-                color={isEditing ? colors.textPrimary : colors.textSecondary}
-              />
-            </Pressable>
-          </View>
+          {!isEditing && renderMetadataCard()}
 
           {dream.isAnalyzed && dream.analysisStatus === 'done' && (
             <>
@@ -1042,6 +1001,13 @@ export default function JournalDetailScreen() {
           </Pressable>
         </View>
       </ScrollView>
+      {isEditing && (
+        <View pointerEvents="box-none" style={styles.metadataOverlay}>
+          <View style={{ marginBottom: floatingTranscriptBottom }}>
+            {renderMetadataCard('floating')}
+          </View>
+        </View>
+      )}
       {isEditingTranscript && (
         <View pointerEvents="box-none" style={styles.transcriptOverlay}>
           <View
@@ -1266,6 +1232,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginTop: 8,
+  },
+  metadataOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 16,
+  },
+  metadataFloatingCard: {
+    borderRadius: 20,
   },
   metadataLabel: {
     fontSize: 14,

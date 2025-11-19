@@ -142,7 +142,7 @@ export function sortDreamsByDate(dreams: DreamAnalysis[], ascending = false): Dr
 /**
  * Get unique themes from dreams
  */
-export function getUniqueThemes(dreams: DreamAnalysis[]): string[] {
+export function getUniqueThemes(dreams: DreamAnalysis[]): DreamTheme[] {
   const themes = new Set<DreamTheme>();
   dreams.forEach((dream) => {
     if (dream.theme) themes.add(dream.theme);
