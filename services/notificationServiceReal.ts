@@ -29,6 +29,10 @@ const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
  * Configure default notification behavior
  */
 export function configureNotificationHandler(): void {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
