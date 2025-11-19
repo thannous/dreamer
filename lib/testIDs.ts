@@ -63,6 +63,7 @@ export const TID = {
     AuthEmailVerificationStatus: 'text.auth.emailVerificationStatus',
     AnalysisLimitBanner: 'text.analysisLimit',
     ChatLimitBanner: 'text.chat.limit',
+    AnalyzePromptTitle: 'text.analyzePromptTitle',
   },
   Chat: {
     Input: 'chat.input.message',

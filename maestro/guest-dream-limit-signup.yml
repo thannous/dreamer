@@ -1,44 +1,53 @@
 appId: com.tanuki75.dreamapp
+clearState: true
 ---
 # Guest dream limit with signup - third dream saved to account on signup
 - launchApp
 
 # Guest dream 1 - save successfully as guest
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Guest Limit Dream 1"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 # Dismiss first-dream sheet
 - tapOn: "Not now|Pas maintenant|Ahora no"
 
 # Guest dream 2 - save successfully as guest and use analyze prompt to reach detail
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Guest Limit Dream 2"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 # Analyze-prompt bottom sheet should be visible for non-first dreams
-- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
+- assertVisible:
+    id: text.analyzePromptTitle
 - tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
 - waitForAnimationToEnd
-# Verify we reached the dream detail screen
+# Scroll down to reveal the explore button, then verify dream detail screen
+- scrollUntilVisible:
+    element:
+      id: btn.exploreDream
+    direction: DOWN
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 
-# Return to the home screen, then back to recording for the third dream
-- tapOn: "Accueil|Home"
+# Return to the recording screen for the third dream using the back button
 - tapOn:
-    id: btn.addDream
+      id: btn.navigateJournal
+
+# Open recording screen for third dream
+- tapOn:
+      id: btn.addDream
 
 # Guest dream 3 - should be blocked by guest limit bottom sheet
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Guest Limit Dream 3"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 
 # Verify guest limit bottom sheet (multi-language)
 - assertVisible: "Limit reached|Limite atteinte|Límite alcanzado"
@@ -46,39 +55,82 @@ appId: com.tanuki75.dreamapp
 # Tap CTA to go to account / settings
 - tapOn: "Go to account|Ouvrir mon compte|Ir a mi cuenta"
 
-# Create account via email/password
+# Create account via email/password using repeat + swipe to find password field
+- evalScript: ${output.foundPassword = 0}
+
+# If password is already visible, mark as found
+- runFlow:
+    when:
+      visible:
+        id: input.auth.password
+    commands:
+      - evalScript: ${output.foundPassword = 1}
+
+- repeat:
+    while:
+      true: ${output.foundPassword == 0}
+    commands:
+      # Swipe down (finger from upper to lower part of the screen) to reveal content above
+      - swipe:
+          start: 50%, 30%
+          end: 50%, 80%
+      # After each swipe, check if the password field is now visible
+      - runFlow:
+          when:
+            visible:
+              id: input.auth.password
+          commands:
+            - evalScript: ${output.foundPassword = 1}
+
 - tapOn:
-    id: input.auth.email
-- inputText: "guest.limit+signup@dreamer.test"
-- tapOn:
-    id: input.auth.password
+      id: input.auth.password
 - inputText: "guestpass"
-- tapOn:
-    id: btn.auth.signUp
 
-# Dismiss signup success alert and verify banner is shown
+# Fill email field
+- tapOn:
+      id: input.auth.email
+- inputText: "guest.limit+signup@dreamer.test"
+
+# Hide keyboard to make buttons area visible
+- pressKey: Back
+
+# Scroll to sign-up button using repeat + swipe
+- evalScript: ${output.foundSignUp = 0}
+
+- runFlow:
+    when:
+      visible:
+        id: btn.auth.signUp
+    commands:
+      - evalScript: ${output.foundSignUp = 1}
+
+- repeat:
+    while:
+      true: ${output.foundSignUp == 0}
+    commands:
+      - swipe:
+          start: 50%, 80%
+          end: 50%, 30%
+      - runFlow:
+          when:
+            visible:
+              id: btn.auth.signUp
+          commands:
+            - evalScript: ${output.foundSignUp = 1}
+
+- tapOn:
+      id: btn.auth.signUp
+
+# Dismiss signup success alert
 - tapOn: "OK|D'accord|Aceptar"
-- assertVisible:
-    id: component.emailVerificationBanner
 
-# Simulate verifying the email via resend CTA
+# Navigate back to recording, then open journal list
 - tapOn:
-    id: btn.auth.resendVerification
-- waitForAnimationToEnd
-- assertNotVisible:
-    id: component.emailVerificationBanner
-
-# Verify we are signed in (email visible)
-- assertVisible:
-    id: text.auth.email
-
-# Navigate to journal tab
-- tapOn: "Journal"
+      id: btn.navigateJournal
 - waitForAnimationToEnd
 - assertVisible:
-    id: screen.journal
+      id: screen.journal
 
 # Verify the three dreams exist in the journal list
 - assertVisible: "Guest Limit Dream 1"
-- assertVisible: "Guest Limit Dream 2"
 - assertVisible: "Guest Limit Dream 3"

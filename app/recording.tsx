@@ -18,13 +18,13 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { transcribeAudio } from '@/services/speechToText';
 import {
-    AudioModule,
-    AudioQuality,
-    IOSOutputFormat,
-    RecordingPresets,
-    setAudioModeAsync,
-    useAudioRecorder,
-    type RecordingOptions,
+  AudioModule,
+  AudioQuality,
+  IOSOutputFormat,
+  RecordingPresets,
+  setAudioModeAsync,
+  useAudioRecorder,
+  type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -71,6 +71,26 @@ const RECORDING_OPTIONS: RecordingOptions = {
     mimeType: 'audio/webm',
     bitsPerSecond: 128000,
   },
+};
+
+const RECORDER_RELEASE_ERROR_SNIPPET = 'shared object that was already released';
+
+const isRecorderReleasedError = (error: unknown): error is Error => {
+  return (
+    error instanceof Error &&
+    typeof error.message === 'string' &&
+    error.message.toLowerCase().includes(RECORDER_RELEASE_ERROR_SNIPPET)
+  );
+};
+
+const handleRecorderReleaseError = (context: string, error: unknown): boolean => {
+  if (isRecorderReleasedError(error)) {
+    if (__DEV__) {
+      console.warn(`[Recording] AudioRecorder already released during ${context}.`, error);
+    }
+    return true;
+  }
+  return false;
 };
 
 export default function RecordingScreen() {
@@ -282,6 +302,9 @@ export default function RecordingScreen() {
         );
       }
     } catch (err) {
+      if (handleRecorderReleaseError('stopRecording', err)) {
+        return;
+      }
       if (__DEV__) {
         console.error('Failed to stop recording:', err);
       }
@@ -310,17 +333,27 @@ export default function RecordingScreen() {
     hasAutoStoppedRecordingRef.current = false;
 
     const subscription = AppState.addEventListener('change', (state) => {
-      if ((state === 'background' || state === 'inactive') && audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
-        hasAutoStoppedRecordingRef.current = true;
-        void stopRecording();
+      try {
+        if ((state === 'background' || state === 'inactive') && audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+          hasAutoStoppedRecordingRef.current = true;
+          void stopRecording();
+        }
+      } catch (error) {
+        handleRecorderReleaseError('appStateChange', error);
       }
     });
 
     return () => {
       subscription.remove();
-      if (audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
-        hasAutoStoppedRecordingRef.current = true;
-        void stopRecording();
+      try {
+        if (audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+          hasAutoStoppedRecordingRef.current = true;
+          void stopRecording();
+        }
+      } catch (error) {
+        if (!handleRecorderReleaseError('appStateCleanup', error)) {
+          throw error;
+        }
       }
     };
   }, [audioRecorder, stopRecording]);
@@ -667,7 +700,10 @@ export default function RecordingScreen() {
         ]}
       >
         <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+        <Text
+          style={[styles.sheetTitle, { color: colors.textPrimary }]}
+          testID={TID.Text.AnalyzePromptTitle}
+        >
           {t('recording.analyze_prompt.sheet.title')}
         </Text>
         <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
