@@ -23,6 +23,23 @@ export type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+const defaultThemeContextValue: ThemeContextValue = {
+  colors: LightTheme,
+  shadows: Shadows.light,
+  mode: 'light',
+  systemMode: 'light',
+  preference: 'auto',
+  setPreference: async () => {
+    // No-op fallback to keep hooks functional when the provider is missing.
+    if (__DEV__) {
+      console.warn('[ThemeContext] setPreference called without a ThemeProvider in the tree.');
+    }
+  },
+  loaded: false,
+};
+
+let hasWarnedMissingThemeProvider = false;
+
 export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const systemColorScheme = useColorScheme();
   const [preference, setPreferenceState] = useState<ThemePreference>('auto');
@@ -109,12 +126,16 @@ export const ThemeProvider: React.FC<React.PropsWithChildren> = ({ children }) =
 /**
  * Hook to access theme context
  * @returns Current theme colors, shadows, mode, preference, and setter
- * @throws Error if used outside ThemeProvider
+ * Falls back to a light theme snapshot if the provider is missing.
  */
 export const useTheme = (): ThemeContextValue => {
   const ctx = useContext(ThemeContext);
   if (!ctx) {
-    throw new Error('useTheme must be used within ThemeProvider');
+    if (__DEV__ && !hasWarnedMissingThemeProvider) {
+      console.warn('[ThemeContext] useTheme called outside of ThemeProvider. Falling back to defaults.');
+      hasWarnedMissingThemeProvider = true;
+    }
+    return defaultThemeContextValue;
   }
   return ctx;
 };
