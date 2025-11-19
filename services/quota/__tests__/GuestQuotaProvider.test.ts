@@ -15,7 +15,7 @@ const buildDream = (overrides: Partial<DreamAnalysis>): DreamAnalysis => ({
   interpretation: '',
   shareableQuote: '',
   theme: undefined,
-  dreamType: 'Dream',
+  dreamType: 'Symbolic Dream',
   imageUrl: '',
   chatHistory: [],
   isAnalyzed: false,

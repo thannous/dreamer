@@ -8,13 +8,14 @@
 
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
+import type { DreamTheme, DreamType } from '@/lib/types';
 
 export type AnalysisResult = {
   title: string;
   interpretation: string;
   shareableQuote: string;
-  theme: 'surreal' | 'mystical' | 'calm' | 'noir';
-  dreamType: string;
+  theme: DreamTheme;
+  dreamType: DreamType;
   imagePrompt: string;
 };
 

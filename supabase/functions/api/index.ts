@@ -189,7 +189,7 @@ serve(async (req: Request) => {
       });
 
       // Ask the model to return strict JSON (no schema fields here to keep compatibility)
-      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string}.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
@@ -238,7 +238,7 @@ serve(async (req: Request) => {
           interpretation: String(analysis.interpretation ?? ''),
           shareable_quote: String(analysis.shareableQuote ?? ''),
           theme,
-          dream_type: String(analysis.dreamType ?? 'Dream'),
+          dream_type: String(analysis.dreamType ?? 'Symbolic Dream'),
           image_url: null,
           chat_history: [],
         });
@@ -256,7 +256,7 @@ serve(async (req: Request) => {
           interpretation: String(analysis.interpretation ?? ''),
           shareableQuote: String(analysis.shareableQuote ?? ''),
           theme,
-          dreamType: String(analysis.dreamType ?? 'Dream'),
+          dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
           imagePrompt: String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere'),
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -287,7 +287,7 @@ serve(async (req: Request) => {
       });
 
       // 1) Analyze the dream
-      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string}.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
@@ -376,7 +376,7 @@ serve(async (req: Request) => {
             interpretation: String(analysis.interpretation ?? ''),
             shareable_quote: String(analysis.shareableQuote ?? ''),
             theme,
-            dream_type: String(analysis.dreamType ?? 'Dream'),
+            dream_type: String(analysis.dreamType ?? 'Symbolic Dream'),
             image_url: null, // storing raw bytes is not ideal; leave null or upload to storage in future
             chat_history: [],
           });
@@ -391,7 +391,7 @@ serve(async (req: Request) => {
           interpretation: String(analysis.interpretation ?? ''),
           shareableQuote: String(analysis.shareableQuote ?? ''),
           theme,
-          dreamType: String(analysis.dreamType ?? 'Dream'),
+          dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
           imagePrompt,
           imageBytes: imageBase64,
         }),

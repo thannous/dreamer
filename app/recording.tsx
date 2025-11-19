@@ -141,7 +141,7 @@ export default function RecordingScreen() {
       interpretation: '',
       shareableQuote: '',
       theme: undefined,
-      dreamType: 'Dream',
+      dreamType: 'Symbolic Dream',
       imageUrl: '',
       thumbnailUrl: undefined,
       chatHistory: trimmedTranscript
