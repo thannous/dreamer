@@ -1,0 +1,63 @@
+appId: com.tanuki75.dreamapp
+---
+- launchApp
+# Navigate to Journal
+- tapOn:
+    id: btn.navigateJournal
+- waitForAnimationToEnd
+
+# Switch to existing user profile to load predefined dreams
+- tapOn: "Settings|Paramètres"
+- tapOn: "Utilisateur existant|Existing user"
+- assertVisible: "mock.existing@dreamer.app"
+- tapOn: "Journal|Journal"
+- waitForAnimationToEnd
+
+# Open a specific dream (assuming mock data "The Infinite Library")
+- tapOn: "The Infinite Library"
+- waitForAnimationToEnd
+
+# Verify initial state (Read Mode)
+- assertVisible: "Symbolic Dream"
+- assertVisible: "Mystical"
+
+# Enter edit mode
+- tapOn:
+    id: btn.editMetadata
+
+# Verify chips are visible (Edit Mode)
+- assertVisible: "Lucid Dream"
+- assertVisible: "Symbolic Dream"
+
+# Update dream title
+- tapOn: "The Infinite Library"
+- eraseText
+- inputText: "The Infinite dark"
+
+# Select new type "Nightmare"
+- swipe:
+    from:
+      id: chip.type.Symbolic Dream
+    direction: LEFT
+    duration: 500
+- tapOn:
+    id: chip.type.Nightmare
+
+# Save changes
+- tapOn:
+    id: btn.editMetadata
+
+# Verify new state (Read Mode)
+- assertVisible: "Nightmare"
+- assertVisible: "Mystical"
+
+# Verify old values are gone (only selected values are shown in Read Mode)
+- assertNotVisible: "Symbolic Dream"
+
+# Navigate back to journal and verify updated title in list
+- tapOn:
+    id: btn.navigateJournal
+- waitForAnimationToEnd
+- assertVisible:
+    id: screen.journal
+- assertVisible: "The Infinite dark"
