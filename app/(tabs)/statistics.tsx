@@ -1,14 +1,14 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {
-  Dimensions,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-  type ViewStyle,
+    Dimensions,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    useWindowDimensions,
+    type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -37,7 +37,7 @@ const LABEL_TEXT_LINE_HEIGHT = 14;
 const LABEL_DETAIL_LINE_HEIGHT = 13;
 const MAX_LABEL_LINES = 3;
 const MAX_LABEL_CHARS_PER_LINE = 10;
-const PIE_LABEL_HEIGHT = getLabelHeight(1);
+const PIE_LABEL_HEIGHT = getLabelHeight(MAX_LABEL_LINES);
 const MIN_PIE_RADIUS = 62;
 const MAX_PIE_RADIUS = 90;
 const MIN_LABEL_WIDTH = 84;
@@ -458,7 +458,13 @@ export default function StatisticsScreen() {
                         <Text style={[styles.themeRankText, { color: colors.backgroundCard }]}>{index + 1}</Text>
                       </View>
                       <View style={styles.themeContent}>
-                        <Text style={[styles.themeText, { color: colors.textPrimary }]}>{theme.theme}</Text>
+                        <Text style={[styles.themeText, { color: colors.textPrimary }]}>
+                          {(() => {
+                            const key = `stats.theme.${theme.theme}`;
+                            const label = t(key);
+                            return label === key ? theme.theme : label;
+                          })()}
+                        </Text>
                         <Text style={[styles.themeCount, { color: colors.textSecondary }]}>
                           {t('stats.legend.count', { count: formatNumber(theme.count) })}
                         </Text>
