@@ -153,3 +153,18 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function getAccessToken(): Promise<string | null> {
   return currentUser ? 'mock-access-token' : null;
 }
+
+export async function updateUserTier(tier: UserTier): Promise<User | null> {
+  if (!currentUser) {
+    return null;
+  }
+  currentUser = {
+    ...currentUser,
+    user_metadata: {
+      ...(currentUser.user_metadata ?? {}),
+      tier,
+    },
+  } as User;
+  emitAuthChange();
+  return currentUser;
+}

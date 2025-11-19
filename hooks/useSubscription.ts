@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
+import { updateUserTier } from '@/lib/auth';
 import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
 import {
   getSubscriptionStatus,
@@ -24,12 +25,28 @@ function formatError(e: unknown): Error {
 }
 
 export function useSubscription() {
-  const { user } = useAuth();
+  const { user, refreshUser, setUserTierLocally } = useAuth();
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
   const [packages, setPackages] = useState<PurchasePackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const requiresAuth = !user?.id;
+
+  const syncTier = useCallback(
+    async (nextStatus: SubscriptionStatus) => {
+      setUserTierLocally(nextStatus.tier);
+      try {
+        await updateUserTier(nextStatus.tier);
+        await refreshUser();
+      } catch (err) {
+        if (__DEV__) {
+          console.warn('[Subscription] Failed to sync tier with auth user', err);
+        }
+      }
+    },
+    [refreshUser, setUserTierLocally]
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -38,6 +55,13 @@ export function useSubscription() {
       try {
         setLoading(true);
         setError(null);
+        if (requiresAuth) {
+          if (mounted) {
+            setStatus(null);
+            setPackages([]);
+          }
+          return;
+        }
         if (!isSubscriptionInitialized()) {
           await initializeSubscription(user?.id ?? null);
         }
@@ -65,14 +89,18 @@ export function useSubscription() {
     return () => {
       mounted = false;
     };
-  }, [user?.id]);
+  }, [requiresAuth, user?.id]);
 
   const purchase = useCallback(async (id: string) => {
+    if (requiresAuth) {
+      return Promise.reject(new Error('auth_required'));
+    }
     setProcessing(true);
     setError(null);
     try {
       const nextStatus = await purchaseSubscriptionPackage(id);
       setStatus(nextStatus);
+      await syncTier(nextStatus);
       return nextStatus;
     } catch (e) {
       setError(formatError(e));
@@ -80,14 +108,18 @@ export function useSubscription() {
     } finally {
       setProcessing(false);
     }
-  }, []);
+  }, [requiresAuth, syncTier]);
 
   const restore = useCallback(async () => {
+    if (requiresAuth) {
+      return Promise.reject(new Error('auth_required'));
+    }
     setProcessing(true);
     setError(null);
     try {
       const nextStatus = await restoreSubscriptionPurchases();
       setStatus(nextStatus);
+      await syncTier(nextStatus);
       return nextStatus;
     } catch (e) {
       setError(formatError(e));
@@ -104,6 +136,7 @@ export function useSubscription() {
     processing,
     error,
     packages,
+    requiresAuth,
     purchase,
     restore,
   };

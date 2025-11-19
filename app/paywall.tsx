@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { Toast } from '@/components/Toast';
 import { PricingOption } from '@/components/subscription/PricingOption';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -24,13 +25,15 @@ function sortPackages(packages: PurchasePackage[]): PurchasePackage[] {
 export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const { isActive, loading, processing, error, packages, purchase, restore } = useSubscription();
+  const { isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const effectiveSelectedId = selectedId ?? (sortedPackages[0]?.id ?? null);
-  const canPurchase = Boolean(effectiveSelectedId) && !processing && !loading && !isActive;
+  const canPurchase =
+    Boolean(effectiveSelectedId) && !processing && !loading && !isActive && !requiresAuth;
 
   const handleClose = () => {
     if (router.canGoBack()) {
@@ -44,17 +47,24 @@ export default function PaywallScreen() {
     setSelectedId(id);
   };
 
+  const handleOpenAuth = () => {
+    router.replace('/(tabs)/settings?section=account' as any);
+  };
+
   const handlePurchase = async () => {
     if (!effectiveSelectedId || !canPurchase) return;
     try {
       await purchase(effectiveSelectedId);
+      setToastMessage(t('subscription.paywall.toast.success'));
     } catch {
     }
   };
 
   const handleRestore = async () => {
+    if (processing || requiresAuth) return;
     try {
       await restore();
+      setToastMessage(t('subscription.paywall.toast.restored'));
     } catch {
     }
   };
@@ -91,11 +101,13 @@ export default function PaywallScreen() {
           </Pressable>
         </View>
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
-        {loading && (
+        {(requiresAuth || loading) && (
           <View style={styles.loadingRow}>
-            <ActivityIndicator color={colors.accent} />
+            {!requiresAuth && <ActivityIndicator color={colors.accent} />}
             <Text style={[styles.loadingLabel, { color: colors.textSecondary }]}>
-              {t('subscription.paywall.loading')}
+              {requiresAuth
+                ? t('subscription.paywall.auth_required')
+                : t('subscription.paywall.loading')}
             </Text>
           </View>
         )}
@@ -156,16 +168,27 @@ export default function PaywallScreen() {
               />
             );
           })}
+          {!loading && sortedPackages.length === 0 && (
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+              {t('subscription.paywall.empty')}
+            </Text>
+          )}
 
           <View style={styles.actions}>
             <Pressable
               style={({ pressed }) => [
                 styles.primaryButton,
-                { backgroundColor: canPurchase ? colors.accent : colors.backgroundSecondary },
-                pressed && canPurchase && styles.primaryButtonPressed,
+                {
+                  backgroundColor: requiresAuth
+                    ? colors.accent
+                    : canPurchase
+                      ? colors.accent
+                      : colors.backgroundSecondary,
+                },
+                !requiresAuth && pressed && canPurchase && styles.primaryButtonPressed,
               ]}
-              disabled={!canPurchase}
-              onPress={handlePurchase}
+              disabled={requiresAuth ? processing || loading : !canPurchase}
+              onPress={requiresAuth ? handleOpenAuth : handlePurchase}
               testID={TID.Button.PaywallPurchase}
             >
               {processing ? (
@@ -174,14 +197,21 @@ export default function PaywallScreen() {
                 <Text
                   style={[
                     styles.primaryLabel,
-                    { color: canPurchase ? colors.textOnAccentSurface : colors.textSecondary },
+                    {
+                      color:
+                        requiresAuth || canPurchase
+                          ? colors.textOnAccentSurface
+                          : colors.textSecondary,
+                    },
                   ]}
                 >
-                  {t(
-                    isActive
-                      ? 'subscription.paywall.button.primary.premium'
-                      : 'subscription.paywall.button.primary.free'
-                  )}
+                  {requiresAuth
+                    ? t('subscription.paywall.button.primary.auth')
+                    : t(
+                        isActive
+                          ? 'subscription.paywall.button.primary.premium'
+                          : 'subscription.paywall.button.primary.free'
+                      )}
                 </Text>
               )}
             </Pressable>
@@ -189,7 +219,7 @@ export default function PaywallScreen() {
             <Pressable
               style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
               onPress={handleRestore}
-              disabled={processing}
+              disabled={processing || requiresAuth}
               testID={TID.Button.PaywallRestore}
             >
               <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
@@ -199,10 +229,20 @@ export default function PaywallScreen() {
           </View>
 
           <Text style={[styles.notice, { color: colors.textSecondary }]}>
-            {t('subscription.paywall.notice.store')}
+            {requiresAuth
+              ? t('subscription.paywall.notice.auth')
+              : t('subscription.paywall.notice.store')}
           </Text>
         </ScreenContainer>
       </ScrollView>
+      {toastMessage ? (
+        <Toast
+          message={toastMessage}
+          mode="success"
+          onHide={() => setToastMessage(null)}
+          testID={TID.Toast.PaywallSuccess}
+        />
+      ) : null}
     </View>
   );
 }
@@ -296,5 +336,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  emptyText: {
+    marginTop: ThemeLayout.spacing.md,
+    fontSize: 14,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    textAlign: 'center',
   },
 });
