@@ -1,10 +1,28 @@
-import type { User } from '@supabase/supabase-js';
 import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('@/lib/supabase', () => {
+  const builder = {
+    select: () => builder,
+    eq: async () => ({ count: 0, error: null }),
+    not: () => builder,
+    gte: () => builder,
+    lt: async () => ({ count: 0, error: null }),
+  };
+  return {
+    supabase: {
+      from: () => builder,
+    },
+  };
+});
+
+vi.mock('@/services/storageService', () => ({
+  getCachedRemoteDreams: vi.fn(async () => []),
+}));
 
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
-const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as unknown as User;
-const premiumUser = { id: 'premium-user', user_metadata: { tier: 'premium' } } as unknown as User;
+const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as any;
+const premiumUser = { id: 'premium-user', user_metadata: { tier: 'premium' } } as any;
 
 describe('SupabaseQuotaProvider – free tier monthly analysis quotas', () => {
   it('allows analyses within initial and monthly limits', async () => {

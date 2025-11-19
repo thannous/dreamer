@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environment: 'node',
+    environmentMatchGlobs: [
+      ['**/hooks/**/*.test.ts?(x)', 'jsdom'],
+    ],
     setupFiles: ['vitest.setup.ts'],
     exclude: ['node_modules', '.expo', 'expo', 'dist', '.eas-local-work'],
   },
