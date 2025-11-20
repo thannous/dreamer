@@ -1,0 +1,13 @@
+# Quick helper to sign in with the mock existing profile
+appId: com.tanuki75.dreamapp
+clearState: true
+---
+- launchApp
+- tapOn:
+    id: tab.settings
+- tapOn:
+    id: btn.mockProfile.existing
+- waitForAnimationToEnd
+- assertVisible: "mock.existing@dreamer.app"
+- tapOn:
+    id: tab.journal

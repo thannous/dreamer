@@ -1,0 +1,71 @@
+# Guest analysis limit: exhaust guest analysis credits across three dreams
+appId: com.tanuki75.dreamapp
+clearState: true
+---
+- launchApp
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - pressKey: back
+      - scrollUntilVisible:
+          element:
+            id: btn.addDream
+          direction: DOWN
+      - tapOn:
+          id: btn.addDream
+      - waitForAnimationToEnd
+- assertVisible:
+    id: screen.recording
+
+# Dream 1 - first-time save, analyze from first-dream sheet
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Analysis Limit Dream 1"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.firstDream.title
+- tapOn:
+    id: btn.firstDream.analyze
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.navigateJournal
+- waitForAnimationToEnd
+
+# Dream 2 - analyze via analyze-prompt sheet
+- tapOn:
+    id: btn.addDream
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Analysis Limit Dream 2"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.navigateJournal
+- waitForAnimationToEnd
+
+# Dream 3 - analysis limit reached
+- tapOn:
+    id: btn.addDream
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Analysis Limit Dream 3"
+- assertVisible:
+    id: text.analysisLimit
