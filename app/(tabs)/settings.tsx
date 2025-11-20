@@ -15,6 +15,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
@@ -99,6 +100,7 @@ export default function SettingsScreen() {
                 ctaLabel={subscriptionCopy.cta}
                 onPress={handleOpenPaywall}
                 disabled={subscriptionLoading}
+                ctaTestID={TID.Button.SubscriptionSettingsCta}
               />
             </View>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>

@@ -6,9 +6,10 @@ appId: com.tanuki75.dreamapp
 - runFlow:
     when:
       visible:
-        text: "Close|Fermer|Cerrar"
+        id: btn.paywall.close
     commands:
-      - tapOn: "Close|Fermer|Cerrar"
+      - tapOn:
+          id: btn.paywall.close
       - waitForAnimationToEnd
 
 # Navigate to tab bar if starting on recording screen
@@ -22,7 +23,8 @@ appId: com.tanuki75.dreamapp
       - waitForAnimationToEnd
 
 # Go to Settings tab
-- tapOn: "Settings|Réglages|Configuración"
+- tapOn:
+    id: tab.settings
 - waitForAnimationToEnd
 
 # If already signed in, sign out to reset to free state
@@ -41,7 +43,8 @@ appId: com.tanuki75.dreamapp
 - waitForAnimationToEnd
 
 # Open the paywall from the subscription card (free or premium copy)
-- tapOn: "See premium options|Voir les options premium|Ver opciones premium|View subscription details|Voir les détails de l’abonnement|Ver detalles de la suscripción"
+- tapOn:
+    id: btn.subscription.settingsCta
 - waitForAnimationToEnd
 
 # Paywall screen should be visible (free or premium header)

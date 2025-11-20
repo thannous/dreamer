@@ -11,7 +11,8 @@ clearState: true
       id: btn.saveDream
 - waitForAnimationToEnd
 # Dismiss first-dream sheet
-- tapOn: "Not now|Pas maintenant|Ahora no"
+- tapOn:
+    id: btn.firstDream.dismiss
 
 # Guest dream 2 - save successfully as guest and use analyze prompt to reach detail
 - tapOn:
@@ -23,7 +24,8 @@ clearState: true
 # Analyze-prompt bottom sheet should be visible for non-first dreams
 - assertVisible:
     id: text.analyzePromptTitle
-- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- tapOn:
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 # Scroll down to reveal the explore button, then verify dream detail screen
 - scrollUntilVisible:
@@ -52,7 +54,8 @@ clearState: true
 - assertVisible: "Limit reached|Limite atteinte|Límite alcanzado"
 
 # Tap CTA to go to account / settings
-- tapOn: "Go to account|Ouvrir mon compte|Ir a mi cuenta"
+- tapOn:
+    id: btn.guestLimit.cta
 
 # Create account via email/password using repeat + swipe to find password field
 - evalScript: ${output.foundPassword = 0}

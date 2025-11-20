@@ -6,10 +6,13 @@ appId: com.tanuki75.dreamapp
     id: btn.navigateJournal
 - waitForAnimationToEnd
 # Switch to existing user profile to load predefined dreams
-- tapOn: "Settings|Paramètres"
-- tapOn: "Utilisateur existant|Existing user"
+- tapOn:
+    id: tab.settings
+- tapOn:
+    id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn: "Journal|Journal"
+- tapOn:
+    id: tab.journal
 - waitForAnimationToEnd
 # Apply explored-only filter (chat bubble icon)
 - tapOn:

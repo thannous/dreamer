@@ -405,6 +405,7 @@ function RitualCard({ colors, shadows, mode, rituals, activeRitual, selectedRitu
           return (
             <Pressable
               key={ritual.id}
+              testID={TID.Button.InspirationRitualVariant(ritual.id)}
               onPress={() => onChangeRitual(ritual.id)}
               style={({ pressed }) => [
                 styles.ritualChip,

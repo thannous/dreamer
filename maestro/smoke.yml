@@ -19,9 +19,10 @@ appId: com.tanuki75.dreamapp
       - pressKey: back
       - scrollUntilVisible:
           element:
-            text: "Add New Dream|Ajouter un rêve|Añadir nuevo sueño"
+            id: btn.addDream
           direction: DOWN
-      - tapOn: "Add New Dream|Ajouter un rêve|Añadir nuevo sueño"
+      - tapOn:
+          id: btn.addDream
       - waitForAnimationToEnd
 - assertVisible:
     id: screen.recording
@@ -35,8 +36,9 @@ appId: com.tanuki75.dreamapp
 - eraseText
 - scrollUntilVisible:
     element:
-      text: "Add New Dream|Ajouter un rêve|Añadir nuevo sueño"
+      id: btn.addDream
     direction: DOWN
-- tapOn: "Add New Dream|Ajouter un rêve|Añadir nuevo sueño"
+- tapOn:
+    id: btn.addDream
 - assertVisible:
     id: screen.recording

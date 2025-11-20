@@ -127,7 +127,7 @@ export function useSubscription() {
     } finally {
       setProcessing(false);
     }
-  }, []);
+  }, [requiresAuth, syncTier]);
 
   return {
     status,

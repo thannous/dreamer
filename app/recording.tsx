@@ -646,7 +646,7 @@ export default function RecordingScreen() {
         ]}
       >
         <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]} testID={TID.Text.FirstDreamSheetTitle}>
           {t('guest.first_dream.sheet.title')}
         </Text>
         <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
@@ -661,6 +661,7 @@ export default function RecordingScreen() {
             ]}
             onPress={handleFirstDreamAnalyze}
             disabled={isPersisting}
+            testID={TID.Button.FirstDreamAnalyze}
           >
             <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
               {t('guest.first_dream.sheet.analyze')}
@@ -674,13 +675,14 @@ export default function RecordingScreen() {
             ]}
             onPress={handleFirstDreamJournal}
             disabled={isPersisting}
+            testID={TID.Button.FirstDreamJournal}
           >
             <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
               {t('guest.first_dream.sheet.journal')}
             </Text>
           </Pressable>
         </View>
-        <Pressable onPress={handleFirstDreamDismiss} style={styles.sheetLinkButton}>
+        <Pressable onPress={handleFirstDreamDismiss} style={styles.sheetLinkButton} testID={TID.Button.FirstDreamDismiss}>
           <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
             {t('guest.first_dream.sheet.dismiss')}
           </Text>
@@ -718,6 +720,7 @@ export default function RecordingScreen() {
             ]}
             onPress={handleFirstDreamAnalyze}
             disabled={isPersisting}
+            testID={TID.Button.AnalyzePromptAnalyze}
           >
             <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
               {t('recording.analyze_prompt.sheet.analyze')}
@@ -731,6 +734,7 @@ export default function RecordingScreen() {
             ]}
             onPress={handleAnalyzePromptJournal}
             disabled={isPersisting}
+            testID={TID.Button.AnalyzePromptJournal}
           >
             <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
               {t('recording.analyze_prompt.sheet.journal')}
@@ -776,6 +780,7 @@ export default function RecordingScreen() {
               setShowGuestLimitSheet(false);
               router.push('/(tabs)/settings');
             }}
+            testID={TID.Button.GuestLimitCta}
           >
             <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
               {t('recording.guest_limit_sheet.cta')}

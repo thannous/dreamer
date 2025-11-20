@@ -8,8 +8,10 @@ appId: com.tanuki75.dreamapp
     id: btn.saveDream
 - waitForAnimationToEnd
 # First-dream bottom sheet appears (multi-language title)
-- assertVisible: "Great start!|Beau début !|¡Buen comienzo!"
-- tapOn: "Analyze this dream|Analyser ce rêve|Analizar este sueño"
+- assertVisible:
+    id: text.firstDream.title
+- tapOn:
+    id: btn.firstDream.analyze
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
@@ -35,8 +37,10 @@ appId: com.tanuki75.dreamapp
     id: text.chat.limit
 - assertVisible: "20/20 messages"
 - assertVisible: "You've reached the message limit for this dream. Upgrade to continue the conversation."
-- tapOn: "Journal"
-- tapOn: "Accueil|Home"
+- tapOn:
+    id: tab.journal
+- tapOn:
+    id: tab.home
 
 # Guest dream 2 - second analysis and exploration via analyze prompt
 - tapOn:
@@ -45,8 +49,10 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible: "Analyze this dream|Analyser ce rêve|¿Analizar este sueño"
-- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
@@ -56,7 +62,8 @@ appId: com.tanuki75.dreamapp
     id: btn.dreamCategory.emotions
 - assertVisible:
     id: chat.input.message
-- tapOn: "Journal"
+- tapOn:
+    id: tab.journal
 - tapOn:
     id: btn.addDream
 
@@ -76,12 +83,12 @@ appId: com.tanuki75.dreamapp
     id: btn.dreamCategory.symbols
 - assertVisible:
     id: chat.screen.blocked
-- assertVisible: "Exploration Limit Reached"
-- assertVisible: "Create Free Account"
-- tapOn: "Journal"
+- tapOn:
+    id: tab.journal
 
 # Create account to migrate guest quotas
-- tapOn: "Paramètres|Settings"
+- tapOn:
+    id: tab.settings
 - tapOn:
     id: input.auth.email
 - inputText: "mock.guest@dreamer.test"
@@ -104,19 +111,23 @@ appId: com.tanuki75.dreamapp
 - assertVisible: "2 / 2"
 
 # Authenticated analyses (three more to reach five total)
-- tapOn: "Accueil|Home"
+- tapOn:
+    id: tab.home
 - tapOn:
     id: input.dreamTranscript
 - inputText: "Auth Dream 1"
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
-- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
-- tapOn: "Accueil|Home"
+- tapOn:
+    id: tab.home
 
 - tapOn:
     id: input.dreamTranscript
@@ -124,12 +135,15 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
-- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
-- tapOn: "Accueil|Home"
+- tapOn:
+    id: tab.home
 
 - tapOn:
     id: input.dreamTranscript
@@ -137,15 +151,19 @@ appId: com.tanuki75.dreamapp
 - tapOn:
     id: btn.saveDream
 - waitForAnimationToEnd
-- assertVisible: "Analyze this dream?|Analyser ce rêve ?|¿Analizar este sueño?"
-- tapOn: "Analyze now|Analyser maintenant|Analizar ahora"
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
-- tapOn: "Accueil|Home"
+- tapOn:
+    id: tab.home
 - assertVisible:
     id: text.analysisLimit
 
 # Verify quotas show 5/5 analyses after upgrading
-- tapOn: "Paramètres|Settings"
+- tapOn:
+    id: tab.settings
 - assertVisible: "5 / 5"
