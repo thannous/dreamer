@@ -1,0 +1,64 @@
+# Guest chat limit: reach the per-dream message cap as a guest
+appId: com.tanuki75.dreamapp
+clearState: true
+---
+- launchApp
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.journal
+    commands:
+      - pressKey: back
+      - scrollUntilVisible:
+          element:
+            id: btn.addDream
+          direction: DOWN
+      - tapOn:
+          id: btn.addDream
+      - waitForAnimationToEnd
+- assertVisible:
+    id: screen.recording
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Guest Chat Limit"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.firstDream.title
+- tapOn:
+    id: btn.firstDream.analyze
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: btn.exploreDream
+    direction: DOWN
+- tapOn:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.symbols
+- assertVisible:
+    id: chat.input.message
+- repeat:
+    times: 20
+    commands:
+      - tapOn:
+          id: chat.input.message
+      - inputText: "Hello from guest"
+      - tapOn:
+          id: chat.button.send
+      - waitForAnimationToEnd
+- tapOn:
+    id: chat.input.message
+- inputText: "Should block"
+- assertVisible:
+    id: text.chat.limit
+- assertVisible: "20/20 messages"
