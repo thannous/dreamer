@@ -14,6 +14,7 @@ export type SubscriptionCardProps = {
   onPress?: () => void;
   disabled?: boolean;
   testID?: string;
+  ctaTestID?: string;
 };
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
@@ -26,6 +27,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onPress,
   disabled,
   testID,
+  ctaTestID,
 }) => {
   const { colors, shadows } = useTheme();
 
@@ -68,6 +70,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           ]}
           disabled={disabled}
           onPress={onPress}
+          testID={ctaTestID}
         >
           <Text style={[styles.ctaText, { color: colors.textOnAccentSurface }]}>{ctaLabel}</Text>
         </Pressable>

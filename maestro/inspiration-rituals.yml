@@ -15,13 +15,16 @@ appId: com.tanuki75.dreamapp
 - assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
 
 # Switch to the memory / recall ritual and verify one of its steps
-- tapOn: "Se souvenir|Dream recall|Memoria de sueños"
+- tapOn:
+    id: btn.inspiration.ritual.memory
 - assertVisible: "Préparer la mémoire|Prime your recall|Preparar el recuerdo"
 
 # Switch to lucid dream ritual and verify a lucid-specific step
-- tapOn: "Rêve lucide|Lucid dream|Sueño lúcido"
+- tapOn:
+    id: btn.inspiration.ritual.lucid
 - assertVisible: "Intention lucide|Lucid intention|Intención lúcida"
 
 # Switch back to starter ritual and ensure the calm evening step is shown
-- tapOn: "Dream|Rêver|Getting started|Empezar"
+- tapOn:
+    id: btn.inspiration.ritual.starter
 - assertVisible: "Soir calme|Calm evening|Noche tranquila"

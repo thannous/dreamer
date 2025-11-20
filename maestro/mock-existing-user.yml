@@ -18,8 +18,11 @@ appId: com.tanuki75.dreamapp
       - tapOn:
           id: tab.journal
       - waitForAnimationToEnd
-- tapOn: "Settings|Paramètres"
-- tapOn: "Utilisateur existant|Existing user"
+- tapOn:
+    id: tab.settings
+- tapOn:
+    id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn: "Journal"
+- tapOn:
+    id: tab.journal
 - assertVisible: "The Infinite Library"

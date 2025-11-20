@@ -274,6 +274,11 @@ export default function JournalDetailScreen() {
   }, [dream]);
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
+  const startMetadataEditing = useCallback(() => {
+    setIsEditingTranscript(false);
+    setIsEditing(true);
+  }, []);
+
   const handleSave = useCallback(async () => {
     if (!dream) return;
 
@@ -766,7 +771,7 @@ export default function JournalDetailScreen() {
       </View>
 
       <Pressable
-        onPress={isEditing ? handleSave : () => setIsEditing(true)}
+        onPress={isEditing ? handleSave : startMetadataEditing}
         testID="btn.editMetadata"
         style={({ pressed }) => [
           styles.editButton,
@@ -1002,14 +1007,20 @@ export default function JournalDetailScreen() {
         </View>
       </ScrollView>
       {isEditing && (
-        <View pointerEvents="box-none" style={styles.metadataOverlay}>
+        <View
+          pointerEvents="box-none"
+          style={[styles.metadataOverlay, { backgroundColor: colors.overlay }]}
+        >
           <View style={{ marginBottom: floatingTranscriptBottom }}>
             {renderMetadataCard('floating')}
           </View>
         </View>
       )}
       {isEditingTranscript && (
-        <View pointerEvents="box-none" style={styles.transcriptOverlay}>
+        <View
+          pointerEvents="box-none"
+          style={[styles.transcriptOverlay, { backgroundColor: colors.overlay }]}
+        >
           <View
             style={[
               styles.transcriptSection,
