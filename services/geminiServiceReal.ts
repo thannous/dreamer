@@ -28,6 +28,15 @@ export async function analyzeDream(transcript: string): Promise<AnalysisResult> 
   });
 }
 
+export async function categorizeDream(transcript: string): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
+  const base = getApiBaseUrl();
+  return fetchJSON<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>>(`${base}/categorizeDream`, {
+    method: 'POST',
+    body: { transcript },
+    retries: 1,
+  });
+}
+
 export async function analyzeDreamWithImage(transcript: string): Promise<AnalysisResult & { imageUrl: string }> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {

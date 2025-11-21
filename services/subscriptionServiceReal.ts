@@ -1,6 +1,8 @@
 import { Platform } from 'react-native';
 import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
 
+import { REVENUECAT_ENTITLEMENT_ID } from '@/constants/subscription';
+
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
 type InternalPackage = {
@@ -14,6 +16,12 @@ let lastUserId: string | null = null;
 let cachedStatus: SubscriptionStatus | null = null;
 let cachedPackages: InternalPackage[] = [];
 
+const ENTITLEMENT_PRIORITY = [
+  REVENUECAT_ENTITLEMENT_ID,
+  'noctalia_plus',
+  'noctalia-plus',
+  'noctaliaPlus',
+];
 function resetCachedState(): void {
   cachedStatus = null;
   cachedPackages = [];
@@ -58,22 +66,33 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
   }
 }
 
+function getActiveEntitlement(info: CustomerInfo | null) {
+  const active = (info?.entitlements?.active ?? {}) as Record<string, { productIdentifier?: string; expirationDate?: string | null }>;
+  for (const key of ENTITLEMENT_PRIORITY) {
+    const entitlement = active[key];
+    if (entitlement) {
+      return entitlement;
+    }
+  }
+
+  const firstKey = Object.keys(active)[0];
+  return firstKey ? active[firstKey] : null;
+}
+
 function mapTierFromCustomerInfo(info: CustomerInfo | null): SubscriptionTier {
-  const active = info?.entitlements?.active ?? {};
-  const hasActive = Object.keys(active).length > 0;
-  return hasActive ? 'premium' : 'free';
+  return getActiveEntitlement(info) ? 'premium' : 'free';
 }
 
 function mapStatus(info: CustomerInfo | null): SubscriptionStatus {
   const tier = mapTierFromCustomerInfo(info);
+  const activeEntitlement = getActiveEntitlement(info);
   const active = tier === 'premium';
-  const activeEntitlements = (info?.entitlements?.active ?? {}) as Record<string, { productIdentifier?: string }>;
-  const firstEntitlement = Object.values(activeEntitlements)[0];
-  const productId = firstEntitlement?.productIdentifier ?? null;
+  const productId = activeEntitlement?.productIdentifier ?? null;
+  const expiryDate = activeEntitlement?.expirationDate ?? null;
   return {
     tier,
     isActive: active,
-    expiryDate: null,
+    expiryDate,
     productId,
   };
 }
@@ -133,6 +152,13 @@ export async function initialize(userId?: string | null): Promise<SubscriptionSt
 
 export function isInitialized(): boolean {
   return initialized;
+}
+
+export async function refreshStatus(): Promise<SubscriptionStatus> {
+  if (!initialized) {
+    throw new Error('Purchases not initialized');
+  }
+  return fetchStatus();
 }
 
 export async function getStatus(): Promise<SubscriptionStatus | null> {

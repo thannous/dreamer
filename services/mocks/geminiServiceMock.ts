@@ -3,9 +3,9 @@
  * Simulates API calls with realistic delays and data
  */
 
-import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
-import { getRandomImageForTheme, getThumbnailUrl } from '@/mock-data/assets';
 import type { DreamTheme, DreamType } from '@/lib/types';
+import { getRandomImageForTheme } from '@/mock-data/assets';
+import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 
 export type AnalysisResult = {
   title: string;
@@ -33,6 +33,22 @@ export async function analyzeDream(transcript: string): Promise<AnalysisResult> 
   const result = generateAnalysisResult(transcript);
   console.log('[MOCK] analyzeDream returning:', result.title);
   return result;
+}
+
+/**
+ * Mock fast categorization (0.5-1 second)
+ */
+export async function categorizeDream(transcript: string): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
+  console.log('[MOCK] categorizeDream called with transcript:', transcript.slice(0, 50) + '...');
+  await delay(500 + Math.random() * 500); // 0.5-1 second
+
+  const result = generateAnalysisResult(transcript);
+  console.log('[MOCK] categorizeDream returning:', result.title);
+  return {
+    title: result.title,
+    theme: result.theme,
+    dreamType: result.dreamType,
+  };
 }
 
 /**
