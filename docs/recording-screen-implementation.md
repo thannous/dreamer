@@ -122,10 +122,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 ## Future Enhancements
 
 ### Speech-to-Text Integration
-The recording functionality is complete, but transcription requires a third-party service. See `docs/speech-to-text-integration.md` for implementation options:
-- OpenAI Whisper API (Recommended)
-- Google Cloud Speech-to-Text
-- Azure Speech Service
+Transcription now runs natively first (via `expo-speech-recognition`) with Google Cloud Speech-to-Text as a backup. See `docs/speech-to-text-integration.md` for the current flow and setup.
 
 ### Additional Features
 1. **Real-time transcription**: Display text as user speaks
