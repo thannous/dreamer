@@ -1,3 +1,5 @@
+import Constants from 'expo-constants';
+
 import { getAccessToken } from './auth';
 import { classifyError, ErrorType } from './errors';
 
@@ -17,6 +19,20 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+type ExpoExtra = {
+  supabaseAnonKey?: string;
+};
+
+function getSupabaseAnonKey(): string | undefined {
+  const env = process?.env as Record<string, string> | undefined;
+  const envKey = env?.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+  const extra = (Constants?.expoConfig as { extra?: ExpoExtra } | undefined)?.extra;
+  const extraKey = extra?.supabaseAnonKey;
+
+  return envKey || extraKey;
+}
+
 /**
  * Performs a single HTTP request
  */
@@ -34,6 +50,14 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
       if (!headers.Authorization) {
         const token = await getAccessToken();
         if (token) headers.Authorization = `Bearer ${token}`;
+      }
+      // Fallback to anon key so public Supabase functions work for guests (prevents 401)
+      if (!headers.Authorization) {
+        const anonKey = getSupabaseAnonKey();
+        if (anonKey) {
+          headers.Authorization = `Bearer ${anonKey}`;
+          if (!headers.apikey) headers.apikey = anonKey;
+        }
       }
     } catch {
       // ignore token retrieval errors; proceed without auth
