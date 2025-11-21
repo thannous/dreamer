@@ -2,9 +2,9 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { MotiView, MotiText } from 'moti';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { MotiText, MotiView } from '@/lib/moti';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { IconSymbol } from '@/components/ui/icon-symbol';

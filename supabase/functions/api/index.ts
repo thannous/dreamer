@@ -1,6 +1,7 @@
 // Deno Deploy / Supabase Edge Function (name: api)
 // Routes:
 // - POST /api/analyzeDream { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt }
+// - POST /api/categorizeDream { transcript } -> { title, theme, dreamType }
 // - POST /api/generateImage { prompt } -> { imageUrl | imageBytes }
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
@@ -399,6 +400,67 @@ serve(async (req: Request) => {
       );
     } catch (e) {
       console.error('[api] /analyzeDreamFull error', e);
+      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+  }
+
+  // Public categorizeDream: fast metadata generation
+  if (req.method === 'POST' && subPath === '/categorizeDream') {
+    try {
+      const body = (await req.json()) as { transcript?: string };
+      const transcript = String(body?.transcript ?? '').trim();
+      if (!transcript) throw new Error('Missing transcript');
+
+      const apiKey = Deno.env.get('GEMINI_API_KEY');
+      if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+      console.log('[api] /categorizeDream request', {
+        userId: user?.id ?? null,
+        transcriptLength: transcript.length,
+      });
+
+      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"}. Choose the single most appropriate theme and dreamType from that list.\nDream transcript:\n${transcript}`;
+
+      const genAI = new GoogleGenerativeAI(apiKey);
+      // Use flash-lite model for speed/cost as requested
+      const modelName = 'gemini-2.5-flash-lite';
+      const model = genAI.getGenerativeModel({ model: modelName });
+
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7 },
+      });
+      const text = result.response.text();
+
+      let analysis: any;
+      try {
+        analysis = JSON.parse(text);
+      } catch {
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) analysis = JSON.parse(match[0]);
+      }
+      if (!analysis) throw new Error('Failed to parse Gemini response');
+
+      const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
+        ? analysis.theme
+        : 'surreal';
+      const dreamType = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'].includes(analysis.dreamType)
+        ? analysis.dreamType
+        : 'Symbolic Dream';
+
+      return new Response(
+        JSON.stringify({
+          title: String(analysis.title ?? 'New Dream'),
+          theme,
+          dreamType,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    } catch (e) {
+      console.error('[api] /categorizeDream error', e);
       return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
         status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },

@@ -16,32 +16,36 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { classifyError, QuotaError } from '@/lib/errors';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
+import { categorizeDream } from '@/services/geminiService';
+import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
 import {
-    AudioModule,
-    AudioQuality,
-    IOSOutputFormat,
-    RecordingPresets,
-    setAudioModeAsync,
-    useAudioRecorder,
-    type RecordingOptions,
+  AudioModule,
+  AudioQuality,
+  IOSOutputFormat,
+  RecordingPresets,
+  setAudioModeAsync,
+  useAudioRecorder,
+  type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    Alert,
-    AppState,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Alert,
+  AppState,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const MAX_TRANSCRIPT_CHARS = 600;
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -107,6 +111,11 @@ export default function RecordingScreen() {
   const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
   const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
+  const skipRecorderRef = useRef(false);
+  const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
+  const baseTranscriptRef = useRef('');
+  const [transcriptionSource, setTranscriptionSource] = useState<'idle' | 'native' | 'google' | 'manual'>('idle');
+  const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
   const { language } = useLanguage();
@@ -116,6 +125,26 @@ export default function RecordingScreen() {
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
+  const lengthLimitMessage = useCallback(
+    () => t('recording.alert.length_limit', { limit: MAX_TRANSCRIPT_CHARS }) || `Limite ${MAX_TRANSCRIPT_CHARS} caractères atteinte`,
+    [t]
+  );
+  const clampTranscript = useCallback((text: string) => {
+    if (text.length <= MAX_TRANSCRIPT_CHARS) {
+      return { text, truncated: false };
+    }
+    return { text: text.slice(0, MAX_TRANSCRIPT_CHARS), truncated: true };
+  }, []);
+  const combineTranscript = useCallback(
+    (base: string, addition: string) => {
+      if (!addition.trim()) {
+        return clampTranscript(base);
+      }
+      const combined = base ? `${base}\n${addition}` : addition;
+      return clampTranscript(combined);
+    },
+    [clampTranscript]
+  );
 
   const transcriptionLocale = useMemo(() => {
     switch (language) {
@@ -127,6 +156,17 @@ export default function RecordingScreen() {
         return 'en-US';
     }
   }, [language]);
+
+  const handleTranscriptChange = useCallback(
+    (text: string) => {
+      const { text: clamped, truncated } = clampTranscript(text);
+      setTranscript(clamped);
+      baseTranscriptRef.current = clamped;
+      setTranscriptionSource('manual');
+      setLengthWarning(truncated ? lengthLimitMessage() : '');
+    },
+    [clampTranscript, lengthLimitMessage]
+  );
 
   // Request microphone permissions on mount
   useEffect(() => {
@@ -140,6 +180,14 @@ export default function RecordingScreen() {
       }
     })();
   }, [t]);
+
+  useEffect(() => {
+    return () => {
+      nativeSessionRef.current?.abort();
+      nativeSessionRef.current = null;
+      baseTranscriptRef.current = '';
+    };
+  }, []);
 
   const deriveDraftTitle = useCallback(() => {
     if (!trimmedTranscript) {
@@ -188,6 +236,9 @@ export default function RecordingScreen() {
     setTranscript('');
     setDraftDream(null);
     analysisProgress.reset();
+    setTranscriptionSource('idle');
+    setLengthWarning('');
+    baseTranscriptRef.current = '';
   }, [analysisProgress]);
 
   const navigateAfterSave = useCallback(
@@ -262,49 +313,136 @@ export default function RecordingScreen() {
         playsInSilentMode: true,
       });
 
+      nativeSessionRef.current?.abort();
+      baseTranscriptRef.current = transcript;
+      nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
+        onPartial: (text) => {
+          const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
+          setTranscript(combined);
+          setLengthWarning(truncated ? lengthLimitMessage() : '');
+          if (truncated) {
+            void stopRecording();
+          }
+        },
+      });
+      skipRecorderRef.current = Boolean(nativeSessionRef.current);
+      if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
+        console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
+      }
+      setTranscriptionSource(nativeSessionRef.current ? 'native' : 'manual');
+      if (__DEV__) {
+        console.log('[Recording] native session', {
+          hasSession: Boolean(nativeSessionRef.current),
+          locale: transcriptionLocale,
+        });
+      }
+
       hasAutoStoppedRecordingRef.current = false;
-      await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
-      audioRecorder.record();
+      if (!skipRecorderRef.current) {
+        await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
+        audioRecorder.record();
+      } else if (__DEV__) {
+        console.log('[Recording] skipping audioRecorder because native session active');
+      }
+
       setIsRecording(true);
     } catch (err) {
+      nativeSessionRef.current?.abort();
+      nativeSessionRef.current = null;
+      skipRecorderRef.current = false;
       if (__DEV__) {
         console.error('Failed to start recording:', err);
       }
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
-  }, [audioRecorder, t]);
+  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript]);
 
   const stopRecording = useCallback(async () => {
+    let nativeSession: NativeSpeechSession | null = null;
+    let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null }> | null = null;
+    let nativeError: string | undefined;
     try {
       setIsRecording(false);
-      await audioRecorder.stop();
-      const uri = audioRecorder.uri ?? undefined;
+      nativeSession = nativeSessionRef.current;
+      nativeSessionRef.current = null;
+      const usedRecorder = !skipRecorderRef.current;
 
-      if (uri) {
+      nativeResultPromise = nativeSession?.stop();
+      if (usedRecorder) {
+        await audioRecorder.stop();
+      }
+      const uri = usedRecorder ? audioRecorder.uri ?? undefined : undefined;
+
+      let transcriptText = '';
+      let recordedUri: string | undefined;
+      if (nativeResultPromise) {
         try {
-          const transcribedText = await transcribeAudio({ uri, languageCode: transcriptionLocale });
-          if (transcribedText) {
-            setTranscript((prev) => (prev ? `${prev}\n${transcribedText}` : transcribedText));
-          } else {
-            Alert.alert(
-              t('recording.alert.no_speech.title'),
-              t('recording.alert.no_speech.message')
-            );
+          const nativeResult = await nativeResultPromise;
+          if (__DEV__) {
+            console.log('[Recording] native result', nativeResult);
           }
+          transcriptText = nativeResult.transcript?.trim() ?? '';
+          recordedUri = nativeResult.recordedUri ?? undefined;
+          if (!transcriptText && nativeResult.error && __DEV__) {
+            console.warn('[Recording] Native STT returned empty result', nativeResult.error);
+          }
+          nativeError = nativeResult.error;
+        } catch (error) {
+          if (__DEV__) {
+            console.warn('[Recording] Native STT failed', error);
+          }
+        }
+      } else if (__DEV__) {
+        console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
+      }
+
+      const shouldFallbackToGoogle =
+        !transcriptText &&
+        (uri || recordedUri) &&
+        !(nativeError && nativeError.toLowerCase().includes('no speech'));
+
+      if (shouldFallbackToGoogle) {
+        try {
+          const fallbackUri = uri ?? recordedUri;
+          if (__DEV__) {
+            console.log('[Recording] fallback to Google STT', {
+              locale: transcriptionLocale,
+              uriLength: fallbackUri?.length ?? 0,
+            });
+          }
+          transcriptText = await transcribeAudio({
+            uri: fallbackUri!,
+            languageCode: transcriptionLocale,
+          });
+          setTranscriptionSource('google');
         } catch (e) {
           const msg = e instanceof Error ? e.message : 'Unknown transcription error';
           Alert.alert(t('recording.alert.transcription_failed.title'), msg);
         }
-      } else {
+      } else if (!transcriptText && !uri) {
         Alert.alert(
           t('recording.alert.recording_invalid.title'),
           t('recording.alert.recording_invalid.message')
+        );
+        return;
+      }
+
+      if (transcriptText) {
+        const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, transcriptText);
+        baseTranscriptRef.current = combined;
+        setLengthWarning(truncated ? lengthLimitMessage() : '');
+        setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
+      } else {
+        Alert.alert(
+          t('recording.alert.no_speech.title'),
+          t('recording.alert.no_speech.message')
         );
       }
     } catch (err) {
       if (handleRecorderReleaseError('stopRecording', err)) {
         return;
       }
+      nativeSession?.abort();
       if (__DEV__) {
         console.error('Failed to stop recording:', err);
       }
@@ -318,8 +456,9 @@ export default function RecordingScreen() {
         }
       }
       hasAutoStoppedRecordingRef.current = false;
+      skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale, t]);
+  }, [audioRecorder, transcriptionLocale, t, combineTranscript]);
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -377,7 +516,31 @@ export default function RecordingScreen() {
     setIsPersisting(true);
     try {
       const preCount = dreams.length;
-      const savedDream = await ensureDraftSaved();
+
+      // Prepare the dream object
+      let dreamToSave = draftDream && draftDream.transcript === trimmedTranscript
+        ? draftDream
+        : buildDraftDream();
+
+      // Attempt quick categorization if we have a transcript
+      if (trimmedTranscript) {
+        try {
+          const metadata = await categorizeDream(trimmedTranscript);
+          dreamToSave = {
+            ...dreamToSave,
+            ...metadata,
+          };
+        } catch (err) {
+          // Silently fail and proceed with default/derived values
+          if (__DEV__) {
+            console.warn('[Recording] Quick categorization failed:', err);
+          }
+        }
+      }
+
+      const savedDream = await addDream(dreamToSave);
+      setDraftDream(savedDream);
+
       resetComposer();
       navigateAfterSave(savedDream, preCount);
     } catch (error) {
@@ -541,97 +704,108 @@ export default function RecordingScreen() {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardView}
         >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          testID={TID.Screen.Recording}
-        >
-          {/* Main Content */}
-          <View style={styles.mainContent}>
-            <View style={styles.recordingSection}>
-              <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
-                {t('recording.instructions')}
-              </Text>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            testID={TID.Screen.Recording}
+          >
+            {/* Main Content */}
+            <View style={styles.mainContent}>
+              <View style={styles.recordingSection}>
+                <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
+                  {t('recording.instructions')}
+                </Text>
+                <Text style={[styles.serviceBadge, { color: colors.textSecondary }]}>
+                  {transcriptionSource === 'native' && 'Source: Reconnaissance native (temps réel)'}
+                  {transcriptionSource === 'google' && 'Source: Secours Google (après enregistrement)'}
+                  {transcriptionSource === 'manual' && 'Source: Saisie manuelle'}
+                  {transcriptionSource === 'idle' && 'Source: Aucune transcription en cours'}
+                </Text>
 
-              <MicButton
-                isRecording={isRecording}
-                onPress={toggleRecording}
-                disabled={interactionDisabled}
-                testID={TID.Button.RecordToggle}
-              />
-
-              <Waveform isActive={isRecording} />
-            </View>
-
-            {/* Text Input */}
-            <View style={styles.textInputSection}>
-              <TextInput
-                value={transcript}
-                onChangeText={setTranscript}
-                placeholder={t('recording.placeholder')}
-                placeholderTextColor={colors.textSecondary}
-                style={[
-                  styles.textInput,
-                  shadows.md,
-                  {
-                    backgroundColor: colors.backgroundSecondary,
-                    color: colors.textPrimary,
-                  },
-                ]}
-                multiline
-                editable={!interactionDisabled}
-                testID={TID.Input.DreamTranscript}
-                accessibilityLabel={t('recording.placeholder.accessibility')}
-              />
-              {/* Analysis Progress */}
-              {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
-                <AnalysisProgress
-                  step={analysisProgress.step}
-                  progress={analysisProgress.progress}
-                  message={analysisProgress.message}
-                  error={analysisProgress.error}
-                  onRetry={pendingAnalysisDream ? handleFirstDreamAnalyze : undefined}
+                <MicButton
+                  isRecording={isRecording}
+                  onPress={toggleRecording}
+                  disabled={interactionDisabled}
+                  testID={TID.Button.RecordToggle}
                 />
-              )}
 
-              {/* Actions */}
-              <View style={styles.actionButtons}>
-                <Pressable
-                  onPress={handleSaveDream}
-                  disabled={!trimmedTranscript || interactionDisabled}
+                <Waveform isActive={isRecording} />
+              </View>
+
+              {/* Text Input */}
+              <View style={styles.textInputSection}>
+                <TextInput
+                  value={transcript}
+                  onChangeText={handleTranscriptChange}
+                  placeholder={t('recording.placeholder')}
+                  placeholderTextColor={colors.textSecondary}
                   style={[
-                    styles.submitButton,
-                    shadows.lg,
-                    { backgroundColor: colors.accent },
-                    (!trimmedTranscript || interactionDisabled) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }],
+                    styles.textInput,
+                    shadows.md,
+                    {
+                      backgroundColor: colors.backgroundSecondary,
+                      color: colors.textPrimary,
+                    },
                   ]}
-                  testID={TID.Button.SaveDream}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                  multiline
+                  editable={!interactionDisabled}
+                  testID={TID.Input.DreamTranscript}
+                  accessibilityLabel={t('recording.placeholder.accessibility')}
+                />
+                {lengthWarning ? (
+                  <Text style={[styles.lengthWarning, { color: colors.accent }]}>
+                    {lengthWarning}
+                  </Text>
+                ) : null}
+                {/* Analysis Progress */}
+                {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
+                  <AnalysisProgress
+                    step={analysisProgress.step}
+                    progress={analysisProgress.progress}
+                    message={analysisProgress.message}
+                    error={analysisProgress.error}
+                    onRetry={pendingAnalysisDream ? handleFirstDreamAnalyze : undefined}
+                  />
+                )}
+
+                {/* Actions */}
+                <View style={styles.actionButtons}>
+                  <Pressable
+                    onPress={handleSaveDream}
+                    disabled={!trimmedTranscript || interactionDisabled}
+                    style={[
+                      styles.submitButton,
+                      shadows.lg,
+                      { backgroundColor: colors.accent },
+                      (!trimmedTranscript || interactionDisabled) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }],
+                    ]}
+                    testID={TID.Button.SaveDream}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                  >
+                    <Text style={styles.submitButtonText}>
+                      💾 {t('recording.button.save_dream')}
+                    </Text>
+                  </Pressable>
+                </View>
+
+                <Pressable
+                  onPress={handleGoToJournal}
+                  style={styles.journalLinkButton}
+                  testID={TID.Button.NavigateJournal}
+                  accessibilityRole="link"
+                  accessibilityLabel={t('recording.nav_button.accessibility')}
                 >
-                  <Text style={styles.submitButtonText}>
-                    💾 {t('recording.button.save_dream')}
+                  <Text style={[styles.journalLinkText, { color: colors.accent }]}>
+                    {t('recording.nav_button')}
                   </Text>
                 </Pressable>
               </View>
 
-              <Pressable
-                onPress={handleGoToJournal}
-                style={styles.journalLinkButton}
-                testID={TID.Button.NavigateJournal}
-                accessibilityRole="link"
-                accessibilityLabel={t('recording.nav_button.accessibility')}
-              >
-                <Text style={[styles.journalLinkText, { color: colors.accent }]}>
-                  {t('recording.nav_button')}
-                </Text>
-              </Pressable>
             </View>
-
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </LinearGradient>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </LinearGradient>
       <BottomSheet
         visible={Boolean(firstDreamPrompt)}
         onClose={handleFirstDreamDismiss}
@@ -817,6 +991,12 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
     gap: 32,
   },
+  serviceBadge: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+    opacity: 0.9,
+  },
   instructionText: {
     fontSize: 22,
     lineHeight: 32,
@@ -847,6 +1027,11 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.lora.regularItalic,
     textAlignVertical: 'top',
     // shadow: applied via theme shadows.md
+  },
+  lengthWarning: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    textAlign: 'right',
   },
   submitButton: {
     // backgroundColor: set dynamically in component
