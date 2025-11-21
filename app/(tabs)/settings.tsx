@@ -112,9 +112,11 @@ export default function SettingsScreen() {
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
               <LanguageSettingsCard />
             </View>
-            <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-              <NotificationSettingsCard />
-            </View>
+            {Platform.OS !== 'web' && (
+              <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
+                <NotificationSettingsCard />
+              </View>
+            )}
           </View>
         </ScreenContainer>
       </ScrollView>
