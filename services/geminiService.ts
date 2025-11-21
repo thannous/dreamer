@@ -23,6 +23,7 @@ if (isMockMode) {
 
 // Re-export all functions from the selected service
 export const analyzeDream = service.analyzeDream;
+export const categorizeDream = service.categorizeDream;
 export const analyzeDreamWithImage = service.analyzeDreamWithImage;
 export const analyzeDreamWithImageResilient = service.analyzeDreamWithImageResilient;
 export const generateImageForDream = service.generateImageForDream;

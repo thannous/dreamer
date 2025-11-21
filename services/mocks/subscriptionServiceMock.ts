@@ -88,3 +88,13 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
   }
   return currentStatus;
 }
+
+export async function refreshStatus(): Promise<SubscriptionStatus> {
+  if (!initialized) {
+    throw new Error('Purchases not initialized');
+  }
+  if (!currentStatus) {
+    currentStatus = getDefaultStatus();
+  }
+  return currentStatus;
+}
