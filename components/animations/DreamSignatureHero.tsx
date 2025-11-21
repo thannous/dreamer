@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { MotiView, useDynamicAnimation } from 'moti';
 
+import { MotiView, useDynamicAnimation } from '@/lib/moti';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { SurrealTheme } from '@/constants/theme';
 
