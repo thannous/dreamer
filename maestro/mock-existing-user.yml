@@ -1,28 +1,28 @@
 # Ensure the bundle identifier matches the local dev build (Expo Go / dev client).
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
 - launchApp
 - runFlow:
-    when:
-      visible:
-        id: btn.navigateJournal
-    commands:
-      - tapOn:
-          id: btn.navigateJournal
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: btn.navigateJournal
+      commands:
+          - tapOn:
+                id: btn.navigateJournal
+          - waitForAnimationToEnd
 - runFlow:
-    when:
-      visible:
-        id: tab.journal
-    commands:
-      - tapOn:
-          id: tab.journal
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: tab.journal
+      commands:
+          - tapOn:
+                id: tab.journal
+          - waitForAnimationToEnd
 - tapOn:
-    id: tab.settings
+      id: tab.settings
 - tapOn:
-    id: btn.mockProfile.existing
+      id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
 - tapOn:
-    id: tab.journal
+      id: tab.journal
 - assertVisible: "The Infinite Library"

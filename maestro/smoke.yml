@@ -1,44 +1,43 @@
 # Update the appId if your build uses a different bundle identifier.
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
-
 - launchApp
 - runFlow:
-    when:
-      visible:
-        id: tab.journal
-    commands:
-      - tapOn:
-          id: tab.journal
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: tab.journal
+      commands:
+          - tapOn:
+                id: tab.journal
+          - waitForAnimationToEnd
 - runFlow:
-    when:
-      visible:
-        id: screen.journal
-    commands:
-      - pressKey: back
-      - scrollUntilVisible:
-          element:
-            id: btn.addDream
-          direction: DOWN
-      - tapOn:
-          id: btn.addDream
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: screen.journal
+      commands:
+          - pressKey: back
+          - scrollUntilVisible:
+                element:
+                    id: btn.addDream
+                direction: DOWN
+          - tapOn:
+                id: btn.addDream
+          - waitForAnimationToEnd
 - assertVisible:
-    id: screen.recording
+      id: screen.recording
 - tapOn:
-    id: btn.navigateJournal
+      id: btn.navigateJournal
 - assertVisible:
-    id: screen.journal
+      id: screen.journal
 - tapOn:
-    id: input.searchDreams
+      id: input.searchDreams
 - inputText: Lucide
 - eraseText
 - scrollUntilVisible:
-    element:
-      id: btn.addDream
-    direction: DOWN
+      element:
+          id: btn.addDream
+      direction: DOWN
 - tapOn:
-    id: btn.addDream
+      id: btn.addDream
 - assertVisible:
-    id: screen.recording
+      id: screen.recording

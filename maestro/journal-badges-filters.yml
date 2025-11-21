@@ -1,27 +1,27 @@
 # Verify journal badges and analyzed/explored filters with mock existing user
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
 - launchApp
 - tapOn:
-    id: btn.navigateJournal
+      id: btn.navigateJournal
 - waitForAnimationToEnd
 # Switch to existing user profile to load predefined dreams
 - tapOn:
-    id: tab.settings
+      id: tab.settings
 - tapOn:
-    id: btn.mockProfile.existing
+      id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
 - tapOn:
-    id: tab.journal
+      id: tab.journal
 - waitForAnimationToEnd
 # Apply explored-only filter (chat bubble icon)
 - tapOn:
-    id: btn.filterExplored
+      id: btn.filterExplored
 - waitForAnimationToEnd
 - assertVisible: "Ocean of Stars"
 - assertNotVisible: "The Infinite Library"
 # Combine with analyzed filter (sparkles icon) – should still show the explored dream
 - tapOn:
-    id: btn.filterAnalyzed
+      id: btn.filterAnalyzed
 - waitForAnimationToEnd
 - assertVisible: "Ocean of Stars"

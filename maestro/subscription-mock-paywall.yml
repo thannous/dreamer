@@ -1,50 +1,50 @@
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
 # Validate subscription paywall flow in mock mode
 
 # If paywall already open, close it to reset state
 - runFlow:
-    when:
-      visible:
-        id: btn.paywall.close
-    commands:
-      - tapOn:
-          id: btn.paywall.close
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: btn.paywall.close
+      commands:
+          - tapOn:
+                id: btn.paywall.close
+          - waitForAnimationToEnd
 
 # Navigate to tab bar if starting on recording screen
 - runFlow:
-    when:
-      visible:
-        id: btn.navigateJournal
-    commands:
-      - tapOn:
-          id: btn.navigateJournal
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: btn.navigateJournal
+      commands:
+          - tapOn:
+                id: btn.navigateJournal
+          - waitForAnimationToEnd
 
 # Go to Settings tab
 - tapOn:
-    id: tab.settings
+      id: tab.settings
 - waitForAnimationToEnd
 
 # If already signed in, sign out to reset to free state
 - runFlow:
-    when:
-      visible:
-        id: btn.auth.signOut
-    commands:
-      - tapOn:
-          id: btn.auth.signOut
-      - waitForAnimationToEnd
+      when:
+          visible:
+              id: btn.auth.signOut
+      commands:
+          - tapOn:
+                id: btn.auth.signOut
+          - waitForAnimationToEnd
 
 # Quick sign-in (mock mode) as an existing free user
 - tapOn:
-    id: btn.mockProfile.existing
+      id: btn.mockProfile.existing
 - waitForAnimationToEnd
 
 # Open the paywall from the subscription card (free or premium copy)
 - tapOn:
-    id: btn.subscription.settingsCta
+      id: btn.subscription.settingsCta
 - waitForAnimationToEnd
 
 # Paywall screen should be visible (free or premium header)
@@ -55,9 +55,9 @@ appId: com.tanuki75.dreamapp
 
 # Select the monthly option and purchase
 - tapOn:
-    id: btn.paywall.selectMonthly
+      id: btn.paywall.selectMonthly
 - tapOn:
-    id: btn.paywall.purchase
+      id: btn.paywall.purchase
 - waitForAnimationToEnd
 
 # After mock purchase, header should reflect premium state
@@ -65,6 +65,6 @@ appId: com.tanuki75.dreamapp
 
 # Close paywall and verify subscription card reflects active state
 - tapOn:
-    id: btn.paywall.close
+      id: btn.paywall.close
 - waitForAnimationToEnd
 - assertVisible: "Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."
