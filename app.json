@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "dream-app",
+    "name": "Noctalia",
     "slug": "dream-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.tanuki75.noctalia"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +25,7 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "com.tanuki75.dreamapp"
+      "package": "com.tanuki75.noctalia"
     },
     "web": {
       "output": "static",
@@ -61,7 +62,8 @@
         }
       ],
       "expo-localization",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-speech-recognition"
     ],
     "experiments": {
       "typedRoutes": true,
