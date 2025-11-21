@@ -1,5 +1,4 @@
 import type { User } from '@supabase/supabase-js';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { Platform } from 'react-native';
 
 import { supabase } from './supabase';
@@ -9,6 +8,21 @@ import type { SubscriptionTier } from './types';
 export type { MockProfile } from './mockAuth';
 
 const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
+
+let googleSignInModule: Promise<GoogleSignInModule> | null = null;
+
+async function getGoogleSignInModule(): Promise<GoogleSignInModule> {
+  if (Platform.OS === 'web') {
+    throw new Error('Native Google Sign-In is not available on web platforms.');
+  }
+
+  if (!googleSignInModule) {
+    googleSignInModule = import('@react-native-google-signin/google-signin');
+  }
+
+  return googleSignInModule;
+}
 
 /**
  * Initialize Google Sign-In with web client ID
@@ -27,11 +41,20 @@ export function initializeGoogleSignIn() {
     return;
   }
 
-  GoogleSignin.configure({
-    webClientId,
-    scopes: ['openid', 'email', 'profile'],
-    offlineAccess: false,
-  });
+  // Lazy load module to avoid importing native-only code on web bundles
+  getGoogleSignInModule()
+    .then(({ GoogleSignin }) =>
+      GoogleSignin.configure({
+        webClientId,
+        scopes: ['openid', 'email', 'profile'],
+        offlineAccess: false,
+      })
+    )
+    .catch((error) => {
+      if (__DEV__) {
+        console.warn('[Auth] Failed to initialize Google Sign-In', error);
+      }
+    });
 }
 
 export async function getAccessToken(): Promise<string | null> {
@@ -114,6 +137,8 @@ export async function signInWithGoogle(): Promise<User> {
     throw new Error('Google Sign-In on web should use the web-specific implementation');
   }
 
+  const { GoogleSignin, statusCodes } = await getGoogleSignInModule();
+
   try {
     // Check for Play Services availability (Android)
     await GoogleSignin.hasPlayServices();
@@ -184,6 +209,7 @@ export async function signOut() {
   try {
     // Sign out from Google if signed in
     if (Platform.OS !== 'web') {
+      const { GoogleSignin } = await getGoogleSignInModule();
       const isSignedIn = await GoogleSignin.isSignedIn();
       if (isSignedIn) {
         await GoogleSignin.signOut();

@@ -64,7 +64,7 @@ You need to create **THREE** OAuth client IDs:
 2. Select **Android**
 3. Configure:
    - **Name**: Dream Journal Android
-   - **Package name**: `com.tanuki75.dreamapp`
+   - **Package name**: `com.tanuki75.noctalia`
    - **SHA-1 certificate fingerprint**: See section 1.4 below
 
 #### C. iOS Client ID (if deploying to iOS)
