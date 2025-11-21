@@ -169,7 +169,7 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 4. Dans **Application type**, sélectionner **Android**
 5. Remplir :
    - **Name** : `Dream Journal Android`
-   - **Package name** : `com.tanuki75.dreamapp` ⚠️ IMPORTANT : Ne pas modifier !
+   - **Package name** : `com.tanuki75.noctalia` ⚠️ IMPORTANT : Ne pas modifier !
    - **SHA-1 certificate fingerprint** : Coller le SHA-1 de l'Étape 4
 
 6. Cliquer **Create**
@@ -178,7 +178,7 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 
 ### ✅ Validation :
 - [x] L'Android OAuth client ID est créé
-- [x] Package name : `com.tanuki75.dreamapp`
+- [x] Package name : `com.tanuki75.noctalia`
 - [x] SHA-1 ajouté
 - [x] Android Client ID : `359653779023-b2ehl3qp5eas6b8ncu4cenjbtb3ivqfp.apps.googleusercontent.com`
 
@@ -360,7 +360,7 @@ Si vous voulez configurer iOS :
 
 **Erreur `DEVELOPER_ERROR`** :
 - Vérifier que le SHA-1 dans Google Cloud Console correspond à celui d'EAS
-- Vérifier que le package name est bien `com.tanuki75.dreamapp`
+- Vérifier que le package name est bien `com.tanuki75.noctalia`
 
 **Erreur `No user data received from Supabase`** :
 - Vérifier que "Skip nonce check" est bien coché dans Supabase
