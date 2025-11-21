@@ -1,18 +1,18 @@
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
 # Navigate to Journal
 - tapOn:
-    id: btn.navigateJournal
+      id: btn.navigateJournal
 - waitForAnimationToEnd
 
 # Switch to existing user profile to load predefined dreams
 - tapOn:
-    id: tab.settings
+      id: tab.settings
 - tapOn:
-    id: btn.mockProfile.existing
+      id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
 - tapOn:
-    id: tab.journal
+      id: tab.journal
 - waitForAnimationToEnd
 
 # Open a specific dream (assuming mock data "The Infinite Library")
@@ -25,7 +25,7 @@ appId: com.tanuki75.dreamapp
 
 # Enter edit mode
 - tapOn:
-    id: btn.editMetadata
+      id: btn.editMetadata
 
 # Verify chips are visible (Edit Mode)
 - assertVisible: "Lucid Dream"
@@ -38,16 +38,16 @@ appId: com.tanuki75.dreamapp
 
 # Select new type "Nightmare"
 - swipe:
-    from:
-      id: chip.type.Symbolic Dream
-    direction: LEFT
-    duration: 500
+      from:
+          id: chip.type.Symbolic Dream
+      direction: LEFT
+      duration: 500
 - tapOn:
-    id: chip.type.Nightmare
+      id: chip.type.Nightmare
 
 # Save changes
 - tapOn:
-    id: btn.editMetadata
+      id: btn.editMetadata
 
 # Verify new state (Read Mode)
 - assertVisible: "Nightmare"
@@ -58,8 +58,8 @@ appId: com.tanuki75.dreamapp
 
 # Navigate back to journal and verify updated title in list
 - tapOn:
-    id: btn.navigateJournal
+      id: btn.navigateJournal
 - waitForAnimationToEnd
 - assertVisible:
-    id: screen.journal
+      id: screen.journal
 - assertVisible: "The Infinite dark"

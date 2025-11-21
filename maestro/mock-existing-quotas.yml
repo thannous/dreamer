@@ -1,5 +1,5 @@
 # Validate quota + stats numbers for the mock existing user profile
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
 - launchApp
 # Go to settings (assumes mock existing user already signed in)

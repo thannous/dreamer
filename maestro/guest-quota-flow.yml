@@ -1,169 +1,169 @@
-appId: com.tanuki75.dreamapp
+appId: com.tanuki75.noctalia
 ---
 # Guest dream 1 - analyze and explore, hit chat message limit
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Guest Dream 1"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 # First-dream bottom sheet appears (multi-language title)
 - assertVisible:
-    id: text.firstDream.title
+      id: text.firstDream.title
 - tapOn:
-    id: btn.firstDream.analyze
+      id: btn.firstDream.analyze
 - waitForAnimationToEnd
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: btn.dreamCategory.symbols
+      id: btn.dreamCategory.symbols
 - assertVisible:
-    id: chat.input.message
+      id: chat.input.message
 - repeat:
-    times: 20
-    commands:
-      - tapOn:
-          id: chat.input.message
-      - inputText: "Hello from guest"
-      - tapOn:
-          id: chat.button.send
-      - waitForAnimationToEnd
+      times: 20
+      commands:
+          - tapOn:
+                id: chat.input.message
+          - inputText: "Hello from guest"
+          - tapOn:
+                id: chat.button.send
+          - waitForAnimationToEnd
 - tapOn:
-    id: chat.input.message
+      id: chat.input.message
 - inputText: "Should block"
 - assertVisible:
-    id: text.chat.limit
+      id: text.chat.limit
 - assertVisible: "20/20 messages"
 - assertVisible: "You've reached the message limit for this dream. Upgrade to continue the conversation."
 - tapOn:
-    id: tab.journal
+      id: tab.journal
 - tapOn:
-    id: tab.home
+      id: tab.home
 
 # Guest dream 2 - second analysis and exploration via analyze prompt
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Guest Dream 2"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-    id: text.analyzePromptTitle
+      id: text.analyzePromptTitle
 - tapOn:
-    id: btn.analyzePrompt.analyze
+      id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: btn.dreamCategory.emotions
+      id: btn.dreamCategory.emotions
 - assertVisible:
-    id: chat.input.message
+      id: chat.input.message
 - tapOn:
-    id: tab.journal
+      id: tab.journal
 - tapOn:
-    id: btn.addDream
+      id: btn.addDream
 
 # Guest dream 3 - analysis limit hit, exploration blocked
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Guest Dream 3"
 - assertVisible:
-    id: text.analysisLimit
+      id: text.analysisLimit
 - tapOn: "Enregistrer sans analyser|Save without analysis"
 - waitForAnimationToEnd
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: btn.dreamCategory.symbols
+      id: btn.dreamCategory.symbols
 - assertVisible:
-    id: chat.screen.blocked
+      id: chat.screen.blocked
 - tapOn:
-    id: tab.journal
+      id: tab.journal
 
 # Create account to migrate guest quotas
 - tapOn:
-    id: tab.settings
+      id: tab.settings
 - tapOn:
-    id: input.auth.email
+      id: input.auth.email
 - inputText: "mock.guest@dreamer.test"
 - tapOn:
-    id: input.auth.password
+      id: input.auth.password
 - inputText: "mockpass"
 - tapOn:
-    id: btn.auth.signUp
+      id: btn.auth.signUp
 - tapOn: "OK"
 - assertVisible:
-    id: component.emailVerificationBanner
+      id: component.emailVerificationBanner
 - tapOn:
-    id: btn.auth.resendVerification
+      id: btn.auth.resendVerification
 - waitForAnimationToEnd
 - assertNotVisible:
-    id: component.emailVerificationBanner
+      id: component.emailVerificationBanner
 - assertVisible:
-    id: text.auth.email
+      id: text.auth.email
 - assertVisible: "2 / 5"
 - assertVisible: "2 / 2"
 
 # Authenticated analyses (three more to reach five total)
 - tapOn:
-    id: tab.home
+      id: tab.home
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Auth Dream 1"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-    id: text.analyzePromptTitle
+      id: text.analyzePromptTitle
 - tapOn:
-    id: btn.analyzePrompt.analyze
+      id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: tab.home
+      id: tab.home
 
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Auth Dream 2"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-    id: text.analyzePromptTitle
+      id: text.analyzePromptTitle
 - tapOn:
-    id: btn.analyzePrompt.analyze
+      id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: tab.home
+      id: tab.home
 
 - tapOn:
-    id: input.dreamTranscript
+      id: input.dreamTranscript
 - inputText: "Auth Dream 3"
 - tapOn:
-    id: btn.saveDream
+      id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-    id: text.analyzePromptTitle
+      id: text.analyzePromptTitle
 - tapOn:
-    id: btn.analyzePrompt.analyze
+      id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-    id: btn.exploreDream
+      id: btn.exploreDream
 - tapOn:
-    id: tab.home
+      id: tab.home
 - assertVisible:
-    id: text.analysisLimit
+      id: text.analysisLimit
 
 # Verify quotas show 5/5 analyses after upgrading
 - tapOn:
-    id: tab.settings
+      id: tab.settings
 - assertVisible: "5 / 5"
