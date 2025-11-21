@@ -1,7 +1,8 @@
 import { memo } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { MotiView } from 'moti';
+
+import { MotiView } from '@/lib/moti';
 
 const { width } = Dimensions.get('window');
 
