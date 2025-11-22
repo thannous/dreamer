@@ -109,6 +109,7 @@ export default function TabLayout() {
           marginHorizontal: 0,
           left: sideInset,
           right: sideInset,
+          top: -11
         };
       })()
     : baseTabBarStyle;

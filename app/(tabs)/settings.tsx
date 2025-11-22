@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import EmailAuthCard from '@/components/auth/EmailAuthCard';
+import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
 import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';

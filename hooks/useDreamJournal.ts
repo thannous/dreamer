@@ -1,7 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNetworkState } from 'expo-network';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { useAuth } from '@/context/AuthContext';
+import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
+import { analyzeDream as analyzeDreamText, generateImageFromTranscript } from '@/services/geminiService';
+import { quotaService } from '@/services/quotaService';
 import {
   getCachedRemoteDreams,
   getPendingDreamMutations,
@@ -16,10 +20,6 @@ import {
   fetchDreamsFromSupabase,
   updateDreamInSupabase,
 } from '@/services/supabaseDreamService';
-import { useAuth } from '@/context/AuthContext';
-import { quotaService } from '@/services/quotaService';
-import { QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { analyzeDreamWithImageResilient } from '@/services/geminiService';
 
 // Guest limit centralized in constants/limits
 
@@ -552,50 +552,84 @@ export const useDreamJournal = () => {
       // Generate request ID for idempotence
       const requestId = generateUUID();
 
-      // Update dream status to pending
-      const pendingDream: DreamAnalysis = {
+      // Initial pending state
+      let currentDreamState: DreamAnalysis = {
         ...dream,
         analysisStatus: 'pending',
         analysisRequestId: requestId,
       };
-      await updateDream(pendingDream);
+      await updateDream(currentDreamState);
+
+      // Invalidate quota cache immediately
+      quotaService.invalidate(user);
+
+      // Helper to update state safely
+      const updateState = async (partial: Partial<DreamAnalysis>) => {
+        currentDreamState = { ...currentDreamState, ...partial };
+
+        // Check if analysis is complete (has text AND (image or image failed))
+        const hasText = !!currentDreamState.title;
+        const hasImage = !!currentDreamState.imageUrl || currentDreamState.imageGenerationFailed;
+
+        if (hasText && hasImage) {
+          currentDreamState.analysisStatus = 'done';
+          currentDreamState.analyzedAt = Date.now();
+          currentDreamState.isAnalyzed = true;
+        }
+
+        await updateDream(currentDreamState);
+      };
+
+      // Launch parallel requests
+      const textPromise = (async () => {
+        try {
+          const analysis = await analyzeDreamText(transcript);
+          await updateState({
+            title: analysis.title,
+            interpretation: analysis.interpretation,
+            shareableQuote: analysis.shareableQuote,
+            theme: analysis.theme,
+            dreamType: analysis.dreamType,
+          });
+          return 'text';
+        } catch (error) {
+          console.error('Text analysis failed', error);
+          throw error;
+        }
+      })();
+
+      const imagePromise = (async () => {
+        try {
+          const imageUrl = await generateImageFromTranscript(transcript);
+          await updateState({ imageUrl, imageGenerationFailed: false });
+          return 'image';
+        } catch (error) {
+          console.warn('Image generation failed', error);
+          await updateState({ imageGenerationFailed: true });
+          return 'image_failed';
+        }
+      })();
 
       try {
-        // Call AI analysis API
-        const analysis = await analyzeDreamWithImageResilient(transcript);
+        // Wait for the FIRST successful result (or first failure if both fail)
+        // We use Promise.race to return as soon as possible
+        await Promise.race([textPromise, imagePromise]);
 
-        // Update dream with analysis results
-        const analyzedDream: DreamAnalysis = {
-          ...dream,
-          title: analysis.title,
-          interpretation: analysis.interpretation,
-          shareableQuote: analysis.shareableQuote,
-          imageUrl: analysis.imageUrl,
-          thumbnailUrl: analysis.imageUrl,
-          theme: analysis.theme,
-          dreamType: analysis.dreamType,
-          imageGenerationFailed: analysis.imageGenerationFailed,
-          isAnalyzed: true,
-          analyzedAt: Date.now(),
-          analysisStatus: 'done',
-          analysisRequestId: requestId,
-        };
-
-        await updateDream(analyzedDream);
-
-        // Invalidate quota cache
-        quotaService.invalidate(user);
-
-        return analyzedDream;
+        // Return the current state which has at least one part
+        return currentDreamState;
       } catch (error) {
-        // Mark analysis as failed
+        // If the first one failed, we still wait for the other one? 
+        // Or if text fails, is it a total failure?
+        // If text fails, we probably consider the analysis failed.
+        // If image fails, we continue.
+
+        // If textPromise failed, it threw.
+        // Let's check if it was text failure.
         const failedDream: DreamAnalysis = {
-          ...dream,
+          ...currentDreamState,
           analysisStatus: 'failed',
-          analysisRequestId: requestId,
         };
         await updateDream(failedDream);
-
         throw error;
       }
     },

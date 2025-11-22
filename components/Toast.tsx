@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, StyleSheet, Text } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
