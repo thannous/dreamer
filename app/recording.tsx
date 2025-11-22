@@ -1,7 +1,8 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
+import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { MicButton } from '@/components/recording/MicButton';
-import { Waveform } from '@/components/recording/Waveform';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { TypewriterText } from '@/components/ui/TypewriterText';
 import { GradientColors } from '@/constants/gradients';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { GUEST_DREAM_LIMIT } from '@/constants/limits';
@@ -29,7 +30,8 @@ import {
   type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { MotiView } from 'moti';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
@@ -113,8 +115,8 @@ export default function RecordingScreen() {
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const skipRecorderRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
+  const isRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
-  const [transcriptionSource, setTranscriptionSource] = useState<'idle' | 'native' | 'google' | 'manual'>('idle');
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
@@ -162,10 +164,56 @@ export default function RecordingScreen() {
       const { text: clamped, truncated } = clampTranscript(text);
       setTranscript(clamped);
       baseTranscriptRef.current = clamped;
-      setTranscriptionSource('manual');
       setLengthWarning(truncated ? lengthLimitMessage() : '');
     },
     [clampTranscript, lengthLimitMessage]
+  );
+
+  const forceStopRecording = useCallback(
+    async (reason: 'blur' | 'unmount') => {
+      const hasNativeSession = Boolean(nativeSessionRef.current);
+      const shouldStopRecorder = !skipRecorderRef.current && audioRecorder.isRecording;
+
+      if (!hasNativeSession && !shouldStopRecorder && !isRecordingRef.current) {
+        return;
+      }
+
+      setIsRecording(false);
+      isRecordingRef.current = false;
+
+      const nativeSession = nativeSessionRef.current;
+      nativeSessionRef.current = null;
+
+      try {
+        nativeSession?.abort();
+      } catch (error) {
+        if (__DEV__) {
+          console.warn(`[Recording] failed to abort native session during ${reason}`, error);
+        }
+      }
+
+      if (shouldStopRecorder) {
+        try {
+          await audioRecorder.stop();
+        } catch (error) {
+          if (!handleRecorderReleaseError(`forceStopRecording:${reason}`, error) && __DEV__) {
+            console.warn('[Recording] failed to stop audio recorder during cleanup', error);
+          }
+        }
+      }
+
+      try {
+        await setAudioModeAsync({ allowsRecording: false });
+      } catch (error) {
+        if (__DEV__) {
+          console.warn(`[Recording] failed to reset audio mode during ${reason}`, error);
+        }
+      } finally {
+        skipRecorderRef.current = false;
+        hasAutoStoppedRecordingRef.current = false;
+      }
+    },
+    [audioRecorder]
   );
 
   // Request microphone permissions on mount
@@ -183,11 +231,18 @@ export default function RecordingScreen() {
 
   useEffect(() => {
     return () => {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
       baseTranscriptRef.current = '';
+      void forceStopRecording('unmount');
     };
-  }, []);
+  }, [forceStopRecording]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        void forceStopRecording('blur');
+      };
+    }, [forceStopRecording])
+  );
 
   const deriveDraftTitle = useCallback(() => {
     if (!trimmedTranscript) {
@@ -222,21 +277,10 @@ export default function RecordingScreen() {
     };
   }, [deriveDraftTitle, trimmedTranscript]);
 
-  const ensureDraftSaved = useCallback(async () => {
-    if (draftDream && draftDream.transcript === trimmedTranscript) {
-      return draftDream;
-    }
-    const draft = buildDraftDream();
-    const saved = await addDream(draft);
-    setDraftDream(saved);
-    return saved;
-  }, [draftDream, trimmedTranscript, buildDraftDream, addDream]);
-
   const resetComposer = useCallback(() => {
     setTranscript('');
     setDraftDream(null);
     analysisProgress.reset();
-    setTranscriptionSource('idle');
     setLengthWarning('');
     baseTranscriptRef.current = '';
   }, [analysisProgress]);
@@ -331,7 +375,6 @@ export default function RecordingScreen() {
       if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
         console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
       }
-      setTranscriptionSource(nativeSessionRef.current ? 'native' : 'manual');
       if (__DEV__) {
         console.log('[Recording] native session', {
           hasSession: Boolean(nativeSessionRef.current),
@@ -348,16 +391,18 @@ export default function RecordingScreen() {
       }
 
       setIsRecording(true);
+      isRecordingRef.current = true;
     } catch (err) {
       nativeSessionRef.current?.abort();
       nativeSessionRef.current = null;
       skipRecorderRef.current = false;
+      isRecordingRef.current = false;
       if (__DEV__) {
         console.error('Failed to start recording:', err);
       }
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
-  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript]);
+  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording]);
 
   const stopRecording = useCallback(async () => {
     let nativeSession: NativeSpeechSession | null = null;
@@ -365,11 +410,12 @@ export default function RecordingScreen() {
     let nativeError: string | undefined;
     try {
       setIsRecording(false);
+      isRecordingRef.current = false;
       nativeSession = nativeSessionRef.current;
       nativeSessionRef.current = null;
       const usedRecorder = !skipRecorderRef.current;
 
-      nativeResultPromise = nativeSession?.stop();
+      nativeResultPromise = nativeSession?.stop() ?? null;
       if (usedRecorder) {
         await audioRecorder.stop();
       }
@@ -416,7 +462,6 @@ export default function RecordingScreen() {
             uri: fallbackUri!,
             languageCode: transcriptionLocale,
           });
-          setTranscriptionSource('google');
         } catch (e) {
           const msg = e instanceof Error ? e.message : 'Unknown transcription error';
           Alert.alert(t('recording.alert.transcription_failed.title'), msg);
@@ -460,7 +505,7 @@ export default function RecordingScreen() {
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale, t, combineTranscript]);
+  }, [audioRecorder, transcriptionLocale, t, combineTranscript, lengthLimitMessage]);
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -555,8 +600,8 @@ export default function RecordingScreen() {
     trimmedTranscript,
     dreams.length,
     draftDream,
+    addDream,
     buildDraftDream,
-    ensureDraftSaved,
     navigateAfterSave,
     resetComposer,
     t,
@@ -694,6 +739,14 @@ export default function RecordingScreen() {
     ? GradientColors.surreal
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
 
+  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
+
+  const toggleInputMode = useCallback(() => {
+    setInputMode((prev) => (prev === 'voice' ? 'text' : 'voice'));
+  }, []);
+
+  // ... (existing code)
+
   return (
     <>
       <LinearGradient
@@ -702,6 +755,7 @@ export default function RecordingScreen() {
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
       >
+        <AtmosphereBackground />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardView}
@@ -713,52 +767,95 @@ export default function RecordingScreen() {
           >
             {/* Main Content */}
             <View style={styles.mainContent}>
-              <View style={styles.recordingSection}>
-                <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
-                  {t('recording.instructions')}
-                </Text>
-                <Text style={[styles.serviceBadge, { color: colors.textSecondary }]}>
-                  {transcriptionSource === 'native' && 'Source: Reconnaissance native (temps réel)'}
-                  {transcriptionSource === 'google' && 'Source: Secours Google (après enregistrement)'}
-                  {transcriptionSource === 'manual' && 'Source: Saisie manuelle'}
-                  {transcriptionSource === 'idle' && 'Source: Aucune transcription en cours'}
-                </Text>
+              <View style={styles.bodySection}>
+                <View style={styles.recordingSection}>
+                  {inputMode === 'voice' ? (
+                    <TypewriterText
+                      style={[styles.instructionText, { color: colors.textSecondary }]}
+                      text={t('recording.instructions')}
+                    />
+                  ) : (
+                    <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
+                      {(t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient...")}
+                    </Text>
+                  )}
+                </View>
 
-                <MicButton
-                  isRecording={isRecording}
-                  onPress={toggleRecording}
-                  disabled={interactionDisabled}
-                  testID={TID.Button.RecordToggle}
-                />
+                {inputMode === 'voice' ? (
+                  <View style={styles.micContainer}>
+                    <View style={styles.micButtonWrapper}>
+                      {isRecording}
+                      <MicButton
+                        isRecording={isRecording}
+                        onPress={toggleRecording}
+                        disabled={interactionDisabled}
+                        testID={TID.Button.RecordToggle}
+                      />
+                    </View>
 
-                <Waveform isActive={isRecording} />
-              </View>
+                    {/* Live Transcript Display */}
+                    {transcript ? (
+                      <MotiView
+                        from={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ type: 'timing', duration: 500 }}
+                        style={styles.liveTranscriptContainer}
+                      >
+                        <TypewriterText
+                          text={transcript}
+                          speed={30}
+                          style={[styles.liveTranscriptText, { color: colors.textPrimary }]}
+                        />
+                      </MotiView>
+                    ) : null}
 
-              {/* Text Input */}
-              <View style={styles.textInputSection}>
-                <TextInput
-                  value={transcript}
-                  onChangeText={handleTranscriptChange}
-                  placeholder={t('recording.placeholder')}
-                  placeholderTextColor={colors.textSecondary}
-                  style={[
-                    styles.textInput,
-                    shadows.md,
-                    {
-                      backgroundColor: colors.backgroundSecondary,
-                      color: colors.textPrimary,
-                    },
-                  ]}
-                  multiline
-                  editable={!interactionDisabled}
-                  testID={TID.Input.DreamTranscript}
-                  accessibilityLabel={t('recording.placeholder.accessibility')}
-                />
-                {lengthWarning ? (
-                  <Text style={[styles.lengthWarning, { color: colors.accent }]}>
-                    {lengthWarning}
-                  </Text>
-                ) : null}
+                    <Pressable
+                      onPress={toggleInputMode}
+                      style={styles.modeSwitchButton}
+                      testID="button-switch-to-text"
+                    >
+                      <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
+                        {(transcript ? "Modifier mon rêve" : (t('recording.mode.switch_to_text') || "Écrire mon rêve")) + " ✎"}
+                      </Text>
+                    </Pressable>
+                  </View>
+                ) : (
+                  <View style={styles.textInputSection}>
+                    <TextInput
+                      value={transcript}
+                      onChangeText={handleTranscriptChange}
+                      style={[
+                        styles.textInput,
+                        shadows.md,
+                        {
+                          backgroundColor: colors.backgroundSecondary,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      multiline
+                      editable={!interactionDisabled}
+                      testID={TID.Input.DreamTranscript}
+                      accessibilityLabel={t('recording.placeholder.accessibility')}
+                      autoFocus
+                    />
+                    {lengthWarning ? (
+                      <Text style={[styles.lengthWarning, { color: colors.accent }]}>
+                        {lengthWarning}
+                      </Text>
+                    ) : null}
+
+                    <Pressable
+                      onPress={toggleInputMode}
+                      style={styles.modeSwitchButton}
+                      testID="button-switch-to-voice"
+                    >
+                      <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
+                        {(t('recording.mode.switch_to_voice') || "Dicter mon rêve") + " ✎"}
+                      </Text>
+                    </Pressable>
+                  </View>
+                )}
+
                 {/* Analysis Progress */}
                 {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
                   <AnalysisProgress
@@ -769,26 +866,32 @@ export default function RecordingScreen() {
                     onRetry={pendingAnalysisDream ? handleFirstDreamAnalyze : undefined}
                   />
                 )}
+              </View>
 
-                {/* Actions */}
+              {/* Actions */}
+              <View style={styles.footerActions}>
                 <View style={styles.actionButtons}>
-                  <Pressable
-                    onPress={handleSaveDream}
-                    disabled={!trimmedTranscript || interactionDisabled}
-                    style={[
-                      styles.submitButton,
-                      shadows.lg,
-                      { backgroundColor: colors.accent },
-                      (!trimmedTranscript || interactionDisabled) && [styles.submitButtonDisabled, { backgroundColor: colors.textSecondary }],
-                    ]}
-                    testID={TID.Button.SaveDream}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                  <MotiView
+                    animate={{ opacity: (!trimmedTranscript || interactionDisabled) ? 0.5 : 1 }}
+                    transition={{ type: 'timing', duration: 300 }}
                   >
-                    <Text style={styles.submitButtonText}>
-                      💾 {t('recording.button.save_dream')}
-                    </Text>
-                  </Pressable>
+                    <Pressable
+                      onPress={handleSaveDream}
+                      disabled={!trimmedTranscript || interactionDisabled}
+                      style={[
+                        styles.submitButton,
+                        shadows.lg,
+                        { backgroundColor: colors.accent },
+                        // Opacity handled by MotiView now, but we keep disabled style if needed for other props like color
+                        (!trimmedTranscript || interactionDisabled) && [{ backgroundColor: colors.textSecondary }], 
+                      ]}
+                      testID={TID.Button.SaveDream}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                    >
+                      <Text style={styles.submitButtonText}>{t('recording.button.save_dream')}</Text>
+                    </Pressable>
+                  </MotiView>
                 </View>
 
                 <Pressable
@@ -980,28 +1083,47 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 16,
     paddingHorizontal: 16,
-    paddingBottom: 16,
-    paddingTop: 16,
+    paddingVertical: 24,
     position: 'relative',
   },
-  recordingSection: {
+  bodySection: {
     flex: 1,
+    justifyContent: 'center',
+    gap: 24,
+  },
+  recordingSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 32,
-    gap: 32,
+    marginTop: -8,
   },
-  serviceBadge: {
+  micContainer: {
+    alignItems: 'center',
+    gap: 16
+  },
+  liveTranscriptContainer: {
+    marginBottom: 10,
+    paddingHorizontal:8,
+    minHeight: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  liveTranscriptText: {
     fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
-    opacity: 0.9,
+    lineHeight: 20,
+    fontFamily: Fonts.lora.regular,
+  },
+  waveformSlot: {
+    minHeight: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   instructionText: {
-    fontSize: 22,
-    lineHeight: 32,
+    fontSize: 24,
+    lineHeight: 34,
     fontFamily: Fonts.lora.regularItalic,
     // color: set dynamically in component
     textAlign: 'center',
@@ -1058,6 +1180,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.5,
+  },
+  footerActions: {
+    marginTop: 'auto',
+    width: '100%',
+    alignItems: 'center',
+    gap: 12,
+    paddingBottom: 8,
   },
   journalLinkButton: {
     paddingVertical: 12,
@@ -1128,5 +1257,22 @@ const styles = StyleSheet.create({
   },
   sheetDisabledButton: {
     opacity: 0.6,
+  },
+  micButtonWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    width: 240,
+    height: 240,
+  },
+  modeSwitchButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 0,
+    alignSelf: 'center',
+    marginTop: 8,
+  },
+  modeSwitchText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
 });
