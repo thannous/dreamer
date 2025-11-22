@@ -23,14 +23,18 @@ export default function GoogleSignInButton() {
       }
 
       const user = await signInWithGoogle();
-      console.log('Successfully signed in with Google:', user.email);
+      if (__DEV__) {
+        console.log('Successfully signed in with Google:', user.email);
+      }
       requestStayOnSettingsIntent();
       // Navigation is handled by auth state listener in settings screen
     } catch (error: any) {
       clearStayOnSettingsIntent();
       // Don't show error if user cancelled
       if (error.message === 'SIGN_IN_CANCELLED') {
-        console.log('User cancelled Google Sign-In');
+        if (__DEV__) {
+          console.log('User cancelled Google Sign-In');
+        }
       } else if (error.message?.includes('Play Services')) {
         Alert.alert(
           t('auth.google.play_services_title'),
