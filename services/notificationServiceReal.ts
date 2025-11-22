@@ -1,25 +1,26 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
+import { getTranslator } from '@/lib/i18n';
 import type { NotificationSettings } from '@/lib/types';
 
-// Array of smart, motivational notification prompts
-const NOTIFICATION_PROMPTS = [
-  'Good morning! Capture your dreams before they fade away.',
-  'What did you dream about last night? Take a moment to record it.',
-  'Your dreams are waiting to be remembered. Open your journal.',
-  'Morning check-in: Did you have any interesting dreams?',
-  'Dreams hold valuable insights. Record yours now.',
-  'Time to journal! What messages did your dreams bring?',
-  'Your subconscious has been busy. What did you dream?',
-  'Start your day by recording last night\'s dreams.',
-  'Don\'t let your dreams slip away. Journal them now.',
-  'Good morning dreamer! What adventures did you have last night?',
-  'Your dream journal is calling. What did you experience?',
-  'Unlock the meaning of your dreams. Record them while fresh.',
-  'Morning ritual: Capture your dreams for reflection.',
-  'What story did your mind tell you last night?',
-  'Dreams fade fast. Take a minute to preserve yours.',
+// Array of smart, motivational notification prompt keys
+const NOTIFICATION_PROMPT_KEYS = [
+  'notifications.prompt.morning_1',
+  'notifications.prompt.morning_2',
+  'notifications.prompt.morning_3',
+  'notifications.prompt.morning_4',
+  'notifications.prompt.morning_5',
+  'notifications.prompt.morning_6',
+  'notifications.prompt.morning_7',
+  'notifications.prompt.morning_8',
+  'notifications.prompt.morning_9',
+  'notifications.prompt.morning_10',
+  'notifications.prompt.morning_11',
+  'notifications.prompt.morning_12',
+  'notifications.prompt.morning_13',
+  'notifications.prompt.morning_14',
+  'notifications.prompt.morning_15',
 ];
 
 // Notification channel for Android
@@ -64,8 +65,10 @@ export async function requestNotificationPermissions(): Promise<boolean> {
 
   // Android: Create notification channel
   if (Platform.OS === 'android') {
+    // Get system language for channel name (can't be changed after creation)
+    const t = getTranslator();
     await Notifications.setNotificationChannelAsync(NOTIFICATION_CHANNEL_ID, {
-      name: 'Dream Reminders',
+      name: t('notifications.channel_name'),
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#FF6B6B',
@@ -79,8 +82,9 @@ export async function requestNotificationPermissions(): Promise<boolean> {
  * Get a random notification prompt from the array
  */
 function getRandomPrompt(): string {
-  const randomIndex = Math.floor(Math.random() * NOTIFICATION_PROMPTS.length);
-  return NOTIFICATION_PROMPTS[randomIndex];
+  const t = getTranslator();
+  const randomIndex = Math.floor(Math.random() * NOTIFICATION_PROMPT_KEYS.length);
+  return t(NOTIFICATION_PROMPT_KEYS[randomIndex]);
 }
 
 /**

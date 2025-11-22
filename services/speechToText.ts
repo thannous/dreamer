@@ -66,7 +66,7 @@ export async function transcribeAudio({
   // Pick encoding/sample hints based on platform + our recording options
   // - iOS: WAV Linear PCM -> LINEAR16 @ 16000 Hz
   // - Android: 3GP AMR-WB -> AMR_WB @ 16000 Hz
-  // - Web: WebM/Opus -> WEBM_OPUS @ 48000 Hz (MediaRecorder default for Opus)
+  // - Web: WebM/Opus -> WEBM_OPUS with auto-detected sample rate (browser/hardware-dependent)
   let encoding = 'LINEAR16';
   let sampleRateHertz: number | undefined = 16000;
 
@@ -75,7 +75,7 @@ export async function transcribeAudio({
     sampleRateHertz = 16000;
   } else if (Platform.OS === 'web') {
     encoding = 'WEBM_OPUS';
-    sampleRateHertz = 48000;
+    sampleRateHertz = undefined; // let Google STT infer from the WebM/Opus metadata to avoid mismatch
   }
 
   const base = getApiBaseUrl();
