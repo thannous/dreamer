@@ -114,6 +114,18 @@ export async function generateImageForDream(prompt: string): Promise<string> {
   throw new Error('Invalid image response from backend');
 }
 
+export async function generateImageFromTranscript(transcript: string): Promise<string> {
+  const base = getApiBaseUrl();
+  const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
+    method: 'POST',
+    body: { transcript },
+    timeoutMs: 60000, // Image generation can take time
+  });
+  if (res.imageUrl) return res.imageUrl;
+  if (res.imageBytes) return `data:image/jpeg;base64,${res.imageBytes}`;
+  throw new Error('Invalid image response from backend');
+}
+
 export async function startOrContinueChat(
   history: { role: 'user' | 'model'; text: string }[],
   message: string,

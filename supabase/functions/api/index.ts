@@ -471,10 +471,12 @@ serve(async (req: Request) => {
   // Public generateImage (temporary public access)
   if (req.method === 'POST' && subPath === '/generateImage') {
     try {
-      const body = (await req.json()) as { prompt?: string };
-      const prompt = String(body?.prompt ?? '').trim();
-      if (!prompt) {
-        return new Response(JSON.stringify({ error: 'Missing prompt' }), {
+      const body = (await req.json()) as { prompt?: string; transcript?: string };
+      let prompt = String(body?.prompt ?? '').trim();
+      const transcript = String(body?.transcript ?? '').trim();
+
+      if (!prompt && !transcript) {
+        return new Response(JSON.stringify({ error: 'Missing prompt or transcript' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
@@ -483,8 +485,20 @@ serve(async (req: Request) => {
       const apiKey = Deno.env.get('GEMINI_API_KEY');
       if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
+      // If we have a transcript but no prompt, generate the prompt first
+      if (!prompt && transcript) {
+        console.log('[api] /generateImage generating prompt from transcript');
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+        const promptGenResult = await model.generateContent({
+          contents: [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
+        });
+        prompt = promptGenResult.response.text().trim();
+        console.log('[api] /generateImage generated prompt:', prompt);
+      }
+
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-4.0-generate-001';
+      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-3.0-generate-001';
       const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
 
       const imgRes = await fetch(endpoint, {
@@ -520,7 +534,7 @@ serve(async (req: Request) => {
         });
       }
 
-      return new Response(JSON.stringify({ imageBytes: imageBase64 }), {
+      return new Response(JSON.stringify({ imageBytes: imageBase64, prompt }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });

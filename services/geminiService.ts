@@ -27,6 +27,7 @@ export const categorizeDream = service.categorizeDream;
 export const analyzeDreamWithImage = service.analyzeDreamWithImage;
 export const analyzeDreamWithImageResilient = service.analyzeDreamWithImageResilient;
 export const generateImageForDream = service.generateImageForDream;
+export const generateImageFromTranscript = service.generateImageFromTranscript;
 export const startOrContinueChat = service.startOrContinueChat;
 export const resetChat = service.resetChat;
 export const generateSpeechForText = service.generateSpeechForText;

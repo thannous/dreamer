@@ -113,6 +113,14 @@ export async function generateImageForDream(prompt: string): Promise<string> {
   return imageUrl;
 }
 
+export async function generateImageFromTranscript(transcript: string): Promise<string> {
+  console.log('[MOCK] generateImageFromTranscript called with transcript:', transcript.slice(0, 50) + '...');
+  await delay(2000 + Math.random() * 2000); // 2-4 seconds
+  const imageUrl = getRandomImageForTheme('surreal');
+  console.log('[MOCK] generateImageFromTranscript returning:', imageUrl);
+  return imageUrl;
+}
+
 /**
  * Mock chat conversation (1-2 seconds)
  */
