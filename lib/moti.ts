@@ -1,6 +1,4 @@
-import { Text as MotiText } from 'moti/build/components/text';
-import { View as MotiView } from 'moti/build/components/view';
-import useDynamicAnimation from 'moti/build/core/use-dynamic-animation';
+import { MotiText, MotiView, useDynamicAnimation } from 'moti';
 
-// Avoid the root `moti` entrypoint to prevent pulling in the deprecated React Native SafeAreaView.
+// Use the public entrypoint so Metro/Node respects the package exports.
 export { MotiText, MotiView, useDynamicAnimation };
