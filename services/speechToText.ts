@@ -1,8 +1,10 @@
-import { Platform } from 'react-native';
-import * as FileSystem from 'expo-file-system';
-import { File } from 'expo-file-system';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
+import * as FileSystem from 'expo-file-system';
+import { File } from 'expo-file-system';
+import { Platform } from 'react-native';
+
+export const TRANSCRIPTION_TIMEOUT_MS = 60000;
 
 type TranscribeParams = {
   uri: string;
@@ -42,7 +44,7 @@ async function readAudioAsBase64(uri: string): Promise<string> {
   } catch (error) {
     console.warn('[speechToText] File API failed, falling back to readAsStringAsync', error);
     return FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: 'base64',
     });
   }
 }
@@ -64,7 +66,7 @@ export async function transcribeAudio({
   // Pick encoding/sample hints based on platform + our recording options
   // - iOS: WAV Linear PCM -> LINEAR16 @ 16000 Hz
   // - Android: 3GP AMR-WB -> AMR_WB @ 16000 Hz
-  // - Web: WebM/Opus -> WEBM_OPUS (let Google auto-detect sample rate)
+  // - Web: WebM/Opus -> WEBM_OPUS @ 48000 Hz (MediaRecorder default for Opus)
   let encoding = 'LINEAR16';
   let sampleRateHertz: number | undefined = 16000;
 
@@ -73,7 +75,7 @@ export async function transcribeAudio({
     sampleRateHertz = 16000;
   } else if (Platform.OS === 'web') {
     encoding = 'WEBM_OPUS';
-    sampleRateHertz = undefined; // let the API detect
+    sampleRateHertz = 48000;
   }
 
   const base = getApiBaseUrl();
@@ -92,7 +94,7 @@ export async function transcribeAudio({
         sampleRateHertz,
       },
       // Transcription can take a bit longer
-      timeoutMs: 60000,
+      timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
     });
 
     if (__DEV__) {

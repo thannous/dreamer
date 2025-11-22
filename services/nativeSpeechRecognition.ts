@@ -1,4 +1,3 @@
-import { requireOptionalNativeModule } from 'expo-modules-core';
 import { Platform } from 'react-native';
 
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
@@ -12,32 +11,51 @@ export type NativeSpeechSession = {
   abort: () => void;
 };
 
-const END_TIMEOUT_MS = 4000;
+export const END_TIMEOUT_MS = 4000;
 
 const normalizeLocale = (locale: string) => locale.replace('_', '-').toLowerCase();
 
+const hasWebSpeechAPI = (): boolean => {
+  return typeof window !== 'undefined' &&
+    (typeof (window as typeof globalThis & { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition !== 'undefined' ||
+      typeof (window as typeof globalThis & { SpeechRecognition?: unknown }).SpeechRecognition !== 'undefined');
+};
+
 let cachedSpeechModule: ExpoSpeechRecognitionModuleType | null | undefined;
 
-const getSpeechRecognitionModule = (): ExpoSpeechRecognitionModuleType | null => {
-  if (cachedSpeechModule !== undefined) {
+const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModuleType | null> => {
+  try {
+    // Use dynamic import for ES6 compatibility
+    const speechModule = await import('expo-speech-recognition');
+    
+    if (!speechModule.ExpoSpeechRecognitionModule) {
+      throw new Error('ExpoSpeechRecognitionModule export missing');
+    }
+
+    cachedSpeechModule = speechModule.ExpoSpeechRecognitionModule;
+
+    if (__DEV__ && Platform.OS === 'web') {
+      console.log('[nativeSpeech] resolved ExpoSpeechRecognitionModule', {
+        hasSpeechAPI: hasWebSpeechAPI(),
+        hasStart: typeof speechModule.ExpoSpeechRecognitionModule.start === 'function',
+      });
+    }
+
     return cachedSpeechModule;
-  }
-
-  const module = requireOptionalNativeModule<ExpoSpeechRecognitionModuleType>('ExpoSpeechRecognition');
-
-  if (!module) {
+  } catch (error) {
     if (__DEV__) {
-      console.warn('[nativeSpeech] ExpoSpeechRecognition native module unavailable');
-      if (Platform.OS === 'web') {
+      console.warn('[nativeSpeech] ExpoSpeechRecognition native module unavailable', {
+        error,
+        platform: Platform.OS,
+        hasSpeechAPI: hasWebSpeechAPI(),
+      });
+      if (Platform.OS === 'web' && !hasWebSpeechAPI()) {
         console.warn('[nativeSpeech] Web Speech API not available in this browser/context');
       }
     }
     cachedSpeechModule = null;
     return null;
   }
-
-  cachedSpeechModule = module;
-  return module;
 };
 
 async function shouldRequireOnDeviceRecognition(
@@ -83,7 +101,8 @@ export async function startNativeSpeechSession(
   languageCode: string,
   options?: NativeSpeechOptions
 ): Promise<NativeSpeechSession | null> {
-  const speechModule = getSpeechRecognitionModule();
+  // Ensure the module is loaded asynchronously
+  const speechModule = await loadSpeechRecognitionModule();
   if (!speechModule) {
     if (__DEV__) {
       console.warn('[nativeSpeech] no module, cannot start session');
@@ -180,6 +199,10 @@ export async function startNativeSpeechSession(
       lang: languageCode,
       interimResults: true,
       addsPunctuation: true,
+      // On web keep the session alive longer; native ignores/handles as supported.
+      // This prevents premature stop before the user speaks.
+       
+      continuous: Platform.OS === 'web',
       requiresOnDeviceRecognition,
       recordingOptions: speechModule.supportsRecording?.()
         ? {
