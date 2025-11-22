@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface ImageRetryProps {
   onRetry: () => void;
@@ -10,6 +10,7 @@ interface ImageRetryProps {
 }
 
 export function ImageRetry({ onRetry, isRetrying = false }: ImageRetryProps) {
+  const { t } = useTranslation();
   const { colors, shadows } = useTheme();
 
   return (
@@ -23,7 +24,7 @@ export function ImageRetry({ onRetry, isRetrying = false }: ImageRetryProps) {
         )}
       </View>
 
-      <Text style={[styles.title, { color: colors.textPrimary }]}>Image Generation Failed</Text>
+      <Text style={[styles.title, { color: colors.textPrimary }]}>{t('image_retry.generation_failed')}</Text>
       <Text style={[styles.message, { color: colors.textSecondary }]}>
         We couldn&apos;t generate an image for this dream. You can try again to create dream imagery.
       </Text>
@@ -36,12 +37,12 @@ export function ImageRetry({ onRetry, isRetrying = false }: ImageRetryProps) {
         {isRetrying ? (
           <View style={styles.buttonContent}>
             <ActivityIndicator size="small" color={colors.textPrimary} />
-            <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>Generating...</Text>
+            <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('image_retry.generating')}</Text>
           </View>
         ) : (
           <View style={styles.buttonContent}>
             <Ionicons name="refresh" size={20} color={colors.textPrimary} />
-            <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>Retry Image Generation</Text>
+            <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('image_retry.retry_generation')}</Text>
           </View>
         )}
       </Pressable>

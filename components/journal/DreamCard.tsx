@@ -8,16 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React, { memo, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeIn, FadeInUp } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: () => void;
-  index: number;
   shouldLoadImage?: boolean;
   testID?: string;
   badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
-  disableEnteringAnimation?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -25,11 +23,9 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
-  index,
   shouldLoadImage = true,
   testID,
   badges,
-  disableEnteringAnimation = false,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
@@ -45,9 +41,7 @@ export const DreamCard = memo(function DreamCard({
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
 
   return (
-    <Animated.View
-      entering={disableEnteringAnimation ? undefined : FadeInUp.delay(index * 50).springify().damping(20)}
-    >
+    <Animated.View>
       <AnimatedPressable
         style={[styles.card, { backgroundColor: colors.backgroundCard }, animatedStyle]}
         onPress={onPress}
@@ -67,7 +61,7 @@ export const DreamCard = memo(function DreamCard({
             )}
             {/* Actual Thumbnail - only load if shouldLoadImage is true */}
             {shouldLoadImage && (
-              <Animated.View entering={FadeIn.duration(300)} style={styles.imageWrapper}>
+              <Animated.View style={styles.imageWrapper}>
                 <Image
                   source={{ uri: thumbnailUri }}
                   style={styles.image}

@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useLocalSearchParams, router } from 'expo-router';
+import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
-import { Fonts } from '@/constants/theme';
 import { TID } from '@/lib/testIDs';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router, useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type Category = {
   id: string;
@@ -41,6 +41,7 @@ const CATEGORIES: Category[] = [
 ];
 
 export default function DreamCategoriesScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { dreams } = useDreams();
   const { colors, shadows, mode } = useTheme();
@@ -53,7 +54,7 @@ export default function DreamCategoriesScreen() {
   if (!dream) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <Text style={[styles.errorText, { color: colors.textPrimary }]}>Dream not found.</Text>
+        <Text style={[styles.errorText, { color: colors.textPrimary }]}>{t('dream_categories.not_found.title')}</Text>
       </LinearGradient>
     );
   }
@@ -73,7 +74,7 @@ export default function DreamCategoriesScreen() {
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <MaterialCommunityIcons name="arrow-left" size={24} color={colors.textPrimary} />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>Explore Your Dream</Text>
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('dream_categories.explore_title')}</Text>
           <View style={styles.headerSpacer} />
         </View>
 
@@ -129,7 +130,7 @@ export default function DreamCategoriesScreen() {
           onPress={() => handleCategoryPress('general')}
         >
           <MaterialCommunityIcons name="chat-processing-outline" size={24} color={colors.textPrimary} />
-          <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>Ask anything about this dream</Text>
+          <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>{t('dream_categories.free_chat_prompt')}</Text>
         </Pressable>
       </ScrollView>
     </LinearGradient>
