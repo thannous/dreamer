@@ -107,11 +107,16 @@ const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: a
       return;
     }
 
+    if (!text.length) {
+      setDisplayedText('');
+      return;
+    }
+
     let i = 0;
     const timer = setInterval(() => {
+      i = Math.min(i + 2, text.length); // Speed
       setDisplayedText(text.slice(0, i));
-      i += 2; // Speed
-      if (i > text.length) {
+      if (i >= text.length) {
         clearInterval(timer);
       }
     }, 10);
