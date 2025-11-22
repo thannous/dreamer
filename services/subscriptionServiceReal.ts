@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
 
@@ -29,13 +30,15 @@ function resetCachedState(): void {
 
 function resolveApiKey(): string | null {
   const env = process.env;
+  const extra = (Constants?.expoConfig as any)?.extra ?? {};
+
   if (Platform.OS === 'android') {
-    return env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
+    return env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? extra.revenuecatAndroidKey ?? null;
   }
   if (Platform.OS === 'ios') {
-    return env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? null;
+    return env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? extra.revenuecatIosKey ?? null;
   }
-  return env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? null;
+  return env.EXPO_PUBLIC_REVENUECAT_WEB_KEY ?? extra.revenuecatWebKey ?? null;
 }
 
 async function ensureConfigured(userId?: string | null): Promise<void> {
