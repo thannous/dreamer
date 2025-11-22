@@ -101,6 +101,14 @@ const handleRecorderReleaseError = (context: string, error: unknown): boolean =>
   return false;
 };
 
+const blurActiveElement = () => {
+  if (Platform.OS !== 'web') {
+    return;
+  }
+  const activeElement = (typeof document !== 'undefined' ? document.activeElement : null) as HTMLElement | null;
+  activeElement?.blur?.();
+};
+
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
@@ -255,6 +263,7 @@ export default function RecordingScreen() {
     return () => {
       baseTranscriptRef.current = '';
       void forceStopRecording('unmount');
+      blurActiveElement();
     };
   }, [forceStopRecording]);
 
@@ -262,6 +271,7 @@ export default function RecordingScreen() {
     useCallback(() => {
       return () => {
         void forceStopRecording('blur');
+        blurActiveElement();
       };
     }, [forceStopRecording])
   );
@@ -643,6 +653,7 @@ export default function RecordingScreen() {
 
 
   const handleGoToJournal = useCallback(() => {
+    blurActiveElement();
     router.push('/(tabs)/journal');
   }, []);
 
@@ -660,6 +671,7 @@ export default function RecordingScreen() {
     }
     setFirstDreamPrompt(null);
     setPendingAnalysisDream(null);
+    blurActiveElement();
     router.push('/(tabs)/journal');
   }, [firstDreamPrompt]);
 
@@ -677,6 +689,7 @@ export default function RecordingScreen() {
     }
     setAnalyzePromptDream(null);
     setPendingAnalysisDream(null);
+    blurActiveElement();
     router.push('/(tabs)/journal');
   }, [analyzePromptDream]);
 

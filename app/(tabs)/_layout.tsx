@@ -116,10 +116,10 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      sceneContainerStyle={{
-        paddingBottom: sceneBottomPadding,
-      }}
       screenOptions={{
+        sceneStyle: {
+          paddingBottom: sceneBottomPadding,
+        },
         headerShown: false,
         // On Android, the default icon wrapper from @react-navigation/bottom-tabs
         // has a very small fixed width (~24), which was causing our custom

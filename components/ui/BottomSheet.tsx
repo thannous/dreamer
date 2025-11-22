@@ -3,6 +3,7 @@ import {
   Animated,
   Easing,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   type StyleProp,
@@ -35,6 +36,7 @@ export function BottomSheet({
   style,
   backdropColor = 'rgba(0,0,0,0.45)',
 }: BottomSheetProps) {
+  const nativeDriver = Platform.OS !== 'web';
   const translateY = useRef(new Animated.Value(0)).current;
   const [isMounted, setIsMounted] = useState(visible);
 
@@ -46,14 +48,14 @@ export function BottomSheet({
         toValue: 0,
         duration: 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: nativeDriver,
       }).start();
     } else if (isMounted) {
       Animated.timing(translateY, {
         toValue: 400,
         duration: 220,
         easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: nativeDriver,
       }).start(({ finished }) => {
         if (finished) {
           setIsMounted(false);

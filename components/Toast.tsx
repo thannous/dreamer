@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text } from 'react-native';
+import { Animated, Easing, Platform, StyleSheet, Text } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -19,6 +19,7 @@ export const Toast: React.FC<ToastProps> = ({
   onHide,
   testID,
 }) => {
+  const nativeDriver = Platform.OS !== 'web';
   const { colors, shadows } = useTheme();
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(16)).current;
@@ -29,14 +30,14 @@ export const Toast: React.FC<ToastProps> = ({
         toValue: 1,
         duration: 220,
         easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
+        useNativeDriver: nativeDriver,
       }),
       Animated.spring(translateY, {
         toValue: 0,
         damping: 12,
         mass: 0.6,
         stiffness: 120,
-        useNativeDriver: true,
+        useNativeDriver: nativeDriver,
       }),
     ]).start();
 
@@ -46,13 +47,13 @@ export const Toast: React.FC<ToastProps> = ({
           toValue: 0,
           duration: 180,
           easing: Easing.in(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: nativeDriver,
         }),
         Animated.timing(translateY, {
           toValue: 16,
           duration: 180,
           easing: Easing.in(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: nativeDriver,
         }),
       ]).start(() => {
         if (onHide) {
