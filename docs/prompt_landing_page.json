@@ -1,0 +1,211 @@
+{
+  "app": "Noctalia",
+  "goal": "Inciter les visiteurs à télécharger l’app sur mobile (et à terme à créer un compte).",
+  "style": {
+    "look": "Extrêmement premium, motion, onirique, bento grid, glassmorphism, couleurs pastel (violet/crème doux).",
+    "tone": "Onirique, bienveillant, poétique mais très clair et rassurant.",
+    "theme": "Sombre (fond nuit) avec accents violets/mauves (Nuit, ciel étoilé, nuages doux, halos lumineux, univers légèrement magique)."
+  },
+  "product": {
+    "baseline": "Le journal de rêves intelligent qui révèle ce que vos nuits racontent.",
+    "description_courte": "Noctalia est un journal de rêves intelligent. Au réveil, vous enregistrez votre rêve à la voix ou en texte, l’IA le transcrit puis vous propose en quelques secondes une analyse guidée : interprétation, symboles, type de rêve, thèmes, citation marquante et image onirique générée automatiquement. Vous pouvez ensuite discuter avec l’IA autour d’un rêve précis et suivre l’évolution de vos rêves et émotions nocturnes dans le temps.",
+    "target": "Adultes curieux de leurs rêves, sensibles au développement personnel, à la psychologie, à la spiritualité ou simplement fascinés par leur inconscient.",
+    "problem": "On oublie très vite ses rêves, ils sont difficiles à noter au réveil et on ne sait pas comment les interpréter de façon structurée.",
+    "promise": "Capturer vos rêves sans effort et obtenir en quelques secondes une analyse claire et guidée pour mieux vous comprendre.",
+    "cta_main": "Télécharger Noctalia",
+    "cta_secondary_1": "Voir comment ça marche",
+    "cta_secondary_2": "Découvrir les fonctionnalités",
+    "benefices_cles": [
+      "Ne plus oublier vos rêves grâce à la capture vocale ultra rapide.",
+      "Comprendre le sens possible de vos rêves avec une analyse guidée par IA.",
+      "Visualiser vos rêves avec des images oniriques générées automatiquement.",
+      "Suivre l’évolution de vos thèmes de rêves et émotions nocturnes dans le temps.",
+      "Utiliser vos rêves comme un outil de connaissance de soi et de journal intime."
+    ],
+    "features_cles": [
+      "Enregistrement des rêves à la voix (STT) ou en texte libre.",
+      "Transcription automatique et analyse IA instantanée.",
+      "Fiche d’analyse structurée : interprétation, symboles, type de rêve, thèmes, citation.",
+      "Génération automatique d’images oniriques pour chaque rêve.",
+      "Conversation avec une IA autour d’un rêve précis.",
+      "Statistiques et historique des rêves (émotions, récurrence, thèmes)."
+    ],
+    "differentiation": [
+      "Focus total sur la simplicité au réveil (parler plutôt qu’écrire).",
+      "Analyse IA structurée et immédiate, pas juste un 'chat' générique.",
+      "Dimension artistique avec les images oniriques.",
+      "Suivi longitudinal des émotions nocturnes."
+    ],
+    "pricing": {
+      "free": {
+        "name": "Formule Nuit Claire",
+        "details": "Enregistrement illimité des rêves, 2 analyses IA complètes offertes, possibilité d’explorer quelques rêves gratuitement."
+      },
+      "paid": {
+        "name": "Formule Ciel Étoilé (Premium)",
+        "price_monthly": "2,99 €/mois",
+        "price_yearly": "19 €/an",
+        "details": "Abonnement pour débloquer davantage d’analyses IA, des statistiques avancées et plus d’images oniriques."
+      }
+    }
+  },
+  "required_sections": [
+    "Hero",
+    "Comment Ça Marche ? (3 étapes)",
+    "Pourquoi Noctalia ? (Bénéfices)",
+    "Fonctionnalités Principales",
+    "Pour Qui ? (Profils)",
+    "Témoignages / Avis (3 inventés)",
+    "Prix / Plans",
+    "FAQ (5-7 Q&R)",
+    "Footer"
+  ],
+  "sections_content": {
+    "Hero": {
+      "H1": "Vos rêves sont une carte. Apprenez à la lire.",
+      "Sous-titre": "Le journal de rêves intelligent qui révèle ce que vos nuits racontent.",
+      "Reassurance": "Saisissez l'invisible. 100% sans effort au réveil. Analyse instantanée par IA.",
+      "CTA_Main": "Télécharger Noctalia",
+      "CTA_Secondary": "Voir comment ça marche"
+    },
+    "Comment Ça Marche ? (3 étapes)": {
+      "H2": "De l'ombre à la lumière en 3 étapes oniriques",
+      "Etape_1": {
+        "H3": "1. Chuchotez votre rêve",
+        "Paragraphe": "Au réveil, vous n'avez qu'à parler. Notre capture vocale ultra-rapide (ou le texte libre) enregistre votre expérience nocturne avant qu'elle ne s'évapore."
+      },
+      "Etape_2": {
+        "H3": "2. L'IA décrypte l'invisible",
+        "Paragraphe": "L'intelligence artificielle de Noctalia transcrit et analyse immédiatement votre rêve. Elle génère une fiche structurée : interprétation, symboles, thèmes, citation marquante."
+      },
+      "Etape_3": {
+        "H3": "3. Explorez votre inconscient",
+        "Paragraphe": "Visualisez votre rêve grâce à une image onirique auto-générée, suivez l'évolution de vos émotions, et dialoguez avec notre IA pour une exploration guidée."
+      },
+      "CTA_Secondary": "Découvrir les fonctionnalités"
+    },
+    "Pourquoi Noctalia ? (Bénéfices)": {
+      "H2": "Le pont entre vos nuits et votre connaissance de soi",
+      "Sous-titre": "Le problème : on oublie 90% de ses rêves en 10 minutes et on ne sait pas quoi en faire. La promesse Noctalia : Capturer sans effort, comprendre clairement, se transformer.",
+      "Benefice_1": {
+        "H3": "Capture Vocale Anti-Oubli",
+        "Paragraphe": "Ne perdez plus jamais un rêve. Parlez, c'est enregistré. (Focus sur la simplicité au réveil)."
+      },
+      "Benefice_2": {
+        "H3": "Analyse Guidée, Pas Générique",
+        "Paragraphe": "Accédez à une interprétation structurée et immédiate de vos symboles et thèmes."
+      },
+      "Benefice_3": {
+        "H3": "L'Art de l'Inconscient",
+        "Paragraphe": "Visualisez l'atmosphère de votre rêve grâce à une image onirique générée par IA."
+      },
+      "Benefice_4": {
+        "H3": "Votre Boussole Émotionnelle",
+        "Paragraphe": "Suivez l'évolution de vos émotions nocturnes et des thèmes récurrents dans le temps."
+      }
+    },
+    "Fonctionnalités Principales": {
+      "H2": "Toutes les clés pour percer le mystère de vos rêves",
+      "Features_list": [
+        {"H3": "Enregistrement Vocal & Transcription", "Icone_suggeree": "Micro"},
+        {"H3": "Analyse IA Instantanée & Fiche Structurée", "Icone_suggeree": "Étoile / Cerveau IA"},
+        {"H3": "Génération d'Images Oniriques", "Icone_suggeree": "Pinceau / Nuage"},
+        {"H3": "Chat IA Exploratoire", "Icone_suggeree": "Discussion / Bulle"},
+        {"H3": "Statistiques et Historique", "Icone_suggeree": "Graphique / Lune"},
+        {"H3": "Suivi des Émotions Nocturnes", "Icone_suggeree": "Cœur / Vague"}
+      ]
+    },
+    "Pour Qui ? (Profils)": {
+      "H2": "Réveillez la curiosité qui sommeille en vous",
+      "Introduction": "Noctalia a été conçue pour tous ceux qui voient leurs rêves non pas comme un hasard, mais comme un outil précieux de développement personnel et de connaissance de soi.",
+      "Profil_1": {
+        "H3": "L'explorateur Intérieur",
+        "Paragraphe": "Vous êtes sensible au développement personnel, à la psychologie ou à la spiritualité et cherchez une nouvelle voie d'accès à votre inconscient."
+      },
+      "Profil_2": {
+        "H3": "Le Passionné de l'Invisible",
+        "Paragraphe": "Vous êtes fasciné(e) par la mécanique de l'esprit, par les symboles, et souhaitez documenter vos expériences nocturnes avec structure."
+      },
+      "Profil_3": {
+        "H3": "Le Chercheur de Sens",
+        "Paragraphe": "Vous faites des rêves récurrents, vifs, ou vous vous sentez bloqué(e) et cherchez une interprétation claire pour mieux vous comprendre."
+      }
+    },
+    "Témoignages / Avis (3 inventés)": {
+      "H2": "Ils ont redécouvert leurs nuits avec Noctalia",
+      "Avis_1": {
+        "H3": "Magique et incroyablement utile",
+        "Citation": "« Avant Noctalia, mes rêves s'envolaient en quelques minutes. Maintenant, je les capture en parlant au réveil. L'analyse structurée est bluffante de pertinence ! »",
+        "Auteur": "Éloïse P., 29 ans."
+      },
+      "Avis_2": {
+        "H3": "Bien plus qu'un simple journal",
+        "Citation": "« J'adore la dimension artistique avec les images générées. Ça rend le rêve concret et ça aide à le décortiquer. Le suivi des émotions est un vrai plus pour comprendre mes cycles. »",
+        "Auteur": "Mehdi S., 41 ans."
+      },
+      "Avis_3": {
+        "H3": "Simple et si profond à la fois",
+        "Citation": "« Le meilleur : la fonction 'Chat IA'. C'est comme avoir un interprète personnel pour approfondir les détails de mes rêves les plus complexes. 5 étoiles ! »",
+        "Auteur": "Sophie L., 35 ans."
+      }
+    },
+    "Prix / Plans": {
+      "H2": "Choisissez votre voyage intérieur",
+      "Sous-titre": "Commencez gratuitement. Éveillez votre potentiel avec Noctalia Premium.",
+      "Plan_Gratuit": {
+        "H3": "Formule Nuit Claire (Gratuite)",
+        "Details": [
+          "Enregistrement illimité de vos rêves (Voix/Texte)",
+          "Stockage sécurisé de votre journal",
+          "2 analyses IA complètes offertes (à vie)",
+          "Accès gratuit à l'exploration de vos premiers rêves"
+        ],
+        "CTA": "Télécharger et Essayer"
+      },
+      "Plan_Payant": {
+        "H3": "Formule Ciel Étoilé (Premium)",
+        "Prix_Mois": "2,99 €/mois",
+        "Prix_An": "19 €/an (soit -47% !)",
+        "Details": [
+          "Toutes les fonctionnalités de Nuit Claire",
+          "Analyses IA illimitées",
+          "Statistiques et Historique Avancés",
+          "Plus d'images oniriques (Générations illimitées)",
+          "Accès prioritaire aux nouvelles fonctionnalités"
+        ],
+        "CTA": "Démarrer l'Essai Gratuit"
+      }
+    },
+    "FAQ (5-7 Q&R)": {
+      "H2": "Vos questions, nos lumières",
+      "Questions_Reponses": [
+        {
+          "Question": "À quoi sert l'image onirique générée par l'IA ?",
+          "Reponse": "Elle sert à donner une dimension visuelle et artistique à l'atmosphère de votre rêve, facilitant la mémorisation et l'analyse émotionnelle."
+        },
+        {
+          "Question": "L'enregistrement vocal fonctionne-t-il si je parle à moitié endormi ?",
+          "Reponse": "Oui. Notre système de transcription est optimisé pour capter et interpréter les enregistrements rapides, souvent peu clairs, faits juste après le réveil."
+        },
+        {
+          "Question": "Mes rêves sont-ils privés et sécurisés ?",
+          "Reponse": "Absolument. Vos données et vos rêves sont cryptés et stockés de manière totalement privée et sécurisée. Ils ne sont utilisés que pour vous offrir votre analyse."
+        },
+        {
+          "Question": "Est-ce que l'application peut m'aider avec le rêve lucide ?",
+          "Reponse": "En vous aidant à suivre les thèmes, les symboles et les récurrences, Noctalia augmente votre conscience de vos propres mécanismes oniriques, une étape clé pour la lucidité."
+        },
+        {
+          "Question": "Puis-je essayer la version Premium avant de payer ?",
+          "Reponse": "Oui, en sélectionnant l'abonnement 'Ciel Étoilé', vous bénéficiez d'un essai gratuit sans engagement."
+        }
+      ]
+    },
+    "Footer": {
+      "Liens_Download": ["App Store", "Play Store"],
+      "Liens_Legaux": ["Conditions Générales d'Utilisation", "Politique de Confidentialité"],
+      "Liens_Contact": ["Contactez-nous"],
+      "Copyright": "© 2025 Noctalia. Tous droits réservés."
+    }
+  }
+}

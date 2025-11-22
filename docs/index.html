@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noctalia | Le journal de rêves intelligent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fraunces (Premium Serif) & Outfit (Clean Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dream: {
+                            dark: '#0a0514',
+                            purple: '#2E1065',
+                            lavender: '#E9D5FF',
+                            cream: '#FFF7ED',
+                            salmon: '#FDA481',
+                            salmonLight: '#FFCCB5',
+                            glass: 'rgba(255, 255, 255, 0.03)',
+                            glassBorder: 'rgba(255, 255, 255, 0.08)',
+                            accent: '#a855f7' 
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Fraunces', 'serif'],
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 12s ease-in-out infinite reverse',
+                        'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0514;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c1d95;
+            border-radius: 4px;
+        }
+
+        /* Grain Texture Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Mesh Gradient Background Animation */
+        .aurora-bg {
+            background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                        radial-gradient(at 50% 0%, hsla(260,39%,20%,1) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, hsla(339,49%,20%,1) 0, transparent 50%);
+            background-size: 200% 200%;
+            animation: aurora 20s ease infinite;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(20, 10, 40, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        /* Phone Frame Utility */
+        .phone-frame {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            background: #000;
+        }
+
+        /* Reveal on Scroll - Safe Fallback */
+        .reveal {
+            opacity: 0; /* Initial state */
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+        /* If JS fails, we might want to force visibility, but for now we rely on robust JS. 
+           If no-js is critical, we could add a noscript tag style. */
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Accordion for FAQ */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* Marquee Animation */
+        .marquee-container {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        
+        .marquee-content {
+            display: flex;
+            gap: 2rem;
+            width: max-content;
+            animation: marquee 40s linear infinite;
+            padding-left: 2rem;
+        }
+        
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+
+    <!-- Ambient Background -->
+    <div class="aurora-bg"></div>
+    <div class="noise-overlay"></div>
+    
+    <!-- Floating Orbs -->
+    <div class="orb w-[40rem] h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
+    <div class="orb w-[50rem] h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center glass-panel rounded-full px-6 py-3">
+            <div class="flex items-center gap-2">
+                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-sans text-purple-100/80">
+                <a href="#comment-ca-marche" class="hover:text-white transition-colors">Comment ça marche</a>
+                <a href="#fonctionnalites" class="hover:text-white transition-colors">Fonctionnalités</a>
+                <a href="#temoignages" class="hover:text-white transition-colors">Témoignages</a>
+            </div>
+            <a href="#download" class="hidden sm:block glass-button px-6 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">
+                Télécharger
+            </a>
+        </div>
+    </nav>
+
+    <!-- 1. Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
+            
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-dream-salmon/30 bg-dream-salmon/10 backdrop-blur-md mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.1s;">
+                <span class="w-2 h-2 rounded-full bg-dream-salmon animate-pulse"></span>
+                <span class="text-xs font-sans uppercase tracking-widest text-dream-salmonLight">IA Nouvelle Génération</span>
+            </div>
+            
+            <!-- H1 Title -->
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl animate-fade-in-up opacity-0" style="animation-delay: 0.2s;">
+                Révélez ce que vos<br>nuits racontent
+            </h1>
+            
+            <!-- Subtitle/Baseline -->
+            <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s;">
+                Le journal de rêves intelligent. Capturez vos rêves à la voix et obtenez une analyse guidée instantanée pour mieux vous comprendre.
+            </p>
+
+            <!-- CTA & Reassurance -->
+            <div class="flex flex-col items-center gap-6 animate-fade-in-up opacity-0" style="animation-delay: 0.4s;">
+                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <button class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)]">
+                        <span class="relative z-10 flex items-center justify-center gap-2">
+                            Télécharger Noctalia <i data-lucide="download" class="w-4 h-4"></i>
+                        </span>
+                    </button>
+                    <button class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors">
+                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
+                    </button>
+                </div>
+                <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Gratuit • Sécurisé • Déjà 10 000+ rêveurs
+                </p>
+            </div>
+
+            <!-- App Visual Placeholder (Detail View Screenshot) -->
+            <div class="mt-16 relative w-full max-w-[280px] md:max-w-[320px] mx-auto animate-float animate-fade-in-up" style="animation-delay: 0.6s;">
+                <!-- Glow effect behind phone -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] bg-dream-salmon/20 blur-3xl rounded-full"></div>
+                
+                <!-- Phone container -->
+                <div class="phone-frame aspect-[9/19.5] bg-black">
+                   <img src="./img/home_list.jpg" alt="Interface Noctalia - Analyse de rêve" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. Comment ça marche (3 étapes) -->
+    <section id="comment-ca-marche" class="py-24 px-4 relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">De l'oreiller à la clarté</h2>
+                <p class="text-purple-200/60 max-w-lg mx-auto">Transformez vos souvenirs flous en connaissances concrètes en trois étapes simples.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Connecting line (desktop only) -->
+                <div class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0"></div>
+
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 100ms;">
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                        <i data-lucide="mic" class="w-10 h-10 text-dream-salmon"></i>
+                    </div>
+                    <span class="text-6xl font-serif text-white/5 absolute -top-4 left-1/2 -translate-x-1/2 -z-10">1</span>
+                    <h3 class="text-xl font-serif mb-3">Enregistrez</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed px-4">
+                        Au réveil, racontez simplement votre rêve à voix haute. L'application capture chaque détail avant qu'il ne s'efface.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 200ms;">
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                        <i data-lucide="sparkles" class="w-10 h-10 text-dream-salmon"></i>
+                    </div>
+                    <span class="text-6xl font-serif text-white/5 absolute -top-4 left-1/2 -translate-x-1/2 -z-10">2</span>
+                    <h3 class="text-xl font-serif mb-3">Analysez</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed px-4">
+                        Notre IA transcrit et décode instantanément les symboles, les émotions et les archétypes cachés dans votre récit.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 300ms;">
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                        <i data-lucide="compass" class="w-10 h-10 text-dream-salmon"></i>
+                    </div>
+                    <span class="text-6xl font-serif text-white/5 absolute -top-4 left-1/2 -translate-x-1/2 -z-10">3</span>
+                    <h3 class="text-xl font-serif mb-3">Explorez</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed px-4">
+                        Visualisez votre rêve grâce à une image générée et discutez avec l'IA pour approfondir le sens personnel du message.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2.5 Interface Gallery (Marquee) -->
+    <section class="py-24 overflow-hidden relative">
+        <div class="text-center mb-12">
+            <h2 class="font-serif text-2xl md:text-3xl text-dream-cream/80">Une interface apaisante</h2>
+        </div>
+        
+        <div class="marquee-container w-full">
+            <div class="marquee-content">
+                <!-- First set -->
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/home_list.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/dream_detail.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/recording_mode.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/edit_mode.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/search_view.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/settings_menu.jpg" class="w-full h-full object-cover"></div>
+                
+                <!-- Duplicate set for infinite scroll -->
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/home_list.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/dream_detail.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/recording_mode.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/edit_mode.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/search_view.jpg" class="w-full h-full object-cover"></div>
+                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/19.5] flex-shrink-0"><img src="./img/settings_menu.jpg" class="w-full h-full object-cover"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Pourquoi Noctalia (Bénéfices) & 4. Fonctionnalités (Bento Grid) -->
+    <section id="fonctionnalites" class="py-32 px-4 relative bg-black/20">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16 md:flex md:justify-between md:items-end">
+                <div>
+                    <h2 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Votre laboratoire onirique</h2>
+                    <p class="text-purple-200/60 max-w-xl">Une suite d'outils puissants pour transformer vos nuits en connaissance de soi.</p>
+                </div>
+                <div class="hidden md:block">
+                    <i data-lucide="stars" class="w-12 h-12 text-dream-salmon/50"></i>
+                </div>
+            </div>
+
+            <!-- Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
+                
+                <!-- Feature 1: Voice & AI (Large) -->
+                <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+                    
+                    <!-- Text Content -->
+                    <div class="relative z-10 p-8 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-start justify-between mb-6">
+                                <div class="p-3 bg-white/5 rounded-xl border border-white/10">
+                                    <i data-lucide="mic" class="text-dream-salmon w-6 h-6"></i>
+                                </div>
+                                <span class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Technologie STT</span>
+                            </div>
+                            <h3 class="font-serif text-3xl mb-3">Capture vocale & Transcription</h3>
+                            <p class="text-gray-400 text-sm max-w-md">Ne perdez plus une seconde à écrire dans le noir. Noctalia transcrit vos murmures matinaux en texte clair.</p>
+                        </div>
+                         <div class="mt-6 flex gap-2 items-center opacity-60">
+                            <div class="w-1 h-8 bg-dream-salmon rounded-full animate-pulse"></div>
+                            <div class="w-1 h-12 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
+                            <div class="w-1 h-6 bg-dream-salmon rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                            <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.3s"></div>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot Integration (Phone crop) -->
+                    <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
+                        <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
+                             <img src="./img/settings_menu.jpg" alt="Écran d'enregistrement" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Visuals (Medium) -->
+                <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
+                     <!-- Screenshot Integration (Full Background) -->
+                    <img src="./img/dream_detail.jpg" alt="Liste des rêves" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                    
+                    <div class="absolute bottom-0 left-0 p-6 w-full z-10">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="image" class="w-5 h-5 text-dream-salmon"></i>
+                            <h3 class="font-serif text-xl">Journal Visuel</h3>
+                        </div>
+                        <p class="text-xs text-gray-300">Retrouvez tous vos voyages oniriques illustrés automatiquement par l'IA.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Guided Analysis (Medium) -->
+                <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal">
+                    <div class="flex items-center gap-3 mb-6">
+                         <div class="p-2 bg-purple-500/20 rounded-lg">
+                            <i data-lucide="brain-circuit" class="text-dream-salmon w-5 h-5"></i>
+                         </div>
+                        <h3 class="font-serif text-2xl">Analyse Guidée</h3>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
+                            <span><strong>Interprétation :</strong> Un résumé du sens profond.</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
+                            <span><strong>Symboles :</strong> Décodage des archétypes (Jung/Freud).</span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
+                            <span><strong>Chat IA :</strong> Posez des questions à votre rêve.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Feature 4: Longitudinal Stats (Medium) -->
+                <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2 bg-blue-500/20 rounded-lg">
+                               <i data-lucide="bar-chart-2" class="text-blue-300 w-5 h-5"></i>
+                            </div>
+                           <h3 class="font-serif text-2xl">Suivi Émotionnel</h3>
+                       </div>
+                       <p class="text-sm text-gray-400 mt-2">Détectez les récurrences et suivez l'évolution de votre humeur nocturne.</p>
+                    </div>
+
+                    <!-- Mock Chart -->
+                    <div class="h-32 flex items-end gap-2 mt-6">
+                        <div class="w-full bg-dream-salmon/10 h-[40%] rounded-t"></div>
+                        <div class="w-full bg-dream-salmon/30 h-[60%] rounded-t relative group">
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">Lucide</div>
+                        </div>
+                        <div class="w-full bg-dream-salmon/50 h-[80%] rounded-t"></div>
+                        <div class="w-full bg-dream-salmon/20 h-[50%] rounded-t"></div>
+                        <div class="w-full bg-dream-salmon/40 h-[70%] rounded-t"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Pour qui ? (Profils) -->
+    <section class="py-24 px-4 relative">
+         <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Est-ce pour vous ?</h2>
+                <div class="h-1 w-20 bg-dream-salmon mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Profile 1 -->
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-dream-salmon">
+                    <div class="mx-auto w-16 h-16 bg-purple-900/50 rounded-full flex items-center justify-center mb-6">
+                        <i data-lucide="search" class="text-dream-salmon w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-serif text-xl mb-3">Le Curieux</h3>
+                    <p class="text-sm text-gray-400">Vous vous demandez pourquoi vous rêvez de perdre vos dents ou de voler. Vous cherchez du sens.</p>
+                </div>
+
+                <!-- Profile 2 -->
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-pink-400" style="transition-delay: 100ms;">
+                    <div class="mx-auto w-16 h-16 bg-pink-900/30 rounded-full flex items-center justify-center mb-6">
+                        <i data-lucide="feather" class="text-pink-300 w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-serif text-xl mb-3">L'Introspectif</h3>
+                    <p class="text-sm text-gray-400">Vous utilisez le journal intime et le développement personnel pour mieux vous connaître.</p>
+                </div>
+
+                <!-- Profile 3 -->
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-indigo-400" style="transition-delay: 200ms;">
+                    <div class="mx-auto w-16 h-16 bg-indigo-900/50 rounded-full flex items-center justify-center mb-6">
+                        <i data-lucide="moon" class="text-indigo-300 w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-serif text-xl mb-3">L'Explorateur</h3>
+                    <p class="text-sm text-gray-400">Vous pratiquez ou souhaitez apprendre le rêve lucide pour contrôler votre inconscient.</p>
+                </div>
+            </div>
+         </div>
+    </section>
+
+    <!-- 6. Témoignages -->
+    <section id="temoignages" class="py-24 px-4 bg-black/20">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-serif text-3xl md:text-4xl text-center mb-16 reveal">Rêves partagés</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="glass-panel p-8 rounded-2xl reveal">
+                    <div class="flex gap-1 text-dream-salmon mb-4">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Incroyable pour comprendre mes cauchemars récurrents. L'analyse m'a permis de faire le lien avec mon stress au travail. Apaisant."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-blue-500"></div>
+                        <div>
+                            <div class="text-sm font-bold">Sophie L.</div>
+                            <div class="text-xs text-gray-500">Utilisatrice depuis 2 mois</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 100ms;">
+                    <div class="flex gap-1 text-dream-salmon mb-4">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Je détestais écrire au réveil, j'oubliais tout le temps. Avec la fonction vocale, c'est devenu un réflexe naturel."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-teal-500"></div>
+                        <div>
+                            <div class="text-sm font-bold">Marc D.</div>
+                            <div class="text-xs text-gray-500">Rêveur lucide</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="glass-panel p-8 rounded-2xl reveal" style="transition-delay: 200ms;">
+                    <div class="flex gap-1 text-dream-salmon mb-4">
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Les images générées sont bluffantes. C'est magique de voir son rêve prendre forme visuellement. Mon journal est magnifique."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-red-500"></div>
+                        <div>
+                            <div class="text-sm font-bold">Élodie M.</div>
+                            <div class="text-xs text-gray-500">Artiste</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Prix / Plans -->
+    <section class="py-24 px-4 relative">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="font-serif text-3xl md:text-4xl mb-16 reveal">Commencez votre voyage</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Free Plan -->
+                <div class="glass-panel p-8 rounded-3xl reveal hover:border-dream-salmon/30">
+                    <h3 class="text-2xl font-serif mb-2">Rêveur</h3>
+                    <div class="text-4xl font-bold mb-6">Gratuit</div>
+                    <p class="text-gray-400 text-sm mb-8">Pour découvrir la magie de vos nuits sans engagement.</p>
+                    
+                    <ul class="space-y-4 text-left mb-8 px-4">
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 Analyses IA complètes</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Journal de base</li>
+                    </ul>
+                    
+                    <a href="#download" class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium">Télécharger</a>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
+                    <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Recommandé</div>
+                    <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
+                    
+                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Onironaute</h3>
+                    <div class="text-4xl font-bold mb-2">2,99 €<span class="text-sm font-normal text-gray-400">/mois</span></div>
+                    <p class="text-purple-200/60 text-xs mb-6">Ou 19 €/an (2 mois offerts)</p>
+                    
+                    <ul class="space-y-4 text-left mb-8 px-4">
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Analyses IA illimitées</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat avec le rêve</li>
+                    </ul>
+                    
+                    <button class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50">Essayer Gratuitement</button>
+                    <p class="text-[10px] text-gray-500 mt-3">7 jours d'essai offerts, annulation facile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. FAQ -->
+    <section class="py-20 px-4 max-w-3xl mx-auto">
+        <h2 class="font-serif text-3xl text-center mb-12 reveal">Questions fréquentes</h2>
+        
+        <div class="space-y-4 reveal">
+            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                <summary class="font-medium flex justify-between items-center">
+                    Comment fonctionne l'analyse des rêves ?
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                </summary>
+                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                    Noctalia utilise des modèles de langage avancés entraînés sur la psychologie analytique (Jung) et la symbolique des rêves. L'IA identifie les motifs récurrents et les archétypes pour vous proposer des pistes de réflexion, sans jamais imposer une vérité absolue.
+                </p>
+            </details>
+
+            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                <summary class="font-medium flex justify-between items-center">
+                    Mes rêves sont-ils privés ?
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                </summary>
+                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                    Absolument. Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous seul(e) y avez accès. Nous ne vendons pas vos données personnelles.
+                </p>
+            </details>
+
+            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                <summary class="font-medium flex justify-between items-center">
+                    Puis-je écrire mes rêves au lieu de parler ?
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                </summary>
+                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                    Oui, tout à fait. Si vous préférez ne pas réveiller votre partenaire ou si vous êtes plus à l'aise à l'écrit, un éditeur de texte complet est disponible.
+                </p>
+            </details>
+            
+            <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                <summary class="font-medium flex justify-between items-center">
+                    L'application fonctionne-t-elle hors ligne ?
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                </summary>
+                <p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                    Vous pouvez enregistrer vos rêves hors ligne. L'analyse IA et la synchronisation se feront automatiquement dès que vous retrouverez une connexion.
+                </p>
+            </details>
+        </div>
+    </section>
+
+    <!-- 9. Footer -->
+    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
+                </div>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">
+                    Le compagnon de vos nuits. Transformez l'invisible en visible, un rêve à la fois.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h5 class="font-bold mb-4 text-white">Légal</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="mentions-legales.html" class="hover:text-dream-salmon transition-colors">Mentions légales</a></li>
+                    <li><a href="politique-confidentialite.html" class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
+                    <li><a href="cgu.html" class="hover:text-dream-salmon transition-colors">CGU</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h5 class="font-bold mb-4 text-white">Télécharger</h5>
+                <div class="flex flex-col gap-3">
+                    <button class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                        <i data-lucide="apple" class="w-5 h-5"></i>
+                        <div class="leading-none">
+                            <div class="text-[9px] uppercase">Disponible sur</div>
+                            <div class="text-sm font-bold">App Store</div>
+                        </div>
+                    </button>
+                    <button class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                        <div class="leading-none">
+                            <div class="text-[9px] uppercase">Disponible sur</div>
+                            <div class="text-sm font-bold">Google Play</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+            <span>© 2025 Noctalia Inc. Tous droits réservés.</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
+        </div>
+    </footer>
+
+    <script>
+        // Safe Script Execution
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Initialize Icons (Safe Check)
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                try {
+                    lucide.createIcons();
+                } catch (e) {
+                    console.error("Lucide icons failed to load", e);
+                }
+            }
+
+            // 2. Scroll Reveal Animation (Independent of Lucide)
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal');
+            if(revealElements.length > 0){
+                revealElements.forEach(el => {
+                    observer.observe(el);
+                });
+            } else {
+                // Fallback if something is weird with selectors
+                console.log("No reveal elements found");
+            }
+
+            // 3. Mouse Parallax Effect
+            document.addEventListener('mousemove', (e) => {
+                const orbs = document.querySelectorAll('.orb');
+                if(orbs.length > 0) {
+                    const x = e.clientX / window.innerWidth;
+                    const y = e.clientY / window.innerHeight;
+
+                    orbs.forEach((orb, index) => {
+                        const speed = (index + 1) * 15;
+                        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+                    });
+                }
+            });
+
+            // 4. Navbar blurred on scroll
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('navbar');
+                if(navbar) {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('py-2');
+                        navbar.classList.remove('py-6');
+                    } else {
+                        navbar.classList.add('py-6');
+                        navbar.classList.remove('py-2');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

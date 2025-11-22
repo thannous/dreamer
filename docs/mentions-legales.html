@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentions légales | Noctalia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@100..900&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dream: {
+                            dark: '#0a0514',
+                            purple: '#2E1065',
+                            lavender: '#E9D5FF',
+                            cream: '#FFF7ED',
+                            salmon: '#FDA481',
+                            glass: 'rgba(255, 255, 255, 0.03)',
+                        },
+                    },
+                    fontFamily: {
+                        serif: ['Fraunces', 'serif'],
+                        sans: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dream-dark text-white font-sans antialiased selection:bg-dream-salmon selection:text-dream-dark">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-dream-dark/80 backdrop-blur-md border-b border-white/5">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2">
+                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                <span class="font-serif text-xl font-semibold text-dream-cream">Noctalia</span>
+            </a>
+            <a href="index.html" class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Retour
+            </a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 px-6 max-w-3xl mx-auto">
+        <h1 class="font-serif text-4xl md:text-5xl mb-10 text-dream-cream">Mentions légales</h1>
+        
+        <div class="space-y-8 text-gray-300 leading-relaxed">
+            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">1. Éditeur du site et de l'application</h2>
+                <p>Le site et l'application <strong>Noctalia</strong> sont édités par :</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>Éditeur :</strong> Thanh Chau</li>
+                    <li><strong>Statut juridique :</strong> entreprise individuelle établie en France</li>
+                    <li><strong>Adresse :</strong> Orléans, France</li>
+                    <li><strong>Numéro SIREN / SIRET :</strong> en cours d'immatriculation</li>
+                    <li><strong>Directeur de la publication :</strong> Thanh Chau</li>
+                    <li><strong>Contact :</strong> <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a></li>
+                </ul>
+            </section>
+
+            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">2. Hébergement</h2>
+                <p>Le site est hébergé par :</p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>Hébergeur :</strong> Vercel Inc.</li>
+                    <li><strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, États‑Unis</li>
+                    <li><strong>Site web :</strong> <a href="https://vercel.com" class="text-dream-salmon hover:underline">https://vercel.com</a></li>
+                </ul>
+                <p class="mt-4">Les données de l'application (comptes et journal de rêves) sont hébergées de manière sécurisée dans une base de données <strong>Supabase</strong> située en <strong>Europe de l'Ouest (Union européenne)</strong>, sur des serveurs soumis au RGPD. Pour plus d'informations sur la manière dont vos données sont traitées, veuillez consulter notre <a href="politique-confidentialite.html" class="text-dream-salmon hover:underline">Politique de confidentialité</a>.</p>
+            </section>
+
+            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">3. Propriété intellectuelle</h2>
+                <p>L'ensemble de ce site et de l'application Noctalia relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.</p>
+                <p class="mt-4">Sauf mention contraire, les éléments figurant sur le site et dans l'application (textes, interfaces, illustrations, logos, icônes, etc.) sont la propriété de Thanh Chau / Noctalia ou font l'objet d'une licence accordée à Noctalia. Toute reproduction, représentation, adaptation ou diffusion, intégrale ou partielle, sur quelque support que ce soit, est interdite sans l'autorisation écrite préalable du directeur de la publication.</p>
+            </section>
+
+            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">4. Données personnelles</h2>
+                <p>Les traitements de données personnelles réalisés dans le cadre de Noctalia sont détaillés dans notre <a href="politique-confidentialite.html" class="text-dream-salmon hover:underline">Politique de confidentialité</a>. Vous y trouverez notamment les finalités des traitements, leurs bases légales, les durées de conservation ainsi que vos droits (accès, rectification, effacement, opposition, limitation, portabilité, etc.).</p>
+            </section>
+
+            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">5. Signalement de contenus illicites</h2>
+                <p>Noctalia peut héberger des contenus fournis par les utilisateurs (notamment leurs rêves et notes personnelles). Si vous estimez qu'un contenu est manifestement illicite ou contraire à nos conditions d'utilisation, vous pouvez le signaler en nous contactant à l'adresse suivante : <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
+                <p class="mt-4">Afin de permettre un traitement efficace de votre demande, merci de fournir toutes les informations utiles (description du contenu, motif du signalement, date de constatation, identifiant ou capture du contenu concerné). Votre signalement sera examiné dans les meilleurs délais, conformément à la législation applicable.</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="py-10 border-t border-white/5 text-center text-gray-600 text-sm">
+        <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <span>© 2025 Thanh Chau — Noctalia. Tous droits réservés.</span>
+            <div class="flex gap-4">
+                <a href="mentions-legales.html" class="text-dream-salmon">Mentions légales</a>
+                <a href="politique-confidentialite.html" class="hover:text-white transition-colors">Confidentialité</a>
+                <a href="cgu.html" class="hover:text-white transition-colors">CGU</a>
+            </div>
+        </div>
+    </footer>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
