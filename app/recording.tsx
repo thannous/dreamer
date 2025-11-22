@@ -325,7 +325,9 @@ export default function RecordingScreen() {
           }
         },
       });
-      skipRecorderRef.current = Boolean(nativeSessionRef.current);
+      // On web we keep the recorder running to preserve a fallback audio file in case
+      // the SpeechRecognition API returns an empty transcript.
+      skipRecorderRef.current = Platform.OS !== 'web' && Boolean(nativeSessionRef.current);
       if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
         console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
       }
