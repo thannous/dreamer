@@ -1,12 +1,28 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated, Platform } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Animated, {
+  Easing,
+  type SharedValue,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
+
 import { useTheme } from '@/context/ThemeContext';
 
 interface WaveformProps {
   isActive: boolean;
 }
 
-const BARS = [
+type BarConfig = {
+  height: number;
+  opacity: number;
+  phase: number;
+};
+
+// Pre-generate subtle phase offsets so bars don't move in sync
+const BARS: BarConfig[] = [
   { height: 20, opacity: 0.5 },
   { height: 36, opacity: 0.7 },
   { height: 56, opacity: 1 },
@@ -25,69 +41,82 @@ const BARS = [
   { height: 20, opacity: 0.5 },
   { height: 36, opacity: 0.7 },
   { height: 56, opacity: 1 },
-];
+].map((bar, index) => ({
+  ...bar,
+  phase: (index * Math.PI) / 6 + Math.random() * 0.8,
+}));
+
+const LOOP_DURATION_MS = 900;
 
 export function Waveform({ isActive }: WaveformProps) {
   const { colors } = useTheme();
-  const animations = useRef(
-    BARS.map(() => new Animated.Value(1))
-  ).current;
+  const progress = useSharedValue(0);
 
   useEffect(() => {
     if (isActive) {
-      // Animate each bar with different timing
-      const animatedBars = animations.map((anim, index) =>
-        Animated.loop(
-          Animated.sequence([
-            Animated.timing(anim, {
-              toValue: 0.3 + Math.random() * 0.7,
-              duration: 300 + Math.random() * 400,
-              useNativeDriver: Platform.OS !== 'web',
-            }),
-            Animated.timing(anim, {
-              toValue: 1,
-              duration: 300 + Math.random() * 400,
-              useNativeDriver: Platform.OS !== 'web',
-            }),
-          ])
-        )
+      progress.value = withRepeat(
+        withTiming(Math.PI * 2, {
+          duration: LOOP_DURATION_MS,
+          easing: Easing.linear,
+        }),
+        -1
       );
-
-      animatedBars.forEach((animation, index) => {
-        setTimeout(() => animation.start(), index * 50);
-      });
-
-      return () => {
-        animatedBars.forEach(animation => animation.stop());
-      };
     } else {
-      // Reset all bars to default state
-      animations.forEach(anim => anim.setValue(1));
+      progress.value = 0;
     }
-  }, [isActive, animations]);
+
+    return () => {
+      progress.value = 0;
+    };
+  }, [isActive, progress]);
 
   return (
     <View style={styles.container}>
       {BARS.map((bar, index) => {
         const isAccent = index % 5 === 2 || index % 5 === 4;
         return (
-          <Animated.View
+          <WaveformBar
             key={index}
-            style={[
-              styles.bar,
-              {
-                height: bar.height,
-                backgroundColor: isAccent
-                  ? colors.accent
-                  : colors.textSecondary,
-                opacity: bar.opacity,
-                transform: [{ scaleY: animations[index] }],
-              },
-            ]}
+            bar={bar}
+            isAccent={isAccent}
+            progress={progress}
+            accentColor={colors.accent}
+            baseColor={colors.textSecondary}
           />
         );
       })}
     </View>
+  );
+}
+
+type WaveformBarProps = {
+  bar: BarConfig;
+  isAccent: boolean;
+  progress: SharedValue<number>;
+  accentColor: string;
+  baseColor: string;
+};
+
+function WaveformBar({ bar, isAccent, progress, accentColor, baseColor }: WaveformBarProps) {
+  const animatedStyle = useAnimatedStyle(() => {
+    // Range ~0.3 -> 1.0 to mimic breathing waveform
+    const wave = 0.5 + 0.5 * Math.sin(progress.value + bar.phase);
+    const scaleY = 0.3 + wave * 0.7;
+    return { transform: [{ scaleY }] };
+  });
+
+  return (
+    <Animated.View
+      style={[
+        styles.bar,
+        {
+          height: bar.height,
+          backgroundColor: isAccent ? accentColor : baseColor,
+          opacity: bar.opacity,
+        },
+        animatedStyle,
+      ]}
+    />
   );
 }
 

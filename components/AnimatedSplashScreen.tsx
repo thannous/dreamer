@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Animated, {
     Easing,
@@ -10,6 +10,7 @@ import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withSequence,
+    withRepeat,
     withTiming,
     type SharedValue
 } from 'react-native-reanimated';
@@ -73,7 +74,8 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
   // 1-2: Draw Moon
   // 2-3: Draw Star
   // 3-4: Fill & Glow & Text
-  
+
+  const floatProgress = useSharedValue(0);
   const containerOpacity = useSharedValue(1);
 
   useEffect(() => {
@@ -89,6 +91,13 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       withTiming(4, { duration: 1000, easing: Easing.out(Easing.quad) })
     );
   }, [phase]);
+
+  useEffect(() => {
+    floatProgress.value = withRepeat(
+      withTiming(Math.PI * 2, { duration: 2400, easing: Easing.linear }),
+      -1
+    );
+  }, [floatProgress]);
 
   useEffect(() => {
     if (status === 'outro') {
@@ -192,7 +201,7 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       {/* Particles */}
       <View style={StyleSheet.absoluteFill}>
         {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
-          <Particle key={i} index={i} phase={phase} />
+          <Particle key={i} index={i} phase={phase} float={floatProgress} />
         ))}
       </View>
 
@@ -252,16 +261,18 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
 
 // --- Helper Components ---
 
-const Particle = ({ index, phase }: { index: number; phase: SharedValue<number> }) => {
-  // Random initial positions
-  const randomX = Math.random() * width;
-  const randomY = Math.random() * height;
-  const size = Math.random() * 2 + 1;
-  
+const Particle = ({ index, phase, float }: { index: number; phase: SharedValue<number>; float: SharedValue<number> }) => {
+  // Random initial positions (stable across renders)
+  const randomX = useRef(Math.random() * width).current;
+  const randomY = useRef(Math.random() * height).current;
+  const size = useRef(Math.random() * 2 + 1).current;
+  const phaseOffset = useRef(Math.random() * Math.PI * 2).current;
+
   const style = useAnimatedStyle(() => {
-    // Floating movement
-    const floatY = Math.sin(Date.now() / 1000 + index) * 15;
-    
+    // Floating movement (UI thread)
+    const wave = 0.5 + 0.5 * Math.sin(float.value + phaseOffset);
+    const floatY = (wave - 0.5) * 30;
+
     // Convergence to center in Phase 1-2
     const progress = interpolate(phase.value, [0, 2], [0, 1], 'clamp');
     

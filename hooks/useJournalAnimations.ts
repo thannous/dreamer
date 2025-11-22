@@ -6,6 +6,7 @@ import { OPACITY, SCALE, SLIDE_DISTANCE, SPRING_CONFIGS, TIMING_CONFIGS } from '
 import { useEffect } from 'react';
 import {
     Extrapolation,
+    cancelAnimation,
     interpolate,
     useAnimatedStyle,
     useSharedValue,
@@ -143,21 +144,30 @@ export function usePulseAnimation(idleTimeoutMs = 15000) {
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    // Create a repeating pulse effect
-    const pulse = () => {
-      scale.value = withSpring(1.05, SPRING_CONFIGS.gentle, () => {
-        scale.value = withSpring(1, SPRING_CONFIGS.gentle);
-      });
-    };
+    let timeout: ReturnType<typeof setTimeout> | null = null;
 
-    // Pulse every 3 seconds
-    const interval = setInterval(pulse, 3000);
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-    }, idleTimeoutMs);
+    scale.value = withRepeat(
+      withSequence(
+        withSpring(1.05, SPRING_CONFIGS.gentle),
+        withSpring(1, SPRING_CONFIGS.gentle)
+      ),
+      -1,
+      false
+    );
+
+    if (idleTimeoutMs > 0) {
+      timeout = setTimeout(() => {
+        cancelAnimation(scale);
+        scale.value = withTiming(1, TIMING_CONFIGS.easeOut);
+      }, idleTimeoutMs);
+    }
+
     return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      cancelAnimation(scale);
+      scale.value = 1;
     };
   }, [idleTimeoutMs, scale]);
 
