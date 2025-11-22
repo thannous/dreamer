@@ -1,33 +1,33 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
+import { GradientColors } from '@/constants/gradients';
+import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
-import { Fonts } from '@/constants/theme';
-import { startOrContinueChat } from '@/services/geminiService';
-import { ChatMessage, DreamAnalysis } from '@/lib/types';
-import { GradientColors } from '@/constants/gradients';
-import { getImageConfig } from '@/lib/imageUtils';
 import { useQuota } from '@/hooks/useQuota';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
-import { quotaService } from '@/services/quotaService';
-import { useAuth } from '@/context/AuthContext';
+import { getImageConfig } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
+import { ChatMessage, DreamAnalysis } from '@/lib/types';
+import { startOrContinueChat } from '@/services/geminiService';
+import { quotaService } from '@/services/quotaService';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+    ActivityIndicator,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
 
@@ -73,6 +73,7 @@ const QUICK_CATEGORIES = [
 ];
 
 export default function DreamChatScreen() {
+  const { t } = useTranslation();
   const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
   const { dreams, updateDream } = useDreams();
   const { colors, mode, shadows } = useTheme();
@@ -272,12 +273,12 @@ export default function DreamChatScreen() {
   if (!dream) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <Text style={[styles.errorText, { color: colors.textPrimary }]}>Dream not found.</Text>
+        <Text style={[styles.errorText, { color: colors.textPrimary }]}>{t('dream_chat.not_found.title')}</Text>
         <Pressable
           onPress={handleBackPress}
           style={[styles.missingDreamBackButton, { backgroundColor: colors.accent }]}
         >
-          <Text style={[styles.missingDreamBackButtonText, { color: colors.textPrimary }]}>Go Back</Text>
+          <Text style={[styles.missingDreamBackButtonText, { color: colors.textPrimary }]}>{t('dream_chat.not_found.back')}</Text>
         </Pressable>
       </LinearGradient>
     );
@@ -298,12 +299,12 @@ export default function DreamChatScreen() {
         <View style={[styles.blockedContainer]} testID={TID.Chat.ScreenBlocked}>
           <Ionicons name="lock-closed" size={64} color={colors.accent} />
           <Text style={[styles.blockedTitle, { color: colors.textPrimary }]}>
-            Exploration Limit Reached
+            {t('dream_chat.exploration_limit.title')}
           </Text>
           <Text style={[styles.blockedMessage, { color: colors.textSecondary }]}>
             {tier === 'guest'
-              ? `You've reached the limit of 2 dream explorations in guest mode. Create a free account to continue exploring your dreams!`
-              : `You've reached the exploration limit. Upgrade to premium for unlimited dream exploration!`}
+              ? t('dream_chat.exploration_limit.message_guest')
+              : t('dream_chat.exploration_limit.message_free')}
           </Text>
           <Pressable
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: colors.accent }]}
@@ -311,7 +312,7 @@ export default function DreamChatScreen() {
           >
             <Ionicons name="arrow-up-circle-outline" size={24} color={colors.textPrimary} />
             <Text style={[styles.upgradeButtonText, { color: colors.textPrimary }]}>
-              {tier === 'guest' ? 'Create Free Account' : 'Upgrade to Premium'}
+              {tier === 'guest' ? t('dream_chat.exploration_limit.cta_guest') : t('dream_chat.exploration_limit.cta_free')}
             </Text>
           </Pressable>
         </View>
@@ -422,14 +423,14 @@ export default function DreamChatScreen() {
           {isLoading && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="small" color={colors.accent} />
-              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>Thinking...</Text>
+              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('dream_chat.thinking')}</Text>
             </View>
           )}
 
           {/* Quick Category Buttons */}
           {messages.length <= 2 && (
             <View style={styles.quickCategoriesContainer}>
-              <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>Quick Topics:</Text>
+              <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>{t('dream_chat.quick_topics')}</Text>
               <View style={styles.quickCategories}>
                 {QUICK_CATEGORIES.map((cat) => (
                   <Pressable

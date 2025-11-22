@@ -19,21 +19,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Animated,
-  Easing,
-  Keyboard,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  Share,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
+    ActivityIndicator,
+    Alert,
+    Animated,
+    Easing,
+    Keyboard,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    Share,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
 } from 'react-native';
 
 type ShareNavigator = Navigator & {
@@ -726,12 +726,12 @@ export default function JournalDetailScreen() {
           selectTextOnFocus
           value={editableTitle}
           onChangeText={setEditableTitle}
-          placeholder="Add a title to this dream"
+          placeholder={t('journal.detail.title_placeholder')}
           placeholderTextColor={colors.textSecondary}
         />
       ) : (
         <Text style={[styles.metadataTitle, { color: colors.textPrimary }]}>
-          {dream.title || 'Untitled Dream'}
+          {dream.title || t('journal.detail.untitled_dream')}
         </Text>
       )}
 
@@ -739,7 +739,7 @@ export default function JournalDetailScreen() {
         <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}
         >
           <Ionicons name="moon-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
-          <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Dream Type:</Text>
+          <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>{t('journal.detail.dream_type_label')}</Text>
           {isEditing ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
               <View style={styles.chipsContainer}>
@@ -774,7 +774,7 @@ export default function JournalDetailScreen() {
 
       <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
         <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
-        <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>Theme:</Text>
+        <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>{t('journal.detail.theme_label')}</Text>
         {isEditing ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
             <View style={styles.chipsContainer}>
