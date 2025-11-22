@@ -1,8 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Animated, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
+import { Ionicons } from '@expo/vector-icons';
+import { MotiView } from 'moti';
+import React, { useCallback, useState } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 
 interface MicButtonProps {
   isRecording: boolean;
@@ -15,60 +18,22 @@ interface MicButtonProps {
 export function MicButton({ isRecording, onPress, testID, accessibilityLabel, disabled }: MicButtonProps) {
   const { t } = useTranslation();
   const { colors, shadows, mode } = useTheme();
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const glowAnim = useRef(new Animated.Value(0)).current;
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isFocused, setIsFocused] = useState(true);
 
-  useEffect(() => {
-    if (isRecording) {
-      // Start pulsing animation
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, {
-            toValue: 1.1,
-            duration: 800,
-            useNativeDriver: Platform.OS !== 'web',
-          }),
-          Animated.timing(pulseAnim, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: Platform.OS !== 'web',
-          }),
-        ])
-      ).start();
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
-      // Start glow animation
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(glowAnim, {
-            toValue: 1,
-            duration: 1000,
-            useNativeDriver: false,
-          }),
-          Animated.timing(glowAnim, {
-            toValue: 0,
-            duration: 1000,
-            useNativeDriver: false,
-          }),
-        ])
-      ).start();
-    } else {
-      // Reset animations
-      pulseAnim.setValue(1);
-      glowAnim.setValue(0);
-    }
-  }, [isRecording, pulseAnim, glowAnim]);
-
-  // Dynamic glow colors based on theme
-  const glowColor = glowAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: mode === 'dark'
-      ? [colors.accent, '#9d7bc8']
-      : [colors.accent, colors.accentLight],
-  });
-
-  // Dynamic button colors
+  // Dynamic colors
   const buttonBackground = mode === 'dark' ? '#4f3d6b' : colors.accent;
   const buttonRecordingBackground = mode === 'dark' ? '#5a3d7b' : colors.accentDark;
+  const glowColor = mode === 'dark' ? colors.accent : colors.accentDark;
+  const shouldAnimate = isFocused && !prefersReducedMotion;
+  const showPulses = isRecording && shouldAnimate;
 
   return (
     <Pressable
@@ -81,34 +46,84 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel, di
       }
       testID={testID}
     >
-      {isRecording && (
-        <Animated.View
+      {/* Outer Pulse Circle */}
+      {showPulses && (
+        <MotiView
+          from={{ opacity: 0.5, scale: 1 }}
+          animate={{ opacity: 0, scale: 1.4 }}
+          transition={{
+            type: 'timing',
+            duration: 2000,
+            loop: true,
+            repeatReverse: false,
+          }}
+          style={[
+            styles.pulseCircle,
+            {
+              backgroundColor: glowColor,
+            }
+          ]}
+        />
+      )}
+
+      {/* Glow Effect */}
+      {showPulses && (
+        <MotiView
+          from={{ opacity: 0.6, scale: 1.05 }}
+          animate={{ opacity: 0.2, scale: 1.15 }}
+          transition={{
+            type: 'timing',
+            duration: 1500,
+            loop: true,
+            repeatReverse: true,
+          }}
           style={[
             styles.glow,
             {
               borderColor: glowColor,
-              opacity: glowAnim,
             },
           ]}
         />
       )}
-      <Animated.View
+
+      {/* Main Button */}
+      <MotiView
+        animate={{
+          scale: isRecording ? 1.05 : 1,
+          backgroundColor: isRecording ? buttonRecordingBackground : buttonBackground,
+        }}
+        transition={{
+          type: 'timing',
+          duration: 800,
+        }}
         style={[
           styles.button,
           shadows.xl,
           {
-            backgroundColor: isRecording ? buttonRecordingBackground : buttonBackground,
             borderColor: colors.accent,
-            transform: [{ scale: pulseAnim }],
           },
         ]}
       >
-        <Ionicons
-          name={isRecording ? 'stop' : 'mic'}
-          size={72}
-          color={colors.textPrimary}
-        />
-      </Animated.View>
+        {/* Breathing Icon */}
+        <MotiView
+          animate={{
+            scale: isRecording ? 1.1 : 1,
+            opacity: isRecording ? 1 : 0.9,
+          }}
+          transition={{
+            type: 'timing',
+            duration: 1000,
+            loop: isRecording && shouldAnimate,
+            repeatReverse: true,
+          }}
+        >
+          <Ionicons
+            name={isRecording ? 'stop' : 'mic'}
+            size={104}
+            color={colors.textPrimary}
+          />
+        </MotiView>
+      </MotiView>
     </Pressable>
   );
 }
@@ -118,25 +133,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    width: 240,
+    height: 240,
   },
   disabled: {
     opacity: 0.5,
   },
   button: {
-    width: 144,
-    height: 144,
-    borderRadius: 72,
-    // backgroundColor and borderColor: set dynamically
+    width: 206,
+    height: 206,
+    borderRadius: 103,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    // shadow: applied via theme shadows.xl
+    zIndex: 10,
   },
   glow: {
     position: 'absolute',
-    width: 164,
-    height: 164,
-    borderRadius: 82,
+    width: 216,
+    height: 216,
+    borderRadius: 108,
     borderWidth: 4,
+    zIndex: 5,
+  },
+  pulseCircle: {
+    position: 'absolute',
+    width: 206,
+    height: 206,
+    borderRadius: 103,
+    zIndex: 1,
   },
 });

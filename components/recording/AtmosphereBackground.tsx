@@ -1,17 +1,32 @@
+import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from 'moti';
-import React, { useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 const { height } = Dimensions.get('window');
+const PARTICLE_COUNT = 4;
+const STAR_COUNT = 5;
 
-export function AtmosphereBackground() {
-  const { mode } = useTheme();
+function AtmosphereBackgroundComponent() {
+  const { mode, colors } = useTheme();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isFocused, setIsFocused] = useState(true);
   const isDark = mode === 'dark';
 
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
+
+  const shouldAnimate = isFocused && !prefersReducedMotion;
+
   // Particle configuration
-  const particles = useMemo(() => Array.from({ length: 15 }).map((_, i) => ({
+  const particles = useMemo(() => Array.from({ length: PARTICLE_COUNT }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
     size: Math.random() * 4 + 2,
@@ -20,7 +35,7 @@ export function AtmosphereBackground() {
   })), []);
 
   // Star configuration
-  const stars = useMemo(() => Array.from({ length: 20 }).map((_, i) => ({
+  const stars = useMemo(() => Array.from({ length: STAR_COUNT }).map((_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
@@ -33,19 +48,27 @@ export function AtmosphereBackground() {
       {/* Animated Gradient Background Overlay - subtle movement */}
       <MotiView
         from={{ opacity: 0.3 }}
-        animate={{ opacity: 0.6 }}
-        transition={{
-          type: 'timing',
-          duration: 4000,
-          loop: true,
-          repeatReverse: true,
-        }}
+        animate={shouldAnimate ? { opacity: 0.6 } : { opacity: 0.45 }}
+        transition={
+          shouldAnimate
+            ? {
+                type: 'timing',
+                duration: 4000,
+                loop: true,
+                repeatReverse: true,
+              }
+            : undefined
+        }
         style={StyleSheet.absoluteFill}
       >
         <Svg height="100%" width="100%">
           <Defs>
             <RadialGradient id="grad" cx="50%" cy="50%" rx="50%" ry="50%" fx="50%" fy="50%" gradientUnits="userSpaceOnUse">
-              <Stop offset="0%" stopColor={isDark ? '#4c3f6d' : '#e0d4fc'} stopOpacity="0.4" />
+              <Stop
+                offset="0%"
+                stopColor={isDark ? '#4c3f6d' : colors.accent}
+                stopOpacity={isDark ? 0.4 : 0.25}
+              />
               <Stop offset="100%" stopColor="transparent" stopOpacity="0" />
             </RadialGradient>
           </Defs>
@@ -61,42 +84,61 @@ export function AtmosphereBackground() {
             translateY: height,
             opacity: 0,
           }}
-          animate={{
-            translateY: -50,
-            opacity: [0, 0.8, 0],
-          }}
-          transition={{
-            type: 'timing',
-            duration: p.duration,
-            loop: true,
-            delay: p.delay,
-            repeatReverse: false,
-          }}
+          animate={
+            shouldAnimate
+              ? {
+                  translateY: -50,
+                  opacity: [0, 0.8, 0],
+                }
+              : {
+                  translateY: height * 0.2,
+                  opacity: 0.35,
+                }
+          }
+          transition={
+            shouldAnimate
+              ? {
+                  type: 'timing',
+                  duration: p.duration,
+                  loop: true,
+                  delay: p.delay,
+                  repeatReverse: false,
+                }
+              : undefined
+          }
           style={[
             styles.particle,
             {
               left: `${p.x}%`,
               width: p.size,
               height: p.size,
-              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.6)',
+              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(212, 165, 116, 0.4)',
             }
           ]}
         />
       ))}
 
       {/* Twinkling Stars */}
-      {isDark && stars.map((s) => (
+      {stars.map((s) => (
         <MotiView
           key={`star-${s.id}`}
-          from={{ opacity: 0.2, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1.2 }}
-          transition={{
-            type: 'timing',
-            duration: 1000 + Math.random() * 1000,
-            loop: true,
-            repeatReverse: true,
-            delay: s.delay,
-          }}
+          from={{ opacity: 0.2, scale: 0.85 }}
+          animate={
+            shouldAnimate
+              ? { opacity: 1, scale: 1.2 }
+              : { opacity: 0.8, scale: 1 }
+          }
+          transition={
+            shouldAnimate
+              ? {
+                  type: 'timing',
+                  duration: 1000 + Math.random() * 1000,
+                  loop: true,
+                  repeatReverse: true,
+                  delay: s.delay,
+                }
+              : undefined
+          }
           style={[
             styles.star,
             {
@@ -104,6 +146,7 @@ export function AtmosphereBackground() {
               top: `${s.y}%`,
               width: s.size,
               height: s.size,
+              backgroundColor: isDark ? '#FFF' : 'rgba(212, 165, 116, 0.6)',
             }
           ]}
         />
@@ -128,3 +171,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
 });
+
+export const AtmosphereBackground = memo(AtmosphereBackgroundComponent);

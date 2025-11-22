@@ -1,11 +1,23 @@
+import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from 'moti';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export function MicClouds() {
   const { mode } = useTheme();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const [isFocused, setIsFocused] = useState(true);
   const isDark = mode === 'dark';
+  const shouldAnimate = isFocused && !prefersReducedMotion;
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
   // Cloud colors based on theme
   const cloudColor = isDark ? 'rgba(100, 80, 120, 0.15)' : 'rgba(255, 255, 255, 0.4)';
@@ -23,19 +35,32 @@ export function MicClouds() {
               translateX: 0,
               translateY: 0,
             }}
-            animate={{
-              opacity: 0.6,
-              scale: 1.1 + (i * 0.05),
-              translateX: (i % 2 === 0 ? 10 : -10),
-              translateY: -10,
-            }}
-            transition={{
-              type: 'timing',
-              duration: 4000 + (i * 1000),
-              loop: true,
-              repeatReverse: true,
-              delay: i * 500,
-            }}
+            animate={
+              shouldAnimate
+                ? {
+                    opacity: 0.6,
+                    scale: 1.1 + (i * 0.05),
+                    translateX: (i % 2 === 0 ? 10 : -10),
+                    translateY: -10,
+                  }
+                : {
+                    opacity: 0.5,
+                    scale: 1.05,
+                    translateX: 0,
+                    translateY: -4,
+                  }
+            }
+            transition={
+              shouldAnimate
+                ? {
+                    type: 'timing',
+                    duration: 4000 + (i * 1000),
+                    loop: true,
+                    repeatReverse: true,
+                    delay: i * 500,
+                  }
+                : undefined
+            }
             style={[
               styles.cloud,
               {
