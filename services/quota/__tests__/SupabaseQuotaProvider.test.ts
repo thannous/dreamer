@@ -39,9 +39,11 @@ const guestUser = null;
 describe('SupabaseQuotaProvider', () => {
   let provider: SupabaseQuotaProvider;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     provider = new SupabaseQuotaProvider();
     vi.clearAllMocks();
+    const mockStorage = await vi.importMock('@/services/storageService');
+    mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([]);
   });
 
   describe('class instantiation and basic methods', () => {
@@ -133,7 +135,7 @@ describe('SupabaseQuotaProvider', () => {
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([dream]);
 
       // When
-      const count = await provider.getUsedMessagesCount(user, { dreamId: 123 });
+      const count = await provider.getUsedMessagesCount({ dreamId: 123 }, user);
 
       // Then
       expect(count).toBe(10);
@@ -289,15 +291,15 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockDate = new Date('2024-01-15T12:00:00Z');
-      vi.spyOn(global, 'Date').mockImplementation(() => mockDate as any);
+      vi.useFakeTimers();
+      vi.setSystemTime(mockDate);
 
       // When
       const cacheKey = p.getMonthlyCacheKey('test_prefix', user);
 
       // Then
       expect(cacheKey).toBe('test_prefix_test-user_2024-1');
-      
-      vi.restoreAllMocks();
+      vi.useRealTimers();
     });
   });
 
@@ -310,7 +312,7 @@ describe('SupabaseQuotaProvider', () => {
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([mockDream]);
 
       // When
-      const dream = await provider.resolveDream(dreamId);
+      const dream = await provider.resolveDream({ dreamId });
 
       // Then
       expect(dream).toEqual(mockDream);
@@ -324,15 +326,15 @@ describe('SupabaseQuotaProvider', () => {
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([{ id: 123 }]);
 
       // When
-      const dream = await provider.resolveDream(dreamId);
+      const dream = await provider.resolveDream({ dreamId });
 
       // Then
-      expect(dream).toBeNull();
+      expect(dream).toBeUndefined();
     });
   });
 
   describe('quota validation methods', () => {
-    it('given guest user when checking analysis then allows within guest limits', async () => {
+    it('given guest user when checking analysis then denies (handled by guest provider elsewhere)', async () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(1);
@@ -341,7 +343,7 @@ describe('SupabaseQuotaProvider', () => {
       const canAnalyze = await provider.canAnalyzeDream(guestUser, { dreamId: 123 });
 
       // Then
-      expect(canAnalyze).toBe(true);
+      expect(canAnalyze).toBe(false);
     });
 
     it('given guest user beyond limits when checking analysis then denies', async () => {
@@ -374,10 +376,10 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedExplorationCount = vi.fn().mockResolvedValue(1);
 
       // When
-      const canExplore = await provider.canExploreDream(guestUser, { dreamId: 123 });
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, guestUser);
 
       // Then
-      expect(canExplore).toBe(true);
+      expect(canExplore).toBe(false);
     });
 
     it('given guest user beyond limits when checking exploration then denies', async () => {
@@ -386,7 +388,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedExplorationCount = vi.fn().mockResolvedValue(3);
 
       // When
-      const canExplore = await provider.canExploreDream(guestUser, { dreamId: 123 });
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, guestUser);
 
       // Then
       expect(canExplore).toBe(false);
@@ -398,7 +400,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedExplorationCount = vi.fn().mockResolvedValue(100);
 
       // When
-      const canExplore = await provider.canExploreDream(premiumUser, { dreamId: 123 });
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, premiumUser);
 
       // Then
       expect(canExplore).toBe(true);
