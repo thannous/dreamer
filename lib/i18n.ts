@@ -183,6 +183,9 @@ const translations: LanguagePack = {
     'recording.title': 'New Dream',
     'recording.instructions': 'Whisper your dream into the ether...',
     'recording.placeholder': 'Or transcribe the whispers of your subconscious here...',
+    'recording.instructions.text': 'Or write down the whispers of your subconscious...',
+    'recording.mode.switch_to_text': 'Write my dream',
+    'recording.mode.switch_to_voice': 'Dictate my dream',
     'recording.placeholder.accessibility': 'Dream transcript input',
     'recording.button.analyze': 'Analyze My Dream',
     'recording.button.accessibility': 'Analyze my dream',
@@ -412,8 +415,7 @@ const translations: LanguagePack = {
     'common.error_title': 'Erreur',
     'common.ok': 'OK',
     'common.success': 'Succès',
-    'common.ok': 'OK',
-    'common.success': 'Succès',
+
     'nav.home': 'Accueil',
     'nav.journal': 'Journal',
     'nav.stats': 'Stats',
@@ -583,6 +585,9 @@ const translations: LanguagePack = {
     'recording.title': 'Nouveau rêve',
     'recording.instructions': 'Chuchote ton rêve à l’éther...',
     'recording.placeholder': 'Ou transcris ici les murmures de ton subconscient...',
+    'recording.instructions.text': 'Ou transcris ici les murmures de ton subconscient...',
+    'recording.mode.switch_to_text': 'Écrire mon rêve',
+    'recording.mode.switch_to_voice': 'Dicter mon rêve',
     'recording.placeholder.accessibility': 'Zone de texte du rêve',
     'recording.button.analyze': 'Analyser mon rêve',
     'recording.button.accessibility': 'Analyser mon rêve',
@@ -981,6 +986,9 @@ const translations: LanguagePack = {
     'recording.title': 'Nuevo sueño',
     'recording.instructions': 'Susurra tu sueño al éter...',
     'recording.placeholder': 'O transcribe aquí los susurros de tu subconsciente...',
+    'recording.instructions.text': 'O escribe aquí los susurros de tu subconsciente...',
+    'recording.mode.switch_to_text': 'Escribir mi sueño',
+    'recording.mode.switch_to_voice': 'Dictar mi sueño',
     'recording.placeholder.accessibility': 'Entrada del sueño',
     'recording.button.analyze': 'Analizar mi sueño',
     'recording.button.accessibility': 'Analizar mi sueño',
@@ -1202,6 +1210,7 @@ const translations: LanguagePack = {
   },
 };
 
+// Force reload translations
 export const getTranslator = (lang?: string) => {
   const language = translations[lang || 'en'] ? (lang as keyof typeof translations) : 'en';
   return (key: string, replacements?: { [k: string]: string | number }): string => {
