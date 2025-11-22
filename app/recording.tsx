@@ -118,6 +118,7 @@ export default function RecordingScreen() {
   const skipRecorderRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
+  const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
@@ -362,72 +363,9 @@ export default function RecordingScreen() {
     };
   }, [user, pendingGuestLimitDream, addDream, dreams.length, navigateAfterSave, resetComposer, t]);
 
-  const startRecording = useCallback(async () => {
-    try {
-      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-      if (!granted) {
-        Alert.alert(
-          t('recording.alert.permission_required.title'),
-          t('recording.alert.permission_required.message')
-        );
-        return;
-      }
-
-      await setAudioModeAsync({
-        allowsRecording: true,
-        playsInSilentMode: true,
-      });
-
-      nativeSessionRef.current?.abort();
-      baseTranscriptRef.current = transcript;
-      nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
-        onPartial: (text) => {
-          const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
-          setTranscript(combined);
-          setLengthWarning(truncated ? lengthLimitMessage() : '');
-          if (truncated) {
-            void stopRecording();
-          }
-        },
-      });
-      // On web we keep the recorder running to preserve a fallback audio file in case
-      // the SpeechRecognition API returns an empty transcript.
-      skipRecorderRef.current = Platform.OS !== 'web' && Boolean(nativeSessionRef.current);
-      if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
-        console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
-      }
-      if (__DEV__) {
-        console.log('[Recording] native session', {
-          hasSession: Boolean(nativeSessionRef.current),
-          locale: transcriptionLocale,
-        });
-      }
-
-      hasAutoStoppedRecordingRef.current = false;
-      if (!skipRecorderRef.current) {
-        await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
-        audioRecorder.record();
-      } else if (__DEV__) {
-        console.log('[Recording] skipping audioRecorder because native session active');
-      }
-
-      setIsRecording(true);
-      isRecordingRef.current = true;
-    } catch (err) {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
-      skipRecorderRef.current = false;
-      isRecordingRef.current = false;
-      if (__DEV__) {
-        console.error('Failed to start recording:', err);
-      }
-      Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
-    }
-  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording]);
-
   const stopRecording = useCallback(async () => {
     let nativeSession: NativeSpeechSession | null = null;
-    let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null }> | null = null;
+    let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }> | null = null;
     let nativeError: string | undefined;
     try {
       setIsRecording(false);
@@ -528,13 +466,87 @@ export default function RecordingScreen() {
     }
   }, [audioRecorder, transcriptionLocale, t, combineTranscript, lengthLimitMessage]);
 
-  const toggleRecording = useCallback(async () => {
-    if (isRecording) {
-      await stopRecording();
-    } else {
-      await startRecording();
+  const startRecording = useCallback(async () => {
+    try {
+      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
+      if (!granted) {
+        Alert.alert(
+          t('recording.alert.permission_required.title'),
+          t('recording.alert.permission_required.message')
+        );
+        return;
+      }
+
+      await setAudioModeAsync({
+        allowsRecording: true,
+        playsInSilentMode: true,
+      });
+
+      nativeSessionRef.current?.abort();
+      baseTranscriptRef.current = transcript;
+      nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
+        onPartial: (text) => {
+          const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
+          setTranscript(combined);
+          setLengthWarning(truncated ? lengthLimitMessage() : '');
+          if (truncated) {
+            void stopRecording();
+          }
+        },
+      });
+      // Only skip the backup recorder when the native session can persist audio itself.
+      const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
+      // On web we keep the recorder running to preserve a fallback audio file in case
+      // the SpeechRecognition API returns an empty transcript.
+      skipRecorderRef.current = Platform.OS !== 'web' && Boolean(nativeSessionRef.current) && canPersistAudio;
+      if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
+        console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
+      }
+      if (__DEV__) {
+        console.log('[Recording] native session', {
+          hasSession: Boolean(nativeSessionRef.current),
+          locale: transcriptionLocale,
+          canPersistAudio,
+        });
+      }
+
+      hasAutoStoppedRecordingRef.current = false;
+      if (!skipRecorderRef.current) {
+        await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
+        audioRecorder.record();
+      } else if (__DEV__) {
+        console.log('[Recording] skipping audioRecorder because native session active');
+      }
+
+      setIsRecording(true);
+      isRecordingRef.current = true;
+    } catch (err) {
+      nativeSessionRef.current?.abort();
+      nativeSessionRef.current = null;
+      skipRecorderRef.current = false;
+      isRecordingRef.current = false;
+      if (__DEV__) {
+        console.error('Failed to start recording:', err);
+      }
+      Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
-  }, [isRecording, stopRecording, startRecording]);
+  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording]);
+
+  const toggleRecording = useCallback(async () => {
+    if (recordingTransitionRef.current) {
+      return;
+    }
+    recordingTransitionRef.current = true;
+    try {
+      if (isRecordingRef.current) {
+        await stopRecording();
+      } else {
+        await startRecording();
+      }
+    } finally {
+      recordingTransitionRef.current = false;
+    }
+  }, [startRecording, stopRecording]);
 
   useEffect(() => {
     hasAutoStoppedRecordingRef.current = false;

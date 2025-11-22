@@ -7,8 +7,9 @@ type NativeSpeechOptions = {
 };
 
 export type NativeSpeechSession = {
-  stop: () => Promise<{ transcript: string; error?: string; recordedUri?: string | null }>;
+  stop: () => Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }>;
   abort: () => void;
+  hasRecording?: boolean;
 };
 
 export const END_TIMEOUT_MS = 4000;
@@ -184,6 +185,7 @@ export async function startNativeSpeechSession(
     });
 
     const requiresOnDeviceRecognition = await shouldRequireOnDeviceRecognition(speechModule, languageCode);
+    const supportsRecording = speechModule.supportsRecording?.() ?? false;
     if (__DEV__) {
       const service = speechModule.getDefaultRecognitionService?.();
       const supportsOnDevice = speechModule.supportsOnDeviceRecognition?.();
@@ -192,6 +194,7 @@ export async function startNativeSpeechSession(
         service,
         supportsOnDevice,
         requiresOnDeviceRecognition,
+        supportsRecording,
       });
     }
 
@@ -204,7 +207,7 @@ export async function startNativeSpeechSession(
        
       continuous: Platform.OS === 'web',
       requiresOnDeviceRecognition,
-      recordingOptions: speechModule.supportsRecording?.()
+      recordingOptions: supportsRecording
         ? {
             persist: true,
             outputSampleRate: 16000,
@@ -243,7 +246,7 @@ export async function startNativeSpeechSession(
           recordedUri,
         });
       }
-      return { transcript, error: lastError?.message, recordedUri };
+      return { transcript, error: lastError?.message, recordedUri, hasRecording: supportsRecording };
     };
 
     const abort = () => {
@@ -258,7 +261,7 @@ export async function startNativeSpeechSession(
       cleanup();
     };
 
-    return { stop, abort };
+    return { stop, abort, hasRecording: supportsRecording };
   } catch (error) {
     if (__DEV__) {
       console.warn('[nativeSpeech] failed to start', error);
