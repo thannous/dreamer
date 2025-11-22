@@ -15,10 +15,12 @@ export type { AnalysisResult } from './geminiServiceReal';
 const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
 const service = isMockMode ? mockService : realService;
 
-if (isMockMode) {
-  console.log('[GEMINI SERVICE] Using MOCK implementation');
-} else {
-  console.log('[GEMINI SERVICE] Using REAL implementation');
+if (__DEV__) {
+  if (isMockMode) {
+    console.log('[GEMINI SERVICE] Using MOCK implementation');
+  } else {
+    console.log('[GEMINI SERVICE] Using REAL implementation');
+  }
 }
 
 // Re-export all functions from the selected service
