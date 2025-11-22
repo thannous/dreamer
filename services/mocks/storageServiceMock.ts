@@ -32,6 +32,7 @@ export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
   if (!enabled) {
     dreamsPreloaded = false;
+    delete mockStorage['gemini_dream_journal_dreams'];
   }
   console.log('[MOCK STORAGE] Dream preloading', enabled ? 'enabled' : 'disabled');
 }
