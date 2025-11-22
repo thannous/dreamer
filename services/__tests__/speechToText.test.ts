@@ -1,18 +1,31 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Platform, type PlatformOSType } from 'react-native';
 
-const readAsStringAsync = vi.fn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
-const fileBase64 = vi.fn<() => string | Promise<string>>();
+type PlatformOSType = 'ios' | 'android' | 'macos' | 'windows' | 'web';
+const { Platform } = vi.hoisted(() => {
+  const Platform = { OS: 'ios' as PlatformOSType };
+  return { Platform };
+});
 
-class MockFile {
-  uri: string;
+const { readAsStringAsync, fileBase64, MockFile } = vi.hoisted(() => {
+  const readAsStringAsync = vi.fn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
+  const fileBase64 = vi.fn<() => string | Promise<string>>();
 
-  constructor(uri: string) {
-    this.uri = uri;
+  class MockFile {
+    uri: string;
+
+    constructor(uri: string) {
+      this.uri = uri;
+    }
+
+    base64 = fileBase64;
   }
 
-  base64 = fileBase64;
-}
+  return { readAsStringAsync, fileBase64, MockFile };
+});
+
+vi.mock('react-native', () => ({
+  Platform,
+}), { virtual: true });
 
 vi.mock('expo-file-system', () => ({
   File: MockFile,
