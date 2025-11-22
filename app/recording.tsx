@@ -81,6 +81,8 @@ const RECORDING_OPTIONS: RecordingOptions = {
 
 const RECORDER_RELEASE_ERROR_SNIPPET = 'shared object that was already released';
 
+const normalizeTranscriptText = (text: string) => text.replace(/\s+/g, ' ').trim();
+
 const isRecorderReleasedError = (error: unknown): error is Error => {
   return (
     error instanceof Error &&
@@ -127,6 +129,7 @@ export default function RecordingScreen() {
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
+  const isSaveDisabled = !trimmedTranscript || interactionDisabled;
   const lengthLimitMessage = useCallback(
     () => t('recording.alert.length_limit', { limit: MAX_TRANSCRIPT_CHARS }) || `Limite ${MAX_TRANSCRIPT_CHARS} caractères atteinte`,
     [t]
@@ -139,10 +142,28 @@ export default function RecordingScreen() {
   }, []);
   const combineTranscript = useCallback(
     (base: string, addition: string) => {
-      if (!addition.trim()) {
+      const trimmedAddition = addition.trim();
+      if (!trimmedAddition) {
         return clampTranscript(base);
       }
-      const combined = base ? `${base}\n${addition}` : addition;
+      const trimmedBase = base.trim();
+
+      if (trimmedBase) {
+        const normalizedBase = normalizeTranscriptText(trimmedBase);
+        const normalizedAddition = normalizeTranscriptText(trimmedAddition);
+
+        // If STT re-sends text we already have, keep the existing transcript to avoid duplicates.
+        if (normalizedBase.includes(normalizedAddition)) {
+          return clampTranscript(trimmedBase);
+        }
+
+        // When the recognizer returns the whole transcript plus new words, keep the expanded text once.
+        if (normalizedAddition.startsWith(normalizedBase)) {
+          return clampTranscript(trimmedAddition);
+        }
+      }
+
+      const combined = trimmedBase ? `${trimmedBase}\n${trimmedAddition}` : trimmedAddition;
       return clampTranscript(combined);
     },
     [clampTranscript]
@@ -740,6 +761,10 @@ export default function RecordingScreen() {
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
 
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
+  const instructionStyle = useMemo(
+    () => [styles.instructionText, { color: colors.textSecondary }],
+    [colors.textSecondary]
+  );
 
   const toggleInputMode = useCallback(() => {
     setInputMode((prev) => (prev === 'voice' ? 'text' : 'voice'));
@@ -771,11 +796,11 @@ export default function RecordingScreen() {
                 <View style={styles.recordingSection}>
                   {inputMode === 'voice' ? (
                     <TypewriterText
-                      style={[styles.instructionText, { color: colors.textSecondary }]}
+                      style={instructionStyle}
                       text={t('recording.instructions')}
                     />
                   ) : (
-                    <Text style={[styles.instructionText, { color: colors.textSecondary }]}>
+                    <Text style={instructionStyle}>
                       {(t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient...")}
                     </Text>
                   )}
@@ -784,7 +809,6 @@ export default function RecordingScreen() {
                 {inputMode === 'voice' ? (
                   <View style={styles.micContainer}>
                     <View style={styles.micButtonWrapper}>
-                      {isRecording}
                       <MicButton
                         isRecording={isRecording}
                         onPress={toggleRecording}
@@ -801,11 +825,9 @@ export default function RecordingScreen() {
                         transition={{ type: 'timing', duration: 500 }}
                         style={styles.liveTranscriptContainer}
                       >
-                        <TypewriterText
-                          text={transcript}
-                          speed={30}
-                          style={[styles.liveTranscriptText, { color: colors.textPrimary }]}
-                        />
+                        <Text style={[styles.liveTranscriptText, { color: colors.textPrimary }]}>
+                          {transcript}
+                        </Text>
                       </MotiView>
                     ) : null}
 
@@ -872,24 +894,30 @@ export default function RecordingScreen() {
               <View style={styles.footerActions}>
                 <View style={styles.actionButtons}>
                   <MotiView
-                    animate={{ opacity: (!trimmedTranscript || interactionDisabled) ? 0.5 : 1 }}
+                    animate={{ opacity: isSaveDisabled ? 0.65 : 1 }}
                     transition={{ type: 'timing', duration: 300 }}
                   >
                     <Pressable
                       onPress={handleSaveDream}
-                      disabled={!trimmedTranscript || interactionDisabled}
+                      disabled={isSaveDisabled}
                       style={[
                         styles.submitButton,
                         shadows.lg,
-                        { backgroundColor: colors.accent },
-                        // Opacity handled by MotiView now, but we keep disabled style if needed for other props like color
-                        (!trimmedTranscript || interactionDisabled) && [{ backgroundColor: colors.textSecondary }], 
+                        { backgroundColor: isSaveDisabled ? colors.textSecondary : colors.accent },
+                        isSaveDisabled && styles.submitButtonDisabled,
                       ]}
                       testID={TID.Button.SaveDream}
                       accessibilityRole="button"
                       accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
                     >
-                      <Text style={styles.submitButtonText}>{t('recording.button.save_dream')}</Text>
+                      <Text
+                        style={[
+                          styles.submitButtonText,
+                          isSaveDisabled && { color: colors.backgroundSecondary, opacity: 0.9 },
+                        ]}
+                      >
+                        {t('recording.button.save_dream')}
+                      </Text>
                     </Pressable>
                   </MotiView>
                 </View>

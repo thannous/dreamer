@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Animated, {
+  cancelAnimation,
   Easing,
   type SharedValue,
   useAnimatedStyle,
@@ -62,10 +63,12 @@ export function Waveform({ isActive }: WaveformProps) {
         -1
       );
     } else {
+      cancelAnimation(progress);
       progress.value = 0;
     }
 
     return () => {
+      cancelAnimation(progress);
       progress.value = 0;
     };
   }, [isActive, progress]);
@@ -79,6 +82,7 @@ export function Waveform({ isActive }: WaveformProps) {
             key={index}
             bar={bar}
             isAccent={isAccent}
+            isActive={isActive}
             progress={progress}
             accentColor={colors.accent}
             baseColor={colors.textSecondary}
@@ -92,18 +96,33 @@ export function Waveform({ isActive }: WaveformProps) {
 type WaveformBarProps = {
   bar: BarConfig;
   isAccent: boolean;
+  isActive: boolean;
   progress: SharedValue<number>;
   accentColor: string;
   baseColor: string;
 };
 
-function WaveformBar({ bar, isAccent, progress, accentColor, baseColor }: WaveformBarProps) {
-  const animatedStyle = useAnimatedStyle(() => {
-    // Range ~0.3 -> 1.0 to mimic breathing waveform
-    const wave = 0.5 + 0.5 * Math.sin(progress.value + bar.phase);
-    const scaleY = 0.3 + wave * 0.7;
-    return { transform: [{ scaleY }] };
-  });
+function WaveformBar({
+  bar,
+  isAccent,
+  isActive,
+  progress,
+  accentColor,
+  baseColor,
+}: WaveformBarProps) {
+  const animatedStyle = useAnimatedStyle(
+    () => {
+      if (!isActive) {
+        return { transform: [{ scaleY: 1 }] };
+      }
+
+      // Range ~0.3 -> 1.0 to mimic breathing waveform
+      const wave = 0.5 + 0.5 * Math.sin(progress.value + bar.phase);
+      const scaleY = 0.3 + wave * 0.7;
+      return { transform: [{ scaleY }] };
+    },
+    [isActive]
+  );
 
   return (
     <Animated.View
