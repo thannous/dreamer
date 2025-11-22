@@ -12,10 +12,12 @@ import * as realService from './notificationServiceReal';
 const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
 const service = isMockMode ? mockService : realService;
 
-if (isMockMode) {
-  console.log('[NOTIFICATION SERVICE] Using MOCK implementation');
-} else {
-  console.log('[NOTIFICATION SERVICE] Using REAL implementation');
+if (__DEV__) {
+  if (isMockMode) {
+    console.log('[NOTIFICATION SERVICE] Using MOCK implementation');
+  } else {
+    console.log('[NOTIFICATION SERVICE] Using REAL implementation');
+  }
 }
 
 // Re-export all functions from the selected service
