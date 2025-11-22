@@ -1,0 +1,161 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Platform, type PlatformOSType } from 'react-native';
+
+const readAsStringAsync = vi.fn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
+const fileBase64 = vi.fn<() => string | Promise<string>>();
+
+class MockFile {
+  uri: string;
+
+  constructor(uri: string) {
+    this.uri = uri;
+  }
+
+  base64 = fileBase64;
+}
+
+vi.mock('expo-file-system', () => ({
+  File: MockFile,
+  readAsStringAsync,
+}));
+
+vi.mock('@/lib/config', () => ({
+  getApiBaseUrl: vi.fn(),
+}));
+
+vi.mock('@/lib/http', () => ({
+  fetchJSON: vi.fn(),
+}));
+
+import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from '@/services/speechToText';
+import { fetchJSON } from '@/lib/http';
+import { getApiBaseUrl } from '@/lib/config';
+
+const mockFetchJSON = vi.mocked(fetchJSON);
+const mockGetApiBaseUrl = vi.mocked(getApiBaseUrl);
+const mockReadAsStringAsync = readAsStringAsync;
+const mockFileBase64 = fileBase64;
+
+const setPlatform = (os: PlatformOSType) =>
+  vi.spyOn(Platform, 'OS', 'get').mockReturnValue(os);
+
+let platformSpy: ReturnType<typeof setPlatform> | undefined;
+
+describe('transcribeAudio', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (globalThis as typeof globalThis & { __DEV__: boolean }).__DEV__ = false;
+    mockGetApiBaseUrl.mockReturnValue('https://api.example');
+    mockFetchJSON.mockResolvedValue({ transcript: 'mock transcript' });
+    mockFileBase64.mockReturnValue('native-base64');
+    mockReadAsStringAsync.mockResolvedValue('fallback-base64');
+  });
+
+  afterEach(() => {
+    platformSpy?.mockRestore();
+    platformSpy = undefined;
+    vi.unstubAllGlobals();
+  });
+
+  it('posts native recordings with LINEAR16 defaults on iOS', async () => {
+    platformSpy = setPlatform('ios');
+
+    const transcript = await transcribeAudio({
+      uri: 'file:///tmp/audio.wav',
+      languageCode: 'en-US',
+    });
+
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'https://api.example/transcribe',
+      expect.objectContaining({
+        method: 'POST',
+        body: {
+          contentBase64: 'native-base64',
+          encoding: 'LINEAR16',
+          languageCode: 'en-US',
+          sampleRateHertz: 16000,
+        },
+        timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
+      }),
+    );
+    expect(transcript).toBe('mock transcript');
+  });
+
+  it('uses AMR_WB encoding hints on Android', async () => {
+    platformSpy = setPlatform('android');
+
+    await transcribeAudio({ uri: 'file:///tmp/audio.3gp' });
+
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'https://api.example/transcribe',
+      expect.objectContaining({
+        body: expect.objectContaining({
+          contentBase64: 'native-base64',
+          encoding: 'AMR_WB',
+          languageCode: 'fr-FR',
+          sampleRateHertz: 16000,
+        }),
+      }),
+    );
+  });
+
+  it('falls back to readAsStringAsync when File.base64 throws', async () => {
+    platformSpy = setPlatform('ios');
+    mockFileBase64.mockImplementationOnce(() => {
+      throw new Error('base64 failed');
+    });
+    mockReadAsStringAsync.mockResolvedValueOnce('fallback-base64');
+
+    await transcribeAudio({ uri: 'file:///tmp/audio.wav' });
+
+    expect(mockReadAsStringAsync).toHaveBeenCalledWith('file:///tmp/audio.wav', { encoding: 'base64' });
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'https://api.example/transcribe',
+      expect.objectContaining({
+        body: expect.objectContaining({
+          contentBase64: 'fallback-base64',
+        }),
+      }),
+    );
+  });
+
+  it('reads web recordings with FileReader and WEBM_OPUS encoding', async () => {
+    platformSpy = setPlatform('web');
+    const webBase64 = 'web-base64';
+
+    class MockFileReader {
+      result: string | ArrayBuffer | null = null;
+      onerror: FileReader['onerror'] = null;
+      onloadend: FileReader['onloadend'] = null;
+
+      readAsDataURL() {
+        this.result = `data:audio/webm;base64,${webBase64}`;
+        this.onloadend?.(new Event('loadend') as ProgressEvent<FileReader>);
+      }
+    }
+
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
+      ok: true,
+      blob: async () => ({} as Blob),
+    } as Response);
+
+    vi.stubGlobal('FileReader', MockFileReader as unknown as typeof FileReader);
+    vi.stubGlobal('fetch', fetchMock);
+
+    await transcribeAudio({ uri: 'https://example.com/audio.webm' });
+
+    expect(fetchMock).toHaveBeenCalledWith('https://example.com/audio.webm');
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'https://api.example/transcribe',
+      expect.objectContaining({
+        body: {
+          contentBase64: webBase64,
+          encoding: 'WEBM_OPUS',
+          languageCode: 'fr-FR',
+          sampleRateHertz: undefined,
+        },
+        timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
+      }),
+    );
+  });
+});
