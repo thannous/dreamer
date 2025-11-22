@@ -31,6 +31,9 @@ import {
 } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const ENTERING_ANIMATION_LIMIT_MOBILE = 12;
+const ENTERING_ANIMATION_LIMIT_DESKTOP = 24;
 export default function JournalListScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { dreams, guestLimitReached } = useDreams();
@@ -188,6 +191,7 @@ export default function JournalListScreen() {
 
   const renderDreamItem = useCallback(({ item, index }: { item: DreamAnalysis; index: number }) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < 5; // Load first 5 immediately
+    const enteringEnabled = index < ENTERING_ANIMATION_LIMIT_MOBILE;
 
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
@@ -238,6 +242,7 @@ export default function JournalListScreen() {
             index={index}
             shouldLoadImage={shouldLoadImage}
             badges={mobileBadges}
+            disableEnteringAnimation={!enteringEnabled}
             testID={TID.List.DreamItem(item.id)}
           />
         </View>
@@ -247,6 +252,7 @@ export default function JournalListScreen() {
 
   const renderDreamItemDesktop = useCallback(({ item, index }: { item: DreamAnalysis; index: number }) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < 12;
+    const enteringEnabled = index < ENTERING_ANIMATION_LIMIT_DESKTOP;
     const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
@@ -300,6 +306,7 @@ export default function JournalListScreen() {
           index={index}
           shouldLoadImage={shouldLoadImage}
           badges={badges}
+          disableEnteringAnimation={!enteringEnabled}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
@@ -393,6 +400,7 @@ export default function JournalListScreen() {
         <FlatList
           testID={TID.List.Dreams}
           ref={flatListRef}
+          key={`desktop-${desktopColumns}`} // Force remount when column count changes to satisfy FlatList invariant
           data={filteredDreams}
           extraData={visibleItemIds}
           keyExtractor={keyExtractor}

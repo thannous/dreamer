@@ -17,6 +17,7 @@ interface DreamCardProps {
   shouldLoadImage?: boolean;
   testID?: string;
   badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
+  disableEnteringAnimation?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -28,6 +29,7 @@ export const DreamCard = memo(function DreamCard({
   shouldLoadImage = true,
   testID,
   badges,
+  disableEnteringAnimation = false,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
@@ -44,7 +46,7 @@ export const DreamCard = memo(function DreamCard({
 
   return (
     <Animated.View
-      entering={FadeInUp.delay(index * 50).springify().damping(20)}
+      entering={disableEnteringAnimation ? undefined : FadeInUp.delay(index * 50).springify().damping(20)}
     >
       <AnimatedPressable
         style={[styles.card, { backgroundColor: colors.backgroundCard }, animatedStyle]}

@@ -36,24 +36,23 @@ import { getFirstLaunchCompleted, saveFirstLaunchCompleted } from '@/services/st
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
 // while keeping production behavior unchanged.
 if (__DEV__) {
-  try {
-    const keepAwakeModule = require('expo-keep-awake').default as {
-      activate?: (...args: unknown[]) => Promise<void>;
-    };
-    const originalActivate = keepAwakeModule?.activate;
+  void import('expo-keep-awake')
+    .then(({ default: keepAwakeModule }: { default?: { activate?: (...args: unknown[]) => Promise<void> } }) => {
+      const originalActivate = keepAwakeModule?.activate;
 
-    if (typeof originalActivate === 'function') {
-      keepAwakeModule.activate = async (...args: Parameters<typeof originalActivate>) => {
-        try {
-          await originalActivate(...args);
-        } catch (error) {
-          console.warn('[dev] keep-awake activation failed, continuing without it', error);
-        }
-      };
-    }
-  } catch {
-    // Optional module; ignore if missing in this build.
-  }
+      if (typeof originalActivate === 'function') {
+        keepAwakeModule.activate = async (...args: Parameters<typeof originalActivate>) => {
+          try {
+            await originalActivate(...args);
+          } catch (error) {
+            console.warn('[dev] keep-awake activation failed, continuing without it', error);
+          }
+        };
+      }
+    })
+    .catch(() => {
+      // Optional module; ignore if missing in this build.
+    });
 }
 
 // Prevent the splash screen from auto-hiding before fonts are loaded

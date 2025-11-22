@@ -19,21 +19,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Animated,
-    Easing,
-    Keyboard,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    Pressable,
-    ScrollView,
-    Share,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Easing,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
 } from 'react-native';
 
 type ShareNavigator = Navigator & {
@@ -82,6 +82,44 @@ const getMimeTypeFromExtension = (ext: string): string => {
 
 const DREAM_TYPES = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES = ['surreal', 'mystical', 'calm', 'noir'];
+
+const Skeleton = ({ style }: { style: any }) => {
+  const opacity = useRef(new Animated.Value(0.3)).current;
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+      ])
+    );
+    anim.start();
+    return () => anim.stop();
+  }, [opacity]);
+  return <Animated.View style={[style, { opacity, backgroundColor: 'rgba(150,150,150,0.2)' }]} />;
+};
+
+const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: any; shouldAnimate: boolean }) => {
+  const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
+
+  useEffect(() => {
+    if (!shouldAnimate) {
+      setDisplayedText(text);
+      return;
+    }
+
+    let i = 0;
+    const timer = setInterval(() => {
+      setDisplayedText(text.slice(0, i));
+      i += 2; // Speed
+      if (i > text.length) {
+        clearInterval(timer);
+      }
+    }, 10);
+    return () => clearInterval(timer);
+  }, [text, shouldAnimate]);
+
+  return <Text style={style}>{displayedText}</Text>;
+};
 
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -800,310 +838,329 @@ export default function JournalDetailScreen() {
       keyboardVerticalOffset={keyboardVerticalOffset}
     >
       <LinearGradient colors={gradientColors} style={styles.gradient}>
-      <Pressable
-        onPress={handleBackPress}
-        style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
-        testID={TID.Button.NavigateJournal}
-      >
-        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
-      </Pressable>
-      <ScrollView
-        ref={scrollViewRef}
-        style={styles.scrollView}
-        contentContainerStyle={[
-          styles.scrollContent,
-          (isEditing || isEditingTranscript) && { paddingBottom: 220 },
-        ]}
-        keyboardShouldPersistTaps="handled"
-      >
+        <Pressable
+          onPress={handleBackPress}
+          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          testID={TID.Button.NavigateJournal}
+        >
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+        </Pressable>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.scrollView}
+          contentContainerStyle={[
+            styles.scrollContent,
+            (isEditing || isEditingTranscript) && { paddingBottom: 220 },
+          ]}
+          keyboardShouldPersistTaps="handled"
+        >
 
-        {/* Dream Image */}
-        {!shouldHideHeroMedia && (
-          <View style={styles.imageContainer}>
-            <View style={styles.imageFrame}>
-              {dream.imageGenerationFailed ? (
-                <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
-              ) : dream.imageUrl ? (
-                <>
-                  <Image
-                    source={{ uri: dream.imageUrl }}
-                    style={styles.dreamImage}
-                    contentFit={imageConfig.contentFit}
-                    transition={imageConfig.transition}
-                    cachePolicy={imageConfig.cachePolicy}
-                    priority={imageConfig.priority}
-                    placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+          {/* Dream Image */}
+          {!shouldHideHeroMedia && (
+            <View style={styles.imageContainer}>
+              <View style={styles.imageFrame}>
+                {dream.imageGenerationFailed ? (
+                  <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+                ) : dream.imageUrl ? (
+                  <>
+                    <Image
+                      source={{ uri: dream.imageUrl }}
+                      style={styles.dreamImage}
+                      contentFit={imageConfig.contentFit}
+                      transition={imageConfig.transition}
+                      cachePolicy={imageConfig.cachePolicy}
+                      priority={imageConfig.priority}
+                      placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+                    />
+                    <View style={styles.imageOverlay} />
+                  </>
+                ) : dream.analysisStatus === 'pending' ? (
+                  <Skeleton style={{ width: '100%', height: '100%' }} />
+                ) : (
+                  <Pressable
+                    onPress={handlePickImage}
+                    disabled={isPickingImage}
+                    style={[
+                      styles.dreamImage,
+                      {
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: colors.backgroundSecondary,
+                        flexDirection: 'column',
+                      },
+                    ]}
+                  >
+                    {isPickingImage ? (
+                      <ActivityIndicator color={colors.textPrimary} />
+                    ) : (
+                      <>
+                        <Ionicons name="image-outline" size={28} color={colors.textSecondary} />
+                        <Text
+                          style={{
+                            marginTop: 8,
+                            color: colors.textSecondary,
+                            fontFamily: Fonts.spaceGrotesk.medium,
+                            fontSize: 14,
+                          }}
+                        >
+                          {t('journal.detail.add_image')}
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                )}
+              </View>
+            </View>
+          )}
+
+          {/* Content Card - Overlaps image */}
+          <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
+
+            {/* Premium Metadata Card */}
+            {!isEditing && renderMetadataCard()}
+
+            {(dream.isAnalyzed || dream.analysisStatus === 'pending') && (
+              <>
+                {/* Quote */}
+                {dream.shareableQuote ? (
+                  <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
+                    <Text style={[styles.quote, { color: colors.textPrimary }]}>
+                      &quot;{dream.shareableQuote}&quot;
+                    </Text>
+                  </View>
+                ) : dream.analysisStatus === 'pending' ? (
+                  <Skeleton style={{ height: 60, width: '100%', marginBottom: 16, borderRadius: 8 }} />
+                ) : null}
+
+                {dream.interpretation ? (
+                  <TypewriterText
+                    text={dream.interpretation}
+                    style={[styles.interpretation, { color: colors.textSecondary }]}
+                    shouldAnimate={dream.analysisStatus === 'pending'}
                   />
-                  <View style={styles.imageOverlay} />
-                </>
-              ) : (
-                <Pressable
-                  onPress={handlePickImage}
-                  disabled={isPickingImage}
-                  style={[
-                    styles.dreamImage,
-                    {
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: colors.backgroundSecondary,
-                      flexDirection: 'column',
-                    },
-                  ]}
+                ) : dream.analysisStatus === 'pending' ? (
+                  <View style={{ gap: 8, marginBottom: 16 }}>
+                    <Skeleton style={{ height: 16, width: '100%', borderRadius: 4 }} />
+                    <Skeleton style={{ height: 16, width: '90%', borderRadius: 4 }} />
+                    <Skeleton style={{ height: 16, width: '95%', borderRadius: 4 }} />
+                  </View>
+                ) : null}
+
+                {/* Action Buttons */}
+                {(dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
+                  <Pressable
+                    testID={TID.Button.ExploreDream}
+                    style={[styles.exploreButton, shadows.xl, {
+                      backgroundColor: colors.accent,
+                      borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+                    }]}
+                    onPress={handleExplorePress}
+                  >
+                    <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                    <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
+                  </Pressable>
+                )}
+              </>
+            )}
+
+            {/* Additional Actions */}
+            {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && (
+              <Pressable
+                onPress={handleAnalyze}
+                disabled={isAnalyzing || dream.analysisStatus === 'pending'}
+                style={[styles.analyzeButton, shadows.md, { backgroundColor: colors.accent }]}
+              >
+                {isAnalyzing || dream.analysisStatus === 'pending' ? (
+                  <ActivityIndicator color={colors.textPrimary} />
+                ) : (
+                  <>
+                    <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
+                    <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
+                    >
+                      {dream.analysisStatus === 'failed'
+                        ? t('journal.detail.analyze_button.retry')
+                        : t('journal.detail.analyze_button.default')}
+                    </Text>
+                  </>
+                )}
+              </Pressable>
+            )}
+
+            <View style={styles.actionsRow}>
+              <Pressable
+                onPress={() => toggleFavorite(dream.id)}
+                style={[
+                  styles.actionButton,
+                  shadows.sm,
+                  {
+                    // Match the main card surface so the padding around the
+                    // button doesn't look like a darker band on Android.
+                    backgroundColor: colors.backgroundCard,
+                    borderColor: accentSurfaceBorderColor,
+                  },
+                ]}
+              >
+                <Ionicons
+                  name={dream.isFavorite ? 'heart' : 'heart-outline'}
+                  size={24}
+                  color={dream.isFavorite ? '#F59E0B' : colors.textPrimary}
+                />
+                <Text style={[styles.actionButtonText, { color: colors.textPrimary }]}
                 >
-                  {isPickingImage ? (
-                    <ActivityIndicator color={colors.textPrimary} />
-                  ) : (
-                    <>
-                      <Ionicons name="image-outline" size={28} color={colors.textSecondary} />
-                      <Text
-                        style={{
-                          marginTop: 8,
-                          color: colors.textSecondary,
-                          fontFamily: Fonts.spaceGrotesk.medium,
-                          fontSize: 14,
-                        }}
-                      >
-                        {t('journal.detail.add_image')}
-                      </Text>
-                    </>
-                  )}
-                </Pressable>
-              )}
+                  {dream.isFavorite
+                    ? t('journal.detail.favorite.on')
+                    : t('journal.detail.favorite.off')}
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={onShare}
+                disabled={isSharing}
+                style={[
+                  styles.actionButton,
+                  shadows.sm,
+                  {
+                    backgroundColor: colors.backgroundCard,
+                    borderColor: accentSurfaceBorderColor,
+                    opacity: isSharing ? 0.7 : 1,
+                  },
+                ]}
+              >
+                {isSharing ? (
+                  <ActivityIndicator size="small" color={colors.textOnAccentSurface} />
+                ) : (
+                  <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
+                )}
+                <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}
+                >
+                  {isSharing
+                    ? t('journal.detail.share.button_loading')
+                    : t('journal.detail.share.button_default')}
+                </Text>
+              </Pressable>
+            </View>
+
+            {/* Transcript Section */}
+            {!isEditingTranscript && (
+              <View
+                style={[styles.transcriptSection, {
+                  borderTopColor: colors.divider,
+                  backgroundColor: transcriptBackgroundColor,
+                }]}
+                onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
+              >
+                {renderTranscriptBody()}
+              </View>
+            )}
+
+            <Pressable
+              onPress={onDelete}
+              style={styles.deleteLink}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityRole="link"
+            >
+              <Ionicons name="trash-outline" size={18} color="#EF4444" />
+              <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+        {isEditing && (
+          <View
+            pointerEvents="box-none"
+            style={[styles.metadataOverlay, { backgroundColor: colors.overlay }]}
+          >
+            <View style={{ marginBottom: floatingTranscriptBottom }}>
+              {renderMetadataCard('floating')}
             </View>
           </View>
         )}
-
-        {/* Content Card - Overlaps image */}
-        <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
-
-          {/* Premium Metadata Card */}
-          {!isEditing && renderMetadataCard()}
-
-          {dream.isAnalyzed && dream.analysisStatus === 'done' && (
-            <>
-              {/* Quote */}
-              <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
-                <Text style={[styles.quote, { color: colors.textPrimary }]}
-                >
-                  &quot;{dream.shareableQuote}&quot;
-                </Text>
-              </View>
-
-              <Text style={[styles.interpretation, { color: colors.textSecondary }]}>{dream.interpretation}</Text>
-
-              {/* Action Buttons */}
-              <Pressable
-                testID={TID.Button.ExploreDream}
-                style={[styles.exploreButton, shadows.xl, {
-                  backgroundColor: colors.accent,
-                  borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
-                }]}
-                onPress={handleExplorePress}
-              >
-                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
-                <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
-              </Pressable>
-            </>
-          )}
-
-          {/* Additional Actions */}
-          {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && (
-            <Pressable
-              onPress={handleAnalyze}
-              disabled={isAnalyzing || dream.analysisStatus === 'pending'}
-              style={[styles.analyzeButton, shadows.md, { backgroundColor: colors.accent }]}
-            >
-              {isAnalyzing || dream.analysisStatus === 'pending' ? (
-                <ActivityIndicator color={colors.textPrimary} />
-              ) : (
-                <>
-                  <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
-                  <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
-                  >
-                    {dream.analysisStatus === 'failed'
-                      ? t('journal.detail.analyze_button.retry')
-                      : t('journal.detail.analyze_button.default')}
-                  </Text>
-                </>
-              )}
-            </Pressable>
-          )}
-
-          <View style={styles.actionsRow}>
-            <Pressable
-              onPress={() => toggleFavorite(dream.id)}
-              style={[
-                styles.actionButton,
-                shadows.sm,
-                {
-                  // Match the main card surface so the padding around the
-                  // button doesn't look like a darker band on Android.
-                  backgroundColor: colors.backgroundCard,
-                  borderColor: accentSurfaceBorderColor,
-                },
-              ]}
-            >
-              <Ionicons
-                name={dream.isFavorite ? 'heart' : 'heart-outline'}
-                size={24}
-                color={dream.isFavorite ? '#F59E0B' : colors.textPrimary}
-              />
-              <Text style={[styles.actionButtonText, { color: colors.textPrimary }]}
-              >
-                {dream.isFavorite
-                  ? t('journal.detail.favorite.on')
-                  : t('journal.detail.favorite.off')}
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={onShare}
-              disabled={isSharing}
-              style={[
-                styles.actionButton,
-                shadows.sm,
-                {
-                  backgroundColor: colors.backgroundCard,
-                  borderColor: accentSurfaceBorderColor,
-                  opacity: isSharing ? 0.7 : 1,
-                },
-              ]}
-            >
-              {isSharing ? (
-                <ActivityIndicator size="small" color={colors.textOnAccentSurface} />
-              ) : (
-                <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
-              )}
-              <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}
-              >
-                {isSharing
-                  ? t('journal.detail.share.button_loading')
-                  : t('journal.detail.share.button_default')}
-              </Text>
-            </Pressable>
-          </View>
-
-          {/* Transcript Section */}
-          {!isEditingTranscript && (
+        {isEditingTranscript && (
+          <View
+            pointerEvents="box-none"
+            style={[styles.transcriptOverlay, { backgroundColor: colors.overlay }]}
+          >
             <View
-              style={[styles.transcriptSection, {
-                borderTopColor: colors.divider,
-                backgroundColor: transcriptBackgroundColor,
-              }]}
-              onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
+              style={[
+                styles.transcriptSection,
+                styles.transcriptFloatingCard,
+                shadows.xl,
+                {
+                  backgroundColor: colors.backgroundCard,
+                  borderColor: colors.divider,
+                  marginBottom: floatingTranscriptBottom,
+                },
+              ]}
             >
               {renderTranscriptBody()}
             </View>
-          )}
-
-          <Pressable
-            onPress={onDelete}
-            style={styles.deleteLink}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            accessibilityRole="link"
-          >
-            <Ionicons name="trash-outline" size={18} color="#EF4444" />
-            <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-      {isEditing && (
-        <View
-          pointerEvents="box-none"
-          style={[styles.metadataOverlay, { backgroundColor: colors.overlay }]}
-        >
-          <View style={{ marginBottom: floatingTranscriptBottom }}>
-            {renderMetadataCard('floating')}
           </View>
-        </View>
-      )}
-      {isEditingTranscript && (
-        <View
-          pointerEvents="box-none"
-          style={[styles.transcriptOverlay, { backgroundColor: colors.overlay }]}
+        )}
+        <Modal
+          visible={isShareModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={closeShareModal}
         >
-          <View
-            style={[
-              styles.transcriptSection,
-              styles.transcriptFloatingCard,
-              shadows.xl,
-              {
-                backgroundColor: colors.backgroundCard,
-                borderColor: colors.divider,
-                marginBottom: floatingTranscriptBottom,
-              },
-            ]}
-          >
-            {renderTranscriptBody()}
-          </View>
-        </View>
-      )}
-      <Modal
-        visible={isShareModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={closeShareModal}
-      >
-        <View style={styles.shareModalOverlay}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={closeShareModal} />
-          <View style={[styles.shareModalContent, { backgroundColor: colors.backgroundCard }]}
-          >
-            <Text style={[styles.shareModalTitle, { color: colors.textPrimary }]}>
-              {t('journal.detail.share_modal.title')}
-            </Text>
-            <Text style={[styles.shareModalDescription, { color: colors.textSecondary }]}
+          <View style={styles.shareModalOverlay}>
+            <Pressable style={StyleSheet.absoluteFill} onPress={closeShareModal} />
+            <View style={[styles.shareModalContent, { backgroundColor: colors.backgroundCard }]}
             >
-              {clipboardSupported
-                ? t('journal.detail.share_modal.description.clipboard')
-                : t('journal.detail.share_modal.description.manual')}
-            </Text>
-            <View
-              style={[
-                styles.shareMessageBox,
-                { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
-              ]}
-            >
-              <Text selectable style={[styles.shareMessageText, { color: colors.textPrimary }]}
-              >
-                {shareMessage || t('journal.detail.share_modal.empty')}
+              <Text style={[styles.shareModalTitle, { color: colors.textPrimary }]}>
+                {t('journal.detail.share_modal.title')}
               </Text>
-            </View>
-            {clipboardSupported && (
-              <Pressable
-                style={[styles.shareCopyButton, { backgroundColor: colors.accent }]}
-                onPress={handleCopyShareText}
+              <Text style={[styles.shareModalDescription, { color: colors.textSecondary }]}
               >
-                <Ionicons
-                  name={shareCopyStatus === 'success' ? 'checkmark' : 'copy-outline'}
-                  size={18}
-                  color={colors.textPrimary}
-                />
-                <Text style={[styles.shareCopyButtonText, { color: colors.textPrimary }]}
+                {clipboardSupported
+                  ? t('journal.detail.share_modal.description.clipboard')
+                  : t('journal.detail.share_modal.description.manual')}
+              </Text>
+              <View
+                style={[
+                  styles.shareMessageBox,
+                  { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
+                ]}
+              >
+                <Text selectable style={[styles.shareMessageText, { color: colors.textPrimary }]}
                 >
-                  {shareCopyStatus === 'success'
-                    ? t('journal.detail.share_modal.copied')
-                    : t('journal.detail.share_modal.copy')}
+                  {shareMessage || t('journal.detail.share_modal.empty')}
+                </Text>
+              </View>
+              {clipboardSupported && (
+                <Pressable
+                  style={[styles.shareCopyButton, { backgroundColor: colors.accent }]}
+                  onPress={handleCopyShareText}
+                >
+                  <Ionicons
+                    name={shareCopyStatus === 'success' ? 'checkmark' : 'copy-outline'}
+                    size={18}
+                    color={colors.textPrimary}
+                  />
+                  <Text style={[styles.shareCopyButtonText, { color: colors.textPrimary }]}
+                  >
+                    {shareCopyStatus === 'success'
+                      ? t('journal.detail.share_modal.copied')
+                      : t('journal.detail.share_modal.copy')}
+                  </Text>
+                </Pressable>
+              )}
+              {shareCopyStatus === 'error' && (
+                <Text style={[styles.shareFeedbackText, { color: '#EF4444' }]}
+                >
+                  {t('journal.detail.share_modal.copy_failed')}
+                </Text>
+              )}
+              <Pressable
+                style={[styles.shareCloseButton, { borderColor: colors.divider }]}
+                onPress={closeShareModal}
+              >
+                <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}
+                >
+                  {t('journal.detail.share_modal.close')}
                 </Text>
               </Pressable>
-            )}
-            {shareCopyStatus === 'error' && (
-              <Text style={[styles.shareFeedbackText, { color: '#EF4444' }]}
-              >
-                {t('journal.detail.share_modal.copy_failed')}
-              </Text>
-            )}
-            <Pressable
-              style={[styles.shareCloseButton, { borderColor: colors.divider }]}
-              onPress={closeShareModal}
-            >
-              <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}
-              >
-                {t('journal.detail.share_modal.close')}
-              </Text>
-            </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </LinearGradient>
+        </Modal>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }

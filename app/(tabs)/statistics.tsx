@@ -279,11 +279,50 @@ export default function StatisticsScreen() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const { width } = useWindowDimensions();
-  const { formatNumber, formatDate, formatPercent } = useLocaleFormatting();
+  const { formatNumber, formatPercent } = useLocaleFormatting();
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
   const stats = useDreamStatistics(dreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+
+  const dreamTypeColors =
+    mode === 'dark'
+      ? ['#B8A4FF', '#D3B8FF', '#9683E2', '#C2A0FF', '#8770CF']
+      : ['#AD96E0', '#D9B28A', '#9BC6B3', '#A1B8E0', '#DCC48C'];
+
+  const pieLabelLineConfig: LabelLineConfig = {
+    length: PIE_LABEL_LINE_LENGTH,
+    tailLength: PIE_LABEL_TAIL_LENGTH,
+    color: colors.textSecondary,
+    thickness: 1,
+    labelComponentWidth: PIE_LABEL_WIDTH,
+    labelComponentHeight: PIE_LABEL_HEIGHT,
+    labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
+    avoidOverlappingOfLabels: true,
+  };
+
+  const topDreamTypes = stats.dreamTypeDistribution.slice(0, 5);
+
+  const pieChartData: DreamPieDataItem[] = topDreamTypes.map((item, index) => {
+    const typeLines = splitLabelText(item.type);
+    const labelHeight = getLabelHeight(typeLines.length);
+
+    return {
+      value: item.count,
+      color: dreamTypeColors[index % dreamTypeColors.length],
+      count: item.count,
+      percentage: item.percentage,
+      typeLabel: item.type,
+      typeLines,
+      labelHeight,
+      labelLineConfig: {
+        ...pieLabelLineConfig,
+        labelComponentHeight: labelHeight,
+      },
+    };
+  });
+
+  const pieLabelLayouts = React.useMemo(() => buildPieLabelLayouts(pieChartData), [pieChartData]);
 
   if (!loaded) {
     return (
@@ -324,45 +363,6 @@ export default function StatisticsScreen() {
       </View>
     );
   }
-
-  const dreamTypeColors =
-    mode === 'dark'
-      ? ['#B8A4FF', '#D3B8FF', '#9683E2', '#C2A0FF', '#8770CF']
-      : ['#AD96E0', '#D9B28A', '#9BC6B3', '#A1B8E0', '#DCC48C'];
-
-  const pieLabelLineConfig: LabelLineConfig = {
-    length: PIE_LABEL_LINE_LENGTH,
-    tailLength: PIE_LABEL_TAIL_LENGTH,
-    color: colors.textSecondary,
-    thickness: 1,
-    labelComponentWidth: PIE_LABEL_WIDTH,
-    labelComponentHeight: PIE_LABEL_HEIGHT,
-    labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
-    avoidOverlappingOfLabels: true,
-  };
-
-  const topDreamTypes = stats.dreamTypeDistribution.slice(0, 5);
-
-  const pieChartData: DreamPieDataItem[] = topDreamTypes.map((item, index) => {
-    const typeLines = splitLabelText(item.type);
-    const labelHeight = getLabelHeight(typeLines.length);
-
-    return {
-      value: item.count,
-      color: dreamTypeColors[index % dreamTypeColors.length],
-      count: item.count,
-      percentage: item.percentage,
-      typeLabel: item.type,
-      typeLines,
-      labelHeight,
-      labelLineConfig: {
-        ...pieLabelLineConfig,
-        labelComponentHeight: labelHeight,
-      },
-    };
-  });
-
-  const pieLabelLayouts = React.useMemo(() => buildPieLabelLayouts(pieChartData), [pieChartData]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>

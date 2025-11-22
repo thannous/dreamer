@@ -241,7 +241,7 @@ export default function DreamChatScreen() {
         setIsLoading(false);
       }
     },
-    [inputText, dream, messages, updateDream, canChat, dreamId, user, quotaService]
+    [inputText, dream, messages, updateDream, canChat, user]
   );
 
   const handleQuickCategory = (categoryId: string) => {
