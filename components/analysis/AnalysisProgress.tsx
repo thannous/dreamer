@@ -19,9 +19,16 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
   const { t } = useTranslation();
   const { colors, shadows } = useTheme();
   const showError = step === AnalysisStep.ERROR && error;
+  const roundedProgress = Math.round(progress);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundSecondary }]}>
+    <View
+      style={[styles.container, { backgroundColor: colors.backgroundSecondary }]}
+      accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: 100, now: roundedProgress }}
+      accessibilityLiveRegion="polite"
+      accessibilityLabel={showError ? t('analysis.step.error') : t('analysis.step.analyzing')}
+    >
       {/* Progress Bar */}
       {!showError && (
         <View style={styles.progressBarContainer}>
@@ -36,7 +43,7 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
               ]}
             />
           </View>
-          <Text style={[styles.progressText, { color: colors.textPrimary }]}>{Math.round(progress)}%</Text>
+          <Text style={[styles.progressText, { color: colors.textPrimary }]}>{roundedProgress}%</Text>
         </View>
       )}
 

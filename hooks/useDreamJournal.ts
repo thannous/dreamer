@@ -553,7 +553,7 @@ export const useDreamJournal = () => {
       const requestId = generateUUID();
 
       // Initial pending state
-      let currentDreamState: DreamAnalysis = {
+      const currentDreamState: DreamAnalysis = {
         ...dream,
         analysisStatus: 'pending',
         analysisRequestId: requestId,
@@ -563,73 +563,52 @@ export const useDreamJournal = () => {
       // Invalidate quota cache immediately
       quotaService.invalidate(user);
 
-      // Helper to update state safely
-      const updateState = async (partial: Partial<DreamAnalysis>) => {
-        currentDreamState = { ...currentDreamState, ...partial };
-
-        // Check if analysis is complete (has text AND (image or image failed))
-        const hasText = !!currentDreamState.title;
-        const hasImage = !!currentDreamState.imageUrl || currentDreamState.imageGenerationFailed;
-
-        if (hasText && hasImage) {
-          currentDreamState.analysisStatus = 'done';
-          currentDreamState.analyzedAt = Date.now();
-          currentDreamState.isAnalyzed = true;
-        }
-
-        await updateDream(currentDreamState);
-      };
-
-      // Launch parallel requests
-      const textPromise = (async () => {
-        try {
+      try {
+        const textPromise = async () => {
           const analysis = await analyzeDreamText(transcript);
-          await updateState({
+          return {
             title: analysis.title,
             interpretation: analysis.interpretation,
             shareableQuote: analysis.shareableQuote,
             theme: analysis.theme,
             dreamType: analysis.dreamType,
-          });
-          return 'text';
-        } catch (error) {
-          console.error('Text analysis failed', error);
-          throw error;
-        }
-      })();
-
-      const imagePromise = (async () => {
-        try {
-          const imageUrl = await generateImageFromTranscript(transcript);
-          await updateState({ imageUrl, imageGenerationFailed: false });
-          return 'image';
-        } catch (error) {
-          console.warn('Image generation failed', error);
-          await updateState({ imageGenerationFailed: true });
-          return 'image_failed';
-        }
-      })();
-
-      try {
-        // Wait for the FIRST successful result (or first failure if both fail)
-        // We use Promise.race to return as soon as possible
-        await Promise.race([textPromise, imagePromise]);
-
-        // Return the current state which has at least one part
-        return currentDreamState;
-      } catch (error) {
-        // If the first one failed, we still wait for the other one? 
-        // Or if text fails, is it a total failure?
-        // If text fails, we probably consider the analysis failed.
-        // If image fails, we continue.
-
-        // If textPromise failed, it threw.
-        // Let's check if it was text failure.
-        const failedDream: DreamAnalysis = {
-          ...currentDreamState,
-          analysisStatus: 'failed',
+          };
         };
-        await updateDream(failedDream);
+
+        const imagePromise = async () => {
+          const imageUrl = await generateImageFromTranscript(transcript);
+          return imageUrl;
+        };
+
+        const [textResult, imageResult] = await Promise.allSettled([textPromise(), imagePromise()]);
+
+        if (textResult.status !== 'fulfilled') {
+          console.error('Text analysis failed', textResult.reason);
+          const failedDream: DreamAnalysis = {
+            ...currentDreamState,
+            analysisStatus: 'failed',
+          };
+          await updateDream(failedDream);
+          throw textResult.reason;
+        }
+
+        if (imageResult.status !== 'fulfilled') {
+          console.warn('Image generation failed', imageResult.reason);
+        }
+
+        const next: DreamAnalysis = {
+          ...currentDreamState,
+          ...textResult.value,
+          ...(imageResult.status === 'fulfilled'
+            ? { imageUrl: imageResult.value, imageGenerationFailed: false }
+            : { imageGenerationFailed: true }),
+          analysisStatus: 'done',
+          analyzedAt: Date.now(),
+          isAnalyzed: true,
+        };
+        await updateDream(next);
+        return next;
+      } catch (error) {
         throw error;
       }
     },
