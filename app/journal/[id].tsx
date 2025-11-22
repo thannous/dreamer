@@ -82,14 +82,15 @@ const getMimeTypeFromExtension = (ext: string): string => {
 
 const DREAM_TYPES = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES = ['surreal', 'mystical', 'calm', 'noir'];
+const nativeDriver = Platform.OS !== 'web';
 
 const Skeleton = ({ style }: { style: any }) => {
   const opacity = useRef(new Animated.Value(0.3)).current;
   useEffect(() => {
     const anim = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: nativeDriver }),
+        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: nativeDriver }),
       ])
     );
     anim.start();
@@ -211,13 +212,13 @@ export default function JournalDetailScreen() {
             toValue: 1,
             duration: 900,
             easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
           }),
           Animated.timing(metadataPulse, {
             toValue: 0,
             duration: 900,
             easing: Easing.in(Easing.quad),
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
           }),
         ]),
       );
@@ -240,13 +241,13 @@ export default function JournalDetailScreen() {
             toValue: 1,
             duration: 900,
             easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
           }),
           Animated.timing(transcriptPulse, {
             toValue: 0,
             duration: 900,
             easing: Easing.in(Easing.quad),
-            useNativeDriver: true,
+            useNativeDriver: nativeDriver,
           }),
         ]),
       );
