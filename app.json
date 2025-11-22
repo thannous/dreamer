@@ -72,6 +72,8 @@
     "extra": {
       "router": {},
       "apiUrl": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
+      "supabaseUrl": "https://usuyppgsmmowzizhaoqj.supabase.co",
+      "supabaseAnonKey": "sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n",
       "eas": {
         "projectId": "942327eb-bbba-4b13-a38a-23bbf64936b8"
       }
