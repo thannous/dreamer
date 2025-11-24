@@ -12,7 +12,9 @@ import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
+import { useDreamSaving } from '@/hooks/useDreamSaving';
 import { useQuota } from '@/hooks/useQuota';
+import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { classifyError, QuotaError } from '@/lib/errors';
 import { TID } from '@/lib/testIDs';
@@ -113,6 +115,16 @@ export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
+  const { language } = useLanguage();
+  const { t } = useTranslation();
+  
+  // Use extracted hooks for recording and dream saving
+  const _recordingSession = useRecordingSession({
+    transcriptionLocale: language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : 'en-US',
+    t,
+  });
+  const _dreamSaving = useDreamSaving();
+  
   const [transcript, setTranscript] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -131,8 +143,6 @@ export default function RecordingScreen() {
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
-  const { language } = useLanguage();
-  const { t } = useTranslation();
   const { user } = useAuth();
   const { canAnalyzeNow } = useQuota();
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
