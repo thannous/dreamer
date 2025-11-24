@@ -5,6 +5,7 @@ import { DreamCard } from '@/components/journal/DreamCard';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
 import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
+import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
@@ -17,28 +18,29 @@ import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ViewToken } from 'react-native';
 import {
-  FlatList,
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
+    Modal,
+    Platform,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+    useWindowDimensions,
 } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function JournalListScreen() {
   const tabBarHeight = useBottomTabBarHeight();
-  const { dreams, guestLimitReached } = useDreams();
+  const { dreams } = useDreams();
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<any>(null); // FlashList ref
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -64,15 +66,16 @@ export default function JournalListScreen() {
   // Lazy loading state - track which items should load images
   const [visibleItemIds, setVisibleItemIds] = useState<Set<number>>(new Set());
   const viewabilityConfigRef = useRef({
-    itemVisiblePercentThreshold: 10, // Consider item visible when 10% is shown
-    minimumViewTime: 100,
+    itemVisiblePercentThreshold: JOURNAL_LIST.VIEWABILITY_THRESHOLD,
+    minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
   });
 
   // Animations
   const themeModalAnim = useModalSlide(showThemeModal);
   const dateModalAnim = useModalSlide(showDateModal);
   const floatingOffset = tabBarHeight + ThemeLayout.spacing.xl;
-  const showAddButton = !guestLimitReached;
+  // Always show add button - quota is now enforced on analysis, not recording
+  const showAddButton = true;
   const listBottomPadding = floatingOffset + (showAddButton ? 132 : 0);
 
   // Get available themes
@@ -94,10 +97,12 @@ export default function JournalListScreen() {
     return sortDreamsByDate(filtered, false); // Newest first
   }, [dreams, searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
 
-  // Initialize visible items with first 5 dreams for immediate loading
+  // Initialize visible items with first items for immediate loading
   useEffect(() => {
     if (filteredDreams.length > 0) {
-      const initialIds = new Set(filteredDreams.slice(0, 5).map(d => d.id));
+      const initialIds = new Set(
+        filteredDreams.slice(0, JOURNAL_LIST.INITIAL_VISIBLE_COUNT).map(d => d.id)
+      );
       setVisibleItemIds(initialIds);
     }
   }, [filteredDreams]);
@@ -152,43 +157,47 @@ export default function JournalListScreen() {
     filteredDreamsRef.current = filteredDreams;
   }, [filteredDreams]);
 
-  const onViewableItemsChanged = useRef(({ viewableItems, changed }: any) => {
-    const newVisibleIds = new Set<number>();
+  interface ViewabilityInfo {
+    viewableItems: ViewToken[];
+    changed: ViewToken[];
+  }
 
-    // Add currently visible items
-    viewableItems.forEach((item: any) => {
-      if (item.item?.id) {
-        newVisibleIds.add(item.item.id);
-      }
-    });
+  const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
+    setVisibleItemIds((prevIds) => {
+      const newVisibleIds = new Set<number>();
+      const currentFilteredDreams = filteredDreamsRef.current;
 
-    // Preload images for items near the viewport (2 items ahead and behind)
-    const PRELOAD_BUFFER = 2;
-    const currentFilteredDreams = filteredDreamsRef.current;
-    viewableItems.forEach((item: any) => {
-      if (item.index !== null && item.index !== undefined) {
-        // Preload items ahead
-        for (let i = 1; i <= PRELOAD_BUFFER; i++) {
-          const nextIndex = item.index + i;
-          if (nextIndex < currentFilteredDreams.length) {
-            newVisibleIds.add(currentFilteredDreams[nextIndex].id);
+      // Add currently visible items and preload buffer
+      viewableItems.forEach((item) => {
+        const dream = item.item as DreamAnalysis | undefined;
+        if (dream?.id) {
+          newVisibleIds.add(dream.id);
+
+          // Preload items ahead and behind
+          if (typeof item.index === 'number') {
+            for (let i = 1; i <= JOURNAL_LIST.PRELOAD_BUFFER; i++) {
+              const nextDream = currentFilteredDreams[item.index + i];
+              const prevDream = currentFilteredDreams[item.index - i];
+              if (nextDream) newVisibleIds.add(nextDream.id);
+              if (prevDream) newVisibleIds.add(prevDream.id);
+            }
           }
         }
-        // Preload items behind
-        for (let i = 1; i <= PRELOAD_BUFFER; i++) {
-          const prevIndex = item.index - i;
-          if (prevIndex >= 0) {
-            newVisibleIds.add(currentFilteredDreams[prevIndex].id);
-          }
-        }
-      }
-    });
+      });
 
-    setVisibleItemIds(newVisibleIds);
+      // Only update if the set actually changed to avoid unnecessary re-renders
+      if (
+        prevIds.size === newVisibleIds.size &&
+        [...prevIds].every((id) => newVisibleIds.has(id))
+      ) {
+        return prevIds;
+      }
+      return newVisibleIds;
+    });
   }).current;
 
-  const renderDreamItem = useCallback(({ item, index }: { item: DreamAnalysis; index: number }) => {
-    const shouldLoadImage = visibleItemIds.has(item.id) || index < 5; // Load first 5 immediately
+  const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+    const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.INITIAL_VISIBLE_COUNT; // Load first 5 immediately
 
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
@@ -245,8 +254,8 @@ export default function JournalListScreen() {
     );
   }, [filteredDreams.length, visibleItemIds, colors, formatDreamListDate, t]);
 
-  const renderDreamItemDesktop = useCallback(({ item, index }: { item: DreamAnalysis; index: number }) => {
-    const shouldLoadImage = visibleItemIds.has(item.id) || index < 12;
+  const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+    const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.DESKTOP_INITIAL_COUNT;
     const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
@@ -317,11 +326,7 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
 
-  const getItemLayout = useCallback((_: any, index: number) => ({
-    length: 140, // Approximate item height
-    offset: 140 * index,
-    index,
-  }), []);
+  // FlashList handles item layout automatically with estimatedItemSize
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
@@ -389,46 +394,32 @@ export default function JournalListScreen() {
 
       {/* Timeline / Bento List */}
       {isDesktopLayout ? (
-        <FlatList
+        <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
-          key={`desktop-${desktopColumns}`} // Force remount when column count changes to satisfy FlatList invariant
+          key={`desktop-${desktopColumns}`}
           data={filteredDreams}
           extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
-          columnWrapperStyle={styles.desktopRow}
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
-          // Re-enable clipping for smoother scroll now that entering animations are disabled.
-          removeClippedSubviews
-          maxToRenderPerBatch={12}
-          updateCellsBatchingPeriod={50}
-          initialNumToRender={18}
-          windowSize={21}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
         />
       ) : (
-        <FlatList
+        <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
           data={filteredDreams}
           extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
-          getItemLayout={getItemLayout}
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
-          // Re-enable clipping for smoother scroll now that entering animations are disabled.
-          removeClippedSubviews
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={50}
-          initialNumToRender={10}
-          windowSize={21}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
         />

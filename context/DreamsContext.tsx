@@ -1,11 +1,10 @@
-import React, { createContext, useContext, useMemo } from 'react';
 import { useDreamJournal } from '@/hooks/useDreamJournal';
 import type { DreamAnalysis } from '@/lib/types';
+import React, { createContext, useContext, useMemo } from 'react';
 
 export type DreamsContextValue = {
   dreams: DreamAnalysis[];
   loaded: boolean;
-  guestLimitReached: boolean;
   addDream: (dream: DreamAnalysis) => Promise<DreamAnalysis>;
   updateDream: (dream: DreamAnalysis) => Promise<void>;
   deleteDream: (id: number) => Promise<void>;
@@ -22,7 +21,6 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const value = useMemo(() => ({
     dreams: journal.dreams,
     loaded: journal.loaded,
-    guestLimitReached: journal.guestLimitReached,
     addDream: journal.addDream,
     updateDream: journal.updateDream,
     deleteDream: journal.deleteDream,
@@ -31,7 +29,6 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   }), [
     journal.dreams,
     journal.loaded,
-    journal.guestLimitReached,
     journal.addDream,
     journal.updateDream,
     journal.deleteDream,

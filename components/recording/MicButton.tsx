@@ -1,11 +1,11 @@
-import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
 import { MotiView } from 'moti';
 import React, { useCallback, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, type AccessibilityState } from 'react-native';
 
 interface MicButtonProps {
   isRecording: boolean;
@@ -43,6 +43,15 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel, di
       accessibilityRole="button"
       accessibilityLabel={
         accessibilityLabel ?? (isRecording ? t('recording.mic.stop') : t('recording.mic.start'))
+      }
+      accessibilityState={{
+        disabled: disabled ?? false,
+        busy: isRecording,
+      } as AccessibilityState}
+      accessibilityHint={
+        isRecording
+          ? t('recording.mic.stop_hint', { defaultValue: 'Double tap to stop recording' })
+          : t('recording.mic.start_hint', { defaultValue: 'Double tap to start voice recording' })
       }
       testID={testID}
     >
@@ -116,6 +125,9 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel, di
             loop: isRecording && shouldAnimate,
             repeatReverse: true,
           }}
+          // Hide icon from accessibility tree since parent has the label
+          importantForAccessibility="no-hide-descendants"
+          accessibilityElementsHidden={true}
         >
           <Ionicons
             name={isRecording ? 'stop' : 'mic'}

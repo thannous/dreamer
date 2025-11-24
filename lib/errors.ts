@@ -1,5 +1,22 @@
 // Error classification and user-friendly message generation for API errors
 
+/**
+ * Translation function type for i18n support
+ */
+export type TranslateFunction = (key: string, params?: Record<string, unknown>) => string;
+
+/**
+ * Default error messages (English fallback)
+ */
+const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
+  'error.network': 'No internet connection. Please check your network and try again.',
+  'error.timeout': 'Request timed out. The server is taking too long to respond. Please try again.',
+  'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
+  'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
+  'error.client': 'Invalid request. Please check your input and try again.',
+  'error.unknown': 'An unexpected error occurred.',
+};
+
 export enum ErrorType {
   NETWORK = 'network',
   TIMEOUT = 'timeout',
@@ -18,10 +35,19 @@ export interface ClassifiedError {
 }
 
 /**
- * Classifies an error and returns metadata about it
+ * Classifies an error and returns metadata about it.
+ * Optionally accepts a translation function for i18n support.
  */
-export function classifyError(error: Error): ClassifiedError {
+export function classifyError(error: Error, t?: TranslateFunction): ClassifiedError {
   const message = error.message.toLowerCase();
+  const translate = (key: string, fallbackKey?: string): string => {
+    if (t) {
+      const translated = t(key);
+      // If translation returns the key itself, use fallback
+      if (translated !== key) return translated;
+    }
+    return DEFAULT_ERROR_MESSAGES[fallbackKey ?? key] ?? error.message;
+  };
 
   // Network/connectivity errors
   if (
@@ -36,7 +62,7 @@ export function classifyError(error: Error): ClassifiedError {
       type: ErrorType.NETWORK,
       message: error.message,
       originalError: error,
-      userMessage: 'No internet connection. Please check your network and try again.',
+      userMessage: translate('error.network'),
       canRetry: true,
     };
   }
@@ -51,7 +77,7 @@ export function classifyError(error: Error): ClassifiedError {
       type: ErrorType.TIMEOUT,
       message: error.message,
       originalError: error,
-      userMessage: 'Request timed out. The server is taking too long to respond. Please try again.',
+      userMessage: translate('error.timeout'),
       canRetry: true,
     };
   }
@@ -62,7 +88,7 @@ export function classifyError(error: Error): ClassifiedError {
       type: ErrorType.RATE_LIMIT,
       message: error.message,
       originalError: error,
-      userMessage: 'Too many requests. Please wait a moment and try again.',
+      userMessage: translate('error.rate_limit'),
       canRetry: true,
     };
   }
@@ -73,7 +99,7 @@ export function classifyError(error: Error): ClassifiedError {
       type: ErrorType.SERVER,
       message: error.message,
       originalError: error,
-      userMessage: 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
+      userMessage: translate('error.server'),
       canRetry: true,
     };
   }
@@ -84,7 +110,7 @@ export function classifyError(error: Error): ClassifiedError {
       type: ErrorType.CLIENT,
       message: error.message,
       originalError: error,
-      userMessage: 'Invalid request. Please check your input and try again.',
+      userMessage: translate('error.client'),
       canRetry: false,
     };
   }
@@ -94,23 +120,27 @@ export function classifyError(error: Error): ClassifiedError {
     type: ErrorType.UNKNOWN,
     message: error.message,
     originalError: error,
-    userMessage: `An unexpected error occurred: ${error.message}`,
+    userMessage: `${translate('error.unknown')}: ${error.message}`,
     canRetry: true,
   };
 }
 
 /**
  * Gets a user-friendly error message from an error
+ * @param error The error to get message from
+ * @param t Optional translation function for i18n
  */
-export function getUserErrorMessage(error: Error): string {
-  return classifyError(error).userMessage;
+export function getUserErrorMessage(error: Error, t?: TranslateFunction): string {
+  return classifyError(error, t).userMessage;
 }
 
 /**
  * Checks if an error can be retried
+ * @param error The error to check
+ * @param t Optional translation function (not used for retry check but kept for consistency)
  */
-export function canRetryError(error: Error): boolean {
-  return classifyError(error).canRetry;
+export function canRetryError(error: Error, t?: TranslateFunction): boolean {
+  return classifyError(error, t).canRetry;
 }
 
 /**
