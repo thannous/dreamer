@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Fonts } from '@/constants/theme';
+import React from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -46,7 +46,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 }
 
-function DefaultErrorFallback({ error, resetError }: { error: Error; resetError: () => void }): JSX.Element {
+function DefaultErrorFallback({ error, resetError }: { error: Error; resetError: () => void }): React.ReactElement {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Something went wrong</Text>

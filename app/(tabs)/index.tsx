@@ -4,17 +4,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { MotiText, MotiView } from '@/lib/moti';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
-import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
+import { MotiText, MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { ThemeMode } from '@/lib/types';
 import { getRitualPreference, saveRitualPreference } from '@/services/storageService';
@@ -98,7 +97,7 @@ export default function InspirationScreen() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const { guestLimitReached } = useDreams();
+  // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const tabBarHeight = useBottomTabBarHeight();
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIP_KEYS.length));
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
@@ -106,7 +105,8 @@ export default function InspirationScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   const floatingOffset = tabBarHeight + ThemeLayout.spacing.xl;
-  const showAddButton = !guestLimitReached;
+  // Always show add button - quota is enforced on analysis, not recording
+  const showAddButton = true;
   const scrollContentBottomPadding = floatingOffset + (showAddButton ? 132 : 0);
 
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);

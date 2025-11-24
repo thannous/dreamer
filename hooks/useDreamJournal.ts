@@ -7,18 +7,18 @@ import type { DreamAnalysis, DreamMutation } from '@/lib/types';
 import { analyzeDream as analyzeDreamText, generateImageFromTranscript } from '@/services/geminiService';
 import { quotaService } from '@/services/quotaService';
 import {
-  getCachedRemoteDreams,
-  getPendingDreamMutations,
-  getSavedDreams,
-  saveCachedRemoteDreams,
-  saveDreams,
-  savePendingDreamMutations,
+    getCachedRemoteDreams,
+    getPendingDreamMutations,
+    getSavedDreams,
+    saveCachedRemoteDreams,
+    saveDreams,
+    savePendingDreamMutations,
 } from '@/services/storageService';
 import {
-  createDreamInSupabase,
-  deleteDreamFromSupabase,
-  fetchDreamsFromSupabase,
-  updateDreamInSupabase,
+    createDreamInSupabase,
+    deleteDreamFromSupabase,
+    fetchDreamsFromSupabase,
+    updateDreamInSupabase,
 } from '@/services/supabaseDreamService';
 
 // Guest limit centralized in constants/limits
@@ -615,12 +615,9 @@ export const useDreamJournal = () => {
     [user, updateDream]
   );
 
-  const guestLimitReached = false;
-
   return {
     dreams,
     loaded,
-    guestLimitReached,
     addDream,
     updateDream,
     deleteDream,

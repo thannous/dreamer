@@ -1,13 +1,13 @@
-import React from 'react';
-import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import { Fonts } from '@/constants/theme';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 interface LoadingStateProps {
   message?: string;
   size?: 'small' | 'large';
 }
 
-export function LoadingState({ message = 'Loading...', size = 'large' }: LoadingStateProps): JSX.Element {
+export function LoadingState({ message = 'Loading...', size = 'large' }: LoadingStateProps): React.ReactElement {
   return (
     <View style={styles.container}>
       <ActivityIndicator size={size} color="#8C9EFF" />
