@@ -80,6 +80,7 @@ export const TID = {
   Chat: {
     Input: 'chat.input.message',
     Send: 'chat.button.send',
+    Mic: 'chat.button.mic',
     ScreenBlocked: 'chat.screen.blocked',
   },
   Quota: {

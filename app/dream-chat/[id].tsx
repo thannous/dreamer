@@ -2,47 +2,50 @@ import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
-import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
+import { useTranslation } from '@/hooks/useTranslation';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
+import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
 import { quotaService } from '@/services/quotaService';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AudioModule } from 'expo-audio';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
 
-const getCategoryQuestion = (category: CategoryType): string => {
+const getCategoryQuestion = (category: CategoryType, t: (key: string) => string): string => {
   const categoryQuestions: Record<CategoryType, string> = {
-    symbols: 'Tell me about the symbolic meanings in my dream. What do the key symbols represent?',
-    emotions: 'Help me understand the emotional landscape of this dream. What emotions am I processing?',
-    growth: 'What insights for personal growth can you share based on this dream?',
+    symbols: t('dream_chat.prompt.symbols'),
+    emotions: t('dream_chat.prompt.emotions'),
+    growth: t('dream_chat.prompt.growth'),
     general: '',
   };
   return categoryQuestions[category];
 };
 
-const buildCategoryPrompt = (category: CategoryType, dream: DreamAnalysis): string => {
+const buildCategoryPrompt = (category: CategoryType, dream: DreamAnalysis, t: (key: string) => string): string => {
   if (category === 'general') return '';
 
   const dreamContext = `Here's my dream:
@@ -63,14 +66,14 @@ Key Quote: "${dream.shareableQuote}"
 
 `;
 
-  const question = getCategoryQuestion(category);
+  const question = getCategoryQuestion(category, t);
   return dreamContext + 'Now, ' + question.charAt(0).toLowerCase() + question.slice(1);
 };
 
 const QUICK_CATEGORIES = [
-  { id: 'symbols', label: 'Symbols', icon: 'creation' as const },
-  { id: 'emotions', label: 'Emotions', icon: 'heart-pulse' as const },
-  { id: 'growth', label: 'Growth', icon: 'sprout' as const },
+  { id: 'symbols', labelKey: 'dream_chat.quick.symbols', icon: 'creation' as const },
+  { id: 'emotions', labelKey: 'dream_chat.quick.emotions', icon: 'heart-pulse' as const },
+  { id: 'growth', labelKey: 'dream_chat.quick.growth', icon: 'sprout' as const },
 ];
 
 export default function DreamChatScreen() {
@@ -79,6 +82,7 @@ export default function DreamChatScreen() {
   const { dreams, updateDream } = useDreams();
   const { colors, mode, shadows } = useTheme();
   const { user } = useAuth();
+  const { language } = useLanguage();
   const insets = useSafeAreaInsets();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
@@ -88,8 +92,23 @@ export default function DreamChatScreen() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const hasSentCategoryRef = useRef(false);
+  const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
+  const baseInputRef = useRef('');
+
+  // Speech recognition locale based on language
+  const transcriptionLocale = useMemo(() => {
+    switch (language) {
+      case 'fr':
+        return 'fr-FR';
+      case 'es':
+        return 'es-ES';
+      default:
+        return 'en-US';
+    }
+  }, [language]);
 
   // Use full-resolution image config for chat view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
@@ -124,12 +143,12 @@ export default function DreamChatScreen() {
       // Start with initial AI greeting
       const initialMessage: ChatMessage = {
         role: 'model',
-        text: `I'm here to help you explore deeper insights about your dream "${dream.title}". What would you like to know?`,
+        text: t('dream_chat.initial_greeting', { title: dream.title }),
       };
       setMessages([initialMessage]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dream?.id]);
+  }, [dream?.id, t]);
 
   // Send category-specific question if category is provided
   useEffect(() => {
@@ -137,8 +156,8 @@ export default function DreamChatScreen() {
       return;
     }
 
-    const categoryPrompt = buildCategoryPrompt(category as CategoryType, dream);
-    const question = getCategoryQuestion(category as CategoryType);
+    const categoryPrompt = buildCategoryPrompt(category as CategoryType, dream, t);
+    const question = getCategoryQuestion(category as CategoryType, t);
 
     if (categoryPrompt) {
       hasSentCategoryRef.current = true;
@@ -151,7 +170,7 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, t]); // sendMessage has stable dependencies via useCallback
 
   useEffect(() => {
     // Auto-scroll to bottom when messages change
@@ -236,24 +255,120 @@ export default function DreamChatScreen() {
         }
         const errorMessage: ChatMessage = {
           role: 'model',
-          text: 'Sorry, I encountered an error. Please try again.',
+          text: t('dream_chat.error_message'),
         };
         setMessages([...updatedMessages, errorMessage]);
       } finally {
         setIsLoading(false);
       }
     },
-    [inputText, dream, messages, updateDream, canChat, user]
+    [inputText, dream, messages, updateDream, canChat, user, t]
   );
 
   const handleQuickCategory = (categoryId: string) => {
     if (!dream) return;
-    const prompt = buildCategoryPrompt(categoryId as CategoryType, dream);
-    const question = getCategoryQuestion(categoryId as CategoryType);
+    const prompt = buildCategoryPrompt(categoryId as CategoryType, dream, t);
+    const question = getCategoryQuestion(categoryId as CategoryType, t);
     if (prompt) {
       sendMessage(prompt, question);
     }
   };
+
+  // Speech-to-text: stop recording and get transcript
+  const stopRecording = useCallback(async () => {
+    const nativeSession = nativeSessionRef.current;
+    nativeSessionRef.current = null;
+    setIsRecording(false);
+
+    if (!nativeSession) return;
+
+    try {
+      const result = await nativeSession.stop();
+      const transcript = result.transcript?.trim();
+      
+      if (transcript) {
+        // Append transcript to existing input text
+        setInputText((prev) => {
+          const trimmedPrev = prev.trim();
+          return trimmedPrev ? `${trimmedPrev} ${transcript}` : transcript;
+        });
+      } else if (!result.error?.toLowerCase().includes('no speech')) {
+        // Only alert if it's not a "no speech" error
+        Alert.alert(
+          t('recording.alert.no_speech.title'),
+          t('recording.alert.no_speech.message')
+        );
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[DreamChat] Failed to stop speech recognition:', error);
+      }
+    }
+  }, [t]);
+
+  // Speech-to-text: start recording
+  const startRecording = useCallback(async () => {
+    try {
+      // Request microphone permission
+      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
+      if (!granted) {
+        Alert.alert(
+          t('recording.alert.permission_required.title'),
+          t('recording.alert.permission_required.message')
+        );
+        return;
+      }
+
+      // Abort any existing session
+      nativeSessionRef.current?.abort();
+      baseInputRef.current = inputText;
+
+      // Start native speech session
+      const session = await startNativeSpeechSession(transcriptionLocale, {
+        onPartial: (text) => {
+          // Update input text with partial transcript
+          const base = baseInputRef.current.trim();
+          setInputText(base ? `${base} ${text}` : text);
+        },
+      });
+
+      if (!session) {
+        Alert.alert(
+          t('common.error_title'),
+          t('recording.alert.start_failed')
+        );
+        return;
+      }
+
+      nativeSessionRef.current = session;
+      setIsRecording(true);
+    } catch (error) {
+      nativeSessionRef.current?.abort();
+      nativeSessionRef.current = null;
+      setIsRecording(false);
+      if (__DEV__) {
+        console.error('[DreamChat] Failed to start speech recognition:', error);
+      }
+      Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
+    }
+  }, [inputText, t, transcriptionLocale]);
+
+  // Toggle recording on/off
+  const toggleRecording = useCallback(async () => {
+    if (isRecording) {
+      await stopRecording();
+    } else {
+      await startRecording();
+    }
+  }, [isRecording, startRecording, stopRecording]);
+
+  // Cleanup speech session on unmount
+  useEffect(() => {
+    return () => {
+      nativeSessionRef.current?.abort();
+      nativeSessionRef.current = null;
+    };
+  }, []);
 
   const gradientColors = mode === 'dark'
     ? GradientColors.darkBase
@@ -336,6 +451,9 @@ export default function DreamChatScreen() {
     ? quotaMessages.remaining
     : fallbackRemaining;
   const messageLimitReached = messageLimit !== null && messagesRemaining <= 0;
+  const messageCounterLabel = typeof messageLimit === 'number'
+    ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
+    : '';
 
   return (
     <LinearGradient colors={gradientColors} style={styles.gradient}>
@@ -448,7 +566,9 @@ export default function DreamChatScreen() {
                     disabled={isLoading}
                   >
                     <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
-                    <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>{cat.label}</Text>
+                    <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
+                      {t(cat.labelKey)}
+                    </Text>
                   </Pressable>
                 ))}
               </View>
@@ -470,11 +590,11 @@ export default function DreamChatScreen() {
                 styles.messageCounter,
                 { color: messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary }
               ]}>
-                {userMessageCount}/{messageLimit} messages
+                {messageCounterLabel}
               </Text>
               {messageLimitReached && (
                 <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
-                  • Limit reached
+                  {t('dream_chat.limit_reached')}
                 </Text>
               )}
             </View>
@@ -487,7 +607,7 @@ export default function DreamChatScreen() {
             >
               <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
               <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
-                You&apos;ve reached the message limit for this dream. Upgrade to continue the conversation.
+                {t('dream_chat.limit_warning')}
               </Text>
             </View>
           )}
@@ -496,14 +616,39 @@ export default function DreamChatScreen() {
             <TextInput
               testID={TID.Chat.Input}
               style={[styles.input, { color: colors.textPrimary }]}
-              placeholder={messageLimitReached ? "Message limit reached..." : "Type your response..."}
+              placeholder={
+                isRecording
+                  ? t('dream_chat.input.recording_placeholder')
+                  : messageLimitReached
+                    ? t('dream_chat.input.limit_placeholder')
+                    : t('dream_chat.input.placeholder')
+              }
               placeholderTextColor={colors.textSecondary}
               value={inputText}
               onChangeText={setInputText}
               multiline
               maxLength={500}
-              editable={!isLoading && !messageLimitReached}
+              editable={!isLoading && !messageLimitReached && !isRecording}
             />
+            {/* Mic button for speech-to-text */}
+            <Pressable
+              testID={TID.Chat.Mic}
+              style={[
+                styles.micButton,
+                { backgroundColor: isRecording ? colors.accent : colors.backgroundCard },
+                (isLoading || messageLimitReached) && styles.sendButtonDisabled,
+              ]}
+              onPress={toggleRecording}
+              disabled={isLoading || messageLimitReached}
+              accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
+            >
+              <Ionicons
+                name={isRecording ? 'stop' : 'mic'}
+                size={20}
+                color={isRecording ? colors.textPrimary : colors.textSecondary}
+              />
+            </Pressable>
+            {/* Send button */}
             <Pressable
               testID={TID.Chat.Send}
               style={[styles.sendButton, { backgroundColor: colors.accent }, (!inputText.trim() || isLoading || messageLimitReached) && styles.sendButtonDisabled]}
@@ -741,6 +886,13 @@ const styles = StyleSheet.create({
   },
   sendButtonDisabled: {
     opacity: 0.4,
+  },
+  micButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   // Exploration blocked screen
   blockedContainer: {
