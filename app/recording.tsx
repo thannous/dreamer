@@ -194,10 +194,20 @@ export default function RecordingScreen() {
     [clampTranscript, lengthLimitMessage]
   );
 
+  const getRecorderIsRecording = useCallback(() => {
+    try {
+      return audioRecorder.isRecording;
+    } catch (error) {
+      handleRecorderReleaseError('isRecordingCheck', error);
+      return false;
+    }
+  }, [audioRecorder]);
+
   const forceStopRecording = useCallback(
     async (reason: 'blur' | 'unmount') => {
       const hasNativeSession = Boolean(nativeSessionRef.current);
-      const shouldStopRecorder = !skipRecorderRef.current && audioRecorder.isRecording;
+      const recorderIsRecording = getRecorderIsRecording();
+      const shouldStopRecorder = !skipRecorderRef.current && recorderIsRecording;
 
       if (!hasNativeSession && !shouldStopRecorder && !isRecordingRef.current) {
         return;
@@ -238,7 +248,7 @@ export default function RecordingScreen() {
         hasAutoStoppedRecordingRef.current = false;
       }
     },
-    [audioRecorder]
+    [audioRecorder, getRecorderIsRecording]
   );
 
   // Request microphone permissions on mount
@@ -271,22 +281,24 @@ export default function RecordingScreen() {
     }, [forceStopRecording])
   );
 
-  const deriveDraftTitle = useCallback(() => {
-    if (!trimmedTranscript) {
+  const deriveDraftTitle = useCallback((transcriptText?: string) => {
+    const source = (transcriptText ?? trimmedTranscript).trim();
+    if (!source) {
       return t('recording.draft.default_title');
     }
-    const firstLine = trimmedTranscript.split('\n')[0]?.trim() ?? '';
+    const firstLine = source.split('\n')[0]?.trim() ?? '';
     if (!firstLine) {
       return t('recording.draft.default_title');
     }
     return firstLine.length > 64 ? `${firstLine.slice(0, 64)}…` : firstLine;
   }, [trimmedTranscript, t]);
 
-  const buildDraftDream = useCallback((): DreamAnalysis => {
-    const title = deriveDraftTitle();
+  const buildDraftDream = useCallback((transcriptText?: string): DreamAnalysis => {
+    const normalizedTranscript = (transcriptText ?? trimmedTranscript).trim();
+    const title = deriveDraftTitle(normalizedTranscript);
     return {
       id: Date.now(),
-      transcript: trimmedTranscript,
+      transcript: normalizedTranscript,
       title,
       interpretation: '',
       shareableQuote: '',
@@ -294,8 +306,8 @@ export default function RecordingScreen() {
       dreamType: 'Symbolic Dream',
       imageUrl: '',
       thumbnailUrl: undefined,
-      chatHistory: trimmedTranscript
-        ? [{ role: 'user', text: `Here is my dream: ${trimmedTranscript}` }]
+      chatHistory: normalizedTranscript
+        ? [{ role: 'user', text: `Here is my dream: ${normalizedTranscript}` }]
         : [],
       isFavorite: false,
       imageGenerationFailed: false,
@@ -558,7 +570,8 @@ export default function RecordingScreen() {
 
     const subscription = AppState.addEventListener('change', (state) => {
       try {
-        if ((state === 'background' || state === 'inactive') && audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+        const recorderIsRecording = getRecorderIsRecording();
+        if ((state === 'background' || state === 'inactive') && recorderIsRecording && !hasAutoStoppedRecordingRef.current) {
           hasAutoStoppedRecordingRef.current = true;
           void stopRecording();
         }
@@ -570,7 +583,7 @@ export default function RecordingScreen() {
     return () => {
       subscription.remove();
       try {
-        if (audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+        if (getRecorderIsRecording() && !hasAutoStoppedRecordingRef.current) {
           hasAutoStoppedRecordingRef.current = true;
           void stopRecording();
         }
@@ -580,19 +593,27 @@ export default function RecordingScreen() {
         }
       }
     };
-  }, [audioRecorder, stopRecording]);
+  }, [audioRecorder, getRecorderIsRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async () => {
-    if (!trimmedTranscript) {
+    const hasActiveRecording =
+      isRecordingRef.current || Boolean(nativeSessionRef.current) || getRecorderIsRecording();
+    if (hasActiveRecording) {
+      await stopRecording();
+    }
+
+    const latestTranscript = (baseTranscriptRef.current || transcript).trim();
+
+    if (!latestTranscript) {
       Alert.alert(t('recording.alert.empty.title'), t('recording.alert.empty.message'));
       return;
     }
 
     if (!user && dreams.length >= GUEST_DREAM_LIMIT - 1) {
       const draft =
-        draftDream && draftDream.transcript === trimmedTranscript
+        draftDream && draftDream.transcript === latestTranscript
           ? draftDream
-          : buildDraftDream();
+          : buildDraftDream(latestTranscript);
       setPendingGuestLimitDream(draft);
       setShowGuestLimitSheet(true);
       return;
@@ -603,14 +624,14 @@ export default function RecordingScreen() {
       const preCount = dreams.length;
 
       // Prepare the dream object
-      let dreamToSave = draftDream && draftDream.transcript === trimmedTranscript
+      let dreamToSave = draftDream && draftDream.transcript === latestTranscript
         ? draftDream
-        : buildDraftDream();
+        : buildDraftDream(latestTranscript);
 
       // Attempt quick categorization if we have a transcript
-      if (trimmedTranscript) {
+      if (latestTranscript) {
         try {
-          const metadata = await categorizeDream(trimmedTranscript);
+          const metadata = await categorizeDream(latestTranscript);
           dreamToSave = {
             ...dreamToSave,
             ...metadata,
@@ -635,14 +656,16 @@ export default function RecordingScreen() {
       setIsPersisting(false);
     }
   }, [
-    trimmedTranscript,
-    dreams.length,
-    draftDream,
     addDream,
     buildDraftDream,
+    dreams.length,
+    draftDream,
+    getRecorderIsRecording,
     navigateAfterSave,
     resetComposer,
+    stopRecording,
     t,
+    transcript,
     user,
   ]);
 
