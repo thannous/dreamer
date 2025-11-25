@@ -129,6 +129,20 @@ describe('dreamFilters', () => {
       expect(result[0].title).toBe('Falling Dream');
     });
 
+    it('given localized dream type label when filtering then returns matching dreams', () => {
+      // Given
+      const query = 'cauchemar';
+
+      // When
+      const result = filterBySearch(mockDreams, query, {
+        dreamTypeLabelResolver: (dreamType) => (dreamType === 'nightmare' ? 'Cauchemar' : undefined),
+      });
+
+      // Then
+      expect(result).toHaveLength(1);
+      expect(result[0].title).toBe('Falling Dream');
+    });
+
     it('given search term with different case when filtering then returns matching dreams', () => {
       // Given
       const query = 'FLYING';
@@ -342,6 +356,22 @@ describe('dreamFilters', () => {
       // Then
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe('Flying Dream');
+    });
+
+    it('given localized search term and resolver when applying then returns filtered dreams', () => {
+      // Given
+      const filters: DreamFilters = { searchQuery: 'pesadilla' };
+
+      // When
+      const result = applyFilters(mockDreams, filters, {
+        searchOptions: {
+          dreamTypeLabelResolver: (dreamType) => (dreamType === 'nightmare' ? 'Pesadilla' : undefined),
+        },
+      });
+
+      // Then
+      expect(result).toHaveLength(1);
+      expect(result[0].title).toBe('Falling Dream');
     });
 
     it('given theme filter when applying then returns filtered dreams', () => {

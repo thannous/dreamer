@@ -172,10 +172,13 @@ export default function RootLayout() {
       (async () => {
         try {
           const NavigationBar = await import('expo-navigation-bar');
+          const { isEdgeToEdge } = await import('react-native-is-edge-to-edge');
           if (!isMounted) {
             return;
           }
-          await NavigationBar.setBackgroundColorAsync(SurrealTheme.bgStart);
+          if (!isEdgeToEdge()) {
+            await NavigationBar.setBackgroundColorAsync(SurrealTheme.bgStart);
+          }
           await NavigationBar.setButtonStyleAsync('light');
         } catch (error) {
           if (__DEV__) {

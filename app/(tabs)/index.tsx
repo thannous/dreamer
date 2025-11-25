@@ -1,4 +1,3 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
@@ -8,7 +7,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
+import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -100,16 +99,16 @@ export default function InspirationScreen() {
   const insets = useSafeAreaInsets();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
-  const tabBarHeight = useBottomTabBarHeight();
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIP_KEYS.length));
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
-  const floatingOffset = tabBarHeight + ThemeLayout.spacing.xl;
+  const fallbackTabHeight = TAB_BAR_HEIGHT;
+  const floatingOffset = fallbackTabHeight;
   // Always show add button - quota is enforced on analysis, not recording
   const showAddButton = true;
-  const scrollContentBottomPadding = floatingOffset + (showAddButton ? 132 : 0);
+  const scrollContentBottomPadding = floatingOffset + (showAddButton ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.sm : ThemeLayout.spacing.sm);
 
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
   const prompts = useMemo(

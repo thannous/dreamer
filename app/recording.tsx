@@ -32,7 +32,7 @@ import {
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { MotiView } from 'moti';
+import { MotiView } from '@/lib/moti';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
@@ -956,7 +956,10 @@ export default function RecordingScreen() {
                       <Text
                         style={[
                           styles.submitButtonText,
-                          isSaveDisabled && { color: colors.backgroundSecondary, opacity: 0.9 },
+                          {
+                            color: isSaveDisabled ? colors.textPrimary : colors.textOnAccentSurface,
+                            opacity: isSaveDisabled ? 0.9 : 1,
+                          },
                         ]}
                       >
                         {t('recording.button.save_dream')}
