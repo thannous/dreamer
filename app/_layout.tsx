@@ -36,26 +36,28 @@ import { getFirstLaunchCompleted, saveFirstLaunchCompleted } from '@/services/st
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
 // while keeping production behavior unchanged.
 if (__DEV__) {
-  try {
-    const { requireOptionalNativeModule } = require('expo-modules-core') as typeof import('expo-modules-core');
-    const nativeKeepAwake = requireOptionalNativeModule<{
-      activate?: (...args: unknown[]) => Promise<void>;
-    }>('ExpoKeepAwake');
+  void (async () => {
+    try {
+      const { requireOptionalNativeModule } = await import('expo-modules-core');
+      const nativeKeepAwake = requireOptionalNativeModule<{
+        activate?: (...args: unknown[]) => Promise<void>;
+      }>('ExpoKeepAwake');
 
-    const originalActivate = nativeKeepAwake?.activate;
+      const originalActivate = nativeKeepAwake?.activate;
 
-    if (nativeKeepAwake && typeof originalActivate === 'function') {
-      nativeKeepAwake.activate = async (...args: Parameters<typeof originalActivate>) => {
-        try {
-          await originalActivate(...args);
-        } catch (error) {
-          console.warn('[dev] keep-awake activation failed, continuing without it', error);
-        }
-      };
+      if (nativeKeepAwake && typeof originalActivate === 'function') {
+        nativeKeepAwake.activate = async (...args: Parameters<typeof originalActivate>) => {
+          try {
+            await originalActivate(...args);
+          } catch (error) {
+            console.warn('[dev] keep-awake activation failed, continuing without it', error);
+          }
+        };
+      }
+    } catch {
+      // Optional module; ignore if missing in this build.
     }
-  } catch {
-    // Optional module; ignore if missing in this build.
-  }
+  })();
 }
 
 // Prevent the splash screen from auto-hiding before fonts are loaded

@@ -120,7 +120,10 @@ export async function startNativeSpeechSession(
       return null;
     }
 
-    const permissions = await speechModule.requestPermissionsAsync();
+    // Web doesn't need (or support) permission requests; avoid noisy warnings
+    const permissions = Platform.OS === 'web'
+      ? { granted: hasWebSpeechAPI() }
+      : await speechModule.requestPermissionsAsync();
     if (!permissions.granted) {
       if (__DEV__) {
         console.warn('[nativeSpeech] permissions not granted', permissions);
