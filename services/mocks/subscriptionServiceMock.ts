@@ -1,7 +1,11 @@
+import type { User } from '@supabase/supabase-js';
+
+import { getCurrentUser } from '@/lib/auth';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
 let initialized = false;
 let currentStatus: SubscriptionStatus | null = null;
+const DEFAULT_PREMIUM_PRODUCT_ID = 'mock_premium';
 
 const mockPackages: PurchasePackage[] = [
   {
@@ -31,12 +35,46 @@ function getDefaultStatus(): SubscriptionStatus {
   };
 }
 
-export async function initialize(): Promise<SubscriptionStatus> {
+function mapTierFromUser(user: User | null): SubscriptionTier {
+  const tier = user?.user_metadata?.tier as SubscriptionTier | undefined;
+  if (tier === 'premium' || tier === 'guest') {
+    return tier;
+  }
+  if ((user?.user_metadata as any)?.profile === 'premium') {
+    return 'premium';
+  }
+  return 'free';
+}
+
+function buildStatusFromTier(tier: SubscriptionTier): SubscriptionStatus {
+  return {
+    tier,
+    isActive: tier === 'premium',
+    expiryDate: null,
+    productId: tier === 'premium' ? currentStatus?.productId ?? DEFAULT_PREMIUM_PRODUCT_ID : null,
+  };
+}
+
+async function syncStatusWithCurrentUser(): Promise<SubscriptionStatus> {
+  const user = await getCurrentUser();
+  const tier = mapTierFromUser(user);
+  const nextStatus = buildStatusFromTier(tier);
+
+  if (!currentStatus || currentStatus.tier !== tier) {
+    currentStatus = nextStatus;
+  } else {
+    currentStatus = { ...currentStatus, ...nextStatus };
+  }
+
+  return currentStatus;
+}
+
+export async function initialize(_userId?: string | null): Promise<SubscriptionStatus> {
   initialized = true;
   if (!currentStatus) {
     currentStatus = getDefaultStatus();
   }
-  return currentStatus;
+  return syncStatusWithCurrentUser();
 }
 
 export function isInitialized(): boolean {
@@ -47,10 +85,7 @@ export async function getStatus(): Promise<SubscriptionStatus | null> {
   if (!initialized) {
     return null;
   }
-  if (!currentStatus) {
-    currentStatus = getDefaultStatus();
-  }
-  return currentStatus;
+  return syncStatusWithCurrentUser();
 }
 
 export async function loadOfferings(): Promise<PurchasePackage[]> {
@@ -83,18 +118,12 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
   }
-  if (!currentStatus) {
-    currentStatus = getDefaultStatus();
-  }
-  return currentStatus;
+  return syncStatusWithCurrentUser();
 }
 
 export async function refreshStatus(): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
   }
-  if (!currentStatus) {
-    currentStatus = getDefaultStatus();
-  }
-  return currentStatus;
+  return syncStatusWithCurrentUser();
 }
