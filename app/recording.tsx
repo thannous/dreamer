@@ -12,11 +12,10 @@ import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
-import { useDreamSaving } from '@/hooks/useDreamSaving';
 import { useQuota } from '@/hooks/useQuota';
-import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { classifyError, QuotaError } from '@/lib/errors';
+import { blurActiveElement } from '@/lib/accessibility';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
@@ -46,6 +45,7 @@ import {
   Text,
   TextInput,
   View,
+  type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -103,28 +103,13 @@ const handleRecorderReleaseError = (context: string, error: unknown): boolean =>
   return false;
 };
 
-const blurActiveElement = () => {
-  if (Platform.OS !== 'web') {
-    return;
-  }
-  const activeElement = (typeof document !== 'undefined' ? document.activeElement : null) as HTMLElement | null;
-  activeElement?.blur?.();
-};
-
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
   const insets = useSafeAreaInsets();
   const { language } = useLanguage();
   const { t } = useTranslation();
-  
-  // Use extracted hooks for recording and dream saving
-  const _recordingSession = useRecordingSession({
-    transcriptionLocale: language === 'fr' ? 'fr-FR' : language === 'es' ? 'es-ES' : 'en-US',
-    t,
-  });
-  const _dreamSaving = useDreamSaving();
-  
+
   const [transcript, setTranscript] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -1232,9 +1217,10 @@ const styles = StyleSheet.create({
   submitButtonDisabled: {
     // backgroundColor: set dynamically in component
     opacity: 0.5,
-    shadowOpacity: 0,
-    elevation: 0,
-  },
+    ...(Platform.OS === 'web'
+      ? { boxShadow: 'none' }
+      : { shadowOpacity: 0, elevation: 0 }),
+  } as ViewStyle,
   actionButtons: {
     gap: 12,
   },
