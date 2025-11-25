@@ -1,7 +1,7 @@
 import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-import { MotiView } from 'moti';
+import { MotiView } from '@/lib/moti';
 import React, { useCallback, useState } from 'react';
 import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 

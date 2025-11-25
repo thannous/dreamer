@@ -3,7 +3,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
-import { MotiView } from 'moti';
+import { MotiView } from '@/lib/moti';
 import React, { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, type AccessibilityState } from 'react-native';
 

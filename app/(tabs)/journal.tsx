@@ -7,39 +7,37 @@ import { SearchBar } from '@/components/journal/SearchBar';
 import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
+import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
-import { blurActiveElement } from '@/lib/accessibility';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useModalSlide } from '@/hooks/useJournalAnimations';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
+import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    Modal,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-    type ViewStyle,
-    type ViewToken,
-    useWindowDimensions,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+  type ViewToken,
+  useWindowDimensions,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function JournalListScreen() {
-  const tabBarHeight = useBottomTabBarHeight();
   const { dreams } = useDreams();
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
@@ -86,10 +84,10 @@ export default function JournalListScreen() {
   // Animations
   const themeModalAnim = useModalSlide(showThemeModal);
   const dateModalAnim = useModalSlide(showDateModal);
-  const floatingOffset = tabBarHeight + ThemeLayout.spacing.xl;
+  const floatingOffset = TAB_BAR_HEIGHT;
   // Always show add button - quota is now enforced on analysis, not recording
   const showAddButton = true;
-  const listBottomPadding = floatingOffset + (showAddButton ? 132 : 0);
+  const listBottomPadding = floatingOffset + (showAddButton ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.xs : ThemeLayout.spacing.sm);
 
   // Get available themes
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
@@ -106,9 +104,13 @@ export default function JournalListScreen() {
       favoritesOnly: showFavoritesOnly,
       analyzedOnly: showAnalyzedOnly,
       exploredOnly: showExploredOnly,
+    }, {
+      searchOptions: {
+        dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
+      },
     });
     return sortDreamsByDate(filtered, false); // Newest first
-  }, [dreams, searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
+  }, [dreams, searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
 
   // Initialize visible items with first items for immediate loading
   useEffect(() => {
@@ -418,6 +420,7 @@ export default function JournalListScreen() {
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
+          columnWrapperStyle={styles.desktopColumnWrapper}
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
@@ -635,9 +638,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     columnGap: ThemeLayout.spacing.md,
   },
+  desktopColumnWrapper: {
+    gap: ThemeLayout.spacing.lg,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+  },
   desktopCardWrapper: {
     flex: 1,
-    marginBottom: ThemeLayout.spacing.lg,
+    marginBottom: ThemeLayout.spacing.xl,
   },
   desktopCardHero: {
     flex: 2,

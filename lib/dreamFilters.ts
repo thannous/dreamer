@@ -1,22 +1,33 @@
 import { isDreamAnalyzed, isDreamExplored } from './dreamUsage';
 import type { DreamAnalysis, DreamTheme, DreamType } from './types';
 
+export interface FilterBySearchOptions {
+  dreamTypeLabelResolver?: (dreamType: DreamType | null | undefined) => string | undefined;
+}
+
 /**
  * Filter dreams by search query
  * Searches in title, transcript, and interpretation
  */
-export function filterBySearch(dreams: DreamAnalysis[], query: string): DreamAnalysis[] {
+export function filterBySearch(
+  dreams: DreamAnalysis[],
+  query: string,
+  options: FilterBySearchOptions = {},
+): DreamAnalysis[] {
   if (!query.trim()) return dreams;
 
   const normalizedQuery = query.toLowerCase();
 
   return dreams.filter((dream) => {
+    const dreamTypeLabel = options.dreamTypeLabelResolver?.(dream.dreamType);
     const searchableText = [
       dream.title,
       dream.transcript,
       dream.interpretation,
       dream.dreamType,
+      dreamTypeLabel,
     ]
+      .filter((value): value is string => Boolean(value))
       .join(' ')
       .toLowerCase();
 
@@ -96,11 +107,19 @@ export interface DreamFilters {
   exploredOnly?: boolean;
 }
 
-export function applyFilters(dreams: DreamAnalysis[], filters: DreamFilters): DreamAnalysis[] {
+export interface ApplyFiltersOptions {
+  searchOptions?: FilterBySearchOptions;
+}
+
+export function applyFilters(
+  dreams: DreamAnalysis[],
+  filters: DreamFilters,
+  options: ApplyFiltersOptions = {},
+): DreamAnalysis[] {
   let filtered = [...dreams];
 
   if (filters.searchQuery) {
-    filtered = filterBySearch(filtered, filters.searchQuery);
+    filtered = filterBySearch(filtered, filters.searchQuery, options.searchOptions);
   }
 
   if (filters.theme) {

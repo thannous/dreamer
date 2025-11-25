@@ -4,8 +4,9 @@ import { Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT, TAB_BAR_MAX_WIDTH } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, TAB_BAR_CONTENT_BOTTOM_PADDING, TAB_BAR_HEIGHT, TAB_BAR_MARGIN } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -46,7 +47,9 @@ function TabBarItem({ label, icon, focused, palette, colors }: {
         style={[
           styles.tabLabel,
           { color: focused ? palette.textActive : palette.text },
-        ]}>
+        ]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
         {label}
       </Text>
     </View>
@@ -59,18 +62,15 @@ export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  const TAB_BAR_HEIGHT = 58;
-  const TAB_BAR_MARGIN = Platform.OS === 'android' ? 4 : 24;
-  const CONTENT_BOTTOM_PADDING = Platform.OS === 'android' ? 40 : 16;
   const bottomSpacing = TAB_BAR_MARGIN + insets.bottom;
-  const sceneBottomPadding = TAB_BAR_HEIGHT + bottomSpacing + CONTENT_BOTTOM_PADDING;
+  const sceneBottomPadding = bottomSpacing + TAB_BAR_CONTENT_BOTTOM_PADDING; // allow content to sit under the tab bar
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
   const palette: TabPalette = mode === 'dark'
     ? {
-        barBg: '#120721',
-        barBorder: '#2f2147',
-        iconBg: '#35224f',
+        barBg: 'transparent',
+        barBorder: 'transparent',
+        iconBg: colors.backgroundSecondary,
         iconActiveBg: colors.accent,
         text: colors.textSecondary,
         textActive: colors.textPrimary,
@@ -94,37 +94,24 @@ export default function TabLayout() {
     paddingHorizontal: 20,
     paddingVertical: 8,
     height: TAB_BAR_HEIGHT,
-    borderWidth: 1,
+    borderWidth: 0,
     borderColor: palette.barBorder,
-    ...shadows.xl,
+    shadowColor: 'transparent',
   };
 
-  const tabBarStyle: ViewStyle = isDesktopWeb
-    ? (() => {
-        const desiredWidth = Math.min(width, TAB_BAR_MAX_WIDTH);
-        const sideInset = (width - desiredWidth) / 2;
-
-        return {
-          ...baseTabBarStyle,
-          marginHorizontal: 0,
-          left: sideInset,
-          right: sideInset,
-          top: -11
-        };
-      })()
+  // On desktop web with sidebar, hide the tab bar
+  const tabBarStyle: ViewStyle | { display: 'none' } = isDesktopWeb
+    ? { display: 'none' }
     : baseTabBarStyle;
 
-  return (
+  const tabs = (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          paddingBottom: sceneBottomPadding,
+          paddingBottom: isDesktopWeb ? 0 : sceneBottomPadding,
+          backgroundColor: colors.backgroundDark,
         },
         headerShown: false,
-        // On Android, the default icon wrapper from @react-navigation/bottom-tabs
-        // has a very small fixed width (~24), which was causing our custom
-        // TabBarItem (icon + label) to be clipped and labels to appear truncated.
-        // Expanding the icon container fixes this while keeping iOS/Web behavior.
         tabBarIconStyle: {
           flex: 1,
           width: '100%',
@@ -188,9 +175,34 @@ export default function TabLayout() {
       />
     </Tabs>
   );
+
+  // Desktop web layout with sidebar
+  if (isDesktopWeb) {
+    return (
+      <View style={styles.desktopContainer}>
+        <DesktopSidebar />
+        <View style={styles.desktopContent}>
+          {tabs}
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.backgroundDark }}>
+      {tabs}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  desktopContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  desktopContent: {
+    flex: 1,
+  },
   tabItem: {
     flex: 1,
     alignItems: 'center',

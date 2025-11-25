@@ -1,7 +1,7 @@
 import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-import { MotiView } from 'moti';
+import { MotiView } from '@/lib/moti';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { Dimensions, Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';

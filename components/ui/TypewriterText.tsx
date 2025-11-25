@@ -1,4 +1,4 @@
-import { MotiText } from 'moti';
+import { MotiText } from '@/lib/moti';
 import React, { memo, useMemo } from 'react';
 import { Platform, StyleSheet, TextProps, TextStyle, View } from 'react-native';
 
