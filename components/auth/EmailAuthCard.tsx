@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, type FormEvent } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -137,6 +138,114 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
   };
 
+  const handleFormSubmit = (event?: FormEvent<HTMLFormElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+    attemptSignIn();
+  };
+
+  const emailPasswordForm = (
+    <>
+      <TextInput
+        testID={TID.Input.AuthEmail}
+        style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
+        placeholder={t('settings.account.placeholder.email')}
+        placeholderTextColor={colors.textSecondary}
+        value={email}
+        onChangeText={(value) => {
+          setEmail(value);
+          if (!touched.email) {
+            setTouched((prev) => ({ ...prev, email: true }));
+          }
+        }}
+        onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        inputMode="email"
+        textContentType="emailAddress"
+      />
+      {showEmailError && (
+        <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+          {t('auth.email.invalid')}
+        </Text>
+      )}
+
+      <TextInput
+        testID={TID.Input.AuthPassword}
+        style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
+        placeholder={t('settings.account.placeholder.password')}
+        placeholderTextColor={colors.textSecondary}
+        value={password}
+        onChangeText={(value) => {
+          setPassword(value);
+          if (!touched.password) {
+            setTouched((prev) => ({ ...prev, password: true }));
+          }
+        }}
+        onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
+        secureTextEntry
+        textContentType="password"
+        onSubmitEditing={attemptSignIn}
+      />
+      {showPasswordError && (
+        <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+          {t('auth.password.too_short', { count: PASSWORD_MIN_LENGTH })}
+        </Text>
+      )}
+
+      <View style={[styles.row, isCompact && styles.rowCompact]}>
+        <Pressable
+          testID={TID.Button.AuthSignIn}
+          style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.accent }, (emailActionsDisabled || submitting === 'signup') && styles.btnDisabled]}
+          onPress={attemptSignIn}
+          disabled={emailActionsDisabled}
+        >
+          {submitting === 'signin' ? (
+            <ActivityIndicator color={colors.backgroundCard} />
+          ) : (
+            <Text
+              style={[styles.btnText, isCompact && styles.btnTextCompact, { color: colors.backgroundCard }]}
+              numberOfLines={1}
+            >
+              {t('settings.account.button.sign_in')}
+            </Text>
+          )}
+        </Pressable>
+
+        <Pressable
+          testID={TID.Button.AuthSignUp}
+          style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.backgroundSecondary }, (emailActionsDisabled || submitting === 'signin') && styles.btnDisabled]}
+          onPress={attemptSignUp}
+          disabled={emailActionsDisabled}
+        >
+          {submitting === 'signup' ? (
+            <ActivityIndicator color={colors.textPrimary} />
+          ) : (
+            <Text
+              style={[styles.btnTextSecondary, isCompact && styles.btnTextCompact, { color: colors.textPrimary }]}
+              numberOfLines={1}
+            >
+              {t('settings.account.button.sign_up')}
+            </Text>
+          )}
+        </Pressable>
+      </View>
+
+      <Text style={[styles.hint, { color: colors.textSecondary }]}>
+        {t('settings.account.hint.configure_supabase')}
+      </Text>
+    </>
+  );
+
+  const authForm = Platform.OS === 'web'
+    ? React.createElement(
+        'form',
+        { style: { width: '100%' }, onSubmit: handleFormSubmit },
+        emailPasswordForm
+      )
+    : emailPasswordForm;
+
   if (user) {
     return (
       <View
@@ -258,93 +367,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         </>
       )}
 
-      <TextInput
-        testID={TID.Input.AuthEmail}
-        style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
-        placeholder={t('settings.account.placeholder.email')}
-        placeholderTextColor={colors.textSecondary}
-        value={email}
-        onChangeText={(value) => {
-          setEmail(value);
-          if (!touched.email) {
-            setTouched((prev) => ({ ...prev, email: true }));
-          }
-        }}
-        onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        inputMode="email"
-        textContentType="emailAddress"
-      />
-      {showEmailError && (
-        <Text style={[styles.errorText, { color: colors.textSecondary }]}>
-          {t('auth.email.invalid')}
-        </Text>
-      )}
-
-      <TextInput
-        testID={TID.Input.AuthPassword}
-        style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
-        placeholder={t('settings.account.placeholder.password')}
-        placeholderTextColor={colors.textSecondary}
-        value={password}
-        onChangeText={(value) => {
-          setPassword(value);
-          if (!touched.password) {
-            setTouched((prev) => ({ ...prev, password: true }));
-          }
-        }}
-        onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
-        secureTextEntry
-        textContentType="password"
-      />
-      {showPasswordError && (
-        <Text style={[styles.errorText, { color: colors.textSecondary }]}>
-          {t('auth.password.too_short', { count: PASSWORD_MIN_LENGTH })}
-        </Text>
-      )}
-
-      <View style={[styles.row, isCompact && styles.rowCompact]}>
-        <Pressable
-          testID={TID.Button.AuthSignIn}
-          style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.accent }, (emailActionsDisabled || submitting === 'signup') && styles.btnDisabled]}
-          onPress={attemptSignIn}
-          disabled={emailActionsDisabled}
-        >
-          {submitting === 'signin' ? (
-            <ActivityIndicator color={colors.backgroundCard} />
-          ) : (
-            <Text
-              style={[styles.btnText, isCompact && styles.btnTextCompact, { color: colors.backgroundCard }]}
-              numberOfLines={1}
-            >
-              {t('settings.account.button.sign_in')}
-            </Text>
-          )}
-        </Pressable>
-
-        <Pressable
-          testID={TID.Button.AuthSignUp}
-          style={[styles.btn, isCompact && styles.btnCompact, { backgroundColor: colors.backgroundSecondary }, (emailActionsDisabled || submitting === 'signin') && styles.btnDisabled]}
-          onPress={attemptSignUp}
-          disabled={emailActionsDisabled}
-        >
-          {submitting === 'signup' ? (
-            <ActivityIndicator color={colors.textPrimary} />
-          ) : (
-            <Text
-              style={[styles.btnTextSecondary, isCompact && styles.btnTextCompact, { color: colors.textPrimary }]}
-              numberOfLines={1}
-            >
-              {t('settings.account.button.sign_up')}
-            </Text>
-          )}
-        </Pressable>
-      </View>
-
-      <Text style={[styles.hint, { color: colors.textSecondary }]}>
-        {t('settings.account.hint.configure_supabase')}
-      </Text>
+      {authForm}
     </View>
   );
 };
@@ -376,6 +399,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.xs,
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
+    width: '100%',
   },
   row: {
     flexDirection: 'row',
