@@ -10,18 +10,20 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
+import { blurActiveElement } from '@/lib/accessibility';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useModalSlide } from '@/hooks/useJournalAnimations';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { ViewToken } from 'react-native';
 import {
     Modal,
     Platform,
@@ -29,9 +31,11 @@ import {
     StyleSheet,
     Text,
     View,
+    type ViewStyle,
+    type ViewToken,
     useWindowDimensions,
 } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function JournalListScreen() {
@@ -39,6 +43,7 @@ export default function JournalListScreen() {
   const { dreams } = useDreams();
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
+  useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<any>(null); // FlashList ref
   const { width } = useWindowDimensions();
@@ -46,6 +51,9 @@ export default function JournalListScreen() {
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
+  const webBackdropBlur: ViewStyle | undefined = Platform.OS === 'web'
+    ? { backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' } as ViewStyle
+    : undefined;
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,6 +70,11 @@ export default function JournalListScreen() {
   // Modal states
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
+  useEffect(() => {
+    if (showThemeModal || showDateModal) {
+      blurActiveElement();
+    }
+  }, [showDateModal, showThemeModal]);
 
   // Lazy loading state - track which items should load images
   const [visibleItemIds, setVisibleItemIds] = useState<Set<number>>(new Set());
@@ -202,6 +215,7 @@ export default function JournalListScreen() {
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
     const isExplored = isDreamExplored(item);
+    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const mobileBadges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
 
@@ -240,7 +254,7 @@ export default function JournalListScreen() {
         <View style={styles.contentColumn}>
           <Text style={[styles.date, { color: colors.textSecondary }]}>
             {formatDreamListDate(item.id)}
-            {item.dreamType ? ` • ${item.dreamType}` : ''}
+            {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
           </Text>
           <DreamCard
             dream={item}
@@ -261,6 +275,7 @@ export default function JournalListScreen() {
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
     const isExplored = isDreamExplored(item);
+    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
     const badges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
@@ -300,7 +315,7 @@ export default function JournalListScreen() {
         <View style={styles.desktopMetaRow}> 
           <Text style={[styles.desktopDate, { color: colors.textSecondary }] }>
             {formatDreamListDate(item.id)}
-            {item.dreamType ? ` • ${item.dreamType}` : ''}
+            {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
           </Text>
         </View>
         <DreamCard
@@ -453,12 +468,16 @@ export default function JournalListScreen() {
       <Modal
         visible={showThemeModal}
         animationType="none"
+        transparent
         onRequestClose={() => setShowThemeModal(false)}
       >
         <Animated.View
-          style={[styles.modalOverlay, { backgroundColor: colors.backgroundDark }, themeModalAnim.backdropStyle]}
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(200)}
+          style={[
+            styles.modalOverlay,
+            webBackdropBlur,
+            { backgroundColor: colors.overlay },
+            themeModalAnim.backdropStyle,
+          ]}
         >
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setShowThemeModal(false)} />
           <Animated.View
@@ -480,7 +499,9 @@ export default function JournalListScreen() {
                 ]}
                 onPress={() => handleThemeSelect(theme)}
               >
-                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>{theme}</Text>
+                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
+                  {getDreamThemeLabel(theme, t) ?? theme}
+                </Text>
               </Pressable>
             ))}
             <View style={{ height: 16 }} />
@@ -496,7 +517,9 @@ export default function JournalListScreen() {
                 ]}
                 onPress={() => handleDreamTypeSelect(dreamType)}
               >
-                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>{dreamType}</Text>
+                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
+                  {getDreamTypeLabel(dreamType, t) ?? dreamType}
+                </Text>
               </Pressable>
             ))}
             <Pressable
@@ -515,12 +538,16 @@ export default function JournalListScreen() {
       <Modal
         visible={showDateModal}
         animationType="none"
+        transparent
         onRequestClose={() => setShowDateModal(false)}
       >
         <Animated.View
-          style={[styles.modalOverlay, dateModalAnim.backdropStyle]}
-          entering={FadeIn.duration(300)}
-          exiting={FadeOut.duration(200)}
+          style={[
+            styles.modalOverlay,
+            webBackdropBlur,
+            { backgroundColor: colors.overlay },
+            dateModalAnim.backdropStyle,
+          ]}
         >
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setShowDateModal(false)} />
           <Animated.View style={dateModalAnim.contentStyle} testID={TID.Modal.DateRange}>
