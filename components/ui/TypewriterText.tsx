@@ -1,6 +1,6 @@
 import { MotiText } from 'moti';
 import React, { memo, useMemo } from 'react';
-import { StyleSheet, TextProps, View } from 'react-native';
+import { Platform, StyleSheet, TextProps, TextStyle, View } from 'react-native';
 
 interface TypewriterTextProps extends TextProps {
   text: string;
@@ -42,9 +42,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     textAlign: 'center',
   },
-  textShadow: {
-    textShadowColor: 'rgba(255, 255, 255, 0.35)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 6,
-  },
+  textShadow: (Platform.OS === 'web'
+    ? { textShadow: '0px 0px 6px rgba(255, 255, 255, 0.35)' }
+    : {
+        textShadowColor: 'rgba(255, 255, 255, 0.35)',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 6,
+      }) as TextStyle,
 });

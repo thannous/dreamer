@@ -3,7 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from 'moti';
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 const { height } = Dimensions.get('window');
@@ -43,8 +43,13 @@ function AtmosphereBackgroundComponent() {
     delay: Math.random() * 1000,
   })), []);
 
+  const containerPointerEvents = Platform.OS === 'web' ? undefined : 'none';
+
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View
+      style={[StyleSheet.absoluteFill, Platform.OS === 'web' ? styles.nonInteractive : null]}
+      pointerEvents={containerPointerEvents}
+    >
       {/* Animated Gradient Background Overlay - subtle movement */}
       <MotiView
         from={{ opacity: 0.3 }}
@@ -161,6 +166,9 @@ const styles = StyleSheet.create({
     // Note: blurRadius is an Image prop, for Views we can't easily blur without Expo Blur.
     // We rely on opacity and soft shapes.
   },
+  nonInteractive: {
+    pointerEvents: 'none',
+  } as ViewStyle,
   particle: {
     position: 'absolute',
     borderRadius: 999,

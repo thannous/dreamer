@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Platform, StyleSheet, Text } from 'react-native';
+import { Animated, Easing, Platform, StyleSheet, Text, type ViewStyle } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -63,7 +63,7 @@ export const Toast: React.FC<ToastProps> = ({
     }, durationMs);
 
     return () => clearTimeout(timeout);
-  }, [durationMs, onHide, opacity, translateY]);
+  }, [durationMs, nativeDriver, onHide, opacity, translateY]);
 
   const backgroundColor =
     mode === 'success'
@@ -73,6 +73,8 @@ export const Toast: React.FC<ToastProps> = ({
         : colors.backgroundSecondary;
   const textColor = mode === 'success' || mode === 'error' ? '#FFFFFF' : colors.textPrimary;
 
+  const pointerEventsProp = Platform.OS === 'web' ? undefined : 'none';
+
   return (
     <Animated.View
       style={[
@@ -80,8 +82,9 @@ export const Toast: React.FC<ToastProps> = ({
         { opacity, transform: [{ translateY }] },
         { backgroundColor },
         shadows.md,
+        Platform.OS === 'web' ? styles.pointerNone : null,
       ]}
-      pointerEvents="none"
+      pointerEvents={pointerEventsProp}
       testID={testID}
     >
       <Text style={[styles.text, { color: textColor }]}>{message}</Text>
@@ -104,6 +107,9 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk_500Medium',
     textAlign: 'center',
   },
+  pointerNone: {
+    pointerEvents: 'none',
+  } as ViewStyle,
 });
 
 export default Toast;
