@@ -11,6 +11,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
 import { MotiText, MotiView } from '@/lib/moti';
@@ -97,6 +98,7 @@ export default function InspirationScreen() {
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const tabBarHeight = useBottomTabBarHeight();
   const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIP_KEYS.length));
