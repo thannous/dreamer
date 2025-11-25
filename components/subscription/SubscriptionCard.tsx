@@ -43,8 +43,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           ) : null}
         </View>
         {badge ? (
-          <View style={[styles.badge, { backgroundColor: colors.backgroundSecondary }]}>
-            <Text style={[styles.badgeText, { color: colors.accent }]}>{badge}</Text>
+          <View style={[styles.badge, { backgroundColor: colors.accent }]}>
+            <Text style={[styles.badgeText, { color: colors.textOnAccentSurface }]}>{badge}</Text>
           </View>
         ) : null}
         {loading ? <ActivityIndicator color={colors.accent} /> : null}

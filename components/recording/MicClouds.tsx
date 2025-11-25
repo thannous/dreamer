@@ -3,7 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from 'moti';
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 
 export function MicClouds() {
   const { mode } = useTheme();
@@ -23,7 +23,10 @@ export function MicClouds() {
   const cloudColor = isDark ? 'rgba(100, 80, 120, 0.15)' : 'rgba(255, 255, 255, 0.4)';
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View
+      style={[StyleSheet.absoluteFill, Platform.OS === 'web' ? styles.nonInteractive : null]}
+      pointerEvents={Platform.OS === 'web' ? undefined : 'none'}
+    >
       <View style={styles.centerContainer}>
         {/* Clouds / Fog - 3 Ellipses */}
         {[0, 1, 2].map((i) => (
@@ -87,6 +90,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  nonInteractive: {
+    pointerEvents: 'none',
+  } as ViewStyle,
   cloud: {
     position: 'absolute',
     borderRadius: 100,

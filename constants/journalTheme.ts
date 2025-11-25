@@ -1,3 +1,5 @@
+import { Platform, type ViewStyle } from 'react-native';
+
 /**
  * Journal-specific theme constants
  * Supports both dark and light themes with soft, gentle colors for morning use
@@ -102,77 +104,121 @@ export const LightTheme: ThemeColors = {
   },
 };
 
+type ShadowConfig = {
+  color: string;
+  offsetY: number;
+  radius: number;
+  opacity: number;
+  elevation: number;
+};
+
+const hexToRgba = (hex: string, opacity: number): string => {
+  const normalized = hex.replace('#', '');
+  const hasShortSyntax = normalized.length === 3;
+  const hexValue = hasShortSyntax
+    ? normalized
+        .split('')
+        .map((char) => char + char)
+        .join('')
+    : normalized;
+
+  const parsed = Number.parseInt(hexValue, 16);
+  const r = (parsed >> 16) & 255;
+  const g = (parsed >> 8) & 255;
+  const b = parsed & 255;
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+const createShadowStyle = ({ color, offsetY, radius, opacity, elevation }: ShadowConfig): ViewStyle => {
+  const nativeShadow: ViewStyle = {
+    shadowColor: color,
+    shadowOffset: { width: 0, height: offsetY },
+    shadowOpacity: opacity,
+    shadowRadius: radius,
+    elevation,
+  };
+
+  if (Platform.OS === 'web') {
+    return {
+      boxShadow: `0px ${offsetY}px ${radius}px ${hexToRgba(color, opacity)}`,
+    } as ViewStyle;
+  }
+
+  return nativeShadow;
+};
+
 /**
  * Shadow system - adapted for light and dark themes
  */
 export const Shadows = {
   dark: {
     // Subtle elevation for cards and small elements
-    sm: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.15,
-      shadowRadius: 4,
+    sm: createShadowStyle({
+      color: '#000',
+      offsetY: 2,
+      radius: 4,
+      opacity: 0.15,
       elevation: 2,
-    },
+    }),
     // Normal elevation for buttons and interactive elements
-    md: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 8,
+    md: createShadowStyle({
+      color: '#000',
+      offsetY: 4,
+      radius: 8,
+      opacity: 0.2,
       elevation: 4,
-    },
+    }),
     // Elevated elements like floating buttons
-    lg: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.25,
-      shadowRadius: 12,
+    lg: createShadowStyle({
+      color: '#000',
+      offsetY: 6,
+      radius: 12,
+      opacity: 0.25,
       elevation: 6,
-    },
+    }),
     // High elevation for modals and overlays
-    xl: {
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.3,
-      shadowRadius: 16,
+    xl: createShadowStyle({
+      color: '#000',
+      offsetY: 8,
+      radius: 16,
+      opacity: 0.3,
       elevation: 8,
-    },
+    }),
   },
   light: {
     // Subtle elevation for cards and small elements
-    sm: {
-      shadowColor: '#2A2838',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.08,
-      shadowRadius: 3,
+    sm: createShadowStyle({
+      color: '#2A2838',
+      offsetY: 1,
+      radius: 3,
+      opacity: 0.08,
       elevation: 1,
-    },
+    }),
     // Normal elevation for buttons and interactive elements
-    md: {
-      shadowColor: '#2A2838',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
+    md: createShadowStyle({
+      color: '#2A2838',
+      offsetY: 2,
+      radius: 6,
+      opacity: 0.1,
       elevation: 3,
-    },
+    }),
     // Elevated elements like floating buttons
-    lg: {
-      shadowColor: '#2A2838',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.12,
-      shadowRadius: 10,
+    lg: createShadowStyle({
+      color: '#2A2838',
+      offsetY: 4,
+      radius: 10,
+      opacity: 0.12,
       elevation: 5,
-    },
+    }),
     // High elevation for modals and overlays
-    xl: {
-      shadowColor: '#2A2838',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.15,
-      shadowRadius: 14,
+    xl: createShadowStyle({
+      color: '#2A2838',
+      offsetY: 6,
+      radius: 14,
+      opacity: 0.15,
       elevation: 7,
-    },
+    }),
   },
 };
 

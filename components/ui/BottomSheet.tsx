@@ -1,15 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
   Modal,
   Platform,
   Pressable,
+  Text,
   StyleSheet,
   type StyleProp,
   type ViewStyle,
   View,
 } from 'react-native';
+
+import { blurActiveElement } from '@/lib/accessibility';
 
 type BottomSheetProps = {
   visible: boolean;
@@ -39,9 +42,25 @@ export function BottomSheet({
   const nativeDriver = Platform.OS !== 'web';
   const translateY = useRef(new Animated.Value(0)).current;
   const [isMounted, setIsMounted] = useState(visible);
+  const normalizedChildren = useMemo(
+    () =>
+      React.Children.toArray(children).map((child, index) => {
+        if (typeof child === 'string' || typeof child === 'number') {
+          // Wrap stray text nodes so React Native Web doesn't warn about raw text inside a View
+          return (
+            <Text key={`bs-text-${index}`} accessibilityRole="text">
+              {child}
+            </Text>
+          );
+        }
+        return child;
+      }),
+    [children]
+  );
 
   useEffect(() => {
     if (visible) {
+      blurActiveElement();
       setIsMounted(true);
       translateY.setValue(400);
       Animated.timing(translateY, {
@@ -62,7 +81,7 @@ export function BottomSheet({
         }
       });
     }
-  }, [visible, translateY, isMounted]);
+  }, [isMounted, nativeDriver, translateY, visible]);
 
   if (!isMounted) {
     return null;
@@ -79,7 +98,7 @@ export function BottomSheet({
       <View style={styles.wrapper}>
         <Pressable style={[styles.backdrop, { backgroundColor: backdropColor }]} onPress={onClose} />
         <Animated.View style={[styles.sheet, style, { transform: [{ translateY }] }]}>
-          {children}
+          {normalizedChildren}
         </Animated.View>
       </View>
     </Modal>

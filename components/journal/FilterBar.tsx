@@ -1,6 +1,7 @@
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { memo } from 'react';
@@ -140,8 +141,8 @@ export const FilterBar = memo(function FilterBar({
   const activeIconColor = colors.backgroundCard;
 
   const themeLabelParts: string[] = [];
-  if (selectedTheme) themeLabelParts.push(selectedTheme);
-  if (selectedDreamType) themeLabelParts.push(selectedDreamType);
+  if (selectedTheme) themeLabelParts.push(getDreamThemeLabel(selectedTheme, t) ?? selectedTheme);
+  if (selectedDreamType) themeLabelParts.push(getDreamTypeLabel(selectedDreamType, t) ?? selectedDreamType);
   const themeFilterSuffix = themeLabelParts.length ? ` • ${themeLabelParts.join(' • ')}` : '';
 
   return (
