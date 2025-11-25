@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noctalia | The intelligent dream journal</title>
-    <meta name="description" content="Noctalia is the intelligent dream journal: capture dreams by voice, get instant AI analysis, and understand your nights better.">
+    <meta name="description" content="Noctalia is your intelligent dream companion: capture dreams by voice, explore them, and understand your nights better.">
     <link rel="canonical" href="https://noctalia.app/en/">
     <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
@@ -192,8 +192,8 @@
     <div class="noise-overlay"></div>
     
     <!-- Floating Orbs -->
-    <div class="orb w-[40rem] h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
-    <div class="orb w-[50rem] h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
+    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
+    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
@@ -226,7 +226,7 @@
             <!-- Badge -->
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-dream-salmon/30 bg-dream-salmon/10 backdrop-blur-md mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.1s;">
                 <span class="w-2 h-2 rounded-full bg-dream-salmon animate-pulse"></span>
-                <span class="text-xs font-sans uppercase tracking-widest text-dream-salmonLight">Next-gen AI</span>
+                <span class="text-xs font-sans uppercase tracking-widest text-dream-salmonLight">Your dream companion</span>
             </div>
             
             <!-- H1 Title -->
@@ -236,7 +236,7 @@
             
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s;">
-                The intelligent dream journal. Capture your dreams by voice and get instant, guided AI analysis to understand yourself better.
+                Your intelligent dream companion. Capture your dreams by voice and let it guide you to understand yourself better.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -276,67 +276,61 @@
                 <div class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0"></div>
 
                 <!-- Step 1 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 100ms;">
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" style="transition-delay: 100ms;">
+                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">1</span>
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="mic" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
-                    <span class="text-6xl font-serif text-white/5 absolute -top-16 left-1/2 -translate-x-1/2 -z-10">1</span>
                     <h3 class="text-xl font-serif mb-3">Record</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
                         On wake-up, simply narrate your dream aloud. The app captures every detail before it fades.
                     </p>
+                              <!-- 1. Recording screen -->
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px] ">
+                        <img src="../img/en/recording.jpg" alt="Recording your dream with your voice" class="w-full h-full object-cover">
+                    </div>
+                  
+           
                 </div>
 
                 <!-- Step 2 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 200ms;">
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" style="transition-delay: 200ms;">
+                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">2</span>
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="sparkles" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
-                    <span class="text-6xl font-serif text-white/5 absolute -top-16 left-1/2 -translate-x-1/2 -z-10">2</span>
                     <h3 class="text-xl font-serif mb-3">Analyze</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Our AI instantly transcribes and decodes symbols, emotions, and hidden archetypes in your story.
+                        Your dream companion instantly transcribes and decodes symbols, emotions, and hidden archetypes in your story.
                     </p>
+                             <!-- 2. Analyzing screen -->
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px] ">
+                        <img src="../img/en/analizing.jpg" alt="AI analyzing and summarizing your dream" class="w-full h-full object-cover">
+                    </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 300ms;">
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" style="transition-delay: 300ms;">
+                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">3</span>
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="compass" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
-                    <span class="text-6xl font-serif text-white/5 absolute -top-16 left-1/2 -translate-x-1/2 -z-10">3</span>
                     <h3 class="text-xl font-serif mb-3">Explore</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualize your dream with a generated image and chat with the AI to deepen the personal meaning.
+                        Visualize your dream with a generated image and chat with your dream companion to deepen the personal meaning.
                     </p>
+                    <!-- 3. Exploring screen -->
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px] ">
+                        <img src="../img/en/exploring.jpg" alt="Exploring insights and symbolism of your dream" class="w-full h-full object-cover">
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- 2.5 Interface Gallery (Marquee) -->
-    <section class="py-24 overflow-hidden relative">
-        <div class="text-center mb-12">
-            <h2 class="font-serif text-2xl md:text-3xl text-dream-cream/80">A soothing interface</h2>
-        </div>
-        
-        <div class="marquee-container w-full">
-            <div class="marquee-content">
-                <!-- First set -->
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_journal.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_fiche_reve.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_enregistrement.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_articles.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_conversationIA.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_stat.jpg" class="w-full h-full object-cover"></div>
-                
-                <!-- Duplicate set for infinite scroll -->
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_journal.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_fiche_reve.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_enregistrement.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_articles.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_conversationIA.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_stat.jpg" class="w-full h-full object-cover"></div>
+            
+            <div class="mt-16 text-center reveal">
+                <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+          
+         
+                </div>
             </div>
         </div>
     </section>
@@ -357,7 +351,7 @@
             <!-- Bento Grid -->
             <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
                 
-                <!-- Feature 1: Voice & AI (Large) -->
+                <!-- Feature 1: Voice & dream companion (Large) -->
                 <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
                     
@@ -423,7 +417,7 @@
                         </li>
                         <li class="flex items-start gap-3 text-sm text-gray-300">
                             <i data-lucide="check-circle-2" class="w-4 h-4 text-dream-salmon mt-0.5"></i>
-                            <span><strong>AI chat:</strong> Ask your dream follow-up questions.</span>
+                            <span><strong>Dream companion:</strong> Ask your dream follow-up questions.</span>
                         </li>
                     </ul>
                 </div>
@@ -575,7 +569,7 @@
                     
                     <ul class="space-y-4 text-left mb-8 px-4">
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Unlimited recordings</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 full AI analyses</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 full sessions with your dream companion</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Basic journal</li>
                     </ul>
                     
@@ -592,7 +586,7 @@
                     <p class="text-purple-200/60 text-xs mb-6">Or EUR 19/year (2 months free)</p>
                     
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited AI analyses</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Unlimited sessions with your dream companion</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> HD image generation</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Advanced stats</li>
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat with the dream</li>
@@ -616,7 +610,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Noctalia uses advanced language models inspired by analytical psychology (Jung) and dream symbolism. The AI spots recurring motifs and archetypes to give you lines of inquiry without pretending there is one single truth.
+                    Noctalia uses advanced language models inspired by analytical psychology (Jung) and dream symbolism. The analysis engine spots recurring motifs and archetypes to give you lines of inquiry without pretending there is one single truth.
                 </p>
             </details>
 
@@ -646,7 +640,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    You can record dreams offline. AI analysis and sync run automatically as soon as you reconnect.
+                    You can record dreams offline. Analysis and sync run automatically as soon as you reconnect.
                 </p>
             </details>
         </div>
