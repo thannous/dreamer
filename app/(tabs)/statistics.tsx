@@ -23,8 +23,11 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamStatistics } from '@/hooks/useDreamStatistics';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import type { DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -279,6 +282,7 @@ export default function StatisticsScreen() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const { width } = useWindowDimensions();
+  useClearWebFocus();
   const { formatNumber, formatPercent } = useLocaleFormatting();
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
@@ -304,7 +308,8 @@ export default function StatisticsScreen() {
   const topDreamTypes = stats.dreamTypeDistribution.slice(0, 5);
 
   const pieChartData: DreamPieDataItem[] = topDreamTypes.map((item, index) => {
-    const typeLines = splitLabelText(item.type);
+    const typeLabel = getDreamTypeLabel(item.type as DreamType, t) ?? item.type;
+    const typeLines = splitLabelText(typeLabel);
     const labelHeight = getLabelHeight(typeLines.length);
 
     return {
@@ -312,7 +317,7 @@ export default function StatisticsScreen() {
       color: dreamTypeColors[index % dreamTypeColors.length],
       count: item.count,
       percentage: item.percentage,
-      typeLabel: item.type,
+      typeLabel,
       typeLines,
       labelHeight,
       labelLineConfig: {
