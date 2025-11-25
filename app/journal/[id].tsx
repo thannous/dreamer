@@ -3,15 +3,18 @@ import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { blurActiveElement } from '@/lib/accessibility';
 import { isDreamExplored } from '@/lib/dreamUsage';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { QuotaError } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { generateImageForDream } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -33,7 +36,8 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    View
+    View,
+    type ViewStyle
 } from 'react-native';
 
 type ShareNavigator = Navigator & {
@@ -76,12 +80,12 @@ const getMimeTypeFromExtension = (ext: string): string => {
       return 'image/webp';
     case 'jpg':
     default:
-      return 'image/jpeg';
+    return 'image/jpeg';
   }
 };
 
-const DREAM_TYPES = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
-const DREAM_THEMES = ['surreal', 'mystical', 'calm', 'noir'];
+const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
+const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const nativeDriver = Platform.OS !== 'web';
 
 const Skeleton = ({ style }: { style: any }) => {
@@ -132,16 +136,30 @@ export default function JournalDetailScreen() {
   const dreamId = useMemo(() => Number(id), [id]);
   const { dreams, toggleFavorite, updateDream, deleteDream, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
+  useClearWebFocus();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  useEffect(() => {
+    if (isShareModalVisible) {
+      blurActiveElement();
+    }
+  }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const { canAnalyzeNow } = useQuota();
   const { t } = useTranslation();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const dreamTypeLabel = useMemo(
+    () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
+    [dream, t]
+  );
+  const dreamThemeLabel = useMemo(
+    () => (dream ? getDreamThemeLabel(dream.theme, t) ?? dream.theme : undefined),
+    [dream, t]
+  );
   const [editableTitle, setEditableTitle] = useState('');
   const [editableTheme, setEditableTheme] = useState('');
   const [editableDreamType, setEditableDreamType] = useState('');
@@ -290,17 +308,21 @@ export default function JournalDetailScreen() {
     }
     const metadata: string[] = [];
     if (dream.dreamType) {
-      metadata.push(t('journal.detail.share.type_label', { type: dream.dreamType }));
+      metadata.push(t('journal.detail.share.type_label', { type: dreamTypeLabel || dream.dreamType }));
     }
     if (dream.theme) {
-      metadata.push(t('journal.detail.share.theme_label', { theme: dream.theme }));
+      metadata.push(
+        t('journal.detail.share.theme_label', {
+          theme: dreamThemeLabel || dream.theme,
+        }),
+      );
     }
     if (metadata.length) {
       sections.push(metadata.join(' • '));
     }
     sections.push(t('journal.detail.share.footer'));
     return sections.join('\n\n');
-  }, [dream, t]);
+  }, [dream, dreamThemeLabel, dreamTypeLabel, t]);
   const shareTitle = useMemo(
     () => (dream?.title ? dream.title : t('journal.title')),
     [dream, t],
@@ -345,22 +367,16 @@ export default function JournalDetailScreen() {
 
   const handlePickImage = useCallback(async () => {
     if (!dream) return;
-    if (Platform.OS === 'web') {
-      Alert.alert(
-        t('journal.detail.image_picker.web_unavailable.title'),
-        t('journal.detail.image_picker.web_unavailable.message'),
-      );
-      return;
-    }
 
     try {
       setIsPickingImage(true);
       const ImagePicker = await import('expo-image-picker');
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [2, 3],
+        mediaTypes: [ImagePicker.MediaType.Images],
+        allowsEditing: Platform.OS !== 'web',
+        aspect: Platform.OS !== 'web' ? [2, 3] : undefined,
         quality: 0.9,
+        base64: Platform.OS === 'web',
       });
 
       if (result.canceled || !result.assets?.length) {
@@ -368,14 +384,22 @@ export default function JournalDetailScreen() {
       }
 
       const asset = result.assets[0];
-      if (!asset?.uri) {
+      if (!asset) {
+        return;
+      }
+
+      const selectedUri = Platform.OS === 'web' && asset.base64
+        ? `data:${asset.mimeType ?? 'image/jpeg'};base64,${asset.base64}`
+        : asset.uri;
+
+      if (!selectedUri) {
         return;
       }
 
       const updatedDream = {
         ...dream,
-        imageUrl: asset.uri,
-        thumbnailUrl: asset.uri,
+        imageUrl: selectedUri,
+        thumbnailUrl: selectedUri,
         imageGenerationFailed: false,
       };
 
@@ -711,6 +735,8 @@ export default function JournalDetailScreen() {
         {
           backgroundColor: colors.backgroundCard,
           borderColor: variant === 'floating' ? colors.divider : accentSurfaceBorderColor,
+          // Keep room for the floating edit/check button so it doesn't overlap chips
+          paddingBottom: isEditing ? 64 : 20,
         },
       ]}
     >
@@ -749,31 +775,36 @@ export default function JournalDetailScreen() {
           {isEditing ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
               <View style={styles.chipsContainer}>
-                {sortedDreamTypes.map((type) => (
-                  <Pressable
-                    key={type}
-                    testID={`chip.type.${type}`}
-                    onPress={() => setEditableDreamType(type)}
-                    style={[
-                      styles.chip,
-                      { borderColor: colors.divider },
-                      editableDreamType === type && { backgroundColor: colors.accent, borderColor: colors.accent }
-                    ]}
-                  >
-                    <Text style={[
-                      styles.chipText,
-                      { color: colors.textPrimary },
-                      editableDreamType === type && styles.chipTextSelected
-                    ]}
+                {sortedDreamTypes.map((type) => {
+                  const label = getDreamTypeLabel(type as DreamType, t) ?? type;
+                  return (
+                    <Pressable
+                      key={type}
+                      testID={`chip.type.${type}`}
+                      onPress={() => setEditableDreamType(type)}
+                      style={[
+                        styles.chip,
+                        { borderColor: colors.divider },
+                        editableDreamType === type && { backgroundColor: colors.accent, borderColor: colors.accent }
+                      ]}
                     >
-                      {type}
-                    </Text>
-                  </Pressable>
-                ))}
+                      <Text style={[
+                        styles.chipText,
+                        { color: colors.textPrimary },
+                        editableDreamType === type && styles.chipTextSelected
+                      ]}
+                      >
+                        {label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             </ScrollView>
           ) : (
-            <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>{dream.dreamType}</Text>
+            <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>
+              {dreamTypeLabel || dream.dreamType}
+            </Text>
           )}
         </View>
       )}
@@ -784,32 +815,35 @@ export default function JournalDetailScreen() {
         {isEditing ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
             <View style={styles.chipsContainer}>
-              {sortedDreamThemes.map((theme) => (
-                <Pressable
-                  key={theme}
-                  testID={`chip.theme.${theme}`}
-                  onPress={() => setEditableTheme(theme)}
-                  style={[
-                    styles.chip,
-                    { borderColor: colors.divider },
-                    editableTheme === theme && { backgroundColor: colors.accent, borderColor: colors.accent }
-                  ]}
-                >
-                  <Text style={[
-                    styles.chipText,
-                    { color: colors.textPrimary },
-                    editableTheme === theme && styles.chipTextSelected
-                  ]}
+              {sortedDreamThemes.map((theme) => {
+                const label = getDreamThemeLabel(theme as DreamTheme, t) ?? theme;
+                return (
+                  <Pressable
+                    key={theme}
+                    testID={`chip.theme.${theme}`}
+                    onPress={() => setEditableTheme(theme)}
+                    style={[
+                      styles.chip,
+                      { borderColor: colors.divider },
+                      editableTheme === theme && { backgroundColor: colors.accent, borderColor: colors.accent }
+                    ]}
                   >
-                    {theme}
-                  </Text>
-                </Pressable>
-              ))}
+                    <Text style={[
+                      styles.chipText,
+                      { color: colors.textPrimary },
+                      editableTheme === theme && styles.chipTextSelected
+                    ]}
+                    >
+                      {label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
           </ScrollView>
         ) : (
           <Text style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}>
-            {dream.theme || 'No theme'}
+            {dreamThemeLabel || t('journal.detail.theme_placeholder')}
           </Text>
         )}
       </View>
@@ -1071,8 +1105,11 @@ export default function JournalDetailScreen() {
         </ScrollView>
         {isEditing && (
           <View
-            pointerEvents="box-none"
-            style={[styles.metadataOverlay, { backgroundColor: colors.overlay }]}
+            pointerEvents="auto"
+            style={[
+              styles.metadataOverlay,
+              { backgroundColor: colors.overlay },
+            ]}
           >
             <View style={{ marginBottom: floatingTranscriptBottom }}>
               {renderMetadataCard('floating')}
@@ -1081,8 +1118,11 @@ export default function JournalDetailScreen() {
         )}
         {isEditingTranscript && (
           <View
-            pointerEvents="box-none"
-            style={[styles.transcriptOverlay, { backgroundColor: colors.overlay }]}
+            pointerEvents="auto"
+            style={[
+              styles.transcriptOverlay,
+              { backgroundColor: colors.overlay },
+            ]}
           >
             <View
               style={[
