@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://noctalia.app/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/cgu.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/terms.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/mentions-legales.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/legal-notice.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/politique-confidentialite.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/privacy-policy.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/suppression-compte.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/account-deletion.html</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+  </url>
+</urlset>
