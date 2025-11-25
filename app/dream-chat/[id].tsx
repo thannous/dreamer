@@ -285,19 +285,21 @@ export default function DreamChatScreen() {
     try {
       const result = await nativeSession.stop();
       const transcript = result.transcript?.trim();
-      
+
       if (transcript) {
-        // Append transcript to existing input text
-        setInputText((prev) => {
-          const trimmedPrev = prev.trim();
-          return trimmedPrev ? `${trimmedPrev} ${transcript}` : transcript;
+        // Replace partial text with final transcript using the original input as base
+        setInputText(() => {
+          const base = baseInputRef.current.trim();
+          return base ? `${base} ${transcript}` : transcript;
         });
-      } else if (!result.error?.toLowerCase().includes('no speech')) {
-        // Only alert if it's not a "no speech" error
-        Alert.alert(
-          t('recording.alert.no_speech.title'),
-          t('recording.alert.no_speech.message')
-        );
+      } else {
+        const normalizedError = result.error?.toLowerCase();
+        if (!normalizedError?.includes('no speech')) {
+          Alert.alert(
+            t('recording.alert.no_speech.title'),
+            t('recording.alert.no_speech.message')
+          );
+        }
       }
     } catch (error) {
       if (__DEV__) {

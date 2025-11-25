@@ -1,6 +1,7 @@
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -11,8 +12,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type Category = {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   color: string;
 };
@@ -20,22 +21,22 @@ type Category = {
 const CATEGORIES: Category[] = [
   {
     id: 'symbols',
-    title: 'Symbols',
-    description: 'Explore the symbolic meanings and hidden messages in your dream',
+    titleKey: 'dream_categories.symbols.title',
+    descriptionKey: 'dream_categories.symbols.description',
     icon: 'creation',
     color: '#8C9EFF',
   },
   {
     id: 'emotions',
-    title: 'Emotions',
-    description: 'Understand the emotional landscape and feelings from your dream',
+    titleKey: 'dream_categories.emotions.title',
+    descriptionKey: 'dream_categories.emotions.description',
     icon: 'heart-pulse',
     color: '#FF6B9D',
   },
   {
     id: 'growth',
-    title: 'Personal Growth',
-    description: 'Discover insights and lessons for your personal development',
+    titleKey: 'dream_categories.growth.title',
+    descriptionKey: 'dream_categories.growth.description',
     icon: 'sprout',
     color: '#4CAF50',
   },
@@ -46,6 +47,7 @@ export default function DreamCategoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { dreams } = useDreams();
   const { colors, shadows, mode } = useTheme();
+  useClearWebFocus();
   const dream = dreams.find((d) => d.id === Number(id));
 
   const gradientColors = mode === 'dark'
@@ -86,7 +88,7 @@ export default function DreamCategoriesScreen() {
         }]}>
           <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
           <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
-            Choose a theme to explore deeper insights
+            {t('dream_categories.subtitle')}
           </Text>
         </View>
 
@@ -112,8 +114,8 @@ export default function DreamCategoriesScreen() {
                 />
               </View>
               <View style={styles.categoryContent}>
-                <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>{category.title}</Text>
-                <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>{category.description}</Text>
+                <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>{t(category.titleKey)}</Text>
+                <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>{t(category.descriptionKey)}</Text>
               </View>
               <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textSecondary} />
             </Pressable>

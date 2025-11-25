@@ -24,8 +24,10 @@ export function MicClouds() {
 
   return (
     <View
-      style={[StyleSheet.absoluteFill, Platform.OS === 'web' ? styles.nonInteractive : null]}
-      pointerEvents={Platform.OS === 'web' ? undefined : 'none'}
+      style={[
+        StyleSheet.absoluteFill,
+        Platform.OS === 'web' ? styles.nonInteractive : styles.nativeNonInteractive,
+      ]}
     >
       <View style={styles.centerContainer}>
         {/* Clouds / Fog - 3 Ellipses */}
@@ -91,6 +93,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nonInteractive: {
+    pointerEvents: 'none',
+  } as ViewStyle,
+  nativeNonInteractive: {
     pointerEvents: 'none',
   } as ViewStyle,
   cloud: {

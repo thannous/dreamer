@@ -40,7 +40,7 @@ const RECORDING_OPTIONS: RecordingOptions = {
   },
   web: {
     mimeType: 'audio/webm',
-    bitsPerSecond: AUDIO_CONFIG.BIT_RATE,
+    bitsPerSecond: Math.max(AUDIO_CONFIG.BIT_RATE, AUDIO_CONFIG.WEB_MIN_BIT_RATE),
   },
 };
 

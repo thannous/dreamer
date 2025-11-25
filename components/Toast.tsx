@@ -72,8 +72,7 @@ export const Toast: React.FC<ToastProps> = ({
         ? '#DC2626'
         : colors.backgroundSecondary;
   const textColor = mode === 'success' || mode === 'error' ? '#FFFFFF' : colors.textPrimary;
-
-  const pointerEventsProp = Platform.OS === 'web' ? undefined : 'none';
+  const pointerEventsStyle = Platform.OS === 'web' ? styles.pointerNone : styles.nativePointerNone;
 
   return (
     <Animated.View
@@ -82,9 +81,8 @@ export const Toast: React.FC<ToastProps> = ({
         { opacity, transform: [{ translateY }] },
         { backgroundColor },
         shadows.md,
-        Platform.OS === 'web' ? styles.pointerNone : null,
+        pointerEventsStyle,
       ]}
-      pointerEvents={pointerEventsProp}
       testID={testID}
     >
       <Text style={[styles.text, { color: textColor }]}>{message}</Text>
@@ -108,6 +106,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   pointerNone: {
+    pointerEvents: 'none',
+  } as ViewStyle,
+  nativePointerNone: {
     pointerEvents: 'none',
   } as ViewStyle,
 });

@@ -43,12 +43,12 @@ function AtmosphereBackgroundComponent() {
     delay: Math.random() * 1000,
   })), []);
 
-  const containerPointerEvents = Platform.OS === 'web' ? undefined : 'none';
-
   return (
     <View
-      style={[StyleSheet.absoluteFill, Platform.OS === 'web' ? styles.nonInteractive : null]}
-      pointerEvents={containerPointerEvents}
+      style={[
+        StyleSheet.absoluteFill,
+        Platform.OS === 'web' ? styles.nonInteractive : styles.nativeNonInteractive,
+      ]}
     >
       {/* Animated Gradient Background Overlay - subtle movement */}
       <MotiView
@@ -167,6 +167,9 @@ const styles = StyleSheet.create({
     // We rely on opacity and soft shapes.
   },
   nonInteractive: {
+    pointerEvents: 'none',
+  } as ViewStyle,
+  nativeNonInteractive: {
     pointerEvents: 'none',
   } as ViewStyle,
   particle: {

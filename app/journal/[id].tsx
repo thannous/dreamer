@@ -1105,10 +1105,10 @@ export default function JournalDetailScreen() {
         </ScrollView>
         {isEditing && (
           <View
-            pointerEvents="auto"
             style={[
               styles.metadataOverlay,
               { backgroundColor: colors.overlay },
+              styles.pointerAuto,
             ]}
           >
             <View style={{ marginBottom: floatingTranscriptBottom }}>
@@ -1118,10 +1118,10 @@ export default function JournalDetailScreen() {
         )}
         {isEditingTranscript && (
           <View
-            pointerEvents="auto"
             style={[
               styles.transcriptOverlay,
               { backgroundColor: colors.overlay },
+              styles.pointerAuto,
             ]}
           >
             <View
@@ -1354,6 +1354,9 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 16,
   },
+  pointerAuto: {
+    pointerEvents: 'auto',
+  } as ViewStyle,
   metadataFloatingCard: {
     borderRadius: 20,
   },

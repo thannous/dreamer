@@ -13,6 +13,7 @@ import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -23,6 +24,7 @@ export default function SettingsScreen() {
   const { width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
+  useClearWebFocus();
   const scrollRef = useRef<ScrollView>(null);
 
   const { isActive, loading: subscriptionLoading } = useSubscription();

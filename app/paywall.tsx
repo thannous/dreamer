@@ -9,6 +9,7 @@ import { PricingOption } from '@/components/subscription/PricingOption';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
+import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -25,6 +26,7 @@ function sortPackages(packages: PurchasePackage[]): PurchasePackage[] {
 export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  useClearWebFocus();
   const { isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
