@@ -4,7 +4,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts, SurrealTheme } from '@/constants/theme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -31,8 +31,8 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       onPress={() => router.push(href as '/(tabs)')}
       style={({ hovered }) => [
         styles.navItem,
-        isActive && styles.navItemActive,
-        hovered && !isActive && styles.navItemHover,
+        isActive && { backgroundColor: colors.accentDark },
+        hovered && !isActive && { backgroundColor: colors.backgroundSecondary },
       ]}
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -40,12 +40,12 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       <IconSymbol
         name={icon}
         size={22}
-        color={isActive ? colors.textPrimary : SurrealTheme.textMuted}
+        color={isActive ? colors.textPrimary : colors.textSecondary}
       />
       <Text
         style={[
           styles.navLabel,
-          { color: isActive ? colors.textPrimary : SurrealTheme.textMuted },
+          { color: isActive ? colors.textPrimary : colors.textSecondary },
         ]}
       >
         {label}
@@ -57,6 +57,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
 export function DesktopSidebar() {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const { colors } = useTheme();
 
   const navItems: { icon: IconName; label: string; href: string; testID?: string }[] = [
     { icon: 'house.fill', label: t('nav.home'), href: '/', testID: TID.Tab.Home },
@@ -73,7 +74,7 @@ export function DesktopSidebar() {
   };
 
   return (
-    <View style={styles.sidebar}>
+    <View style={[styles.sidebar, { backgroundColor: colors.backgroundDark, borderRightColor: colors.divider }]}>
       {/* Logo Section */}
       <View style={styles.logoSection}>
         <Image
@@ -81,7 +82,7 @@ export function DesktopSidebar() {
           style={styles.logo}
           contentFit="contain"
         />
-        <Text style={styles.appName}>Noctalia</Text>
+        <Text style={[styles.appName, { color: colors.textPrimary }]}>Noctalia</Text>
       </View>
 
       {/* Navigation Items */}
@@ -99,8 +100,8 @@ export function DesktopSidebar() {
       </View>
 
       {/* Footer Section */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>v1.0.0</Text>
+      <View style={[styles.footer, { borderTopColor: colors.divider }]}>
+        <Text style={[styles.footerText, { color: colors.textSecondary }]}>v1.0.0</Text>
       </View>
     </View>
   );
@@ -112,9 +113,7 @@ const styles = StyleSheet.create({
   sidebar: {
     width: SIDEBAR_WIDTH,
     height: '100%',
-    backgroundColor: SurrealTheme.bgStart,
     borderRightWidth: 1,
-    borderRightColor: SurrealTheme.shape,
     paddingVertical: 24,
     paddingHorizontal: 16,
     flexDirection: 'column',
@@ -134,7 +133,6 @@ const styles = StyleSheet.create({
   appName: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 22,
-    color: SurrealTheme.textLight,
     letterSpacing: -0.5,
   },
   navSection: {
@@ -149,12 +147,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 10,
   },
-  navItemActive: {
-    backgroundColor: SurrealTheme.shape,
-  },
-  navItemHover: {
-    backgroundColor: 'rgba(79, 61, 107, 0.5)',
-  },
   navLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 15,
@@ -162,12 +154,10 @@ const styles = StyleSheet.create({
   footer: {
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: SurrealTheme.shape,
   },
   footerText: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 12,
-    color: SurrealTheme.textMuted,
     textAlign: 'center',
   },
 });

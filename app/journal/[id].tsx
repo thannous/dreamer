@@ -1,4 +1,5 @@
 import { ImageRetry } from '@/components/journal/ImageRetry';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
@@ -139,6 +140,7 @@ export default function JournalDetailScreen() {
   useClearWebFocus();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -152,6 +154,7 @@ export default function JournalDetailScreen() {
   const { t } = useTranslation();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
     [dream, t]
@@ -584,10 +587,41 @@ export default function JournalDetailScreen() {
     router.push(`/dream-categories/${dream.id}`);
   }, [dream, hasExistingChat]);
 
-  const handleAnalyze = useCallback(async () => {
+  const runAnalyze = useCallback(
+    async (replaceImage: boolean) => {
+      if (!dream) return;
+
+      if (!canAnalyzeNow) {
+        Alert.alert(
+          t('journal.detail.analysis_limit.title'),
+          t('journal.detail.analysis_limit.message'),
+          [{ text: t('common.ok') }],
+        );
+        return;
+      }
+
+      setShowReplaceImageSheet(false);
+      setIsAnalyzing(true);
+      try {
+        await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage });
+        Alert.alert(t('common.success'), t('journal.detail.analysis.success_message'));
+      } catch (error) {
+        if (error instanceof QuotaError) {
+          Alert.alert(t('journal.detail.quota_exceeded.title'), error.userMessage);
+        } else {
+          const msg = error instanceof Error ? error.message : t('common.unknown_error');
+          Alert.alert(t('analysis_error.title'), msg);
+        }
+      } finally {
+        setIsAnalyzing(false);
+      }
+    },
+    [analyzeDream, canAnalyzeNow, dream, t]
+  );
+
+  const handleAnalyze = useCallback(() => {
     if (!dream) return;
 
-    // Check quota
     if (!canAnalyzeNow) {
       Alert.alert(
         t('journal.detail.analysis_limit.title'),
@@ -597,21 +631,25 @@ export default function JournalDetailScreen() {
       return;
     }
 
-    setIsAnalyzing(true);
-    try {
-      await analyzeDream(dream.id, dream.transcript);
-      Alert.alert(t('common.success'), t('journal.detail.analysis.success_message'));
-    } catch (error) {
-      if (error instanceof QuotaError) {
-        Alert.alert(t('journal.detail.quota_exceeded.title'), error.userMessage);
-      } else {
-        const msg = error instanceof Error ? error.message : t('common.unknown_error');
-        Alert.alert(t('analysis_error.title'), msg);
-      }
-    } finally {
-      setIsAnalyzing(false);
+    if (hasExistingImage) {
+      setShowReplaceImageSheet(true);
+      return;
     }
-  }, [dream, canAnalyzeNow, analyzeDream, t]);
+
+    void runAnalyze(true);
+  }, [dream, canAnalyzeNow, hasExistingImage, runAnalyze, t]);
+
+  const handleReplaceImage = useCallback(() => {
+    void runAnalyze(true);
+  }, [runAnalyze]);
+
+  const handleKeepImage = useCallback(() => {
+    void runAnalyze(false);
+  }, [runAnalyze]);
+
+  const handleDismissReplaceSheet = useCallback(() => {
+    setShowReplaceImageSheet(false);
+  }, []);
 
   const gradientColors = mode === 'dark'
     ? GradientColors.dreamJournal
@@ -1140,6 +1178,50 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         )}
+        <BottomSheet
+          visible={showReplaceImageSheet}
+          onClose={handleDismissReplaceSheet}
+          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+          style={[
+            styles.replaceImageSheet,
+            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+            shadows.xl,
+          ]}
+        >
+          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+          <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+            {t('journal.detail.image_replace.title')}
+          </Text>
+          <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+            {t('journal.detail.image_replace.subtitle')}
+          </Text>
+          <View style={styles.sheetButtons}>
+            <Pressable
+              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
+              onPress={handleReplaceImage}
+            >
+              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+                {t('journal.detail.image_replace.replace')}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.sheetSecondaryButton,
+                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+              ]}
+              onPress={handleKeepImage}
+            >
+              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+                {t('journal.detail.image_replace.keep')}
+              </Text>
+            </Pressable>
+          </View>
+          <Pressable onPress={handleDismissReplaceSheet} style={styles.sheetLinkButton}>
+            <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
+              {t('common.cancel')}
+            </Text>
+          </Pressable>
+        </BottomSheet>
         <Modal
           visible={isShareModalVisible}
           transparent
@@ -1511,6 +1593,72 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
     letterSpacing: 0.3,
+  },
+  replaceImageSheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 24,
+    borderWidth: 1,
+    gap: 12,
+  },
+  sheetHandle: {
+    width: 44,
+    height: 4,
+    borderRadius: 999,
+    alignSelf: 'center',
+    marginBottom: 12,
+    opacity: 0.7,
+  },
+  sheetTitle: {
+    fontSize: 20,
+    fontFamily: Fonts.lora.bold,
+    textAlign: 'left',
+  },
+  sheetSubtitle: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 22,
+  },
+  sheetButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 8,
+  },
+  sheetPrimaryButton: {
+    flex: 1,
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetSecondaryButton: {
+    flex: 1,
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  },
+  sheetPrimaryButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    letterSpacing: 0.4,
+  },
+  sheetSecondaryButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    letterSpacing: 0.4,
+  },
+  sheetLinkButton: {
+    marginTop: 4,
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  sheetLinkText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   shareModalOverlay: {
     flex: 1,
