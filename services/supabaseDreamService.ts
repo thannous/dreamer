@@ -29,6 +29,9 @@ type SupabaseDreamRow = {
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   const createdAt = row.created_at ? Date.parse(row.created_at) : Date.now();
+  const imageUrl = row.image_url ?? '';
+  const hasImage = Boolean(imageUrl);
+  const imageGenerationFailed = hasImage ? false : row.image_generation_failed ?? false;
   return {
     id: createdAt,
     remoteId: row.id,
@@ -36,13 +39,13 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     title: row.title ?? '',
     interpretation: row.interpretation ?? '',
     shareableQuote: row.shareable_quote ?? '',
-    imageUrl: row.image_url ?? '',
-    thumbnailUrl: row.image_url ?? undefined,
+    imageUrl,
+    thumbnailUrl: hasImage ? imageUrl : undefined,
     chatHistory: Array.isArray(row.chat_history) ? row.chat_history : [],
     theme: row.theme ?? undefined,
     dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
     isFavorite: row.is_favorite ?? false,
-    imageGenerationFailed: row.image_generation_failed ?? false,
+    imageGenerationFailed,
     isAnalyzed: row.is_analyzed ?? undefined,
     analyzedAt: row.analyzed_at ? Date.parse(row.analyzed_at) : undefined,
     analysisStatus: row.analysis_status ?? undefined,
