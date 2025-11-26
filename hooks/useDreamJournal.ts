@@ -603,7 +603,7 @@ export const useDreamJournal = () => {
             thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
           } catch (imageError) {
             console.warn('Image generation failed', imageError);
-            imageGenerationFailed = !imageUrl;
+            imageGenerationFailed = true;
           }
         }
 
@@ -613,12 +613,14 @@ export const useDreamJournal = () => {
             shouldReplaceImage || !thumbnailUrl ? getThumbnailUrl(imageUrl) : thumbnailUrl;
         }
 
+        const imageFailedWithoutImage = imageGenerationFailed && !imageUrl;
+
         const next: DreamAnalysis = {
           ...currentDreamState,
           ...analysisFields,
           imageUrl,
           thumbnailUrl,
-          imageGenerationFailed: imageGenerationFailed && !imageUrl,
+          imageGenerationFailed: imageFailedWithoutImage,
           analysisStatus: 'done',
           analyzedAt: Date.now(),
           isAnalyzed: true,
