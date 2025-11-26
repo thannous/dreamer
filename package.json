@@ -6,6 +6,7 @@
     "start": "expo start",
     "start:mock": "cp .env.mock .env.local && expo start",
     "start:real": "cp .env.real .env.local && expo start",
+    "start:teststore": "cp .env.teststore .env.local && expo start",
     "start:supabase": "node ./scripts/start-supabase.js",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
@@ -22,7 +23,8 @@
     "test:e2e:guest-limit": "maestro test maestro/guest-dream-limit.yml",
     "build:apk": "echo 'Usage: npm run build:apk:mock | npm run build:apk:prod'",
     "build:apk:mock": "EXPO_PUBLIC_MOCK_MODE=true EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile preview --local",
-    "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local"
+    "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo-google-fonts/lora": "^0.4.2",
@@ -91,6 +93,7 @@
     "happy-dom": "^20.0.10",
     "jsdom": "^27.2.0",
     "madge": "^8.0.0",
+    "patch-package": "^8.0.1",
     "supabase": "^2.54.11",
     "typescript": "~5.9.2",
     "vite-tsconfig-paths": "^5.1.1",
