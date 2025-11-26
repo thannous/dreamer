@@ -40,6 +40,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env.real
 .env.supabase
 .env.google.template
 supabase.exe
