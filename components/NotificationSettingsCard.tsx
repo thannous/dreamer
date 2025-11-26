@@ -1,17 +1,17 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { Alert, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, AppState, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { NotificationSettings } from '@/lib/types';
 import {
-    cancelAllNotifications,
-    hasNotificationPermissions,
-    requestNotificationPermissions,
-    scheduleDailyNotification,
-    sendTestNotification,
+  cancelAllNotifications,
+  hasNotificationPermissions,
+  requestNotificationPermissions,
+  scheduleDailyNotification,
+  sendTestNotification,
 } from '@/services/notificationService';
 import { getNotificationSettings, saveNotificationSettings } from '@/services/storageService';
 
@@ -27,16 +27,22 @@ export default function NotificationSettingsCard() {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    loadSettings();
+  const refreshPermissions = useCallback(async () => {
+    try {
+      const permissions = await hasNotificationPermissions();
+      setHasPermissions(permissions);
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to check notification permissions:', error);
+      }
+    }
   }, []);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const savedSettings = await getNotificationSettings();
       setSettings(savedSettings);
-      const permissions = await hasNotificationPermissions();
-      setHasPermissions(permissions);
+      await refreshPermissions();
     } catch (error) {
       if (__DEV__) {
         console.error('Failed to load notification settings:', error);
@@ -44,7 +50,23 @@ export default function NotificationSettingsCard() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [refreshPermissions]);
+
+  useEffect(() => {
+    void loadSettings();
+  }, [loadSettings]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        void refreshPermissions();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [refreshPermissions]);
 
   const handleToggle = async (enabled: boolean) => {
     if (enabled && !hasPermissions) {
@@ -239,8 +261,8 @@ export default function NotificationSettingsCard() {
       )}
 
       {!hasPermissions && !settings.isEnabled && (
-        <View style={[styles.warningBox, { borderColor: colors.accent }]}>
-          <Text style={[styles.warningText, { color: colors.accentLight }]}>{t('notifications.warning.permissions')}</Text>
+        <View style={[styles.warningBox, { backgroundColor: '#000000', borderColor: '#FF6B35', borderWidth: 2 }]}>
+          <Text style={[styles.warningText, { color: '#FFFFFF', fontWeight: 'bold' }]}>{t('notifications.warning.permissions')} ff</Text>
         </View>
       )}
     </View>
@@ -321,9 +343,9 @@ const styles = StyleSheet.create({
   warningBox: {
     marginTop: 12,
     padding: 12,
-    backgroundColor: 'rgba(254, 243, 199, 0.1)',
     borderRadius: ThemeLayout.borderRadius.sm,
-    borderWidth: 1,
+    borderWidth: 2,
+    width: '100%',
   },
   warningText: {
     fontSize: 13,
