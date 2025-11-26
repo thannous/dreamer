@@ -33,6 +33,16 @@ function resolveApiKey(): string | null {
   const extra = (Constants?.expoConfig as any)?.extra ?? {};
 
   if (Platform.OS === 'android') {
+    if (__DEV__) {
+      // En dev on ne veut pas retomber sur la clé extra (qui est celle du Play Store) si l'env est chargé.
+      const key = env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
+      console.log('[RC DEBUG] env android key', key);
+      if (!key) {
+        console.warn('[RC DEBUG] No env android key found, fallback to extra');
+        console.log('[RC DEBUG] extra android key', extra.revenuecatAndroidKey);
+      }
+      return key ?? extra.revenuecatAndroidKey ?? null;
+    }
     return env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? extra.revenuecatAndroidKey ?? null;
   }
   if (Platform.OS === 'ios') {

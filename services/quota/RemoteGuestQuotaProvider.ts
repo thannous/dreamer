@@ -31,11 +31,31 @@ type RemoteQuotaResponse = {
 export class RemoteGuestQuotaProvider implements QuotaProvider {
   private cache: Map<string, CacheEntry<QuotaStatus>> = new Map();
   private readonly CACHE_TTL = 20000; // 20 seconds
+  private remoteUnavailable = false;
 
   constructor(private readonly fallback: GuestQuotaProvider) {}
 
   private resolveDreamId(target: QuotaDreamTarget | undefined): number | undefined {
     return target?.dream?.id ?? target?.dreamId;
+  }
+
+  private isEndpointUnavailable(error: unknown): boolean {
+    const message = error instanceof Error ? error.message : String(error);
+    return (
+      message.includes('HTTP 401') ||
+      message.includes('Unauthorized') ||
+      message.includes('HTTP 403') ||
+      message.includes('HTTP 404')
+    );
+  }
+
+  private async getFallbackStatus(
+    cacheKey: string,
+    target: QuotaDreamTarget | undefined
+  ): Promise<QuotaStatus> {
+    const fallbackStatus = await this.fallback.getQuotaStatus(null, target);
+    this.cache.set(cacheKey, { value: fallbackStatus, expiresAt: Date.now() + this.CACHE_TTL });
+    return fallbackStatus;
   }
 
   private buildUsage(
@@ -97,6 +117,10 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       return cached.value;
     }
 
+    if (this.remoteUnavailable) {
+      return this.getFallbackStatus(cacheKey, target);
+    }
+
     try {
       const fingerprint = await getDeviceFingerprint();
       const response = await fetchJSON<RemoteQuotaResponse>(`${getApiBaseUrl()}/quota/status`, {
@@ -112,12 +136,15 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       this.cache.set(cacheKey, { value: status, expiresAt: Date.now() + this.CACHE_TTL });
       return status;
     } catch (error) {
-      if (__DEV__) {
+      if (this.isEndpointUnavailable(error)) {
+        this.remoteUnavailable = true;
+        if (__DEV__) {
+          console.log('[Quota] Remote guest quota endpoint unavailable, using local store');
+        }
+      } else if (__DEV__) {
         console.warn('[Quota] Remote guest quota failed, falling back to local store', error);
       }
-      const fallbackStatus = await this.fallback.getQuotaStatus(null, target);
-      this.cache.set(cacheKey, { value: fallbackStatus, expiresAt: Date.now() + this.CACHE_TTL });
-      return fallbackStatus;
+      return this.getFallbackStatus(cacheKey, target);
     }
   }
 

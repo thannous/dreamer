@@ -27,6 +27,20 @@ const NOTIFICATION_PROMPT_KEYS = [
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 
 /**
+ * Normalize permission status across platforms (handles iOS provisional/ephemeral)
+ */
+function allowsNotifications(permission: Notifications.NotificationPermissionsStatus): boolean {
+  const iosStatus = permission.ios?.status;
+  return (
+    permission.granted ||
+    permission.status === 'granted' ||
+    iosStatus === Notifications.IosAuthorizationStatus.AUTHORIZED ||
+    iosStatus === Notifications.IosAuthorizationStatus.PROVISIONAL ||
+    iosStatus === Notifications.IosAuthorizationStatus.EPHEMERAL
+  );
+}
+
+/**
  * Configure default notification behavior
  */
 export function configureNotificationHandler(): void {
@@ -55,16 +69,23 @@ export async function requestNotificationPermissions(): Promise<boolean> {
     return false;
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+  const existingPermissions = await Notifications.getPermissionsAsync();
+  let permissionResult = existingPermissions;
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
+  if (!allowsNotifications(existingPermissions)) {
+    permissionResult = await Notifications.requestPermissionsAsync({
+      ios: {
+        allowAlert: true,
+        allowBadge: true,
+        allowSound: true,
+      },
+    });
   }
 
+  const isGranted = allowsNotifications(permissionResult);
+
   // Android: Create notification channel
-  if (Platform.OS === 'android') {
+  if (isGranted && Platform.OS === 'android') {
     // Get system language for channel name (can't be changed after creation)
     const t = getTranslator();
     await Notifications.setNotificationChannelAsync(NOTIFICATION_CHANNEL_ID, {
@@ -75,7 +96,7 @@ export async function requestNotificationPermissions(): Promise<boolean> {
     });
   }
 
-  return finalStatus === 'granted';
+  return isGranted;
 }
 
 /**
@@ -189,6 +210,6 @@ export async function hasNotificationPermissions(): Promise<boolean> {
     return false;
   }
 
-  const { status } = await Notifications.getPermissionsAsync();
-  return status === 'granted';
+  const permissions = await Notifications.getPermissionsAsync();
+  return allowsNotifications(permissions);
 }
