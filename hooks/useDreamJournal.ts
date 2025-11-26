@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { getThumbnailUrl } from '@/lib/imageUtils';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
 import { analyzeDream as analyzeDreamText, generateImageForDream } from '@/services/geminiService';
 import { quotaService } from '@/services/quotaService';
@@ -39,6 +40,20 @@ const generateUUID = (): string => {
     return v.toString(16);
   });
 };
+
+const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
+  const hasImage = Boolean(dream.imageUrl?.trim());
+  const derivedThumbnail = hasImage ? getThumbnailUrl(dream.imageUrl) : undefined;
+
+  return {
+    ...dream,
+    thumbnailUrl: hasImage ? derivedThumbnail : undefined,
+    imageGenerationFailed: hasImage ? false : dream.imageGenerationFailed,
+  };
+};
+
+const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] =>
+  list.map((dream) => normalizeDreamImages(dream));
 
 const upsertDream = (list: DreamAnalysis[], dream: DreamAnalysis): DreamAnalysis[] => {
   const index = list.findIndex(
@@ -113,7 +128,8 @@ export const useDreamJournal = () => {
   }, [dreams]);
 
   const persistLocalDreams = useCallback(async (newDreams: DreamAnalysis[]) => {
-    const sorted = sortDreams(newDreams);
+    const normalized = normalizeDreamList(newDreams);
+    const sorted = sortDreams(normalized);
     setDreams(sorted);
     await saveDreams(sorted);
   }, []);
@@ -122,7 +138,8 @@ export const useDreamJournal = () => {
     async (updater: DreamListUpdater) => {
       if (!canUseRemoteSync) return;
       const resolved = typeof updater === 'function' ? updater(dreamsRef.current) : updater;
-      const sorted = sortDreams(resolved);
+      const normalized = normalizeDreamList(resolved);
+      const sorted = sortDreams(normalized);
       setDreams(sorted);
       await saveCachedRemoteDreams(sorted);
     },
@@ -196,7 +213,7 @@ export const useDreamJournal = () => {
           pendingMutationsRef.current = [];
           const localDreams = await getSavedDreams();
           if (mounted) {
-            setDreams(sortDreams(localDreams));
+            setDreams(sortDreams(normalizeDreamList(localDreams)));
           }
           return;
         }
@@ -213,19 +230,20 @@ export const useDreamJournal = () => {
 
         try {
           const remoteDreams = await fetchDreamsFromSupabase();
-          await saveCachedRemoteDreams(sortDreams(remoteDreams));
-          const hydrated = applyPendingMutations(remoteDreams, pending);
+          const normalizedRemote = normalizeDreamList(remoteDreams);
+          await saveCachedRemoteDreams(sortDreams(normalizedRemote));
+          const hydrated = normalizeDreamList(applyPendingMutations(normalizedRemote, pending));
           if (mounted) {
-            setDreams(hydrated);
+            setDreams(sortDreams(hydrated));
           }
         } catch (error) {
           if (__DEV__) {
             console.error('Failed to load dreams', error);
           }
           const cached = await getCachedRemoteDreams();
-          const fallback = applyPendingMutations(cached, pending);
+          const fallback = normalizeDreamList(applyPendingMutations(cached, pending));
           if (mounted) {
-            setDreams(fallback);
+            setDreams(sortDreams(fallback));
           }
         }
       } catch (error) {
@@ -251,6 +269,7 @@ export const useDreamJournal = () => {
 
   const addDream = useCallback(
     async (dream: DreamAnalysis): Promise<DreamAnalysis> => {
+      const normalizedDream = normalizeDreamImages(dream);
       const currentDreams = dreamsRef.current;
 
       // Note: Guest dream limit has been removed.
@@ -258,12 +277,12 @@ export const useDreamJournal = () => {
       // See quotaService for analysis quota enforcement.
 
       if (!canUseRemoteSync) {
-        await persistLocalDreams([dream, ...currentDreams]);
-        return dream;
+        await persistLocalDreams([normalizedDream, ...currentDreams]);
+        return normalizedDream;
       }
 
       const queueAndPersist = async () => {
-        const queuedDream = { ...dream, pendingSync: true };
+        const queuedDream = { ...normalizedDream, pendingSync: true };
         await queueOfflineOperation(
           {
             id: generateMutationId(),
@@ -281,7 +300,7 @@ export const useDreamJournal = () => {
       }
 
       try {
-        const saved = await createDreamInSupabase(dream, user!.id);
+        const saved = await createDreamInSupabase(normalizedDream, user!.id);
         await persistRemoteDreams((prev) => upsertDream(prev, saved));
         return saved;
       } catch (error) {
@@ -301,15 +320,16 @@ export const useDreamJournal = () => {
 
   const updateDream = useCallback(
     async (updatedDream: DreamAnalysis) => {
+      const normalizedDream = normalizeDreamImages(updatedDream);
       const currentDreams = dreamsRef.current;
 
       if (!canUseRemoteSync) {
-        const newDreams = currentDreams.map((d) => (d.id === updatedDream.id ? updatedDream : d));
+        const newDreams = currentDreams.map((d) => (d.id === normalizedDream.id ? normalizedDream : d));
         await persistLocalDreams(newDreams);
         return;
       }
 
-      const remoteId = updatedDream.remoteId ?? resolveRemoteId(updatedDream.id);
+      const remoteId = normalizedDream.remoteId ?? resolveRemoteId(normalizedDream.id);
 
       const queueAndPersist = async (pendingVersion: DreamAnalysis) => {
         await queueOfflineOperation(
@@ -319,30 +339,30 @@ export const useDreamJournal = () => {
             createdAt: Date.now(),
             dream: pendingVersion,
           },
-          (prev) => upsertDream(prev, pendingVersion)
+          (prev) => upsertDream(prev, normalizeDreamImages(pendingVersion))
         );
       };
 
       if (!remoteId) {
-        const pendingVersion = { ...updatedDream, pendingSync: true };
+        const pendingVersion = { ...normalizedDream, pendingSync: true };
         await queueAndPersist(pendingVersion);
         return;
       }
 
       if (!hasNetwork) {
-        const pendingVersion = { ...updatedDream, pendingSync: true, remoteId };
+        const pendingVersion = { ...normalizedDream, pendingSync: true, remoteId };
         await queueAndPersist(pendingVersion);
         return;
       }
 
       try {
-        const saved = await updateDreamInSupabase({ ...updatedDream, remoteId });
+        const saved = await updateDreamInSupabase({ ...normalizedDream, remoteId });
         await persistRemoteDreams((prev) => upsertDream(prev, saved));
       } catch (error) {
         if (__DEV__) {
           console.warn('Falling back to offline dream update', error);
         }
-        const pendingVersion = { ...updatedDream, pendingSync: true, remoteId };
+        const pendingVersion = { ...normalizedDream, pendingSync: true, remoteId };
         await queueAndPersist(pendingVersion);
       }
     },
@@ -574,22 +594,31 @@ export const useDreamJournal = () => {
         const { imagePrompt, ...analysisFields } = analysis;
 
         let imageUrl = dream.imageUrl;
+        let thumbnailUrl = dream.thumbnailUrl;
         let imageGenerationFailed = false;
 
         if (shouldReplaceImage) {
           try {
             imageUrl = await generateImageForDream(imagePrompt);
+            thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
           } catch (imageError) {
             console.warn('Image generation failed', imageError);
-            imageGenerationFailed = true;
+            imageGenerationFailed = !imageUrl;
           }
+        }
+
+        if (imageUrl) {
+          // Ensure thumbnail stays in sync with the latest image
+          thumbnailUrl =
+            shouldReplaceImage || !thumbnailUrl ? getThumbnailUrl(imageUrl) : thumbnailUrl;
         }
 
         const next: DreamAnalysis = {
           ...currentDreamState,
           ...analysisFields,
           imageUrl,
-          imageGenerationFailed,
+          thumbnailUrl,
+          imageGenerationFailed: imageGenerationFailed && !imageUrl,
           analysisStatus: 'done',
           analyzedAt: Date.now(),
           isAnalyzed: true,

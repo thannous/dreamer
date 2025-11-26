@@ -12,7 +12,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { QuotaError } from '@/lib/errors';
-import { getImageConfig } from '@/lib/imageUtils';
+import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
@@ -556,11 +556,13 @@ export default function JournalDetailScreen() {
       // We need to reconstruct it or store it - for now we'll use a generic approach
       // In a real scenario, you'd want to store the imagePrompt in the DreamAnalysis type
       const imageUrl = await generateImageForDream(dream.interpretation);
+      const thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
 
       // Update the dream with the new image
       const updatedDream = {
         ...dream,
         imageUrl,
+        thumbnailUrl,
         imageGenerationFailed: false,
       };
 
@@ -937,9 +939,7 @@ export default function JournalDetailScreen() {
           {!shouldHideHeroMedia && (
             <View style={styles.imageContainer}>
               <View style={styles.imageFrame}>
-                {dream.imageGenerationFailed ? (
-                  <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
-                ) : dream.imageUrl ? (
+                {dream.imageUrl ? (
                   <>
                     <Image
                       source={{ uri: dream.imageUrl }}
@@ -952,6 +952,8 @@ export default function JournalDetailScreen() {
                     />
                     <View style={styles.imageOverlay} />
                   </>
+                ) : dream.imageGenerationFailed ? (
+                  <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
                 ) : dream.analysisStatus === 'pending' ? (
                   <Skeleton style={{ width: '100%', height: '100%' }} />
                 ) : (
