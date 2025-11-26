@@ -31,6 +31,45 @@ serve(async (req: Request) => {
   const { data: authData } = await supabase.auth.getUser().catch(() => ({ data: null }));
   const user = authData?.user ?? null;
 
+  // Guest quota status (public)
+  if (req.method === 'POST' && subPath === '/quota/status') {
+    try {
+      const body = (await req.json().catch(() => ({}))) as {
+        fingerprint?: string;
+        targetDreamId?: number | null;
+      };
+      console.log('[api] /quota/status request', {
+        userId: user?.id ?? null,
+        fingerprint: body?.fingerprint ? '[redacted]' : null,
+        targetDreamId: body?.targetDreamId ?? null,
+      });
+
+      // Static guest quotas for now; adjust if server-side tracking is added later
+      const guestLimits = { analysis: 2, exploration: 2, messagesPerDream: 20 };
+
+      return new Response(
+        JSON.stringify({
+          tier: 'guest',
+          usage: {
+            analysis: { used: 0, limit: guestLimits.analysis },
+            exploration: { used: 0, limit: guestLimits.exploration },
+            messages: { used: 0, limit: guestLimits.messagesPerDream },
+          },
+          canAnalyze: true,
+          canExplore: true,
+          reasons: [],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    } catch (e) {
+      console.error('[api] /quota/status error', e);
+      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+  }
+
   if (req.method === 'POST' && subPath === '/transcribe') {
     try {
       const body = (await req.json()) as {
@@ -135,7 +174,7 @@ serve(async (req: Request) => {
       if (message) contents.push({ role: 'user', parts: [{ text: message }] });
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
 
       let reply = '';
       try {
@@ -146,8 +185,8 @@ serve(async (req: Request) => {
         });
         reply = result.response.text();
       } catch (err) {
-        console.warn('[api] /chat primary model failed, retrying with flash', primaryModel, err);
-        const fallbackModel = 'gemini-2.5-flash';
+        console.warn('[api] /chat primary model failed, retrying with flash-lite', primaryModel, err);
+        const fallbackModel = 'gemini-2.5-flash-lite';
         const model = genAI.getGenerativeModel({ model: fallbackModel });
         const result = await model.generateContent({
           contents,
@@ -331,7 +370,7 @@ serve(async (req: Request) => {
       const imagePrompt = String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere');
 
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-4.0-fast-generate-001';
+      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
       const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
 
       const imgRes = await fetch(endpoint, {
@@ -498,7 +537,7 @@ serve(async (req: Request) => {
       }
 
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'imagen-3.0-generate-001';
+      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
       const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
 
       const imgRes = await fetch(endpoint, {
