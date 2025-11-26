@@ -420,6 +420,7 @@ export default function JournalListScreen() {
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
+          // @ts-expect-error columnWrapperStyle is supported by FlashList for grid layouts
           columnWrapperStyle={styles.desktopColumnWrapper}
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}

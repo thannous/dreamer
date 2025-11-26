@@ -91,7 +91,7 @@ const isMissingImageGenerationColumnError = (error: PostgrestError | null): bool
 
 export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
   const { data, error } = await supabase
-    .from<SupabaseDreamRow>(DREAMS_TABLE)
+    .from(DREAMS_TABLE)
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -105,7 +105,7 @@ export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
 export async function createDreamInSupabase(dream: DreamAnalysis, userId: string): Promise<DreamAnalysis> {
   const insert = (includeImageColumn: boolean) =>
     supabase
-      .from<SupabaseDreamRow>(DREAMS_TABLE)
+      .from(DREAMS_TABLE)
       .insert(mapDreamToRow(dream, userId, includeImageColumn))
       .select('*')
       .single();
@@ -132,7 +132,7 @@ export async function updateDreamInSupabase(dream: DreamAnalysis): Promise<Dream
 
   const update = (includeImageColumn: boolean) =>
     supabase
-      .from<SupabaseDreamRow>(DREAMS_TABLE)
+      .from(DREAMS_TABLE)
       .update(mapDreamToRow(dream, undefined, includeImageColumn))
       .eq('id', dream.remoteId)
       .select('*')

@@ -5,14 +5,16 @@
 import { OPACITY, SCALE, SLIDE_DISTANCE, SPRING_CONFIGS, TIMING_CONFIGS } from '@/constants/animations';
 import { useEffect } from 'react';
 import {
-    Extrapolation,
-    cancelAnimation,
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withSpring,
-    withTiming,
+  Extrapolation,
+  cancelAnimation,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 
 /**
@@ -46,7 +48,7 @@ export function useScalePress() {
  */
 export function useFadeInUp(delay = 0) {
   const opacity = useSharedValue(0);
-  const translateY = useSharedValue(SLIDE_DISTANCE.medium);
+  const translateY = useSharedValue<number>(SLIDE_DISTANCE.medium);
 
   useEffect(() => {
     opacity.value = withDelay(
@@ -106,7 +108,7 @@ export function useModalSlide(visible: boolean) {
  */
 export function useStaggeredAnimation(index: number, staggerDelay = 50) {
   const opacity = useSharedValue(0);
-  const translateY = useSharedValue(SLIDE_DISTANCE.large);
+  const translateY = useSharedValue<number>(SLIDE_DISTANCE.large);
   const scale = useSharedValue(0.9);
 
   useEffect(() => {

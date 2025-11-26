@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { MotiView, useDynamicAnimation } from '@/lib/moti';
+import { useDynamicAnimation } from 'moti';
+
+import { MotiView } from '@/lib/moti';
 
 type DreamSignatureHeroProps = {
   children: ReactNode;

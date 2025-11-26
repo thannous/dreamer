@@ -372,7 +372,7 @@ export default function JournalDetailScreen() {
       setIsPickingImage(true);
       const ImagePicker = await import('expo-image-picker');
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: [ImagePicker.MediaType.Images],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: Platform.OS !== 'web',
         aspect: Platform.OS !== 'web' ? [2, 3] : undefined,
         quality: 0.9,

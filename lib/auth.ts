@@ -210,10 +210,7 @@ export async function signOut() {
     // Sign out from Google if signed in
     if (Platform.OS !== 'web') {
       const { GoogleSignin } = await getGoogleSignInModule();
-      const isSignedIn = await GoogleSignin.isSignedIn();
-      if (isSignedIn) {
-        await GoogleSignin.signOut();
-      }
+      await GoogleSignin.signOut();
     }
 
     // Sign out from Supabase
