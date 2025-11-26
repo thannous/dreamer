@@ -15,6 +15,78 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function generateImageFromPrompt(options: {
+  prompt: string;
+  apiKey: string;
+  model: string;
+  apiBase?: string;
+  aspectRatio?: string;
+}): Promise<{ imageBase64?: string; raw: any }> {
+  const { prompt, apiKey, model, apiBase = 'https://generativelanguage.googleapis.com', aspectRatio = '9:16' } = options;
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-goog-api-key': apiKey,
+  };
+
+  const isGeminiImage = model.toLowerCase().includes('gemini');
+
+  if (isGeminiImage) {
+    const endpoint = `${apiBase}/v1beta/models/${model}:generateContent`;
+    const body = {
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { responseMimeType: 'image/png' },
+    };
+
+    const imgRes = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!imgRes.ok) {
+      const t = await imgRes.text();
+      throw new Error(`Gemini image error ${imgRes.status}: ${t}`);
+    }
+
+    const imgJson = (await imgRes.json()) as any;
+    const parts = imgJson?.candidates?.[0]?.content?.parts;
+    const inlinePart = Array.isArray(parts)
+      ? parts.find((p: any) => p?.inlineData?.data)
+      : undefined;
+
+    return { imageBase64: inlinePart?.inlineData?.data as string | undefined, raw: imgJson };
+  }
+
+  const endpoint = `${apiBase}/v1beta/models/${model}:predict`;
+
+  const imgRes = await fetch(endpoint, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      instances: [{ prompt }],
+      parameters: {
+        sampleCount: 1,
+        ...(aspectRatio ? { aspectRatio } : {}),
+      },
+    }),
+  });
+
+  if (!imgRes.ok) {
+    const t = await imgRes.text();
+    throw new Error(`Imagen error ${imgRes.status}: ${t}`);
+  }
+
+  const imgJson = (await imgRes.json()) as any;
+
+  let imageBase64: string | undefined;
+  const firstPred = imgJson?.predictions?.[0];
+  if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
+  const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
+  if (!imageBase64 && gen0) imageBase64 = gen0;
+
+  return { imageBase64, raw: imgJson };
+}
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
@@ -371,33 +443,13 @@ serve(async (req: Request) => {
 
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
       const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
-      const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
-
-      const imgRes = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': apiKey,
-        },
-        body: JSON.stringify({
-          instances: [{ prompt: imagePrompt }],
-          parameters: {
-            sampleCount: 1,
-            aspectRatio: '9:16',
-          },
-        }),
+      const { imageBase64, raw: imgJson } = await generateImageFromPrompt({
+        prompt: imagePrompt,
+        apiKey,
+        model: imageModel,
+        apiBase,
+        aspectRatio: '9:16',
       });
-      if (!imgRes.ok) {
-        const t = await imgRes.text();
-        throw new Error(`Imagen error ${imgRes.status}: ${t}`);
-      }
-      const imgJson = (await imgRes.json()) as any;
-
-      let imageBase64: string | undefined;
-      const firstPred = imgJson?.predictions?.[0];
-      if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
-      const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
-      if (!imageBase64 && gen0) imageBase64 = gen0;
 
       if (!imageBase64) {
         return new Response(JSON.stringify({ error: 'No image returned', raw: imgJson }), {
@@ -538,33 +590,13 @@ serve(async (req: Request) => {
 
       const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
       const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
-      const endpoint = `${apiBase}/v1beta/models/${imageModel}:predict`;
-
-      const imgRes = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': apiKey,
-        },
-        body: JSON.stringify({
-          instances: [{ prompt }],
-          parameters: {
-            sampleCount: 1,
-            aspectRatio: '9:16',
-          },
-        }),
+      const { imageBase64, raw: imgJson } = await generateImageFromPrompt({
+        prompt,
+        apiKey,
+        model: imageModel,
+        apiBase,
+        aspectRatio: '9:16',
       });
-      if (!imgRes.ok) {
-        const t = await imgRes.text();
-        throw new Error(`Imagen error ${imgRes.status}: ${t}`);
-      }
-      const imgJson = (await imgRes.json()) as any;
-
-      let imageBase64: string | undefined;
-      const firstPred = imgJson?.predictions?.[0];
-      if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
-      const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
-      if (!imageBase64 && gen0) imageBase64 = gen0;
 
       if (!imageBase64) {
         return new Response(JSON.stringify({ error: 'No image returned', raw: imgJson }), {
