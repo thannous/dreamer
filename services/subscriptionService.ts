@@ -1,8 +1,13 @@
+import { Platform } from 'react-native';
+
 import * as mockService from './mocks/subscriptionServiceMock';
 import * as realService from './subscriptionServiceReal';
 
 const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
-const service = isMockMode ? mockService : realService;
+const hasWebKey = !!(process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_REVENUECAT_WEB_KEY;
+// Sur web, on n'active le réel que si une clé web est fournie. Sinon, on mock.
+const shouldMock = isMockMode || (Platform.OS === 'web' && !hasWebKey);
+const service = shouldMock ? mockService : realService;
 
 export const initializeSubscription = service.initialize;
 export const isSubscriptionInitialized = service.isInitialized;

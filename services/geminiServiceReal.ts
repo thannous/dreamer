@@ -118,7 +118,8 @@ export async function generateImageFromTranscript(transcript: string): Promise<s
   const base = getApiBaseUrl();
   const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
     method: 'POST',
-    body: { transcript },
+    // Backend expects a prompt; include transcript for backward compatibility.
+    body: { prompt: transcript, transcript },
     timeoutMs: 60000, // Image generation can take time
   });
   if (res.imageUrl) return res.imageUrl;
