@@ -142,6 +142,14 @@ Ce guide vous accompagne dans la configuration complète de Google Sign-In pour 
 5. **Copier le SHA-1 fingerprint** affiché
    - Format : `XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX:XX`
 
+#### Empreinte de production (Play Console)
+
+Une fois un premier build soumis sur la Play Console (piste Internal Testing suffit) :
+
+1. Ouvrir **Play Console** > **Release** > **Setup** > **App Integrity**
+2. Dans la carte **App signing**, copier l’empreinte **SHA-1 certificate fingerprint**
+3. Conserver cette empreinte : elle doit être ajoutée en plus du SHA-1 de développement
+
 ### Alternative si EAS credentials ne fonctionne pas :
 
 Pour un keystore local de développement :
@@ -170,11 +178,14 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 5. Remplir :
    - **Name** : `Dream Journal Android`
    - **Package name** : `com.tanuki75.noctalia` ⚠️ IMPORTANT : Ne pas modifier !
-   - **SHA-1 certificate fingerprint** : Coller le SHA-1 de l'Étape 4
+   - **SHA-1 certificate fingerprint** : Coller le SHA-1 de l'Étape 4 (développement)
 
 6. Cliquer **Create**
 
 7. Noter le **Client ID** généré (il sera différent du Web Client ID)
+
+8. Après avoir obtenu l’empreinte SHA-1 de production (Étape 4), retourner sur ce **même client Android** dans Google Cloud
+   Console, cliquer **Edit** et ajouter l’empreinte de production en plus de celle de développement, puis **Save**
 
 ### ✅ Validation :
 - [x] L'Android OAuth client ID est créé

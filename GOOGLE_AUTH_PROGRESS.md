@@ -17,6 +17,19 @@ Pending (requires your credentials/actions)
 - EAS: prefer storing Google client IDs as EAS project secrets for production builds.
 - Build a dev client via EAS and test sign-in on device (Expo Go won’t work for native Google Sign-In).
 
+Immediate action plan
+
+1) Récupérer les empreintes SHA-1
+   - Dev : `eas credentials` > Android > Keystore (empreinte du keystore local)
+   - Prod : Play Console > Release > Setup > App Integrity > App signing (empreinte re-signée par Google)
+2) Mettre à jour le client OAuth Android (`com.tanuki75.noctalia`)
+   - Google Cloud Console > Credentials > Client Android > Edit
+   - Ajouter **toutes** les empreintes SHA-1 (dev + prod), puis Save
+3) Vérifier Supabase
+   - Supabase > Authentication > Providers > Google > Authorized Client IDs : s’assurer que le Client ID Android mis à jour est listé (et laisser l’ID web inchangé)
+4) Recompiler et réinstaller un build de développement
+   - Relancer un dev build EAS Android, installer sur un appareil physique, puis retester le bouton “Continue with Google”
+
 Quick test paths
 
 - Web (Expo Web): Button now triggers Supabase OAuth popup. Requires Supabase Google provider configured with Web Client ID/Secret and allowed origins/redirects.
