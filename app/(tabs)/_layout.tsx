@@ -57,7 +57,7 @@ function TabBarItem({ label, icon, focused, palette, colors }: {
 }
 
 export default function TabLayout() {
-  const { colors, shadows, mode } = useTheme();
+  const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();

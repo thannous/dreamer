@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount } from '@/lib/dreamUsage';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
@@ -35,8 +35,7 @@ const startOfDay = (timestamp: number): Date => {
   return date;
 };
 
-const isWithinDays = (timestamp: number, days: number): boolean => {
-  const now = Date.now();
+const isWithinDays = (timestamp: number, days: number, now: number): boolean => {
   const dayInMs = 24 * 60 * 60 * 1000;
   return now - timestamp <= days * dayInMs;
 };
@@ -107,11 +106,19 @@ const calculateStreaks = (dreams: DreamAnalysis[]): { current: number; longest: 
 };
 
 export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => {
+  const [now, setNow] = useState(0);
+
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
+
   return useMemo(() => {
+    const effectiveNow = now || 0;
+
     const totalDreams = dreams.length;
     const favoriteDreams = dreams.filter(d => d.isFavorite).length;
-    const dreamsThisWeek = dreams.filter(d => isWithinDays(d.id, 7)).length;
-    const dreamsThisMonth = dreams.filter(d => isWithinDays(d.id, 30)).length;
+    const dreamsThisWeek = dreams.filter(d => isWithinDays(d.id, 7, effectiveNow)).length;
+    const dreamsThisMonth = dreams.filter(d => isWithinDays(d.id, 30, effectiveNow)).length;
 
     const streaks = calculateStreaks(dreams);
     const currentStreak = streaks.current;
@@ -119,8 +126,8 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
 
     const firstDreamDate = dreams.length > 0
       ? Math.min(...dreams.map(d => d.id))
-      : Date.now();
-    const weeksSinceFirst = Math.max(1, Math.floor((Date.now() - firstDreamDate) / (7 * 24 * 60 * 60 * 1000)));
+      : effectiveNow;
+    const weeksSinceFirst = Math.max(1, Math.floor((effectiveNow - firstDreamDate) / (7 * 24 * 60 * 60 * 1000)));
     const averageDreamsPerWeek = totalDreams / weeksSinceFirst;
 
     const dayCount = new Map<number, number>();
@@ -135,14 +142,14 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
     }));
 
     const dateCount = new Map<number, number>();
-    const last30Days = dreams.filter(d => isWithinDays(d.id, 30));
+    const last30Days = dreams.filter(d => isWithinDays(d.id, 30, effectiveNow));
     last30Days.forEach(dream => {
       const date = startOfDay(dream.id);
       const dayTimestamp = date.getTime();
       dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
     });
 
-    const today = startOfDay(Date.now());
+    const today = startOfDay(effectiveNow);
     const dreamsOverTime = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date(today);

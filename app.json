@@ -28,8 +28,12 @@
       "package": "com.tanuki75.noctalia"
     },
     "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "single",
+      "favicon": "./assets/images/favicon.png",
+      "name": "Noctalia",
+      "shortName": "Noctalia",
+      "themeColor": "#000000",
+      "backgroundColor": "#ffffff"
     },
     "plugins": [
       "expo-router",

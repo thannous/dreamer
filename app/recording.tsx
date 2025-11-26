@@ -14,8 +14,9 @@ import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
-import { classifyError, QuotaError } from '@/lib/errors';
 import { blurActiveElement } from '@/lib/accessibility';
+import { classifyError, QuotaError } from '@/lib/errors';
+import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
@@ -32,7 +33,6 @@ import {
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { MotiView } from '@/lib/moti';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
@@ -485,6 +485,17 @@ export default function RecordingScreen() {
 
   const startRecording = useCallback(async () => {
     try {
+      if (Platform.OS === 'web') {
+        const hasSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
+        if (!hasSecureContext) {
+          Alert.alert(
+            t('recording.alert.permission_required.title'),
+            'Le micro est bloqué car la page n’est pas servie en HTTPS (ou localhost). Ouvre la page en HTTPS ou via localhost pour activer la dictée.'
+          );
+          return;
+        }
+      }
+
       const { granted } = await AudioModule.requestRecordingPermissionsAsync();
       if (!granted) {
         Alert.alert(
