@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
-import { analyzeDream as analyzeDreamText, generateImageFromTranscript } from '@/services/geminiService';
+import { analyzeDream as analyzeDreamText, generateImageForDream } from '@/services/geminiService';
 import { quotaService } from '@/services/quotaService';
 import {
     getCachedRemoteDreams,
@@ -535,13 +535,19 @@ export const useDreamJournal = () => {
    * Checks quota, calls AI analysis API, and updates dream with results
    */
   const analyzeDream = useCallback(
-    async (dreamId: number, transcript: string): Promise<DreamAnalysis> => {
+    async (
+      dreamId: number,
+      transcript: string,
+      options?: { replaceExistingImage?: boolean }
+    ): Promise<DreamAnalysis> => {
       // Check quota before analyzing
       const canAnalyze = await quotaService.canAnalyzeDream(user);
       if (!canAnalyze) {
         const tier = user ? 'free' : 'guest';
         throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
       }
+
+      const shouldReplaceImage = options?.replaceExistingImage ?? true;
 
       // Find the dream to update
       const dream = dreamsRef.current.find((d) => d.id === dreamId);
@@ -564,44 +570,26 @@ export const useDreamJournal = () => {
       quotaService.invalidate(user);
 
       try {
-        const textPromise = async () => {
-          const analysis = await analyzeDreamText(transcript);
-          return {
-            title: analysis.title,
-            interpretation: analysis.interpretation,
-            shareableQuote: analysis.shareableQuote,
-            theme: analysis.theme,
-            dreamType: analysis.dreamType,
-          };
-        };
+        const analysis = await analyzeDreamText(transcript);
+        const { imagePrompt, ...analysisFields } = analysis;
 
-        const imagePromise = async () => {
-          const imageUrl = await generateImageFromTranscript(transcript);
-          return imageUrl;
-        };
+        let imageUrl = dream.imageUrl;
+        let imageGenerationFailed = false;
 
-        const [textResult, imageResult] = await Promise.allSettled([textPromise(), imagePromise()]);
-
-        if (textResult.status !== 'fulfilled') {
-          console.error('Text analysis failed', textResult.reason);
-          const failedDream: DreamAnalysis = {
-            ...currentDreamState,
-            analysisStatus: 'failed',
-          };
-          await updateDream(failedDream);
-          throw textResult.reason;
-        }
-
-        if (imageResult.status !== 'fulfilled') {
-          console.warn('Image generation failed', imageResult.reason);
+        if (shouldReplaceImage) {
+          try {
+            imageUrl = await generateImageForDream(imagePrompt);
+          } catch (imageError) {
+            console.warn('Image generation failed', imageError);
+            imageGenerationFailed = true;
+          }
         }
 
         const next: DreamAnalysis = {
           ...currentDreamState,
-          ...textResult.value,
-          ...(imageResult.status === 'fulfilled'
-            ? { imageUrl: imageResult.value, imageGenerationFailed: false }
-            : { imageGenerationFailed: true }),
+          ...analysisFields,
+          imageUrl,
+          imageGenerationFailed,
           analysisStatus: 'done',
           analyzedAt: Date.now(),
           isAnalyzed: true,
@@ -609,6 +597,11 @@ export const useDreamJournal = () => {
         await updateDream(next);
         return next;
       } catch (error) {
+        const failedDream: DreamAnalysis = {
+          ...currentDreamState,
+          analysisStatus: 'failed',
+        };
+        await updateDream(failedDream);
         throw error;
       }
     },

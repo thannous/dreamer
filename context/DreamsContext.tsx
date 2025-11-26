@@ -9,7 +9,11 @@ export type DreamsContextValue = {
   updateDream: (dream: DreamAnalysis) => Promise<void>;
   deleteDream: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<void>;
-  analyzeDream: (dreamId: number, transcript: string) => Promise<DreamAnalysis>;
+  analyzeDream: (
+    dreamId: number,
+    transcript: string,
+    options?: { replaceExistingImage?: boolean }
+  ) => Promise<DreamAnalysis>;
 };
 
 const DreamsContext = createContext<DreamsContextValue | null>(null);
