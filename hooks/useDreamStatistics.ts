@@ -222,5 +222,5 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       mostDiscussedDream,
       mostDiscussedDreamUserMessages,
     };
-  }, [dreams]);
+  }, [dreams, now]);
 };
