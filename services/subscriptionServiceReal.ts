@@ -12,6 +12,19 @@ type InternalPackage = {
   mapped: PurchasePackage;
 };
 
+type GlobalPurchasesState = {
+  configured: boolean;
+  apiKey: string | null;
+  userId: string | null;
+};
+
+const RC_GLOBAL_KEY = '__dreamerPurchases';
+const globalAny = globalThis as typeof globalThis & { [RC_GLOBAL_KEY]?: GlobalPurchasesState };
+if (!globalAny[RC_GLOBAL_KEY]) {
+  // Persist across Fast Refresh to avoid duplicate configure warnings
+  globalAny[RC_GLOBAL_KEY] = { configured: false, apiKey: null, userId: null };
+}
+
 let initialized = false;
 let lastUserId: string | null = null;
 let cachedStatus: SubscriptionStatus | null = null;
@@ -58,10 +71,27 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
     throw new Error('Missing RevenueCat API key');
   }
   const normalizedUserId = userId ?? null;
+  const globalState = globalAny[RC_GLOBAL_KEY]!;
+
   if (!initialized) {
-    Purchases.configure({ apiKey, appUserID: normalizedUserId ?? undefined });
+    const sameConfig = globalState.configured && globalState.apiKey === apiKey;
+    if (!sameConfig) {
+      Purchases.configure({ apiKey, appUserID: normalizedUserId ?? undefined });
+      globalState.configured = true;
+      globalState.apiKey = apiKey;
+      globalState.userId = normalizedUserId;
+    } else if (globalState.userId !== normalizedUserId) {
+      // Sync app user without re-configuring the SDK (avoids duplicate configure warning)
+      if (normalizedUserId) {
+        await Purchases.logIn(normalizedUserId);
+      } else {
+        await Purchases.logOut();
+      }
+      globalState.userId = normalizedUserId;
+    }
     initialized = true;
     lastUserId = normalizedUserId;
+    resetCachedState();
     return;
   }
   if (!normalizedUserId) {
