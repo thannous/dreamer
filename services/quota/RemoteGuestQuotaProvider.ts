@@ -204,5 +204,6 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
 
   invalidate(): void {
     this.cache.clear();
+    this.remoteUnavailable = false;
   }
 }

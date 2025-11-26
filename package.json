@@ -80,7 +80,8 @@
     "react-native-svg": "15.12.1",
     "react-native-url-polyfill": "^3.0.0",
     "react-native-web": "~0.21.0",
-    "react-native-worklets": "0.5.1"
+    "react-native-worklets": "0.5.1",
+    "patch-package": "^8.0.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-template-literals": "^7.27.1",
@@ -93,7 +94,6 @@
     "happy-dom": "^20.0.10",
     "jsdom": "^27.2.0",
     "madge": "^8.0.0",
-    "patch-package": "^8.0.1",
     "supabase": "^2.54.11",
     "typescript": "~5.9.2",
     "vite-tsconfig-paths": "^5.1.1",
