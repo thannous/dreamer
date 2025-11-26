@@ -5,7 +5,7 @@
   "scripts": {
     "start": "expo start",
     "start:mock": "cp .env.mock .env.local && expo start",
-    "start:real": "rm -f .env.local && expo start",
+    "start:real": "cp .env.real .env.local && expo start",
     "start:supabase": "node ./scripts/start-supabase.js",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
