@@ -897,23 +897,24 @@ export default function RecordingScreen() {
                   </View>
                 ) : (
                   <View style={styles.textInputSection}>
-                    <TextInput
-                      value={transcript}
-                      onChangeText={handleTranscriptChange}
-                      style={[
-                        styles.textInput,
-                        shadows.md,
-                        {
-                          backgroundColor: colors.backgroundSecondary,
-                          color: colors.textPrimary,
-                        },
-                      ]}
-                      multiline
-                      editable={!interactionDisabled}
-                      testID={TID.Input.DreamTranscript}
-                      accessibilityLabel={t('recording.placeholder.accessibility')}
-                      autoFocus
-                    />
+                    <View style={shadows.md}>
+                      <TextInput
+                        value={transcript}
+                        onChangeText={handleTranscriptChange}
+                        style={[
+                          styles.textInput,
+                          {
+                            backgroundColor: colors.backgroundSecondary,
+                            color: colors.textPrimary,
+                          },
+                        ]}
+                        multiline
+                        editable={!interactionDisabled}
+                        testID={TID.Input.DreamTranscript}
+                        accessibilityLabel={t('recording.placeholder.accessibility')}
+                        autoFocus
+                      />
+                    </View>
                     {lengthWarning ? (
                       <Text style={[styles.lengthWarning, { color: colors.accent }]}>
                         {lengthWarning}

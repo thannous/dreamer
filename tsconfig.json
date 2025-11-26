@@ -13,5 +13,16 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/__tests__/**",
+    "tests/**",
+    "maestro/**",
+    "supabase/functions/**",
+    "coverage/**",
+    "dist/**",
+    "dist-dev-nossg/**"
   ]
 }

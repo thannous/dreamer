@@ -56,7 +56,7 @@ export function useAnalysisProgress() {
   });
 
   // Track the target progress for smooth animation
-  const animationRef = useRef<NodeJS.Timeout | null>(null);
+  const animationRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Ensure we clean up any running interval when the hook's owner unmounts
   useEffect(() => {

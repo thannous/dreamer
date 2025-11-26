@@ -3,6 +3,7 @@ import type { QuotaProvider, QuotaDreamTarget } from './quota/types';
 import type { QuotaStatus } from '@/lib/types';
 import { GuestQuotaProvider } from './quota/GuestQuotaProvider';
 import { MockQuotaProvider } from './quota/MockQuotaProvider';
+import { RemoteGuestQuotaProvider } from './quota/RemoteGuestQuotaProvider';
 import { SupabaseQuotaProvider } from './quota/SupabaseQuotaProvider';
 
 const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
@@ -12,12 +13,14 @@ const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_P
  * Automatically selects the correct provider based on user authentication status
  */
 class QuotaService {
-  private guestProvider: QuotaProvider;
+  private guestProvider: GuestQuotaProvider;
+  private remoteGuestProvider: QuotaProvider | null;
   private supabaseProvider: QuotaProvider;
   private mockProvider: QuotaProvider | null;
 
   constructor() {
     this.guestProvider = new GuestQuotaProvider();
+    this.remoteGuestProvider = isMockMode ? null : new RemoteGuestQuotaProvider(this.guestProvider);
     this.supabaseProvider = new SupabaseQuotaProvider();
     this.mockProvider = isMockMode ? new MockQuotaProvider() : null;
   }
@@ -28,6 +31,9 @@ class QuotaService {
   private getProvider(user: User | null): QuotaProvider {
     if (this.mockProvider) {
       return this.mockProvider;
+    }
+    if (user === null && this.remoteGuestProvider) {
+      return this.remoteGuestProvider;
     }
     return user === null ? this.guestProvider : this.supabaseProvider;
   }
@@ -104,6 +110,7 @@ class QuotaService {
    */
   invalidateAll(): void {
     this.guestProvider.invalidate();
+    this.remoteGuestProvider?.invalidate();
     this.supabaseProvider.invalidate();
     this.mockProvider?.invalidate();
   }

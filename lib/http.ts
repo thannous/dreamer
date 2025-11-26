@@ -21,7 +21,18 @@ function sleep(ms: number): Promise<void> {
 
 type ExpoExtra = {
   supabaseAnonKey?: string;
+  supabaseUrl?: string;
 };
+
+function getSupabaseUrl(): string | undefined {
+  const env = process?.env as Record<string, string> | undefined;
+  const envUrl = env?.EXPO_PUBLIC_SUPABASE_URL;
+
+  const extra = (Constants?.expoConfig as { extra?: ExpoExtra } | undefined)?.extra;
+  const extraUrl = extra?.supabaseUrl;
+
+  return envUrl || extraUrl;
+}
 
 function getSupabaseAnonKey(): string | undefined {
   const env = process?.env as Record<string, string> | undefined;
@@ -31,6 +42,37 @@ function getSupabaseAnonKey(): string | undefined {
   const extraKey = extra?.supabaseAnonKey;
 
   return envKey || extraKey;
+}
+
+const SUPABASE_HOSTS = (() => {
+  const hosts = new Set<string>();
+  const supabaseUrl = getSupabaseUrl();
+
+  if (supabaseUrl) {
+    try {
+      const parsed = new URL(supabaseUrl);
+      hosts.add(parsed.host);
+
+      // Also allow the functions subdomain for the same project (e.g., xyz.functions.supabase.co)
+      if (parsed.host.endsWith('.supabase.co')) {
+        const fnHost = parsed.host.replace('.supabase.co', '.functions.supabase.co');
+        hosts.add(fnHost);
+      }
+    } catch {
+      // Ignore malformed Supabase URLs
+    }
+  }
+
+  return hosts;
+})();
+
+function shouldAttachSupabaseAuth(targetUrl: string): boolean {
+  try {
+    const parsed = new URL(targetUrl, 'http://localhost');
+    return SUPABASE_HOSTS.has(parsed.host);
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -45,14 +87,16 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
       ...(options.headers || {}),
     };
 
+    const allowSupabaseAuth = shouldAttachSupabaseAuth(url);
+
     // Attach Supabase access token if present and not explicitly overridden
     try {
-      if (!headers.Authorization) {
+      if (allowSupabaseAuth && !headers.Authorization) {
         const token = await getAccessToken();
         if (token) headers.Authorization = `Bearer ${token}`;
       }
       // Fallback to anon key so public Supabase functions work for guests (prevents 401)
-      if (!headers.Authorization) {
+      if (allowSupabaseAuth && !headers.Authorization) {
         const anonKey = getSupabaseAnonKey();
         if (anonKey) {
           headers.Authorization = `Bearer ${anonKey}`;
