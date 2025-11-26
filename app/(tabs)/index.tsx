@@ -99,7 +99,7 @@ export default function InspirationScreen() {
   const insets = useSafeAreaInsets();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
-  const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * TIP_KEYS.length));
+  const [tipIndex, setTipIndex] = useState(0);
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
@@ -177,6 +177,11 @@ export default function InspirationScreen() {
       }
     }
   };
+
+  useEffect(() => {
+    // Defer randomization to the client to avoid SSR hydration mismatches.
+    setTipIndex(Math.floor(Math.random() * TIP_KEYS.length));
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>

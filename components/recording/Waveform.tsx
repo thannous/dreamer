@@ -22,6 +22,11 @@ type BarConfig = {
   phase: number;
 };
 
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
 // Pre-generate subtle phase offsets so bars don't move in sync
 const BARS: BarConfig[] = [
   { height: 20, opacity: 0.5 },
@@ -42,10 +47,13 @@ const BARS: BarConfig[] = [
   { height: 20, opacity: 0.5 },
   { height: 36, opacity: 0.7 },
   { height: 56, opacity: 1 },
-].map((bar, index) => ({
-  ...bar,
-  phase: (index * Math.PI) / 6 + Math.random() * 0.8,
-}));
+].map((bar, index) => {
+  const jitter = seededRandom(index + 1) * 0.8;
+  return {
+    ...bar,
+    phase: (index * Math.PI) / 6 + jitter,
+  };
+});
 
 const LOOP_DURATION_MS = 900;
 

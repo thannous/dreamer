@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Animated, {
     Easing,
@@ -18,7 +18,11 @@ import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { Fonts } from '@/constants/theme';
 
-const { width, height } = Dimensions.get('window');
+const DEFAULT_VIEWPORT = { width: 360, height: 640 };
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
 
 // --- Configuration ---
 const PARTICLE_COUNT = 30;
@@ -68,6 +72,13 @@ type AnimatedSplashScreenProps = {
 };
 
 const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSplashScreenProps) => {
+  const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
+
+  useEffect(() => {
+    const { width, height } = Dimensions.get('window');
+    setViewport({ width, height });
+  }, []);
+
   // Shared values
   const phase = useSharedValue(0); // 0 to 4
   // 0-1: Ether
@@ -201,7 +212,7 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       {/* Particles */}
       <View style={StyleSheet.absoluteFill}>
         {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
-          <Particle key={i} index={i} phase={phase} float={floatProgress} />
+          <Particle key={i} index={i} phase={phase} float={floatProgress} viewport={viewport} />
         ))}
       </View>
 
@@ -261,12 +272,21 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
 
 // --- Helper Components ---
 
-const Particle = ({ index, phase, float }: { index: number; phase: SharedValue<number>; float: SharedValue<number> }) => {
-  // Random initial positions (stable across renders)
-  const randomX = useRef(Math.random() * width).current;
-  const randomY = useRef(Math.random() * height).current;
-  const size = useRef(Math.random() * 2 + 1).current;
-  const phaseOffset = useRef(Math.random() * Math.PI * 2).current;
+const Particle = ({
+  index,
+  phase,
+  float,
+  viewport,
+}: {
+  index: number;
+  phase: SharedValue<number>;
+  float: SharedValue<number>;
+  viewport: { width: number; height: number };
+}) => {
+  const randomX = useMemo(() => seededRandom(index + 1) * viewport.width, [index, viewport.width]);
+  const randomY = useMemo(() => seededRandom(index + 101) * viewport.height, [index, viewport.height]);
+  const size = useMemo(() => seededRandom(index + 201) * 2 + 1, [index]);
+  const phaseOffset = useMemo(() => seededRandom(index + 301) * Math.PI * 2, [index]);
 
   const style = useAnimatedStyle(() => {
     // Floating movement (UI thread)
@@ -276,8 +296,8 @@ const Particle = ({ index, phase, float }: { index: number; phase: SharedValue<n
     // Convergence to center in Phase 1-2
     const progress = interpolate(phase.value, [0, 2], [0, 1], 'clamp');
     
-    const targetX = width / 2;
-    const targetY = height / 2 - 20; // Approx logo center
+    const targetX = viewport.width / 2;
+    const targetY = viewport.height / 2 - 20; // Approx logo center
     
     // Interpolate position
     const currentX = interpolate(progress, [0, 1], [randomX, targetX]);

@@ -2,18 +2,24 @@ import { useFocusEffect } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from '@/lib/moti';
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Dimensions, Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
-const { height } = Dimensions.get('window');
+const DEFAULT_HEIGHT = 640;
 const PARTICLE_COUNT = 4;
 const STAR_COUNT = 5;
+
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
 
 function AtmosphereBackgroundComponent() {
   const { mode, colors } = useTheme();
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isFocused, setIsFocused] = useState(true);
+  const [viewportHeight, setViewportHeight] = useState(DEFAULT_HEIGHT);
   const isDark = mode === 'dark';
 
   useFocusEffect(
@@ -23,24 +29,30 @@ function AtmosphereBackgroundComponent() {
     }, [])
   );
 
+  useEffect(() => {
+    const { height } = Dimensions.get('window');
+    setViewportHeight(height || DEFAULT_HEIGHT);
+  }, []);
+
   const shouldAnimate = isFocused && !prefersReducedMotion;
 
   // Particle configuration
   const particles = useMemo(() => Array.from({ length: PARTICLE_COUNT }).map((_, i) => ({
     id: i,
-    x: Math.random() * 100,
-    size: Math.random() * 4 + 2,
-    duration: Math.random() * 10000 + 4000,
-    delay: Math.random() * 2000,
+    x: seededRandom(i + 1) * 100,
+    size: seededRandom(i + 11) * 4 + 2,
+    duration: seededRandom(i + 21) * 10000 + 4000,
+    delay: seededRandom(i + 31) * 2000,
   })), []);
 
   // Star configuration
   const stars = useMemo(() => Array.from({ length: STAR_COUNT }).map((_, i) => ({
     id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 2 + 1,
-    delay: Math.random() * 1000,
+    x: seededRandom(i + 101) * 100,
+    y: seededRandom(i + 111) * 100,
+    size: seededRandom(i + 121) * 2 + 1,
+    delay: seededRandom(i + 131) * 1000,
+    blinkDuration: 1000 + seededRandom(i + 141) * 1000,
   })), []);
 
   return (
@@ -86,7 +98,7 @@ function AtmosphereBackgroundComponent() {
         <MotiView
           key={`particle-${p.id}`}
           from={{
-            translateY: height,
+            translateY: viewportHeight,
             opacity: 0,
           }}
           animate={
@@ -96,7 +108,7 @@ function AtmosphereBackgroundComponent() {
                   opacity: [0, 0.8, 0],
                 }
               : {
-                  translateY: height * 0.2,
+                  translateY: viewportHeight * 0.2,
                   opacity: 0.35,
                 }
           }
@@ -137,7 +149,7 @@ function AtmosphereBackgroundComponent() {
             shouldAnimate
               ? {
                   type: 'timing',
-                  duration: 1000 + Math.random() * 1000,
+                  duration: s.blinkDuration,
                   loop: true,
                   repeatReverse: true,
                   delay: s.delay,
