@@ -1,3 +1,5 @@
+import type { RitualId } from './inspirationRituals';
+
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
@@ -47,6 +49,11 @@ export interface NotificationSettings {
   isEnabled: boolean;
   weekdayTime: string; // "HH:MM"
   weekendTime: string; // "HH:MM"
+}
+
+export interface RitualStepProgress {
+  date: string; // Local date key YYYY-MM-DD
+  steps: Partial<Record<RitualId, Record<string, boolean>>>;
 }
 
 export type ThemePreference = 'light' | 'dark' | 'auto';
