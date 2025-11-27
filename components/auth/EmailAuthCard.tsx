@@ -1,4 +1,5 @@
-import React, { useMemo, useState, type FormEvent } from 'react';
+import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
+import { AuthApiError, isAuthApiError } from '@supabase/auth-js';
 import {
   ActivityIndicator,
   Alert,
@@ -16,7 +17,13 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
-import { signInMock, signInWithEmailPassword, signOut, signUpWithEmailPassword } from '@/lib/auth';
+import {
+  resendVerificationEmail,
+  signInMock,
+  signInWithEmailPassword,
+  signOut,
+  signUpWithEmailPassword,
+} from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
 import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
@@ -44,6 +51,18 @@ const mockProfiles: { profile: MockProfile; titleKey: string; subtitleKey: strin
   },
 ];
 
+const isUnverifiedEmailError = (error: unknown): error is AuthApiError => {
+  if (!isAuthApiError(error)) {
+    return false;
+  }
+
+  const code = error.code;
+  const message = (error.message ?? '').toLowerCase();
+  const mentionsConfirmation = message.includes('confirm') || message.includes('verification');
+
+  return error.status === 400 && (code === 'email_not_confirmed' || mentionsConfirmation);
+};
+
 type Props = {
   isCompact?: boolean;
 };
@@ -58,6 +77,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const [touched, setTouched] = useState({ email: false, password: false });
   const [submitting, setSubmitting] = useState<'signin' | 'signup' | 'signout' | null>(null);
   const [mockProfileLoading, setMockProfileLoading] = useState<MockProfile | null>(null);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
@@ -75,6 +96,11 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   };
 
   const handleSupabaseError = (error: unknown, titleKey: string) => {
+    if (isUnverifiedEmailError(error)) {
+      setUnverifiedEmail(trimmedEmail);
+      setResendStatus('idle');
+      return;
+    }
     const message = error instanceof Error ? error.message : t('common.unknown_error');
     Alert.alert(t(titleKey), message);
   };
@@ -85,6 +111,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setSubmitting('signin');
     try {
       await signInWithEmailPassword(trimmedEmail, password);
+      setUnverifiedEmail(null);
+      setResendStatus('idle');
       requestStayOnSettingsIntent();
       resetSensitiveInputs();
     } catch (error) {
@@ -144,6 +172,42 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
     attemptSignIn();
   };
+
+  const resendStatusMessage = useMemo(() => {
+    if (resendStatus === 'success') {
+      return t('settings.account.banner.unverified.success');
+    }
+    if (resendStatus === 'error') {
+      return t('settings.account.banner.unverified.error');
+    }
+    return null;
+  }, [resendStatus, t]);
+
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail || resendStatus === 'sending') {
+      return;
+    }
+    setResendStatus('sending');
+    try {
+      await resendVerificationEmail(unverifiedEmail);
+      setResendStatus('success');
+      requestStayOnSettingsIntent();
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[EmailAuthCard] resend verification failed', error);
+      }
+      setResendStatus('error');
+    }
+  };
+
+  useEffect(() => {
+    if (unverifiedEmail && trimmedEmail !== unverifiedEmail) {
+      setUnverifiedEmail(null);
+      setResendStatus('idle');
+    }
+  }, [trimmedEmail, unverifiedEmail]);
+
+  const resendStatusColor = resendStatus === 'error' ? colors.accent : colors.textSecondary;
 
   const emailPasswordForm = (
     <>
@@ -305,6 +369,50 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
         {t('settings.account.description_signed_out')}
       </Text>
+
+      {unverifiedEmail ? (
+        <View
+          style={[
+            styles.unverifiedBanner,
+            isCompact && styles.unverifiedBannerCompact,
+            { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider },
+          ]}
+        >
+          <Text style={[styles.unverifiedTitle, { color: colors.textPrimary }]}>
+            {t('settings.account.banner.unverified.title')}
+          </Text>
+          <Text style={[styles.unverifiedMessage, { color: colors.textSecondary }]}>
+            {t('settings.account.banner.unverified.message')}
+          </Text>
+          <Pressable
+            style={({ pressed }) => [
+              styles.unverifiedAction,
+              pressed && styles.unverifiedActionPressed,
+              resendStatus === 'sending' && styles.unverifiedActionDisabled,
+              {
+                borderColor: colors.accent,
+                backgroundColor: colors.backgroundCard,
+              },
+            ]}
+            onPress={handleResendVerification}
+            disabled={resendStatus === 'sending'}
+            testID={TID.Button.AuthResendVerification}
+          >
+            {resendStatus === 'sending' ? (
+              <ActivityIndicator color={colors.textPrimary} />
+            ) : (
+              <Text style={[styles.unverifiedActionText, { color: colors.textPrimary }]}>
+                {t('settings.account.banner.unverified.action')}
+              </Text>
+            )}
+          </Pressable>
+          {resendStatusMessage ? (
+            <Text style={[styles.unverifiedStatus, { color: resendStatusColor }]} testID={TID.Text.AuthEmailVerificationStatus}>
+              {resendStatusMessage}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
 
       {isMockModeEnabled ? (
         <>
@@ -521,6 +629,47 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk_400Regular',
     fontSize: 13,
     marginTop: 2,
+  },
+  unverifiedBanner: {
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.md,
+    padding: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  unverifiedBannerCompact: {
+    padding: ThemeLayout.spacing.sm,
+  },
+  unverifiedTitle: {
+    fontSize: 16,
+    fontFamily: 'SpaceGrotesk_700Bold',
+    marginBottom: ThemeLayout.spacing.xs,
+  },
+  unverifiedMessage: {
+    fontSize: 14,
+    marginBottom: ThemeLayout.spacing.sm,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  unverifiedAction: {
+    borderRadius: ThemeLayout.borderRadius.sm,
+    borderWidth: 1,
+    paddingVertical: ThemeLayout.spacing.xs,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+    alignSelf: 'flex-start',
+  },
+  unverifiedActionPressed: {
+    opacity: 0.8,
+  },
+  unverifiedActionDisabled: {
+    opacity: 0.6,
+  },
+  unverifiedActionText: {
+    fontSize: 13,
+    fontFamily: 'SpaceGrotesk_500Medium',
+  },
+  unverifiedStatus: {
+    marginTop: ThemeLayout.spacing.xs,
+    fontSize: 12,
+    fontFamily: 'SpaceGrotesk_400Regular',
   },
 });
 
