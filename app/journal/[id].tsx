@@ -1,3 +1,4 @@
+import { Toast } from '@/components/Toast';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
@@ -144,6 +145,7 @@ export default function JournalDetailScreen() {
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [favoriteError, setFavoriteError] = useState<string | null>(null);
   useEffect(() => {
     if (isShareModalVisible) {
       blurActiveElement();
@@ -511,6 +513,19 @@ export default function JournalDetailScreen() {
       setIsSharing(false);
     }
   }, [dream, shareImage, shareMessage, shareTitle, openShareModal, getShareableImageUri, t]);
+
+  const handleToggleFavorite = useCallback(async () => {
+    if (!dream) return;
+    try {
+      setFavoriteError(null);
+      await toggleFavorite(dream.id);
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to toggle favorite', error);
+      }
+      setFavoriteError(t('journal.detail.favorite.error'));
+    }
+  }, [dream, toggleFavorite, t]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
@@ -1068,7 +1083,7 @@ export default function JournalDetailScreen() {
 
             <View style={styles.actionsRow}>
               <Pressable
-                onPress={() => toggleFavorite(dream.id)}
+                onPress={handleToggleFavorite}
                 style={[
                   styles.actionButton,
                   shadows.sm,
@@ -1290,6 +1305,13 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         </Modal>
+        {favoriteError ? (
+          <Toast
+            message={favoriteError}
+            mode="error"
+            onHide={() => setFavoriteError(null)}
+          />
+        ) : null}
       </LinearGradient>
     </KeyboardAvoidingView>
   );
