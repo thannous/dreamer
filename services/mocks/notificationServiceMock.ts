@@ -3,6 +3,7 @@
  * Logs to console instead of scheduling real notifications
  */
 
+import type { RitualId } from '@/lib/inspirationRituals';
 import type { NotificationSettings } from '@/lib/types';
 
 // Mock notification requests for getScheduledNotifications
@@ -76,6 +77,36 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
 
   console.log(`[MOCK NOTIFICATIONS] Scheduled daily notification for ${settings.weekdayTime}`);
   console.log('[MOCK NOTIFICATIONS] Mock notification details:', mockNotification);
+}
+
+export async function scheduleRitualReminder(settings: NotificationSettings, ritualId: RitualId): Promise<void> {
+  console.log('[MOCK NOTIFICATIONS] scheduleRitualReminder called with settings:', settings, 'ritualId:', ritualId);
+
+  mockScheduledNotifications = [];
+
+  if (!settings.isEnabled) {
+    console.log('[MOCK NOTIFICATIONS] Notifications disabled, not scheduling ritual reminder');
+    return;
+  }
+
+  const [hours, minutes] = settings.weekdayTime.split(':').map(Number);
+
+  const mockNotification: MockNotificationRequest = {
+    identifier: `mock-ritual-${Date.now()}`,
+    content: {
+      title: "Today's ritual",
+      body: `Ritual ${ritualId} reminder (mock)`,
+    },
+    trigger: {
+      type: 'daily',
+      hour: hours,
+      minute: minutes,
+    },
+  };
+
+  mockScheduledNotifications.push(mockNotification);
+
+  console.log(`[MOCK NOTIFICATIONS] Scheduled ritual reminder for ${settings.weekdayTime}`);
 }
 
 export async function sendTestNotification(): Promise<void> {
