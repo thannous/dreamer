@@ -55,6 +55,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const tierLabel = quotaStatus
     ? t(`settings.quota.tier.${quotaStatus.tier}` as const)
     : t('settings.quota.tier.guest');
+  const isGuest = quotaStatus?.tier === 'guest';
 
   const handleUpgrade = () => {
     if (onUpgradePress) {
@@ -84,6 +85,14 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
             {t('settings.quota.error')}
           </Text>
         </Pressable>
+      )}
+
+      {isGuest && (
+        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
+          <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
+            {t('settings.quota.guest_message')}
+          </Text>
+        </View>
       )}
 
       {rows.map((row) => {
