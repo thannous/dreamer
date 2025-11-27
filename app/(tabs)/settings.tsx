@@ -1,6 +1,6 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -25,7 +25,6 @@ export default function SettingsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
   useClearWebFocus();
-  const scrollRef = useRef<ScrollView>(null);
 
   const { isActive, loading: subscriptionLoading } = useSubscription();
 
@@ -57,10 +56,6 @@ export default function SettingsScreen() {
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
 
-  const handleUpgradeScroll = useCallback(() => {
-    scrollRef.current?.scrollTo({ y: 0, animated: true });
-  }, []);
-
   const handleOpenPaywall = useCallback(() => {
     router.push('/paywall' as any);
   }, []);
@@ -79,7 +74,6 @@ export default function SettingsScreen() {
       </ScreenContainer>
 
       <ScrollView
-        ref={scrollRef}
         style={styles.scrollView}
         contentContainerStyle={[
           styles.scrollContent,
@@ -106,7 +100,7 @@ export default function SettingsScreen() {
               />
             </View>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-              <QuotaStatusCard onUpgradePress={handleUpgradeScroll} />
+              <QuotaStatusCard />
             </View>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
               <ThemeSettingsCard />

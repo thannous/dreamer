@@ -62,7 +62,11 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       onUpgradePress();
       return;
     }
-    router.push('/(tabs)/settings?section=account');
+    if (isGuest) {
+      router.push('/(tabs)/settings?section=account');
+      return;
+    }
+    router.push('/paywall' as any);
   };
 
   return (
