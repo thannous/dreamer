@@ -3,7 +3,14 @@
  * Uses in-memory storage and can optionally preload predefined dreams
  */
 
-import type { DreamAnalysis, DreamMutation, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
+import type {
+  DreamAnalysis,
+  DreamMutation,
+  LanguagePreference,
+  NotificationSettings,
+  RitualStepProgress,
+  ThemePreference,
+} from '@/lib/types';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
 // In-memory storage
@@ -26,6 +33,7 @@ const DEFAULT_THEME_PREFERENCE: ThemePreference = 'auto';
 
 const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
+const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 
 export function setPreloadDreamsEnabled(enabled: boolean): void {
@@ -262,6 +270,33 @@ export async function saveRitualPreference(preference: string): Promise<void> {
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save ritual preference:', error);
     throw new Error('Failed to save ritual preference');
+  }
+}
+
+export async function getRitualStepProgress(): Promise<RitualStepProgress | null> {
+  console.log('[MOCK STORAGE] getRitualStepProgress called');
+  try {
+    const savedProgress = mockStorage[RITUAL_PROGRESS_KEY];
+    if (savedProgress) {
+      const parsed = JSON.parse(savedProgress) as RitualStepProgress;
+      console.log('[MOCK STORAGE] Returning ritual step progress');
+      return parsed;
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to retrieve ritual step progress:', error);
+  }
+  console.log('[MOCK STORAGE] No ritual step progress set yet');
+  return null;
+}
+
+export async function saveRitualStepProgress(progress: RitualStepProgress): Promise<void> {
+  console.log('[MOCK STORAGE] saveRitualStepProgress called');
+  try {
+    mockStorage[RITUAL_PROGRESS_KEY] = JSON.stringify(progress);
+    console.log('[MOCK STORAGE] Ritual step progress saved');
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save ritual step progress:', error);
+    throw new Error('Failed to save ritual step progress');
   }
 }
 
