@@ -425,22 +425,22 @@ export const useDreamJournal = () => {
   const toggleFavorite = useCallback(
     async (dreamId: number) => {
       const currentDreams = dreamsRef.current;
-      const newDreams = currentDreams.map((d) =>
-        d.id === dreamId ? { ...d, isFavorite: !d.isFavorite } : d
+      const existing = currentDreams.find((d) => d.id === dreamId);
+      if (!existing) return;
+
+      const updated = { ...existing, isFavorite: !existing.isFavorite };
+      const optimisticDreams = currentDreams.map((d) =>
+        d.id === dreamId ? updated : d
       );
 
       if (!canUseRemoteSync) {
-        await persistLocalDreams(newDreams);
+        await persistLocalDreams(optimisticDreams);
         return;
       }
 
-      const updated = newDreams.find((d) => d.id === dreamId);
-      if (!updated) return;
+      await persistRemoteDreams(optimisticDreams);
 
       const remoteId = updated.remoteId ?? resolveRemoteId(dreamId);
-      if (!remoteId) {
-        throw new Error('Missing remote id for Supabase dream update');
-      }
 
       const queueAndPersist = async (pendingVersion: DreamAnalysis) => {
         await queueOfflineOperation(
@@ -460,15 +460,17 @@ export const useDreamJournal = () => {
         return;
       }
 
+      if (!remoteId) {
+        await persistRemoteDreams(currentDreams);
+        throw new Error('Missing remote id for Supabase dream update');
+      }
+
       try {
         const saved = await updateDreamInSupabase({ ...updated, remoteId });
         await persistRemoteDreams((prev) => upsertDream(prev, saved));
       } catch (error) {
-        if (__DEV__) {
-          console.warn('Falling back to offline favorite toggle', error);
-        }
-        const pendingVersion = { ...updated, pendingSync: true };
-        await queueAndPersist(pendingVersion);
+        await persistRemoteDreams(currentDreams);
+        throw error;
       }
     },
     [canUseRemoteSync, hasNetwork, persistLocalDreams, queueOfflineOperation, resolveRemoteId, persistRemoteDreams]
