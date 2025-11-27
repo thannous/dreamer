@@ -26,7 +26,9 @@ const extraAnon = (extra?.supabaseAnonKey as string | undefined) ?? undefined;
 const SUPABASE_URL = envUrl || extraUrl;
 const SUPABASE_ANON_KEY = envAnon || extraAnon;
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+
+if (!isSupabaseConfigured) {
   // eslint-disable-next-line no-console
   console.warn(
     'Missing EXPO_PUBLIC_SUPABASE_URL or EXPO_PUBLIC_SUPABASE_ANON_KEY. Auth will be disabled until configured.'

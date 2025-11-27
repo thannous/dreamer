@@ -27,6 +27,7 @@ import {
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
 import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
@@ -90,6 +91,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const isMockBusy = mockProfileLoading !== null;
   const isBusy = submitting !== null || authLoading || isMockBusy;
   const emailActionsDisabled = isBusy || !emailValid || !passwordValid;
+  const showSupabaseConfigHint = !isSupabaseConfigured && !isMockModeEnabled;
 
   const resetSensitiveInputs = () => {
     setPassword('');
@@ -296,9 +298,11 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         </Pressable>
       </View>
 
-      <Text style={[styles.hint, { color: colors.textSecondary }]}>
-        {t('settings.account.hint.configure_supabase')}
-      </Text>
+      {showSupabaseConfigHint && (
+        <Text style={[styles.hint, { color: colors.textSecondary }]}>
+          {t('settings.account.hint.configure_supabase')}
+        </Text>
+      )}
     </>
   );
 
