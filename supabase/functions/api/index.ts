@@ -103,6 +103,52 @@ serve(async (req: Request) => {
   const { data: authData } = await supabase.auth.getUser().catch(() => ({ data: null }));
   const user = authData?.user ?? null;
 
+  const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET') ?? 'dream-images';
+  const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+  const uploadImageToStorage = async (
+    imageBase64: string,
+    contentType: string = 'image/png'
+  ): Promise<string | null> => {
+    if (!imageBase64) return null;
+    if (!supabaseServiceRoleKey) {
+      console.warn('[api] storage upload skipped: SUPABASE_SERVICE_ROLE_KEY not set');
+      return null;
+    }
+
+    try {
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+
+      const extension = contentType.split('/')[1] || 'png';
+      const objectKey = `${user?.id ?? 'guest'}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+      const bytes = Uint8Array.from(atob(imageBase64), (c) => c.charCodeAt(0));
+
+      const { error: uploadError } = await adminClient.storage
+        .from(storageBucket)
+        .upload(objectKey, bytes, { contentType, upsert: false });
+
+      if (uploadError) {
+        console.warn('[api] storage upload failed', uploadError);
+        return null;
+      }
+
+      const { data: signed, error: signedErr } = await adminClient.storage
+        .from(storageBucket)
+        .createSignedUrl(objectKey, 60 * 60 * 24 * 365); // 1 year
+
+      if (!signedErr && signed?.signedUrl) return signed.signedUrl;
+
+      const { data: publicUrl } = adminClient.storage.from(storageBucket).getPublicUrl(objectKey);
+      if (publicUrl?.publicUrl) return publicUrl.publicUrl;
+    } catch (storageErr) {
+      console.warn('[api] storage upload exception', storageErr);
+    }
+
+    return null;
+  };
+
   // Guest quota status (public)
   if (req.method === 'POST' && subPath === '/quota/status') {
     try {
@@ -458,6 +504,10 @@ serve(async (req: Request) => {
         });
       }
 
+      const imageContentType = 'image/png';
+      const storedImageUrl = await uploadImageToStorage(imageBase64, imageContentType);
+      const imageUrl = storedImageUrl ?? `data:${imageContentType};base64,${imageBase64}`;
+
       // Optional DB insert if user is authenticated (store the dream with image if desired)
       if (user) {
         try {
@@ -469,7 +519,7 @@ serve(async (req: Request) => {
             shareable_quote: String(analysis.shareableQuote ?? ''),
             theme,
             dream_type: String(analysis.dreamType ?? 'Symbolic Dream'),
-            image_url: null, // storing raw bytes is not ideal; leave null or upload to storage in future
+            image_url: imageUrl,
             chat_history: [],
           });
         } catch (dbErr) {
@@ -485,7 +535,8 @@ serve(async (req: Request) => {
           theme,
           dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
           imagePrompt,
-          imageBytes: imageBase64,
+          imageUrl,
+          imageBytes: imageBase64, // kept for backward compatibility with clients expecting bytes
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
@@ -605,7 +656,11 @@ serve(async (req: Request) => {
         });
       }
 
-      return new Response(JSON.stringify({ imageBytes: imageBase64, prompt }), {
+      const imageContentType = 'image/png';
+      const storedImageUrl = await uploadImageToStorage(imageBase64, imageContentType);
+      const imageUrl = storedImageUrl ?? `data:${imageContentType};base64,${imageBase64}`;
+
+      return new Response(JSON.stringify({ imageUrl, imageBytes: imageBase64, prompt }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
