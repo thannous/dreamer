@@ -441,6 +441,15 @@ export const useDreamJournal = () => {
       await persistRemoteDreams(optimisticDreams);
 
       const remoteId = updated.remoteId ?? resolveRemoteId(dreamId);
+      const rollbackFavorite = async () => {
+        await persistRemoteDreams((prev) =>
+          prev.map((dream) => {
+            if (dream.id !== dreamId) return dream;
+            if (dream.isFavorite !== updated.isFavorite) return dream;
+            return { ...dream, isFavorite: existing.isFavorite };
+          })
+        );
+      };
 
       const queueAndPersist = async (pendingVersion: DreamAnalysis) => {
         await queueOfflineOperation(
@@ -461,7 +470,7 @@ export const useDreamJournal = () => {
       }
 
       if (!remoteId) {
-        await persistRemoteDreams(currentDreams);
+        await rollbackFavorite();
         throw new Error('Missing remote id for Supabase dream update');
       }
 
@@ -469,7 +478,7 @@ export const useDreamJournal = () => {
         const saved = await updateDreamInSupabase({ ...updated, remoteId });
         await persistRemoteDreams((prev) => upsertDream(prev, saved));
       } catch (error) {
-        await persistRemoteDreams(currentDreams);
+        await rollbackFavorite();
         throw error;
       }
     },

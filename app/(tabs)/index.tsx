@@ -15,8 +15,15 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
 import { MotiText, MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
-import type { ThemeMode } from '@/lib/types';
-import { getRitualPreference, saveRitualPreference } from '@/services/storageService';
+import type { NotificationSettings, ThemeMode } from '@/lib/types';
+import { scheduleRitualReminder } from '@/services/notificationService';
+import {
+  getNotificationSettings,
+  getRitualPreference,
+  getRitualStepProgress,
+  saveRitualPreference,
+  saveRitualStepProgress,
+} from '@/services/storageService';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -27,6 +34,14 @@ const TIP_KEYS = [
   'inspiration.tips.observePatterns',
   'inspiration.tips.prepareNight',
 ] as const;
+
+const getLocalDateKey = (): string => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = `${now.getMonth() + 1}`.padStart(2, '0');
+  const day = `${now.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 type CopyCard = {
   id: string;
@@ -101,6 +116,9 @@ export default function InspirationScreen() {
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [tipIndex, setTipIndex] = useState(0);
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
+  const [ritualProgress, setRitualProgress] = useState<Partial<Record<RitualId, Record<string, boolean>>>>({});
+  const [progressDate, setProgressDate] = useState<string>(getLocalDateKey());
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings | null>(null);
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
@@ -145,6 +163,23 @@ export default function InspirationScreen() {
   }, [selectedRitualId]);
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      const todayKey = getLocalDateKey();
+      if (progressDate !== todayKey) {
+        setRitualProgress({});
+        setProgressDate(todayKey);
+        void saveRitualStepProgress({ date: todayKey, steps: {} }).catch((error) => {
+          if (__DEV__) {
+            console.error('[InspirationScreen] Failed to reset ritual progress', error);
+          }
+        });
+      }
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [progressDate]);
+
+  useEffect(() => {
     let isMounted = true;
 
     (async () => {
@@ -167,10 +202,63 @@ export default function InspirationScreen() {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      const todayKey = getLocalDateKey();
+      try {
+        const storedProgress = await getRitualStepProgress();
+        if (!isMounted) return;
+
+        if (storedProgress && storedProgress.date === todayKey) {
+          setRitualProgress(storedProgress.steps ?? {});
+          setProgressDate(storedProgress.date);
+        } else {
+          setRitualProgress({});
+          setProgressDate(todayKey);
+          await saveRitualStepProgress({ date: todayKey, steps: {} });
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.error('[InspirationScreen] Failed to load ritual step progress', error);
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    (async () => {
+      try {
+        const savedSettings = await getNotificationSettings();
+        if (isMounted) {
+          setNotificationSettings(savedSettings);
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.error('[InspirationScreen] Failed to load notification settings', error);
+        }
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleRitualChange = async (id: RitualId) => {
     setSelectedRitualId(id);
     try {
       await saveRitualPreference(id);
+      if (notificationSettings?.isEnabled) {
+        await scheduleRitualReminder(notificationSettings, id);
+      }
     } catch (error) {
       if (__DEV__) {
         console.error('[InspirationScreen] Failed to save ritual preference', error);
@@ -178,10 +266,30 @@ export default function InspirationScreen() {
     }
   };
 
+  const handleToggleRitualStep = (stepId: string) => {
+    const todayKey = getLocalDateKey();
+    setRitualProgress((prev) => {
+      const base = progressDate === todayKey ? prev : {};
+      const ritualSteps = base[selectedRitualId] ?? {};
+      const updatedRitualSteps = { ...ritualSteps, [stepId]: !ritualSteps[stepId] };
+      const nextProgress = { ...base, [selectedRitualId]: updatedRitualSteps };
+
+      setProgressDate(todayKey);
+      void saveRitualStepProgress({ date: todayKey, steps: nextProgress }).catch((error) => {
+        if (__DEV__) {
+          console.error('[InspirationScreen] Failed to save ritual step progress', error);
+        }
+      });
+      return nextProgress;
+    });
+  };
+
   useEffect(() => {
     // Defer randomization to the client to avoid SSR hydration mismatches.
     setTipIndex(Math.floor(Math.random() * TIP_KEYS.length));
   }, []);
+
+  const completedSteps = ritualProgress[selectedRitualId] ?? {};
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
@@ -227,7 +335,9 @@ export default function InspirationScreen() {
                   rituals={RITUALS}
                   activeRitual={activeRitual}
                   selectedRitualId={selectedRitualId}
+                  completedSteps={completedSteps}
                   onChangeRitual={handleRitualChange}
+                  onToggleStep={handleToggleRitualStep}
                 />
               </MotiView>
             </View>
@@ -375,22 +485,22 @@ type RitualCardProps = {
   activeRitual: RitualConfig;
   selectedRitualId: RitualId;
   onChangeRitual: (id: RitualId) => void;
+  completedSteps: Record<string, boolean>;
+  onToggleStep: (stepId: string) => void;
 };
 
-function RitualCard({ colors, shadows, mode, rituals, activeRitual, selectedRitualId, onChangeRitual }: RitualCardProps) {
+function RitualCard({
+  colors,
+  shadows,
+  mode,
+  rituals,
+  activeRitual,
+  selectedRitualId,
+  onChangeRitual,
+  completedSteps,
+  onToggleStep,
+}: RitualCardProps) {
   const { t } = useTranslation();
-  const [completedSteps, setCompletedSteps] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    setCompletedSteps({});
-  }, [selectedRitualId]);
-
-  const toggleStep = (id: string) => {
-    setCompletedSteps((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   const checkboxBorderColor = mode === 'dark' ? colors.divider : colors.textSecondary;
 
@@ -441,15 +551,19 @@ function RitualCard({ colors, shadows, mode, rituals, activeRitual, selectedRitu
 
       <View style={styles.ritualSteps}>
         {activeRitual.steps.map((step) => {
-          const done = completedSteps[step.id];
+          const done = completedSteps?.[step.id];
           return (
             <Pressable
               key={step.id}
-              onPress={() => toggleStep(step.id)}
+              onPress={() => onToggleStep(step.id)}
               style={({ pressed }) => [
                 styles.ritualStep,
                 { opacity: pressed ? 0.8 : 1 },
               ]}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: !!done }}
+              accessibilityLabel={t(step.titleKey)}
+              accessibilityHint={t(step.bodyKey)}
             >
               <View
                 style={[
