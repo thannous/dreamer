@@ -1,6 +1,13 @@
 import { Platform } from 'react-native';
 
-import type { DreamAnalysis, DreamMutation, LanguagePreference, NotificationSettings, ThemePreference } from '@/lib/types';
+import type {
+  DreamAnalysis,
+  DreamMutation,
+  LanguagePreference,
+  NotificationSettings,
+  RitualStepProgress,
+  ThemePreference,
+} from '@/lib/types';
 
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
@@ -10,6 +17,7 @@ const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
+const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 
 type StorageLike = {
@@ -388,6 +396,31 @@ export async function saveRitualPreference(preference: string): Promise<void> {
       console.error('Failed to save ritual preference:', error);
     }
     throw new Error('Failed to save ritual preference');
+  }
+}
+
+export async function getRitualStepProgress(): Promise<RitualStepProgress | null> {
+  try {
+    const savedProgress = await getItem(RITUAL_PROGRESS_KEY);
+    if (savedProgress) {
+      return JSON.parse(savedProgress) as RitualStepProgress;
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to retrieve ritual step progress:', error);
+    }
+  }
+  return null;
+}
+
+export async function saveRitualStepProgress(progress: RitualStepProgress): Promise<void> {
+  try {
+    await setItem(RITUAL_PROGRESS_KEY, JSON.stringify(progress));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save ritual step progress:', error);
+    }
+    throw new Error('Failed to save ritual step progress');
   }
 }
 
