@@ -38,5 +38,7 @@ export const getPendingDreamMutations = service.getPendingDreamMutations;
 export const savePendingDreamMutations = service.savePendingDreamMutations;
 export const getRitualPreference = service.getRitualPreference;
 export const saveRitualPreference = service.saveRitualPreference;
+export const getRitualStepProgress = service.getRitualStepProgress;
+export const saveRitualStepProgress = service.saveRitualStepProgress;
 export const getFirstLaunchCompleted = service.getFirstLaunchCompleted;
 export const saveFirstLaunchCompleted = service.saveFirstLaunchCompleted;
