@@ -24,6 +24,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> & { id?: number } = {}): D
   isFavorite: overrides.isFavorite,
   isAnalyzed: overrides.isAnalyzed,
   analyzedAt: overrides.analyzedAt,
+  analysisStatus: overrides.analysisStatus,
   explorationStartedAt: overrides.explorationStartedAt,
   pendingSync: overrides.pendingSync,
   imageGenerationFailed: overrides.imageGenerationFailed,
