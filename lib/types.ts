@@ -30,6 +30,7 @@ export interface DreamAnalysis {
   shareableQuote: string;
   imageUrl: string; // Full-resolution image for detail views
   thumbnailUrl?: string; // Smaller thumbnail for list views (optional for backward compatibility)
+  imageSource?: 'user' | 'ai'; // Track if the image comes from user upload or AI generation
   chatHistory: ChatMessage[];
   theme?: DreamTheme;
   dreamType: DreamType;
