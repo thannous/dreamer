@@ -63,6 +63,9 @@ interface ComposerProps {
   isDisabled?: boolean;
   transcriptionLocale?: string;
   testID?: string;
+  headerContent?: React.ReactNode;
+  micTestID?: string;
+  sendTestID?: string;
 }
 
 export function Composer({
@@ -74,6 +77,9 @@ export function Composer({
   isDisabled = false,
   transcriptionLocale = 'en-US',
   testID,
+  headerContent,
+  micTestID,
+  sendTestID,
 }: ComposerProps) {
   const { t } = useTranslation();
   const { colors } = useTheme();
@@ -95,7 +101,7 @@ export function Composer({
     // Update shared context value on UI thread
     runOnUI(() => {
       'worklet';
-      composerHeight.set(height);
+      composerHeight.value.value = height;
     })();
   }, [composerHeight, localHeight]);
 
@@ -199,6 +205,7 @@ export function Composer({
       ]}
       onLayout={handleLayout}
     >
+      {headerContent}
       <View style={[styles.inputWrapper, { backgroundColor: colors.backgroundSecondary }]}>
         <TextInput
           testID={testID}
@@ -226,6 +233,7 @@ export function Composer({
           onPress={toggleRecording}
           disabled={isLoading || isDisabled}
           accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
+          testID={micTestID}
         >
           <Ionicons
             name={isRecording ? 'stop' : 'mic'}
@@ -243,6 +251,7 @@ export function Composer({
           ]}
           onPress={onSend}
           disabled={!canSend}
+          testID={sendTestID}
         >
           <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
         </Pressable>

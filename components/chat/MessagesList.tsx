@@ -13,24 +13,29 @@ import { Fonts } from '@/constants/theme';
 import { MessageContextProvider, useNewMessageAnimationContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
-    useAutoScrollOnNewMessage,
-    useKeyboardAwareMessageList,
-    useMessageListProps,
-    useScrollWhenComposerSizeUpdates,
-    useUpdateLastMessageIndex,
+  useAutoScrollOnNewMessage,
+  useKeyboardAwareMessageList,
+  useMessageListProps,
+  useInitialScrollToEnd,
+  useScrollWhenComposerSizeUpdates,
+  useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
 import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
- import { AnimatedLegendList } from '@legendapp/list/reanimated';
- import React, { useCallback, useRef } from 'react';
- import { StyleSheet, Text, View } from 'react-native';
- import type Animated from 'react-native-reanimated';
- import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
+import { AnimatedLegendList } from '@legendapp/list/reanimated';
+import React, { useCallback, useRef } from 'react';
+import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import type Animated from 'react-native-reanimated';
+import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
 
 interface MessagesListProps {
   messages: ChatMessage[];
   isLoading?: boolean;
   loadingText?: string;
+  ListHeaderComponent?: React.ReactNode;
+  ListFooterComponent?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -68,11 +73,9 @@ function AssistantMessage({ message, isStreaming }: { message: ChatMessage; inde
         <View style={[styles.messageBubble, styles.messageBubbleAI, { backgroundColor: colors.backgroundSecondary }]}>
           <TextFadeInStaggeredIfStreaming
             isStreaming={isStreaming}
-            style={{ color: colors.textPrimary }}
+            style={[styles.messageText, { color: colors.textPrimary }]}
           >
-            <Text style={[styles.messageText, { color: colors.textPrimary }]}>
-              {message.text}
-            </Text>
+            {message.text}
           </TextFadeInStaggeredIfStreaming>
         </View>
       </View>
@@ -107,12 +110,21 @@ function LoadingIndicator({ text }: { text?: string }) {
   );
 }
 
-export function MessagesList({ messages, isLoading, loadingText }: MessagesListProps) {
+export function MessagesList({
+  messages,
+  isLoading,
+  loadingText,
+  ListHeaderComponent,
+  ListFooterComponent,
+  style,
+  contentContainerStyle,
+}: MessagesListProps) {
   // Apply composable hooks for chat behavior
   useKeyboardAwareMessageList();
   useScrollWhenComposerSizeUpdates();
   useUpdateLastMessageIndex(messages.length);
   useAutoScrollOnNewMessage(messages.length);
+  useInitialScrollToEnd(messages.length > 0);
 
   const { animatedProps, ref, onContentSizeChange, onScroll } = useMessageListProps();
   const { isStreaming, hasAnimatedMessages } = useNewMessageAnimationContext();
@@ -120,31 +132,35 @@ export function MessagesList({ messages, isLoading, loadingText }: MessagesListP
   const scrollViewRef = useRef<Animated.ScrollView | null>(null);
 
   // Render individual message with context
-  const renderItem = useCallback(({ item, index }: { item: ChatMessage; index: number }) => {
-    const messageId = `${item.role}-${index}`;
-    const isNew = !hasAnimatedMessages.current.has(messageId);
-    const isStreamingMessage = isStreaming.get() && index === messages.length - 1 && item.role === 'model';
+  const renderItem = useCallback(
+    ({ item, index }: { item: ChatMessage; index: number }) => {
+      const messageId = `${item.role}-${index}`;
+      const isNew = !hasAnimatedMessages.current.has(messageId);
+      const isStreamingMessage =
+        isStreaming.get() && index === messages.length - 1 && item.role === 'model';
 
-    // Mark as animated
-    if (isNew) {
-      hasAnimatedMessages.current.add(messageId);
-    }
+      // Mark as animated
+      if (isNew) {
+        hasAnimatedMessages.current.add(messageId);
+      }
 
-    return (
-      <MessageContextProvider
-        messageId={messageId}
-        index={index}
-        isStreaming={isStreamingMessage}
-        isNew={isNew}
-      >
-        {item.role === 'user' ? (
-          <UserMessage message={item} index={index} />
-        ) : (
-          <AssistantMessage message={item} index={index} isStreaming={isStreamingMessage} />
-        )}
-      </MessageContextProvider>
-    );
-  }, [messages.length, isStreaming, hasAnimatedMessages]);
+      return (
+        <MessageContextProvider
+          messageId={messageId}
+          index={index}
+          isStreaming={isStreamingMessage}
+          isNew={isNew}
+        >
+          {item.role === 'user' ? (
+            <UserMessage message={item} index={index} />
+          ) : (
+            <AssistantMessage message={item} index={index} isStreaming={isStreamingMessage} />
+          )}
+        </MessageContextProvider>
+      );
+    },
+    [messages.length, isStreaming, hasAnimatedMessages]
+  );
 
   const keyExtractor = useCallback((item: ChatMessage, index: number) => `${item.role}-${index}`, []);
 
@@ -152,7 +168,7 @@ export function MessagesList({ messages, isLoading, loadingText }: MessagesListP
   const listData = [...messages];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+    <View style={[styles.container, style, { backgroundColor: colors.backgroundDark }]}>
       <AnimatedLegendList
         ref={ref}
         refScrollView={scrollViewRef}
@@ -164,11 +180,13 @@ export function MessagesList({ messages, isLoading, loadingText }: MessagesListP
         onScroll={onScroll}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
         // LegendList specific props
         recycleItems={true}
         estimatedItemSize={80}
         maintainScrollAtEnd={false}
+        ListHeaderComponent={ListHeaderComponent ?? null}
+        ListFooterComponent={ListFooterComponent ?? null}
       />
       {isLoading && <LoadingIndicator text={loadingText} />}
     </View>
@@ -181,7 +199,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-    paddingBottom: 100, // Space for floating composer
+    paddingBottom: 24, // Base spacing; composer height is added via animatedProps
   },
   messageRow: {
     flexDirection: 'row',

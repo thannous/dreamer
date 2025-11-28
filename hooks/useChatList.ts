@@ -30,7 +30,7 @@ export function useMessageListProps() {
   // Animated props for ScrollView/LegendList contentInset
   // This keeps the composer floating on top while allowing scroll
   const animatedProps = useAnimatedProps(() => {
-    const bottomInset = composerHeight.get() + insets.bottom + 8;
+    const bottomInset = composerHeight.value.value + insets.bottom + 8;
     return {
       contentInset: {
         bottom: Platform.OS === 'ios' ? bottomInset : 0,
@@ -49,8 +49,8 @@ export function useMessageListProps() {
   // Animated scroll handler
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
-      scrollY.set(event.contentOffset.y);
-      containerHeight.set(event.layoutMeasurement.height);
+      scrollY.value.value = event.contentOffset.y;
+      containerHeight.value.value = event.layoutMeasurement.height;
     },
   });
 
@@ -130,7 +130,7 @@ export function useKeyboardAwareMessageList() {
 
   // Auto-scroll to end when keyboard shows
   useAnimatedReaction(
-    () => isKeyboardVisible.get(),
+    () => isKeyboardVisible.value.value,
     (visible, prevVisible) => {
       if (visible && !prevVisible) {
         runOnJS(scrollToEnd)({ animated: true });
@@ -168,7 +168,7 @@ export function useScrollWhenComposerSizeUpdates() {
   }, [listRef, scrollToEnd, contentHeight, containerHeight, scrollY]);
 
   useAnimatedReaction(
-    () => composerHeight.get(),
+    () => composerHeight.value.value,
     (height, prevHeight) => {
       if (height > 0 && height !== prevHeight) {
         runOnJS(autoscrollToEnd)();
