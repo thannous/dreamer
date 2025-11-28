@@ -24,7 +24,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { user } = useAuth();
   const { canAnalyzeNow } = useQuota();
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
 
   const [isPersisting, setIsPersisting] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -92,7 +92,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         // Attempt quick categorization if we have a transcript
         if (trimmedTranscript) {
           try {
-            const metadata = await categorizeDream(trimmedTranscript);
+            const metadata = await categorizeDream(trimmedTranscript, currentLang);
             dreamToSave = {
               ...dreamToSave,
               ...metadata,
@@ -116,7 +116,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         setIsPersisting(false);
       }
     },
-    [addDream, buildDraftDream, draftDream, dreams.length, options, t, user]
+    [addDream, buildDraftDream, currentLang, draftDream, dreams.length, options, t, user]
   );
 
   const analyzeAndSaveDream = useCallback(
@@ -153,7 +153,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         onProgress?.reset();
         onProgress?.setStep(1); // ANALYZING
 
-        const analyzedDream = await analyzeDream(dream.id, dream.transcript);
+        const analyzedDream = await analyzeDream(dream.id, dream.transcript, { lang: currentLang });
 
         onProgress?.setStep(3); // COMPLETE
         options.onAnalysisComplete?.(analyzedDream);
@@ -186,7 +186,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         setIsPersisting(false);
       }
     },
-    [analyzeDream, canAnalyzeNow, options, t, user]
+    [analyzeDream, canAnalyzeNow, currentLang, options, t, user]
   );
 
   const resetDraft = useCallback(() => {

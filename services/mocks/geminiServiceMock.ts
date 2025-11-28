@@ -26,8 +26,8 @@ function delay(ms: number): Promise<void> {
 /**
  * Mock dream analysis (1-3 seconds)
  */
-export async function analyzeDream(transcript: string): Promise<AnalysisResult> {
-  console.log('[MOCK] analyzeDream called with transcript:', transcript.slice(0, 50) + '...');
+export async function analyzeDream(transcript: string, lang = 'en'): Promise<AnalysisResult> {
+  console.log('[MOCK] analyzeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(1000 + Math.random() * 2000); // 1-3 seconds
 
   const result = generateAnalysisResult(transcript);
@@ -38,8 +38,11 @@ export async function analyzeDream(transcript: string): Promise<AnalysisResult> 
 /**
  * Mock fast categorization (0.5-1 second)
  */
-export async function categorizeDream(transcript: string): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
-  console.log('[MOCK] categorizeDream called with transcript:', transcript.slice(0, 50) + '...');
+export async function categorizeDream(
+  transcript: string,
+  lang = 'en'
+): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
+  console.log('[MOCK] categorizeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(500 + Math.random() * 500); // 0.5-1 second
 
   const result = generateAnalysisResult(transcript);
@@ -54,8 +57,8 @@ export async function categorizeDream(transcript: string): Promise<Pick<Analysis
 /**
  * Mock combined analysis + image generation (3-5 seconds)
  */
-export async function analyzeDreamWithImage(transcript: string): Promise<AnalysisResult & { imageUrl: string }> {
-  console.log('[MOCK] analyzeDreamWithImage called');
+export async function analyzeDreamWithImage(transcript: string, lang = 'en'): Promise<AnalysisResult & { imageUrl: string }> {
+  console.log('[MOCK] analyzeDreamWithImage called with lang:', lang);
   await delay(3000 + Math.random() * 2000); // 3-5 seconds
 
   const result = generateAnalysisResult(transcript);
@@ -70,9 +73,10 @@ export async function analyzeDreamWithImage(transcript: string): Promise<Analysi
  * Always succeeds in mock mode (no failures to simulate)
  */
 export async function analyzeDreamWithImageResilient(
-  transcript: string
+  transcript: string,
+  lang = 'en'
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
-  console.log('[MOCK] analyzeDreamWithImageResilient called');
+  console.log('[MOCK] analyzeDreamWithImageResilient called with lang:', lang);
 
   // Simulate progressive delay (analysis phase)
   await delay(2000);
