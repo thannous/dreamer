@@ -2,10 +2,23 @@ import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDreamSaving } from '../useDreamSaving';
 
+const mockCategorizeDream = vi.fn().mockResolvedValue({
+  title: 'Test Dream',
+  theme: 'surreal',
+  dreamType: 'Lucid Dream',
+});
+
+const mockAnalyzeDream = vi.fn().mockResolvedValue({ id: 1, isAnalyzed: true });
+const mockAddDream = vi.fn().mockImplementation((dream) => Promise.resolve({ ...dream, id: Date.now() }));
+
 // Mock all dependencies
 vi.mock('react-native', () => ({
   Alert: {
     alert: vi.fn(),
+  },
+  Platform: {
+    OS: 'web',
+    select: (spec: Record<string, unknown>) => spec.web ?? spec.default,
   },
 }));
 
@@ -24,9 +37,9 @@ vi.mock('@/context/AuthContext', () => ({
 
 vi.mock('@/context/DreamsContext', () => ({
   useDreams: vi.fn().mockReturnValue({
-    addDream: vi.fn().mockImplementation((dream) => Promise.resolve({ ...dream, id: Date.now() })),
+    addDream: mockAddDream,
     dreams: [],
-    analyzeDream: vi.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
+    analyzeDream: mockAnalyzeDream,
   }),
 }));
 
@@ -39,15 +52,12 @@ vi.mock('@/hooks/useQuota', () => ({
 vi.mock('@/hooks/useTranslation', () => ({
   useTranslation: vi.fn().mockReturnValue({
     t: (key: string) => key,
+    currentLang: 'fr',
   }),
 }));
 
 vi.mock('@/services/geminiService', () => ({
-  categorizeDream: vi.fn().mockResolvedValue({
-    title: 'Test Dream',
-    theme: 'surreal',
-    dreamType: 'Lucid Dream',
-  }),
+  categorizeDream: mockCategorizeDream,
 }));
 
 describe('useDreamSaving', () => {
@@ -164,5 +174,26 @@ describe('useDreamSaving', () => {
     });
     
     expect(onSaveComplete).toHaveBeenCalled();
+  });
+
+  it('passes current language to quick categorization', async () => {
+    const { result } = renderHook(() => useDreamSaving());
+
+    await act(async () => {
+      await result.current.saveDream('  Bonjour le monde  ');
+    });
+
+    expect(mockCategorizeDream).toHaveBeenCalledWith('Bonjour le monde', 'fr');
+  });
+
+  it('passes current language to analyzeAndSaveDream', async () => {
+    const { result } = renderHook(() => useDreamSaving());
+    const draft = result.current.buildDraftDream('Un rêve');
+
+    await act(async () => {
+      await result.current.analyzeAndSaveDream(draft);
+    });
+
+    expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, { lang: 'fr' });
   });
 });
