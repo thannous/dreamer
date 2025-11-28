@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import {
+  getAnalyzedDreamCount,
+  getDreamDetailAction,
+  getExploredDreamCount,
+  getUserChatMessageCount,
+  isDreamAnalyzed,
+  isDreamExplored,
+} from '@/lib/dreamUsage';
 import type { DreamAnalysis } from '@/lib/types';
 
 const buildDream = (overrides: Partial<DreamAnalysis> & { id?: number } = {}): DreamAnalysis => ({
@@ -53,5 +60,30 @@ describe('dreamUsage helpers', () => {
 
     expect(getUserChatMessageCount(dreamWithChat)).toBe(2);
     expect(getUserChatMessageCount(buildDream({ id: 21 }))).toBe(0);
+  });
+
+  it('derives detail CTA state based on analyzed and explored flags', () => {
+    const notTaggedAnalyzed = buildDream({ id: 30, isAnalyzed: true, analysisStatus: 'done' });
+    const analyzed = buildDream({ id: 31, isAnalyzed: true, analyzedAt: 5555 });
+    const exploredByTimestamp = buildDream({
+      id: 32,
+      isAnalyzed: true,
+      analyzedAt: 6666,
+      explorationStartedAt: 7777,
+    });
+    const exploredByChat = buildDream({
+      id: 33,
+      isAnalyzed: true,
+      analyzedAt: 8888,
+      chatHistory: [
+        { role: 'user', text: 'hi' },
+        { role: 'model', text: 'hello' },
+      ],
+    });
+
+    expect(getDreamDetailAction(notTaggedAnalyzed)).toBe('analyze');
+    expect(getDreamDetailAction(analyzed)).toBe('explore');
+    expect(getDreamDetailAction(exploredByTimestamp)).toBe('continue');
+    expect(getDreamDetailAction(exploredByChat)).toBe('continue');
   });
 });
