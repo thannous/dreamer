@@ -1,3 +1,5 @@
+// @vitest-environment happy-dom
+
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRecordingSession } from '../useRecordingSession';
@@ -46,6 +48,12 @@ vi.mock('react-native', () => ({
   },
   Platform: {
     OS: 'ios',
+  },
+  TurboModuleRegistry: {
+    get: vi.fn(),
+  },
+  NativeModules: {
+    ExponentConstants: {},
   },
 }));
 

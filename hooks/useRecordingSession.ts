@@ -88,16 +88,37 @@ export function useRecordingSession({
   const [isRecording, setIsRecording] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const skipRecorderRef = useRef(false);
+  const recorderReleasedRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
   const recordingTransitionRef = useRef(false);
   const hasAutoStoppedRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
 
+  const handleRecorderError = useCallback(
+    (context: string, error: unknown) => {
+      const released = handleRecorderReleaseError(context, error);
+      if (released) {
+        recorderReleasedRef.current = true;
+        isRecordingRef.current = false;
+      }
+      return released;
+    },
+    []
+  );
+
+  const getRecorderIsRecording = useCallback(() => {
+    if (recorderReleasedRef.current) {
+      return false;
+    }
+    return isRecordingRef.current;
+  }, []);
+
   const forceStopRecording = useCallback(
     async (reason: 'blur' | 'unmount') => {
       const hasNativeSession = Boolean(nativeSessionRef.current);
-      const shouldStopRecorder = !skipRecorderRef.current && audioRecorder.isRecording;
+      const recorderIsRecording = getRecorderIsRecording();
+      const shouldStopRecorder = !skipRecorderRef.current && recorderIsRecording;
 
       if (!hasNativeSession && !shouldStopRecorder && !isRecordingRef.current) {
         return;
@@ -117,11 +138,11 @@ export function useRecordingSession({
         }
       }
 
-      if (shouldStopRecorder) {
+      if (shouldStopRecorder && !recorderReleasedRef.current) {
         try {
           await audioRecorder.stop();
         } catch (error) {
-          if (!handleRecorderReleaseError(`forceStopRecording:${reason}`, error) && __DEV__) {
+          if (!handleRecorderError(`forceStopRecording:${reason}`, error) && __DEV__) {
             console.warn('[Recording] failed to stop audio recorder during cleanup', error);
           }
         }
@@ -138,7 +159,7 @@ export function useRecordingSession({
         hasAutoStoppedRecordingRef.current = false;
       }
     },
-    [audioRecorder]
+    [audioRecorder, getRecorderIsRecording, handleRecorderError]
   );
 
   const stopRecording = useCallback(async (): Promise<RecordingSessionResult> => {
@@ -154,10 +175,17 @@ export function useRecordingSession({
       const usedRecorder = !skipRecorderRef.current;
 
       nativeResultPromise = nativeSession?.stop() ?? null;
-      if (usedRecorder) {
-        await audioRecorder.stop();
+      if (usedRecorder && !recorderReleasedRef.current) {
+        try {
+          await audioRecorder.stop();
+        } catch (error) {
+          if (!handleRecorderError('stopRecording', error)) {
+            throw error;
+          }
+        }
       }
-      const uri = usedRecorder ? audioRecorder.uri ?? undefined : undefined;
+      const uri =
+        usedRecorder && !recorderReleasedRef.current ? audioRecorder.uri ?? undefined : undefined;
 
       let transcriptText = '';
       let recordedUri: string | undefined;
@@ -213,7 +241,7 @@ export function useRecordingSession({
         error: !transcriptText && !uri ? 'no_recording' : undefined,
       };
     } catch (err) {
-      if (handleRecorderReleaseError('stopRecording', err)) {
+      if (handleRecorderError('stopRecording', err)) {
         return { transcript: '', error: 'recorder_released' };
       }
       nativeSession?.abort();
@@ -232,7 +260,7 @@ export function useRecordingSession({
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale]);
+  }, [audioRecorder, transcriptionLocale, handleRecorderError]);
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
@@ -251,6 +279,7 @@ export function useRecordingSession({
           playsInSilentMode: true,
         });
 
+        recorderReleasedRef.current = false;
         nativeSessionRef.current?.abort();
         baseTranscriptRef.current = currentTranscript;
 
@@ -290,13 +319,14 @@ export function useRecordingSession({
         nativeSessionRef.current = null;
         skipRecorderRef.current = false;
         isRecordingRef.current = false;
+        handleRecorderError('startRecording', err);
         if (__DEV__) {
           console.error('Failed to start recording:', err);
         }
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       }
     },
-    [audioRecorder, t, transcriptionLocale, onPartialTranscript]
+    [audioRecorder, t, transcriptionLocale, onPartialTranscript, handleRecorderError]
   );
 
   const toggleRecording = useCallback(
@@ -335,29 +365,29 @@ export function useRecordingSession({
 
     const subscription = AppState.addEventListener('change', (state) => {
       try {
-        if ((state === 'background' || state === 'inactive') && audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+        if ((state === 'background' || state === 'inactive') && getRecorderIsRecording() && !hasAutoStoppedRecordingRef.current) {
           hasAutoStoppedRecordingRef.current = true;
           void stopRecording();
         }
       } catch (error) {
-        handleRecorderReleaseError('appStateChange', error);
+        handleRecorderError('appStateChange', error);
       }
     });
 
     return () => {
       subscription.remove();
       try {
-        if (audioRecorder.isRecording && !hasAutoStoppedRecordingRef.current) {
+        if (getRecorderIsRecording() && !hasAutoStoppedRecordingRef.current) {
           hasAutoStoppedRecordingRef.current = true;
           void stopRecording();
         }
       } catch (error) {
-        if (!handleRecorderReleaseError('appStateCleanup', error)) {
+        if (!handleRecorderError('appStateCleanup', error)) {
           throw error;
         }
       }
     };
-  }, [audioRecorder, stopRecording]);
+  }, [getRecorderIsRecording, handleRecorderError, stopRecording]);
 
   return {
     isRecording,
