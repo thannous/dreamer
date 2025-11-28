@@ -678,8 +678,12 @@ export default function JournalDetailScreen() {
 
   const handleConfirmReanalyze = useCallback(() => {
     setShowReanalyzeSheet(false);
+    if (hasExistingImage) {
+      setShowReplaceImageSheet(true);
+      return;
+    }
     void runAnalyze(true);
-  }, [runAnalyze]);
+  }, [hasExistingImage, runAnalyze]);
 
   const handleTranscriptSave = useCallback(async () => {
     if (!dream) return;
