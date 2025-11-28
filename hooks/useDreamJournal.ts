@@ -8,18 +8,18 @@ import type { DreamAnalysis, DreamMutation } from '@/lib/types';
 import { analyzeDream as analyzeDreamText, generateImageForDream } from '@/services/geminiService';
 import { quotaService } from '@/services/quotaService';
 import {
-    getCachedRemoteDreams,
-    getPendingDreamMutations,
-    getSavedDreams,
-    saveCachedRemoteDreams,
-    saveDreams,
-    savePendingDreamMutations,
+  getCachedRemoteDreams,
+  getPendingDreamMutations,
+  getSavedDreams,
+  saveCachedRemoteDreams,
+  saveDreams,
+  savePendingDreamMutations,
 } from '@/services/storageService';
 import {
-    createDreamInSupabase,
-    deleteDreamFromSupabase,
-    fetchDreamsFromSupabase,
-    updateDreamInSupabase,
+  createDreamInSupabase,
+  deleteDreamFromSupabase,
+  fetchDreamsFromSupabase,
+  updateDreamInSupabase,
 } from '@/services/supabaseDreamService';
 
 // Guest limit centralized in constants/limits
@@ -569,7 +569,7 @@ export const useDreamJournal = () => {
     async (
       dreamId: number,
       transcript: string,
-      options?: { replaceExistingImage?: boolean }
+      options?: { replaceExistingImage?: boolean; lang?: string }
     ): Promise<DreamAnalysis> => {
       // Check quota before analyzing
       const canAnalyze = await quotaService.canAnalyzeDream(user);
@@ -601,7 +601,7 @@ export const useDreamJournal = () => {
       quotaService.invalidate(user);
 
       try {
-        const analysis = await analyzeDreamText(transcript);
+        const analysis = await analyzeDreamText(transcript, options?.lang);
         const { imagePrompt, ...analysisFields } = analysis;
 
         let imageUrl = dream.imageUrl;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, type FormEvent } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { AuthApiError, isAuthApiError } from '@supabase/auth-js';
 import {
   ActivityIndicator,
@@ -15,6 +15,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { EmailVerificationDialog } from '@/components/auth/EmailVerificationDialog';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import {
@@ -33,6 +34,8 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
 const isMockModeEnabled =
   ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+const VERIFICATION_POLL_INTERVAL_MS = 15000;
+const RESEND_COOLDOWN_MS = 60000;
 
 const mockProfiles: { profile: MockProfile; titleKey: string; subtitleKey: string }[] = [
   {
@@ -80,6 +83,14 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const [mockProfileLoading, setMockProfileLoading] = useState<MockProfile | null>(null);
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [pendingVerification, setPendingVerification] = useState<{
+    email: string;
+    password: string;
+    visible: boolean;
+  } | null>(null);
+  const [verificationPolling, setVerificationPolling] = useState(false);
+  const [lastVerificationEmailSentAt, setLastVerificationEmailSentAt] = useState<number | null>(null);
+  const [cooldownTick, setCooldownTick] = useState(() => Date.now());
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
@@ -92,15 +103,50 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const isBusy = submitting !== null || authLoading || isMockBusy;
   const emailActionsDisabled = isBusy || !emailValid || !passwordValid;
   const showSupabaseConfigHint = !isSupabaseConfigured && !isMockModeEnabled;
+  const resendCooldownRemainingMs = useMemo(() => {
+    if (!lastVerificationEmailSentAt) {
+      return 0;
+    }
+    return Math.max(0, RESEND_COOLDOWN_MS - (cooldownTick - lastVerificationEmailSentAt));
+  }, [cooldownTick, lastVerificationEmailSentAt]);
+  const resendCooldownSeconds = Math.ceil(resendCooldownRemainingMs / 1000);
 
-  const resetSensitiveInputs = () => {
+  const resetSensitiveInputs = useCallback(() => {
     setPassword('');
-  };
+  }, []);
+
+  const clearPendingVerification = useCallback(() => {
+    setPendingVerification(null);
+    setUnverifiedEmail(null);
+    setResendStatus('idle');
+    setLastVerificationEmailSentAt(null);
+  }, []);
+
+  const startVerificationFlow = useCallback(
+    (
+      emailForVerification: string,
+      passwordForVerification: string,
+      showDialog = true,
+      lastSentAt: number | null = null
+    ) => {
+      const normalizedEmail = emailForVerification.trim();
+      const lastSentTimestamp = lastSentAt ?? Date.now();
+      setPendingVerification({
+        email: normalizedEmail,
+        password: passwordForVerification,
+        visible: showDialog,
+      });
+      setUnverifiedEmail(normalizedEmail);
+      setResendStatus('idle');
+      setLastVerificationEmailSentAt(lastSentTimestamp);
+      setCooldownTick(lastSentTimestamp);
+    },
+    []
+  );
 
   const handleSupabaseError = (error: unknown, titleKey: string) => {
     if (isUnverifiedEmailError(error)) {
-      setUnverifiedEmail(trimmedEmail);
-      setResendStatus('idle');
+      startVerificationFlow(trimmedEmail, password, true, lastVerificationEmailSentAt);
       return;
     }
     const message = error instanceof Error ? error.message : t('common.unknown_error');
@@ -113,8 +159,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setSubmitting('signin');
     try {
       await signInWithEmailPassword(trimmedEmail, password);
-      setUnverifiedEmail(null);
-      setResendStatus('idle');
+      clearPendingVerification();
       requestStayOnSettingsIntent();
       resetSensitiveInputs();
     } catch (error) {
@@ -127,14 +172,17 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const attemptSignUp = async () => {
     setTouched({ email: true, password: true });
     if (emailActionsDisabled) return;
+    const passwordForVerification = password;
     setSubmitting('signup');
     try {
-      await signUpWithEmailPassword(trimmedEmail, password);
+      const newUser = await signUpWithEmailPassword(trimmedEmail, passwordForVerification);
+      const needsVerification = !newUser?.email_confirmed_at;
+      if (needsVerification) {
+        startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now());
+      } else {
+        clearPendingVerification();
+      }
       requestStayOnSettingsIntent();
-      Alert.alert(
-        t('settings.account.alert.signup_success.title'),
-        t('settings.account.alert.signup_success.message')
-      );
       resetSensitiveInputs();
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signup_failed.title');
@@ -148,6 +196,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setSubmitting('signout');
     try {
       await signOut();
+      clearPendingVerification();
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signout_failed.title');
     } finally {
@@ -168,6 +217,42 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
   };
 
+  const pollForVerification = useCallback(async () => {
+    if (
+      !pendingVerification ||
+      verificationPolling ||
+      submitting !== null ||
+      authLoading ||
+      isMockBusy ||
+      user
+    ) {
+      return;
+    }
+
+    setVerificationPolling(true);
+    try {
+      await signInWithEmailPassword(pendingVerification.email, pendingVerification.password);
+      clearPendingVerification();
+      requestStayOnSettingsIntent();
+      resetSensitiveInputs();
+    } catch (error) {
+      if (!isUnverifiedEmailError(error) && __DEV__) {
+        console.warn('[EmailAuthCard] verification poll failed', error);
+      }
+    } finally {
+      setVerificationPolling(false);
+    }
+  }, [
+    authLoading,
+    clearPendingVerification,
+    isMockBusy,
+    pendingVerification,
+    resetSensitiveInputs,
+    submitting,
+    user,
+    verificationPolling,
+  ]);
+
   const handleFormSubmit = (event?: FormEvent<HTMLFormElement>) => {
     if (event) {
       event.preventDefault();
@@ -184,14 +269,25 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
     return null;
   }, [resendStatus, t]);
+  const resendCooldownMessage = useMemo(() => {
+    if (resendCooldownRemainingMs > 0) {
+      return t('settings.account.verification.resend_in', { seconds: resendCooldownSeconds });
+    }
+    return null;
+  }, [resendCooldownRemainingMs, resendCooldownSeconds, t]);
+  const resendDisabled = resendStatus === 'sending' || resendCooldownRemainingMs > 0;
 
   const handleResendVerification = async () => {
-    if (!unverifiedEmail || resendStatus === 'sending') {
+    const targetEmail = unverifiedEmail ?? pendingVerification?.email;
+    if (!targetEmail || resendDisabled) {
       return;
     }
     setResendStatus('sending');
     try {
-      await resendVerificationEmail(unverifiedEmail);
+      await resendVerificationEmail(targetEmail);
+      const now = Date.now();
+      setLastVerificationEmailSentAt(now);
+      setCooldownTick(now);
       setResendStatus('success');
       requestStayOnSettingsIntent();
     } catch (error) {
@@ -207,9 +303,44 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       setUnverifiedEmail(null);
       setResendStatus('idle');
     }
-  }, [trimmedEmail, unverifiedEmail]);
+    if (pendingVerification && trimmedEmail !== pendingVerification.email) {
+      clearPendingVerification();
+    }
+  }, [clearPendingVerification, pendingVerification, trimmedEmail, unverifiedEmail]);
+
+  useEffect(() => {
+    if (!pendingVerification && !lastVerificationEmailSentAt) {
+      return;
+    }
+    const tick = setInterval(() => {
+      setCooldownTick(Date.now());
+    }, 1000);
+    return () => clearInterval(tick);
+  }, [lastVerificationEmailSentAt, pendingVerification]);
+
+  useEffect(() => {
+    if (!pendingVerification || user) {
+      return;
+    }
+    const interval = setInterval(() => {
+      pollForVerification();
+    }, VERIFICATION_POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [pendingVerification, pollForVerification, user]);
+
+  useEffect(() => {
+    if (user) {
+      clearPendingVerification();
+    }
+  }, [clearPendingVerification, user]);
 
   const resendStatusColor = resendStatus === 'error' ? colors.accent : colors.textSecondary;
+  const verificationEmail = pendingVerification?.email ?? unverifiedEmail ?? trimmedEmail;
+  const verificationVisible = Boolean(pendingVerification?.visible && !user);
+  const resendButtonLabel = t('settings.account.banner.unverified.action');
+  const handleCloseVerificationDialog = useCallback(() => {
+    setPendingVerification((current) => (current ? { ...current, visible: false } : null));
+  }, []);
 
   const emailPasswordForm = (
     <>
@@ -314,56 +445,52 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       )
     : emailPasswordForm;
 
-  if (user) {
-    return (
+  const cardContent = user ? (
+    <View
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: colors.backgroundCard }]}
+    >
+      <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+        {t('settings.account.title')}
+      </Text>
+      <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
+        {t('settings.account.description_signed_in')}
+      </Text>
+
+      <EmailVerificationBanner isCompact={isCompact} />
+
       <View
-        style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: colors.backgroundCard }]}
+        style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
       >
-        <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
-          {t('settings.account.title')}
+        <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
+          {t('settings.account.label.email')}
         </Text>
-        <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
-          {t('settings.account.description_signed_in')}
+        <Text
+          testID={TID.Text.AuthEmail}
+          style={[styles.userEmail, { color: colors.textPrimary }]}
+        >
+          {user.email}
         </Text>
-
-        <EmailVerificationBanner isCompact={isCompact} />
-
-        <View
-          style={[styles.userInfo, isCompact && styles.userInfoCompact, { backgroundColor: colors.backgroundSecondary }]}
-        >
-          <Text style={[styles.userLabel, { color: colors.textSecondary }]}>
-            {t('settings.account.label.email')}
-          </Text>
-          <Text
-            testID={TID.Text.AuthEmail}
-            style={[styles.userEmail, { color: colors.textPrimary }]}
-          >
-            {user.email}
-          </Text>
-        </View>
-
-        <Pressable
-          style={[styles.btn, styles.danger, isCompact && styles.btnCompact, isBusy && styles.btnDisabled]}
-          onPress={attemptSignOut}
-          disabled={isBusy}
-          testID={TID.Button.AuthSignOut}
-        >
-          {submitting === 'signout' ? (
-            <ActivityIndicator color={colors.backgroundCard} />
-          ) : (
-            <Text
-              style={[styles.btnText, isCompact && styles.btnTextCompact, { color: colors.backgroundCard }]}
-              numberOfLines={1}
-            >
-              {t('settings.account.button.sign_out')}
-            </Text>
-          )}
-        </Pressable>
       </View>
-    );
-  }
 
-  return (
+      <Pressable
+        style={[styles.btn, styles.danger, isCompact && styles.btnCompact, isBusy && styles.btnDisabled]}
+        onPress={attemptSignOut}
+        disabled={isBusy}
+        testID={TID.Button.AuthSignOut}
+      >
+        {submitting === 'signout' ? (
+          <ActivityIndicator color={colors.backgroundCard} />
+        ) : (
+          <Text
+            style={[styles.btnText, isCompact && styles.btnTextCompact, { color: colors.backgroundCard }]}
+            numberOfLines={1}
+          >
+            {t('settings.account.button.sign_out')}
+          </Text>
+        )}
+      </Pressable>
+    </View>
+  ) : (
     <View
       style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: colors.backgroundCard }]}
     >
@@ -392,27 +519,32 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
             style={({ pressed }) => [
               styles.unverifiedAction,
               pressed && styles.unverifiedActionPressed,
-              resendStatus === 'sending' && styles.unverifiedActionDisabled,
+              resendDisabled && styles.unverifiedActionDisabled,
               {
                 borderColor: colors.accent,
                 backgroundColor: colors.backgroundCard,
               },
             ]}
             onPress={handleResendVerification}
-            disabled={resendStatus === 'sending'}
+            disabled={resendDisabled}
             testID={TID.Button.AuthResendVerification}
           >
             {resendStatus === 'sending' ? (
               <ActivityIndicator color={colors.textPrimary} />
             ) : (
               <Text style={[styles.unverifiedActionText, { color: colors.textPrimary }]}>
-                {t('settings.account.banner.unverified.action')}
+                {resendButtonLabel}
               </Text>
             )}
           </Pressable>
           {resendStatusMessage ? (
             <Text style={[styles.unverifiedStatus, { color: resendStatusColor }]} testID={TID.Text.AuthEmailVerificationStatus}>
               {resendStatusMessage}
+            </Text>
+          ) : null}
+          {resendCooldownMessage ? (
+            <Text style={[styles.unverifiedStatus, { color: colors.textSecondary }]}>
+              {resendCooldownMessage}
             </Text>
           ) : null}
         </View>
@@ -481,6 +613,23 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
       {authForm}
     </View>
+  );
+
+  return (
+    <>
+      {cardContent}
+      <EmailVerificationDialog
+        visible={verificationVisible}
+        email={verificationEmail || ''}
+        onClose={handleCloseVerificationDialog}
+        onResend={handleResendVerification}
+        resendDisabled={resendDisabled}
+        resendLabel={resendButtonLabel}
+        statusMessage={resendStatusMessage}
+        cooldownMessage={resendCooldownMessage}
+        isResending={resendStatus === 'sending'}
+      />
+    </>
   );
 };
 

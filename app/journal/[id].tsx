@@ -4,14 +4,15 @@ import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { isDreamExplored } from '@/lib/dreamUsage';
 import { QuotaError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
@@ -24,22 +25,22 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Animated,
-    Easing,
-    Keyboard,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    Pressable,
-    ScrollView,
-    Share,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-    type ViewStyle
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Easing,
+  Keyboard,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  type ViewStyle
 } from 'react-native';
 
 type ShareNavigator = Navigator & {
@@ -82,7 +83,7 @@ const getMimeTypeFromExtension = (ext: string): string => {
       return 'image/webp';
     case 'jpg':
     default:
-    return 'image/jpeg';
+      return 'image/jpeg';
   }
 };
 
@@ -138,6 +139,7 @@ export default function JournalDetailScreen() {
   const dreamId = useMemo(() => Number(id), [id]);
   const { dreams, toggleFavorite, updateDream, deleteDream, analyzeDream } = useDreams();
   const { colors, shadows, mode } = useTheme();
+  const { language } = useLanguage();
   useClearWebFocus();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -620,7 +622,7 @@ export default function JournalDetailScreen() {
       setShowReplaceImageSheet(false);
       setIsAnalyzing(true);
       try {
-        await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage });
+        await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage, lang: language });
         Alert.alert(t('common.success'), t('journal.detail.analysis.success_message'));
       } catch (error) {
         if (error instanceof QuotaError) {

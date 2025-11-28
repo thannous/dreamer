@@ -19,29 +19,29 @@ export type AnalysisResult = {
   imagePrompt: string;
 };
 
-export async function analyzeDream(transcript: string): Promise<AnalysisResult> {
+export async function analyzeDream(transcript: string, lang: string = 'en'): Promise<AnalysisResult> {
   const base = getApiBaseUrl();
   return fetchJSON<AnalysisResult>(`${base}/analyzeDream`, {
     method: 'POST',
-    body: { transcript },
+    body: { transcript, lang },
     retries: 1, // One automatic retry
   });
 }
 
-export async function categorizeDream(transcript: string): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
+export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
   const base = getApiBaseUrl();
   return fetchJSON<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>>(`${base}/categorizeDream`, {
     method: 'POST',
-    body: { transcript },
+    body: { transcript, lang },
     retries: 1,
   });
 }
 
-export async function analyzeDreamWithImage(transcript: string): Promise<AnalysisResult & { imageUrl: string }> {
+export async function analyzeDreamWithImage(transcript: string, lang: string = 'en'): Promise<AnalysisResult & { imageUrl: string }> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
     method: 'POST',
-    body: { transcript },
+    body: { transcript, lang },
     retries: 1, // One automatic retry
     timeoutMs: 60000, // Increased timeout for combined operation
   });
@@ -57,7 +57,8 @@ export async function analyzeDreamWithImage(transcript: string): Promise<Analysi
  * Returns analysis result with imageUrl or null if image failed.
  */
 export async function analyzeDreamWithImageResilient(
-  transcript: string
+  transcript: string,
+  lang: string = 'en'
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
   const base = getApiBaseUrl();
 
@@ -65,7 +66,7 @@ export async function analyzeDreamWithImageResilient(
     // Try combined analysis + image generation first
     const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
       method: 'POST',
-      body: { transcript },
+      body: { transcript, lang },
       retries: 1,
       timeoutMs: 60000,
     });
@@ -86,7 +87,7 @@ export async function analyzeDreamWithImageResilient(
   } catch (error) {
     // Combined call failed entirely, try analysis only as fallback
     try {
-      const analysisOnly = await analyzeDream(transcript);
+      const analysisOnly = await analyzeDream(transcript, lang);
 
       // Try to generate image separately
       try {
