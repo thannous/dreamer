@@ -642,7 +642,7 @@ export default function RecordingScreen() {
       // Attempt quick categorization if we have a transcript
       if (latestTranscript) {
         try {
-          const metadata = await categorizeDream(latestTranscript);
+          const metadata = await categorizeDream(latestTranscript, language);
           dreamToSave = {
             ...dreamToSave,
             ...metadata,
@@ -765,7 +765,7 @@ export default function RecordingScreen() {
       analysisProgress.reset();
       analysisProgress.setStep(AnalysisStep.ANALYZING);
 
-      const analyzedDream = await analyzeDream(dream.id, dream.transcript);
+      const analyzedDream = await analyzeDream(dream.id, dream.transcript, { lang: language });
 
       analysisProgress.setStep(AnalysisStep.COMPLETE);
       setPendingAnalysisDream(null);
@@ -1191,7 +1191,7 @@ const styles = StyleSheet.create({
   },
   liveTranscriptContainer: {
     marginBottom: 10,
-    paddingHorizontal:8,
+    paddingHorizontal: 8,
     minHeight: 40,
     alignItems: 'center',
     justifyContent: 'center',

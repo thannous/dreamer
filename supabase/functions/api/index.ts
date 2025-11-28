@@ -333,8 +333,9 @@ serve(async (req: Request) => {
   // Public analyzeDream: allow without auth (skip DB insert when user is null)
   if (req.method === 'POST' && subPath === '/analyzeDream') {
     try {
-      const body = (await req.json()) as { transcript?: string };
+      const body = (await req.json()) as { transcript?: string; lang?: string };
       const transcript = String(body?.transcript ?? '').trim();
+      const lang = String(body?.lang ?? 'en');
       if (!transcript) throw new Error('Missing transcript');
 
       const apiKey = Deno.env.get('GEMINI_API_KEY');
@@ -343,11 +344,19 @@ serve(async (req: Request) => {
       console.log('[api] /analyzeDream request', {
         userId: user?.id ?? null,
         transcriptLength: transcript.length,
+        lang,
         snippet: transcript.slice(0, 80),
       });
 
+      const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
+      const systemInstruction = lang === 'fr'
+        ? 'Réponds uniquement en JSON strict.'
+        : lang === 'es'
+          ? 'Responde solo en JSON estricto.'
+          : 'Return ONLY strict JSON.';
+
       // Ask the model to return strict JSON (no schema fields here to keep compatibility)
-      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
@@ -431,8 +440,9 @@ serve(async (req: Request) => {
   // Combined: analyze dream and generate image in one call (public)
   if (req.method === 'POST' && subPath === '/analyzeDreamFull') {
     try {
-      const body = (await req.json()) as { transcript?: string };
+      const body = (await req.json()) as { transcript?: string; lang?: string };
       const transcript = String(body?.transcript ?? '').trim();
+      const lang = String(body?.lang ?? 'en');
       if (!transcript) throw new Error('Missing transcript');
 
       const apiKey = Deno.env.get('GEMINI_API_KEY');
@@ -441,11 +451,19 @@ serve(async (req: Request) => {
       console.log('[api] /analyzeDreamFull request', {
         userId: user?.id ?? null,
         transcriptLength: transcript.length,
+        lang,
         snippet: transcript.slice(0, 80),
       });
 
+      const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
+      const systemInstruction = lang === 'fr'
+        ? 'Réponds uniquement en JSON strict.'
+        : lang === 'es'
+          ? 'Responde solo en JSON estricto.'
+          : 'Return ONLY strict JSON.';
+
       // 1) Analyze the dream
-      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
@@ -552,8 +570,9 @@ serve(async (req: Request) => {
   // Public categorizeDream: fast metadata generation
   if (req.method === 'POST' && subPath === '/categorizeDream') {
     try {
-      const body = (await req.json()) as { transcript?: string };
+      const body = (await req.json()) as { transcript?: string; lang?: string };
       const transcript = String(body?.transcript ?? '').trim();
+      const lang = String(body?.lang ?? 'en');
       if (!transcript) throw new Error('Missing transcript');
 
       const apiKey = Deno.env.get('GEMINI_API_KEY');
@@ -562,9 +581,17 @@ serve(async (req: Request) => {
       console.log('[api] /categorizeDream request', {
         userId: user?.id ?? null,
         transcriptLength: transcript.length,
+        lang,
       });
 
-      const prompt = `You analyze user dreams. Return ONLY strict JSON with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"}. Choose the single most appropriate theme and dreamType from that list.\nDream transcript:\n${transcript}`;
+      const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
+      const systemInstruction = lang === 'fr'
+        ? 'Réponds uniquement en JSON strict.'
+        : lang === 'es'
+          ? 'Responde solo en JSON estricto.'
+          : 'Return ONLY strict JSON.';
+
+      const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
       // Use flash-lite model for speed/cost as requested

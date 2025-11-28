@@ -29,6 +29,7 @@ export const TID = {
     AuthSignUp: 'btn.auth.signUp',
     AuthSignOut: 'btn.auth.signOut',
     AuthResendVerification: 'btn.auth.resendVerification',
+    AuthCloseVerification: 'btn.auth.closeVerification',
     FirstDreamAnalyze: 'btn.firstDream.analyze',
     FirstDreamJournal: 'btn.firstDream.journal',
     FirstDreamDismiss: 'btn.firstDream.dismiss',

@@ -12,7 +12,7 @@ export type DreamsContextValue = {
   analyzeDream: (
     dreamId: number,
     transcript: string,
-    options?: { replaceExistingImage?: boolean }
+    options?: { replaceExistingImage?: boolean; lang?: string }
   ) => Promise<DreamAnalysis>;
 };
 
