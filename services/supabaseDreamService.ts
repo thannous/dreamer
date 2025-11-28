@@ -20,6 +20,7 @@ type SupabaseDreamRow = {
   dream_type: string;
   is_favorite: boolean | null;
   image_generation_failed?: boolean | null;
+  image_source?: 'user' | 'ai' | null;
   is_analyzed?: boolean | null;
   analyzed_at?: string | null;
   analysis_status?: 'none' | 'pending' | 'done' | 'failed' | null;
@@ -32,6 +33,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   const imageUrl = row.image_url ?? '';
   const hasImage = Boolean(imageUrl);
   const imageGenerationFailed = hasImage ? false : row.image_generation_failed ?? false;
+  const imageSource = row.image_source ?? null;
   return {
     id: createdAt,
     remoteId: row.id,
@@ -41,6 +43,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     shareableQuote: row.shareable_quote ?? '',
     imageUrl,
     thumbnailUrl: hasImage ? imageUrl : undefined,
+    imageSource: imageSource ?? undefined,
     chatHistory: Array.isArray(row.chat_history) ? row.chat_history : [],
     theme: row.theme ?? undefined,
     dreamType: (row.dream_type ?? 'Symbolic Dream') as DreamType,
@@ -54,7 +57,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   };
 };
 
-const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageGenerationFailed = true) => {
+const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => {
   const base = {
     user_id: userId,
     transcript: dream.transcript,
@@ -73,12 +76,13 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageGenera
     exploration_started_at: dream.explorationStartedAt ? new Date(dream.explorationStartedAt).toISOString() : null,
   };
 
-  return includeImageGenerationFailed
-    ? {
-        ...base,
-        image_generation_failed: dream.imageGenerationFailed ?? false,
-      }
-    : base;
+  if (!includeImageColumns) return base;
+
+  return {
+    ...base,
+    image_generation_failed: dream.imageGenerationFailed ?? false,
+    image_source: dream.imageSource ?? null,
+  };
 };
 
 const formatError = (error: PostgrestError | null, defaultMessage: string): Error => {
@@ -89,7 +93,7 @@ const formatError = (error: PostgrestError | null, defaultMessage: string): Erro
 const isMissingImageGenerationColumnError = (error: PostgrestError | null): boolean => {
   if (!error) return false;
   if (error.code !== 'PGRST204') return false;
-  return /image_generation_failed/.test(error.message ?? '');
+  return /image_generation_failed|image_source/.test(error.message ?? '');
 };
 
 export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {

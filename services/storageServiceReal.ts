@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import { Platform } from 'react-native';
 
 import type {
@@ -19,6 +20,8 @@ const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const MAX_CHAT_HISTORY_FOR_STORAGE = 50;
+const IMAGE_CACHE_DIR = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? null;
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -225,6 +228,82 @@ async function removeItem(key: string): Promise<void> {
   delete memoryStore[key];
 }
 
+const isDataUriImage = (value?: string | null): value is string =>
+  Boolean(value && value.startsWith('data:image'));
+
+const extractBase64Payload = (value: string): string | null => {
+  const separatorIndex = value.indexOf(',');
+  if (separatorIndex === -1) return null;
+  return value.slice(separatorIndex + 1);
+};
+
+async function persistDataUriImage(imageUrl: string, dreamId: number): Promise<string | null> {
+  if (!IMAGE_CACHE_DIR) return null;
+  const base64 = extractBase64Payload(imageUrl);
+  if (!base64) return null;
+
+  const extMatch = /^data:image\/(.+);base64/.exec(imageUrl);
+  const extension = (extMatch?.[1] ?? 'jpg').split('+')[0];
+  const dir = `${IMAGE_CACHE_DIR}dream-images/`;
+  const filePath = `${dir}${dreamId}.${extension}`;
+
+  try {
+    await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
+    await FileSystem.writeAsStringAsync(filePath, base64, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    return filePath;
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('Failed to persist inline image, dropping to save space', error);
+    }
+    return null;
+  }
+}
+
+async function normalizeDreamForStorage(dream: DreamAnalysis): Promise<DreamAnalysis> {
+  const trimmedChatHistory = Array.isArray(dream.chatHistory)
+    ? dream.chatHistory.slice(-MAX_CHAT_HISTORY_FOR_STORAGE)
+    : [];
+
+  let imageUrl = dream.imageUrl;
+  let thumbnailUrl = dream.thumbnailUrl;
+
+  if (isDataUriImage(imageUrl)) {
+    const persisted = await persistDataUriImage(imageUrl, dream.id);
+    imageUrl = persisted ?? '';
+    if (!thumbnailUrl || isDataUriImage(thumbnailUrl)) {
+      thumbnailUrl = persisted ?? undefined;
+    }
+  } else if (thumbnailUrl && isDataUriImage(thumbnailUrl)) {
+    const persisted = await persistDataUriImage(thumbnailUrl, dream.id);
+    thumbnailUrl = persisted ?? undefined;
+  }
+
+  return {
+    ...dream,
+    imageUrl,
+    thumbnailUrl,
+    chatHistory: trimmedChatHistory,
+  };
+}
+
+async function normalizeDreamsForStorage(dreams: DreamAnalysis[]): Promise<DreamAnalysis[]> {
+  return Promise.all(dreams.map((dream) => normalizeDreamForStorage(dream)));
+}
+
+async function normalizeMutationsForStorage(mutations: DreamMutation[]): Promise<DreamMutation[]> {
+  return Promise.all(
+    mutations.map(async (mutation) => {
+      if (mutation.type === 'create' || mutation.type === 'update') {
+        const dream = await normalizeDreamForStorage(mutation.dream);
+        return { ...mutation, dream };
+      }
+      return mutation;
+    })
+  );
+}
+
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   isEnabled: false,
   weekdayTime: '07:00',
@@ -247,13 +326,18 @@ export async function getSavedDreams(): Promise<DreamAnalysis[]> {
     if (__DEV__) {
       console.error('Failed to retrieve dreams:', error);
     }
+    const message = error instanceof Error ? error.message : '';
+    if (message.includes('Row too big')) {
+      await removeItem(DREAMS_STORAGE_KEY);
+    }
     return [];
   }
 }
 
 export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   try {
-    await setItem(DREAMS_STORAGE_KEY, JSON.stringify(dreams));
+    const normalized = await normalizeDreamsForStorage(dreams);
+    await setItem(DREAMS_STORAGE_KEY, JSON.stringify(normalized));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save dreams:', error);
@@ -465,7 +549,8 @@ export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
 
 export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<void> {
   try {
-    await setItem(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(dreams));
+    const normalized = await normalizeDreamsForStorage(dreams);
+    await setItem(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to cache remote dreams:', error);
@@ -490,7 +575,8 @@ export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
 
 export async function savePendingDreamMutations(mutations: DreamMutation[]): Promise<void> {
   try {
-    await setItem(DREAM_MUTATIONS_KEY, JSON.stringify(mutations));
+    const normalized = await normalizeMutationsForStorage(mutations);
+    await setItem(DREAM_MUTATIONS_KEY, JSON.stringify(normalized));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save pending dream mutations:', error);

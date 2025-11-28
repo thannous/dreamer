@@ -607,11 +607,13 @@ export const useDreamJournal = () => {
         let imageUrl = dream.imageUrl;
         let thumbnailUrl = dream.thumbnailUrl;
         let imageGenerationFailed = false;
+        let imageSource: DreamAnalysis['imageSource'] = dream.imageSource;
 
         if (shouldReplaceImage) {
           try {
             imageUrl = await generateImageForDream(imagePrompt);
             thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
+            imageSource = imageUrl ? 'ai' : imageSource;
           } catch (imageError) {
             console.warn('Image generation failed', imageError);
             imageGenerationFailed = true;
@@ -631,6 +633,7 @@ export const useDreamJournal = () => {
           ...analysisFields,
           imageUrl,
           thumbnailUrl,
+          imageSource,
           imageGenerationFailed: imageFailedWithoutImage,
           analysisStatus: 'done',
           analyzedAt: Date.now(),
