@@ -1,6 +1,6 @@
 import { useMessageContext } from '@/context/ChatContext';
 import React, { useEffect } from 'react';
-import type { TextStyle } from 'react-native';
+import type { StyleProp, TextStyle } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -68,7 +68,7 @@ export function FadeInStaggered({
 type TextFadeInStaggeredIfStreamingProps = {
   children: React.ReactNode;
   isStreaming: boolean;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 };
 
 /**
