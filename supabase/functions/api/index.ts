@@ -28,10 +28,19 @@ async function generateImageFromPrompt(options: {
     'x-goog-api-key': apiKey,
   };
 
-  const isGeminiImage = model.toLowerCase().includes('gemini');
+  const lowerModel = model.toLowerCase();
+  const fallbackGeminiImageModel = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'gemini-2.5-flash-image';
+  const isGemini = lowerModel.includes('gemini');
+  const isGeminiImageModel = isGemini && lowerModel.includes('image');
+  const resolvedModel = isGemini && !isGeminiImageModel ? fallbackGeminiImageModel : model;
+  const isGeminiImage = resolvedModel.toLowerCase().includes('gemini') && resolvedModel.toLowerCase().includes('image');
+
+  if (isGemini && !isGeminiImageModel && resolvedModel !== model) {
+    console.warn(`[api] generateImageFromPrompt: model ${model} is text-only, falling back to ${resolvedModel}`);
+  }
 
   if (isGeminiImage) {
-    const endpoint = `${apiBase}/v1beta/models/${model}:generateContent`;
+    const endpoint = `${apiBase}/v1beta/models/${resolvedModel}:generateContent`;
     const body = {
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: { responseMimeType: 'image/png' },
@@ -57,7 +66,7 @@ async function generateImageFromPrompt(options: {
     return { imageBase64: inlinePart?.inlineData?.data as string | undefined, raw: imgJson };
   }
 
-  const endpoint = `${apiBase}/v1beta/models/${model}:predict`;
+  const endpoint = `${apiBase}/v1beta/models/${resolvedModel}:predict`;
 
   const imgRes = await fetch(endpoint, {
     method: 'POST',
