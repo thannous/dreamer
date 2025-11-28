@@ -13,6 +13,30 @@ export function isDreamExplored(dream?: DreamAnalysis | null): boolean {
   return typeof dream?.explorationStartedAt === 'number';
 }
 
+export type DreamDetailAction = 'analyze' | 'explore' | 'continue';
+
+const hasModelResponse = (dream?: DreamAnalysis | null): boolean => {
+  return Boolean(dream?.chatHistory?.some((message) => message.role === 'model'));
+};
+
+/**
+ * Primary CTA state for the dream detail screen.
+ * - analyze: the dream is not tagged as analyzed yet
+ * - explore: analyzed but no exploration started
+ * - continue: an exploration/chat already exists
+ */
+export function getDreamDetailAction(dream?: DreamAnalysis | null): DreamDetailAction {
+  if (!isDreamAnalyzed(dream)) {
+    return 'analyze';
+  }
+
+  if (isDreamExplored(dream) || hasModelResponse(dream)) {
+    return 'continue';
+  }
+
+  return 'explore';
+}
+
 export function getAnalyzedDreamCount(dreams: DreamAnalysis[]): number {
   return dreams.filter(isDreamAnalyzed).length;
 }
