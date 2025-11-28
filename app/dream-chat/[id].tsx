@@ -1,6 +1,9 @@
+import { Composer } from '@/components/chat/Composer';
+import { MessagesList } from '@/components/chat/MessagesList';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { ChatProvider } from '@/context/ChatContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -11,27 +14,13 @@ import { getImageConfig } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
-import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
 import { quotaService } from '@/services/quotaService';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { AudioModule } from 'expo-audio';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
 
@@ -83,7 +72,6 @@ export default function DreamChatScreen() {
   const { colors, mode, shadows } = useTheme();
   const { user } = useAuth();
   const { language } = useLanguage();
-  const insets = useSafeAreaInsets();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat } = useQuota({ dreamId, dream });
@@ -92,11 +80,7 @@ export default function DreamChatScreen() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const scrollViewRef = useRef<ScrollView>(null);
   const hasSentCategoryRef = useRef(false);
-  const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
-  const baseInputRef = useRef('');
 
   // Speech recognition locale based on language
   const transcriptionLocale = useMemo(() => {
@@ -171,17 +155,6 @@ export default function DreamChatScreen() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, dream, t]); // sendMessage has stable dependencies via useCallback
-
-  useEffect(() => {
-    // Auto-scroll to bottom when messages change
-    const timeoutId = setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [messages]);
 
   const sendMessage = useCallback(
     async (messageText?: string, displayText?: string) => {
@@ -274,104 +247,6 @@ export default function DreamChatScreen() {
     }
   };
 
-  // Speech-to-text: stop recording and get transcript
-  const stopRecording = useCallback(async () => {
-    const nativeSession = nativeSessionRef.current;
-    nativeSessionRef.current = null;
-    setIsRecording(false);
-
-    if (!nativeSession) return;
-
-    try {
-      const result = await nativeSession.stop();
-      const transcript = result.transcript?.trim();
-
-      if (transcript) {
-        // Replace partial text with final transcript using the original input as base
-        setInputText(() => {
-          const base = baseInputRef.current.trim();
-          return base ? `${base} ${transcript}` : transcript;
-        });
-      } else {
-        const normalizedError = result.error?.toLowerCase();
-        if (!normalizedError?.includes('no speech')) {
-          Alert.alert(
-            t('recording.alert.no_speech.title'),
-            t('recording.alert.no_speech.message')
-          );
-        }
-      }
-    } catch (error) {
-      if (__DEV__) {
-        console.warn('[DreamChat] Failed to stop speech recognition:', error);
-      }
-    }
-  }, [t]);
-
-  // Speech-to-text: start recording
-  const startRecording = useCallback(async () => {
-    try {
-      // Request microphone permission
-      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-      if (!granted) {
-        Alert.alert(
-          t('recording.alert.permission_required.title'),
-          t('recording.alert.permission_required.message')
-        );
-        return;
-      }
-
-      // Abort any existing session
-      nativeSessionRef.current?.abort();
-      baseInputRef.current = inputText;
-
-      // Start native speech session
-      const session = await startNativeSpeechSession(transcriptionLocale, {
-        onPartial: (text) => {
-          // Update input text with partial transcript
-          const base = baseInputRef.current.trim();
-          setInputText(base ? `${base} ${text}` : text);
-        },
-      });
-
-      if (!session) {
-        Alert.alert(
-          t('common.error_title'),
-          t('recording.alert.start_failed')
-        );
-        return;
-      }
-
-      nativeSessionRef.current = session;
-      setIsRecording(true);
-    } catch (error) {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
-      setIsRecording(false);
-      if (__DEV__) {
-        console.error('[DreamChat] Failed to start speech recognition:', error);
-      }
-      Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
-    }
-  }, [inputText, t, transcriptionLocale]);
-
-  // Toggle recording on/off
-  const toggleRecording = useCallback(async () => {
-    if (isRecording) {
-      await stopRecording();
-    } else {
-      await startRecording();
-    }
-  }, [isRecording, startRecording, stopRecording]);
-
-  // Cleanup speech session on unmount
-  useEffect(() => {
-    return () => {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
-    };
-  }, []);
-
   const gradientColors = mode === 'dark'
     ? GradientColors.darkBase
     : ([colors.backgroundDark, colors.backgroundDark] as const);
@@ -457,217 +332,145 @@ export default function DreamChatScreen() {
     ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
     : '';
 
-  return (
-    <LinearGradient colors={gradientColors} style={styles.gradient}>
-      <Pressable
-        onPress={handleBackPress}
-        style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
-        accessibilityRole="button"
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
-      </Pressable>
-      <KeyboardAvoidingView
-        style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={0}
-      >
-
-
-        {/* Dream Image with Title */}
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: dream.imageUrl }}
-            style={styles.dreamImage}
-            contentFit={imageConfig.contentFit}
-            transition={imageConfig.transition}
-            cachePolicy={imageConfig.cachePolicy}
-            priority={imageConfig.priority}
-            placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-          />
-          <LinearGradient
-            colors={imageGradientColors}
-            style={styles.imageGradient}
-          >
-            <Text style={[styles.dreamTitle, { color: colors.textPrimary }]} numberOfLines={2}>
-              {dream.title}
-            </Text>
-          </LinearGradient>
-        </View>
-
-        {/* Chat Messages */}
-        <ScrollView
-          ref={scrollViewRef}
-          style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
-          contentContainerStyle={styles.messagesContent}
-          showsVerticalScrollIndicator={false}
+  const headerComponent = (
+    <>
+      <View style={styles.imageContainer}>
+        <Image
+          source={{ uri: dream.imageUrl }}
+          style={styles.dreamImage}
+          contentFit={imageConfig.contentFit}
+          transition={imageConfig.transition}
+          cachePolicy={imageConfig.cachePolicy}
+          priority={imageConfig.priority}
+          placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+        />
+        <LinearGradient
+          colors={imageGradientColors}
+          style={styles.imageGradient}
         >
-          {messages.map((message, index) => (
-            <View
-              key={index}
-              style={[
-                styles.messageRow,
-                message.role === 'user' ? styles.messageRowUser : styles.messageRowAI,
-              ]}
-            >
-              {message.role === 'model' && (
-                <View style={[styles.avatarAI, { backgroundColor: colors.accent }]}>
-                  <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
-                </View>
-              )}
-              <View
-                style={[
-                  styles.messageBubble,
-                  message.role === 'user'
-                    ? [styles.messageBubbleUser, { backgroundColor: colors.accent }]
-                    : [styles.messageBubbleAI, { backgroundColor: colors.backgroundSecondary }],
+          <Text style={[styles.dreamTitle, { color: colors.textPrimary }]} numberOfLines={2}>
+            {dream.title}
+          </Text>
+        </LinearGradient>
+      </View>
+      {messages.length <= 2 && (
+        <View style={styles.quickCategoriesContainer}>
+          <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>{t('dream_chat.quick_topics')}</Text>
+          <View style={styles.quickCategories}>
+            {QUICK_CATEGORIES.map((cat) => (
+              <Pressable
+                key={cat.id}
+                style={({ pressed }) => [
+                  styles.quickCategoryButton,
+                  {
+                    backgroundColor: mode === 'dark' ? 'rgba(50, 17, 212, 0.2)' : colors.backgroundSecondary,
+                    borderColor: colors.divider,
+                  },
+                  pressed && styles.quickCategoryButtonPressed,
                 ]}
+                onPress={() => handleQuickCategory(cat.id)}
+                disabled={isLoading}
               >
-                <Text
-                  style={[
-                    styles.messageText,
-                    { color: colors.textPrimary },
-                    message.role === 'user' && styles.messageTextUser,
-                  ]}
-                >
-                  {message.text}
+                <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
+                <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
+                  {t(cat.labelKey)}
                 </Text>
-              </View>
-              {message.role === 'user' && (
-                <View style={[styles.avatarUser, { backgroundColor: colors.backgroundSecondary }]}>
-                  <MaterialCommunityIcons name="account" size={20} color={colors.textPrimary} />
-                </View>
-              )}
-            </View>
-          ))}
-
-          {isLoading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color={colors.accent} />
-              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('dream_chat.thinking')}</Text>
-            </View>
-          )}
-
-          {/* Quick Category Buttons */}
-          {messages.length <= 2 && (
-            <View style={styles.quickCategoriesContainer}>
-              <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>{t('dream_chat.quick_topics')}</Text>
-              <View style={styles.quickCategories}>
-                {QUICK_CATEGORIES.map((cat) => (
-                  <Pressable
-                    key={cat.id}
-                    style={({ pressed }) => [
-                      styles.quickCategoryButton,
-                      {
-                        backgroundColor: mode === 'dark' ? 'rgba(50, 17, 212, 0.2)' : colors.backgroundSecondary,
-                        borderColor: colors.divider
-                      },
-                      pressed && styles.quickCategoryButtonPressed,
-                    ]}
-                    onPress={() => handleQuickCategory(cat.id)}
-                    disabled={isLoading}
-                  >
-                    <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
-                    <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
-                      {t(cat.labelKey)}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </View>
-          )}
-        </ScrollView>
-
-        {/* Input Area */}
-        <View style={[styles.inputContainer, { backgroundColor: colors.backgroundDark, borderTopColor: colors.divider, paddingBottom: insets.bottom + 12 }]}>
-          {/* Message Counter */}
-          {typeof messageLimit === 'number' && (
-            <View style={[styles.messageCounterContainer]}>
-              <Ionicons
-                name="chatbubble-outline"
-                size={14}
-                color={messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary}
-              />
-              <Text style={[
-                styles.messageCounter,
-                { color: messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary }
-              ]}>
-                {messageCounterLabel}
-              </Text>
-              {messageLimitReached && (
-                <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
-                  {t('dream_chat.limit_reached')}
-                </Text>
-              )}
-            </View>
-          )}
-
-          {messageLimitReached && (
-            <View
-              testID={TID.Text.ChatLimitBanner}
-              style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}
-            >
-              <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
-              <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
-                {t('dream_chat.limit_warning')}
-              </Text>
-            </View>
-          )}
-
-          <View style={[styles.inputWrapper, { backgroundColor: colors.backgroundSecondary }]}>
-            <TextInput
-              testID={TID.Chat.Input}
-              style={[styles.input, { color: colors.textPrimary }]}
-              placeholder={
-                isRecording
-                  ? t('dream_chat.input.recording_placeholder')
-                  : messageLimitReached
-                    ? t('dream_chat.input.limit_placeholder')
-                    : t('dream_chat.input.placeholder')
-              }
-              placeholderTextColor={colors.textSecondary}
-              value={inputText}
-              onChangeText={setInputText}
-              multiline
-              maxLength={500}
-              editable={!isLoading && !messageLimitReached && !isRecording}
-            />
-            {/* Mic button for speech-to-text */}
-            <Pressable
-              testID={TID.Chat.Mic}
-              style={[
-                styles.micButton,
-                { backgroundColor: isRecording ? colors.accent : colors.backgroundCard },
-                (isLoading || messageLimitReached) && styles.sendButtonDisabled,
-              ]}
-              onPress={toggleRecording}
-              disabled={isLoading || messageLimitReached}
-              accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
-            >
-              <Ionicons
-                name={isRecording ? 'stop' : 'mic'}
-                size={20}
-                color={isRecording ? colors.textPrimary : colors.textSecondary}
-              />
-            </Pressable>
-            {/* Send button */}
-            <Pressable
-              testID={TID.Chat.Send}
-              style={[styles.sendButton, { backgroundColor: colors.accent }, (!inputText.trim() || isLoading || messageLimitReached) && styles.sendButtonDisabled]}
-              onPress={() => sendMessage()}
-              disabled={!inputText.trim() || isLoading || messageLimitReached}
-            >
-              <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
-            </Pressable>
+              </Pressable>
+            ))}
           </View>
         </View>
-      </KeyboardAvoidingView>
-    </LinearGradient>
+      )}
+    </>
+  );
+
+  const composerHeader = (
+    <>
+      {typeof messageLimit === 'number' && (
+        <View style={styles.messageCounterContainer}>
+          <Ionicons
+            name="chatbubble-outline"
+            size={14}
+            color={messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary}
+          />
+          <Text
+            style={[
+              styles.messageCounter,
+              { color: messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary },
+            ]}
+          >
+            {messageCounterLabel}
+          </Text>
+          {messageLimitReached && (
+            <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
+              {t('dream_chat.limit_reached')}
+            </Text>
+          )}
+        </View>
+      )}
+
+      {messageLimitReached && (
+        <View
+          testID={TID.Text.ChatLimitBanner}
+          style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}
+        >
+          <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
+          <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
+            {t('dream_chat.limit_warning')}
+          </Text>
+        </View>
+      )}
+    </>
+  );
+
+  const composerPlaceholder = messageLimitReached
+    ? t('dream_chat.input.limit_placeholder')
+    : t('dream_chat.input.placeholder');
+
+  return (
+    <ChatProvider isStreaming={isLoading}>
+      <LinearGradient colors={gradientColors} style={styles.gradient}>
+        <Pressable
+          onPress={handleBackPress}
+          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          accessibilityRole="button"
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+        </Pressable>
+
+        <View style={styles.chatContent}>
+          <MessagesList
+            messages={messages}
+            isLoading={isLoading}
+            loadingText={t('dream_chat.thinking')}
+            ListHeaderComponent={headerComponent}
+            style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
+          />
+        </View>
+
+        <Composer
+          value={inputText}
+          onChangeText={setInputText}
+          onSend={() => sendMessage()}
+          placeholder={composerPlaceholder}
+          isLoading={isLoading}
+          isDisabled={messageLimitReached}
+          transcriptionLocale={transcriptionLocale}
+          testID={TID.Chat.Input}
+          micTestID={TID.Chat.Mic}
+          sendTestID={TID.Chat.Send}
+          headerContent={composerHeader}
+        />
+      </LinearGradient>
+    </ChatProvider>
   );
 }
 
 const styles = StyleSheet.create({
   gradient: {
+    flex: 1,
+  },
+  chatContent: {
     flex: 1,
   },
   floatingBackButton: {
@@ -690,35 +493,6 @@ const styles = StyleSheet.create({
     // color: set dynamically
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingTop: 50,
-    paddingBottom: 12,
-    // backgroundColor and borderBottomColor: set dynamically
-    borderBottomWidth: 1,
-  },
-  backButton: {
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically
-    flex: 1,
-    textAlign: 'center',
-  },
-  headerSpacer: {
-    width: 48,
   },
   imageContainer: {
     width: '100%',
@@ -748,68 +522,6 @@ const styles = StyleSheet.create({
   messagesContainer: {
     flex: 1,
     // backgroundColor: set dynamically
-  },
-  messagesContent: {
-    padding: 16,
-    paddingBottom: 8,
-  },
-  messageRow: {
-    flexDirection: 'row',
-    marginBottom: 16,
-    gap: 8,
-  },
-  messageRowAI: {
-    justifyContent: 'flex-start',
-  },
-  messageRowUser: {
-    justifyContent: 'flex-end',
-  },
-  avatarAI: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    // backgroundColor: set dynamically
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarUser: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    // backgroundColor: set dynamically
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  messageBubble: {
-    maxWidth: '75%',
-    borderRadius: 12,
-    padding: 12,
-  },
-  messageBubbleAI: {
-    // backgroundColor: set dynamically
-  },
-  messageBubbleUser: {
-    // backgroundColor: set dynamically
-  },
-  messageText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically
-    lineHeight: 20,
-  },
-  messageTextUser: {
-    // color: set dynamically
-  },
-  loadingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingVertical: 8,
-  },
-  loadingText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically
   },
   quickCategoriesContainer: {
     marginTop: 16,
@@ -853,48 +565,6 @@ const styles = StyleSheet.create({
   missingDreamBackButtonText: {
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
-  },
-  inputContainer: {
-    // backgroundColor and borderTopColor: set dynamically
-    borderTopWidth: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    // paddingBottom is set dynamically with safe area insets
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 8,
-    // backgroundColor: set dynamically
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically
-    maxHeight: 100,
-    paddingVertical: 8,
-  },
-  sendButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    // backgroundColor: set dynamically
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sendButtonDisabled: {
-    opacity: 0.4,
-  },
-  micButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   // Exploration blocked screen
   blockedContainer: {

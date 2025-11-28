@@ -121,6 +121,7 @@ export default function RecordingScreen() {
   const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
   const skipRecorderRef = useRef(false);
+  const recorderReleasedRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
   const recordingTransitionRef = useRef(false);
@@ -194,14 +195,24 @@ export default function RecordingScreen() {
     [clampTranscript, lengthLimitMessage]
   );
 
+  const handleRecorderError = useCallback(
+    (context: string, error: unknown) => {
+      const released = handleRecorderReleaseError(context, error);
+      if (released) {
+        recorderReleasedRef.current = true;
+        isRecordingRef.current = false;
+      }
+      return released;
+    },
+    []
+  );
+
   const getRecorderIsRecording = useCallback(() => {
-    try {
-      return audioRecorder.isRecording;
-    } catch (error) {
-      handleRecorderReleaseError('isRecordingCheck', error);
+    if (recorderReleasedRef.current) {
       return false;
     }
-  }, [audioRecorder]);
+    return isRecordingRef.current;
+  }, []);
 
   const forceStopRecording = useCallback(
     async (reason: 'blur' | 'unmount') => {
@@ -231,7 +242,7 @@ export default function RecordingScreen() {
         try {
           await audioRecorder.stop();
         } catch (error) {
-          if (!handleRecorderReleaseError(`forceStopRecording:${reason}`, error) && __DEV__) {
+          if (!handleRecorderError(`forceStopRecording:${reason}`, error) && __DEV__) {
             console.warn('[Recording] failed to stop audio recorder during cleanup', error);
           }
         }
@@ -248,7 +259,7 @@ export default function RecordingScreen() {
         hasAutoStoppedRecordingRef.current = false;
       }
     },
-    [audioRecorder, getRecorderIsRecording]
+    [audioRecorder, getRecorderIsRecording, handleRecorderError]
   );
 
   // Request microphone permissions on mount
@@ -392,10 +403,17 @@ export default function RecordingScreen() {
       const usedRecorder = !skipRecorderRef.current;
 
       nativeResultPromise = nativeSession?.stop() ?? null;
-      if (usedRecorder) {
-        await audioRecorder.stop();
+      if (usedRecorder && !recorderReleasedRef.current) {
+        try {
+          await audioRecorder.stop();
+        } catch (error) {
+          if (!handleRecorderError('stopRecording', error)) {
+            throw error;
+          }
+        }
       }
-      const uri = usedRecorder ? audioRecorder.uri ?? undefined : undefined;
+      const uri =
+        usedRecorder && !recorderReleasedRef.current ? audioRecorder.uri ?? undefined : undefined;
 
       let transcriptText = '';
       let recordedUri: string | undefined;
@@ -462,7 +480,7 @@ export default function RecordingScreen() {
         );
       }
     } catch (err) {
-      if (handleRecorderReleaseError('stopRecording', err)) {
+      if (handleRecorderError('stopRecording', err)) {
         return;
       }
       nativeSession?.abort();
@@ -481,7 +499,7 @@ export default function RecordingScreen() {
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale, t, combineTranscript, lengthLimitMessage]);
+  }, [audioRecorder, transcriptionLocale, t, combineTranscript, lengthLimitMessage, handleRecorderError]);
 
   const startRecording = useCallback(async () => {
     try {
@@ -510,6 +528,7 @@ export default function RecordingScreen() {
         playsInSilentMode: true,
       });
 
+      recorderReleasedRef.current = false;
       nativeSessionRef.current?.abort();
       baseTranscriptRef.current = transcript;
       nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
@@ -553,12 +572,13 @@ export default function RecordingScreen() {
       nativeSessionRef.current = null;
       skipRecorderRef.current = false;
       isRecordingRef.current = false;
+      handleRecorderError('startRecording', err);
       if (__DEV__) {
         console.error('Failed to start recording:', err);
       }
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
-  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording]);
+  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording, handleRecorderError]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -587,7 +607,7 @@ export default function RecordingScreen() {
           void stopRecording();
         }
       } catch (error) {
-        handleRecorderReleaseError('appStateChange', error);
+        handleRecorderError('appStateChange', error);
       }
     });
 
@@ -599,12 +619,12 @@ export default function RecordingScreen() {
           void stopRecording();
         }
       } catch (error) {
-        if (!handleRecorderReleaseError('appStateCleanup', error)) {
+        if (!handleRecorderError('appStateCleanup', error)) {
           throw error;
         }
       }
     };
-  }, [audioRecorder, getRecorderIsRecording, stopRecording]);
+  }, [getRecorderIsRecording, handleRecorderError, stopRecording]);
 
   const handleSaveDream = useCallback(async () => {
     const hasActiveRecording =
