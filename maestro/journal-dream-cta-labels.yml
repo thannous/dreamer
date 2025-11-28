@@ -1,0 +1,54 @@
+# Verify dream detail CTA labels for analyzed vs explored states (mock existing user)
+appId: com.tanuki75.noctalia
+---
+- launchApp
+- tapOn:
+      id: tab.settings
+- tapOn:
+      id: btn.mockProfile.existing
+- assertVisible: "mock.existing@dreamer.app"
+- tapOn:
+      id: tab.journal
+- waitForAnimationToEnd
+
+# Un-tagged as analyzed -> primary CTA shows Analyze dream
+- scrollUntilVisible:
+      element:
+          text: "The Shadowy Pursuer"
+      direction: DOWN
+- tapOn: "The Shadowy Pursuer"
+- scrollUntilVisible:
+      element:
+          text: "Analyze dream"
+      direction: DOWN
+- assertVisible: "Analyze dream"
+- tapOn:
+      id: btn.navigateJournal
+- waitForAnimationToEnd
+
+# Analyzed but not explored -> Explore dream further
+- scrollUntilVisible:
+      element:
+          text: "The Infinite Library"
+      direction: DOWN
+- tapOn: "The Infinite Library"
+- scrollUntilVisible:
+      element:
+          text: "Explore dream further"
+      direction: DOWN
+- assertVisible: "Explore dream further"
+- tapOn:
+      id: btn.navigateJournal
+- waitForAnimationToEnd
+
+# Explored -> Continue analyzing
+- scrollUntilVisible:
+      element:
+          text: "Ocean of Stars"
+      direction: DOWN
+- tapOn: "Ocean of Stars"
+- scrollUntilVisible:
+      element:
+          text: "Continue analyzing"
+      direction: DOWN
+- assertVisible: "Continue analyzing"
