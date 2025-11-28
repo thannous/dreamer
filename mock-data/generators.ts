@@ -2,7 +2,7 @@
  * Generators for random mock data
  */
 
-import type { DreamAnalysis, ChatMessage, DreamTheme, DreamType } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { getRandomImageForTheme, getThumbnailUrl } from './assets';
 
 const DREAM_TITLES = [
@@ -82,6 +82,7 @@ export function generateRandomDream(): Omit<DreamAnalysis, 'id'> {
     dreamType: DREAM_TYPES[Math.floor(Math.random() * DREAM_TYPES.length)],
     imageUrl: getRandomImageForTheme(theme),
     thumbnailUrl: getThumbnailUrl(getRandomImageForTheme(theme)),
+    imageSource: 'ai',
     chatHistory: [],
     isFavorite: Math.random() > 0.7,
     imageGenerationFailed: false,

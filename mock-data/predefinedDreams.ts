@@ -8,7 +8,7 @@ import type { DreamAnalysis } from '@/lib/types';
  * Collection of predefined dreams with realistic content
  * These can be injected into mock storage when the "existing user" profile is selected
  */
-export const PREDEFINED_DREAMS: Array<Omit<DreamAnalysis, 'id'>> = [
+export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
   {
     title: 'The Infinite Library',
     transcript: 'I found myself in an enormous library with endless shelves reaching up into darkness. Books were floating around me, their pages turning on their own. I picked up a golden book that seemed to glow, and when I opened it, I could see memories from my childhood playing out on the pages like a movie.',
@@ -163,6 +163,7 @@ export function getPredefinedDreamsWithTimestamps(): DreamAnalysis[] {
       id: timestamp, // Use number timestamp as ID
       isAnalyzed: dream.isAnalyzed ?? true,
       analysisStatus: dream.analysisStatus ?? 'done',
+      imageSource: dream.imageSource ?? (dream.imageUrl ? 'ai' : undefined),
     };
 
     if (baseDream.isAnalyzed && baseDream.analyzedAt == null && seededAnalyses < PRELOADED_ANALYSIS_USAGE) {
