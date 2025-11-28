@@ -15,8 +15,8 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { NativeModules, Platform } from 'react-native';
 import 'react-native-reanimated';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
@@ -63,6 +63,12 @@ if (__DEV__) {
 // Prevent the splash screen from auto-hiding before fonts are loaded
 SplashScreen.preventAutoHideAsync();
 
+const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
+  Platform.OS !== 'web' && NativeModules?.KeyboardController
+    ? // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require('react-native-keyboard-controller').KeyboardProvider
+    : ({ children }) => <>{children}</>;
+
 export const unstable_settings = {
   anchor: '(tabs)',
 };
@@ -101,18 +107,20 @@ function RootLayoutNav() {
 
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
-      <DreamsProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="recording" options={{ headerShown: false }} />
-          <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
-          <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
-          <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
-          <Stack.Screen name="paywall" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
-        </Stack>
-      </DreamsProvider>
-      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <KeyboardProviderComponent>
+        <DreamsProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="recording" options={{ headerShown: false }} />
+            <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="paywall" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
+          </Stack>
+        </DreamsProvider>
+        <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      </KeyboardProviderComponent>
     </NavigationThemeProvider>
   );
 }

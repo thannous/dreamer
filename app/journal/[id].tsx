@@ -12,13 +12,13 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamExplored } from '@/lib/dreamUsage';
+import { getDreamDetailAction, isDreamExplored } from '@/lib/dreamUsage';
 import { QuotaError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { generateImageForDream } from '@/services/geminiService';
+import { generateImageFromTranscript } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -144,6 +144,7 @@ export default function JournalDetailScreen() {
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
+  const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -286,6 +287,7 @@ export default function JournalDetailScreen() {
     };
   }, [isEditingTranscript, transcriptPulse]);
 
+  const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
   const hasExistingChat = useMemo(() => {
     if (!dream) {
       return false;
@@ -295,9 +297,16 @@ export default function JournalDetailScreen() {
     }
     return dream.chatHistory.some((message) => message.role === 'model');
   }, [dream]);
-  const exploreButtonLabel = hasExistingChat
-    ? t('journal.detail.explore_button.continue')
-    : t('journal.detail.explore_button.new');
+  const exploreButtonLabel = useMemo(() => {
+    if (primaryAction === 'analyze') {
+      return t('journal.detail.analyze_button.default');
+    }
+    if (primaryAction === 'continue') {
+      return t('journal.detail.explore_button.continue');
+    }
+    return t('journal.detail.explore_button.new');
+  }, [primaryAction, t]);
+  const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
   const shareMessage = useMemo(() => {
     if (!dream) return '';
     const sections: string[] = [];
@@ -408,9 +417,11 @@ export default function JournalDetailScreen() {
         imageUrl: selectedUri,
         thumbnailUrl: selectedUri,
         imageGenerationFailed: false,
+        imageSource: 'user',
       };
 
       await updateDream(updatedDream);
+      setIsEditing(false);
     } catch (error) {
       const msg = error instanceof Error ? error.message : t('common.unknown_error');
       Alert.alert(t('common.error_title'), msg);
@@ -419,18 +430,6 @@ export default function JournalDetailScreen() {
     }
   }, [dream, updateDream, t]);
 
-  const handleTranscriptSave = useCallback(async () => {
-    if (!dream) return;
-    const normalizedTranscript = editableTranscript.trim().length === 0
-      ? dream.transcript
-      : editableTranscript;
-    const updatedDream: DreamAnalysis = {
-      ...dream,
-      transcript: normalizedTranscript,
-    };
-    await updateDream(updatedDream);
-    setIsEditingTranscript(false);
-  }, [dream, editableTranscript, updateDream]);
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
     setShareModalVisible(true);
@@ -455,6 +454,11 @@ export default function JournalDetailScreen() {
 
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
+  const imageCacheKey = useMemo(() => {
+    if (!dream?.imageUrl) return undefined;
+    const version = dream.analyzedAt ?? dream.analysisRequestId ?? dream.id;
+    return `${dream.imageUrl}|${version}`;
+  }, [dream?.analysisRequestId, dream?.analyzedAt, dream?.id, dream?.imageUrl]);
 
   const getShareableImageUri = useCallback(async () => {
     if (!shareImage) {
@@ -569,18 +573,20 @@ export default function JournalDetailScreen() {
 
     setIsRetryingImage(true);
     try {
-      // Get the image prompt from the dream's analysis
-      // We need to reconstruct it or store it - for now we'll use a generic approach
-      // In a real scenario, you'd want to store the imagePrompt in the DreamAnalysis type
-      const imageUrl = await generateImageForDream(dream.interpretation);
+      const sourceText = dream.transcript?.trim() || dream.interpretation?.trim();
+      if (!sourceText) {
+        throw new Error(t('journal.detail.image.no_source'));
+      }
+
+      const imageUrl = await generateImageFromTranscript(sourceText);
       const thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
 
-      // Update the dream with the new image
       const updatedDream = {
         ...dream,
         imageUrl,
         thumbnailUrl,
         imageGenerationFailed: false,
+        imageSource: 'ai',
       };
 
       await updateDream(updatedDream);
@@ -635,7 +641,7 @@ export default function JournalDetailScreen() {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, canAnalyzeNow, dream, t]
+    [analyzeDream, canAnalyzeNow, dream, language, t]
   );
 
   const handleAnalyze = useCallback(() => {
@@ -665,6 +671,34 @@ export default function JournalDetailScreen() {
   const handleKeepImage = useCallback(() => {
     void runAnalyze(false);
   }, [runAnalyze]);
+
+  const handleDismissReanalyzeSheet = useCallback(() => {
+    setShowReanalyzeSheet(false);
+  }, []);
+
+  const handleConfirmReanalyze = useCallback(() => {
+    setShowReanalyzeSheet(false);
+    void runAnalyze(true);
+  }, [runAnalyze]);
+
+  const handleTranscriptSave = useCallback(async () => {
+    if (!dream) return;
+    const normalizedTranscript = editableTranscript.trim().length === 0
+      ? dream.transcript
+      : editableTranscript;
+    const transcriptChanged = normalizedTranscript !== dream.transcript;
+
+    const updatedDream: DreamAnalysis = {
+      ...dream,
+      transcript: normalizedTranscript,
+    };
+    await updateDream(updatedDream);
+    setIsEditingTranscript(false);
+
+    if (transcriptChanged) {
+      setShowReanalyzeSheet(true);
+    }
+  }, [dream, editableTranscript, updateDream]);
 
   const handleDismissReplaceSheet = useCallback(() => {
     setShowReplaceImageSheet(false);
@@ -959,7 +993,8 @@ export default function JournalDetailScreen() {
                 {dream.imageUrl ? (
                   <>
                     <Image
-                      source={{ uri: dream.imageUrl }}
+                      key={imageCacheKey ?? dream.imageUrl}
+                      source={{ uri: dream.imageUrl, cacheKey: imageCacheKey }}
                       style={styles.dreamImage}
                       contentFit={imageConfig.contentFit}
                       transition={imageConfig.transition}
@@ -974,40 +1009,79 @@ export default function JournalDetailScreen() {
                 ) : dream.analysisStatus === 'pending' ? (
                   <Skeleton style={{ width: '100%', height: '100%' }} />
                 ) : (
-                  <Pressable
-                    onPress={handlePickImage}
-                    disabled={isPickingImage}
+                  <View
                     style={[
                       styles.dreamImage,
+                      styles.imagePlaceholderCard,
                       {
-                        justifyContent: 'center',
-                        alignItems: 'center',
                         backgroundColor: colors.backgroundSecondary,
-                        flexDirection: 'column',
+                        borderColor: colors.divider,
                       },
                     ]}
                   >
-                    {isPickingImage ? (
-                      <ActivityIndicator color={colors.textPrimary} />
-                    ) : (
-                      <>
-                        <Ionicons name="image-outline" size={28} color={colors.textSecondary} />
-                        <Text
-                          style={{
-                            marginTop: 8,
-                            color: colors.textSecondary,
-                            fontFamily: Fonts.spaceGrotesk.medium,
-                            fontSize: 14,
-                          }}
-                        >
-                          {t('journal.detail.add_image')}
+                    <Ionicons name="image-outline" size={32} color={colors.textSecondary} />
+                    <Text style={[styles.imagePlaceholderTitle, { color: colors.textPrimary }]}>
+                      {t('journal.detail.image.no_image_title')}
+                    </Text>
+                    <Text style={[styles.imagePlaceholderSubtitle, { color: colors.textSecondary }]}>
+                      {t('journal.detail.image.no_image_subtitle')}
+                    </Text>
+                    <View style={styles.imageActionsColumn}>
+                      <Pressable
+                        onPress={onRetryImage}
+                        disabled={isRetryingImage}
+                        style={[
+                          styles.imageActionButton,
+                          shadows.md,
+                          { backgroundColor: colors.accent },
+                          isRetryingImage && styles.imageActionButtonDisabled,
+                        ]}
+                      >
+                        {isRetryingImage ? (
+                          <ActivityIndicator color={colors.textPrimary} />
+                        ) : (
+                          <Ionicons name="refresh" size={18} color={colors.textPrimary} />
+                        )}
+                        <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                          {isRetryingImage
+                            ? t('image_retry.generating')
+                            : t('journal.detail.image.generate_action')}
                         </Text>
-                      </>
-                    )}
-                  </Pressable>
+                      </Pressable>
+
+                      <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                        {t('journal.detail.image.or')}
+                      </Text>
+
+                      <Pressable
+                        onPress={handlePickImage}
+                        disabled={isPickingImage}
+                        style={[
+                          styles.imageActionButton,
+                          styles.imageActionButtonSecondary,
+                          {
+                            borderColor: colors.divider,
+                          },
+                          isPickingImage && styles.imageActionButtonDisabled,
+                        ]}
+                      >
+                        {isPickingImage ? (
+                          <ActivityIndicator color={colors.textPrimary} />
+                        ) : (
+                          <Ionicons name="image-outline" size={18} color={colors.textPrimary} />
+                        )}
+                        <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                          {isPickingImage
+                            ? t('image_retry.generating')
+                            : t('journal.detail.image.add_from_library')}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </View>
                 )}
               </View>
             </View>
+
           )}
 
           {/* Content Card - Overlaps image */}
@@ -1051,9 +1125,14 @@ export default function JournalDetailScreen() {
                       backgroundColor: colors.accent,
                       borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
                     }]}
-                    onPress={handleExplorePress}
+                    onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
+                    disabled={isPrimaryActionBusy}
                   >
-                    <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                    {isPrimaryActionBusy ? (
+                      <ActivityIndicator color={colors.textPrimary} />
+                    ) : (
+                      <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                    )}
                     <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
                   </Pressable>
                 )}
@@ -1168,6 +1247,44 @@ export default function JournalDetailScreen() {
               styles.pointerAuto,
             ]}
           >
+            {dream.imageUrl ? (
+              <View
+                style={[
+                  styles.imageEditOverlay,
+                  { borderColor: 'transparent', backgroundColor: 'transparent' },
+                ]}
+              >
+                {dream.imageSource !== 'ai' ? (
+                  <Pressable
+                    onPress={handlePickImage}
+                    disabled={isPickingImage}
+                    style={[
+                      styles.imageEditButton,
+                      {
+                        backgroundColor: colors.backgroundCard,
+                        borderColor: colors.divider,
+                      },
+                      isPickingImage && styles.imageActionButtonDisabled,
+                    ]}
+                  >
+                    {isPickingImage ? (
+                      <ActivityIndicator color={colors.textPrimary} />
+                    ) : (
+                      <Ionicons name="image-outline" size={18} color={colors.textPrimary} />
+                    )}
+                    <Text style={[styles.imageEditButtonText, { color: colors.textPrimary }]}>
+                      {isPickingImage
+                        ? t('image_retry.generating')
+                        : t('journal.detail.image.replace_user_button')}
+                    </Text>
+                  </Pressable>
+                ) : (
+                  <Text style={[styles.imageEditNote, { color: colors.textSecondary }]}>
+                    {t('journal.detail.image.ai_locked_note')}
+                  </Text>
+                )}
+              </View>
+            ) : null}
             <View style={{ marginBottom: floatingTranscriptBottom }}>
               {renderMetadataCard('floating')}
             </View>
@@ -1236,6 +1353,50 @@ export default function JournalDetailScreen() {
             </Pressable>
           </View>
           <Pressable onPress={handleDismissReplaceSheet} style={styles.sheetLinkButton}>
+            <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
+              {t('common.cancel')}
+            </Text>
+          </Pressable>
+        </BottomSheet>
+        <BottomSheet
+          visible={showReanalyzeSheet}
+          onClose={handleDismissReanalyzeSheet}
+          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+          style={[
+            styles.replaceImageSheet,
+            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+            shadows.xl,
+          ]}
+        >
+          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+          <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+            {t('journal.detail.reanalyze_prompt.title')}
+          </Text>
+          <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+            {t('journal.detail.reanalyze_prompt.message')}
+          </Text>
+          <View style={styles.sheetButtons}>
+            <Pressable
+              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
+              onPress={handleConfirmReanalyze}
+            >
+              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+                {t('journal.detail.reanalyze_prompt.reanalyze')}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.sheetSecondaryButton,
+                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+              ]}
+              onPress={handleDismissReanalyzeSheet}
+            >
+              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+                {t('journal.detail.reanalyze_prompt.later')}
+              </Text>
+            </Pressable>
+          </View>
+          <Pressable onPress={handleDismissReanalyzeSheet} style={styles.sheetLinkButton}>
             <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
               {t('common.cancel')}
             </Text>
@@ -1380,6 +1541,107 @@ const styles = StyleSheet.create({
   dreamImage: {
     width: '100%',
     height: '100%',
+  },
+  imagePlaceholderCard: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  imagePlaceholderTitle: {
+    fontSize: 18,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textAlign: 'center',
+  },
+  imagePlaceholderSubtitle: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    textAlign: 'center',
+    lineHeight: 20,
+    paddingHorizontal: 8,
+  },
+  imageActionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    width: '100%',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  imageActionsColumn: {
+    width: '100%',
+    gap: 12,
+    alignItems: 'center',
+  },
+  imageActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    minWidth: 150,
+    gap: 8,
+  },
+  imageActionButtonSecondary: {
+    borderWidth: 1,
+    backgroundColor: 'transparent',
+  },
+  imageActionButtonDisabled: {
+    opacity: 0.7,
+  },
+  imageActionText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 15,
+  },
+  imageOrText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    letterSpacing: 0.2,
+  },
+  imageEditRow: {
+    marginTop: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: '92%',
+    zIndex: 2,
+  },
+  imageEditOverlay: {
+    width: '100%',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderRadius: 0,
+    borderWidth: 0,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  imageEditButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  imageEditButtonText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 14,
+  },
+  imageEditNote: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 18,
   },
   imageOverlay: {
     position: 'absolute',
