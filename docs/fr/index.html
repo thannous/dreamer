@@ -906,7 +906,7 @@
         function setupWaitlistCapture() {
             const modal = document.createElement('div');
             modal.id = 'waitlist-modal';
-            modal.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center px-4';
+            modal.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center px-4 z-50';
             modal.innerHTML = `
                 <div class=\"bg-[#120720] border border-white/10 rounded-2xl w-full max-w-md p-6 relative glass-panel\">
                     <button type=\"button\" id=\"waitlist-close\" class=\"absolute top-4 right-4 text-gray-400 hover:text-white\" aria-label=\"Fermer le formulaire\">
