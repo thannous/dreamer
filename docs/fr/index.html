@@ -883,8 +883,8 @@
         const IOS_URL = 'https://apps.apple.com/app/id0000000000';
         const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.noctalia';
         const WAITLIST_ENDPOINT = 'https://usuyppgsmmowzizhaoqj.supabase.co/functions/v1/waitlist';
-        // jeton anon legacy (JWT) pour satisfaire verify_jwt sur la fonction Edge
-        const WAITLIST_AUTH = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzdXlwcGdzbW1vd3ppemhhb3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NDQ1MTAsImV4cCI6MjA3NjQyMDUxMH0.ecPYWwbUf7a4tyobTt5Oiw4hzHVPLsITgnsezBENbaM';
+        // laissé vide pour éviter les soucis CORS ; la fonction accepte les appels non authentifiés
+        const WAITLIST_AUTH = '';
         const WAITLIST_SOURCE = 'landing-fr';
 
         const liveParam = new URLSearchParams(window.location.search).get('live');
@@ -952,12 +952,11 @@
                 e.preventDefault();
                 statusEl.textContent = 'Envoi...';
                 try {
+                    const headers = { 'content-type': 'application/json' };
+                    if (WAITLIST_AUTH) { headers['authorization'] = WAITLIST_AUTH; }
                     const res = await fetch(WAITLIST_ENDPOINT, {
                         method: 'POST',
-                        headers: {
-                            'content-type': 'application/json',
-                            'authorization': WAITLIST_AUTH,
-                        },
+                        headers,
                         body: JSON.stringify({
                             email: emailInput.value,
                             locale: 'fr',
