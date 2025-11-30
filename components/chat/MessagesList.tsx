@@ -62,7 +62,19 @@ function UserMessage({ message }: { message: ChatMessage; index: number }) {
  * AssistantMessage - Styled AI message bubble with streaming support
  */
 function AssistantMessage({ message, isStreaming }: { message: ChatMessage; index: number; isStreaming: boolean }) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+
+  const aiBubbleStyle = mode === 'dark'
+    ? {
+        backgroundColor: colors.backgroundCard,
+        borderColor: 'rgba(255,255,255,0.12)',
+        borderWidth: 1,
+      }
+    : {
+        backgroundColor: colors.backgroundSecondary,
+        borderColor: colors.divider,
+        borderWidth: 1,
+      };
 
   return (
     <FadeInStaggered>
@@ -70,7 +82,7 @@ function AssistantMessage({ message, isStreaming }: { message: ChatMessage; inde
         <View style={[styles.avatar, { backgroundColor: colors.accent }]}>
           <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
         </View>
-        <View style={[styles.messageBubble, styles.messageBubbleAI, { backgroundColor: colors.backgroundSecondary }]}>
+        <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
           <TextFadeInStaggeredIfStreaming
             isStreaming={isStreaming}
             style={[styles.messageText, { color: colors.textPrimary }]}
