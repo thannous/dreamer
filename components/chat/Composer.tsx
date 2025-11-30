@@ -18,21 +18,21 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AudioModule } from 'expo-audio';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    Alert,
-    NativeModules,
-    Platform,
-    Pressable,
-    StyleSheet,
-    TextInput,
-    View,
-    type LayoutChangeEvent,
-    type ViewStyle,
+  Alert,
+  NativeModules,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+  type LayoutChangeEvent,
+  type ViewStyle,
 } from 'react-native';
 import Animated, {
-    runOnUI,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
+  runOnUI,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -64,6 +64,7 @@ interface ComposerProps {
   transcriptionLocale?: string;
   testID?: string;
   headerContent?: React.ReactNode;
+  footerContent?: React.ReactNode;
   micTestID?: string;
   sendTestID?: string;
 }
@@ -78,15 +79,15 @@ export function Composer({
   transcriptionLocale = 'en-US',
   testID,
   headerContent,
+  footerContent,
   micTestID,
   sendTestID,
 }: ComposerProps) {
   const { t } = useTranslation();
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const insets = useSafeAreaInsets();
   const { composerHeight } = useComposerHeightContext();
-  // Keyboard state available for future use (e.g., adjusting UI based on keyboard)
-  useKeyboardStateContext();
+  const { keyboardHeight } = useKeyboardStateContext();
 
   const [isRecording, setIsRecording] = useState(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
@@ -193,6 +194,14 @@ export function Composer({
     };
   });
 
+  // Lift the composer above the keyboard on Android (KeyboardStickyView handles iOS)
+  const animatedWrapperStyle = useAnimatedStyle(() => {
+    const offset = Platform.OS === 'android' ? keyboardHeight.value.value : 0;
+    return {
+      transform: [{ translateY: withTiming(-offset, { duration: 160 }) }],
+    };
+  }, [keyboardHeight]);
+
   const canSend = value.trim().length > 0 && !isLoading && !isDisabled;
 
   const composerContent = (
@@ -200,13 +209,22 @@ export function Composer({
       ref={containerRef}
       style={[
         styles.container,
-        { backgroundColor: colors.backgroundDark },
+        { backgroundColor: 'transparent' },
         animatedContainerStyle,
       ]}
       onLayout={handleLayout}
     >
       {headerContent}
-      <View style={[styles.inputWrapper, { backgroundColor: colors.backgroundSecondary }]}>
+      <View
+        style={[
+          styles.inputWrapper,
+          {
+            backgroundColor: mode === 'dark' ? 'rgba(255,255,255,1)' : colors.backgroundSecondary,
+            borderColor: mode === 'dark' ? 'rgba(255,255,255,0.14)' : colors.divider,
+            borderWidth: 1,
+          },
+        ]}
+      >
         <TextInput
           testID={testID}
           style={[styles.input, { color: colors.textPrimary }]}
@@ -215,7 +233,7 @@ export function Composer({
               ? t('dream_chat.input.recording_placeholder')
               : placeholder || t('dream_chat.input.placeholder')
           }
-          placeholderTextColor={colors.textSecondary}
+          placeholderTextColor={mode === 'dark' ? '#e4def7' : colors.textSecondary}
           value={value}
           onChangeText={onChangeText}
           multiline
@@ -256,6 +274,11 @@ export function Composer({
           <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
         </Pressable>
       </View>
+      {footerContent ? (
+        <View style={styles.footerContainer}>
+          {footerContent}
+        </View>
+      ) : null}
     </Animated.View>
   );
 
@@ -273,9 +296,11 @@ export function Composer({
 
   // Fallback for Android or when KeyboardStickyView not available
   return (
-    <View style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }]}>
+    <Animated.View
+      style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }, animatedWrapperStyle]}
+    >
       {composerContent}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -295,7 +320,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(255,255,255,0.1)',
   },
   inputWrapper: {
@@ -322,5 +346,9 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     opacity: 0.4,
+  },
+  footerContainer: {
+    marginTop: 0,
+    alignItems: 'center',
   },
 });

@@ -3,7 +3,7 @@ import { MessagesList } from '@/components/chat/MessagesList';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
-import { ChatProvider } from '@/context/ChatContext';
+import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -21,6 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
 
@@ -383,48 +384,21 @@ export default function DreamChatScreen() {
     </>
   );
 
-  const composerHeader = (
-    <>
-      {typeof messageLimit === 'number' && (
-        <View style={styles.messageCounterContainer}>
-          <Ionicons
-            name="chatbubble-outline"
-            size={14}
-            color={messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary}
-          />
-          <Text
-            style={[
-              styles.messageCounter,
-              { color: messagesRemaining <= 5 ? '#EF4444' : colors.textSecondary },
-            ]}
-          >
-            {messageCounterLabel}
-          </Text>
-          {messageLimitReached && (
-            <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
-              {t('dream_chat.limit_reached')}
-            </Text>
-          )}
-        </View>
-      )}
-
-      {messageLimitReached && (
-        <View
-          testID={TID.Text.ChatLimitBanner}
-          style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}
-        >
-          <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
-          <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
-            {t('dream_chat.limit_warning')}
-          </Text>
-        </View>
-      )}
-    </>
-  );
-
   const composerPlaceholder = messageLimitReached
     ? t('dream_chat.input.limit_placeholder')
     : t('dream_chat.input.placeholder');
+
+  const composerFooter = typeof messageLimit === 'number'
+    ? (
+      <ComposerFooter
+        colors={colors}
+        messageCounterLabel={messageCounterLabel}
+        messageLimitReached={messageLimitReached}
+        messagesRemaining={messagesRemaining}
+        t={t}
+      />
+    )
+    : null;
 
   return (
     <ChatProvider isStreaming={isLoading}>
@@ -459,10 +433,73 @@ export default function DreamChatScreen() {
           testID={TID.Chat.Input}
           micTestID={TID.Chat.Mic}
           sendTestID={TID.Chat.Send}
-          headerContent={composerHeader}
+          footerContent={composerFooter}
         />
       </LinearGradient>
     </ChatProvider>
+  );
+}
+
+type ComposerFooterProps = {
+  colors: ReturnType<typeof useTheme>['colors'];
+  messageCounterLabel: string;
+  messageLimitReached: boolean;
+  messagesRemaining: number;
+  t: (key: string, options?: Record<string, unknown>) => string;
+};
+
+function ComposerFooter({
+  colors,
+  messageCounterLabel,
+  messageLimitReached,
+  messagesRemaining,
+  t,
+}: ComposerFooterProps) {
+  const { isKeyboardVisible } = useKeyboardStateContext();
+
+  const footerAnimatedStyle = useAnimatedStyle(() => {
+    const hidden = isKeyboardVisible.value.value;
+    return {
+      opacity: withTiming(hidden ? 0 : 1, { duration: 150 }),
+      transform: [{ translateY: withTiming(hidden ? 8 : 0, { duration: 150 }) }],
+    };
+  }, [isKeyboardVisible]);
+
+  return (
+    <Animated.View style={[styles.footerWrapper, footerAnimatedStyle]} pointerEvents="none">
+      <View style={styles.messageCounterContainer}>
+        <Ionicons
+          name="chatbubble-outline"
+          size={14}
+          color={messagesRemaining <= 5 ? '#EF4444' : colors.textPrimary}
+        />
+        <Text
+          style={[
+            styles.messageCounter,
+            { color: messagesRemaining <= 5 ? '#EF4444' : colors.textPrimary },
+          ]}
+        >
+          {messageCounterLabel}
+        </Text>
+        {messageLimitReached && (
+          <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
+            {t('dream_chat.limit_reached')}
+          </Text>
+        )}
+      </View>
+
+      {messageLimitReached && (
+        <View
+          testID={TID.Text.ChatLimitBanner}
+          style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}
+        >
+          <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
+          <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
+            {t('dream_chat.limit_warning')}
+          </Text>
+        </View>
+      )}
+    </Animated.View>
   );
 }
 
@@ -635,5 +672,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     flex: 1,
     lineHeight: 18,
+  },
+  footerWrapper: {
+    width: '100%',
+    marginTop: 8,
   },
 });
