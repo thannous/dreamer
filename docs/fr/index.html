@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noctalia | Le journal de rêves intelligent</title>
-    <meta name="description" content="Noctalia est le compagnon de rêves intelligent : capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.">
+    <meta name="description"
+        content="Noctalia est le compagnon de rêves intelligent : capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.">
     <link rel="canonical" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
@@ -13,7 +15,9 @@
     <!-- Google Fonts: Fraunces (Premium Serif) & Outfit (Clean Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&family=Outfit:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -31,7 +35,7 @@
                             salmonLight: '#FFCCB5',
                             glass: 'rgba(255, 255, 255, 0.03)',
                             glassBorder: 'rgba(255, 255, 255, 0.08)',
-                            accent: '#a855f7' 
+                            accent: '#a855f7'
                         }
                     },
                     fontFamily: {
@@ -68,9 +72,11 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #0a0514;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #4c1d95;
             border-radius: 4px;
@@ -78,16 +84,19 @@
 
         /* Mesh Gradient Background Animation */
         .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                        radial-gradient(at 50% 0%, hsla(260,39%,20%,1) 0, transparent 50%), 
-                        radial-gradient(at 100% 0%, hsla(339,49%,20%,1) 0, transparent 50%);
+            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
             background-size: 200% 200%;
             animation: aurora 20s ease infinite;
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: -1;
         }
-        
+
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -105,12 +114,12 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
+
         .glass-panel:hover {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.15);
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .glass-button {
@@ -119,6 +128,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             transition: all 0.3s ease;
         }
+
         .glass-button:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: scale(1.02);
@@ -126,7 +136,7 @@
 
         /* Phone Frame Utility */
         .phone-frame {
-            border: 4px solid rgba(255,255,255,0.1);
+            border: 4px solid rgba(255, 255, 255, 0.1);
             border-radius: 32px;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -136,10 +146,12 @@
 
         /* Reveal on Scroll - Safe Fallback */
         .reveal {
-            opacity: 0; /* Initial state */
+            opacity: 0;
+            /* Initial state */
             transform: translateY(40px);
             transition: all 0.8s ease-out;
         }
+
         /* If JS fails, we might want to force visibility, but for now we rely on robust JS. 
            If no-js is critical, we could add a noscript tag style. */
         .reveal.active {
@@ -148,16 +160,25 @@
         }
 
         @keyframes aurora {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
-        
+
         /* Accordion for FAQ */
-        details > summary {
+        details>summary {
             list-style: none;
         }
-        details > summary::-webkit-details-marker {
+
+        details>summary::-webkit-details-marker {
             display: none;
         }
 
@@ -166,7 +187,7 @@
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
-        
+
         .marquee-content {
             display: flex;
             gap: 2rem;
@@ -174,26 +195,53 @@
             animation: marquee 40s linear infinite;
             padding-left: 2rem;
         }
-        
+
         .marquee-content:hover {
             animation-play-state: paused;
         }
-        
+
         @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* État des CTA (pré-lancement par défaut) */
+        :root:not(.store-live) [data-cta="live"] { display: none !important; }
+        .store-live [data-cta="prelaunch"] { display: none !important; }
+        :root:not(.store-live) [data-subscription="live"] { display: none !important; }
+        .store-live [data-subscription="prelaunch"] { display: none !important; }
+
+        /* Garde-fous pour éviter le scroll horizontal sur mobile */
+        html, body {
+            overflow-x: hidden;
+        }
+
+        .orb {
+            max-width: 100vw;
+            max-height: 100vw;
+        }
+
+        .marquee-container {
+            overflow: hidden;
         }
     </style>
 </head>
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+
+<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden"
+    style="background-color: #0a0514;">
 
     <!-- Ambient Background -->
     <div class="aurora-bg"></div>
     <div class="noise-overlay"></div>
-    
+
     <!-- Floating Orbs -->
-    <div class="orb w-[40rem] h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
-    <div class="orb w-[50rem] h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
+    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
+    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
@@ -208,13 +256,20 @@
                 <a href="#temoignages" class="hover:text-white transition-colors">Témoignages</a>
             </div>
             <div class="flex items-center gap-3">
-                <a href="../en/index.html" hreflang="en" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" aria-label="Switch to English version">
+                <a href="../en/index.html" hreflang="en"
+                    class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors"
+                    aria-label="Switch to English version">
                     <i data-lucide="languages" class="w-4 h-4"></i>
                     EN
                 </a>
-                <a href="#download" class="hidden sm:block glass-button px-6 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">
-                    Télécharger
+                <a data-cta="prelaunch" data-waitlist
+                    class="hidden sm:block glass-button px-6 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">
+                    Rejoindre la liste d'attente
                 </a>
+                <div data-cta="live" hidden class="hidden sm:flex items-center gap-2">
+                    <a data-ios-store class="glass-button px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">App Store</a>
+                    <a data-android-store class="glass-button px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">Google Play</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -222,43 +277,64 @@
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-hidden">
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
-            
+
             <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-dream-salmon/30 bg-dream-salmon/10 backdrop-blur-md mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.1s;">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-dream-salmon/30 bg-dream-salmon/10 backdrop-blur-md mb-8 animate-fade-in-up opacity-0"
+                style="animation-delay: 0.1s;">
                 <span class="w-2 h-2 rounded-full bg-dream-salmon animate-pulse"></span>
-                <span class="text-xs font-sans uppercase tracking-widest text-dream-salmonLight">Votre compagnon de rêves</span>
+                <span class="text-xs font-sans uppercase tracking-widest text-dream-salmonLight">Votre compagnon de
+                    rêves</span>
             </div>
-            
+
             <!-- H1 Title -->
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl animate-fade-in-up opacity-0" style="animation-delay: 0.2s;">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl animate-fade-in-up opacity-0"
+                style="animation-delay: 0.2s;">
                 Révélez ce que vos<br>nuits racontent
             </h1>
-            
+
             <!-- Subtitle/Baseline -->
-            <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s;">
-                Le compagnon de rêves intelligent. Capturez vos rêves à la voix et laissez-vous guider pour mieux vous comprendre.
+            <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0"
+                style="animation-delay: 0.3s;">
+                Le compagnon de rêves intelligent. Capturez vos rêves à la voix et laissez-vous guider pour mieux vous
+                comprendre.
             </p>
 
             <!-- CTA & Reassurance -->
             <div class="flex flex-col items-center gap-6 animate-fade-in-up opacity-0" style="animation-delay: 0.4s;">
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <button class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)]">
+                    <a data-cta="prelaunch" data-waitlist
+                        class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
-                            Télécharger Noctalia <i data-lucide="download" class="w-4 h-4"></i>
+                            Rejoindre la liste d'attente <i data-lucide="download" class="w-4 h-4"></i>
                         </span>
-                    </button>
-                    <button class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors">
-                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
+                    </a>
+                    <div data-cta="live" hidden class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <a data-ios-store
+                            class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
+                            <span class="relative z-10 flex items-center justify-center gap-2">
+                                Obtenir sur l'App Store <i data-lucide="apple" class="w-4 h-4"></i>
+                            </span>
+                        </a>
+                        <a data-android-store
+                            class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors text-center">
+                            <i data-lucide="play" class="w-5 h-5 fill-current"></i> Obtenir sur Google Play
+                        </a>
+                    </div>
+                    <button
+                        class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors">
+                        <i data-lucide="play-circle"
+                            class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
                     </button>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Gratuit • Sécurisé • Déjà 10 000+ rêveurs
+                    <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Gratuit • Sécurisé • Déjà 10
+                    000+ rêveurs
                 </p>
             </div>
 
             <!-- App Visual Placeholder -->
             <div class="mt-16 relative w-full max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 0.6s;">
-                <img src="../screenshoot/demo1.png" alt="Interface de l'application Noctalia - Demo" class="w-full">
+                <img src="../screenshoot/demo1_cropped.png" alt="Interface de l'application Noctalia - Demo" class="w-full">
             </div>
         </div>
     </header>
@@ -268,75 +344,80 @@
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-serif text-3xl md:text-5xl mb-4 text-dream-cream">De l'oreiller à la clarté</h2>
-                <p class="text-purple-200/60 max-w-lg mx-auto">Transformez vos souvenirs flous en connaissances concrètes en trois étapes simples.</p>
+                <p class="text-purple-200/60 max-w-lg mx-auto">Transformez vos souvenirs flous en connaissances
+                    concrètes en trois étapes simples.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
                 <!-- Connecting line (desktop only) -->
-                <div class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0"></div>
+                <div
+                    class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0">
+                </div>
 
                 <!-- Step 1 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 100ms;">
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible"
+                    style="transition-delay: 100ms;">
+                    <span
+                        class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">1</span>
+                    <div
+                        class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="mic" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
-                    <span class="text-6xl font-serif text-white/5 absolute -top-16 left-1/2 -translate-x-1/2 -z-10">1</span>
                     <h3 class="text-xl font-serif mb-3">Enregistrez</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Au réveil, racontez simplement votre rêve à voix haute. L'application capture chaque détail avant qu'il ne s'efface.
+                        Au réveil, racontez simplement votre rêve à voix haute. L'application capture chaque détail
+                        avant qu'il ne s'efface.
                     </p>
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]">
+                        <img src="../img/en/recording.jpg" alt="Enregistrement vocal de votre rêve"
+                            class="w-full h-full object-cover">
+                    </div>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 200ms;">
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible"
+                    style="transition-delay: 200ms;">
+                    <span
+                        class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">2</span>
+                    <div
+                        class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="sparkles" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
-                    <span class="text-6xl font-serif text-white/5 absolute -top-16 left-1/2 -translate-x-1/2 -z-10">2</span>
                     <h3 class="text-xl font-serif mb-3">Analysez</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Votre compagnon de rêves transcrit et décode instantanément les symboles, les émotions et les archétypes cachés dans votre récit.
+                        Votre compagnon de rêves transcrit et décode instantanément les symboles, les émotions et les
+                        archétypes cachés dans votre récit.
                     </p>
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]">
+                        <img src="../img/en/analizing.jpg" alt="Analyse instantanée de votre rêve"
+                            class="w-full h-full object-cover">
+                    </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal" style="transition-delay: 300ms;">
-                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)]">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible"
+                    style="transition-delay: 300ms;">
+                    <span
+                        class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">3</span>
+                    <div
+                        class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="compass" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
-                    <span class="text-6xl font-serif text-white/5 absolute -top-16 left-1/2 -translate-x-1/2 -z-10">3</span>
                     <h3 class="text-xl font-serif mb-3">Explorez</h3>
                     <p class="text-sm text-gray-400 leading-relaxed px-4">
-                        Visualisez votre rêve grâce à une image générée et échangez avec votre compagnon de rêves pour approfondir le sens personnel du message.
+                        Visualisez votre rêve grâce à une image générée et échangez avec votre compagnon de rêves pour
+                        approfondir le sens personnel du message.
                     </p>
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]">
+                        <img src="../img/en/exploring.jpg" alt="Exploration et visualisation de votre rêve"
+                            class="w-full h-full object-cover">
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- 2.5 Interface Gallery (Marquee) -->
-    <section class="py-24 overflow-hidden relative">
-        <div class="text-center mb-12">
-            <h2 class="font-serif text-2xl md:text-3xl text-dream-cream/80">Une interface apaisante</h2>
-        </div>
-        
-        <div class="marquee-container w-full">
-            <div class="marquee-content">
-                <!-- First set -->
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_journal.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_fiche_reve.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_enregistrement.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_articles.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_conversationIA.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_stat.jpg" class="w-full h-full object-cover"></div>
-                
-                <!-- Duplicate set for infinite scroll -->
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_journal.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_fiche_reve.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_enregistrement.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_articles.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_conversationIA.jpg" class="w-full h-full object-cover"></div>
-                <div class="phone-frame w-[200px] md:w-[240px] aspect-[9/16] flex-shrink-0"><img src="../screenshoot/s_stat.jpg" class="w-full h-full object-cover"></div>
+            <div class="mt-16 text-center reveal">
+                <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+                </div>
             </div>
         </div>
     </section>
@@ -347,7 +428,8 @@
             <div class="mb-16 md:flex md:justify-between md:items-end">
                 <div>
                     <h2 class="font-serif text-4xl md:text-5xl mb-4 text-dream-cream">Votre laboratoire onirique</h2>
-                    <p class="text-purple-200/60 max-w-xl">Une suite d'outils puissants pour transformer vos nuits en connaissance de soi.</p>
+                    <p class="text-purple-200/60 max-w-xl">Une suite d'outils puissants pour transformer vos nuits en
+                        connaissance de soi.</p>
                 </div>
                 <div class="hidden md:block">
                     <i data-lucide="stars" class="w-12 h-12 text-dream-salmon/50"></i>
@@ -356,11 +438,14 @@
 
             <!-- Bento Grid -->
             <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
-                
+
                 <!-- Feature 1: Voice & AI (Large) -->
-                <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
-                    
+                <div
+                    class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0">
+                    </div>
+
                     <!-- Text Content -->
                     <div class="relative z-10 p-8 flex-1 flex flex-col justify-between">
                         <div>
@@ -368,48 +453,60 @@
                                 <div class="p-3 bg-white/5 rounded-xl border border-white/10">
                                     <i data-lucide="mic" class="text-dream-salmon w-6 h-6"></i>
                                 </div>
-                                <span class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Technologie STT</span>
+                                <span
+                                    class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Technologie
+                                    STT</span>
                             </div>
                             <h3 class="font-serif text-3xl mb-3">Capture vocale & Transcription</h3>
-                            <p class="text-gray-400 text-sm max-w-md">Ne perdez plus une seconde à écrire dans le noir. Noctalia transcrit vos murmures matinaux en texte clair.</p>
+                            <p class="text-gray-400 text-sm max-w-md">Ne perdez plus une seconde à écrire dans le noir.
+                                Noctalia transcrit vos murmures matinaux en texte clair.</p>
                         </div>
-                         <div class="mt-6 flex gap-2 items-center opacity-60">
+                        <div class="mt-6 flex gap-2 items-center opacity-60">
                             <div class="w-1 h-8 bg-dream-salmon rounded-full animate-pulse"></div>
-                            <div class="w-1 h-12 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
-                            <div class="w-1 h-6 bg-dream-salmon rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
-                            <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.3s"></div>
+                            <div class="w-1 h-12 bg-dream-salmonLight rounded-full animate-pulse"
+                                style="animation-delay: 0.1s"></div>
+                            <div class="w-1 h-6 bg-dream-salmon rounded-full animate-pulse"
+                                style="animation-delay: 0.2s"></div>
+                            <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse"
+                                style="animation-delay: 0.3s"></div>
                         </div>
                     </div>
 
                     <!-- Screenshot Integration (Phone crop) -->
-                    <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
-                        <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
-                             <img src="../img/settings_menu.jpg" alt="Écran d'enregistrement" class="w-full h-full object-cover">
+                    <div
+                        class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
+                        <div
+                            class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
+                            <img src="../img/settings_menu.jpg" alt="Écran d'enregistrement"
+                                class="w-full h-full object-cover">
                         </div>
                     </div>
                 </div>
 
                 <!-- Feature 2: Visuals (Medium) -->
-                <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
-                     <!-- Screenshot Integration (Full Background) -->
-                    <img src="../img/dream_detail.jpg" alt="Liste des rêves" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60">
+                <div
+                    class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
+                    <!-- Screenshot Integration (Full Background) -->
+                    <img src="../img/dream_detail.jpg" alt="Liste des rêves"
+                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                    
+
                     <div class="absolute bottom-0 left-0 p-6 w-full z-10">
                         <div class="flex items-center gap-2 mb-2">
                             <i data-lucide="image" class="w-5 h-5 text-dream-salmon"></i>
                             <h3 class="font-serif text-xl">Journal Visuel</h3>
                         </div>
-                        <p class="text-xs text-gray-300">Retrouvez tous vos voyages oniriques illustrés automatiquement par votre compagnon de rêves.</p>
+                        <p class="text-xs text-gray-300">Retrouvez tous vos voyages oniriques illustrés automatiquement
+                            par votre compagnon de rêves.</p>
                     </div>
                 </div>
 
                 <!-- Feature 3: Guided Analysis (Medium) -->
                 <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal">
                     <div class="flex items-center gap-3 mb-6">
-                         <div class="p-2 bg-purple-500/20 rounded-lg">
+                        <div class="p-2 bg-purple-500/20 rounded-lg">
                             <i data-lucide="brain-circuit" class="text-dream-salmon w-5 h-5"></i>
-                         </div>
+                        </div>
                         <h3 class="font-serif text-2xl">Analyse Guidée</h3>
                     </div>
                     <ul class="space-y-4">
@@ -429,22 +526,26 @@
                 </div>
 
                 <!-- Feature 4: Longitudinal Stats (Medium) -->
-                <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal flex flex-col justify-between">
+                <div
+                    class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal flex flex-col justify-between">
                     <div>
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-blue-500/20 rounded-lg">
-                               <i data-lucide="bar-chart-2" class="text-blue-300 w-5 h-5"></i>
+                                <i data-lucide="bar-chart-2" class="text-blue-300 w-5 h-5"></i>
                             </div>
-                           <h3 class="font-serif text-2xl">Suivi Émotionnel</h3>
-                       </div>
-                       <p class="text-sm text-gray-400 mt-2">Détectez les récurrences et suivez l'évolution de votre humeur nocturne.</p>
+                            <h3 class="font-serif text-2xl">Suivi Émotionnel</h3>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-2">Détectez les récurrences et suivez l'évolution de votre
+                            humeur nocturne.</p>
                     </div>
 
                     <!-- Mock Chart -->
                     <div class="h-32 flex items-end gap-2 mt-6">
                         <div class="w-full bg-dream-salmon/10 h-[40%] rounded-t"></div>
                         <div class="w-full bg-dream-salmon/30 h-[60%] rounded-t relative group">
-                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">Lucide</div>
+                            <div
+                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                Lucide</div>
                         </div>
                         <div class="w-full bg-dream-salmon/50 h-[80%] rounded-t"></div>
                         <div class="w-full bg-dream-salmon/20 h-[50%] rounded-t"></div>
@@ -458,12 +559,12 @@
 
     <!-- 5. Pour qui ? (Profils) -->
     <section class="py-24 px-4 relative">
-         <div class="max-w-6xl mx-auto">
+        <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-serif text-3xl md:text-4xl text-white mb-4">Est-ce pour vous ?</h2>
                 <div class="h-1 w-20 bg-dream-salmon mx-auto rounded-full"></div>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Profile 1 -->
                 <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-dream-salmon">
@@ -471,35 +572,40 @@
                         <i data-lucide="search" class="text-dream-salmon w-8 h-8"></i>
                     </div>
                     <h3 class="font-serif text-xl mb-3">Le Curieux</h3>
-                    <p class="text-sm text-gray-400">Vous vous demandez pourquoi vous rêvez de perdre vos dents ou de voler. Vous cherchez du sens.</p>
+                    <p class="text-sm text-gray-400">Vous vous demandez pourquoi vous rêvez de perdre vos dents ou de
+                        voler. Vous cherchez du sens.</p>
                 </div>
 
                 <!-- Profile 2 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-pink-400" style="transition-delay: 100ms;">
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-pink-400"
+                    style="transition-delay: 100ms;">
                     <div class="mx-auto w-16 h-16 bg-pink-900/30 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="feather" class="text-pink-300 w-8 h-8"></i>
                     </div>
                     <h3 class="font-serif text-xl mb-3">L'Introspectif</h3>
-                    <p class="text-sm text-gray-400">Vous utilisez le journal intime et le développement personnel pour mieux vous connaître.</p>
+                    <p class="text-sm text-gray-400">Vous utilisez le journal intime et le développement personnel pour
+                        mieux vous connaître.</p>
                 </div>
 
                 <!-- Profile 3 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-indigo-400" style="transition-delay: 200ms;">
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-indigo-400"
+                    style="transition-delay: 200ms;">
                     <div class="mx-auto w-16 h-16 bg-indigo-900/50 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="moon" class="text-indigo-300 w-8 h-8"></i>
                     </div>
                     <h3 class="font-serif text-xl mb-3">L'Explorateur</h3>
-                    <p class="text-sm text-gray-400">Vous pratiquez ou souhaitez apprendre le rêve lucide pour contrôler votre inconscient.</p>
+                    <p class="text-sm text-gray-400">Vous pratiquez ou souhaitez apprendre le rêve lucide pour contrôler
+                        votre inconscient.</p>
                 </div>
             </div>
-         </div>
+        </div>
     </section>
 
     <!-- 6. Témoignages -->
     <section id="temoignages" class="py-24 px-4 bg-black/20">
         <div class="max-w-7xl mx-auto">
             <h2 class="font-serif text-3xl md:text-4xl text-center mb-16 reveal">Rêves partagés</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Review 1 -->
                 <div class="glass-panel p-8 rounded-2xl reveal">
@@ -510,7 +616,8 @@
                         <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                     </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Incroyable pour comprendre mes cauchemars récurrents. L'analyse m'a permis de faire le lien avec mon stress au travail. Apaisant."</p>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Incroyable pour comprendre mes cauchemars récurrents.
+                        L'analyse m'a permis de faire le lien avec mon stress au travail. Apaisant."</p>
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-blue-500"></div>
                         <div>
@@ -529,7 +636,8 @@
                         <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                     </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Je détestais écrire au réveil, j'oubliais tout le temps. Avec la fonction vocale, c'est devenu un réflexe naturel."</p>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Je détestais écrire au réveil, j'oubliais tout le
+                        temps. Avec la fonction vocale, c'est devenu un réflexe naturel."</p>
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-teal-500"></div>
                         <div>
@@ -548,7 +656,8 @@
                         <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                         <i data-lucide="star" class="w-4 h-4 fill-current"></i>
                     </div>
-                    <p class="text-gray-300 text-sm mb-6 italic">"Les images générées sont bluffantes. C'est magique de voir son rêve prendre forme visuellement. Mon journal est magnifique."</p>
+                    <p class="text-gray-300 text-sm mb-6 italic">"Les images générées sont bluffantes. C'est magique de
+                        voir son rêve prendre forme visuellement. Mon journal est magnifique."</p>
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-red-500"></div>
                         <div>
@@ -565,40 +674,74 @@
     <section class="py-24 px-4 relative">
         <div class="max-w-5xl mx-auto text-center">
             <h2 class="font-serif text-3xl md:text-4xl mb-16 reveal">Commencez votre voyage</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <!-- Free Plan -->
                 <div class="glass-panel p-8 rounded-3xl reveal hover:border-dream-salmon/30">
                     <h3 class="text-2xl font-serif mb-2">Rêveur</h3>
                     <div class="text-4xl font-bold mb-6">Gratuit</div>
                     <p class="text-gray-400 text-sm mb-8">Pour découvrir la magie de vos nuits sans engagement.</p>
-                    
+
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 analyses complètes avec votre compagnon de rêves</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Journal de base</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-white"></i> 2 analyses complètes avec votre compagnon de rêves</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-gray-400"></i> Journal de base</li>
                     </ul>
-                    
-                    <a href="#download" class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium">Télécharger</a>
+
+                    <a data-cta="prelaunch" data-waitlist
+                        class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium text-center">Rejoindre la liste d'attente</a>
+                    <div data-cta="live" hidden class="flex flex-col gap-2">
+                        <a data-ios-store class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium text-center">App Store</a>
+                        <a data-android-store class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium text-center">Google Play</a>
+                    </div>
                 </div>
 
-                <!-- Premium Plan -->
-                <div class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
-                    <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">Recommandé</div>
+                <!-- Premium Plan (live only) -->
+                <div data-subscription="prelaunch"
+                    class="glass-panel p-8 rounded-3xl border border-white/10 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.05)]">
                     <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
-                    
-                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Onironaute</h3>
-                    <div class="text-4xl font-bold mb-2">2,99 €<span class="text-sm font-normal text-gray-400">/mois</span></div>
-                    <p class="text-purple-200/60 text-xs mb-6">Ou 19 €/an (2 mois offerts)</p>
-                    
-                    <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Analyses illimitées avec votre compagnon de rêves</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat avec le rêve</li>
+                    <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium arrive bientôt</h3>
+                    <p class="text-purple-200/70 text-sm mb-6">Soyez parmi les premiers à profiter des analyses illimitées, images HD et stats avancées dès le lancement.</p>
+                    <ul class="space-y-3 text-left mb-8 px-4 text-sm text-gray-300">
+                        <li class="flex items-center gap-3"><i data-lucide="sparkles" class="w-4 h-4 text-dream-salmon"></i> Compagnon de rêves illimité</li>
+                        <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuels HD de vos rêves</li>
+                        <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Statistiques et insights avancés</li>
                     </ul>
-                    
-                    <button class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50">Essayer Gratuitement</button>
+                    <a data-waitlist data-cta="prelaunch"
+                        class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Rejoindre la liste d'attente</a>
+                    <p class="text-[10px] text-gray-500 mt-3">On vous prévient dès que l'abonnement ouvre.</p>
+                </div>
+
+                <div data-subscription="live"
+                    class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
+                    <div
+                        class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                        Recommandé</div>
+                    <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
+
+                    <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Onironaute</h3>
+                    <div class="text-4xl font-bold mb-2">2,99 €<span
+                            class="text-sm font-normal text-gray-400">/mois</span></div>
+                    <p class="text-purple-200/60 text-xs mb-6">Ou 19 €/an (2 mois offerts)</p>
+
+                    <ul class="space-y-4 text-left mb-8 px-4">
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-dream-salmon"></i> Analyses illimitées avec votre compagnon de rêves
+                        </li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
+                                class="w-4 h-4 text-dream-salmon"></i> Chat avec le rêve</li>
+                    </ul>
+
+                    <button
+                        class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50">Essayer
+                        Gratuitement</button>
                     <p class="text-[10px] text-gray-500 mt-3">7 jours d'essai offerts, annulation facile.</p>
                 </div>
             </div>
@@ -608,45 +751,54 @@
     <!-- 8. FAQ -->
     <section class="py-20 px-4 max-w-3xl mx-auto">
         <h2 class="font-serif text-3xl text-center mb-12 reveal">Questions fréquentes</h2>
-        
+
         <div class="space-y-4 reveal">
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     Comment fonctionne l'analyse des rêves ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down"
+                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Noctalia utilise des modèles de langage avancés entraînés sur la psychologie analytique (Jung) et la symbolique des rêves. Le moteur d'analyse identifie les motifs récurrents et les archétypes pour vous proposer des pistes de réflexion, sans jamais imposer une vérité absolue.
+                    Noctalia utilise des modèles de langage avancés entraînés sur la psychologie analytique (Jung) et la
+                    symbolique des rêves. Le moteur d'analyse identifie les motifs récurrents et les archétypes pour
+                    vous proposer des pistes de réflexion, sans jamais imposer une vérité absolue.
                 </p>
             </details>
 
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     Mes rêves sont-ils privés ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down"
+                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Absolument. Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous seul(e) y avez accès. Nous ne vendons pas vos données personnelles.
+                    Absolument. Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous
+                    seul(e) y avez accès. Nous ne vendons pas vos données personnelles.
                 </p>
             </details>
 
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     Puis-je écrire mes rêves au lieu de parler ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down"
+                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Oui, tout à fait. Si vous préférez ne pas réveiller votre partenaire ou si vous êtes plus à l'aise à l'écrit, un éditeur de texte complet est disponible.
+                    Oui, tout à fait. Si vous préférez ne pas réveiller votre partenaire ou si vous êtes plus à l'aise à
+                    l'écrit, un éditeur de texte complet est disponible.
                 </p>
             </details>
-            
+
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     L'application fonctionne-t-elle hors ligne ?
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down"
+                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                    Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se feront automatiquement dès que vous retrouverez une connexion.
+                    Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se feront
+                    automatiquement dès que vous retrouverez une connexion.
                 </p>
             </details>
         </div>
@@ -664,52 +816,178 @@
                     Le compagnon de vos nuits. Transformez l'invisible en visible, un rêve à la fois.
                 </p>
                 <div class="flex gap-4">
-                    <a href="#" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i data-lucide="instagram" class="w-5 h-5"></i></a>
-                    <a href="#" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i
+                            data-lucide="instagram" class="w-5 h-5"></i></a>
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i
+                            data-lucide="twitter" class="w-5 h-5"></i></a>
                 </div>
             </div>
-            
+
             <div>
                 <h5 class="font-bold mb-4 text-white">Légal</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="mentions-legales.html" class="hover:text-dream-salmon transition-colors">Mentions légales</a></li>
-                    <li><a href="politique-confidentialite.html" class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
+                    <li><a href="mentions-legales.html" class="hover:text-dream-salmon transition-colors">Mentions
+                            légales</a></li>
+                    <li><a href="politique-confidentialite.html"
+                            class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
                     <li><a href="cgu.html" class="hover:text-dream-salmon transition-colors">CGU</a></li>
-                    <li><a href="suppression-compte.html" class="hover:text-dream-salmon transition-colors">Suppression de compte</a></li>
+                    <li><a href="suppression-compte.html" class="hover:text-dream-salmon transition-colors">Suppression
+                            de compte</a></li>
                 </ul>
             </div>
 
             <div>
                 <h5 class="font-bold mb-4 text-white">Télécharger</h5>
                 <div class="flex flex-col gap-3">
-                    <button class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
-                        <i data-lucide="apple" class="w-5 h-5"></i>
+                    <a data-cta="prelaunch" data-waitlist
+                        class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                        <i data-lucide="download" class="w-5 h-5"></i>
                         <div class="leading-none">
-                            <div class="text-[9px] uppercase">Disponible sur</div>
-                            <div class="text-sm font-bold">App Store</div>
+                            <div class="text-[9px] uppercase">Accès anticipé</div>
+                            <div class="text-sm font-bold">Rejoindre la liste d'attente</div>
                         </div>
-                    </button>
-                    <button class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
-                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
-                        <div class="leading-none">
-                            <div class="text-[9px] uppercase">Disponible sur</div>
-                            <div class="text-sm font-bold">Google Play</div>
-                        </div>
-                    </button>
+                    </a>
+                    <div data-cta="live" hidden class="flex flex-col gap-3">
+                        <a data-ios-store
+                            class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                            <i data-lucide="apple" class="w-5 h-5"></i>
+                            <div class="leading-none">
+                                <div class="text-[9px] uppercase">Disponible sur</div>
+                                <div class="text-sm font-bold">App Store</div>
+                            </div>
+                        </a>
+                        <a data-android-store
+                            class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                            <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                            <div class="leading-none">
+                                <div class="text-[9px] uppercase">Disponible sur</div>
+                                <div class="text-sm font-bold">Google Play</div>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+
+        <div
+            class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
             <span>© 2025 Noctalia Inc. Tous droits réservés.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart"
+                    class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
 
     <script>
+        const IS_STORE_LIVE = false; // Basculer à true dès que l'app est en ligne sur les stores
+        const WAITLIST_URL = 'https://noctalia.app/waitlist';
+        const IOS_URL = 'https://apps.apple.com/app/id0000000000';
+        const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.noctalia';
+        const WAITLIST_ENDPOINT = 'https://usuyppgsmmowzizhaoqj.supabase.co/functions/v1/waitlist';
+        // clé publishable uniquement (pas de secret) ; utilisée pour le header auth si requis
+        const WAITLIST_AUTH = 'Bearer sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n';
+        const WAITLIST_SOURCE = 'landing-fr';
+
+        const liveParam = new URLSearchParams(window.location.search).get('live');
+        const isLive = typeof liveParam === 'string'
+            ? ['1', 'true', 'yes', 'on'].includes(liveParam.toLowerCase())
+            : IS_STORE_LIVE;
+
+        function syncCTAs(live) {
+            document.documentElement.classList.toggle('store-live', live);
+            document.querySelectorAll('[data-cta="prelaunch"]').forEach(el => { el.hidden = live; });
+            document.querySelectorAll('[data-cta="live"]').forEach(el => { el.hidden = !live; });
+            document.querySelectorAll('[data-waitlist]').forEach(el => { el.setAttribute('href', WAITLIST_URL); });
+            document.querySelectorAll('[data-ios-store]').forEach(el => { el.setAttribute('href', IOS_URL); });
+            document.querySelectorAll('[data-android-store]').forEach(el => { el.setAttribute('href', ANDROID_URL); });
+        }
+
+        function setupWaitlistCapture() {
+            const modal = document.createElement('div');
+            modal.id = 'waitlist-modal';
+            modal.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center px-4';
+            modal.innerHTML = `
+                <div class=\"bg-[#120720] border border-white/10 rounded-2xl w-full max-w-md p-6 relative glass-panel\">
+                    <button type=\"button\" id=\"waitlist-close\" class=\"absolute top-4 right-4 text-gray-400 hover:text-white\" aria-label=\"Fermer le formulaire\">
+                        <i data-lucide=\"x\" class=\"w-5 h-5\"></i>
+                    </button>
+                    <h3 class=\"font-serif text-2xl mb-2 text-white\">Rejoindre la liste d'attente</h3>
+                    <p class=\"text-sm text-purple-200/70 mb-4\">Soyez prévenu dès que Noctalia arrive sur les stores.</p>
+                    <form id=\"waitlist-form\" class=\"space-y-3\">
+                        <label class=\"block text-xs uppercase tracking-wide text-gray-400\">Email</label>
+                        <input id=\"waitlist-email\" type=\"email\" required placeholder=\"vous@example.com\" class=\"w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-dream-salmon outline-none text-white\" />
+                        <button type=\"submit\" class=\"w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors\">Prévenez-moi</button>
+                        <p id=\"waitlist-status\" class=\"text-xs text-gray-400\"></p>
+                        <p class=\"text-[11px] text-gray-500\">Votre email est utilisé uniquement pour vous informer du lancement.</p>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const emailInput = modal.querySelector('#waitlist-email');
+            const form = modal.querySelector('#waitlist-form');
+            const statusEl = modal.querySelector('#waitlist-status');
+            const closeBtn = modal.querySelector('#waitlist-close');
+
+            const open = () => {
+                modal.classList.remove('hidden');
+                statusEl.textContent = '';
+                emailInput.value = '';
+                emailInput.focus();
+            };
+            const close = () => modal.classList.add('hidden');
+
+            closeBtn?.addEventListener('click', close);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) close();
+            });
+
+            document.querySelectorAll('[data-waitlist]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    open();
+                });
+            });
+
+            form?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                statusEl.textContent = 'Envoi...';
+                try {
+                    const res = await fetch(WAITLIST_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json',
+                            'authorization': WAITLIST_AUTH,
+                        },
+                        body: JSON.stringify({
+                            email: emailInput.value,
+                            locale: 'fr',
+                            source: WAITLIST_SOURCE,
+                        }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok || data?.error) {
+                        throw new Error(data?.error || 'Request failed');
+                    }
+                    statusEl.textContent = 'Vous êtes sur la liste ! ✅';
+                    statusEl.classList.remove('text-gray-400');
+                    statusEl.classList.add('text-dream-salmon');
+                } catch (err) {
+                    statusEl.textContent = 'Erreur, réessayez.';
+                    statusEl.classList.remove('text-dream-salmon');
+                    statusEl.classList.add('text-red-400');
+                    console.error('waitlist submit failed', err);
+                }
+            });
+        }
+
         // Safe Script Execution
         document.addEventListener('DOMContentLoaded', () => {
-            
+
+            syncCTAs(isLive);
+            setupWaitlistCapture();
+
             // 1. Initialize Icons (Safe Check)
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 try {
@@ -736,7 +1014,7 @@
             }, observerOptions);
 
             const revealElements = document.querySelectorAll('.reveal');
-            if(revealElements.length > 0){
+            if (revealElements.length > 0) {
                 revealElements.forEach(el => {
                     observer.observe(el);
                 });
@@ -748,7 +1026,7 @@
             // 3. Mouse Parallax Effect
             document.addEventListener('mousemove', (e) => {
                 const orbs = document.querySelectorAll('.orb');
-                if(orbs.length > 0) {
+                if (orbs.length > 0) {
                     const x = e.clientX / window.innerWidth;
                     const y = e.clientY / window.innerHeight;
 
@@ -762,7 +1040,7 @@
             // 4. Navbar blurred on scroll
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
-                if(navbar) {
+                if (navbar) {
                     if (window.scrollY > 50) {
                         navbar.classList.add('py-2');
                         navbar.classList.remove('py-6');
@@ -775,4 +1053,5 @@
         });
     </script>
 </body>
+
 </html>
