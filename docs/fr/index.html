@@ -883,9 +883,9 @@
         const IOS_URL = 'https://apps.apple.com/app/id0000000000';
         const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.noctalia';
         const WAITLIST_ENDPOINT = 'https://usuyppgsmmowzizhaoqj.supabase.co/functions/v1/waitlist';
-        // clé publishable envoyée dans l'entête apikey ; pas d'Authorization pour éviter le CORS
+        // entêtes requis par Supabase Edge Functions (Authorization nécessaire malgré verify_jwt=false)
         const WAITLIST_APIKEY = 'sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n';
-        const WAITLIST_AUTH = ''; // laissé vide volontairement
+        const WAITLIST_AUTH = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzdXlwcGdzbW1vd3ppemhhb3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NDQ1MTAsImV4cCI6MjA3NjQyMDUxMH0.ecPYWwbUf7a4tyobTt5Oiw4hzHVPLsITgnsezBENbaM';
         const WAITLIST_SOURCE = 'landing-fr';
 
         const liveParam = new URLSearchParams(window.location.search).get('live');
@@ -953,8 +953,7 @@
                 e.preventDefault();
                 statusEl.textContent = 'Envoi...';
                 try {
-                    const headers = { 'content-type': 'application/json', 'apikey': WAITLIST_APIKEY };
-                    if (WAITLIST_AUTH) { headers['authorization'] = WAITLIST_AUTH; }
+                    const headers = { 'content-type': 'application/json', 'apikey': WAITLIST_APIKEY, 'authorization': WAITLIST_AUTH };
                     const res = await fetch(WAITLIST_ENDPOINT, {
                         method: 'POST',
                         headers,
