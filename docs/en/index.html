@@ -282,7 +282,11 @@
 
             <!-- App Visual Placeholder -->
             <div class="mt-16 relative w-full max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 0.6s;">
-                <img src="/screenshoot/demo1_cropped.png?v=2" alt="Noctalia app interface - demo" class="w-full">
+                <picture>
+                    <source type="image/webp" srcset="/screenshoot/demo1_cropped-800w.webp 800w, /screenshoot/demo1_cropped-1600w.webp 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
+                    <source type="image/jpeg" srcset="/screenshoot/demo1_cropped-800w.jpg 800w, /screenshoot/demo1_cropped-1600w.jpg 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
+                    <img src="/screenshoot/demo1_cropped-1600w.jpg" alt="Noctalia app interface - demo" class="w-full" width="1600" height="678" decoding="async" fetchpriority="high">
+                </picture>
             </div>
         </div>
     </header>
@@ -311,7 +315,11 @@
                     </p>
                               <!-- 1. Recording screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px] ">
-                        <img src="../img/en/recording.jpg" alt="Recording your dream with your voice" class="w-full h-full object-cover">
+                        <picture>
+                            <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="../img/en/recording-800w.jpg" alt="Recording your dream with your voice" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                   
            
@@ -329,7 +337,11 @@
                     </p>
                              <!-- 2. Analyzing screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px] ">
-                        <img src="../img/en/analizing.jpg" alt="AI analyzing and summarizing your dream" class="w-full h-full object-cover">
+                        <picture>
+                            <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="../img/en/analizing-800w.jpg" alt="AI analyzing and summarizing your dream" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
 
@@ -345,7 +357,11 @@
                     </p>
                     <!-- 3. Exploring screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px] ">
-                        <img src="../img/en/exploring.jpg" alt="Exploring insights and symbolism of your dream" class="w-full h-full object-cover">
+                        <picture>
+                            <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="../img/en/exploring-800w.jpg" alt="Exploring insights and symbolism of your dream" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
             </div>
@@ -402,7 +418,11 @@
                     <!-- Screenshot Integration (Phone crop) -->
                     <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
                         <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
-                             <img src="../img/settings_menu.jpg" alt="Recording screen" class="w-full h-full object-cover">
+                             <picture>
+                                <source type="image/webp" srcset="../img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
+                                <source type="image/jpeg" srcset="../img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
+                                <img src="../img/settings_menu-720w.jpg" alt="Recording screen" class="w-full h-full object-cover" width="720" height="1487" loading="lazy" decoding="async">
+                             </picture>
                         </div>
                     </div>
                 </div>
@@ -410,7 +430,11 @@
                 <!-- Feature 2: Visuals (Medium) -->
                 <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
                      <!-- Screenshot Integration (Full Background) -->
-                    <img src="../img/dream_detail.jpg" alt="Dream list" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60">
+                    <picture>
+                        <source type="image/webp" srcset="../img/dream_detail-700w.webp 700w, ../img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
+                        <source type="image/jpeg" srcset="../img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
+                        <img src="../img/dream_detail-1000w.jpg" alt="Dream list" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60" width="1000" height="2078" loading="lazy" decoding="async">
+                    </picture>
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                     
                     <div class="absolute bottom-0 left-0 p-6 w-full z-10">

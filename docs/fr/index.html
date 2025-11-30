@@ -20,6 +20,9 @@
         rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -278,28 +281,25 @@
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
 
             <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-dream-salmon/30 bg-dream-salmon/10 backdrop-blur-md mb-8 animate-fade-in-up opacity-0"
-                style="animation-delay: 0.1s;">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-dream-salmon/30 bg-dream-salmon/10 backdrop-blur-md mb-8 opacity-0 hero-anim hero-badge">
                 <span class="w-2 h-2 rounded-full bg-dream-salmon animate-pulse"></span>
                 <span class="text-xs font-sans uppercase tracking-widest text-dream-salmonLight">Votre compagnon de
                     rêves</span>
             </div>
 
             <!-- H1 Title -->
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl animate-fade-in-up opacity-0"
-                style="animation-delay: 0.2s;">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim hero-title">
                 Révélez ce que vos<br>nuits racontent
             </h1>
 
             <!-- Subtitle/Baseline -->
-            <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0"
-                style="animation-delay: 0.3s;">
+            <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim hero-subtitle">
                 Le compagnon de rêves intelligent. Capturez vos rêves à la voix et laissez-vous guider pour mieux vous
                 comprendre.
             </p>
 
             <!-- CTA & Reassurance -->
-            <div class="flex flex-col items-center gap-6 animate-fade-in-up opacity-0" style="animation-delay: 0.4s;">
+            <div class="flex flex-col items-center gap-6 opacity-0 hero-anim hero-cta">
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                     <a data-cta="prelaunch" data-waitlist
                         class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
@@ -331,8 +331,12 @@
             </div>
 
             <!-- App Visual Placeholder -->
-            <div class="mt-16 relative w-full max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 0.6s;">
-                <img src="/screenshoot/demo1_cropped.png?v=2" alt="Interface de l'application Noctalia - Demo" class="w-full">
+            <div class="mt-16 relative w-full max-w-5xl mx-auto opacity-0 hero-anim hero-visual">
+                <picture>
+                    <source type="image/webp" srcset="/screenshoot/demo1_cropped-800w.webp 800w, /screenshoot/demo1_cropped-1600w.webp 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
+                    <source type="image/jpeg" srcset="/screenshoot/demo1_cropped-800w.jpg 800w, /screenshoot/demo1_cropped-1600w.jpg 1600w" sizes="(min-width: 1280px) 1024px, (min-width: 768px) 90vw, 95vw">
+                    <img src="/screenshoot/demo1_cropped-1600w.jpg" alt="Interface de l'application Noctalia - Demo" class="w-full" width="1600" height="678" decoding="async" fetchpriority="high">
+                </picture>
             </div>
         </div>
     </header>
@@ -349,11 +353,11 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
                 <!-- Connecting line (desktop only) -->
                 <div
-                    class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0">
+                    class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0 step-line">
                 </div>
 
                 <!-- Step 1 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible"
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="record"
                     style="transition-delay: 100ms;">
                     <span
                         class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">1</span>
@@ -366,14 +370,17 @@
                         Au réveil, racontez simplement votre rêve à voix haute. L'application capture chaque détail
                         avant qu'il ne s'efface.
                     </p>
-                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]">
-                        <img src="../img/en/recording.jpg" alt="Enregistrement vocal de votre rêve"
-                            class="w-full h-full object-cover">
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="record">
+                        <picture>
+                            <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="../img/en/recording-800w.jpg" alt="Enregistrement vocal de votre rêve" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible"
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="analyze"
                     style="transition-delay: 200ms;">
                     <span
                         class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">2</span>
@@ -386,14 +393,17 @@
                         Votre compagnon de rêves transcrit et décode instantanément les symboles, les émotions et les
                         archétypes cachés dans votre récit.
                     </p>
-                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]">
-                        <img src="../img/en/analizing.jpg" alt="Analyse instantanée de votre rêve"
-                            class="w-full h-full object-cover">
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
+                        <picture>
+                            <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="../img/en/analizing-800w.jpg" alt="Analyse instantanée de votre rêve" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible"
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="explore"
                     style="transition-delay: 300ms;">
                     <span
                         class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">3</span>
@@ -406,9 +416,12 @@
                         Visualisez votre rêve grâce à une image générée et échangez avec votre compagnon de rêves pour
                         approfondir le sens personnel du message.
                     </p>
-                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]">
-                        <img src="../img/en/exploring.jpg" alt="Exploration et visualisation de votre rêve"
-                            class="w-full h-full object-cover">
+                    <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
+                        <picture>
+                            <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="../img/en/exploring-800w.jpg" alt="Exploration et visualisation de votre rêve" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
+                        </picture>
                     </div>
                 </div>
             </div>
@@ -475,8 +488,11 @@
                         class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
                         <div
                             class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
-                            <img src="../img/settings_menu.jpg" alt="Écran d'enregistrement"
-                                class="w-full h-full object-cover">
+                            <picture>
+                                <source type="image/webp" srcset="../img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
+                                <source type="image/jpeg" srcset="../img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
+                                <img src="../img/settings_menu-720w.jpg" alt="Écran d'enregistrement" class="w-full h-full object-cover" width="720" height="1487" loading="lazy" decoding="async">
+                            </picture>
                         </div>
                     </div>
                 </div>
@@ -485,8 +501,13 @@
                 <div
                     class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
                     <!-- Screenshot Integration (Full Background) -->
-                    <img src="../img/dream_detail.jpg" alt="Liste des rêves"
-                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60">
+                    <picture>
+                        <source type="image/webp" srcset="../img/dream_detail-700w.webp 700w, ../img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
+                        <source type="image/jpeg" srcset="../img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
+                        <img src="../img/dream_detail-1000w.jpg" alt="Liste des rêves"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60"
+                            width="1000" height="2078" loading="lazy" decoding="async">
+                    </picture>
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
 
                     <div class="absolute bottom-0 left-0 p-6 w-full z-10">
@@ -877,6 +898,7 @@
         </div>
     </footer>
 
+    <script type="module" src="../js/landing-animations.js"></script>
     <script>
         const IS_STORE_LIVE = false; // Basculer à true dès que l'app est en ligne sur les stores
         const WAITLIST_URL = 'https://noctalia.app/waitlist';
@@ -985,6 +1007,8 @@
             syncCTAs(isLive);
             setupWaitlistCapture();
 
+            const hasGSAP = typeof window !== 'undefined' && window.gsap && window.ScrollTrigger;
+
             // 1. Initialize Icons (Safe Check)
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 try {
@@ -994,30 +1018,32 @@
                 }
             }
 
-            // 2. Scroll Reveal Animation (Independent of Lucide)
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+            // 2. Scroll Reveal Animation fallback (used uniquement si GSAP indisponible)
+            if (!hasGSAP) {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.1
+                };
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
+                const observer = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
 
-            const revealElements = document.querySelectorAll('.reveal');
-            if (revealElements.length > 0) {
-                revealElements.forEach(el => {
-                    observer.observe(el);
-                });
-            } else {
-                // Fallback if something is weird with selectors
-                console.log("No reveal elements found");
+                const revealElements = document.querySelectorAll('.reveal');
+                if (revealElements.length > 0) {
+                    revealElements.forEach(el => {
+                        observer.observe(el);
+                    });
+                } else {
+                    // Fallback if something is weird with selectors
+                    console.log("No reveal elements found");
+                }
             }
 
             // 3. Mouse Parallax Effect
