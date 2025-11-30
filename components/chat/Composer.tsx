@@ -219,7 +219,7 @@ export function Composer({
         style={[
           styles.inputWrapper,
           {
-            backgroundColor: mode === 'dark' ? 'rgba(255,255,255,1)' : colors.backgroundSecondary,
+            backgroundColor: mode === 'dark' ? colors.backgroundCard : colors.backgroundSecondary,
             borderColor: mode === 'dark' ? 'rgba(255,255,255,0.14)' : colors.divider,
             borderWidth: 1,
           },
