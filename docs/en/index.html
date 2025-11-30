@@ -826,7 +826,7 @@
                 e.preventDefault();
                 statusEl.textContent = 'Sending...';
                 try {
-                    const headers: Record<string, string> = { 'content-type': 'application/json', 'apikey': WAITLIST_APIKEY };
+                    const headers = { 'content-type': 'application/json', 'apikey': WAITLIST_APIKEY };
                     if (WAITLIST_AUTH) { headers['authorization'] = WAITLIST_AUTH; }
                     const res = await fetch(WAITLIST_ENDPOINT, {
                         method: 'POST',
