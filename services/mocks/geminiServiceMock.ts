@@ -97,7 +97,7 @@ export async function analyzeDreamWithImageResilient(
 /**
  * Mock image generation for dream (2-4 seconds)
  */
-export async function generateImageForDream(prompt: string): Promise<string> {
+export async function generateImageForDream(prompt: string, _previousImageUrl?: string): Promise<string> {
   console.log('[MOCK] generateImageForDream called with prompt:', prompt.slice(0, 50) + '...');
   await delay(2000 + Math.random() * 2000); // 2-4 seconds
 
@@ -117,7 +117,7 @@ export async function generateImageForDream(prompt: string): Promise<string> {
   return imageUrl;
 }
 
-export async function generateImageFromTranscript(transcript: string): Promise<string> {
+export async function generateImageFromTranscript(transcript: string, _previousImageUrl?: string): Promise<string> {
   console.log('[MOCK] generateImageFromTranscript called with transcript:', transcript.slice(0, 50) + '...');
   await delay(2000 + Math.random() * 2000); // 2-4 seconds
   const imageUrl = getRandomImageForTheme('surreal');
