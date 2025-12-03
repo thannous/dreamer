@@ -45,7 +45,7 @@ export async function analyzeDreamWithImage(transcript: string, lang: string = '
     retries: 1, // One automatic retry
     timeoutMs: 60000, // Increased timeout for combined operation
   });
-  const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/jpeg;base64,${res.imageBytes}` : undefined);
+  const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
   if (!imageUrl) throw new Error('Invalid combined response from backend');
   // Return merged object with a guaranteed imageUrl
   return { ...res, imageUrl };
@@ -70,7 +70,7 @@ export async function analyzeDreamWithImageResilient(
       retries: 1,
       timeoutMs: 60000,
     });
-    const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/jpeg;base64,${res.imageBytes}` : undefined);
+    const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
 
     if (imageUrl) {
       return { ...res, imageUrl, imageGenerationFailed: false };
@@ -104,27 +104,27 @@ export async function analyzeDreamWithImageResilient(
   }
 }
 
-export async function generateImageForDream(prompt: string): Promise<string> {
+export async function generateImageForDream(prompt: string, previousImageUrl?: string): Promise<string> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImage`, {
     method: 'POST',
-    body: { prompt },
+    body: { prompt, previousImageUrl },
   });
   if (res.imageUrl) return res.imageUrl;
-  if (res.imageBytes) return `data:image/jpeg;base64,${res.imageBytes}`;
+  if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
   throw new Error('Invalid image response from backend');
 }
 
-export async function generateImageFromTranscript(transcript: string): Promise<string> {
+export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
     method: 'POST',
     // Backend expects a prompt; include transcript for backward compatibility.
-    body: { prompt: transcript, transcript },
+    body: { prompt: transcript, transcript, previousImageUrl },
     timeoutMs: 60000, // Image generation can take time
   });
   if (res.imageUrl) return res.imageUrl;
-  if (res.imageBytes) return `data:image/jpeg;base64,${res.imageBytes}`;
+  if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
   throw new Error('Invalid image response from backend');
 }
 

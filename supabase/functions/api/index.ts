@@ -9,10 +9,49 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GoogleGenerativeAI } from 'https://esm.sh/@google/generative-ai@0.21.0?target=deno';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+const parseStorageObjectKey = (url: string, bucket: string): string | null => {
+  try {
+    const parsed = new URL(url);
+    const path = parsed.pathname;
+    const encodedBucket = bucket.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const signMatch = path.match(new RegExp(`/storage/v1/object/(?:sign|public|authenticated)/${encodedBucket}/(.+)`));
+    if (signMatch?.[1]) return decodeURIComponent(signMatch[1]);
+    const directMatch = path.match(new RegExp(`/storage/v1/object/${encodedBucket}/(.+)`));
+    if (directMatch?.[1]) return decodeURIComponent(directMatch[1]);
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+const optimizeImage = async (
+  imageBase64: string,
+  options: { maxWidth?: number; maxHeight?: number; quality?: number } = {}
+): Promise<{ base64: string; contentType: string }> => {
+  // Force WEBP output to keep stored images small (<1MB in practice)
+  const { maxWidth = 960, maxHeight = 960, quality = 60 } = options;
+  try {
+    const bytes = Uint8Array.from(atob(imageBase64), (c) => c.charCodeAt(0));
+    const img = await Image.decode(bytes);
+    const scale = Math.min(1, maxWidth / img.width, maxHeight / img.height);
+    if (scale < 1) {
+      img.resize(Math.max(1, Math.round(img.width * scale)), Math.max(1, Math.round(img.height * scale)));
+    }
+    const q = Math.min(100, Math.max(1, Math.round(quality)));
+    const optimizedBytes = await img.encodeWEBP(q);
+    const optimizedBase64 = btoa(String.fromCharCode(...optimizedBytes));
+    return { base64: optimizedBase64, contentType: 'image/webp' };
+  } catch (err) {
+    console.warn('[api] optimizeImage fallback (using original bytes)', err);
+    return { base64: imageBase64, contentType: 'image/webp' };
+  }
 };
 
 async function generateImageFromPrompt(options: {
@@ -30,10 +69,42 @@ async function generateImageFromPrompt(options: {
 
   const lowerModel = model.toLowerCase();
   const fallbackGeminiImageModel = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'gemini-2.5-flash-image';
+  const imagenPredictFallbackModel = Deno.env.get('IMAGEN_PREDICT_MODEL') ?? 'imagen-3.0-generate-002';
   const isGemini = lowerModel.includes('gemini');
   const isGeminiImageModel = isGemini && lowerModel.includes('image');
   const resolvedModel = isGemini && !isGeminiImageModel ? fallbackGeminiImageModel : model;
   const isGeminiImage = resolvedModel.toLowerCase().includes('gemini') && resolvedModel.toLowerCase().includes('image');
+
+  const runImagenPredict = async (modelName: string) => {
+    const endpoint = `${apiBase}/v1beta/models/${modelName}:predict`;
+
+    const imgRes = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        instances: [{ prompt }],
+        parameters: {
+          sampleCount: 1,
+          ...(aspectRatio ? { aspectRatio } : {}),
+        },
+      }),
+    });
+
+    if (!imgRes.ok) {
+      const t = await imgRes.text();
+      throw new Error(`Imagen error ${imgRes.status}: ${t}`);
+    }
+
+    const imgJson = (await imgRes.json()) as any;
+
+    let imageBase64: string | undefined;
+    const firstPred = imgJson?.predictions?.[0];
+    if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
+    const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
+    if (!imageBase64 && gen0) imageBase64 = gen0;
+
+    return { imageBase64, raw: imgJson };
+  };
 
   if (isGemini && !isGeminiImageModel && resolvedModel !== model) {
     console.warn(`[api] generateImageFromPrompt: model ${model} is text-only, falling back to ${resolvedModel}`);
@@ -41,19 +112,49 @@ async function generateImageFromPrompt(options: {
 
   if (isGeminiImage) {
     const endpoint = `${apiBase}/v1beta/models/${resolvedModel}:generateContent`;
-    const body = {
+    const createBody = (includeMime: boolean) => ({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: 'image/png' },
+      ...(includeMime ? { generationConfig: { response_mime_type: 'image/webp' } } : {}),
+    });
+    const requestOnce = async (includeMime: boolean) => {
+      return fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(createBody(includeMime)),
+      });
     };
 
-    const imgRes = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    });
+    const imgRes = await requestOnce(true);
 
     if (!imgRes.ok) {
       const t = await imgRes.text();
+      const mimeTypeError =
+        imgRes.status === 400 &&
+        (() => {
+          const normalized = t.toLowerCase();
+          return normalized.includes('response_mime_type') || normalized.includes('responsemimetype');
+        })();
+
+      if (mimeTypeError) {
+        console.warn(
+          `[api] generateImageFromPrompt: responseMimeType rejected for ${resolvedModel}, falling back to ${imagenPredictFallbackModel}`
+        );
+        // Retry Gemini image call without forcing the response mime type (some deployments reject it),
+        // then fall back to Imagen predict if it still fails.
+        const retry = await requestOnce(false);
+        if (retry.ok) {
+          const retryJson = (await retry.json()) as any;
+          const retryParts = retryJson?.candidates?.[0]?.content?.parts;
+          const retryInline = Array.isArray(retryParts)
+            ? retryParts.find((p: any) => p?.inlineData?.data)
+            : undefined;
+          if (retryInline?.inlineData?.data) {
+            return { imageBase64: retryInline.inlineData.data as string, raw: retryJson };
+          }
+        }
+        return runImagenPredict(imagenPredictFallbackModel);
+      }
+
       throw new Error(`Gemini image error ${imgRes.status}: ${t}`);
     }
 
@@ -66,34 +167,7 @@ async function generateImageFromPrompt(options: {
     return { imageBase64: inlinePart?.inlineData?.data as string | undefined, raw: imgJson };
   }
 
-  const endpoint = `${apiBase}/v1beta/models/${resolvedModel}:predict`;
-
-  const imgRes = await fetch(endpoint, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      instances: [{ prompt }],
-      parameters: {
-        sampleCount: 1,
-        ...(aspectRatio ? { aspectRatio } : {}),
-      },
-    }),
-  });
-
-  if (!imgRes.ok) {
-    const t = await imgRes.text();
-    throw new Error(`Imagen error ${imgRes.status}: ${t}`);
-  }
-
-  const imgJson = (await imgRes.json()) as any;
-
-  let imageBase64: string | undefined;
-  const firstPred = imgJson?.predictions?.[0];
-  if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
-  const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
-  if (!imageBase64 && gen0) imageBase64 = gen0;
-
-  return { imageBase64, raw: imgJson };
+  return runImagenPredict(resolvedModel);
 }
 
 serve(async (req: Request) => {
@@ -117,7 +191,7 @@ serve(async (req: Request) => {
 
   const uploadImageToStorage = async (
     imageBase64: string,
-    contentType: string = 'image/png'
+    contentType: string = 'image/webp'
   ): Promise<string | null> => {
     if (!imageBase64) return null;
     if (!supabaseServiceRoleKey) {
@@ -156,6 +230,33 @@ serve(async (req: Request) => {
     }
 
     return null;
+  };
+
+  const deleteImageFromStorage = async (imageUrl: string): Promise<boolean> => {
+    if (!supabaseServiceRoleKey) {
+      console.warn('[api] deleteImageFromStorage skipped: SUPABASE_SERVICE_ROLE_KEY not set');
+      return false;
+    }
+
+    const objectKey = parseStorageObjectKey(imageUrl, storageBucket);
+    if (!objectKey) {
+      return false;
+    }
+
+    try {
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+      const { error } = await adminClient.storage.from(storageBucket).remove([objectKey]);
+      if (error) {
+        console.warn('[api] deleteImageFromStorage error', error);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.warn('[api] deleteImageFromStorage exception', err);
+      return false;
+    }
   };
 
   // Guest quota status (public)
@@ -404,22 +505,6 @@ serve(async (req: Request) => {
         ? analysis.theme
         : 'surreal';
 
-      // Optional DB insert if user is authenticated
-      if (user) {
-        console.log('[api] /analyzeDream insert for user', user.id);
-        await supabase.from('dreams').insert({
-          user_id: user.id,
-          transcript,
-          title: String(analysis.title ?? ''),
-          interpretation: String(analysis.interpretation ?? ''),
-          shareable_quote: String(analysis.shareableQuote ?? ''),
-          theme,
-          dream_type: String(analysis.dreamType ?? 'Symbolic Dream'),
-          image_url: null,
-          chat_history: [],
-        });
-      }
-
       console.log('[api] /analyzeDream success', {
         userId: user?.id ?? null,
         theme,
@@ -531,28 +616,14 @@ serve(async (req: Request) => {
         });
       }
 
-      const imageContentType = 'image/png';
-      const storedImageUrl = await uploadImageToStorage(imageBase64, imageContentType);
-      const imageUrl = storedImageUrl ?? `data:${imageContentType};base64,${imageBase64}`;
+      const optimized =
+        (await optimizeImage(imageBase64, { maxWidth: 960, maxHeight: 960, quality: 60 }).catch(() => null)) ?? {
+          base64: imageBase64,
+          contentType: 'image/webp',
+        };
 
-      // Optional DB insert if user is authenticated (store the dream with image if desired)
-      if (user) {
-        try {
-          await supabase.from('dreams').insert({
-            user_id: user.id,
-            transcript,
-            title: String(analysis.title ?? ''),
-            interpretation: String(analysis.interpretation ?? ''),
-            shareable_quote: String(analysis.shareableQuote ?? ''),
-            theme,
-            dream_type: String(analysis.dreamType ?? 'Symbolic Dream'),
-            image_url: imageUrl,
-            chat_history: [],
-          });
-        } catch (dbErr) {
-          console.warn('[api] /analyzeDreamFull insert failed (non-fatal)', dbErr);
-        }
-      }
+      const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
+      const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
 
       return new Response(
         JSON.stringify({
@@ -563,7 +634,7 @@ serve(async (req: Request) => {
           dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
           imagePrompt,
           imageUrl,
-          imageBytes: imageBase64, // kept for backward compatibility with clients expecting bytes
+          imageBytes: optimized.base64, // kept for backward compatibility with clients expecting bytes
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
@@ -649,9 +720,10 @@ serve(async (req: Request) => {
   // Public generateImage (temporary public access)
   if (req.method === 'POST' && subPath === '/generateImage') {
     try {
-      const body = (await req.json()) as { prompt?: string; transcript?: string };
+      const body = (await req.json()) as { prompt?: string; transcript?: string; previousImageUrl?: string };
       let prompt = String(body?.prompt ?? '').trim();
       const transcript = String(body?.transcript ?? '').trim();
+      const previousImageUrl = String(body?.previousImageUrl ?? '').trim();
 
       if (!prompt && !transcript) {
         return new Response(JSON.stringify({ error: 'Missing prompt or transcript' }), {
@@ -692,11 +764,20 @@ serve(async (req: Request) => {
         });
       }
 
-      const imageContentType = 'image/png';
-      const storedImageUrl = await uploadImageToStorage(imageBase64, imageContentType);
-      const imageUrl = storedImageUrl ?? `data:${imageContentType};base64,${imageBase64}`;
+      const optimized =
+        (await optimizeImage(imageBase64, { maxWidth: 960, maxHeight: 960, quality: 60 }).catch(() => null)) ?? {
+          base64: imageBase64,
+          contentType: 'image/webp',
+        };
 
-      return new Response(JSON.stringify({ imageUrl, imageBytes: imageBase64, prompt }), {
+      const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
+      const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
+
+      if (previousImageUrl) {
+        await deleteImageFromStorage(previousImageUrl);
+      }
+
+      return new Response(JSON.stringify({ imageUrl, imageBytes: optimized.base64, prompt }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
