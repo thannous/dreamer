@@ -641,11 +641,14 @@ const styles = StyleSheet.create({
   },
   desktopColumnWrapper: {
     gap: ThemeLayout.spacing.lg,
+    columnGap: ThemeLayout.spacing.lg,
     paddingHorizontal: ThemeLayout.spacing.sm,
   },
   desktopCardWrapper: {
     flex: 1,
     marginBottom: ThemeLayout.spacing.xl,
+    paddingHorizontal: ThemeLayout.spacing.xs,
+    minWidth: 0,
   },
   desktopCardHero: {
     flex: 2,

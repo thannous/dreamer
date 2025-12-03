@@ -91,6 +91,14 @@ const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare',
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const nativeDriver = Platform.OS !== 'web';
 
+const generateUUID = (): string => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
 const Skeleton = ({ style }: { style: any }) => {
   const opacity = useRef(new Animated.Value(0.3)).current;
   useEffect(() => {
@@ -145,6 +153,7 @@ export default function JournalDetailScreen() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
+  const [regenerateImageOnReanalyze, setRegenerateImageOnReanalyze] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -412,11 +421,15 @@ export default function JournalDetailScreen() {
         return;
       }
 
-      const updatedDream = {
+      const imageUpdatedAt = Date.now();
+      const analysisRequestId = generateUUID();
+      const updatedDream: DreamAnalysis = {
         ...dream,
         imageUrl: selectedUri,
         thumbnailUrl: selectedUri,
         imageGenerationFailed: false,
+        imageUpdatedAt,
+        analysisRequestId,
         imageSource: 'user',
       };
 
@@ -456,9 +469,9 @@ export default function JournalDetailScreen() {
   const imageConfig = useMemo(() => getImageConfig('full'), []);
   const imageCacheKey = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
-    const version = dream.analyzedAt ?? dream.analysisRequestId ?? dream.id;
+    const version = dream.imageUpdatedAt ?? dream.analysisRequestId ?? dream.analyzedAt ?? dream.id;
     return `${dream.imageUrl}|${version}`;
-  }, [dream?.analysisRequestId, dream?.analyzedAt, dream?.id, dream?.imageUrl]);
+  }, [dream?.analysisRequestId, dream?.analyzedAt, dream?.id, dream?.imageUpdatedAt, dream?.imageUrl]);
 
   const getShareableImageUri = useCallback(async () => {
     if (!shareImage) {
@@ -578,14 +591,18 @@ export default function JournalDetailScreen() {
         throw new Error(t('journal.detail.image.no_source'));
       }
 
-      const imageUrl = await generateImageFromTranscript(sourceText);
+      const imageUrl = await generateImageFromTranscript(sourceText, dream.imageUrl);
       const thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
 
-      const updatedDream = {
+      const imageUpdatedAt = Date.now();
+      const analysisRequestId = generateUUID();
+      const updatedDream: DreamAnalysis = {
         ...dream,
         imageUrl,
         thumbnailUrl,
         imageGenerationFailed: false,
+        imageUpdatedAt,
+        analysisRequestId,
         imageSource: 'ai',
       };
 
@@ -674,16 +691,17 @@ export default function JournalDetailScreen() {
 
   const handleDismissReanalyzeSheet = useCallback(() => {
     setShowReanalyzeSheet(false);
+    setRegenerateImageOnReanalyze(false);
+  }, []);
+
+  const toggleRegenerateImageOnReanalyze = useCallback(() => {
+    setRegenerateImageOnReanalyze((prev) => !prev);
   }, []);
 
   const handleConfirmReanalyze = useCallback(() => {
     setShowReanalyzeSheet(false);
-    if (hasExistingImage) {
-      setShowReplaceImageSheet(true);
-      return;
-    }
-    void runAnalyze(true);
-  }, [hasExistingImage, runAnalyze]);
+    void runAnalyze(regenerateImageOnReanalyze);
+  }, [regenerateImageOnReanalyze, runAnalyze]);
 
   const handleTranscriptSave = useCallback(async () => {
     if (!dream) return;
@@ -700,6 +718,7 @@ export default function JournalDetailScreen() {
     setIsEditingTranscript(false);
 
     if (transcriptChanged) {
+      setRegenerateImageOnReanalyze(false);
       setShowReanalyzeSheet(true);
     }
   }, [dream, editableTranscript, updateDream]);
@@ -1030,57 +1049,58 @@ export default function JournalDetailScreen() {
                     <Text style={[styles.imagePlaceholderSubtitle, { color: colors.textSecondary }]}>
                       {t('journal.detail.image.no_image_subtitle')}
                     </Text>
-                    <View style={styles.imageActionsColumn}>
-                      <Pressable
-                        onPress={onRetryImage}
-                        disabled={isRetryingImage}
-                        style={[
-                          styles.imageActionButton,
-                          shadows.md,
-                          { backgroundColor: colors.accent },
-                          isRetryingImage && styles.imageActionButtonDisabled,
-                        ]}
-                      >
-                        {isRetryingImage ? (
-                          <ActivityIndicator color={colors.textPrimary} />
-                        ) : (
+                    {!isRetryingImage && (
+                      <View style={styles.imageActionsColumn}>
+                        <Pressable
+                          onPress={onRetryImage}
+                          disabled={isRetryingImage}
+                          style={[
+                            styles.imageActionButton,
+                            shadows.md,
+                            { backgroundColor: colors.accent },
+                            isRetryingImage && styles.imageActionButtonDisabled,
+                          ]}
+                        >
                           <Ionicons name="refresh" size={18} color={colors.textPrimary} />
-                        )}
-                        <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                          {isRetryingImage
-                            ? t('image_retry.generating')
-                            : t('journal.detail.image.generate_action')}
-                        </Text>
-                      </Pressable>
+                          <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                            {t('journal.detail.image.generate_action')}
+                          </Text>
+                        </Pressable>
 
-                      <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                        {t('journal.detail.image.or')}
-                      </Text>
-
-                      <Pressable
-                        onPress={handlePickImage}
-                        disabled={isPickingImage}
-                        style={[
-                          styles.imageActionButton,
-                          styles.imageActionButtonSecondary,
-                          {
-                            borderColor: colors.divider,
-                          },
-                          isPickingImage && styles.imageActionButtonDisabled,
-                        ]}
-                      >
-                        {isPickingImage ? (
-                          <ActivityIndicator color={colors.textPrimary} />
-                        ) : (
-                          <Ionicons name="image-outline" size={18} color={colors.textPrimary} />
-                        )}
-                        <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                          {isPickingImage
-                            ? t('image_retry.generating')
-                            : t('journal.detail.image.add_from_library')}
+                        <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                          {t('journal.detail.image.or')}
                         </Text>
-                      </Pressable>
-                    </View>
+
+                        <Pressable
+                          onPress={handlePickImage}
+                          disabled={isPickingImage}
+                          style={[
+                            styles.imageActionButton,
+                            styles.imageActionButtonSecondary,
+                            {
+                              borderColor: colors.divider,
+                            },
+                            isPickingImage && styles.imageActionButtonDisabled,
+                          ]}
+                        >
+                          {isPickingImage ? (
+                            <ActivityIndicator color={colors.textPrimary} />
+                          ) : (
+                            <Ionicons name="image-outline" size={18} color={colors.textPrimary} />
+                          )}
+                          <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                            {isPickingImage
+                              ? t('journal.detail.image.adding_from_library')
+                              : t('journal.detail.image.add_from_library')}
+                          </Text>
+                        </Pressable>
+                      </View>
+                    )}
+                  </View>
+                )}
+                {isRetryingImage && (
+                  <View style={[styles.imageLoadingOverlay, { backgroundColor: colors.overlay }]}>
+                    <ActivityIndicator color={colors.textPrimary} />
                   </View>
                 )}
               </View>
@@ -1278,7 +1298,7 @@ export default function JournalDetailScreen() {
                     )}
                     <Text style={[styles.imageEditButtonText, { color: colors.textPrimary }]}>
                       {isPickingImage
-                        ? t('image_retry.generating')
+                        ? t('journal.detail.image.adding_from_library')
                         : t('journal.detail.image.replace_user_button')}
                     </Text>
                   </Pressable>
@@ -1379,6 +1399,37 @@ export default function JournalDetailScreen() {
           <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
             {t('journal.detail.reanalyze_prompt.message')}
           </Text>
+          <Pressable
+            onPress={toggleRegenerateImageOnReanalyze}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: regenerateImageOnReanalyze }}
+            style={[
+              styles.sheetCheckboxRow,
+              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+            ]}
+          >
+            <View
+              style={[
+                styles.sheetCheckboxBox,
+                {
+                  borderColor: colors.divider,
+                  backgroundColor: regenerateImageOnReanalyze ? colors.accent : 'transparent',
+                },
+              ]}
+            >
+              {regenerateImageOnReanalyze ? (
+                <Ionicons name="checkmark" size={16} color={colors.textOnAccentSurface} />
+              ) : null}
+            </View>
+            <View style={styles.sheetCheckboxContent}>
+              <Text style={[styles.sheetCheckboxLabel, { color: colors.textPrimary }]}>
+                {t('journal.detail.reanalyze_prompt.regenerate_label')}
+              </Text>
+              <Text style={[styles.sheetCheckboxNote, { color: colors.textSecondary }]}>
+                {t('journal.detail.reanalyze_prompt.regenerate_note')}
+              </Text>
+            </View>
+          </Pressable>
           <View style={styles.sheetButtons}>
             <Pressable
               style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
@@ -1400,11 +1451,6 @@ export default function JournalDetailScreen() {
               </Text>
             </Pressable>
           </View>
-          <Pressable onPress={handleDismissReanalyzeSheet} style={styles.sheetLinkButton}>
-            <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
-              {t('common.cancel')}
-            </Text>
-          </Pressable>
         </BottomSheet>
         <Modal
           visible={isShareModalVisible}
@@ -1655,6 +1701,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 16,
     backgroundColor: 'rgba(140, 158, 255, 0.05)',
+  },
+  imageLoadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contentCard: {
     marginTop: -24,
@@ -1912,6 +1964,37 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 22,
+  },
+  sheetCheckboxRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  sheetCheckboxBox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+  },
+  sheetCheckboxContent: {
+    flex: 1,
+    gap: 2,
+  },
+  sheetCheckboxLabel: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    lineHeight: 20,
+  },
+  sheetCheckboxNote: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 18,
   },
   sheetButtons: {
     flexDirection: 'row',

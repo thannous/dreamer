@@ -301,8 +301,11 @@ export const useDreamJournal = () => {
 
       try {
         const saved = await createDreamInSupabase(normalizedDream, user!.id);
-        await persistRemoteDreams((prev) => upsertDream(prev, saved));
-        return saved;
+        const merged = normalizedDream.imageUpdatedAt
+          ? { ...saved, imageUpdatedAt: normalizedDream.imageUpdatedAt }
+          : saved;
+        await persistRemoteDreams((prev) => upsertDream(prev, merged));
+        return merged;
       } catch (error) {
         if (__DEV__) {
           console.warn('Falling back to offline dream creation', error);
@@ -357,7 +360,10 @@ export const useDreamJournal = () => {
 
       try {
         const saved = await updateDreamInSupabase({ ...normalizedDream, remoteId });
-        await persistRemoteDreams((prev) => upsertDream(prev, saved));
+        const merged = normalizedDream.imageUpdatedAt
+          ? { ...saved, imageUpdatedAt: normalizedDream.imageUpdatedAt }
+          : saved;
+        await persistRemoteDreams((prev) => upsertDream(prev, merged));
       } catch (error) {
         if (__DEV__) {
           console.warn('Falling back to offline dream update', error);
@@ -476,7 +482,8 @@ export const useDreamJournal = () => {
 
       try {
         const saved = await updateDreamInSupabase({ ...updated, remoteId });
-        await persistRemoteDreams((prev) => upsertDream(prev, saved));
+        const merged = updated.imageUpdatedAt ? { ...saved, imageUpdatedAt: updated.imageUpdatedAt } : saved;
+        await persistRemoteDreams((prev) => upsertDream(prev, merged));
       } catch (error) {
         await rollbackFavorite();
         throw error;
@@ -496,6 +503,9 @@ export const useDreamJournal = () => {
         try {
           if (mutation.type === 'create') {
             const created = await createDreamInSupabase(mutation.dream, user.id);
+            const createdWithLocal = mutation.dream.imageUpdatedAt
+              ? { ...created, imageUpdatedAt: mutation.dream.imageUpdatedAt }
+              : created;
             queue.shift();
             queue = queue.map((entry) => {
               if (entry.type === 'update' && entry.dream.id === mutation.dream.id) {
@@ -515,7 +525,7 @@ export const useDreamJournal = () => {
                 if (d.id !== mutation.dream.id) return d;
                 return stillPending
                   ? { ...d, id: created.id, remoteId: created.remoteId }
-                  : { ...created, id: created.id, pendingSync: undefined };
+                  : { ...createdWithLocal, id: created.id, pendingSync: undefined };
               })
             );
           } else if (mutation.type === 'update') {
@@ -524,6 +534,9 @@ export const useDreamJournal = () => {
               throw new Error('Missing remote id for Supabase dream update');
             }
             const saved = await updateDreamInSupabase({ ...mutation.dream, remoteId });
+            const savedWithLocal = mutation.dream.imageUpdatedAt
+              ? { ...saved, imageUpdatedAt: mutation.dream.imageUpdatedAt }
+              : saved;
             queue.shift();
             const stillPending = hasPendingMutationsForDream(queue, mutation.dream.id);
             await persistRemoteDreams((prev) =>
@@ -532,7 +545,7 @@ export const useDreamJournal = () => {
                 if (stillPending) {
                   return d;
                 }
-                return { ...saved, id: d.id, pendingSync: undefined };
+                return { ...savedWithLocal, id: d.id, pendingSync: undefined };
               })
             );
           } else if (mutation.type === 'delete') {
@@ -608,12 +621,15 @@ export const useDreamJournal = () => {
         let thumbnailUrl = dream.thumbnailUrl;
         let imageGenerationFailed = false;
         let imageSource: DreamAnalysis['imageSource'] = dream.imageSource;
+        let imageUpdatedAt = dream.imageUpdatedAt;
 
         if (shouldReplaceImage) {
+          const previousImageUrl = dream.imageUrl;
           try {
-            imageUrl = await generateImageForDream(imagePrompt);
+            imageUrl = await generateImageForDream(imagePrompt, previousImageUrl);
             thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
             imageSource = imageUrl ? 'ai' : imageSource;
+            imageUpdatedAt = imageUrl ? Date.now() : imageUpdatedAt;
           } catch (imageError) {
             console.warn('Image generation failed', imageError);
             imageGenerationFailed = true;
@@ -634,6 +650,7 @@ export const useDreamJournal = () => {
           imageUrl,
           thumbnailUrl,
           imageSource,
+          imageUpdatedAt,
           imageGenerationFailed: imageFailedWithoutImage,
           analysisStatus: 'done',
           analyzedAt: Date.now(),

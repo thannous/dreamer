@@ -445,7 +445,7 @@ type ComposerFooterProps = {
   messageCounterLabel: string;
   messageLimitReached: boolean;
   messagesRemaining: number;
-  t: (key: string, options?: Record<string, unknown>) => string;
+  t: (key: string, replacements?: { [k: string]: string | number }) => string;
 };
 
 function ComposerFooter({

@@ -28,12 +28,14 @@ import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-na
 import type Animated from 'react-native-reanimated';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
 
+type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
+
 interface MessagesListProps {
   messages: ChatMessage[];
   isLoading?: boolean;
   loadingText?: string;
-  ListHeaderComponent?: React.ReactNode;
-  ListFooterComponent?: React.ReactNode;
+  ListHeaderComponent?: LegendListComponent;
+  ListFooterComponent?: LegendListComponent;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 }
