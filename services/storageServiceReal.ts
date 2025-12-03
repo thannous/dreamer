@@ -1,4 +1,5 @@
 import * as FileSystem from 'expo-file-system';
+import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
 import type {
@@ -21,7 +22,15 @@ const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 const MAX_CHAT_HISTORY_FOR_STORAGE = 50;
-const IMAGE_CACHE_DIR = FileSystem.cacheDirectory ?? FileSystem.documentDirectory ?? null;
+const IMAGE_CACHE_DIR = FileSystemLegacy.cacheDirectory ?? FileSystemLegacy.documentDirectory ?? null;
+// Store large payloads on the filesystem to avoid Android CursorWindow limits in AsyncStorage
+const FILE_STORAGE_DIR = FileSystemLegacy.documentDirectory ?? FileSystemLegacy.cacheDirectory ?? null;
+const FILE_STORAGE_PREFIX = FILE_STORAGE_DIR ? `${FILE_STORAGE_DIR}storage/` : null;
+const FILE_BACKED_KEYS = new Set([
+  DREAMS_STORAGE_KEY,
+  REMOTE_DREAMS_CACHE_KEY,
+  DREAM_MUTATIONS_KEY,
+]);
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -49,6 +58,57 @@ let indexedDBStorage: IndexedDBStorage | null | undefined;
 const IDB_DB_NAME = 'gemini_dream_journal';
 const IDB_STORE_NAME = 'storage';
 const IDB_VERSION = 1;
+
+const getFileBackedPath = (key: string): string | null =>
+  FILE_STORAGE_PREFIX ? `${FILE_STORAGE_PREFIX}${key}.json` : null;
+
+const shouldUseFileStorage = (key: string): boolean =>
+  Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && Boolean(FILE_STORAGE_PREFIX);
+
+async function readFileBackedItem(key: string): Promise<string | null> {
+  const path = getFileBackedPath(key);
+  if (!path) return null;
+  try {
+    const info = await FileSystemLegacy.getInfoAsync(path);
+    if (!info.exists || info.isDirectory) return null;
+    const file = new FileSystem.File(path);
+    return await file.text();
+  } catch (error) {
+    if (__DEV__) {
+      console.warn(`Failed to read file-backed key ${key}`, error);
+    }
+    return null;
+  }
+}
+
+async function writeFileBackedItem(key: string, value: string): Promise<void> {
+  const path = getFileBackedPath(key);
+  if (!path) {
+    throw new Error('File storage unavailable');
+  }
+  try {
+    await FileSystemLegacy.makeDirectoryAsync(FILE_STORAGE_PREFIX!, { intermediates: true });
+    const file = new FileSystem.File(path);
+    file.write(value, { encoding: 'utf8' });
+  } catch (error) {
+    if (__DEV__) {
+      console.warn(`Failed to write file-backed key ${key}`, error);
+    }
+    throw error;
+  }
+}
+
+async function deleteFileBackedItem(key: string): Promise<void> {
+  const path = getFileBackedPath(key);
+  if (!path) return;
+  try {
+    await FileSystemLegacy.deleteAsync(path, { idempotent: true });
+  } catch (error) {
+    if (__DEV__) {
+      console.warn(`Failed to delete file-backed key ${key}`, error);
+    }
+  }
+}
 
 async function createIndexedDBStorage(): Promise<IndexedDBStorage> {
   const globalWithIDB = globalThis as typeof globalThis & { indexedDB?: IDBFactory };
@@ -169,8 +229,37 @@ async function getAsyncStorage(): Promise<AsyncStorageModule | null> {
 }
 
 async function getItem(key: string): Promise<string | null> {
+  if (shouldUseFileStorage(key)) {
+    const fileValue = await readFileBackedItem(key);
+    if (fileValue != null) {
+      return fileValue;
+    }
+  }
+
   const AS = await getAsyncStorage();
-  if (AS) return AS.getItem(key);
+  if (AS) {
+    try {
+      const value = await AS.getItem(key);
+      if (value != null && shouldUseFileStorage(key)) {
+        await writeFileBackedItem(key, value);
+        await AS.removeItem(key);
+      }
+      return value;
+    } catch (error) {
+      if (__DEV__) {
+        console.warn(`Failed to read AsyncStorage key ${key}`, error);
+      }
+      if (error instanceof Error && error.message.includes('Row too big')) {
+        try {
+          await AS.removeItem(key);
+        } catch {
+          // Best-effort cleanup
+        }
+      } else {
+        throw error;
+      }
+    }
+  }
   const idb = await getIndexedDBStorage();
   if (idb) {
     const value = await idb.getItem(key);
@@ -199,6 +288,19 @@ async function getItem(key: string): Promise<string | null> {
 }
 
 async function setItem(key: string, value: string): Promise<void> {
+  if (shouldUseFileStorage(key)) {
+    await writeFileBackedItem(key, value);
+    const AS = await getAsyncStorage();
+    if (AS) {
+      try {
+        await AS.removeItem(key);
+      } catch {
+        // Swallow cleanup errors
+      }
+    }
+    return;
+  }
+
   const AS = await getAsyncStorage();
   if (AS) return AS.setItem(key, value);
   const idb = await getIndexedDBStorage();
@@ -214,6 +316,10 @@ async function setItem(key: string, value: string): Promise<void> {
 }
 
 async function removeItem(key: string): Promise<void> {
+  if (shouldUseFileStorage(key)) {
+    await deleteFileBackedItem(key);
+  }
+
   const AS = await getAsyncStorage();
   if (AS) return AS.removeItem(key);
   const idb = await getIndexedDBStorage();
@@ -248,10 +354,9 @@ async function persistDataUriImage(imageUrl: string, dreamId: number): Promise<s
   const filePath = `${dir}${dreamId}.${extension}`;
 
   try {
-    await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
-    await FileSystem.writeAsStringAsync(filePath, base64, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+    await FileSystemLegacy.makeDirectoryAsync(dir, { intermediates: true });
+    const file = new FileSystem.File(filePath);
+    file.write(base64, { encoding: 'base64' });
     return filePath;
   } catch (error) {
     if (__DEV__) {
