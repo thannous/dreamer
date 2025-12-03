@@ -316,6 +316,7 @@ export default function JournalDetailScreen() {
     return t('journal.detail.explore_button.new');
   }, [primaryAction, t]);
   const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
+  const isAnalysisLocked = !!dream && (dream.analysisStatus === 'pending' || isAnalyzing);
   const shareMessage = useMemo(() => {
     if (!dream) return '';
     const sections: string[] = [];
@@ -366,9 +367,10 @@ export default function JournalDetailScreen() {
   const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   const startMetadataEditing = useCallback(() => {
+    if (isAnalysisLocked) return;
     setIsEditingTranscript(false);
     setIsEditing(true);
-  }, []);
+  }, [isAnalysisLocked]);
 
   const handleSave = useCallback(async () => {
     if (!dream) return;
@@ -391,7 +393,7 @@ export default function JournalDetailScreen() {
   }, [dream, editableTitle, editableTheme, editableDreamType, updateDream]);
 
   const handlePickImage = useCallback(async () => {
-    if (!dream) return;
+    if (!dream || isAnalysisLocked) return;
 
     try {
       setIsPickingImage(true);
@@ -441,7 +443,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsPickingImage(false);
     }
-  }, [dream, updateDream, t]);
+  }, [dream, isAnalysisLocked, updateDream, t]);
 
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
@@ -483,7 +485,7 @@ export default function JournalDetailScreen() {
 
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
-    if (!dream) return;
+    if (!dream || isAnalysisLocked) return;
     setIsSharing(true);
     try {
       if (Platform.OS === 'web') {
@@ -531,10 +533,10 @@ export default function JournalDetailScreen() {
     } finally {
       setIsSharing(false);
     }
-  }, [dream, shareImage, shareMessage, shareTitle, openShareModal, getShareableImageUri, t]);
+  }, [dream, getShareableImageUri, isAnalysisLocked, openShareModal, shareImage, shareMessage, shareTitle, t]);
 
   const handleToggleFavorite = useCallback(async () => {
-    if (!dream) return;
+    if (!dream || isAnalysisLocked) return;
     try {
       setFavoriteError(null);
       await toggleFavorite(dream.id);
@@ -544,7 +546,7 @@ export default function JournalDetailScreen() {
       }
       setFavoriteError(t('journal.detail.favorite.error'));
     }
-  }, [dream, toggleFavorite, t]);
+  }, [dream, isAnalysisLocked, toggleFavorite, t]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
@@ -553,7 +555,7 @@ export default function JournalDetailScreen() {
   }, [dream, deleteDream]);
 
   const onDelete = useCallback(() => {
-    if (!dream) return;
+    if (!dream || isAnalysisLocked) return;
     const confirmMessage = t('journal.detail.delete_confirm.message');
 
     if (Platform.OS === 'web') {
@@ -579,10 +581,10 @@ export default function JournalDetailScreen() {
         },
       ],
     );
-  }, [dream, deleteAndNavigate, t]);
+  }, [deleteAndNavigate, dream, isAnalysisLocked, t]);
 
   const onRetryImage = useCallback(async () => {
-    if (!dream) return;
+    if (!dream || isAnalysisLocked) return;
 
     setIsRetryingImage(true);
     try {
@@ -614,7 +616,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsRetryingImage(false);
     }
-  }, [dream, updateDream, t]);
+  }, [dream, isAnalysisLocked, updateDream, t]);
 
   const handleBackPress = useCallback(() => {
     router.replace('/(tabs)/journal');
@@ -802,10 +804,11 @@ export default function JournalDetailScreen() {
             setIsEditingTranscript(true);
           }}
           testID="btn.editTranscript"
+          disabled={isAnalysisLocked}
           style={({ pressed }) => [
             styles.transcriptEditButton,
             {
-              opacity: pressed ? 0.7 : 1,
+              opacity: pressed || isAnalysisLocked ? 0.7 : 1,
               backgroundColor: isEditingTranscript ? colors.accent : 'transparent',
               borderColor: colors.divider,
             },
@@ -967,10 +970,11 @@ export default function JournalDetailScreen() {
       <Pressable
         onPress={isEditing ? handleSave : startMetadataEditing}
         testID="btn.editMetadata"
+        disabled={isAnalysisLocked}
         style={({ pressed }) => [
           styles.editButton,
           {
-            opacity: pressed ? 0.7 : 1,
+            opacity: pressed || isAnalysisLocked ? 0.7 : 1,
             backgroundColor: isEditing ? colors.accent : colors.backgroundSecondary,
           },
         ]}
@@ -1051,16 +1055,16 @@ export default function JournalDetailScreen() {
                     <Text style={[styles.imagePlaceholderSubtitle, { color: colors.textSecondary }]}>
                       {t('journal.detail.image.no_image_subtitle')}
                     </Text>
-                    {!isRetryingImage && (
+                    {!isRetryingImage && !isAnalysisLocked && (
                       <View style={styles.imageActionsColumn}>
                         <Pressable
                           onPress={onRetryImage}
-                          disabled={isRetryingImage}
+                          disabled={isRetryingImage || isAnalysisLocked}
                           style={[
                             styles.imageActionButton,
                             shadows.md,
                             { backgroundColor: colors.accent },
-                            isRetryingImage && styles.imageActionButtonDisabled,
+                            (isRetryingImage || isAnalysisLocked) && styles.imageActionButtonDisabled,
                           ]}
                         >
                           <Ionicons name="refresh" size={18} color={colors.textPrimary} />
@@ -1075,14 +1079,14 @@ export default function JournalDetailScreen() {
 
                         <Pressable
                           onPress={handlePickImage}
-                          disabled={isPickingImage}
+                          disabled={isPickingImage || isAnalysisLocked}
                           style={[
                             styles.imageActionButton,
                             styles.imageActionButtonSecondary,
                             {
                               borderColor: colors.divider,
                             },
-                            isPickingImage && styles.imageActionButtonDisabled,
+                            (isPickingImage || isAnalysisLocked) && styles.imageActionButtonDisabled,
                           ]}
                         >
                           {isPickingImage ? (
@@ -1100,7 +1104,7 @@ export default function JournalDetailScreen() {
                     )}
                   </View>
                 )}
-                {isRetryingImage && (
+                {(isRetryingImage || isAnalysisLocked) && (
                   <View style={[styles.imageLoadingOverlay, { backgroundColor: colors.overlay }]}>
                     <ActivityIndicator color={colors.textPrimary} />
                   </View>
@@ -1150,9 +1154,10 @@ export default function JournalDetailScreen() {
                     style={[styles.exploreButton, shadows.xl, {
                       backgroundColor: colors.accent,
                       borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+                      opacity: isPrimaryActionBusy || isAnalysisLocked ? 0.8 : 1,
                     }]}
                     onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
-                    disabled={isPrimaryActionBusy}
+                    disabled={isPrimaryActionBusy || isAnalysisLocked}
                   >
                     {isPrimaryActionBusy ? (
                       <ActivityIndicator color={colors.textPrimary} />
@@ -1166,7 +1171,7 @@ export default function JournalDetailScreen() {
             )}
 
             {/* Additional Actions */}
-            {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && (
+            {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && !isAnalysisLocked && (
               <Pressable
                 onPress={handleAnalyze}
                 disabled={isAnalyzing || dream.analysisStatus === 'pending'}
@@ -1191,6 +1196,7 @@ export default function JournalDetailScreen() {
             <View style={styles.actionsRow}>
               <Pressable
                 onPress={handleToggleFavorite}
+                disabled={isAnalysisLocked}
                 style={[
                   styles.actionButton,
                   shadows.sm,
@@ -1199,6 +1205,7 @@ export default function JournalDetailScreen() {
                     // button doesn't look like a darker band on Android.
                     backgroundColor: colors.backgroundCard,
                     borderColor: accentSurfaceBorderColor,
+                    opacity: isAnalysisLocked ? 0.6 : 1,
                   },
                 ]}
               >
@@ -1216,14 +1223,14 @@ export default function JournalDetailScreen() {
               </Pressable>
               <Pressable
                 onPress={onShare}
-                disabled={isSharing}
+                disabled={isSharing || isAnalysisLocked}
                 style={[
                   styles.actionButton,
                   shadows.sm,
                   {
                     backgroundColor: colors.backgroundCard,
                     borderColor: accentSurfaceBorderColor,
-                    opacity: isSharing ? 0.7 : 1,
+                    opacity: isSharing || isAnalysisLocked ? 0.7 : 1,
                   },
                 ]}
               >
@@ -1283,14 +1290,14 @@ export default function JournalDetailScreen() {
                 {dream.imageSource !== 'ai' ? (
                   <Pressable
                     onPress={handlePickImage}
-                    disabled={isPickingImage}
+                    disabled={isPickingImage || isAnalysisLocked}
                     style={[
                       styles.imageEditButton,
                       {
                         backgroundColor: colors.backgroundCard,
                         borderColor: colors.divider,
                       },
-                      isPickingImage && styles.imageActionButtonDisabled,
+                      (isPickingImage || isAnalysisLocked) && styles.imageActionButtonDisabled,
                     ]}
                   >
                     {isPickingImage ? (
@@ -1361,6 +1368,7 @@ export default function JournalDetailScreen() {
             <Pressable
               style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
               onPress={handleReplaceImage}
+              disabled={isAnalysisLocked}
             >
               <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
                 {t('journal.detail.image_replace.replace')}
@@ -1372,6 +1380,7 @@ export default function JournalDetailScreen() {
                 { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
               ]}
               onPress={handleKeepImage}
+              disabled={isAnalysisLocked}
             >
               <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
                 {t('journal.detail.image_replace.keep')}
@@ -1405,9 +1414,11 @@ export default function JournalDetailScreen() {
             onPress={toggleRegenerateImageOnReanalyze}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: regenerateImageOnReanalyze }}
+            disabled={isAnalysisLocked}
             style={[
               styles.sheetCheckboxRow,
               { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+              isAnalysisLocked && { opacity: 0.5 },
             ]}
           >
             <View
@@ -1436,6 +1447,7 @@ export default function JournalDetailScreen() {
             <Pressable
               style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
               onPress={handleConfirmReanalyze}
+              disabled={isAnalysisLocked}
             >
               <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
                 {t('journal.detail.reanalyze_prompt.reanalyze')}
@@ -1447,6 +1459,7 @@ export default function JournalDetailScreen() {
                 { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
               ]}
               onPress={handleDismissReanalyzeSheet}
+              disabled={isAnalysisLocked}
             >
               <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
                 {t('journal.detail.reanalyze_prompt.later')}
