@@ -232,7 +232,7 @@ serve(async (req: Request) => {
     return null;
   };
 
-  const deleteImageFromStorage = async (imageUrl: string): Promise<boolean> => {
+  const deleteImageFromStorage = async (imageUrl: string, ownerId?: string): Promise<boolean> => {
     if (!supabaseServiceRoleKey) {
       console.warn('[api] deleteImageFromStorage skipped: SUPABASE_SERVICE_ROLE_KEY not set');
       return false;
@@ -240,6 +240,14 @@ serve(async (req: Request) => {
 
     const objectKey = parseStorageObjectKey(imageUrl, storageBucket);
     if (!objectKey) {
+      return false;
+    }
+
+    if (!ownerId || !objectKey.startsWith(`${ownerId}/`)) {
+      console.warn('[api] deleteImageFromStorage skipped: unauthorized request for object', {
+        objectKey,
+        ownerId: ownerId ?? null,
+      });
       return false;
     }
 
@@ -774,7 +782,7 @@ serve(async (req: Request) => {
       const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
 
       if (previousImageUrl) {
-        await deleteImageFromStorage(previousImageUrl);
+        await deleteImageFromStorage(previousImageUrl, user?.id ?? undefined);
       }
 
       return new Response(JSON.stringify({ imageUrl, imageBytes: optimized.base64, prompt }), {

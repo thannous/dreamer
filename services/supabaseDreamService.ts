@@ -140,6 +140,15 @@ const convertToWebpBase64 = async (params: {
 const buildStoragePath = (userId: string, extension: string) =>
   `${userId}/dream-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
 
+const applyVariantToPath = (path: string, variant: 'image' | 'thumbnail') => {
+  if (variant !== 'thumbnail') return path;
+  const lastDot = path.lastIndexOf('.');
+  const base = lastDot === -1 ? path : path.slice(0, lastDot);
+  const ext = lastDot === -1 ? '' : path.slice(lastDot);
+  if (base.endsWith('-thumb')) return `${base}${ext}`;
+  return `${base}-thumb${ext}`;
+};
+
 const extractStoragePathFromUrl = (url: string): string | null => {
   try {
     const parsed = new URL(url);
@@ -172,17 +181,19 @@ const deriveStoragePath = (params: {
   contentType: string;
   existingUrl?: string | null;
   remoteId?: number;
+  variant?: 'image' | 'thumbnail';
 }) => {
-  const { userId, contentType, existingUrl, remoteId } = params;
+  const { userId, contentType, existingUrl, remoteId, variant = 'image' } = params;
   const extension = (contentType.split('/')[1] ?? 'jpg').split('+')[0];
+
   if (remoteId) {
-    return { path: `${userId}/dream-${remoteId}.${extension}`, extension };
+    return { path: applyVariantToPath(`${userId}/dream-${remoteId}.${extension}`, variant), extension };
   }
   const existingPath = existingUrl ? extractStoragePathFromUrl(existingUrl) : null;
   if (existingPath && existingPath.startsWith(`${userId}/`)) {
-    return { path: existingPath, extension };
+    return { path: applyVariantToPath(existingPath, variant), extension };
   }
-  return { path: buildStoragePath(userId, extension), extension };
+  return { path: applyVariantToPath(buildStoragePath(userId, extension), variant), extension };
 };
 
 const uploadImageToBucket = async (
@@ -190,13 +201,15 @@ const uploadImageToBucket = async (
   contentType: string,
   userId: string,
   preferredPath?: string,
-  remoteId?: number
+  remoteId?: number,
+  variant: 'image' | 'thumbnail' = 'image'
 ): Promise<string> => {
   const { path } = deriveStoragePath({
     userId,
     contentType,
     existingUrl: preferredPath,
     remoteId,
+    variant,
   });
   const data = decodeBase64ToUint8Array(base64);
 
@@ -292,7 +305,8 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
           webp.contentType,
           ownerId,
           previousRemoteImageUrl ?? undefined,
-          dream.remoteId
+          dream.remoteId,
+          'thumbnail'
         );
         thumbnailUrl = remoteUrl;
         if (!imageUrl || !isRemoteImageUrl(imageUrl)) {
