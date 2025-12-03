@@ -164,7 +164,7 @@ export default function JournalDetailScreen() {
     }
   }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
-  const { canAnalyzeNow } = useQuota();
+  const { canAnalyzeNow, canAnalyze } = useQuota();
   const { t } = useTranslation();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
@@ -633,7 +633,8 @@ export default function JournalDetailScreen() {
     async (replaceImage: boolean) => {
       if (!dream) return;
 
-      if (!canAnalyzeNow) {
+      const allowed = canAnalyzeNow || (await canAnalyze());
+      if (!allowed) {
         Alert.alert(
           t('journal.detail.analysis_limit.title'),
           t('journal.detail.analysis_limit.message'),
@@ -658,13 +659,14 @@ export default function JournalDetailScreen() {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, canAnalyzeNow, dream, language, t]
+    [analyzeDream, canAnalyze, canAnalyzeNow, dream, language, t]
   );
 
-  const handleAnalyze = useCallback(() => {
+  const handleAnalyze = useCallback(async () => {
     if (!dream) return;
 
-    if (!canAnalyzeNow) {
+    const allowed = canAnalyzeNow || (await canAnalyze());
+    if (!allowed) {
       Alert.alert(
         t('journal.detail.analysis_limit.title'),
         t('journal.detail.analysis_limit.message'),
@@ -679,7 +681,7 @@ export default function JournalDetailScreen() {
     }
 
     void runAnalyze(true);
-  }, [dream, canAnalyzeNow, hasExistingImage, runAnalyze, t]);
+  }, [dream, canAnalyze, canAnalyzeNow, hasExistingImage, runAnalyze, t]);
 
   const handleReplaceImage = useCallback(() => {
     void runAnalyze(true);
