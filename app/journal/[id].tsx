@@ -718,10 +718,10 @@ export default function JournalDetailScreen() {
     setIsEditingTranscript(false);
 
     if (transcriptChanged) {
-      setRegenerateImageOnReanalyze(false);
+      setRegenerateImageOnReanalyze(!hasExistingImage);
       setShowReanalyzeSheet(true);
     }
-  }, [dream, editableTranscript, updateDream]);
+  }, [dream, editableTranscript, hasExistingImage, updateDream]);
 
   const handleDismissReplaceSheet = useCallback(() => {
     setShowReplaceImageSheet(false);
