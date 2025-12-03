@@ -5,7 +5,10 @@ import { useAuth } from '@/context/AuthContext';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
-import { analyzeDream as analyzeDreamText, generateImageForDream } from '@/services/geminiService';
+import {
+  analyzeDream as analyzeDreamText,
+  generateImageFromTranscript,
+} from '@/services/geminiService';
 import { quotaService } from '@/services/quotaService';
 import {
   getCachedRemoteDreams,
@@ -613,36 +616,34 @@ export const useDreamJournal = () => {
       // Invalidate quota cache immediately
       quotaService.invalidate(user);
 
+      // Kick off analysis and image generation in parallel. Image generation uses the transcript
+      // directly so it doesn't have to wait for the analysis result to produce the prompt.
+      const analysisPromise = analyzeDreamText(transcript, options?.lang);
+      const imagePromise = shouldReplaceImage
+        ? generateImageFromTranscript(transcript, dream.imageUrl)
+            .then((url) => ({ url }))
+            .catch((err) => {
+              console.warn('Image generation failed', err);
+              return { url: dream.imageUrl, failed: true as const };
+            })
+        : Promise.resolve({ url: dream.imageUrl, failed: false as const });
+
       try {
-        const analysis = await analyzeDreamText(transcript, options?.lang);
-        const { imagePrompt, ...analysisFields } = analysis;
+        const [analysis, imageResult] = await Promise.all([analysisPromise, imagePromise]);
+        const { imagePrompt: _unusedImagePrompt, ...analysisFields } = analysis;
 
-        let imageUrl = dream.imageUrl;
-        let thumbnailUrl = dream.thumbnailUrl;
-        let imageGenerationFailed = false;
-        let imageSource: DreamAnalysis['imageSource'] = dream.imageSource;
-        let imageUpdatedAt = dream.imageUpdatedAt;
+        const imageUrl = imageResult.url;
+        const imageSource: DreamAnalysis['imageSource'] =
+          imageUrl && imageUrl !== dream.imageUrl ? 'ai' : dream.imageSource;
+        const imageUpdatedAt =
+          imageUrl && imageUrl !== dream.imageUrl ? Date.now() : dream.imageUpdatedAt;
+        const thumbnailUrl =
+          imageUrl && (shouldReplaceImage || !dream.thumbnailUrl)
+            ? getThumbnailUrl(imageUrl)
+            : dream.thumbnailUrl;
 
-        if (shouldReplaceImage) {
-          const previousImageUrl = dream.imageUrl;
-          try {
-            imageUrl = await generateImageForDream(imagePrompt, previousImageUrl);
-            thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
-            imageSource = imageUrl ? 'ai' : imageSource;
-            imageUpdatedAt = imageUrl ? Date.now() : imageUpdatedAt;
-          } catch (imageError) {
-            console.warn('Image generation failed', imageError);
-            imageGenerationFailed = true;
-          }
-        }
-
-        if (imageUrl) {
-          // Ensure thumbnail stays in sync with the latest image
-          thumbnailUrl =
-            shouldReplaceImage || !thumbnailUrl ? getThumbnailUrl(imageUrl) : thumbnailUrl;
-        }
-
-        const imageFailedWithoutImage = imageGenerationFailed && !imageUrl;
+        const imageFailedWithoutImage =
+          shouldReplaceImage && !!imageResult.failed && !imageUrl && !dream.imageUrl;
 
         const next: DreamAnalysis = {
           ...currentDreamState,
