@@ -1,18 +1,26 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { useAuth } from '@/context/AuthContext';
+import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
-import type { QuotaUsage } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/theme';
+import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+
+type UsageEntry = {
+  used: number;
+  limit: number | null;
+  remaining: number | null;
+};
 
 type Props = {
   onUpgradePress?: () => void;
 };
 
-const formatUsage = (usage?: QuotaUsage[keyof QuotaUsage], unlimitedLabel?: string) => {
+const formatUsage = (usage?: UsageEntry, unlimitedLabel?: string) => {
   if (!usage) return '—';
   if (usage.limit === null) {
     return unlimitedLabel ?? 'Unlimited';
@@ -21,7 +29,7 @@ const formatUsage = (usage?: QuotaUsage[keyof QuotaUsage], unlimitedLabel?: stri
   return `${Math.max(used, 0)} / ${usage.limit}`;
 };
 
-const getProgress = (usage?: QuotaUsage[keyof QuotaUsage]) => {
+const getProgress = (usage?: UsageEntry) => {
   if (!usage || usage.limit === null || usage.limit === 0) {
     return 0;
   }
@@ -29,11 +37,31 @@ const getProgress = (usage?: QuotaUsage[keyof QuotaUsage]) => {
 };
 
 export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
+  const { user } = useAuth();
+  const { dreams } = useDreams();
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch } = useQuota();
 
+  const recordingUsage: UsageEntry = useMemo(() => {
+    // Align with guest recording guard (limit is enforced at GUEST_DREAM_LIMIT - 1)
+    const guestRecordingLimit = Math.max(GUEST_DREAM_LIMIT - 1, 0);
+    const hasAccount = Boolean(user);
+
+    return {
+      used: dreams.length,
+      limit: hasAccount ? null : guestRecordingLimit,
+      remaining: hasAccount ? null : Math.max(guestRecordingLimit - dreams.length, 0),
+    };
+  }, [dreams.length, user]);
+
   const rows = useMemo(() => ([
+    {
+      key: 'recordings',
+      label: t('settings.quota.recording_label'),
+      usage: recordingUsage,
+      testID: TID.Quota.RecordingsValue,
+    },
     {
       key: 'analysis',
       label: t('settings.quota.analysis_label'),
@@ -46,7 +74,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       usage: quotaStatus?.usage.exploration,
       testID: TID.Quota.ExplorationValue,
     },
-  ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, t]);
+  ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, recordingUsage, t]);
 
   const showCta = quotaStatus && quotaStatus.tier !== 'premium';
   const ctaLabel = quotaStatus?.tier === 'guest'

@@ -87,6 +87,7 @@ export const TID = {
   Quota: {
     AnalysisValue: 'quota.analysisValue',
     ExplorationValue: 'quota.explorationValue',
+    RecordingsValue: 'quota.recordingsValue',
   },
   Stats: {
     TotalChatsValue: 'stats.totalChats',
