@@ -182,6 +182,17 @@ export async function startNativeSpeechSession(
     });
 
     const errorSub = speechModule.addListener('error', (event) => {
+      const isBenignClientError = event?.error === 'client';
+
+      // Android can emit ERROR_CLIENT when we stop/abort; treat it as noise unless debugging.
+      if (isBenignClientError) {
+        if (__DEV__) {
+          console.log('[nativeSpeech] client error ignored after stop/abort', event);
+        }
+        resolveEnd?.();
+        return;
+      }
+
       console.warn('[nativeSpeech] error', event);
       lastError = { code: event.error, message: event.message };
       resolveEnd?.();

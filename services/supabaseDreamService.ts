@@ -3,7 +3,7 @@ import type { PostgrestError } from '@supabase/supabase-js';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
-import * as ImageManipulator from 'expo-image-manipulator';
+import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
 import { Platform } from 'react-native';
 import type { ChatMessage, DreamAnalysis, DreamType, DreamTheme } from '@/lib/types';
 
@@ -75,12 +75,45 @@ const writeBase64TempFile = async (base64: string, extension: string = 'png'): P
   return uri;
 };
 
-const convertToWebpBase64 = async (params: {
-  base64?: string;
-  uri?: string;
-  contentType?: string;
-}): Promise<{ base64: string; contentType: string }> => {
+type WebpOptions = {
+  compress?: number;
+  /**
+   * Resize longest side down to this value. Skipped for small payloads to avoid upscaling.
+   */
+  maxDimension?: number;
+  /**
+   * Force square resize (used for thumbnails).
+   */
+  squareSize?: number;
+};
+
+type ImageManipulatorModule = typeof import('expo-image-manipulator');
+
+let imageManipulatorModule: ImageManipulatorModule | null = null;
+
+const getImageManipulator = async (): Promise<ImageManipulatorModule | null> => {
+  if (imageManipulatorModule !== null) {
+    return imageManipulatorModule;
+  }
+  try {
+    const mod = await import('expo-image-manipulator');
+    imageManipulatorModule = mod;
+    return mod;
+  } catch (err) {
+    if (__DEV__) {
+      console.warn('expo-image-manipulator unavailable; skipping client-side image optimization', err);
+    }
+    imageManipulatorModule = null;
+    return null;
+  }
+};
+
+const convertToWebpBase64 = async (
+  params: { base64?: string; uri?: string; contentType?: string },
+  options: WebpOptions = {}
+): Promise<{ base64: string; contentType: string }> => {
   const { base64, uri, contentType } = params;
+  const { compress = 0.65, maxDimension, squareSize } = options;
   let sourceUri = uri;
   let cleanupUri: string | null = null;
 
@@ -108,12 +141,28 @@ const convertToWebpBase64 = async (params: {
   }
 
   try {
-    const result = await ImageManipulator.manipulateAsync(
+    const manipulator = await getImageManipulator();
+    if (!manipulator) {
+      return { base64: base64 ?? '', contentType: contentType ?? 'image/webp' };
+    }
+
+    const actions: ImageManipulatorAction[] = [];
+    if (squareSize) {
+      actions.push({ resize: { width: squareSize, height: squareSize } });
+    } else if (maxDimension) {
+      // Heuristic: only resize when payload is likely large to avoid upscaling tiny images.
+      const shouldResize = !base64 || base64.length > 400_000;
+      if (shouldResize) {
+        actions.push({ resize: { width: maxDimension, height: maxDimension } });
+      }
+    }
+
+    const result = await manipulator.manipulateAsync(
       sourceUri,
-      [],
+      actions,
       {
-        compress: 0.6,
-        format: ImageManipulator.SaveFormat.WEBP,
+        compress,
+        format: manipulator.SaveFormat.WEBP,
         base64: true,
       }
     );
@@ -136,6 +185,10 @@ const convertToWebpBase64 = async (params: {
     }
   }
 };
+
+const MAX_UPLOAD_DIMENSION = 1600;
+const THUMBNAIL_SQUARE_SIZE = 320;
+const THUMBNAIL_COMPRESS = 0.7;
 
 const buildStoragePath = (userId: string, extension: string) =>
   `${userId}/dream-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
@@ -242,6 +295,7 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
   let imageUrl = dream.imageUrl;
   let thumbnailUrl = dream.thumbnailUrl;
   const previousRemoteImageUrl = isRemoteImageUrl(dream.imageUrl) ? dream.imageUrl : null;
+  const previousRemoteThumbnailUrl = isRemoteImageUrl(dream.thumbnailUrl) ? dream.thumbnailUrl : null;
 
   const handleFailure = (): DreamAnalysis => ({
     ...dream,
@@ -266,7 +320,10 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
       }
 
       if (base64) {
-        const webp = await convertToWebpBase64({ base64, uri: isFileUri(imageUrl) ? imageUrl : undefined, contentType });
+        const webp = await convertToWebpBase64(
+          { base64, uri: isFileUri(imageUrl) ? imageUrl : undefined, contentType },
+          { maxDimension: MAX_UPLOAD_DIMENSION }
+        );
         const remoteUrl = await uploadImageToBucket(
           webp.base64,
           webp.contentType,
@@ -275,6 +332,19 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
           dream.remoteId
         );
         imageUrl = remoteUrl;
+        const thumb = await convertToWebpBase64(
+          { base64, uri: isFileUri(imageUrl) ? imageUrl : undefined, contentType },
+          { squareSize: THUMBNAIL_SQUARE_SIZE, compress: THUMBNAIL_COMPRESS }
+        );
+        const remoteThumbUrl = await uploadImageToBucket(
+          thumb.base64,
+          thumb.contentType,
+          ownerId,
+          previousRemoteThumbnailUrl ?? undefined,
+          dream.remoteId,
+          'thumbnail'
+        );
+        thumbnailUrl = remoteThumbUrl || thumbnailUrl || remoteUrl;
         if (!thumbnailUrl || !isRemoteImageUrl(thumbnailUrl)) {
           thumbnailUrl = remoteUrl;
         }
@@ -299,12 +369,15 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
             base64Length: base64.length,
           });
         }
-        const webp = await convertToWebpBase64({ base64, uri: isFileUri(thumbnailUrl) ? thumbnailUrl : undefined, contentType });
+        const webp = await convertToWebpBase64(
+          { base64, uri: isFileUri(thumbnailUrl) ? thumbnailUrl : undefined, contentType },
+          { squareSize: THUMBNAIL_SQUARE_SIZE, compress: THUMBNAIL_COMPRESS }
+        );
         const remoteUrl = await uploadImageToBucket(
           webp.base64,
           webp.contentType,
           ownerId,
-          previousRemoteImageUrl ?? undefined,
+          previousRemoteThumbnailUrl ?? undefined,
           dream.remoteId,
           'thumbnail'
         );
@@ -317,6 +390,9 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
 
     if (previousRemoteImageUrl && imageUrl && previousRemoteImageUrl !== imageUrl) {
       await deleteFromBucketIfPossible(previousRemoteImageUrl);
+    }
+    if (previousRemoteThumbnailUrl && thumbnailUrl && previousRemoteThumbnailUrl !== thumbnailUrl) {
+      await deleteFromBucketIfPossible(previousRemoteThumbnailUrl);
     }
 
     return {

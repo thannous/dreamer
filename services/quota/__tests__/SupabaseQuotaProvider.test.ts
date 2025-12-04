@@ -2,30 +2,45 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
-vi.mock('@/lib/supabase', () => {
-  const builder = {
-    select: () => builder,
-    eq: () => builder,
-    not: () => builder,
-    gte: () => builder,
-    lt: () => builder,
-    single: () => builder,
+// Use vi.hoisted for mocks that need to be accessed
+const { mockBuilder, mockGetCachedRemoteDreams } = vi.hoisted(() => {
+  const mockBuilder = {
+    select: vi.fn(),
+    eq: vi.fn(),
+    not: vi.fn(),
+    gte: vi.fn(),
+    lt: vi.fn(),
+    single: vi.fn(),
     count: 0,
-    error: null,
-    data: null,
+    error: null as Error | null,
+    data: null as unknown,
   };
-  return {
-    supabase: {
-      from: () => builder,
-    },
-  };
+  // Make builder methods chainable
+  mockBuilder.select.mockReturnValue(mockBuilder);
+  mockBuilder.eq.mockReturnValue(mockBuilder);
+  mockBuilder.not.mockReturnValue(mockBuilder);
+  mockBuilder.gte.mockReturnValue(mockBuilder);
+  mockBuilder.lt.mockReturnValue(mockBuilder);
+  mockBuilder.single.mockReturnValue(mockBuilder);
+
+  const mockGetCachedRemoteDreams = vi.fn<[], Promise<unknown[]>>();
+  mockGetCachedRemoteDreams.mockResolvedValue([]);
+
+  return { mockBuilder, mockGetCachedRemoteDreams };
 });
 
-vi.mock('@/services/storageService', () => ({
-  getCachedRemoteDreams: vi.fn(async () => []),
+// Mock using relative paths from this test file
+vi.mock('../../../lib/supabase', () => ({
+  supabase: {
+    from: () => mockBuilder,
+  },
 }));
 
-vi.mock('@/lib/quotaReset', () => ({
+vi.mock('../../storageService', () => ({
+  getCachedRemoteDreams: () => mockGetCachedRemoteDreams(),
+}));
+
+vi.mock('../../../lib/quotaReset', () => ({
   getMonthlyQuotaPeriod: () => ({
     periodStart: new Date('2024-01-01'),
     periodEnd: new Date('2024-02-01'),
@@ -39,11 +54,21 @@ const guestUser = null;
 describe('SupabaseQuotaProvider', () => {
   let provider: SupabaseQuotaProvider;
 
-  beforeEach(async () => {
-    provider = new SupabaseQuotaProvider();
+  beforeEach(() => {
     vi.clearAllMocks();
-    const mockStorage = await vi.importMock('@/services/storageService');
-    mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([]);
+    // Reset mock states
+    mockBuilder.count = 0;
+    mockBuilder.error = null;
+    mockBuilder.data = null;
+    mockGetCachedRemoteDreams.mockResolvedValue([]);
+    // Re-setup chainable methods
+    mockBuilder.select.mockReturnValue(mockBuilder);
+    mockBuilder.eq.mockReturnValue(mockBuilder);
+    mockBuilder.not.mockReturnValue(mockBuilder);
+    mockBuilder.gte.mockReturnValue(mockBuilder);
+    mockBuilder.lt.mockReturnValue(mockBuilder);
+    mockBuilder.single.mockReturnValue(mockBuilder);
+    provider = new SupabaseQuotaProvider();
   });
 
   describe('class instantiation and basic methods', () => {
@@ -85,7 +110,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given user when getting used analysis count then queries Supabase correctly', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -107,7 +132,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given user when getting used exploration count then queries Supabase correctly', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -131,7 +156,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const dream = { id: 123, chatHistory: Array(10).fill({ role: 'user' }) };
-      const mockStorage = await vi.importMock('@/services/storageService');
+      const mockStorage = await vi.importMock('../../storageService');
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([dream]);
 
       // When
@@ -144,7 +169,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given Supabase error when counting analyses then handles error gracefully', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -171,7 +196,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given Supabase error when counting explorations then returns 0', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -194,7 +219,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -218,7 +243,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -243,7 +268,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -265,7 +290,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('@/lib/supabase');
+      const mockSupabase = await vi.importMock('../../../lib/supabase');
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -308,7 +333,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const dreamId = 123;
       const mockDream = { id: 123, title: 'Test Dream' };
-      const mockStorage = await vi.importMock('@/services/storageService');
+      const mockStorage = await vi.importMock('../../storageService');
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([mockDream]);
 
       // When
@@ -322,7 +347,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given non-existent dream ID when resolving then returns null', async () => {
       // Given
       const dreamId = 999;
-      const mockStorage = await vi.importMock('@/services/storageService');
+      const mockStorage = await vi.importMock('../../storageService');
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([{ id: 123 }]);
 
       // When
@@ -587,6 +612,8 @@ describe('SupabaseQuotaProvider', () => {
     it('given dream ID when resolving then returns undefined if no dream found', async () => {
       // Given
       const target = { dreamId: 123 };
+      const mockStorage = await vi.importMock('../../storageService');
+      mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([]);
       const p = provider as any;
 
       // When

@@ -78,6 +78,7 @@
       "apiUrl": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
       "supabaseUrl": "https://usuyppgsmmowzizhaoqj.supabase.co",
       "supabaseAnonKey": "sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n",
+      "supabaseFunctionJwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzdXlwcGdzbW1vd3ppemhhb3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NDQ1MTAsImV4cCI6MjA3NjQyMDUxMH0.ecPYWwbUf7a4tyobTt5Oiw4hzHVPLsITgnsezBENbaM",
       "revenuecatAndroidKey": "goog_BFWJqTqAtQUnwYisczZcZrnsanw",
       "revenuecatWebKey": "test_zqltcBoDiTWPWmuyXTXTbYkJPrz",
       "eas": {

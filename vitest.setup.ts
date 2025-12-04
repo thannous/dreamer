@@ -47,8 +47,13 @@ vi.mock('expo-modules-core', () => ({
     removeAllListeners() {}
     emit() {}
   },
+  NativeModule: class NativeModule<T = any> {
+    // Minimal stub so legacy Expo modules can extend this base class during tests.
+    constructor(..._args: any[]) {}
+  },
   NativeModulesProxy: {},
   requireNativeModule: vi.fn(),
+  requireOptionalNativeModule: vi.fn(),
 }));
 
 // Some dependencies pull URL polyfills meant for RN; avoid bundling heavy/unsupported code in unit tests.

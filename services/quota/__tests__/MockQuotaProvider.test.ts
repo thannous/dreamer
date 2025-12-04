@@ -3,12 +3,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DreamAnalysis } from '@/lib/types';
 import { MockQuotaProvider } from '../MockQuotaProvider';
 
-vi.mock('@/services/storageService', () => ({
-  getSavedDreams: vi.fn(),
+// Use vi.hoisted to ensure mock is available during module loading
+const { mockGetSavedDreams } = vi.hoisted(() => ({
+  mockGetSavedDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
 }));
 
-const { getSavedDreams } = await import('@/services/storageService');
-const mockGetSavedDreams = vi.mocked(getSavedDreams);
+// Mock using the relative path from this test file to storageService
+vi.mock('../../storageService', () => ({
+  getSavedDreams: () => mockGetSavedDreams(),
+}));
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),
@@ -67,13 +70,13 @@ describe('MockQuotaProvider', () => {
   describe('message counting', () => {
     it('given dream target when counting messages then returns chat message count for specific dream', async () => {
       // Given
-      const targetDream = buildDream({ 
-        id: 123, 
-        chatHistory: Array(5).fill({ role: 'user', content: 'test' }) 
+      const targetDream = buildDream({
+        id: 123,
+        chatHistory: Array(5).fill({ role: 'user', text: 'test' })
       });
-      const otherDream = buildDream({ 
-        id: 456, 
-        chatHistory: Array(10).fill({ role: 'user', content: 'test' }) 
+      const otherDream = buildDream({
+        id: 456,
+        chatHistory: Array(10).fill({ role: 'user', text: 'test' })
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream, otherDream]);
 
@@ -88,9 +91,9 @@ describe('MockQuotaProvider', () => {
 
     it('given dream object target when counting messages then returns chat message count', async () => {
       // Given
-      const targetDream = buildDream({ 
-        id: 123, 
-        chatHistory: Array(8).fill({ role: 'user', content: 'test' }) 
+      const targetDream = buildDream({
+        id: 123,
+        chatHistory: Array(8).fill({ role: 'user', text: 'test' })
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 
@@ -151,10 +154,10 @@ describe('MockQuotaProvider', () => {
     it('given already explored dream when checking exploration then always allows', async () => {
       // Given
       const user = { id: 'test-user', user_metadata: { tier: 'guest' } } as any;
-      const exploredDream = buildDream({ 
-        id: 123, 
+      const exploredDream = buildDream({
+        id: 123,
         explorationStartedAt: Date.now(),
-        chatHistory: Array(20).fill({ role: 'user', content: 'test' })
+        chatHistory: Array(20).fill({ role: 'user', text: 'test' })
       });
       mockGetSavedDreams.mockResolvedValueOnce([exploredDream]);
 
@@ -257,9 +260,9 @@ describe('MockQuotaProvider', () => {
     it('given user within message limit when checking messages then allows', async () => {
       // Given
       const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
-      const targetDream = buildDream({ 
-        id: 123, 
-        chatHistory: Array(10).fill({ role: 'user', content: 'test' }) 
+      const targetDream = buildDream({
+        id: 123,
+        chatHistory: Array(10).fill({ role: 'user', text: 'test' })
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 
@@ -275,9 +278,9 @@ describe('MockQuotaProvider', () => {
     it('given user beyond message limit when checking messages then denies', async () => {
       // Given
       const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
-      const targetDream = buildDream({ 
-        id: 123, 
-        chatHistory: Array(25).fill({ role: 'user', content: 'test' }) 
+      const targetDream = buildDream({
+        id: 123,
+        chatHistory: Array(25).fill({ role: 'user', text: 'test' })
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 

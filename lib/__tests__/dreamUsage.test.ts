@@ -7,8 +7,8 @@ import {
   getUserChatMessageCount,
   isDreamAnalyzed,
   isDreamExplored,
-} from '@/lib/dreamUsage';
-import type { DreamAnalysis } from '@/lib/types';
+} from '../dreamUsage';
+import type { DreamAnalysis } from '../types';
 
 const buildDream = (overrides: Partial<DreamAnalysis> & { id?: number } = {}): DreamAnalysis => ({
   id: overrides.id ?? Date.now(),

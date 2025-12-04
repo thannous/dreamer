@@ -93,7 +93,7 @@
     "@vitest/coverage-v8": "^4.0.13",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
-    "expo-mcp": "^0.1.15",
+    "expo-mcp": "~0.2.1",
     "happy-dom": "^20.0.10",
     "jsdom": "^27.2.0",
     "madge": "^8.0.0",

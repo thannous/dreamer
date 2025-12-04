@@ -1,15 +1,19 @@
+/**
+ * @vitest-environment happy-dom
+ */
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { useDreamSaving } from '../useDreamSaving';
 
-const mockCategorizeDream = vi.fn().mockResolvedValue({
-  title: 'Test Dream',
-  theme: 'surreal',
-  dreamType: 'Lucid Dream',
-});
-
-const mockAnalyzeDream = vi.fn().mockResolvedValue({ id: 1, isAnalyzed: true });
-const mockAddDream = vi.fn().mockImplementation((dream) => Promise.resolve({ ...dream, id: Date.now() }));
+// Use vi.hoisted to ensure mock functions are available during module loading
+const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = vi.hoisted(() => ({
+  mockCategorizeDream: vi.fn().mockResolvedValue({
+    title: 'Test Dream',
+    theme: 'surreal',
+    dreamType: 'Lucid Dream',
+  }),
+  mockAnalyzeDream: vi.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
+  mockAddDream: vi.fn().mockImplementation((dream: unknown) => Promise.resolve({ ...dream as object, id: Date.now() })),
+}));
 
 // Mock all dependencies
 vi.mock('react-native', () => ({
@@ -29,13 +33,14 @@ vi.mock('expo-router', () => ({
   },
 }));
 
-vi.mock('@/context/AuthContext', () => ({
+// Use relative paths for mocks
+vi.mock('../../context/AuthContext', () => ({
   useAuth: vi.fn().mockReturnValue({
     user: { id: 'test-user' },
   }),
 }));
 
-vi.mock('@/context/DreamsContext', () => ({
+vi.mock('../../context/DreamsContext', () => ({
   useDreams: vi.fn().mockReturnValue({
     addDream: mockAddDream,
     dreams: [],
@@ -43,22 +48,25 @@ vi.mock('@/context/DreamsContext', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useQuota', () => ({
+vi.mock('../useQuota', () => ({
   useQuota: vi.fn().mockReturnValue({
     canAnalyzeNow: true,
   }),
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+vi.mock('../useTranslation', () => ({
   useTranslation: vi.fn().mockReturnValue({
     t: (key: string) => key,
     currentLang: 'fr',
   }),
 }));
 
-vi.mock('@/services/geminiService', () => ({
+vi.mock('../../services/geminiService', () => ({
   categorizeDream: mockCategorizeDream,
 }));
+
+// Import after mocks are set up
+const { useDreamSaving } = await import('../useDreamSaving');
 
 describe('useDreamSaving', () => {
   beforeEach(() => {

@@ -4,10 +4,14 @@ import type { DreamAnalysis } from '@/lib/types';
 import { MockQuotaProvider } from '../MockQuotaProvider';
 import type { User } from '@supabase/supabase-js';
 
-const mockGetSavedDreams = vi.fn<[], Promise<DreamAnalysis[]>>();
+// Use vi.hoisted to ensure mock is available during module loading
+const { mockGetSavedDreams } = vi.hoisted(() => ({
+  mockGetSavedDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
+}));
 
-vi.mock('@/services/storageService', () => ({
-  getSavedDreams: (...args: unknown[]) => mockGetSavedDreams(...args),
+// Mock using the relative path from this test file to storageService
+vi.mock('../../storageService', () => ({
+  getSavedDreams: () => mockGetSavedDreams(),
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({

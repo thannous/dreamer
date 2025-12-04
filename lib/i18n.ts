@@ -740,7 +740,7 @@ const translations: LanguagePack = {
     'recording.guest_limit_sheet.title': 'Limite atteinte',
     'recording.guest_limit_sheet.message': 'Ton rêve est toujours là, rien n’est perdu. Crée ton compte maintenant pour l’enregistrer avec les 2 précédents et bénéficier d’analyses de rêves offertes.',
     'recording.guest_limit_sheet.cta': 'Ouvrir mon compte',
-    'recording.analyze_prompt.sheet.title': 'Analyser ce rêve ?',
+    'recording.analyze_prompt.sheet.title': 'Rêve enregistré, analyser ce rêve ?',
     'recording.analyze_prompt.sheet.subtitle': 'Rêve enregistré. Et maintenant ?',
     'recording.analyze_prompt.sheet.analyze': 'Analyser maintenant',
     'recording.analyze_prompt.sheet.journal': 'Ouvrir le journal',

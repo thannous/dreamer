@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { RITUALS } from '@/lib/inspirationRituals';
-import { getTranslator } from '@/lib/i18n';
+import { RITUALS } from '../inspirationRituals';
+import { getTranslator } from '../i18n';
 
 describe('Inspiration rituals configuration', () => {
   it('defines three rituals with four steps each', () => {

@@ -1,16 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "mcp__expo-mcp__add_library",
-      "Bash(npx tsc:*)",
-      "Bash(npm run lint:*)",
-      "Bash(npx expo install:*)",
-      "mcp__expo-mcp__search_documentation",
-      "Bash(cat:*)",
-      "mcp__ide__getDiagnostics",
-      "Bash(ls:*)"
+      "Bash(npm run test:*)",
+      "Bash(ls:*)",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ],
+  "outputStyle": "default"
 }
