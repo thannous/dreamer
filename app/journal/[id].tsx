@@ -153,11 +153,13 @@ export default function JournalDetailScreen() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
+  const [showDeleteSheet, setShowDeleteSheet] = useState(false);
   const [regenerateImageOnReanalyze, setRegenerateImageOnReanalyze] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   useEffect(() => {
     if (isShareModalVisible) {
       blurActiveElement();
@@ -550,38 +552,34 @@ export default function JournalDetailScreen() {
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
-    await deleteDream(dream.id);
-    router.replace('/(tabs)/journal');
-  }, [dream, deleteDream]);
+    try {
+      setIsDeleting(true);
+      await deleteDream(dream.id);
+      setShowDeleteSheet(false);
+      router.replace('/(tabs)/journal');
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to delete dream', error);
+      }
+      Alert.alert(t('common.error_title'), t('common.unknown_error'));
+      setIsDeleting(false);
+    }
+  }, [deleteDream, dream, router, t]);
+
+  const handleCloseDeleteSheet = useCallback(() => {
+    if (isDeleting) return;
+    setShowDeleteSheet(false);
+  }, [isDeleting]);
 
   const onDelete = useCallback(() => {
     if (!dream || isAnalysisLocked) return;
-    const confirmMessage = t('journal.detail.delete_confirm.message');
+    setShowDeleteSheet(true);
+  }, [dream, isAnalysisLocked]);
 
-    if (Platform.OS === 'web') {
-      const confirmed =
-        typeof window !== 'undefined' ? window.confirm(confirmMessage) : false;
-      if (confirmed) {
-        void deleteAndNavigate();
-      }
-      return;
-    }
-
-    Alert.alert(
-      t('journal.detail.delete_confirm.title'),
-      confirmMessage,
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('journal.detail.delete_confirm.confirm'),
-          style: 'destructive',
-          onPress: () => {
-            void deleteAndNavigate();
-          },
-        },
-      ],
-    );
-  }, [deleteAndNavigate, dream, isAnalysisLocked, t]);
+  const handleConfirmDelete = useCallback(() => {
+    if (!dream || isAnalysisLocked || isDeleting) return;
+    void deleteAndNavigate();
+  }, [deleteAndNavigate, dream, isAnalysisLocked, isDeleting]);
 
   const onRetryImage = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -1467,6 +1465,58 @@ export default function JournalDetailScreen() {
             </Pressable>
           </View>
         </BottomSheet>
+        <BottomSheet
+          visible={showDeleteSheet}
+          onClose={handleCloseDeleteSheet}
+          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.35)'}
+          style={[
+            styles.deleteSheet,
+            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+            shadows.xl,
+          ]}
+        >
+          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+          <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+            {t('journal.detail.delete_confirm.title')}
+          </Text>
+          <Text style={[styles.deleteSheetMessage, { color: colors.textSecondary }]}>
+            {t('journal.detail.delete_confirm.message')}
+          </Text>
+          <View style={styles.deleteSheetActions}>
+            <Pressable
+              onPress={handleCloseDeleteSheet}
+              disabled={isDeleting}
+              style={[
+                styles.deleteCancelButton,
+                {
+                  borderColor: colors.divider,
+                  backgroundColor: colors.backgroundSecondary,
+                  opacity: isDeleting ? 0.7 : 1,
+                },
+              ]}
+            >
+              <Text style={[styles.deleteCancelText, { color: colors.textPrimary }]}>
+                {t('common.cancel')}
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={handleConfirmDelete}
+              disabled={isDeleting}
+              style={[
+                styles.deleteConfirmButton,
+                { backgroundColor: '#EF4444', opacity: isDeleting ? 0.8 : 1 },
+              ]}
+            >
+              {isDeleting ? (
+                <ActivityIndicator size="small" color="#FFF" />
+              ) : (
+                <Text style={styles.deleteConfirmText}>
+                  {t('journal.detail.delete_confirm.confirm')}
+                </Text>
+              )}
+            </Pressable>
+          </View>
+        </BottomSheet>
         <Modal
           visible={isShareModalVisible}
           transparent
@@ -1952,6 +2002,50 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
     letterSpacing: 0.3,
+  },
+  deleteSheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 22,
+    paddingTop: 18,
+    paddingBottom: 24,
+    borderWidth: 1,
+    gap: 10,
+  },
+  deleteSheetMessage: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 22,
+  },
+  deleteSheetActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 12,
+  },
+  deleteCancelButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  deleteCancelText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    letterSpacing: 0.3,
+  },
+  deleteConfirmButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    minWidth: 120,
+    alignItems: 'center',
+  },
+  deleteConfirmText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    letterSpacing: 0.3,
+    color: '#FFF',
   },
   replaceImageSheet: {
     borderTopLeftRadius: 24,
