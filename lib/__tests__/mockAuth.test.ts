@@ -12,10 +12,10 @@ import {
     signOut,
     signUpWithEmailPassword,
     updateUserTier,
-} from '@/lib/mockAuth';
+} from '../mockAuth';
 
 // Mock storage service to avoid side effects
-vi.mock('@/services/mocks/storageServiceMock', () => ({
+vi.mock('../../services/mocks/storageServiceMock', () => ({
   resetMockStorage: vi.fn(),
   setPreloadDreamsEnabled: vi.fn(),
   preloadDreamsNow: vi.fn(),

@@ -11,7 +11,7 @@ import { useSubscription } from './useSubscription';
 // Mock __DEV__ global
 global.__DEV__ = true;
 
-vi.mock('@/services/subscriptionService', () => {
+vi.mock('../services/subscriptionService', () => {
   return {
     initializeSubscription: vi.fn(async () => ({ tier: 'free', isActive: false })),
     isSubscriptionInitialized: vi.fn(() => false),
@@ -24,7 +24,7 @@ vi.mock('@/services/subscriptionService', () => {
   };
 });
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('../lib/auth', () => ({
   updateUserTier: vi.fn(async () => null),
 }));
 
@@ -32,7 +32,7 @@ let currentUser: any = { id: 'user-1' };
 const refreshUser = vi.fn(async () => currentUser);
 const setUserTierLocally = vi.fn();
 
-vi.mock('@/context/AuthContext', () => ({
+vi.mock('../context/AuthContext', () => ({
   useAuth: () => ({
     user: currentUser,
     loading: false,
@@ -98,7 +98,7 @@ describe('useSubscription', () => {
 
     it('given authenticated user when initializing then handles errors gracefully', async () => {
       // Given
-      const { initializeSubscription } = await import('@/services/subscriptionService');
+      const { initializeSubscription } = await import('../services/subscriptionService');
       vi.mocked(initializeSubscription).mockRejectedValue(new Error('Purchases not initialized'));
       
       const { result } = renderHook(() => useSubscription());
@@ -130,7 +130,7 @@ describe('useSubscription', () => {
 
     it('given authenticated user when purchasing fails then sets error and throws', async () => {
       // Given
-      const { purchaseSubscriptionPackage } = await import('@/services/subscriptionService');
+      const { purchaseSubscriptionPackage } = await import('../services/subscriptionService');
       vi.mocked(purchaseSubscriptionPackage).mockRejectedValue(new Error('Purchase failed'));
       
       const { result } = renderHook(() => useSubscription());
@@ -146,7 +146,7 @@ describe('useSubscription', () => {
 
     it('given authenticated user when purchasing with initialization error then formats error message', async () => {
       // Given
-      const { purchaseSubscriptionPackage } = await import('@/services/subscriptionService');
+      const { purchaseSubscriptionPackage } = await import('../services/subscriptionService');
       vi.mocked(purchaseSubscriptionPackage).mockRejectedValue(new Error('Purchases not initialized'));
       
       const { result } = renderHook(() => useSubscription());
@@ -179,7 +179,7 @@ describe('useSubscription', () => {
 
     it('given authenticated user when restoring fails then sets error and throws', async () => {
       // Given
-      const { restoreSubscriptionPurchases } = await import('@/services/subscriptionService');
+      const { restoreSubscriptionPurchases } = await import('../services/subscriptionService');
       vi.mocked(restoreSubscriptionPurchases).mockRejectedValue(new Error('Restore failed'));
       
       const { result } = renderHook(() => useSubscription());
@@ -195,7 +195,7 @@ describe('useSubscription', () => {
 
     it('given authenticated user when restoring with initialization error then formats error message', async () => {
       // Given
-      const { restoreSubscriptionPurchases } = await import('@/services/subscriptionService');
+      const { restoreSubscriptionPurchases } = await import('../services/subscriptionService');
       vi.mocked(restoreSubscriptionPurchases).mockRejectedValue(new Error('Purchases not initialized'));
       
       const { result } = renderHook(() => useSubscription());

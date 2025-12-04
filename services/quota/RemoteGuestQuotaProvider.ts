@@ -49,26 +49,24 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     );
   }
 
-  private async getFallbackStatus(
-    cacheKey: string,
-    target: QuotaDreamTarget | undefined
-  ): Promise<QuotaStatus> {
-    const fallbackStatus = await this.fallback.getQuotaStatus(null, target);
-    this.cache.set(cacheKey, { value: fallbackStatus, expiresAt: Date.now() + this.CACHE_TTL });
-    return fallbackStatus;
-  }
-
   private buildUsage(
     remote: RemoteQuotaUsage | undefined,
+    fallback: QuotaStatus['usage'] | undefined,
     defaults = QUOTAS.guest
   ): QuotaStatus['usage'] {
-    const analysisUsed = remote?.analysis?.used ?? 0;
-    const explorationUsed = remote?.exploration?.used ?? 0;
-    const messagesUsed = remote?.messages?.used ?? 0;
+    const fallbackAnalysisUsed = fallback?.analysis.used ?? 0;
+    const fallbackExplorationUsed = fallback?.exploration.used ?? 0;
+    const fallbackMessagesUsed = fallback?.messages.used ?? 0;
 
-    const analysisLimit = remote?.analysis?.limit ?? defaults.analysis ?? null;
-    const explorationLimit = remote?.exploration?.limit ?? defaults.exploration ?? null;
-    const messagesLimit = remote?.messages?.limit ?? defaults.messagesPerDream ?? null;
+    const analysisUsed = Math.max(remote?.analysis?.used ?? 0, fallbackAnalysisUsed);
+    const explorationUsed = Math.max(remote?.exploration?.used ?? 0, fallbackExplorationUsed);
+    const messagesUsed = Math.max(remote?.messages?.used ?? 0, fallbackMessagesUsed);
+
+    const analysisLimit = remote?.analysis?.limit ?? fallback?.analysis.limit ?? defaults.analysis ?? null;
+    const explorationLimit =
+      remote?.exploration?.limit ?? fallback?.exploration.limit ?? defaults.exploration ?? null;
+    const messagesLimit =
+      remote?.messages?.limit ?? fallback?.messages.limit ?? defaults.messagesPerDream ?? null;
 
     return {
       analysis: {
@@ -89,8 +87,8 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     };
   }
 
-  private mapResponseToStatus(remote: RemoteQuotaResponse): QuotaStatus {
-    const usage = this.buildUsage(remote.usage);
+  private mapResponseToStatus(remote: RemoteQuotaResponse, fallbackUsage: QuotaStatus['usage']): QuotaStatus {
+    const usage = this.buildUsage(remote.usage, fallbackUsage);
     const canAnalyze =
       typeof remote.canAnalyze === 'boolean'
         ? remote.canAnalyze
@@ -117,8 +115,14 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       return cached.value;
     }
 
+    const fallbackStatus = await this.fallback.getQuotaStatus(null, target);
+    const cacheFallback = () => {
+      this.cache.set(cacheKey, { value: fallbackStatus, expiresAt: Date.now() + this.CACHE_TTL });
+      return fallbackStatus;
+    };
+
     if (this.remoteUnavailable) {
-      return this.getFallbackStatus(cacheKey, target);
+      return cacheFallback();
     }
 
     try {
@@ -132,7 +136,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         retries: 1,
         timeoutMs: 10000,
       });
-      const status = this.mapResponseToStatus(response);
+      const status = this.mapResponseToStatus(response, fallbackStatus.usage);
       this.cache.set(cacheKey, { value: status, expiresAt: Date.now() + this.CACHE_TTL });
       return status;
     } catch (error) {
@@ -144,7 +148,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       } else if (__DEV__) {
         console.warn('[Quota] Remote guest quota failed, falling back to local store', error);
       }
-      return this.getFallbackStatus(cacheKey, target);
+      return cacheFallback();
     }
   }
 
@@ -205,5 +209,6 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
   invalidate(): void {
     this.cache.clear();
     this.remoteUnavailable = false;
+    this.fallback.invalidate();
   }
 }

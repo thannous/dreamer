@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getTranslator } from '@/lib/i18n';
+import { getTranslator } from '../i18n';
 
 const languages: ('en' | 'fr' | 'es')[] = ['en', 'fr', 'es'];
 

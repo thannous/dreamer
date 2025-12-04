@@ -621,7 +621,7 @@ export const useDreamJournal = () => {
       const analysisPromise = analyzeDreamText(transcript, options?.lang);
       const imagePromise = shouldReplaceImage
         ? generateImageFromTranscript(transcript, dream.imageUrl)
-            .then((url) => ({ url }))
+            .then((url) => ({ url, failed: false as const }))
             .catch((err) => {
               console.warn('Image generation failed', err);
               return { url: dream.imageUrl, failed: true as const };

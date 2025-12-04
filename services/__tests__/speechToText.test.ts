@@ -32,20 +32,21 @@ vi.mock('expo-file-system', () => ({
   readAsStringAsync,
 }));
 
-vi.mock('@/lib/config', () => ({
-  getApiBaseUrl: vi.fn(),
+const { mockFetchJSON, mockGetApiBaseUrl } = vi.hoisted(() => ({
+  mockFetchJSON: vi.fn(),
+  mockGetApiBaseUrl: vi.fn(),
 }));
 
-vi.mock('@/lib/http', () => ({
-  fetchJSON: vi.fn(),
+// Mock using relative paths from this test file
+vi.mock('../../lib/config', () => ({
+  getApiBaseUrl: mockGetApiBaseUrl,
 }));
 
-import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from '@/services/speechToText';
-import { fetchJSON } from '@/lib/http';
-import { getApiBaseUrl } from '@/lib/config';
+vi.mock('../../lib/http', () => ({
+  fetchJSON: mockFetchJSON,
+}));
 
-const mockFetchJSON = vi.mocked(fetchJSON);
-const mockGetApiBaseUrl = vi.mocked(getApiBaseUrl);
+import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from '../speechToText';
 const mockReadAsStringAsync = readAsStringAsync;
 const mockFileBase64 = fileBase64;
 

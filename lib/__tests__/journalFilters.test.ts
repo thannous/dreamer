@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { applyFilters } from '@/lib/dreamFilters';
-import type { DreamAnalysis } from '@/lib/types';
+import { applyFilters } from '../dreamFilters';
+import type { DreamAnalysis } from '../types';
 
 function makeDream(partial: Partial<DreamAnalysis> & { id: number }): DreamAnalysis {
   return {

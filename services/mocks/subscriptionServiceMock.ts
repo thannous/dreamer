@@ -56,6 +56,12 @@ function buildStatusFromTier(tier: SubscriptionTier): SubscriptionStatus {
 }
 
 async function syncStatusWithCurrentUser(): Promise<SubscriptionStatus> {
+  // If the user has purchased (currentStatus is premium), preserve that state
+  // since the mock doesn't have real backend sync
+  if (currentStatus?.tier === 'premium') {
+    return currentStatus;
+  }
+
   const user = await getCurrentUser();
   const tier = mapTierFromUser(user);
   const nextStatus = buildStatusFromTier(tier);

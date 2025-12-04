@@ -22,6 +22,7 @@ function sleep(ms: number): Promise<void> {
 type ExpoExtra = {
   supabaseAnonKey?: string;
   supabaseUrl?: string;
+  supabaseFunctionJwt?: string;
 };
 
 function getSupabaseUrl(): string | undefined {
@@ -43,6 +44,29 @@ function getSupabaseAnonKey(): string | undefined {
 
   return envKey || extraKey;
 }
+
+/**
+ * Optional override for Edge Functions when using publishable keys.
+ * Edge Functions still expect a JWT-style bearer token. If your project
+ * only exposes `sb_publishable_` keys, set EXPO_PUBLIC_SUPABASE_FUNCTION_JWT
+ * to the legacy anon JWT from the Supabase dashboard to avoid 401s.
+ */
+function getSupabaseFunctionJwt(): string | undefined {
+  const env = process?.env as Record<string, string> | undefined;
+  const envJwt = env?.EXPO_PUBLIC_SUPABASE_FUNCTION_JWT;
+
+  const extra = (Constants?.expoConfig as { extra?: ExpoExtra } | undefined)?.extra;
+  const extraJwt = extra?.supabaseFunctionJwt;
+
+  return envJwt || extraJwt || getSupabaseAnonKey();
+}
+
+const isLikelyJWT = (token?: string | null): token is string => {
+  if (!token) return false;
+  // Basic heuristic: JWTs have 3 dot-separated parts and often start with "ey"
+  const parts = token.split('.');
+  return parts.length === 3 && token.startsWith('ey');
+};
 
 const SUPABASE_HOSTS = (() => {
   const hosts = new Set<string>();
@@ -75,6 +99,15 @@ function shouldAttachSupabaseAuth(targetUrl: string): boolean {
   }
 }
 
+function isSupabaseFunctionsUrl(targetUrl: string): boolean {
+  try {
+    const parsed = new URL(targetUrl, 'http://localhost');
+    return parsed.host.endsWith('.functions.supabase.co');
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Performs a single HTTP request
  */
@@ -88,6 +121,7 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
     };
 
     const allowSupabaseAuth = shouldAttachSupabaseAuth(url);
+    const isFunctionRequest = allowSupabaseAuth && isSupabaseFunctionsUrl(url);
 
     // Attach Supabase access token if present and not explicitly overridden
     try {
@@ -95,11 +129,19 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
         const token = await getAccessToken();
         if (token) headers.Authorization = `Bearer ${token}`;
       }
-      // Fallback to anon key so public Supabase functions work for guests (prevents 401)
-      if (allowSupabaseAuth && !headers.Authorization) {
-        const anonKey = getSupabaseAnonKey();
+      // Fallback to anon/legacy function key so public Supabase functions work for guests (prevents 401)
+      if (allowSupabaseAuth) {
+        const anonKey = isFunctionRequest ? getSupabaseFunctionJwt() : getSupabaseAnonKey();
         if (anonKey) {
-          headers.Authorization = `Bearer ${anonKey}`;
+          // Edge Functions expect an Authorization header even for guests.
+          if (!headers.Authorization && (isFunctionRequest || isLikelyJWT(anonKey))) {
+            headers.Authorization = `Bearer ${anonKey}`;
+            if (__DEV__ && isFunctionRequest && !isLikelyJWT(anonKey)) {
+              console.warn(
+                '[HTTP] Supabase functions are using a publishable key; set EXPO_PUBLIC_SUPABASE_FUNCTION_JWT to the legacy anon JWT to avoid 401 errors.'
+              );
+            }
+          }
           if (!headers.apikey) headers.apikey = anonKey;
         }
       }

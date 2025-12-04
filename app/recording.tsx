@@ -32,6 +32,7 @@ import {
   type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -84,6 +85,12 @@ const RECORDING_OPTIONS: RecordingOptions = {
 const RECORDER_RELEASE_ERROR_SNIPPET = 'shared object that was already released';
 
 const normalizeTranscriptText = (text: string) => text.replace(/\s+/g, ' ').trim();
+const normalizeForComparison = (text: string) =>
+  normalizeTranscriptText(text)
+    // Ignore lightweight punctuation so edits that only tweak commas/periods
+    // don't cause duplicate concatenation when the recognizer replays the transcript.
+    .replace(/[.,!?;:…]/g, '')
+    .toLowerCase();
 
 const isRecorderReleasedError = (error: unknown): error is Error => {
   return (
@@ -135,6 +142,7 @@ export default function RecordingScreen() {
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
   const isSaveDisabled = !trimmedTranscript || interactionDisabled;
+  const textInputRef = useRef<TextInput | null>(null);
   const lengthLimitMessage = useCallback(
     () => t('recording.alert.length_limit', { limit: MAX_TRANSCRIPT_CHARS }) || `Limite ${MAX_TRANSCRIPT_CHARS} caractères atteinte`,
     [t]
@@ -154,8 +162,8 @@ export default function RecordingScreen() {
       const trimmedBase = base.trim();
 
       if (trimmedBase) {
-        const normalizedBase = normalizeTranscriptText(trimmedBase);
-        const normalizedAddition = normalizeTranscriptText(trimmedAddition);
+        const normalizedBase = normalizeForComparison(trimmedBase);
+        const normalizedAddition = normalizeForComparison(trimmedAddition);
 
         // If STT re-sends text we already have, keep the existing transcript to avoid duplicates.
         if (normalizedBase.includes(normalizedAddition)) {
@@ -165,6 +173,17 @@ export default function RecordingScreen() {
         // When the recognizer returns the whole transcript plus new words, keep the expanded text once.
         if (normalizedAddition.startsWith(normalizedBase)) {
           return clampTranscript(trimmedAddition);
+        }
+
+        // If only the last line is being incrementally extended, replace that line instead of stacking.
+        const baseLines = trimmedBase.split('\n');
+        const lastLine = baseLines[baseLines.length - 1]?.trim() ?? '';
+        if (lastLine) {
+          const normalizedLastLine = normalizeForComparison(lastLine);
+          if (normalizedAddition.startsWith(normalizedLastLine)) {
+            baseLines[baseLines.length - 1] = trimmedAddition;
+            return clampTranscript(baseLines.join('\n'));
+          }
         }
       }
 
@@ -535,6 +554,7 @@ export default function RecordingScreen() {
         onPartial: (text) => {
           const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
           setTranscript(combined);
+          baseTranscriptRef.current = combined;
           setLengthWarning(truncated ? lengthLimitMessage() : '');
           if (truncated) {
             void stopRecording();
@@ -835,14 +855,57 @@ export default function RecordingScreen() {
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
 
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
+  const focusTranscriptEnd = useCallback((value: string) => {
+    const len = value.length;
+    requestAnimationFrame(() => {
+      const input = textInputRef.current;
+      if (!input) return;
+      input.focus();
+      // React Native
+      input.setNativeProps?.({ selection: { start: len, end: len } });
+      // Web fallback
+      (input as unknown as { setSelectionRange?: (start: number, end: number) => void })
+        ?.setSelectionRange?.(len, len);
+    });
+  }, []);
   const instructionStyle = useMemo(
     () => [styles.instructionText, { color: colors.textSecondary }],
     [colors.textSecondary]
   );
+  const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
 
-  const toggleInputMode = useCallback(() => {
-    setInputMode((prev) => (prev === 'voice' ? 'text' : 'voice'));
-  }, []);
+  const switchToTextMode = useCallback(async () => {
+    const hasActiveRecording =
+      isRecordingRef.current || getRecorderIsRecording() || Boolean(nativeSessionRef.current);
+    if (hasActiveRecording) {
+      recordingTransitionRef.current = true;
+      try {
+        await stopRecording();
+      } finally {
+        recordingTransitionRef.current = false;
+      }
+    }
+    setInputMode('text');
+  }, [getRecorderIsRecording, stopRecording]);
+
+  const switchToVoiceMode = useCallback(async () => {
+    setInputMode('voice');
+    if (isRecordingRef.current || getRecorderIsRecording()) {
+      return;
+    }
+    recordingTransitionRef.current = true;
+    try {
+      await startRecording();
+    } finally {
+      recordingTransitionRef.current = false;
+    }
+  }, [getRecorderIsRecording, startRecording]);
+
+  useEffect(() => {
+    if (inputMode === 'text') {
+      focusTranscriptEnd(baseTranscriptRef.current || transcript);
+    }
+  }, [focusTranscriptEnd, inputMode, transcript]);
 
   // ... (existing code)
 
@@ -906,7 +969,7 @@ export default function RecordingScreen() {
                     ) : null}
 
                     <Pressable
-                      onPress={toggleInputMode}
+                      onPress={switchToTextMode}
                       style={styles.modeSwitchButton}
                       testID="button-switch-to-text"
                     >
@@ -921,6 +984,7 @@ export default function RecordingScreen() {
                       <TextInput
                         value={transcript}
                         onChangeText={handleTranscriptChange}
+                        ref={textInputRef}
                         style={[
                           styles.textInput,
                           {
@@ -942,12 +1006,13 @@ export default function RecordingScreen() {
                     ) : null}
 
                     <Pressable
-                      onPress={toggleInputMode}
-                      style={styles.modeSwitchButton}
+                      onPress={switchToVoiceMode}
+                      style={[styles.modeSwitchButton, styles.modeSwitchVoiceButton]}
                       testID="button-switch-to-voice"
                     >
+                      <Ionicons name="mic-outline" size={16} color={colors.textSecondary} style={{ marginRight: 6 }} />
                       <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
-                        {(t('recording.mode.switch_to_voice') || "Dicter mon rêve") + " ✎"}
+                        {t('recording.mode.switch_to_voice') || "Dicter mon rêve"}
                       </Text>
                     </Pressable>
                   </View>
@@ -1093,9 +1158,21 @@ export default function RecordingScreen() {
         >
           {t('recording.analyze_prompt.sheet.title')}
         </Text>
-        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-          {t('recording.analyze_prompt.sheet.subtitle')}
-        </Text>
+        {analyzePromptTranscript ? (
+          <View
+            style={styles.sheetTranscriptContainer}
+          >
+            <ScrollView
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={false}
+              style={styles.sheetTranscriptScroll}
+            >
+              <Text style={[styles.sheetTranscriptText, { color: colors.textPrimary }]}>
+                {analyzePromptTranscript}
+              </Text>
+            </ScrollView>
+          </View>
+        ) : null}
         <View style={styles.sheetButtons}>
           <Pressable
             style={[
@@ -1329,6 +1406,24 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlign: 'center',
   },
+  sheetTranscriptContainer: {
+    width: '100%',
+    borderRadius: ThemeLayout.borderRadius.lg,
+    borderWidth: 0,
+    paddingVertical: ThemeLayout.spacing.sm,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    maxHeight: 180,
+    marginTop: ThemeLayout.spacing.sm,
+  },
+  sheetTranscriptScroll: {
+    maxHeight: 164,
+  },
+  sheetTranscriptText: {
+    fontFamily: Fonts.lora.regular,
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
   sheetButtons: {
     width: '100%',
     gap: 12,
@@ -1373,7 +1468,7 @@ const styles = StyleSheet.create({
     height: 240,
   },
   modeSwitchButton: {
-    paddingVertical: 4,
+    paddingVertical: 6,
     paddingHorizontal: 0,
     alignSelf: 'center',
     marginTop: 8,
@@ -1381,5 +1476,9 @@ const styles = StyleSheet.create({
   modeSwitchText: {
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.medium,
+  },
+  modeSwitchVoiceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

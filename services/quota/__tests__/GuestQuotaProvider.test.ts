@@ -1,11 +1,15 @@
 import type { DreamAnalysis } from '@/lib/types';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GuestQuotaProvider } from '../GuestQuotaProvider';
 
-const mockGetDreams = vi.fn();
+// Use vi.hoisted to ensure mock is available during module loading
+const { mockGetDreams } = vi.hoisted(() => ({
+  mockGetDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
+}));
 
-vi.mock('@/services/storageServiceReal', () => ({
-  getSavedDreams: (...args: unknown[]) => mockGetDreams(...args),
+// Mock using the relative path from this test file to storageServiceReal
+vi.mock('../../storageServiceReal', () => ({
+  getSavedDreams: () => mockGetDreams(),
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis>): DreamAnalysis => ({
@@ -26,6 +30,12 @@ const buildDream = (overrides: Partial<DreamAnalysis>): DreamAnalysis => ({
 describe('GuestQuotaProvider', () => {
   beforeEach(() => {
     mockGetDreams.mockReset();
+    // Default to empty array to avoid undefined issues
+    mockGetDreams.mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe('analysis validation', () => {

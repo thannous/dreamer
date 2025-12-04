@@ -35,8 +35,8 @@ const optimizeImage = async (
   imageBase64: string,
   options: { maxWidth?: number; maxHeight?: number; quality?: number } = {}
 ): Promise<{ base64: string; contentType: string }> => {
-  // Force WEBP output to keep stored images small (<1MB in practice)
-  const { maxWidth = 960, maxHeight = 960, quality = 60 } = options;
+  // Force WEBP output to keep stored images small (<500KB–1MB in practice)
+  const { maxWidth = 1024, maxHeight = 1024, quality = 68 } = options;
   try {
     const bytes = Uint8Array.from(atob(imageBase64), (c) => c.charCodeAt(0));
     const img = await Image.decode(bytes);
@@ -210,7 +210,11 @@ serve(async (req: Request) => {
 
       const { error: uploadError } = await adminClient.storage
         .from(storageBucket)
-        .upload(objectKey, bytes, { contentType, upsert: false });
+        .upload(objectKey, bytes, {
+          contentType,
+          upsert: false,
+          cacheControl: '31536000', // 1 year
+        });
 
       if (uploadError) {
         console.warn('[api] storage upload failed', uploadError);
@@ -625,7 +629,7 @@ serve(async (req: Request) => {
       }
 
       const optimized =
-        (await optimizeImage(imageBase64, { maxWidth: 960, maxHeight: 960, quality: 60 }).catch(() => null)) ?? {
+        (await optimizeImage(imageBase64, { maxWidth: 1024, maxHeight: 1024, quality: 68 }).catch(() => null)) ?? {
           base64: imageBase64,
           contentType: 'image/webp',
         };
@@ -773,7 +777,7 @@ serve(async (req: Request) => {
       }
 
       const optimized =
-        (await optimizeImage(imageBase64, { maxWidth: 960, maxHeight: 960, quality: 60 }).catch(() => null)) ?? {
+        (await optimizeImage(imageBase64, { maxWidth: 1024, maxHeight: 1024, quality: 68 }).catch(() => null)) ?? {
           base64: imageBase64,
           contentType: 'image/webp',
         };

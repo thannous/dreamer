@@ -32,15 +32,20 @@ vi.mock('react-native', () => ({
   Platform,
 }), { virtual: true });
 
-vi.mock('@/lib/config', () => ({
+// Mock using relative paths from this test file
+vi.mock('../lib/config', () => ({
   getApiBaseUrl: () => 'https://api.dreamer.test',
 }));
 
-vi.mock('@/lib/http', () => ({
-  fetchJSON: vi.fn(),
+const { mockFetchJSON } = vi.hoisted(() => ({
+  mockFetchJSON: vi.fn(),
 }));
 
-const { fetchJSON } = await import('@/lib/http');
+vi.mock('../lib/http', () => ({
+  fetchJSON: mockFetchJSON,
+}));
+
+const fetchJSON = mockFetchJSON;
 import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from './speechToText';
 
 describe('speechToText Service', () => {

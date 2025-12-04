@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import type { DreamAnalysis } from '@/lib/types';
-import { PREDEFINED_DREAMS } from '@/mock-data/predefinedDreams';
+import type { DreamAnalysis } from '../../../lib/types';
+import { PREDEFINED_DREAMS } from '../../../mock-data/predefinedDreams';
 import {
     clearSavedTranscript,
     getNotificationSettings,
@@ -15,7 +15,7 @@ import {
     saveThemePreference,
     saveTranscript,
     setPreloadDreamsEnabled,
-} from '@/services/mocks/storageServiceMock';
+} from '../storageServiceMock';
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),
