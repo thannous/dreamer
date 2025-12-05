@@ -398,14 +398,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingHorizontal: 0,
+    paddingTop: 0,
     paddingBottom: 16,
     // paddingBottom is set dynamically via animatedProps in useChatList
   },
   messageRow: {
     flexDirection: 'row',
     marginBottom: 16,
+    margin:12,
     gap: 8,
   },
   messageRowAI: {
