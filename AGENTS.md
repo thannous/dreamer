@@ -86,3 +86,5 @@ npx expo doctor                 # Check project health and dependencies
 2. Check this `AGENTS.md` and existing code to match project conventions.
 3. When in doubt, ask for clarification rather than introducing new patterns or dependencies.
 4. Avoid committing temporary debugging code or logs; keep the codebase clean.
+
+Use your tools to verify assumptions
