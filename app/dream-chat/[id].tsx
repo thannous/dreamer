@@ -83,6 +83,7 @@ export default function DreamChatScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
+  const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
   const hasSentCategoryRef = useRef(false);
 
   // Speech recognition locale based on language
@@ -110,15 +111,24 @@ export default function DreamChatScreen() {
     const checkExplorationQuota = async () => {
       if (!dream) return;
 
-      const canExploreDream = await canExplore();
-      if (!canExploreDream) {
-        setExplorationBlocked(true);
+      try {
+        setQuotaCheckError(null);
+        const canExploreDream = await canExplore();
+        if (!canExploreDream) {
+          setExplorationBlocked(true);
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.error('[DreamChat] Quota check failed:', error);
+        }
+        setQuotaCheckError(t('dream_chat.quota_check_error'));
+      } finally {
+        setQuotaCheckComplete(true);
       }
-      setQuotaCheckComplete(true);
     };
 
     checkExplorationQuota();
-  }, [dream, dreamId, canExplore]);
+  }, [dream, dreamId, canExplore, t]);
 
   // Initialize chat messages from dream history
   useEffect(() => {
@@ -183,9 +193,21 @@ export default function DreamChatScreen() {
           return;
         }
         // Double-check exploration quota before starting new exploration
-        const canExploreDream = await canExplore();
-        if (!canExploreDream) {
-          setExplorationBlocked(true);
+        try {
+          const canExploreDream = await canExplore();
+          if (!canExploreDream) {
+            setExplorationBlocked(true);
+            return;
+          }
+        } catch (error) {
+          if (__DEV__) {
+            console.error('[DreamChat] Exploration quota check failed:', error);
+          }
+          Alert.alert(
+            t('common.error_title'),
+            t('dream_chat.quota_check_error'),
+            [{ text: t('common.ok') }]
+          );
           return;
         }
       }
@@ -346,14 +368,45 @@ export default function DreamChatScreen() {
     );
   }
 
-  // Show loading while checking quota
-  if (!quotaCheckComplete) {
+  // Show loading or error while checking quota
+  if (!quotaCheckComplete || quotaCheckError) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
-        <ActivityIndicator size="large" color={colors.accent} />
-        <Text style={[styles.errorText, { color: colors.textSecondary, marginTop: 16 }]}>
-          {t('dream_chat.checking_access')}
-        </Text>
+        <Pressable
+          onPress={handleBackPress}
+          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+        >
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+        </Pressable>
+
+        <View style={styles.quotaCheckContainer}>
+          {quotaCheckError ? (
+            <>
+              <Ionicons name="warning-outline" size={48} color="#FF5252" />
+              <Text style={[styles.errorText, { color: colors.textPrimary, marginTop: 16 }]}>
+                {quotaCheckError}
+              </Text>
+              <Pressable
+                style={[styles.retryButton, { backgroundColor: colors.accent }]}
+                onPress={() => {
+                  setQuotaCheckComplete(false);
+                  setQuotaCheckError(null);
+                }}
+              >
+                <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>
+                  {t('analysis.retry')}
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <ActivityIndicator size="large" color={colors.accent} />
+              <Text style={[styles.errorText, { color: colors.textSecondary, marginTop: 16 }]}>
+                {t('dream_chat.checking_access')}
+              </Text>
+            </>
+          )}
+        </View>
       </LinearGradient>
     );
   }
@@ -584,6 +637,23 @@ const styles = StyleSheet.create({
     // color: set dynamically
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.medium,
+    textAlign: 'center',
+  },
+  quotaCheckContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+  retryButton: {
+    marginTop: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 999,
+  },
+  retryButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   imageContainer: {
     width: '100%',
