@@ -129,6 +129,22 @@ export default function DreamChatScreen() {
     ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
     : '';
 
+  const showMessageLimitAlert = useCallback(() => {
+    const tier = user ? 'free' : 'guest';
+    const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
+    Alert.alert(
+      'Message Limit Reached',
+      limitError.userMessage,
+      [
+        { text: 'OK' },
+        {
+          text: 'Upgrade',
+          onPress: () => router.push('/(tabs)/settings'),
+        },
+      ]
+    );
+  }, [router, user]);
+
   const runQuotaCheck = useCallback(async () => {
     setQuotaCheckComplete(false);
     setQuotaCheckError(null);
@@ -211,6 +227,11 @@ export default function DreamChatScreen() {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
 
+      if (messageLimit !== null && messagesRemaining <= 0) {
+        showMessageLimitAlert();
+        return;
+      }
+
       // Check exploration quota for first message (new exploration)
       const isFirstUserMessage = messages.filter((msg) => msg.role === 'user').length === 0;
       if (isFirstUserMessage && !dream.explorationStartedAt) {
@@ -241,19 +262,7 @@ export default function DreamChatScreen() {
       // Check message quota before sending
       const canSendMessage = await canChat();
       if (!canSendMessage) {
-        const tier = user ? 'free' : 'guest';
-        const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
-        Alert.alert(
-          'Message Limit Reached',
-          limitError.userMessage,
-          [
-            { text: 'OK' },
-            {
-              text: 'Upgrade',
-              onPress: () => router.push('/(tabs)/settings'),
-            },
-          ]
-        );
+        showMessageLimitAlert();
         return;
       }
 
@@ -328,6 +337,7 @@ export default function DreamChatScreen() {
       messageLimit,
       messages,
       messagesRemaining,
+      showMessageLimitAlert,
       t,
       updateDream,
       user,
@@ -337,6 +347,10 @@ export default function DreamChatScreen() {
   const handleQuickCategory = (categoryId: string) => {
     // Block if quota check not complete or exploration blocked
     if (!quotaCheckComplete || explorationBlocked) return;
+    if (messageLimitReached) {
+      showMessageLimitAlert();
+      return;
+    }
     if (!dream) return;
     const prompt = buildCategoryPrompt(categoryId as CategoryType, dream, t);
     const question = getCategoryQuestion(categoryId as CategoryType, t);
@@ -486,10 +500,10 @@ export default function DreamChatScreen() {
                     borderColor: colors.divider,
                   },
                   pressed && styles.quickCategoryButtonPressed,
-                  (!quotaCheckComplete || explorationBlocked) && { opacity: 0.5 },
+                  (!quotaCheckComplete || explorationBlocked || messageLimitReached) && { opacity: 0.5 },
                 ]}
                 onPress={() => handleQuickCategory(cat.id)}
-                disabled={isLoading || !quotaCheckComplete || explorationBlocked}
+                disabled={isLoading || !quotaCheckComplete || explorationBlocked || messageLimitReached}
               >
                 <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
                 <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
