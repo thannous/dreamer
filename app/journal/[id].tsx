@@ -2,6 +2,7 @@ import { Toast } from '@/components/Toast';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
+import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
@@ -659,15 +660,27 @@ export default function JournalDetailScreen() {
   }, []);
 
   const ensureAnalyzeAllowed = useCallback(async () => {
-    const allowed = canAnalyzeNow || (await canAnalyze());
-    if (!allowed) {
-      // Don't show for premium users
-      if (tier === 'premium') return false;
-      setShowQuotaLimitSheet(true);
+    try {
+      const allowed = canAnalyzeNow || (await canAnalyze());
+      if (!allowed) {
+        // Don't show for premium users
+        if (tier === 'premium') return false;
+        setShowQuotaLimitSheet(true);
+        return false;
+      }
+      return true;
+    } catch (error) {
+      if (__DEV__) {
+        console.error('[JournalDetail] Quota check failed:', error);
+      }
+      showAnalysisNotice(
+        t('common.error_title'),
+        t('journal.detail.quota_check_error'),
+        'error'
+      );
       return false;
     }
-    return true;
-  }, [canAnalyze, canAnalyzeNow, tier]);
+  }, [canAnalyze, canAnalyzeNow, tier, showAnalysisNotice, t]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -716,9 +729,16 @@ export default function JournalDetailScreen() {
         setAnalysisSuccessMessage(t('journal.detail.analysis.success_message'));
       } catch (error) {
         if (error instanceof QuotaError) {
-          // Show quota limit sheet with upgrade CTA
+          // Show quota limit sheet with upgrade CTA for non-premium users
           if (tier !== 'premium') {
             setShowQuotaLimitSheet(true);
+          } else {
+            // Premium users should never hit quota errors, but show a notice if they do
+            showAnalysisNotice(
+              t('common.error_title'),
+              error.userMessage || t('common.unknown_error'),
+              'error'
+            );
           }
         } else {
           const msg = error instanceof Error ? error.message : t('common.unknown_error');
@@ -1647,8 +1667,8 @@ export default function JournalDetailScreen() {
           </Text>
           <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
             {tier === 'guest'
-              ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? 2 })
-              : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? 5 })}
+              ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis! })
+              : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis! })}
           </Text>
           <View style={styles.sheetButtons}>
             <Pressable
