@@ -16,7 +16,12 @@
       "mcp__maestro__list_devices",
       "mcp__maestro__inspect_view_hierarchy",
       "mcp__morph-mcp__edit_file",
-      "mcp__morph-mcp__warpgrep_codebase_search"
+      "mcp__morph-mcp__warpgrep_codebase_search",
+      "Bash(git checkout:*)",
+      "Bash(npm run typecheck:app:*)",
+      "Bash(git add:*)",
+      "Bash(grep:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
