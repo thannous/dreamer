@@ -9,13 +9,14 @@ import { Pressable, StyleSheet, type AccessibilityState } from 'react-native';
 
 interface MicButtonProps {
   isRecording: boolean;
+  isPreparing?: boolean;
   onPress: () => void;
   testID?: string;
   accessibilityLabel?: string;
   disabled?: boolean;
 }
 
-export function MicButton({ isRecording, onPress, testID, accessibilityLabel, disabled }: MicButtonProps) {
+export function MicButton({ isRecording, isPreparing, onPress, testID, accessibilityLabel, disabled }: MicButtonProps) {
   const { t } = useTranslation();
   const { colors, shadows, mode } = useTheme();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -33,7 +34,7 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel, di
   const buttonRecordingBackground = mode === 'dark' ? '#5a3d7b' : colors.accentDark;
   const glowColor = mode === 'dark' ? colors.accent : colors.accentDark;
   const shouldAnimate = isFocused && !prefersReducedMotion;
-  const showPulses = isRecording && shouldAnimate;
+  const showPulses = (isRecording || isPreparing) && shouldAnimate;
 
   return (
     <Pressable
@@ -46,7 +47,7 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel, di
       }
       accessibilityState={{
         disabled: disabled ?? false,
-        busy: isRecording,
+        busy: isRecording || isPreparing,
       } as AccessibilityState}
       accessibilityHint={
         isRecording
@@ -98,12 +99,12 @@ export function MicButton({ isRecording, onPress, testID, accessibilityLabel, di
       {/* Main Button */}
       <MotiView
         animate={{
-          scale: isRecording ? 1.05 : 1,
+          scale: isRecording ? 1.05 : isPreparing ? 1.02 : 1,
           backgroundColor: isRecording ? buttonRecordingBackground : buttonBackground,
         }}
         transition={{
           type: 'timing',
-          duration: 800,
+          duration: isPreparing ? 250 : 800,
         }}
         style={[
           styles.button,

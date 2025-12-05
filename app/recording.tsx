@@ -124,6 +124,7 @@ export default function RecordingScreen() {
   const [analyzePromptDream, setAnalyzePromptDream] = useState<DreamAnalysis | null>(null);
   const [pendingAnalysisDream, setPendingAnalysisDream] = useState<DreamAnalysis | null>(null);
   const [isPersisting, setIsPersisting] = useState(false);
+  const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
   const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
@@ -244,6 +245,7 @@ export default function RecordingScreen() {
       }
 
       setIsRecording(false);
+      setIsPreparingRecording(false);
       isRecordingRef.current = false;
 
       const nativeSession = nativeSessionRef.current;
@@ -416,6 +418,7 @@ export default function RecordingScreen() {
     let nativeError: string | undefined;
     try {
       setIsRecording(false);
+      setIsPreparingRecording(false);
       isRecordingRef.current = false;
       nativeSession = nativeSessionRef.current;
       nativeSessionRef.current = null;
@@ -522,6 +525,11 @@ export default function RecordingScreen() {
 
   const startRecording = useCallback(async () => {
     try {
+      // Optimistic UI: show recording state while we spin up permissions/audio mode
+      setIsRecording(true);
+      setIsPreparingRecording(true);
+      // Leave isRecordingRef false until audio is actually rolling
+
       if (Platform.OS === 'web') {
         const hasSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
         if (!hasSecureContext) {
@@ -529,6 +537,9 @@ export default function RecordingScreen() {
             t('recording.alert.permission_required.title'),
             'Le micro est bloqué car la page n’est pas servie en HTTPS (ou localhost). Ouvre la page en HTTPS ou via localhost pour activer la dictée.'
           );
+          setIsRecording(false);
+          setIsPreparingRecording(false);
+          isRecordingRef.current = false;
           return;
         }
       }
@@ -539,6 +550,9 @@ export default function RecordingScreen() {
           t('recording.alert.permission_required.title'),
           t('recording.alert.permission_required.message')
         );
+        setIsRecording(false);
+        setIsPreparingRecording(false);
+        isRecordingRef.current = false;
         return;
       }
 
@@ -585,8 +599,8 @@ export default function RecordingScreen() {
         console.log('[Recording] skipping audioRecorder because native session active');
       }
 
-      setIsRecording(true);
       isRecordingRef.current = true;
+      setIsPreparingRecording(false);
     } catch (err) {
       nativeSessionRef.current?.abort();
       nativeSessionRef.current = null;
@@ -596,6 +610,8 @@ export default function RecordingScreen() {
       if (__DEV__) {
         console.error('Failed to start recording:', err);
       }
+      setIsRecording(false);
+      setIsPreparingRecording(false);
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
   }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording, handleRecorderError]);
@@ -948,11 +964,25 @@ export default function RecordingScreen() {
                     <View style={styles.micButtonWrapper}>
                       <MicButton
                         isRecording={isRecording}
+                        isPreparing={isPreparingRecording}
                         onPress={toggleRecording}
                         disabled={interactionDisabled}
                         testID={TID.Button.RecordToggle}
                       />
                     </View>
+
+                    {isPreparingRecording ? (
+                      <MotiView
+                        from={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: 'timing', duration: 250 }}
+                      >
+                        <Text style={[styles.preparingText, { color: colors.textSecondary }]}>
+                          {t('recording.status.preparing') || 'Initialisation du micro...'}
+                        </Text>
+                      </MotiView>
+                    ) : null}
 
                     {/* Live Transcript Display */}
                     {transcript ? (
@@ -1285,6 +1315,11 @@ const styles = StyleSheet.create({
   micContainer: {
     alignItems: 'center',
     gap: 16
+  },
+  preparingText: {
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textAlign: 'center',
   },
   liveTranscriptContainer: {
     marginBottom: 10,
