@@ -10,7 +10,13 @@
       "mcp__supabase__deploy_edge_function",
       "mcp__supabase__execute_sql",
       "mcp__maestro__tap_on",
-      "mcp__maestro__launch_app"
+      "mcp__maestro__launch_app",
+      "mcp__maestro__run_flow",
+      "mcp__maestro__take_screenshot",
+      "mcp__maestro__list_devices",
+      "mcp__maestro__inspect_view_hierarchy",
+      "mcp__morph-mcp__edit_file",
+      "mcp__morph-mcp__warpgrep_codebase_search"
     ],
     "deny": [],
     "ask": []
