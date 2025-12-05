@@ -61,7 +61,7 @@ async function generateImageFromPrompt(options: {
   apiBase?: string;
   aspectRatio?: string;
 }): Promise<{ imageBase64?: string; raw: any }> {
-  const { prompt, apiKey, model, apiBase = 'https://generativelanguage.googleapis.com', aspectRatio = '9:16' } = options;
+  const { prompt, apiKey, model, apiBase = 'https://generativelanguage.googleapis.com' } = options;
   const headers = {
     'Content-Type': 'application/json',
     'x-goog-api-key': apiKey,
@@ -69,106 +69,107 @@ async function generateImageFromPrompt(options: {
 
   const lowerModel = model.toLowerCase();
   const fallbackGeminiImageModel = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'gemini-2.5-flash-image';
-  const imagenPredictFallbackModel = Deno.env.get('IMAGEN_PREDICT_MODEL') ?? 'imagen-3.0-generate-002';
   const isGemini = lowerModel.includes('gemini');
   const isGeminiImageModel = isGemini && lowerModel.includes('image');
   const resolvedModel = isGemini && !isGeminiImageModel ? fallbackGeminiImageModel : model;
   const isGeminiImage = resolvedModel.toLowerCase().includes('gemini') && resolvedModel.toLowerCase().includes('image');
-
-  const runImagenPredict = async (modelName: string) => {
-    const endpoint = `${apiBase}/v1beta/models/${modelName}:predict`;
-
-    const imgRes = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        instances: [{ prompt }],
-        parameters: {
-          sampleCount: 1,
-          ...(aspectRatio ? { aspectRatio } : {}),
-        },
-      }),
-    });
-
-    if (!imgRes.ok) {
-      const t = await imgRes.text();
-      throw new Error(`Imagen error ${imgRes.status}: ${t}`);
-    }
-
-    const imgJson = (await imgRes.json()) as any;
-
-    let imageBase64: string | undefined;
-    const firstPred = imgJson?.predictions?.[0];
-    if (firstPred?.bytesBase64Encoded) imageBase64 = firstPred.bytesBase64Encoded;
-    const gen0 = imgJson?.generatedImages?.[0]?.image?.imageBytes;
-    if (!imageBase64 && gen0) imageBase64 = gen0;
-
-    return { imageBase64, raw: imgJson };
-  };
+  const apiVersion = apiBase.includes('/v1beta') ? 'v1beta' : 'v1';
+  const mimeConfigKey = apiVersion === 'v1' ? 'responseMimeType' : 'response_mime_type';
 
   if (isGemini && !isGeminiImageModel && resolvedModel !== model) {
     console.warn(`[api] generateImageFromPrompt: model ${model} is text-only, falling back to ${resolvedModel}`);
   }
 
-  if (isGeminiImage) {
-    const endpoint = `${apiBase}/v1beta/models/${resolvedModel}:generateContent`;
-    const createBody = (includeMime: boolean) => ({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      ...(includeMime ? { generationConfig: { response_mime_type: 'image/webp' } } : {}),
-    });
-    const requestOnce = async (includeMime: boolean) => {
-      return fetch(endpoint, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(createBody(includeMime)),
-      });
-    };
-
-    const imgRes = await requestOnce(true);
-
-    if (!imgRes.ok) {
-      const t = await imgRes.text();
-      const mimeTypeError =
-        imgRes.status === 400 &&
-        (() => {
-          const normalized = t.toLowerCase();
-          return normalized.includes('response_mime_type') || normalized.includes('responsemimetype');
-        })();
-
-      if (mimeTypeError) {
-        console.warn(
-          `[api] generateImageFromPrompt: responseMimeType rejected for ${resolvedModel}, falling back to ${imagenPredictFallbackModel}`
-        );
-        // Retry Gemini image call without forcing the response mime type (some deployments reject it),
-        // then fall back to Imagen predict if it still fails.
-        const retry = await requestOnce(false);
-        if (retry.ok) {
-          const retryJson = (await retry.json()) as any;
-          const retryParts = retryJson?.candidates?.[0]?.content?.parts;
-          const retryInline = Array.isArray(retryParts)
-            ? retryParts.find((p: any) => p?.inlineData?.data)
-            : undefined;
-          if (retryInline?.inlineData?.data) {
-            return { imageBase64: retryInline.inlineData.data as string, raw: retryJson };
-          }
-        }
-        return runImagenPredict(imagenPredictFallbackModel);
-      }
-
-      throw new Error(`Gemini image error ${imgRes.status}: ${t}`);
-    }
-
-    const imgJson = (await imgRes.json()) as any;
-    const parts = imgJson?.candidates?.[0]?.content?.parts;
-    const inlinePart = Array.isArray(parts)
-      ? parts.find((p: any) => p?.inlineData?.data)
-      : undefined;
-
-    return { imageBase64: inlinePart?.inlineData?.data as string | undefined, raw: imgJson };
+  if (!isGeminiImage) {
+    throw new Error(
+      `Unsupported image model "${model}". Use a Gemini image-capable model such as "gemini-2.5-flash-image".`
+    );
   }
 
-  return runImagenPredict(resolvedModel);
+  const endpoint = `${apiBase}/${apiVersion}/models/${resolvedModel}:generateContent`;
+  const createBody = (includeMime: boolean) => ({
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    ...(includeMime ? { generationConfig: { [mimeConfigKey]: 'image/png' } } : {}),
+    ...(apiVersion === 'v1beta' ? { responseModalities: ['IMAGE'] } : {}),
+  });
+
+  const requestOnce = async (includeMime: boolean) => {
+    return fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(createBody(includeMime)),
+    });
+  };
+
+  const imgRes = await requestOnce(true);
+
+  if (!imgRes.ok) {
+    const t = await imgRes.text();
+    const mimeTypeError =
+      imgRes.status === 400 &&
+      (() => {
+        const normalized = t.toLowerCase();
+        return normalized.includes('response_mime_type') || normalized.includes('responsemimetype');
+      })();
+
+    if (mimeTypeError) {
+      console.warn(
+        `[api] generateImageFromPrompt: response mime type rejected for ${resolvedModel}, retrying without explicit mime`
+      );
+      const retry = await requestOnce(false);
+      if (retry.ok) {
+        const retryJson = (await retry.json()) as any;
+        const retryParts = retryJson?.candidates?.[0]?.content?.parts;
+        const retryInline = Array.isArray(retryParts)
+          ? retryParts.find((p: any) => p?.inlineData?.data)
+          : undefined;
+        if (retryInline?.inlineData?.data) {
+          return { imageBase64: retryInline.inlineData.data as string, raw: retryJson };
+        }
+      }
+    }
+
+    throw new Error(`Gemini image error ${imgRes.status}: ${t}`);
+  }
+
+  const imgJson = (await imgRes.json()) as any;
+  const parts = imgJson?.candidates?.[0]?.content?.parts;
+  const inlinePart = Array.isArray(parts)
+    ? parts.find((p: any) => p?.inlineData?.data)
+    : undefined;
+
+  return { imageBase64: inlinePart?.inlineData?.data as string | undefined, raw: imgJson };
 }
+
+/**
+ * Normalize the image model to a supported Gemini image model. Avoids using Imagen
+ * models that are not available on the Gemini API endpoints.
+ */
+const resolveImageModel = (): string => {
+  const envModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
+  const fallback = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'gemini-2.5-flash-image';
+  const lower = envModel.toLowerCase();
+
+  if (lower.startsWith('imagen')) {
+    console.warn(`[api] IMAGEN_MODEL ${envModel} not supported on Gemini endpoint, falling back to ${fallback}`);
+    return fallback;
+  }
+  return envModel;
+};
+
+/**
+ * Normalize the Gemini API base. If a versioned path (v1beta) is provided, prefer v1
+ * for image models to avoid 404/not supported errors.
+ */
+const resolveGeminiApiBase = (): string => {
+  const raw = Deno.env.get('GEMINI_API_BASE');
+  if (!raw) return 'https://generativelanguage.googleapis.com';
+  if (raw.includes('/v1beta')) {
+    console.warn('[api] GEMINI_API_BASE contains v1beta; using v1 for image generation');
+    return 'https://generativelanguage.googleapis.com';
+  }
+  return raw.replace(/\/v1$/, '');
+};
 
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -284,20 +285,79 @@ serve(async (req: Request) => {
         targetDreamId: body?.targetDreamId ?? null,
       });
 
-      // Static guest quotas for now; adjust if server-side tracking is added later
       const guestLimits = { analysis: 2, exploration: 2, messagesPerDream: 20 };
+
+      // Si pas de fingerprint, retourner mode dégradé (client enforcera localement)
+      if (!body?.fingerprint || !supabaseServiceRoleKey) {
+        console.log('[api] /quota/status: no fingerprint or service key, returning degraded mode');
+        return new Response(
+          JSON.stringify({
+            tier: 'guest',
+            usage: {
+              analysis: { used: 0, limit: guestLimits.analysis },
+              exploration: { used: 0, limit: guestLimits.exploration },
+              messages: { used: 0, limit: guestLimits.messagesPerDream },
+            },
+            canAnalyze: true,
+            canExplore: true,
+            reasons: [],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
+      // Query actual usage from database
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+
+      const { data: quotaData, error: quotaError } = await adminClient.rpc('get_guest_quota_status', {
+        p_fingerprint: body.fingerprint,
+      });
+
+      if (quotaError) {
+        console.warn('[api] /quota/status: failed to get quota status', quotaError);
+        // Fallback to degraded mode
+        return new Response(
+          JSON.stringify({
+            tier: 'guest',
+            usage: {
+              analysis: { used: 0, limit: guestLimits.analysis },
+              exploration: { used: 0, limit: guestLimits.exploration },
+              messages: { used: 0, limit: guestLimits.messagesPerDream },
+            },
+            canAnalyze: true,
+            canExplore: true,
+            reasons: [],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
+      const analysisUsed = quotaData?.analysis_count ?? 0;
+      const explorationUsed = quotaData?.exploration_count ?? 0;
+      const canAnalyze = analysisUsed < guestLimits.analysis;
+      const canExplore = explorationUsed < guestLimits.exploration;
+
+      const reasons: string[] = [];
+      if (!canAnalyze) {
+        reasons.push(`Guest analysis limit reached (${analysisUsed}/${guestLimits.analysis}). Create a free account to get more!`);
+      }
+      if (!canExplore) {
+        reasons.push(`Guest exploration limit reached (${explorationUsed}/${guestLimits.exploration}). Create a free account to continue!`);
+      }
 
       return new Response(
         JSON.stringify({
           tier: 'guest',
           usage: {
-            analysis: { used: 0, limit: guestLimits.analysis },
-            exploration: { used: 0, limit: guestLimits.exploration },
+            analysis: { used: analysisUsed, limit: guestLimits.analysis },
+            exploration: { used: explorationUsed, limit: guestLimits.exploration },
             messages: { used: 0, limit: guestLimits.messagesPerDream },
           },
-          canAnalyze: true,
-          canExplore: true,
-          reasons: [],
+          canAnalyze,
+          canExplore,
+          reasons,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
@@ -455,9 +515,10 @@ serve(async (req: Request) => {
   // Public analyzeDream: allow without auth (skip DB insert when user is null)
   if (req.method === 'POST' && subPath === '/analyzeDream') {
     try {
-      const body = (await req.json()) as { transcript?: string; lang?: string };
+      const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
       const transcript = String(body?.transcript ?? '').trim();
       const lang = String(body?.lang ?? 'en');
+      const fingerprint = body?.fingerprint;
       if (!transcript) throw new Error('Missing transcript');
 
       const apiKey = Deno.env.get('GEMINI_API_KEY');
@@ -468,7 +529,46 @@ serve(async (req: Request) => {
         transcriptLength: transcript.length,
         lang,
         snippet: transcript.slice(0, 80),
+        hasFingerprint: !!fingerprint,
       });
+
+      // Guest quota enforcement
+      let quotaUsed: { analysis: number } | undefined;
+      if (!user && supabaseServiceRoleKey) {
+        if (!fingerprint) {
+          // Mode dégradé: pas de fingerprint = autoriser avec warning
+          console.warn('[api] /analyzeDream: guest without fingerprint, allowing in degraded mode');
+        } else {
+          // Vérifier et incrémenter le quota
+          const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+            auth: { autoRefreshToken: false, persistSession: false },
+          });
+
+          const guestAnalysisLimit = 2;
+          const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+            p_fingerprint: fingerprint,
+            p_quota_type: 'analysis',
+            p_limit: guestAnalysisLimit,
+          });
+
+          if (quotaError) {
+            console.error('[api] /analyzeDream: quota check failed', quotaError);
+            // En cas d'erreur, autoriser (fail open) mais logger
+          } else if (!quotaResult?.allowed) {
+            console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
+            return new Response(
+              JSON.stringify({
+                error: 'Guest analysis limit reached',
+                code: 'QUOTA_EXCEEDED',
+                usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
+              }),
+              { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+            );
+          } else {
+            quotaUsed = { analysis: quotaResult.new_count };
+          }
+        }
+      }
 
       const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
       const systemInstruction = lang === 'fr'
@@ -521,6 +621,7 @@ serve(async (req: Request) => {
         userId: user?.id ?? null,
         theme,
         titleLength: String(analysis.title ?? '').length,
+        quotaUsed,
       });
 
       return new Response(
@@ -531,6 +632,7 @@ serve(async (req: Request) => {
           theme,
           dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
           imagePrompt: String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere'),
+          ...(quotaUsed && { quotaUsed }),
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
@@ -546,9 +648,10 @@ serve(async (req: Request) => {
   // Combined: analyze dream and generate image in one call (public)
   if (req.method === 'POST' && subPath === '/analyzeDreamFull') {
     try {
-      const body = (await req.json()) as { transcript?: string; lang?: string };
+      const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
       const transcript = String(body?.transcript ?? '').trim();
       const lang = String(body?.lang ?? 'en');
+      const fingerprint = body?.fingerprint;
       if (!transcript) throw new Error('Missing transcript');
 
       const apiKey = Deno.env.get('GEMINI_API_KEY');
@@ -559,7 +662,46 @@ serve(async (req: Request) => {
         transcriptLength: transcript.length,
         lang,
         snippet: transcript.slice(0, 80),
+        hasFingerprint: !!fingerprint,
       });
+
+      // Guest quota enforcement
+      let quotaUsed: { analysis: number } | undefined;
+      if (!user && supabaseServiceRoleKey) {
+        if (!fingerprint) {
+          // Mode dégradé: pas de fingerprint = autoriser avec warning
+          console.warn('[api] /analyzeDreamFull: guest without fingerprint, allowing in degraded mode');
+        } else {
+          // Vérifier et incrémenter le quota
+          const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+            auth: { autoRefreshToken: false, persistSession: false },
+          });
+
+          const guestAnalysisLimit = 2;
+          const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+            p_fingerprint: fingerprint,
+            p_quota_type: 'analysis',
+            p_limit: guestAnalysisLimit,
+          });
+
+          if (quotaError) {
+            console.error('[api] /analyzeDreamFull: quota check failed', quotaError);
+            // En cas d'erreur, autoriser (fail open) mais logger
+          } else if (!quotaResult?.allowed) {
+            console.log('[api] /analyzeDreamFull: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
+            return new Response(
+              JSON.stringify({
+                error: 'Guest analysis limit reached',
+                code: 'QUOTA_EXCEEDED',
+                usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
+              }),
+              { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+            );
+          } else {
+            quotaUsed = { analysis: quotaResult.new_count };
+          }
+        }
+      }
 
       const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
       const systemInstruction = lang === 'fr'
@@ -611,8 +753,8 @@ serve(async (req: Request) => {
       // 2) Generate image from the prompt
       const imagePrompt = String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere');
 
-      const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
+      const apiBase = resolveGeminiApiBase();
+      const imageModel = resolveImageModel();
       const { imageBase64, raw: imgJson } = await generateImageFromPrompt({
         prompt: imagePrompt,
         apiKey,
@@ -647,6 +789,7 @@ serve(async (req: Request) => {
           imagePrompt,
           imageUrl,
           imageBytes: optimized.base64, // kept for backward compatibility with clients expecting bytes
+          ...(quotaUsed && { quotaUsed }),
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
@@ -759,8 +902,8 @@ serve(async (req: Request) => {
         console.log('[api] /generateImage generated prompt:', prompt);
       }
 
-      const apiBase = Deno.env.get('GEMINI_API_BASE') ?? 'https://generativelanguage.googleapis.com';
-      const imageModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
+      const apiBase = resolveGeminiApiBase();
+      const imageModel = resolveImageModel();
       const { imageBase64, raw: imgJson } = await generateImageFromPrompt({
         prompt,
         apiKey,

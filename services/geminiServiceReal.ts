@@ -17,13 +17,18 @@ export type AnalysisResult = {
   theme: DreamTheme;
   dreamType: DreamType;
   imagePrompt: string;
+  quotaUsed?: { analysis: number };
 };
 
-export async function analyzeDream(transcript: string, lang: string = 'en'): Promise<AnalysisResult> {
+export async function analyzeDream(
+  transcript: string,
+  lang: string = 'en',
+  fingerprint?: string
+): Promise<AnalysisResult> {
   const base = getApiBaseUrl();
   return fetchJSON<AnalysisResult>(`${base}/analyzeDream`, {
     method: 'POST',
-    body: { transcript, lang },
+    body: { transcript, lang, ...(fingerprint && { fingerprint }) },
     retries: 1, // One automatic retry
   });
 }
@@ -37,11 +42,15 @@ export async function categorizeDream(transcript: string, lang: string = 'en'): 
   });
 }
 
-export async function analyzeDreamWithImage(transcript: string, lang: string = 'en'): Promise<AnalysisResult & { imageUrl: string }> {
+export async function analyzeDreamWithImage(
+  transcript: string,
+  lang: string = 'en',
+  fingerprint?: string
+): Promise<AnalysisResult & { imageUrl: string }> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
     method: 'POST',
-    body: { transcript, lang },
+    body: { transcript, lang, ...(fingerprint && { fingerprint }) },
     retries: 1, // One automatic retry
     timeoutMs: 60000, // Increased timeout for combined operation
   });
@@ -58,7 +67,8 @@ export async function analyzeDreamWithImage(transcript: string, lang: string = '
  */
 export async function analyzeDreamWithImageResilient(
   transcript: string,
-  lang: string = 'en'
+  lang: string = 'en',
+  fingerprint?: string
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
   const base = getApiBaseUrl();
 
@@ -66,7 +76,7 @@ export async function analyzeDreamWithImageResilient(
     // Try combined analysis + image generation first
     const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
       method: 'POST',
-      body: { transcript, lang },
+      body: { transcript, lang, ...(fingerprint && { fingerprint }) },
       retries: 1,
       timeoutMs: 60000,
     });
@@ -87,6 +97,8 @@ export async function analyzeDreamWithImageResilient(
   } catch (error) {
     // Combined call failed entirely, try analysis only as fallback
     try {
+      // Note: fingerprint already consumed on combined call if it was provided,
+      // so we don't pass it again for fallback analysis-only call
       const analysisOnly = await analyzeDream(transcript, lang);
 
       // Try to generate image separately

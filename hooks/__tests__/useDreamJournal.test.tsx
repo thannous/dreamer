@@ -24,6 +24,8 @@ const {
   mockCanAnalyzeDream,
   mockInvalidateQuota,
   mockGetThumbnailUrl,
+  mockIncrementLocalAnalysisCount,
+  mockSyncWithServerCount,
 } = vi.hoisted(() => ({
   mockGetSavedDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
   mockSaveDreams: vi.fn<[DreamAnalysis[]], Promise<void>>(),
@@ -40,6 +42,8 @@ const {
   mockCanAnalyzeDream: vi.fn(),
   mockInvalidateQuota: vi.fn(),
   mockGetThumbnailUrl: vi.fn(),
+  mockIncrementLocalAnalysisCount: vi.fn<[], Promise<number>>(),
+  mockSyncWithServerCount: vi.fn<[number, 'analysis' | 'exploration'], Promise<number>>(),
 }));
 
 // Mock dependencies
@@ -89,6 +93,11 @@ vi.mock('../../lib/imageUtils', () => ({
   getThumbnailUrl: mockGetThumbnailUrl,
 }));
 
+vi.mock('../../services/quota/GuestAnalysisCounter', () => ({
+  incrementLocalAnalysisCount: mockIncrementLocalAnalysisCount,
+  syncWithServerCount: mockSyncWithServerCount,
+}));
+
 // Import after mocks
 const { useDreamJournal } = await import('../useDreamJournal');
 
@@ -121,6 +130,8 @@ describe('useDreamJournal', () => {
     mockSavePendingDreamMutations.mockResolvedValue(undefined);
     mockFetchDreamsFromSupabase.mockResolvedValue([]);
     mockGetThumbnailUrl.mockImplementation((url) => url ? `${url}-thumb` : undefined);
+    mockIncrementLocalAnalysisCount.mockResolvedValue(1);
+    mockSyncWithServerCount.mockResolvedValue(1);
   });
 
   describe('initialization and loading', () => {
@@ -573,9 +584,10 @@ describe('useDreamJournal', () => {
         await result.current.analyzeDream(1, 'My dream transcript');
       });
 
-      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined);
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, 'mock-hash-fingerprint');
       expect(mockGenerateImageFromTranscript).toHaveBeenCalledWith('My dream transcript', '');
       expect(mockInvalidateQuota).toHaveBeenCalled();
+      expect(mockIncrementLocalAnalysisCount).toHaveBeenCalled();
 
       const analyzedDream = result.current.dreams[0];
       expect(analyzedDream.title).toBe('Analyzed Title');
@@ -665,7 +677,7 @@ describe('useDreamJournal', () => {
         await result.current.analyzeDream(1, 'Mon rêve', { lang: 'fr' });
       });
 
-      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('Mon rêve', 'fr');
+      expect(mockAnalyzeDreamText).toHaveBeenCalledWith('Mon rêve', 'fr', 'mock-hash-fingerprint');
     });
 
     it('throws error when dream not found', async () => {

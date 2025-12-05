@@ -73,6 +73,13 @@ vi.mock('expo-secure-store', () => ({
   isAvailableAsync: vi.fn().mockResolvedValue(true),
 }));
 
+// Mock expo-crypto for fingerprint generation in tests.
+vi.mock('expo-crypto', () => ({
+  randomUUID: vi.fn(() => 'mock-uuid-1234'),
+  digestStringAsync: vi.fn().mockResolvedValue('mock-hash-fingerprint'),
+  CryptoDigestAlgorithm: { SHA256: 'SHA256' },
+}));
+
 vi.mock('expo-file-system', () => {
   class MockFile {
     uri: string;

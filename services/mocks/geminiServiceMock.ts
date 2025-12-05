@@ -14,6 +14,7 @@ export type AnalysisResult = {
   theme: DreamTheme;
   dreamType: DreamType;
   imagePrompt: string;
+  quotaUsed?: { analysis: number };
 };
 
 /**
@@ -26,7 +27,11 @@ function delay(ms: number): Promise<void> {
 /**
  * Mock dream analysis (1-3 seconds)
  */
-export async function analyzeDream(transcript: string, lang = 'en'): Promise<AnalysisResult> {
+export async function analyzeDream(
+  transcript: string,
+  lang = 'en',
+  _fingerprint?: string
+): Promise<AnalysisResult> {
   console.log('[MOCK] analyzeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(1000 + Math.random() * 2000); // 1-3 seconds
 
@@ -57,7 +62,11 @@ export async function categorizeDream(
 /**
  * Mock combined analysis + image generation (3-5 seconds)
  */
-export async function analyzeDreamWithImage(transcript: string, lang = 'en'): Promise<AnalysisResult & { imageUrl: string }> {
+export async function analyzeDreamWithImage(
+  transcript: string,
+  lang = 'en',
+  _fingerprint?: string
+): Promise<AnalysisResult & { imageUrl: string }> {
   console.log('[MOCK] analyzeDreamWithImage called with lang:', lang);
   await delay(3000 + Math.random() * 2000); // 3-5 seconds
 
@@ -74,7 +83,8 @@ export async function analyzeDreamWithImage(transcript: string, lang = 'en'): Pr
  */
 export async function analyzeDreamWithImageResilient(
   transcript: string,
-  lang = 'en'
+  lang = 'en',
+  _fingerprint?: string
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
   console.log('[MOCK] analyzeDreamWithImageResilient called with lang:', lang);
 
