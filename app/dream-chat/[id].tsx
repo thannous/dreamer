@@ -15,6 +15,7 @@ import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
+import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -74,6 +75,8 @@ export default function DreamChatScreen() {
   const { colors, mode, shadows } = useTheme();
   const { user } = useAuth();
   const { language } = useLanguage();
+  const isMockMode =
+    ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat } = useQuota({ dreamId, dream });
@@ -106,6 +109,26 @@ export default function DreamChatScreen() {
     return messages.filter((msg) => msg.role === 'user').length;
   }, [messages]);
 
+  const quotaMessages = quotaStatus?.usage.messages;
+  const rawMessageLimit = quotaMessages?.limit;
+  const messageLimit = typeof rawMessageLimit === 'number'
+    ? rawMessageLimit
+    : rawMessageLimit === null
+      ? null
+      : 20;
+
+  const quotaRemaining = typeof quotaMessages?.remaining === 'number' ? quotaMessages.remaining : null;
+  const localRemaining = messageLimit === null
+    ? Number.POSITIVE_INFINITY
+    : Math.max(messageLimit - userMessageCount, 0);
+  const messagesRemaining = messageLimit === null
+    ? Number.POSITIVE_INFINITY
+    : Math.max(Math.min(localRemaining, quotaRemaining ?? localRemaining), 0);
+  const messageLimitReached = messageLimit !== null && messagesRemaining <= 0;
+  const messageCounterLabel = typeof messageLimit === 'number'
+    ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
+    : '';
+
   const runQuotaCheck = useCallback(async () => {
     setQuotaCheckComplete(false);
     setQuotaCheckError(null);
@@ -117,9 +140,7 @@ export default function DreamChatScreen() {
 
     try {
       const canExploreDream = await canExplore();
-      if (!canExploreDream) {
-        setExplorationBlocked(true);
-      }
+      setExplorationBlocked(!canExploreDream);
     } catch (error) {
       if (__DEV__) {
         console.error('[DreamChat] Quota check failed:', error);
@@ -273,13 +294,16 @@ export default function DreamChatScreen() {
 
         // Invalidate quota cache if this was the first message
         if (isFirstUserMessage) {
+          if (isMockMode) {
+            await markMockExploration({ id: dreamId });
+          }
           if (!user && !dream.explorationStartedAt) {
             incrementLocalExplorationCount().catch((err) => {
               if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
             });
           }
-          quotaService.invalidate(user);
         }
+        quotaService.invalidate(user);
       } catch (error) {
         if (__DEV__) {
           console.error('Chat error:', error);
@@ -293,7 +317,21 @@ export default function DreamChatScreen() {
         setIsLoading(false);
       }
     },
-    [inputText, dream, messages, updateDream, canChat, user, t, explorationBlocked, canExplore]
+    [
+      canChat,
+      canExplore,
+      dream,
+      dreamId,
+      explorationBlocked,
+      inputText,
+      isMockMode,
+      messageLimit,
+      messages,
+      messagesRemaining,
+      t,
+      updateDream,
+      user,
+    ]
   );
 
   const handleQuickCategory = (categoryId: string) => {
@@ -412,25 +450,6 @@ export default function DreamChatScreen() {
       </LinearGradient>
     );
   }
-
-  // Calculate if message limit is reached
-  const quotaMessages = quotaStatus?.usage.messages;
-  const rawMessageLimit = quotaMessages?.limit;
-  const messageLimit = typeof rawMessageLimit === 'number'
-    ? rawMessageLimit
-    : rawMessageLimit === null
-      ? null
-      : 20;
-  const fallbackRemaining = messageLimit === null
-    ? Number.POSITIVE_INFINITY
-    : messageLimit - userMessageCount;
-  const messagesRemaining = typeof quotaMessages?.remaining === 'number'
-    ? quotaMessages.remaining
-    : fallbackRemaining;
-  const messageLimitReached = messageLimit !== null && messagesRemaining <= 0;
-  const messageCounterLabel = typeof messageLimit === 'number'
-    ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
-    : '';
 
   const headerComponent = (
     <>
