@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -52,29 +53,14 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           <Text style={[styles.description, { color: colors.textSecondary }]}>{description}</Text>
         ) : null}
 
-        <View style={styles.buttonRow}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.primaryButton,
-              { backgroundColor: colors.accent },
-              pressed && styles.buttonPressed,
-            ]}
-            onPress={handlePrimary}
-            testID={testIDPrimaryButton}
-          >
-            <Text style={[styles.primaryText, { color: colors.textOnAccentSurface }]}>{primaryLabel}</Text>
-          </Pressable>
-
-          {secondaryLabel ? (
-            <Pressable
-              style={({ pressed }) => [styles.secondaryButton, pressed && styles.buttonPressed]}
-              onPress={handleSecondary}
-              testID={testIDSecondaryButton}
-            >
-              <Text style={[styles.secondaryText, { color: colors.textSecondary }]}>{secondaryLabel}</Text>
-            </Pressable>
-          ) : null}
-        </View>
+        <BottomSheetActions
+          primaryLabel={primaryLabel}
+          onPrimary={handlePrimary}
+          primaryTestID={testIDPrimaryButton}
+          secondaryLabel={secondaryLabel}
+          onSecondary={handleSecondary}
+          secondaryTestID={testIDSecondaryButton}
+        />
       </View>
     </BottomSheet>
   );
@@ -92,34 +78,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
     lineHeight: 20,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: ThemeLayout.spacing.sm,
-  },
-  primaryButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: ThemeLayout.borderRadius.sm,
-    alignItems: 'center',
-  },
-  primaryText: {
-    fontSize: 15,
-    fontFamily: 'SpaceGrotesk_700Bold',
-  },
-  secondaryButton: {
-    paddingVertical: 12,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    borderRadius: ThemeLayout.borderRadius.sm,
-  },
-  secondaryText: {
-    fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
-  },
-  buttonPressed: {
-    opacity: 0.8,
   },
 });
 
