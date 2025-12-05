@@ -88,23 +88,23 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     };
   }
 
-  private mapResponseToStatus(remote: RemoteQuotaResponse, fallbackUsage: QuotaStatus['usage']): QuotaStatus {
-    const usage = this.buildUsage(remote.usage, fallbackUsage);
-    const canAnalyze =
-      typeof remote.canAnalyze === 'boolean'
-        ? remote.canAnalyze
-        : usage.analysis.limit === null || usage.analysis.used < usage.analysis.limit;
-    const canExplore =
-      typeof remote.canExplore === 'boolean'
-        ? remote.canExplore
-        : usage.exploration.limit === null || usage.exploration.used < usage.exploration.limit;
+  private mapResponseToStatus(remote: RemoteQuotaResponse, fallback: QuotaStatus): QuotaStatus {
+    const usage = this.buildUsage(remote.usage, fallback.usage);
+    const canAnalyzeByLimit = usage.analysis.limit === null || usage.analysis.used < usage.analysis.limit;
+    const canExploreByLimit =
+      usage.exploration.limit === null || usage.exploration.used < usage.exploration.limit;
+
+    // Respect stricter remote flags but never allow exceeding local limits/special-case allowances (e.g. already explored dream)
+    const canAnalyze = (remote.canAnalyze ?? true) && (fallback.canAnalyze ?? canAnalyzeByLimit) && canAnalyzeByLimit;
+    const fallbackCanExplore = fallback.canExplore ?? canExploreByLimit;
+    const canExplore = (remote.canExplore ?? true) && (fallbackCanExplore || canExploreByLimit);
 
     return {
       tier: remote.tier ?? 'guest',
       usage,
       canAnalyze,
       canExplore,
-      reasons: remote.reasons,
+      reasons: remote.reasons ?? fallback.reasons,
     };
   }
 
@@ -150,7 +150,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         });
       }
 
-      const status = this.mapResponseToStatus(response, fallbackStatus.usage);
+      const status = this.mapResponseToStatus(response, fallbackStatus);
       this.cache.set(cacheKey, { value: status, expiresAt: Date.now() + this.CACHE_TTL });
       return status;
     } catch (error) {
