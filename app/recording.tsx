@@ -1,8 +1,9 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
-import { MicButton } from '@/components/recording/MicButton';
-import { BottomSheet } from '@/components/ui/BottomSheet';
-import { TypewriterText } from '@/components/ui/TypewriterText';
+import { RecordingFooter } from '@/components/recording/RecordingFooter';
+import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
+import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { GUEST_DREAM_LIMIT } from '@/constants/limits';
@@ -16,7 +17,6 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { classifyError, QuotaError } from '@/lib/errors';
-import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
@@ -32,7 +32,6 @@ import {
   type RecordingOptions,
 } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -40,15 +39,12 @@ import {
   AppState,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
-  type ViewStyle,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const MAX_TRANSCRIPT_CHARS = 600;
 
@@ -112,8 +108,7 @@ const handleRecorderReleaseError = (context: string, error: unknown): boolean =>
 
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
-  const { colors, shadows, mode } = useTheme();
-  const insets = useSafeAreaInsets();
+  const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
 
@@ -729,6 +724,7 @@ export default function RecordingScreen() {
     dreams.length,
     draftDream,
     getRecorderIsRecording,
+    language,
     navigateAfterSave,
     resetComposer,
     stopRecording,
@@ -873,6 +869,7 @@ export default function RecordingScreen() {
     canAnalyzeNow,
     dreams.length,
     firstDreamPrompt,
+    language,
     pendingAnalysisDream,
     navigateAfterSave,
     resetComposer,
@@ -898,10 +895,6 @@ export default function RecordingScreen() {
         ?.setSelectionRange?.(len, len);
     });
   }, []);
-  const instructionStyle = useMemo(
-    () => [styles.instructionText, { color: colors.textSecondary }],
-    [colors.textSecondary]
-  );
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
 
   const switchToTextMode = useCallback(async () => {
@@ -960,108 +953,26 @@ export default function RecordingScreen() {
             {/* Main Content */}
             <View style={styles.mainContent}>
               <View style={styles.bodySection}>
-                <View style={styles.recordingSection}>
-                  {inputMode === 'voice' ? (
-                    <TypewriterText
-                      style={instructionStyle}
-                      text={t('recording.instructions')}
-                    />
-                  ) : (
-                    <Text style={instructionStyle}>
-                      {(t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient...")}
-                    </Text>
-                  )}
-                </View>
-
                 {inputMode === 'voice' ? (
-                  <View style={styles.micContainer}>
-                    <View style={styles.micButtonWrapper}>
-                      <MicButton
-                        isRecording={isRecording}
-                        isPreparing={isPreparingRecording}
-                        onPress={toggleRecording}
-                        disabled={interactionDisabled}
-                        testID={TID.Button.RecordToggle}
-                      />
-                    </View>
-
-                    <View style={styles.preparingSlot}>
-                      {isPreparingRecording ? (
-                        <MotiView
-                          from={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ type: 'timing', duration: 250 }}
-                        >
-                          <Text style={[styles.preparingText, { color: colors.textSecondary }]}>
-                            {t('recording.status.preparing') || 'Initialisation du micro...'}
-                          </Text>
-                        </MotiView>
-                      ) : null}
-                    </View>
-
-                    {/* Live Transcript Display */}
-                    {transcript ? (
-                      <MotiView
-                        from={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ type: 'timing', duration: 500 }}
-                        style={styles.liveTranscriptContainer}
-                      >
-                        <Text style={[styles.liveTranscriptText, { color: colors.textPrimary }]}>
-                          {transcript}
-                        </Text>
-                      </MotiView>
-                    ) : null}
-
-                    <Pressable
-                      onPress={switchToTextMode}
-                      style={styles.modeSwitchButton}
-                      testID="button-switch-to-text"
-                    >
-                      <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
-                        {(transcript ? "Modifier mon rêve" : (t('recording.mode.switch_to_text') || "Écrire mon rêve")) + " ✎"}
-                      </Text>
-                    </Pressable>
-                  </View>
+                  <RecordingVoiceInput
+                    isRecording={isRecording}
+                    isPreparing={isPreparingRecording}
+                    transcript={transcript}
+                    instructionText={t('recording.instructions')}
+                    disabled={interactionDisabled}
+                    onToggleRecording={toggleRecording}
+                    onSwitchToText={switchToTextMode}
+                  />
                 ) : (
-                  <View style={styles.textInputSection}>
-                    <View style={shadows.md}>
-                      <TextInput
-                        value={transcript}
-                        onChangeText={handleTranscriptChange}
-                        ref={textInputRef}
-                        style={[
-                          styles.textInput,
-                          {
-                            backgroundColor: colors.backgroundSecondary,
-                            color: colors.textPrimary,
-                          },
-                        ]}
-                        multiline
-                        editable={!interactionDisabled}
-                        testID={TID.Input.DreamTranscript}
-                        accessibilityLabel={t('recording.placeholder.accessibility')}
-                        autoFocus
-                      />
-                    </View>
-                    {lengthWarning ? (
-                      <Text style={[styles.lengthWarning, { color: colors.accent }]}>
-                        {lengthWarning}
-                      </Text>
-                    ) : null}
-
-                    <Pressable
-                      onPress={switchToVoiceMode}
-                      style={[styles.modeSwitchButton, styles.modeSwitchVoiceButton]}
-                      testID="button-switch-to-voice"
-                    >
-                      <Ionicons name="mic-outline" size={16} color={colors.textSecondary} style={{ marginRight: 6 }} />
-                      <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
-                        {t('recording.mode.switch_to_voice') || "Dicter mon rêve"}
-                      </Text>
-                    </Pressable>
-                  </View>
+                  <RecordingTextInput
+                    ref={textInputRef}
+                    value={transcript}
+                    onChange={handleTranscriptChange}
+                    disabled={interactionDisabled}
+                    lengthWarning={lengthWarning}
+                    instructionText={t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."}
+                    onSwitchToVoice={switchToVoiceMode}
+                  />
                 )}
 
                 {/* Analysis Progress */}
@@ -1076,138 +987,63 @@ export default function RecordingScreen() {
                 )}
               </View>
 
-              {/* Actions */}
-              <View style={styles.footerActions}>
-                <View style={styles.actionButtons}>
-                  <MotiView
-                    animate={{ opacity: isSaveDisabled ? 0.65 : 1 }}
-                    transition={{ type: 'timing', duration: 300 }}
-                  >
-                    <Pressable
-                      onPress={handleSaveDream}
-                      disabled={isSaveDisabled}
-                      style={[
-                        styles.submitButton,
-                        shadows.lg,
-                        { backgroundColor: isSaveDisabled ? colors.textSecondary : colors.accent },
-                        isSaveDisabled && styles.submitButtonDisabled,
-                      ]}
-                      testID={TID.Button.SaveDream}
-                      accessibilityRole="button"
-                      accessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
-                    >
-                      <Text
-                        style={[
-                          styles.submitButtonText,
-                          {
-                            color: isSaveDisabled ? colors.textPrimary : colors.textOnAccentSurface,
-                            opacity: isSaveDisabled ? 0.9 : 1,
-                          },
-                        ]}
-                      >
-                        {t('recording.button.save_dream')}
-                      </Text>
-                    </Pressable>
-                  </MotiView>
-                </View>
-
-                <Pressable
-                  onPress={handleGoToJournal}
-                  style={styles.journalLinkButton}
-                  testID={TID.Button.NavigateJournal}
-                  accessibilityRole="link"
-                  accessibilityLabel={t('recording.nav_button.accessibility')}
-                >
-                  <Text style={[styles.journalLinkText, { color: colors.accent }]}>
-                    {t('recording.nav_button')}
-                  </Text>
-                </Pressable>
-              </View>
+              <RecordingFooter
+                onSave={handleSaveDream}
+                onGoToJournal={handleGoToJournal}
+                isSaveDisabled={isSaveDisabled}
+                saveButtonLabel={t('recording.button.save_dream')}
+                journalLinkLabel={t('recording.nav_button')}
+                saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
+                journalLinkAccessibilityLabel={t('recording.nav_button.accessibility')}
+              />
 
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
-      <BottomSheet
+      {/* First Dream Sheet */}
+      <StandardBottomSheet
         visible={Boolean(firstDreamPrompt)}
         onClose={handleFirstDreamDismiss}
-        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-        style={[
-          styles.firstDreamSheet,
-          {
-            backgroundColor: colors.backgroundCard,
-            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
-          },
-          shadows.xl,
-        ]}
-      >
-        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]} testID={TID.Text.FirstDreamSheetTitle}>
-          {t('guest.first_dream.sheet.title')}
-        </Text>
-        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-          {t('guest.first_dream.sheet.subtitle')}
-        </Text>
-        <View style={styles.sheetButtons}>
-          <Pressable
-            style={[
-              styles.sheetPrimaryButton,
-              { backgroundColor: colors.accent },
-              isPersisting && styles.sheetDisabledButton,
-            ]}
-            onPress={handleFirstDreamAnalyze}
-            disabled={isPersisting}
-            testID={TID.Button.FirstDreamAnalyze}
-          >
-            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-              {t('guest.first_dream.sheet.analyze')}
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.sheetSecondaryButton,
-              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              isPersisting && styles.sheetDisabledButton,
-            ]}
-            onPress={handleFirstDreamJournal}
-            disabled={isPersisting}
-            testID={TID.Button.FirstDreamJournal}
-          >
-            <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
-              {t('guest.first_dream.sheet.journal')}
-            </Text>
-          </Pressable>
-        </View>
-        <Pressable onPress={handleFirstDreamDismiss} style={styles.sheetLinkButton} testID={TID.Button.FirstDreamDismiss}>
-          <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
-            {t('guest.first_dream.sheet.dismiss')}
-          </Text>
-        </Pressable>
-      </BottomSheet>
-      <BottomSheet
+        title={t('guest.first_dream.sheet.title')}
+        subtitle={t('guest.first_dream.sheet.subtitle')}
+        titleTestID={TID.Text.FirstDreamSheetTitle}
+        actions={{
+          primaryLabel: t('guest.first_dream.sheet.analyze'),
+          onPrimary: handleFirstDreamAnalyze,
+          primaryDisabled: isPersisting,
+          primaryTestID: TID.Button.FirstDreamAnalyze,
+          secondaryLabel: t('guest.first_dream.sheet.journal'),
+          onSecondary: handleFirstDreamJournal,
+          secondaryDisabled: isPersisting,
+          secondaryTestID: TID.Button.FirstDreamJournal,
+          linkLabel: t('guest.first_dream.sheet.dismiss'),
+          onLink: handleFirstDreamDismiss,
+          linkTestID: TID.Button.FirstDreamDismiss,
+        }}
+      />
+
+      {/* Analyze Prompt Sheet */}
+      <StandardBottomSheet
         visible={Boolean(analyzePromptDream)}
         onClose={handleAnalyzePromptDismiss}
-        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-        style={[
-          styles.firstDreamSheet,
-          {
-            backgroundColor: colors.backgroundCard,
-            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
-          },
-          shadows.xl,
-        ]}
+        title={t('recording.analyze_prompt.sheet.title')}
+        titleTestID={TID.Text.AnalyzePromptTitle}
+        actions={{
+          primaryLabel: t('recording.analyze_prompt.sheet.analyze'),
+          onPrimary: handleFirstDreamAnalyze,
+          primaryDisabled: isPersisting,
+          primaryTestID: TID.Button.AnalyzePromptAnalyze,
+          secondaryLabel: t('recording.analyze_prompt.sheet.journal'),
+          onSecondary: handleAnalyzePromptJournal,
+          secondaryDisabled: isPersisting,
+          secondaryTestID: TID.Button.AnalyzePromptJournal,
+          linkLabel: t('recording.analyze_prompt.sheet.dismiss'),
+          onLink: handleAnalyzePromptDismiss,
+        }}
       >
-        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-        <Text
-          style={[styles.sheetTitle, { color: colors.textPrimary }]}
-          testID={TID.Text.AnalyzePromptTitle}
-        >
-          {t('recording.analyze_prompt.sheet.title')}
-        </Text>
         {analyzePromptTranscript ? (
-          <View
-            style={styles.sheetTranscriptContainer}
-          >
+          <View style={styles.sheetTranscriptContainer}>
             <ScrollView
               nestedScrollEnabled
               showsVerticalScrollIndicator={false}
@@ -1219,113 +1055,52 @@ export default function RecordingScreen() {
             </ScrollView>
           </View>
         ) : null}
-        <View style={styles.sheetButtons}>
-          <Pressable
-            style={[
-              styles.sheetPrimaryButton,
-              { backgroundColor: colors.accent },
-              isPersisting && styles.sheetDisabledButton,
-            ]}
-            onPress={handleFirstDreamAnalyze}
-            disabled={isPersisting}
-            testID={TID.Button.AnalyzePromptAnalyze}
-          >
-            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-              {t('recording.analyze_prompt.sheet.analyze')}
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.sheetSecondaryButton,
-              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              isPersisting && styles.sheetDisabledButton,
-            ]}
-            onPress={handleAnalyzePromptJournal}
-            disabled={isPersisting}
-            testID={TID.Button.AnalyzePromptJournal}
-          >
-            <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
-              {t('recording.analyze_prompt.sheet.journal')}
-            </Text>
-          </Pressable>
-        </View>
-        <Pressable onPress={handleAnalyzePromptDismiss} style={styles.sheetLinkButton}>
-          <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
-            {t('recording.analyze_prompt.sheet.dismiss')}
-          </Text>
-        </Pressable>
-      </BottomSheet>
-      <BottomSheet
+      </StandardBottomSheet>
+
+      {/* Guest Limit Sheet */}
+      <StandardBottomSheet
         visible={showGuestLimitSheet}
         onClose={() => {
           setShowGuestLimitSheet(false);
           setPendingGuestLimitDream(null);
         }}
-        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-        style={[
-          styles.firstDreamSheet,
-          {
-            backgroundColor: colors.backgroundCard,
-            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
+        title={t('recording.guest_limit_sheet.title')}
+        subtitle={t('recording.guest_limit_sheet.message')}
+        actions={{
+          primaryLabel: t('recording.guest_limit_sheet.cta'),
+          onPrimary: () => {
+            setShowGuestLimitSheet(false);
+            router.push('/paywall');
           },
-          shadows.xl,
-        ]}
-      >
-        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-          {t('recording.guest_limit_sheet.title')}
-        </Text>
-        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-          {t('recording.guest_limit_sheet.message')}
-        </Text>
-        <View style={styles.sheetButtons}>
-          <Pressable
-            style={[
-              styles.sheetPrimaryButton,
-              { backgroundColor: colors.accent },
-            ]}
-            onPress={() => {
-              setShowGuestLimitSheet(false);
-              router.push('/paywall');
-            }}
-            testID={TID.Button.GuestLimitCta}
-          >
-            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-              {t('recording.guest_limit_sheet.cta')}
-            </Text>
-          </Pressable>
-        </View>
-      </BottomSheet>
-      <BottomSheet
+          primaryTestID: TID.Button.GuestLimitCta,
+        }}
+      />
+
+      {/* Quota Limit Sheet */}
+      <StandardBottomSheet
         visible={showQuotaLimitSheet}
         onClose={handleQuotaLimitDismiss}
-        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-        style={[
-          styles.firstDreamSheet,
-          {
-            backgroundColor: colors.backgroundCard,
-            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
-          },
-          shadows.xl,
-        ]}
+        title={tier === 'guest'
+          ? t('recording.analysis_limit.title_guest')
+          : t('recording.analysis_limit.title_free')}
+        subtitle={tier === 'guest'
+          ? t('recording.analysis_limit.message_guest', { limit: usage?.analysis.limit ?? 2 })
+          : t('recording.analysis_limit.message_free', { limit: usage?.analysis.limit ?? 5 })}
         testID={TID.Sheet.QuotaLimit}
+        titleTestID={TID.Text.QuotaLimitTitle}
+        actions={{
+          primaryLabel: tier === 'guest'
+            ? t('recording.analysis_limit.cta_guest')
+            : t('recording.analysis_limit.cta_free'),
+          onPrimary: handleQuotaLimitPrimary,
+          primaryTestID: tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree,
+          secondaryLabel: t('recording.analysis_limit.journal'),
+          onSecondary: handleQuotaLimitJournal,
+          secondaryTestID: TID.Button.QuotaLimitJournal,
+          linkLabel: t('recording.analysis_limit.dismiss'),
+          onLink: handleQuotaLimitDismiss,
+        }}
       >
-        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-        <Text
-          style={[styles.sheetTitle, { color: colors.textPrimary }]}
-          testID={TID.Text.QuotaLimitTitle}
-        >
-          {tier === 'guest'
-            ? t('recording.analysis_limit.title_guest')
-            : t('recording.analysis_limit.title_free')}
-        </Text>
-        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-          {tier === 'guest'
-            ? t('recording.analysis_limit.message_guest', { limit: usage?.analysis.limit ?? 2 })
-            : t('recording.analysis_limit.message_free', { limit: usage?.analysis.limit ?? 5 })}
-        </Text>
-
-        {/* Features list for free users only */}
         {tier === 'free' && (
           <View style={styles.quotaFeaturesList}>
             <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
@@ -1339,38 +1114,7 @@ export default function RecordingScreen() {
             </Text>
           </View>
         )}
-
-        <View style={styles.sheetButtons}>
-          <Pressable
-            style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
-            onPress={handleQuotaLimitPrimary}
-            testID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
-          >
-            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-              {tier === 'guest'
-                ? t('recording.analysis_limit.cta_guest')
-                : t('recording.analysis_limit.cta_free')}
-            </Text>
-          </Pressable>
-          <Pressable
-            style={[
-              styles.sheetSecondaryButton,
-              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-            ]}
-            onPress={handleQuotaLimitJournal}
-            testID={TID.Button.QuotaLimitJournal}
-          >
-            <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
-              {t('recording.analysis_limit.journal')}
-            </Text>
-          </Pressable>
-        </View>
-        <Pressable onPress={handleQuotaLimitDismiss} style={styles.sheetLinkButton}>
-          <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
-            {t('recording.analysis_limit.dismiss')}
-          </Text>
-        </Pressable>
-      </BottomSheet>
+      </StandardBottomSheet>
     </>
   );
 }
@@ -1398,145 +1142,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 24,
   },
-  recordingSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: -8,
-  },
-  micContainer: {
-    alignItems: 'center',
-    gap: 16
-  },
-  preparingSlot: {
-    minHeight: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  preparingText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
-    textAlign: 'center',
-  },
-  liveTranscriptContainer: {
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    minHeight: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  liveTranscriptText: {
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 20,
-    fontFamily: Fonts.lora.regular,
-  },
-  waveformSlot: {
-    minHeight: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  instructionText: {
-    fontSize: 24,
-    lineHeight: 34,
-    fontFamily: Fonts.lora.regularItalic,
-    // color: set dynamically in component
-    textAlign: 'center',
-  },
-  timestampText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically in component
-    opacity: 0.8,
-    textAlign: 'center',
-  },
-  textInputSection: {
-    width: '100%',
-    maxWidth: 512,
-    alignSelf: 'center',
-    gap: 16,
-  },
-  textInput: {
-    minHeight: 160,
-    maxHeight: 240,
-    borderRadius: 16,
-    // backgroundColor and color: set dynamically in component
-    padding: 20,
-    fontSize: 16,
-    fontFamily: Fonts.lora.regularItalic,
-    textAlignVertical: 'top',
-    // shadow: applied via theme shadows.md
-  },
-  lengthWarning: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    textAlign: 'right',
-  },
-  submitButton: {
-    // backgroundColor: set dynamically in component
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // shadow: applied via theme shadows.lg
-  },
-  submitButtonDisabled: {
-    // backgroundColor: set dynamically in component
-    opacity: 0.5,
-    ...(Platform.OS === 'web'
-      ? { boxShadow: 'none' }
-      : { shadowOpacity: 0, elevation: 0 }),
-  } as ViewStyle,
-  actionButtons: {
-    gap: 12,
-  },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.5,
-  },
-  footerActions: {
-    marginTop: 'auto',
-    width: '100%',
-    alignItems: 'center',
-    gap: 12,
-    paddingBottom: 8,
-  },
-  journalLinkButton: {
-    paddingVertical: 12,
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  journalLinkText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  firstDreamSheet: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: ThemeLayout.spacing.lg,
-    gap: ThemeLayout.spacing.md,
-  },
-  sheetHandle: {
-    alignSelf: 'center',
-    width: 56,
-    height: 5,
-    borderRadius: ThemeLayout.borderRadius.full,
-    opacity: 0.6,
-    marginBottom: ThemeLayout.spacing.sm,
-  },
-  sheetTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 22,
-    textAlign: 'center',
-  },
-  sheetSubtitle: {
-    fontFamily: Fonts.lora.regular,
-    fontSize: 16,
-    lineHeight: 22,
-    textAlign: 'center',
-  },
+  // Sheet custom content styles (used in StandardBottomSheet children)
   sheetTranscriptContainer: {
     width: '100%',
     borderRadius: ThemeLayout.borderRadius.lg,
@@ -1555,42 +1161,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     textAlign: 'center',
   },
-  sheetButtons: {
-    width: '100%',
-    gap: 12,
-  },
-  sheetPrimaryButton: {
-    borderRadius: ThemeLayout.borderRadius.lg,
-    paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sheetPrimaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
-  },
-  sheetSecondaryButton: {
-    borderWidth: 1,
-    borderRadius: ThemeLayout.borderRadius.lg,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sheetSecondaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 16,
-  },
-  sheetLinkButton: {
-    paddingVertical: ThemeLayout.spacing.xs,
-    alignItems: 'center',
-  },
-  sheetLinkText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-  },
-  sheetDisabledButton: {
-    opacity: 0.6,
-  },
   quotaFeaturesList: {
     marginTop: ThemeLayout.spacing.sm,
     marginBottom: ThemeLayout.spacing.md,
@@ -1602,26 +1172,5 @@ const styles = StyleSheet.create({
   quotaFeature: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 14,
-  },
-  micButtonWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    width: 240,
-    height: 240,
-  },
-  modeSwitchButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 0,
-    alignSelf: 'center',
-    marginTop: 8,
-  },
-  modeSwitchText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.medium,
-  },
-  modeSwitchVoiceButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
 });
