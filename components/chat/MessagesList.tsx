@@ -10,13 +10,13 @@
  */
 
 import { Fonts } from '@/constants/theme';
-import { MessageContextProvider, useComposerHeightContext, useNewMessageAnimationContext } from '@/context/ChatContext';
+import { MessageContextProvider, useComposerHeightContext, useKeyboardStateContext, useNewMessageAnimationContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
   useAutoScrollOnNewMessage,
+  useInitialScrollToEnd,
   useKeyboardAwareMessageList,
   useMessageListProps,
-  useInitialScrollToEnd,
   useScrollWhenComposerSizeUpdates,
   useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
@@ -24,7 +24,7 @@ import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
@@ -243,10 +243,14 @@ const loadingStyles = StyleSheet.create({
  */
 function BottomSpacer() {
   const { composerHeight } = useComposerHeightContext();
+  const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
   const insets = useSafeAreaInsets();
 
   const animatedStyle = useAnimatedStyle(() => {
-    const height = (composerHeight.value.value + insets.bottom + 80) / 2;
+    const keyboardInset = Platform.OS === 'android' && isKeyboardVisible.value.value
+      ? keyboardHeight.value.value
+      : 0;
+    const height = (composerHeight.value.value + insets.bottom + keyboardInset + 80) / 2;
     return { height };
   }, [insets.bottom]);
 
@@ -394,7 +398,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: 16,
+    paddingBottom: 16,
     // paddingBottom is set dynamically via animatedProps in useChatList
   },
   messageRow: {
