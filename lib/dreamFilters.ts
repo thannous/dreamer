@@ -135,7 +135,9 @@ export function applyFilters(
   }
 
   if (filters.analyzedOnly) {
-    filtered = filtered.filter((dream) => isDreamAnalyzed(dream));
+    // Treat explored dreams as effectively "analyzed" for journal filters:
+    // in the product, exploration always happens on top of an analysis.
+    filtered = filtered.filter((dream) => isDreamAnalyzed(dream) || isDreamExplored(dream));
   }
 
   if (filters.exploredOnly) {
