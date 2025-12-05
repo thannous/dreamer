@@ -3,7 +3,14 @@
     "allow": [
       "Bash(npm run test:*)",
       "Bash(ls:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(npm test:*)",
+      "mcp__supabase__deploy_edge_function",
+      "mcp__supabase__execute_sql",
+      "mcp__maestro__tap_on",
+      "mcp__maestro__launch_app"
     ],
     "deny": [],
     "ask": []

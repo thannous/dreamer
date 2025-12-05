@@ -45,7 +45,9 @@ npm run web        # Web browser
 
 ### Code Quality
 ```bash
-npm run lint       # Run ESLint using expo lint
+npm run lint           # Run ESLint using expo lint
+npm run typecheck:app  # TypeScript type checking for app code
+npm run typecheck:tests # TypeScript type checking for test files
 ```
 
 ### Mock Mode (Development/Testing)
@@ -95,22 +97,41 @@ npm run start:real    # Removes .env.local and starts app with real services
 - Rapid iteration without network latency
 - Onboard new developers quickly
 
-**Windows Users:**
-If the npm scripts don't work on Windows, manually create/delete `.env.local`:
-```bash
-# To enable mock mode
-copy .env.mock .env.local
-npm start
 
-# To disable mock mode
-del .env.local
-npm start
+### Building
+```bash
+npm run build:web              # Build for web with PWA support
+npm run build:apk:mock         # Build local APK with mock mode enabled
+npm run build:apk:prod         # Build local production APK
 ```
 
-### Project Reset
+## Testing
+
+### Unit Tests (Vitest)
 ```bash
-npm run reset-project  # Moves starter code to app-example/ and creates blank app/
+npm test                       # Run all unit tests in watch mode
+npm test -- --run              # Run all tests once (CI mode)
+npm test -- hooks/             # Run tests in a specific directory
+npm test -- useDreamJournal    # Run tests matching a pattern
+npm test -- --coverage         # Run tests with coverage report
 ```
+
+Unit tests are located in `__tests__` directories next to the code they test (e.g., `hooks/__tests__/*.test.tsx`).
+
+**Test Environment:**
+- Vitest with `happy-dom` for React hook tests
+- `vitest.setup.ts` contains mocks for Expo modules and React Native
+- `tests/react-native-stub.ts` provides React Native platform stubs
+
+### E2E Tests (Maestro)
+```bash
+npm run test:e2e               # Run mock-existing-user flow
+npm run test:e2e:mock-quotas   # Run mock quota flow
+npm run test:e2e:quotas        # Run guest quota flow
+npm run test:e2e:guest-limit   # Run guest dream limit flow
+```
+
+E2E tests are in `maestro/*.yml`. Requires Maestro CLI installed and an emulator/device running the dev build.
 
 ## Architecture
 
@@ -319,6 +340,14 @@ try {
 - `Waveform` (`components/recording/`) - Real-time audio visualization
 - `ErrorBoundary` - App-wide error catching
 
-## Testing Notes
-- No test suite currently configured
-- Linting available via `npm run lint` (ESLint with expo config)
+## Writing Tests
+
+When writing new tests for hooks:
+1. Place test files in `hooks/__tests__/` with `.test.tsx` extension
+2. Wrap hooks in `renderHook` from `@testing-library/react`
+3. For hooks using DreamsContext, wrap with `DreamsProvider` in the test
+4. Use `act()` for state updates and `waitFor()` for async operations
+5. Mock external services (storage, API) as needed
+
+## Verify you assumptions with mcp tools
+Use your tools to verify assumptions
