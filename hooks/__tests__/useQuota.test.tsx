@@ -17,6 +17,7 @@ const {
   mockGetUsedAnalysisCount,
   mockGetUsedExplorationCount,
   mockGetUsedMessagesCount,
+  mockSubscribe,
 } = vi.hoisted(() => ({
   mockGetQuotaStatus: vi.fn(),
   mockInvalidate: vi.fn(),
@@ -27,6 +28,7 @@ const {
   mockGetUsedAnalysisCount: vi.fn(),
   mockGetUsedExplorationCount: vi.fn(),
   mockGetUsedMessagesCount: vi.fn(),
+  mockSubscribe: vi.fn(),
 }));
 
 let mockUser: any = null;
@@ -47,6 +49,7 @@ vi.mock('../../services/quotaService', () => ({
     getUsedAnalysisCount: mockGetUsedAnalysisCount,
     getUsedExplorationCount: mockGetUsedExplorationCount,
     getUsedMessagesCount: mockGetUsedMessagesCount,
+    subscribe: mockSubscribe,
   },
 }));
 
@@ -78,6 +81,7 @@ describe('useQuota', () => {
     mockGetUsedAnalysisCount.mockResolvedValue(0);
     mockGetUsedExplorationCount.mockResolvedValue(0);
     mockGetUsedMessagesCount.mockResolvedValue(0);
+    mockSubscribe.mockImplementation(() => () => {});
   });
 
   describe('initialization and loading', () => {
@@ -278,6 +282,31 @@ describe('useQuota', () => {
       rerender();
 
       expect(mockInvalidateAll).toHaveBeenCalled();
+    });
+
+    it('refetches when quota service notifies subscribers', async () => {
+      let listener: (() => void) | undefined;
+      mockSubscribe.mockImplementation((cb) => {
+        listener = cb;
+        return () => {
+          listener = undefined;
+        };
+      });
+
+      const { result } = renderHook(() => useQuota());
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      const initialCallCount = mockGetQuotaStatus.mock.calls.length;
+
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'free' }));
+      listener?.();
+
+      await waitFor(() => {
+        expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 1);
+      });
     });
   });
 

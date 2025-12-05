@@ -63,6 +63,15 @@ describe('dreamUsage helpers', () => {
     expect(getExploredDreamCount([exploredByChat, untouched])).toBe(1);
   });
 
+  it('does not treat dreams with only the transcript message as explored', () => {
+    const transcriptOnly = buildDream({
+      id: 14,
+      chatHistory: [{ role: 'user', text: 'Here is my dream: ...' }],
+    });
+
+    expect(isDreamExplored(transcriptOnly)).toBe(false);
+  });
+
   it('counts only user chat messages for quota usage', () => {
     const dreamWithChat = buildDream({
       id: 20,

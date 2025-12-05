@@ -17,12 +17,30 @@ class QuotaService {
   private remoteGuestProvider: QuotaProvider | null;
   private supabaseProvider: QuotaProvider;
   private mockProvider: QuotaProvider | null;
+  private subscribers: Set<() => void> = new Set();
 
   constructor() {
     this.guestProvider = new GuestQuotaProvider();
     this.remoteGuestProvider = isMockMode ? null : new RemoteGuestQuotaProvider(this.guestProvider);
     this.supabaseProvider = new SupabaseQuotaProvider();
     this.mockProvider = isMockMode ? new MockQuotaProvider() : null;
+  }
+
+  subscribe(listener: () => void): () => void {
+    this.subscribers.add(listener);
+    return () => {
+      this.subscribers.delete(listener);
+    };
+  }
+
+  private notifySubscribers() {
+    this.subscribers.forEach((listener) => {
+      try {
+        listener();
+      } catch (error) {
+        console.error('Quota subscriber error', error);
+      }
+    });
   }
 
   /**
@@ -102,6 +120,7 @@ class QuotaService {
   invalidate(user: User | null): void {
     const provider = this.getProvider(user);
     provider.invalidate();
+    this.notifySubscribers();
   }
 
   /**

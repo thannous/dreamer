@@ -138,7 +138,8 @@ export default function RecordingScreen() {
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
   const { user } = useAuth();
-  const { canAnalyzeNow } = useQuota();
+  const { canAnalyzeNow, tier, usage } = useQuota();
+  const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
@@ -778,32 +779,57 @@ export default function RecordingScreen() {
     router.push('/(tabs)/journal');
   }, [analyzePromptDream]);
 
+  // Show quota limit sheet (reusable for both guard and catch paths)
+  const showQuotaSheet = useCallback(() => {
+    // Close existing sheets to avoid overlay
+    if (firstDreamPrompt) setFirstDreamPrompt(null);
+    if (analyzePromptDream) setAnalyzePromptDream(null);
+
+    // Don't show upsell for premium (edge case: network error)
+    if (tier === 'premium') return false;
+
+    setShowQuotaLimitSheet(true);
+    return true;
+  }, [tier, firstDreamPrompt, analyzePromptDream]);
+
+  const handleQuotaLimitDismiss = useCallback(() => {
+    setShowQuotaLimitSheet(false);
+    // Clean up analysis state if needed
+    if (pendingAnalysisDream) {
+      setPendingAnalysisDream(null);
+      analysisProgress.reset();
+    }
+  }, [pendingAnalysisDream, analysisProgress]);
+
+  const handleQuotaLimitPrimary = useCallback(() => {
+    setShowQuotaLimitSheet(false);
+    if (tier === 'guest') {
+      router.push('/(tabs)/settings');
+    } else {
+      router.push('/paywall');
+    }
+  }, [tier]);
+
+  const handleQuotaLimitJournal = useCallback(() => {
+    setShowQuotaLimitSheet(false);
+    const dream = analyzePromptDream ?? pendingAnalysisDream;
+    if (dream) {
+      router.push(`/journal/${dream.id}`);
+    } else {
+      router.push('/(tabs)/journal');
+    }
+    // Cleanup
+    setPendingAnalysisDream(null);
+    analysisProgress.reset();
+  }, [analyzePromptDream, pendingAnalysisDream, analysisProgress]);
+
   const handleFirstDreamAnalyze = useCallback(async () => {
     const dream = firstDreamPrompt ?? analyzePromptDream ?? pendingAnalysisDream;
     if (!dream) {
       return;
     }
     if (!canAnalyzeNow) {
-      const tier = user ? 'free' : 'guest';
-      const limit = tier === 'guest' ? 2 : 5;
-      const title = tier === 'guest'
-        ? t('recording.alert.analysis_limit.title_guest')
-        : t('recording.alert.analysis_limit.title_free');
-      const message = tier === 'guest'
-        ? t('recording.alert.analysis_limit.message_guest', { limit })
-        : t('recording.alert.analysis_limit.message_free', { limit });
-
-      Alert.alert(
-        title,
-        message,
-        [
-          {
-            text: t('recording.alert.limit.cta'),
-            onPress: () => router.push('/(tabs)/settings'),
-          },
-          { text: t('common.cancel'), style: 'cancel' },
-        ]
-      );
+      showQuotaSheet();
       return;
     }
 
@@ -830,25 +856,16 @@ export default function RecordingScreen() {
       navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
     } catch (error) {
       if (error instanceof QuotaError) {
-        const title = error.tier === 'guest'
-          ? t('recording.alert.analysis_limit.title_guest')
-          : t('recording.alert.analysis_limit.title_free');
-        Alert.alert(
-          title,
-          error.userMessage,
-          [
-            {
-              text: t('recording.alert.limit.cta'),
-              onPress: () => router.push('/(tabs)/settings'),
-            },
-            { text: t('common.cancel'), style: 'cancel' },
-          ]
-        );
+        // Reuse the same sheet for consistent UX
+        if (!showQuotaSheet()) {
+          // Fallback for premium (should not happen)
+          Alert.alert(t('common.error'), error.userMessage);
+        }
         analysisProgress.reset();
-      } else {
-        const classified = classifyError(error as Error);
-        analysisProgress.setError(classified);
+        return;
       }
+      const classified = classifyError(error as Error);
+      analysisProgress.setError(classified);
     } finally {
       setIsPersisting(false);
     }
@@ -862,8 +879,8 @@ export default function RecordingScreen() {
     pendingAnalysisDream,
     navigateAfterSave,
     resetComposer,
+    showQuotaSheet,
     t,
-    user,
   ]);
 
   const gradientColors = mode === 'dark'
@@ -1280,6 +1297,81 @@ export default function RecordingScreen() {
           </Pressable>
         </View>
       </BottomSheet>
+      <BottomSheet
+        visible={showQuotaLimitSheet}
+        onClose={handleQuotaLimitDismiss}
+        backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+        style={[
+          styles.firstDreamSheet,
+          {
+            backgroundColor: colors.backgroundCard,
+            paddingBottom: insets.bottom + ThemeLayout.spacing.md,
+          },
+          shadows.xl,
+        ]}
+        testID={TID.Sheet.QuotaLimit}
+      >
+        <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+        <Text
+          style={[styles.sheetTitle, { color: colors.textPrimary }]}
+          testID={TID.Text.QuotaLimitTitle}
+        >
+          {tier === 'guest'
+            ? t('recording.analysis_limit.title_guest')
+            : t('recording.analysis_limit.title_free')}
+        </Text>
+        <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+          {tier === 'guest'
+            ? t('recording.analysis_limit.message_guest', { limit: usage?.analysis.limit ?? 2 })
+            : t('recording.analysis_limit.message_free', { limit: usage?.analysis.limit ?? 5 })}
+        </Text>
+
+        {/* Features list for free users only */}
+        {tier === 'free' && (
+          <View style={styles.quotaFeaturesList}>
+            <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
+              ✓ {t('recording.analysis_limit.feature_analyses')}
+            </Text>
+            <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
+              ✓ {t('recording.analysis_limit.feature_explorations')}
+            </Text>
+            <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
+              ✓ {t('recording.analysis_limit.feature_priority')}
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.sheetButtons}>
+          <Pressable
+            style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
+            onPress={handleQuotaLimitPrimary}
+            testID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
+          >
+            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+              {tier === 'guest'
+                ? t('recording.analysis_limit.cta_guest')
+                : t('recording.analysis_limit.cta_free')}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[
+              styles.sheetSecondaryButton,
+              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+            ]}
+            onPress={handleQuotaLimitJournal}
+            testID={TID.Button.QuotaLimitJournal}
+          >
+            <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+              {t('recording.analysis_limit.journal')}
+            </Text>
+          </Pressable>
+        </View>
+        <Pressable onPress={handleQuotaLimitDismiss} style={styles.sheetLinkButton}>
+          <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
+            {t('recording.analysis_limit.dismiss')}
+          </Text>
+        </Pressable>
+      </BottomSheet>
     </>
   );
 }
@@ -1494,6 +1586,18 @@ const styles = StyleSheet.create({
   },
   sheetDisabledButton: {
     opacity: 0.6,
+  },
+  quotaFeaturesList: {
+    marginTop: ThemeLayout.spacing.sm,
+    marginBottom: ThemeLayout.spacing.md,
+    gap: 8,
+    alignItems: 'flex-start',
+    width: '100%',
+    paddingHorizontal: ThemeLayout.spacing.md,
+  },
+  quotaFeature: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 14,
   },
   micButtonWrapper: {
     alignItems: 'center',

@@ -41,6 +41,9 @@ export const TID = {
     AnalyzePromptAnalyze: 'btn.analyzePrompt.analyze',
     AnalyzePromptJournal: 'btn.analyzePrompt.journal',
     GuestLimitCta: 'btn.guestLimit.cta',
+    QuotaLimitCtaGuest: 'btn.quotaLimit.ctaGuest',
+    QuotaLimitCtaFree: 'btn.quotaLimit.ctaFree',
+    QuotaLimitJournal: 'btn.quotaLimit.journal',
     PaywallSelectMonthly: 'btn.paywall.selectMonthly',
     PaywallSelectAnnual: 'btn.paywall.selectAnnual',
     PaywallPurchase: 'btn.paywall.purchase',
@@ -77,6 +80,11 @@ export const TID = {
     ChatLimitBanner: 'text.chat.limit',
     AnalyzePromptTitle: 'text.analyzePromptTitle',
     FirstDreamSheetTitle: 'text.firstDream.title',
+    QuotaLimitTitle: 'text.quotaLimit.title',
+  },
+  Sheet: {
+    QuotaLimit: 'sheet.quotaLimit',
+    AnalysisNotice: 'sheet.analysisNotice',
   },
   Chat: {
     Input: 'chat.input.message',

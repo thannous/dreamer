@@ -56,6 +56,12 @@ interface ShareImageData {
   mimeType: string;
 }
 
+type AnalysisNotice = {
+  title: string;
+  message: string;
+  tone?: 'success' | 'warning' | 'error' | 'info';
+};
+
 const getShareNavigator = (): ShareNavigator | undefined => {
   if (typeof navigator === 'undefined') {
     return undefined;
@@ -160,6 +166,7 @@ export default function JournalDetailScreen() {
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [analysisNotice, setAnalysisNotice] = useState<AnalysisNotice | null>(null);
   useEffect(() => {
     if (isShareModalVisible) {
       blurActiveElement();
@@ -191,6 +198,7 @@ export default function JournalDetailScreen() {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const metadataPulse = useRef(new Animated.Value(0)).current;
   const transcriptPulse = useRef(new Animated.Value(0)).current;
+  const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
 
   const sortedDreamTypes = useMemo(() => {
     return sortWithSelectionFirst(DREAM_TYPES, dream?.dreamType);
@@ -199,6 +207,12 @@ export default function JournalDetailScreen() {
   const sortedDreamThemes = useMemo(() => {
     return sortWithSelectionFirst(DREAM_THEMES, dream?.theme);
   }, [dream?.theme]);
+
+  useEffect(() => {
+    if (analysisNotice) {
+      lastAnalysisNoticeRef.current = analysisNotice;
+    }
+  }, [analysisNotice]);
 
   useEffect(() => {
     if (!dream) {
@@ -629,59 +643,91 @@ export default function JournalDetailScreen() {
     router.push(`/dream-categories/${dream.id}`);
   }, [dream, hasExistingChat]);
 
+  const showAnalysisNotice = useCallback(
+    (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
+      setAnalysisNotice({ title, message, tone });
+    },
+    []
+  );
+
+  const handleDismissAnalysisNotice = useCallback(() => {
+    setAnalysisNotice(null);
+  }, []);
+
+  const ensureAnalyzeAllowed = useCallback(async () => {
+    const allowed = canAnalyzeNow || (await canAnalyze());
+    if (!allowed) {
+      showAnalysisNotice(
+        t('journal.detail.analysis_limit.title'),
+        t('journal.detail.analysis_limit.message'),
+        'warning'
+      );
+      return false;
+    }
+    return true;
+  }, [canAnalyze, canAnalyzeNow, showAnalysisNotice, t]);
+
+  const getAnalysisToneColor = useCallback(
+    (tone: AnalysisNotice['tone']) => {
+      switch (tone) {
+        case 'success':
+          return '#22C55E';
+        case 'warning':
+          return '#F59E0B';
+        case 'error':
+          return '#EF4444';
+        default:
+          return colors.accent;
+      }
+    },
+    [colors.accent]
+  );
+
   const runAnalyze = useCallback(
-    async (replaceImage: boolean) => {
+    async (replaceImage: boolean, skipAllowanceCheck = false) => {
       if (!dream) return;
 
-      const allowed = canAnalyzeNow || (await canAnalyze());
-      if (!allowed) {
-        Alert.alert(
-          t('journal.detail.analysis_limit.title'),
-          t('journal.detail.analysis_limit.message'),
-          [{ text: t('common.ok') }],
-        );
-        return;
+      if (!skipAllowanceCheck) {
+        const allowed = await ensureAnalyzeAllowed();
+        if (!allowed) return;
       }
 
       setShowReplaceImageSheet(false);
       setIsAnalyzing(true);
       try {
         await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage, lang: language });
-        Alert.alert(t('common.success'), t('journal.detail.analysis.success_message'));
+        showAnalysisNotice(
+          t('common.success'),
+          t('journal.detail.analysis.success_message'),
+          'success'
+        );
       } catch (error) {
         if (error instanceof QuotaError) {
-          Alert.alert(t('journal.detail.quota_exceeded.title'), error.userMessage);
+          showAnalysisNotice(t('journal.detail.quota_exceeded.title'), error.userMessage, 'warning');
         } else {
           const msg = error instanceof Error ? error.message : t('common.unknown_error');
-          Alert.alert(t('analysis_error.title'), msg);
+          showAnalysisNotice(t('analysis_error.title'), msg, 'error');
         }
       } finally {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, canAnalyze, canAnalyzeNow, dream, language, t]
+    [analyzeDream, dream, ensureAnalyzeAllowed, language, showAnalysisNotice, t]
   );
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
 
-    const allowed = canAnalyzeNow || (await canAnalyze());
-    if (!allowed) {
-      Alert.alert(
-        t('journal.detail.analysis_limit.title'),
-        t('journal.detail.analysis_limit.message'),
-        [{ text: t('common.ok') }],
-      );
-      return;
-    }
+    const allowed = await ensureAnalyzeAllowed();
+    if (!allowed) return;
 
     if (hasExistingImage) {
       setShowReplaceImageSheet(true);
       return;
     }
 
-    void runAnalyze(true);
-  }, [dream, canAnalyze, canAnalyzeNow, hasExistingImage, runAnalyze, t]);
+    void runAnalyze(true, true);
+  }, [dream, ensureAnalyzeAllowed, hasExistingImage, runAnalyze]);
 
   const handleReplaceImage = useCallback(() => {
     void runAnalyze(true);
@@ -732,6 +778,16 @@ export default function JournalDetailScreen() {
   const gradientColors = mode === 'dark'
     ? GradientColors.dreamJournal
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
+  const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNoticeRef.current;
+  const analysisToneColor = getAnalysisToneColor(displayedAnalysisNotice?.tone);
+  const analysisToneBackground = mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+  const analysisIconName = displayedAnalysisNotice?.tone === 'success'
+    ? 'checkmark-circle'
+    : displayedAnalysisNotice?.tone === 'warning'
+      ? 'alert-circle'
+      : displayedAnalysisNotice?.tone === 'error'
+        ? 'close-circle'
+        : 'information-circle';
 
   const keyboardBehavior: 'padding' | 'height' | undefined = Platform.select({
     ios: 'padding',
@@ -1345,6 +1401,42 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         )}
+        <BottomSheet
+          visible={Boolean(analysisNotice)}
+          onClose={handleDismissAnalysisNotice}
+          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+          style={[
+            styles.noticeSheet,
+            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+            shadows.xl,
+          ]}
+          testID={TID.Sheet.AnalysisNotice}
+        >
+          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+          <View style={styles.noticeHeader}>
+            <View style={[styles.noticeIcon, { backgroundColor: analysisToneBackground }]}>
+              <Ionicons name={analysisIconName} size={24} color={analysisToneColor} />
+            </View>
+            <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+              {displayedAnalysisNotice?.title}
+            </Text>
+          </View>
+          <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
+            {displayedAnalysisNotice?.message}
+          </Text>
+          <Pressable
+            style={[
+              styles.sheetPrimaryButton,
+              styles.noticeActionButton,
+              { backgroundColor: colors.accent },
+            ]}
+            onPress={handleDismissAnalysisNotice}
+          >
+            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+              {t('common.ok')}
+            </Text>
+          </Pressable>
+        </BottomSheet>
         <BottomSheet
           visible={showReplaceImageSheet}
           onClose={handleDismissReplaceSheet}
@@ -2055,6 +2147,35 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     borderWidth: 1,
     gap: 12,
+  },
+  noticeSheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 24,
+    borderWidth: 1,
+    gap: 14,
+  },
+  noticeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  noticeIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noticeMessage: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 22,
+  },
+  noticeActionButton: {
+    marginTop: 4,
   },
   sheetHandle: {
     width: 44,

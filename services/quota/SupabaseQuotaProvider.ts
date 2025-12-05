@@ -64,12 +64,12 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     return this.getOrCache(cacheKey, async () => {
       const { periodStart, periodEnd } = getMonthlyQuotaPeriod();
       const { count, error } = await supabase
-        .from('dreams')
+        .from('user_quota_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
-        .eq('is_analyzed', true)
-        .gte('analyzed_at', periodStart.toISOString())
-        .lt('analyzed_at', periodEnd.toISOString());
+        .eq('quota_type', 'analysis')
+        .gte('occurred_at', periodStart.toISOString())
+        .lt('occurred_at', periodEnd.toISOString());
 
       if (error) {
         console.error('Error counting monthly analyses:', error);
@@ -86,12 +86,12 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     return this.getOrCache(cacheKey, async () => {
       const { periodStart, periodEnd } = getMonthlyQuotaPeriod();
       const { count, error } = await supabase
-        .from('dreams')
+        .from('user_quota_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
-        .not('exploration_started_at', 'is', null)
-        .gte('exploration_started_at', periodStart.toISOString())
-        .lt('exploration_started_at', periodEnd.toISOString());
+        .eq('quota_type', 'exploration')
+        .gte('occurred_at', periodStart.toISOString())
+        .lt('occurred_at', periodEnd.toISOString());
 
       if (error) {
         console.error('Error counting monthly explorations:', error);
@@ -108,24 +108,15 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     const cacheKey = `analysis_count_${user.id}`;
 
     return this.getOrCache(cacheKey, async () => {
-      // Count dreams where is_analyzed = true
-      // NOTE: This assumes the is_analyzed column will be added via migration
-      // For backward compatibility, we count all dreams if column doesn't exist
       const { count, error } = await supabase
-        .from('dreams')
+        .from('user_quota_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
-        .eq('is_analyzed', true);
+        .eq('quota_type', 'analysis');
 
       if (error) {
-        // Fallback: if is_analyzed column doesn't exist yet, count all dreams
-        console.warn('is_analyzed column not found, counting all dreams:', error);
-        const { count: fallbackCount } = await supabase
-          .from('dreams')
-          .select('id', { count: 'exact', head: true })
-          .eq('user_id', user.id);
-
-        return fallbackCount ?? 0;
+        console.error('Error counting analysis usage events:', error);
+        return 0;
       }
 
       return count ?? 0;
@@ -138,15 +129,14 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     const cacheKey = `exploration_count_${user.id}`;
 
     return this.getOrCache(cacheKey, async () => {
-      // Count dreams where exploration_started_at is not null
       const { count, error } = await supabase
-        .from('dreams')
+        .from('user_quota_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
-        .not('exploration_started_at', 'is', null);
+        .eq('quota_type', 'exploration');
 
       if (error) {
-        console.error('Error counting explorations:', error);
+        console.error('Error counting exploration usage events:', error);
         return 0;
       }
 

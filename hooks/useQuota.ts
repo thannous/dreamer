@@ -111,6 +111,11 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     fetchQuotaStatus();
   }, [fetchQuotaStatus]);
 
+  useEffect(() => {
+    const unsubscribe = quotaService.subscribe(fetchQuotaStatus);
+    return unsubscribe;
+  }, [fetchQuotaStatus]);
+
   // Invalidate cache when user changes (sign in/out)
   useEffect(() => {
     quotaService.invalidateAll();

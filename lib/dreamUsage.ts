@@ -17,8 +17,8 @@ export function isDreamExplored(dream?: DreamAnalysis | null): boolean {
     return true;
   }
 
-  // Fallback: any user message indicates an exploration/chat session happened
-  return getUserChatMessageCount(dream) > 0;
+  // Fallback: a recorded chat session without the timestamp (legacy data)
+  return Boolean(dream.chatHistory?.some((message) => message.role === 'model'));
 }
 
 export type DreamDetailAction = 'analyze' | 'explore' | 'continue';

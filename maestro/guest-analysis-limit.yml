@@ -61,11 +61,25 @@ clearState: true
       id: btn.navigateJournal
 - waitForAnimationToEnd
 
-# Dream 3 - analysis limit reached
+# Dream 3 - analysis limit reached, quota sheet should appear
 - tapOn:
       id: btn.addDream
 - tapOn:
       id: input.dreamTranscript
 - inputText: "Analysis Limit Dream 3"
+- tapOn:
+      id: btn.saveDream
+- waitForAnimationToEnd
+# AnalyzePrompt sheet appears, try to analyze
 - assertVisible:
-      id: text.analysisLimit
+      id: text.analyzePromptTitle
+- tapOn:
+      id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+# QuotaLimitSheet should appear (quota exhausted)
+- assertVisible:
+      id: sheet.quotaLimit
+- assertVisible:
+      id: text.quotaLimit.title
+- tapOn:
+      id: btn.quotaLimit.journal
