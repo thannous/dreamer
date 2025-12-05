@@ -10,7 +10,7 @@
  */
 
 import { Fonts } from '@/constants/theme';
-import { MessageContextProvider, useComposerHeightContext, useNewMessageAnimationContext } from '@/context/ChatContext';
+import { MessageContextProvider, useNewMessageAnimationContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
   useAutoScrollOnNewMessage,
@@ -25,8 +25,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
@@ -125,22 +124,6 @@ function LoadingIndicator({ text }: { text?: string }) {
   );
 }
 
-/**
- * BottomSpacer - Adds space at the bottom of the list for the floating composer
- */
-function BottomSpacer() {
-  const { composerHeight } = useComposerHeightContext();
-  const insets = useSafeAreaInsets();
-
-  const animatedStyle = useAnimatedStyle(() => {
-    // Match the calculation in useChatList.ts
-    const height = composerHeight.value.value + insets.bottom + 80;
-    return { height };
-  }, [insets.bottom]);
-
-  return <Animated.View style={animatedStyle} />;
-}
-
 export function MessagesList({
   messages,
   isLoading,
@@ -205,21 +188,13 @@ export function MessagesList({
         </MessageContextProvider>
       );
     },
-    [messages.length, isStreaming, hasAnimatedMessages]
+    [messages.length, isStreamingSnapshot, hasAnimatedMessages]
   );
 
   const keyExtractor = useCallback((item: ChatMessage, index: number) => `${item.role}-${index}`, []);
 
   // Prepare data with loading indicator
   const listData = [...messages];
-
-  // Combine custom footer with bottom spacer for composer clearance
-  const footerComponent = (
-    <>
-      {ListFooterComponent}
-      <BottomSpacer />
-    </>
-  );
 
   return (
     <View style={[styles.container, style, { backgroundColor: colors.backgroundDark }]}>
@@ -240,7 +215,7 @@ export function MessagesList({
         estimatedItemSize={80}
         maintainScrollAtEnd={false}
         ListHeaderComponent={ListHeaderComponent ?? null}
-        ListFooterComponent={footerComponent}
+        ListFooterComponent={ListFooterComponent ?? null}
       />
       {isLoading && <LoadingIndicator text={loadingText} />}
     </View>
