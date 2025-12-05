@@ -2,8 +2,9 @@ import type { User } from '@supabase/supabase-js';
 import type { QuotaProvider, CacheEntry, QuotaDreamTarget } from './types';
 import type { QuotaStatus, DreamAnalysis } from '@/lib/types';
 import { QUOTAS } from '@/constants/limits';
-import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
+import { getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
 import { getSavedDreams } from '@/services/storageServiceReal';
+import { getLocalAnalysisCount, getLocalExplorationCount } from './GuestAnalysisCounter';
 
 /**
  * Guest quota provider - counts quotas from local AsyncStorage
@@ -36,15 +37,16 @@ export class GuestQuotaProvider implements QuotaProvider {
   async getUsedAnalysisCount(user: User | null): Promise<number> {
     if (user) return 0; // Not a guest
 
-    const dreams = await this.getGuestDreams();
-    return getAnalyzedDreamCount(dreams);
+    // Use persistent counter instead of counting current dreams
+    // This prevents quota bypass by deleting dreams
+    return getLocalAnalysisCount();
   }
 
   async getUsedExplorationCount(user: User | null): Promise<number> {
     if (user) return 0; // Not a guest
 
-    const dreams = await this.getGuestDreams();
-    return getExploredDreamCount(dreams);
+    // Use persistent counter instead of counting current dreams
+    return getLocalExplorationCount();
   }
 
   private resolveDreamId(target: QuotaDreamTarget | undefined): number | undefined {

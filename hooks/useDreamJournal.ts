@@ -2,6 +2,7 @@ import { useNetworkState } from 'expo-network';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
+import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
@@ -9,6 +10,10 @@ import {
   analyzeDream as analyzeDreamText,
   generateImageFromTranscript,
 } from '@/services/geminiService';
+import {
+  incrementLocalAnalysisCount,
+  syncWithServerCount,
+} from '@/services/quota/GuestAnalysisCounter';
 import { quotaService } from '@/services/quotaService';
 import {
   getCachedRemoteDreams,
@@ -616,9 +621,12 @@ export const useDreamJournal = () => {
       // Invalidate quota cache immediately
       quotaService.invalidate(user);
 
+      // Get fingerprint for guest users to enable server-side quota tracking
+      const fingerprint = !user ? await getDeviceFingerprint() : undefined;
+
       // Kick off analysis and image generation in parallel. Image generation uses the transcript
       // directly so it doesn't have to wait for the analysis result to produce the prompt.
-      const analysisPromise = analyzeDreamText(transcript, options?.lang);
+      const analysisPromise = analyzeDreamText(transcript, options?.lang, fingerprint);
       const imagePromise = shouldReplaceImage
         ? generateImageFromTranscript(transcript, dream.imageUrl)
             .then((url) => ({ url, failed: false as const }))
@@ -630,7 +638,24 @@ export const useDreamJournal = () => {
 
       try {
         const [analysis, imageResult] = await Promise.all([analysisPromise, imagePromise]);
-        const { imagePrompt: _unusedImagePrompt, ...analysisFields } = analysis;
+        const { imagePrompt: _unusedImagePrompt, quotaUsed, ...analysisFields } = analysis;
+
+        if (!user) {
+          // Persist local quota usage for offline enforcement and sync with server when available
+          try {
+            const localCount = await incrementLocalAnalysisCount();
+            if (quotaUsed?.analysis !== undefined) {
+              await syncWithServerCount(
+                Math.max(quotaUsed.analysis, localCount),
+                'analysis'
+              ).catch((err) => {
+                if (__DEV__) console.warn('[useDreamJournal] Failed to sync quota:', err);
+              });
+            }
+          } catch (err) {
+            if (__DEV__) console.warn('[useDreamJournal] Failed to increment quota:', err);
+          }
+        }
 
         const imageUrl = imageResult.url;
         const imageSource: DreamAnalysis['imageSource'] =

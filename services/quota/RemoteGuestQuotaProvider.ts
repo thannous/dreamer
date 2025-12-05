@@ -7,6 +7,7 @@ import { fetchJSON } from '@/lib/http';
 import type { QuotaStatus } from '@/lib/types';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
 import { GuestQuotaProvider } from './GuestQuotaProvider';
+import { syncWithServerCount } from './GuestAnalysisCounter';
 
 type RemoteQuotaUsage = {
   analysis?: { used?: number; limit?: number | null };
@@ -136,6 +137,19 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         retries: 1,
         timeoutMs: 10000,
       });
+
+      // Sync local counter with server (take max to prevent discrepancies)
+      if (typeof response.usage?.analysis?.used === 'number') {
+        await syncWithServerCount(response.usage.analysis.used, 'analysis').catch((err) => {
+          if (__DEV__) console.warn('[Quota] Failed to sync analysis count:', err);
+        });
+      }
+      if (typeof response.usage?.exploration?.used === 'number') {
+        await syncWithServerCount(response.usage.exploration.used, 'exploration').catch((err) => {
+          if (__DEV__) console.warn('[Quota] Failed to sync exploration count:', err);
+        });
+      }
+
       const status = this.mapResponseToStatus(response, fallbackStatus.usage);
       this.cache.set(cacheKey, { value: status, expiresAt: Date.now() + this.CACHE_TTL });
       return status;

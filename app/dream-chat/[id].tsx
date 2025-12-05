@@ -14,6 +14,7 @@ import { getImageConfig } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
+import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { quotaService } from '@/services/quotaService';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -221,6 +222,11 @@ export default function DreamChatScreen() {
 
         // Invalidate quota cache if this was the first message
         if (isFirstUserMessage) {
+          if (!user && !dream.explorationStartedAt) {
+            incrementLocalExplorationCount().catch((err) => {
+              if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
+            });
+          }
           quotaService.invalidate(user);
         }
       } catch (error) {
@@ -388,7 +394,11 @@ export default function DreamChatScreen() {
     ? t('dream_chat.input.limit_placeholder')
     : t('dream_chat.input.placeholder');
 
-  const composerFooter = typeof messageLimit === 'number'
+  // Show counter only when approaching the limit (≥15 messages) or limit reached
+  const shouldShowCounter = typeof messageLimit === 'number' &&
+    (userMessageCount >= 15 || messageLimitReached);
+
+  const composerFooter = shouldShowCounter
     ? (
       <ComposerFooter
         colors={colors}
@@ -642,10 +652,10 @@ const styles = StyleSheet.create({
   messageCounterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingVertical: 6,
   },
   messageCounter: {
     fontFamily: Fonts.spaceGrotesk.medium,
@@ -675,6 +685,9 @@ const styles = StyleSheet.create({
   },
   footerWrapper: {
     width: '100%',
-    marginTop: 8,
+    marginTop: 4,
+    paddingTop: 6,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.15)',
   },
 });
