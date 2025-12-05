@@ -803,12 +803,9 @@ export default function RecordingScreen() {
 
   const handleQuotaLimitPrimary = useCallback(() => {
     setShowQuotaLimitSheet(false);
-    if (tier === 'guest') {
-      router.push('/(tabs)/settings');
-    } else {
-      router.push('/paywall');
-    }
-  }, [tier]);
+    // Both guests and free users go to paywall for upgrade
+    router.push('/paywall');
+  }, []);
 
   const handleQuotaLimitJournal = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -988,18 +985,20 @@ export default function RecordingScreen() {
                       />
                     </View>
 
-                    {isPreparingRecording ? (
-                      <MotiView
-                        from={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ type: 'timing', duration: 250 }}
-                      >
-                        <Text style={[styles.preparingText, { color: colors.textSecondary }]}>
-                          {t('recording.status.preparing') || 'Initialisation du micro...'}
-                        </Text>
-                      </MotiView>
-                    ) : null}
+                    <View style={styles.preparingSlot}>
+                      {isPreparingRecording ? (
+                        <MotiView
+                          from={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ type: 'timing', duration: 250 }}
+                        >
+                          <Text style={[styles.preparingText, { color: colors.textSecondary }]}>
+                            {t('recording.status.preparing') || 'Initialisation du micro...'}
+                          </Text>
+                        </MotiView>
+                      ) : null}
+                    </View>
 
                     {/* Live Transcript Display */}
                     {transcript ? (
@@ -1287,7 +1286,7 @@ export default function RecordingScreen() {
             ]}
             onPress={() => {
               setShowGuestLimitSheet(false);
-              router.push('/(tabs)/settings');
+              router.push('/paywall');
             }}
             testID={TID.Button.GuestLimitCta}
           >
@@ -1407,6 +1406,11 @@ const styles = StyleSheet.create({
   micContainer: {
     alignItems: 'center',
     gap: 16
+  },
+  preparingSlot: {
+    minHeight: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   preparingText: {
     fontSize: 14,

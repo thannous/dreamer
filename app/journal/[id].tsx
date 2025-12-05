@@ -4,6 +4,7 @@ import { BottomSheet } from '@/components/ui/BottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
+import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -166,15 +167,18 @@ export default function JournalDetailScreen() {
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [analysisSuccessMessage, setAnalysisSuccessMessage] = useState<string | null>(null);
   const [analysisNotice, setAnalysisNotice] = useState<AnalysisNotice | null>(null);
+  const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   useEffect(() => {
     if (isShareModalVisible) {
       blurActiveElement();
     }
   }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
-  const { canAnalyzeNow, canAnalyze } = useQuota();
+  const { canAnalyzeNow, canAnalyze, tier, usage } = useQuota();
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
@@ -657,15 +661,27 @@ export default function JournalDetailScreen() {
   const ensureAnalyzeAllowed = useCallback(async () => {
     const allowed = canAnalyzeNow || (await canAnalyze());
     if (!allowed) {
-      showAnalysisNotice(
-        t('journal.detail.analysis_limit.title'),
-        t('journal.detail.analysis_limit.message'),
-        'warning'
-      );
+      // Don't show for premium users
+      if (tier === 'premium') return false;
+      setShowQuotaLimitSheet(true);
       return false;
     }
     return true;
-  }, [canAnalyze, canAnalyzeNow, showAnalysisNotice, t]);
+  }, [canAnalyze, canAnalyzeNow, tier]);
+
+  const handleQuotaLimitDismiss = useCallback(() => {
+    setShowQuotaLimitSheet(false);
+  }, []);
+
+  const handleQuotaLimitPrimary = useCallback(() => {
+    setShowQuotaLimitSheet(false);
+    router.push('/paywall');
+  }, []);
+
+  const handleQuotaLimitSecondary = useCallback(() => {
+    setShowQuotaLimitSheet(false);
+    router.push('/(tabs)/journal');
+  }, []);
 
   const getAnalysisToneColor = useCallback(
     (tone: AnalysisNotice['tone']) => {
@@ -696,14 +712,14 @@ export default function JournalDetailScreen() {
       setIsAnalyzing(true);
       try {
         await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage, lang: language });
-        showAnalysisNotice(
-          t('common.success'),
-          t('journal.detail.analysis.success_message'),
-          'success'
-        );
+        setAnalysisNotice(null);
+        setAnalysisSuccessMessage(t('journal.detail.analysis.success_message'));
       } catch (error) {
         if (error instanceof QuotaError) {
-          showAnalysisNotice(t('journal.detail.quota_exceeded.title'), error.userMessage, 'warning');
+          // Show quota limit sheet with upgrade CTA
+          if (tier !== 'premium') {
+            setShowQuotaLimitSheet(true);
+          }
         } else {
           const msg = error instanceof Error ? error.message : t('common.unknown_error');
           showAnalysisNotice(t('analysis_error.title'), msg, 'error');
@@ -712,7 +728,7 @@ export default function JournalDetailScreen() {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, dream, ensureAnalyzeAllowed, language, showAnalysisNotice, t]
+    [analyzeDream, dream, ensureAnalyzeAllowed, language, t, tier]
   );
 
   const handleAnalyze = useCallback(async () => {
@@ -975,7 +991,7 @@ export default function JournalDetailScreen() {
               </View>
             </ScrollView>
           ) : (
-            <Text style={[styles.metadataValue, { color: colors.textPrimary }]}>
+            <Text style={[styles.metadataValue, { color: colors.textPrimary, flex: 1 }]}>
               {dreamTypeLabel || dream.dreamType}
             </Text>
           )}
@@ -1184,7 +1200,7 @@ export default function JournalDetailScreen() {
                     </Text>
                   </View>
                 ) : dream.analysisStatus === 'pending' ? (
-                  <Skeleton style={{ height: 60, width: '100%', marginBottom: 16, borderRadius: 8 }} />
+                  <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
                 ) : null}
 
                 {dream.interpretation ? (
@@ -1609,6 +1625,62 @@ export default function JournalDetailScreen() {
             </Pressable>
           </View>
         </BottomSheet>
+        <BottomSheet
+          visible={showQuotaLimitSheet}
+          onClose={handleQuotaLimitDismiss}
+          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+          style={[
+            styles.quotaLimitSheet,
+            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+            shadows.xl,
+          ]}
+          testID={TID.Sheet.QuotaLimit}
+        >
+          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+          <Text
+            style={[styles.sheetTitle, { color: colors.textPrimary }]}
+            testID={TID.Text.QuotaLimitTitle}
+          >
+            {tier === 'guest'
+              ? t('journal.detail.quota_limit.title_guest')
+              : t('journal.detail.quota_limit.title_free')}
+          </Text>
+          <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
+            {tier === 'guest'
+              ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? 2 })
+              : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? 5 })}
+          </Text>
+          <View style={styles.sheetButtons}>
+            <Pressable
+              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
+              onPress={handleQuotaLimitPrimary}
+              testID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
+            >
+              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
+                {tier === 'guest'
+                  ? t('journal.detail.quota_limit.cta_guest')
+                  : t('journal.detail.quota_limit.cta_free')}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[
+                styles.sheetSecondaryButton,
+                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+              ]}
+              onPress={handleQuotaLimitSecondary}
+              testID={TID.Button.QuotaLimitJournal}
+            >
+              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+                {t('journal.detail.quota_limit.journal')}
+              </Text>
+            </Pressable>
+          </View>
+          <Pressable onPress={handleQuotaLimitDismiss} style={styles.sheetLinkButton}>
+            <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
+              {t('journal.detail.quota_limit.dismiss')}
+            </Text>
+          </Pressable>
+        </BottomSheet>
         <Modal
           visible={isShareModalVisible}
           transparent
@@ -1675,6 +1747,13 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         </Modal>
+        {analysisSuccessMessage ? (
+          <Toast
+            message={analysisSuccessMessage}
+            mode="success"
+            onHide={() => setAnalysisSuccessMessage(null)}
+          />
+        ) : null}
         {favoriteError ? (
           <Toast
             message={favoriteError}
@@ -2098,11 +2177,11 @@ const styles = StyleSheet.create({
   deleteSheet: {
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    paddingHorizontal: 22,
+    paddingHorizontal: 20,
     paddingTop: 18,
     paddingBottom: 24,
     borderWidth: 1,
-    gap: 10,
+    gap: 12,
   },
   deleteSheetMessage: {
     fontSize: 15,
@@ -2177,6 +2256,15 @@ const styles = StyleSheet.create({
   noticeActionButton: {
     marginTop: 4,
   },
+  quotaLimitSheet: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 24,
+    borderWidth: 1,
+    gap: 12,
+  },
   sheetHandle: {
     width: 44,
     height: 4,
@@ -2188,7 +2276,6 @@ const styles = StyleSheet.create({
   sheetTitle: {
     fontSize: 20,
     fontFamily: Fonts.lora.bold,
-    textAlign: 'left',
   },
   sheetSubtitle: {
     fontSize: 15,

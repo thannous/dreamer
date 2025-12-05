@@ -21,7 +21,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
@@ -82,6 +82,7 @@ export default function DreamChatScreen() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
+  const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
   const hasSentCategoryRef = useRef(false);
 
   // Speech recognition locale based on language
@@ -113,6 +114,7 @@ export default function DreamChatScreen() {
       if (!canExploreDream) {
         setExplorationBlocked(true);
       }
+      setQuotaCheckComplete(true);
     };
 
     checkExplorationQuota();
@@ -138,6 +140,16 @@ export default function DreamChatScreen() {
 
   // Send category-specific question if category is provided
   useEffect(() => {
+    // Wait for quota check to complete before auto-sending
+    if (!quotaCheckComplete) {
+      return;
+    }
+
+    // Don't send if exploration is blocked
+    if (explorationBlocked) {
+      return;
+    }
+
     if (!dream || !category || category === 'general' || hasSentCategoryRef.current) {
       return;
     }
@@ -156,12 +168,27 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, t]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, t, quotaCheckComplete, explorationBlocked]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (messageText?: string, displayText?: string) => {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
+
+      // Check exploration quota for first message (new exploration)
+      const isFirstUserMessage = messages.filter((msg) => msg.role === 'user').length === 0;
+      if (isFirstUserMessage && !dream.explorationStartedAt) {
+        // Block if exploration is already blocked
+        if (explorationBlocked) {
+          return;
+        }
+        // Double-check exploration quota before starting new exploration
+        const canExploreDream = await canExplore();
+        if (!canExploreDream) {
+          setExplorationBlocked(true);
+          return;
+        }
+      }
 
       // Check message quota before sending
       const canSendMessage = await canChat();
@@ -181,9 +208,6 @@ export default function DreamChatScreen() {
         );
         return;
       }
-
-      // Check if this is the first user message (mark as explored)
-      const isFirstUserMessage = messages.filter((msg) => msg.role === 'user').length === 0;
 
       // Add user message (use displayText if provided, otherwise use textToSend)
       const userMessage: ChatMessage = { role: 'user', text: displayText || textToSend };
@@ -242,10 +266,12 @@ export default function DreamChatScreen() {
         setIsLoading(false);
       }
     },
-    [inputText, dream, messages, updateDream, canChat, user, t]
+    [inputText, dream, messages, updateDream, canChat, user, t, explorationBlocked, canExplore]
   );
 
   const handleQuickCategory = (categoryId: string) => {
+    // Block if quota check not complete or exploration blocked
+    if (!quotaCheckComplete || explorationBlocked) return;
     if (!dream) return;
     const prompt = buildCategoryPrompt(categoryId as CategoryType, dream, t);
     const question = getCategoryQuestion(categoryId as CategoryType, t);
@@ -320,6 +346,18 @@ export default function DreamChatScreen() {
     );
   }
 
+  // Show loading while checking quota
+  if (!quotaCheckComplete) {
+    return (
+      <LinearGradient colors={gradientColors} style={styles.container}>
+        <ActivityIndicator size="large" color={colors.accent} />
+        <Text style={[styles.errorText, { color: colors.textSecondary, marginTop: 16 }]}>
+          {t('dream_chat.checking_access')}
+        </Text>
+      </LinearGradient>
+    );
+  }
+
   // Calculate if message limit is reached
   const quotaMessages = quotaStatus?.usage.messages;
   const rawMessageLimit = quotaMessages?.limit;
@@ -374,9 +412,10 @@ export default function DreamChatScreen() {
                     borderColor: colors.divider,
                   },
                   pressed && styles.quickCategoryButtonPressed,
+                  (!quotaCheckComplete || explorationBlocked) && { opacity: 0.5 },
                 ]}
                 onPress={() => handleQuickCategory(cat.id)}
-                disabled={isLoading}
+                disabled={isLoading || !quotaCheckComplete || explorationBlocked}
               >
                 <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
                 <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>

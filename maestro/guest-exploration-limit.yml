@@ -1,0 +1,133 @@
+# Guest exploration limit: exhaust guest exploration credits across multiple dreams
+appId: com.tanuki75.noctalia
+clearState: true
+---
+- launchApp
+- runFlow:
+      when:
+          visible:
+              id: tab.journal
+      commands:
+          - tapOn:
+                id: tab.journal
+          - waitForAnimationToEnd
+- runFlow:
+      when:
+          visible:
+              id: screen.journal
+      commands:
+          - pressKey: back
+          - scrollUntilVisible:
+                element:
+                    id: btn.addDream
+                direction: DOWN
+          - tapOn:
+                id: btn.addDream
+          - waitForAnimationToEnd
+- assertVisible:
+      id: screen.recording
+
+# Dream 1 - analyze and explore
+- tapOn:
+      id: input.dreamTranscript
+- inputText: "Exploration Limit Dream 1"
+- tapOn:
+      id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+      id: text.firstDream.title
+- tapOn:
+      id: btn.firstDream.analyze
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: btn.exploreDream
+      direction: DOWN
+- tapOn:
+      id: btn.exploreDream
+- tapOn:
+      id: btn.dreamCategory.symbols
+- assertVisible:
+      id: chat.input.message
+# Send one message to mark as explored
+- tapOn:
+      id: chat.input.message
+- inputText: "Hello exploration 1"
+- tapOn:
+      id: chat.button.send
+- waitForAnimationToEnd
+- pressKey: back
+- pressKey: back
+- waitForAnimationToEnd
+
+# Dream 2 - analyze and explore
+- tapOn:
+      id: btn.addDream
+- tapOn:
+      id: input.dreamTranscript
+- inputText: "Exploration Limit Dream 2"
+- tapOn:
+      id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+      id: text.analyzePromptTitle
+- tapOn:
+      id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          id: btn.exploreDream
+      direction: DOWN
+- tapOn:
+      id: btn.exploreDream
+- tapOn:
+      id: btn.dreamCategory.emotions
+- assertVisible:
+      id: chat.input.message
+# Send one message to mark as explored
+- tapOn:
+      id: chat.input.message
+- inputText: "Hello exploration 2"
+- tapOn:
+      id: chat.button.send
+- waitForAnimationToEnd
+- pressKey: back
+- pressKey: back
+- waitForAnimationToEnd
+
+# Dream 3 - exploration limit should be reached
+- tapOn:
+      id: btn.addDream
+- tapOn:
+      id: input.dreamTranscript
+- inputText: "Exploration Limit Dream 3"
+- tapOn:
+      id: btn.saveDream
+- waitForAnimationToEnd
+# QuotaLimitSheet should appear (analysis quota exhausted - 2 guest analyses used)
+# If analysis was allowed, try to explore
+- runFlow:
+      when:
+          visible:
+              id: btn.analyzePrompt.analyze
+      commands:
+          - tapOn:
+                id: btn.analyzePrompt.analyze
+          - waitForAnimationToEnd
+- runFlow:
+      when:
+          visible:
+              id: btn.exploreDream
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: btn.exploreDream
+                direction: DOWN
+          - tapOn:
+                id: btn.exploreDream
+          - tapOn:
+                id: btn.dreamCategory.growth
+          - waitForAnimationToEnd
+# Chat screen should show blocked state (exploration limit reached)
+- assertVisible:
+      id: chat.screen.blocked
