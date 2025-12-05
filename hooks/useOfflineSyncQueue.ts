@@ -94,6 +94,30 @@ export function useOfflineSyncQueue({
   }, []);
 
   /**
+   * Hydrate queue with initial mutations loaded from storage.
+   * Merge with any mutations already enqueued in this session to avoid dropping new work.
+   */
+  useEffect(() => {
+    const current = pendingMutationsRef.current;
+    const mergedById = new Map<string, DreamMutation>();
+    [...initialMutations, ...current].forEach((mutation) => {
+      mergedById.set(mutation.id, mutation);
+    });
+
+    const merged = Array.from(mergedById.values()).sort(
+      (a, b) => a.createdAt - b.createdAt
+    );
+
+    const changed =
+      merged.length !== current.length ||
+      merged.some((mutation, index) => mutation.id !== current[index]?.id);
+
+    if (changed) {
+      setPendingMutations(merged);
+    }
+  }, [initialMutations, setPendingMutations]);
+
+  /**
    * Persist pending mutations to storage
    */
   const persistPendingMutations = useCallback(
