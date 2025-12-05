@@ -6,8 +6,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
-  withRepeat,
-  withSequence,
   withTiming,
 } from 'react-native-reanimated';
 
@@ -85,16 +83,10 @@ export function TextFadeInStaggeredIfStreaming({
 
   useEffect(() => {
     if (isStreaming) {
+      // Simple fade-in instead of pulsing to avoid visual distraction
       opacity.value = withDelay(
         index * 20,
-        withRepeat(
-          withSequence(
-            withTiming(0.5, { duration: 320, easing: Easing.inOut(Easing.quad) }),
-            withTiming(1, { duration: 320, easing: Easing.inOut(Easing.quad) })
-          ),
-          -1,
-          true
-        )
+        withTiming(1, { duration: 300, easing: Easing.out(Easing.quad) })
       );
     } else {
       opacity.value = withTiming(1, { duration: 180, easing: Easing.out(Easing.quad) });

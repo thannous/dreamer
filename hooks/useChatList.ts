@@ -30,8 +30,9 @@ export function useMessageListProps() {
   // Animated props for ScrollView/LegendList contentInset
   // This keeps the composer floating on top while allowing scroll
   const animatedProps = useAnimatedProps(() => {
-    // Add a bit of extra space so the last message isn't tucked under the composer/footer
-    const bottomInset = composerHeight.value.value + insets.bottom + 24;
+    // Add extra space so the last message isn't tucked under the composer/footer
+    // Extra padding ensures content is visible above the floating composer
+    const bottomInset = composerHeight.value.value + insets.bottom + 80;
     return {
       contentInset: {
         bottom: Platform.OS === 'ios' ? bottomInset : 0,
