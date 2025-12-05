@@ -1492,11 +1492,35 @@ const translations: LanguagePack = {
   },
 };
 
+const DEFAULT_LANGUAGE = 'en' as const;
+
+const resolveLanguage = (lang?: string): keyof typeof translations => {
+  if (!lang) {
+    return DEFAULT_LANGUAGE;
+  }
+
+  const normalized = lang.toLowerCase();
+  if (translations[normalized as keyof typeof translations]) {
+    return normalized as keyof typeof translations;
+  }
+
+  // Support region-qualified codes like "fr-FR" or "es_MX"
+  const base = normalized.split(/[-_]/)[0];
+  if (translations[base as keyof typeof translations]) {
+    return base as keyof typeof translations;
+  }
+
+  return DEFAULT_LANGUAGE;
+};
+
 // Force reload translations
 export const getTranslator = (lang?: string) => {
-  const language = translations[lang || 'en'] ? (lang as keyof typeof translations) : 'en';
+  const language = resolveLanguage(lang);
+  const fallbackTranslations = translations[DEFAULT_LANGUAGE];
+
   return (key: string, replacements?: { [k: string]: string | number }): string => {
-    let s = translations[language][key] ?? key;
+    const languageTranslations = translations[language] ?? fallbackTranslations;
+    let s = languageTranslations[key] ?? fallbackTranslations[key] ?? key;
     if (replacements) {
       for (const [k, value] of Object.entries(replacements)) {
         const escapedKey = escapeRegex(k);
