@@ -494,6 +494,26 @@ const isMissingImageGenerationColumnError = (error: PostgrestError | null): bool
   return /image_generation_failed|image_source/.test(error.message ?? '');
 };
 
+type CodedError = Error & { code?: string };
+
+const createNotFoundError = (message: string): CodedError => {
+  const error = new Error(message) as CodedError;
+  error.code = 'NOT_FOUND';
+  return error;
+};
+
+const isSingleObjectResultError = (error: PostgrestError | null): boolean => {
+  if (!error) return false;
+  const message = (error.message ?? '').toLowerCase();
+  return (
+    error.code === 'PGRST116' ||
+    error.code === 'PGRST301' ||
+    message.includes('single json object') ||
+    message.includes('0 rows') ||
+    message.includes('no rows')
+  );
+};
+
 export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
   const { data, error } = await supabase
     .from(DREAMS_TABLE)
@@ -553,6 +573,10 @@ export async function updateDreamInSupabase(dream: DreamAnalysis): Promise<Dream
   if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
     imageGenerationFailedColumnAvailable = false;
     ({ data, error } = await update(false));
+  }
+
+  if (isSingleObjectResultError(error) || (!error && !data)) {
+    throw createNotFoundError('Dream not found in Supabase');
   }
 
   if (error || !data) {
