@@ -40,8 +40,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     [journal.dreams, journal.loaded]
   );
 
-  // Actions context - stable references, frozen with empty deps
-  // These functions from useDreamJournal are stable (wrapped in useCallback with stable deps)
+  // Actions context - stable references but will refresh if implementations change (e.g., login/network)
   const actionsValue = useMemo(
     () => ({
       addDream: journal.addDream,
@@ -50,10 +49,13 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       toggleFavorite: journal.toggleFavorite,
       analyzeDream: journal.analyzeDream,
     }),
-    // Empty deps - functions from useDreamJournal are stable
-    // If they change, it will be due to hook remounting which recreates provider anyway
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [
+      journal.addDream,
+      journal.updateDream,
+      journal.deleteDream,
+      journal.toggleFavorite,
+      journal.analyzeDream,
+    ]
   );
 
   return (
