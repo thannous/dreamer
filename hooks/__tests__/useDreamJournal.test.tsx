@@ -26,6 +26,7 @@ const {
   mockGetThumbnailUrl,
   mockIncrementLocalAnalysisCount,
   mockSyncWithServerCount,
+  mockUseAuth,
 } = vi.hoisted(() => ({
   mockGetSavedDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
   mockSaveDreams: vi.fn<[DreamAnalysis[]], Promise<void>>(),
@@ -44,6 +45,7 @@ const {
   mockGetThumbnailUrl: vi.fn(),
   mockIncrementLocalAnalysisCount: vi.fn<[], Promise<number>>(),
   mockSyncWithServerCount: vi.fn<[number, 'analysis' | 'exploration'], Promise<number>>(),
+  mockUseAuth: vi.fn(),
 }));
 
 // Mock dependencies
@@ -54,13 +56,21 @@ vi.mock('expo-network', () => ({
   }),
 }));
 
-let mockUser: any = null;
+// Ensure EXPO_PUBLIC_MOCK_MODE is not set (to avoid mock mode being enabled)
+vi.stubGlobal('process', {
+  ...process,
+  env: {
+    ...process.env,
+    EXPO_PUBLIC_MOCK_MODE: '',
+  },
+});
+
+// Mock AuthContext with hoisted mock function
 vi.mock('../../context/AuthContext', () => ({
-  useAuth: () => ({
-    user: mockUser,
-  }),
+  useAuth: mockUseAuth,
 }));
 
+// Mock storageService
 vi.mock('../../services/storageService', () => ({
   getSavedDreams: mockGetSavedDreams,
   saveDreams: mockSaveDreams,
@@ -70,6 +80,7 @@ vi.mock('../../services/storageService', () => ({
   savePendingDreamMutations: mockSavePendingDreamMutations,
 }));
 
+// Mock supabaseDreamService
 vi.mock('../../services/supabaseDreamService', () => ({
   createDreamInSupabase: mockCreateDreamInSupabase,
   updateDreamInSupabase: mockUpdateDreamInSupabase,
@@ -77,11 +88,13 @@ vi.mock('../../services/supabaseDreamService', () => ({
   fetchDreamsFromSupabase: mockFetchDreamsFromSupabase,
 }));
 
+// Mock geminiService
 vi.mock('../../services/geminiService', () => ({
   analyzeDream: mockAnalyzeDreamText,
   generateImageFromTranscript: mockGenerateImageFromTranscript,
 }));
 
+// Mock quotaService
 vi.mock('../../services/quotaService', () => ({
   quotaService: {
     canAnalyzeDream: mockCanAnalyzeDream,
@@ -89,13 +102,24 @@ vi.mock('../../services/quotaService', () => ({
   },
 }));
 
+// Mock imageUtils
 vi.mock('../../lib/imageUtils', () => ({
   getThumbnailUrl: mockGetThumbnailUrl,
 }));
 
+// Mock GuestAnalysisCounter
 vi.mock('../../services/quota/GuestAnalysisCounter', () => ({
   incrementLocalAnalysisCount: mockIncrementLocalAnalysisCount,
   syncWithServerCount: mockSyncWithServerCount,
+}));
+
+// Mock logger
+vi.mock('../../lib/logger', () => ({
+  logger: {
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  },
 }));
 
 // Import after mocks
@@ -118,10 +142,15 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   ...overrides,
 });
 
+// Helper to set mock user for tests
+const setMockUser = (user: { id: string } | null) => {
+  mockUseAuth.mockReturnValue({ user });
+};
+
 describe('useDreamJournal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUser = null;
+    setMockUser(null);
     mockGetSavedDreams.mockResolvedValue([]);
     mockSaveDreams.mockResolvedValue(undefined);
     mockGetCachedRemoteDreams.mockResolvedValue([]);
@@ -151,7 +180,7 @@ describe('useDreamJournal', () => {
     });
 
     it('loads remote dreams when authenticated', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
       mockFetchDreamsFromSupabase.mockResolvedValue(remoteDreams);
 
@@ -169,7 +198,7 @@ describe('useDreamJournal', () => {
     });
 
     it('falls back to cached dreams when remote fetch fails', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const cachedDreams = [buildDream({ id: 1 })];
       mockFetchDreamsFromSupabase.mockRejectedValue(new Error('Network error'));
       mockGetCachedRemoteDreams.mockResolvedValue(cachedDreams);
@@ -185,7 +214,7 @@ describe('useDreamJournal', () => {
     });
 
     it('applies pending mutations on top of remote dreams', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
       const pendingMutations: DreamMutation[] = [
         {
@@ -275,7 +304,7 @@ describe('useDreamJournal', () => {
 
   describe('addDream - remote mode', () => {
     beforeEach(() => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
     });
 
     it('creates dream in Supabase when authenticated and online', async () => {
@@ -353,7 +382,7 @@ describe('useDreamJournal', () => {
     });
 
     it('updates dream in Supabase when authenticated', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockUpdateDreamInSupabase.mockResolvedValue({ ...existingDream, title: 'Updated' });
@@ -376,7 +405,7 @@ describe('useDreamJournal', () => {
     });
 
     it('queues update when Supabase update fails', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockUpdateDreamInSupabase.mockRejectedValue(new Error('Network error'));
@@ -422,7 +451,7 @@ describe('useDreamJournal', () => {
     });
 
     it('deletes dream from Supabase when authenticated', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockDeleteDreamFromSupabase.mockResolvedValue(undefined);
@@ -442,7 +471,7 @@ describe('useDreamJournal', () => {
     });
 
     it('queues delete when Supabase delete fails', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockDeleteDreamFromSupabase.mockRejectedValue(new Error('Network error'));
@@ -495,7 +524,7 @@ describe('useDreamJournal', () => {
     });
 
     it('updates favorite in Supabase when authenticated', async () => {
-      mockUser = { id: 'user-1' };
+      setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101, isFavorite: false });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
       mockUpdateDreamInSupabase.mockResolvedValue({ ...existingDream, isFavorite: true });
