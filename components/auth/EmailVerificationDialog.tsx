@@ -1,7 +1,8 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -63,38 +64,16 @@ export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = (
         </View>
       </View>
 
-      <View style={styles.actions}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.primary,
-            { backgroundColor: colors.accent },
-            (resendDisabled || isResending) && styles.actionDisabled,
-            pressed && styles.actionPressed,
-          ]}
-          onPress={onResend}
-          disabled={resendDisabled || isResending}
-          testID={TID.Button.AuthResendVerification}
-        >
-          {isResending ? (
-            <ActivityIndicator color={colors.textOnAccentSurface} />
-          ) : (
-            <Text style={[styles.primaryText, { color: colors.textOnAccentSurface }]}>{resendLabel}</Text>
-          )}
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [
-            styles.secondary,
-            { borderColor: colors.divider },
-            pressed && styles.actionPressed,
-          ]}
-          onPress={onClose}
-          testID={TID.Button.AuthCloseVerification}
-        >
-          <Text style={[styles.secondaryText, { color: colors.textSecondary }]}>
-            {t('common.done')}
-          </Text>
-        </Pressable>
-      </View>
+      <BottomSheetActions
+        primaryLabel={resendLabel}
+        onPrimary={onResend}
+        primaryDisabled={resendDisabled}
+        primaryLoading={isResending}
+        primaryTestID={TID.Button.AuthResendVerification}
+        secondaryLabel={t('common.done')}
+        onSecondary={onClose}
+        secondaryTestID={TID.Button.AuthCloseVerification}
+      />
 
       {statusMessage ? (
         <Text style={[styles.status, { color: colors.textSecondary }]} testID={TID.Text.AuthEmailVerificationStatus}>
@@ -154,28 +133,6 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk_400Regular',
     lineHeight: 18,
   },
-  actions: {
-    gap: ThemeLayout.spacing.sm,
-  },
-  primary: {
-    borderRadius: ThemeLayout.borderRadius.sm,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  primaryText: {
-    fontSize: 15,
-    fontFamily: 'SpaceGrotesk_700Bold',
-  },
-  secondary: {
-    borderRadius: ThemeLayout.borderRadius.sm,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  secondaryText: {
-    fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
-  },
   status: {
     marginTop: ThemeLayout.spacing.sm,
     fontSize: 13,
@@ -185,12 +142,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
-  },
-  actionPressed: {
-    opacity: 0.9,
-  },
-  actionDisabled: {
-    opacity: 0.6,
   },
 });
 
