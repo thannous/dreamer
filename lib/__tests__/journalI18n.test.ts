@@ -131,4 +131,29 @@ describe('getTranslator replacement functionality', () => {
     // Then
     expect(result).toBe('test John template');
   });
+
+  it('given no language when translating then defaults to english', () => {
+    // Given
+    const t = getTranslator();
+
+    // When
+    const result = t('nav.home');
+
+    // Then
+    expect(result).toBe('Home');
+  });
+
+  it('given region-specific language when translating then normalizes to base language', () => {
+    // Given
+    const tFr = getTranslator('fr-FR');
+    const tEs = getTranslator('es_MX');
+
+    // When
+    const resultFr = tFr('nav.home');
+    const resultEs = tEs('nav.home');
+
+    // Then
+    expect(resultFr).toBe('Accueil');
+    expect(resultEs).toBe('Inicio');
+  });
 });
