@@ -638,9 +638,6 @@ export const useDreamJournal = () => {
       };
       await updateDream(currentDreamState);
 
-      // Invalidate quota cache immediately
-      quotaService.invalidate(user);
-
       // Get fingerprint for guest users to enable server-side quota tracking
       const fingerprint = !user ? await getDeviceFingerprint() : undefined;
 
@@ -703,6 +700,7 @@ export const useDreamJournal = () => {
           isAnalyzed: true,
         };
         await updateDream(next);
+        quotaService.invalidate(user);
         return next;
       } catch (error) {
         const failedDream: DreamAnalysis = {

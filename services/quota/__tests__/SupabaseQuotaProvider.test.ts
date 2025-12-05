@@ -111,7 +111,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
-      const mockBuilder = {
+      const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         count: 5,
@@ -126,17 +126,16 @@ describe('SupabaseQuotaProvider', () => {
       expect(count).toBe(5);
       expect(mockBuilder.select).toHaveBeenCalledWith('id', { count: 'exact', head: true });
       expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
-      expect(mockBuilder.eq).toHaveBeenCalledWith('is_analyzed', true);
+      expect(mockBuilder.eq).toHaveBeenCalledWith('quota_type', 'analysis');
     });
 
     it('given user when getting used exploration count then queries Supabase correctly', async () => {
       // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
-      const mockBuilder = {
+      const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
-        not: vi.fn().mockReturnThis(),
         count: 3,
         error: null,
       };
@@ -149,7 +148,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(count).toBe(3);
       expect(mockBuilder.select).toHaveBeenCalledWith('id', { count: 'exact', head: true });
       expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
-      expect(mockBuilder.not).toHaveBeenCalledWith('exploration_started_at', 'is', null);
+      expect(mockBuilder.eq).toHaveBeenCalledWith('quota_type', 'exploration');
     });
 
     it('given user when getting used messages count then queries Supabase correctly', async () => {
@@ -220,7 +219,7 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
-      const mockBuilder = {
+      const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         gte: vi.fn().mockReturnThis(),
@@ -235,8 +234,10 @@ describe('SupabaseQuotaProvider', () => {
 
       // Then
       expect(count).toBe(2);
-      expect(mockBuilder.gte).toHaveBeenCalledWith('analyzed_at', '2024-01-01T00:00:00.000Z');
-      expect(mockBuilder.lt).toHaveBeenCalledWith('analyzed_at', '2024-02-01T00:00:00.000Z');
+      expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
+      expect(mockBuilder.eq).toHaveBeenCalledWith('quota_type', 'analysis');
+      expect(mockBuilder.gte).toHaveBeenCalledWith('occurred_at', '2024-01-01T00:00:00.000Z');
+      expect(mockBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
     });
 
     it('given user when getting monthly exploration count then queries with date range', async () => {
@@ -244,10 +245,9 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
-      const mockBuilder = {
+      const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
-        not: vi.fn().mockReturnThis(),
         gte: vi.fn().mockReturnThis(),
         lt: vi.fn().mockReturnThis(),
         count: 1,
@@ -260,8 +260,10 @@ describe('SupabaseQuotaProvider', () => {
 
       // Then
       expect(count).toBe(1);
-      expect(mockBuilder.gte).toHaveBeenCalledWith('exploration_started_at', '2024-01-01T00:00:00.000Z');
-      expect(mockBuilder.lt).toHaveBeenCalledWith('exploration_started_at', '2024-02-01T00:00:00.000Z');
+      expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
+      expect(mockBuilder.eq).toHaveBeenCalledWith('quota_type', 'exploration');
+      expect(mockBuilder.gte).toHaveBeenCalledWith('occurred_at', '2024-01-01T00:00:00.000Z');
+      expect(mockBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
     });
 
     it('given Supabase error when counting monthly analyses then returns 0', async () => {
@@ -269,7 +271,7 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
-      const mockBuilder = {
+      const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         gte: vi.fn().mockReturnThis(),
@@ -291,10 +293,9 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
-      const mockBuilder = {
+      const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
-        not: vi.fn().mockReturnThis(),
         gte: vi.fn().mockReturnThis(),
         lt: vi.fn().mockReturnThis(),
         count: null,

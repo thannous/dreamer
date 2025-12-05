@@ -26,6 +26,10 @@ type BottomSheetProps = {
    * Backdrop color (default: semi-transparent black).
    */
   backdropColor?: string;
+  /**
+   * Test ID for E2E testing.
+   */
+  testID?: string;
 };
 
 /**
@@ -38,6 +42,7 @@ export function BottomSheet({
   children,
   style,
   backdropColor = 'rgba(0,0,0,0.45)',
+  testID,
 }: BottomSheetProps) {
   const nativeDriver = Platform.OS !== 'web';
   const translateY = useRef(new Animated.Value(0)).current;
@@ -97,7 +102,7 @@ export function BottomSheet({
     >
       <View style={styles.wrapper}>
         <Pressable style={[styles.backdrop, { backgroundColor: backdropColor }]} onPress={onClose} />
-        <Animated.View style={[styles.sheet, style, { transform: [{ translateY }] }]}>
+        <Animated.View style={[styles.sheet, style, { transform: [{ translateY }] }]} testID={testID}>
           {normalizedChildren}
         </Animated.View>
       </View>

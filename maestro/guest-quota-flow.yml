@@ -67,13 +67,27 @@ appId: com.tanuki75.noctalia
 - tapOn:
       id: btn.addDream
 
-# Guest dream 3 - analysis limit hit, exploration blocked
+# Guest dream 3 - analysis limit hit when trying to analyze
 - tapOn:
       id: input.dreamTranscript
 - inputText: "Guest Dream 3"
+- tapOn:
+      id: btn.saveDream
+- waitForAnimationToEnd
+# AnalyzePrompt sheet appears
 - assertVisible:
-      id: text.analysisLimit
-- tapOn: "Enregistrer sans analyser|Save without analysis"
+      id: text.analyzePromptTitle
+- tapOn:
+      id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+# QuotaLimitSheet should appear (analysis quota exhausted)
+- assertVisible:
+      id: sheet.quotaLimit
+- assertVisible:
+      id: text.quotaLimit.title
+# Dismiss and go to journal
+- tapOn:
+      id: btn.quotaLimit.journal
 - waitForAnimationToEnd
 - assertVisible:
       id: btn.exploreDream
@@ -160,10 +174,29 @@ appId: com.tanuki75.noctalia
       id: btn.exploreDream
 - tapOn:
       id: tab.home
-- assertVisible:
-      id: text.analysisLimit
 
-# Verify quotas show 5/5 analyses after upgrading
+# Auth Dream 4 - analysis quota exhausted (5/5), should show QuotaLimitSheet
+- tapOn:
+      id: input.dreamTranscript
+- inputText: "Auth Dream 4 - should trigger quota sheet"
+- tapOn:
+      id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+      id: text.analyzePromptTitle
+- tapOn:
+      id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+# QuotaLimitSheet should appear (free tier quota exhausted)
+- assertVisible:
+      id: sheet.quotaLimit
+- assertVisible:
+      id: text.quotaLimit.title
+- tapOn:
+      id: btn.quotaLimit.journal
+- waitForAnimationToEnd
+
+# Verify quotas show 5/5 analyses
 - tapOn:
       id: tab.settings
 - assertVisible: "5 / 5"

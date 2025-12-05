@@ -308,7 +308,7 @@ export default function DreamChatScreen() {
           </Text>
           <Pressable
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: colors.accent }]}
-            onPress={() => router.push('/(tabs)/settings')}
+            onPress={() => router.push('/paywall')}
           >
             <Ionicons name="arrow-up-circle-outline" size={24} color={colors.textPrimary} />
             <Text style={[styles.upgradeButtonText, { color: colors.textPrimary }]}>
