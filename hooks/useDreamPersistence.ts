@@ -44,6 +44,8 @@ export type UseDreamPersistenceResult = {
   dreams: DreamAnalysis[];
   /** Whether initial load has completed */
   loaded: boolean;
+  /** Pending mutations loaded from storage */
+  pendingMutations: DreamMutation[];
   /** Ref to current dreams for use in callbacks */
   dreamsRef: React.RefObject<DreamAnalysis[]>;
   /** Persist dreams to local storage (guest mode) */
@@ -66,6 +68,7 @@ export function useDreamPersistence({
   const { user } = useAuth();
   const [dreams, setDreams] = useState<DreamAnalysis[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [pendingMutations, setPendingMutations] = useState<DreamMutation[]>([]);
   const dreamsRef = useRef<DreamAnalysis[]>([]);
 
   // Keep ref in sync with state
@@ -126,6 +129,7 @@ export function useDreamPersistence({
         const localDreams = await getSavedDreams();
         if (mounted.current) {
           setDreams(sortDreams(normalizeDreamList(localDreams)));
+          setPendingMutations([]);
         }
         return { pendingMutations: [] };
       }
@@ -163,11 +167,16 @@ export function useDreamPersistence({
         }
       }
 
+      if (mounted.current) {
+        setPendingMutations(pendingMutations);
+      }
+
       return { pendingMutations };
     } catch (error) {
       logger.error('Failed to load dreams', error);
       if (mounted.current) {
         setDreams([]);
+        setPendingMutations([]);
       }
       return { pendingMutations: [] };
     } finally {
@@ -197,6 +206,7 @@ export function useDreamPersistence({
   return {
     dreams,
     loaded,
+    pendingMutations,
     dreamsRef,
     persistLocalDreams,
     persistRemoteDreams,

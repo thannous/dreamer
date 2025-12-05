@@ -67,6 +67,7 @@ export const useDreamJournal = () => {
     dreamsRef,
     persistLocalDreams,
     persistRemoteDreams,
+    pendingMutations,
   } = useDreamPersistence({ canUseRemoteSync });
 
   /**
@@ -86,6 +87,7 @@ export const useDreamJournal = () => {
     hasNetwork,
     persistRemoteDreams,
     resolveRemoteId,
+    initialMutations: pendingMutations,
   });
 
   /**
