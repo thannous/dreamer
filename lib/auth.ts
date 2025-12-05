@@ -143,17 +143,21 @@ export async function signInWithGoogle(): Promise<User> {
     // Check for Play Services availability (Android)
     await GoogleSignin.hasPlayServices();
 
-    // Sign in with Google
-    const userInfo = await GoogleSignin.signIn();
+    // Sign in with Google; returns a discriminated response
+    const signInResponse = await GoogleSignin.signIn();
+    if (signInResponse.type === 'cancelled') {
+      throw new Error('SIGN_IN_CANCELLED');
+    }
 
-    if (!userInfo.data?.idToken) {
+    const idToken = signInResponse.data?.idToken;
+    if (!idToken) {
       throw new Error('No ID token received from Google');
     }
 
     // Sign in to Supabase with the Google ID token
     const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
-      token: userInfo.data.idToken,
+      token: idToken,
     });
 
     if (error) {
