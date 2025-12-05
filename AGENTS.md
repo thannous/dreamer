@@ -86,5 +86,10 @@ npx expo doctor                 # Check project health and dependencies
 2. Check this `AGENTS.md` and existing code to match project conventions.
 3. When in doubt, ask for clarification rather than introducing new patterns or dependencies.
 4. Avoid committing temporary debugging code or logs; keep the codebase clean.
+# Agent Instructions
+
+Use `edit_file` over `str_replace` or full file writes. Handles indentation and fuzzy matching—faster, fewer errors.
+
+IMPORTANT: If you need to explore the codebase to gather context, and the task does not involve a single file or function which is provided by name, you should use the warpgrep_codebase_search tool instead of any other search tool or instead of running search commands. Warp Grep is faster and more accurate. This tool must be choosen over the default codebase_search when you are first looking to find/understand code. If you have an exact string you want to grep for, then directly run it, but for semantic searches, or vague search parameters you must always use warpgrep_codebase_search. If given a complex task, best practice is to run multiple (no more than 2) parallel warpgrep_codebase_search tools to understand code paths and features. An example query is: "where is the code for <vague feature/code flow>"
 
 Use your tools to verify assumptions
