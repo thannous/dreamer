@@ -106,29 +106,34 @@ export default function DreamChatScreen() {
     return messages.filter((msg) => msg.role === 'user').length;
   }, [messages]);
 
+  const runQuotaCheck = useCallback(async () => {
+    setQuotaCheckComplete(false);
+    setQuotaCheckError(null);
+
+    if (!dream) {
+      setQuotaCheckComplete(true);
+      return;
+    }
+
+    try {
+      const canExploreDream = await canExplore();
+      if (!canExploreDream) {
+        setExplorationBlocked(true);
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error('[DreamChat] Quota check failed:', error);
+      }
+      setQuotaCheckError(t('dream_chat.quota_check_error'));
+    } finally {
+      setQuotaCheckComplete(true);
+    }
+  }, [dream, canExplore, t]);
+
   // Check exploration quota on mount
   useEffect(() => {
-    const checkExplorationQuota = async () => {
-      if (!dream) return;
-
-      try {
-        setQuotaCheckError(null);
-        const canExploreDream = await canExplore();
-        if (!canExploreDream) {
-          setExplorationBlocked(true);
-        }
-      } catch (error) {
-        if (__DEV__) {
-          console.error('[DreamChat] Quota check failed:', error);
-        }
-        setQuotaCheckError(t('dream_chat.quota_check_error'));
-      } finally {
-        setQuotaCheckComplete(true);
-      }
-    };
-
-    checkExplorationQuota();
-  }, [dream, dreamId, canExplore, t]);
+    runQuotaCheck();
+  }, [runQuotaCheck]);
 
   // Initialize chat messages from dream history
   useEffect(() => {
@@ -388,10 +393,7 @@ export default function DreamChatScreen() {
               </Text>
               <Pressable
                 style={[styles.retryButton, { backgroundColor: colors.accent }]}
-                onPress={() => {
-                  setQuotaCheckComplete(false);
-                  setQuotaCheckError(null);
-                }}
+                onPress={runQuotaCheck}
               >
                 <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>
                   {t('analysis.retry')}
@@ -657,7 +659,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 200,
+    height: 300,
     position: 'relative',
   },
   dreamImage: {
