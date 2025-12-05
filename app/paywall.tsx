@@ -50,7 +50,7 @@ export default function PaywallScreen() {
   };
 
   const handleOpenAuth = () => {
-    router.replace('/(tabs)/settings?section=account' as any);
+    router.replace('/(tabs)/settings');
   };
 
   const handlePurchase = async () => {

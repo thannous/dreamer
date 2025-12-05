@@ -1,5 +1,5 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Dimensions,
   Platform,
@@ -289,12 +289,16 @@ export default function StatisticsScreen() {
   const stats = useDreamStatistics(dreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
-  const dreamTypeColors =
+  // Memoize color arrays to avoid re-allocation churn
+  const dreamTypeColors = useMemo(() =>
     mode === 'dark'
       ? ['#B8A4FF', '#D3B8FF', '#9683E2', '#C2A0FF', '#8770CF']
-      : ['#AD96E0', '#D9B28A', '#9BC6B3', '#A1B8E0', '#DCC48C'];
+      : ['#AD96E0', '#D9B28A', '#9BC6B3', '#A1B8E0', '#DCC48C'],
+    [mode]
+  );
 
-  const pieLabelLineConfig: LabelLineConfig = {
+  // Memoize label config - only depends on colors.textSecondary
+  const pieLabelLineConfig: LabelLineConfig = useMemo(() => ({
     length: PIE_LABEL_LINE_LENGTH,
     tailLength: PIE_LABEL_TAIL_LENGTH,
     color: colors.textSecondary,
@@ -303,31 +307,35 @@ export default function StatisticsScreen() {
     labelComponentHeight: PIE_LABEL_HEIGHT,
     labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
     avoidOverlappingOfLabels: true,
-  };
+  }), [colors.textSecondary]);
 
-  const topDreamTypes = stats.dreamTypeDistribution.slice(0, 5);
+  const topDreamTypes = useMemo(() => stats.dreamTypeDistribution.slice(0, 5), [stats.dreamTypeDistribution]);
 
-  const pieChartData: DreamPieDataItem[] = topDreamTypes.map((item, index) => {
-    const typeLabel = getDreamTypeLabel(item.type as DreamType, t) ?? item.type;
-    const typeLines = splitLabelText(typeLabel);
-    const labelHeight = getLabelHeight(typeLines.length);
+  // Memoize heavy pie chart data computation
+  const pieChartData: DreamPieDataItem[] = useMemo(() => 
+    topDreamTypes.map((item, index) => {
+      const typeLabel = getDreamTypeLabel(item.type as DreamType, t) ?? item.type;
+      const typeLines = splitLabelText(typeLabel);
+      const labelHeight = getLabelHeight(typeLines.length);
 
-    return {
-      value: item.count,
-      color: dreamTypeColors[index % dreamTypeColors.length],
-      count: item.count,
-      percentage: item.percentage,
-      typeLabel,
-      typeLines,
-      labelHeight,
-      labelLineConfig: {
-        ...pieLabelLineConfig,
-        labelComponentHeight: labelHeight,
-      },
-    };
-  });
+      return {
+        value: item.count,
+        color: dreamTypeColors[index % dreamTypeColors.length],
+        count: item.count,
+        percentage: item.percentage,
+        typeLabel,
+        typeLines,
+        labelHeight,
+        labelLineConfig: {
+          ...pieLabelLineConfig,
+          labelComponentHeight: labelHeight,
+        },
+      };
+    }),
+    [topDreamTypes, dreamTypeColors, pieLabelLineConfig, t]
+  );
 
-  const pieLabelLayouts = React.useMemo(() => buildPieLabelLayouts(pieChartData), [pieChartData]);
+  const pieLabelLayouts = useMemo(() => buildPieLabelLayouts(pieChartData), [pieChartData]);
 
   if (!loaded) {
     return (
