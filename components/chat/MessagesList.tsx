@@ -398,6 +398,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
     paddingBottom: 16,
     // paddingBottom is set dynamically via animatedProps in useChatList
   },

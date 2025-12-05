@@ -143,13 +143,15 @@ export async function signInWithGoogle(): Promise<User> {
     // Check for Play Services availability (Android)
     await GoogleSignin.hasPlayServices();
 
-    // Sign in with Google; returns a discriminated response
+    // Sign in with Google; library throws on cancellation
     const signInResponse = await GoogleSignin.signIn();
-    if (signInResponse.type === 'cancelled') {
+
+    if ((signInResponse as any)?.type === 'cancelled') {
       throw new Error('SIGN_IN_CANCELLED');
     }
 
-    const idToken = signInResponse.data?.idToken;
+    // Support both current library shape (idToken top-level) and legacy nested shape
+    const idToken = (signInResponse as any).idToken ?? (signInResponse as any)?.data?.idToken;
     if (!idToken) {
       throw new Error('No ID token received from Google');
     }
