@@ -171,13 +171,14 @@ export async function signInWithGoogle(): Promise<User> {
     }
 
     return data.user;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Re-throw with more context for specific error codes
-    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+    const errorCode = (error as { code?: string })?.code;
+    if (errorCode === statusCodes.SIGN_IN_CANCELLED) {
       throw new Error('SIGN_IN_CANCELLED');
-    } else if (error.code === statusCodes.IN_PROGRESS) {
+    } else if (errorCode === statusCodes.IN_PROGRESS) {
       throw new Error('Sign-in already in progress');
-    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+    } else if (errorCode === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
       throw new Error('Google Play Services not available or outdated');
     }
     throw error;

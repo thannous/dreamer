@@ -1,6 +1,7 @@
 import { Toast } from '@/components/Toast';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { GradientColors } from '@/constants/gradients';
 import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
@@ -42,6 +43,8 @@ import {
   Text,
   TextInput,
   View,
+  type StyleProp,
+  type TextStyle,
   type ViewStyle
 } from 'react-native';
 
@@ -107,7 +110,7 @@ const generateUUID = (): string => {
   });
 };
 
-const Skeleton = ({ style }: { style: any }) => {
+const Skeleton = ({ style }: { style: StyleProp<ViewStyle> }) => {
   const opacity = useRef(new Animated.Value(0.3)).current;
   useEffect(() => {
     const anim = Animated.loop(
@@ -122,7 +125,7 @@ const Skeleton = ({ style }: { style: any }) => {
   return <Animated.View style={[style, { opacity, backgroundColor: 'rgba(150,150,150,0.2)' }]} />;
 };
 
-const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: any; shouldAnimate: boolean }) => {
+const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: StyleProp<TextStyle>; shouldAnimate: boolean }) => {
   const [displayedText, setDisplayedText] = useState(shouldAnimate ? '' : text);
 
   useEffect(() => {
@@ -1460,18 +1463,10 @@ export default function JournalDetailScreen() {
           <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
             {displayedAnalysisNotice?.message}
           </Text>
-          <Pressable
-            style={[
-              styles.sheetPrimaryButton,
-              styles.noticeActionButton,
-              { backgroundColor: colors.accent },
-            ]}
-            onPress={handleDismissAnalysisNotice}
-          >
-            <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-              {t('common.ok')}
-            </Text>
-          </Pressable>
+          <BottomSheetActions
+            primaryLabel={t('common.ok')}
+            onPrimary={handleDismissAnalysisNotice}
+          />
         </BottomSheet>
         <BottomSheet
           visible={showReplaceImageSheet}
@@ -1490,34 +1485,16 @@ export default function JournalDetailScreen() {
           <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
             {t('journal.detail.image_replace.subtitle')}
           </Text>
-          <View style={styles.sheetButtons}>
-            <Pressable
-              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
-              onPress={handleReplaceImage}
-              disabled={isAnalysisLocked}
-            >
-              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-                {t('journal.detail.image_replace.replace')}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={[
-                styles.sheetSecondaryButton,
-                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              ]}
-              onPress={handleKeepImage}
-              disabled={isAnalysisLocked}
-            >
-              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
-                {t('journal.detail.image_replace.keep')}
-              </Text>
-            </Pressable>
-          </View>
-          <Pressable onPress={handleDismissReplaceSheet} style={styles.sheetLinkButton}>
-            <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
-              {t('common.cancel')}
-            </Text>
-          </Pressable>
+          <BottomSheetActions
+            primaryLabel={t('journal.detail.image_replace.replace')}
+            onPrimary={handleReplaceImage}
+            primaryDisabled={isAnalysisLocked}
+            secondaryLabel={t('journal.detail.image_replace.keep')}
+            onSecondary={handleKeepImage}
+            secondaryDisabled={isAnalysisLocked}
+            linkLabel={t('common.cancel')}
+            onLink={handleDismissReplaceSheet}
+          />
         </BottomSheet>
         <BottomSheet
           visible={showReanalyzeSheet}
@@ -1569,29 +1546,14 @@ export default function JournalDetailScreen() {
               </Text>
             </View>
           </Pressable>
-          <View style={styles.sheetButtons}>
-            <Pressable
-              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
-              onPress={handleConfirmReanalyze}
-              disabled={isAnalysisLocked}
-            >
-              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-                {t('journal.detail.reanalyze_prompt.reanalyze')}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={[
-                styles.sheetSecondaryButton,
-                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              ]}
-              onPress={handleDismissReanalyzeSheet}
-              disabled={isAnalysisLocked}
-            >
-              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
-                {t('journal.detail.reanalyze_prompt.later')}
-              </Text>
-            </Pressable>
-          </View>
+          <BottomSheetActions
+            primaryLabel={t('journal.detail.reanalyze_prompt.reanalyze')}
+            onPrimary={handleConfirmReanalyze}
+            primaryDisabled={isAnalysisLocked}
+            secondaryLabel={t('journal.detail.reanalyze_prompt.later')}
+            onSecondary={handleDismissReanalyzeSheet}
+            secondaryDisabled={isAnalysisLocked}
+          />
         </BottomSheet>
         <BottomSheet
           visible={showDeleteSheet}
@@ -1610,40 +1572,16 @@ export default function JournalDetailScreen() {
           <Text style={[styles.deleteSheetMessage, { color: colors.textSecondary }]}>
             {t('journal.detail.delete_confirm.message')}
           </Text>
-          <View style={styles.deleteSheetActions}>
-            <Pressable
-              onPress={handleCloseDeleteSheet}
-              disabled={isDeleting}
-              style={[
-                styles.deleteCancelButton,
-                {
-                  borderColor: colors.divider,
-                  backgroundColor: colors.backgroundSecondary,
-                  opacity: isDeleting ? 0.7 : 1,
-                },
-              ]}
-            >
-              <Text style={[styles.deleteCancelText, { color: colors.textPrimary }]}>
-                {t('common.cancel')}
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={handleConfirmDelete}
-              disabled={isDeleting}
-              style={[
-                styles.deleteConfirmButton,
-                { backgroundColor: '#EF4444', opacity: isDeleting ? 0.8 : 1 },
-              ]}
-            >
-              {isDeleting ? (
-                <ActivityIndicator size="small" color="#FFF" />
-              ) : (
-                <Text style={styles.deleteConfirmText}>
-                  {t('journal.detail.delete_confirm.confirm')}
-                </Text>
-              )}
-            </Pressable>
-          </View>
+          <BottomSheetActions
+            primaryLabel={t('journal.detail.delete_confirm.confirm')}
+            onPrimary={handleConfirmDelete}
+            primaryDisabled={isDeleting}
+            primaryLoading={isDeleting}
+            primaryVariant="danger"
+            secondaryLabel={t('common.cancel')}
+            onSecondary={handleCloseDeleteSheet}
+            secondaryDisabled={isDeleting}
+          />
         </BottomSheet>
         <BottomSheet
           visible={showQuotaLimitSheet}
@@ -1670,36 +1608,18 @@ export default function JournalDetailScreen() {
               ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis! })
               : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis! })}
           </Text>
-          <View style={styles.sheetButtons}>
-            <Pressable
-              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
-              onPress={handleQuotaLimitPrimary}
-              testID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
-            >
-              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textOnAccentSurface }]}>
-                {tier === 'guest'
-                  ? t('journal.detail.quota_limit.cta_guest')
-                  : t('journal.detail.quota_limit.cta_free')}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={[
-                styles.sheetSecondaryButton,
-                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              ]}
-              onPress={handleQuotaLimitSecondary}
-              testID={TID.Button.QuotaLimitJournal}
-            >
-              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
-                {t('journal.detail.quota_limit.journal')}
-              </Text>
-            </Pressable>
-          </View>
-          <Pressable onPress={handleQuotaLimitDismiss} style={styles.sheetLinkButton}>
-            <Text style={[styles.sheetLinkText, { color: colors.textSecondary }]}>
-              {t('journal.detail.quota_limit.dismiss')}
-            </Text>
-          </Pressable>
+          <BottomSheetActions
+            primaryLabel={tier === 'guest'
+              ? t('journal.detail.quota_limit.cta_guest')
+              : t('journal.detail.quota_limit.cta_free')}
+            onPrimary={handleQuotaLimitPrimary}
+            primaryTestID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
+            secondaryLabel={t('journal.detail.quota_limit.journal')}
+            onSecondary={handleQuotaLimitSecondary}
+            secondaryTestID={TID.Button.QuotaLimitJournal}
+            linkLabel={t('journal.detail.quota_limit.dismiss')}
+            onLink={handleQuotaLimitDismiss}
+          />
         </BottomSheet>
         <Modal
           visible={isShareModalVisible}

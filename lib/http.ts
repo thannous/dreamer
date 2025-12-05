@@ -191,8 +191,13 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
           classified.type === ErrorType.TIMEOUT ||
           classified.type === ErrorType.SERVER
         ) {
-          // Exponential backoff: delay * (attempt + 1)
-          await sleep(retryDelay * (attempt + 1));
+          // Exponential backoff with jitter to avoid thundering herd
+          const jitter = 0.8 + Math.random() * 0.5; // 0.8-1.3 multiplier
+          const delay = Math.min(
+            retryDelay * Math.pow(2, attempt) * jitter,
+            30000 // Cap at 30 seconds max
+          );
+          await sleep(delay);
           continue;
         } else {
           // For other errors (rate limit, client errors), don't retry automatically

@@ -20,7 +20,7 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
+import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -43,7 +43,7 @@ export default function JournalListScreen() {
   const { t } = useTranslation();
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
-  const flatListRef = useRef<any>(null); // FlashList ref
+  const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -420,8 +420,6 @@ export default function JournalListScreen() {
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
-          // @ts-expect-error columnWrapperStyle is supported by FlashList for grid layouts
-          columnWrapperStyle={styles.desktopColumnWrapper}
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}

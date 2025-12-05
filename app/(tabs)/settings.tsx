@@ -57,7 +57,7 @@ export default function SettingsScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
 
   const handleOpenPaywall = useCallback(() => {
-    router.push('/paywall' as any);
+    router.push('/paywall');
   }, []);
 
   return (
