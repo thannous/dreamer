@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount } from '@/lib/dreamUsage';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
@@ -106,14 +106,10 @@ const calculateStreaks = (dreams: DreamAnalysis[]): { current: number; longest: 
 };
 
 export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => {
-  const [now, setNow] = useState(0);
-
-  useEffect(() => {
-    setNow(Date.now());
-  }, []);
+  const [now] = useState(() => Date.now());
 
   return useMemo(() => {
-    const effectiveNow = now || 0;
+    const effectiveNow = now;
 
     const totalDreams = dreams.length;
     const favoriteDreams = dreams.filter(d => d.isFavorite).length;
