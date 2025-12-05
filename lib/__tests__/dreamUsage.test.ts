@@ -49,6 +49,20 @@ describe('dreamUsage helpers', () => {
     expect(getExploredDreamCount([explored, untouched])).toBe(1);
   });
 
+  it('counts explored dreams when chat history exists', () => {
+    const exploredByChat = buildDream({
+      id: 12,
+      chatHistory: [
+        { role: 'user', text: 'hello' },
+        { role: 'model', text: 'hi' },
+      ],
+    });
+    const untouched = buildDream({ id: 13 });
+
+    expect(isDreamExplored(exploredByChat)).toBe(true);
+    expect(getExploredDreamCount([exploredByChat, untouched])).toBe(1);
+  });
+
   it('counts only user chat messages for quota usage', () => {
     const dreamWithChat = buildDream({
       id: 20,

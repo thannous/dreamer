@@ -10,7 +10,15 @@ export function isDreamAnalyzed(dream?: DreamAnalysis | null): dream is DreamAna
 }
 
 export function isDreamExplored(dream?: DreamAnalysis | null): boolean {
-  return typeof dream?.explorationStartedAt === 'number';
+  if (!dream) return false;
+
+  // Primary flag
+  if (typeof dream.explorationStartedAt === 'number') {
+    return true;
+  }
+
+  // Fallback: any user message indicates an exploration/chat session happened
+  return getUserChatMessageCount(dream) > 0;
 }
 
 export type DreamDetailAction = 'analyze' | 'explore' | 'continue';
