@@ -10,7 +10,7 @@
  */
 
 import { Fonts } from '@/constants/theme';
-import { MessageContextProvider, useNewMessageAnimationContext } from '@/context/ChatContext';
+import { MessageContextProvider, useComposerHeightContext, useNewMessageAnimationContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
   useAutoScrollOnNewMessage,
@@ -23,9 +23,10 @@ import {
 import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import type Animated from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
@@ -124,6 +125,22 @@ function LoadingIndicator({ text }: { text?: string }) {
   );
 }
 
+/**
+ * BottomSpacer - Adds space at the bottom of the list for the floating composer
+ */
+function BottomSpacer() {
+  const { composerHeight } = useComposerHeightContext();
+  const insets = useSafeAreaInsets();
+
+  const animatedStyle = useAnimatedStyle(() => {
+    // Match the calculation in useChatList.ts
+    const height = composerHeight.value.value + insets.bottom + 80;
+    return { height };
+  }, [insets.bottom]);
+
+  return <Animated.View style={animatedStyle} />;
+}
+
 export function MessagesList({
   messages,
   isLoading,
@@ -144,6 +161,21 @@ export function MessagesList({
   const { isStreaming, hasAnimatedMessages } = useNewMessageAnimationContext();
   const { colors } = useTheme();
   const scrollViewRef = useRef<Animated.ScrollView | null>(null);
+  const [isStreamingSnapshot, setIsStreamingSnapshot] = useState(false);
+
+  // Sync shared value to JS state to avoid reading .value during render
+  useEffect(() => {
+    setIsStreamingSnapshot(isStreaming.value.value);
+  }, [isStreaming]);
+
+  useAnimatedReaction(
+    () => isStreaming.value.value,
+    (current, prev) => {
+      if (current === prev) return;
+      runOnJS(setIsStreamingSnapshot)(current);
+    },
+    [isStreaming]
+  );
 
   // Render individual message with context
   const renderItem = useCallback(
@@ -151,7 +183,7 @@ export function MessagesList({
       const messageId = `${item.role}-${index}`;
       const isNew = !hasAnimatedMessages.current.has(messageId);
       const isStreamingMessage =
-        isStreaming.get() && index === messages.length - 1 && item.role === 'model';
+        isStreamingSnapshot && index === messages.length - 1 && item.role === 'model';
 
       // Mark as animated
       if (isNew) {
@@ -181,6 +213,14 @@ export function MessagesList({
   // Prepare data with loading indicator
   const listData = [...messages];
 
+  // Combine custom footer with bottom spacer for composer clearance
+  const footerComponent = (
+    <>
+      {ListFooterComponent}
+      <BottomSpacer />
+    </>
+  );
+
   return (
     <View style={[styles.container, style, { backgroundColor: colors.backgroundDark }]}>
       <AnimatedLegendList
@@ -200,7 +240,7 @@ export function MessagesList({
         estimatedItemSize={80}
         maintainScrollAtEnd={false}
         ListHeaderComponent={ListHeaderComponent ?? null}
-        ListFooterComponent={ListFooterComponent ?? null}
+        ListFooterComponent={footerComponent}
       />
       {isLoading && <LoadingIndicator text={loadingText} />}
     </View>
@@ -213,7 +253,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-    paddingBottom: 24, // Base spacing; composer height is added via animatedProps
+    // paddingBottom is set dynamically via animatedProps in useChatList
   },
   messageRow: {
     flexDirection: 'row',
