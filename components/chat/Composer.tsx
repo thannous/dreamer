@@ -214,6 +214,11 @@ export function Composer({
       ]}
       onLayout={handleLayout}
     >
+      {footerContent ? (
+        <View style={styles.footerContainer}>
+          {footerContent}
+        </View>
+      ) : null}
       {headerContent}
       <View
         style={[
@@ -274,11 +279,6 @@ export function Composer({
           <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
         </Pressable>
       </View>
-      {footerContent ? (
-        <View style={styles.footerContainer}>
-          {footerContent}
-        </View>
-      ) : null}
     </Animated.View>
   );
 
@@ -349,6 +349,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     marginTop: 0,
+    marginBottom: 24,
     alignItems: 'center',
   },
 });

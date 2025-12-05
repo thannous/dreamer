@@ -1,5 +1,5 @@
 import { Composer } from '@/components/chat/Composer';
-import { MessagesList } from '@/components/chat/MessagesList';
+import { LoadingIndicator, MessagesList } from '@/components/chat/MessagesList';
 import { GradientColors } from '@/constants/gradients';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
@@ -410,6 +410,10 @@ export default function DreamChatScreen() {
     )
     : null;
 
+  const composerHeader = isLoading
+    ? <LoadingIndicator text={t('dream_chat.thinking')} />
+    : null;
+
   return (
     <ChatProvider isStreaming={isLoading}>
       <LinearGradient colors={gradientColors} style={styles.gradient}>
@@ -443,6 +447,7 @@ export default function DreamChatScreen() {
           testID={TID.Chat.Input}
           micTestID={TID.Chat.Mic}
           sendTestID={TID.Chat.Send}
+          headerContent={composerHeader}
           footerContent={composerFooter}
         />
       </LinearGradient>
@@ -573,6 +578,7 @@ const styles = StyleSheet.create({
   quickCategoriesContainer: {
     marginTop: 16,
     marginBottom: 8,
+    paddingHorizontal: 16,
   },
   quickCategoriesLabel: {
     fontSize: 12,
@@ -685,9 +691,6 @@ const styles = StyleSheet.create({
   },
   footerWrapper: {
     width: '100%',
-    marginTop: 4,
-    paddingTop: 6,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.15)',
+    paddingBottom: 6,
   },
 });

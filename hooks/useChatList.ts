@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
  */
 export function useMessageListProps() {
   const { composerHeight } = useComposerHeightContext();
+  const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
   const { listRef, containerHeight, contentHeight, scrollY } = useMessageListContext();
   const insets = useSafeAreaInsets();
 
@@ -32,7 +33,10 @@ export function useMessageListProps() {
   const animatedProps = useAnimatedProps(() => {
     // Add extra space so the last message isn't tucked under the composer/footer
     // Extra padding ensures content is visible above the floating composer
-    const bottomInset = composerHeight.value.value + insets.bottom + 80;
+    const keyboardInset = Platform.OS === 'android' && isKeyboardVisible.value.value
+      ? keyboardHeight.value.value
+      : 0;
+    const bottomInset = composerHeight.value.value + insets.bottom + keyboardInset + 80;
     return {
       contentInset: {
         bottom: Platform.OS === 'ios' ? bottomInset : 0,
