@@ -2,7 +2,12 @@ import type { User } from '@supabase/supabase-js';
 import type { QuotaProvider, CacheEntry, QuotaDreamTarget } from './types';
 import type { QuotaStatus, DreamAnalysis } from '@/lib/types';
 import { QUOTAS } from '@/constants/limits';
-import { getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
+import {
+  getAnalyzedDreamCount,
+  getExploredDreamCount,
+  getUserChatMessageCount,
+  isDreamExplored,
+} from '@/lib/dreamUsage';
 import { getSavedDreams } from '@/services/storageServiceReal';
 import { getLocalAnalysisCount, getLocalExplorationCount } from './GuestAnalysisCounter';
 
@@ -37,16 +42,26 @@ export class GuestQuotaProvider implements QuotaProvider {
   async getUsedAnalysisCount(user: User | null): Promise<number> {
     if (user) return 0; // Not a guest
 
-    // Use persistent counter instead of counting current dreams
-    // This prevents quota bypass by deleting dreams
-    return getLocalAnalysisCount();
+    const [localCount, dreams] = await Promise.all([
+      getLocalAnalysisCount(),
+      this.getGuestDreams(),
+    ]);
+    const derivedCount = getAnalyzedDreamCount(dreams);
+
+    // Use the higher of the persistent counter or current analyzed dreams
+    return Math.max(localCount, derivedCount);
   }
 
   async getUsedExplorationCount(user: User | null): Promise<number> {
     if (user) return 0; // Not a guest
 
-    // Use persistent counter instead of counting current dreams
-    return getLocalExplorationCount();
+    const [localCount, dreams] = await Promise.all([
+      getLocalExplorationCount(),
+      this.getGuestDreams(),
+    ]);
+    const derivedCount = getExploredDreamCount(dreams);
+
+    return Math.max(localCount, derivedCount);
   }
 
   private resolveDreamId(target: QuotaDreamTarget | undefined): number | undefined {

@@ -230,6 +230,38 @@ describe('GuestQuotaProvider', () => {
       // Then
       expect(count).toBe(8);
     });
+
+    it('given analyzed dreams exceed counter when counting analysis then uses dream count', async () => {
+      // Given - counter is outdated but two dreams are analyzed
+      localCounterConfig.analysisCount = 0;
+      mockGetDreams.mockResolvedValueOnce([
+        buildDream({ id: 1, isAnalyzed: true, analyzedAt: Date.now() }),
+        buildDream({ id: 2, isAnalyzed: true, analyzedAt: Date.now() }),
+      ]);
+      const provider = new GuestQuotaProvider();
+
+      // When
+      const count = await provider.getUsedAnalysisCount(null);
+
+      // Then
+      expect(count).toBe(2);
+    });
+
+    it('given explored dreams exceed counter when counting exploration then uses dream count', async () => {
+      // Given - counter is outdated but dreams are explored
+      localCounterConfig.explorationCount = 0;
+      mockGetDreams.mockResolvedValueOnce([
+        buildDream({ id: 3, explorationStartedAt: Date.now() }),
+        buildDream({ id: 4, explorationStartedAt: Date.now() }),
+      ]);
+      const provider = new GuestQuotaProvider();
+
+      // When
+      const count = await provider.getUsedExplorationCount(null);
+
+      // Then
+      expect(count).toBe(2);
+    });
   });
 
   describe('quota status', () => {
