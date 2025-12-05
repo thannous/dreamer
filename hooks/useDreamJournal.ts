@@ -49,6 +49,14 @@ const generateUUID = (): string => {
   });
 };
 
+const isNotFoundError = (error: unknown): error is { code: string } =>
+  Boolean(
+    error &&
+      typeof error === 'object' &&
+      'code' in (error as Record<string, unknown>) &&
+      (error as Record<string, unknown>).code === 'NOT_FOUND'
+  );
+
 const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
   const hasImage = Boolean(dream.imageUrl?.trim());
   const derivedThumbnail = hasImage ? getThumbnailUrl(dream.imageUrl) : undefined;
@@ -541,21 +549,33 @@ export const useDreamJournal = () => {
             if (!remoteId) {
               throw new Error('Missing remote id for Supabase dream update');
             }
-            const saved = await updateDreamInSupabase({ ...mutation.dream, remoteId });
-            const savedWithLocal = mutation.dream.imageUpdatedAt
-              ? { ...saved, imageUpdatedAt: mutation.dream.imageUpdatedAt }
-              : saved;
-            queue.shift();
-            const stillPending = hasPendingMutationsForDream(queue, mutation.dream.id);
-            await persistRemoteDreams((prev) =>
-              prev.map((d) => {
-                if (d.id !== mutation.dream.id) return d;
-                if (stillPending) {
-                  return d;
-                }
-                return { ...savedWithLocal, id: d.id, pendingSync: undefined };
-              })
-            );
+            try {
+              const saved = await updateDreamInSupabase({ ...mutation.dream, remoteId });
+              const savedWithLocal = mutation.dream.imageUpdatedAt
+                ? { ...saved, imageUpdatedAt: mutation.dream.imageUpdatedAt }
+                : saved;
+              queue.shift();
+              const stillPending = hasPendingMutationsForDream(queue, mutation.dream.id);
+              await persistRemoteDreams((prev) =>
+                prev.map((d) => {
+                  if (d.id !== mutation.dream.id) return d;
+                  if (stillPending) {
+                    return d;
+                  }
+                  return { ...savedWithLocal, id: d.id, pendingSync: undefined };
+                })
+              );
+            } catch (error) {
+              if (isNotFoundError(error)) {
+                queue[0] = {
+                  ...mutation,
+                  type: 'create',
+                  dream: { ...mutation.dream, remoteId: undefined, pendingSync: true },
+                };
+                continue;
+              }
+              throw error;
+            }
           } else if (mutation.type === 'delete') {
             const remoteId = mutation.remoteId ?? resolveRemoteId(mutation.dreamId);
             if (!remoteId) {
