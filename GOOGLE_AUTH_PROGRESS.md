@@ -1,6 +1,6 @@
 Google Auth Setup — Current Status
 
-- App scheme configured: `app.json`:8 (`scheme: "dreamapp"`) ✅
+- App scheme configured: `app.json`:8 (`scheme: "noctalia"`) ✅
 - Google Sign-In plugin present: `app.json`:58 (with iOS scheme at 60) ✅
 - Native Google Sign-In library installed: `@react-native-google-signin/google-signin` in `package.json`:22 ✅
 - Initialize Google Sign-In on app startup: `app/_layout.tsx`:56 ✅
@@ -43,5 +43,5 @@ Files touched
 
 Notes
 
-- `app.json` already has `scheme: "dreamapp"`; keep Supabase redirect URL `dreamapp://google-auth` in your Supabase settings.
+- `app.json` now uses `scheme: "noctalia"`; keep Supabase redirect URL `noctalia://google-auth` in your Supabase settings.
 - If you only target Android initially, you can keep the iOS URL scheme placeholder as-is.

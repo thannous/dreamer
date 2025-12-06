@@ -227,7 +227,7 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 8. Aller à **Authentication** > **URL Configuration**
 9. Dans **Redirect URLs**, ajouter :
    ```
-   dreamapp://google-auth
+   noctalia://google-auth
    ```
 10. Cliquer **Save**
 
@@ -236,7 +236,7 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 - [X] Client ID et Secret ajoutés
 - [X] **Skip nonce check** est COCHÉ ✅
 - [X] Authorized Client IDs contient Web + Android
-- [X] Redirect URL `dreamapp://google-auth` ajoutée
+- [X] Redirect URL `noctalia://google-auth` ajoutée
 
 ---
 
