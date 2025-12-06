@@ -32,6 +32,7 @@ import {
   incrementLocalAnalysisCount,
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
+import { markMockAnalysis } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import {
   createDreamInSupabase,
@@ -409,6 +410,11 @@ export const useDreamJournal = () => {
           isAnalyzed: true,
         };
         await updateDream(next);
+
+        if (isMockMode) {
+          await markMockAnalysis({ id: dreamId });
+        }
+
         quotaService.invalidate(user);
         return next;
       } catch (error) {

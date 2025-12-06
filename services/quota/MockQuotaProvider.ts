@@ -1,9 +1,15 @@
 import type { User } from '@supabase/supabase-js';
 
 import { QUOTAS, type UserTier } from '@/constants/limits';
-import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
+import { getUserChatMessageCount, isDreamExplored } from '@/lib/dreamUsage';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { getSavedDreams } from '@/services/storageService';
+import {
+  getMockAnalysisCount,
+  getMockExplorationCount,
+  isDreamExploredMock,
+  invalidateMockQuotaCache,
+} from './MockQuotaEventStore';
 
 import type { CacheEntry, QuotaProvider, QuotaDreamTarget } from './types';
 
@@ -37,13 +43,11 @@ export class MockQuotaProvider implements QuotaProvider {
   }
 
   async getUsedAnalysisCount(_user: User | null): Promise<number> {
-    const dreams = await this.getDreams();
-    return getAnalyzedDreamCount(dreams);
+    return getMockAnalysisCount();
   }
 
   async getUsedExplorationCount(_user: User | null): Promise<number> {
-    const dreams = await this.getDreams();
-    return getExploredDreamCount(dreams);
+    return getMockExplorationCount();
   }
 
   async getUsedMessagesCount(target: QuotaDreamTarget | undefined, _user: User | null): Promise<number> {
@@ -66,12 +70,12 @@ export class MockQuotaProvider implements QuotaProvider {
     const limit = QUOTAS[tier].exploration;
     if (limit === null) return true;
 
-    // If this specific dream is already explored, always allow continuing the chat
+    // If this specific dream is already explored (event store), always allow continuing the chat
     if (target) {
       const dreams = await this.getDreams();
       const dreamId = target?.dream?.id ?? target?.dreamId;
       const dream = dreamId ? dreams.find((d) => d.id === dreamId) : undefined;
-      if (isDreamExplored(dream)) {
+      if (await isDreamExploredMock(dreamId) || isDreamExplored(dream)) {
         return true;
       }
     }
@@ -136,5 +140,6 @@ export class MockQuotaProvider implements QuotaProvider {
 
   invalidate(): void {
     this.cache.clear();
+    invalidateMockQuotaCache();
   }
 }
