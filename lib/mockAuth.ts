@@ -106,11 +106,11 @@ export async function signInWithProfile(profile: MockProfile): Promise<User> {
   return applyProfile(profile);
 }
 
-export async function signInWithEmailPassword(email: string): Promise<User> {
+export async function signInWithEmailPassword(email: string, _lang?: string): Promise<User> {
   return applyProfile('existing', email);
 }
 
-export async function signUpWithEmailPassword(email: string): Promise<User> {
+export async function signUpWithEmailPassword(email: string, _lang?: string): Promise<User> {
   return applyProfile('new', email, { preserveStorage: true });
 }
 

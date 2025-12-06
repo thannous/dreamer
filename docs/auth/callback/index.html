@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0514">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Email Confirmed | Noctalia</title>
+    <meta name="description" content="Your email has been confirmed. Welcome to Noctalia.">
+    <link rel="icon" href="/logo/logo_noctalia.png" type="image/png">
+    <link rel="apple-touch-icon" href="/logo/logo_noctalia.png">
+
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="/css/styles.min.css">
+
+    <!-- Page-specific styles -->
+    <style>
+        /* Checkmark animation */
+        .check-circle {
+            transform-origin: 50px 50px;
+            transform: scale(0);
+        }
+
+        .checkmark-path {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+        }
+
+        /* Glow pulse effect */
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(253, 164, 129, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(253, 164, 129, 0.7));
+            }
+        }
+
+        .glow-pulse {
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        /* Title character */
+        .title-char {
+            display: inline-block;
+            opacity: 0;
+        }
+
+        /* Divider line */
+        .divider {
+            transform: scaleX(0);
+            transform-origin: center;
+        }
+
+        /* Particle burst */
+        @keyframes particleBurst {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .particle-ring {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(253, 164, 129, 0.5);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            margin-left: -60px;
+            margin-top: -60px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .particle-ring.animate {
+            animation: particleBurst 0.8s ease-out forwards;
+        }
+
+        /* Title character animation */
+        .title-char {
+            display: inline-block;
+            opacity: 0;
+            background: linear-gradient(to bottom, #fff 0%, #E9D5FF 50%, rgba(192, 132, 252, 0.7) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        /* Countdown number transition */
+        .countdown-number {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .countdown-number.tick {
+            transform: scale(1.2);
+        }
+
+        /* Static state for reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .check-circle {
+                transform: scale(1) !important;
+            }
+            .checkmark-path {
+                stroke-dashoffset: 0 !important;
+            }
+            .title-char {
+                opacity: 1 !important;
+            }
+            .divider {
+                transform: scaleX(1) !important;
+            }
+            .glow-pulse {
+                animation: none !important;
+            }
+            .shimmer-text {
+                animation: none !important;
+                background: none !important;
+                -webkit-text-fill-color: #fff !important;
+            }
+        }
+
+        /* Ensure content is visible if JS fails */
+        .no-js .check-circle {
+            transform: scale(1);
+        }
+        .no-js .checkmark-path {
+            stroke-dashoffset: 0;
+        }
+        .no-js .title-char {
+            opacity: 1 !important;
+        }
+        .no-js .divider {
+            transform: scaleX(1);
+        }
+        .no-js #subtitle,
+        .no-js #cta-button,
+        .no-js #countdown,
+        .no-js #skip-btn {
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+<body class="no-js bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-hidden" style="background-color: #0a0514;">
+
+    <!-- Ambient Background -->
+    <div class="aurora-bg"></div>
+
+    <!-- Floating Orbs -->
+    <div class="orb w-[60vw] h-[60vw] md:w-[35rem] md:h-[35rem] bg-purple-900/40 top-[-10%] left-[-20%] animate-float"></div>
+    <div class="orb w-[50vw] h-[50vw] md:w-[30rem] md:h-[30rem] bg-dream-salmon/10 bottom-[-10%] right-[-15%] animate-float-delayed"></div>
+    <div class="orb w-[30vw] h-[30vw] md:w-[20rem] md:h-[20rem] bg-blue-900/20 top-[60%] left-[60%] animate-float"></div>
+
+    <!-- Main Content -->
+    <main class="relative min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="relative z-10 flex flex-col items-center text-center max-w-lg mx-auto">
+
+            <!-- Success Icon -->
+            <div class="relative mb-8">
+                <!-- Particle rings (will animate on completion) -->
+                <div class="particle-ring" id="ring1"></div>
+                <div class="particle-ring" id="ring2"></div>
+                <div class="particle-ring" id="ring3"></div>
+
+                <!-- Checkmark SVG -->
+                <svg class="w-24 h-24 md:w-32 md:h-32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Circle background -->
+                    <circle
+                        class="check-circle"
+                        cx="50"
+                        cy="50"
+                        r="45"
+                        fill="rgba(253, 164, 129, 0.15)"
+                        stroke="#FDA481"
+                        stroke-width="2"
+                    />
+                    <!-- Checkmark -->
+                    <path
+                        class="checkmark-path"
+                        d="M30 52 L44 66 L70 38"
+                        stroke="#FDA481"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        fill="none"
+                    />
+                </svg>
+            </div>
+
+            <!-- Title -->
+            <h1 id="title-text" class="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight mb-4"></h1>
+
+            <!-- Subtitle -->
+            <p id="subtitle" class="font-sans text-lg md:text-xl text-purple-200/80 max-w-md mb-8 opacity-0">
+                <!-- Dynamically set based on language -->
+            </p>
+
+            <!-- Decorative Divider -->
+            <div class="divider mb-8" style="width: 8rem; height: 1px; background: linear-gradient(to right, transparent, rgba(253, 164, 129, 0.6), transparent);"></div>
+
+            <!-- CTA Button -->
+            <a
+                id="cta-button"
+                href="/"
+                class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] opacity-0"
+            >
+                <span class="relative z-10 flex items-center justify-center gap-2" id="cta-text">
+                    <!-- Dynamically set -->
+                </span>
+            </a>
+
+            <!-- Countdown -->
+            <p id="countdown" class="font-sans text-sm text-purple-300/60 mt-6 opacity-0">
+                <span id="countdown-prefix"></span>
+                <span class="countdown-number font-medium text-dream-salmon" id="countdown-number">5</span>
+                <span id="countdown-suffix"></span>
+            </p>
+
+            <!-- Skip link -->
+            <button
+                id="skip-btn"
+                class="mt-4 text-xs text-purple-300/40 hover:text-purple-300/80 transition-colors underline opacity-0"
+            >
+                <!-- Dynamically set -->
+            </button>
+        </div>
+    </main>
+
+    <!-- Noctalia Logo/Branding (bottom) -->
+    <footer class="fixed bottom-6 left-0 right-0 flex justify-center z-10">
+        <div class="flex items-center gap-2 opacity-40">
+            <svg class="w-5 h-5 text-dream-salmon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <span class="font-serif text-sm tracking-wide text-dream-cream">Noctalia</span>
+        </div>
+    </footer>
+
+    <!-- GSAP -->
+    <script src="/js/gsap.min.js"></script>
+
+    <!-- Animation & Logic Script -->
+    <script>
+    (function() {
+        'use strict';
+
+        // Remove no-js class
+        document.body.classList.remove('no-js');
+
+        // ===================
+        // i18n Configuration
+        // ===================
+        const translations = {
+            en: {
+                title: 'Email confirmed',
+                subtitle: 'Your account is now active. Welcome to Noctalia.',
+                cta: 'Open the app',
+                ctaArrow: '→',
+                countdownPrefix: 'Redirecting in ',
+                countdownSuffix: ' seconds...',
+                skip: 'Skip countdown'
+            },
+            fr: {
+                title: 'Email confirmé',
+                subtitle: 'Votre compte est maintenant actif. Bienvenue sur Noctalia.',
+                cta: 'Ouvrir l\'app',
+                ctaArrow: '→',
+                countdownPrefix: 'Redirection dans ',
+                countdownSuffix: ' secondes...',
+                skip: 'Passer le compte à rebours'
+            }
+        };
+
+        // Detect language
+        function detectLanguage() {
+            const langs = navigator.languages || [navigator.language || navigator.userLanguage || 'en'];
+            const primary = (langs[0] || 'en').toLowerCase();
+            return primary.startsWith('fr') ? 'fr' : 'en';
+        }
+
+        const lang = detectLanguage();
+        const t = translations[lang];
+
+        // Set HTML lang attribute
+        document.documentElement.lang = lang;
+
+        // ===================
+        // DOM Elements
+        // ===================
+        const titleEl = document.getElementById('title-text');
+        const subtitleEl = document.getElementById('subtitle');
+        const ctaButton = document.getElementById('cta-button');
+        const ctaText = document.getElementById('cta-text');
+        const countdownEl = document.getElementById('countdown');
+        const countdownNumber = document.getElementById('countdown-number');
+        const countdownPrefix = document.getElementById('countdown-prefix');
+        const countdownSuffix = document.getElementById('countdown-suffix');
+        const skipBtn = document.getElementById('skip-btn');
+        const checkCircle = document.querySelector('.check-circle');
+        const checkmarkPath = document.querySelector('.checkmark-path');
+        const divider = document.querySelector('.divider');
+        const rings = [
+            document.getElementById('ring1'),
+            document.getElementById('ring2'),
+            document.getElementById('ring3')
+        ];
+
+        // ===================
+        // Populate Content
+        // ===================
+
+        // Split title into characters
+        const titleChars = t.title.split('').map((char, i) => {
+            if (char === ' ') {
+                return '<span class="title-char" style="width: 0.3em;">&nbsp;</span>';
+            }
+            return `<span class="title-char">${char}</span>`;
+        }).join('');
+        titleEl.innerHTML = titleChars;
+
+        // Set other content
+        subtitleEl.textContent = t.subtitle;
+        ctaText.innerHTML = `${t.cta} <span class="transition-transform group-hover:translate-x-1">${t.ctaArrow}</span>`;
+        countdownPrefix.textContent = t.countdownPrefix;
+        countdownSuffix.textContent = t.countdownSuffix;
+        skipBtn.textContent = t.skip;
+
+        // ===================
+        // Reduced Motion Check
+        // ===================
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion || !window.gsap) {
+            // Show everything immediately
+            checkCircle.style.transform = 'scale(1)';
+            checkmarkPath.style.strokeDashoffset = '0';
+            document.querySelectorAll('.title-char').forEach(el => el.style.opacity = '1');
+            subtitleEl.style.opacity = '1';
+            divider.style.transform = 'scaleX(1)';
+            ctaButton.style.opacity = '1';
+            countdownEl.style.opacity = '1';
+            skipBtn.style.opacity = '1';
+            startCountdown();
+            return;
+        }
+
+        // ===================
+        // GSAP Animation
+        // ===================
+        const gsapLib = window.gsap;
+
+        // Main timeline
+        const tl = gsapLib.timeline({
+            delay: 0.3,
+            onComplete: function() {
+                // Add glow pulse after animation completes
+                checkCircle.parentElement.classList.add('glow-pulse');
+                // Trigger particle burst
+                rings.forEach((ring, i) => {
+                    setTimeout(() => {
+                        ring.classList.add('animate');
+                    }, i * 150);
+                });
+                // Start countdown
+                startCountdown();
+            }
+        });
+
+        // Animation sequence
+        tl
+            // 1. Circle scales in with bounce
+            .to(checkCircle, {
+                scale: 1,
+                duration: 0.6,
+                ease: 'back.out(1.7)'
+            })
+            // 2. Checkmark draws
+            .to(checkmarkPath, {
+                strokeDashoffset: 0,
+                duration: 0.5,
+                ease: 'power2.out'
+            }, '-=0.2')
+            // 3. Title characters reveal
+            .to('.title-char', {
+                opacity: 1,
+                y: 0,
+                duration: 0.4,
+                stagger: 0.025,
+                ease: 'power2.out'
+            }, '-=0.1')
+            // 4. Subtitle fades in
+            .to(subtitleEl, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: 'power2.out'
+            }, '-=0.2')
+            // 5. Divider expands
+            .to(divider, {
+                scaleX: 1,
+                duration: 0.4,
+                ease: 'power2.out'
+            }, '-=0.3')
+            // 6. CTA button appears
+            .to(ctaButton, {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.4,
+                ease: 'power2.out'
+            }, '-=0.2')
+            // 7. Countdown appears
+            .to(countdownEl, {
+                opacity: 1,
+                duration: 0.3,
+                ease: 'power2.out'
+            })
+            // 8. Skip button appears
+            .to(skipBtn, {
+                opacity: 1,
+                duration: 0.3,
+                ease: 'power2.out'
+            }, '-=0.2');
+
+        // Set initial states for animated elements
+        gsapLib.set('.title-char', { opacity: 0, y: 30 });
+        gsapLib.set(subtitleEl, { opacity: 0, y: 20 });
+        gsapLib.set(ctaButton, { opacity: 0, y: 20, scale: 0.95 });
+        gsapLib.set(countdownEl, { opacity: 0 });
+        gsapLib.set(skipBtn, { opacity: 0 });
+
+        // ===================
+        // Countdown Logic
+        // ===================
+        let countdown = 5;
+        let countdownInterval = null;
+
+        // Check if auto-redirect is disabled via URL param (for testing)
+        const urlParams = new URLSearchParams(window.location.search);
+        const noRedirect = urlParams.has('noredirect');
+
+        function startCountdown() {
+            if (noRedirect) {
+                countdownEl.innerHTML = '<span class="text-purple-300/40">(Auto-redirect disabled)</span>';
+                return;
+            }
+
+            countdownInterval = setInterval(() => {
+                countdown--;
+
+                // Animate number change
+                countdownNumber.classList.add('tick');
+                setTimeout(() => {
+                    countdownNumber.textContent = countdown;
+                    countdownNumber.classList.remove('tick');
+                }, 150);
+
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    redirect();
+                }
+            }, 1000);
+        }
+
+        function redirect() {
+            // Try deep link first (for mobile apps)
+            const deepLink = 'noctalia://auth/callback/success';
+
+            // For web, redirect based on language
+            const webFallback = lang === 'fr' ? '/fr/' : '/en/';
+
+            // Show "redirecting" message
+            countdownEl.innerHTML = '<span class="text-dream-salmon">' + (lang === 'fr' ? 'Redirection...' : 'Redirecting...') + '</span>';
+
+            // Try deep link
+            window.location.href = deepLink;
+
+            // Fallback to web after short delay
+            setTimeout(() => {
+                window.location.href = webFallback;
+            }, 1000);
+        }
+
+        // Skip button handler
+        skipBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            redirect();
+        });
+
+        // CTA button handler
+        ctaButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            redirect();
+        });
+
+    })();
+    </script>
+</body>
+</html>

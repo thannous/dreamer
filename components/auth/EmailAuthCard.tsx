@@ -13,6 +13,7 @@ import {
 
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { EmailVerificationDialog } from '@/components/auth/EmailVerificationDialog';
@@ -75,6 +76,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const { language } = useLanguage();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -91,6 +93,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const [verificationPolling, setVerificationPolling] = useState(false);
   const [lastVerificationEmailSentAt, setLastVerificationEmailSentAt] = useState<number | null>(null);
   const [cooldownTick, setCooldownTick] = useState(() => Date.now());
+  const [verificationSuccess, setVerificationSuccess] = useState(false);
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
@@ -120,6 +123,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setUnverifiedEmail(null);
     setResendStatus('idle');
     setLastVerificationEmailSentAt(null);
+    setVerificationSuccess(false);
   }, []);
 
   const startVerificationFlow = useCallback(
@@ -175,7 +179,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     const passwordForVerification = password;
     setSubmitting('signup');
     try {
-      const newUser = await signUpWithEmailPassword(trimmedEmail, passwordForVerification);
+      const newUser = await signUpWithEmailPassword(trimmedEmail, passwordForVerification, language);
       const needsVerification = !newUser?.email_confirmed_at;
       if (needsVerification) {
         startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now());
@@ -224,7 +228,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       submitting !== null ||
       authLoading ||
       isMockBusy ||
-      user
+      user ||
+      verificationSuccess
     ) {
       return;
     }
@@ -232,9 +237,14 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     setVerificationPolling(true);
     try {
       await signInWithEmailPassword(pendingVerification.email, pendingVerification.password);
-      clearPendingVerification();
+      // Show success state briefly before closing
+      setVerificationSuccess(true);
       requestStayOnSettingsIntent();
       resetSensitiveInputs();
+      // Close dialog after showing success animation
+      setTimeout(() => {
+        clearPendingVerification();
+      }, 1500);
     } catch (error) {
       if (!isUnverifiedEmailError(error) && __DEV__) {
         console.warn('[EmailAuthCard] verification poll failed', error);
@@ -251,6 +261,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     submitting,
     user,
     verificationPolling,
+    verificationSuccess,
   ]);
 
   const handleFormSubmit = (event?: FormEvent<HTMLFormElement>) => {
@@ -628,6 +639,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         statusMessage={resendStatusMessage}
         cooldownMessage={resendCooldownMessage}
         isResending={resendStatus === 'sending'}
+        verified={verificationSuccess}
       />
     </>
   );
