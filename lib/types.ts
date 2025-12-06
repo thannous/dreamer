@@ -24,6 +24,7 @@ export type DreamTheme = 'surreal' | 'mystical' | 'calm' | 'noir';
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
+  clientRequestId?: string; // Idempotency key for creates to avoid duplicates
   transcript: string;
   title: string;
   interpretation: string;

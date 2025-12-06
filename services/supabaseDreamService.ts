@@ -1,5 +1,6 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
+import { generateUUID } from '@/lib/dreamUtils';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
@@ -427,6 +428,7 @@ type SupabaseDreamRow = {
   analysis_status?: 'none' | 'pending' | 'done' | 'failed' | null;
   analysis_request_id?: string | null;
   exploration_started_at?: string | null;
+  client_request_id?: string | null;
 };
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
@@ -453,6 +455,7 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     analysisStatus: row.analysis_status ?? undefined,
     analysisRequestId: row.analysis_request_id ?? undefined,
     explorationStartedAt: row.exploration_started_at ? Date.parse(row.exploration_started_at) : undefined,
+    clientRequestId: row.client_request_id ?? undefined,
   };
 };
 
@@ -473,6 +476,7 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumn
     analysis_status: dream.analysisStatus ?? 'none',
     analysis_request_id: dream.analysisRequestId ?? null,
     exploration_started_at: dream.explorationStartedAt ? new Date(dream.explorationStartedAt).toISOString() : null,
+    client_request_id: dream.clientRequestId ?? null,
   };
 
   if (!includeImageColumns) return base;
@@ -528,21 +532,27 @@ export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
 }
 
 export async function createDreamInSupabase(dream: DreamAnalysis, userId: string): Promise<DreamAnalysis> {
-  const preparedDream = await ensureRemoteImage(dream, userId);
+  const withRequestId = dream.clientRequestId
+    ? dream
+    : { ...dream, clientRequestId: generateUUID() };
 
-  const insert = (includeImageColumn: boolean) =>
+  const preparedDream = await ensureRemoteImage(withRequestId, userId);
+
+  const upsert = (includeImageColumn: boolean) =>
     supabase
       .from(DREAMS_TABLE)
-      .insert(mapDreamToRow(preparedDream, userId, includeImageColumn))
+      .upsert(mapDreamToRow(preparedDream, userId, includeImageColumn), {
+        onConflict: 'user_id,client_request_id',
+      })
       .select('*')
       .single();
 
   const tryImageColumn = imageGenerationFailedColumnAvailable;
-  let { data, error } = await insert(tryImageColumn);
+  let { data, error } = await upsert(tryImageColumn);
 
   if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
     imageGenerationFailedColumnAvailable = false;
-    ({ data, error } = await insert(false));
+    ({ data, error } = await upsert(false));
   }
 
   if (error || !data) {

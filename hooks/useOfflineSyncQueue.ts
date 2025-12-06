@@ -18,6 +18,7 @@ import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import {
   type DreamListUpdater,
   generateMutationId,
+  generateUUID,
   hasPendingMutationsForDream,
   isNotFoundError,
   removeDream,
@@ -78,6 +79,18 @@ export function useOfflineSyncQueue({
   // Track component mount state to bail out of async operations
   const mountedRef = useRef(true);
 
+  const ensureClientRequestId = useCallback((mutation: DreamMutation): DreamMutation => {
+    if (mutation.type === 'create' || mutation.type === 'update') {
+      if (mutation.dream.clientRequestId) return mutation;
+      const clientRequestId = generateUUID();
+      return {
+        ...mutation,
+        dream: { ...mutation.dream, clientRequestId },
+      };
+    }
+    return mutation;
+  }, []);
+
   // Track mount state for async safety
   useEffect(() => {
     mountedRef.current = true;
@@ -90,18 +103,18 @@ export function useOfflineSyncQueue({
    * Set pending mutations (used after loadDreams)
    */
   const setPendingMutations = useCallback((mutations: DreamMutation[]) => {
-    pendingMutationsRef.current = mutations;
-  }, []);
+    pendingMutationsRef.current = mutations.map(ensureClientRequestId);
+  }, [ensureClientRequestId]);
 
   /**
    * Hydrate queue with initial mutations loaded from storage.
    * Merge with any mutations already enqueued in this session to avoid dropping new work.
    */
   useEffect(() => {
-    const current = pendingMutationsRef.current;
+    const current = pendingMutationsRef.current.map(ensureClientRequestId);
     const mergedById = new Map<string, DreamMutation>();
-    [...initialMutations, ...current].forEach((mutation) => {
-      mergedById.set(mutation.id, mutation);
+    [...initialMutations.map(ensureClientRequestId), ...current].forEach((mutation) => {
+      mergedById.set(mutation.id, ensureClientRequestId(mutation));
     });
 
     const merged = Array.from(mergedById.values()).sort(
@@ -114,19 +127,21 @@ export function useOfflineSyncQueue({
 
     if (changed) {
       setPendingMutations(merged);
+      void persistPendingMutations(merged);
     }
-  }, [initialMutations, setPendingMutations]);
+  }, [ensureClientRequestId, initialMutations, persistPendingMutations, setPendingMutations]);
 
   /**
    * Persist pending mutations to storage
    */
   const persistPendingMutations = useCallback(
     async (mutations: DreamMutation[]) => {
-      pendingMutationsRef.current = mutations;
+      const normalized = mutations.map(ensureClientRequestId);
+      pendingMutationsRef.current = normalized;
       if (!canUseRemoteSync) return;
-      await savePendingDreamMutations(mutations);
+      await savePendingDreamMutations(normalized);
     },
-    [canUseRemoteSync]
+    [canUseRemoteSync, ensureClientRequestId]
   );
 
   /**
