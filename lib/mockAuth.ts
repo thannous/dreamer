@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 
 import type { UserTier } from '@/constants/limits';
+import { resetMockQuotaEvents } from '@/services/quota/MockQuotaEventStore';
 import { preloadDreamsNow, resetMockStorage, setPreloadDreamsEnabled } from '@/services/mocks/storageServiceMock';
 
 export type MockProfile = 'new' | 'existing' | 'premium';
@@ -77,9 +78,10 @@ type ApplyProfileOptions = {
   preserveStorage?: boolean;
 };
 
-function applyProfile(profile: MockProfile, emailOverride?: string, options?: ApplyProfileOptions): User {
+async function applyProfile(profile: MockProfile, emailOverride?: string, options?: ApplyProfileOptions): Promise<User> {
   if (!options?.preserveStorage) {
     resetMockStorage();
+    await resetMockQuotaEvents();
   }
 
   const config = PROFILE_CONFIG[profile];
@@ -123,6 +125,7 @@ export async function signInWithGoogleWeb(): Promise<User> {
 export async function signOut(): Promise<void> {
   currentUser = null;
   resetMockStorage();
+  await resetMockQuotaEvents();
   setPreloadDreamsEnabled(false);
   emitAuthChange();
 }
