@@ -28,233 +28,16 @@
     <meta name="twitter:description" content="Votre compagnon de rêves intelligent pour enregistrer, analyser et explorer vos nuits.">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
     <meta name="twitter:site" content="@NoctaliaDreams">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Fraunces (Premium Serif) & Outfit (Clean Sans) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&family=Outfit:wght@300;400;500;700&display=swap"
-        rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- GSAP -->
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dream: {
-                            dark: '#0a0514',
-                            purple: '#2E1065',
-                            lavender: '#E9D5FF',
-                            cream: '#FFF7ED',
-                            salmon: '#FDA481',
-                            salmonLight: '#FFCCB5',
-                            glass: 'rgba(255, 255, 255, 0.03)',
-                            glassBorder: 'rgba(255, 255, 255, 0.08)',
-                            accent: '#a855f7'
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Fraunces', 'serif'],
-                        sans: ['Outfit', 'sans-serif'],
-                    },
-                    animation: {
-                        'float': 'float 8s ease-in-out infinite',
-                        'float-delayed': 'float 12s ease-in-out infinite reverse',
-                        'pulse-glow': 'pulseGlow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        pulseGlow: {
-                            '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
-                            '50%': { opacity: 0.8, transform: 'scale(1.05)' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: 0, transform: 'translateY(20px)' },
-                            '100%': { opacity: 1, transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0a0514;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #4c1d95;
-            border-radius: 4px;
-        }
-
-        /* Mesh Gradient Background Animation */
-        .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
-            background-size: 200% 200%;
-            animation: aurora 20s ease infinite;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            z-index: -1;
-            opacity: 0.5;
-        }
-
-        /* Glassmorphism Utilities */
-        .glass-panel {
-            background: rgba(20, 10, 40, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .glass-panel:hover {
-            background: rgba(20, 10, 40, 0.9); /* supprime la transparence au hover pour une meilleure lisibilité */
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-button {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .glass-button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.02);
-        }
-
-        /* Phone Frame Utility */
-        .phone-frame {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            position: relative;
-            background: #000;
-        }
-
-        /* Reveal on Scroll - Safe Fallback */
-        .reveal {
-            opacity: 0;
-            /* Initial state */
-            transform: translateY(40px);
-            transition: all 0.8s ease-out;
-        }
-
-        /* If JS fails, we might want to force visibility, but for now we rely on robust JS. 
-           If no-js is critical, we could add a noscript tag style. */
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @keyframes aurora {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        /* Accordion for FAQ */
-        details>summary {
-            list-style: none;
-        }
-
-        details>summary::-webkit-details-marker {
-            display: none;
-        }
-
-        /* Marquee Animation */
-        .marquee-container {
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
-
-        .marquee-content {
-            display: flex;
-            gap: 2rem;
-            width: max-content;
-            animation: marquee 40s linear infinite;
-            padding-left: 2rem;
-        }
-
-        .marquee-content:hover {
-            animation-play-state: paused;
-        }
-
-        @keyframes marquee {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        /* État des CTA (pré-lancement par défaut) */
-        :root:not(.store-live) [data-cta="live"] { display: none !important; }
-        .store-live [data-cta="prelaunch"] { display: none !important; }
-        :root:not(.store-live) [data-subscription="live"] { display: none !important; }
-        .store-live [data-subscription="prelaunch"] { display: none !important; }
-
-        /* Garde-fous pour éviter le scroll horizontal sur mobile */
-        html, body {
-            overflow-x: hidden;
-        }
-
-        .orb {
-            max-width: 100vw;
-            max-height: 100vw;
-        }
-
-        .marquee-container {
-            overflow: hidden;
-        }
-
-        /* Ancre pour les étapes (3 images) */
-        #etapes-reves {
-            scroll-margin-top: 140px;
-        }
-    </style>
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="/css/styles.min.css">
+    <!-- Lucide Icons (deferred) -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- GSAP (local, deferred) -->
+    <script src="/js/gsap.min.js" defer></script>
+    <script src="/js/ScrollTrigger.min.js" defer></script>
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -387,7 +170,7 @@
     </nav>
 
     <!-- 1. Hero Section -->
-    <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-hidden">
+    <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
 
             <!-- Badge -->
@@ -398,7 +181,7 @@
             </div>
 
             <!-- H1 Title -->
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim hero-title">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.15] md:leading-[1.1] pb-2 mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 drop-shadow-2xl opacity-0 hero-anim hero-title">
                 Révélez ce que vos<br>nuits racontent
             </h1>
 

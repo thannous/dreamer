@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   FONTS
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/Outfit-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/Outfit-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/Outfit-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/Outfit-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   CUSTOM SCROLLBAR
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0514;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4c1d95;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   BACKGROUND EFFECTS
+   ========================================================================== */
+
+/* Mesh Gradient Background Animation */
+.aurora-bg {
+  background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+              radial-gradient(at 50% 0%, hsla(260,39%,20%,1) 0, transparent 50%),
+              radial-gradient(at 100% 0%, hsla(339,49%,20%,1) 0, transparent 50%);
+  background-size: 200% 200%;
+  animation: aurora 20s ease infinite;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  opacity: 0.5;
+  max-width: 100vw;
+  max-height: 100vw;
+}
+
+@keyframes aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==========================================================================
+   GLASSMORPHISM UTILITIES
+   ========================================================================== */
+
+.glass-panel {
+  background: rgba(20, 10, 40, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-panel:hover {
+  background: rgba(20, 10, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.02);
+}
+
+/* ==========================================================================
+   PHONE FRAME
+   ========================================================================== */
+
+.phone-frame {
+  border: 4px solid rgba(255,255,255,0.1);
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  background: #000;
+}
+
+/* ==========================================================================
+   SCROLL REVEAL ANIMATIONS
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease-out;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   FAQ ACCORDION
+   ========================================================================== */
+
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ==========================================================================
+   MARQUEE ANIMATION
+   ========================================================================== */
+
+.marquee-container {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  overflow: hidden;
+}
+
+.marquee-content {
+  display: flex;
+  gap: 2rem;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+  padding-left: 2rem;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ==========================================================================
+   CTA STATE MANAGEMENT (prelaunch vs live)
+   ========================================================================== */
+
+:root:not(.store-live) [data-cta="live"] { display: none !important; }
+.store-live [data-cta="prelaunch"] { display: none !important; }
+:root:not(.store-live) [data-subscription="live"] { display: none !important; }
+.store-live [data-subscription="prelaunch"] { display: none !important; }
+
+/* ==========================================================================
+   LAYOUT GUARDS
+   ========================================================================== */
+
+html, body {
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   SCROLL MARGIN FOR ANCHORS
+   ========================================================================== */
+
+#how-it-works-steps,
+#etapes-reves {
+  scroll-margin-top: 140px;
+}
+
+/* ==========================================================================
+   HERO ANIMATIONS (FR page - GSAP classes)
+   ========================================================================== */
+
+.hero-anim {
+  opacity: 0;
+}

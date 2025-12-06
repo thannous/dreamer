@@ -1,0 +1,14 @@
+{
+  "name": "noctalia-landing",
+  "version": "1.0.0",
+  "description": "Noctalia landing pages",
+  "scripts": {
+    "build:css": "tailwindcss -i src/input.css -o css/styles.min.css --minify",
+    "watch:css": "tailwindcss -i src/input.css -o css/styles.min.css --watch"
+  },
+  "devDependencies": {
+    "@fontsource-variable/fraunces": "^5.2.9",
+    "@fontsource/outfit": "^5.2.8",
+    "tailwindcss": "^3.4.0"
+  }
+}
