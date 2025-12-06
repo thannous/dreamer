@@ -74,7 +74,12 @@ async function generateImageFromPrompt(options: {
   const resolvedModel = isGemini && !isGeminiImageModel ? fallbackGeminiImageModel : model;
   const isGeminiImage = resolvedModel.toLowerCase().includes('gemini') && resolvedModel.toLowerCase().includes('image');
   const apiVersion = apiBase.includes('/v1beta') ? 'v1beta' : 'v1';
-  const mimeConfigKey = apiVersion === 'v1' ? 'responseMimeType' : 'response_mime_type';
+  // Try without an explicit mime first; some endpoints reject both snake_case and camelCase hints.
+  const mimeConfigCandidates: Array<'responseMimeType' | 'response_mime_type' | undefined> = [
+    undefined,
+    'responseMimeType',
+    'response_mime_type',
+  ];
 
   if (isGemini && !isGeminiImageModel && resolvedModel !== model) {
     console.warn(`[api] generateImageFromPrompt: model ${model} is text-only, falling back to ${resolvedModel}`);
@@ -87,58 +92,52 @@ async function generateImageFromPrompt(options: {
   }
 
   const endpoint = `${apiBase}/${apiVersion}/models/${resolvedModel}:generateContent`;
-  const createBody = (includeMime: boolean) => ({
+  const createBody = (mimeKey?: string) => ({
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    ...(includeMime ? { generationConfig: { [mimeConfigKey]: 'image/png' } } : {}),
+    ...(mimeKey ? { generationConfig: { [mimeKey]: 'image/png' } } : {}),
     ...(apiVersion === 'v1beta' ? { responseModalities: ['IMAGE'] } : {}),
   });
 
-  const requestOnce = async (includeMime: boolean) => {
+  const requestOnce = async (mimeKey?: string) => {
     return fetch(endpoint, {
       method: 'POST',
       headers,
-      body: JSON.stringify(createBody(includeMime)),
+      body: JSON.stringify(createBody(mimeKey)),
     });
   };
 
-  const imgRes = await requestOnce(true);
+  const attemptErrors: string[] = [];
 
-  if (!imgRes.ok) {
-    const t = await imgRes.text();
+  for (const key of mimeConfigCandidates) {
+    const res = await requestOnce(key);
+    if (res.ok) {
+      const json = (await res.json()) as any;
+      const parts = json?.candidates?.[0]?.content?.parts;
+      const inlinePart = Array.isArray(parts)
+        ? parts.find((p: any) => p?.inlineData?.data)
+        : undefined;
+      if (inlinePart?.inlineData?.data) return { imageBase64: inlinePart.inlineData.data as string, raw: json };
+      attemptErrors.push(`key=${key ?? 'none'}: ok response but no inlineData`);
+      continue;
+    }
+
+    const bodyText = await res.text();
+    attemptErrors.push(`key=${key ?? 'none'} status=${res.status} body=${bodyText}`);
+
     const mimeTypeError =
-      imgRes.status === 400 &&
+      res.status === 400 &&
       (() => {
-        const normalized = t.toLowerCase();
+        const normalized = bodyText.toLowerCase();
         return normalized.includes('response_mime_type') || normalized.includes('responsemimetype');
       })();
 
-    if (mimeTypeError) {
-      console.warn(
-        `[api] generateImageFromPrompt: response mime type rejected for ${resolvedModel}, retrying without explicit mime`
-      );
-      const retry = await requestOnce(false);
-      if (retry.ok) {
-        const retryJson = (await retry.json()) as any;
-        const retryParts = retryJson?.candidates?.[0]?.content?.parts;
-        const retryInline = Array.isArray(retryParts)
-          ? retryParts.find((p: any) => p?.inlineData?.data)
-          : undefined;
-        if (retryInline?.inlineData?.data) {
-          return { imageBase64: retryInline.inlineData.data as string, raw: retryJson };
-        }
-      }
+    // Only continue to next hint if the error is specifically about the mime field.
+    if (!mimeTypeError) {
+      throw new Error(`Gemini image error ${res.status}: ${bodyText}`);
     }
-
-    throw new Error(`Gemini image error ${imgRes.status}: ${t}`);
   }
 
-  const imgJson = (await imgRes.json()) as any;
-  const parts = imgJson?.candidates?.[0]?.content?.parts;
-  const inlinePart = Array.isArray(parts)
-    ? parts.find((p: any) => p?.inlineData?.data)
-    : undefined;
-
-  return { imageBase64: inlinePart?.inlineData?.data as string | undefined, raw: imgJson };
+  throw new Error(`Gemini image error: all mime strategies failed (${attemptErrors.join(' | ')})`);
 }
 
 /**

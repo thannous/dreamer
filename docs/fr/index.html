@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0514">
     <title>Noctalia | Le journal de rêves intelligent</title>
     <meta name="description"
         content="Noctalia est le compagnon de rêves intelligent : capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.">
@@ -11,6 +12,17 @@
     <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
     <link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/">
+    <link rel="icon" href="/logo/logo_noctalia.png" type="image/png">
+    <link rel="apple-touch-icon" href="/logo/logo_noctalia.png">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Noctalia – Journal de rêves intelligent par la voix">
+    <meta property="og:description" content="Capturez vos rêves à la voix, explorez-les avec l’IA et transformez vos nuits en insights.">
+    <meta property="og:url" content="https://noctalia.app/fr/">
+    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Noctalia – Journal de rêves intelligent par la voix">
+    <meta name="twitter:description" content="Votre compagnon de rêves intelligent pour enregistrer, analyser et explorer vos nuits.">
+    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Fraunces (Premium Serif) & Outfit (Clean Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -233,6 +245,71 @@
             overflow: hidden;
         }
     </style>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "Comment fonctionne l'analyse des rêves ?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Noctalia utilise des modèles de langage avancés inspirés de la psychologie analytique et de la symbolique des rêves pour identifier motifs et archétypes et vous proposer des pistes de réflexion."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Mes rêves sont-ils privés ?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous seul(e) y avez accès, et vos données ne sont pas revendues."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Puis-je écrire mes rêves au lieu de parler ?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Oui, un éditeur de texte complet est disponible si vous préférez écrire vos rêves plutôt que les enregistrer à la voix."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "L'application fonctionne-t-elle hors ligne ?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se font automatiquement lorsque vous retrouvez une connexion."
+                    }
+                }
+            ]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Noctalia",
+            "description": "Application de journal de rêves propulsée par l'IA. Capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.",
+            "operatingSystem": ["iOS", "Android"],
+            "applicationCategory": "LifestyleApplication",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "EUR"
+            }
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Noctalia",
+            "url": "https://noctalia.app",
+            "logo": "https://noctalia.app/logo/logo_noctalia.png",
+            "sameAs": []
+        }
+    </script>
 </head>
 
 <body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden"
@@ -256,6 +333,7 @@
             <div class="hidden md:flex items-center gap-8 text-sm font-sans text-purple-100/80">
                 <a href="#comment-ca-marche" class="hover:text-white transition-colors">Comment ça marche</a>
                 <a href="#fonctionnalites" class="hover:text-white transition-colors">Fonctionnalités</a>
+                <a href="blog/" class="hover:text-white transition-colors">Blog</a>
             </div>
             <div class="flex items-center gap-3">
                 <a href="../en/index.html" hreflang="en"
@@ -264,13 +342,13 @@
                     <i data-lucide="languages" class="w-4 h-4"></i>
                     EN
                 </a>
-                <a data-cta="prelaunch" data-waitlist
+                <a data-cta="prelaunch" data-waitlist href="https://noctalia.app/waitlist"
                     class="hidden sm:block glass-button px-6 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">
                     Rejoindre la liste d'attente
                 </a>
                 <div data-cta="live" hidden class="hidden sm:flex items-center gap-2">
-                    <a data-ios-store class="glass-button px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">App Store</a>
-                    <a data-android-store class="glass-button px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">Google Play</a>
+                    <a data-ios-store href="https://apps.apple.com/app/id0000000000" class="glass-button px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">App Store</a>
+                    <a data-android-store href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="glass-button px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-white/10 border-dream-salmon/30 hover:border-dream-salmon">Google Play</a>
                 </div>
             </div>
         </div>
@@ -301,20 +379,20 @@
             <!-- CTA & Reassurance -->
             <div class="flex flex-col items-center gap-6 opacity-0 hero-anim hero-cta">
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <a data-cta="prelaunch" data-waitlist
+                    <a data-cta="prelaunch" data-waitlist href="https://noctalia.app/waitlist"
                         class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
                             Rejoindre la liste d'attente <i data-lucide="download" class="w-4 h-4"></i>
                         </span>
                     </a>
                     <div data-cta="live" hidden class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                        <a data-ios-store
+                        <a data-ios-store href="https://apps.apple.com/app/id0000000000"
                             class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                             <span class="relative z-10 flex items-center justify-center gap-2">
                                 Obtenir sur l'App Store <i data-lucide="apple" class="w-4 h-4"></i>
                             </span>
                         </a>
-                        <a data-android-store
+                        <a data-android-store href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia"
                             class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors text-center">
                             <i data-lucide="play" class="w-5 h-5 fill-current"></i> Obtenir sur Google Play
                         </a>
@@ -710,7 +788,7 @@
                                 class="w-4 h-4 text-gray-400"></i> Journal de base</li>
                     </ul>
 
-                    <a data-cta="prelaunch" data-waitlist
+                    <a data-cta="prelaunch" data-waitlist href="https://noctalia.app/waitlist"
                         class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium text-center">Rejoindre la liste d'attente</a>
                     <div data-cta="live" hidden class="flex flex-col gap-2">
                         <a data-ios-store class="block w-full py-3 rounded-xl border border-white/20 hover:bg-white/5 transition-colors font-medium text-center">App Store</a>
@@ -729,7 +807,7 @@
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuels HD de vos rêves</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Statistiques et insights avancés</li>
                     </ul>
-                    <a data-waitlist data-cta="prelaunch"
+                    <a data-waitlist data-cta="prelaunch" href="https://noctalia.app/waitlist"
                         class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Rejoindre la liste d'attente</a>
                     <p class="text-[10px] text-gray-500 mt-3">On vous prévient dès que l'abonnement ouvre.</p>
                 </div>
@@ -845,6 +923,14 @@
             </div>
 
             <div>
+                <h5 class="font-bold mb-4 text-white">Ressources</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="blog/" class="hover:text-dream-salmon transition-colors">Blog</a></li>
+                    <li><a href="blog/comment-se-souvenir-de-ses-reves.html" class="hover:text-dream-salmon transition-colors">Mémoire des rêves</a></li>
+                </ul>
+            </div>
+
+            <div>
                 <h5 class="font-bold mb-4 text-white">Légal</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
                     <li><a href="mentions-legales.html" class="hover:text-dream-salmon transition-colors">Mentions
@@ -860,7 +946,7 @@
             <div>
                 <h5 class="font-bold mb-4 text-white">Télécharger</h5>
                 <div class="flex flex-col gap-3">
-                    <a data-cta="prelaunch" data-waitlist
+                    <a data-cta="prelaunch" data-waitlist href="https://noctalia.app/waitlist"
                         class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
                         <i data-lucide="download" class="w-5 h-5"></i>
                         <div class="leading-none">
@@ -869,7 +955,7 @@
                         </div>
                     </a>
                     <div data-cta="live" hidden class="flex flex-col gap-3">
-                        <a data-ios-store
+                        <a data-ios-store href="https://apps.apple.com/app/id0000000000"
                             class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
                             <i data-lucide="apple" class="w-5 h-5"></i>
                             <div class="leading-none">
@@ -877,7 +963,7 @@
                                 <div class="text-sm font-bold">App Store</div>
                             </div>
                         </a>
-                        <a data-android-store
+                        <a data-android-store href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia"
                             class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
                             <i data-lucide="play" class="w-5 h-5 fill-current"></i>
                             <div class="leading-none">
@@ -903,7 +989,7 @@
         const IS_STORE_LIVE = false; // Basculer à true dès que l'app est en ligne sur les stores
         const WAITLIST_URL = 'https://noctalia.app/waitlist';
         const IOS_URL = 'https://apps.apple.com/app/id0000000000';
-        const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.noctalia';
+        const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia';
         const WAITLIST_ENDPOINT = 'https://usuyppgsmmowzizhaoqj.supabase.co/functions/v1/waitlist';
         // entêtes requis par Supabase Edge Functions (Authorization nécessaire malgré verify_jwt=false)
         const WAITLIST_APIKEY = 'sb_publishable_MpacCRXT8NJRcx6q_ww_pw_L_TQWi3n';

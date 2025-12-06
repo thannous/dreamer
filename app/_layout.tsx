@@ -12,11 +12,11 @@ import {
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
-import { Stack, router } from 'expo-router';
+import { Stack, router, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useEffect, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, NativeModules, Platform } from 'react-native';
 import 'react-native-reanimated';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
@@ -76,9 +76,36 @@ export const unstable_settings = {
 
 function RootLayoutNav() {
   const { mode } = useTheme();
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
 
   useSubscriptionInitialize();
   useSubscriptionMonitor();
+
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
+  useEffect(() => {
+    const navigateToRecording = () => {
+      if (pathnameRef.current !== '/recording') {
+        router.replace('/recording');
+      }
+    };
+
+    // Always land on the recording screen when the app wakes or launches
+    navigateToRecording();
+
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        navigateToRecording();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     function redirect(notification: Notifications.Notification) {
