@@ -91,7 +91,7 @@
         defaults: { duration: 2.4, ease: 'power2.out' },
         scrollTrigger: {
           trigger: '#comment-ca-marche',
-          start: 'top top',
+          start: 'top 15%',
           end: '+=420vh',
           pin: true,
           scrub: true,

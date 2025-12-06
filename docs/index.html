@@ -6,47 +6,15 @@
   <meta name="theme-color" content="#0a0514">
   <meta name="robots" content="noindex,follow">
   <meta name="description" content="Noctalia - Your intelligent dream companion. Capture dreams by voice, explore them with AI.">
-  <link rel="canonical" href="https://noctalia.app/en/">
   <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
   <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
   <link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/">
   <link rel="icon" href="/logo/logo_noctalia.png" type="image/png">
   <link rel="apple-touch-icon" href="/logo/logo_noctalia.png">
   <title>Noctalia</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            dream: {
-              dark: '#0a0514',
-              salmon: '#FDA481',
-              cream: '#FFF7ED',
-            }
-          },
-          fontFamily: {
-            serif: ['Fraunces', 'serif'],
-            sans: ['Outfit', 'sans-serif'],
-          },
-          animation: {
-            'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
-          keyframes: {
-            pulseGlow: {
-              '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
-              '50%': { opacity: 1, transform: 'scale(1.1)' },
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body {
+      font-family: system-ui, -apple-system, sans-serif;
       background-color: #0a0514;
       color: #FFF7ED;
       display: flex;
@@ -56,6 +24,22 @@
       height: 100vh;
       margin: 0;
       overflow: hidden;
+    }
+    .title {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+    .subtitle {
+      color: rgba(253, 164, 129, 0.6);
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .loader-container {
+      display: flex;
+      justify-content: center;
     }
     .loader {
       width: 48px;
@@ -69,19 +53,40 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    .fallback {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.2);
+      margin-top: 2rem;
+      position: absolute;
+      bottom: 2.5rem;
+      text-align: center;
+    }
+    .fallback a {
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .fallback a:hover {
+      color: #FDA481;
+    }
+    .separator {
+      margin: 0 0.5rem;
+    }
   </style>
 </head>
 <body>
-  <div class="text-center">
-    <h1 class="font-serif text-4xl md:text-5xl text-dream-cream mb-2 tracking-wide">Noctalia</h1>
-    <p class="font-sans text-dream-salmon/60 text-sm tracking-widest uppercase">Redirection...</p>
-    <div class="flex justify-center">
+  <div style="text-align: center;">
+    <h1 class="title">Noctalia</h1>
+    <p class="subtitle">Redirection...</p>
+    <div class="loader-container">
       <div class="loader"></div>
     </div>
   </div>
 
-  <p class="font-sans text-xs text-white/20 mt-8 absolute bottom-10">
-    <a href="/en/" class="hover:text-dream-salmon transition-colors">If you are not redirected, continue in English</a>
+  <p class="fallback">
+    <a href="/en/">Continue in English</a>
+    <span class="separator">·</span>
+    <a href="/fr/">Continuer en français</a>
   </p>
 
   <script>

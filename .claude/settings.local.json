@@ -34,7 +34,9 @@
       "mcp__chrome-devtools__click",
       "mcp__chrome-devtools__fill",
       "Bash(pkill:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs"
     ],
     "deny": [],
     "ask": []

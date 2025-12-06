@@ -8,6 +8,7 @@
     <title>Noctalia | Le journal de rêves intelligent</title>
     <meta name="description"
         content="Noctalia est le compagnon de rêves intelligent : capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
@@ -19,10 +20,14 @@
     <meta property="og:description" content="Capturez vos rêves à la voix, explorez-les avec l’IA et transformez vos nuits en insights.">
     <meta property="og:url" content="https://noctalia.app/fr/">
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:site_name" content="Noctalia">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Noctalia – Journal de rêves intelligent par la voix">
     <meta name="twitter:description" content="Votre compagnon de rêves intelligent pour enregistrer, analyser et explorer vos nuits.">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
+    <meta name="twitter:site" content="@NoctaliaDreams">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Fraunces (Premium Serif) & Outfit (Clean Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -244,6 +249,11 @@
         .marquee-container {
             overflow: hidden;
         }
+
+        /* Ancre pour les étapes (3 images) */
+        #etapes-reves {
+            scroll-margin-top: 140px;
+        }
     </style>
     <script type="application/ld+json">
         {
@@ -293,6 +303,23 @@
             "description": "Application de journal de rêves propulsée par l'IA. Capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.",
             "operatingSystem": ["iOS", "Android"],
             "applicationCategory": "LifestyleApplication",
+            "inLanguage": "fr",
+            "author": {
+                "@type": "Organization",
+                "name": "Noctalia"
+            },
+            "screenshot": [
+                "https://noctalia.app/img/en/recording-800w.jpg",
+                "https://noctalia.app/img/en/analizing-800w.jpg",
+                "https://noctalia.app/img/en/exploring-800w.jpg"
+            ],
+            "featureList": [
+                "Enregistrement vocal des rêves",
+                "Analyse des rêves par IA",
+                "Génération d'images de rêves",
+                "Journal de rêves",
+                "Suivi émotionnel"
+            ],
             "offers": {
                 "@type": "Offer",
                 "price": "0",
@@ -307,7 +334,12 @@
             "name": "Noctalia",
             "url": "https://noctalia.app",
             "logo": "https://noctalia.app/logo/logo_noctalia.png",
-            "sameAs": []
+            "description": "Application de journal de rêves intelligent pour capturer et explorer vos rêves.",
+            "sameAs": [
+                "https://www.instagram.com/noctaliadreams/",
+                "https://x.com/NoctaliaDreams",
+                "https://www.tiktok.com/@noctaliadreams"
+            ]
         }
     </script>
 </head>
@@ -397,11 +429,12 @@
                             <i data-lucide="play" class="w-5 h-5 fill-current"></i> Obtenir sur Google Play
                         </a>
                     </div>
-                    <button
-                        class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors">
+                    <a href="#etapes-reves"
+                        class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors"
+                        aria-label="Voir comment Noctalia fonctionne">
                         <i data-lucide="play-circle"
                             class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
-                    </button>
+                    </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
                     <i data-lucide="shield-check" class="w-3 h-3 text-dream-salmon"></i> Pré-lancement • Sécurisé • Rejoignez la liste d'attente
@@ -428,7 +461,7 @@
                     concrètes en trois étapes simples.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            <div id="etapes-reves" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
                 <!-- Connecting line (desktop only) -->
                 <div
                     class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0 step-line">
@@ -913,12 +946,21 @@
                     Le compagnon de vos nuits. Transformez l'invisible en visible, un rêve à la fois.
                 </p>
                 <div class="flex gap-4">
-                    <a href="#"
-                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i
-                            data-lucide="instagram" class="w-5 h-5"></i></a>
-                    <a href="#"
-                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"><i
-                            data-lucide="twitter" class="w-5 h-5"></i></a>
+                    <a href="https://www.instagram.com/noctaliadreams/"
+                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
+                        aria-label="Instagram Noctalia">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://x.com/NoctaliaDreams"
+                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
+                        aria-label="X (Twitter) Noctalia">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@noctaliadreams"
+                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
+                        aria-label="TikTok Noctalia">
+                        <i data-lucide="music-2" class="w-5 h-5"></i>
+                    </a>
                 </div>
             </div>
 
