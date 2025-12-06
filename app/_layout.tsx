@@ -12,7 +12,7 @@ import {
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
-import { Stack, router, usePathname } from 'expo-router';
+import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -74,10 +74,40 @@ export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+function useNavigationIsReady(): boolean {
+  const navigationRef = useNavigationContainerRef();
+  const rootNavigationState = useRootNavigationState();
+  const [navigationReady, setNavigationReady] = useState(() => navigationRef.isReady());
+
+  useEffect(() => {
+    if (!rootNavigationState?.key) {
+      return;
+    }
+
+    if (navigationRef.isReady()) {
+      setNavigationReady(true);
+      return;
+    }
+
+    const unsubscribe = navigationRef.addListener?.('state', () => {
+      if (navigationRef.isReady()) {
+        setNavigationReady(true);
+      }
+    });
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, [navigationRef, rootNavigationState?.key]);
+
+  return navigationReady && !!rootNavigationState?.key;
+}
+
 function RootLayoutNav() {
   const { mode } = useTheme();
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
+  const isNavigationReady = useNavigationIsReady();
 
   useSubscriptionInitialize();
   useSubscriptionMonitor();
@@ -87,6 +117,10 @@ function RootLayoutNav() {
   }, [pathname]);
 
   useEffect(() => {
+    if (!isNavigationReady) {
+      return;
+    }
+
     const navigateToRecording = () => {
       if (pathnameRef.current !== '/recording') {
         router.replace('/recording');
@@ -105,9 +139,13 @@ function RootLayoutNav() {
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [isNavigationReady]);
 
   useEffect(() => {
+    if (!isNavigationReady) {
+      return;
+    }
+
     function redirect(notification: Notifications.Notification) {
       const url = notification.request.content.data?.url;
 
@@ -131,7 +169,7 @@ function RootLayoutNav() {
         subscription.remove();
       };
     }
-  }, []);
+  }, [isNavigationReady]);
 
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
@@ -166,6 +204,7 @@ export default function RootLayout() {
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [shouldFadeSplash, setShouldFadeSplash] = useState(false);
   const [hasHandledFirstLaunch, setHasHandledFirstLaunch] = useState(false);
+  const isNavigationReady = useNavigationIsReady();
 
   useEffect(() => {
     if (!fontsLoaded && !fontError) {
@@ -237,7 +276,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (!fontsLoaded || fontError || hasHandledFirstLaunch) {
+    if (!isNavigationReady || !fontsLoaded || fontError || hasHandledFirstLaunch) {
       return;
     }
 
@@ -267,7 +306,7 @@ export default function RootLayout() {
     return () => {
       isMounted = false;
     };
-  }, [fontsLoaded, fontError, hasHandledFirstLaunch]);
+  }, [isNavigationReady, fontsLoaded, fontError, hasHandledFirstLaunch]);
 
   const handleSplashFinished = useCallback(() => {
     setShowCustomSplash(false);
