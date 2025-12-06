@@ -68,12 +68,10 @@ async function generateImageFromPrompt(options: {
   };
 
   const lowerModel = model.toLowerCase();
-  const fallbackGeminiImageModel = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'gemini-2.5-flash-image';
-  const isGemini = lowerModel.includes('gemini');
-  const isGeminiImageModel = isGemini && lowerModel.includes('image');
-  const resolvedModel = isGemini && !isGeminiImageModel ? fallbackGeminiImageModel : model;
-  const isGeminiImage = resolvedModel.toLowerCase().includes('gemini') && resolvedModel.toLowerCase().includes('image');
-  const apiVersion = apiBase.includes('/v1beta') ? 'v1beta' : 'v1';
+  const supportsImageModel = lowerModel.includes('image') || lowerModel.includes('imagen');
+  const resolvedModel = supportsImageModel ? model : resolveImageModel();
+  // Image models (Gemini image + Imagen) are served from v1beta.
+  const apiVersion = 'v1beta';
   // Try without an explicit mime first; some endpoints reject both snake_case and camelCase hints.
   const mimeConfigCandidates: Array<'responseMimeType' | 'response_mime_type' | undefined> = [
     undefined,
@@ -81,13 +79,9 @@ async function generateImageFromPrompt(options: {
     'response_mime_type',
   ];
 
-  if (isGemini && !isGeminiImageModel && resolvedModel !== model) {
-    console.warn(`[api] generateImageFromPrompt: model ${model} is text-only, falling back to ${resolvedModel}`);
-  }
-
-  if (!isGeminiImage) {
+  if (!supportsImageModel) {
     throw new Error(
-      `Unsupported image model "${model}". Use a Gemini image-capable model such as "gemini-2.5-flash-image".`
+      `Unsupported image model "${model}". Use an image-capable model such as "gemini-2.5-flash-image" (default) or set IMAGEN_MODEL.`
     );
   }
 
@@ -146,13 +140,14 @@ async function generateImageFromPrompt(options: {
  */
 const resolveImageModel = (): string => {
   const envModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
-  const fallback = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'gemini-2.5-flash-image';
+  const fallback = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'imagen-3.0-fast-001';
   const lower = envModel.toLowerCase();
 
-  if (lower.startsWith('imagen')) {
-    console.warn(`[api] IMAGEN_MODEL ${envModel} not supported on Gemini endpoint, falling back to ${fallback}`);
+  if (lower.includes('gemini') && !lower.includes('image')) {
+    console.warn(`[api] IMAGEN_MODEL ${envModel} is text-only; using fallback ${fallback}`);
     return fallback;
   }
+
   return envModel;
 };
 
@@ -163,11 +158,8 @@ const resolveImageModel = (): string => {
 const resolveGeminiApiBase = (): string => {
   const raw = Deno.env.get('GEMINI_API_BASE');
   if (!raw) return 'https://generativelanguage.googleapis.com';
-  if (raw.includes('/v1beta')) {
-    console.warn('[api] GEMINI_API_BASE contains v1beta; using v1 for image generation');
-    return 'https://generativelanguage.googleapis.com';
-  }
-  return raw.replace(/\/v1$/, '');
+  // Keep user-specified versioning; do not force v1.
+  return raw.replace(/\/v1$/, '').replace(/\/v1beta$/, '');
 };
 
 serve(async (req: Request) => {
