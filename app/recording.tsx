@@ -6,7 +6,7 @@ import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput'
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { GUEST_DREAM_LIMIT, QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -158,6 +158,25 @@ export default function RecordingScreen() {
       }
       const trimmedBase = base.trim();
 
+      const hasNearPrefixMatch = (source: string, candidate: string) => {
+        // Allow a small divergence near the end (e.g., STT rewrites the last word or adds one more)
+        const sourceTokens = source.split(' ');
+        const candidateTokens = candidate.split(' ');
+        if (sourceTokens.length < 3) return false;
+
+        let matchCount = 0;
+        const limit = Math.min(sourceTokens.length, candidateTokens.length);
+        for (; matchCount < limit; matchCount += 1) {
+          if (sourceTokens[matchCount] !== candidateTokens[matchCount]) break;
+        }
+
+        const remainingSource = sourceTokens.length - matchCount;
+        const minPrefixMatches = Math.max(3, sourceTokens.length - 2);
+
+        // We accept if most of the prefix matches (all but the last 1-2 tokens) and candidate is at least as long.
+        return matchCount >= minPrefixMatches && remainingSource <= 2 && candidateTokens.length >= sourceTokens.length;
+      };
+
       if (trimmedBase) {
         const normalizedBase = normalizeForComparison(trimmedBase);
         const normalizedAddition = normalizeForComparison(trimmedAddition);
@@ -168,16 +187,16 @@ export default function RecordingScreen() {
         }
 
         // When the recognizer returns the whole transcript plus new words, keep the expanded text once.
-        if (normalizedAddition.startsWith(normalizedBase)) {
+        if (normalizedAddition.startsWith(normalizedBase) || hasNearPrefixMatch(normalizedBase, normalizedAddition)) {
           return clampTranscript(trimmedAddition);
         }
 
-        // If only the last line is being incrementally extended, replace that line instead of stacking.
+        // If only the last line is being incrementally extended or lightly corrected, replace that line instead of stacking.
         const baseLines = trimmedBase.split('\n');
         const lastLine = baseLines[baseLines.length - 1]?.trim() ?? '';
         if (lastLine) {
           const normalizedLastLine = normalizeForComparison(lastLine);
-          if (normalizedAddition.startsWith(normalizedLastLine)) {
+          if (normalizedAddition.startsWith(normalizedLastLine) || hasNearPrefixMatch(normalizedLastLine, normalizedAddition)) {
             baseLines[baseLines.length - 1] = trimmedAddition;
             return clampTranscript(baseLines.join('\n'));
           }
@@ -1084,8 +1103,8 @@ export default function RecordingScreen() {
           ? t('recording.analysis_limit.title_guest')
           : t('recording.analysis_limit.title_free')}
         subtitle={tier === 'guest'
-          ? t('recording.analysis_limit.message_guest', { limit: usage?.analysis.limit ?? 2 })
-          : t('recording.analysis_limit.message_free', { limit: usage?.analysis.limit ?? 5 })}
+          ? t('recording.analysis_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis })
+          : t('recording.analysis_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis })}
         testID={TID.Sheet.QuotaLimit}
         titleTestID={TID.Text.QuotaLimitTitle}
         actions={{

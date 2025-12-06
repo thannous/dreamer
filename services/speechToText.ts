@@ -11,6 +11,11 @@ type TranscribeParams = {
   languageCode?: string;
 };
 
+type EncodingHint = {
+  encoding: string;
+  sampleRateHertz?: number;
+};
+
 async function readAudioAsBase64(uri: string): Promise<string> {
   if (Platform.OS === 'web') {
     const response = await fetch(uri);
@@ -49,6 +54,34 @@ async function readAudioAsBase64(uri: string): Promise<string> {
   }
 }
 
+const inferEncodingHint = (uri: string): EncodingHint => {
+  const lowerUri = uri.toLowerCase();
+
+  if (lowerUri.endsWith('.amr') || lowerUri.endsWith('.3gp')) {
+    return { encoding: 'AMR_WB', sampleRateHertz: 16000 };
+  }
+
+  if (lowerUri.endsWith('.webm')) {
+    // WebM/Opus carries its own sample rate metadata; let Google infer it.
+    return { encoding: 'WEBM_OPUS', sampleRateHertz: undefined };
+  }
+
+  if (lowerUri.endsWith('.wav') || lowerUri.endsWith('.caf') || lowerUri.endsWith('.pcm')) {
+    return { encoding: 'LINEAR16', sampleRateHertz: 16000 };
+  }
+
+  // Fall back to platform defaults when we cannot infer from the URI.
+  if (Platform.OS === 'android') {
+    return { encoding: 'AMR_WB', sampleRateHertz: 16000 };
+  }
+
+  if (Platform.OS === 'web') {
+    return { encoding: 'WEBM_OPUS', sampleRateHertz: undefined };
+  }
+
+  return { encoding: 'LINEAR16', sampleRateHertz: 16000 };
+};
+
 export async function transcribeAudio({
   uri,
   languageCode = 'fr-FR',
@@ -63,20 +96,8 @@ export async function transcribeAudio({
     console.log('[speechToText] file size (base64 chars)', contentBase64.length);
   }
 
-  // Pick encoding/sample hints based on platform + our recording options
-  // - iOS: WAV Linear PCM -> LINEAR16 @ 16000 Hz
-  // - Android: 3GP AMR-WB -> AMR_WB @ 16000 Hz
-  // - Web: WebM/Opus -> WEBM_OPUS with auto-detected sample rate (browser/hardware-dependent)
-  let encoding = 'LINEAR16';
-  let sampleRateHertz: number | undefined = 16000;
-
-  if (Platform.OS === 'android') {
-    encoding = 'AMR_WB';
-    sampleRateHertz = 16000;
-  } else if (Platform.OS === 'web') {
-    encoding = 'WEBM_OPUS';
-    sampleRateHertz = undefined; // let Google STT infer from the WebM/Opus metadata to avoid mismatch
-  }
+  // Pick encoding/sample hints based on the recorded file type, with platform defaults as fallback.
+  const { encoding, sampleRateHertz } = inferEncodingHint(uri);
 
   const base = getApiBaseUrl();
 
