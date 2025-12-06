@@ -7,7 +7,7 @@ import { Dimensions, Platform, StyleSheet, View, type ViewStyle } from 'react-na
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 const DEFAULT_HEIGHT = 640;
-const PARTICLE_COUNT = 4;
+const PARTICLE_COUNT = 3; // Reduced 20% to lower GPU load
 const STAR_COUNT = 5;
 
 const seededRandom = (seed: number) => {
@@ -41,7 +41,7 @@ function AtmosphereBackgroundComponent() {
     id: i,
     x: seededRandom(i + 1) * 100,
     size: seededRandom(i + 11) * 4 + 2,
-    duration: seededRandom(i + 21) * 10000 + 4000,
+    duration: seededRandom(i + 21) * 8000 + 3200,
     delay: seededRandom(i + 31) * 2000,
   })), []);
 
@@ -52,7 +52,7 @@ function AtmosphereBackgroundComponent() {
     y: seededRandom(i + 111) * 100,
     size: seededRandom(i + 121) * 2 + 1,
     delay: seededRandom(i + 131) * 1000,
-    blinkDuration: 1000 + seededRandom(i + 141) * 1000,
+    blinkDuration: 800 + seededRandom(i + 141) * 800,
   })), []);
 
   return (
@@ -70,7 +70,7 @@ function AtmosphereBackgroundComponent() {
           shouldAnimate
             ? {
                 type: 'timing',
-                duration: 4000,
+                duration: 3200,
                 loop: true,
                 repeatReverse: true,
               }

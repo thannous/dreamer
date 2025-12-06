@@ -223,8 +223,16 @@ export default function NotificationSettingsCard() {
               <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>{t('notifications.setting.time')}</Text>
               <Text style={[styles.settingHint, { color: colors.textSecondary }]}>{t('notifications.setting.time_hint')}</Text>
             </View>
-            <Pressable onPress={() => setShowTimePicker(true)} style={[styles.timeButton, { backgroundColor: colors.backgroundSecondary }]}>
-              <Text style={[styles.timeButtonText, { color: colors.accent }]}>{settings.weekdayTime}</Text>
+            <Pressable
+              onPress={() => setShowTimePicker(true)}
+              style={[
+                styles.timeButton,
+                { backgroundColor: colors.accent, borderColor: colors.accentDark },
+              ]}
+            >
+              <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
+                {settings.weekdayTime}
+              </Text>
             </Pressable>
           </View>
 
@@ -249,10 +257,13 @@ export default function NotificationSettingsCard() {
 
           <View style={styles.testButtonContainer}>
             <Pressable
-              style={[styles.testButton, { backgroundColor: colors.backgroundSecondary }]}
+              style={[
+                styles.testButton,
+                { backgroundColor: colors.accent, borderColor: colors.accentDark },
+              ]}
               onPress={handleTestNotification}
             >
-              <Text style={[styles.testButtonText, { color: colors.accent }]}>
+              <Text style={[styles.testButtonText, { color: colors.textOnAccentSurface }]}>
                 {t('notifications.button.test')}
               </Text>
             </Pressable>
@@ -313,6 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: ThemeLayout.spacing.sm,
     borderRadius: ThemeLayout.borderRadius.sm,
+    borderWidth: 1,
   },
   timeButtonText: {
     fontSize: 16,
@@ -335,6 +347,7 @@ const styles = StyleSheet.create({
     paddingVertical: ThemeLayout.spacing.sm,
     borderRadius: ThemeLayout.borderRadius.sm,
     alignItems: 'center',
+    borderWidth: 1,
   },
   testButtonText: {
     fontSize: 14,

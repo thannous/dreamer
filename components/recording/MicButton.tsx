@@ -63,7 +63,7 @@ export function MicButton({ isRecording, isPreparing, onPress, testID, accessibi
           animate={{ opacity: 0, scale: 1.4 }}
           transition={{
             type: 'timing',
-            duration: 2000,
+            duration: 1600,
             loop: true,
             repeatReverse: false,
           }}
@@ -83,7 +83,7 @@ export function MicButton({ isRecording, isPreparing, onPress, testID, accessibi
           animate={{ opacity: 0.2, scale: 1.15 }}
           transition={{
             type: 'timing',
-            duration: 1500,
+            duration: 1200,
             loop: true,
             repeatReverse: true,
           }}
