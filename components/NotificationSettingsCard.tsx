@@ -271,7 +271,7 @@ export default function NotificationSettingsCard() {
         </>
       )}
 
-      {!hasPermissions && !settings.isEnabled && (
+      {!hasPermissions && (
         <View style={[styles.warningBox, { backgroundColor: '#000000', borderColor: '#FF6B35', borderWidth: 2 }]}>
           <Text style={[styles.warningText, { color: '#FFFFFF', fontWeight: 'bold' }]}>{t('notifications.warning.permissions')}</Text>
         </View>
