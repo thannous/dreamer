@@ -89,7 +89,6 @@ async function generateImageFromPrompt(options: {
   const createBody = (mimeKey?: string) => ({
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     ...(mimeKey ? { generationConfig: { [mimeKey]: 'image/png' } } : {}),
-    ...(apiVersion === 'v1beta' ? { responseModalities: ['IMAGE'] } : {}),
   });
 
   const requestOnce = async (mimeKey?: string) => {
