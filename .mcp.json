@@ -7,6 +7,14 @@
     "maestro": {
       "command": "maestro",
       "args": ["mcp"]
+    }, 
+    "context7": {
+      "type": "sse",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "ctx7sk-62867755-6cd5-410e-92ff-b5e751a5116d"
+      },
+      "disabled": false
     }
   }
 }
