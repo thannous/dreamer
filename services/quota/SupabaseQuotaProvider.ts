@@ -31,6 +31,21 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   }
 
   /**
+   * Safe fallback when a quota count query fails.
+   * Fail closed for limited tiers to avoid quota bypass if the events table is missing.
+   */
+  private getErrorFallback(user: User | null, quotaType: 'analysis' | 'exploration'): number {
+    if (!user) return 0;
+    const limit = QUOTAS[this.getUserTier(user)][quotaType];
+    return limit === null ? 0 : limit;
+  }
+
+  private getMonthlyErrorFallback(user: User, quotaType: 'analysis' | 'exploration'): number {
+    const limit = QUOTA_CONFIG[this.getUserTier(user)].monthly[quotaType];
+    return limit === null ? 0 : limit;
+  }
+
+  /**
    * Get cached value or compute new one
    */
   private async getOrCache<T>(
@@ -73,7 +88,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
       if (error) {
         console.error('Error counting monthly analyses:', error);
-        return 0;
+        return this.getMonthlyErrorFallback(user, 'analysis');
       }
 
       return count ?? 0;
@@ -95,7 +110,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
       if (error) {
         console.error('Error counting monthly explorations:', error);
-        return 0;
+        return this.getMonthlyErrorFallback(user, 'exploration');
       }
 
       return count ?? 0;
@@ -116,7 +131,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
       if (error) {
         console.error('Error counting analysis usage events:', error);
-        return 0;
+        return this.getErrorFallback(user, 'analysis');
       }
 
       return count ?? 0;
@@ -137,7 +152,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
       if (error) {
         console.error('Error counting exploration usage events:', error);
-        return 0;
+        return this.getErrorFallback(user, 'exploration');
       }
 
       return count ?? 0;

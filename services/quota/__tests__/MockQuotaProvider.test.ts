@@ -4,8 +4,23 @@ import type { DreamAnalysis } from '@/lib/types';
 import { MockQuotaProvider } from '../MockQuotaProvider';
 
 // Use vi.hoisted to ensure mock is available during module loading
-const { mockGetSavedDreams } = vi.hoisted(() => ({
+const { mockGetSavedDreams, mockStorage } = vi.hoisted(() => ({
   mockGetSavedDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
+  mockStorage: new Map<string, string>(),
+}));
+
+vi.mock('@react-native-async-storage/async-storage', () => ({
+  default: {
+    getItem: vi.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
+    setItem: vi.fn((key: string, value: string) => {
+      mockStorage.set(key, value);
+      return Promise.resolve();
+    }),
+    removeItem: vi.fn((key: string) => {
+      mockStorage.delete(key);
+      return Promise.resolve();
+    }),
+  },
 }));
 
 // Mock using the relative path from this test file to storageService
@@ -30,6 +45,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 describe('MockQuotaProvider', () => {
   beforeEach(() => {
     mockGetSavedDreams.mockReset();
+    mockStorage.clear();
   });
 
   describe('analysis counting', () => {
@@ -47,7 +63,26 @@ describe('MockQuotaProvider', () => {
       await expect(provider.getUsedAnalysisCount(null)).resolves.toBe(1);
     });
 
-    it('given cache invalidation when counting analysis then refreshes cached dreams', async () => {
+    it('persists analysis usage after dream deletion in mock mode', async () => {
+      // Given
+      const analyzedDream = buildDream({ id: 4, isAnalyzed: true, analyzedAt: Date.now() });
+      mockGetSavedDreams.mockResolvedValueOnce([analyzedDream]);
+
+      const provider = new MockQuotaProvider();
+      await provider.getUsedAnalysisCount(null);
+
+      // Simulate deletion of the analyzed dream
+      mockGetSavedDreams.mockResolvedValueOnce([]);
+      provider.invalidate();
+
+      // When
+      const refreshedCount = await provider.getUsedAnalysisCount(null);
+
+      // Then
+      expect(refreshedCount).toBe(1); // Usage remains even if dream is gone
+    });
+
+    it('given cache invalidation when counting analysis then keeps persisted usage', async () => {
       // Given
       const analyzedDream = buildDream({ id: 4, isAnalyzed: true, analyzedAt: Date.now() });
       mockGetSavedDreams.mockResolvedValueOnce([analyzedDream]);
@@ -62,8 +97,9 @@ describe('MockQuotaProvider', () => {
       const refreshedCount = await provider.getUsedAnalysisCount(null);
 
       // Then
-      expect(refreshedCount).toBe(0);
-      expect(mockGetSavedDreams).toHaveBeenCalledTimes(2);
+      expect(refreshedCount).toBe(1);
+      // May call storage multiple times due to sync logic
+      expect(mockGetSavedDreams).toHaveBeenCalled();
     });
   });
 
@@ -170,6 +206,29 @@ describe('MockQuotaProvider', () => {
       expect(canExplore).toBe(true); // Already explored, always allowed
     });
 
+    it('keeps exploration usage after dream deletion in mock mode', async () => {
+      // Given
+      const user = null; // Guest user
+      const exploredDreams = [
+        buildDream({ id: 1, explorationStartedAt: Date.now() }),
+        buildDream({ id: 2, explorationStartedAt: Date.now() }),
+      ];
+      mockGetSavedDreams.mockResolvedValueOnce(exploredDreams);
+
+      const provider = new MockQuotaProvider();
+      await provider.getUsedExplorationCount(user);
+
+      // Simulate dream deletion after usage was recorded
+      mockGetSavedDreams.mockResolvedValueOnce([]);
+      provider.invalidate();
+
+      // When
+      const canExplore = await provider.canExploreDream({ dreamId: 999 }, user);
+
+      // Then
+      expect(canExplore).toBe(false); // Usage persists; guest limit reached
+    });
+
     it('given premium user when checking exploration then always allows', async () => {
       // Given
       const premiumUser = { id: 'premium-user', user_metadata: { tier: 'premium' } } as any;
@@ -191,7 +250,7 @@ describe('MockQuotaProvider', () => {
       const exploredDreams = Array(3).fill(null).map((_, i) => 
         buildDream({ id: i + 1, explorationStartedAt: Date.now() })
       );
-      mockGetSavedDreams.mockResolvedValueOnce(exploredDreams);
+      mockGetSavedDreams.mockResolvedValue(exploredDreams);
 
       const provider = new MockQuotaProvider();
 

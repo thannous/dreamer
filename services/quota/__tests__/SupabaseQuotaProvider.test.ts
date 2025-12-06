@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { QUOTA_CONFIG, QUOTAS } from '../../../constants/limits';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
 // Use vi.hoisted for mocks that need to be accessed
@@ -175,24 +176,16 @@ describe('SupabaseQuotaProvider', () => {
         count: null,
         error: { message: 'Column does not exist' },
       };
-      const fallbackBuilder = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        count: 8,
-        error: null,
-      };
-      mockSupabase.supabase.from = vi.fn()
-        .mockReturnValueOnce(mockBuilder)
-        .mockReturnValueOnce(fallbackBuilder);
+      mockSupabase.supabase.from = vi.fn().mockReturnValue(mockBuilder);
 
       // When
       const count = await provider.getUsedAnalysisCount(user);
 
       // Then
-      expect(count).toBe(8);
+      expect(count).toBe(QUOTAS.free.analysis);
     });
 
-    it('given Supabase error when counting explorations then returns 0', async () => {
+    it('given Supabase error when counting explorations then returns tier limit', async () => {
       // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = await vi.importMock('../../../lib/supabase');
@@ -209,7 +202,7 @@ describe('SupabaseQuotaProvider', () => {
       const count = await provider.getUsedExplorationCount(user);
 
       // Then
-      expect(count).toBe(0);
+      expect(count).toBe(QUOTAS.free.exploration);
     });
   });
 
@@ -266,7 +259,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(mockBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
     });
 
-    it('given Supabase error when counting monthly analyses then returns 0', async () => {
+    it('given Supabase error when counting monthly analyses then returns monthly limit', async () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
@@ -285,10 +278,10 @@ describe('SupabaseQuotaProvider', () => {
       const count = await p.getMonthlyAnalysisCount(user);
 
       // Then
-      expect(count).toBe(0);
+      expect(count).toBe(QUOTA_CONFIG.free.monthly.analysis);
     });
 
-    it('given Supabase error when counting monthly explorations then returns 0', async () => {
+    it('given Supabase error when counting monthly explorations then returns monthly limit', async () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
@@ -307,7 +300,7 @@ describe('SupabaseQuotaProvider', () => {
       const count = await p.getMonthlyExplorationCount(user);
 
       // Then
-      expect(count).toBe(0);
+      expect(count).toBe(QUOTA_CONFIG.free.monthly.exploration);
     });
   });
 
