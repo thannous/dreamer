@@ -24,6 +24,43 @@ const hasWebSpeechAPI = (): boolean => {
 
 let cachedSpeechModule: ExpoSpeechRecognitionModuleType | null | undefined;
 
+const normalizeChunk = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+/**
+ * Merge the latest final transcript chunk while avoiding duplicate concatenation.
+ * - If the new chunk extends the last chunk (common STT behavior), replace it.
+ * - If the new chunk is contained in the last chunk, keep the existing one.
+ * - Otherwise, append the new chunk.
+ */
+export const mergeFinalChunk = (finalChunks: string[], newChunk: string): string[] => {
+  const normalizedNew = normalizeChunk(newChunk);
+  if (!normalizedNew) return finalChunks;
+
+  const last = finalChunks[finalChunks.length - 1];
+  if (!last) return [newChunk];
+
+  const normalizedLast = normalizeChunk(last);
+
+  // If identical, keep the existing chunk to avoid bouncing case/spacing.
+  if (normalizedNew === normalizedLast) {
+    return finalChunks;
+  }
+
+  // STT often replays the full transcript with new words appended.
+  if (normalizedNew.startsWith(normalizedLast)) {
+    const next = [...finalChunks];
+    next[next.length - 1] = newChunk;
+    return next;
+  }
+
+  // If the new chunk is shorter, keep the existing one to prevent duplication.
+  if (normalizedLast.startsWith(normalizedNew)) {
+    return finalChunks;
+  }
+
+  return [...finalChunks, newChunk];
+};
+
 const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModuleType | null> => {
   try {
     // Use dynamic import for ES6 compatibility
@@ -134,7 +171,7 @@ export async function startNativeSpeechSession(
     let ended = false;
     let lastPartial = '';
     let lastError: { code?: string; message?: string } | null = null;
-    const finalChunks: string[] = [];
+    let finalChunks: string[] = [];
     let recordedUri: string | null = null;
 
     let resolveEnd: (() => void) | null = null;
@@ -147,15 +184,15 @@ export async function startNativeSpeechSession(
 
     const resultSub = speechModule.addListener('result', (event) => {
       const transcript = event.results?.[0]?.transcript?.trim();
-      if (__DEV__) {
-        console.log('[nativeSpeech] result', { isFinal: event.isFinal, transcript });
-      }
       if (!transcript) {
         return;
       }
 
       if (event.isFinal) {
-        finalChunks.push(transcript);
+        if (__DEV__) {
+          console.log('[nativeSpeech] result', { isFinal: event.isFinal, transcript });
+        }
+        finalChunks = mergeFinalChunk(finalChunks, transcript);
         lastPartial = '';
       } else {
         lastPartial = transcript;

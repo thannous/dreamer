@@ -113,6 +113,22 @@ describe('transcribeAudio', () => {
     );
   });
 
+  it('uses LINEAR16 for native speech fallbacks that persist WAV on Android', async () => {
+    platformSpy = setPlatform('android');
+
+    await transcribeAudio({ uri: 'file:///tmp/native-recording.wav' });
+
+    expect(mockFetchJSON).toHaveBeenCalledWith(
+      'https://api.example/transcribe',
+      expect.objectContaining({
+        body: expect.objectContaining({
+          encoding: 'LINEAR16',
+          sampleRateHertz: 16000,
+        }),
+      }),
+    );
+  });
+
   it('falls back to readAsStringAsync when File.base64 throws', async () => {
     platformSpy = setPlatform('ios');
     mockFileBase64.mockImplementationOnce(() => {
