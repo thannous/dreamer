@@ -184,6 +184,23 @@ describe('useQuota', () => {
   });
 
   describe('convenience flags', () => {
+    it('defaults canAnalyzeNow/canExploreNow to true while loading, then reflects fetched status', async () => {
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false, canExplore: false }));
+
+      const { result } = renderHook(() => useQuota());
+
+      // Optimistic until the status resolves to avoid false gating
+      expect(result.current.canAnalyzeNow).toBe(true);
+      expect(result.current.canExploreNow).toBe(true);
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.canAnalyzeNow).toBe(false);
+      expect(result.current.canExploreNow).toBe(false);
+    });
+
     it('provides canAnalyzeNow flag from quota status', async () => {
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: true }));
 

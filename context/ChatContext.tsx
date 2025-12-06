@@ -37,6 +37,8 @@ type MessageListContextValue = {
   contentHeight: SharedValueAdapter<number>;
   scrollY: SharedValueAdapter<number>;
   lastMessageIndex: SharedValueAdapter<number>;
+  isNearBottom: SharedValueAdapter<boolean>;
+  hasNewMessages: SharedValueAdapter<boolean>;
 };
 
 type NewMessageAnimationContextValue = {
@@ -113,11 +115,15 @@ function MessageListProvider({ children }: { children: ReactNode }) {
   const contentHeightValue = useSharedValue(0);
   const scrollYValue = useSharedValue(0);
   const lastMessageIndexValue = useSharedValue(-1);
+  const isNearBottomValue = useSharedValue(true);
+  const hasNewMessagesValue = useSharedValue(false);
 
   const containerHeight = useMemo(() => createAdapter(containerHeightValue), [containerHeightValue]);
   const contentHeight = useMemo(() => createAdapter(contentHeightValue), [contentHeightValue]);
   const scrollY = useMemo(() => createAdapter(scrollYValue), [scrollYValue]);
   const lastMessageIndex = useMemo(() => createAdapter(lastMessageIndexValue), [lastMessageIndexValue]);
+  const isNearBottom = useMemo(() => createAdapter(isNearBottomValue), [isNearBottomValue]);
+  const hasNewMessages = useMemo(() => createAdapter(hasNewMessagesValue), [hasNewMessagesValue]);
 
   const scrollToEnd = useCallback(
     (options?: { animated?: boolean }) => {
@@ -135,8 +141,10 @@ function MessageListProvider({ children }: { children: ReactNode }) {
       contentHeight,
       scrollY,
       lastMessageIndex,
+      isNearBottom,
+      hasNewMessages,
     }),
-    [containerHeight, contentHeight, lastMessageIndex, scrollToEnd, scrollY]
+    [containerHeight, contentHeight, lastMessageIndex, scrollToEnd, scrollY, isNearBottom, hasNewMessages]
   );
 
   return (

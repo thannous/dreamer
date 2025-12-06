@@ -28,6 +28,7 @@ import { Platform, StyleSheet, Text, View, type StyleProp, type TextStyle, type 
 import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
+import { ScrollToBottomButton } from './ScrollToBottomButton';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
 
@@ -382,13 +383,22 @@ export function MessagesList({
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
-        // LegendList specific props
+        // LegendList specific props for chat UX
         recycleItems={true}
         estimatedItemSize={80}
-        maintainScrollAtEnd={false}
+        // Enable maintainScrollAtEnd for chat-style auto-scroll behavior
+        // This keeps the list anchored at the bottom when new messages arrive
+        // if the user is already near the bottom (threshold ~10% from end)
+        maintainScrollAtEnd={{
+          onLayout: true,
+          onItemLayout: true,
+          onDataChange: true,
+        }}
+        maintainScrollAtEndThreshold={0.1}
         ListHeaderComponent={ListHeaderComponent ?? null}
         ListFooterComponent={footerComponent}
       />
+      <ScrollToBottomButton />
     </View>
   );
 }

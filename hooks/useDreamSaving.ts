@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { GUEST_DREAM_LIMIT, QUOTAS } from '@/constants/limits';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useQuota } from '@/hooks/useQuota';
@@ -126,7 +126,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
     ): Promise<DreamAnalysis | null> => {
       if (!canAnalyzeNow) {
         const tier = user ? 'free' : 'guest';
-        const limit = tier === 'guest' ? 2 : 5;
+        const limit = QUOTAS[tier].analysis ?? 0;
         const title = tier === 'guest'
           ? t('recording.alert.analysis_limit.title_guest')
           : t('recording.alert.analysis_limit.title_free');
