@@ -72,65 +72,46 @@ async function generateImageFromPrompt(options: {
   const resolvedModel = supportsImageModel ? model : resolveImageModel();
   // Image models (Gemini image + Imagen) are served from v1beta.
   const apiVersion = 'v1beta';
-  // Try without an explicit mime first; some endpoints reject both snake_case and camelCase hints.
-  const mimeConfigCandidates: Array<'responseMimeType' | 'response_mime_type' | undefined> = [
-    undefined,
-    'responseMimeType',
-    'response_mime_type',
-  ];
 
   if (!supportsImageModel) {
     throw new Error(
-      `Unsupported image model "${model}". Use an image-capable model such as "gemini-2.5-flash-image" (default) or set IMAGEN_MODEL.`
+      `Unsupported image model "${model}". Use the image-capable model "gemini-2.5-flash-image".`
     );
   }
 
   const endpoint = `${apiBase}/${apiVersion}/models/${resolvedModel}:generateContent`;
-  const createBody = (mimeKey?: string) => ({
+  const createBody = () => ({
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    ...(mimeKey ? { generationConfig: { [mimeKey]: 'image/png' } } : {}),
+    // Request an image modality explicitly; do not force responseMimeType (reserved for text/json).
+    generationConfig: { responseModalities: ['IMAGE'] },
   });
 
-  const requestOnce = async (mimeKey?: string) => {
+  const requestOnce = async () => {
     return fetch(endpoint, {
       method: 'POST',
       headers,
-      body: JSON.stringify(createBody(mimeKey)),
+      body: JSON.stringify(createBody()),
     });
   };
 
-  const attemptErrors: string[] = [];
-
-  for (const key of mimeConfigCandidates) {
-    const res = await requestOnce(key);
-    if (res.ok) {
-      const json = (await res.json()) as any;
-      const parts = json?.candidates?.[0]?.content?.parts;
-      const inlinePart = Array.isArray(parts)
-        ? parts.find((p: any) => p?.inlineData?.data)
-        : undefined;
-      if (inlinePart?.inlineData?.data) return { imageBase64: inlinePart.inlineData.data as string, raw: json };
-      attemptErrors.push(`key=${key ?? 'none'}: ok response but no inlineData`);
-      continue;
-    }
-
+  const res = await requestOnce();
+  if (!res.ok) {
     const bodyText = await res.text();
-    attemptErrors.push(`key=${key ?? 'none'} status=${res.status} body=${bodyText}`);
-
-    const mimeTypeError =
-      res.status === 400 &&
-      (() => {
-        const normalized = bodyText.toLowerCase();
-        return normalized.includes('response_mime_type') || normalized.includes('responsemimetype');
-      })();
-
-    // Only continue to next hint if the error is specifically about the mime field.
-    if (!mimeTypeError) {
-      throw new Error(`Gemini image error ${res.status}: ${bodyText}`);
-    }
+    throw new Error(`Gemini image error ${res.status}: ${bodyText}`);
   }
 
-  throw new Error(`Gemini image error: all mime strategies failed (${attemptErrors.join(' | ')})`);
+  const json = (await res.json()) as any;
+  const parts = json?.candidates?.[0]?.content?.parts;
+  const inlinePart = Array.isArray(parts)
+    ? parts.find((p: any) => p?.inlineData?.data)
+    : undefined;
+
+  if (inlinePart?.inlineData?.data) return { imageBase64: inlinePart.inlineData.data as string, raw: json };
+
+  const blockReason = json?.promptFeedback?.blockReason ?? json?.promptFeedback?.block_reason;
+  throw new Error(
+    `Gemini image error: no inlineData returned${blockReason ? ` (blockReason=${blockReason})` : ''}`
+  );
 }
 
 /**
@@ -138,16 +119,11 @@ async function generateImageFromPrompt(options: {
  * models that are not available on the Gemini API endpoints.
  */
 const resolveImageModel = (): string => {
-  const envModel = Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
-  const fallback = Deno.env.get('IMAGEN_MODEL_FALLBACK') ?? 'imagen-3.0-fast-001';
-  const lower = envModel.toLowerCase();
-
-  if (lower.includes('gemini') && !lower.includes('image')) {
-    console.warn(`[api] IMAGEN_MODEL ${envModel} is text-only; using fallback ${fallback}`);
-    return fallback;
+  const envModel = Deno.env.get('IMAGEN_MODEL');
+  if (envModel && envModel !== 'gemini-2.5-flash-image') {
+    console.warn(`[api] IMAGEN_MODEL ${envModel} overridden; forcing gemini-2.5-flash-image`);
   }
-
-  return envModel;
+  return 'gemini-2.5-flash-image';
 };
 
 /**
