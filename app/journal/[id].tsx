@@ -171,9 +171,9 @@ export default function JournalDetailScreen() {
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [analysisSuccessMessage, setAnalysisSuccessMessage] = useState<string | null>(null);
   const [analysisNotice, setAnalysisNotice] = useState<AnalysisNotice | null>(null);
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
+  const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
   useEffect(() => {
     if (isShareModalVisible) {
       blurActiveElement();
@@ -629,10 +629,9 @@ export default function JournalDetailScreen() {
       };
 
       await updateDream(updatedDream);
-      Alert.alert(t('common.success'), t('journal.detail.image.success_message'));
     } catch (error) {
       const msg = error instanceof Error ? error.message : t('common.unknown_error');
-      Alert.alert(t('common.error_title'), msg);
+      setImageErrorMessage(msg);
     } finally {
       setIsRetryingImage(false);
     }
@@ -661,6 +660,15 @@ export default function JournalDetailScreen() {
   const handleDismissAnalysisNotice = useCallback(() => {
     setAnalysisNotice(null);
   }, []);
+
+  const handleDismissImageError = useCallback(() => {
+    setImageErrorMessage(null);
+  }, []);
+
+  const handleRetryImageError = useCallback(() => {
+    setImageErrorMessage(null);
+    void onRetryImage();
+  }, [onRetryImage]);
 
   const ensureAnalyzeAllowed = useCallback(async () => {
     try {
@@ -729,7 +737,6 @@ export default function JournalDetailScreen() {
       try {
         await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage, lang: language });
         setAnalysisNotice(null);
-        setAnalysisSuccessMessage(t('journal.detail.analysis.success_message'));
       } catch (error) {
         if (error instanceof QuotaError) {
           // Show quota limit sheet with upgrade CTA for non-premium users
@@ -1621,6 +1628,37 @@ export default function JournalDetailScreen() {
             onLink={handleQuotaLimitDismiss}
           />
         </BottomSheet>
+        <BottomSheet
+          visible={Boolean(imageErrorMessage)}
+          onClose={handleDismissImageError}
+          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
+          style={[
+            styles.noticeSheet,
+            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+            shadows.xl,
+          ]}
+        >
+          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
+          <View style={styles.noticeHeader}>
+            <View style={[styles.noticeIcon, { backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)' }]}>
+              <Ionicons name="alert-circle" size={24} color="#EF4444" />
+            </View>
+            <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+              {t('image_retry.generation_failed')}
+            </Text>
+          </View>
+          <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
+            {imageErrorMessage ?? t('common.unknown_error')}
+          </Text>
+          <BottomSheetActions
+            primaryLabel={t('analysis.retry')}
+            onPrimary={handleRetryImageError}
+            secondaryLabel={t('common.cancel')}
+            onSecondary={handleDismissImageError}
+            primaryDisabled={isRetryingImage}
+            primaryLoading={isRetryingImage}
+          />
+        </BottomSheet>
         <Modal
           visible={isShareModalVisible}
           transparent
@@ -1687,13 +1725,6 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         </Modal>
-        {analysisSuccessMessage ? (
-          <Toast
-            message={analysisSuccessMessage}
-            mode="success"
-            onHide={() => setAnalysisSuccessMessage(null)}
-          />
-        ) : null}
         {favoriteError ? (
           <Toast
             message={favoriteError}
