@@ -8,7 +8,7 @@ import {
     useKeyboardStateContext,
     useMessageListContext,
 } from '@/context/ChatContext';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { NativeModules, Platform } from 'react-native';
 import {
     runOnJS,
@@ -22,10 +22,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
  * useMessageListProps - Returns animated props and handlers for the message list
  * Handles contentInset calculation based on composer height
  */
+/** Threshold in pixels to consider "near bottom" for auto-scroll */
+const NEAR_BOTTOM_THRESHOLD = 120;
+
 export function useMessageListProps() {
   const { composerHeight } = useComposerHeightContext();
   const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
-  const { listRef, containerHeight, contentHeight, scrollY } = useMessageListContext();
+  const { listRef, containerHeight, contentHeight, scrollY, isNearBottom, hasNewMessages } = useMessageListContext();
   const insets = useSafeAreaInsets();
 
   // Animated props for ScrollView/LegendList contentInset
@@ -53,11 +56,24 @@ export function useMessageListProps() {
     contentHeight.set(height);
   }, [contentHeight]);
 
-  // Animated scroll handler
+  // Animated scroll handler - also tracks isNearBottom
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value.value = event.contentOffset.y;
       containerHeight.value.value = event.layoutMeasurement.height;
+
+      // Calculate distance from bottom and update isNearBottom
+      const distanceFromEnd = contentHeight.value.value - event.contentOffset.y - event.layoutMeasurement.height;
+      const nearBottom = distanceFromEnd < NEAR_BOTTOM_THRESHOLD;
+
+      if (isNearBottom.value.value !== nearBottom) {
+        isNearBottom.value.value = nearBottom;
+      }
+
+      // Clear hasNewMessages when user scrolls to bottom
+      if (nearBottom && hasNewMessages.value.value) {
+        hasNewMessages.value.value = false;
+      }
     },
   });
 
@@ -72,10 +88,11 @@ export function useMessageListProps() {
 /**
  * useKeyboardAwareMessageList - Handles keyboard show/hide events
  * Updates keyboard state context for other hooks to consume
+ * Only auto-scrolls when user is near the bottom of the chat
  */
 export function useKeyboardAwareMessageList() {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardStateContext();
-  const { scrollToEnd } = useMessageListContext();
+  const { scrollToEnd, isNearBottom } = useMessageListContext();
 
   // Try to use keyboard-controller if available
   useEffect(() => {
@@ -135,11 +152,13 @@ export function useKeyboardAwareMessageList() {
     };
   }, [isKeyboardVisible, keyboardHeight]);
 
-  // Auto-scroll to end when keyboard shows
+  // Auto-scroll to end when keyboard shows, but ONLY if user is near bottom
   useAnimatedReaction(
-    () => isKeyboardVisible.value.value,
-    (visible, prevVisible) => {
-      if (visible && !prevVisible) {
+    () => ({ visible: isKeyboardVisible.value.value, nearBottom: isNearBottom.value.value }),
+    (current, previous) => {
+      const justBecameVisible = current.visible && !previous?.visible;
+      // Only auto-scroll if keyboard just appeared AND user was near bottom
+      if (justBecameVisible && current.nearBottom) {
         runOnJS(scrollToEnd)({ animated: true });
       }
     }
@@ -149,30 +168,25 @@ export function useKeyboardAwareMessageList() {
 /**
  * useScrollWhenComposerSizeUpdates - Auto-scroll when composer height changes
  * Ensures content stays visible when typing multi-line messages
+ * Respects isNearBottom to avoid unwanted scroll jumps
  */
 export function useScrollWhenComposerSizeUpdates() {
   const { composerHeight } = useComposerHeightContext();
-  const { listRef, scrollToEnd, contentHeight, containerHeight, scrollY } = useMessageListContext();
+  const { listRef, scrollToEnd, isNearBottom } = useMessageListContext();
 
   const autoscrollToEnd = useCallback(() => {
     const list = listRef.current;
     if (!list) return;
 
-    // Calculate distance from end
-    const content = contentHeight.get();
-    const container = containerHeight.get();
-    const scroll = scrollY.get();
-    const distanceFromEnd = content - scroll - container;
-
-    // Only scroll if we're near the end (within 50px)
-    if (distanceFromEnd < 50) {
+    // Only scroll if we're near the bottom (use shared value)
+    if (isNearBottom.get()) {
       scrollToEnd({ animated: false });
       // Fire again after a frame for LegendList to update
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         scrollToEnd({ animated: false });
-      }, 16);
+      });
     }
-  }, [listRef, scrollToEnd, contentHeight, containerHeight, scrollY]);
+  }, [listRef, scrollToEnd, isNearBottom]);
 
   useAnimatedReaction(
     () => composerHeight.value.value,
@@ -225,24 +239,72 @@ export function useInitialScrollToEnd(hasMessages: boolean) {
 
 /**
  * useAutoScrollOnNewMessage - Scroll to end when new messages arrive
+ * Uses isNearBottom from context for consistent behavior
+ * Sets hasNewMessages when user is scrolled up to show "scroll to bottom" button
  */
 export function useAutoScrollOnNewMessage(messageCount: number) {
-  const { scrollToEnd, scrollY, contentHeight, containerHeight } = useMessageListContext();
+  const { scrollToEnd, isNearBottom, hasNewMessages } = useMessageListContext();
+  const prevMessageCountRef = useRef(messageCount);
 
   useEffect(() => {
-    if (messageCount === 0) return;
-
-    // Check if we're near the bottom
-    const content = contentHeight.get();
-    const container = containerHeight.get();
-    const scroll = scrollY.get();
-    const distanceFromEnd = content - scroll - container;
-
-    // Only auto-scroll if we're near the end or it's a new chat
-    if (distanceFromEnd < 100 || messageCount <= 2) {
-      setTimeout(() => {
-        scrollToEnd({ animated: true });
-      }, 100);
+    // Skip if no messages or count didn't increase (deletion, etc.)
+    if (messageCount === 0 || messageCount <= prevMessageCountRef.current) {
+      prevMessageCountRef.current = messageCount;
+      return;
     }
-  }, [messageCount, scrollToEnd, scrollY, contentHeight, containerHeight]);
+
+    prevMessageCountRef.current = messageCount;
+
+    // For new chats (1-2 messages), always scroll to bottom
+    if (messageCount <= 2) {
+      // Use RAF + timeout to wait for content to be measured
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          scrollToEnd({ animated: true });
+        }, 50);
+      });
+      return;
+    }
+
+    // Check if user is near bottom using the shared value
+    const nearBottom = isNearBottom.get();
+
+    if (nearBottom) {
+      // User is near bottom - auto-scroll to show new message
+      // Use RAF + timeout to ensure content height is updated
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          scrollToEnd({ animated: true });
+        }, 50);
+      });
+    } else {
+      // User has scrolled up - don't interrupt, but show indicator
+      hasNewMessages.set(true);
+    }
+  }, [messageCount, scrollToEnd, isNearBottom, hasNewMessages]);
+}
+
+/**
+ * useHasNewMessages - Hook to get hasNewMessages state for UI
+ * Returns a JS state that syncs with the shared value
+ */
+export function useHasNewMessages() {
+  const { hasNewMessages, scrollToEnd } = useMessageListContext();
+  const [hasNew, setHasNew] = useState(false);
+
+  useAnimatedReaction(
+    () => hasNewMessages.value.value,
+    (current, prev) => {
+      if (current !== prev) {
+        runOnJS(setHasNew)(current);
+      }
+    }
+  );
+
+  const scrollToBottom = useCallback(() => {
+    hasNewMessages.set(false);
+    scrollToEnd({ animated: true });
+  }, [hasNewMessages, scrollToEnd]);
+
+  return { hasNewMessages: hasNew, scrollToBottom };
 }

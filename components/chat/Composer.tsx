@@ -348,8 +348,8 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   footerContainer: {
-    marginTop: 0,
-    marginBottom: 24,
+    marginTop: 8,
+    marginBottom: 12,
     alignItems: 'center',
   },
 });

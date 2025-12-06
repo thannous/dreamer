@@ -134,8 +134,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
 
     // Convenience flags from quota status
     tier: quotaStatus?.tier || 'guest',
-    canAnalyzeNow: quotaStatus?.canAnalyze ?? false,
-    canExploreNow: quotaStatus?.canExplore ?? false,
+    // Default to optimistic while loading to avoid false blocks (gate will fail later if quota is actually exceeded)
+    canAnalyzeNow: quotaStatus?.canAnalyze ?? true,
+    canExploreNow: quotaStatus?.canExplore ?? true,
     usage: quotaStatus?.usage,
     reasons: quotaStatus?.reasons,
   };

@@ -12,7 +12,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
-import { ChatMessage, DreamAnalysis } from '@/lib/types';
+import { ChatMessage, DreamAnalysis, type ThemeMode } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
@@ -68,6 +68,8 @@ const QUICK_CATEGORIES = [
   { id: 'growth', labelKey: 'dream_chat.quick.growth', icon: 'sprout' as const },
 ];
 
+const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
+
 export default function DreamChatScreen() {
   const { t } = useTranslation();
   const { id, category } = useLocalSearchParams<{ id: string; category?: string }>();
@@ -87,7 +89,18 @@ export default function DreamChatScreen() {
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
+  const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = useRef(true);
   const hasSentCategoryRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (quotaCheckTimeoutRef.current) {
+        clearTimeout(quotaCheckTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Speech recognition locale based on language
   const transcriptionLocale = useMemo(() => {
@@ -129,6 +142,15 @@ export default function DreamChatScreen() {
     ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
     : '';
 
+  const isExistingExploration = useMemo(() => {
+    if (!dream) return false;
+    const hasUserMessages = dream.chatHistory?.some((msg) => msg.role === 'user');
+    return Boolean(dream.explorationStartedAt || hasUserMessages);
+  }, [dream]);
+  const shouldGateOnQuotaCheck = !isExistingExploration;
+  const hasQuotaCheckClearance = shouldGateOnQuotaCheck ? quotaCheckComplete : true;
+  const isQuotaGateBlocked = shouldGateOnQuotaCheck && explorationBlocked;
+
   const showMessageLimitAlert = useCallback(() => {
     const tier = user ? 'free' : 'guest';
     const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
@@ -146,6 +168,8 @@ export default function DreamChatScreen() {
   }, [router, user]);
 
   const runQuotaCheck = useCallback(async () => {
+    if (!isMountedRef.current) return;
+
     setQuotaCheckComplete(false);
     setQuotaCheckError(null);
 
@@ -154,16 +178,34 @@ export default function DreamChatScreen() {
       return;
     }
 
+    if (quotaCheckTimeoutRef.current) {
+      clearTimeout(quotaCheckTimeoutRef.current);
+    }
+
+    let didTimeout = false;
+    const timeoutPromise = new Promise<boolean>((_, reject) => {
+      quotaCheckTimeoutRef.current = setTimeout(() => {
+        didTimeout = true;
+        reject(new Error('QUOTA_CHECK_TIMEOUT'));
+      }, QUOTA_CHECK_TIMEOUT_MS);
+    });
+
     try {
-      const canExploreDream = await canExplore();
+      const canExploreDream = await Promise.race([canExplore(), timeoutPromise]);
       setExplorationBlocked(!canExploreDream);
     } catch (error) {
-      if (__DEV__) {
+      if (__DEV__ && !didTimeout) {
         console.error('[DreamChat] Quota check failed:', error);
       }
       setQuotaCheckError(t('dream_chat.quota_check_error'));
     } finally {
-      setQuotaCheckComplete(true);
+      if (quotaCheckTimeoutRef.current) {
+        clearTimeout(quotaCheckTimeoutRef.current);
+        quotaCheckTimeoutRef.current = null;
+      }
+      if (isMountedRef.current) {
+        setQuotaCheckComplete(true);
+      }
     }
   }, [dream, canExplore, t]);
 
@@ -193,12 +235,12 @@ export default function DreamChatScreen() {
   // Send category-specific question if category is provided
   useEffect(() => {
     // Wait for quota check to complete before auto-sending
-    if (!quotaCheckComplete) {
+    if (!hasQuotaCheckClearance) {
       return;
     }
 
     // Don't send if exploration is blocked
-    if (explorationBlocked) {
+    if (isQuotaGateBlocked) {
       return;
     }
 
@@ -220,7 +262,7 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, t, quotaCheckComplete, explorationBlocked]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, t, hasQuotaCheckClearance, isQuotaGateBlocked]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (messageText?: string, displayText?: string) => {
@@ -346,7 +388,7 @@ export default function DreamChatScreen() {
 
   const handleQuickCategory = (categoryId: string) => {
     // Block if quota check not complete or exploration blocked
-    if (!quotaCheckComplete || explorationBlocked) return;
+    if (!hasQuotaCheckClearance || isQuotaGateBlocked) return;
     if (messageLimitReached) {
       showMessageLimitAlert();
       return;
@@ -390,7 +432,7 @@ export default function DreamChatScreen() {
   }
 
   // If exploration is blocked, show upgrade screen
-  if (explorationBlocked) {
+  if (isQuotaGateBlocked) {
     const tier = user ? 'free' : 'guest';
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
@@ -426,7 +468,7 @@ export default function DreamChatScreen() {
   }
 
   // Show loading or error while checking quota
-  if (!quotaCheckComplete || quotaCheckError) {
+  if (shouldGateOnQuotaCheck && (!quotaCheckComplete || quotaCheckError)) {
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
         <Pressable
@@ -500,10 +542,10 @@ export default function DreamChatScreen() {
                     borderColor: colors.divider,
                   },
                   pressed && styles.quickCategoryButtonPressed,
-                  (!quotaCheckComplete || explorationBlocked || messageLimitReached) && { opacity: 0.5 },
+                  (!hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached) && { opacity: 0.5 },
                 ]}
                 onPress={() => handleQuickCategory(cat.id)}
-                disabled={isLoading || !quotaCheckComplete || explorationBlocked || messageLimitReached}
+                disabled={isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached}
               >
                 <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
                 <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
@@ -529,6 +571,7 @@ export default function DreamChatScreen() {
     ? (
       <ComposerFooter
         colors={colors}
+        mode={mode}
         messageCounterLabel={messageCounterLabel}
         messageLimitReached={messageLimitReached}
         messagesRemaining={messagesRemaining}
@@ -584,6 +627,7 @@ export default function DreamChatScreen() {
 
 type ComposerFooterProps = {
   colors: ReturnType<typeof useTheme>['colors'];
+  mode: ThemeMode;
   messageCounterLabel: string;
   messageLimitReached: boolean;
   messagesRemaining: number;
@@ -592,6 +636,7 @@ type ComposerFooterProps = {
 
 function ComposerFooter({
   colors,
+  mode,
   messageCounterLabel,
   messageLimitReached,
   messagesRemaining,
@@ -607,33 +652,41 @@ function ComposerFooter({
     };
   }, [isKeyboardVisible]);
 
+  const isLowRemaining = messagesRemaining <= 5;
+  const pillBackground = mode === 'dark' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.9)';
+  const pillBorder = mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+  const counterColor = isLowRemaining ? '#EF4444' : colors.textPrimary;
+  const limitBannerBackground = mode === 'dark' ? '#3A1212' : '#FEE2E2';
+
   return (
     <Animated.View style={[styles.footerWrapper, footerAnimatedStyle]} pointerEvents="none">
-      <View style={styles.messageCounterContainer}>
-        <Ionicons
-          name="chatbubble-outline"
-          size={14}
-          color={messagesRemaining <= 5 ? '#EF4444' : colors.textPrimary}
-        />
-        <Text
+      {!messageLimitReached && (
+        <View
           style={[
-            styles.messageCounter,
-            { color: messagesRemaining <= 5 ? '#EF4444' : colors.textPrimary },
+            styles.messageCounterContainer,
+            { backgroundColor: pillBackground, borderColor: pillBorder },
           ]}
         >
-          {messageCounterLabel}
-        </Text>
-        {messageLimitReached && (
-          <Text style={[styles.limitReachedText, { color: '#EF4444' }]}>
-            {t('dream_chat.limit_reached')}
+          <Ionicons
+            name="chatbubble-outline"
+            size={14}
+            color={counterColor}
+          />
+          <Text
+            style={[
+              styles.messageCounter,
+              { color: counterColor },
+            ]}
+          >
+            {messageCounterLabel}
           </Text>
-        )}
-      </View>
+        </View>
+      )}
 
       {messageLimitReached && (
         <View
           testID={TID.Text.ChatLimitBanner}
-          style={[styles.limitWarningBanner, { backgroundColor: '#EF444420' }]}
+          style={[styles.limitWarningBanner, { backgroundColor: limitBannerBackground }]}
         >
           <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
           <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
@@ -806,16 +859,13 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 16,
     paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
   },
   messageCounter: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     letterSpacing: 0.3,
-  },
-  limitReachedText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 11,
-    letterSpacing: 0.5,
   },
   limitWarningBanner: {
     flexDirection: 'row',
@@ -835,6 +885,8 @@ const styles = StyleSheet.create({
   },
   footerWrapper: {
     width: '100%',
+    paddingTop: 4,
     paddingBottom: 6,
+    alignItems: 'center',
   },
 });

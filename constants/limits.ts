@@ -25,7 +25,7 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
   guest: {
     analysis: 2, // 2 dream analyses
     exploration: 2, // Can explore 2 dreams
-    messagesPerDream: 20, // 20 messages per dream
+    messagesPerDream: 10, // 20 messages per dream
   },
   free: {
     analysis: 5, // 5 dream analyses total (includes guest analyses)
