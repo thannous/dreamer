@@ -96,7 +96,8 @@ export const useDreamJournal = () => {
    */
   const addDream = useCallback(
     async (dream: DreamAnalysis): Promise<DreamAnalysis> => {
-      const normalizedDream = normalizeDreamImages(dream);
+      const clientRequestId = dream.clientRequestId ?? generateUUID();
+      const normalizedDream = normalizeDreamImages({ ...dream, clientRequestId });
       const currentDreams = dreamsRef.current;
 
       if (!canUseRemoteSync) {
