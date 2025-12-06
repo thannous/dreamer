@@ -3,6 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
+import { EmailVerificationIcon } from '@/components/icons/EmailVerificationIcon';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -18,6 +19,7 @@ type EmailVerificationDialogProps = {
   statusMessage?: string | null;
   cooldownMessage?: string | null;
   isResending?: boolean;
+  verified?: boolean;
 };
 
 export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = ({
@@ -30,9 +32,18 @@ export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = (
   statusMessage,
   cooldownMessage,
   isResending = false,
+  verified = false,
 }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  const title = verified
+    ? t('settings.account.verification.success_title')
+    : t('settings.account.verification.title');
+
+  const subtitle = verified
+    ? t('settings.account.verification.success_subtitle')
+    : t('settings.account.verification.subtitle', { email });
 
   return (
     <BottomSheet
@@ -42,45 +53,73 @@ export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = (
       backdropColor="rgba(0,0,0,0.6)"
     >
       <View style={styles.header}>
-        <View style={[styles.badge, { backgroundColor: colors.backgroundSecondary }]}>
-          <ActivityIndicator color={colors.accent} size="small" />
-          <Text style={[styles.badgeText, { color: colors.textPrimary }]}>
-            {t('settings.account.verification.waiting', { seconds: 15 })}
-          </Text>
+        {/* Hero icon */}
+        <View style={styles.iconContainer}>
+          <EmailVerificationIcon
+            size={64}
+            color={colors.accent}
+            verified={verified}
+            successColor="#16A34A"
+          />
         </View>
+
+        {/* Title */}
         <Text style={[styles.title, { color: colors.textPrimary }]}>
-          {t('settings.account.verification.title')}
+          {title}
         </Text>
+
+        {/* Subtitle with email highlighted */}
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-          {t('settings.account.verification.subtitle', { email })}
+          {verified ? (
+            subtitle
+          ) : (
+            <>
+              {t('settings.account.verification.subtitle_prefix')}{' '}
+              <Text style={[styles.emailHighlight, { color: colors.textPrimary }]}>
+                {email}
+              </Text>
+            </>
+          )}
         </Text>
-        <View style={[styles.hintBox, { backgroundColor: colors.backgroundSecondary }]}>
-          <Text style={[styles.hint, { color: colors.textPrimary }]}>
-            {t('settings.account.verification.help')}
-          </Text>
-          <Text style={[styles.hintSub, { color: colors.textSecondary }]}>
-            {t('settings.account.verification.auto_signin')}
-          </Text>
-        </View>
+
+        {/* Status badge - only show when not verified */}
+        {!verified && (
+          <View style={[styles.badge, { backgroundColor: colors.backgroundSecondary }]}>
+            <ActivityIndicator color={colors.accent} size="small" />
+            <Text style={[styles.badgeText, { color: colors.textSecondary }]}>
+              {t('settings.account.verification.waiting_short')}
+            </Text>
+          </View>
+        )}
       </View>
 
-      <BottomSheetActions
-        primaryLabel={resendLabel}
-        onPrimary={onResend}
-        primaryDisabled={resendDisabled}
-        primaryLoading={isResending}
-        primaryTestID={TID.Button.AuthResendVerification}
-        secondaryLabel={t('common.done')}
-        onSecondary={onClose}
-        secondaryTestID={TID.Button.AuthCloseVerification}
-      />
+      {/* Actions */}
+      {verified ? (
+        <BottomSheetActions
+          primaryLabel={t('common.continue')}
+          onPrimary={onClose}
+          primaryTestID={TID.Button.AuthCloseVerification}
+        />
+      ) : (
+        <BottomSheetActions
+          primaryLabel={resendLabel}
+          onPrimary={onResend}
+          primaryDisabled={resendDisabled}
+          primaryLoading={isResending}
+          primaryTestID={TID.Button.AuthResendVerification}
+          secondaryLabel={t('common.done')}
+          onSecondary={onClose}
+          secondaryTestID={TID.Button.AuthCloseVerification}
+        />
+      )}
 
-      {statusMessage ? (
+      {/* Status messages */}
+      {statusMessage && !verified ? (
         <Text style={[styles.status, { color: colors.textSecondary }]} testID={TID.Text.AuthEmailVerificationStatus}>
           {statusMessage}
         </Text>
       ) : null}
-      {cooldownMessage ? (
+      {cooldownMessage && !verified ? (
         <Text style={[styles.cooldown, { color: colors.textSecondary }]}>{cooldownMessage}</Text>
       ) : null}
     </BottomSheet>
@@ -89,59 +128,55 @@ export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = (
 
 const styles = StyleSheet.create({
   sheet: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingVertical: ThemeLayout.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    paddingVertical: ThemeLayout.spacing.lg,
   },
   header: {
-    gap: ThemeLayout.spacing.sm,
-    marginBottom: ThemeLayout.spacing.md,
-  },
-  badge: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: ThemeLayout.spacing.xs,
-    alignSelf: 'flex-start',
-    paddingHorizontal: ThemeLayout.spacing.sm,
-    paddingVertical: ThemeLayout.spacing.xs,
-    borderRadius: ThemeLayout.borderRadius.sm,
+    gap: ThemeLayout.spacing.sm,
+    marginBottom: ThemeLayout.spacing.lg,
   },
-  badgeText: {
-    fontSize: 13,
-    fontFamily: 'SpaceGrotesk_500Medium',
+  iconContainer: {
+    marginBottom: ThemeLayout.spacing.sm,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: 'SpaceGrotesk_700Bold',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
     lineHeight: 20,
+    textAlign: 'center',
   },
-  hintBox: {
+  emailHighlight: {
+    fontFamily: 'SpaceGrotesk_600SemiBold',
+  },
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.xs,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingVertical: ThemeLayout.spacing.sm,
     borderRadius: ThemeLayout.borderRadius.md,
-    padding: ThemeLayout.spacing.sm,
-    gap: 4,
+    marginTop: ThemeLayout.spacing.sm,
   },
-  hint: {
-    fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
-    lineHeight: 20,
-  },
-  hintSub: {
+  badgeText: {
     fontSize: 13,
     fontFamily: 'SpaceGrotesk_400Regular',
-    lineHeight: 18,
   },
   status: {
     marginTop: ThemeLayout.spacing.sm,
     fontSize: 13,
     fontFamily: 'SpaceGrotesk_400Regular',
+    textAlign: 'center',
   },
   cooldown: {
     marginTop: 4,
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
+    textAlign: 'center',
   },
 });
 

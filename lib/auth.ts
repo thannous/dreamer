@@ -104,12 +104,22 @@ export async function signInWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
-export async function signUpWithEmailPassword(email: string, password: string) {
+const EMAIL_REDIRECT_NATIVE = 'noctalia://auth/callback';
+
+export async function signUpWithEmailPassword(email: string, password: string, userLang?: string) {
   if (isMockMode) {
-    return mockAuth.signUpWithEmailPassword(email);
+    return mockAuth.signUpWithEmailPassword(email, userLang);
   }
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const signUpOptions = {
+    emailRedirectTo: EMAIL_REDIRECT_NATIVE,
+    data: userLang ? { lang: userLang } : undefined,
+  };
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: signUpOptions,
+  });
   if (error) throw error;
   return data.user;
 }

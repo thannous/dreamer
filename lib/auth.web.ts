@@ -7,6 +7,7 @@ import type { SubscriptionTier } from './types';
 export type { MockProfile } from './mockAuth';
 
 const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+const EMAIL_REDIRECT_WEB = 'https://noctalia.app/auth/callback';
 
 /**
  * Initialize Google Sign-In with web client ID
@@ -63,12 +64,20 @@ export async function signInWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
-export async function signUpWithEmailPassword(email: string, password: string) {
+export async function signUpWithEmailPassword(email: string, password: string, userLang?: string) {
   if (isMockMode) {
-    return mockAuth.signUpWithEmailPassword(email);
+    return mockAuth.signUpWithEmailPassword(email, userLang);
   }
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const signUpOptions = {
+    emailRedirectTo: EMAIL_REDIRECT_WEB,
+    data: userLang ? { lang: userLang } : undefined,
+  };
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: signUpOptions,
+  });
   if (error) throw error;
   return data.user;
 }
