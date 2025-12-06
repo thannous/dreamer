@@ -134,7 +134,7 @@ eas credentials
 1. Navigate to **Authentication** > **URL Configuration**
 2. Add redirect URL:
    ```
-   dreamapp://google-auth
+   noctalia://google-auth
    ```
 3. Save
 

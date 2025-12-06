@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "Noctalia",
-    "slug": "dream-app",
+    "slug": "noctalia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "dreamapp",
+    "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
