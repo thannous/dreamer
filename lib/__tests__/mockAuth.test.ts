@@ -20,6 +20,9 @@ vi.mock('../../services/mocks/storageServiceMock', () => ({
   setPreloadDreamsEnabled: vi.fn(),
   preloadDreamsNow: vi.fn(),
 }));
+vi.mock('@/services/quota/MockQuotaEventStore', () => ({
+  resetMockQuotaEvents: vi.fn().mockResolvedValue(undefined),
+}));
 
 describe('mockAuth', () => {
   const email = 'mock.verify@dreamer.test';
