@@ -26,39 +26,14 @@
     <meta name="twitter:title" content="How to Remember Your Dreams: 10 Effective Techniques">
     <meta name="twitter:description" content="Discover scientifically proven methods to improve your dream recall.">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&family=Outfit:wght@300;400;500;700&display=swap"
-        rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="/css/styles.min.css">
+    <!-- Lucide Icons (deferred) -->
+    <script src="https://unpkg.com/lucide@latest" defer></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dream: {
-                            dark: '#0a0514',
-                            purple: '#2E1065',
-                            lavender: '#E9D5FF',
-                            cream: '#FFF7ED',
-                            salmon: '#FDA481',
-                            salmonLight: '#FFCCB5',
-                            glass: 'rgba(255, 255, 255, 0.03)',
-                            glassBorder: 'rgba(255, 255, 255, 0.08)',
-                            accent: '#a855f7'
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Fraunces', 'serif'],
-                        sans: ['Outfit', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
 
     <style>
         ::-webkit-scrollbar {
