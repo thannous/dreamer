@@ -8,6 +8,7 @@
   <meta name="description" content="Noctalia - Your intelligent dream companion. Capture dreams by voice, explore them with AI.">
   <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
   <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
+  <link rel="alternate" hreflang="es" href="https://noctalia.app/es/">
   <link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/">
   <link rel="icon" href="/logo/logo_noctalia.png" type="image/png">
   <link rel="apple-touch-icon" href="/logo/logo_noctalia.png">
@@ -87,6 +88,8 @@
     <a href="/en/">Continue in English</a>
     <span class="separator">·</span>
     <a href="/fr/">Continuer en français</a>
+    <span class="separator">·</span>
+    <a href="/es/">Continuar en español</a>
   </p>
 
   <script>
@@ -100,6 +103,8 @@
 
         if (primary.startsWith('fr')) {
           target = '/fr/';
+        } else if (primary.startsWith('es')) {
+          target = '/es/';
         }
 
         window.location.replace(target);
