@@ -90,11 +90,7 @@ export default function NotificationSettingsCard() {
       await saveNotificationSettings(newSettings);
       if (enabled) {
         await scheduleDailyNotification(newSettings);
-        Alert.alert(
-          t('notifications.alert.reminder_set.title'),
-          t('notifications.alert.reminder_set.message', { time: newSettings.weekdayTime }),
-          [{ text: t('common.done') }]
-        );
+        setShowTimePicker(true);
       } else {
         await cancelAllNotifications();
       }
@@ -102,6 +98,8 @@ export default function NotificationSettingsCard() {
       if (__DEV__) {
         console.error('Failed to update notification settings:', error);
       }
+      // Revert switch to false on error
+      setSettings({ ...settings, isEnabled: false });
       Alert.alert(
         t('notifications.alert.update_failed.title'),
         t('notifications.alert.update_failed.message')

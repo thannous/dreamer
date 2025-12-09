@@ -40,7 +40,7 @@ export default function SettingsScreen() {
     return {
       title: t('subscription.settings.title.free'),
       subtitle: t('subscription.settings.subtitle.free'),
-      badge: t('subscription.paywall.card.badge.free'),
+      badge: undefined,
       cta: t('subscription.settings.cta.free'),
     };
   }, [isActive, t]);

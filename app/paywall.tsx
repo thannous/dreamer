@@ -123,11 +123,7 @@ export default function PaywallScreen() {
           <SubscriptionCard
             title={t('subscription.paywall.card.title')}
             subtitle={t('subscription.paywall.card.subtitle')}
-            badge={t(
-              isActive
-                ? 'subscription.paywall.card.badge.premium'
-                : 'subscription.paywall.card.badge.free'
-            )}
+            badge={isActive ? t('subscription.paywall.card.badge.premium') : undefined}
             features={[
               t('subscription.paywall.card.feature.unlimited_analyses'),
               t('subscription.paywall.card.feature.unlimited_explorations'),
