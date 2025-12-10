@@ -86,6 +86,13 @@ vi.mock('../../../hooks/useTranslation', () => ({
   }),
 }));
 
+vi.mock('../../../context/LanguageContext', () => ({
+  useLanguage: () => ({
+    language: 'en',
+    setLanguage: vi.fn(),
+  }),
+}));
+
 vi.mock('../GoogleSignInButton', () => ({
   default: () => <div data-testid="google-sign-in" />,
 }));

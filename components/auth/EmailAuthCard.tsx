@@ -153,6 +153,12 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
       startVerificationFlow(trimmedEmail, password, true, lastVerificationEmailSentAt);
       return;
     }
+    if (__DEV__) {
+      console.log('[EmailAuthCard] handleSupabaseError', {
+        titleKey,
+        error,
+      });
+    }
     const message = error instanceof Error ? error.message : t('common.unknown_error');
     Alert.alert(t(titleKey), message);
   };
@@ -160,11 +166,24 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const attemptSignIn = async () => {
     setTouched({ email: true, password: true });
     if (emailActionsDisabled) return;
+    if (__DEV__) {
+      console.log('[EmailAuthCard] attemptSignIn', {
+        email: trimmedEmail,
+      });
+    }
     setSubmitting('signin');
     try {
       await signInWithEmailPassword(trimmedEmail, password);
+      if (__DEV__) {
+        console.log('[EmailAuthCard] signInWithEmailPassword success', {
+          email: trimmedEmail,
+        });
+      }
       clearPendingVerification();
       requestStayOnSettingsIntent();
+      if (__DEV__) {
+        console.log('[EmailAuthCard] requested stay-on-settings intent');
+      }
       resetSensitiveInputs();
     } catch (error) {
       handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
