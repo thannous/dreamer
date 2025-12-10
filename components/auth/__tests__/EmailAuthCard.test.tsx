@@ -2,10 +2,10 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AuthApiError } from '@supabase/auth-js';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TID } from '../../../lib/testIDs';
-import EmailAuthCard from '../EmailAuthCard';
+import { EmailAuthCard } from '../EmailAuthCard';
 
 const {
   mockAlert,
@@ -28,8 +28,13 @@ vi.mock('react-native', () => {
     ActivityIndicator: (props: any) => <div data-testid="activity" {...props} />,
     Animated: {
       Value: class {
-        constructor(_value: number) {}
-        setValue(_value: number) {}
+        value: number;
+        constructor(value: number) {
+          this.value = value;
+        }
+        setValue(next: number) {
+          this.value = next;
+        }
         interpolate() { return this; }
       },
       View: ({ children }: any) => <div>{children}</div>,
@@ -171,4 +176,3 @@ describe('EmailAuthCard', () => {
     vi.useRealTimers();
   });
 });
-
