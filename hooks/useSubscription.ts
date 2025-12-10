@@ -12,6 +12,22 @@ import {
   restoreSubscriptionPurchases,
 } from '@/services/subscriptionService';
 
+type RevenueCatError = Error & {
+  userCancelled?: boolean;
+  code?: string | number;
+};
+
+function isUserCancelledError(e: unknown): boolean {
+  if (typeof e !== 'object' || e === null) return false;
+  const error = e as RevenueCatError;
+  // RevenueCat sets userCancelled flag or uses PURCHASE_CANCELLED_ERROR code
+  if (error.userCancelled === true) return true;
+  if (error.code === 'PURCHASE_CANCELLED_ERROR') return true;
+  // Some versions use numeric code 1
+  if (error.code === '1' || error.code === 1) return true;
+  return false;
+}
+
 function formatError(e: unknown): Error {
   if (e instanceof Error) {
     // RevenueCat errors often have a 'code' or 'userInfo' property, but we'll keep it simple for now
@@ -103,7 +119,10 @@ export function useSubscription() {
       await syncTier(nextStatus);
       return nextStatus;
     } catch (e) {
-      setError(formatError(e));
+      // Don't show error if user simply cancelled the purchase
+      if (!isUserCancelledError(e)) {
+        setError(formatError(e));
+      }
       throw e;
     } finally {
       setProcessing(false);
@@ -122,7 +141,10 @@ export function useSubscription() {
       await syncTier(nextStatus);
       return nextStatus;
     } catch (e) {
-      setError(formatError(e));
+      // Don't show error if user simply cancelled the restore
+      if (!isUserCancelledError(e)) {
+        setError(formatError(e));
+      }
       throw e;
     } finally {
       setProcessing(false);
