@@ -45,7 +45,10 @@ export const isNotFoundError = (error: unknown): error is { code: string } =>
  */
 export const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
   const hasImage = Boolean(dream.imageUrl?.trim());
-  const derivedThumbnail = hasImage ? getThumbnailUrl(dream.imageUrl) : undefined;
+  // Perf: Skip redundant URL parsing if thumbnail already exists
+  const derivedThumbnail = hasImage
+    ? (dream.thumbnailUrl || getThumbnailUrl(dream.imageUrl))
+    : undefined;
 
   return {
     ...dream,
