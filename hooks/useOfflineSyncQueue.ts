@@ -107,6 +107,19 @@ export function useOfflineSyncQueue({
   }, [ensureClientRequestId]);
 
   /**
+   * Persist pending mutations to storage
+   */
+  const persistPendingMutations = useCallback(
+    async (mutations: DreamMutation[]) => {
+      const normalized = mutations.map(ensureClientRequestId);
+      pendingMutationsRef.current = normalized;
+      if (!canUseRemoteSync) return;
+      await savePendingDreamMutations(normalized);
+    },
+    [canUseRemoteSync, ensureClientRequestId]
+  );
+
+  /**
    * Hydrate queue with initial mutations loaded from storage.
    * Merge with any mutations already enqueued in this session to avoid dropping new work.
    */
@@ -130,19 +143,6 @@ export function useOfflineSyncQueue({
       void persistPendingMutations(merged);
     }
   }, [ensureClientRequestId, initialMutations, persistPendingMutations, setPendingMutations]);
-
-  /**
-   * Persist pending mutations to storage
-   */
-  const persistPendingMutations = useCallback(
-    async (mutations: DreamMutation[]) => {
-      const normalized = mutations.map(ensureClientRequestId);
-      pendingMutationsRef.current = normalized;
-      if (!canUseRemoteSync) return;
-      await savePendingDreamMutations(normalized);
-    },
-    [canUseRemoteSync, ensureClientRequestId]
-  );
 
   /**
    * Append a mutation to the queue
