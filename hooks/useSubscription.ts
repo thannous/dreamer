@@ -14,7 +14,7 @@ import {
 
 type RevenueCatError = Error & {
   userCancelled?: boolean;
-  code?: string;
+  code?: string | number;
 };
 
 function isUserCancelledError(e: unknown): boolean {
@@ -24,7 +24,7 @@ function isUserCancelledError(e: unknown): boolean {
   if (error.userCancelled === true) return true;
   if (error.code === 'PURCHASE_CANCELLED_ERROR') return true;
   // Some versions use numeric code 1
-  if (error.code === '1') return true;
+  if (error.code === '1' || error.code === 1) return true;
   return false;
 }
 
