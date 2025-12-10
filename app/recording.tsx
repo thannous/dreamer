@@ -475,10 +475,10 @@ export default function RecordingScreen() {
         console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
       }
 
-      const shouldFallbackToGoogle =
-        !transcriptText &&
-        (uri || recordedUri) &&
-        !(nativeError && nativeError.toLowerCase().includes('no speech'));
+      // Always fallback to Google STT if native returned nothing and we have audio.
+      // The previous "no speech" check was blocking fallback for languages where
+      // native STT doesn't work well (e.g., Spanish on devices without the language pack).
+      const shouldFallbackToGoogle = !transcriptText && (uri || recordedUri);
 
       if (shouldFallbackToGoogle) {
         try {
@@ -486,6 +486,7 @@ export default function RecordingScreen() {
           if (__DEV__) {
             console.log('[Recording] fallback to Google STT', {
               locale: transcriptionLocale,
+              nativeError,
               uriLength: fallbackUri?.length ?? 0,
             });
           }
