@@ -1,5 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+// Use vi.hoisted to ensure mocks are created before module loading
+const { mockResetMockQuotaEvents, mockResetMockStorage, mockSetPreloadDreamsEnabled, mockPreloadDreamsNow } = vi.hoisted(() => ({
+  mockResetMockQuotaEvents: vi.fn().mockResolvedValue(undefined),
+  mockResetMockStorage: vi.fn(),
+  mockSetPreloadDreamsEnabled: vi.fn(),
+  mockPreloadDreamsNow: vi.fn(),
+}));
+
+// Mock storage service and quota store BEFORE importing mockAuth
+vi.mock('../../services/mocks/storageServiceMock', () => ({
+  resetMockStorage: mockResetMockStorage,
+  setPreloadDreamsEnabled: mockSetPreloadDreamsEnabled,
+  preloadDreamsNow: mockPreloadDreamsNow,
+}));
+vi.mock('../../services/quota/MockQuotaEventStore', () => ({
+  resetMockQuotaEvents: mockResetMockQuotaEvents,
+}));
+
 import {
     getAccessToken,
     getCurrentUser,
@@ -13,16 +31,6 @@ import {
     signUpWithEmailPassword,
     updateUserTier,
 } from '../mockAuth';
-
-// Mock storage service to avoid side effects
-vi.mock('../../services/mocks/storageServiceMock', () => ({
-  resetMockStorage: vi.fn(),
-  setPreloadDreamsEnabled: vi.fn(),
-  preloadDreamsNow: vi.fn(),
-}));
-vi.mock('@/services/quota/MockQuotaEventStore', () => ({
-  resetMockQuotaEvents: vi.fn().mockResolvedValue(undefined),
-}));
 
 describe('mockAuth', () => {
   const email = 'mock.verify@dreamer.test';

@@ -107,6 +107,7 @@ function RootLayoutNav() {
   const { mode } = useTheme();
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
+  const hasInitialNavigated = useRef(false);
   const isNavigationReady = useNavigationIsReady();
 
   useSubscriptionInitialize();
@@ -121,18 +122,46 @@ function RootLayoutNav() {
       return;
     }
 
-    const navigateToRecording = () => {
+    const navigateToRecording = (reason: 'initial' | 'appState') => {
+      if (__DEV__) {
+        console.log('[RootLayoutNav] navigateToRecording', {
+          reason,
+          currentPath: pathnameRef.current,
+        });
+      }
+      // Do not override the settings tab – when the user is explicitly
+      // managing their account we should not force navigation away,
+      // which can happen when password managers trigger app focus changes.
+      if (pathnameRef.current.includes('/settings')) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on settings, skip redirect');
+        }
+        return;
+      }
       if (pathnameRef.current !== '/recording') {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] redirecting to /recording');
+        }
         router.replace('/recording');
       }
     };
 
-    // Always land on the recording screen when the app wakes or launches
-    navigateToRecording();
+    // Only navigate to recording on initial app launch, not on subsequent
+    // isNavigationReady changes (e.g., language change causing navigation state reset)
+    if (!hasInitialNavigated.current) {
+      hasInitialNavigated.current = true;
+      navigateToRecording('initial');
+    }
 
     const subscription = AppState.addEventListener('change', (state) => {
+      if (__DEV__) {
+        console.log('[RootLayoutNav] AppState change', {
+          state,
+          currentPath: pathnameRef.current,
+        });
+      }
       if (state === 'active') {
-        navigateToRecording();
+        navigateToRecording('appState');
       }
     });
 
