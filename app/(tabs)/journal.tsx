@@ -417,6 +417,7 @@ export default function JournalListScreen() {
           key={`desktop-${desktopColumns}`}
           data={filteredDreams}
           extraData={visibleItemIds}
+          estimatedItemSize={150}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
@@ -432,6 +433,7 @@ export default function JournalListScreen() {
           ref={flatListRef}
           data={filteredDreams}
           extraData={visibleItemIds}
+          estimatedItemSize={150}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
