@@ -21,9 +21,19 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
   const ensureSettingsTab = (nextUser: User | null) => {
     if (!nextUser) {
+      if (__DEV__) {
+        console.log('[AuthContext] ensureSettingsTab: no user, skipping');
+      }
       return;
     }
-    if (consumeStayOnSettingsIntent()) {
+    const shouldStayOnSettings = consumeStayOnSettingsIntent();
+    if (__DEV__) {
+      console.log('[AuthContext] ensureSettingsTab', {
+        hasUser: true,
+        shouldStayOnSettings,
+      });
+    }
+    if (shouldStayOnSettings) {
       router.replace('/(tabs)/settings');
     }
   };
@@ -35,6 +45,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       try {
         const sessionUser = await getCurrentUser();
         if (mounted) {
+          if (__DEV__) {
+            console.log('[AuthContext] bootstrap user', {
+              hasUser: !!sessionUser,
+              email: sessionUser?.email,
+            });
+          }
           setUser(sessionUser);
           setLoading(false);
           ensureSettingsTab(sessionUser);
@@ -52,6 +68,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     bootstrap();
 
     const unsubscribe = onAuthChange((nextUser) => {
+      if (__DEV__) {
+        console.log('[AuthContext] onAuthChange', {
+          hasUser: !!nextUser,
+          email: nextUser?.email,
+        });
+      }
       setUser(nextUser);
       setLoading(false);
       ensureSettingsTab(nextUser);
