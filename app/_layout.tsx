@@ -123,25 +123,27 @@ function RootLayoutNav() {
     }
 
     const navigateToRecording = (reason: 'initial' | 'appState') => {
+      const currentPath = pathnameRef.current ?? pathname;
+      const isInSettings =
+        currentPath?.includes('/settings') ||
+        currentPath?.startsWith('/(tabs)/settings') ||
+        pathname?.startsWith('/(tabs)/settings');
+
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateToRecording', {
           reason,
-          currentPath: pathnameRef.current,
+          currentPath,
         });
       }
-      // Do not override the settings tab – when the user is explicitly
-      // managing their account we should not force navigation away,
-      // which can happen when password managers trigger app focus changes.
-      if (pathnameRef.current.includes('/settings')) {
+
+      if (isInSettings) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on settings, skip redirect');
         }
         return;
       }
-      if (pathnameRef.current !== '/recording') {
-        if (__DEV__) {
-          console.log('[RootLayoutNav] redirecting to /recording');
-        }
+
+      if (currentPath !== '/recording') {
         router.replace('/recording');
       }
     };
@@ -168,7 +170,7 @@ function RootLayoutNav() {
     return () => {
       subscription.remove();
     };
-  }, [isNavigationReady]);
+  }, [isNavigationReady, pathname]);
 
   useEffect(() => {
     if (!isNavigationReady) {
