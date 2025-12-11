@@ -29,7 +29,7 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
   },
   free: {
     analysis: 5, // 5 dream analyses total (includes guest analyses)
-    exploration: 2, // 2 explorations total (includes guest explorations)
+    exploration: 3, // 3 explorations total (includes guest explorations)
     messagesPerDream: 20, // 20 messages per dream
   },
   premium: {
