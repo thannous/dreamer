@@ -1,10 +1,10 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
-import { DreamCard } from '@/components/journal/DreamCard';
+import { JournalListItem } from '@/components/journal/JournalListItem';
+import { JournalDesktopItem } from '@/components/journal/JournalDesktopItem';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
-import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
@@ -12,12 +12,10 @@ import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useModalSlide } from '@/hooks/useJournalAnimations';
-import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
@@ -42,7 +40,7 @@ export default function JournalListScreen() {
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
-  const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
+
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -211,125 +209,39 @@ export default function JournalListScreen() {
     });
   }).current;
 
+  // Stable callback for dream press
+  const handleDreamPress = useCallback((dreamId: number) => {
+    router.push(`/journal/${dreamId}`);
+  }, []);
+
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.INITIAL_VISIBLE_COUNT; // Load first 5 immediately
 
-    const isFavorite = !!item.isFavorite;
-    const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-
-    const mobileBadges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      mobileBadges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      mobileBadges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      mobileBadges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
-
     return (
-      <View style={styles.timelineItem}>
-        {/* Timeline indicator column */}
-        <View style={styles.timelineColumn}>
-          <TimelineIndicator dreamType={item.dreamType} />
-          {/* Timeline line - don't show for last item */}
-          {index < filteredDreams.length - 1 && <View style={[styles.timelineLine, { backgroundColor: colors.timeline }]} />}
-        </View>
-
-        {/* Content column */}
-        <View style={styles.contentColumn}>
-          <Text style={[styles.date, { color: colors.textSecondary }]}>
-            {formatDreamListDate(item.id)}
-            {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
-          </Text>
-          <DreamCard
-            dream={item}
-            onPress={() => router.push(`/journal/${item.id}`)}
-            shouldLoadImage={shouldLoadImage}
-            badges={mobileBadges}
-            testID={TID.List.DreamItem(item.id)}
-          />
-        </View>
-      </View>
+      <JournalListItem
+        dream={item}
+        isLast={index === filteredDreams.length - 1}
+        shouldLoadImage={shouldLoadImage}
+        onPress={handleDreamPress}
+      />
     );
-  }, [filteredDreams.length, visibleItemIds, colors, formatDreamListDate, t]);
+  }, [filteredDreams.length, visibleItemIds, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.DESKTOP_INITIAL_COUNT;
-    const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isRecent = index < 3;
-    const isFavorite = !!item.isFavorite;
-    const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
-    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-
+    const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isHero = isRecent && hasImage;
-    const badges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      badges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      badges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      badges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
-      <View
-        style={[
-          styles.desktopCardWrapper,
-          isHero && styles.desktopCardHero,
-          !isHero && isFavorite && styles.desktopCardFavorite,
-          !isHero && !isFavorite && isAnalyzed && styles.desktopCardAnalyzed,
-          !isHero && !isFavorite && !isAnalyzed && hasImage && styles.desktopCardWithImage,
-        ]}
-      >
-        <View style={styles.desktopMetaRow}> 
-          <Text style={[styles.desktopDate, { color: colors.textSecondary }] }>
-            {formatDreamListDate(item.id)}
-            {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
-          </Text>
-        </View>
-        <DreamCard
-          dream={item}
-          onPress={() => router.push(`/journal/${item.id}`)}
-          shouldLoadImage={shouldLoadImage}
-          badges={badges}
-          testID={TID.List.DreamItem(item.id)}
-        />
-      </View>
+      <JournalDesktopItem
+        dream={item}
+        shouldLoadImage={shouldLoadImage}
+        onPress={handleDreamPress}
+        isHero={isHero}
+      />
     );
-  }, [visibleItemIds, colors, formatDreamListDate, t]);
+  }, [visibleItemIds, handleDreamPress]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -342,8 +254,6 @@ export default function JournalListScreen() {
   ), [searchQuery, selectedTheme, dateRange.start, dateRange.end, showFavoritesOnly, colors, t]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
-
-  // FlashList handles item layout automatically with estimatedItemSize
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
@@ -425,6 +335,8 @@ export default function JournalListScreen() {
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
+          // @ts-expect-error estimatedItemSize is required for performance but missing from types
+          estimatedItemSize={250}
         />
       ) : (
         <FlashList
@@ -439,6 +351,8 @@ export default function JournalListScreen() {
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
+          // @ts-expect-error estimatedItemSize is required for performance but missing from types
+          estimatedItemSize={120}
         />
       )}
 
@@ -608,80 +522,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  desktopMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: ThemeLayout.spacing.xs,
-  },
-  desktopDate: {
-    fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
-  },
-  desktopBadgesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: ThemeLayout.spacing.xs,
-  },
-  desktopBadge: {
-    borderRadius: ThemeLayout.borderRadius.full,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  desktopBadgeText: {
-    fontSize: 11,
-    fontFamily: 'SpaceGrotesk_500Medium',
-  },
-  desktopRow: {
-    flexDirection: 'row',
-    columnGap: ThemeLayout.spacing.md,
-  },
-  desktopColumnWrapper: {
-    gap: ThemeLayout.spacing.lg,
-    columnGap: ThemeLayout.spacing.lg,
-    paddingHorizontal: ThemeLayout.spacing.sm,
-  },
-  desktopCardWrapper: {
-    flex: 1,
-    marginBottom: ThemeLayout.spacing.xl,
-    paddingHorizontal: ThemeLayout.spacing.xs,
-    minWidth: 0,
-  },
-  desktopCardHero: {
-    flex: 2,
-  },
-  desktopCardFavorite: {
-    flex: 1.5,
-  },
-  desktopCardAnalyzed: {
-    flex: 1.3,
-  },
-  desktopCardWithImage: {
-    flex: 1.2,
-  },
-  timelineItem: {
-    flexDirection: 'row',
-    marginBottom: ThemeLayout.spacing.lg,
-  },
-  timelineColumn: {
-    width: 36,
-    alignItems: 'center',
-    marginRight: ThemeLayout.spacing.md,
-  },
-  timelineLine: {
-    flex: 1,
-    width: ThemeLayout.timelineLineWidth,
-    marginTop: 4,
-  },
-  contentColumn: {
-    flex: 1,
-  },
-  date: {
-    fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
-    marginBottom: 8,
-    marginLeft: 4,
   },
   emptyState: {
     paddingTop: 60,
