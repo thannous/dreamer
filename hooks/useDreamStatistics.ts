@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount } from '@/lib/dreamUsage';
+import { calculateStreaks, isWithinDays, startOfDay } from '@/lib/streakUtils';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
 export interface DreamStatistics {
@@ -28,82 +29,6 @@ export interface DreamStatistics {
 }
 
 const ORDERED_WEEKDAYS = [1, 2, 3, 4, 5, 6, 0];
-
-const startOfDay = (timestamp: number): Date => {
-  const date = new Date(timestamp);
-  date.setHours(0, 0, 0, 0);
-  return date;
-};
-
-const isWithinDays = (timestamp: number, days: number, now: number): boolean => {
-  const dayInMs = 24 * 60 * 60 * 1000;
-  return now - timestamp <= days * dayInMs;
-};
-
-const calculateStreaks = (dreams: DreamAnalysis[]): { current: number; longest: number } => {
-  if (dreams.length === 0) return { current: 0, longest: 0 };
-
-  const sortedDreams = [...dreams].sort((a, b) => b.id - a.id);
-  const dayInMs = 24 * 60 * 60 * 1000;
-
-  let currentStreak = 0;
-  let longestStreak = 0;
-  let tempStreak = 1;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayTimestamp = today.getTime();
-
-  const mostRecentDream = new Date(sortedDreams[0].id);
-  mostRecentDream.setHours(0, 0, 0, 0);
-
-  const daysSinceLastDream = Math.floor((todayTimestamp - mostRecentDream.getTime()) / dayInMs);
-
-  if (daysSinceLastDream <= 1) {
-    currentStreak = 1;
-
-    for (let i = 1; i < sortedDreams.length; i++) {
-      const currentDate = new Date(sortedDreams[i - 1].id);
-      currentDate.setHours(0, 0, 0, 0);
-
-      const prevDate = new Date(sortedDreams[i].id);
-      prevDate.setHours(0, 0, 0, 0);
-
-      const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / dayInMs);
-
-      if (daysDiff <= 1) {
-        currentStreak++;
-        tempStreak++;
-      } else {
-        break;
-      }
-
-      longestStreak = Math.max(longestStreak, tempStreak);
-    }
-  }
-
-  tempStreak = 1;
-  for (let i = 1; i < sortedDreams.length; i++) {
-    const currentDate = new Date(sortedDreams[i - 1].id);
-    currentDate.setHours(0, 0, 0, 0);
-
-    const prevDate = new Date(sortedDreams[i].id);
-    prevDate.setHours(0, 0, 0, 0);
-
-    const daysDiff = Math.floor((currentDate.getTime() - prevDate.getTime()) / dayInMs);
-
-    if (daysDiff <= 1) {
-      tempStreak++;
-    } else {
-      longestStreak = Math.max(longestStreak, tempStreak);
-      tempStreak = 1;
-    }
-  }
-
-  longestStreak = Math.max(longestStreak, tempStreak, currentStreak);
-
-  return { current: currentStreak, longest: longestStreak };
-};
 
 export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => {
   const [now] = useState(() => Date.now());
