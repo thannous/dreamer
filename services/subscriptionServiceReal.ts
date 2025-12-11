@@ -3,8 +3,14 @@ import { Platform } from 'react-native';
 import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
 
 import { REVENUECAT_ENTITLEMENT_ID } from '@/constants/subscription';
+import {
+  getActiveEntitlement as getActiveEntitlementPure,
+  mapPackage as mapPackagePure,
+  mapStatus as mapStatusPure,
+  type CustomerInfoLike,
+} from '@/lib/revenuecat';
 
-import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
+import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
 
 type InternalPackage = {
   id: string;
@@ -30,12 +36,6 @@ let lastUserId: string | null = null;
 let cachedStatus: SubscriptionStatus | null = null;
 let cachedPackages: InternalPackage[] = [];
 
-const ENTITLEMENT_PRIORITY = [
-  REVENUECAT_ENTITLEMENT_ID,
-  'noctalia_plus',
-  'noctalia-plus',
-  'noctaliaPlus',
-];
 function resetCachedState(): void {
   cachedStatus = null;
   cachedPackages = [];
@@ -109,65 +109,18 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
   }
 }
 
-function getActiveEntitlement(info: CustomerInfo | null) {
-  const active = (info?.entitlements?.active ?? {}) as Record<string, { productIdentifier?: string; expirationDate?: string | null }>;
-  for (const key of ENTITLEMENT_PRIORITY) {
-    const entitlement = active[key];
-    if (entitlement) {
-      return entitlement;
-    }
-  }
-
-  const firstKey = Object.keys(active)[0];
-  return firstKey ? active[firstKey] : null;
-}
-
-function mapTierFromCustomerInfo(info: CustomerInfo | null): SubscriptionTier {
-  return getActiveEntitlement(info) ? 'premium' : 'free';
-}
-
+// Use pure functions from lib/revenuecat.ts for mapping
 function mapStatus(info: CustomerInfo | null): SubscriptionStatus {
-  const tier = mapTierFromCustomerInfo(info);
-  const activeEntitlement = getActiveEntitlement(info);
-  const active = tier === 'premium';
-  const productId = activeEntitlement?.productIdentifier ?? null;
-  const expiryDate = activeEntitlement?.expirationDate ?? null;
-  return {
-    tier,
-    isActive: active,
-    expiryDate,
-    productId,
-  };
-}
-
-function mapIntervalFromId(id: string, pkg?: PurchasesPackage): PurchasePackage['interval'] {
-  if (pkg?.packageType === 'ANNUAL') {
-    return 'annual';
-  }
-  if (pkg?.packageType === 'MONTHLY') {
-    return 'monthly';
-  }
-
-  const lower = id.toLowerCase();
-  if (lower.includes('year') || lower.includes('annual') || lower.includes('annuel')) {
-    return 'annual';
-  }
-  return 'monthly';
+  return mapStatusPure(info as CustomerInfoLike);
 }
 
 function mapPackage(pkg: PurchasesPackage): InternalPackage {
-  const id = pkg.identifier;
-  const product = pkg.product;
-  const interval = mapIntervalFromId(id, pkg);
-  const mapped: PurchasePackage = {
-    id,
-    interval,
-    priceFormatted: product.priceString ?? '',
-    currency: product.currencyCode ?? '',
-    title: product.title ?? '',
-    description: product.description ?? '',
-  };
-  return { id, pkg, mapped };
+  const mapped = mapPackagePure({
+    identifier: pkg.identifier,
+    packageType: pkg.packageType,
+    product: pkg.product,
+  });
+  return { id: pkg.identifier, pkg, mapped };
 }
 
 async function fetchStatus(): Promise<SubscriptionStatus> {
