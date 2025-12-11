@@ -109,9 +109,17 @@ async function generateImageFromPrompt(options: {
   if (inlinePart?.inlineData?.data) return { imageBase64: inlinePart.inlineData.data as string, raw: json };
 
   const blockReason = json?.promptFeedback?.blockReason ?? json?.promptFeedback?.block_reason;
-  throw new Error(
+  // Surface more detail for diagnostics when Gemini refuses to return an image
+  console.warn('[api] Gemini image no inlineData returned', {
+    blockReason: blockReason ?? null,
+    promptFeedback: json?.promptFeedback ?? null,
+  });
+  const err = new Error(
     `Gemini image error: no inlineData returned${blockReason ? ` (blockReason=${blockReason})` : ''}`
   );
+  (err as any).blockReason = blockReason ?? null;
+  (err as any).promptFeedback = json?.promptFeedback ?? null;
+  throw err;
 }
 
 /**
@@ -730,10 +738,16 @@ serve(async (req: Request) => {
       });
 
       if (!imageBase64) {
-        return new Response(JSON.stringify({ error: 'No image returned', raw: imgJson }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        });
+        return new Response(
+          JSON.stringify({
+            error: 'No image returned',
+            raw: imgJson,
+          }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          }
+        );
       }
 
       const optimized =
@@ -761,10 +775,17 @@ serve(async (req: Request) => {
       );
     } catch (e) {
       console.error('[api] /analyzeDreamFull error', e);
-      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({
+          error: String((e as Error).message || e),
+          ...(e as any)?.blockReason ? { blockReason: (e as any).blockReason } : {},
+          ...(e as any)?.promptFeedback ? { promptFeedback: (e as any).promptFeedback } : {},
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
     }
   }
 
@@ -879,10 +900,16 @@ serve(async (req: Request) => {
       });
 
       if (!imageBase64) {
-        return new Response(JSON.stringify({ error: 'No image returned', raw: imgJson }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        });
+        return new Response(
+          JSON.stringify({
+            error: 'No image returned',
+            raw: imgJson,
+          }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          }
+        );
       }
 
       const optimized =
@@ -904,10 +931,17 @@ serve(async (req: Request) => {
       });
     } catch (e) {
       console.error('[api] /generateImage error', e);
-      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({
+          error: String((e as Error).message || e),
+          ...(e as any)?.blockReason ? { blockReason: (e as any).blockReason } : {},
+          ...(e as any)?.promptFeedback ? { promptFeedback: (e as any).promptFeedback } : {},
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
     }
   }
 
