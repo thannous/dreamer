@@ -118,6 +118,7 @@ describe('useAnalysisProgress', () => {
         originalError: new Error('Test'),
         userMessage: 'Network error',
         canRetry: true,
+        message: 'Network error',
       };
 
       act(() => {
@@ -143,6 +144,7 @@ describe('useAnalysisProgress', () => {
         originalError: new Error('Test'),
         userMessage: 'Network error occurred',
         canRetry: true,
+        message: 'Network error occurred',
       };
 
       act(() => {
@@ -169,6 +171,7 @@ describe('useAnalysisProgress', () => {
         originalError: new Error('Server error'),
         userMessage: 'Server error',
         canRetry: true,
+        message: 'Server error',
       };
 
       act(() => {
@@ -205,6 +208,7 @@ describe('useAnalysisProgress', () => {
         originalError: new Error('Test'),
         userMessage: 'Error',
         canRetry: true,
+        message: 'Error',
       };
 
       act(() => {
