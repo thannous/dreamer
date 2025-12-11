@@ -1,10 +1,10 @@
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { router } from 'expo-router';
+import React from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type Props = {
   testID?: string;
@@ -23,7 +23,6 @@ export const UpsellCard: React.FC<Props> = ({ testID }) => {
   return (
     <View style={[styles.card, { backgroundColor: colors.backgroundCard }, shadows.md]} testID={testID}>
       <Text style={[styles.title, { color: colors.textPrimary }]}>{t('guest.upsell.title')}</Text>
-      <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{t('guest.upsell.subtitle')}</Text>
       <View style={styles.benefits}>
         <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.unlimited')}</Text>
         <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.analysis')}</Text>
