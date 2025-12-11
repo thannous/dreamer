@@ -18,6 +18,25 @@
 | Dreams About Death | Published | 2025-12-11 | [EN](/en/blog/death-dreams-meaning.html) | [FR](/fr/blog/reves-de-mort.html) | [ES](/es/blog/suenos-de-muerte.html) |
 | Water Dreams | Published | 2025-12-11 | [EN](/en/blog/water-dreams-meaning.html) | [FR](/fr/blog/reves-eau.html) | [ES](/es/blog/suenos-de-agua.html) |
 
+### Batch 3 - Relationships, Life & Nightmares (December 2025)
+
+| Article | Status | Published | EN | FR | ES |
+|---------|--------|-----------|----|----|-----|
+| Dreams About Ex-Partners | Published | 2025-12-11 | [EN](/en/blog/dreams-about-ex.html) | [FR](/fr/blog/reves-ex-partenaire.html) | [ES](/es/blog/suenos-con-ex.html) |
+| Pregnancy Dreams | Published | 2025-12-11 | [EN](/en/blog/pregnancy-dreams-meaning.html) | [FR](/fr/blog/reves-de-grossesse.html) | [ES](/es/blog/suenos-de-embarazo.html) |
+| Nightmares Guide | Published | 2025-12-11 | [EN](/en/blog/stop-nightmares-guide.html) | [FR](/fr/blog/guide-cauchemars.html) | [ES](/es/blog/guia-pesadillas.html) |
+
+### Batch 4 - Practical Guides & Science (December 2025)
+
+| Article | Status | Published | EN | FR | ES |
+|---------|--------|-----------|----|----|-----|
+| Sleep Paralysis Explained | Published | 2025-12-11 | [EN](/en/blog/sleep-paralysis-guide.html) | [FR](/fr/blog/guide-paralysie-sommeil.html) | [ES](/es/blog/guia-paralisis-sueno.html) |
+| Dream Journaling Guide | Published | 2025-12-11 | [EN](/en/blog/dream-journal-guide.html) | [FR](/fr/blog/guide-journal-reves.html) | [ES](/es/blog/guia-diario-suenos.html) |
+| Dreams and Mental Health | Published | 2025-12-11 | [EN](/en/blog/dreams-mental-health.html) | [FR](/fr/blog/reves-sante-mentale.html) | [ES](/es/blog/suenos-salud-mental.html) |
+| Why Do We Dream? | Published | 2025-12-11 | [EN](/en/blog/why-we-dream-science.html) | [FR](/fr/blog/pourquoi-nous-revons-science.html) | [ES](/es/blog/por-que-sonamos-ciencia.html) |
+| REM Sleep and Dreams | Published | 2025-12-11 | [EN](/en/blog/rem-sleep-dreams.html) | [FR](/fr/blog/sommeil-paradoxal-reves.html) | [ES](/es/blog/sueno-rem-suenos.html) |
+| Dream Interpretation History | Published | 2025-12-11 | [EN](/en/blog/dream-interpretation-history.html) | [FR](/fr/blog/histoire-interpretation-reves.html) | [ES](/es/blog/historia-interpretacion-suenos.html) |
+
 ### Existing Content
 
 | Article | EN | FR | ES |
@@ -35,19 +54,19 @@
 - [x] Being Chased Dreams - `being-chased-dreams.html` ✅ Published 2025-12-11
 - [x] Dreams About Death - `death-dreams-meaning.html` ✅ Published 2025-12-11
 - [x] Water Dreams (ocean, drowning, flood) - `water-dreams-meaning.html` ✅ Published 2025-12-11
-- [ ] Dreams About Ex-Partners - `dreams-about-ex.html`
-- [ ] Pregnancy Dreams - `pregnancy-dreams-meaning.html`
+- [x] Dreams About Ex-Partners - `dreams-about-ex.html` ✅ Published 2025-12-11
+- [x] Pregnancy Dreams - `pregnancy-dreams-meaning.html` ✅ Published 2025-12-11
 
 ### Practical Guides (Medium Priority)
-- [ ] Nightmares: Causes and Solutions - `stop-nightmares-guide.html`
-- [ ] Sleep Paralysis Explained - `sleep-paralysis-guide.html`
-- [ ] Dream Journaling Complete Guide - `dream-journal-guide.html`
-- [ ] Dreams and Mental Health - `dreams-mental-health.html`
+- [x] Nightmares: Causes and Solutions - `stop-nightmares-guide.html` ✅ Published 2025-12-11
+- [x] Sleep Paralysis Explained - `sleep-paralysis-guide.html` ✅ Published 2025-12-11
+- [x] Dream Journaling Complete Guide - `dream-journal-guide.html` ✅ Published 2025-12-11
+- [x] Dreams and Mental Health - `dreams-mental-health.html` ✅ Published 2025-12-11
 
 ### Science & Education (Lower Priority)
-- [ ] Why Do We Dream? The Science - `why-we-dream-science.html`
-- [ ] REM Sleep and Dreams - `rem-sleep-dreams.html`
-- [ ] Dream Interpretation History - `dream-interpretation-history.html`
+- [x] Why Do We Dream? The Science - `why-we-dream-science.html` ✅ Published 2025-12-11
+- [x] REM Sleep and Dreams - `rem-sleep-dreams.html` ✅ Published 2025-12-11
+- [x] Dream Interpretation History - `dream-interpretation-history.html` ✅ Published 2025-12-11
 
 ---
 
