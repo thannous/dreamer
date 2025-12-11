@@ -19,17 +19,17 @@ vi.mock('../../services/quota/MockQuotaEventStore', () => ({
 }));
 
 import {
-    getAccessToken,
-    getCurrentUser,
-    onAuthChange,
-    resendVerificationEmail,
-    signInWithEmailPassword,
-    signInWithGoogle,
-    signInWithGoogleWeb,
-    signInWithProfile,
-    signOut,
-    signUpWithEmailPassword,
-    updateUserTier,
+  getAccessToken,
+  getCurrentUser,
+  onAuthChange,
+  resendVerificationEmail,
+  signInWithEmailPassword,
+  signInWithGoogle,
+  signInWithGoogleWeb,
+  signInWithProfile,
+  signOut,
+  signUpWithEmailPassword,
+  updateUserTier,
 } from '../mockAuth';
 
 describe('mockAuth', () => {

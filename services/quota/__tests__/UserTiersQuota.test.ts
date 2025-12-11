@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DreamAnalysis } from '@/lib/types';
-import { MockQuotaProvider } from '../MockQuotaProvider';
 import type { User } from '@supabase/supabase-js';
+import { MockQuotaProvider } from '../MockQuotaProvider';
 
 // Use vi.hoisted to ensure mock is available during module loading
 const { mockGetSavedDreams, mockQuotaEventStore } = vi.hoisted(() => ({
@@ -20,16 +20,30 @@ vi.mock('../../storageService', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
 }));
 
-// Mock MockQuotaEventStore to control quota counts directly
+// Mock MockQuotaEventStore to avoid AsyncStorage access
 vi.mock('../MockQuotaEventStore', () => ({
   getMockAnalysisCount: vi.fn().mockImplementation(async () => mockQuotaEventStore.analysisCount),
   getMockExplorationCount: vi.fn().mockImplementation(async () => mockQuotaEventStore.explorationCount),
+  isDreamAnalyzedMock: vi.fn().mockImplementation(async (dreamId?: number) => {
+    return dreamId ? mockQuotaEventStore.analyzedDreamIds.includes(dreamId) : false;
+  }),
   isDreamExploredMock: vi.fn().mockImplementation(async (dreamId?: number) => {
     return dreamId ? mockQuotaEventStore.exploredDreamIds.includes(dreamId) : false;
   }),
+  recordMockAnalysis: vi.fn().mockImplementation(async (dreamId: number) => {
+    mockQuotaEventStore.analysisCount++;
+    if (dreamId && !mockQuotaEventStore.analyzedDreamIds.includes(dreamId)) {
+      mockQuotaEventStore.analyzedDreamIds.push(dreamId);
+    }
+  }),
+  recordMockExploration: vi.fn().mockImplementation(async (dreamId: number) => {
+    mockQuotaEventStore.explorationCount++;
+    if (dreamId && !mockQuotaEventStore.exploredDreamIds.includes(dreamId)) {
+      mockQuotaEventStore.exploredDreamIds.push(dreamId);
+    }
+  }),
   invalidateMockQuotaCache: vi.fn(),
 }));
-
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now() + Math.floor(Math.random() * 1000),
   transcript: 'Dream',
@@ -49,7 +63,7 @@ const userPremium = { id: 'u2', user_metadata: { tier: 'premium' } } as unknown 
 describe('Quota rules by user tier (MockQuotaProvider)', () => {
   beforeEach(() => {
     mockGetSavedDreams.mockReset();
-    // Reset quota state for each test
+    // Reset mock quota state
     mockQuotaEventStore.analysisCount = 0;
     mockQuotaEventStore.explorationCount = 0;
     mockQuotaEventStore.analyzedDreamIds = [];
@@ -67,6 +81,10 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     ];
     mockGetSavedDreams.mockResolvedValueOnce(dreams);
 
+    // Set up mock state to reflect 2 analyses already done
+    mockQuotaEventStore.analysisCount = 2;
+    mockQuotaEventStore.analyzedDreamIds = [1, 2];
+
     const provider = new MockQuotaProvider();
     await expect(provider.canAnalyzeDream(null)).resolves.toBe(false);
 
@@ -74,12 +92,13 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockQuotaEventStore.exploredDreamIds = [10];
     const explored = buildDream({ id: 10, explorationStartedAt: Date.now() });
     mockGetSavedDreams.mockResolvedValueOnce([explored, ...dreams]);
+    mockQuotaEventStore.exploredDreamIds = [10];
     await expect(provider.canExploreDream({ dreamId: explored.id }, null)).resolves.toBe(true);
 
     // (Messages per dream covered in MockQuotaProvider.test.ts)
   });
 
-  it('Free: 5 analyses total (including guest), 2 explorations total', async () => {
+  it('Free: 5 analyses total (including guest), 3 explorations total', async () => {
     // Start with 2 analyses used (guest usage carried over)
     mockQuotaEventStore.analysisCount = 2;
 
@@ -87,6 +106,10 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
       buildDream({ id: 100, isAnalyzed: true, analyzedAt: Date.now() }),
       buildDream({ id: 101, isAnalyzed: true, analyzedAt: Date.now() }),
     ];
+
+    // Set mock state: 2 analyses done
+    mockQuotaEventStore.analysisCount = 2;
+    mockQuotaEventStore.analyzedDreamIds = [100, 101];
 
     mockGetSavedDreams.mockResolvedValueOnce(base);
     const provider = new MockQuotaProvider();
@@ -100,27 +123,32 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
       buildDream({ id: 103, isAnalyzed: true, analyzedAt: Date.now() }),
       buildDream({ id: 104, isAnalyzed: true, analyzedAt: Date.now() }),
     ];
+
+    // Set mock state: 5 analyses done
+    mockQuotaEventStore.analysisCount = 5;
+    mockQuotaEventStore.analyzedDreamIds = [100, 101, 102, 103, 104];
+
     const provider2 = new MockQuotaProvider();
     mockGetSavedDreams.mockResolvedValueOnce(five);
     await expect(provider2.canAnalyzeDream(userFree)).resolves.toBe(false);
 
-    // Explorations: two dreams explored already
-    mockQuotaEventStore.explorationCount = 2;
-    mockQuotaEventStore.exploredDreamIds = [200, 201];
+    // Explorations: three dreams explored already (limit for free tier)
+    mockQuotaEventStore.explorationCount = 3;
+    mockQuotaEventStore.exploredDreamIds = [200, 201, 202];
     const now2 = Date.now();
-    const twoExplored: DreamAnalysis[] = [
+    const threeExplored: DreamAnalysis[] = [
       buildDream({ id: 200, explorationStartedAt: now2, chatHistory: [{ role: 'user', text: 'hi' }] }),
       buildDream({ id: 201, explorationStartedAt: now2, chatHistory: [{ role: 'user', text: 'hi2' }] }),
+      buildDream({ id: 202, explorationStartedAt: now2, chatHistory: [{ role: 'user', text: 'hi3' }] }),
     ];
-
     const provider3 = new MockQuotaProvider();
-    mockGetSavedDreams.mockResolvedValueOnce(twoExplored);
+    mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
     await expect(provider3.canExploreDream({ dreamId: 999 }, userFree)).resolves.toBe(false);
 
     // But for those same explored dreams, allow continuing the chat
     const provider4 = new MockQuotaProvider();
-    mockGetSavedDreams.mockResolvedValueOnce(twoExplored);
-    await expect(provider4.getUsedExplorationCount(userFree)).resolves.toBe(2);
+    mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
+    await expect(provider4.getUsedExplorationCount(userFree)).resolves.toBe(3);
     await expect(provider4.canExploreDream({ dreamId: 200 }, userFree)).resolves.toBe(true);
   });
 

@@ -94,6 +94,7 @@ vi.mock('../../../hooks/useTranslation', () => ({
 vi.mock('../../../context/LanguageContext', () => ({
   useLanguage: () => ({
     language: 'en',
+    locale: { languageTag: 'en-US' },
     setLanguage: vi.fn(),
   }),
 }));
