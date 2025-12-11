@@ -10,6 +10,14 @@
 | Falling Dreams | Published | 2025-01-10 | [EN](/en/blog/falling-dreams-meaning.html) | [FR](/fr/blog/reves-de-chute.html) | [ES](/es/blog/suenos-de-caer.html) |
 | Flying Dreams | Published | 2025-01-10 | [EN](/en/blog/flying-dreams-meaning.html) | [FR](/fr/blog/reves-de-voler.html) | [ES](/es/blog/suenos-de-volar.html) |
 
+### Batch 2 - Dream Interpretation Series (December 2025)
+
+| Article | Status | Published | EN | FR | ES |
+|---------|--------|-----------|----|----|-----|
+| Being Chased Dreams | Published | 2025-12-11 | [EN](/en/blog/being-chased-dreams.html) | [FR](/fr/blog/reves-etre-poursuivi.html) | [ES](/es/blog/suenos-ser-perseguido.html) |
+| Dreams About Death | Published | 2025-12-11 | [EN](/en/blog/death-dreams-meaning.html) | [FR](/fr/blog/reves-de-mort.html) | [ES](/es/blog/suenos-de-muerte.html) |
+| Water Dreams | Published | 2025-12-11 | [EN](/en/blog/water-dreams-meaning.html) | [FR](/fr/blog/reves-eau.html) | [ES](/es/blog/suenos-de-agua.html) |
+
 ### Existing Content
 
 | Article | EN | FR | ES |
@@ -24,9 +32,9 @@
 ## Backlog - Future Articles
 
 ### Dream Interpretation (High Priority)
-- [ ] Being Chased Dreams - `being-chased-dreams.html`
-- [ ] Dreams About Death - `death-dreams-meaning.html`
-- [ ] Water Dreams (ocean, drowning, flood) - `water-dreams-meaning.html`
+- [x] Being Chased Dreams - `being-chased-dreams.html` ✅ Published 2025-12-11
+- [x] Dreams About Death - `death-dreams-meaning.html` ✅ Published 2025-12-11
+- [x] Water Dreams (ocean, drowning, flood) - `water-dreams-meaning.html` ✅ Published 2025-12-11
 - [ ] Dreams About Ex-Partners - `dreams-about-ex.html`
 - [ ] Pregnancy Dreams - `pregnancy-dreams-meaning.html`
 
