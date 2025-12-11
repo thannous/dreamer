@@ -23,8 +23,9 @@ function isUserCancelledError(e: unknown): boolean {
   // RevenueCat sets userCancelled flag or uses PURCHASE_CANCELLED_ERROR code
   if (error.userCancelled === true) return true;
   if (error.code === 'PURCHASE_CANCELLED_ERROR') return true;
-  // Some versions use numeric code 1
-  if (error.code === '1' || error.code === 1) return true;
+  // Some versions use numeric code 1; coerce strings to cover both
+  const numericCode = typeof error.code === 'string' ? Number.parseInt(error.code, 10) : error.code;
+  if (numericCode === 1) return true;
   return false;
 }
 
