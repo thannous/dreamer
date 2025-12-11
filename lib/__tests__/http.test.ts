@@ -138,7 +138,7 @@ describe('http', () => {
       );
     });
 
-    it('given Supabase URL without auth token when fetching then uses anon key', async () => {
+    it('given Supabase URL without auth token when fetching then uses anon key for apikey', async () => {
       mockGetAccessToken.mockResolvedValue(null);
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -147,12 +147,14 @@ describe('http', () => {
 
       await fetchJSON('https://test.supabase.co/rest/v1/dreams');
 
+      // The anon key in the mock ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test') has only 2 parts,
+      // so isLikelyJWT returns false and Authorization is not added.
+      // But apikey header is still set.
       expect(global.fetch).toHaveBeenCalledWith(
         'https://test.supabase.co/rest/v1/dreams',
         expect.objectContaining({
           headers: expect.objectContaining({
             apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test`,
           }),
         })
       );

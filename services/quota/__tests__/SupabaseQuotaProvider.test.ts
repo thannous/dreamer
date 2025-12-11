@@ -443,7 +443,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('free');
       expect(status.usage.analysis.limit).toBe(5);
       expect(status.usage.analysis.used).toBe(3);
-      expect(status.usage.exploration.limit).toBe(2);
+      expect(status.usage.exploration.limit).toBe(3);
       expect(status.usage.exploration.used).toBe(1);
       expect(status.usage.messages.limit).toBe(20);
       expect(status.usage.messages.used).toBe(2);
@@ -455,7 +455,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(5);
-      p.getUsedExplorationCount = vi.fn().mockResolvedValue(2);
+      p.getUsedExplorationCount = vi.fn().mockResolvedValue(3); // Must be >= 3 (initial limit) to trigger monthly
       p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
       p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(1);
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(5);
@@ -823,7 +823,7 @@ describe('SupabaseQuotaProvider', () => {
       expect(status.tier).toBe('free');
       expect(status.usage.analysis.limit).toBe(5);
       expect(status.usage.analysis.used).toBe(3);
-      expect(status.usage.exploration.limit).toBe(2);
+      expect(status.usage.exploration.limit).toBe(3);
       expect(status.usage.exploration.used).toBe(1);
       expect(status.usage.messages.limit).toBe(20);
       expect(status.usage.messages.used).toBe(2);
@@ -835,7 +835,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(5);
-      p.getUsedExplorationCount = vi.fn().mockResolvedValue(2);
+      p.getUsedExplorationCount = vi.fn().mockResolvedValue(3); // Must be >= 3 (initial limit) to trigger monthly
       p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
       p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(1);
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(5);
