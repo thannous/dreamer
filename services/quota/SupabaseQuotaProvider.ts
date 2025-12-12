@@ -7,6 +7,12 @@ import { getCachedRemoteDreams } from '@/services/storageService';
 import type { User } from '@supabase/supabase-js';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
 
+type TierMonthlyLimits = {
+  analysis: number | null;
+  exploration: number | null;
+  messagesPerDream: number | null;
+};
+
 /**
  * Supabase quota provider - counts quotas from Supabase database
  * Used for authenticated users with optimized COUNT queries
@@ -29,6 +35,62 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   private getUserTier(user: User | null): UserTier {
     if (!user) return 'guest';
     return (user.user_metadata?.tier as UserTier) || 'free';
+  }
+
+  private getFallbackMonthlyLimits(tier: UserTier): TierMonthlyLimits {
+    const config = QUOTA_CONFIG[tier]?.monthly ?? QUOTA_CONFIG.free.monthly;
+    return {
+      analysis: config.analysis,
+      exploration: config.exploration,
+      messagesPerDream: config.messagesPerDream,
+    };
+  }
+
+  private async getMonthlyLimitsFromDb(tier: UserTier): Promise<TierMonthlyLimits> {
+    if (tier === 'premium') {
+      return { analysis: null, exploration: null, messagesPerDream: null };
+    }
+
+    const cacheKey = `quota_limits_monthly_${tier}`;
+
+    return this.getOrCache(cacheKey, async () => {
+      const fallback = this.getFallbackMonthlyLimits(tier);
+
+      const { data, error } = await supabase
+        .from('quota_limits')
+        .select('quota_type,quota_limit')
+        .eq('tier', tier)
+        .eq('period', 'monthly');
+
+      if (error) {
+        if (__DEV__) {
+          console.warn('[SupabaseQuotaProvider] Failed to fetch quota_limits, using fallback', error);
+        }
+        return fallback;
+      }
+
+      const rows = Array.isArray(data) ? (data as Array<{ quota_type?: string; quota_limit?: number | null }>) : [];
+
+      const limits: TierMonthlyLimits = { ...fallback };
+      rows.forEach((row) => {
+        if (!row || typeof row.quota_type !== 'string') return;
+        switch (row.quota_type) {
+          case 'analysis':
+            limits.analysis = row.quota_limit ?? null;
+            break;
+          case 'exploration':
+            limits.exploration = row.quota_limit ?? null;
+            break;
+          case 'messages_per_dream':
+            limits.messagesPerDream = row.quota_limit ?? null;
+            break;
+          default:
+            break;
+        }
+      });
+
+      return limits;
+    });
   }
 
   /**
@@ -240,7 +302,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     if (!user) return false;
 
     const tier = this.getUserTier(user);
-    const limits = QUOTAS[tier];
+    const limits = await this.getMonthlyLimitsFromDb(tier);
 
     if (limits.analysis === null) return true;
 
@@ -249,17 +311,15 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       return used < (limits.analysis ?? 0);
     }
 
-    const monthlyLimit = QUOTA_CONFIG.free.monthly.analysis;
-    if (monthlyLimit === null) return true;
     const monthlyUsed = await this.getMonthlyAnalysisCount(user);
-    return monthlyUsed < monthlyLimit;
+    return monthlyUsed < (limits.analysis ?? 0);
   }
 
   async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
     if (!user) return false;
 
     const tier = this.getUserTier(user);
-    const limits = QUOTAS[tier];
+    const limits = await this.getMonthlyLimitsFromDb(tier);
 
     if (limits.exploration === null) return true;
 
@@ -292,18 +352,15 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       return used < (limits.exploration ?? 0);
     }
 
-    const monthlyLimit = QUOTA_CONFIG.free.monthly.exploration;
-    if (monthlyLimit === null) return true;
-
     const monthlyUsed = await this.getMonthlyExplorationCount(user);
-    return monthlyUsed < monthlyLimit;
+    return monthlyUsed < (limits.exploration ?? 0);
   }
 
   async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
     if (!user) return false;
 
     const tier = this.getUserTier(user);
-    const limit = QUOTAS[tier].messagesPerDream;
+    const { messagesPerDream: limit } = await this.getMonthlyLimitsFromDb(tier);
 
     if (limit === null) return true; // Unlimited
 
@@ -329,7 +386,8 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     const tier = this.getUserTier(user);
     const messagesUsed = target ? await this.getUsedMessagesCount(target, user) : 0;
 
-    const messagesLimit = QUOTAS[tier].messagesPerDream;
+    const limits = await this.getMonthlyLimitsFromDb(tier);
+    const messagesLimit = limits.messagesPerDream;
 
     const [analysisUsed, explorationUsed] = await Promise.all(
       tier === 'free'
@@ -337,8 +395,8 @@ export class SupabaseQuotaProvider implements QuotaProvider {
         : [this.getUsedAnalysisCount(user), this.getUsedExplorationCount(user)]
     );
 
-    const analysisLimit = tier === 'free' ? QUOTA_CONFIG.free.monthly.analysis : QUOTAS[tier].analysis;
-    const explorationLimit = tier === 'free' ? QUOTA_CONFIG.free.monthly.exploration : QUOTAS[tier].exploration;
+    const analysisLimit = tier === 'free' ? limits.analysis : QUOTAS[tier].analysis;
+    const explorationLimit = tier === 'free' ? limits.exploration : QUOTAS[tier].exploration;
 
     const canAnalyze = await this.canAnalyzeDream(user);
     const canExplore = await this.canExploreDream(target, user);

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { QUOTA_CONFIG, QUOTAS } from '../../../constants/limits';
+import { supabase } from '../../../lib/supabase';
 import type { DreamAnalysis } from '../../../lib/types';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
@@ -63,6 +64,8 @@ describe('SupabaseQuotaProvider', () => {
     mockBuilder.error = null;
     mockBuilder.data = null;
     mockGetCachedRemoteDreams.mockResolvedValue([]);
+    // Reset supabase.from mock in case a previous test overwrote it
+    (supabase as any).from = () => mockBuilder;
     // Re-setup chainable methods
     mockBuilder.select.mockReturnValue(mockBuilder);
     mockBuilder.eq.mockReturnValue(mockBuilder);
@@ -634,6 +637,26 @@ describe('SupabaseQuotaProvider', () => {
   });
 
   describe('free tier monthly analysis quotas', () => {
+    it('given custom DB quota limits when checking analysis then uses DB limit', async () => {
+      // Given
+      const p = provider as any;
+      // quota_limits for free: analysis limit = 1
+      mockBuilder.data = [
+        { quota_type: 'analysis', quota_limit: 1 },
+        { quota_type: 'exploration', quota_limit: 2 },
+        { quota_type: 'messages_per_dream', quota_limit: 20 },
+      ];
+      mockBuilder.error = null;
+
+      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
+
+      // When
+      const result = await provider.canAnalyzeDream(freeUser);
+
+      // Then
+      expect(result).toBe(false);
+    });
+
     it('given analyses within limits when checking then allows analysis', async () => {
       // Given
       const p = provider as any;

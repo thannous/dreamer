@@ -16,6 +16,8 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
   'error.client': 'Invalid request. Please check your input and try again.',
+  'error.image_transient': 'The image service is temporarily busy. Your dream has been saved and you can retry later.',
+  'error.image_blocked': 'This dream\'s imagery couldn\'t be generated due to content guidelines.',
   'error.unknown': 'An unexpected error occurred.',
 };
 
@@ -25,6 +27,8 @@ export enum ErrorType {
   RATE_LIMIT = 'rate_limit',
   SERVER = 'server',
   CLIENT = 'client',
+  IMAGE_TRANSIENT = 'image_transient',
+  IMAGE_BLOCKED = 'image_blocked',
   UNKNOWN = 'unknown',
 }
 
@@ -117,6 +121,34 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
     };
   }
 
+  // Gemini image generation errors (content blocked)
+  if (
+    message.includes('gemini image error') &&
+    (message.includes('blockreason') || message.includes('content blocked'))
+  ) {
+    return {
+      type: ErrorType.IMAGE_BLOCKED,
+      message: error.message,
+      originalError: error,
+      userMessage: translate('error.image_blocked'),
+      canRetry: false,
+    };
+  }
+
+  // Gemini image generation errors (transient - no inlineData returned)
+  if (
+    message.includes('gemini image error') &&
+    (message.includes('no inlinedata') || message.includes('image_other'))
+  ) {
+    return {
+      type: ErrorType.IMAGE_TRANSIENT,
+      message: error.message,
+      originalError: error,
+      userMessage: translate('error.image_transient'),
+      canRetry: true,
+    };
+  }
+
   // Unknown errors
   return {
     type: ErrorType.UNKNOWN,
@@ -143,6 +175,71 @@ export function getUserErrorMessage(error: Error, t?: TranslateFunction): string
  */
 export function canRetryError(error: Error, t?: TranslateFunction): boolean {
   return classifyError(error, t).canRetry;
+}
+
+/**
+ * Image generation error response from the API
+ */
+export interface ImageGenerationErrorResponse {
+  error: string;
+  blockReason?: string | null;
+  finishReason?: string | null;
+  promptFeedback?: unknown;
+  retryAttempts?: number;
+  isTransient?: boolean;
+}
+
+/**
+ * Classifies an image generation error response from the API
+ * @param response The error response from the API
+ * @param t Optional translation function for i18n
+ */
+export function classifyImageError(
+  response: ImageGenerationErrorResponse,
+  t?: TranslateFunction
+): ClassifiedError {
+  const translate = (key: string): string => {
+    if (t) {
+      const translated = t(key);
+      if (translated !== key) return translated;
+    }
+    return DEFAULT_ERROR_MESSAGES[key] ?? response.error;
+  };
+
+  // Content was explicitly blocked by Gemini
+  if (response.blockReason) {
+    return {
+      type: ErrorType.IMAGE_BLOCKED,
+      message: response.error,
+      originalError: new Error(response.error),
+      userMessage: translate('error.image_blocked'),
+      canRetry: false,
+    };
+  }
+
+  // Transient failure (no blockReason, isTransient flag, or IMAGE_OTHER finishReason)
+  if (
+    response.isTransient ||
+    response.finishReason === 'IMAGE_OTHER' ||
+    response.error.toLowerCase().includes('no inlinedata')
+  ) {
+    return {
+      type: ErrorType.IMAGE_TRANSIENT,
+      message: response.error,
+      originalError: new Error(response.error),
+      userMessage: translate('error.image_transient'),
+      canRetry: true,
+    };
+  }
+
+  // Default to transient for image errors (better UX to allow retry)
+  return {
+    type: ErrorType.IMAGE_TRANSIENT,
+    message: response.error,
+    originalError: new Error(response.error),
+    userMessage: translate('error.image_transient'),
+    canRetry: true,
+  };
 }
 
 /**
@@ -210,6 +307,50 @@ export class QuotaError extends Error {
     }
   }
 }
+
+type CodedError = Error & { code?: string };
+
+const getErrorMessage = (error: unknown): string => {
+  if (typeof error === 'string') return error;
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === 'object' && 'message' in (error as Record<string, unknown>)) {
+    const msg = (error as Record<string, unknown>).message;
+    return typeof msg === 'string' ? msg : '';
+  }
+  return '';
+};
+
+/**
+ * Converts a Postgres/PostgREST quota violation into a typed QuotaError.
+ * Designed to work with errors coming from Supabase/PostgREST (e.g. `RAISE EXCEPTION`).
+ */
+export const coerceQuotaError = (
+  error: unknown,
+  tier: 'guest' | 'free' | 'premium'
+): QuotaError | null => {
+  const message = getErrorMessage(error);
+
+  if (message.includes('QUOTA_EXPLORATION_LIMIT_REACHED')) {
+    return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, tier);
+  }
+
+  if (message.includes('QUOTA_ANALYSIS_LIMIT_REACHED')) {
+    return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+  }
+
+  // Fallback: some backends may only expose a generic Postgres error code.
+  const coded = error as CodedError | null;
+  if (coded?.code === 'P0001' && /quota/i.test(message)) {
+    if (/analysis/i.test(message)) {
+      return new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+    }
+    if (/exploration/i.test(message)) {
+      return new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, tier);
+    }
+  }
+
+  return null;
+};
 
 export enum SubscriptionErrorCode {
   PURCHASE_FAILED = 'PURCHASE_FAILED',
