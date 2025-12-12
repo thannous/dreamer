@@ -16,6 +16,7 @@ import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
+import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, QuotaError } from '@/lib/errors';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
@@ -328,40 +329,13 @@ export default function RecordingScreen() {
     }, [forceStopRecording])
   );
 
-  const deriveDraftTitle = useCallback((transcriptText?: string) => {
-    const source = (transcriptText ?? trimmedTranscript).trim();
-    if (!source) {
-      return t('recording.draft.default_title');
-    }
-    const firstLine = source.split('\n')[0]?.trim() ?? '';
-    if (!firstLine) {
-      return t('recording.draft.default_title');
-    }
-    return firstLine.length > 64 ? `${firstLine.slice(0, 64)}…` : firstLine;
-  }, [trimmedTranscript, t]);
-
-  const buildDraftDream = useCallback((transcriptText?: string): DreamAnalysis => {
-    const normalizedTranscript = (transcriptText ?? trimmedTranscript).trim();
-    const title = deriveDraftTitle(normalizedTranscript);
-    return {
-      id: Date.now(),
-      transcript: normalizedTranscript,
-      title,
-      interpretation: '',
-      shareableQuote: '',
-      theme: undefined,
-      dreamType: 'Symbolic Dream',
-      imageUrl: '',
-      thumbnailUrl: undefined,
-      chatHistory: normalizedTranscript
-        ? [{ role: 'user', text: `Here is my dream: ${normalizedTranscript}` }]
-        : [],
-      isFavorite: false,
-      imageGenerationFailed: false,
-      isAnalyzed: false,
-      analysisStatus: 'none',
-    };
-  }, [deriveDraftTitle, trimmedTranscript]);
+  const buildDraftDream = useCallback(
+    (transcriptText?: string): DreamAnalysis =>
+      buildDraftDreamPure(transcriptText ?? trimmedTranscript, {
+        defaultTitle: t('recording.draft.default_title'),
+      }),
+    [trimmedTranscript, t]
+  );
 
   const resetComposer = useCallback(() => {
     setTranscript('');
@@ -1104,8 +1078,12 @@ export default function RecordingScreen() {
           ? t('recording.analysis_limit.title_guest')
           : t('recording.analysis_limit.title_free')}
         subtitle={tier === 'guest'
-          ? t('recording.analysis_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis })
-          : t('recording.analysis_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis })}
+          ? t('recording.analysis_limit.message_guest', {
+            limit: usage?.analysis.limit ?? QUOTAS.guest.analysis ?? 0,
+          })
+          : t('recording.analysis_limit.message_free', {
+            limit: usage?.analysis.limit ?? QUOTAS.free.analysis ?? 0,
+          })}
         testID={TID.Sheet.QuotaLimit}
         titleTestID={TID.Text.QuotaLimitTitle}
         actions={{

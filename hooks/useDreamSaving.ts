@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, QuotaError } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
@@ -29,40 +30,11 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
   const [isPersisting, setIsPersisting] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
 
-  const deriveDraftTitle = useCallback((transcript: string) => {
-    const trimmed = transcript.trim();
-    if (!trimmed) {
-      return t('recording.draft.default_title');
-    }
-    const firstLine = trimmed.split('\n')[0]?.trim() ?? '';
-    if (!firstLine) {
-      return t('recording.draft.default_title');
-    }
-    return firstLine.length > 64 ? `${firstLine.slice(0, 64)}…` : firstLine;
-  }, [t]);
-
-  const buildDraftDream = useCallback((transcript: string): DreamAnalysis => {
-    const trimmed = transcript.trim();
-    const title = deriveDraftTitle(trimmed);
-    return {
-      id: Date.now(),
-      transcript: trimmed,
-      title,
-      interpretation: '',
-      shareableQuote: '',
-      theme: undefined,
-      dreamType: 'Symbolic Dream',
-      imageUrl: '',
-      thumbnailUrl: undefined,
-      chatHistory: trimmed
-        ? [{ role: 'user', text: `Here is my dream: ${trimmed}` }]
-        : [],
-      isFavorite: false,
-      imageGenerationFailed: false,
-      isAnalyzed: false,
-      analysisStatus: 'none',
-    };
-  }, [deriveDraftTitle]);
+  const buildDraftDream = useCallback(
+    (transcript: string): DreamAnalysis =>
+      buildDraftDreamPure(transcript, { defaultTitle: t('recording.draft.default_title') }),
+    [t]
+  );
 
   const saveDream = useCallback(
     async (transcript: string): Promise<DreamAnalysis | null> => {
