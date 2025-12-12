@@ -34,21 +34,6 @@ export const JOURNAL_LIST = {
   MINIMUM_VIEW_TIME: 100,
 } as const;
 
-export const QUOTA_LIMITS = {
-  /** Maximum analyses for guest users per day */
-  GUEST_ANALYSIS: 2,
-  /** Maximum analyses for free users per day */
-  FREE_ANALYSIS: 5,
-  /** Maximum dream explorations for guests */
-  GUEST_EXPLORATION: 2,
-  /** Maximum dream explorations for free users */
-  FREE_EXPLORATION: 5,
-  /** Maximum messages per dream conversation */
-  MESSAGE_PER_DREAM: 20,
-  /** Maximum dreams guest can record */
-  GUEST_DREAM_LIMIT: 3,
-} as const;
-
 export const TIMEOUTS = {
   /** Default HTTP request timeout */
   HTTP_DEFAULT_MS: 30000,

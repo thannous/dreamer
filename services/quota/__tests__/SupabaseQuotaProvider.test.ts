@@ -213,7 +213,7 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
-      const mockBuilder: any = {
+      const eventsBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         gte: vi.fn().mockReturnThis(),
@@ -221,25 +221,7 @@ describe('SupabaseQuotaProvider', () => {
         count: 2,
         error: null,
       };
-      mockSupabase.supabase.from = vi.fn().mockReturnValue(mockBuilder);
-
-      // When
-      const count = await p.getMonthlyAnalysisCount(user);
-
-      // Then
-      expect(count).toBe(2);
-      expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
-      expect(mockBuilder.eq).toHaveBeenCalledWith('quota_type', 'analysis');
-      expect(mockBuilder.gte).toHaveBeenCalledWith('occurred_at', '2024-01-01T00:00:00.000Z');
-      expect(mockBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
-    });
-
-    it('given user when getting monthly exploration count then queries with date range', async () => {
-      // Given
-      const user = { id: 'test-user' } as any;
-      const p = provider as any;
-      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
-      const mockBuilder: any = {
+      const dreamsBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         gte: vi.fn().mockReturnThis(),
@@ -247,17 +229,60 @@ describe('SupabaseQuotaProvider', () => {
         count: 1,
         error: null,
       };
-      mockSupabase.supabase.from = vi.fn().mockReturnValue(mockBuilder);
+      mockSupabase.supabase.from = vi.fn((table: string) => (table === 'user_quota_events' ? eventsBuilder : dreamsBuilder));
+
+      // When
+      const count = await p.getMonthlyAnalysisCount(user);
+
+      // Then
+      expect(count).toBe(2);
+      expect(eventsBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
+      expect(eventsBuilder.eq).toHaveBeenCalledWith('quota_type', 'analysis');
+      expect(eventsBuilder.gte).toHaveBeenCalledWith('occurred_at', '2024-01-01T00:00:00.000Z');
+      expect(eventsBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
+      expect(dreamsBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
+      expect(dreamsBuilder.eq).toHaveBeenCalledWith('is_analyzed', true);
+      expect(dreamsBuilder.gte).toHaveBeenCalledWith('analyzed_at', '2024-01-01T00:00:00.000Z');
+      expect(dreamsBuilder.lt).toHaveBeenCalledWith('analyzed_at', '2024-02-01T00:00:00.000Z');
+    });
+
+    it('given user when getting monthly exploration count then queries with date range', async () => {
+      // Given
+      const user = { id: 'test-user' } as any;
+      const p = provider as any;
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
+      const eventsBuilder: any = {
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        gte: vi.fn().mockReturnThis(),
+        lt: vi.fn().mockReturnThis(),
+        count: 1,
+        error: null,
+      };
+      const dreamsBuilder: any = {
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        not: vi.fn().mockReturnThis(),
+        gte: vi.fn().mockReturnThis(),
+        lt: vi.fn().mockReturnThis(),
+        count: 1,
+        error: null,
+      };
+      mockSupabase.supabase.from = vi.fn((table: string) => (table === 'user_quota_events' ? eventsBuilder : dreamsBuilder));
 
       // When
       const count = await p.getMonthlyExplorationCount(user);
 
       // Then
       expect(count).toBe(1);
-      expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
-      expect(mockBuilder.eq).toHaveBeenCalledWith('quota_type', 'exploration');
-      expect(mockBuilder.gte).toHaveBeenCalledWith('occurred_at', '2024-01-01T00:00:00.000Z');
-      expect(mockBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
+      expect(eventsBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
+      expect(eventsBuilder.eq).toHaveBeenCalledWith('quota_type', 'exploration');
+      expect(eventsBuilder.gte).toHaveBeenCalledWith('occurred_at', '2024-01-01T00:00:00.000Z');
+      expect(eventsBuilder.lt).toHaveBeenCalledWith('occurred_at', '2024-02-01T00:00:00.000Z');
+      expect(dreamsBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
+      expect(dreamsBuilder.not).toHaveBeenCalledWith('exploration_started_at', 'is', null);
+      expect(dreamsBuilder.gte).toHaveBeenCalledWith('exploration_started_at', '2024-01-01T00:00:00.000Z');
+      expect(dreamsBuilder.lt).toHaveBeenCalledWith('exploration_started_at', '2024-02-01T00:00:00.000Z');
     });
 
     it('given Supabase error when counting monthly analyses then returns monthly limit', async () => {
@@ -428,48 +453,26 @@ describe('SupabaseQuotaProvider', () => {
   });
 
   describe('comprehensive quota status', () => {
-    it('given free tier within initial limits when getting status then shows initial limits', async () => {
+    it('given free tier when getting status then shows monthly limits', async () => {
       // Given
       const p = provider as any;
-      p.getUsedAnalysisCount = vi.fn().mockResolvedValue(3);
-      p.getUsedExplorationCount = vi.fn().mockResolvedValue(1);
-      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(0);
+      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
       p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(0);
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(2);
-
-      // When
-      const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
-
-      // Then
-      expect(status.tier).toBe('free');
-      expect(status.usage.analysis.limit).toBe(5);
-      expect(status.usage.analysis.used).toBe(3);
-      expect(status.usage.exploration.limit).toBe(3);
-      expect(status.usage.exploration.used).toBe(1);
-      expect(status.usage.messages.limit).toBe(20);
-      expect(status.usage.messages.used).toBe(2);
-      expect(status.canAnalyze).toBe(true);
-      expect(status.canExplore).toBe(true);
-    });
-
-    it('given free tier beyond initial limits when getting status then shows monthly limits', async () => {
-      // Given
-      const p = provider as any;
-      p.getUsedAnalysisCount = vi.fn().mockResolvedValue(5);
-      p.getUsedExplorationCount = vi.fn().mockResolvedValue(3); // Must be >= 3 (initial limit) to trigger monthly
-      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
-      p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(1);
-      p.getUsedMessagesCount = vi.fn().mockResolvedValue(5);
+      p.canAnalyzeDream = vi.fn().mockResolvedValue(true);
       p.canExploreDream = vi.fn().mockResolvedValue(true);
 
       // When
       const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
 
       // Then
-      expect(status.usage.analysis.limit).toBe(2);
+      expect(status.tier).toBe('free');
+      expect(status.usage.analysis.limit).toBe(3);
       expect(status.usage.analysis.used).toBe(1);
-      expect(status.usage.exploration.limit).toBe(1);
-      expect(status.usage.exploration.used).toBe(1);
+      expect(status.usage.exploration.limit).toBe(2);
+      expect(status.usage.exploration.used).toBe(0);
+      expect(status.usage.messages.limit).toBe(20);
+      expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });
@@ -648,7 +651,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const p = provider as any;
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(10);
-      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(2);
+      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(3);
 
       // When
       const result = await provider.canAnalyzeDream(freeUser);
@@ -678,7 +681,7 @@ describe('SupabaseQuotaProvider', () => {
       const p = provider as any;
       p.resolveDream = vi.fn().mockResolvedValue(undefined);
       p.getUsedExplorationCount = vi.fn().mockResolvedValue(5);
-      p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(1);
+      p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(2);
 
       // When
       const result = await provider.canExploreDream({ dreamId: 1 }, freeUser);
@@ -826,48 +829,26 @@ describe('SupabaseQuotaProvider', () => {
   });
 
   describe('comprehensive quota status', () => {
-    it('given free tier within initial limits when getting status then shows initial limits', async () => {
+    it('given free tier when getting status then shows monthly limits', async () => {
       // Given
       const p = provider as any;
-      p.getUsedAnalysisCount = vi.fn().mockResolvedValue(3);
-      p.getUsedExplorationCount = vi.fn().mockResolvedValue(1);
-      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(0);
+      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
       p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(0);
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(2);
-
-      // When
-      const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
-
-      // Then
-      expect(status.tier).toBe('free');
-      expect(status.usage.analysis.limit).toBe(5);
-      expect(status.usage.analysis.used).toBe(3);
-      expect(status.usage.exploration.limit).toBe(3);
-      expect(status.usage.exploration.used).toBe(1);
-      expect(status.usage.messages.limit).toBe(20);
-      expect(status.usage.messages.used).toBe(2);
-      expect(status.canAnalyze).toBe(true);
-      expect(status.canExplore).toBe(true);
-    });
-
-    it('given free tier beyond initial limits when getting status then shows monthly limits', async () => {
-      // Given
-      const p = provider as any;
-      p.getUsedAnalysisCount = vi.fn().mockResolvedValue(5);
-      p.getUsedExplorationCount = vi.fn().mockResolvedValue(3); // Must be >= 3 (initial limit) to trigger monthly
-      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(1);
-      p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(1);
-      p.getUsedMessagesCount = vi.fn().mockResolvedValue(5);
+      p.canAnalyzeDream = vi.fn().mockResolvedValue(true);
       p.canExploreDream = vi.fn().mockResolvedValue(true);
 
       // When
       const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
 
       // Then
-      expect(status.usage.analysis.limit).toBe(2);
+      expect(status.tier).toBe('free');
+      expect(status.usage.analysis.limit).toBe(3);
       expect(status.usage.analysis.used).toBe(1);
-      expect(status.usage.exploration.limit).toBe(1);
-      expect(status.usage.exploration.used).toBe(1);
+      expect(status.usage.exploration.limit).toBe(2);
+      expect(status.usage.exploration.used).toBe(0);
+      expect(status.usage.messages.limit).toBe(20);
+      expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
     });

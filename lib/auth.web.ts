@@ -8,7 +8,7 @@ import type { SubscriptionTier } from './types';
 export type { MockProfile } from './mockAuth';
 
 const isMockMode = isMockModeEnabled();
-const EMAIL_REDIRECT_WEB = 'https://noctalia.app/auth/callback';
+const EMAIL_REDIRECT_WEB = 'https://dream.noctalia.app/recording';
 
 /**
  * Initialize Google Sign-In with web client ID
@@ -89,7 +89,13 @@ export async function resendVerificationEmail(email: string) {
     return;
   }
 
-  const { error } = await supabase.auth.resend({ type: 'signup', email });
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: EMAIL_REDIRECT_WEB,
+    },
+  });
   if (error) throw error;
 }
 

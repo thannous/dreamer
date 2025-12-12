@@ -25,11 +25,12 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
   guest: {
     analysis: 2, // 2 dream analyses
     exploration: 2, // Can explore 2 dreams
-    messagesPerDream: 10, // 20 messages per dream
+    messagesPerDream: 10, // 10 messages per dream
   },
   free: {
-    analysis: 5, // 5 dream analyses total (includes guest analyses)
-    exploration: 3, // 3 explorations total (includes guest explorations)
+    // Quotas for the current month (authenticated users)
+    analysis: 3,
+    exploration: 2,
     messagesPerDream: 20, // 20 messages per dream
   },
   premium: {
@@ -46,11 +47,7 @@ export const QUOTA_CONFIG: Record<UserTier, TierQuotaConfig> = {
   },
   free: {
     initial: QUOTAS.free,
-    monthly: {
-      analysis: 2,
-      exploration: 1,
-      messagesPerDream: QUOTAS.free.messagesPerDream,
-    },
+    monthly: QUOTAS.free,
   },
   premium: {
     initial: QUOTAS.premium,
@@ -59,7 +56,7 @@ export const QUOTA_CONFIG: Record<UserTier, TierQuotaConfig> = {
 };
 
 /**
- * @deprecated Use QUOTAS.guest.analysis instead
- * Kept for backward compatibility
+ * @deprecated Guest dream recording limit (UI only).
+ * Kept for backward compatibility with older components.
  */
-export const GUEST_DREAM_LIMIT = 3;
+export const GUEST_DREAM_LIMIT = 2;

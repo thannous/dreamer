@@ -267,11 +267,24 @@ export function MessagesList({
   style,
   contentContainerStyle,
 }: MessagesListProps) {
-  const hasHydratedInitialMessages = useRef(false);
   const handwritingAnimatedMessages = useRef<Set<string>>(new Set());
+  const prevMessagesLengthRef = useRef(0);
+  const prevLastRoleRef = useRef<ChatMessage['role'] | undefined>(undefined);
+
+  const prevLength = prevMessagesLengthRef.current;
+  const delta = messages.length - prevLength;
+  const didInitialHydrate = prevLength === 0 && messages.length > 0;
+  const canHandwriteNewAiMessage =
+    !didInitialHydrate &&
+    messages.length > 0 &&
+    messages[messages.length - 1].role === 'model' &&
+    ((delta === 1 && prevLastRoleRef.current === 'user') ||
+      (delta === 2 && messages.length >= 2 && messages[messages.length - 2].role === 'user'));
+
   useEffect(() => {
-    hasHydratedInitialMessages.current = true;
-  }, []);
+    prevMessagesLengthRef.current = messages.length;
+    prevLastRoleRef.current = messages.length ? messages[messages.length - 1].role : undefined;
+  }, [messages]);
 
   // Apply composable hooks for chat behavior
   useKeyboardAwareMessageList();
@@ -312,7 +325,7 @@ export function MessagesList({
 
       if (
         !hasAnimatedHandwriting &&
-        hasHydratedInitialMessages.current &&
+        canHandwriteNewAiMessage &&
         isNew &&
         item.role === 'model' &&
         index === messages.length - 1
@@ -346,7 +359,7 @@ export function MessagesList({
         </MessageContextProvider>
       );
     },
-    [messages.length, isStreamingSnapshot, hasAnimatedMessages]
+    [canHandwriteNewAiMessage, messages.length, isStreamingSnapshot, hasAnimatedMessages]
   );
 
   const keyExtractor = useCallback((item: ChatMessage, index: number) => `${item.role}-${index}`, []);

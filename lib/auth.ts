@@ -105,7 +105,9 @@ export async function signInWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
-const EMAIL_REDIRECT_NATIVE = 'noctalia://auth/callback';
+// Use an https redirect so the same confirmation link works on desktop (web) and on mobile
+// (via Universal Links / Android App Links), avoiding OS prompts like "xdg-open" on Linux.
+const EMAIL_REDIRECT_NATIVE = 'https://dream.noctalia.app/recording';
 
 export async function signUpWithEmailPassword(email: string, password: string, userLang?: string) {
   if (isMockMode) {
@@ -131,7 +133,13 @@ export async function resendVerificationEmail(email: string) {
     return;
   }
 
-  const { error } = await supabase.auth.resend({ type: 'signup', email });
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: {
+      emailRedirectTo: EMAIL_REDIRECT_NATIVE,
+    },
+  });
   if (error) throw error;
 }
 

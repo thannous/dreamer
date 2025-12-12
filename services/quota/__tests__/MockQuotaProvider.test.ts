@@ -283,7 +283,7 @@ describe('MockQuotaProvider', () => {
     it('given free user within limits when checking analysis then allows', async () => {
       // Given
       const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as any;
-      const dreams = Array(2).fill(null).map((_, i) => 
+      const dreams = Array(2).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
       mockGetSavedDreams.mockResolvedValueOnce(dreams);
@@ -294,13 +294,13 @@ describe('MockQuotaProvider', () => {
       const canAnalyze = await provider.canAnalyzeDream(freeUser);
 
       // Then
-      expect(canAnalyze).toBe(true); // Free user within 5 analysis limit
+      expect(canAnalyze).toBe(true); // Free user within 3 analysis limit
     });
 
     it('given free user beyond limits when checking analysis then denies', async () => {
       // Given
       const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as any;
-      const dreams = Array(6).fill(null).map((_, i) => 
+      const dreams = Array(4).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
       mockGetSavedDreams.mockResolvedValueOnce(dreams);
@@ -311,7 +311,7 @@ describe('MockQuotaProvider', () => {
       const canAnalyze = await provider.canAnalyzeDream(freeUser);
 
       // Then
-      expect(canAnalyze).toBe(false); // Free user exceeded 5 analysis limit
+      expect(canAnalyze).toBe(false); // Free user exceeded 3 analysis limit
     });
   });
 

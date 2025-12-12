@@ -31,6 +31,7 @@ import { useSubscriptionMonitor } from '@/hooks/useSubscriptionMonitor';
 import { initializeGoogleSignIn } from '@/lib/auth';
 import { configureNotificationHandler } from '@/services/notificationService';
 import { migrateExistingGuestQuota } from '@/services/quota/GuestAnalysisCounter';
+import { migrateExistingGuestDreamRecording } from '@/services/quota/GuestDreamCounter';
 import { getFirstLaunchCompleted, saveFirstLaunchCompleted } from '@/services/storageService';
 
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
@@ -268,6 +269,9 @@ export default function RootLayout() {
     // Migrate existing guest quota counter (runs once, idempotent)
     migrateExistingGuestQuota().catch((err) => {
       if (__DEV__) console.warn('[RootLayout] Guest quota migration failed:', err);
+    });
+    migrateExistingGuestDreamRecording().catch((err) => {
+      if (__DEV__) console.warn('[RootLayout] Guest dream counter migration failed:', err);
     });
   }, []);
 
