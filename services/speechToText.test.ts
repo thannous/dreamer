@@ -30,7 +30,7 @@ vi.mock('expo-file-system', () => ({
 
 vi.mock('react-native', () => ({
   Platform,
-}), { virtual: true });
+}));
 
 // Mock using relative paths from this test file
 vi.mock('../lib/config', () => ({
@@ -160,7 +160,7 @@ describe('speechToText Service', () => {
       // Given
       (global as any).__DEV__ = true;
       (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
-      global.Platform = { OS: 'ios' };
+      (globalThis as any).Platform = { OS: 'ios' };
 
       // When
       await transcribeAudio({ uri: mockAudioUri, languageCode: 'fr-FR' });

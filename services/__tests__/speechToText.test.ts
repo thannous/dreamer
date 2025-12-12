@@ -25,7 +25,7 @@ const { readAsStringAsync, fileBase64, MockFile } = vi.hoisted(() => {
 
 vi.mock('react-native', () => ({
   Platform,
-}), { virtual: true });
+}));
 
 vi.mock('expo-file-system', () => ({
   File: MockFile,
@@ -155,8 +155,8 @@ describe('transcribeAudio', () => {
 
     class MockFileReader {
       result: string | ArrayBuffer | null = null;
-      onerror: FileReader['onerror'] = null;
-      onloadend: FileReader['onloadend'] = null;
+      onerror: ((ev: ProgressEvent<FileReader>) => void) | null = null;
+      onloadend: ((ev: ProgressEvent<FileReader>) => void) | null = null;
 
       readAsDataURL() {
         this.result = `data:audio/webm;base64,${webBase64}`;

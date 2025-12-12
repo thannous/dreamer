@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSubscription } from './useSubscription';
 
 // Mock __DEV__ global
-global.__DEV__ = true;
+(globalThis as any).__DEV__ = true;
 
 vi.mock('../services/subscriptionService', () => {
   return {

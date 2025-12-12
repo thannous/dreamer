@@ -27,7 +27,7 @@ const buildUsage = (analysisUsed: number) => ({
 const createFallback = (initialAnalysisUsed: number) => {
   let analysisUsed = initialAnalysisUsed;
 
-  const getQuotaStatus = vi.fn<[], Promise<QuotaStatus>>(() =>
+  const getQuotaStatus = vi.fn<() => Promise<QuotaStatus>>(() =>
     Promise.resolve({
       tier: 'guest',
       usage: buildUsage(analysisUsed),

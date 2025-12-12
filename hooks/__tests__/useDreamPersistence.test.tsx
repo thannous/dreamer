@@ -16,11 +16,11 @@ vi.mock('../../context/AuthContext', () => ({
 }));
 
 // Mock storage service
-const mockGetSavedDreams = vi.fn<[], Promise<DreamAnalysis[]>>();
-const mockSaveDreams = vi.fn<[DreamAnalysis[]], Promise<void>>();
-const mockGetCachedRemoteDreams = vi.fn<[], Promise<DreamAnalysis[]>>();
-const mockSaveCachedRemoteDreams = vi.fn<[DreamAnalysis[]], Promise<void>>();
-const mockGetPendingMutations = vi.fn<[], Promise<DreamMutation[]>>();
+const mockGetSavedDreams = vi.fn<() => Promise<DreamAnalysis[]>>();
+const mockSaveDreams = vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
+const mockGetCachedRemoteDreams = vi.fn<() => Promise<DreamAnalysis[]>>();
+const mockSaveCachedRemoteDreams = vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
+const mockGetPendingMutations = vi.fn<() => Promise<DreamMutation[]>>();
 
 vi.mock('../../services/storageService', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
@@ -31,7 +31,7 @@ vi.mock('../../services/storageService', () => ({
 }));
 
 // Mock supabase service
-const mockFetchFromSupabase = vi.fn<[], Promise<DreamAnalysis[]>>();
+const mockFetchFromSupabase = vi.fn<() => Promise<DreamAnalysis[]>>();
 const mockCreateInSupabase = vi.fn();
 
 vi.mock('../../services/supabaseDreamService', () => ({

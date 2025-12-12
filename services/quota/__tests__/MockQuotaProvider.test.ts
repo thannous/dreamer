@@ -5,7 +5,7 @@ import { MockQuotaProvider } from '../MockQuotaProvider';
 
 // Use vi.hoisted to ensure mock is available during module loading
 const { mockGetSavedDreams, mockStorage } = vi.hoisted(() => ({
-  mockGetSavedDreams: vi.fn<[], Promise<DreamAnalysis[]>>(),
+  mockGetSavedDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
   mockStorage: new Map<string, string>(),
 }));
 
