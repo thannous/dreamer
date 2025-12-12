@@ -9,6 +9,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isMockModeEnabled } from '@/lib/env';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
@@ -77,8 +78,7 @@ export default function DreamChatScreen() {
   const { colors, mode, shadows } = useTheme();
   const { user } = useAuth();
   const { language } = useLanguage();
-  const isMockMode =
-    ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+  const isMockMode = isMockModeEnabled();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat } = useQuota({ dreamId, dream });
@@ -151,21 +151,21 @@ export default function DreamChatScreen() {
   const hasQuotaCheckClearance = shouldGateOnQuotaCheck ? quotaCheckComplete : true;
   const isQuotaGateBlocked = shouldGateOnQuotaCheck && explorationBlocked;
 
-  const showMessageLimitAlert = useCallback(() => {
-    const tier = user ? 'free' : 'guest';
-    const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
-    Alert.alert(
-      'Message Limit Reached',
-      limitError.userMessage,
-      [
-        { text: 'OK' },
-        {
-          text: 'Upgrade',
-          onPress: () => router.push('/(tabs)/settings'),
-        },
-      ]
-    );
-  }, [router, user]);
+	  const showMessageLimitAlert = useCallback(() => {
+	    const tier = user ? 'free' : 'guest';
+	    const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
+	    Alert.alert(
+	      'Message Limit Reached',
+	      limitError.userMessage,
+	      [
+	        { text: 'OK' },
+	        {
+	          text: 'Upgrade',
+	          onPress: () => router.push('/(tabs)/settings'),
+	        },
+	      ]
+	    );
+	  }, [user]);
 
   const runQuotaCheck = useCallback(async () => {
     if (!isMountedRef.current) return;

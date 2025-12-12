@@ -5,8 +5,9 @@ import { GuestQuotaProvider } from './quota/GuestQuotaProvider';
 import { MockQuotaProvider } from './quota/MockQuotaProvider';
 import { RemoteGuestQuotaProvider } from './quota/RemoteGuestQuotaProvider';
 import { SupabaseQuotaProvider } from './quota/SupabaseQuotaProvider';
+import { isMockModeEnabled } from '@/lib/env';
 
-const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+const isMockMode = isMockModeEnabled();
 
 /**
  * Quota service - unified interface for quota checking

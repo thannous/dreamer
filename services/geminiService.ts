@@ -7,12 +7,13 @@
 // Import both implementations
 import * as realService from './geminiServiceReal';
 import * as mockService from './mocks/geminiServiceMock';
+import { isMockModeEnabled } from '@/lib/env';
 
 // Export type that's shared between both implementations
 export type { AnalysisResult } from './geminiServiceReal';
 
 // Select which implementation to use based on environment
-const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
+const isMockMode = isMockModeEnabled();
 const service = isMockMode ? mockService : realService;
 
 if (__DEV__) {

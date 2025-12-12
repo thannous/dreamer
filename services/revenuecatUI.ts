@@ -12,6 +12,7 @@ import {
   isSubscriptionInitialized,
   refreshSubscriptionStatus,
 } from './subscriptionService';
+import { isMockModeEnabled } from '@/lib/env';
 
 type PresentPaywallOptions = {
   offeringId?: string | null;
@@ -24,8 +25,7 @@ type PaywallResponse = {
   status: SubscriptionStatus | null;
 };
 
-const env = (process?.env ?? {}) as Record<string, string>;
-const isMockMode = (env.EXPO_PUBLIC_MOCK_MODE ?? '').toLowerCase() === 'true';
+const isMockMode = isMockModeEnabled();
 
 async function ensurePurchasesReady(userId?: string | null): Promise<void> {
   if (isMockMode) {
