@@ -12,6 +12,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { isMockModeEnabled } from '@/lib/env';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
+import { getTranscriptionLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis, type ThemeMode } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
@@ -103,16 +104,7 @@ export default function DreamChatScreen() {
   }, []);
 
   // Speech recognition locale based on language
-  const transcriptionLocale = useMemo(() => {
-    switch (language) {
-      case 'fr':
-        return 'fr-FR';
-      case 'es':
-        return 'es-ES';
-      default:
-        return 'en-US';
-    }
-  }, [language]);
+  const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Use full-resolution image config for chat view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
