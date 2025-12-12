@@ -143,3 +143,65 @@ export const resolveDreamListUpdater = (
   updater: DreamListUpdater,
   current: DreamAnalysis[]
 ): DreamAnalysis[] => (typeof updater === 'function' ? updater(current) : updater);
+
+/**
+ * Derive a draft title from a transcript.
+ * Uses the first non-empty line, truncated to `maxTitleLength`.
+ */
+export function deriveDraftTitle(
+  transcript: string,
+  defaultTitle: string,
+  maxTitleLength = 64
+): string {
+  const trimmed = transcript.trim();
+  if (!trimmed) {
+    return defaultTitle;
+  }
+
+  const firstLine = trimmed.split('\n')[0]?.trim() ?? '';
+  if (!firstLine) {
+    return defaultTitle;
+  }
+
+  return firstLine.length > maxTitleLength
+    ? `${firstLine.slice(0, maxTitleLength)}…`
+    : firstLine;
+}
+
+type BuildDraftDreamOptions = {
+  defaultTitle: string;
+  maxTitleLength?: number;
+  now?: () => number;
+};
+
+/**
+ * Build a local draft dream object from a transcript.
+ * Pure and reusable across screens/hooks.
+ */
+export function buildDraftDream(
+  transcript: string,
+  options: BuildDraftDreamOptions
+): DreamAnalysis {
+  const trimmed = transcript.trim();
+  const now = options.now ?? Date.now;
+  const title = deriveDraftTitle(trimmed, options.defaultTitle, options.maxTitleLength ?? 64);
+
+  return {
+    id: now(),
+    transcript: trimmed,
+    title,
+    interpretation: '',
+    shareableQuote: '',
+    theme: undefined,
+    dreamType: 'Symbolic Dream',
+    imageUrl: '',
+    thumbnailUrl: undefined,
+    chatHistory: trimmed
+      ? [{ role: 'user', text: `Here is my dream: ${trimmed}` }]
+      : [],
+    isFavorite: false,
+    imageGenerationFailed: false,
+    isAnalyzed: false,
+    analysisStatus: 'none',
+  };
+}
