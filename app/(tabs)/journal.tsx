@@ -416,6 +416,8 @@ export default function JournalListScreen() {
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
           data={filteredDreams}
+          // @ts-expect-error - estimatedItemSize is missing in FlashList types but required for performance
+          estimatedItemSize={150}
           extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
@@ -431,6 +433,8 @@ export default function JournalListScreen() {
           testID={TID.List.Dreams}
           ref={flatListRef}
           data={filteredDreams}
+          // @ts-expect-error - estimatedItemSize is missing in FlashList types but required for performance
+          estimatedItemSize={150}
           extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
