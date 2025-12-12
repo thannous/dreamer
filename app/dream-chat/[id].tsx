@@ -10,11 +10,10 @@ import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isMockModeEnabled } from '@/lib/env';
-import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
-import { ChatMessage, DreamAnalysis, type ThemeMode } from '@/lib/types';
+import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
@@ -27,7 +26,9 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-type CategoryType = 'symbols' | 'emotions' | 'growth' | 'general';
+type CategoryType = DreamChatCategory;
+
+const LEGACY_DRAFT_PREFIXES = ['Here is my dream:'];
 
 const getCategoryQuestion = (category: CategoryType, t: (key: string) => string): string => {
   const categoryQuestions: Record<CategoryType, string> = {
@@ -39,10 +40,14 @@ const getCategoryQuestion = (category: CategoryType, t: (key: string) => string)
   return categoryQuestions[category];
 };
 
-const buildCategoryPrompt = (category: CategoryType, dream: DreamAnalysis, t: (key: string) => string): string => {
+const buildCategoryPrompt = (
+  category: CategoryType,
+  dream: DreamAnalysis,
+  t: (key: string) => string
+): string => {
   if (category === 'general') return '';
 
-  const dreamContext = `Here's my dream:
+  const dreamContext = `${t('dream_chat.draft_prefix')}
 
 Title: "${dream.title}"
 Type: ${dream.dreamType}
@@ -92,7 +97,7 @@ export default function DreamChatScreen() {
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
-  const hasSentCategoryRef = useRef(false);
+  const lastCategorySentKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
     return () => {
@@ -144,19 +149,20 @@ export default function DreamChatScreen() {
   const isQuotaGateBlocked = shouldGateOnQuotaCheck && explorationBlocked;
 
   const showMessageLimitAlert = useCallback(() => {
-    const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
     Alert.alert(
-      'Message Limit Reached',
-      limitError.userMessage,
+      t('dream_chat.message_limit.title'),
+      t('dream_chat.limit_warning'),
 	      [
-	        { text: 'OK' },
+	        { text: t('common.ok') },
 	        {
-	          text: 'Upgrade',
+	          text: tier === 'guest'
+              ? t('dream_chat.exploration_limit.cta_guest')
+              : t('dream_chat.exploration_limit.cta_free'),
 	          onPress: () => router.push('/(tabs)/settings'),
 	        },
 	      ]
 	    );
-  }, [tier]);
+  }, [t, tier]);
 
   const runQuotaCheck = useCallback(async () => {
     if (!isMountedRef.current) return;
@@ -211,7 +217,22 @@ export default function DreamChatScreen() {
 
     // Initialize with existing chat history or start new conversation
     if (dream.chatHistory && dream.chatHistory.length > 0) {
-      setMessages(dream.chatHistory);
+      const localizedPrefix = t('dream_chat.draft_prefix');
+      const normalized = dream.chatHistory.map((msg, index) => {
+        if (index !== 0 || msg.role !== 'user') return msg;
+        const text = msg.text ?? '';
+        for (const legacyPrefix of LEGACY_DRAFT_PREFIXES) {
+          if (text.startsWith(legacyPrefix)) {
+            const rest = text.slice(legacyPrefix.length).trimStart();
+            const updatedText = rest ? `${localizedPrefix} ${rest}` : localizedPrefix;
+            return { ...msg, text: updatedText };
+          }
+        }
+        return msg;
+      });
+
+      setMessages(normalized);
+      lastCategorySentKeyRef.current = null; // allow new theme prompts when revisiting
     } else {
       // Start with initial AI greeting
       const initialMessage: ChatMessage = {
@@ -219,6 +240,7 @@ export default function DreamChatScreen() {
         text: t('dream_chat.initial_greeting', { title: dream.title }),
       };
       setMessages([initialMessage]);
+      lastCategorySentKeyRef.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dream?.id, t]);
@@ -235,7 +257,19 @@ export default function DreamChatScreen() {
       return;
     }
 
-    if (!dream || !category || category === 'general' || hasSentCategoryRef.current) {
+    if (!dream || !category || category === 'general') {
+      return;
+    }
+
+    // Wait until existing history is loaded into state to avoid dropping messages
+    const hasStoredHistory = Boolean(dream.chatHistory?.length);
+    const messagesReady = messages.length > 0 || !hasStoredHistory;
+    if (!messagesReady) {
+      return;
+    }
+
+    const categoryKey = `${dream.id}:${category}`;
+    if (lastCategorySentKeyRef.current === categoryKey) {
       return;
     }
 
@@ -243,9 +277,13 @@ export default function DreamChatScreen() {
     const question = getCategoryQuestion(category as CategoryType, t);
 
     if (categoryPrompt) {
-      hasSentCategoryRef.current = true;
+      lastCategorySentKeyRef.current = categoryKey;
       const timeoutId = setTimeout(() => {
-        sendMessage(categoryPrompt, question);
+        const baseMessages = messages.length > 0 ? messages : dream.chatHistory ?? [];
+        sendMessage(categoryPrompt, question, {
+          baseMessages,
+          category: category as Exclude<CategoryType, 'general'>,
+        });
       }, 500);
 
       return () => {
@@ -253,10 +291,14 @@ export default function DreamChatScreen() {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, t, hasQuotaCheckClearance, isQuotaGateBlocked]); // sendMessage has stable dependencies via useCallback
+  }, [category, dream, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
-    async (messageText?: string, displayText?: string) => {
+    async (
+      messageText?: string,
+      displayText?: string,
+      options?: { baseMessages?: ChatMessage[]; category?: Exclude<CategoryType, 'general'> }
+    ) => {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
 
@@ -300,8 +342,13 @@ export default function DreamChatScreen() {
       }
 
       // Add user message (use displayText if provided, otherwise use textToSend)
-      const userMessage: ChatMessage = { role: 'user', text: displayText || textToSend };
-      const updatedMessages = [...messages, userMessage];
+      const baseMessages = options?.baseMessages ?? messages;
+      const userMessage: ChatMessage = {
+        role: 'user',
+        text: displayText || textToSend,
+        ...(options?.category ? { meta: { category: options.category } } : {}),
+      };
+      const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
       setInputText('');
       setIsLoading(true);
@@ -314,7 +361,7 @@ export default function DreamChatScreen() {
         }));
 
         // Get AI response
-        const aiResponseText = await startOrContinueChat(history, textToSend, 'en');
+        const aiResponseText = await startOrContinueChat(history, textToSend, language);
 
         const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
         const finalMessages = [...updatedMessages, aiMessage];
@@ -367,6 +414,7 @@ export default function DreamChatScreen() {
       explorationBlocked,
       inputText,
       isMockMode,
+      language,
       messageLimit,
       messages,
       messagesRemaining,
@@ -388,7 +436,7 @@ export default function DreamChatScreen() {
     const prompt = buildCategoryPrompt(categoryId as CategoryType, dream, t);
     const question = getCategoryQuestion(categoryId as CategoryType, t);
     if (prompt) {
-      sendMessage(prompt, question);
+      sendMessage(prompt, question, { category: categoryId as Exclude<CategoryType, 'general'> });
     }
   };
 

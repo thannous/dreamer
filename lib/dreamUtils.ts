@@ -172,6 +172,7 @@ type BuildDraftDreamOptions = {
   defaultTitle: string;
   maxTitleLength?: number;
   now?: () => number;
+  initialUserMessagePrefix?: string;
 };
 
 /**
@@ -185,6 +186,7 @@ export function buildDraftDream(
   const trimmed = transcript.trim();
   const now = options.now ?? Date.now;
   const title = deriveDraftTitle(trimmed, options.defaultTitle, options.maxTitleLength ?? 64);
+  const initialUserMessagePrefix = options.initialUserMessagePrefix ?? 'Here is my dream:';
 
   return {
     id: now(),
@@ -197,7 +199,7 @@ export function buildDraftDream(
     imageUrl: '',
     thumbnailUrl: undefined,
     chatHistory: trimmed
-      ? [{ role: 'user', text: `Here is my dream: ${trimmed}` }]
+      ? [{ role: 'user', text: `${initialUserMessagePrefix} ${trimmed}` }]
       : [],
     isFavorite: false,
     imageGenerationFailed: false,
