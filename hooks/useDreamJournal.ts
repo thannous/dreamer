@@ -22,7 +22,7 @@ import {
   removeDream,
   upsertDream,
 } from '@/lib/dreamUtils';
-import { QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { logger } from '@/lib/logger';
@@ -212,12 +212,25 @@ export const useDreamJournal = () => {
           : saved;
         await persistRemoteDreams((prev) => upsertDream(prev, merged));
       } catch (error) {
+        const quotaError = coerceQuotaError(error, deriveUserTier(user));
+        if (quotaError) {
+          throw quotaError;
+        }
         logger.warn('Falling back to offline dream update', error);
         const pendingVersion = { ...normalizedDream, pendingSync: true, remoteId };
         await queueAndPersist(pendingVersion);
       }
     },
-    [canUseRemoteSync, dreamsRef, hasNetwork, persistLocalDreams, persistRemoteDreams, queueOfflineOperation, resolveRemoteId]
+    [
+      canUseRemoteSync,
+      dreamsRef,
+      hasNetwork,
+      persistLocalDreams,
+      persistRemoteDreams,
+      queueOfflineOperation,
+      resolveRemoteId,
+      user,
+    ]
   );
 
   /**

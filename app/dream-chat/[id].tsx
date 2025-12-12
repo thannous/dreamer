@@ -10,6 +10,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isMockModeEnabled } from '@/lib/env';
+import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
@@ -307,13 +308,23 @@ export default function DreamChatScreen() {
         return;
       }
 
+      // Safety: block sending while the initial exploration quota check is still running
+      if (shouldGateOnQuotaCheck && !hasQuotaCheckClearance) {
+        return;
+      }
+
       // Check exploration quota for first message (new exploration)
-      const isFirstUserMessage = messages.filter((msg) => msg.role === 'user').length === 0;
+      const baseMessages = options?.baseMessages ?? messages;
+      const isFirstUserMessage = baseMessages.filter((msg) => msg.role === 'user').length === 0;
+      let claimedExplorationStartedAt: number | null = null;
+
       if (isFirstUserMessage && !dream.explorationStartedAt) {
         // Block if exploration is already blocked
         if (explorationBlocked) {
           return;
         }
+        // Clear cached quota counts before checking/claiming to avoid stale cache windows
+        quotaService.invalidate(user);
         // Double-check exploration quota before starting new exploration
         try {
           const canExploreDream = await canExplore();
@@ -321,7 +332,17 @@ export default function DreamChatScreen() {
             setExplorationBlocked(true);
             return;
           }
+
+          // Claim the exploration on the server BEFORE calling the AI, so quota is enforced atomically.
+          // The DB trigger will normalize the timestamp to server time and log the quota event.
+          claimedExplorationStartedAt = Date.now();
+          await updateDream({ ...dream, explorationStartedAt: claimedExplorationStartedAt } as DreamAnalysis);
+          quotaService.invalidate(user);
         } catch (error) {
+          if (error instanceof QuotaError && error.code === QuotaErrorCode.EXPLORATION_LIMIT_REACHED) {
+            setExplorationBlocked(true);
+            return;
+          }
           if (__DEV__) {
             console.error('[DreamChat] Exploration quota check failed:', error);
           }
@@ -342,7 +363,6 @@ export default function DreamChatScreen() {
       }
 
       // Add user message (use displayText if provided, otherwise use textToSend)
-      const baseMessages = options?.baseMessages ?? messages;
       const userMessage: ChatMessage = {
         role: 'user',
         text: displayText || textToSend,
@@ -374,8 +394,9 @@ export default function DreamChatScreen() {
           chatHistory: finalMessages,
         };
 
-        if (isFirstUserMessage && !dream.explorationStartedAt) {
-          dreamUpdate.explorationStartedAt = Date.now();
+        if (isFirstUserMessage && !dreamUpdate.explorationStartedAt) {
+          dreamUpdate.explorationStartedAt =
+            dream.explorationStartedAt ?? claimedExplorationStartedAt ?? Date.now();
         }
 
         // Persist to dream
@@ -412,6 +433,7 @@ export default function DreamChatScreen() {
       dream,
       dreamId,
       explorationBlocked,
+      hasQuotaCheckClearance,
       inputText,
       isMockMode,
       language,
@@ -419,6 +441,7 @@ export default function DreamChatScreen() {
       messages,
       messagesRemaining,
       showMessageLimitAlert,
+      shouldGateOnQuotaCheck,
       t,
       updateDream,
       user,

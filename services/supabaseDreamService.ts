@@ -487,9 +487,13 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumn
   };
 };
 
-const formatError = (error: PostgrestError | null, defaultMessage: string): Error => {
-  if (!error) return new Error(defaultMessage);
-  return new Error(error.message || defaultMessage);
+const formatError = (error: PostgrestError | null, defaultMessage: string): CodedError => {
+  const message = error?.message?.trim() ? error.message : defaultMessage;
+  const err = new Error(message) as CodedError;
+  if (error?.code) {
+    err.code = error.code;
+  }
+  return err;
 };
 
 const isMissingImageGenerationColumnError = (error: PostgrestError | null): boolean => {
