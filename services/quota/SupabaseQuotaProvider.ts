@@ -1,4 +1,5 @@
 import { QUOTAS, QUOTA_CONFIG, type UserTier } from '@/constants/limits';
+import { getUserChatMessageCount } from '@/lib/dreamUsage';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 import { supabase } from '@/lib/supabase';
 import type { QuotaStatus } from '@/lib/types';
@@ -179,11 +180,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
         }
       }
 
-      if (dream?.chatHistory?.length) {
-        return dream.chatHistory.filter((msg) => msg.role === 'user').length;
-      }
-
-      return 0;
+      return getUserChatMessageCount(dream);
     });
   }
 

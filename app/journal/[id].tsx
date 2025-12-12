@@ -6,7 +6,6 @@ import { GradientColors } from '@/constants/gradients';
 import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
-import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -182,7 +181,6 @@ export default function JournalDetailScreen() {
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const { canAnalyzeNow, canAnalyze, tier, usage } = useQuota();
   const { t } = useTranslation();
-  const { user } = useAuth();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
@@ -321,15 +319,7 @@ export default function JournalDetailScreen() {
   }, [isEditingTranscript, transcriptPulse]);
 
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
-  const hasExistingChat = useMemo(() => {
-    if (!dream) {
-      return false;
-    }
-    if (isDreamExplored(dream)) {
-      return true;
-    }
-    return dream.chatHistory.some((message) => message.role === 'model');
-  }, [dream]);
+  const hasExistingChat = useMemo(() => isDreamExplored(dream), [dream]);
   const exploreButtonLabel = useMemo(() => {
     if (primaryAction === 'analyze') {
       return t('journal.detail.analyze_button.default');
@@ -572,21 +562,21 @@ export default function JournalDetailScreen() {
     }
   }, [dream, isAnalysisLocked, toggleFavorite, t]);
 
-  const deleteAndNavigate = useCallback(async () => {
-    if (!dream) return;
-    try {
-      setIsDeleting(true);
-      await deleteDream(dream.id);
-      setShowDeleteSheet(false);
-      router.replace('/(tabs)/journal');
-    } catch (error) {
-      if (__DEV__) {
-        console.error('Failed to delete dream', error);
-      }
-      Alert.alert(t('common.error_title'), t('common.unknown_error'));
-      setIsDeleting(false);
-    }
-  }, [deleteDream, dream, router, t]);
+	  const deleteAndNavigate = useCallback(async () => {
+	    if (!dream) return;
+	    try {
+	      setIsDeleting(true);
+	      await deleteDream(dream.id);
+	      setShowDeleteSheet(false);
+	      router.replace('/(tabs)/journal');
+	    } catch (error) {
+	      if (__DEV__) {
+	        console.error('Failed to delete dream', error);
+	      }
+	      Alert.alert(t('common.error_title'), t('common.unknown_error'));
+	      setIsDeleting(false);
+	    }
+	  }, [deleteDream, dream, t]);
 
   const handleCloseDeleteSheet = useCallback(() => {
     if (isDeleting) return;
@@ -757,9 +747,9 @@ export default function JournalDetailScreen() {
       } finally {
         setIsAnalyzing(false);
       }
-    },
-    [analyzeDream, dream, ensureAnalyzeAllowed, language, t, tier]
-  );
+	    },
+	    [analyzeDream, dream, ensureAnalyzeAllowed, language, showAnalysisNotice, t, tier]
+	  );
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
