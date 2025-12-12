@@ -14,7 +14,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { getDreamDetailAction, isDreamExplored } from '@/lib/dreamUsage';
+import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { QuotaError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
@@ -319,7 +319,6 @@ export default function JournalDetailScreen() {
   }, [isEditingTranscript, transcriptPulse]);
 
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
-  const hasExistingChat = useMemo(() => isDreamExplored(dream), [dream]);
   const exploreButtonLabel = useMemo(() => {
     if (primaryAction === 'analyze') {
       return t('journal.detail.analyze_button.default');
@@ -633,12 +632,8 @@ export default function JournalDetailScreen() {
 
   const handleExplorePress = useCallback(() => {
     if (!dream) return;
-    if (hasExistingChat) {
-      router.push(`/dream-chat/${dream.id}`);
-      return;
-    }
     router.push(`/dream-categories/${dream.id}`);
-  }, [dream, hasExistingChat]);
+  }, [dream]);
 
   const showAnalysisNotice = useCallback(
     (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
@@ -689,8 +684,12 @@ export default function JournalDetailScreen() {
 
   const handleQuotaLimitPrimary = useCallback(() => {
     setShowQuotaLimitSheet(false);
-    router.push('/paywall');
-  }, []);
+    if (tier === 'guest') {
+      router.push('/(tabs)/settings');
+    } else {
+      router.push('/paywall');
+    }
+  }, [tier]);
 
   const handleQuotaLimitSecondary = useCallback(() => {
     setShowQuotaLimitSheet(false);

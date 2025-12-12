@@ -3,15 +3,20 @@ import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isCategoryExplored } from '@/lib/chatCategoryUtils';
+import { isDreamExplored } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
+import type { DreamChatCategory } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+type CategoryId = Exclude<DreamChatCategory, 'general'>;
+
 type Category = {
-  id: string;
+  id: CategoryId;
   titleKey: string;
   descriptionKey: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
@@ -49,6 +54,7 @@ export default function DreamCategoriesScreen() {
   const { colors, shadows, mode } = useTheme();
   useClearWebFocus();
   const dream = dreams.find((d) => d.id === Number(id));
+  const hasExistingChat = isDreamExplored(dream);
 
   const gradientColors = mode === 'dark'
     ? (['#131022', '#4A3B5F'] as const)
@@ -68,6 +74,8 @@ export default function DreamCategoriesScreen() {
       params: { id: id, category: categoryId },
     });
   };
+
+  const availableCategories = CATEGORIES.filter((category) => !isCategoryExplored(dream.chatHistory, category.id));
 
   return (
     <LinearGradient colors={gradientColors} style={styles.gradient}>
@@ -94,7 +102,7 @@ export default function DreamCategoriesScreen() {
 
         {/* Category Cards */}
         <View style={styles.categoriesContainer}>
-          {CATEGORIES.map((category) => (
+          {availableCategories.map((category) => (
             <Pressable
               testID={TID.Button.DreamCategory(category.id)}
               key={category.id}
@@ -130,10 +138,12 @@ export default function DreamCategoriesScreen() {
             { backgroundColor: colors.accent },
             pressed && styles.freeChatButtonPressed,
           ]}
-          onPress={() => handleCategoryPress('general')}
+          onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
         >
           <MaterialCommunityIcons name="chat-processing-outline" size={24} color={colors.textPrimary} />
-          <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>{t('dream_categories.free_chat_prompt')}</Text>
+          <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
+            {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
+          </Text>
         </Pressable>
       </ScrollView>
     </LinearGradient>

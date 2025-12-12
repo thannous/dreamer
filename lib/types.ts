@@ -1,8 +1,13 @@
 import type { RitualId } from './inspirationRituals';
 
+export type DreamChatCategory = 'symbols' | 'emotions' | 'growth' | 'general';
+
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
+  meta?: {
+    category?: DreamChatCategory;
+  };
 }
 
 /**

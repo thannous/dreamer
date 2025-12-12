@@ -86,39 +86,79 @@ async function generateImageFromPrompt(options: {
     generationConfig: { responseModalities: ['IMAGE'] },
   });
 
-  const requestOnce = async () => {
-    return fetch(endpoint, {
+  const extractInlineData = (json: any): string | undefined => {
+    const parts = json?.candidates?.[0]?.content?.parts;
+    const inlinePart = Array.isArray(parts) ? parts.find((p: any) => p?.inlineData?.data) : undefined;
+    return inlinePart?.inlineData?.data as string | undefined;
+  };
+
+  const getBlockReason = (json: any): string | null => {
+    return (json?.promptFeedback?.blockReason ?? json?.promptFeedback?.block_reason ?? null) as string | null;
+  };
+
+  const requestOnce = async (): Promise<any> => {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify(createBody()),
     });
+    if (!res.ok) {
+      const bodyText = await res.text();
+      throw new Error(`Gemini image error ${res.status}: ${bodyText}`);
+    }
+    return (await res.json()) as any;
   };
 
-  const res = await requestOnce();
-  if (!res.ok) {
-    const bodyText = await res.text();
-    throw new Error(`Gemini image error ${res.status}: ${bodyText}`);
+  const firstJson = await requestOnce();
+  const firstImage = extractInlineData(firstJson);
+  if (firstImage) return { imageBase64: firstImage, raw: firstJson };
+
+  const firstBlockReason = getBlockReason(firstJson);
+  const firstFinishReason = firstJson?.candidates?.[0]?.finishReason ?? null;
+
+  // When Gemini returns no inlineData without a blockReason, it can be transient.
+  // Do a single retry to reduce spurious failures observed in production.
+  if (!firstBlockReason) {
+    await new Promise((r) => setTimeout(r, 250));
+    const secondJson = await requestOnce();
+    const secondImage = extractInlineData(secondJson);
+    if (secondImage) return { imageBase64: secondImage, raw: secondJson };
+
+    const secondBlockReason = getBlockReason(secondJson);
+    const secondFinishReason = secondJson?.candidates?.[0]?.finishReason ?? null;
+
+    console.warn('[api] Gemini image no inlineData returned after retry', {
+      first: {
+        blockReason: firstBlockReason,
+        finishReason: firstFinishReason,
+        promptFeedback: firstJson?.promptFeedback ?? null,
+      },
+      second: {
+        blockReason: secondBlockReason,
+        finishReason: secondFinishReason,
+        promptFeedback: secondJson?.promptFeedback ?? null,
+      },
+    });
+
+    const err = new Error(
+      `Gemini image error: no inlineData returned${secondBlockReason ? ` (blockReason=${secondBlockReason})` : ''}`
+    );
+    (err as any).blockReason = secondBlockReason ?? null;
+    (err as any).promptFeedback = secondJson?.promptFeedback ?? null;
+    throw err;
   }
 
-  const json = (await res.json()) as any;
-  const parts = json?.candidates?.[0]?.content?.parts;
-  const inlinePart = Array.isArray(parts)
-    ? parts.find((p: any) => p?.inlineData?.data)
-    : undefined;
-
-  if (inlinePart?.inlineData?.data) return { imageBase64: inlinePart.inlineData.data as string, raw: json };
-
-  const blockReason = json?.promptFeedback?.blockReason ?? json?.promptFeedback?.block_reason;
   // Surface more detail for diagnostics when Gemini refuses to return an image
   console.warn('[api] Gemini image no inlineData returned', {
-    blockReason: blockReason ?? null,
-    promptFeedback: json?.promptFeedback ?? null,
+    blockReason: firstBlockReason ?? null,
+    finishReason: firstFinishReason,
+    promptFeedback: firstJson?.promptFeedback ?? null,
   });
   const err = new Error(
-    `Gemini image error: no inlineData returned${blockReason ? ` (blockReason=${blockReason})` : ''}`
+    `Gemini image error: no inlineData returned${firstBlockReason ? ` (blockReason=${firstBlockReason})` : ''}`
   );
-  (err as any).blockReason = blockReason ?? null;
-  (err as any).promptFeedback = json?.promptFeedback ?? null;
+  (err as any).blockReason = firstBlockReason ?? null;
+  (err as any).promptFeedback = firstJson?.promptFeedback ?? null;
   throw err;
 }
 
@@ -430,13 +470,17 @@ serve(async (req: Request) => {
       // Build conversation
       const history = Array.isArray(body?.history) ? body!.history! : [];
       const message = String(body?.message ?? '').trim();
-      const lang = String(body?.lang ?? 'en');
+      const lang = String(body?.lang ?? 'en')
+        .toLowerCase()
+        .split(/[-_]/)[0];
 
       // Compose chat contents in Gemini format
       const systemPreamble =
         lang === 'fr'
           ? 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.'
-          : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in the requested language.';
+          : lang === 'es'
+            ? 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.'
+            : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.';
 
       const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
       contents.push({ role: 'user', parts: [{ text: systemPreamble }] });

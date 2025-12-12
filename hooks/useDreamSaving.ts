@@ -9,9 +9,10 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
-import { classifyError, QuotaError } from '@/lib/errors';
+import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
+import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 
 export interface UseDreamSavingOptions {
   /** Callback after successful save */
@@ -33,7 +34,10 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
 
   const buildDraftDream = useCallback(
     (transcript: string): DreamAnalysis =>
-      buildDraftDreamPure(transcript, { defaultTitle: t('recording.draft.default_title') }),
+      buildDraftDreamPure(transcript, {
+        defaultTitle: t('recording.draft.default_title'),
+        initialUserMessagePrefix: t('dream_chat.draft_prefix'),
+      }),
     [t]
   );
 
@@ -46,12 +50,15 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
       }
 
       // Check guest limit
-      if (!user && isGuestDreamLimitReached(dreams.length)) {
-        const draft = draftDream && draftDream.transcript === trimmedTranscript
-          ? draftDream
-          : buildDraftDream(trimmedTranscript);
-        options.onGuestLimitReached?.(draft);
-        return null;
+      if (!user) {
+        const used = await getGuestRecordedDreamCount(dreams.length);
+        if (isGuestDreamLimitReached(used)) {
+          const draft = draftDream && draftDream.transcript === trimmedTranscript
+            ? draftDream
+            : buildDraftDream(trimmedTranscript);
+          options.onGuestLimitReached?.(draft);
+          return null;
+        }
       }
 
       setIsPersisting(true);
@@ -82,6 +89,13 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         options.onSaveComplete?.(savedDream, preCount);
         return savedDream;
       } catch (error) {
+        if (error instanceof QuotaError && error.code === QuotaErrorCode.GUEST_LIMIT_REACHED) {
+          const draft = draftDream && draftDream.transcript === trimmedTranscript
+            ? draftDream
+            : buildDraftDream(trimmedTranscript);
+          options.onGuestLimitReached?.(draft);
+          return null;
+        }
         const message = error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
         Alert.alert(t('common.error_title'), message);
         return null;

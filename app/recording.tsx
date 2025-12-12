@@ -20,11 +20,12 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
-import { classifyError, QuotaError } from '@/lib/errors';
+import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
+import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
 import {
@@ -274,6 +275,7 @@ export default function RecordingScreen() {
     (transcriptText?: string): DreamAnalysis =>
       buildDraftDreamPure(transcriptText ?? trimmedTranscript, {
         defaultTitle: t('recording.draft.default_title'),
+        initialUserMessagePrefix: t('dream_chat.draft_prefix'),
       }),
     [trimmedTranscript, t]
   );
@@ -607,14 +609,17 @@ export default function RecordingScreen() {
       return;
     }
 
-    if (!user && isGuestDreamLimitReached(dreams.length)) {
-      const draft =
-        draftDream && draftDream.transcript === latestTranscript
-          ? draftDream
-          : buildDraftDream(latestTranscript);
-      setPendingGuestLimitDream(draft);
-      setShowGuestLimitSheet(true);
-      return;
+    if (!user) {
+      const used = await getGuestRecordedDreamCount(dreams.length);
+      if (isGuestDreamLimitReached(used)) {
+        const draft =
+          draftDream && draftDream.transcript === latestTranscript
+            ? draftDream
+            : buildDraftDream(latestTranscript);
+        setPendingGuestLimitDream(draft);
+        setShowGuestLimitSheet(true);
+        return;
+      }
     }
 
     setIsPersisting(true);
@@ -648,6 +653,15 @@ export default function RecordingScreen() {
       resetComposer();
       navigateAfterSave(savedDream, preCount);
     } catch (error) {
+      if (error instanceof QuotaError && error.code === QuotaErrorCode.GUEST_LIMIT_REACHED) {
+        const draft =
+          draftDream && draftDream.transcript === latestTranscript
+            ? draftDream
+            : buildDraftDream(latestTranscript);
+        setPendingGuestLimitDream(draft);
+        setShowGuestLimitSheet(true);
+        return;
+      }
       const message = error instanceof Error ? error.message : 'Unexpected error occurred. Please try again.';
       Alert.alert(t('common.error_title'), message);
     } finally {
@@ -1005,7 +1019,7 @@ export default function RecordingScreen() {
           primaryLabel: t('recording.guest_limit_sheet.cta'),
           onPrimary: () => {
             setShowGuestLimitSheet(false);
-            router.push('/paywall');
+            router.push('/(tabs)/settings');
           },
           primaryTestID: TID.Button.GuestLimitCta,
         }}
