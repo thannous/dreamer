@@ -4,6 +4,7 @@ import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { GUEST_DREAM_LIMIT, QUOTAS } from '@/constants/limits';
@@ -19,20 +20,17 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { classifyError, QuotaError } from '@/lib/errors';
+import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
 import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
 import {
-  AudioModule,
-  AudioQuality,
-  IOSOutputFormat,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorder,
-  type RecordingOptions,
-} from 'expo-audio';
+	  AudioModule,
+	  setAudioModeAsync,
+	  useAudioRecorder,
+	} from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -48,40 +46,6 @@ import {
   View,
 } from 'react-native';
 
-const MAX_TRANSCRIPT_CHARS = 600;
-
-const RECORDING_OPTIONS: RecordingOptions = {
-  ...RecordingPresets.HIGH_QUALITY,
-  isMeteringEnabled: false,
-  extension: '.caf',
-  sampleRate: 16000,
-  numberOfChannels: 1,
-  bitRate: 64000,
-  android: {
-    ...RecordingPresets.HIGH_QUALITY.android,
-    extension: '.amr',
-    outputFormat: 'amrwb',
-    audioEncoder: 'amr_wb',
-    sampleRate: 16000,
-  },
-  ios: {
-    ...RecordingPresets.HIGH_QUALITY.ios,
-    extension: '.caf',
-    outputFormat: IOSOutputFormat.LINEARPCM,
-    audioQuality: AudioQuality.MEDIUM,
-    sampleRate: 16000,
-    linearPCMBitDepth: 16,
-    linearPCMIsBigEndian: false,
-    linearPCMIsFloat: false,
-  },
-  web: {
-    mimeType: 'audio/webm',
-    bitsPerSecond: 64000,
-  },
-};
-
-const RECORDER_RELEASE_ERROR_SNIPPET = 'shared object that was already released';
-
 const normalizeTranscriptText = (text: string) => text.replace(/\s+/g, ' ').trim();
 const normalizeForComparison = (text: string) =>
   normalizeTranscriptText(text)
@@ -89,24 +53,6 @@ const normalizeForComparison = (text: string) =>
     // don't cause duplicate concatenation when the recognizer replays the transcript.
     .replace(/[.,!?;:…]/g, '')
     .toLowerCase();
-
-const isRecorderReleasedError = (error: unknown): error is Error => {
-  return (
-    error instanceof Error &&
-    typeof error.message === 'string' &&
-    error.message.toLowerCase().includes(RECORDER_RELEASE_ERROR_SNIPPET)
-  );
-};
-
-const handleRecorderReleaseError = (context: string, error: unknown): boolean => {
-  if (isRecorderReleasedError(error)) {
-    if (__DEV__) {
-      console.warn(`[Recording] AudioRecorder already released during ${context}.`, error);
-    }
-    return true;
-  }
-  return false;
-};
 
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
@@ -143,14 +89,16 @@ export default function RecordingScreen() {
   const isSaveDisabled = !trimmedTranscript || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const lengthLimitMessage = useCallback(
-    () => t('recording.alert.length_limit', { limit: MAX_TRANSCRIPT_CHARS }) || `Limite ${MAX_TRANSCRIPT_CHARS} caractères atteinte`,
+    () =>
+      t('recording.alert.length_limit', { limit: RECORDING.MAX_TRANSCRIPT_CHARS }) ||
+      `Limite ${RECORDING.MAX_TRANSCRIPT_CHARS} caractères atteinte`,
     [t]
   );
   const clampTranscript = useCallback((text: string) => {
-    if (text.length <= MAX_TRANSCRIPT_CHARS) {
+    if (text.length <= RECORDING.MAX_TRANSCRIPT_CHARS) {
       return { text, truncated: false };
     }
-    return { text: text.slice(0, MAX_TRANSCRIPT_CHARS), truncated: true };
+    return { text: text.slice(0, RECORDING.MAX_TRANSCRIPT_CHARS), truncated: true };
   }, []);
   const combineTranscript = useCallback(
     (base: string, addition: string) => {
