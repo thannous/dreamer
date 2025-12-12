@@ -6,9 +6,9 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
 import { TID } from '@/lib/testIDs';
+import { getGuestDreamRecordingLimit } from '@/lib/guestLimits';
 import { router } from 'expo-router';
 import { Fonts } from '@/constants/theme';
-import { GUEST_DREAM_LIMIT } from '@/constants/limits';
 
 type UsageEntry = {
   used: number;
@@ -44,8 +44,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { quotaStatus, loading, error, refetch } = useQuota();
 
   const recordingUsage: UsageEntry = useMemo(() => {
-    // Align with guest recording guard (limit is enforced at GUEST_DREAM_LIMIT - 1)
-    const guestRecordingLimit = Math.max(GUEST_DREAM_LIMIT - 1, 0);
+    const guestRecordingLimit = getGuestDreamRecordingLimit();
     const hasAccount = Boolean(user);
 
     return {

@@ -7,7 +7,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { GUEST_DREAM_LIMIT, QUOTAS } from '@/constants/limits';
+import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -18,6 +18,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
+import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { classifyError, QuotaError } from '@/lib/errors';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
@@ -606,7 +607,7 @@ export default function RecordingScreen() {
       return;
     }
 
-    if (!user && dreams.length >= GUEST_DREAM_LIMIT - 1) {
+    if (!user && isGuestDreamLimitReached(dreams.length)) {
       const draft =
         draftDream && draftDream.transcript === latestTranscript
           ? draftDream
