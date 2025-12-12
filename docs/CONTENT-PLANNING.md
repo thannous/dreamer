@@ -37,6 +37,14 @@
 | REM Sleep and Dreams | Published | 2025-12-11 | [EN](/en/blog/rem-sleep-dreams.html) | [FR](/fr/blog/sommeil-paradoxal-reves.html) | [ES](/es/blog/sueno-rem-suenos.html) |
 | Dream Interpretation History | Published | 2025-12-11 | [EN](/en/blog/dream-interpretation-history.html) | [FR](/fr/blog/histoire-interpretation-reves.html) | [ES](/es/blog/historia-interpretacion-suenos.html) |
 
+### Batch 5 - New Articles (December 2025)
+
+| Article | Status | Published | EN | FR | ES |
+|---------|--------|-----------|----|----|-----|
+| Snake Dreams | Published | 2025-12-11 | [EN](/en/blog/snake-dreams-meaning.html) | [FR](/fr/blog/reves-de-serpents.html) | [ES](/es/blog/suenos-con-serpientes.html) |
+| Dream Incubation Guide | Published | 2025-12-11 | [EN](/en/blog/dream-incubation-guide.html) | [FR](/fr/blog/guide-incubation-reves.html) | [ES](/es/blog/guia-incubacion-suenos.html) |
+| Precognitive Dreams | Published | 2025-12-11 | [EN](/en/blog/precognitive-dreams-science.html) | [FR](/fr/blog/reves-premonitoires-science.html) | [ES](/es/blog/suenos-premonitorios-ciencia.html) |
+
 ### Existing Content
 
 | Article | EN | FR | ES |
@@ -56,17 +64,20 @@
 - [x] Water Dreams (ocean, drowning, flood) - `water-dreams-meaning.html` ✅ Published 2025-12-11
 - [x] Dreams About Ex-Partners - `dreams-about-ex.html` ✅ Published 2025-12-11
 - [x] Pregnancy Dreams - `pregnancy-dreams-meaning.html` ✅ Published 2025-12-11
+- [x] Snake Dreams - `snake-dreams-meaning.html` ✅ Published 2025-12-11
 
 ### Practical Guides (Medium Priority)
 - [x] Nightmares: Causes and Solutions - `stop-nightmares-guide.html` ✅ Published 2025-12-11
 - [x] Sleep Paralysis Explained - `sleep-paralysis-guide.html` ✅ Published 2025-12-11
 - [x] Dream Journaling Complete Guide - `dream-journal-guide.html` ✅ Published 2025-12-11
 - [x] Dreams and Mental Health - `dreams-mental-health.html` ✅ Published 2025-12-11
+- [x] Dream Incubation Guide - `dream-incubation-guide.html` ✅ Published 2025-12-11
 
 ### Science & Education (Lower Priority)
 - [x] Why Do We Dream? The Science - `why-we-dream-science.html` ✅ Published 2025-12-11
 - [x] REM Sleep and Dreams - `rem-sleep-dreams.html` ✅ Published 2025-12-11
 - [x] Dream Interpretation History - `dream-interpretation-history.html` ✅ Published 2025-12-11
+- [x] Precognitive Dreams - `precognitive-dreams-science.html` ✅ Published 2025-12-11
 
 ---
 
