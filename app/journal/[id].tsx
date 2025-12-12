@@ -14,12 +14,13 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { QuotaError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import type { DreamAnalysis, DreamTheme, DreamType, DreamChatCategory } from '@/lib/types';
 import { generateImageFromTranscript } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -99,6 +100,7 @@ const getMimeTypeFromExtension = (ext: string): string => {
 
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
+const THEME_CATEGORIES: Exclude<DreamChatCategory, 'general'>[] = ['symbols', 'emotions', 'growth'];
 const nativeDriver = Platform.OS !== 'web';
 
 const generateUUID = (): string => {
@@ -319,6 +321,10 @@ export default function JournalDetailScreen() {
   }, [isEditingTranscript, transcriptPulse]);
 
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
+  const allThemesExplored = useMemo(() => {
+    if (!dream) return false;
+    return THEME_CATEGORIES.every((category) => isCategoryExplored(dream.chatHistory, category));
+  }, [dream]);
   const exploreButtonLabel = useMemo(() => {
     if (primaryAction === 'analyze') {
       return t('journal.detail.analyze_button.default');
@@ -632,8 +638,12 @@ export default function JournalDetailScreen() {
 
   const handleExplorePress = useCallback(() => {
     if (!dream) return;
+    if (allThemesExplored) {
+      router.push(`/dream-chat/${dream.id}`);
+      return;
+    }
     router.push(`/dream-categories/${dream.id}`);
-  }, [dream]);
+  }, [allThemesExplored, dream]);
 
   const showAnalysisNotice = useCallback(
     (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
