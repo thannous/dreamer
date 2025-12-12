@@ -2,11 +2,12 @@ import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { GUEST_DREAM_LIMIT, QUOTAS } from '@/constants/limits';
+import { QUOTAS } from '@/constants/limits';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, QuotaError } from '@/lib/errors';
 import type { DreamAnalysis } from '@/lib/types';
@@ -24,7 +25,7 @@ export interface UseDreamSavingOptions {
 export function useDreamSaving(options: UseDreamSavingOptions = {}) {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { user } = useAuth();
-  const { canAnalyzeNow } = useQuota();
+  const { canAnalyzeNow, tier } = useQuota();
   const { t, currentLang } = useTranslation();
 
   const [isPersisting, setIsPersisting] = useState(false);
@@ -45,7 +46,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
       }
 
       // Check guest limit
-      if (!user && dreams.length >= GUEST_DREAM_LIMIT - 1) {
+      if (!user && isGuestDreamLimitReached(dreams.length)) {
         const draft = draftDream && draftDream.transcript === trimmedTranscript
           ? draftDream
           : buildDraftDream(trimmedTranscript);
@@ -97,7 +98,6 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
       onProgress?: { setStep: (step: number) => void; setError: (error: unknown) => void; reset: () => void }
     ): Promise<DreamAnalysis | null> => {
       if (!canAnalyzeNow) {
-        const tier = user ? 'free' : 'guest';
         const limit = QUOTAS[tier].analysis ?? 0;
         const title = tier === 'guest'
           ? t('recording.alert.analysis_limit.title_guest')
@@ -158,7 +158,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         setIsPersisting(false);
       }
     },
-    [analyzeDream, canAnalyzeNow, currentLang, options, t, user]
+    [analyzeDream, canAnalyzeNow, currentLang, options, t, tier]
   );
 
   const resetDraft = useCallback(() => {

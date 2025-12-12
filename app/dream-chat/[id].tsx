@@ -82,7 +82,7 @@ export default function DreamChatScreen() {
   const isMockMode = isMockModeEnabled();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
-  const { quotaStatus, canExplore, canChat } = useQuota({ dreamId, dream });
+  const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -143,12 +143,11 @@ export default function DreamChatScreen() {
   const hasQuotaCheckClearance = shouldGateOnQuotaCheck ? quotaCheckComplete : true;
   const isQuotaGateBlocked = shouldGateOnQuotaCheck && explorationBlocked;
 
-	  const showMessageLimitAlert = useCallback(() => {
-	    const tier = user ? 'free' : 'guest';
-	    const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
-	    Alert.alert(
-	      'Message Limit Reached',
-	      limitError.userMessage,
+  const showMessageLimitAlert = useCallback(() => {
+    const limitError = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, tier);
+    Alert.alert(
+      'Message Limit Reached',
+      limitError.userMessage,
 	      [
 	        { text: 'OK' },
 	        {
@@ -157,7 +156,7 @@ export default function DreamChatScreen() {
 	        },
 	      ]
 	    );
-	  }, [user]);
+  }, [tier]);
 
   const runQuotaCheck = useCallback(async () => {
     if (!isMountedRef.current) return;
@@ -425,7 +424,6 @@ export default function DreamChatScreen() {
 
   // If exploration is blocked, show upgrade screen
   if (isQuotaGateBlocked) {
-    const tier = user ? 'free' : 'guest';
     return (
       <LinearGradient colors={gradientColors} style={styles.container}>
         <Pressable

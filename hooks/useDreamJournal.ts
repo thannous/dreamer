@@ -14,6 +14,7 @@ import { useCallback, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
+import { deriveUserTier } from '@/lib/quotaTier';
 import {
   generateMutationId,
   generateUUID,
@@ -327,8 +328,7 @@ export const useDreamJournal = () => {
       // Check quota before analyzing
       const canAnalyze = await quotaService.canAnalyzeDream(user);
       if (!canAnalyze) {
-        const tier = user ? 'free' : 'guest';
-        throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
+        throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, deriveUserTier(user));
       }
 
       const shouldReplaceImage = options?.replaceExistingImage ?? true;
