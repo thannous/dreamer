@@ -1,5 +1,7 @@
 // Error classification and user-friendly message generation for API errors
 
+import { QUOTAS } from '@/constants/limits';
+
 /**
  * Translation function type for i18n support
  */
@@ -179,28 +181,29 @@ export class QuotaError extends Error {
     switch (code) {
       case QuotaErrorCode.ANALYSIS_LIMIT_REACHED:
         if (tier === 'guest') {
-          return 'You have reached the limit of 2 analyses in guest mode. Create a free account to get 3 more analyses!';
+          return `You have reached the limit of ${QUOTAS.guest.analysis ?? 0} analyses in guest mode. Create a free account to get ${QUOTAS.free.analysis ?? 0} analyses per month!`;
         } else if (tier === 'free') {
-          return 'You have used all 5 free analyses. Upgrade to premium for unlimited analyses!';
+          return `You have used all ${QUOTAS.free.analysis ?? 0} free analyses for this month. Upgrade to premium for unlimited analyses!`;
         }
         return 'Analysis limit reached.';
 
       case QuotaErrorCode.EXPLORATION_LIMIT_REACHED:
         if (tier === 'guest') {
-          return 'You have explored 2 dreams in guest mode. Create a free account to continue exploring!';
+          return `You have explored ${QUOTAS.guest.exploration ?? 0} dreams in guest mode. Create a free account to continue exploring!`;
         } else if (tier === 'free') {
-          return 'You have reached the exploration limit. Upgrade to premium for unlimited dream exploration!';
+          return `You have used all ${QUOTAS.free.exploration ?? 0} free dream explorations for this month. Upgrade to premium for unlimited dream exploration!`;
         }
         return 'Exploration limit reached.';
 
       case QuotaErrorCode.MESSAGE_LIMIT_REACHED:
         if (tier === 'guest' || tier === 'free') {
-          return 'You have reached the limit of 20 messages for this dream. Upgrade to premium for unlimited conversations!';
+          const limit = tier === 'guest' ? QUOTAS.guest.messagesPerDream : QUOTAS.free.messagesPerDream;
+          return `You have reached the limit of ${limit ?? 0} messages for this dream. Upgrade to premium for unlimited conversations!`;
         }
         return 'Message limit reached.';
 
       case QuotaErrorCode.GUEST_LIMIT_REACHED:
-        return 'You have reached the limit of 2 dreams in guest mode. Create a free account to continue!';
+        return `You have reached the limit of ${QUOTAS.guest.exploration ?? 0} dreams in guest mode. Create a free account to continue!`;
 
       default:
         return 'Quota limit reached.';

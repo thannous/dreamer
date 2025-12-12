@@ -127,6 +127,10 @@ vi.mock('../EmailVerificationDialog', () => ({
   EmailVerificationDialog: () => <div data-testid="email-verification-dialog" />,
 }));
 
+vi.mock('../../ui/StandardBottomSheet', () => ({
+  StandardBottomSheet: () => <div data-testid="standard-bottom-sheet" />,
+}));
+
 vi.mock('../../../constants/journalTheme', () => ({
   ThemeLayout: {
     borderRadius: { sm: 4, md: 8, lg: 12 },

@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import { router } from 'expo-router';
 
 export const GuestLimitBanner: React.FC = () => {
@@ -12,9 +13,31 @@ export const GuestLimitBanner: React.FC = () => {
   const { dreams } = useDreams();
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
+  const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
 
   const isGuest = !user;
-  const used = useMemo(() => (isGuest ? Math.min(dreams.length, GUEST_DREAM_LIMIT) : 0), [dreams.length, isGuest]);
+  useEffect(() => {
+    if (!isGuest) {
+      setGuestRecordedTotal(0);
+      return;
+    }
+    let cancelled = false;
+    getLocalDreamRecordingCount()
+      .then((count) => {
+        if (!cancelled) setGuestRecordedTotal(count);
+      })
+      .catch(() => {
+        // Best-effort
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isGuest, dreams.length]);
+
+  const used = useMemo(
+    () => (isGuest ? Math.min(Math.max(dreams.length, guestRecordedTotal), GUEST_DREAM_LIMIT) : 0),
+    [dreams.length, guestRecordedTotal, isGuest]
+  );
   const progress = useMemo(() => (isGuest ? used / GUEST_DREAM_LIMIT : 0), [used, isGuest]);
 
   if (!isGuest || used === 0) return null;

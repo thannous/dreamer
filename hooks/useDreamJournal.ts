@@ -23,6 +23,7 @@ import {
   upsertDream,
 } from '@/lib/dreamUtils';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { logger } from '@/lib/logger';
 import type { DreamAnalysis } from '@/lib/types';
@@ -34,6 +35,11 @@ import {
   incrementLocalAnalysisCount,
   syncWithServerCount,
 } from '@/services/quota/GuestAnalysisCounter';
+import {
+  getGuestRecordedDreamCount,
+  incrementLocalDreamRecordingCount,
+  withGuestDreamRecordingLock,
+} from '@/services/quota/GuestDreamCounter';
 import { markMockAnalysis } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import {
@@ -99,9 +105,29 @@ export const useDreamJournal = () => {
     async (dream: DreamAnalysis): Promise<DreamAnalysis> => {
       const clientRequestId = dream.clientRequestId ?? generateUUID();
       const normalizedDream = normalizeDreamImages({ ...dream, clientRequestId });
-      const currentDreams = dreamsRef.current;
 
       if (!canUseRemoteSync) {
+        if (!user) {
+          return withGuestDreamRecordingLock(async () => {
+            const currentDreams = dreamsRef.current;
+            const alreadyExists = currentDreams.some((existing) => existing.id === normalizedDream.id);
+            const used = await getGuestRecordedDreamCount(currentDreams.length);
+            if (!alreadyExists && isGuestDreamLimitReached(used)) {
+              throw new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest');
+            }
+            await persistLocalDreams([normalizedDream, ...currentDreams]);
+            if (!alreadyExists) {
+              try {
+                await incrementLocalDreamRecordingCount();
+              } catch (err) {
+                logger.warn('[useDreamJournal] Failed to increment guest recording count', err);
+              }
+            }
+            return normalizedDream;
+          });
+        }
+
+        const currentDreams = dreamsRef.current;
         await persistLocalDreams([normalizedDream, ...currentDreams]);
         return normalizedDream;
       }

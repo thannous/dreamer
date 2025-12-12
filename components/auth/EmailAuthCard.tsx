@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState, type FormEvent } from
 import { AuthApiError, isAuthApiError } from '@supabase/auth-js';
 import {
   ActivityIndicator,
-  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -31,6 +30,7 @@ import type { MockProfile } from '@/lib/auth';
 import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
@@ -94,6 +94,11 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const [lastVerificationEmailSentAt, setLastVerificationEmailSentAt] = useState<number | null>(null);
   const [cooldownTick, setCooldownTick] = useState(() => Date.now());
   const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [authErrorSheet, setAuthErrorSheet] = useState<{
+    visible: boolean;
+    titleKey: string;
+    messageKey: string | null;
+  }>({ visible: false, titleKey: '', messageKey: null });
 
   const trimmedEmail = useMemo(() => email.trim(), [email]);
   const emailValid = useMemo(() => EMAIL_REGEX.test(trimmedEmail), [trimmedEmail]);
@@ -159,9 +164,16 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         error,
       });
     }
-    const message = error instanceof Error ? error.message : t('common.unknown_error');
-    Alert.alert(t(titleKey), message);
+    // For sign-in errors, use a user-friendly message key; for others, show generic message
+    const messageKey = titleKey === 'settings.account.alert.signin_failed.title'
+      ? 'settings.account.alert.signin_failed.message'
+      : null;
+    setAuthErrorSheet({ visible: true, titleKey, messageKey });
   };
+
+  const closeAuthErrorSheet = useCallback(() => {
+    setAuthErrorSheet((prev) => ({ ...prev, visible: false }));
+  }, []);
 
   const attemptSignIn = async () => {
     setTouched({ email: true, password: true });
@@ -659,6 +671,16 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         cooldownMessage={resendCooldownMessage}
         isResending={resendStatus === 'sending'}
         verified={verificationSuccess}
+      />
+      <StandardBottomSheet
+        visible={authErrorSheet.visible}
+        onClose={closeAuthErrorSheet}
+        title={t(authErrorSheet.titleKey)}
+        subtitle={authErrorSheet.messageKey ? t(authErrorSheet.messageKey) : undefined}
+        actions={{
+          primaryLabel: t('common.ok'),
+          onPrimary: closeAuthErrorSheet,
+        }}
       />
     </>
   );

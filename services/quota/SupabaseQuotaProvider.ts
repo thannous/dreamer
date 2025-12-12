@@ -79,20 +79,46 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
     return this.getOrCache(cacheKey, async () => {
       const { periodStart, periodEnd } = getMonthlyQuotaPeriod();
+      const periodStartIso = periodStart.toISOString();
+      const periodEndIso = periodEnd.toISOString();
+
       const { count, error } = await supabase
         .from('user_quota_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
         .eq('quota_type', 'analysis')
-        .gte('occurred_at', periodStart.toISOString())
-        .lt('occurred_at', periodEnd.toISOString());
+        .gte('occurred_at', periodStartIso)
+        .lt('occurred_at', periodEndIso);
 
       if (error) {
         console.error('Error counting monthly analyses:', error);
         return this.getMonthlyErrorFallback(user, 'analysis');
       }
 
-      return count ?? 0;
+      const eventCount = count ?? 0;
+
+      // Defensive: if triggers are missing/misconfigured, events may not be logged.
+      // Fall back to counting analyzed dreams in the current month, then take the max
+      // to preserve the anti-deletion property when events are present.
+      try {
+        const { count: dreamCount, error: dreamError } = await supabase
+          .from('dreams')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('is_analyzed', true)
+          .gte('analyzed_at', periodStartIso)
+          .lt('analyzed_at', periodEndIso);
+
+        if (dreamError) {
+          console.error('Error counting monthly analyzed dreams:', dreamError);
+          return eventCount;
+        }
+
+        return Math.max(eventCount, dreamCount ?? 0);
+      } catch (fallbackError) {
+        console.error('Error counting monthly analyzed dreams (fallback):', fallbackError);
+        return eventCount;
+      }
     });
   }
 
@@ -101,20 +127,46 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
     return this.getOrCache(cacheKey, async () => {
       const { periodStart, periodEnd } = getMonthlyQuotaPeriod();
+      const periodStartIso = periodStart.toISOString();
+      const periodEndIso = periodEnd.toISOString();
+
       const { count, error } = await supabase
         .from('user_quota_events')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
         .eq('quota_type', 'exploration')
-        .gte('occurred_at', periodStart.toISOString())
-        .lt('occurred_at', periodEnd.toISOString());
+        .gte('occurred_at', periodStartIso)
+        .lt('occurred_at', periodEndIso);
 
       if (error) {
         console.error('Error counting monthly explorations:', error);
         return this.getMonthlyErrorFallback(user, 'exploration');
       }
 
-      return count ?? 0;
+      const eventCount = count ?? 0;
+
+      // Defensive: if triggers are missing/misconfigured, events may not be logged.
+      // Fall back to counting explored dreams in the current month, then take the max
+      // to preserve the anti-deletion property when events are present.
+      try {
+        const { count: dreamCount, error: dreamError } = await supabase
+          .from('dreams')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .not('exploration_started_at', 'is', null)
+          .gte('exploration_started_at', periodStartIso)
+          .lt('exploration_started_at', periodEndIso);
+
+        if (dreamError) {
+          console.error('Error counting monthly explored dreams:', dreamError);
+          return eventCount;
+        }
+
+        return Math.max(eventCount, dreamCount ?? 0);
+      } catch (fallbackError) {
+        console.error('Error counting monthly explored dreams (fallback):', fallbackError);
+        return eventCount;
+      }
     });
   }
 
@@ -197,18 +249,10 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       return used < (limits.analysis ?? 0);
     }
 
-    const initial = QUOTA_CONFIG.free.initial.analysis;
-    const monthly = QUOTA_CONFIG.free.monthly.analysis;
-    const totalUsed = await this.getUsedAnalysisCount(user);
-
-    if (initial !== null && totalUsed < initial) {
-      return true;
-    }
-
-    if (monthly === null) return true;
-
+    const monthlyLimit = QUOTA_CONFIG.free.monthly.analysis;
+    if (monthlyLimit === null) return true;
     const monthlyUsed = await this.getMonthlyAnalysisCount(user);
-    return monthlyUsed < monthly;
+    return monthlyUsed < monthlyLimit;
   }
 
   async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
@@ -243,23 +287,16 @@ export class SupabaseQuotaProvider implements QuotaProvider {
       }
     }
 
-    const used = await this.getUsedExplorationCount(user);
-
     if (tier !== 'free') {
+      const used = await this.getUsedExplorationCount(user);
       return used < (limits.exploration ?? 0);
     }
 
-    const initial = QUOTA_CONFIG.free.initial.exploration;
-    const monthly = QUOTA_CONFIG.free.monthly.exploration;
-
-    if (initial !== null && used < initial) {
-      return true;
-    }
-
-    if (monthly === null) return true;
+    const monthlyLimit = QUOTA_CONFIG.free.monthly.exploration;
+    if (monthlyLimit === null) return true;
 
     const monthlyUsed = await this.getMonthlyExplorationCount(user);
-    return monthlyUsed < monthly;
+    return monthlyUsed < monthlyLimit;
   }
 
   async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
@@ -290,50 +327,31 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     }
 
     const tier = this.getUserTier(user);
-    const totalAnalysisUsed = await this.getUsedAnalysisCount(user);
-    const totalExplorationUsed = await this.getUsedExplorationCount(user);
     const messagesUsed = target ? await this.getUsedMessagesCount(target, user) : 0;
-
-    let analysisUsed = totalAnalysisUsed;
-    let explorationUsed = totalExplorationUsed;
-    let analysisLimit = QUOTAS[tier].analysis;
-    let explorationLimit = QUOTAS[tier].exploration;
-
-    if (tier === 'free') {
-      const initial = QUOTA_CONFIG.free.initial;
-      const monthly = QUOTA_CONFIG.free.monthly;
-
-      if (initial.analysis !== null && totalAnalysisUsed >= initial.analysis) {
-        const monthlyAnalysisUsed = await this.getMonthlyAnalysisCount(user);
-        analysisUsed = monthlyAnalysisUsed;
-        analysisLimit = monthly.analysis;
-      } else {
-        analysisLimit = initial.analysis;
-      }
-
-      if (initial.exploration !== null && totalExplorationUsed >= initial.exploration) {
-        const monthlyExplorationUsed = await this.getMonthlyExplorationCount(user);
-        explorationUsed = monthlyExplorationUsed;
-        explorationLimit = monthly.exploration;
-      } else {
-        explorationLimit = initial.exploration;
-      }
-    }
 
     const messagesLimit = QUOTAS[tier].messagesPerDream;
 
+    const [analysisUsed, explorationUsed] = await Promise.all(
+      tier === 'free'
+        ? [this.getMonthlyAnalysisCount(user), this.getMonthlyExplorationCount(user)]
+        : [this.getUsedAnalysisCount(user), this.getUsedExplorationCount(user)]
+    );
+
+    const analysisLimit = tier === 'free' ? QUOTA_CONFIG.free.monthly.analysis : QUOTAS[tier].analysis;
+    const explorationLimit = tier === 'free' ? QUOTA_CONFIG.free.monthly.exploration : QUOTAS[tier].exploration;
+
     const canAnalyze = await this.canAnalyzeDream(user);
-    const canExplore = target ? await this.canExploreDream(target, user) : true;
+    const canExplore = await this.canExploreDream(target, user);
 
     const reasons: string[] = [];
     if (!canAnalyze) {
       if (tier === 'free') {
-        reasons.push('You have used all 5 free analyses. Upgrade to premium for unlimited analyses!');
+        reasons.push('You have reached your free monthly analysis limit. Upgrade to premium for unlimited analyses!');
       }
     }
     if (!canExplore && target) {
       if (tier === 'free') {
-        reasons.push('You have reached the exploration limit. Upgrade to premium for unlimited exploration!');
+        reasons.push('You have reached your free monthly exploration limit. Upgrade to premium for unlimited exploration!');
       }
     }
 

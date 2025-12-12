@@ -26,6 +26,7 @@ const {
   mockGetThumbnailUrl,
   mockIncrementLocalAnalysisCount,
   mockSyncWithServerCount,
+  mockGuestDreamCounterState,
   mockUseAuth,
 } = vi.hoisted(() => ({
   mockGetSavedDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
@@ -45,6 +46,7 @@ const {
   mockGetThumbnailUrl: vi.fn<(url: string | undefined) => string | undefined>(),
   mockIncrementLocalAnalysisCount: vi.fn<() => Promise<number>>(),
   mockSyncWithServerCount: vi.fn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
+  mockGuestDreamCounterState: { count: 0 },
   mockUseAuth: vi.fn<() => { user: { id: string } | null }>(),
 }));
 
@@ -113,6 +115,16 @@ vi.mock('../../services/quota/GuestAnalysisCounter', () => ({
   syncWithServerCount: mockSyncWithServerCount,
 }));
 
+// Mock GuestDreamCounter (avoid persisting between tests)
+vi.mock('../../services/quota/GuestDreamCounter', () => ({
+  getGuestRecordedDreamCount: async (currentDreamCount: number) => Math.max(mockGuestDreamCounterState.count, currentDreamCount),
+  incrementLocalDreamRecordingCount: async () => {
+    mockGuestDreamCounterState.count += 1;
+    return mockGuestDreamCounterState.count;
+  },
+  withGuestDreamRecordingLock: async (fn: () => Promise<unknown>) => fn(),
+}));
+
 // Mock logger
 vi.mock('../../lib/logger', () => ({
   logger: {
@@ -151,6 +163,7 @@ describe('useDreamJournal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     setMockUser(null);
+    mockGuestDreamCounterState.count = 0;
     mockGetSavedDreams.mockResolvedValue([]);
     mockSaveDreams.mockResolvedValue(undefined);
     mockGetCachedRemoteDreams.mockResolvedValue([]);
@@ -294,11 +307,11 @@ describe('useDreamJournal', () => {
         await result.current.addDream(buildDream({ id: 3 }));
       });
 
-      await act(async () => {
-        await result.current.addDream(buildDream({ id: 2 }));
+      await expect(result.current.addDream(buildDream({ id: 2 }))).rejects.toBeInstanceOf(QuotaError);
+      await expect(result.current.addDream(buildDream({ id: 2 }))).rejects.toMatchObject({
+        code: QuotaErrorCode.GUEST_LIMIT_REACHED,
       });
-
-      expect(result.current.dreams.map((d) => d.id)).toEqual([3, 2, 1]);
+      expect(result.current.dreams.map((d) => d.id)).toEqual([3, 1]);
     });
   });
 

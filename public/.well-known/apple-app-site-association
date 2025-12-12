@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["<APPLE_TEAM_ID>.com.tanuki75.noctalia"],
+        "components": [
+          {
+            "/": "*",
+            "comment": "Open all routes in the app when installed"
+          }
+        ]
+      }
+    ]
+  }
+}

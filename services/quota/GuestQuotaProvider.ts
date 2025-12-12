@@ -150,10 +150,10 @@ export class GuestQuotaProvider implements QuotaProvider {
 
     const reasons: string[] = [];
     if (!canAnalyze) {
-      reasons.push('Guest analysis limit reached (2/2). Create a free account to get 3 more!');
+      reasons.push(`Guest analysis limit reached (${analysisUsed}/${analysisLimit}). Create a free account to continue!`);
     }
     if (!canExplore && target) {
-      reasons.push('Guest exploration limit reached (2/2). Create a free account to continue!');
+      reasons.push(`Guest exploration limit reached (${explorationUsed}/${explorationLimit}). Create a free account to continue!`);
     }
 
     return {
