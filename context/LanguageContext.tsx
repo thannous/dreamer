@@ -1,14 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocales } from 'expo-localization';
 import { getLanguagePreference, saveLanguagePreference } from '@/services/storageService';
-import type { LanguagePreference } from '@/lib/types';
+import type { AppLanguage, LanguagePreference } from '@/lib/types';
 
-type Language = 'en' | 'fr' | 'es';
-const SUPPORTED_LANGUAGES: Language[] = ['en', 'fr', 'es'];
+const SUPPORTED_LANGUAGES: AppLanguage[] = ['en', 'fr', 'es'];
 
-const normalizeLanguage = (code?: string | null): Language => {
-  if (code && SUPPORTED_LANGUAGES.includes(code as Language)) {
-    return code as Language;
+const normalizeLanguage = (code?: string | null): AppLanguage => {
+  if (code && SUPPORTED_LANGUAGES.includes(code as AppLanguage)) {
+    return code as AppLanguage;
   }
   return 'en';
 };
@@ -27,9 +26,9 @@ type LocaleMetadata = {
 
 export type LanguageContextValue = {
   /** Current effective language ('en', 'fr', or 'es') */
-  language: Language;
+  language: AppLanguage;
   /** Current system language derived from device settings */
-  systemLanguage: Language;
+  systemLanguage: AppLanguage;
   /** Snapshot of primary locale metadata reported by the OS */
   locale: LocaleMetadata;
   /** User's language preference ('auto', 'en', 'fr', or 'es') */
@@ -77,7 +76,7 @@ export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }
   }, []);
 
   // Detect system language
-  const systemLanguage: Language = useMemo(
+  const systemLanguage: AppLanguage = useMemo(
     () => normalizeLanguage(primaryLocale?.languageCode),
     [primaryLocale?.languageCode]
   );
@@ -92,11 +91,11 @@ export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }
   );
 
   // Calculate effective language based on preference and system
-  const language: Language = useMemo(() => {
+  const language: AppLanguage = useMemo(() => {
     if (preference === 'auto') {
       return systemLanguage;
     }
-    return preference as Language;
+    return preference as AppLanguage;
   }, [preference, systemLanguage]);
 
   // Update preference and save to storage

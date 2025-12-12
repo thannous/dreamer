@@ -17,6 +17,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
+import { getTranscriptionLocale } from '@/lib/locale';
 import { classifyError, QuotaError } from '@/lib/errors';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
@@ -210,16 +211,7 @@ export default function RecordingScreen() {
     [clampTranscript]
   );
 
-  const transcriptionLocale = useMemo(() => {
-    switch (language) {
-      case 'fr':
-        return 'fr-FR';
-      case 'es':
-        return 'es-ES';
-      default:
-        return 'en-US';
-    }
-  }, [language]);
+  const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   const handleTranscriptChange = useCallback(
     (text: string) => {
