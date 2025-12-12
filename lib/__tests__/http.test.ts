@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies before importing the module
-const mockGetAccessToken = vi.fn<[], Promise<string | null>>();
+const mockGetAccessToken = vi.fn<() => Promise<string | null>>();
 const mockClassifyError = vi.fn();
 
 vi.mock('../auth', () => ({
@@ -332,7 +332,7 @@ describe('http', () => {
 
   describe('timeout handling', () => {
     it('given custom timeout when request takes too long then aborts', async () => {
-      let abortSignal: AbortSignal | undefined;
+      let abortSignal: AbortSignal | null | undefined;
       global.fetch = vi.fn().mockImplementation((_url, options) => {
         abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {

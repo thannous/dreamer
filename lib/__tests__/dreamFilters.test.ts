@@ -19,54 +19,57 @@ import type { DreamAnalysis, DreamTheme, DreamType } from '../types';
 
 // Mock the dreamUsage functions
 vi.mock('../dreamUsage', () => ({
-  isDreamAnalyzed: vi.fn((dream: DreamAnalysis) => dream.isAnalyzed),
-  isDreamExplored: vi.fn((dream: DreamAnalysis) => dream.isExplored),
+  isDreamAnalyzed: vi.fn((dream: DreamAnalysis) => Boolean(dream.isAnalyzed && typeof dream.analyzedAt === 'number')),
+  isDreamExplored: vi.fn((dream: DreamAnalysis) => Boolean(dream.explorationStartedAt)),
 }));
 
 describe('dreamFilters', () => {
+  const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
+    id: Date.now(),
+    title: 'Dream',
+    transcript: 'Transcript',
+    interpretation: 'Interpretation',
+    shareableQuote: 'Quote',
+    imageUrl: '',
+    chatHistory: [],
+    dreamType: 'Symbolic Dream',
+    ...overrides,
+  });
+
   const mockDreams: DreamAnalysis[] = [
-    {
+    buildDream({
       id: 1640000000000, // 2021-12-20
       title: 'Flying Dream',
       transcript: 'I was flying over mountains',
       interpretation: 'Feeling of freedom',
-      dreamType: 'lucid' as DreamType,
-      theme: 'adventure' as DreamTheme,
+      dreamType: 'Lucid Dream',
+      theme: 'surreal',
       isFavorite: false,
       isAnalyzed: true,
-      isExplored: false,
-      analysis: { sentiment: 'positive' },
-      createdAt: '2021-12-20T10:00:00Z',
-      updatedAt: '2021-12-20T10:00:00Z',
-    },
-    {
+      analyzedAt: 1640000000000,
+    }),
+    buildDream({
       id: 1640086400000, // 2021-12-21
       title: 'Falling Dream',
       transcript: 'I was falling from a building',
       interpretation: 'Fear of losing control',
-      dreamType: 'nightmare' as DreamType,
-      theme: 'anxiety' as DreamTheme,
+      dreamType: 'Nightmare',
+      theme: 'noir',
       isFavorite: true,
       isAnalyzed: true,
-      isExplored: true,
-      analysis: { sentiment: 'negative' },
-      createdAt: '2021-12-21T10:00:00Z',
-      updatedAt: '2021-12-21T10:00:00Z',
-    },
-    {
+      analyzedAt: 1640086400000,
+      explorationStartedAt: 1640086400000,
+    }),
+    buildDream({
       id: 1640172800000, // 2021-12-22
       title: 'Water Dream',
       transcript: 'Swimming in the ocean',
       interpretation: 'Emotional journey',
-      dreamType: 'normal' as DreamType,
-      theme: 'emotional' as DreamTheme,
+      dreamType: 'Symbolic Dream',
+      theme: 'calm',
       isFavorite: false,
       isAnalyzed: false,
-      isExplored: false,
-      analysis: null,
-      createdAt: '2021-12-22T10:00:00Z',
-      updatedAt: '2021-12-22T10:00:00Z',
-    },
+    }),
   ];
 
   describe('filterBySearch', () => {
@@ -135,7 +138,7 @@ describe('dreamFilters', () => {
 
       // When
       const result = filterBySearch(mockDreams, query, {
-        dreamTypeLabelResolver: (dreamType) => (dreamType === 'nightmare' ? 'Cauchemar' : undefined),
+        dreamTypeLabelResolver: (dreamType) => (dreamType === 'Nightmare' ? 'Cauchemar' : undefined),
       });
 
       // Then
@@ -181,14 +184,14 @@ describe('dreamFilters', () => {
 
     it('given valid theme when filtering then returns dreams with that theme', () => {
       // Given
-      const theme = 'adventure' as DreamTheme;
+      const theme = 'surreal';
 
       // When
       const result = filterByTheme(mockDreams, theme);
 
       // Then
       expect(result).toHaveLength(1);
-      expect(result[0].theme).toBe('adventure');
+      expect(result[0].theme).toBe('surreal');
     });
 
     it('given theme with no matches when filtering then returns empty array', () => {
@@ -217,14 +220,14 @@ describe('dreamFilters', () => {
 
     it('given valid dream type when filtering then returns dreams with that type', () => {
       // Given
-      const dreamType = 'lucid' as DreamType;
+      const dreamType: DreamType = 'Lucid Dream';
 
       // When
       const result = filterByDreamType(mockDreams, dreamType);
 
       // Then
       expect(result).toHaveLength(1);
-      expect(result[0].dreamType).toBe('lucid');
+      expect(result[0].dreamType).toBe('Lucid Dream');
     });
 
     it('given dream type with no matches when filtering then returns empty array', () => {
@@ -365,7 +368,7 @@ describe('dreamFilters', () => {
       // When
       const result = applyFilters(mockDreams, filters, {
         searchOptions: {
-          dreamTypeLabelResolver: (dreamType) => (dreamType === 'nightmare' ? 'Pesadilla' : undefined),
+          dreamTypeLabelResolver: (dreamType) => (dreamType === 'Nightmare' ? 'Pesadilla' : undefined),
         },
       });
 
@@ -376,26 +379,26 @@ describe('dreamFilters', () => {
 
     it('given theme filter when applying then returns filtered dreams', () => {
       // Given
-      const filters: DreamFilters = { theme: 'adventure' as DreamTheme };
+      const filters: DreamFilters = { theme: 'surreal' };
 
       // When
       const result = applyFilters(mockDreams, filters);
 
       // Then
       expect(result).toHaveLength(1);
-      expect(result[0].theme).toBe('adventure');
+      expect(result[0].theme).toBe('surreal');
     });
 
     it('given dream type filter when applying then returns filtered dreams', () => {
       // Given
-      const filters: DreamFilters = { dreamType: 'nightmare' as DreamType };
+      const filters: DreamFilters = { dreamType: 'Nightmare' };
 
       // When
       const result = applyFilters(mockDreams, filters);
 
       // Then
       expect(result).toHaveLength(1);
-      expect(result[0].dreamType).toBe('nightmare');
+      expect(result[0].dreamType).toBe('Nightmare');
     });
 
     it('given favorites filter when applying then returns filtered dreams', () => {
@@ -431,7 +434,7 @@ describe('dreamFilters', () => {
 
       // Then
       expect(result).toHaveLength(1);
-      expect(result[0].isExplored).toBe(true);
+      expect(result[0].explorationStartedAt).toBeDefined();
     });
 
     it('given date range filter when applying then returns filtered dreams', () => {
@@ -452,8 +455,8 @@ describe('dreamFilters', () => {
     it('given multiple filters when applying then returns dreams matching all criteria', () => {
       // Given
       const filters: DreamFilters = {
-        theme: 'anxiety' as DreamTheme,
-        dreamType: 'nightmare' as DreamType,
+        theme: 'noir',
+        dreamType: 'Nightmare',
         favoritesOnly: true,
         analyzedOnly: true,
         exploredOnly: true,
@@ -516,7 +519,7 @@ describe('dreamFilters', () => {
       const result = getUniqueThemes(dreams);
 
       // Then
-      expect(result).toEqual(['adventure', 'anxiety', 'emotional']);
+      expect(result).toEqual(['calm', 'noir', 'surreal']);
     });
 
     it('given dreams with null themes when getting unique themes then excludes null themes', () => {
@@ -525,15 +528,15 @@ describe('dreamFilters', () => {
         ...mockDreams,
         {
           ...mockDreams[0],
-          theme: null,
-        } as DreamAnalysis,
+          theme: undefined,
+        },
       ];
 
       // When
       const result = getUniqueThemes(dreamsWithNullTheme);
 
       // Then
-      expect(result).toEqual(['adventure', 'anxiety', 'emotional']);
+      expect(result).toEqual(['calm', 'noir', 'surreal']);
     });
 
     it('given empty array when getting unique themes then returns empty array', () => {
@@ -557,7 +560,7 @@ describe('dreamFilters', () => {
       const result = getUniqueDreamTypes(dreams);
 
       // Then
-      expect(result).toEqual(['lucid', 'nightmare', 'normal']);
+      expect(result).toEqual(['Lucid Dream', 'Nightmare', 'Symbolic Dream']);
     });
 
     it('given dreams with null types when getting unique types then excludes null types', () => {
@@ -566,15 +569,15 @@ describe('dreamFilters', () => {
         ...mockDreams,
         {
           ...mockDreams[0],
-          dreamType: null,
-        } as DreamAnalysis,
+          dreamType: undefined as unknown as DreamType,
+        },
       ];
 
       // When
       const result = getUniqueDreamTypes(dreamsWithNullType);
 
       // Then
-      expect(result).toEqual(['lucid', 'nightmare', 'normal']);
+      expect(result).toEqual(['Lucid Dream', 'Nightmare', 'Symbolic Dream']);
     });
 
     it('given empty array when getting unique types then returns empty array', () => {

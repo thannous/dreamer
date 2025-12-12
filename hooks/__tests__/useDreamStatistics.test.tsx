@@ -15,7 +15,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   shareableQuote: '',
   imageUrl: '',
   dreamType: 'Symbolic Dream',
-  theme: 'adventure',
+  theme: 'surreal',
   chatHistory: [],
   isAnalyzed: true,
   analyzedAt: Date.now(),
@@ -334,48 +334,46 @@ describe('useDreamStatistics', () => {
   });
 
   describe('top themes', () => {
-    it('aggregates top 5 themes', () => {
+    it('aggregates themes', () => {
       const dreams = [
-        buildDream({ id: 1, theme: 'adventure' }),
-        buildDream({ id: 2, theme: 'adventure' }),
-        buildDream({ id: 3, theme: 'mystery' }),
-        buildDream({ id: 4, theme: 'nightmare' }),
-        buildDream({ id: 5, theme: 'flying' }),
-        buildDream({ id: 6, theme: 'water' }),
-        buildDream({ id: 7, theme: 'animals' }),
+        buildDream({ id: 1, theme: 'surreal' }),
+        buildDream({ id: 2, theme: 'surreal' }),
+        buildDream({ id: 3, theme: 'mystical' }),
+        buildDream({ id: 4, theme: 'noir' }),
+        buildDream({ id: 5, theme: 'calm' }),
       ];
 
       const { result } = renderHook(() => useDreamStatistics(dreams));
 
-      expect(result.current.topThemes).toHaveLength(5);
-      expect(result.current.topThemes[0].theme).toBe('adventure');
+      expect(result.current.topThemes).toHaveLength(4);
+      expect(result.current.topThemes[0].theme).toBe('surreal');
       expect(result.current.topThemes[0].count).toBe(2);
     });
 
     it('sorts themes by count descending', () => {
       const dreams = [
-        buildDream({ id: 1, theme: 'adventure' }),
-        buildDream({ id: 2, theme: 'mystery' }),
-        buildDream({ id: 3, theme: 'mystery' }),
-        buildDream({ id: 4, theme: 'mystery' }),
+        buildDream({ id: 1, theme: 'surreal' }),
+        buildDream({ id: 2, theme: 'mystical' }),
+        buildDream({ id: 3, theme: 'mystical' }),
+        buildDream({ id: 4, theme: 'mystical' }),
       ];
 
       const { result } = renderHook(() => useDreamStatistics(dreams));
 
-      expect(result.current.topThemes[0].theme).toBe('mystery');
+      expect(result.current.topThemes[0].theme).toBe('mystical');
       expect(result.current.topThemes[0].count).toBe(3);
     });
 
     it('ignores dreams with no theme', () => {
       const dreams = [
-        buildDream({ id: 1, theme: 'adventure' }),
+        buildDream({ id: 1, theme: 'surreal' }),
         buildDream({ id: 2, theme: undefined }),
       ];
 
       const { result } = renderHook(() => useDreamStatistics(dreams));
 
       expect(result.current.topThemes).toHaveLength(1);
-      expect(result.current.topThemes[0].theme).toBe('adventure');
+      expect(result.current.topThemes[0].theme).toBe('surreal');
     });
   });
 

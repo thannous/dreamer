@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { QUOTA_CONFIG, QUOTAS } from '../../../constants/limits';
+import type { DreamAnalysis } from '../../../lib/types';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
 
 // Use vi.hoisted for mocks that need to be accessed
@@ -24,7 +25,7 @@ const { mockBuilder, mockGetCachedRemoteDreams } = vi.hoisted(() => {
   mockBuilder.lt.mockReturnValue(mockBuilder);
   mockBuilder.single.mockReturnValue(mockBuilder);
 
-  const mockGetCachedRemoteDreams = vi.fn<[], Promise<unknown[]>>();
+  const mockGetCachedRemoteDreams = vi.fn<() => Promise<unknown[]>>();
   mockGetCachedRemoteDreams.mockResolvedValue([]);
 
   return { mockBuilder, mockGetCachedRemoteDreams };
@@ -89,7 +90,7 @@ describe('SupabaseQuotaProvider', () => {
       const user = null;
 
       // When
-      const tier = await provider.getUserTier(user);
+      const tier = (provider as any).getUserTier(user);
 
       // Then
       expect(tier).toBe('guest');
@@ -100,7 +101,7 @@ describe('SupabaseQuotaProvider', () => {
       const user = { id: 'test-user', user_metadata: { tier: 'premium' } } as any;
 
       // When
-      const tier = await provider.getUserTier(user);
+      const tier = (provider as any).getUserTier(user);
 
       // Then
       expect(tier).toBe('premium');
@@ -111,7 +112,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given user when getting used analysis count then queries Supabase correctly', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -133,7 +134,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given user when getting used exploration count then queries Supabase correctly', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -169,7 +170,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given Supabase error when counting analyses then handles error gracefully', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -188,7 +189,7 @@ describe('SupabaseQuotaProvider', () => {
     it('given Supabase error when counting explorations then returns tier limit', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -211,7 +212,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -237,7 +238,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -263,7 +264,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -285,7 +286,7 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
-      const mockSupabase = await vi.importMock('../../../lib/supabase');
+      const mockSupabase = (await vi.importMock('../../../lib/supabase')) as any;
       const mockBuilder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
@@ -327,11 +328,11 @@ describe('SupabaseQuotaProvider', () => {
       // Given
       const dreamId = 123;
       const mockDream = { id: 123, title: 'Test Dream' };
-      const mockStorage = await vi.importMock('../../storageService');
+      const mockStorage = (await vi.importMock('../../storageService')) as any;
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([mockDream]);
 
       // When
-      const dream = await provider.resolveDream({ dreamId });
+      const dream = await (provider as any).resolveDream({ dreamId });
 
       // Then
       expect(dream).toEqual(mockDream);
@@ -341,11 +342,11 @@ describe('SupabaseQuotaProvider', () => {
     it('given non-existent dream ID when resolving then returns null', async () => {
       // Given
       const dreamId = 999;
-      const mockStorage = await vi.importMock('../../storageService');
+      const mockStorage = (await vi.importMock('../../storageService')) as any;
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([{ id: 123 }]);
 
       // When
-      const dream = await provider.resolveDream({ dreamId });
+      const dream = await (provider as any).resolveDream({ dreamId });
 
       // Then
       expect(dream).toBeUndefined();
@@ -359,7 +360,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(1);
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(guestUser, { dreamId: 123 });
+      const canAnalyze = await provider.canAnalyzeDream(guestUser);
 
       // Then
       expect(canAnalyze).toBe(false);
@@ -371,7 +372,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(3);
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(guestUser, { dreamId: 123 });
+      const canAnalyze = await provider.canAnalyzeDream(guestUser);
 
       // Then
       expect(canAnalyze).toBe(false);
@@ -383,7 +384,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(100);
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(premiumUser, { dreamId: 123 });
+      const canAnalyze = await provider.canAnalyzeDream(premiumUser);
 
       // Then
       expect(canAnalyze).toBe(true);
@@ -768,7 +769,16 @@ describe('SupabaseQuotaProvider', () => {
   describe('chat message limits', () => {
     it('given messages within limit when checking then allows sending', async () => {
       // Given
-      const dream = { id: 123, chatHistory: [{ role: 'user' }, { role: 'assistant' }] };
+      const dream: DreamAnalysis = {
+        id: 123,
+        transcript: 'Test dream',
+        title: 'Test dream',
+        interpretation: '',
+        shareableQuote: '',
+        imageUrl: '',
+        chatHistory: [{ role: 'user', text: 'hi' }, { role: 'model', text: 'ok' }],
+        dreamType: 'Symbolic Dream',
+      };
       const p = provider as any;
       p.resolveDream = vi.fn().mockResolvedValue(dream);
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(2);
@@ -782,7 +792,16 @@ describe('SupabaseQuotaProvider', () => {
 
     it('given messages at limit when checking then denies sending', async () => {
       // Given
-      const dream = { id: 123, chatHistory: Array(20).fill({ role: 'user' }) };
+      const dream: DreamAnalysis = {
+        id: 123,
+        transcript: 'Test dream',
+        title: 'Test dream',
+        interpretation: '',
+        shareableQuote: '',
+        imageUrl: '',
+        chatHistory: Array.from({ length: 20 }, () => ({ role: 'user' as const, text: 'x' })),
+        dreamType: 'Symbolic Dream',
+      };
       const p = provider as any;
       p.resolveDream = vi.fn().mockResolvedValue(dream);
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(20);

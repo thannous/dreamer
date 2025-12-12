@@ -273,8 +273,10 @@ describe('storageServiceMock', () => {
   describe('ritual step progress', () => {
     it('given saved ritual step progress when retrieving then returns saved progress', async () => {
       const progress: RitualStepProgress = {
-        stepKey: 'evening',
-        completedAt: Date.now(),
+        date: '2024-01-01',
+        steps: {
+          starter: { evening: true },
+        },
       };
       await saveRitualStepProgress(progress);
 

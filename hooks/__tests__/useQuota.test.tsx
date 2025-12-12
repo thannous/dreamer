@@ -61,10 +61,9 @@ const buildQuotaStatus = (overrides: Partial<QuotaStatus> = {}): QuotaStatus => 
   canAnalyze: true,
   canExplore: true,
   usage: {
-    analysisCount: 0,
-    analysisLimit: 3,
-    explorationCount: 0,
-    explorationLimit: 1,
+    analysis: { used: 0, limit: 3, remaining: 3 },
+    exploration: { used: 0, limit: 1, remaining: 1 },
+    messages: { used: 0, limit: 20, remaining: 20 },
   },
   reasons: [],
   ...overrides,
@@ -227,10 +226,9 @@ describe('useQuota', () => {
 
     it('provides usage data from quota status', async () => {
       const usage = {
-        analysisCount: 2,
-        analysisLimit: 3,
-        explorationCount: 1,
-        explorationLimit: 1,
+        analysis: { used: 2, limit: 3, remaining: 1 },
+        exploration: { used: 1, limit: 1, remaining: 0 },
+        messages: { used: 0, limit: 20, remaining: 20 },
       };
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ usage }));
 
