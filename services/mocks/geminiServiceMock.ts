@@ -3,19 +3,14 @@
  * Simulates API calls with realistic delays and data
  */
 
-import type { DreamTheme, DreamType } from '@/lib/types';
 import { getRandomImageForTheme } from '@/mock-data/assets';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 
-export type AnalysisResult = {
-  title: string;
-  interpretation: string;
-  shareableQuote: string;
-  theme: DreamTheme;
-  dreamType: DreamType;
-  imagePrompt: string;
-  quotaUsed?: { analysis: number };
-};
+import type { DreamTheme } from '@/lib/types';
+
+import type { AnalysisResult } from '../geminiServiceReal';
+
+export type { AnalysisResult } from '../geminiServiceReal';
 
 /**
  * Simulate network delay
