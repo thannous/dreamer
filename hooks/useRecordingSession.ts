@@ -1,66 +1,14 @@
 import {
     AudioModule,
-    AudioQuality,
-    IOSOutputFormat,
-    RecordingPresets,
     setAudioModeAsync,
     useAudioRecorder,
-    type RecordingOptions,
 } from 'expo-audio';
 import { useCallback, useRef, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
-import { AUDIO_CONFIG, RECORDING } from '@/constants/appConfig';
+import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
-
-const RECORDING_OPTIONS: RecordingOptions = {
-  ...RecordingPresets.HIGH_QUALITY,
-  isMeteringEnabled: false,
-  extension: '.caf',
-  sampleRate: AUDIO_CONFIG.SAMPLE_RATE,
-  numberOfChannels: AUDIO_CONFIG.CHANNELS,
-  bitRate: AUDIO_CONFIG.BIT_RATE,
-  android: {
-    ...RecordingPresets.HIGH_QUALITY.android,
-    extension: '.amr',
-    outputFormat: 'amrwb',
-    audioEncoder: 'amr_wb',
-    sampleRate: AUDIO_CONFIG.SAMPLE_RATE,
-  },
-  ios: {
-    ...RecordingPresets.HIGH_QUALITY.ios,
-    extension: '.caf',
-    outputFormat: IOSOutputFormat.LINEARPCM,
-    audioQuality: AudioQuality.MEDIUM,
-    sampleRate: AUDIO_CONFIG.SAMPLE_RATE,
-    linearPCMBitDepth: 16,
-    linearPCMIsBigEndian: false,
-    linearPCMIsFloat: false,
-  },
-  web: {
-    mimeType: 'audio/webm',
-    bitsPerSecond: Math.max(AUDIO_CONFIG.BIT_RATE, AUDIO_CONFIG.WEB_MIN_BIT_RATE),
-  },
-};
-
-const isRecorderReleasedError = (error: unknown): error is Error => {
-  return (
-    error instanceof Error &&
-    typeof error.message === 'string' &&
-    error.message.toLowerCase().includes(RECORDING.RELEASE_ERROR_SNIPPET)
-  );
-};
-
-const handleRecorderReleaseError = (context: string, error: unknown): boolean => {
-  if (isRecorderReleasedError(error)) {
-    if (__DEV__) {
-      console.warn(`[Recording] AudioRecorder already released during ${context}.`, error);
-    }
-    return true;
-  }
-  return false;
-};
 
 export interface RecordingSessionResult {
   transcript: string;
