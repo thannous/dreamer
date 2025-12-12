@@ -7,9 +7,10 @@
 // Import both implementations
 import * as mockService from './mocks/storageServiceMock';
 import * as realService from './storageServiceReal';
+import { isMockModeEnabled } from '@/lib/env';
 
 // Select which implementation to use based on environment
-const isMockMode = process.env.EXPO_PUBLIC_MOCK_MODE === 'true';
+const isMockMode = isMockModeEnabled();
 const service = isMockMode ? mockService : realService;
 
 if (__DEV__) {

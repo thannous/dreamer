@@ -1,12 +1,13 @@
 import type { User } from '@supabase/supabase-js';
 
 import * as mockAuth from './mockAuth';
+import { isMockModeEnabled } from './env';
 import { supabase } from './supabase';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
 
-const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+const isMockMode = isMockModeEnabled();
 const EMAIL_REDIRECT_WEB = 'https://noctalia.app/auth/callback';
 
 /**

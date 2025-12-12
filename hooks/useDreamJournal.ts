@@ -13,6 +13,7 @@ import { useCallback, useMemo } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { isMockModeEnabled } from '@/lib/env';
 import {
   generateMutationId,
   generateUUID,
@@ -46,8 +47,7 @@ import { useOfflineSyncQueue } from './useOfflineSyncQueue';
 export const useDreamJournal = () => {
   const { user } = useAuth();
   const isAuthenticated = Boolean(user);
-  const isMockMode =
-    ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+  const isMockMode = isMockModeEnabled();
   const canUseRemoteSync = isAuthenticated && !isMockMode;
 
   const networkState = useNetworkState();

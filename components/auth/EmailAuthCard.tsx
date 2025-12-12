@@ -30,11 +30,11 @@ import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
 import { requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 6;
-const isMockModeEnabled =
-  ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+const isMockModeEnabled = isMockModeEnabledEnv();
 const VERIFICATION_POLL_INTERVAL_MS = 15000;
 const RESEND_COOLDOWN_MS = 60000;
 

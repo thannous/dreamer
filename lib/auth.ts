@@ -3,11 +3,12 @@ import { Platform } from 'react-native';
 
 import { supabase } from './supabase';
 import * as mockAuth from './mockAuth';
+import { isMockModeEnabled } from './env';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
 
-const isMockMode = ((process?.env as Record<string, string> | undefined)?.EXPO_PUBLIC_MOCK_MODE ?? '') === 'true';
+const isMockMode = isMockModeEnabled();
 type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
 
 let googleSignInModule: Promise<GoogleSignInModule> | null = null;
