@@ -3,6 +3,30 @@ import Constants from 'expo-constants';
 import { getAccessToken } from './auth';
 import { classifyError, ErrorType } from './errors';
 
+export class HttpError<TBody = unknown> extends Error {
+  public readonly name = 'HttpError';
+  public readonly status: number;
+  public readonly statusText: string;
+  public readonly url: string;
+  public readonly bodyText: string;
+  public readonly body?: TBody;
+
+  constructor(options: {
+    status: number;
+    statusText: string;
+    url: string;
+    bodyText: string;
+    body?: TBody;
+  }) {
+    super(`HTTP ${options.status} ${options.statusText}: ${options.bodyText}`);
+    this.status = options.status;
+    this.statusText = options.statusText;
+    this.url = options.url;
+    this.bodyText = options.bodyText;
+    this.body = options.body;
+  }
+}
+
 export type HttpOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   headers?: Record<string, string>;
@@ -156,8 +180,23 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
       signal: controller.signal,
     } as RequestInit);
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      throw new Error(`HTTP ${res.status} ${res.statusText}: ${text}`);
+      const bodyText = await res.text().catch(() => '');
+      let body: unknown = undefined;
+      const trimmed = bodyText.trim();
+      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+        try {
+          body = JSON.parse(trimmed);
+        } catch {
+          body = undefined;
+        }
+      }
+      throw new HttpError({
+        status: res.status,
+        statusText: res.statusText,
+        url,
+        bodyText,
+        body,
+      });
     }
     const json = (await res.json()) as T;
     return json;

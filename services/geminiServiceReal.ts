@@ -7,7 +7,8 @@
 // - POST /tts { text } -> { audioBase64: string }
 
 import { getApiBaseUrl } from '@/lib/config';
-import { fetchJSON } from '@/lib/http';
+import { fetchJSON, HttpError } from '@/lib/http';
+import { classifyImageError, type ImageGenerationErrorResponse } from '@/lib/errors';
 import type { DreamTheme, DreamType } from '@/lib/types';
 
 export type AnalysisResult = {
@@ -118,26 +119,71 @@ export async function analyzeDreamWithImageResilient(
 
 export async function generateImageForDream(prompt: string, previousImageUrl?: string): Promise<string> {
   const base = getApiBaseUrl();
-  const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImage`, {
-    method: 'POST',
-    body: { prompt, previousImageUrl },
-  });
-  if (res.imageUrl) return res.imageUrl;
-  if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
-  throw new Error('Invalid image response from backend');
+  try {
+    const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImage`, {
+      method: 'POST',
+      body: { prompt, previousImageUrl },
+      timeoutMs: 60000,
+      retries: 2,
+      retryDelay: 1200,
+    });
+    if (res.imageUrl) return res.imageUrl;
+    if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
+    throw new Error('Invalid image response from backend');
+  } catch (error) {
+    if (error instanceof HttpError && error.body && typeof error.body === 'object' && error.body !== null) {
+      const body = error.body as Partial<ImageGenerationErrorResponse>;
+      if (typeof body.error === 'string') {
+        if (__DEV__) {
+          console.warn('[geminiService] generateImageForDream failed', {
+            status: error.status,
+            blockReason: body.blockReason ?? null,
+            finishReason: body.finishReason ?? null,
+            retryAttempts: body.retryAttempts ?? null,
+            isTransient: body.isTransient ?? null,
+          });
+        }
+        const classified = classifyImageError(body as ImageGenerationErrorResponse);
+        throw new Error(classified.userMessage);
+      }
+    }
+    throw error;
+  }
 }
 
 export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
   const base = getApiBaseUrl();
-  const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
-    method: 'POST',
-    // Backend expects a prompt; include transcript for backward compatibility.
-    body: { prompt: transcript, transcript, previousImageUrl },
-    timeoutMs: 60000, // Image generation can take time
-  });
-  if (res.imageUrl) return res.imageUrl;
-  if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
-  throw new Error('Invalid image response from backend');
+  try {
+    const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
+      method: 'POST',
+      // Let the backend generate a short image prompt from the transcript.
+      body: { transcript, previousImageUrl },
+      timeoutMs: 60000, // Image generation can take time
+      retries: 2,
+      retryDelay: 1200,
+    });
+    if (res.imageUrl) return res.imageUrl;
+    if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
+    throw new Error('Invalid image response from backend');
+  } catch (error) {
+    if (error instanceof HttpError && error.body && typeof error.body === 'object' && error.body !== null) {
+      const body = error.body as Partial<ImageGenerationErrorResponse>;
+      if (typeof body.error === 'string') {
+        if (__DEV__) {
+          console.warn('[geminiService] generateImageFromTranscript failed', {
+            status: error.status,
+            blockReason: body.blockReason ?? null,
+            finishReason: body.finishReason ?? null,
+            retryAttempts: body.retryAttempts ?? null,
+            isTransient: body.isTransient ?? null,
+          });
+        }
+        const classified = classifyImageError(body as ImageGenerationErrorResponse);
+        throw new Error(classified.userMessage);
+      }
+    }
+    throw error;
+  }
 }
 
 export async function startOrContinueChat(
