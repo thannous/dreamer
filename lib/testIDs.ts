@@ -86,6 +86,9 @@ export const TID = {
     QuotaLimit: 'sheet.quotaLimit',
     AnalysisNotice: 'sheet.analysisNotice',
   },
+  BottomSheet: {
+    PaywallError: 'bottomSheet.paywall.error',
+  },
   Chat: {
     Input: 'chat.input.message',
     Send: 'chat.button.send',

@@ -20,22 +20,58 @@ type RevenueCatError = Error & {
 function isUserCancelledError(e: unknown): boolean {
   if (typeof e !== 'object' || e === null) return false;
   const error = e as RevenueCatError;
-  // RevenueCat sets userCancelled flag or uses PURCHASE_CANCELLED_ERROR code
+
+  if (__DEV__) {
+    console.log('[useSubscription] isUserCancelledError checking:', {
+      userCancelled: error.userCancelled,
+      code: error.code,
+      message: error.message?.substring(0, 100),
+    });
+  }
+
+  // RevenueCat sets userCancelled flag or uses various cancellation codes
   if (error.userCancelled === true) return true;
   if (error.code === 'PURCHASE_CANCELLED_ERROR') return true;
+  if (error.code === 'PurchaseCancelledError') return true;
+  if (error.code === 'USER_CANCELED') return true;
   // Some versions use numeric code 1; coerce strings to cover both
   const numericCode = typeof error.code === 'string' ? Number.parseInt(error.code, 10) : error.code;
   if (numericCode === 1) return true;
+
   return false;
 }
 
 function formatError(e: unknown): Error {
   if (e instanceof Error) {
-    // RevenueCat errors often have a 'code' or 'userInfo' property, but we'll keep it simple for now
-    // and just ensure we have a readable message.
-    if (e.message.includes('Purchases not initialized')) {
+    const msg = e.message.toLowerCase();
+
+    // Erreur réseau
+    if (msg.includes('network_error') || msg.includes('networkerror')) {
+      return new Error('Erreur de connexion. Vérifiez votre connexion internet et réessayez.');
+    }
+
+    // Produit non disponible (ITEM_UNAVAILABLE) - erreur Play Store
+    if (msg.includes('item_unavailable') ||
+        msg.includes('productnotavailableforpurchase')) {
+      return new Error('Cet abonnement n\'est pas disponible sur votre appareil.');
+    }
+
+    // Échec de connexion au store
+    if (msg.includes('billing_unavailable') ||
+        msg.includes('service_unavailable')) {
+      return new Error('Le service de paiement est temporairement indisponible.');
+    }
+
+    // Erreur générique d'achat
+    if (msg.includes('purchaseerror') && !msg.includes('cancelled')) {
+      return new Error('L\'achat a échoué. Veuillez réessayer.');
+    }
+
+    // SDK non initialisé
+    if (msg.includes('purchases not initialized')) {
       return new Error('Service des achats non initialisé. Veuillez redémarrer l\'application.');
     }
+
     return e;
   }
   return new Error('Une erreur inconnue est survenue.');
@@ -120,9 +156,20 @@ export function useSubscription() {
       await syncTier(nextStatus);
       return nextStatus;
     } catch (e) {
+      const isCancelled = isUserCancelledError(e);
+      if (__DEV__) {
+        console.log('[useSubscription] purchase error caught:', {
+          isCancelled,
+          error: e,
+        });
+      }
       // Don't show error if user simply cancelled the purchase
-      if (!isUserCancelledError(e)) {
-        setError(formatError(e));
+      if (!isCancelled) {
+        const formattedError = formatError(e);
+        if (__DEV__) {
+          console.log('[useSubscription] setting error state:', formattedError.message);
+        }
+        setError(formattedError);
       }
       throw e;
     } finally {
