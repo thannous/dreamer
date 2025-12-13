@@ -15,6 +15,7 @@ export type NativeSpeechSession = {
 export const END_TIMEOUT_MS = 4000;
 
 const normalizeLocale = (locale: string) => locale.replace('_', '-').toLowerCase();
+const CHATGPT_RECOGNITION_SERVICE = 'com.openai.chatgpt';
 
 const hasWebSpeechAPI = (): boolean => {
   return typeof window !== 'undefined' &&
@@ -25,6 +26,69 @@ const hasWebSpeechAPI = (): boolean => {
 let cachedSpeechModule: ExpoSpeechRecognitionModuleType | null | undefined;
 
 const normalizeChunk = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+function resolveAndroidRecognitionServiceOverride(
+  speechModule: ExpoSpeechRecognitionModuleType
+): string | undefined {
+  if (Platform.OS !== 'android') return undefined;
+
+  try {
+    const defaultService = speechModule.getDefaultRecognitionService?.()?.packageName ?? '';
+    const isChatGptDefault = Boolean(defaultService) && defaultService === CHATGPT_RECOGNITION_SERVICE;
+
+    const available = speechModule.getSpeechRecognitionServices?.() ?? [];
+    const candidates = available.filter((pkg) => pkg && pkg !== CHATGPT_RECOGNITION_SERVICE);
+
+    const preferred =
+      candidates.find((pkg) => pkg === 'com.google.android.as') ??
+      candidates.find((pkg) => pkg === 'com.google.android.googlequicksearchbox') ??
+      candidates[0];
+
+    // Only force a service when Android is configured to route recognition to ChatGPT,
+    // which can rate-limit aggressively and break language switching.
+    if (isChatGptDefault) {
+      if (__DEV__) {
+        console.log('[nativeSpeech] overriding Android recognition service', {
+          defaultService,
+          preferred,
+          available,
+        });
+      }
+      return preferred;
+    }
+
+    return undefined;
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[nativeSpeech] failed to resolve Android recognition service override', error);
+    }
+    return undefined;
+  }
+}
+
+async function ensureSpeechModuleInactive(speechModule: ExpoSpeechRecognitionModuleType): Promise<void> {
+  if (!speechModule.getStateAsync) return;
+
+  try {
+    const state = await speechModule.getStateAsync();
+    if (state === 'inactive') return;
+
+    try {
+      speechModule.abort();
+    } catch {
+      /* no-op */
+    }
+
+    const startTime = Date.now();
+    while (Date.now() - startTime < 600) {
+      const next = await speechModule.getStateAsync();
+      if (next === 'inactive') return;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+  } catch {
+    /* no-op */
+  }
+}
 
 /**
  * Merge the latest final transcript chunk while avoiding duplicate concatenation.
@@ -118,7 +182,8 @@ const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModul
 
 async function shouldRequireOnDeviceRecognition(
   speechModule: ExpoSpeechRecognitionModuleType,
-  languageCode: string
+  languageCode: string,
+  androidRecognitionServicePackage?: string
 ): Promise<boolean> {
   if (Platform.OS === 'web') {
     if (__DEV__) {
@@ -132,7 +197,7 @@ async function shouldRequireOnDeviceRecognition(
   }
 
   try {
-    const supportedLocales = await speechModule.getSupportedLocales?.({});
+    const supportedLocales = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
     const installedLocales = supportedLocales?.installedLocales ?? [];
 
     if (!installedLocales.length) {
@@ -144,7 +209,7 @@ async function shouldRequireOnDeviceRecognition(
 
     const normalizedLanguage = normalizeLocale(languageCode);
     if (__DEV__) {
-      console.log('[nativeSpeech] installedLocales', installedLocales);
+      console.log('[nativeSpeech] installedLocales', { androidRecognitionServicePackage, installedLocales });
     }
     return installedLocales.some((locale) => normalizeLocale(locale) === normalizedLanguage);
   } catch (error) {
@@ -187,6 +252,28 @@ export async function startNativeSpeechSession(
       }
       return null;
     }
+
+    const androidRecognitionServicePackage = resolveAndroidRecognitionServiceOverride(speechModule);
+    const requiresOnDeviceRecognition = await shouldRequireOnDeviceRecognition(
+      speechModule,
+      languageCode,
+      androidRecognitionServicePackage
+    );
+    const supportsRecording = speechModule.supportsRecording?.() ?? false;
+    if (__DEV__) {
+      const service = speechModule.getDefaultRecognitionService?.();
+      const supportsOnDevice = speechModule.supportsOnDeviceRecognition?.();
+      console.log('[nativeSpeech] start', {
+        languageCode,
+        service,
+        androidRecognitionServicePackage,
+        supportsOnDevice,
+        requiresOnDeviceRecognition,
+        supportsRecording,
+      });
+    }
+
+    await ensureSpeechModuleInactive(speechModule);
 
     let ended = false;
     let lastPartial = '';
@@ -255,29 +342,15 @@ export async function startNativeSpeechSession(
       resolveEnd?.();
     });
 
-    const requiresOnDeviceRecognition = await shouldRequireOnDeviceRecognition(speechModule, languageCode);
-    const supportsRecording = speechModule.supportsRecording?.() ?? false;
-    if (__DEV__) {
-      const service = speechModule.getDefaultRecognitionService?.();
-      const supportsOnDevice = speechModule.supportsOnDeviceRecognition?.();
-      console.log('[nativeSpeech] start', {
-        languageCode,
-        service,
-        supportsOnDevice,
-        requiresOnDeviceRecognition,
-        supportsRecording,
-      });
-    }
-
     speechModule.start({
       lang: languageCode,
       interimResults: true,
       addsPunctuation: true,
       // On web keep the session alive longer; native ignores/handles as supported.
       // This prevents premature stop before the user speaks.
-       
       continuous: Platform.OS === 'web',
       requiresOnDeviceRecognition,
+      androidRecognitionServicePackage,
       recordingOptions: supportsRecording
         ? {
             persist: true,

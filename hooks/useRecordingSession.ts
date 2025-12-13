@@ -113,7 +113,6 @@ export function useRecordingSession({
   const stopRecording = useCallback(async (): Promise<RecordingSessionResult> => {
     let nativeSession: NativeSpeechSession | null = null;
     let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }> | null = null;
-    let nativeError: string | undefined;
 
     try {
       setIsRecording(false);
@@ -149,7 +148,6 @@ export function useRecordingSession({
           if (!transcriptText && nativeResult.error && __DEV__) {
             console.warn('[Recording] Native STT returned empty result', nativeResult.error);
           }
-          nativeError = nativeResult.error;
         } catch (error) {
           if (__DEV__) {
             console.warn('[Recording] Native STT failed', error);
@@ -159,10 +157,8 @@ export function useRecordingSession({
         console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
       }
 
-      const shouldFallbackToGoogle =
-        !transcriptText &&
-        (uri || recordedUri) &&
-        !(nativeError && nativeError.toLowerCase().includes('no speech'));
+      const hasNativeSession = Boolean(nativeResultPromise);
+      const shouldFallbackToGoogle = !hasNativeSession && !transcriptText && (uri || recordedUri);
 
       if (shouldFallbackToGoogle) {
         try {
@@ -186,7 +182,7 @@ export function useRecordingSession({
       return {
         transcript: transcriptText,
         recordedUri: recordedUri ?? uri,
-        error: !transcriptText && !uri ? 'no_recording' : undefined,
+        error: !transcriptText && !uri && !hasNativeSession ? 'no_recording' : undefined,
       };
     } catch (err) {
       if (handleRecorderError('stopRecording', err)) {
@@ -238,7 +234,7 @@ export function useRecordingSession({
         });
 
         const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
-        skipRecorderRef.current = Platform.OS !== 'web' && Boolean(nativeSessionRef.current) && canPersistAudio;
+        skipRecorderRef.current = Boolean(nativeSessionRef.current);
 
         if (__DEV__) {
           if (!nativeSessionRef.current && Platform.OS === 'web') {
