@@ -14,6 +14,7 @@ DECLARE
   lock_key text;
   exploration_limit integer;
   analysis_limit integer;
+  occurred_at timestamptz;
 BEGIN
   -- Only enforce for authenticated users
   IF NEW.user_id IS NULL THEN
@@ -36,15 +37,16 @@ BEGIN
     tier := 'free';
   END IF;
 
-  -- Monthly period in UTC
-  period_start := (date_trunc('month', now() at time zone 'utc') at time zone 'utc');
-  period_end := ((date_trunc('month', now() at time zone 'utc') + interval '1 month') at time zone 'utc');
-
   -- Enforce exploration quota on transition NULL -> NOT NULL
   IF (
     (TG_OP = 'INSERT' AND NEW.exploration_started_at IS NOT NULL)
     OR (TG_OP = 'UPDATE' AND OLD.exploration_started_at IS NULL AND NEW.exploration_started_at IS NOT NULL)
   ) THEN
+    occurred_at := COALESCE(NEW.exploration_started_at, now());
+    -- Monthly period in UTC based on when the exploration occurred
+    period_start := (date_trunc('month', occurred_at at time zone 'utc') at time zone 'utc');
+    period_end := ((date_trunc('month', occurred_at at time zone 'utc') + interval '1 month') at time zone 'utc');
+
     SELECT q.quota_limit
     INTO exploration_limit
     FROM public.quota_limits q
@@ -72,9 +74,6 @@ BEGIN
         RAISE EXCEPTION 'QUOTA_EXPLORATION_LIMIT_REACHED' USING ERRCODE = 'P0001';
       END IF;
     END IF;
-
-    -- Normalize timestamp to server time to avoid backdating.
-    NEW.exploration_started_at := now();
   END IF;
 
   -- Enforce analysis quota on transition FALSE/NULL -> TRUE
@@ -82,6 +81,11 @@ BEGIN
     (TG_OP = 'INSERT' AND NEW.is_analyzed IS TRUE)
     OR (TG_OP = 'UPDATE' AND COALESCE(OLD.is_analyzed, false) IS FALSE AND NEW.is_analyzed IS TRUE)
   ) THEN
+    occurred_at := COALESCE(NEW.analyzed_at, now());
+    -- Monthly period in UTC based on when the analysis occurred
+    period_start := (date_trunc('month', occurred_at at time zone 'utc') at time zone 'utc');
+    period_end := ((date_trunc('month', occurred_at at time zone 'utc') + interval '1 month') at time zone 'utc');
+
     SELECT q.quota_limit
     INTO analysis_limit
     FROM public.quota_limits q
@@ -109,12 +113,8 @@ BEGIN
         RAISE EXCEPTION 'QUOTA_ANALYSIS_LIMIT_REACHED' USING ERRCODE = 'P0001';
       END IF;
     END IF;
-
-    -- Normalize timestamp to server time to avoid backdating.
-    NEW.analyzed_at := now();
   END IF;
 
   RETURN NEW;
 END;
 $$;
-

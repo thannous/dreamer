@@ -1,7 +1,7 @@
 -- Enforce monthly quotas for authenticated users at the database level.
 -- Prevents race conditions, stale caches, and client-side bypasses.
 
--- 1) Log quota events using server time (avoid client backdating).
+-- 1) Log quota events using dream timestamps (fallback to server time).
 CREATE OR REPLACE FUNCTION public.log_user_quota_event()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -17,7 +17,7 @@ BEGIN
   -- Record analysis usage: one event per (user, dream)
   IF NEW.is_analyzed IS TRUE THEN
     INSERT INTO public.user_quota_events (user_id, dream_id, quota_type, occurred_at)
-    SELECT NEW.user_id, NEW.id, 'analysis', now()
+    SELECT NEW.user_id, NEW.id, 'analysis', COALESCE(NEW.analyzed_at, now())
     WHERE NOT EXISTS (
       SELECT 1
       FROM public.user_quota_events e
@@ -30,7 +30,7 @@ BEGIN
   -- Record exploration usage: one event per (user, dream)
   IF NEW.exploration_started_at IS NOT NULL THEN
     INSERT INTO public.user_quota_events (user_id, dream_id, quota_type, occurred_at)
-    SELECT NEW.user_id, NEW.id, 'exploration', now()
+    SELECT NEW.user_id, NEW.id, 'exploration', COALESCE(NEW.exploration_started_at, now())
     WHERE NOT EXISTS (
       SELECT 1
       FROM public.user_quota_events e
@@ -57,6 +57,7 @@ DECLARE
   period_end timestamptz;
   used_count integer;
   lock_key text;
+  occurred_at timestamptz;
 BEGIN
   -- Only enforce for authenticated users
   IF NEW.user_id IS NULL THEN
@@ -79,15 +80,16 @@ BEGIN
     tier := 'free';
   END IF;
 
-  -- Monthly period in UTC
-  period_start := (date_trunc('month', now() at time zone 'utc') at time zone 'utc');
-  period_end := ((date_trunc('month', now() at time zone 'utc') + interval '1 month') at time zone 'utc');
-
   -- Enforce exploration quota on transition NULL -> NOT NULL
   IF (
     (TG_OP = 'INSERT' AND NEW.exploration_started_at IS NOT NULL)
     OR (TG_OP = 'UPDATE' AND OLD.exploration_started_at IS NULL AND NEW.exploration_started_at IS NOT NULL)
   ) THEN
+    occurred_at := COALESCE(NEW.exploration_started_at, now());
+    -- Monthly period in UTC based on when the exploration occurred
+    period_start := (date_trunc('month', occurred_at at time zone 'utc') at time zone 'utc');
+    period_end := ((date_trunc('month', occurred_at at time zone 'utc') + interval '1 month') at time zone 'utc');
+
     lock_key := format('quota:exploration:%s:%s', NEW.user_id::text, to_char(period_start, 'YYYY-MM'));
     PERFORM pg_advisory_xact_lock(hashtextextended(lock_key, 0));
 
@@ -102,9 +104,6 @@ BEGIN
     IF used_count >= 2 THEN
       RAISE EXCEPTION 'QUOTA_EXPLORATION_LIMIT_REACHED' USING ERRCODE = 'P0001';
     END IF;
-
-    -- Normalize timestamp to server time to avoid backdating.
-    NEW.exploration_started_at := now();
   END IF;
 
   -- Enforce analysis quota on transition FALSE/NULL -> TRUE
@@ -112,6 +111,11 @@ BEGIN
     (TG_OP = 'INSERT' AND NEW.is_analyzed IS TRUE)
     OR (TG_OP = 'UPDATE' AND COALESCE(OLD.is_analyzed, false) IS FALSE AND NEW.is_analyzed IS TRUE)
   ) THEN
+    occurred_at := COALESCE(NEW.analyzed_at, now());
+    -- Monthly period in UTC based on when the analysis occurred
+    period_start := (date_trunc('month', occurred_at at time zone 'utc') at time zone 'utc');
+    period_end := ((date_trunc('month', occurred_at at time zone 'utc') + interval '1 month') at time zone 'utc');
+
     lock_key := format('quota:analysis:%s:%s', NEW.user_id::text, to_char(period_start, 'YYYY-MM'));
     PERFORM pg_advisory_xact_lock(hashtextextended(lock_key, 0));
 
@@ -126,9 +130,6 @@ BEGIN
     IF used_count >= 3 THEN
       RAISE EXCEPTION 'QUOTA_ANALYSIS_LIMIT_REACHED' USING ERRCODE = 'P0001';
     END IF;
-
-    -- Normalize timestamp to server time to avoid backdating.
-    NEW.analyzed_at := now();
   END IF;
 
   RETURN NEW;
