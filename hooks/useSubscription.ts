@@ -45,36 +45,36 @@ function formatError(e: unknown): Error {
   if (e instanceof Error) {
     const msg = e.message.toLowerCase();
 
-    // Erreur réseau
+    // Network error
     if (msg.includes('network_error') || msg.includes('networkerror')) {
-      return new Error('Erreur de connexion. Vérifiez votre connexion internet et réessayez.');
+      return new Error('subscription.error.network');
     }
 
-    // Produit non disponible (ITEM_UNAVAILABLE) - erreur Play Store
+    // Product not available (ITEM_UNAVAILABLE) - Play Store error
     if (msg.includes('item_unavailable') ||
         msg.includes('productnotavailableforpurchase')) {
-      return new Error('Cet abonnement n\'est pas disponible sur votre appareil.');
+      return new Error('subscription.error.item_unavailable');
     }
 
-    // Échec de connexion au store
+    // Store/billing not available
     if (msg.includes('billing_unavailable') ||
         msg.includes('service_unavailable')) {
-      return new Error('Le service de paiement est temporairement indisponible.');
+      return new Error('subscription.error.store_unavailable');
     }
 
-    // Erreur générique d'achat
+    // Generic purchase error
     if (msg.includes('purchaseerror') && !msg.includes('cancelled')) {
-      return new Error('L\'achat a échoué. Veuillez réessayer.');
+      return new Error('subscription.error.purchase_failed');
     }
 
-    // SDK non initialisé
+    // SDK not initialized
     if (msg.includes('purchases not initialized')) {
-      return new Error('Service des achats non initialisé. Veuillez redémarrer l\'application.');
+      return new Error('subscription.error.not_initialized');
     }
 
     return e;
   }
-  return new Error('Une erreur inconnue est survenue.');
+  return new Error('subscription.error.unknown');
 }
 
 export function useSubscription() {

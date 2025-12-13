@@ -10,7 +10,12 @@
  */
 
 import { Fonts } from '@/constants/theme';
-import { MessageContextProvider, useComposerHeightContext, useNewMessageAnimationContext } from '@/context/ChatContext';
+import {
+  MessageContextProvider,
+  useComposerHeightContext,
+  useMessageListContext,
+  useNewMessageAnimationContext,
+} from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
   useAutoScrollOnNewMessage,
@@ -292,9 +297,12 @@ export function MessagesList({
 
   const { animatedProps, ref, onContentSizeChange, onScroll } = useMessageListProps();
   const { isStreaming, hasAnimatedMessages } = useNewMessageAnimationContext();
+  const { isNearBottom } = useMessageListContext();
   const { colors } = useTheme();
   const scrollViewRef = useRef<Animated.ScrollView | null>(null);
   const [isStreamingSnapshot, setIsStreamingSnapshot] = useState(false);
+  const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
 
   // Sync shared value to JS state to avoid reading .value during render
   useEffect(() => {
@@ -310,20 +318,45 @@ export function MessagesList({
     [isStreaming]
   );
 
+  // Avoid running "new message" animations for existing history.
+  // Without this, older messages can be treated as "new" the first time they scroll into view.
+  useEffect(() => {
+    if (!didInitialHydrate) return;
+    for (let index = 0; index < messages.length; index++) {
+      hasAnimatedMessages.current.add(`${messages[index].role}-${index}`);
+    }
+  }, [didInitialHydrate, hasAnimatedMessages, messages]);
+
+  // Sync isNearBottom to JS so we can disable expensive behaviors when the user is reading history.
+  useEffect(() => {
+    setIsNearBottomSnapshot(isNearBottom.value.value);
+  }, [isNearBottom]);
+
+  useAnimatedReaction(
+    () => isNearBottom.value.value,
+    (current, prev) => {
+      if (current === prev) return;
+      runOnJS(setIsNearBottomSnapshot)(current);
+    },
+    [isNearBottom]
+  );
+
   // Render individual message with context
   const renderItem = useCallback(
     ({ item, index }: { item: ChatMessage; index: number }) => {
       const messageId = `${item.role}-${index}`;
-      const isNew = !hasAnimatedMessages.current.has(messageId);
+      const isNew = !didInitialHydrate && !hasAnimatedMessages.current.has(messageId);
       const isStreamingMessage =
         isStreamingSnapshot && index === messages.length - 1 && item.role === 'model';
+      const allowHandwrite = isNearBottomSnapshot && !isUserScrolling;
       const hasAnimatedHandwriting = handwritingAnimatedMessages.current.has(messageId);
-      let shouldHandwrite = hasAnimatedHandwriting;
+      let shouldHandwrite = hasAnimatedHandwriting && allowHandwrite;
 
       if (
         !hasAnimatedHandwriting &&
         canHandwriteNewAiMessage &&
         isNew &&
+        allowHandwrite &&
         item.role === 'model' &&
         index === messages.length - 1
       ) {
@@ -356,13 +389,21 @@ export function MessagesList({
         </MessageContextProvider>
       );
     },
-    [canHandwriteNewAiMessage, messages.length, isStreamingSnapshot, hasAnimatedMessages]
+    [
+      canHandwriteNewAiMessage,
+      didInitialHydrate,
+      hasAnimatedMessages,
+      isNearBottomSnapshot,
+      isStreamingSnapshot,
+      isUserScrolling,
+      messages.length,
+    ]
   );
 
   const keyExtractor = useCallback((item: ChatMessage, index: number) => `${item.role}-${index}`, []);
 
-  // Prepare data with loading indicator
-  const listData = [...messages];
+  // Avoid copying data on every render (can trigger extra list work)
+  const listData = messages;
 
   const loadingAccessibility = isLoading
     ? { accessibilityState: { busy: true }, accessibilityLabel: loadingText }
@@ -390,6 +431,10 @@ export function MessagesList({
         keyExtractor={keyExtractor}
         onContentSizeChange={onContentSizeChange}
         onScroll={onScroll}
+        onScrollBeginDrag={() => setIsUserScrolling(true)}
+        onScrollEndDrag={() => setIsUserScrolling(false)}
+        onMomentumScrollBegin={() => setIsUserScrolling(true)}
+        onMomentumScrollEnd={() => setIsUserScrolling(false)}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
@@ -399,11 +444,15 @@ export function MessagesList({
         // Enable maintainScrollAtEnd for chat-style auto-scroll behavior
         // This keeps the list anchored at the bottom when new messages arrive
         // if the user is already near the bottom (threshold ~10% from end)
-        maintainScrollAtEnd={{
-          onLayout: true,
-          onItemLayout: true,
-          onDataChange: true,
-        }}
+        maintainScrollAtEnd={
+          isNearBottomSnapshot
+            ? {
+                onLayout: true,
+                onItemLayout: true,
+                onDataChange: true,
+              }
+            : undefined
+        }
         maintainScrollAtEndThreshold={0.1}
         ListHeaderComponent={ListHeaderComponent ?? null}
         ListFooterComponent={footerComponent}

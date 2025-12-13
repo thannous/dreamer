@@ -108,7 +108,7 @@ describe('useSubscription', () => {
 
       // Then
       expect(result.current.loading).toBe(false);
-      expect(result.current.error?.message).toBe('Service des achats non initialisé. Veuillez redémarrer l\'application.');
+      expect(result.current.error?.message).toBe('subscription.error.not_initialized');
     });
   });
 
@@ -157,7 +157,7 @@ describe('useSubscription', () => {
       });
 
       // Then
-      expect(result.current.error?.message).toBe('Service des achats non initialisé. Veuillez redémarrer l\'application.');
+      expect(result.current.error?.message).toBe('subscription.error.not_initialized');
     });
   });
 
@@ -206,7 +206,7 @@ describe('useSubscription', () => {
       });
 
       // Then
-      expect(result.current.error?.message).toBe('Service des achats non initialisé. Veuillez redémarrer l\'application.');
+      expect(result.current.error?.message).toBe('subscription.error.not_initialized');
     });
   });
 
