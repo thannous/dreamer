@@ -60,7 +60,7 @@ async function generateImageFromPrompt(options: {
   model: string;
   apiBase?: string;
   aspectRatio?: string;
-}): Promise<{ imageBase64?: string; raw: any }> {
+}): Promise<{ imageBase64?: string; raw: any; retryAttempts?: number }> {
   const { prompt, apiKey, model, apiBase = 'https://generativelanguage.googleapis.com' } = options;
   const headers = {
     'Content-Type': 'application/json',
@@ -109,56 +109,64 @@ async function generateImageFromPrompt(options: {
     return (await res.json()) as any;
   };
 
-  const firstJson = await requestOnce();
-  const firstImage = extractInlineData(firstJson);
-  if (firstImage) return { imageBase64: firstImage, raw: firstJson };
+  // Retry configuration with exponential backoff
+  const MAX_RETRIES = 3;
+  const BASE_DELAY_MS = 500;
+  const attempts: { blockReason: string | null; finishReason: string | null; promptFeedback: any }[] = [];
 
-  const firstBlockReason = getBlockReason(firstJson);
-  const firstFinishReason = firstJson?.candidates?.[0]?.finishReason ?? null;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const json = await requestOnce();
+    const image = extractInlineData(json);
+    if (image) {
+      if (attempt > 1) {
+        console.log(`[api] Gemini image succeeded on attempt ${attempt}/${MAX_RETRIES}`);
+      }
+      return { imageBase64: image, raw: json, retryAttempts: attempt };
+    }
 
-  // When Gemini returns no inlineData without a blockReason, it can be transient.
-  // Do a single retry to reduce spurious failures observed in production.
-  if (!firstBlockReason) {
-    await new Promise((r) => setTimeout(r, 250));
-    const secondJson = await requestOnce();
-    const secondImage = extractInlineData(secondJson);
-    if (secondImage) return { imageBase64: secondImage, raw: secondJson };
+    const blockReason = getBlockReason(json);
+    const finishReason = json?.candidates?.[0]?.finishReason ?? null;
+    const promptFeedback = json?.promptFeedback ?? null;
 
-    const secondBlockReason = getBlockReason(secondJson);
-    const secondFinishReason = secondJson?.candidates?.[0]?.finishReason ?? null;
+    attempts.push({ blockReason, finishReason, promptFeedback });
 
-    console.warn('[api] Gemini image no inlineData returned after retry', {
-      first: {
-        blockReason: firstBlockReason,
-        finishReason: firstFinishReason,
-        promptFeedback: firstJson?.promptFeedback ?? null,
-      },
-      second: {
-        blockReason: secondBlockReason,
-        finishReason: secondFinishReason,
-        promptFeedback: secondJson?.promptFeedback ?? null,
-      },
-    });
+    // If there's a blockReason, the content was explicitly blocked - don't retry
+    if (blockReason) {
+      console.warn(`[api] Gemini image blocked on attempt ${attempt}`, {
+        blockReason,
+        finishReason,
+        promptFeedback,
+      });
+      const err = new Error(`Gemini image error: content blocked (blockReason=${blockReason})`);
+      (err as any).blockReason = blockReason;
+      (err as any).finishReason = finishReason;
+      (err as any).promptFeedback = promptFeedback;
+      (err as any).retryAttempts = attempt;
+      (err as any).isTransient = false;
+      throw err;
+    }
 
-    const err = new Error(
-      `Gemini image error: no inlineData returned${secondBlockReason ? ` (blockReason=${secondBlockReason})` : ''}`
-    );
-    (err as any).blockReason = secondBlockReason ?? null;
-    (err as any).promptFeedback = secondJson?.promptFeedback ?? null;
-    throw err;
+    // Transient failure - retry with exponential backoff + jitter
+    if (attempt < MAX_RETRIES) {
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+      const jitter = Math.random() * 100; // Add 0-100ms jitter
+      console.log(`[api] Gemini image no inlineData on attempt ${attempt}/${MAX_RETRIES}, retrying in ${Math.round(delay + jitter)}ms...`);
+      await new Promise((r) => setTimeout(r, delay + jitter));
+    }
   }
 
-  // Surface more detail for diagnostics when Gemini refuses to return an image
-  console.warn('[api] Gemini image no inlineData returned', {
-    blockReason: firstBlockReason ?? null,
-    finishReason: firstFinishReason,
-    promptFeedback: firstJson?.promptFeedback ?? null,
-  });
+  // All retries exhausted - transient failure
+  const lastAttempt = attempts[attempts.length - 1];
+  console.warn(`[api] Gemini image failed after ${MAX_RETRIES} attempts`, { attempts });
+
   const err = new Error(
-    `Gemini image error: no inlineData returned${firstBlockReason ? ` (blockReason=${firstBlockReason})` : ''}`
+    `Gemini image error: no inlineData returned after ${MAX_RETRIES} attempts${lastAttempt?.finishReason ? ` (finishReason=${lastAttempt.finishReason})` : ''}`
   );
-  (err as any).blockReason = firstBlockReason ?? null;
-  (err as any).promptFeedback = firstJson?.promptFeedback ?? null;
+  (err as any).blockReason = null;
+  (err as any).finishReason = lastAttempt?.finishReason ?? null;
+  (err as any).promptFeedback = lastAttempt?.promptFeedback ?? null;
+  (err as any).retryAttempts = MAX_RETRIES;
+  (err as any).isTransient = true;
   throw err;
 }
 
@@ -975,11 +983,15 @@ serve(async (req: Request) => {
       });
     } catch (e) {
       console.error('[api] /generateImage error', e);
+      const err = e as any;
       return new Response(
         JSON.stringify({
-          error: String((e as Error).message || e),
-          ...(e as any)?.blockReason ? { blockReason: (e as any).blockReason } : {},
-          ...(e as any)?.promptFeedback ? { promptFeedback: (e as any).promptFeedback } : {},
+          error: String(err?.message || e),
+          ...(err?.blockReason != null ? { blockReason: err.blockReason } : {}),
+          ...(err?.finishReason != null ? { finishReason: err.finishReason } : {}),
+          ...(err?.promptFeedback != null ? { promptFeedback: err.promptFeedback } : {}),
+          ...(err?.retryAttempts != null ? { retryAttempts: err.retryAttempts } : {}),
+          ...(err?.isTransient != null ? { isTransient: err.isTransient } : {}),
         }),
         {
           status: 400,
