@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -7,6 +7,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { Toast } from '@/components/Toast';
 import { PricingOption } from '@/components/subscription/PricingOption';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -23,6 +24,17 @@ function sortPackages(packages: PurchasePackage[]): PurchasePackage[] {
   });
 }
 
+function calculateAnnualDiscount(packages: PurchasePackage[]): number | null {
+  const monthly = packages.find((p) => p.interval === 'monthly');
+  const annual = packages.find((p) => p.interval === 'annual');
+  if (!monthly || !annual || monthly.price <= 0 || annual.price <= 0) {
+    return null;
+  }
+  const yearlyFromMonthly = monthly.price * 12;
+  const savings = ((yearlyFromMonthly - annual.price) / yearlyFromMonthly) * 100;
+  return Math.round(savings);
+}
+
 export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -30,8 +42,24 @@ export default function PaywallScreen() {
   const { isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
+  const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const [showErrorSheet, setShowErrorSheet] = useState(false);
+
+  // Afficher la bottom sheet quand une erreur survient
+  useEffect(() => {
+    if (__DEV__) {
+      console.log('[Paywall] error state changed:', error?.message);
+    }
+    if (error) {
+      if (__DEV__) {
+        console.log('[Paywall] showing error bottom sheet');
+      }
+      setShowErrorSheet(true);
+    }
+  }, [error]);
 
   const effectiveSelectedId = selectedId ?? (sortedPackages[0]?.id ?? null);
   const canPurchase =
@@ -113,9 +141,7 @@ export default function PaywallScreen() {
             </Text>
           </View>
         )}
-        {error && (
-          <Text style={[styles.errorText, { color: '#EF4444' }]}>{error.message}</Text>
-        )}
+        {/* Erreurs affichées dans la bottom sheet */}
       </ScreenContainer>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
@@ -152,7 +178,9 @@ export default function PaywallScreen() {
                 )}
                 badge={
                   pkg.interval === 'annual'
-                    ? t('subscription.paywall.option.badge.annual')
+                    ? annualDiscount && annualDiscount > 0
+                      ? `-${annualDiscount}%`
+                      : t('subscription.paywall.option.badge.annual')
                     : undefined
                 }
                 selected={effectiveSelectedId === pkg.id}
@@ -241,6 +269,18 @@ export default function PaywallScreen() {
           testID={TID.Toast.PaywallSuccess}
         />
       ) : null}
+
+      <StandardBottomSheet
+        visible={showErrorSheet}
+        onClose={() => setShowErrorSheet(false)}
+        title={t('subscription.paywall.error.title')}
+        subtitle={error?.message}
+        actions={{
+          primaryLabel: t('subscription.paywall.error.ok'),
+          onPrimary: () => setShowErrorSheet(false),
+        }}
+        testID={TID.BottomSheet.PaywallError}
+      />
     </View>
   );
 }
@@ -286,11 +326,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   loadingLabel: {
-    fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
-  },
-  errorText: {
-    marginTop: 4,
     fontSize: 13,
     fontFamily: 'SpaceGrotesk_400Regular',
   },

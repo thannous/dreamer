@@ -129,6 +129,7 @@ function RootLayoutNav() {
         currentPath?.includes('/settings') ||
         currentPath?.startsWith('/(tabs)/settings') ||
         pathname?.startsWith('/(tabs)/settings');
+      const isInPaywall = currentPath === '/paywall';
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateToRecording', {
@@ -140,6 +141,13 @@ function RootLayoutNav() {
       if (isInSettings) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on settings, skip redirect');
+        }
+        return;
+      }
+
+      if (isInPaywall) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on paywall, skip redirect');
         }
         return;
       }
