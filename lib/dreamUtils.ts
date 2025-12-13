@@ -202,6 +202,8 @@ export function buildDraftDream(
       ? [{ role: 'user', text: `${initialUserMessagePrefix} ${trimmed}` }]
       : [],
     isFavorite: false,
+    // Stable idempotency key so offline retries don't duplicate on reconnect
+    clientRequestId: generateUUID(),
     imageGenerationFailed: false,
     isAnalyzed: false,
     analysisStatus: 'none',
