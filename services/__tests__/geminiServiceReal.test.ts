@@ -11,9 +11,14 @@ vi.mock('../../lib/auth', () => ({
 }));
 
 // Mock errors module
-vi.mock('../../lib/errors', () => ({
-  classifyError: () => ({ type: 'unknown', canRetry: false }),
-}));
+vi.mock('../../lib/errors', async () => {
+  const actual = await vi.importActual<typeof import('../../lib/errors')>('../../lib/errors');
+  return {
+    ...actual,
+    // Keep retries deterministic in these unit tests.
+    classifyError: () => ({ type: 'unknown', canRetry: false }),
+  };
+});
 
 // Mock expo-constants
 vi.mock('expo-constants', () => ({
@@ -379,7 +384,7 @@ describe('geminiServiceReal', () => {
   });
 
   describe('generateImageFromTranscript', () => {
-    it('sends POST to /generateImage with transcript as prompt', async () => {
+    it('sends POST to /generateImage with transcript', async () => {
       (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
         mockFetchResponse({ imageUrl: 'https://gen.img.com/transcript.jpg' })
       );
@@ -390,7 +395,7 @@ describe('geminiServiceReal', () => {
         'https://api.example.com/generateImage',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ prompt: 'I dreamed of flying', transcript: 'I dreamed of flying' }),
+          body: JSON.stringify({ transcript: 'I dreamed of flying' }),
         })
       );
       expect(result).toBe('https://gen.img.com/transcript.jpg');
@@ -406,7 +411,7 @@ describe('geminiServiceReal', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ prompt: 'new dream', transcript: 'new dream', previousImageUrl: 'https://prev.img.com' }),
+          body: JSON.stringify({ transcript: 'new dream', previousImageUrl: 'https://prev.img.com' }),
         })
       );
     });

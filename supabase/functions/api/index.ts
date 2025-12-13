@@ -104,7 +104,12 @@ async function generateImageFromPrompt(options: {
     });
     if (!res.ok) {
       const bodyText = await res.text();
-      throw new Error(`Gemini image error ${res.status}: ${bodyText}`);
+      const err = new Error(`Gemini image error ${res.status}: ${bodyText}`);
+      (err as any).httpStatus = res.status;
+      (err as any).isTransient = res.status === 429 || res.status >= 500;
+      const retryAfter = res.headers.get('retry-after');
+      if (retryAfter) (err as any).retryAfter = retryAfter;
+      throw err;
     }
     return (await res.json()) as any;
   };
@@ -115,7 +120,36 @@ async function generateImageFromPrompt(options: {
   const attempts: { blockReason: string | null; finishReason: string | null; promptFeedback: any }[] = [];
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    const json = await requestOnce();
+    let json: any;
+    try {
+      json = await requestOnce();
+    } catch (error) {
+      const err = error as any;
+      const msg = String(err?.message ?? error);
+      const isTransient =
+        Boolean(err?.isTransient) ||
+        msg.includes('429') ||
+        msg.toLowerCase().includes('timeout') ||
+        msg.toLowerCase().includes('fetch failed');
+
+      attempts.push({
+        blockReason: null,
+        finishReason: null,
+        promptFeedback: { requestError: msg, httpStatus: err?.httpStatus ?? null },
+      });
+
+      if (isTransient && attempt < MAX_RETRIES) {
+        const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+        const jitter = Math.random() * 100;
+        console.log(
+          `[api] Gemini image request error on attempt ${attempt}/${MAX_RETRIES}, retrying in ${Math.round(delay + jitter)}ms...`,
+          { httpStatus: err?.httpStatus ?? null }
+        );
+        await new Promise((r) => setTimeout(r, delay + jitter));
+        continue;
+      }
+      throw error;
+    }
     const image = extractInlineData(json);
     if (image) {
       if (attempt > 1) {
@@ -984,6 +1018,15 @@ serve(async (req: Request) => {
     } catch (e) {
       console.error('[api] /generateImage error', e);
       const err = e as any;
+      const status = err?.isTransient === true ? 503 : 400;
+      console.error('[api] /generateImage error details', {
+        status,
+        blockReason: err?.blockReason ?? null,
+        finishReason: err?.finishReason ?? null,
+        retryAttempts: err?.retryAttempts ?? null,
+        isTransient: err?.isTransient ?? null,
+        httpStatus: err?.httpStatus ?? null,
+      });
       return new Response(
         JSON.stringify({
           error: String(err?.message || e),
@@ -994,7 +1037,7 @@ serve(async (req: Request) => {
           ...(err?.isTransient != null ? { isTransient: err.isTransient } : {}),
         }),
         {
-          status: 400,
+          status,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         }
       );
