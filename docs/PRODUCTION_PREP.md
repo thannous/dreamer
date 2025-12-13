@@ -28,3 +28,31 @@
 - Build AAB: `eas build --platform android --profile production` (ou `--auto-submit` si service account configuré).
 - Soumettre: `eas submit --platform android --profile production` ou via Play Console internal track.
 - Préparer listing: titre, description, screenshots, icône 512px, bannière 1024x500, politique de confidentialité (URL).
+
+
+Tests de Validation Post-Implémentation
+✅ Test 1 : Impossible de Bypass Tier
+Ouvrir console navigateur
+Exécuter : supabase.auth.updateUser({ data: { tier: 'premium' } })
+Attendu : Tier reste 'free' dans app_metadata, quotas toujours appliqués
+Vérifier via : supabase.auth.getUser() → user.app_metadata.tier ne change pas
+✅ Test 2 : Quota Chat Strictement Appliqué
+Créer utilisateur free
+Créer un rêve, démarrer chat
+Envoyer 20 messages → OK
+Envoyer 21ème message → 429 QUOTA_MESSAGE_LIMIT_REACHED
+Vérifier console backend : log quota_events avec blocked=true
+✅ Test 3 : Ownership Chat
+Utilisateur A crée rêve avec ID=123
+Utilisateur B essaie /chat avec dreamId=123
+Attendu : 403 Unauthorized
+✅ Test 4 : Expiration d'Abonnement
+Créer abonnement test RevenueCat
+Annuler/laisser expirer
+Attendre 5 minutes (TTL cache)
+Recharger app
+Attendu : Tier passe de 'premium' à 'free', quotas affichés "X / Y"
+✅ Test 5 : RevenueCat Webhook
+Simuler webhook EXPIRATION avec payload RevenueCat
+Attendu : app_metadata.tier passe à 'free'
+Vérifier logs webhook : "Tier changed from premium to free"
