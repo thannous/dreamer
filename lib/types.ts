@@ -128,6 +128,7 @@ export type PurchaseInterval = 'monthly' | 'annual';
 export interface PurchasePackage {
   id: string;
   interval: PurchaseInterval;
+  price: number; // Numeric price for calculations (e.g. discount)
   priceFormatted: string;
   currency: string;
   title?: string;
