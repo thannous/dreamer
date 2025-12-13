@@ -159,45 +159,77 @@ export async function signInWithGoogle(): Promise<User> {
   const { GoogleSignin, statusCodes } = await getGoogleSignInModule();
 
   try {
+    console.log('[Auth] Starting Google Sign-In process...');
+
     // Check for Play Services availability (Android)
+    console.log('[Auth] Checking Google Play Services availability...');
     await GoogleSignin.hasPlayServices();
+    console.log('[Auth] Play Services available ✓');
 
     // Sign in with Google; library throws on cancellation
+    console.log('[Auth] Showing Google Sign-In dialog...');
     const signInResponse = await GoogleSignin.signIn();
+    console.log('[Auth] Google Sign-In dialog closed');
 
     if ((signInResponse as any)?.type === 'cancelled') {
+      console.log('[Auth] User cancelled Google Sign-In');
       throw new Error('SIGN_IN_CANCELLED');
     }
 
     // Support both current library shape (idToken top-level) and legacy nested shape
+    console.log('[Auth] Extracting ID token from response...');
     const idToken = (signInResponse as any).idToken ?? (signInResponse as any)?.data?.idToken;
     if (!idToken) {
+      console.error('[Auth] ❌ No ID token found in response');
+      console.error('[Auth] Response structure:', JSON.stringify(signInResponse, null, 2));
       throw new Error('No ID token received from Google');
     }
+    console.log('[Auth] ID token extracted successfully ✓');
 
     // Sign in to Supabase with the Google ID token
+    console.log('[Auth] Exchanging ID token with Supabase...');
     const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
       token: idToken,
     });
 
     if (error) {
+      console.error('[Auth] ❌ Supabase signInWithIdToken failed:');
+      console.error('[Auth] Error code:', error.code);
+      console.error('[Auth] Error message:', error.message);
+      console.error('[Auth] Error status:', error.status);
       throw error;
     }
 
     if (!data.user) {
+      console.error('[Auth] ❌ No user data received from Supabase');
       throw new Error('No user data received from Supabase');
     }
 
+    console.log('[Auth] ✓ Successfully signed in with Google');
+    console.log('[Auth] User email:', data.user.email);
+    console.log('[Auth] User ID:', data.user.id);
+
     return data.user;
   } catch (error: unknown) {
+    console.error('[Auth] ❌ Google Sign-In failed with error:');
+    console.error('[Auth] Error object:', error);
+
     // Re-throw with more context for specific error codes
     const errorCode = (error as { code?: string })?.code;
+    const errorMessage = (error as { message?: string })?.message;
+
+    console.error('[Auth] Error code:', errorCode);
+    console.error('[Auth] Error message:', errorMessage);
+
     if (errorCode === statusCodes.SIGN_IN_CANCELLED) {
+      console.log('[Auth] → User cancelled');
       throw new Error('SIGN_IN_CANCELLED');
     } else if (errorCode === statusCodes.IN_PROGRESS) {
+      console.log('[Auth] → Sign-in already in progress');
       throw new Error('Sign-in already in progress');
     } else if (errorCode === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      console.log('[Auth] → Play Services not available');
       throw new Error('Google Play Services not available or outdated');
     }
     throw error;
