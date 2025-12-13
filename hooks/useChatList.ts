@@ -27,19 +27,15 @@ const NEAR_BOTTOM_THRESHOLD = 120;
 
 export function useMessageListProps() {
   const { composerHeight } = useComposerHeightContext();
-  const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
   const { listRef, containerHeight, contentHeight, scrollY, isNearBottom, hasNewMessages } = useMessageListContext();
   const insets = useSafeAreaInsets();
 
   // Animated props for ScrollView/LegendList contentInset
   // This keeps the composer floating on top while allowing scroll
+  // Note: Keyboard height is now handled by KeyboardAwareChatContent wrapper
   const animatedProps = useAnimatedProps(() => {
     // Add extra space so the last message isn't tucked under the composer/footer
-    // Extra padding ensures content is visible above the floating composer
-    const keyboardInset = Platform.OS === 'android' && isKeyboardVisible.value.value
-      ? keyboardHeight.value.value
-      : 0;
-    const bottomInset = composerHeight.value.value + insets.bottom + keyboardInset + 80;
+    const bottomInset = composerHeight.value.value + insets.bottom + 40;
     return {
       contentInset: {
         bottom: Platform.OS === 'ios' ? bottomInset : 0,

@@ -24,7 +24,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 type CategoryType = DreamChatCategory;
@@ -657,7 +657,7 @@ export default function DreamChatScreen() {
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </Pressable>
 
-        <View style={styles.chatContent}>
+        <KeyboardAwareChatContent>
           <MessagesList
             messages={messages}
             isLoading={isLoading}
@@ -665,7 +665,7 @@ export default function DreamChatScreen() {
             ListHeaderComponent={headerComponent}
             style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
           />
-        </View>
+        </KeyboardAwareChatContent>
 
         <Composer
           value={inputText}
@@ -759,11 +759,36 @@ function ComposerFooter({
   );
 }
 
+/**
+ * KeyboardAwareChatContent - Adjusts container height when keyboard is visible
+ * This ensures the message list shrinks and messages remain visible above the keyboard
+ */
+type KeyboardAwareChatContentProps = {
+  children: React.ReactNode;
+};
+
+function KeyboardAwareChatContent({ children }: KeyboardAwareChatContentProps) {
+  const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const kbHeight = Platform.OS === 'android' && isKeyboardVisible.value.value
+      ? keyboardHeight.value.value
+      : 0;
+    return {
+      flex: 1,
+      marginBottom: withTiming(kbHeight, { duration: 150 }),
+    };
+  }, [keyboardHeight, isKeyboardVisible]);
+
+  return (
+    <Animated.View style={animatedStyle}>
+      {children}
+    </Animated.View>
+  );
+}
+
 const styles = StyleSheet.create({
   gradient: {
-    flex: 1,
-  },
-  chatContent: {
     flex: 1,
   },
   floatingBackButton: {
