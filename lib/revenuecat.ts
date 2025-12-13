@@ -29,6 +29,7 @@ export interface PurchasesPackageLike {
   identifier: string;
   packageType?: string;
   product: {
+    price?: number;
     priceString?: string;
     currencyCode?: string;
     title?: string;
@@ -119,6 +120,7 @@ export function mapPackage(pkg: PurchasesPackageLike): PurchasePackage {
   return {
     id,
     interval,
+    price: product.price ?? 0,
     priceFormatted: product.priceString ?? '',
     currency: product.currencyCode ?? '',
     title: product.title ?? '',

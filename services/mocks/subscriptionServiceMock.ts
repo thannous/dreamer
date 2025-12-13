@@ -11,6 +11,7 @@ const mockPackages: PurchasePackage[] = [
   {
     id: 'mock_monthly',
     interval: 'monthly',
+    price: 4.99,
     priceFormatted: '$4.99',
     currency: 'USD',
     title: 'Monthly',
@@ -19,6 +20,7 @@ const mockPackages: PurchasePackage[] = [
   {
     id: 'mock_annual',
     interval: 'annual',
+    price: 39.99,
     priceFormatted: '$39.99',
     currency: 'USD',
     title: 'Annual',
