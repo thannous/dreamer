@@ -43,6 +43,7 @@ yarn-error.*
 .env.real
 .env.supabase
 .env.google.template
+credentials.json
 supabase.exe
 supabase_windows_amd64.tar.gz
 

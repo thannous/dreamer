@@ -17,7 +17,7 @@
     },
     "production-apk": {
       "channel": "production",
-      "android": { "buildType": "apk" },
+      "android": { "buildType": "apk", "credentialsSource": "local" },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api"
       }

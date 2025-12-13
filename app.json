@@ -11,7 +11,13 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.tanuki75.noctalia",
-      "associatedDomains": ["applinks:dream.noctalia.app"]
+      "associatedDomains": [
+        "applinks:dream.noctalia.app"
+      ],
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -33,7 +39,10 @@
               "pathPrefix": "/"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "permissions": [
@@ -97,15 +106,12 @@
       "revenuecatAndroidKey": "goog_BFWJqTqAtQUnwYisczZcZrnsanw",
       "revenuecatWebKey": "test_zqltcBoDiTWPWmuyXTXTbYkJPrz",
       "eas": {
-        "projectId": "942327eb-bbba-4b13-a38a-23bbf64936b8"
+        "projectId": "cfd1b275-9dad-40d7-9d9a-147c7bb38415"
       }
     },
     "owner": "tanuki75",
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/942327eb-bbba-4b13-a38a-23bbf64936b8"
     }
   }
 }
