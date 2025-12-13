@@ -472,17 +472,25 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumn
     dream_type: dream.dreamType,
     is_favorite: dream.isFavorite ?? false,
     is_analyzed: dream.isAnalyzed ?? false,
-    analyzed_at: dream.analyzedAt ? new Date(dream.analyzedAt).toISOString() : null,
     analysis_status: dream.analysisStatus ?? 'none',
-    analysis_request_id: dream.analysisRequestId ?? null,
-    exploration_started_at: dream.explorationStartedAt ? new Date(dream.explorationStartedAt).toISOString() : null,
-    client_request_id: dream.clientRequestId ?? null,
   };
 
-  if (!includeImageColumns) return base;
+  // Avoid clearing existing server-side values when a field is missing locally.
+  // For monotonic fields (timestamps/idempotency keys), omit when undefined.
+  const quotaFields = {
+    ...(dream.analyzedAt != null ? { analyzed_at: new Date(dream.analyzedAt).toISOString() } : {}),
+    ...(dream.analysisRequestId != null ? { analysis_request_id: dream.analysisRequestId } : {}),
+    ...(dream.explorationStartedAt != null
+      ? { exploration_started_at: new Date(dream.explorationStartedAt).toISOString() }
+      : {}),
+    ...(dream.clientRequestId != null ? { client_request_id: dream.clientRequestId } : {}),
+  };
+
+  if (!includeImageColumns) return { ...base, ...quotaFields };
 
   return {
     ...base,
+    ...quotaFields,
     image_generation_failed: dream.imageGenerationFailed ?? false,
   };
 };
