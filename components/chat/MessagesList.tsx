@@ -10,7 +10,7 @@
  */
 
 import { Fonts } from '@/constants/theme';
-import { MessageContextProvider, useComposerHeightContext, useKeyboardStateContext, useNewMessageAnimationContext } from '@/context/ChatContext';
+import { MessageContextProvider, useComposerHeightContext, useNewMessageAnimationContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
   useAutoScrollOnNewMessage,
@@ -24,7 +24,7 @@ import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
@@ -240,18 +240,15 @@ const loadingStyles = StyleSheet.create({
 
 /**
  * BottomSpacer - Adds space at the bottom of the list for the floating composer
- * Uses half the inset since content padding already reserves room via animatedProps
+ * Keyboard height is now handled by KeyboardAwareChatContent wrapper
  */
 function BottomSpacer() {
   const { composerHeight } = useComposerHeightContext();
-  const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
   const insets = useSafeAreaInsets();
 
   const animatedStyle = useAnimatedStyle(() => {
-    const keyboardInset = Platform.OS === 'android' && isKeyboardVisible.value.value
-      ? keyboardHeight.value.value
-      : 0;
-    const height = (composerHeight.value.value + insets.bottom + keyboardInset + 80) / 2;
+    // Space for composer + safe area + extra padding
+    const height = composerHeight.value.value + insets.bottom + 40;
     return { height };
   }, [insets.bottom]);
 
