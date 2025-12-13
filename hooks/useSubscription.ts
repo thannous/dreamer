@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
-import { updateUserTier } from '@/lib/auth';
+import { isEntitlementExpired } from '@/lib/revenuecat';
 import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
 import {
   getSubscriptionStatus,
@@ -90,7 +90,9 @@ export function useSubscription() {
     async (nextStatus: SubscriptionStatus) => {
       setUserTierLocally(nextStatus.tier);
       try {
-        await updateUserTier(nextStatus.tier);
+        // ✅ CRITICAL SECURITY FIX: Tier is now updated ONLY via RevenueCat webhook (admin-only app_metadata)
+        // No need to call updateUserTier() - webhook has already updated app_metadata
+        // Just refresh to get the latest tier from the server
         await refreshUser();
       } catch (err) {
         if (__DEV__) {
@@ -143,6 +145,28 @@ export function useSubscription() {
       mounted = false;
     };
   }, [requiresAuth, user?.id]);
+
+  // ✅ PHASE 3: Check for subscription expiration on app startup
+  useEffect(() => {
+    if (!status || requiresAuth) return;
+
+    // Check if subscription has expired
+    if (status.expiryDate && isEntitlementExpired(status.expiryDate)) {
+      if (__DEV__) {
+        console.log('[useSubscription] Subscription expired, forcing refresh');
+      }
+      // Force refresh from RevenueCat to get latest status
+      initializeSubscription(user?.id ?? null)
+        .then((nextStatus) => {
+          setStatus(nextStatus);
+        })
+        .catch((err) => {
+          if (__DEV__) {
+            console.warn('[useSubscription] Failed to refresh expired status', err);
+          }
+        });
+    }
+  }, [status?.expiryDate, requiresAuth, user?.id]);
 
   const purchase = useCallback(async (id: string) => {
     if (requiresAuth) {

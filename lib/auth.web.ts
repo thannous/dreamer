@@ -148,21 +148,20 @@ export async function signInMock(profile: mockAuth.MockProfile): Promise<User> {
   return mockAuth.signInWithProfile(profile);
 }
 
+/**
+ * ✅ CRITICAL SECURITY FIX: Tier can only be updated via RevenueCat webhook (admin-only)
+ * This function is DISABLED in production to prevent users from modifying their own tier.
+ *
+ * In mock mode, it still works for testing purposes.
+ * In production, tier is set ONLY via the RevenueCat webhook, which writes to app_metadata.
+ */
 export async function updateUserTier(tier: SubscriptionTier): Promise<User | null> {
   if (isMockMode) {
     return mockAuth.updateUserTier(tier);
   }
 
-  try {
-    const { data, error } = await supabase.auth.updateUser({
-      data: { tier },
-    });
-    if (error) {
-      throw error;
-    }
-    return data.user ?? null;
-  } catch (error) {
-    console.error('Failed to update user tier', error);
-    throw error;
-  }
+  // ✅ BLOCKED: Tier must be updated via RevenueCat webhook (writes to admin-only app_metadata)
+  throw new Error(
+    'updateUserTier() is disabled. User tier can only be modified via RevenueCat webhook after subscription purchase.'
+  );
 }

@@ -7,7 +7,13 @@ type NativeSpeechOptions = {
 };
 
 export type NativeSpeechSession = {
-  stop: () => Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }>;
+  stop: () => Promise<{
+    transcript: string;
+    error?: string;
+    errorCode?: string;
+    recordedUri?: string | null;
+    hasRecording?: boolean;
+  }>;
   abort: () => void;
   hasRecording?: boolean;
 };
@@ -26,6 +32,12 @@ const hasWebSpeechAPI = (): boolean => {
 let cachedSpeechModule: ExpoSpeechRecognitionModuleType | null | undefined;
 
 const normalizeChunk = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+export type SpeechLocaleAvailability = {
+  isInstalled: boolean;
+  installedLocales: string[];
+  androidRecognitionServicePackage?: string;
+};
 
 function resolveAndroidRecognitionServiceOverride(
   speechModule: ExpoSpeechRecognitionModuleType
@@ -179,6 +191,35 @@ const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModul
     return null;
   }
 };
+
+export async function getSpeechLocaleAvailability(languageCode: string): Promise<SpeechLocaleAvailability | null> {
+  const speechModule = await loadSpeechRecognitionModule();
+  if (!speechModule) return null;
+
+  const androidRecognitionServicePackage = resolveAndroidRecognitionServiceOverride(speechModule);
+
+  try {
+    const supportedLocales = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
+    const installedLocales = supportedLocales?.installedLocales ?? [];
+    const normalizedLanguage = normalizeLocale(languageCode);
+    const isInstalled = installedLocales.some((locale) => normalizeLocale(locale) === normalizedLanguage);
+
+    return {
+      isInstalled,
+      installedLocales,
+      androidRecognitionServicePackage,
+    };
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[nativeSpeech] failed to read supported locales', error);
+    }
+    return {
+      isInstalled: false,
+      installedLocales: [],
+      androidRecognitionServicePackage,
+    };
+  }
+}
 
 async function shouldRequireOnDeviceRecognition(
   speechModule: ExpoSpeechRecognitionModuleType,
@@ -390,7 +431,13 @@ export async function startNativeSpeechSession(
           recordedUri,
         });
       }
-      return { transcript, error: lastError?.message, recordedUri, hasRecording: supportsRecording };
+      return {
+        transcript,
+        error: lastError?.message,
+        errorCode: lastError?.code,
+        recordedUri,
+        hasRecording: supportsRecording,
+      };
     };
 
     const abort = () => {

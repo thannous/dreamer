@@ -438,39 +438,38 @@ describe('geminiServiceReal', () => {
   });
 
   describe('startOrContinueChat', () => {
-    it('sends POST to /chat with history and message', async () => {
+    it('sends POST to /chat with dreamId and message', async () => {
       (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
         mockFetchResponse({ text: 'AI response' })
       );
 
-      const history = [
-        { role: 'user' as const, text: 'Tell me about my dream' },
-        { role: 'model' as const, text: 'Your dream suggests...' },
-      ];
-
-      const result = await startOrContinueChat(history, 'What does water mean?', 'en');
+      // ✅ PHASE 2: Updated to use dreamId instead of history
+      const dreamId = 'dream-123';
+      const result = await startOrContinueChat(dreamId, 'What does water mean?', 'en');
 
       expect(global.fetch).toHaveBeenCalledWith(
         'https://api.example.com/chat',
         expect.objectContaining({
           method: 'POST',
-          body: JSON.stringify({ history, message: 'What does water mean?', lang: 'en' }),
+          body: JSON.stringify({ dreamId, message: 'What does water mean?', lang: 'en' }),
         })
       );
       expect(result).toBe('AI response');
     });
 
-    it('handles empty history', async () => {
+    it('handles default language', async () => {
       (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
         mockFetchResponse({ text: 'First response' })
       );
 
-      const result = await startOrContinueChat([], 'First message', 'fr');
+      // ✅ PHASE 2: Server manages history, client just sends dreamId and message
+      const dreamId = 'dream-456';
+      const result = await startOrContinueChat(dreamId, 'First message');
 
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: JSON.stringify({ history: [], message: 'First message', lang: 'fr' }),
+          body: JSON.stringify({ dreamId, message: 'First message', lang: 'en' }),
         })
       );
       expect(result).toBe('First response');

@@ -3,6 +3,7 @@ import { AtmosphereBackground } from '@/components/recording/AtmosphereBackgroun
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
+import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
@@ -22,17 +23,25 @@ import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
+import {
+  openGoogleVoiceSettingsBestEffort,
+  openSpeechRecognitionLanguageSettings,
+} from '@/lib/speechRecognitionSettings';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
-import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
+import {
+  getSpeechLocaleAvailability,
+  startNativeSpeechSession,
+  type NativeSpeechSession,
+} from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
 import {
-	  AudioModule,
-	  setAudioModeAsync,
-	  useAudioRecorder,
-	} from 'expo-audio';
+  AudioModule,
+  setAudioModeAsync,
+  useAudioRecorder,
+} from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -85,6 +94,10 @@ export default function RecordingScreen() {
   const { user } = useAuth();
   const { canAnalyzeNow, tier, usage } = useQuota();
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
+  const [languagePackMissingInfo, setLanguagePackMissingInfo] = useState<{
+    locale: string;
+    installedLocales: string[];
+  } | null>(null);
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
@@ -162,6 +175,24 @@ export default function RecordingScreen() {
   );
 
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
+
+  const showLanguagePackMissingSheet = useCallback((locale: string, installedLocales: string[]) => {
+    setLanguagePackMissingInfo({ locale, installedLocales });
+  }, []);
+
+  const handleLanguagePackMissingClose = useCallback(() => {
+    setLanguagePackMissingInfo(null);
+  }, []);
+
+  const handleLanguagePackMissingOpenSettings = useCallback(() => {
+    handleLanguagePackMissingClose();
+    void openSpeechRecognitionLanguageSettings();
+  }, [handleLanguagePackMissingClose]);
+
+  const handleLanguagePackMissingOpenGoogleSettings = useCallback(() => {
+    handleLanguagePackMissingClose();
+    void openGoogleVoiceSettingsBestEffort();
+  }, [handleLanguagePackMissingClose]);
 
   const handleTranscriptChange = useCallback(
     (text: string) => {
@@ -352,9 +383,18 @@ export default function RecordingScreen() {
 
   const stopRecording = useCallback(async () => {
     let nativeSession: NativeSpeechSession | null = null;
-    let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }> | null = null;
+    let nativeResultPromise: Promise<{
+      transcript: string;
+      error?: string;
+      errorCode?: string;
+      recordedUri?: string | null;
+      hasRecording?: boolean;
+    }> | null = null;
     let nativeError: string | undefined;
+    let nativeErrorCode: string | undefined;
     let hadNativeSession = false;
+    let isLanguagePackMissing = false;
+    let isRateLimited = false;
     try {
       setIsRecording(false);
       setIsPreparingRecording(false);
@@ -391,6 +431,16 @@ export default function RecordingScreen() {
             console.warn('[Recording] Native STT returned empty result', nativeResult.error);
           }
           nativeError = nativeResult.error;
+          nativeErrorCode = nativeResult.errorCode;
+          const normalizedError = nativeError?.toLowerCase();
+          isLanguagePackMissing =
+            normalizedError?.includes('language-not-supported') ||
+            normalizedError?.includes('not yet downloaded') ||
+            false;
+          isRateLimited =
+            nativeErrorCode === 'too-many-requests' ||
+            normalizedError?.includes('too many requests') ||
+            false;
         } catch (error) {
           if (__DEV__) {
             console.warn('[Recording] Native STT failed', error);
@@ -401,7 +451,8 @@ export default function RecordingScreen() {
       }
 
       // Only fallback to server-side transcription when native speech recognition was not used.
-      const shouldFallbackToGoogle = !hadNativeSession && !transcriptText && (uri || recordedUri);
+      const shouldFallbackToGoogle =
+        (isLanguagePackMissing || isRateLimited || !hadNativeSession) && !transcriptText && (uri || recordedUri);
 
       if (shouldFallbackToGoogle) {
         try {
@@ -410,6 +461,7 @@ export default function RecordingScreen() {
             console.log('[Recording] fallback to Google STT', {
               locale: transcriptionLocale,
               nativeError,
+              nativeErrorCode,
               uriLength: fallbackUri?.length ?? 0,
             });
           }
@@ -435,6 +487,18 @@ export default function RecordingScreen() {
         setLengthWarning(truncated ? lengthLimitMessage() : '');
         setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
       } else {
+        if (isLanguagePackMissing) {
+          const availability = await getSpeechLocaleAvailability(transcriptionLocale);
+          showLanguagePackMissingSheet(
+            transcriptionLocale,
+            availability?.installedLocales ?? []
+          );
+          return;
+        }
+        if (isRateLimited) {
+          Alert.alert(t('common.error_title'), t('error.rate_limit'));
+          return;
+        }
         Alert.alert(
           t('recording.alert.no_speech.title'),
           t('recording.alert.no_speech.message')
@@ -460,7 +524,15 @@ export default function RecordingScreen() {
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale, t, combineTranscript, lengthLimitMessage, handleRecorderError]);
+  }, [
+    audioRecorder,
+    transcriptionLocale,
+    t,
+    combineTranscript,
+    lengthLimitMessage,
+    handleRecorderError,
+    showLanguagePackMissingSheet,
+  ]);
 
   const startRecording = useCallback(async () => {
     try {
@@ -489,6 +561,15 @@ export default function RecordingScreen() {
           t('recording.alert.permission_required.title'),
           t('recording.alert.permission_required.message')
         );
+        setIsRecording(false);
+        setIsPreparingRecording(false);
+        isRecordingRef.current = false;
+        return;
+      }
+
+      const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
+      if (localeAvailability?.installedLocales.length && !localeAvailability.isInstalled) {
+        showLanguagePackMissingSheet(transcriptionLocale, localeAvailability.installedLocales);
         setIsRecording(false);
         setIsPreparingRecording(false);
         isRecordingRef.current = false;
@@ -552,7 +633,17 @@ export default function RecordingScreen() {
       setIsPreparingRecording(false);
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     }
-  }, [audioRecorder, t, transcriptionLocale, transcript, combineTranscript, lengthLimitMessage, stopRecording, handleRecorderError]);
+  }, [
+    audioRecorder,
+    t,
+    transcriptionLocale,
+    transcript,
+    combineTranscript,
+    lengthLimitMessage,
+    stopRecording,
+    handleRecorderError,
+    showLanguagePackMissingSheet,
+  ]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -1074,6 +1165,15 @@ export default function RecordingScreen() {
           </View>
         )}
       </StandardBottomSheet>
+
+      <LanguagePackMissingSheet
+        visible={Boolean(languagePackMissingInfo)}
+        onClose={handleLanguagePackMissingClose}
+        locale={languagePackMissingInfo?.locale ?? transcriptionLocale}
+        installedLocales={languagePackMissingInfo?.installedLocales ?? []}
+        onOpenSettings={handleLanguagePackMissingOpenSettings}
+        onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
+      />
     </>
   );
 }

@@ -3,7 +3,7 @@
 // - POST /analyzeDream { transcript } -> AnalysisResult
 // - POST /generateImage { prompt } -> { imageUrl?: string, imageBytes?: string }
 // - POST /analyzeDreamFull { transcript } -> AnalysisResult & { imageBytes?: string, imageUrl?: string }
-// - POST /chat { history, message, lang } -> { text: string }
+// - POST /chat { dreamId, message, lang } -> { text: string }  [✅ UPDATED: now requires dreamId, enforces quotas]
 // - POST /tts { text } -> { audioBase64: string }
 
 import { getApiBaseUrl } from '@/lib/config';
@@ -186,15 +186,29 @@ export async function generateImageFromTranscript(transcript: string, previousIm
   }
 }
 
+/**
+ * ✅ PHASE 2: Send chat message with server-side quota enforcement
+ *
+ * CRITICAL CHANGES:
+ * - Now requires dreamId for ownership verification and per-dream quota tracking
+ * - Client no longer sends history - server reads from dreams.chat_history (source of truth)
+ * - Returns 429 if user exceeds message limit
+ * - Uses "claim before cost" pattern: message persisted BEFORE Gemini call
+ *
+ * @param dreamId - ID of the dream to chat about (required for ownership + quota)
+ * @param message - Single user message (server appends to history)
+ * @param lang - Language for response ('en', 'fr', 'es')
+ * @throws HttpError with status 429 if quota exceeded
+ */
 export async function startOrContinueChat(
-  history: { role: 'user' | 'model'; text: string }[],
+  dreamId: string,
   message: string,
-  lang: string,
+  lang: string = 'en',
 ): Promise<string> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<{ text: string }>(`${base}/chat`, {
     method: 'POST',
-    body: { history, message, lang },
+    body: { dreamId, message, lang },
   });
   return res.text;
 }

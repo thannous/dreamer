@@ -48,6 +48,20 @@ const ENTITLEMENT_PRIORITY = [
 ];
 
 /**
+ * ✅ PHASE 3: Check if an entitlement has expired
+ * Returns true if expiryDate is in the past, false if no expiryDate or future date
+ */
+export function isEntitlementExpired(expiryDate: string | null): boolean {
+  if (!expiryDate) {
+    // No expiration date = not expired
+    return false;
+  }
+  const expiryTime = new Date(expiryDate).getTime();
+  const now = Date.now();
+  return expiryTime < now;
+}
+
+/**
  * Finds the active entitlement from CustomerInfo based on priority.
  * Returns the first matching entitlement or the first active one if none match priority.
  */
@@ -74,13 +88,18 @@ export function mapTierFromCustomerInfo(info: CustomerInfoLike | null): Subscrip
 
 /**
  * Maps CustomerInfo to a complete SubscriptionStatus object.
+ * ✅ PHASE 3: Validates expiration date - expired entitlements are treated as 'free' tier
  */
 export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
-  const tier = mapTierFromCustomerInfo(info);
   const activeEntitlement = getActiveEntitlement(info);
+  const expiryDate = activeEntitlement?.expirationDate ?? null;
+
+  // ✅ PHASE 3: Check if entitlement has expired
+  const isExpired = isEntitlementExpired(expiryDate);
+  const tier = (activeEntitlement && !isExpired) ? 'premium' : 'free';
   const active = tier === 'premium';
   const productId = activeEntitlement?.productIdentifier ?? null;
-  const expiryDate = activeEntitlement?.expirationDate ?? null;
+
   return {
     tier,
     isActive: active,

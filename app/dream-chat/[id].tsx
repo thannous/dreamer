@@ -374,14 +374,11 @@ export default function DreamChatScreen() {
       setIsLoading(true);
 
       try {
-        // Build conversation history for API
-        const history = updatedMessages.map((msg) => ({
-          role: msg.role,
-          text: msg.text,
-        }));
-
-        // Get AI response
-        const aiResponseText = await startOrContinueChat(history, textToSend, language);
+        // ✅ PHASE 2: Get AI response with server-side quota enforcement
+        // Note: No longer send history - server reads from dreams.chat_history
+        // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
+        const dreamIdString = String(dream.remoteId ?? dream.id);
+        const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
 
         const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
         const finalMessages = [...updatedMessages, aiMessage];
