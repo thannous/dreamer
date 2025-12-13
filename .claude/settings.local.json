@@ -67,7 +67,9 @@
       "Bash(cp:*)",
       "Bash(git diff:*)",
       "Bash(npx supabase:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(./gradlew properties:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

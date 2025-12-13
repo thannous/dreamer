@@ -131,19 +131,22 @@ export async function generateImageFromTranscript(transcript: string, _previousI
 }
 
 /**
- * Mock chat conversation (1-2 seconds)
+ * ✅ PHASE 2: Mock chat conversation with quota enforcement (1-2 seconds)
+ *
+ * UPDATED: Now requires dreamId (for ownership + quota enforcement)
+ * In mock mode, quota is handled by GuestAnalysisCounter or MockQuotaEventStore
  */
 export async function startOrContinueChat(
-  history: { role: 'user' | 'model'; text: string }[],
+  dreamId: string,
   message: string,
-  lang: string,
+  lang: string = 'en',
 ): Promise<string> {
-  console.log('[MOCK] startOrContinueChat called with message:', message);
+  console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);
   await delay(1000 + Math.random() * 1000); // 1-2 seconds
 
-  // Get dream context from history if available
-  const dreamContext = history.length > 0 ? history[0].text : 'your dream';
-  const response = generateChatResponse(message, dreamContext);
+  // In mock mode, generate response based on message
+  // Server-side quota tracking is handled by quota service
+  const response = generateChatResponse(message, 'your dream');
 
   console.log('[MOCK] startOrContinueChat returning response');
   return response;

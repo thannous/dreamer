@@ -165,10 +165,11 @@ describe('geminiServiceMock', () => {
   });
 
   describe('startOrContinueChat', () => {
-    it('returns a chat response', async () => {
-      const history = [{ role: 'user' as const, text: 'My dream context' }];
+    it('returns a chat response with dreamId', async () => {
+      // ✅ PHASE 2: Updated to use dreamId instead of history
+      const dreamId = 'dream-abc-123';
       const message = 'What does flying mean?';
-      const resultPromise = startOrContinueChat(history, message, 'en');
+      const resultPromise = startOrContinueChat(dreamId, message, 'en');
 
       await vi.advanceTimersByTimeAsync(2000);
 
@@ -178,16 +179,18 @@ describe('geminiServiceMock', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('handles empty history', async () => {
-      const history: { role: 'user' | 'model'; text: string }[] = [];
+    it('handles default language', async () => {
+      // ✅ PHASE 2: Server manages history, client just sends dreamId and message
+      const dreamId = 'dream-xyz-789';
       const message = 'Tell me about my dream';
-      const resultPromise = startOrContinueChat(history, message, 'en');
+      const resultPromise = startOrContinueChat(dreamId, message);
 
       await vi.advanceTimersByTimeAsync(2000);
 
       const result = await resultPromise;
 
       expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
     });
   });
 

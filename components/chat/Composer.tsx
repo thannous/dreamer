@@ -13,7 +13,16 @@ import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
+import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
+import {
+  getSpeechLocaleAvailability,
+  startNativeSpeechSession,
+  type NativeSpeechSession,
+} from '@/services/nativeSpeechRecognition';
+import {
+  openGoogleVoiceSettingsBestEffort,
+  openSpeechRecognitionLanguageSettings,
+} from '@/lib/speechRecognitionSettings';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AudioModule } from 'expo-audio';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -28,6 +37,8 @@ import {
   type LayoutChangeEvent,
   type ViewStyle,
 } from 'react-native';
+
+import { transcribeAudio } from '@/services/speechToText';
 import Animated, {
   runOnUI,
   useAnimatedStyle,
@@ -90,10 +101,28 @@ export function Composer({
   const { keyboardHeight } = useKeyboardStateContext();
 
   const [isRecording, setIsRecording] = useState(false);
+  const [languagePackMissingInfo, setLanguagePackMissingInfo] = useState<{
+    locale: string;
+    installedLocales: string[];
+  } | null>(null);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const baseInputRef = useRef('');
   const containerRef = useRef<View>(null);
   const localHeight = useSharedValue(0);
+
+  const handleLanguagePackMissingClose = useCallback(() => {
+    setLanguagePackMissingInfo(null);
+  }, []);
+
+  const handleLanguagePackMissingOpenSettings = useCallback(() => {
+    handleLanguagePackMissingClose();
+    void openSpeechRecognitionLanguageSettings();
+  }, [handleLanguagePackMissingClose]);
+
+  const handleLanguagePackMissingOpenGoogleSettings = useCallback(() => {
+    handleLanguagePackMissingClose();
+    void openGoogleVoiceSettingsBestEffort();
+  }, [handleLanguagePackMissingClose]);
 
   // Track composer height for contentInset
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
@@ -123,6 +152,15 @@ export function Composer({
           t('recording.alert.permission_required.title'),
           t('recording.alert.permission_required.message')
         );
+        return;
+      }
+
+      const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
+      if (localeAvailability?.installedLocales.length && !localeAvailability.isInstalled) {
+        setLanguagePackMissingInfo({
+          locale: transcriptionLocale,
+          installedLocales: localeAvailability.installedLocales,
+        });
         return;
       }
 
@@ -167,6 +205,44 @@ export function Composer({
         onChangeText(base ? `${base} ${transcript}` : transcript);
       } else {
         const normalizedError = result.error?.toLowerCase();
+        const isRateLimited =
+          result.errorCode === 'too-many-requests' ||
+          normalizedError?.includes('too many requests') ||
+          false;
+        const isLanguagePackMissing =
+          result.errorCode === 'language-not-supported' ||
+          normalizedError?.includes('language-not-supported') ||
+          normalizedError?.includes('not yet downloaded') ||
+          false;
+        const recordedUri = result.recordedUri ?? undefined;
+
+        if (isRateLimited && recordedUri) {
+          try {
+            const fallbackTranscript = await transcribeAudio({
+              uri: recordedUri,
+              languageCode: transcriptionLocale,
+            });
+            if (fallbackTranscript?.trim()) {
+              const base = baseInputRef.current.trim();
+              onChangeText(base ? `${base} ${fallbackTranscript.trim()}` : fallbackTranscript.trim());
+              return;
+            }
+          } catch {
+            // ignore and continue to other handling
+          }
+        }
+        if (isRateLimited) {
+          Alert.alert(t('common.error_title'), t('error.rate_limit'));
+          return;
+        }
+        if (isLanguagePackMissing) {
+          const availability = await getSpeechLocaleAvailability(transcriptionLocale);
+          setLanguagePackMissingInfo({
+            locale: transcriptionLocale,
+            installedLocales: availability?.installedLocales ?? [],
+          });
+          return;
+        }
         if (!normalizedError?.includes('no speech')) {
           Alert.alert(
             t('recording.alert.no_speech.title'),
@@ -177,7 +253,7 @@ export function Composer({
     } catch {
       // Silent fail on stop
     }
-  }, [onChangeText, t]);
+  }, [onChangeText, transcriptionLocale, t]);
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -285,22 +361,42 @@ export function Composer({
   // Wrap with KeyboardStickyView if available (iOS)
   if (Platform.OS === 'ios' && KeyboardStickyView) {
     return (
-      <KeyboardStickyView
-        style={styles.stickyWrapper}
-        offset={{ closed: -insets.bottom, opened: -8 }}
-      >
-        {composerContent}
-      </KeyboardStickyView>
+      <>
+        <KeyboardStickyView
+          style={styles.stickyWrapper}
+          offset={{ closed: -insets.bottom, opened: -8 }}
+        >
+          {composerContent}
+        </KeyboardStickyView>
+        <LanguagePackMissingSheet
+          visible={Boolean(languagePackMissingInfo)}
+          onClose={handleLanguagePackMissingClose}
+          locale={languagePackMissingInfo?.locale ?? transcriptionLocale}
+          installedLocales={languagePackMissingInfo?.installedLocales ?? []}
+          onOpenSettings={handleLanguagePackMissingOpenSettings}
+          onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
+        />
+      </>
     );
   }
 
   // Fallback for Android or when KeyboardStickyView not available
   return (
-    <Animated.View
-      style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }, animatedWrapperStyle]}
-    >
-      {composerContent}
-    </Animated.View>
+    <>
+      <Animated.View
+        style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }, animatedWrapperStyle]}
+      >
+        {composerContent}
+      </Animated.View>
+      <LanguagePackMissingSheet
+        visible={Boolean(languagePackMissingInfo)}
+        onClose={handleLanguagePackMissingClose}
+        locale={languagePackMissingInfo?.locale ?? transcriptionLocale}
+        installedLocales={languagePackMissingInfo?.installedLocales ?? []}
+        onOpenSettings={handleLanguagePackMissingOpenSettings}
+        onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
+      />
+    </>
   );
 }
 

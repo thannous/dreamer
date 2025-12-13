@@ -91,7 +91,15 @@
       ],
       "expo-localization",
       "expo-notifications",
-      "expo-speech-recognition"
+      "expo-speech-recognition",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 33
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -31,10 +31,11 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
   /**
    * Get user tier from metadata
+   * ✅ CRITICAL FIX: Read from app_metadata (admin-only) instead of user_metadata (client-modifiable)
    */
   private getUserTier(user: User | null): UserTier {
     if (!user) return 'guest';
-    return (user.user_metadata?.tier as UserTier) || 'free';
+    return (user.app_metadata?.tier as UserTier) || 'free';
   }
 
   private getFallbackMonthlyLimits(tier: UserTier): TierMonthlyLimits {

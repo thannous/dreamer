@@ -132,6 +132,11 @@ async function generateImageFromPrompt(options: {
         msg.toLowerCase().includes('timeout') ||
         msg.toLowerCase().includes('fetch failed');
 
+      if (err && typeof err === 'object') {
+        err.isTransient = isTransient;
+        if (err.retryAttempts == null) err.retryAttempts = attempt;
+      }
+
       attempts.push({
         blockReason: null,
         finishReason: null,
@@ -148,7 +153,7 @@ async function generateImageFromPrompt(options: {
         await new Promise((r) => setTimeout(r, delay + jitter));
         continue;
       }
-      throw error;
+      throw err ?? error;
     }
     const image = extractInlineData(json);
     if (image) {
@@ -341,7 +346,8 @@ serve(async (req: Request) => {
         targetDreamId: body?.targetDreamId ?? null,
       });
 
-      const guestLimits = { analysis: 2, exploration: 2, messagesPerDream: 20 };
+      // ✅ CRITICAL FIX: Align guest message limit with DB seed (was inconsistent: backend said 20, DB said 10)
+      const guestLimits = { analysis: 2, exploration: 2, messagesPerDream: 10 };
 
       // Si pas de fingerprint, retourner mode dégradé (client enforcera localement)
       if (!body?.fingerprint || !supabaseServiceRoleKey) {
@@ -497,26 +503,99 @@ serve(async (req: Request) => {
     }
   }
 
-  // Public chat endpoint: conversational follow-ups about dreams
+  // ✅ PHASE 2: Public chat endpoint with quota enforcement via "claim before cost" pattern
+  // - Requires dreamId parameter for ownership verification
+  // - Implements server-side message persistence (source of truth)
+  // - Quota is enforced at DB trigger level before Gemini call
   if (req.method === 'POST' && subPath === '/chat') {
     try {
       const body = (await req.json()) as {
-        history?: { role: 'user' | 'model'; text: string }[];
+        dreamId?: string;  // ✅ NEW: Required for ownership check
         message?: string;
         lang?: string;
       };
 
+      const dreamId = String(body?.dreamId ?? '').trim();
+      const userMessage = String(body?.message ?? '').trim();
+
+      // ✅ NEW: Validate required parameters
+      if (!dreamId) {
+        return new Response(JSON.stringify({ error: 'dreamId is required' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      if (!userMessage) {
+        return new Response(JSON.stringify({ error: 'message is required' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
       const apiKey = Deno.env.get('GEMINI_API_KEY');
       if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-      // Build conversation
-      const history = Array.isArray(body?.history) ? body!.history! : [];
-      const message = String(body?.message ?? '').trim();
+      // ✅ NEW: Fetch dream and verify ownership
+      const currentUserId = user?.id ?? null;
+      const { data: dream, error: dreamError } = await supabase
+        .from('dreams')
+        .select('id, chat_history, user_id')
+        .eq('id', dreamId)
+        .single();
+
+      if (dreamError || !dream) {
+        return new Response(JSON.stringify({ error: 'Dream not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      // ✅ NEW: Ownership check - prevent users from accessing other users' dreams
+      if (dream.user_id !== currentUserId) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      // ✅ CRITICAL: "Claim Before Cost" Pattern
+      // Add user message to chat_history BEFORE calling Gemini
+      // This allows the DB trigger to validate quota atomically
+      const existingHistory = Array.isArray(dream.chat_history) ? (dream.chat_history as { role: string; text: string }[]) : [];
+      const newUserMessage = { role: 'user', text: userMessage };
+      const historyWithUserMsg = [...existingHistory, newUserMessage];
+
+      // Try to persist the user message - this triggers quota validation
+      const { error: updateError } = await supabase
+        .from('dreams')
+        .update({ chat_history: historyWithUserMsg })
+        .eq('id', dreamId);
+
+      if (updateError) {
+        // ✅ NEW: Handle quota exceeded error from trigger
+        if (updateError.message?.includes('QUOTA_MESSAGE_LIMIT_REACHED')) {
+          console.log('[api] /chat: quota exceeded for dream', dreamId, 'user', currentUserId);
+          return new Response(
+            JSON.stringify({
+              error: 'QUOTA_MESSAGE_LIMIT_REACHED',
+              userMessage: 'You have reached your message limit for this dream.',
+            }),
+            {
+              status: 429,  // Too Many Requests
+              headers: { 'Content-Type': 'application/json', ...corsHeaders },
+            }
+          );
+        }
+        // Unexpected error
+        throw updateError;
+      }
+
+      // Quota passed - now call Gemini with the full conversation
       const lang = String(body?.lang ?? 'en')
         .toLowerCase()
         .split(/[-_]/)[0];
 
-      // Compose chat contents in Gemini format
       const systemPreamble =
         lang === 'fr'
           ? 'Tu es un assistant empathique qui aide à interpréter les rêves. Sois clair, bienveillant et évite les affirmations médicales. Réponds en français.'
@@ -524,14 +603,14 @@ serve(async (req: Request) => {
             ? 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.'
             : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.';
 
+      // Build Gemini conversation from persisted history (source of truth from DB)
       const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
       contents.push({ role: 'user', parts: [{ text: systemPreamble }] });
-      for (const turn of history) {
+      for (const turn of historyWithUserMsg) {
         const r = turn.role === 'model' ? 'model' : 'user';
         const t = String(turn.text ?? '');
         if (t) contents.push({ role: r, parts: [{ text: t }] });
       }
-      if (message) contents.push({ role: 'user', parts: [{ text: message }] });
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
@@ -558,6 +637,15 @@ serve(async (req: Request) => {
       if (typeof reply !== 'string' || !reply.trim()) {
         throw new Error('Empty model response');
       }
+
+      // ✅ NEW: Persist model response to complete the conversation
+      const modelMessage = { role: 'model', text: reply.trim() };
+      const finalHistory = [...historyWithUserMsg, modelMessage];
+
+      await supabase
+        .from('dreams')
+        .update({ chat_history: finalHistory })
+        .eq('id', dreamId);
 
       return new Response(JSON.stringify({ text: reply.trim() }), {
         status: 200,

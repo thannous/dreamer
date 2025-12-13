@@ -22,12 +22,43 @@ function getSupabaseAdminClient() {
   });
 }
 
+/**
+ * ✅ PHASE 3: Improved isPremiumFromPayload to validate expiration dates
+ * Previously only checked if entitlements exist, now also validates they haven't expired
+ */
 function isPremiumFromPayload(payload: any): boolean {
   const activeEntitlements = payload?.event?.customer_info?.entitlements?.active ?? {};
   if (!activeEntitlements || typeof activeEntitlements !== 'object') {
     return false;
   }
-  return Object.keys(activeEntitlements).length > 0;
+
+  // Check for explicit cancellation/expiration events
+  const eventType = payload?.event?.type;
+  if (eventType === 'EXPIRATION' || eventType === 'CANCELLATION') {
+    return false;
+  }
+
+  // Verify at least one entitlement exists AND hasn't expired
+  for (const key of Object.keys(activeEntitlements)) {
+    const entitlement = activeEntitlements[key];
+    if (!entitlement) continue;
+
+    // Get expiration date - RevenueCat uses 'expires_date' in webhook payloads
+    const expiresDate = entitlement?.expires_date ?? null;
+    if (expiresDate) {
+      const expiryTime = new Date(expiresDate).getTime();
+      const now = Date.now();
+      // Skip if entitlement is expired
+      if (expiryTime < now) {
+        continue;
+      }
+    }
+
+    // Found a valid, non-expired entitlement
+    return true;
+  }
+
+  return false;  // No valid, non-expired entitlements found
 }
 
 function getAppUserId(payload: any): string | null {
@@ -204,11 +235,12 @@ serve(async (req: Request) => {
       });
     }
 
-    const currentMeta = (userData.user.user_metadata ?? {}) as Record<string, unknown>;
-    const updatedMeta = { ...currentMeta, tier: newTier };
+    // ✅ CRITICAL FIX: Write to app_metadata (admin-only) instead of user_metadata (client-modifiable)
+    const currentAppMeta = (userData.user.app_metadata ?? {}) as Record<string, unknown>;
+    const updatedAppMeta = { ...currentAppMeta, tier: newTier };
 
     const { error: updateError } = await supabase.auth.admin.updateUserById(appUserId, {
-      user_metadata: updatedMeta,
+      app_metadata: updatedAppMeta,
     });
 
     if (updateError) {

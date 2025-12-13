@@ -7,7 +7,11 @@ import { useCallback, useRef, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
-import { startNativeSpeechSession, type NativeSpeechSession } from '@/services/nativeSpeechRecognition';
+import {
+  getSpeechLocaleAvailability,
+  startNativeSpeechSession,
+  type NativeSpeechSession,
+} from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
 
 export interface RecordingSessionResult {
@@ -20,7 +24,7 @@ export interface UseRecordingSessionOptions {
   /** Locale for speech recognition (e.g., 'en-US', 'fr-FR') */
   transcriptionLocale: string;
   /** Translation function for error messages */
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, unknown>) => string;
   /** Callback when partial transcript is received */
   onPartialTranscript?: (text: string) => void;
   /** Callback when transcript limit is reached */
@@ -112,7 +116,17 @@ export function useRecordingSession({
 
   const stopRecording = useCallback(async (): Promise<RecordingSessionResult> => {
     let nativeSession: NativeSpeechSession | null = null;
-    let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }> | null = null;
+    let nativeResultPromise: Promise<{
+      transcript: string;
+      error?: string;
+      errorCode?: string;
+      recordedUri?: string | null;
+      hasRecording?: boolean;
+    }> | null = null;
+    let nativeErrorCode: string | undefined;
+    let nativeError: string | undefined;
+    let isLanguagePackMissing = false;
+    let isRateLimited = false;
 
     try {
       setIsRecording(false);
@@ -148,6 +162,17 @@ export function useRecordingSession({
           if (!transcriptText && nativeResult.error && __DEV__) {
             console.warn('[Recording] Native STT returned empty result', nativeResult.error);
           }
+          nativeError = nativeResult.error;
+          nativeErrorCode = nativeResult.errorCode;
+          const normalizedNativeError = nativeError?.toLowerCase();
+          isLanguagePackMissing =
+            normalizedNativeError?.includes('language-not-supported') ||
+            normalizedNativeError?.includes('not yet downloaded') ||
+            false;
+          isRateLimited =
+            nativeErrorCode === 'too-many-requests' ||
+            normalizedNativeError?.includes('too many requests') ||
+            false;
         } catch (error) {
           if (__DEV__) {
             console.warn('[Recording] Native STT failed', error);
@@ -158,7 +183,8 @@ export function useRecordingSession({
       }
 
       const hasNativeSession = Boolean(nativeResultPromise);
-      const shouldFallbackToGoogle = !hasNativeSession && !transcriptText && (uri || recordedUri);
+      const shouldFallbackToGoogle =
+        (isLanguagePackMissing || isRateLimited || !hasNativeSession) && !transcriptText && (uri || recordedUri);
 
       if (shouldFallbackToGoogle) {
         try {
@@ -177,6 +203,25 @@ export function useRecordingSession({
           const msg = e instanceof Error ? e.message : 'Unknown transcription error';
           return { transcript: '', error: msg };
         }
+      }
+
+      if (!transcriptText && isLanguagePackMissing) {
+        const availability = await getSpeechLocaleAvailability(transcriptionLocale);
+        const installedText = availability?.installedLocales.length
+          ? availability.installedLocales.join(', ')
+          : t('recording.alert.language_pack_missing.none');
+        Alert.alert(
+          t('recording.alert.language_pack_missing.title'),
+          t('recording.alert.language_pack_missing.message', {
+            locale: transcriptionLocale,
+            installed: installedText,
+          })
+        );
+        return {
+          transcript: '',
+          recordedUri: recordedUri ?? uri,
+          error: 'language_pack_missing',
+        };
       }
 
       return {
@@ -204,7 +249,7 @@ export function useRecordingSession({
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale, handleRecorderError]);
+  }, [audioRecorder, transcriptionLocale, handleRecorderError, t]);
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
@@ -216,6 +261,19 @@ export function useRecordingSession({
             t('recording.alert.permission_required.message')
           );
           return { success: false, error: 'permission_denied' };
+        }
+
+        const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
+        if (localeAvailability?.installedLocales.length && !localeAvailability.isInstalled) {
+          const installedText = localeAvailability.installedLocales.join(', ') || t('recording.alert.language_pack_missing.none');
+          Alert.alert(
+            t('recording.alert.language_pack_missing.title'),
+            t('recording.alert.language_pack_missing.message', {
+              locale: transcriptionLocale,
+              installed: installedText,
+            })
+          );
+          return { success: false, error: 'language_pack_missing' };
         }
 
         await setAudioModeAsync({
