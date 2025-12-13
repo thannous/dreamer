@@ -14,11 +14,12 @@ export interface RecordingTextInputProps {
   lengthWarning: string;
   instructionText: string;
   onSwitchToVoice: () => void;
+  onClear?: () => void;
 }
 
 export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>(
   function RecordingTextInput(
-    { value, onChange, disabled, lengthWarning, instructionText, onSwitchToVoice },
+    { value, onChange, disabled, lengthWarning, instructionText, onSwitchToVoice, onClear },
     ref
   ) {
     const { colors, shadows } = useTheme();
@@ -74,6 +75,31 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               {t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave'}
             </Text>
           </Pressable>
+
+          {onClear ? (
+            <Pressable
+              onPress={onClear}
+              style={[
+                styles.modeSwitchButton,
+                styles.modeSwitchVoiceButton,
+                !value.trim() && styles.hiddenButton,
+              ]}
+              testID="button-clear-dream"
+              disabled={disabled || !value.trim()}
+              accessibilityElementsHidden={!value.trim()}
+              importantForAccessibility={value.trim() ? 'yes' : 'no-hide-descendants'}
+            >
+              <Ionicons
+                name="trash-outline"
+                size={16}
+                color={colors.textSecondary}
+                style={styles.modeSwitchIcon}
+              />
+              <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
+                {t('recording.mode.clear_dream') || 'Effacer le rêve'}
+              </Text>
+            </Pressable>
+          ) : null}
         </View>
       </>
     );
@@ -84,7 +110,7 @@ const styles = StyleSheet.create({
   recordingSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -8,
+    marginTop: 16,
   },
   instructionText: {
     fontSize: 24,
@@ -128,5 +154,8 @@ const styles = StyleSheet.create({
   modeSwitchText: {
     fontSize: 15,
     fontFamily: Fonts.spaceGrotesk.medium,
+  },
+  hiddenButton: {
+    opacity: 0,
   },
 });

@@ -288,6 +288,12 @@ export default function RecordingScreen() {
     baseTranscriptRef.current = '';
   }, [analysisProgress]);
 
+  const handleClearTranscript = useCallback(() => {
+    setTranscript('');
+    setLengthWarning('');
+    baseTranscriptRef.current = '';
+  }, []);
+
   const navigateAfterSave = useCallback(
     (savedDream: DreamAnalysis, previousDreamCount: number, options?: { skipFirstDreamSheet?: boolean }) => {
       if (options?.skipFirstDreamSheet) {
@@ -921,6 +927,7 @@ export default function RecordingScreen() {
                     lengthWarning={lengthWarning}
                     instructionText={t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."}
                     onSwitchToVoice={switchToVoiceMode}
+                    onClear={handleClearTranscript}
                   />
                 )}
 
