@@ -2,6 +2,7 @@ import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -36,6 +37,8 @@ export const DreamCard = memo(function DreamCard({
   const thumbnailUri = useMemo(() => {
     return dream.thumbnailUrl || getThumbnailUrl(dream.imageUrl);
   }, [dream.thumbnailUrl, dream.imageUrl]);
+
+  const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
@@ -88,7 +91,7 @@ export const DreamCard = memo(function DreamCard({
             <View style={styles.tagContainer}>
               {dream.theme && (
                 <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
-                  <Text style={[styles.tagText, { color: colors.textPrimary }]}>{dream.theme}</Text>
+                  <Text style={[styles.tagText, { color: colors.textPrimary }]}>{themeLabel}</Text>
                 </View>
               )}
               {badges?.map((badge, i) => {
