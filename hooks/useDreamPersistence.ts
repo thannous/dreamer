@@ -111,7 +111,12 @@ export function useDreamPersistence({
     if (!unsynced.length) return;
 
     for (const dream of unsynced) {
-      await createDreamInSupabase(dream, user.id);
+      const clientRequestId =
+        dream.clientRequestId ?? (typeof dream.id === 'number' ? `dream-${dream.id}` : undefined);
+      await createDreamInSupabase(
+        clientRequestId ? { ...dream, clientRequestId } : dream,
+        user.id
+      );
     }
 
     await saveDreams([]);

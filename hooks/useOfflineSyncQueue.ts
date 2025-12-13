@@ -82,7 +82,11 @@ export function useOfflineSyncQueue({
   const ensureClientRequestId = useCallback((mutation: DreamMutation): DreamMutation => {
     if (mutation.type === 'create' || mutation.type === 'update') {
       if (mutation.dream.clientRequestId) return mutation;
-      const clientRequestId = generateUUID();
+      const clientRequestId =
+        // Deterministic fallback based on local id to avoid regenerating new ids on each retry
+        typeof mutation.dream.id === 'number'
+          ? `dream-${mutation.dream.id}`
+          : generateUUID();
       return {
         ...mutation,
         dream: { ...mutation.dream, clientRequestId },
