@@ -354,11 +354,13 @@ export default function RecordingScreen() {
     let nativeSession: NativeSpeechSession | null = null;
     let nativeResultPromise: Promise<{ transcript: string; error?: string; recordedUri?: string | null; hasRecording?: boolean }> | null = null;
     let nativeError: string | undefined;
+    let hadNativeSession = false;
     try {
       setIsRecording(false);
       setIsPreparingRecording(false);
       isRecordingRef.current = false;
       nativeSession = nativeSessionRef.current;
+      hadNativeSession = Boolean(nativeSession);
       nativeSessionRef.current = null;
       const usedRecorder = !skipRecorderRef.current;
 
@@ -398,10 +400,8 @@ export default function RecordingScreen() {
         console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
       }
 
-      // Always fallback to Google STT if native returned nothing and we have audio.
-      // The previous "no speech" check was blocking fallback for languages where
-      // native STT doesn't work well (e.g., Spanish on devices without the language pack).
-      const shouldFallbackToGoogle = !transcriptText && (uri || recordedUri);
+      // Only fallback to server-side transcription when native speech recognition was not used.
+      const shouldFallbackToGoogle = !hadNativeSession && !transcriptText && (uri || recordedUri);
 
       if (shouldFallbackToGoogle) {
         try {
@@ -421,7 +421,7 @@ export default function RecordingScreen() {
           const msg = e instanceof Error ? e.message : 'Unknown transcription error';
           Alert.alert(t('recording.alert.transcription_failed.title'), msg);
         }
-      } else if (!transcriptText && !uri) {
+      } else if (!transcriptText && !uri && !hadNativeSession) {
         Alert.alert(
           t('recording.alert.recording_invalid.title'),
           t('recording.alert.recording_invalid.message')
@@ -514,11 +514,10 @@ export default function RecordingScreen() {
           }
         },
       });
-      // Only skip the backup recorder when the native session can persist audio itself.
+      // If native speech recognition is present, don't keep a parallel audio recorder just
+      // for a server-side fallback transcription.
       const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
-      // On web we keep the recorder running to preserve a fallback audio file in case
-      // the SpeechRecognition API returns an empty transcript.
-      skipRecorderRef.current = Platform.OS !== 'web' && Boolean(nativeSessionRef.current) && canPersistAudio;
+      skipRecorderRef.current = Boolean(nativeSessionRef.current);
       if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
         console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
       }

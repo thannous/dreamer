@@ -8,19 +8,19 @@
 ## Runtime Flow
 1. When the mic starts, `startNativeSpeechSession(locale)` begins a native recognition session (punctuation on, on-device when available).
 2. On stop, we first use the native transcript if it exists.
-3. If native STT returns nothing or errors, we send the recorded file to the `/transcribe` endpoint (Google STT) as a backup.
+3. If native STT is not available (no session), we send the recorded file to the `/transcribe` endpoint (Google STT) as a backup.
 
 ## Key Files
 - `app/recording.tsx`  
   - Starts native STT alongside the recording session.  
-  - Prefers the native transcript; falls back to Google only if empty/failed.  
+  - Prefers native STT when available; falls back to Google only when native STT is unavailable.  
   - Relevant excerpt:
   ```ts
   nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale);
   // ...
   const nativeResult = await nativeSession?.stop();
   let transcriptText = nativeResult?.transcript?.trim() ?? '';
-  if (!transcriptText && uri) {
+  if (!nativeSession && uri) {
     transcriptText = await transcribeAudio({ uri, languageCode: transcriptionLocale });
   }
   ```
@@ -39,8 +39,8 @@
 4. API base: `EXPO_PUBLIC_API_URL` or `app.json` `extra.apiUrl` must point to the Supabase Edge Function host.
 
 ## Platform Notes
-- **iOS/Android:** Native STT is attempted first; on-device recognition is requested when supported. Recorded audio is still kept for the Google backup.
-- **Web:** Uses the browser SpeechRecognition API through `expo-speech-recognition`; if unavailable/empty, the Google backup is used.
+- **iOS/Android:** Native STT is attempted first; on-device recognition is requested when supported. Google backup is used only when native STT cannot start.
+- **Web:** Uses the browser SpeechRecognition API through `expo-speech-recognition`; if unavailable, the Google backup is used.
 - **Error handling:** If both native and backup paths return no transcript, the UI shows the “No Speech Detected” alert.
 
 ## Cost Considerations (backup path)
