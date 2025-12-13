@@ -63,7 +63,10 @@
       "Bash(tree:*)",
       "mcp__linear-server__list_comments",
       "Bash(npm run lint:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(git diff:*)",
+      "Bash(npx supabase:*)"
     ],
     "deny": [],
     "ask": []
