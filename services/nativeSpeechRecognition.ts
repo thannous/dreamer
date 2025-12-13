@@ -61,6 +61,26 @@ export const mergeFinalChunk = (finalChunks: string[], newChunk: string): string
   return [...finalChunks, newChunk];
 };
 
+/**
+ * Build the preview string from final chunks and current partial, avoiding duplication.
+ * STT engines often replay the entire sentence in partials (e.g., after a final is emitted,
+ * the next partial may contain the full sentence plus new words). This function detects
+ * when the partial extends the last final chunk and avoids concatenating duplicates.
+ */
+export const buildPreview = (finalChunks: string[], lastPartial: string): string => {
+  const lastFinal = finalChunks[finalChunks.length - 1] ?? '';
+  const normalizedLastFinal = normalizeChunk(lastFinal);
+  const normalizedPartial = normalizeChunk(lastPartial);
+
+  if (normalizedPartial && normalizedLastFinal && normalizedPartial.startsWith(normalizedLastFinal)) {
+    // The partial extends the last final chunk - use partial instead of concatenating
+    const prefix = finalChunks.slice(0, -1).join(' ');
+    return prefix ? `${prefix} ${lastPartial}`.trim() : lastPartial;
+  }
+
+  return `${finalChunks.join(' ')} ${lastPartial}`.trim();
+};
+
 const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModuleType | null> => {
   try {
     // Use dynamic import for ES6 compatibility
@@ -198,7 +218,7 @@ export async function startNativeSpeechSession(
         lastPartial = transcript;
       }
 
-      const preview = `${finalChunks.join(' ')} ${lastPartial}`.trim();
+      const preview = buildPreview(finalChunks, lastPartial);
       if (preview && options?.onPartial) {
         options.onPartial(preview);
       }
