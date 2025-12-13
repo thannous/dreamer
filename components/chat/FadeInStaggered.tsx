@@ -25,7 +25,9 @@ export function FadeInStaggered({
   initialOffset = 6,
 }: FadeInStaggeredProps) {
   const { index, isNew } = useMessageContext();
-  const delay = isNew ? index * delayPerItem : 0;
+  // Using the absolute list index can create multi-second delays in long chats.
+  // Cap the delay so new messages animate quickly and scrolling doesn't schedule huge animation queues.
+  const delay = isNew ? Math.min(180, index * delayPerItem) : 0;
 
   const animatedStyle = useAnimatedStyle(() => {
     if (!isNew) {
@@ -85,7 +87,7 @@ export function TextFadeInStaggeredIfStreaming({
     if (isStreaming) {
       // Simple fade-in instead of pulsing to avoid visual distraction
       opacity.value = withDelay(
-        index * 20,
+        Math.min(200, index * 20),
         withTiming(1, { duration: 300, easing: Easing.out(Easing.quad) })
       );
     } else {

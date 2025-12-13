@@ -247,6 +247,7 @@ describe('revenuecat utils', () => {
         identifier: 'noctalia_monthly',
         packageType: 'MONTHLY',
         product: {
+          price: 4.99,
           priceString: '$4.99',
           currencyCode: 'USD',
           title: 'Monthly Premium',
@@ -259,6 +260,7 @@ describe('revenuecat utils', () => {
       expect(result).toEqual({
         id: 'noctalia_monthly',
         interval: 'monthly',
+        price: 4.99,
         priceFormatted: '$4.99',
         currency: 'USD',
         title: 'Monthly Premium',
@@ -294,6 +296,7 @@ describe('revenuecat utils', () => {
       expect(result).toEqual({
         id: 'minimal_pkg',
         interval: 'monthly',
+        price: 0,
         priceFormatted: '',
         currency: '',
         title: '',

@@ -1,6 +1,7 @@
 -- Fix missing exploration quota tracking:
 -- - Ensure exploration_started_at is set server-side when chat_history gets first user message.
 -- - Ensure enforcement trigger runs on all updates (including chat_history-only updates).
+-- - Ensure quota logging trigger runs on chat-only updates.
 -- - Log quota events using server time to prevent client backdating.
 
 -- 1) Log quota events using server time (anti-backdating).
@@ -16,8 +17,11 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  -- Record analysis usage: one event per (user, dream)
-  IF NEW.is_analyzed IS TRUE THEN
+  -- Record analysis usage: one event per (user, dream) when becoming analyzed
+  IF (
+    (TG_OP = 'INSERT' AND NEW.is_analyzed IS TRUE)
+    OR (TG_OP = 'UPDATE' AND COALESCE(OLD.is_analyzed, false) IS FALSE AND NEW.is_analyzed IS TRUE)
+  ) THEN
     INSERT INTO public.user_quota_events (user_id, dream_id, quota_type, occurred_at)
     SELECT NEW.user_id, NEW.id, 'analysis', now()
     WHERE NOT EXISTS (
@@ -29,8 +33,11 @@ BEGIN
     );
   END IF;
 
-  -- Record exploration usage: one event per (user, dream)
-  IF NEW.exploration_started_at IS NOT NULL THEN
+  -- Record exploration usage: one event per (user, dream) when exploration starts
+  IF (
+    (TG_OP = 'INSERT' AND NEW.exploration_started_at IS NOT NULL)
+    OR (TG_OP = 'UPDATE' AND OLD.exploration_started_at IS NULL AND NEW.exploration_started_at IS NOT NULL)
+  ) THEN
     INSERT INTO public.user_quota_events (user_id, dream_id, quota_type, occurred_at)
     SELECT NEW.user_id, NEW.id, 'exploration', now()
     WHERE NOT EXISTS (
@@ -100,3 +107,12 @@ ON public.dreams
 FOR EACH ROW
 EXECUTE FUNCTION public.enforce_authenticated_monthly_quota();
 
+-- 4) Ensure quota logging runs even when exploration_started_at is set by another trigger.
+-- We avoid "UPDATE OF ..." here because that only fires when the UPDATE statement
+-- explicitly touches those columns (not when another trigger mutates NEW.*).
+DROP TRIGGER IF EXISTS trg_log_quota_event_on_dreams ON public.dreams;
+CREATE TRIGGER trg_log_quota_event_on_dreams
+AFTER INSERT OR UPDATE
+ON public.dreams
+FOR EACH ROW
+EXECUTE FUNCTION public.log_user_quota_event();
