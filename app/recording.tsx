@@ -840,7 +840,13 @@ export default function RecordingScreen() {
       analysisProgress.reset();
       analysisProgress.setStep(AnalysisStep.ANALYZING);
 
-      const analyzedDream = await analyzeDream(dream.id, dream.transcript, { lang: language });
+      const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
+        lang: language,
+        onProgress: (step) => {
+          // Update progress as each phase completes
+          analysisProgress.setStep(step);
+        },
+      });
 
       analysisProgress.setStep(AnalysisStep.COMPLETE);
       setPendingAnalysisDream(null);
