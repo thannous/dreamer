@@ -93,7 +93,7 @@ describe('mockAuth', () => {
       expect(user.email_confirmed_at).toBeTruthy();
     });
 
-    it('given premium profile when signing in then returns premium user with verified email', async () => {
+    it('given plus profile when signing in then returns plus user with verified email', async () => {
       // Given
       const profile = 'premium';
 
@@ -103,7 +103,7 @@ describe('mockAuth', () => {
       // Then
       expect(user.email).toBe('mock.premium@dreamer.app');
       expect(user.user_metadata?.profile).toBe('premium');
-      expect(user.user_metadata?.tier).toBe('premium');
+      expect(user.user_metadata?.tier).toBe('plus');
       expect(user.email_confirmed_at).toBeTruthy();
     });
   });

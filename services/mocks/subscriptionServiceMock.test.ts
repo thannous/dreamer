@@ -83,7 +83,7 @@ describe('subscriptionServiceMock', () => {
       const status = await service.getStatus();
 
       // Then
-      expect(status?.tier).toBe('premium');
+      expect(status?.tier).toBe('plus');
       expect(status?.isActive).toBe(true);
       expect(status?.productId).toBe('mock_monthly');
     });
@@ -138,7 +138,7 @@ describe('subscriptionServiceMock', () => {
       await expect(service.purchasePackage('mock_monthly')).rejects.toThrow('Purchases not initialized');
     });
 
-    it('given initialized service when purchasing valid package then upgrades to premium', async () => {
+    it('given initialized service when purchasing valid package then upgrades to plus', async () => {
       // Given
       const service = await import('./subscriptionServiceMock');
       await service.initialize();
@@ -147,7 +147,7 @@ describe('subscriptionServiceMock', () => {
       const status = await service.purchasePackage('mock_annual');
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.isActive).toBe(true);
       expect(status.expiryDate).toBeNull();
       expect(status.productId).toBe('mock_annual');
@@ -162,7 +162,7 @@ describe('subscriptionServiceMock', () => {
       const status = await service.purchasePackage('invalid_package_id');
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.isActive).toBe(true);
       expect(status.productId).toBe('mock_monthly'); // Falls back to first package
     });
@@ -176,7 +176,7 @@ describe('subscriptionServiceMock', () => {
       const status = await service.purchasePackage('mock_monthly');
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.productId).toBe('mock_monthly');
     });
   });
@@ -205,7 +205,7 @@ describe('subscriptionServiceMock', () => {
       expect(status.productId).toBeNull();
     });
 
-    it('given initialized service with premium status when restoring purchases then returns current premium status', async () => {
+    it('given initialized service with plus status when restoring purchases then returns current plus status', async () => {
       // Given
       const service = await import('./subscriptionServiceMock');
       await service.initialize();
@@ -215,7 +215,7 @@ describe('subscriptionServiceMock', () => {
       const status = await service.restorePurchases();
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.isActive).toBe(true);
       expect(status.productId).toBe('mock_annual');
     });
@@ -245,7 +245,7 @@ describe('subscriptionServiceMock', () => {
       expect(status.productId).toBeNull();
     });
 
-    it('given initialized service with premium status when refreshing status then returns current premium status', async () => {
+    it('given initialized service with plus status when refreshing status then returns current plus status', async () => {
       // Given
       const service = await import('./subscriptionServiceMock');
       await service.initialize();
@@ -255,7 +255,7 @@ describe('subscriptionServiceMock', () => {
       const status = await service.refreshStatus();
 
       // Then
-      expect(status.tier).toBe('premium');
+      expect(status.tier).toBe('plus');
       expect(status.isActive).toBe(true);
       expect(status.productId).toBe('mock_monthly');
     });
@@ -272,19 +272,19 @@ describe('subscriptionServiceMock', () => {
 
       // When - Purchase
       const purchasedStatus = await service.purchasePackage('mock_annual');
-      expect(purchasedStatus.tier).toBe('premium');
+      expect(purchasedStatus.tier).toBe('plus');
 
       // When - Get status
       const currentStatus = await service.getStatus();
-      expect(currentStatus?.tier).toBe('premium');
+      expect(currentStatus?.tier).toBe('plus');
 
       // When - Restore purchases
       const restoredStatus = await service.restorePurchases();
-      expect(restoredStatus.tier).toBe('premium');
+      expect(restoredStatus.tier).toBe('plus');
 
       // When - Refresh status
       const refreshedStatus = await service.refreshStatus();
-      expect(refreshedStatus.tier).toBe('premium');
+      expect(refreshedStatus.tier).toBe('plus');
 
       // Then - All statuses should be consistent
       expect(purchasedStatus.productId).toBe(restoredStatus.productId);

@@ -41,12 +41,17 @@ vi.mock('../../context/AuthContext', () => ({
   }),
 }));
 
-vi.mock('../useSubscription', () => ({
-  useSubscription: () => ({
-    status: mockSubscriptionStatus,
-    loading: mockSubscriptionLoading,
-  }),
-}));
+vi.mock('../useSubscription', () => {
+  return {
+    useSubscription: () => {
+      // Return values dynamically so they can be changed in tests
+      return {
+        status: mockSubscriptionStatus,
+        loading: mockSubscriptionLoading,
+      };
+    },
+  };
+});
 
 vi.mock('../../services/quotaService', () => ({
   quotaService: {
@@ -110,6 +115,7 @@ describe('useQuota', () => {
     });
 
     it('provides guest tier by default when not authenticated', async () => {
+      // When not authenticated, user is null and tier defaults to 'free'
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'guest' }));
 
       const { result } = renderHook(() => useQuota());
@@ -118,7 +124,9 @@ describe('useQuota', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      expect(result.current.tier).toBe('guest');
+      // Guest users get 'free' tier (no subscription), but quotaStatus shows guest limits
+      expect(result.current.tier).toBe('free');
+      expect(result.current.quotaStatus?.tier).toBe('guest');
     });
 
     it('provides free tier when authenticated', async () => {

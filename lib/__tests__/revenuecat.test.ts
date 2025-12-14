@@ -110,7 +110,7 @@ describe('revenuecat utils', () => {
       expect(mapTierFromCustomerInfo(info)).toBe('free');
     });
 
-    it('given active premium entitlement returns premium tier', () => {
+    it('given active premium entitlement returns plus tier', () => {
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
@@ -118,10 +118,10 @@ describe('revenuecat utils', () => {
           },
         },
       };
-      expect(mapTierFromCustomerInfo(info)).toBe('premium');
+      expect(mapTierFromCustomerInfo(info)).toBe('plus');
     });
 
-    it('given any active entitlement returns premium tier', () => {
+    it('given any active entitlement returns plus tier', () => {
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
@@ -129,7 +129,7 @@ describe('revenuecat utils', () => {
           },
         },
       };
-      expect(mapTierFromCustomerInfo(info)).toBe('premium');
+      expect(mapTierFromCustomerInfo(info)).toBe('plus');
     });
   });
 
@@ -145,7 +145,7 @@ describe('revenuecat utils', () => {
       });
     });
 
-    it('given active subscription returns premium active status', () => {
+    it('given active subscription returns plus active status', () => {
       const futureDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
       const info: CustomerInfoLike = {
         entitlements: {
@@ -161,7 +161,7 @@ describe('revenuecat utils', () => {
       const result = mapStatus(info);
 
       expect(result).toEqual({
-        tier: 'premium',
+        tier: 'plus',
         isActive: true,
         expiryDate: futureDate,
         productId: 'noctalia_monthly',

@@ -55,12 +55,15 @@ const PLUS_ENTITLEMENT_IDS = [
 
 /**
  * Priority order for checking entitlements.
- * Premium takes precedence over Plus.
+ * Check for premium entitlements first (will be mapped to 'plus' tier).
+ * In the future, premium entitlements may be mapped to a separate 'premium' tier.
  */
 const ENTITLEMENT_PRIORITY = [...PREMIUM_ENTITLEMENT_IDS, ...PLUS_ENTITLEMENT_IDS];
 
 function tierFromEntitlementId(entitlementId: string): SubscriptionTier {
-  if (PREMIUM_ENTITLEMENT_IDS.includes(entitlementId)) return 'premium';
+  // Map both premium and plus entitlements to 'plus' tier
+  // 'premium' tier will be implemented in the future
+  if (PREMIUM_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
   if (PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
   // Default safe paid tier if an entitlement exists but isn't explicitly mapped.
   return 'plus';
@@ -132,7 +135,7 @@ export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
   // ✅ PHASE 3: Check if entitlement has expired
   const isExpired = isEntitlementExpired(expiryDate);
   const tier = (activeEntitlement && !isExpired && entitlementId) ? tierFromEntitlementId(entitlementId) : 'free';
-  const active = tier === 'plus' || tier === 'premium';
+  const active = tier === 'plus';
   const productId = activeEntitlement?.productIdentifier ?? null;
 
   return {
