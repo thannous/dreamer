@@ -271,7 +271,7 @@ describe('GuestQuotaProvider', () => {
       const provider = new GuestQuotaProvider();
 
       // When
-      const status = await provider.getQuotaStatus(user);
+      const status = await provider.getQuotaStatus(user, 'guest');
 
       // Then
       expect(status.tier).toBe('free');
@@ -297,7 +297,7 @@ describe('GuestQuotaProvider', () => {
       const provider = new GuestQuotaProvider();
 
       // When
-      const status = await provider.getQuotaStatus(null, { dreamId: dreamB.id });
+      const status = await provider.getQuotaStatus(null, 'guest', { dreamId: dreamB.id });
 
       // Then
       expect(status.usage.analysis.used).toBe(2);
@@ -314,7 +314,7 @@ describe('GuestQuotaProvider', () => {
       const provider = new GuestQuotaProvider();
 
       // When
-      const status = await provider.getQuotaStatus(null, { dreamId: 999 });
+      const status = await provider.getQuotaStatus(null, 'guest', { dreamId: 999 });
 
       // Then
       expect(status.tier).toBe('guest');
@@ -331,7 +331,7 @@ describe('GuestQuotaProvider', () => {
       const provider = new GuestQuotaProvider();
 
       // When
-      const status = await provider.getQuotaStatus(null, { dreamId: 999 });
+      const status = await provider.getQuotaStatus(null, 'guest', { dreamId: 999 });
 
       // Then
       expect(status.canExplore).toBe(false);

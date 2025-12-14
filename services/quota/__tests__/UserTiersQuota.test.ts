@@ -86,14 +86,14 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockQuotaEventStore.analyzedDreamIds = [1, 2];
 
     const provider = new MockQuotaProvider();
-    await expect(provider.canAnalyzeDream(null)).resolves.toBe(false);
+    await expect(provider.canAnalyzeDream(null, 'guest')).resolves.toBe(false);
 
     // Exploration: allow for already explored dream
     mockQuotaEventStore.exploredDreamIds = [10];
     const explored = buildDream({ id: 10, explorationStartedAt: Date.now() });
     mockGetSavedDreams.mockResolvedValueOnce([explored, ...dreams]);
     mockQuotaEventStore.exploredDreamIds = [10];
-    await expect(provider.canExploreDream({ dreamId: explored.id }, null)).resolves.toBe(true);
+    await expect(provider.canExploreDream({ dreamId: explored.id }, null, 'guest')).resolves.toBe(true);
 
     // (Messages per dream covered in MockQuotaProvider.test.ts)
   });
@@ -113,7 +113,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
 
     mockGetSavedDreams.mockResolvedValueOnce(base);
     const provider = new MockQuotaProvider();
-    await expect(provider.canAnalyzeDream(userFree)).resolves.toBe(true);
+    await expect(provider.canAnalyzeDream(userFree, 'free')).resolves.toBe(true);
 
     // Use 1 more => total 3 (limit for free tier)
     mockQuotaEventStore.analysisCount = 3;
@@ -128,7 +128,7 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
 
     const provider2 = new MockQuotaProvider();
     mockGetSavedDreams.mockResolvedValueOnce(five);
-    await expect(provider2.canAnalyzeDream(userFree)).resolves.toBe(false);
+    await expect(provider2.canAnalyzeDream(userFree, 'free')).resolves.toBe(false);
 
     // Explorations: two dreams explored already (limit for free tier)
     mockQuotaEventStore.explorationCount = 2;
@@ -140,13 +140,13 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     ];
     const provider3 = new MockQuotaProvider();
     mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
-    await expect(provider3.canExploreDream({ dreamId: 999 }, userFree)).resolves.toBe(false);
+    await expect(provider3.canExploreDream({ dreamId: 999 }, userFree, 'free')).resolves.toBe(false);
 
     // But for those same explored dreams, allow continuing the chat
     const provider4 = new MockQuotaProvider();
     mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
     await expect(provider4.getUsedExplorationCount(userFree)).resolves.toBe(2);
-    await expect(provider4.canExploreDream({ dreamId: 200 }, userFree)).resolves.toBe(true);
+    await expect(provider4.canExploreDream({ dreamId: 200 }, userFree, 'free')).resolves.toBe(true);
   });
 
   it('Premium: unlimited analyses, explorations, and messages', async () => {
@@ -156,10 +156,10 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockGetSavedDreams.mockResolvedValue(heavy);
 
     const provider = new MockQuotaProvider();
-    await expect(provider.canAnalyzeDream(userPremium)).resolves.toBe(true);
-    await expect(provider.canExploreDream({ dreamId: 12345 }, userPremium)).resolves.toBe(true);
-    await expect(provider.canSendChatMessage({ dreamId: heavy[0].id }, userPremium)).resolves.toBe(true);
-    const status = await provider.getQuotaStatus(userPremium);
+    await expect(provider.canAnalyzeDream(userPremium, 'premium')).resolves.toBe(true);
+    await expect(provider.canExploreDream({ dreamId: 12345 }, userPremium, 'premium')).resolves.toBe(true);
+    await expect(provider.canSendChatMessage({ dreamId: heavy[0].id }, userPremium, 'premium')).resolves.toBe(true);
+    const status = await provider.getQuotaStatus(userPremium, 'premium');
     expect(status.usage.analysis.limit).toBeNull();
     expect(status.usage.exploration.limit).toBeNull();
     expect(status.usage.messages.limit).toBeNull();
