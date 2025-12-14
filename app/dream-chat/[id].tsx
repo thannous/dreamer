@@ -316,14 +316,13 @@ export default function DreamChatScreen() {
       // Check exploration quota for first message (new exploration)
       const baseMessages = options?.baseMessages ?? messages;
       const isFirstUserMessage = baseMessages.filter((msg) => msg.role === 'user').length === 0;
-      let claimedExplorationStartedAt: number | null = null;
 
       if (isFirstUserMessage && !dream.explorationStartedAt) {
         // Block if exploration is already blocked
         if (explorationBlocked) {
           return;
         }
-        // Clear cached quota counts before checking/claiming to avoid stale cache windows
+        // Clear cached quota counts before checking to avoid stale cache windows
         quotaService.invalidate(user);
         // Double-check exploration quota before starting new exploration
         try {
@@ -332,12 +331,9 @@ export default function DreamChatScreen() {
             setExplorationBlocked(true);
             return;
           }
-
-          // Claim the exploration on the server BEFORE calling the AI, so quota is enforced atomically.
-          // The DB trigger will normalize the timestamp to server time and log the quota event.
-          claimedExplorationStartedAt = Date.now();
-          await updateDream({ ...dream, explorationStartedAt: claimedExplorationStartedAt } as DreamAnalysis);
-          quotaService.invalidate(user);
+          // Note: Actual quota enforcement happens server-side via DB trigger
+          // when the AI response is added to chat_history. This client-side check
+          // provides fast feedback to the user.
         } catch (error) {
           if (error instanceof QuotaError && error.code === QuotaErrorCode.EXPLORATION_LIMIT_REACHED) {
             setExplorationBlocked(true);
@@ -385,16 +381,13 @@ export default function DreamChatScreen() {
 
         setMessages(finalMessages);
 
-        // Mark dream as explored if this is the first user message
+        // Persist chat history to dream
+        // Note: exploration_started_at is set server-side by the DB trigger
+        // when it detects the first model message in chat_history
         const dreamUpdate: Partial<DreamAnalysis> = {
           ...dream,
           chatHistory: finalMessages,
         };
-
-        if (isFirstUserMessage && !dreamUpdate.explorationStartedAt) {
-          dreamUpdate.explorationStartedAt =
-            dream.explorationStartedAt ?? claimedExplorationStartedAt ?? Date.now();
-        }
 
         // Persist to dream
         await updateDream(dreamUpdate as DreamAnalysis);
