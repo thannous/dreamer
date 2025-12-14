@@ -173,7 +173,7 @@ describe('QuotaError', () => {
     const error = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'free');
     
     expect(error.userMessage).toContain('3 free analyses');
-    expect(error.userMessage).toContain('premium');
+    expect(error.userMessage).toContain('Plus');
   });
 
   it('should allow custom user message', () => {
@@ -206,7 +206,7 @@ describe('QuotaError', () => {
       const error = new QuotaError(QuotaErrorCode.EXPLORATION_LIMIT_REACHED, 'free');
 
       expect(error.userMessage).toContain('dream explorations');
-      expect(error.userMessage).toContain('premium');
+      expect(error.userMessage).toContain('Plus');
     });
 
     it('should generate message for premium exploration limit', () => {
@@ -221,14 +221,14 @@ describe('QuotaError', () => {
       const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'guest');
 
       expect(error.userMessage).toContain('10 messages');
-      expect(error.userMessage).toContain('premium');
+      expect(error.userMessage).toContain('Plus');
     });
 
     it('should generate message for free message limit', () => {
       const error = new QuotaError(QuotaErrorCode.MESSAGE_LIMIT_REACHED, 'free');
 
       expect(error.userMessage).toContain('20 messages');
-      expect(error.userMessage).toContain('premium');
+      expect(error.userMessage).toContain('Plus');
     });
 
     it('should generate message for premium message limit', () => {
