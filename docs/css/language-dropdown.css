@@ -3,14 +3,9 @@
  * Dropdown menu for language selection in landing pages
  */
 
-/* Hidden utility class - but allow nav links to show */
+/* Hidden utility class */
 .hidden {
   display: none !important;
-}
-
-/* Override hidden for nav links */
-nav .hidden {
-  display: inline-flex !important;
 }
 
 /* Dropdown wrapper positioning */
