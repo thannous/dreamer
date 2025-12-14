@@ -1,0 +1,96 @@
+/**
+ * Language Dropdown Styles
+ * Dropdown menu for language selection in landing pages
+ */
+
+/* Dropdown wrapper positioning */
+.language-dropdown-wrapper {
+  position: relative;
+}
+
+/* Dropdown menu styles */
+.language-dropdown-menu {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  animation: dropdownFadeIn 0.2s ease-out forwards;
+  backdrop-filter: blur(10px);
+  background: rgba(10, 5, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown fade-in animation */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dropdown item base styles */
+.dropdown-item {
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: rgba(196, 181, 253, 0.5);
+  transition: all 0.2s ease;
+}
+
+/* Dropdown item hover state */
+.dropdown-item:hover:not(.disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-left-color: #FDA481; /* dream-salmon */
+}
+
+/* Dropdown item active/disabled state (for future use) */
+.dropdown-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Check icon styles */
+.dropdown-item .text-dream-salmon {
+  color: #FDA481;
+}
+
+/* Hidden check icon */
+.dropdown-item .current-lang-indicator.hidden {
+  display: none;
+}
+
+/* Chevron rotation transition */
+#dropdownChevron {
+  transition: transform 0.3s ease;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .language-dropdown-menu {
+    right: -8px;
+    min-width: 140px;
+    font-size: 0.8125rem;
+  }
+
+  .dropdown-item {
+    padding: 0.4rem 0.75rem;
+  }
+}
+
+/* Ensure proper z-stacking */
+.language-dropdown-menu {
+  z-index: 50;
+}
+
+/* Glass button hover enhancement */
+.glass-button:hover {
+  border-color: #FDA481; /* dream-salmon */
+  color: white;
+}
