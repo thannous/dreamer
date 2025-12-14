@@ -130,6 +130,10 @@ function RootLayoutNav() {
         currentPath?.startsWith('/(tabs)/settings') ||
         pathname?.startsWith('/(tabs)/settings');
       const isInPaywall = currentPath === '/paywall';
+      const isInJournalDetail =
+        currentPath?.startsWith('/journal/') ||
+        currentPath?.startsWith('/dream-chat/') ||
+        currentPath?.startsWith('/dream-categories/');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateToRecording', {
@@ -148,6 +152,13 @@ function RootLayoutNav() {
       if (isInPaywall) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on paywall, skip redirect');
+        }
+        return;
+      }
+
+      if (isInJournalDetail) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] stay on journal detail, skip redirect');
         }
         return;
       }
