@@ -3,6 +3,16 @@
  * Dropdown menu for language selection in landing pages
  */
 
+/* Hidden utility class - but allow nav links to show */
+.hidden {
+  display: none !important;
+}
+
+/* Override hidden for nav links */
+nav .hidden {
+  display: inline-flex !important;
+}
+
 /* Dropdown wrapper positioning */
 .language-dropdown-wrapper {
   position: relative;
@@ -10,11 +20,21 @@
 
 /* Dropdown menu styles */
 .language-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  min-width: 160px;
+  z-index: 50;
+  border-radius: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   animation: dropdownFadeIn 0.2s ease-out forwards;
   backdrop-filter: blur(10px);
-  background: rgba(10, 5, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 10, 40, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 /* Dropdown fade-in animation */
@@ -40,6 +60,9 @@
   font-size: 0.875rem;
   color: rgba(196, 181, 253, 0.5);
   transition: all 0.2s ease;
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Dropdown item hover state */
@@ -94,3 +117,4 @@
   border-color: #FDA481; /* dream-salmon */
   color: white;
 }
+
