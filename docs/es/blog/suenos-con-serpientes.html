@@ -31,6 +31,7 @@
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/css/styles.min.css">
+    <link rel="stylesheet" href="/css/language-dropdown.css">
     <script src="https://unpkg.com/lucide@latest" defer></script>
 
     <style>
@@ -290,5 +291,6 @@
     </footer>
 
     <script>document.addEventListener('DOMContentLoaded', () => { if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons(); window.addEventListener('scroll', () => { const navbar = document.getElementById('navbar'); if (navbar) { navbar.classList.toggle('py-2', window.scrollY > 50); navbar.classList.toggle('py-6', window.scrollY <= 50); } }); document.querySelectorAll('.toc-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const target = document.querySelector(link.getAttribute('href')); if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); }); });</script>
+        <script src="/js/language-dropdown.js" defer></script>
 </body>
 </html>
