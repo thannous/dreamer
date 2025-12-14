@@ -27,6 +27,7 @@ import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { logger } from '@/lib/logger';
 import type { DreamAnalysis } from '@/lib/types';
+import { AnalysisStep } from '@/hooks/useAnalysisProgress';
 import {
   analyzeDream as analyzeDreamText,
   generateImageFromTranscript,
@@ -362,7 +363,7 @@ export const useDreamJournal = () => {
     async (
       dreamId: number,
       transcript: string,
-      options?: { replaceExistingImage?: boolean; lang?: string }
+      options?: { replaceExistingImage?: boolean; lang?: string; onProgress?: (step: AnalysisStep) => void }
     ): Promise<DreamAnalysis> => {
       // Check quota before analyzing
       const canAnalyze = await quotaService.canAnalyzeDream(user);
@@ -393,15 +394,31 @@ export const useDreamJournal = () => {
       const fingerprint = !user ? await getDeviceFingerprint() : undefined;
 
       // Kick off analysis and image generation in parallel
-      const analysisPromise = analyzeDreamText(transcript, options?.lang, fingerprint);
+      const analysisPromise = analyzeDreamText(transcript, options?.lang, fingerprint)
+        .then((result) => {
+          // Analysis completed → notify GENERATING_IMAGE
+          options?.onProgress?.(AnalysisStep.GENERATING_IMAGE);
+          return result;
+        });
       const imagePromise = shouldReplaceImage
         ? generateImageFromTranscript(transcript, dream.imageUrl)
-            .then((url) => ({ url, failed: false as const }))
+            .then((url) => {
+              // Image generated → notify FINALIZING
+              options?.onProgress?.(AnalysisStep.FINALIZING);
+              return { url, failed: false as const };
+            })
             .catch((err) => {
               logger.warn('Image generation failed', err);
+              // Even if image fails, move to FINALIZING
+              options?.onProgress?.(AnalysisStep.FINALIZING);
               return { url: dream.imageUrl, failed: true as const };
             })
-        : Promise.resolve({ url: dream.imageUrl, failed: false as const });
+        : Promise.resolve({ url: dream.imageUrl, failed: false as const })
+            .then((result) => {
+              // No image to generate, skip directly to FINALIZING
+              options?.onProgress?.(AnalysisStep.FINALIZING);
+              return result;
+            });
 
       try {
         const [analysis, imageResult] = await Promise.all([analysisPromise, imagePromise]);
