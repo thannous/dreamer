@@ -3,6 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
+import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +17,6 @@ interface DreamCardProps {
   onPress: () => void;
   shouldLoadImage?: boolean;
   testID?: string;
-  badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -26,7 +26,6 @@ export const DreamCard = memo(function DreamCard({
   onPress,
   shouldLoadImage = true,
   testID,
-  badges,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
@@ -42,6 +41,37 @@ export const DreamCard = memo(function DreamCard({
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
+
+  // Compute badges internally to ensure prop stability and avoid unnecessary re-renders
+  const badges = useMemo(() => {
+    const list: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
+    const isAnalyzed = isDreamAnalyzed(dream);
+    const isExplored = isDreamExplored(dream);
+    const isFavorite = !!dream.isFavorite;
+
+    if (isExplored) {
+      list.push({
+        label: t('journal.badge.explored'),
+        icon: 'chatbubble-ellipses-outline',
+        variant: 'accent',
+      });
+    }
+    if (!isExplored && isAnalyzed) {
+      list.push({
+        label: t('journal.badge.analyzed'),
+        icon: 'sparkles',
+        variant: 'secondary',
+      });
+    }
+    if (isFavorite) {
+      list.push({
+        label: t('journal.badge.favorite'),
+        icon: 'heart',
+        variant: 'secondary',
+      });
+    }
+    return list;
+  }, [dream, t]);
 
   return (
     <Animated.View>
@@ -94,7 +124,7 @@ export const DreamCard = memo(function DreamCard({
                   <Text style={[styles.tagText, { color: colors.textPrimary }]}>{themeLabel}</Text>
                 </View>
               )}
-              {badges?.map((badge, i) => {
+              {badges.map((badge, i) => {
                 const isAccent = badge.variant === 'accent';
                 const key = badge.label || badge.icon || String(i);
 

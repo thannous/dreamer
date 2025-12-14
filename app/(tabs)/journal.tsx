@@ -214,34 +214,7 @@ export default function JournalListScreen() {
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.INITIAL_VISIBLE_COUNT; // Load first 5 immediately
 
-    const isFavorite = !!item.isFavorite;
-    const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-
-    const mobileBadges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      mobileBadges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      mobileBadges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      mobileBadges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
       <View style={styles.timelineItem}>
@@ -262,7 +235,6 @@ export default function JournalListScreen() {
             dream={item}
             onPress={() => router.push(`/journal/${item.id}`)}
             shouldLoadImage={shouldLoadImage}
-            badges={mobileBadges}
             testID={TID.List.DreamItem(item.id)}
           />
         </View>
@@ -280,29 +252,6 @@ export default function JournalListScreen() {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
-    const badges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      badges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      badges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      badges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
       <View
@@ -324,7 +273,6 @@ export default function JournalListScreen() {
           dream={item}
           onPress={() => router.push(`/journal/${item.id}`)}
           shouldLoadImage={shouldLoadImage}
-          badges={badges}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
@@ -420,6 +368,7 @@ export default function JournalListScreen() {
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
+          estimatedItemSize={250} // Approximate height for desktop cards
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
@@ -434,6 +383,7 @@ export default function JournalListScreen() {
           extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
+          estimatedItemSize={140} // Approximate height for mobile list items
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
