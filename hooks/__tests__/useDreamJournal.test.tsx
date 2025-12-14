@@ -41,7 +41,7 @@ const {
   mockFetchDreamsFromSupabase: vi.fn<() => Promise<DreamAnalysis[]>>(),
   mockAnalyzeDreamText: vi.fn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
   mockGenerateImageFromTranscript: vi.fn<(transcript: string, previousImageUrl?: string) => Promise<string>>(),
-  mockCanAnalyzeDream: vi.fn<(user: unknown) => Promise<boolean>>(),
+  mockCanAnalyzeDream: vi.fn<(user: unknown, tier: string) => Promise<boolean>>(),
   mockInvalidateQuota: vi.fn<(user: unknown) => void>(),
   mockGetThumbnailUrl: vi.fn<(url: string | undefined) => string | undefined>(),
   mockIncrementLocalAnalysisCount: vi.fn<() => Promise<number>>(),
@@ -70,6 +70,14 @@ vi.stubGlobal('process', {
 // Mock AuthContext with hoisted mock function
 vi.mock('../../context/AuthContext', () => ({
   useAuth: mockUseAuth,
+}));
+
+// Mock useSubscription
+vi.mock('../useSubscription', () => ({
+  useSubscription: () => ({
+    status: { tier: 'free' },
+    loading: false,
+  }),
 }));
 
 // Mock storageService
@@ -604,7 +612,7 @@ describe('useDreamJournal', () => {
         });
       }).rejects.toThrow(QuotaError);
 
-      expect(mockCanAnalyzeDream).toHaveBeenCalled();
+      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'free');
     });
 
     it('analyzes dream and generates image in parallel', async () => {
