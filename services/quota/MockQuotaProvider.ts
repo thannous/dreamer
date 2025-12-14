@@ -36,8 +36,8 @@ export class MockQuotaProvider implements QuotaProvider {
 
   private getTier(user: User | null): UserTier {
     if (!user) return 'guest';
-    const tier = user.user_metadata?.tier as UserTier | undefined;
-    if (tier === 'premium') return 'premium';
+    const tier = (user.app_metadata?.tier ?? user.user_metadata?.tier) as UserTier | undefined;
+    if (tier === 'premium' || tier === 'plus') return tier;
     if (tier === 'guest') return 'guest';
     return 'free';
   }

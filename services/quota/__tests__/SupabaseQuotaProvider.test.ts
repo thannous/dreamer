@@ -50,8 +50,8 @@ vi.mock('../../../lib/quotaReset', () => ({
   }),
 }));
 
-const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as any;
-const premiumUser = { id: 'premium-user', user_metadata: { tier: 'premium' } } as any;
+const freeUser = { id: 'free-user', app_metadata: { tier: 'free' } } as any;
+const premiumUser = { id: 'premium-user', app_metadata: { tier: 'premium' } } as any;
 const guestUser = null;
 
 describe('SupabaseQuotaProvider', () => {
@@ -101,7 +101,7 @@ describe('SupabaseQuotaProvider', () => {
 
     it('given user with metadata tier when getting tier then returns metadata tier', async () => {
       // Given
-      const user = { id: 'test-user', user_metadata: { tier: 'premium' } } as any;
+      const user = { id: 'test-user', app_metadata: { tier: 'premium' } } as any;
 
       // When
       const tier = (provider as any).getUserTier(user);
@@ -552,7 +552,7 @@ describe('SupabaseQuotaProvider', () => {
 
     it('given user without tier when getting tier then defaults to free', () => {
       // Given
-      const userWithoutTier = { id: 'no-tier', user_metadata: {} } as any;
+      const userWithoutTier = { id: 'no-tier', app_metadata: {} } as any;
       const p = provider as any;
 
       // When

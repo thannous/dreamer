@@ -77,39 +77,53 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
   const normalizedUserId = userId ?? null;
   const globalState = globalAny[RC_GLOBAL_KEY]!;
 
-  if (!initialized) {
-    const sameConfig = globalState.configured && globalState.apiKey === apiKey;
-    if (!sameConfig) {
-      Purchases.configure({ apiKey, appUserID: normalizedUserId ?? undefined });
-      globalState.configured = true;
-      globalState.apiKey = apiKey;
-      globalState.userId = normalizedUserId;
-    } else if (globalState.userId !== normalizedUserId) {
-      // Sync app user without re-configuring the SDK (avoids duplicate configure warning)
-      if (normalizedUserId) {
-        await Purchases.logIn(normalizedUserId);
-      } else {
-        await Purchases.logOut();
-      }
-      globalState.userId = normalizedUserId;
-    }
+  const sameConfig = globalState.configured && globalState.apiKey === apiKey;
+
+  // Best practice: start anonymous, then link authenticated users via logIn/logOut.
+  // This prevents orphaning purchases that happened before sign-in and makes webhook `app_user_id` mapping reliable.
+  if (!initialized || !sameConfig) {
+    Purchases.configure({ apiKey });
+    globalState.configured = true;
+    globalState.apiKey = apiKey;
+    globalState.userId = null;
     initialized = true;
-    lastUserId = normalizedUserId;
-    resetCachedState();
-    return;
-  }
-  if (!normalizedUserId) {
-    if (lastUserId !== null) {
-      await Purchases.logOut();
-    }
     lastUserId = null;
     resetCachedState();
+  }
+
+  if (normalizedUserId) {
+    if (lastUserId !== normalizedUserId) {
+      await Purchases.logIn(normalizedUserId);
+      lastUserId = normalizedUserId;
+      globalState.userId = normalizedUserId;
+      resetCachedState();
+      if (__DEV__) {
+        try {
+          const appUserId = await Purchases.getAppUserID();
+          const isAnonymous = await Purchases.isAnonymous();
+          console.log('[RevenueCat] Logged in', { appUserId, isAnonymous });
+        } catch {
+          // ignore
+        }
+      }
+    }
     return;
   }
-  if (normalizedUserId !== lastUserId) {
-    await Purchases.logIn(normalizedUserId);
-    lastUserId = normalizedUserId;
+
+  if (lastUserId !== null) {
+    await Purchases.logOut();
+    lastUserId = null;
+    globalState.userId = null;
     resetCachedState();
+    if (__DEV__) {
+      try {
+        const appUserId = await Purchases.getAppUserID();
+        const isAnonymous = await Purchases.isAnonymous();
+        console.log('[RevenueCat] Logged out', { appUserId, isAnonymous });
+      } catch {
+        // ignore
+      }
+    }
   }
 }
 

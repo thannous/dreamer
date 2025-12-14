@@ -1,7 +1,7 @@
 /**
  * User tier types for quota management
  */
-export type UserTier = 'guest' | 'free' | 'premium';
+export type UserTier = 'guest' | 'free' | 'plus' | 'premium';
 
 /**
  * Quota limits by user tier
@@ -33,6 +33,11 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
     exploration: 2,
     messagesPerDream: 20, // 20 messages per dream
   },
+  plus: {
+    analysis: null, // Unlimited analyses
+    exploration: null, // Unlimited explorations
+    messagesPerDream: null, // Unlimited messages
+  },
   premium: {
     analysis: null, // Unlimited analyses
     exploration: null, // Unlimited explorations
@@ -48,6 +53,10 @@ export const QUOTA_CONFIG: Record<UserTier, TierQuotaConfig> = {
   free: {
     initial: QUOTAS.free,
     monthly: QUOTAS.free,
+  },
+  plus: {
+    initial: QUOTAS.plus,
+    monthly: QUOTAS.plus,
   },
   premium: {
     initial: QUOTAS.premium,

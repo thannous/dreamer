@@ -88,8 +88,15 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   try {
-    const { data } = await supabase.auth.getSession();
-    return data.session?.user ?? null;
+    // getSession() is usually cached locally and might not reflect server-side updates
+    // to app_metadata (e.g. tier updates from RevenueCat webhook). Prefer getUser().
+    const { data, error } = await supabase.auth.getUser();
+    if (!error) {
+      return data.user ?? null;
+    }
+
+    const session = await supabase.auth.getSession();
+    return session.data.session?.user ?? null;
   } catch {
     return null;
   }
@@ -207,8 +214,16 @@ export async function signInWithGoogle(): Promise<User> {
     }
 
     console.log('[Auth] ✓ Successfully signed in with Google');
-    console.log('[Auth] User email:', data.user.email);
-    console.log('[Auth] User ID:', data.user.id);
+    if (__DEV__) {
+      console.log('[Auth] User email:', data.user.email);
+      console.log('[Auth] User ID:', data.user.id);
+    } else {
+      console.log('[Auth] User authenticated:', {
+        hasEmail: Boolean(data.user.email),
+        hasId: Boolean(data.user.id),
+        emailDomain: data.user.email?.split('@')[1] ?? 'unknown'
+      });
+    }
 
     return data.user;
   } catch (error: unknown) {

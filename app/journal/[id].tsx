@@ -670,7 +670,7 @@ export default function JournalDetailScreen() {
       const allowed = canAnalyzeNow || (await canAnalyze());
       if (!allowed) {
         // Don't show for premium users
-        if (tier === 'premium') return false;
+        if (tier === 'plus' || tier === 'premium') return false;
         setShowQuotaLimitSheet(true);
         return false;
       }

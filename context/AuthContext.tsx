@@ -102,8 +102,13 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   const setUserTierLocally = useCallback((tier: SubscriptionTier) => {
     setUser((prev) => {
       if (!prev) return prev;
+      // Mirror tier into app_metadata (source of truth for quota) and keep user_metadata for backward UI paths.
       return {
         ...prev,
+        app_metadata: {
+          ...(prev.app_metadata ?? {}),
+          tier,
+        },
         user_metadata: {
           ...(prev.user_metadata ?? {}),
           tier,

@@ -350,3 +350,8 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 
 [functions.api]
 verify_jwt = false
+
+# RevenueCat webhook is called by RevenueCat servers, not by our app clients,
+# so it must not require a Supabase JWT.
+[functions."revenuecat-webhook"]
+verify_jwt = false

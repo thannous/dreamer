@@ -37,15 +37,34 @@ export interface PurchasesPackageLike {
   };
 }
 
-/**
- * Priority order for checking entitlements.
- */
-const ENTITLEMENT_PRIORITY = [
+const PREMIUM_ENTITLEMENT_IDS = [
   'premium',
+  'noctalia_premium',
+  'noctalia-premium',
+  'noctaliaPremium',
+  'Noctalia Premium',
+];
+
+const PLUS_ENTITLEMENT_IDS = [
+  'plus',
   'noctalia_plus',
   'noctalia-plus',
   'noctaliaPlus',
+  'Noctalia Plus',
 ];
+
+/**
+ * Priority order for checking entitlements.
+ * Premium takes precedence over Plus.
+ */
+const ENTITLEMENT_PRIORITY = [...PREMIUM_ENTITLEMENT_IDS, ...PLUS_ENTITLEMENT_IDS];
+
+function tierFromEntitlementId(entitlementId: string): SubscriptionTier {
+  if (PREMIUM_ENTITLEMENT_IDS.includes(entitlementId)) return 'premium';
+  if (PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
+  // Default safe paid tier if an entitlement exists but isn't explicitly mapped.
+  return 'plus';
+}
 
 /**
  * ✅ PHASE 3: Check if an entitlement has expired
@@ -79,11 +98,26 @@ export function getActiveEntitlement(info: CustomerInfoLike | null): Entitlement
   return firstKey ? active[firstKey] : null;
 }
 
+export function getActiveEntitlementId(info: CustomerInfoLike | null): string | null {
+  const active = (info?.entitlements?.active ?? {}) as Record<string, Entitlement>;
+
+  for (const key of ENTITLEMENT_PRIORITY) {
+    const entitlement = active[key];
+    if (entitlement) {
+      return key;
+    }
+  }
+
+  const firstKey = Object.keys(active)[0];
+  return firstKey ?? null;
+}
+
 /**
  * Maps CustomerInfo to a subscription tier.
  */
 export function mapTierFromCustomerInfo(info: CustomerInfoLike | null): SubscriptionTier {
-  return getActiveEntitlement(info) ? 'premium' : 'free';
+  const entitlementId = getActiveEntitlementId(info);
+  return entitlementId ? tierFromEntitlementId(entitlementId) : 'free';
 }
 
 /**
@@ -92,12 +126,13 @@ export function mapTierFromCustomerInfo(info: CustomerInfoLike | null): Subscrip
  */
 export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
   const activeEntitlement = getActiveEntitlement(info);
+  const entitlementId = getActiveEntitlementId(info);
   const expiryDate = activeEntitlement?.expirationDate ?? null;
 
   // ✅ PHASE 3: Check if entitlement has expired
   const isExpired = isEntitlementExpired(expiryDate);
-  const tier = (activeEntitlement && !isExpired) ? 'premium' : 'free';
-  const active = tier === 'premium';
+  const tier = (activeEntitlement && !isExpired && entitlementId) ? tierFromEntitlementId(entitlementId) : 'free';
+  const active = tier === 'plus' || tier === 'premium';
   const productId = activeEntitlement?.productIdentifier ?? null;
 
   return {

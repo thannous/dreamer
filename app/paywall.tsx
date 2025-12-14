@@ -39,7 +39,7 @@ export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
-  const { isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
+  const { status: subscriptionStatus, isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
@@ -99,11 +99,12 @@ export default function PaywallScreen() {
     }
   };
 
+  const activeTierKey = subscriptionStatus?.tier === 'premium' ? 'premium' : 'plus';
   const headerTitle = isActive
-    ? t('subscription.paywall.header.premium')
+    ? t(`subscription.paywall.header.${activeTierKey}` as const)
     : t('subscription.paywall.header.free');
   const headerSubtitle = isActive
-    ? t('subscription.paywall.header.subtitle.premium')
+    ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
     : t('subscription.paywall.header.subtitle.free');
 
   const translateWithFallback = (key: string, fallback?: string) => {
@@ -149,7 +150,7 @@ export default function PaywallScreen() {
           <SubscriptionCard
             title={t('subscription.paywall.card.title')}
             subtitle={t('subscription.paywall.card.subtitle')}
-            badge={isActive ? t('subscription.paywall.card.badge.premium') : undefined}
+            badge={isActive ? t(`subscription.paywall.card.badge.${activeTierKey}` as const) : undefined}
             features={[
               t('subscription.paywall.card.feature.unlimited_analyses'),
               t('subscription.paywall.card.feature.unlimited_explorations'),
@@ -235,7 +236,7 @@ export default function PaywallScreen() {
                     ? t('subscription.paywall.button.primary.auth')
                     : t(
                         isActive
-                          ? 'subscription.paywall.button.primary.premium'
+                          ? (`subscription.paywall.button.primary.${activeTierKey}` as const)
                           : 'subscription.paywall.button.primary.free'
                       )}
                 </Text>
