@@ -87,28 +87,6 @@ describe('SupabaseQuotaProvider', () => {
       // Then
       expect(newProvider).toBeInstanceOf(SupabaseQuotaProvider);
     });
-
-    it('given guest user when getting tier then returns guest', async () => {
-      // Given
-      const user = null;
-
-      // When
-      const tier = (provider as any).getUserTier(user);
-
-      // Then
-      expect(tier).toBe('guest');
-    });
-
-    it('given user with metadata tier when getting tier then returns metadata tier', async () => {
-      // Given
-      const user = { id: 'test-user', app_metadata: { tier: 'premium' } } as any;
-
-      // When
-      const tier = (provider as any).getUserTier(user);
-
-      // Then
-      expect(tier).toBe('premium');
-    });
   });
 
   describe('private method testing via public interface', () => {
@@ -186,7 +164,8 @@ describe('SupabaseQuotaProvider', () => {
       const count = await provider.getUsedAnalysisCount(user);
 
       // Then
-      expect(count).toBe(QUOTAS.free.analysis);
+      // On error, return 0 as safe fallback (higher-level methods handle tier-specific fallback)
+      expect(count).toBe(0);
     });
 
     it('given Supabase error when counting explorations then returns tier limit', async () => {
@@ -206,7 +185,8 @@ describe('SupabaseQuotaProvider', () => {
       const count = await provider.getUsedExplorationCount(user);
 
       // Then
-      expect(count).toBe(QUOTAS.free.exploration);
+      // On error, return 0 as safe fallback (higher-level methods handle tier-specific fallback)
+      expect(count).toBe(0);
     });
   });
 
@@ -232,7 +212,7 @@ describe('SupabaseQuotaProvider', () => {
         count: 1,
         error: null,
       };
-      mockSupabase.supabase.from = vi.fn((table: string) => (table === 'user_quota_events' ? eventsBuilder : dreamsBuilder));
+      mockSupabase.supabase.from = vi.fn((table: string) => (table === 'quota_usage' ? eventsBuilder : dreamsBuilder));
 
       // When
       const count = await p.getMonthlyAnalysisCount(user);
@@ -271,7 +251,7 @@ describe('SupabaseQuotaProvider', () => {
         count: 1,
         error: null,
       };
-      mockSupabase.supabase.from = vi.fn((table: string) => (table === 'user_quota_events' ? eventsBuilder : dreamsBuilder));
+      mockSupabase.supabase.from = vi.fn((table: string) => (table === 'quota_usage' ? eventsBuilder : dreamsBuilder));
 
       // When
       const count = await p.getMonthlyExplorationCount(user);
@@ -466,7 +446,7 @@ describe('SupabaseQuotaProvider', () => {
       p.canExploreDream = vi.fn().mockResolvedValue(true);
 
       // When
-      const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
+      const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
 
       // Then
       expect(status.tier).toBe('free');
@@ -488,7 +468,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(20);
 
       // When
-      const status = await provider.getQuotaStatus(premiumUser, { dreamId: 1 });
+      const status = await provider.getQuotaStatus(premiumUser, 'premium', { dreamId: 1 });
 
       // Then
       expect(status.tier).toBe('premium');
@@ -511,7 +491,7 @@ describe('SupabaseQuotaProvider', () => {
       p.canExploreDream = vi.fn().mockResolvedValue(false);
 
       // When
-      const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
+      const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
 
       // Then
       expect(status.canAnalyze).toBe(false);
@@ -533,33 +513,6 @@ describe('SupabaseQuotaProvider', () => {
 
       // Then
       expect(p.cache.size).toBe(0);
-    });
-
-    it('given user when getting tier then extracts from metadata', () => {
-      // Given
-      const p = provider as any;
-
-      // When
-      const freeTier = p.getUserTier(freeUser);
-      const premiumTier = p.getUserTier(premiumUser);
-      const guestTier = p.getUserTier(guestUser);
-
-      // Then
-      expect(freeTier).toBe('free');
-      expect(premiumTier).toBe('premium');
-      expect(guestTier).toBe('guest');
-    });
-
-    it('given user without tier when getting tier then defaults to free', () => {
-      // Given
-      const userWithoutTier = { id: 'no-tier', app_metadata: {} } as any;
-      const p = provider as any;
-
-      // When
-      const tier = p.getUserTier(userWithoutTier);
-
-      // Then
-      expect(tier).toBe('free');
     });
   });
 
@@ -783,7 +736,7 @@ describe('SupabaseQuotaProvider', () => {
       // Guest user is null
 
       // When
-      const status = await provider.getQuotaStatus(guestUser);
+      const status = await provider.getQuotaStatus(guestUser, 'guest');
 
       // Then
       expect(status.tier).toBe('guest');
@@ -862,7 +815,7 @@ describe('SupabaseQuotaProvider', () => {
       p.canExploreDream = vi.fn().mockResolvedValue(true);
 
       // When
-      const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
+      const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
 
       // Then
       expect(status.tier).toBe('free');
@@ -884,7 +837,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedMessagesCount = vi.fn().mockResolvedValue(20);
 
       // When
-      const status = await provider.getQuotaStatus(premiumUser, { dreamId: 1 });
+      const status = await provider.getQuotaStatus(premiumUser, 'premium', { dreamId: 1 });
 
       // Then
       expect(status.tier).toBe('premium');
@@ -907,13 +860,57 @@ describe('SupabaseQuotaProvider', () => {
       p.canExploreDream = vi.fn().mockResolvedValue(false);
 
       // When
-      const status = await provider.getQuotaStatus(freeUser, { dreamId: 1 });
+      const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
 
       // Then
       expect(status.canAnalyze).toBe(false);
       expect(status.canExplore).toBe(false);
       expect(status.reasons).toBeDefined();
       expect(status.reasons!.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('critical non-regression: tier parameter usage (RevenueCat SSOT)', () => {
+    it('should use tier parameter instead of user.app_metadata.tier', async () => {
+      // CRITICAL TEST: Verifies that tier comes from parameter (RevenueCat), not from user metadata
+      // Given: User has 'premium' in app_metadata, but we pass 'free' as tier parameter
+      const userWithPremiumMetadata = { id: 'user-123', app_metadata: { tier: 'premium' } } as any;
+      const p = provider as any;
+      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(2);
+      p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(0);
+      p.getUsedMessagesCount = vi.fn().mockResolvedValue(0);
+
+      // Act: Pass 'free' tier explicitly (simulating RevenueCat saying user is free)
+      const status = await provider.getQuotaStatus(userWithPremiumMetadata, 'free', { dreamId: 1 });
+
+      // Assert: Provider should use 'free' tier (parameter), NOT 'premium' (metadata)
+      expect(status.tier).toBe('free');
+      // Free tier has 3 monthly analyses, premium would be unlimited (null)
+      expect(status.usage.analysis.limit).toBe(3);
+      expect(status.usage.analysis.used).toBe(2);
+      expect(status.usage.analysis.remaining).toBe(1);
+
+      // Verify canAnalyze respects the 'free' tier limit (2 used out of 3, so true)
+      expect(status.canAnalyze).toBe(true);
+    });
+
+    it('should use tier parameter even when user has free in metadata but premium passed', async () => {
+      // Verify the opposite: user has 'free' in metadata, but tier='premium' passed
+      const userWithFreeMetadata = { id: 'user-456', app_metadata: { tier: 'free' } } as any;
+      const p = provider as any;
+      p.getMonthlyAnalysisCount = vi.fn().mockResolvedValue(100);
+      p.getMonthlyExplorationCount = vi.fn().mockResolvedValue(0);
+      p.getUsedMessagesCount = vi.fn().mockResolvedValue(0);
+
+      // Act: Pass 'premium' tier explicitly
+      const status = await provider.getQuotaStatus(userWithFreeMetadata, 'premium', { dreamId: 1 });
+
+      // Assert: Provider should use 'premium' tier (parameter), showing unlimited
+      expect(status.tier).toBe('premium');
+      // Premium tier has unlimited analyses
+      expect(status.usage.analysis.limit).toBeNull();
+      // Can analyze should always be true for premium
+      expect(status.canAnalyze).toBe(true);
     });
   });
 });

@@ -174,14 +174,13 @@ describe('MockQuotaProvider', () => {
   describe('exploration validation', () => {
     it('given unexplored dream when checking exploration then validates against limits', async () => {
       // Given
-      const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const unexploredDream = buildDream({ id: 123, explorationStartedAt: undefined });
       mockGetSavedDreams.mockResolvedValueOnce([unexploredDream]);
 
       const provider = new MockQuotaProvider();
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 123 }, user);
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, null, 'free');
 
       // Then
       expect(canExplore).toBe(true); // Free tier with 0 explorations used
@@ -189,7 +188,6 @@ describe('MockQuotaProvider', () => {
 
     it('given already explored dream when checking exploration then always allows', async () => {
       // Given
-      const user = { id: 'test-user', user_metadata: { tier: 'guest' } } as any;
       const exploredDream = buildDream({
         id: 123,
         explorationStartedAt: Date.now(),
@@ -200,7 +198,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 123 }, user);
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, null, 'guest');
 
       // Then
       expect(canExplore).toBe(true); // Already explored, always allowed
@@ -208,7 +206,6 @@ describe('MockQuotaProvider', () => {
 
     it('keeps exploration usage after dream deletion in mock mode', async () => {
       // Given
-      const user = null; // Guest user
       const exploredDreams = [
         buildDream({ id: 1, explorationStartedAt: Date.now() }),
         buildDream({ id: 2, explorationStartedAt: Date.now() }),
@@ -216,14 +213,14 @@ describe('MockQuotaProvider', () => {
       mockGetSavedDreams.mockResolvedValueOnce(exploredDreams);
 
       const provider = new MockQuotaProvider();
-      await provider.getUsedExplorationCount(user);
+      await provider.getUsedExplorationCount(null);
 
       // Simulate dream deletion after usage was recorded
       mockGetSavedDreams.mockResolvedValueOnce([]);
       provider.invalidate();
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 999 }, user);
+      const canExplore = await provider.canExploreDream({ dreamId: 999 }, null, 'guest');
 
       // Then
       expect(canExplore).toBe(false); // Usage persists; guest limit reached
@@ -231,14 +228,13 @@ describe('MockQuotaProvider', () => {
 
     it('given premium user when checking exploration then always allows', async () => {
       // Given
-      const premiumUser = { id: 'premium-user', user_metadata: { tier: 'premium' } } as any;
       const dreams = [buildDream({ id: 123 })];
       mockGetSavedDreams.mockResolvedValueOnce(dreams);
 
       const provider = new MockQuotaProvider();
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 123 }, premiumUser);
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, null, 'premium');
 
       // Then
       expect(canExplore).toBe(true); // Premium has unlimited exploration
@@ -246,8 +242,7 @@ describe('MockQuotaProvider', () => {
 
     it('given guest user beyond limits when checking exploration then denies', async () => {
       // Given
-      const user = null; // Guest user
-      const exploredDreams = Array(3).fill(null).map((_, i) => 
+      const exploredDreams = Array(3).fill(null).map((_, i) =>
         buildDream({ id: i + 1, explorationStartedAt: Date.now() })
       );
       mockGetSavedDreams.mockResolvedValue(exploredDreams);
@@ -255,7 +250,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 999 }, user);
+      const canExplore = await provider.canExploreDream({ dreamId: 999 }, null, 'guest');
 
       // Then
       expect(canExplore).toBe(false); // Guest limit exceeded
@@ -265,8 +260,7 @@ describe('MockQuotaProvider', () => {
   describe('analysis validation', () => {
     it('given premium user when checking analysis then always allows', async () => {
       // Given
-      const premiumUser = { id: 'premium-user', user_metadata: { tier: 'premium' } } as any;
-      const dreams = Array(100).fill(null).map((_, i) => 
+      const dreams = Array(100).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
       mockGetSavedDreams.mockResolvedValueOnce(dreams);
@@ -274,7 +268,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(premiumUser);
+      const canAnalyze = await provider.canAnalyzeDream(null, 'premium');
 
       // Then
       expect(canAnalyze).toBe(true); // Premium has unlimited analysis
@@ -282,7 +276,6 @@ describe('MockQuotaProvider', () => {
 
     it('given free user within limits when checking analysis then allows', async () => {
       // Given
-      const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as any;
       const dreams = Array(2).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
@@ -291,7 +284,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(freeUser);
+      const canAnalyze = await provider.canAnalyzeDream(null, 'free');
 
       // Then
       expect(canAnalyze).toBe(true); // Free user within 3 analysis limit
@@ -299,7 +292,6 @@ describe('MockQuotaProvider', () => {
 
     it('given free user beyond limits when checking analysis then denies', async () => {
       // Given
-      const freeUser = { id: 'free-user', user_metadata: { tier: 'free' } } as any;
       const dreams = Array(4).fill(null).map((_, i) =>
         buildDream({ id: i + 1, isAnalyzed: true, analyzedAt: Date.now() })
       );
@@ -308,7 +300,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(freeUser);
+      const canAnalyze = await provider.canAnalyzeDream(null, 'free');
 
       // Then
       expect(canAnalyze).toBe(false); // Free user exceeded 3 analysis limit
@@ -318,7 +310,6 @@ describe('MockQuotaProvider', () => {
   describe('message validation', () => {
     it('given user within message limit when checking messages then allows', async () => {
       // Given
-      const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const targetDream = buildDream({
         id: 123,
         chatHistory: Array(10).fill({ role: 'user', text: 'test' })
@@ -328,7 +319,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, user);
+      const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, null, 'free');
 
       // Then
       expect(canSendMessage).toBe(true); // Free user within 20 message limit
@@ -336,7 +327,6 @@ describe('MockQuotaProvider', () => {
 
     it('given user beyond message limit when checking messages then denies', async () => {
       // Given
-      const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const targetDream = buildDream({
         id: 123,
         chatHistory: Array(25).fill({ role: 'user', text: 'test' })
@@ -346,7 +336,7 @@ describe('MockQuotaProvider', () => {
       const provider = new MockQuotaProvider();
 
       // When
-      const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, user);
+      const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, null, 'free');
 
       // Then
       expect(canSendMessage).toBe(false); // Free user exceeded 20 message limit
