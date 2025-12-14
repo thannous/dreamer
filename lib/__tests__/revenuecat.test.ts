@@ -146,12 +146,13 @@ describe('revenuecat utils', () => {
     });
 
     it('given active subscription returns premium active status', () => {
+      const futureDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
       const info: CustomerInfoLike = {
         entitlements: {
           active: {
             premium: {
               productIdentifier: 'noctalia_monthly',
-              expirationDate: '2024-12-31T23:59:59Z',
+              expirationDate: futureDate,
             },
           },
         },
@@ -162,7 +163,7 @@ describe('revenuecat utils', () => {
       expect(result).toEqual({
         tier: 'premium',
         isActive: true,
-        expiryDate: '2024-12-31T23:59:59Z',
+        expiryDate: futureDate,
         productId: 'noctalia_monthly',
       });
     });

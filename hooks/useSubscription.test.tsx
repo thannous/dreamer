@@ -19,8 +19,8 @@ vi.mock('../services/subscriptionService', () => {
     loadSubscriptionPackages: vi.fn(async () => [
       { id: 'mock_monthly', interval: 'monthly', priceFormatted: '$4.99', currency: 'USD' },
     ]),
-    purchaseSubscriptionPackage: vi.fn(async () => ({ tier: 'premium', isActive: true })),
-    restoreSubscriptionPurchases: vi.fn(async () => ({ tier: 'premium', isActive: true })),
+    purchaseSubscriptionPackage: vi.fn(async () => ({ tier: 'plus', isActive: true })),
+    restoreSubscriptionPurchases: vi.fn(async () => ({ tier: 'plus', isActive: true })),
   };
 });
 
@@ -125,7 +125,7 @@ describe('useSubscription', () => {
       // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
-      expect(setUserTierLocally).toHaveBeenCalledWith('premium');
+      expect(setUserTierLocally).toHaveBeenCalledWith('plus');
     });
 
     it('given authenticated user when purchasing fails then sets error and throws', async () => {
@@ -174,7 +174,7 @@ describe('useSubscription', () => {
       // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
-      expect(setUserTierLocally).toHaveBeenCalledWith('premium');
+      expect(setUserTierLocally).toHaveBeenCalledWith('plus');
     });
 
     it('given authenticated user when restoring fails then sets error and throws', async () => {

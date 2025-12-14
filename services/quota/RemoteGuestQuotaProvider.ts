@@ -16,7 +16,7 @@ type RemoteQuotaUsage = {
 };
 
 type RemoteQuotaResponse = {
-  tier?: 'guest' | 'free' | 'premium';
+  tier?: 'guest' | 'free' | 'plus' | 'premium';
   usage?: RemoteQuotaUsage;
   canAnalyze?: boolean;
   canExplore?: boolean;

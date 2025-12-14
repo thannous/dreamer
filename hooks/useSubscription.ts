@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
 import { isEntitlementExpired } from '@/lib/revenuecat';
-import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
+import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import {
   getSubscriptionStatus,
   initializeSubscription,
@@ -85,6 +85,15 @@ export function useSubscription() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const requiresAuth = !user?.id;
+  const lastSyncedTierRef = useRef<SubscriptionTier | null>(null);
+
+  const getTierFromUser = useCallback((input?: typeof user | null): SubscriptionTier => {
+    return (
+      (input?.app_metadata?.tier as SubscriptionTier | undefined) ||
+      (input?.user_metadata?.tier as SubscriptionTier | undefined) ||
+      'free'
+    );
+  }, []);
 
   const syncTier = useCallback(
     async (nextStatus: SubscriptionStatus) => {
@@ -145,6 +154,38 @@ export function useSubscription() {
       mounted = false;
     };
   }, [requiresAuth, user?.id]);
+
+  // Keep auth user tier in sync with the RevenueCat status to avoid stale "Free plan" UI/quota states.
+  useEffect(() => {
+    if (!status || requiresAuth) return;
+
+    const currentTier = getTierFromUser(user);
+    if (status.tier === currentTier) {
+      lastSyncedTierRef.current = null;
+      return;
+    }
+
+    // Avoid looping refreshes for the same target tier
+    if (lastSyncedTierRef.current === status.tier) return;
+    lastSyncedTierRef.current = status.tier;
+
+    const sync = async () => {
+      try {
+        const refreshed = await refreshUser();
+        const refreshedTier = getTierFromUser(refreshed);
+        if (refreshedTier !== status.tier) {
+          setUserTierLocally(status.tier);
+        }
+      } catch (err) {
+        if (__DEV__) {
+          console.warn('[useSubscription] Failed to refresh user for tier sync', err);
+        }
+        setUserTierLocally(status.tier);
+      }
+    };
+
+    sync();
+  }, [getTierFromUser, refreshUser, requiresAuth, setUserTierLocally, status, user]);
 
   // ✅ PHASE 3: Check for subscription expiration on app startup
   useEffect(() => {

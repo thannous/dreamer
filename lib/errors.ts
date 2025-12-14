@@ -1,6 +1,7 @@
 // Error classification and user-friendly message generation for API errors
 
 import { QUOTAS } from '@/constants/limits';
+import type { SubscriptionTier } from '@/lib/types';
 
 /**
  * Translation function type for i18n support
@@ -257,13 +258,13 @@ export enum QuotaErrorCode {
  */
 export class QuotaError extends Error {
   public readonly code: QuotaErrorCode;
-  public readonly tier: 'guest' | 'free' | 'premium';
+  public readonly tier: SubscriptionTier;
   public readonly userMessage: string;
   public readonly canUpgrade: boolean;
 
   constructor(
     code: QuotaErrorCode,
-    tier: 'guest' | 'free' | 'premium',
+    tier: SubscriptionTier,
     userMessage?: string
   ) {
     super(userMessage || QuotaError.getDefaultMessage(code, tier));
@@ -274,13 +275,13 @@ export class QuotaError extends Error {
     this.canUpgrade = tier !== 'premium';
   }
 
-  private static getDefaultMessage(code: QuotaErrorCode, tier: 'guest' | 'free' | 'premium'): string {
+  private static getDefaultMessage(code: QuotaErrorCode, tier: SubscriptionTier): string {
     switch (code) {
       case QuotaErrorCode.ANALYSIS_LIMIT_REACHED:
         if (tier === 'guest') {
           return `You have reached the limit of ${QUOTAS.guest.analysis ?? 0} analyses in guest mode. Create a free account to get ${QUOTAS.free.analysis ?? 0} analyses per month!`;
         } else if (tier === 'free') {
-          return `You have used all ${QUOTAS.free.analysis ?? 0} free analyses for this month. Upgrade to premium for unlimited analyses!`;
+          return `You have used all ${QUOTAS.free.analysis ?? 0} free analyses for this month. Upgrade to Noctalia Plus for unlimited analyses!`;
         }
         return 'Analysis limit reached.';
 
@@ -288,14 +289,14 @@ export class QuotaError extends Error {
         if (tier === 'guest') {
           return `You have explored ${QUOTAS.guest.exploration ?? 0} dreams in guest mode. Create a free account to continue exploring!`;
         } else if (tier === 'free') {
-          return `You have used all ${QUOTAS.free.exploration ?? 0} free dream explorations for this month. Upgrade to premium for unlimited dream exploration!`;
+          return `You have used all ${QUOTAS.free.exploration ?? 0} free dream explorations for this month. Upgrade to Noctalia Plus for unlimited dream exploration!`;
         }
         return 'Exploration limit reached.';
 
       case QuotaErrorCode.MESSAGE_LIMIT_REACHED:
         if (tier === 'guest' || tier === 'free') {
           const limit = tier === 'guest' ? QUOTAS.guest.messagesPerDream : QUOTAS.free.messagesPerDream;
-          return `You have reached the limit of ${limit ?? 0} messages for this dream. Upgrade to premium for unlimited conversations!`;
+          return `You have reached the limit of ${limit ?? 0} messages for this dream. Upgrade to Noctalia Plus for unlimited conversations!`;
         }
         return 'Message limit reached.';
 
@@ -326,7 +327,7 @@ const getErrorMessage = (error: unknown): string => {
  */
 export const coerceQuotaError = (
   error: unknown,
-  tier: 'guest' | 'free' | 'premium'
+  tier: SubscriptionTier
 ): QuotaError | null => {
   const message = getErrorMessage(error);
 

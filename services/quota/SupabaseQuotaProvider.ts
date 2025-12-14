@@ -48,7 +48,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
   }
 
   private async getMonthlyLimitsFromDb(tier: UserTier): Promise<TierMonthlyLimits> {
-    if (tier === 'premium') {
+    if (tier === 'plus' || tier === 'premium') {
       return { analysis: null, exploration: null, messagesPerDream: null };
     }
 

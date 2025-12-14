@@ -26,15 +26,16 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   useClearWebFocus();
 
-  const { isActive, loading: subscriptionLoading } = useSubscription();
+  const { status: subscriptionStatus, isActive, loading: subscriptionLoading } = useSubscription();
 
   const subscriptionCopy = useMemo(() => {
     if (isActive) {
+      const activeTierKey = subscriptionStatus?.tier === 'premium' ? 'premium' : 'plus';
       return {
-        title: t('subscription.settings.title.premium'),
-        subtitle: t('subscription.settings.subtitle.premium'),
-        badge: t('subscription.paywall.card.badge.premium'),
-        cta: t('subscription.settings.cta.premium'),
+        title: t(`subscription.settings.title.${activeTierKey}` as const),
+        subtitle: t(`subscription.settings.subtitle.${activeTierKey}` as const),
+        badge: t(`subscription.paywall.card.badge.${activeTierKey}` as const),
+        cta: t(`subscription.settings.cta.${activeTierKey}` as const),
       };
     }
     return {
@@ -43,7 +44,7 @@ export default function SettingsScreen() {
       badge: undefined,
       cta: t('subscription.settings.cta.free'),
     };
-  }, [isActive, t]);
+  }, [isActive, subscriptionStatus?.tier, t]);
 
   const subscriptionFeatures = useMemo(
     () => [

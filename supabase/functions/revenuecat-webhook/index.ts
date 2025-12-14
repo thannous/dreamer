@@ -10,9 +10,16 @@ const corsHeaders: Record<string, string> = {
 const encoder = new TextEncoder();
 
 function getSupabaseAdminClient() {
-  const supabaseUrl = Deno.env.get('SUPABASE_URL');
-  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? Deno.env.get('EXPO_PUBLIC_SUPABASE_URL');
+  const serviceKey =
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ??
+    Deno.env.get('SUPABASE_SERVICE_KEY') ??
+    Deno.env.get('SERVICE_ROLE_KEY');
   if (!supabaseUrl || !serviceKey) {
+    console.error('[revenuecat-webhook] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY', {
+      hasSupabaseUrl: Boolean(supabaseUrl),
+      hasServiceRoleKey: Boolean(serviceKey),
+    });
     throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
   }
   return createClient(supabaseUrl, serviceKey, {
@@ -22,58 +29,191 @@ function getSupabaseAdminClient() {
   });
 }
 
+type InferredTier = 'free' | 'plus' | 'premium' | null;
+
+const PREMIUM_ENTITLEMENT_IDS = [
+  'premium',
+  'noctalia_premium',
+  'noctalia-premium',
+  'noctaliaPremium',
+  'Noctalia Premium',
+];
+
+const PLUS_ENTITLEMENT_IDS = [
+  'plus',
+  'noctalia_plus',
+  'noctalia-plus',
+  'noctaliaPlus',
+  'Noctalia Plus',
+];
+
+function tierFromEntitlementId(entitlementId: string): Exclude<InferredTier, 'free' | null> {
+  if (PREMIUM_ENTITLEMENT_IDS.includes(entitlementId)) return 'premium';
+  if (PLUS_ENTITLEMENT_IDS.includes(entitlementId)) return 'plus';
+  // If an entitlement exists but isn't mapped yet, grant the lowest paid tier.
+  return 'plus';
+}
+
 /**
- * ✅ PHASE 3: Improved isPremiumFromPayload to validate expiration dates
- * Previously only checked if entitlements exist, now also validates they haven't expired
+ * Infer tier from webhook payload.
+ *
+ * Best practice per RevenueCat docs is to follow up webhooks with a subscribers API call to
+ * normalize all events. We avoid accidental downgrades here by returning `null` when the
+ * payload doesn't include entitlement state we can trust.
  */
-function isPremiumFromPayload(payload: any): boolean {
-  const activeEntitlements = payload?.event?.customer_info?.entitlements?.active ?? {};
-  if (!activeEntitlements || typeof activeEntitlements !== 'object') {
-    return false;
-  }
-
-  // Check for explicit cancellation/expiration events
+function inferTierFromPayload(payload: any): InferredTier {
   const eventType = payload?.event?.type;
+  // Explicit non-active events should never grant premium
   if (eventType === 'EXPIRATION' || eventType === 'CANCELLATION') {
-    return false;
+    return 'free';
   }
 
-  // Verify at least one entitlement exists AND hasn't expired
-  for (const key of Object.keys(activeEntitlements)) {
-    const entitlement = activeEntitlements[key];
-    if (!entitlement) continue;
+  const now = Date.now();
 
-    // Get expiration date - RevenueCat uses 'expires_date' in webhook payloads
-    const expiresDate = entitlement?.expires_date ?? null;
-    if (expiresDate) {
-      const expiryTime = new Date(expiresDate).getTime();
-      const now = Date.now();
-      // Skip if entitlement is expired
-      if (expiryTime < now) {
-        continue;
+  const isEntitlementActive = (ent: any): boolean => {
+    if (!ent) return false;
+
+    // Prefer expires_at (RC webhook field), fallback to expires_date (legacy)
+    const expires = ent.expires_at ?? ent.expires_date ?? null;
+    const expiresAtMs =
+      typeof expires === 'string' && expires ? new Date(expires).getTime() : null;
+
+    // Grace period (Play Store billing issue) keeps access until grace expires
+    const graceMs =
+      typeof ent.grace_period_expires_at_ms === 'number'
+        ? ent.grace_period_expires_at_ms
+        : null;
+
+    if (graceMs !== null) {
+      return graceMs > now;
+    }
+
+    if (expiresAtMs !== null) {
+      return expiresAtMs > now;
+    }
+
+    // No expiration field -> not enough signal to consider it active
+    return false;
+  };
+
+  const entitlementsRaw = payload?.event?.entitlements;
+
+  const entitlementsFromEvent: Array<{ id?: string; ent: any }> = Array.isArray(entitlementsRaw)
+    ? (entitlementsRaw as any[]).map((ent) => ({ ent }))
+    : (entitlementsRaw && typeof entitlementsRaw === 'object')
+      ? Object.entries(entitlementsRaw as Record<string, any>).map(([id, ent]) => ({ id, ent }))
+      : [];
+
+  // 1) Preferred: event.entitlements
+  if (entitlementsFromEvent.length > 0) {
+    let hasAnyActive = false;
+    const activeEntitlementIds: string[] = [];
+
+    for (const entry of entitlementsFromEvent) {
+      const ent = entry.ent;
+      if (isEntitlementActive(ent)) {
+        hasAnyActive = true;
+        const entId =
+          entry.id ??
+          ent?.entitlement_identifier ??
+          ent?.entitlement_id ??
+          ent?.entitlement ??
+          ent?.identifier;
+        if (typeof entId === 'string' && entId.trim()) {
+          activeEntitlementIds.push(entId.trim());
+        }
       }
     }
 
-    // Found a valid, non-expired entitlement
-    return true;
+    if (!hasAnyActive) return 'free';
+
+    // If we can map entitlements, pick the highest tier.
+    if (activeEntitlementIds.some((id) => PREMIUM_ENTITLEMENT_IDS.includes(id))) {
+      return 'premium';
+    }
+    if (activeEntitlementIds.length > 0) {
+      // If any active entitlement is known as plus/premium, map it. Otherwise default to plus.
+      return activeEntitlementIds.reduce<Exclude<InferredTier, 'free' | null>>((acc, id) => {
+        const mapped = tierFromEntitlementId(id);
+        return acc === 'premium' ? 'premium' : mapped;
+      }, 'plus');
+    }
+
+    // Active entitlement present but no identifier -> grant lowest paid tier
+    return 'plus';
   }
 
-  return false;  // No valid, non-expired entitlements found
+  // 2) Fallback: event.customer_info.entitlements.active.* (legacy)
+  const activeEntitlements = payload?.event?.customer_info?.entitlements?.active;
+  if (activeEntitlements && typeof activeEntitlements === 'object') {
+    const keys = Object.keys(activeEntitlements);
+    const activeIds: string[] = [];
+    for (const key of keys) {
+      if (isEntitlementActive((activeEntitlements as any)[key])) {
+        activeIds.push(key);
+      }
+    }
+
+    if (activeIds.length === 0) {
+      // If the payload explicitly includes entitlements.active (even empty), treat that as authoritative.
+      return 'free';
+    }
+
+    if (activeIds.some((id) => PREMIUM_ENTITLEMENT_IDS.includes(id))) {
+      return 'premium';
+    }
+    return activeIds.some((id) => PLUS_ENTITLEMENT_IDS.includes(id)) ? 'plus' : 'plus';
+  }
+
+  // No entitlement state in payload -> don't change anything (avoid accidental downgrade)
+  return null;
 }
 
-function getAppUserId(payload: any): string | null {
-  const fromRoot = payload?.app_user_id;
-  const fromEvent = payload?.event?.app_user_id;
-  const id = fromEvent || fromRoot;
-  if (!id || typeof id !== 'string') {
-    return null;
+function getAppUserIdCandidates(payload: any): string[] {
+  const ids = new Set<string>();
+
+  const add = (value: unknown) => {
+    if (typeof value !== 'string') return;
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    ids.add(trimmed);
+  };
+
+  // Common locations
+  add(payload?.event?.app_user_id);
+  add(payload?.app_user_id);
+
+  // Alias/original fields (present after Purchases.logIn linking)
+  add(payload?.event?.original_app_user_id);
+  add(payload?.original_app_user_id);
+  add(payload?.event?.customer_info?.original_app_user_id);
+
+  const aliases =
+    payload?.event?.aliases ??
+    payload?.event?.customer_info?.aliases ??
+    payload?.event?.customer_info?.subscriber?.aliases ??
+    payload?.aliases;
+
+  if (Array.isArray(aliases)) {
+    for (const alias of aliases) {
+      add(alias);
+    }
   }
-  return id;
+
+  return Array.from(ids);
+}
+
+function looksLikeUuid(id: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 }
 
 function getWebhookSecret(): string {
-  const secret = Deno.env.get('REVENUECAT_WEBHOOK_SECRET');
+  const secret =
+    Deno.env.get('REVENUECAT_WEBHOOK_SECRET') ??
+    Deno.env.get('REVENUECAT_WEBHOOK_AUTH') ??
+    Deno.env.get('REVENUECAT_WEBHOOK_AUTHORIZATION');
   if (!secret) {
+    console.error('[revenuecat-webhook] Missing REVENUECAT_WEBHOOK_SECRET');
     throw new Error('Missing REVENUECAT_WEBHOOK_SECRET');
   }
   return secret;
@@ -158,6 +298,26 @@ async function verifySignature(req: Request, rawBody: string): Promise<boolean> 
   );
 }
 
+function verifyAuthorizationHeader(req: Request): boolean {
+  const secret = getWebhookSecret().trim();
+  const provided = req.headers.get('authorization')?.trim();
+  if (!provided) return false;
+
+  // Support both exact value and common "Bearer <token>" format.
+  const expectedBearer = `Bearer ${secret}`;
+
+  return timingSafeEqual(provided, secret) || timingSafeEqual(provided, expectedBearer);
+}
+
+async function verifyWebhookAuth(req: Request, rawBody: string): Promise<boolean> {
+  // Best practice per RevenueCat docs: configure a static Authorization header value in the dashboard.
+  // Keep signature verification as an optional fallback.
+  if (verifyAuthorizationHeader(req)) {
+    return true;
+  }
+  return verifySignature(req, rawBody);
+}
+
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -181,14 +341,15 @@ serve(async (req: Request) => {
   }
 
   try {
-    const isValid = await verifySignature(req, rawBody);
+    const isValid = await verifyWebhookAuth(req, rawBody);
     if (!isValid) {
-      return new Response(JSON.stringify({ error: 'Invalid webhook signature' }), {
+      return new Response(JSON.stringify({ error: 'Invalid webhook authentication' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
   } catch (e) {
+    console.error('[revenuecat-webhook] Auth verification error', e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -205,8 +366,8 @@ serve(async (req: Request) => {
     });
   }
 
-  const appUserId = getAppUserId(payload);
-  if (!appUserId) {
+  const candidateIds = getAppUserIdCandidates(payload);
+  if (!candidateIds.length) {
     return new Response(JSON.stringify({ error: 'Missing app_user_id' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -217,19 +378,51 @@ serve(async (req: Request) => {
   try {
     supabase = getSupabaseAdminClient();
   } catch (e) {
+    console.error('[revenuecat-webhook] Failed to create Supabase admin client', e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 
-  const premium = isPremiumFromPayload(payload);
-  const newTier = premium ? 'premium' : 'free';
+  const inferredTier = inferTierFromPayload(payload);
+  if (inferredTier === null) {
+    return new Response(JSON.stringify({ ok: true, skipped: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+
+  const newTier = inferredTier;
 
   try {
-    const { data: userData, error: userError } = await supabase.auth.admin.getUserById(appUserId);
-    if (userError || !userData?.user) {
-      return new Response(JSON.stringify({ error: 'User not found', details: userError?.message }), {
+    let resolvedUserId: string | null = null;
+    let userData: { user: any } | null = null;
+    let lastErrorMessage: string | undefined;
+
+    for (const id of candidateIds) {
+      if (!looksLikeUuid(id)) {
+        continue;
+      }
+      try {
+        const { data, error } = await supabase.auth.admin.getUserById(id);
+        if (!error && data?.user) {
+          resolvedUserId = id;
+          userData = data as any;
+          break;
+        }
+        lastErrorMessage = error?.message ?? lastErrorMessage;
+      } catch (e) {
+        lastErrorMessage = (e as Error)?.message ?? lastErrorMessage;
+      }
+    }
+
+    if (!resolvedUserId || !userData?.user) {
+      console.warn('[revenuecat-webhook] User not found for RevenueCat app_user_id candidates', {
+        candidateCount: candidateIds.length,
+        lastErrorMessage,
+      });
+      return new Response(JSON.stringify({ error: 'User not found', details: lastErrorMessage ?? 'User not found' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -239,7 +432,7 @@ serve(async (req: Request) => {
     const currentAppMeta = (userData.user.app_metadata ?? {}) as Record<string, unknown>;
     const updatedAppMeta = { ...currentAppMeta, tier: newTier };
 
-    const { error: updateError } = await supabase.auth.admin.updateUserById(appUserId, {
+    const { error: updateError } = await supabase.auth.admin.updateUserById(resolvedUserId, {
       app_metadata: updatedAppMeta,
     });
 

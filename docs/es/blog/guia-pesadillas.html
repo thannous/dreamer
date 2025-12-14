@@ -115,9 +115,39 @@
                 <a href="/es/blog/" class="hidden sm:inline-flex text-dream-salmon">Blog</a>
             </div>
             <div class="flex items-center gap-3">
-                <a href="../../en/blog/stop-nightmares-guide.html" hreflang="en" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">
-                    <i data-lucide="languages" class="w-4 h-4"></i> EN
-                </a>
+                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+                <button type="button"
+                        class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-label="Choose language"
+                        id="languageDropdownButton">
+                    <i data-lucide="languages" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">ES</span>
+                    <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
+                </button>
+                <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
+                     role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
+                    <a href="../../en/blog/stop-nightmares-guide.html" hreflang="en"
+                       class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
+                       role="menuitem">
+                        <span>English</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="../../fr/blog/guide-cauchemars.html" hreflang="fr"
+                       class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
+                       role="menuitem">
+                        <span>Français</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="../../es/blog/guia-pesadillas.html" hreflang="es"
+                       class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
+                       role="menuitem">
+                        <span>Español</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
+                    </a>
+                </div>
+            </div>
                 <a href="../../fr/blog/guide-cauchemars.html" hreflang="fr" class="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">FR</a>
             </div>
         </div>
