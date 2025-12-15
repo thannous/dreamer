@@ -128,16 +128,24 @@ function getAppUserIdCandidates(payload: any): string[] {
   return Array.from(ids);
 }
 
-function tierFromEntitlementKey(key: string): Tier {
+function tierFromEntitlementKey(key: string): InferredTier {
   if (PREMIUM_ENTITLEMENT_KEYS.includes(key)) return 'premium';
   if (PLUS_ENTITLEMENT_KEYS.includes(key)) return 'plus';
-  return 'plus';
+  return null;
 }
 
-function inferTierFromEntitlementKeys(keys: string[]): Tier {
-  if (keys.some((k) => PREMIUM_ENTITLEMENT_KEYS.includes(k))) return 'premium';
-  if (keys.some((k) => PLUS_ENTITLEMENT_KEYS.includes(k))) return 'plus';
-  return keys.length > 0 ? 'plus' : 'free';
+function inferTierFromEntitlementKeys(keys: string[]): InferredTier {
+  let inferred: InferredTier = null;
+
+  for (const key of keys) {
+    const mapped = tierFromEntitlementKey(key);
+    if (!mapped) continue;
+    if (mapped === 'premium') return 'premium';
+    if (!inferred) inferred = mapped;
+  }
+
+  if (inferred) return inferred;
+  return keys.length > 0 ? null : 'free';
 }
 
 async function rcFetchJson<T>(url: string, apiKey: string, timeoutMs = 8000): Promise<T> {
@@ -210,7 +218,7 @@ function isActiveEntitlementV1(ent: RevenueCatV1Entitlement, nowMs: number): boo
   return false;
 }
 
-function inferTierFromSubscriberV1(subscriber: RevenueCatV1SubscriberResponse): Tier {
+function inferTierFromSubscriberV1(subscriber: RevenueCatV1SubscriberResponse): InferredTier {
   const entitlements = subscriber?.subscriber?.entitlements ?? {};
   const nowMs = Date.now();
 
@@ -266,10 +274,7 @@ function inferTierFromWebhookPayload(payload: any): InferredTier {
   }
 
   if (entitlementIds.length > 0) {
-    return entitlementIds.reduce<Tier>((acc, id) => {
-      const mapped = tierFromEntitlementKey(id);
-      return acc === 'premium' ? 'premium' : mapped;
-    }, 'plus');
+    return inferTierFromEntitlementKeys(entitlementIds);
   }
 
   // No reliable entitlement state -> avoid accidental downgrade.
