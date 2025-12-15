@@ -26,7 +26,11 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   useClearWebFocus();
 
-  const { status: subscriptionStatus, isActive, loading: subscriptionLoading } = useSubscription();
+  const {
+    status: subscriptionStatus,
+    isActive,
+    loading: subscriptionLoading,
+  } = useSubscription();
 
   const subscriptionCopy = useMemo(() => {
     if (isActive) {
@@ -50,6 +54,7 @@ export default function SettingsScreen() {
     () => [
       t('subscription.paywall.card.feature.unlimited_analyses'),
       t('subscription.paywall.card.feature.unlimited_explorations'),
+      t('subscription.paywall.card.feature.recorded_dreams'),
     ],
     [t],
   );
