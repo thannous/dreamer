@@ -3,6 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
+import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,10 +14,9 @@ import Animated from 'react-native-reanimated';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
-  onPress: () => void;
+  onPress: (id: number) => void;
   shouldLoadImage?: boolean;
   testID?: string;
-  badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -26,12 +26,41 @@ export const DreamCard = memo(function DreamCard({
   onPress,
   shouldLoadImage = true,
   testID,
-  badges,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useTranslation();
+
+  const badges = useMemo(() => {
+    const list: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
+    const isExplored = isDreamExplored(dream);
+    const isAnalyzed = isDreamAnalyzed(dream);
+    const isFavorite = !!dream.isFavorite;
+
+    if (isExplored) {
+      list.push({
+        label: t('journal.badge.explored'),
+        icon: 'chatbubble-ellipses-outline',
+        variant: 'accent',
+      });
+    }
+    if (!isExplored && isAnalyzed) {
+      list.push({
+        label: t('journal.badge.analyzed'),
+        icon: 'sparkles',
+        variant: 'secondary',
+      });
+    }
+    if (isFavorite) {
+      list.push({
+        label: t('journal.badge.favorite'),
+        icon: 'heart',
+        variant: 'secondary',
+      });
+    }
+    return list;
+  }, [dream, t]);
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const thumbnailUri = useMemo(() => {
@@ -47,7 +76,7 @@ export const DreamCard = memo(function DreamCard({
     <Animated.View>
       <AnimatedPressable
         style={[styles.card, { backgroundColor: colors.backgroundCard }, animatedStyle]}
-        onPress={onPress}
+        onPress={() => onPress(dream.id)}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         accessibilityRole="button"

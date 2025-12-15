@@ -17,7 +17,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
@@ -211,37 +211,14 @@ export default function JournalListScreen() {
     });
   }).current;
 
+  const handleDreamPress = useCallback((id: number) => {
+    router.push(`/journal/${id}`);
+  }, []);
+
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.INITIAL_VISIBLE_COUNT; // Load first 5 immediately
 
-    const isFavorite = !!item.isFavorite;
-    const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-
-    const mobileBadges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      mobileBadges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      mobileBadges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      mobileBadges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
       <View style={styles.timelineItem}>
@@ -260,15 +237,14 @@ export default function JournalListScreen() {
           </Text>
           <DreamCard
             dream={item}
-            onPress={() => router.push(`/journal/${item.id}`)}
+            onPress={handleDreamPress}
             shouldLoadImage={shouldLoadImage}
-            badges={mobileBadges}
             testID={TID.List.DreamItem(item.id)}
           />
         </View>
       </View>
     );
-  }, [filteredDreams.length, visibleItemIds, colors, formatDreamListDate, t]);
+  }, [filteredDreams.length, visibleItemIds, colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.DESKTOP_INITIAL_COUNT;
@@ -276,33 +252,9 @@ export default function JournalListScreen() {
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
-    const badges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      badges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      badges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      badges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
       <View
@@ -314,7 +266,7 @@ export default function JournalListScreen() {
           !isHero && !isFavorite && !isAnalyzed && hasImage && styles.desktopCardWithImage,
         ]}
       >
-        <View style={styles.desktopMetaRow}> 
+        <View style={styles.desktopMetaRow}>
           <Text style={[styles.desktopDate, { color: colors.textSecondary }] }>
             {formatDreamListDate(item.id)}
             {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
@@ -322,14 +274,13 @@ export default function JournalListScreen() {
         </View>
         <DreamCard
           dream={item}
-          onPress={() => router.push(`/journal/${item.id}`)}
+          onPress={handleDreamPress}
           shouldLoadImage={shouldLoadImage}
-          badges={badges}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [visibleItemIds, colors, formatDreamListDate, t]);
+  }, [visibleItemIds, colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -425,6 +376,8 @@ export default function JournalListScreen() {
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
+          // @ts-expect-error estimatedItemSize is missing in FlashList type definition
+          estimatedItemSize={280}
         />
       ) : (
         <FlashList
@@ -439,6 +392,8 @@ export default function JournalListScreen() {
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
+          // @ts-expect-error estimatedItemSize is missing in FlashList type definition
+          estimatedItemSize={150}
         />
       )}
 
