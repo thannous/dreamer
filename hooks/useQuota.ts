@@ -42,6 +42,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   // Get tier from RevenueCat (source of truth)
   // For unauthenticated guests, return 'guest'; for authenticated users, return subscription tier or 'free'
   const tier = !user?.id ? 'guest' : (subscriptionStatus?.tier || 'free');
+  const isPaidTier = tier === 'plus' || tier === 'premium';
 
   /**
    * Fetch quota status
@@ -50,6 +51,24 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const fetchQuotaStatus = useCallback(async () => {
     // Don't fetch until subscription is loaded
     if (subscriptionLoading) return;
+
+    // For paid tiers, mirror RevenueCat (source of truth) and short-circuit to unlimited.
+    if (isPaidTier) {
+      const unlimitedUsage = { used: 0, limit: null, remaining: null } as const;
+      setQuotaStatus({
+        tier,
+        usage: {
+          analysis: unlimitedUsage,
+          exploration: unlimitedUsage,
+          messages: unlimitedUsage,
+        },
+        canAnalyze: true,
+        canExplore: true,
+      });
+      setLoading(false);
+      setError(null);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -62,7 +81,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     } finally {
       setLoading(false);
     }
-  }, [user, tier, baseTarget, subscriptionLoading]);
+  }, [user, tier, baseTarget, subscriptionLoading, isPaidTier]);
 
   /**
    * Invalidate cache and refetch
@@ -76,17 +95,19 @@ export function useQuota(targetInput?: QuotaTargetInput) {
    * Check if user can analyze a dream
    */
   const canAnalyze = useCallback(async (): Promise<boolean> => {
+    if (isPaidTier) return true;
     return quotaService.canAnalyzeDream(user, tier);
-  }, [user, tier]);
+  }, [isPaidTier, user, tier]);
 
   /**
    * Check if user can explore a specific dream
    */
   const canExplore = useCallback(
     async (override?: QuotaTargetInput): Promise<boolean> => {
+      if (isPaidTier) return true;
       return quotaService.canExploreDream(resolveTarget(override), user, tier);
     },
-    [user, tier, resolveTarget]
+    [isPaidTier, user, tier, resolveTarget]
   );
 
   /**
@@ -94,15 +115,24 @@ export function useQuota(targetInput?: QuotaTargetInput) {
    */
   const canChat = useCallback(
     async (override?: QuotaTargetInput): Promise<boolean> => {
+      if (isPaidTier) return true;
       return quotaService.canSendChatMessage(resolveTarget(override), user, tier);
     },
-    [user, tier, resolveTarget]
+    [isPaidTier, user, tier, resolveTarget]
   );
 
   /**
    * Get usage counts
    */
   const getUsageCounts = useCallback(async () => {
+    if (isPaidTier) {
+      return {
+        analysis: 0,
+        exploration: 0,
+        messages: 0,
+      };
+    }
+
     const [analysisCount, explorationCount, messageCount] = await Promise.all([
       quotaService.getUsedAnalysisCount(user),
       quotaService.getUsedExplorationCount(user),
@@ -114,7 +144,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
       exploration: explorationCount,
       messages: messageCount,
     };
-  }, [user, baseTarget]);
+  }, [isPaidTier, user, baseTarget]);
 
   // Fetch on mount and when user/dreamId changes
   useEffect(() => {
