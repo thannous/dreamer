@@ -82,6 +82,19 @@ function formatError(e: unknown): Error {
   return new Error('subscription.error.unknown');
 }
 
+// Global sync state shared across all hook instances to avoid concurrent reconciliation loops
+const globalSyncState: {
+  lastSyncedTier: SubscriptionTier | null;
+  lastSyncAt: number | null;
+  inProgressTier: SubscriptionTier | null;
+  runId: number;
+} = {
+  lastSyncedTier: null,
+  lastSyncAt: null,
+  inProgressTier: null,
+  runId: 0,
+};
+
 export function useSubscription() {
   const { user, refreshUser, setUserTierLocally } = useAuth();
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
@@ -90,12 +103,18 @@ export function useSubscription() {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const requiresAuth = !user?.id;
-  const lastSyncedTierRef = useRef<SubscriptionTier | null>(null);
-  const tierReconcileRunIdRef = useRef(0);
-  // ✅ FIX: Track if sync is in progress for a specific tier to prevent duplicate syncs
-  const syncInProgressRef = useRef<SubscriptionTier | null>(null);
   // ✅ FIX: Track reconciliation attempts to enforce max attempt limit
   const reconciliationAttemptsRef = useRef(0);
+
+  // Extract stable user ID to break circular dependency in tier sync
+  const userId = user?.id;
+  // Extract user tier independently from user object reference
+  // to avoid re-triggering effects when user object changes
+  const userTier = (
+    (user?.app_metadata?.tier as SubscriptionTier | undefined) ||
+    (user?.user_metadata?.tier as SubscriptionTier | undefined) ||
+    'free'
+  );
 
   const getTierFromUser = useCallback((input?: typeof user | null): SubscriptionTier => {
     return (
@@ -107,9 +126,18 @@ export function useSubscription() {
 
   const startTierReconciliation = useCallback(
     (expectedTier: SubscriptionTier) => {
-      if (!user?.id) return;
+      if (!userId) return;
 
-      const runId = ++tierReconcileRunIdRef.current;
+      // Prevent duplicate runs for the same tier across hook instances
+      if (globalSyncState.inProgressTier === expectedTier) {
+        if (__DEV__) {
+          console.log('[useSubscription] Reconciliation already in progress for tier', expectedTier);
+        }
+        return;
+      }
+
+      const runId = ++globalSyncState.runId;
+      globalSyncState.inProgressTier = expectedTier;
       const startedAt = Date.now();
       const timeoutMs = 30000;
       const intervalMs = 2000;
@@ -117,7 +145,7 @@ export function useSubscription() {
 
       console.log('[useSubscription] Tier reconciliation started', {
         timestamp: new Date().toISOString(),
-        userId: user?.id,
+        userId,
         expectedTier,
         runId,
       });
@@ -129,7 +157,7 @@ export function useSubscription() {
         try {
           for (;;) {
             // ✅ FIX: Check if this run has been cancelled (new reconciliation started)
-            if (tierReconcileRunIdRef.current !== runId) {
+            if (globalSyncState.runId !== runId) {
               if (__DEV__) {
                 console.log('[useSubscription] Reconciliation cancelled (new run started)');
               }
@@ -167,10 +195,9 @@ export function useSubscription() {
             // Poll the authoritative user without forcing a JWT refresh on every attempt.
             // Once the tier matches, refresh the session JWT a single time so DB-side auth.jwt()
             // reflects the updated app_metadata (used by quota triggers).
-            // ✅ FIX: Don't bypass circuit breaker - respect rate limiting
             let refreshed;
             try {
-              refreshed = await refreshUser({ bypassCircuitBreaker: false, skipJwtRefresh: true });
+              refreshed = await refreshUser({ bypassCircuitBreaker: true, skipJwtRefresh: true });
             } catch (err) {
               console.warn('[useSubscription] Reconciliation refresh failed, will retry', {
                 timestamp: new Date().toISOString(),
@@ -182,7 +209,7 @@ export function useSubscription() {
               await sleep(intervalMs);
               continue;
             }
-            if (tierReconcileRunIdRef.current !== runId) return;
+            if (globalSyncState.runId !== runId) return;
 
             const refreshedTier = getTierFromUser(refreshed);
             if (refreshedTier === expectedTier) {
@@ -199,7 +226,7 @@ export function useSubscription() {
               }
 
               // Final refresh with JWT
-              const withFreshJwt = await refreshUser({ bypassCircuitBreaker: false, skipJwtRefresh: false });
+              const withFreshJwt = await refreshUser({ bypassCircuitBreaker: true, skipJwtRefresh: false });
               quotaService.invalidate(withFreshJwt ?? refreshed ?? user);
               return;
             }
@@ -215,25 +242,25 @@ export function useSubscription() {
           });
         } finally {
           // Only clear sync state if this run is still the latest to avoid clobbering newer runs
-          if (tierReconcileRunIdRef.current === runId) {
-            syncInProgressRef.current = null;
-            lastSyncedTierRef.current = null;
+          if (globalSyncState.runId === runId) {
+            globalSyncState.inProgressTier = null;
+            // Keep lastSyncedTier to avoid restarting for the same target tier unless status changes
           }
         }
       };
 
       void run();
     },
-    [getTierFromUser, refreshUser, user]
+    [getTierFromUser, refreshUser, userId]
   );
 
   const syncTier = useCallback(
     async (nextStatus: SubscriptionStatus) => {
       console.log('[useSubscription] Tier sync started', {
         timestamp: new Date().toISOString(),
-        userId: user?.id,
+        userId,
         targetTier: nextStatus.tier,
-        currentTier: getTierFromUser(user),
+        currentTier: userTier,
         expiryDate: nextStatus.expiryDate || null,
       });
 
@@ -244,7 +271,7 @@ export function useSubscription() {
         // Kick a short background reconciliation loop to wait for webhook + refresh JWT.
         // This prevents users from being stuck on server-side "free" claims for 10-30s after purchase.
         startTierReconciliation(nextStatus.tier);
-        await refreshUser();
+        await refreshUser({ bypassCircuitBreaker: true });
         console.log('[useSubscription] Tier sync completed', {
           timestamp: new Date().toISOString(),
           userId: user?.id,
@@ -262,7 +289,7 @@ export function useSubscription() {
         }
       }
     },
-    [refreshUser, setUserTierLocally, startTierReconciliation, user, getTierFromUser]
+    [refreshUser, setUserTierLocally, startTierReconciliation, user, userId, userTier]
   );
 
   useEffect(() => {
@@ -309,31 +336,56 @@ export function useSubscription() {
   }, [requiresAuth, user?.id]);
 
   // Keep auth user tier in sync with the RevenueCat status to avoid stale "Free plan" UI/quota states.
+  // ✅ FIX: Use ref to track if we've already initiated sync for current status to prevent infinite loops
+  const syncInitiatedForStatusRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!status || requiresAuth) return;
 
-    const currentTier = getTierFromUser(user);
+    const currentTier = userTier;
 
-    // Already in sync
+    // Already in sync - just return early
+    // ✅ IMPORTANT: Do NOT reset syncInitiatedForStatusRef here!
+    // The reconciliation process will call refreshUser() which may return stale tier data.
+    // If we reset the ref when tiers temporarily match (after setUserTierLocally), then
+    // when refreshUser returns stale data, the ref will be null and we'll restart sync.
+    // The ref will naturally get a new value when status changes (different statusKey).
     if (status.tier === currentTier) {
-      lastSyncedTierRef.current = null;
-      syncInProgressRef.current = null; // ✅ FIX: Clean up sync state
+      globalSyncState.inProgressTier = null;
       return;
     }
 
-    // Avoid looping refreshes for the same target tier
-    if (lastSyncedTierRef.current === status.tier) return;
+    // ✅ FIX: Create a stable identifier for this status to track if we've already initiated sync
+    // This prevents re-triggering when user state changes due to refreshUser() returning stale data
+    const statusKey = `${status.tier}-${status.isActive}-${status.expiryDate ?? 'no-expiry'}`;
+    if (syncInitiatedForStatusRef.current === statusKey) {
+      if (__DEV__) {
+        console.log('[useSubscription] Sync already initiated for this status:', statusKey);
+      }
+      return;
+    }
 
-    // ✅ FIX: Avoid starting a new sync if already syncing this tier
-    if (syncInProgressRef.current === status.tier) {
+    // Avoid looping refreshes for the same target tier (allow retry after short cooldown)
+    if (
+      globalSyncState.lastSyncedTier === status.tier &&
+      globalSyncState.lastSyncAt &&
+      Date.now() - globalSyncState.lastSyncAt < 5000
+    ) {
+      return;
+    }
+
+    // ✅ FIX: Avoid starting a new sync if already syncing this tier across any component
+    if (globalSyncState.inProgressTier === status.tier) {
       if (__DEV__) {
         console.log('[useSubscription] Sync already in progress for tier:', status.tier);
       }
       return;
     }
 
-    lastSyncedTierRef.current = status.tier;
-    syncInProgressRef.current = status.tier;
+    // ✅ FIX: Mark this status as having initiated sync BEFORE any state changes
+    syncInitiatedForStatusRef.current = statusKey;
+    globalSyncState.lastSyncedTier = status.tier;
+    globalSyncState.lastSyncAt = Date.now();
 
     if (__DEV__) {
       console.log('[useSubscription] Starting tier sync:', { from: currentTier, to: status.tier });
@@ -342,7 +394,7 @@ export function useSubscription() {
     // Optimistic UI, then reconcile with server until webhook-driven app_metadata matches.
     setUserTierLocally(status.tier);
     startTierReconciliation(status.tier);
-  }, [getTierFromUser, requiresAuth, setUserTierLocally, startTierReconciliation, status, user]);
+  }, [getTierFromUser, requiresAuth, setUserTierLocally, startTierReconciliation, status, userId, userTier]);
 
   // ✅ PHASE 3: Check for subscription expiration on app startup
   useEffect(() => {
@@ -364,7 +416,7 @@ export function useSubscription() {
           }
         });
     }
-  }, [status?.expiryDate, requiresAuth, user?.id]);
+  }, [status, requiresAuth, user?.id]);
 
   const purchase = useCallback(async (id: string) => {
     if (requiresAuth) {
