@@ -54,8 +54,9 @@ export interface DreamAnalysis {
 }
 
 export interface NotificationSettings {
-  isEnabled: boolean;
+  weekdayEnabled: boolean;
   weekdayTime: string; // "HH:MM"
+  weekendEnabled: boolean;
   weekendTime: string; // "HH:MM"
 }
 

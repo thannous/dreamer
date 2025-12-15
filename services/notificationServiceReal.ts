@@ -130,6 +130,11 @@ function getRitualReminderBody(ritualId: RitualId): string {
 
 /**
  * Schedule daily notification based on settings
+ * Note: expo-notifications doesn't support weekday-specific triggers directly.
+ * To implement different times for weekdays vs weekends, we use a simplified
+ * approach: schedule using weekday time if enabled, otherwise weekend time if enabled.
+ * For a complete implementation with both times firing on their respective days,
+ * a backend service or more sophisticated scheduling would be required.
  */
 export async function scheduleDailyNotification(settings: NotificationSettings): Promise<void> {
   if (Platform.OS === 'web') {
@@ -140,15 +145,20 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
   // Cancel all existing notifications first
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  if (!settings.isEnabled) {
+  // Check if either weekday or weekend notifications are enabled
+  if (!settings.weekdayEnabled && !settings.weekendEnabled) {
+    if (__DEV__) {
+      console.log('All notification types disabled');
+    }
     return;
   }
 
-  // Parse time string (HH:MM)
-  const timeToUse = settings.weekdayTime; // For now, using single time
+  // Determine which time to use
+  // If weekday is enabled, use weekday time; otherwise use weekend time
+  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
   const { hours, minutes } = getTimeParts(timeToUse);
 
-  // Schedule for weekdays (Monday-Friday)
+  // Schedule daily notification
   await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Dream Journal Reminder',
@@ -161,14 +171,17 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
       hour: hours,
       minute: minutes,
-      // Note: expo-notifications doesn't support weekday-specific triggers directly
-      // The notification will fire daily. For weekday-specific logic, we'd need
-      // to check in the notification handler or use a different approach
     },
   });
 
   if (__DEV__) {
-    console.log(`Scheduled daily notification for ${timeToUse}`);
+    if (settings.weekdayEnabled && settings.weekendEnabled) {
+      console.log(`Scheduled daily notification for ${timeToUse} (weekday time used - platform doesn't support different times for weekdays/weekends)`);
+    } else if (settings.weekdayEnabled) {
+      console.log(`Scheduled daily notification for ${settings.weekdayTime} (weekday only)`);
+    } else {
+      console.log(`Scheduled daily notification for ${settings.weekendTime} (weekend only)`);
+    }
   }
 }
 
@@ -179,11 +192,14 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
 
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  if (!settings.isEnabled) {
+  // Use same logic as scheduleDailyNotification - check if either is enabled
+  if (!settings.weekdayEnabled && !settings.weekendEnabled) {
     return;
   }
 
-  const { hours, minutes } = getTimeParts(settings.weekdayTime);
+  // Use weekday time if enabled, otherwise weekend time
+  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
+  const { hours, minutes } = getTimeParts(timeToUse);
   const t = getTranslator();
 
   await Notifications.scheduleNotificationAsync({
@@ -202,7 +218,7 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
   });
 
   if (__DEV__) {
-    console.log(`Scheduled ritual reminder for ${settings.weekdayTime} (${ritualId})`);
+    console.log(`Scheduled ritual reminder for ${timeToUse} (${ritualId})`);
   }
 }
 

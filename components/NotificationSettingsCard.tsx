@@ -28,8 +28,9 @@ function NotificationSettingsCardComponent(
   ref: React.ForwardedRef<NotificationSettingsCardHandle>
 ) {
   const [settings, setSettings] = useState<NotificationSettings>({
-    isEnabled: false,
+    weekdayEnabled: false,
     weekdayTime: '07:00',
+    weekendEnabled: false,
     weekendTime: '10:00',
   });
   const [hasPermissions, setHasPermissions] = useState(false);
@@ -65,7 +66,8 @@ function NotificationSettingsCardComponent(
 
   // Auto-scroll vers le bas quand les notifications sont activées
   useEffect(() => {
-    if (settings.isEnabled && optionsContainerRef.current && props.scrollViewRef?.current) {
+    const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
+    if (notificationsEnabled && optionsContainerRef.current && props.scrollViewRef?.current) {
       // Délai pour que React ait rendu le contenu
       setTimeout(() => {
         optionsContainerRef.current?.measure((x, y, width, height, pageX, pageY) => {
@@ -78,7 +80,7 @@ function NotificationSettingsCardComponent(
         });
       }, 300);
     }
-  }, [settings.isEnabled, props]);
+  }, [settings.weekdayEnabled, settings.weekendEnabled, props]);
 
   const refreshPermissions = useCallback(async () => {
     try {
@@ -121,7 +123,7 @@ function NotificationSettingsCardComponent(
     };
   }, [refreshPermissions]);
 
-  const handleToggle = async (enabled: boolean) => {
+  const handleWeekdayToggle = async (enabled: boolean) => {
     if (enabled && !hasPermissions) {
       // Request permissions first
       const granted = await requestNotificationPermissions();
@@ -136,12 +138,12 @@ function NotificationSettingsCardComponent(
       setHasPermissions(true);
     }
 
-    const newSettings = { ...settings, isEnabled: enabled };
+    const newSettings = { ...settings, weekdayEnabled: enabled };
     setSettings(newSettings);
 
     try {
       await saveNotificationSettings(newSettings);
-      if (enabled) {
+      if (newSettings.weekdayEnabled || newSettings.weekendEnabled) {
         await scheduleDailyNotification(newSettings);
       } else {
         await cancelAllNotifications();
@@ -150,8 +152,46 @@ function NotificationSettingsCardComponent(
       if (__DEV__) {
         console.error('Failed to update notification settings:', error);
       }
-      // Revert switch to false on error
-      setSettings({ ...settings, isEnabled: false });
+      // Revert switch on error
+      setSettings({ ...settings, weekdayEnabled: !enabled });
+      Alert.alert(
+        t('notifications.alert.update_failed.title'),
+        t('notifications.alert.update_failed.message')
+      );
+    }
+  };
+
+  const handleWeekendToggle = async (enabled: boolean) => {
+    if (enabled && !hasPermissions) {
+      // Request permissions first
+      const granted = await requestNotificationPermissions();
+      if (!granted) {
+        Alert.alert(
+          t('notifications.alert.permission_required.title'),
+          t('notifications.alert.permission_required.message'),
+          [{ text: t('common.done') }]
+        );
+        return;
+      }
+      setHasPermissions(true);
+    }
+
+    const newSettings = { ...settings, weekendEnabled: enabled };
+    setSettings(newSettings);
+
+    try {
+      await saveNotificationSettings(newSettings);
+      if (newSettings.weekdayEnabled || newSettings.weekendEnabled) {
+        await scheduleDailyNotification(newSettings);
+      } else {
+        await cancelAllNotifications();
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to update notification settings:', error);
+      }
+      // Revert switch on error
+      setSettings({ ...settings, weekendEnabled: !enabled });
       Alert.alert(
         t('notifications.alert.update_failed.title'),
         t('notifications.alert.update_failed.message')
@@ -174,7 +214,7 @@ function NotificationSettingsCardComponent(
 
       try {
         await saveNotificationSettings(newSettings);
-        if (settings.isEnabled) {
+        if (newSettings.weekdayEnabled || newSettings.weekendEnabled) {
           await scheduleDailyNotification(newSettings);
         }
       } catch (error) {
@@ -200,7 +240,7 @@ function NotificationSettingsCardComponent(
 
       try {
         await saveNotificationSettings(newSettings);
-        if (settings.isEnabled) {
+        if (newSettings.weekdayEnabled || newSettings.weekendEnabled) {
           await scheduleDailyNotification(newSettings);
         }
       } catch (error) {
@@ -252,10 +292,27 @@ function NotificationSettingsCardComponent(
   };
 
   const getNextReminderText = (): string => {
+    const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
+    if (!notificationsEnabled) {
+      return t('notifications.setting.enable_hint_inactive');
+    }
+
     const now = new Date();
     const todayDay = now.getDay(); // 0 = Sunday, 6 = Saturday
     const isWeekend = todayDay === 0 || todayDay === 6;
-    const nextTime = isWeekend ? settings.weekendTime : settings.weekdayTime;
+
+    // Determine which time should be used based on enabled periods
+    let nextTime: string;
+    if (settings.weekdayEnabled && settings.weekendEnabled) {
+      // Both enabled - use appropriate time for today
+      nextTime = isWeekend ? settings.weekendTime : settings.weekdayTime;
+    } else if (settings.weekdayEnabled) {
+      // Only weekday enabled
+      nextTime = settings.weekdayTime;
+    } else {
+      // Only weekend enabled
+      nextTime = settings.weekendTime;
+    }
 
     const [hours, minutes] = nextTime.split(':').map(Number);
     const nextReminder = new Date();
@@ -302,118 +359,123 @@ function NotificationSettingsCardComponent(
     );
   }
 
+  const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
+
   return (
     <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.card.title')}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.card.description')}</Text>
 
+      {/* Weekday checkbox and time picker */}
       <View style={styles.settingRow}>
         <View style={styles.settingInfo}>
-          <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>{t('notifications.setting.enable')}</Text>
+          <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+            🌅 {t('notifications.setting.weekday')}
+          </Text>
           <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
-            {settings.isEnabled ? getNextReminderText() : t('notifications.setting.enable_hint_inactive')}
+            {t('notifications.setting.time_hint')}
           </Text>
         </View>
-        <Switch
-          value={settings.isEnabled}
-          onValueChange={handleToggle}
-          trackColor={{ false: colors.backgroundSecondary, true: colors.accentLight }}
-          thumbColor={settings.isEnabled ? colors.accent : '#f4f3f4'}
-        />
+        <View style={styles.controlGroup}>
+          <Pressable
+            onPress={() => setShowWeekdayPicker(true)}
+            style={[
+              styles.timeButton,
+              { backgroundColor: colors.accent, borderColor: colors.accentDark },
+            ]}
+          >
+            <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
+              {settings.weekdayTime}
+            </Text>
+          </Pressable>
+          <Switch
+            value={settings.weekdayEnabled}
+            onValueChange={handleWeekdayToggle}
+            trackColor={{ false: colors.backgroundSecondary, true: colors.accentLight }}
+            thumbColor={settings.weekdayEnabled ? colors.accent : '#f4f3f4'}
+            style={styles.checkboxMargin}
+          />
+        </View>
       </View>
 
-      {settings.isEnabled && (
+      {showWeekdayPicker && (
+        <DateTimePicker
+          value={getDateFromTime(settings.weekdayTime)}
+          mode="time"
+          is24Hour={true}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleWeekdayTimeChange}
+        />
+      )}
+
+      {Platform.OS === 'ios' && showWeekdayPicker && (
+        <Pressable
+          style={[styles.doneButton, { backgroundColor: colors.accent }]}
+          onPress={() => setShowWeekdayPicker(false)}
+        >
+          <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
+        </Pressable>
+      )}
+
+      {/* Weekend checkbox and time picker */}
+      <View style={[styles.settingRow, styles.marginTop12]}>
+        <View style={styles.settingInfo}>
+          <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+            🌙 {t('notifications.setting.weekend')}
+          </Text>
+          <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
+            {t('notifications.setting.time_hint')}
+          </Text>
+        </View>
+        <View style={styles.controlGroup}>
+          <Pressable
+            onPress={() => setShowWeekendPicker(true)}
+            style={[
+              styles.timeButton,
+              { backgroundColor: colors.accent, borderColor: colors.accentDark },
+            ]}
+          >
+            <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
+              {settings.weekendTime}
+            </Text>
+          </Pressable>
+          <Switch
+            value={settings.weekendEnabled}
+            onValueChange={handleWeekendToggle}
+            trackColor={{ false: colors.backgroundSecondary, true: colors.accentLight }}
+            thumbColor={settings.weekendEnabled ? colors.accent : '#f4f3f4'}
+            style={styles.checkboxMargin}
+          />
+        </View>
+      </View>
+
+      {showWeekendPicker && (
+        <DateTimePicker
+          value={getDateFromTime(settings.weekendTime)}
+          mode="time"
+          is24Hour={true}
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleWeekendTimeChange}
+        />
+      )}
+
+      {Platform.OS === 'ios' && showWeekendPicker && (
+        <Pressable
+          style={[styles.doneButton, { backgroundColor: colors.accent }]}
+          onPress={() => setShowWeekendPicker(false)}
+        >
+          <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
+        </Pressable>
+      )}
+
+      {/* Next reminder and test button */}
+      {notificationsEnabled && (
         <View ref={optionsContainerRef}>
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
 
-          {/* Explanatory text */}
-          <Text style={[styles.explanatoryText, { color: colors.textSecondary }]}>
-            {t('notifications.setting.different_times')}
+          <Text style={[styles.settingHint, { color: colors.textSecondary, marginBottom: ThemeLayout.spacing.md }]}>
+            {getNextReminderText()}
           </Text>
-
-          {/* Weekday Time Picker */}
-          <View style={styles.settingRow}>
-            <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
-                🌅 {t('notifications.setting.weekday')}
-              </Text>
-              <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
-                {t('notifications.setting.time_hint')}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setShowWeekdayPicker(true)}
-              style={[
-                styles.timeButton,
-                { backgroundColor: colors.accent, borderColor: colors.accentDark },
-              ]}
-            >
-              <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
-                {settings.weekdayTime}
-              </Text>
-            </Pressable>
-          </View>
-
-          {showWeekdayPicker && (
-            <DateTimePicker
-              value={getDateFromTime(settings.weekdayTime)}
-              mode="time"
-              is24Hour={true}
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={handleWeekdayTimeChange}
-            />
-          )}
-
-          {Platform.OS === 'ios' && showWeekdayPicker && (
-            <Pressable
-              style={[styles.doneButton, { backgroundColor: colors.accent }]}
-              onPress={() => setShowWeekdayPicker(false)}
-            >
-              <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
-            </Pressable>
-          )}
-
-          {/* Weekend Time Picker */}
-          <View style={[styles.settingRow, styles.marginTop12]}>
-            <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
-                🌙 {t('notifications.setting.weekend')}
-              </Text>
-              <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
-                {t('notifications.setting.time_hint')}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => setShowWeekendPicker(true)}
-              style={[
-                styles.timeButton,
-                { backgroundColor: colors.accent, borderColor: colors.accentDark },
-              ]}
-            >
-              <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
-                {settings.weekendTime}
-              </Text>
-            </Pressable>
-          </View>
-
-          {showWeekendPicker && (
-            <DateTimePicker
-              value={getDateFromTime(settings.weekendTime)}
-              mode="time"
-              is24Hour={true}
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={handleWeekendTimeChange}
-            />
-          )}
-
-          {Platform.OS === 'ios' && showWeekendPicker && (
-            <Pressable
-              style={[styles.doneButton, { backgroundColor: colors.accent }]}
-              onPress={() => setShowWeekendPicker(false)}
-            >
-              <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
-            </Pressable>
-          )}
 
           <View style={styles.testButtonContainer}>
             <Pressable
@@ -475,6 +537,14 @@ const styles = StyleSheet.create({
   settingHint: {
     fontSize: 13,
     fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  controlGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  checkboxMargin: {
+    marginLeft: 8,
   },
   divider: {
     height: 1,
