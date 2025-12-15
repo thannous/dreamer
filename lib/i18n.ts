@@ -999,7 +999,7 @@ const translations: LanguagePack = {
     'subscription.paywall.header.plus': 'Noctalia Plus est actif',
     'subscription.paywall.header.premium': 'Premium est actif',
     'subscription.paywall.header.subtitle.free': 'Tirez plus de vos rêves avec des analyses étendues, explorations plus longues et insights enrichis.',
-    'subscription.paywall.header.subtitle.plus': 'Merci de soutenir Noctalia. Profitez d'analyses étendues et d'explorations plus longues.',
+    'subscription.paywall.header.subtitle.plus': 'Merci de soutenir Noctalia. Profitez d\'analyses étendues et d\'explorations plus longues.',
     'subscription.paywall.header.subtitle.premium': 'Merci de soutenir Noctalia. Profitez de tout ce qui est inclus dans Premium.',
     'subscription.paywall.card.title': 'Analyse de rêves Noctalia Plus',
     'subscription.paywall.card.subtitle': 'Analyses étendues, explorations plus longues et regards plus profonds sur vos nuits.',
