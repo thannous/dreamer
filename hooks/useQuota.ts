@@ -40,7 +40,8 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   );
 
   // Get tier from RevenueCat (source of truth)
-  const tier = subscriptionStatus?.tier || 'free';
+  // For unauthenticated guests, return 'guest'; for authenticated users, return subscription tier or 'free'
+  const tier = !user?.id ? 'guest' : (subscriptionStatus?.tier || 'free');
 
   /**
    * Fetch quota status
@@ -48,7 +49,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
    */
   const fetchQuotaStatus = useCallback(async () => {
     // Don't fetch until subscription is loaded
-    if (subscriptionLoading || !subscriptionStatus) return;
+    if (subscriptionLoading) return;
 
     try {
       setLoading(true);
@@ -61,7 +62,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     } finally {
       setLoading(false);
     }
-  }, [user, tier, baseTarget, subscriptionLoading, subscriptionStatus]);
+  }, [user, tier, baseTarget, subscriptionLoading]);
 
   /**
    * Invalidate cache and refetch
