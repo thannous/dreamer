@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useLanguage } from '@/context/LanguageContext';
@@ -13,7 +13,7 @@ import {
   type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
-import { getTranscriptionLocale } from '@/lib/locale';
+import { updateLanguagePreference } from '@/lib/languagePreference';
 
 const LANGUAGE_LABEL_KEYS: Record<Exclude<LanguagePreference, 'auto'>, string> = {
   en: 'settings.language.option.en.label',
@@ -32,26 +32,61 @@ export default function LanguageSettingsCard() {
 
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
+  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
+  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
+
+  const resolveOfflineModelPrompt = useCallback(() => {
+    const resolve = offlineModelPromptResolveRef.current;
+    offlineModelPromptResolveRef.current = null;
+    offlineModelPromptPromiseRef.current = null;
+    resolve?.();
+  }, []);
+
+  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
+    if (offlineModelPromptPromiseRef.current) {
+      return offlineModelPromptPromiseRef.current;
+    }
+
+    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
+      offlineModelPromptResolveRef.current = () => {
+        resolve();
+      };
+    });
+
+    return offlineModelPromptPromiseRef.current;
+  }, []);
+
+  const handleOfflineModelPromptShow = useCallback(
+    async (locale: string) => {
+      setOfflineModelLocale(locale);
+      setShowOfflineModelSheet(true);
+      await waitForOfflineModelPromptClose();
+    },
+    [waitForOfflineModelPromptClose]
+  );
+
+  const handleOfflineModelSheetClose = useCallback(() => {
+    setShowOfflineModelSheet(false);
+    setOfflineModelLocale('');
+    resolveOfflineModelPrompt();
+  }, [resolveOfflineModelPrompt]);
+
+  const handleOfflineModelDownloadComplete = useCallback((_success: boolean) => undefined, []);
 
   // Register offline model prompt handler
   useEffect(() => {
     const handler: OfflineModelPromptHandler = {
       isVisible: showOfflineModelSheet,
-      show: async (locale: string) => {
-        setOfflineModelLocale(locale);
-        setShowOfflineModelSheet(true);
-        await new Promise((resolve) => {
-          const checkInterval = setInterval(() => {
-            if (!showOfflineModelSheet) {
-              clearInterval(checkInterval);
-              resolve(null);
-            }
-          }, 100);
-        });
-      },
+      show: handleOfflineModelPromptShow,
     };
     registerOfflineModelPromptHandler(handler);
-  }, [showOfflineModelSheet]);
+  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
+
+  useEffect(() => {
+    return () => {
+      resolveOfflineModelPrompt();
+    };
+  }, [resolveOfflineModelPrompt]);
 
   const languageOptions = useMemo(
     () =>
@@ -86,18 +121,12 @@ export default function LanguageSettingsCard() {
 
   const handleSelectLanguage = async (value: LanguagePreference) => {
     try {
-      // Determine effective language for this preference
-      const effectiveLanguage = value === 'auto' ? systemLanguage : value;
-      const locale = getTranscriptionLocale(effectiveLanguage);
-
-      // Ensure offline model (non-blocking - don't wait for result)
-      // User will be prompted if needed, but language change proceeds regardless
-      ensureOfflineSttModel(locale).catch(() => {
-        // Ignore errors - this is best-effort
+      await updateLanguagePreference({
+        preference: value,
+        systemLanguage,
+        setPreference,
+        ensureOfflineModel: ensureOfflineSttModel,
       });
-
-      // Apply language change immediately
-      await setPreference(value);
     } catch (error) {
       if (__DEV__) {
         console.error('Failed to update language preference:', error);
@@ -180,12 +209,9 @@ export default function LanguageSettingsCard() {
       })}
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}
-        onClose={() => setShowOfflineModelSheet(false)}
+        onClose={handleOfflineModelSheetClose}
         locale={offlineModelLocale}
-        onDownloadComplete={() => {
-          setShowOfflineModelSheet(false);
-          setOfflineModelLocale('');
-        }}
+        onDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </View>
   );
