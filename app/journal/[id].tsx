@@ -1,5 +1,6 @@
 import { Toast } from '@/components/Toast';
 import { ImageRetry } from '@/components/journal/ImageRetry';
+import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { GradientColors } from '@/constants/gradients';
@@ -11,6 +12,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
+import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
@@ -183,6 +185,7 @@ export default function JournalDetailScreen() {
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading } = useQuota();
   const { t } = useTranslation();
+  const isPremium = tier === 'premium' || tier === 'plus';
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
@@ -319,6 +322,8 @@ export default function JournalDetailScreen() {
       animation?.stop();
     };
   }, [isEditingTranscript, transcriptPulse]);
+
+  const { shareImageRef, shareComposite } = useDreamShareComposite();
 
   const primaryAction = useMemo(() => getDreamDetailAction(dream), [dream]);
   const allThemesExplored = useMemo(() => {
@@ -494,13 +499,6 @@ export default function JournalDetailScreen() {
     return `${dream.imageUrl}|${version}`;
   }, [dream?.analysisRequestId, dream?.analyzedAt, dream?.id, dream?.imageUpdatedAt, dream?.imageUrl]);
 
-  const getShareableImageUri = useCallback(async () => {
-    if (!shareImage) {
-      // If getInfo fails, we'll re-download the file.
-      return undefined;
-    }
-    return shareImage.source;
-  }, [shareImage]);
 
   // Define callbacks before early return (hooks must be called unconditionally)
   const onShare = useCallback(async () => {
@@ -523,27 +521,20 @@ export default function JournalDetailScreen() {
         return;
       }
 
-      let localImageUri: string | undefined;
+      // Mobile (iOS/Android): Use composite image for sharing
       if (shareImage) {
-        localImageUri = await getShareableImageUri();
+        await shareComposite(dream);
+        return;
       }
 
-      const sharePayload: {
-        message: string;
-        title?: string;
-        url?: string;
-      } = {
+      // Fallback to text-only sharing if no image
+      await Share.share({
         message: shareMessage,
         title: shareTitle,
-      };
-
-      if (localImageUri) {
-        sharePayload.url = localImageUri;
-      }
-
-      await Share.share(sharePayload);
+      });
       return;
-    } catch {
+    } catch (error) {
+      console.error('Share failed:', error);
       if (Platform.OS === 'web') {
         openShareModal();
       } else {
@@ -552,7 +543,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsSharing(false);
     }
-  }, [dream, getShareableImageUri, isAnalysisLocked, openShareModal, shareImage, shareMessage, shareTitle, t]);
+  }, [dream, isAnalysisLocked, openShareModal, shareComposite, shareImage, shareMessage, shareTitle, t]);
 
   const handleToggleFavorite = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
@@ -1761,6 +1752,13 @@ export default function JournalDetailScreen() {
             onHide={() => setFavoriteError(null)}
           />
         ) : null}
+
+        {/* Hidden composite image generator for sharing */}
+        {dream && shareImage && (
+          <View style={{ position: 'absolute', left: -10000, top: 0, width: 1080, height: 1350 }}>
+            <DreamShareImage ref={shareImageRef} dream={dream} isPremium={isPremium} t={t} />
+          </View>
+        )}
       </LinearGradient>
     </KeyboardAvoidingView>
   );
