@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -119,6 +119,7 @@ export default function InspirationScreen() {
   const [ritualProgress, setRitualProgress] = useState<Partial<Record<RitualId, Record<string, boolean>>>>({});
   const [progressDate, setProgressDate] = useState<string>(getLocalDateKey());
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings | null>(null);
+  const [showAnimations, setShowAnimations] = useState(false);
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
@@ -256,7 +257,7 @@ export default function InspirationScreen() {
     setSelectedRitualId(id);
     try {
       await saveRitualPreference(id);
-      if (notificationSettings?.isEnabled) {
+      if (notificationSettings && (notificationSettings.weekdayEnabled || notificationSettings.weekendEnabled)) {
         await scheduleRitualReminder(notificationSettings, id);
       }
     } catch (error) {
@@ -291,6 +292,13 @@ export default function InspirationScreen() {
 
   const completedSteps = ritualProgress[selectedRitualId] ?? {};
 
+  useFocusEffect(
+    useCallback(() => {
+      setShowAnimations(true);
+      return () => setShowAnimations(false);
+    }, [])
+  );
+
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
       <ScreenContainer>
@@ -301,6 +309,7 @@ export default function InspirationScreen() {
           ]}
         >
           <MotiText
+            key={`header-${showAnimations}`}
             from={{ opacity: 0, translateY: 12 }}
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 650 }}
@@ -324,6 +333,7 @@ export default function InspirationScreen() {
           <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHeroSection]}>
               <MotiView
+                key={`ritual-${showAnimations}`}
                 from={{ opacity: 0, translateY: 12, scale: 0.98 }}
                 animate={{ opacity: 1, translateY: 0, scale: 1 }}
                 transition={{ type: 'timing', duration: 700 }}
@@ -509,6 +519,7 @@ function RitualCard({
       style={[
         styles.heroCard,
         { backgroundColor: colors.backgroundCard },
+        { marginHorizontal: 16 },
         shadows.lg,
       ]}
     >
