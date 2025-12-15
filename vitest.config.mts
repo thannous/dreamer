@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       'react-native': path.resolve(__dirname, 'tests/react-native-stub.ts'),
+      '@expo/vector-icons': path.resolve(__dirname, 'tests/expo-vector-icons-stub.ts'),
     },
   },
   test: {

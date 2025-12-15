@@ -72,7 +72,13 @@
       "Bash(cat:*)",
       "mcp__supabase__list_edge_functions",
       "Bash(git show:*)",
-      "Bash(npx expo-doctor:*)"
+      "Bash(npx expo-doctor:*)",
+      "Bash(keytool -list -v -keystore:*)",
+      "Bash(keytool:*)",
+      "Bash(keytool -printcert:*)",
+      "Bash(npx react-native:*)",
+      "Bash(head:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []
