@@ -11,6 +11,7 @@ import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/li
 export interface Entitlement {
   productIdentifier?: string;
   expirationDate?: string | null;
+  willRenew?: boolean;
 }
 
 /**
@@ -131,6 +132,7 @@ export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
   const activeEntitlement = getActiveEntitlement(info);
   const entitlementId = getActiveEntitlementId(info);
   const expiryDate = activeEntitlement?.expirationDate ?? null;
+  const willRenew = activeEntitlement?.willRenew ?? undefined;
 
   // ✅ PHASE 3: Check if entitlement has expired
   const isExpired = isEntitlementExpired(expiryDate);
@@ -143,6 +145,7 @@ export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
     isActive: active,
     expiryDate,
     productId,
+    willRenew,
   };
 }
 

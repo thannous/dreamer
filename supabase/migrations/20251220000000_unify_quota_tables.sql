@@ -125,7 +125,7 @@ LANGUAGE plpgsql
 SET search_path = public
 AS $$
 DECLARE
-  tier text;
+  tier_value text;
   period_start timestamptz;
   period_end timestamptz;
   used_count integer;
@@ -145,11 +145,11 @@ BEGIN
   END IF;
 
   -- Tier is stored in app_metadata (admin-only)
-  tier := COALESCE((select auth.jwt() -> 'app_metadata' ->> 'tier'), 'free');
+  tier_value := COALESCE((select auth.jwt() -> 'app_metadata' ->> 'tier'), 'free');
 
   -- Fail closed: treat unknown tiers as free.
-  IF tier NOT IN ('free', 'plus', 'premium') THEN
-    tier := 'free';
+  IF tier_value NOT IN ('free', 'plus', 'premium') THEN
+    tier_value := 'free';
   END IF;
 
   -- Enforce exploration quota on transition NULL -> NOT NULL
@@ -165,7 +165,7 @@ BEGIN
     SELECT q.quota_limit
     INTO exploration_limit
     FROM public.quota_limits q
-    WHERE q.tier = tier
+    WHERE q.tier = tier_value
       AND q.period = 'monthly'
       AND q.quota_type = 'exploration';
 
@@ -205,7 +205,7 @@ BEGIN
     SELECT q.quota_limit
     INTO analysis_limit
     FROM public.quota_limits q
-    WHERE q.tier = tier
+    WHERE q.tier = tier_value
       AND q.period = 'monthly'
       AND q.quota_type = 'analysis';
 
@@ -249,7 +249,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
-  tier text;
+  tier_value text;
   message_limit integer;
   new_count integer;
   old_count integer;
@@ -271,29 +271,29 @@ BEGIN
   END IF;
 
   -- ✅ CRITICAL: Read tier from app_metadata (admin-only, not client-modifiable)
-  tier := COALESCE((select auth.jwt() -> 'app_metadata' ->> 'tier'), 'free');
+  tier_value := COALESCE((select auth.jwt() -> 'app_metadata' ->> 'tier'), 'free');
 
   -- Premium users have unlimited messages - bypass quota check
-  IF tier = 'premium' THEN
+  IF tier_value = 'premium' THEN
     RETURN NEW;
   END IF;
 
   -- Fail closed: treat unknown tiers as 'free'
-  IF tier NOT IN ('free', 'plus', 'guest') THEN
-    tier := 'free';
+  IF tier_value NOT IN ('free', 'plus', 'guest') THEN
+    tier_value := 'free';
   END IF;
 
   -- Fetch the per-dream message limit from quota_limits table
   SELECT q.quota_limit
   INTO message_limit
   FROM public.quota_limits q
-  WHERE q.tier = tier
+  WHERE q.tier = tier_value
     AND q.period = 'monthly'
     AND q.quota_type = 'messages_per_dream';
 
   -- Fallback limits if not configured in DB
   IF message_limit IS NULL THEN
-    message_limit := CASE WHEN tier = 'guest' THEN 10 WHEN tier = 'free' THEN 20 WHEN tier = 'plus' THEN 20 ELSE 20 END;
+    message_limit := CASE WHEN tier_value = 'guest' THEN 10 WHEN tier_value = 'free' THEN 20 WHEN tier_value = 'plus' THEN 20 ELSE 20 END;
   END IF;
 
   -- Count user messages in old and new chat_history
@@ -315,7 +315,7 @@ BEGIN
 
     -- Raise exception to abort the transaction
     RAISE EXCEPTION 'QUOTA_MESSAGE_LIMIT_REACHED: Tier "%" allows max % messages per dream, attempted %',
-      tier, message_limit, new_count
+      tier_value, message_limit, new_count
       USING ERRCODE = 'P0001';
   END IF;
 

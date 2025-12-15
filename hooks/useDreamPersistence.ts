@@ -10,6 +10,7 @@
  * This hook is extracted from useDreamJournal for better separation of concerns.
  */
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '../context/AuthContext';
@@ -21,6 +22,7 @@ import {
   normalizeDreamList,
   resolveDreamListUpdater,
   sortDreams,
+  upsertDream,
 } from '../lib/dreamUtils';
 import {
   getCachedRemoteDreams,
@@ -125,6 +127,64 @@ export function useDreamPersistence({
   }, [canUseRemoteSync, userId]); // ✅ FIX: Depend on userId instead of full user object
 
   /**
+   * Migrate unsynced dreams to Supabase (one-shot migration)
+   * Syncs all dreams without remoteId that aren't already pending sync
+   */
+  const migrateUnsyncedDreams = useCallback(async () => {
+    // Guard: only if authenticated + remote sync enabled + network available
+    if (!canUseRemoteSync || !userId) return;
+
+    // One-shot: check if already migrated (flag stored locally per user)
+    const migrationKey = `@dreams_migration_synced_${userId}`;
+    const alreadyMigrated = await AsyncStorage.getItem(migrationKey);
+    if (alreadyMigrated === 'true') return;
+
+    try {
+      // Load remote dreams (already fetched and cached)
+      const remoteDreams = await getCachedRemoteDreams();
+
+      // Filter: without remoteId AND without pendingSync (to avoid conflict with offline queue)
+      const unsynced = remoteDreams.filter((d) => !d.remoteId && !d.pendingSync);
+
+      if (unsynced.length === 0) {
+        await AsyncStorage.setItem(migrationKey, 'true');
+        return;
+      }
+
+      logger.debug(`Migrating ${unsynced.length} unsynced dreams`);
+
+      // Sync each dream one by one
+      for (const dream of unsynced) {
+        try {
+          // Ensure clientRequestId for idempotence (prevent duplicates if dream already on server)
+          const dreamToSync = dream.clientRequestId
+            ? dream
+            : { ...dream, clientRequestId: `dream-${dream.id}` };
+
+          // createDreamInSupabase does upsert on (user_id, client_request_id)
+          // If dream exists on server, fetches just remoteId without creating duplicate
+          const synced = await createDreamInSupabase(dreamToSync, userId);
+
+          // IMPORTANT: synced.id may differ from dream.id (reconstructed from server's created_at)
+          // upsertDream matches by id OR remoteId, so will correctly update the dream
+          await persistRemoteDreams((prev) => upsertDream(prev, synced));
+
+          logger.debug(`Migrated dream ${dream.id} → remoteId ${synced.remoteId}`);
+        } catch (error) {
+          logger.warn('Migration failed for dream', dream.id, error);
+          // Continue with others (don't block entire migration)
+        }
+      }
+
+      // Mark as migrated to never run again (even if errors)
+      await AsyncStorage.setItem(migrationKey, 'true');
+    } catch (error) {
+      logger.error('Background migration failed', error);
+      // Don't mark as migrated in case of catastrophic failure
+    }
+  }, [canUseRemoteSync, userId, persistRemoteDreams]);
+
+  /**
    * Load dreams from storage/server
    */
   const loadDreams = useCallback(async (mounted: { current: boolean }) => {
@@ -174,6 +234,11 @@ export function useDreamPersistence({
         }
       }
 
+      // Run unsynced dreams migration in background (one-shot, non-blocking)
+      migrateUnsyncedDreams().catch((err) => {
+        logger.warn('Background migration of unsynced dreams failed', err);
+      });
+
       if (mounted.current) {
         setPendingMutations(pendingMutations);
       }
@@ -191,7 +256,7 @@ export function useDreamPersistence({
         setLoaded(true);
       }
     }
-  }, [canUseRemoteSync, migrateGuestDreamsToSupabase]);
+  }, [canUseRemoteSync, migrateGuestDreamsToSupabase, migrateUnsyncedDreams]);
 
   /**
    * Public reload function

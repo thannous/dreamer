@@ -94,6 +94,7 @@ export const useDreamJournal = () => {
   const {
     queueOfflineOperation,
     clearQueuedMutationsForDream,
+    syncPendingMutations,
   } = useOfflineSyncQueue({
     canUseRemoteSync,
     hasNetwork,
@@ -392,6 +393,8 @@ export const useDreamJournal = () => {
         analysisRequestId: requestId,
       };
       await updateDream(currentDreamState);
+      // Best-effort: flush any pending sync so Supabase reflects "pending" before the user navigates away.
+      await syncPendingMutations();
 
       // Get fingerprint for guest users to enable server-side quota tracking
       const fingerprint = !user ? await getDeviceFingerprint() : undefined;
@@ -508,15 +511,10 @@ export const useDreamJournal = () => {
           isAnalyzed: true,
         };
 
-        try {
-          await updateDream(next);
-        } catch (updateError) {
-          logger.error('[useDreamJournal] Failed to persist completed analysis', updateError);
-          // Even if persistence fails, we want to show success to user and retry sync later
-          // The analysis is complete locally, just sync is failing
-          // Return the completed dream state so UI shows success
-          // The offline queue or next sync will eventually persist it
-        }
+        // Persist locally and best-effort sync to Supabase. updateDream intentionally falls back
+        // to the offline queue for most errors, so we force a sync attempt right after.
+        await updateDream(next);
+        await syncPendingMutations();
 
         if (isMockMode) {
           await markMockAnalysis({ id: dreamId });
@@ -546,7 +544,7 @@ export const useDreamJournal = () => {
         throw error;
       }
     },
-    [dreamsRef, updateDream, user, tier]
+    [dreamsRef, syncPendingMutations, updateDream, user, tier]
   );
 
   return {

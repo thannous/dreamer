@@ -35,14 +35,12 @@ let initialized = false;
 let lastUserId: string | null = null;
 let cachedStatus: SubscriptionStatus | null = null;
 let cachedPackages: InternalPackage[] = [];
-// ✅ PHASE 3: Add TTL to cache to prevent infinite stale data (expiration never detected)
-let cacheTimestamp: number | null = null;
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+// Keep a live listener-driven cache up to date with RevenueCat (source of truth)
+let customerInfoListener: ((info: CustomerInfo) => void) | null = null;
 
 function resetCachedState(): void {
   cachedStatus = null;
   cachedPackages = [];
-  cacheTimestamp = null;  // ✅ PHASE 3: Clear cache timestamp on reset
 }
 
 function resolveApiKey(): string | null {
@@ -83,6 +81,16 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
   // This prevents orphaning purchases that happened before sign-in and makes webhook `app_user_id` mapping reliable.
   if (!initialized || !sameConfig) {
     Purchases.configure({ apiKey });
+
+    // Subscribe once to live customer info updates so the app UI reflects
+    // RevenueCat changes immediately (e.g., purchases on another device).
+    if (!customerInfoListener) {
+      customerInfoListener = (info: CustomerInfo) => {
+        cachedStatus = mapStatus(info);
+      };
+      Purchases.addCustomerInfoUpdateListener(customerInfoListener);
+    }
+
     globalState.configured = true;
     globalState.apiKey = apiKey;
     globalState.userId = null;
@@ -170,8 +178,6 @@ async function fetchStatus(): Promise<SubscriptionStatus> {
   const info = await Purchases.getCustomerInfo();
   const status = mapStatus(info);
   cachedStatus = status;
-  // ✅ PHASE 3: Record when cache was populated to implement TTL
-  cacheTimestamp = Date.now();
   return status;
 }
 
@@ -207,17 +213,7 @@ export async function getStatus(): Promise<SubscriptionStatus | null> {
     return null;
   }
 
-  // ✅ PHASE 3: Check if cached status is still fresh (within TTL)
-  if (cachedStatus && cacheTimestamp) {
-    const now = Date.now();
-    const cacheAge = now - cacheTimestamp;
-    if (cacheAge < CACHE_TTL_MS) {
-      // Cache is still fresh, return it
-      return cachedStatus;
-    }
-    // Cache expired, fall through to fetchStatus()
-  }
-
+  // Always fetch from RevenueCat (source of truth) to avoid stale states.
   return fetchStatus();
 }
 

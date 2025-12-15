@@ -58,6 +58,23 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     const bootstrap = async () => {
       try {
+        if (isMockMode) {
+          const mockUser = await getCurrentUser();
+          if (mounted) {
+            if (__DEV__) {
+              console.log('[AuthContext] bootstrap (mock mode)', {
+                hasUser: !!mockUser,
+                email: mockUser?.email,
+                tier: mockUser?.app_metadata?.tier ?? mockUser?.user_metadata?.tier,
+              });
+            }
+            setUser(mockUser);
+            setLoading(false);
+            ensureSettingsTab(mockUser);
+          }
+          return;
+        }
+
         // Keep startup responsive: restore local session first, then let onAuthChange/getCurrentUser
         // reconcile server-side app_metadata in the background.
         const { data } = await supabase.auth.getSession();

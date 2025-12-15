@@ -121,6 +121,7 @@ export interface SubscriptionStatus {
   isActive: boolean;
   expiryDate?: string | null;
   productId?: string | null;
+  willRenew?: boolean;
 }
 
 export type PurchaseInterval = 'monthly' | 'annual';

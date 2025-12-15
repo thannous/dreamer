@@ -30,7 +30,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
-import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, {
+  runOnJS,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+  interpolate,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
@@ -172,6 +180,37 @@ function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: 
 }
 
 /**
+ * AnimatedDot - Single pulsing dot with staggered timing
+ */
+function AnimatedDot({ delay, color }: { delay: number; color: string }) {
+  const progress = useSharedValue(0);
+
+  useEffect(() => {
+    progress.value = withRepeat(
+      withTiming(1, { duration: 1200 }, () => {
+        progress.value = 0;
+      }),
+      -1,
+      false
+    );
+  }, [progress]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const delayedProgress = Math.max(0, progress.value - delay / 1200);
+    const opacity = interpolate(
+      delayedProgress,
+      [0, 0.3, 0.6, 1],
+      [0.4, 1, 0.4, 0.4],
+      'clamp'
+    );
+
+    return { opacity };
+  });
+
+  return <Animated.View style={[loadingStyles.dot, { backgroundColor: color }, animatedStyle]} />;
+}
+
+/**
  * LoadingIndicator - Shows thinking state
  * Exported for use in Composer headerContent
  */
@@ -185,9 +224,9 @@ export function LoadingIndicator({ text }: { text?: string }) {
       </View>
       <View style={[loadingStyles.bubble, { backgroundColor: colors.backgroundSecondary }]}>
         <View style={loadingStyles.dots}>
-          <View style={[loadingStyles.dot, { backgroundColor: colors.accent }]} />
-          <View style={[loadingStyles.dot, loadingStyles.dotDelay1, { backgroundColor: colors.accent }]} />
-          <View style={[loadingStyles.dot, loadingStyles.dotDelay2, { backgroundColor: colors.accent }]} />
+          <AnimatedDot delay={0} color={colors.accent} />
+          <AnimatedDot delay={150} color={colors.accent} />
+          <AnimatedDot delay={300} color={colors.accent} />
         </View>
         {text && (
           <Text style={[loadingStyles.text, { color: colors.textSecondary }]}>
@@ -229,13 +268,6 @@ const loadingStyles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    opacity: 0.6,
-  },
-  dotDelay1: {
-    opacity: 0.4,
-  },
-  dotDelay2: {
-    opacity: 0.2,
   },
   text: {
     fontSize: 13,
@@ -272,6 +304,7 @@ export function MessagesList({
   const handwritingAnimatedMessages = useRef<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(0);
   const prevLastRoleRef = useRef<ChatMessage['role'] | undefined>(undefined);
+  const insets = useSafeAreaInsets();
 
   const prevLength = prevMessagesLengthRef.current;
   const delta = messages.length - prevLength;
@@ -437,7 +470,7 @@ export function MessagesList({
         onMomentumScrollEnd={() => setIsUserScrolling(false)}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
+        contentContainerStyle={[styles.contentContainer, { paddingTop: insets.top + 8 }, contentContainerStyle]}
         // LegendList specific props for chat UX
         recycleItems={true}
         estimatedItemSize={80}

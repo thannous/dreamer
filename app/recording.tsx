@@ -113,6 +113,15 @@ export default function RecordingScreen() {
       }
       const trimmedBase = base.trim();
 
+      if (__DEV__) {
+        console.log('[combineTranscript]', {
+          baseLength: trimmedBase.length,
+          additionLength: trimmedAddition.length,
+          baseSample: trimmedBase.substring(0, 20) + '...',
+          additionSample: trimmedAddition.substring(0, 20) + '...',
+        });
+      }
+
       const hasNearPrefixMatch = (source: string, candidate: string) => {
         // Allow a small divergence near the end (e.g., STT rewrites the last word or adds one more)
         const sourceTokens = source.split(' ');
@@ -453,10 +462,43 @@ export default function RecordingScreen() {
       }
 
       if (transcriptText) {
-        const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, transcriptText);
-        baseTranscriptRef.current = combined;
-        setLengthWarning(truncated ? lengthLimitMessage() : '');
-        setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
+        const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
+        const normalizedFinal = normalizeForComparison(transcriptText);
+
+        if (__DEV__) {
+          console.log('[stopRecording]', {
+            baseLength: normalizedBase.length,
+            finalLength: normalizedFinal.length,
+            baseSample: normalizedBase.substring(0, 30) + '...',
+            finalSample: normalizedFinal.substring(0, 30) + '...',
+          });
+        }
+
+        // Calculate similarity: if base and final are very similar (>90%), assume partials gave us the full text
+        const baseLen = normalizedBase.length;
+        const finalLen = normalizedFinal.length;
+        const similarity = baseLen > 0 && finalLen > 0
+          ? Math.min(baseLen, finalLen) / Math.max(baseLen, finalLen)
+          : 0;
+
+        // If final is essentially same as base with 90%+ similarity and starts similarly
+        // it means partials already gave us the transcript
+        if (similarity > 0.9 && normalizedFinal.startsWith(normalizedBase.substring(0, Math.min(20, normalizedBase.length)))) {
+          if (__DEV__) {
+            console.log('[stopRecording] final very similar to base, using final (may have corrections)', {
+              similarity: similarity.toFixed(2),
+            });
+          }
+          // Use final as-is (it might have corrections from the STT engine)
+          baseTranscriptRef.current = transcriptText;
+          setTranscript(transcriptText);
+        } else {
+          // Final is significantly different - combine with base
+          const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, transcriptText);
+          baseTranscriptRef.current = combined;
+          setLengthWarning(truncated ? lengthLimitMessage() : '');
+          setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
+        }
       } else {
         if (isRateLimited) {
           Alert.alert(t('common.error_title'), t('error.rate_limit'));

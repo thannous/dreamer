@@ -204,11 +204,27 @@ export async function startOrContinueChat(
   dreamId: string,
   message: string,
   lang: string = 'en',
+  dreamContext?: {
+    transcript: string;
+    title: string;
+    interpretation: string;
+    shareableQuote: string;
+    dreamType: string;
+    theme?: string;
+    chatHistory?: { role: string; text: string }[];
+  },
+  fingerprint?: string
 ): Promise<string> {
   const base = getApiBaseUrl();
   const res = await fetchJSON<{ text: string }>(`${base}/chat`, {
     method: 'POST',
-    body: { dreamId, message, lang },
+    body: {
+      dreamId,
+      message,
+      lang,
+      ...(dreamContext && { dreamContext }),
+      ...(fingerprint && { fingerprint }),
+    },
   });
   return res.text;
 }

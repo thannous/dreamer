@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -66,49 +66,6 @@ export default function PaywallScreen() {
     }
   }, [error]);
 
-  // ✅ FIX: Automatically navigate away when subscription becomes active
-  const activeWhenStableRef = useRef(isActive && !loading && !processing && !error);
-
-  useEffect(() => {
-    const isStable = !loading && !processing && !error;
-    const wasActiveAtLastStable = activeWhenStableRef.current;
-    const isActiveNow = isActive && isStable;
-
-    let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    // Navigate when transitioning from inactive → active after a stable purchase flow
-    if (isStable && !wasActiveAtLastStable && isActiveNow) {
-      if (__DEV__) {
-        console.log('[Paywall] Subscription activated, navigating away');
-      }
-
-      // ✅ Delay to allow user to see success toast
-      timeoutId = setTimeout(() => {
-        // ✅ Check router is available before navigating
-        try {
-          if (router.canGoBack()) {
-            router.back();
-          } else {
-            router.replace('/(tabs)/journal');
-          }
-        } catch (navError) {
-          if (__DEV__) {
-            console.warn('[Paywall] Navigation failed:', navError);
-          }
-        }
-      }, 1500);
-    }
-
-    if (isStable) {
-      activeWhenStableRef.current = isActive;
-    }
-
-    // ✅ Cleanup timeout on unmount or dependency change
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [isActive, loading, processing, error]);
-
   const effectiveSelectedId = selectedId ?? (sortedPackages[0]?.id ?? null);
   const canPurchase =
     Boolean(effectiveSelectedId) && !processing && !loading && !isActive && !requiresAuth;
@@ -162,6 +119,27 @@ export default function PaywallScreen() {
     }
     return translated;
   };
+
+  // Format expiry date for display
+  const formattedExpiryDate = useMemo(() => {
+    const expiryDate = subscriptionStatus?.expiryDate;
+    if (!expiryDate) return null;
+    try {
+      const date = new Date(expiryDate);
+      const dateStr = date.toLocaleDateString(undefined, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      const timeStr = date.toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      return `${dateStr} à ${timeStr}`;
+    } catch {
+      return null;
+    }
+  }, [subscriptionStatus?.expiryDate]);
 
   // Show upgrade message if device fingerprint is already upgraded
   if (isDeviceUpgraded) {
@@ -246,6 +224,16 @@ export default function PaywallScreen() {
           </Pressable>
         </View>
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
+        {isActive && formattedExpiryDate && (
+          <Text style={[styles.expiryDate, { color: colors.textSecondary }]}>
+            {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
+            {subscriptionStatus?.willRenew !== undefined && (
+              subscriptionStatus.willRenew
+                ? ` · ${t('subscription.paywall.auto_renew.on')}`
+                : ` · ${t('subscription.paywall.auto_renew.off')}`
+            )}
+          </Text>
+        )}
         {(requiresAuth || loading) && (
           <View style={styles.loadingRow}>
             {!requiresAuth && <ActivityIndicator color={colors.accent} />}
@@ -357,16 +345,18 @@ export default function PaywallScreen() {
               )}
             </Pressable>
 
-            <Pressable
-              style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
-              onPress={handleRestore}
-              disabled={processing || requiresAuth}
-              testID={TID.Button.PaywallRestore}
-            >
-              <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
-                {t('subscription.paywall.button.restore')}
-              </Text>
-            </Pressable>
+            {!requiresAuth && (
+              <Pressable
+                style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
+                onPress={handleRestore}
+                disabled={processing}
+                testID={TID.Button.PaywallRestore}
+              >
+                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                  {t('subscription.paywall.button.restore')}
+                </Text>
+              </Pressable>
+            )}
           </View>
 
           <Text style={[styles.notice, { color: colors.textSecondary }]}>
@@ -421,6 +411,11 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
+    marginBottom: 8,
+  },
+  expiryDate: {
+    fontSize: 13,
+    fontFamily: 'SpaceGrotesk_500Medium',
     marginBottom: 8,
   },
   closeButton: {
