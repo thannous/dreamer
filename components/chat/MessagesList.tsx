@@ -292,7 +292,7 @@ export function MessagesList({
   useKeyboardAwareMessageList();
   useScrollWhenComposerSizeUpdates();
   useUpdateLastMessageIndex(messages.length);
-  useAutoScrollOnNewMessage(messages.length);
+  useAutoScrollOnNewMessage(messages.length, messages);
   useInitialScrollToEnd(messages.length > 0);
 
   const { animatedProps, ref, onContentSizeChange, onScroll } = useMessageListProps();
@@ -442,14 +442,14 @@ export function MessagesList({
         recycleItems={true}
         estimatedItemSize={80}
         // Enable maintainScrollAtEnd for chat-style auto-scroll behavior
-        // This keeps the list anchored at the bottom when new messages arrive
+        // This keeps the list anchored at the bottom during layout/size changes
         // if the user is already near the bottom (threshold ~10% from end)
+        // Note: onDataChange is handled by useAutoScrollOnNewMessage hook for smart scrolling
         maintainScrollAtEnd={
           isNearBottomSnapshot
             ? {
                 onLayout: true,
                 onItemLayout: true,
-                onDataChange: true,
               }
             : undefined
         }
