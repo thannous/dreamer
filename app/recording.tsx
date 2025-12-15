@@ -1,5 +1,6 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
+import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
@@ -28,7 +29,9 @@ import { categorizeDream } from '@/services/geminiService';
 import {
   startNativeSpeechSession,
   ensureOfflineSttModel,
-  type NativeSpeechSession
+  registerOfflineModelPromptHandler,
+  type NativeSpeechSession,
+  type OfflineModelPromptHandler
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import { transcribeAudio } from '@/services/speechToText';
@@ -89,6 +92,8 @@ export default function RecordingScreen() {
   const { user } = useAuth();
   const { canAnalyzeNow, tier, usage } = useQuota();
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
+  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
+  const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
@@ -266,6 +271,28 @@ export default function RecordingScreen() {
       }
     })();
   }, [t]);
+
+  // Register offline model prompt handler
+  useEffect(() => {
+    const handler: OfflineModelPromptHandler = {
+      isVisible: showOfflineModelSheet,
+      show: async (locale: string) => {
+        setOfflineModelLocale(locale);
+        setShowOfflineModelSheet(true);
+        // Wait for user response
+        await new Promise((resolve) => {
+          // This will be resolved by onDownloadComplete callback
+          const checkInterval = setInterval(() => {
+            if (!showOfflineModelSheet) {
+              clearInterval(checkInterval);
+              resolve(null);
+            }
+          }, 100);
+        });
+      },
+    };
+    registerOfflineModelPromptHandler(handler);
+  }, [showOfflineModelSheet]);
 
   useEffect(() => {
     return () => {
@@ -1171,6 +1198,17 @@ export default function RecordingScreen() {
           </View>
         )}
       </StandardBottomSheet>
+
+      {/* Offline Model Download Sheet */}
+      <OfflineModelDownloadSheet
+        visible={showOfflineModelSheet}
+        onClose={() => setShowOfflineModelSheet(false)}
+        locale={offlineModelLocale}
+        onDownloadComplete={() => {
+          setShowOfflineModelSheet(false);
+          setOfflineModelLocale('');
+        }}
+      />
     </>
   );
 }
