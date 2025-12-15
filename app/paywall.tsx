@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,6 +11,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -40,6 +41,7 @@ export default function PaywallScreen() {
   const { t } = useTranslation();
   useClearWebFocus();
   const { status: subscriptionStatus, isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
+  const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);
   const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
@@ -47,6 +49,9 @@ export default function PaywallScreen() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const [showErrorSheet, setShowErrorSheet] = useState(false);
+
+  // If device fingerprint is upgraded, show message encouraging login
+  const isDeviceUpgraded = quotaStatus?.isUpgraded ?? false;
 
   // Afficher la bottom sheet quand une erreur survient
   useEffect(() => {
@@ -60,6 +65,45 @@ export default function PaywallScreen() {
       setShowErrorSheet(true);
     }
   }, [error]);
+
+  // ✅ FIX: Automatically navigate away when subscription becomes active
+  const isActiveRef = useRef(isActive);
+
+  useEffect(() => {
+    const wasInactive = !isActiveRef.current;
+    const isNowActive = isActive;
+
+    isActiveRef.current = isActive;
+
+    // Navigate when transitioning from inactive → active
+    // ✅ Check for stable state (no loading, no processing, no error)
+    if (wasInactive && isNowActive && !loading && !processing && !error) {
+      if (__DEV__) {
+        console.log('[Paywall] Subscription activated, navigating away');
+      }
+
+      // ✅ Delay to allow user to see success toast
+      const timeoutId = setTimeout(() => {
+        // ✅ Check router is available before navigating
+        try {
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace('/(tabs)/journal');
+          }
+        } catch (navError) {
+          if (__DEV__) {
+            console.warn('[Paywall] Navigation failed:', navError);
+          }
+        }
+      }, 1500);
+
+      // ✅ Cleanup timeout on unmount
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [isActive, loading, processing, error]);
 
   const effectiveSelectedId = selectedId ?? (sortedPackages[0]?.id ?? null);
   const canPurchase =
@@ -114,6 +158,72 @@ export default function PaywallScreen() {
     }
     return translated;
   };
+
+  // Show upgrade message if device fingerprint is already upgraded
+  if (isDeviceUpgraded) {
+    return (
+      <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
+        <ScreenContainer style={[styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }]}>
+          <View style={styles.headerRow}>
+            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+              {t('subscription.paywall.header.free')}
+            </Text>
+            <Pressable
+              onPress={handleClose}
+              style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+              accessibilityRole="button"
+              testID={TID.Button.PaywallClose}
+            >
+              <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>
+                {t('subscription.paywall.button.close')}
+              </Text>
+            </Pressable>
+          </View>
+        </ScreenContainer>
+
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+          <ScreenContainer>
+            <View style={styles.upgradedMessageContainer}>
+              <Text style={[styles.upgradedTitle, { color: colors.textPrimary }]}>
+                {"Vous avez déjà utilisé l'application !"}
+              </Text>
+              <Text style={[styles.upgradedSubtitle, { color: colors.textSecondary }]}>
+                Connectez-vous pour retrouver vos rêves et analyses illimitées.
+              </Text>
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.primaryButton,
+                  { backgroundColor: colors.accent },
+                  pressed && styles.primaryButtonPressed,
+                ]}
+                onPress={handleOpenAuth}
+                testID={TID.Button.PaywallPurchase}
+              >
+                <Text
+                  style={[
+                    styles.primaryLabel,
+                    { color: colors.textOnAccentSurface },
+                  ]}
+                >
+                  Se connecter
+                </Text>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
+                onPress={handleClose}
+              >
+                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                  {t('subscription.paywall.button.close')}
+                </Text>
+              </Pressable>
+            </View>
+          </ScreenContainer>
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
@@ -376,5 +486,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
     textAlign: 'center',
+  },
+  upgradedMessageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: ThemeLayout.spacing.xl,
+    paddingHorizontal: ThemeLayout.spacing.md,
+  },
+  upgradedTitle: {
+    fontSize: 20,
+    fontFamily: 'SpaceGrotesk_700Bold',
+    marginBottom: ThemeLayout.spacing.md,
+    textAlign: 'center',
+  },
+  upgradedSubtitle: {
+    fontSize: 14,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    textAlign: 'center',
+    marginBottom: ThemeLayout.spacing.lg,
+    lineHeight: 20,
   },
 });
