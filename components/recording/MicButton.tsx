@@ -34,7 +34,7 @@ export function MicButton({ isRecording, isPreparing, onPress, testID, accessibi
   const buttonRecordingBackground = mode === 'dark' ? '#5a3d7b' : colors.accentDark;
   const glowColor = mode === 'dark' ? colors.accent : colors.accentDark;
   const shouldAnimate = isFocused && !prefersReducedMotion;
-  const showPulses = (isRecording || isPreparing) && shouldAnimate;
+  const showPulses = isRecording && shouldAnimate;
 
   return (
     <Pressable

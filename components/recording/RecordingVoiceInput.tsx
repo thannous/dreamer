@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MicButton } from '@/components/recording/MicButton';
 import { TypewriterText } from '@/components/ui/TypewriterText';
@@ -55,7 +55,9 @@ export function RecordingVoiceInput({
           />
         </View>
 
-        <View style={styles.preparingSlot} />
+        <View style={styles.preparingSlot}>
+          {isPreparing ? <ActivityIndicator size="small" color={colors.textSecondary} /> : null}
+        </View>
 
         {transcript ? (
           <MotiView
