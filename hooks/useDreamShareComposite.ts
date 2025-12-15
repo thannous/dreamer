@@ -28,7 +28,7 @@ export function useDreamShareComposite(): UseDreamShareCompositeReturn {
     try {
       setIsGenerating(true);
 
-      tempUri = await captureRef(shareImageRef, {
+      tempUri = await captureRef(shareImageRef.current, {
         result: 'tmpfile',
         quality: 0.9,
         format: 'jpg',
