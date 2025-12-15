@@ -18,18 +18,19 @@ import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
+import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
-import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
-import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import {
   startNativeSpeechSession,
-  type NativeSpeechSession,
+  ensureOfflineSttModel,
+  type NativeSpeechSession
 } from '@/services/nativeSpeechRecognition';
+import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import { transcribeAudio } from '@/services/speechToText';
 import {
   AudioModule,
@@ -571,7 +572,10 @@ export default function RecordingScreen() {
         return;
       }
 
-      // STT now forced to online mode everywhere, no need to check language pack availability
+      // ✅ Ensure offline STT model is available (Android 13+)
+      // This will prompt user to download if needed. On other platforms, returns false
+      // and we fallback to online recognition.
+      await ensureOfflineSttModel(transcriptionLocale);
 
       await setAudioModeAsync({
         allowsRecording: true,

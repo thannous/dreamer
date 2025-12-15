@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 
@@ -302,6 +302,99 @@ export async function getSpeechLocaleAvailability(languageCode: string): Promise
   }
 }
 
+/**
+ * Ensure offline STT model is available and trigger download if needed (Android 13+).
+ * Returns true if the model is already installed or download was successful.
+ * Returns false if offline recognition is not supported or download was cancelled.
+ */
+export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
+  // iOS and web don't support offline packs
+  if (Platform.OS !== 'android') {
+    if (__DEV__) {
+      console.log('[nativeSpeech] offline model not available on this platform', { platform: Platform.OS });
+    }
+    return false;
+  }
+
+  // Android 13+ (API 33) needed for offline model download
+  const androidApi = Number(Platform.Version);
+  if (androidApi < 33) {
+    if (__DEV__) {
+      console.log('[nativeSpeech] offline models require Android 13+', { androidApi });
+    }
+    return false;
+  }
+
+  const speechModule = await loadSpeechRecognitionModule();
+  if (!speechModule) return false;
+
+  try {
+    // Check if model is already installed
+    const supported = await speechModule.getSupportedLocales?.({
+      androidRecognitionServicePackage: 'com.google.android.as',
+    });
+    const installedLocales = supported?.installedLocales ?? [];
+
+    if (installedLocales.includes(locale)) {
+      if (__DEV__) {
+        console.log('[nativeSpeech] offline model already installed', { locale });
+      }
+      return true;
+    }
+
+    // Model is missing - prompt user to download
+    return await new Promise<boolean>((resolve) => {
+      Alert.alert(
+        'Télécharger le pack de langue',
+        `Pour utiliser la reconnaissance vocale hors ligne en ${locale}, téléchargez le modèle (~45 MB).`,
+        [
+          {
+            text: 'Annuler',
+            style: 'cancel',
+            onPress: () => {
+              if (__DEV__) {
+                console.log('[nativeSpeech] offline model download cancelled by user', { locale });
+              }
+              resolve(false);
+            },
+          },
+          {
+            text: 'Télécharger',
+            onPress: async () => {
+              try {
+                if (__DEV__) {
+                  console.log('[nativeSpeech] triggering offline model download', { locale });
+                }
+                const res = await speechModule.androidTriggerOfflineModelDownload?.({ locale });
+
+                const downloadSuccess = res?.status === 'download_success' || res?.status === 'opened_dialog';
+                if (__DEV__) {
+                  console.log('[nativeSpeech] offline model download response', {
+                    locale,
+                    status: res?.status,
+                    success: downloadSuccess,
+                  });
+                }
+                resolve(downloadSuccess);
+              } catch (error) {
+                if (__DEV__) {
+                  console.warn('[nativeSpeech] offline model download failed', { locale, error });
+                }
+                resolve(false);
+              }
+            },
+          },
+        ]
+      );
+    });
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[nativeSpeech] failed to ensure offline model', { locale, error });
+    }
+    return false;
+  }
+}
+
 async function shouldRequireOnDeviceRecognition(
   speechModule: ExpoSpeechRecognitionModuleType,
   languageCode: string,
@@ -319,30 +412,26 @@ async function shouldRequireOnDeviceRecognition(
   }
 
   try {
-    const supportedLocales = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
-    const installedLocales = supportedLocales?.installedLocales ?? [];
+    // Check if the user has ensured the offline model is available via ensureOfflineSttModel()
+    const supported = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
+    const installedLocales = supported?.installedLocales ?? [];
     const normalizedLanguage = normalizeLocale(languageCode);
-
-    // ✅ Check if the language is installed
     const isInstalled = installedLocales.some((locale) => normalizeLocale(locale) === normalizedLanguage);
 
     if (__DEV__) {
-      console.log('[nativeSpeech] locale availability', {
+      console.log('[nativeSpeech] on-device availability check', {
         languageCode,
         isInstalled,
-        installedLocales,
+        installedLocales: installedLocales.length,
         androidRecognitionServicePackage,
       });
     }
 
-    // ✅ Return true to:
-    // 1. Use on-device if the language pack IS installed
-    // 2. Trigger the native module to PROPOSE downloading the pack if NOT installed
-    // Only return false if there are genuinely no locales available at all
-    return installedLocales.length > 0;
+    // Only use on-device if the model is actually installed (after ensureOfflineSttModel)
+    return isInstalled;
   } catch (error) {
     if (__DEV__) {
-      console.warn('[nativeSpeech] failed to determine on-device support', error);
+      console.warn('[nativeSpeech] failed to check on-device availability', error);
     }
     return false;
   }
