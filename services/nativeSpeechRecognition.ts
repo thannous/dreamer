@@ -321,19 +321,25 @@ async function shouldRequireOnDeviceRecognition(
   try {
     const supportedLocales = await speechModule.getSupportedLocales?.({ androidRecognitionServicePackage });
     const installedLocales = supportedLocales?.installedLocales ?? [];
-
-    if (!installedLocales.length) {
-      if (__DEV__) {
-        console.log('[nativeSpeech] no installed locales, skipping on-device');
-      }
-      return false;
-    }
-
     const normalizedLanguage = normalizeLocale(languageCode);
+
+    // ✅ Check if the language is installed
+    const isInstalled = installedLocales.some((locale) => normalizeLocale(locale) === normalizedLanguage);
+
     if (__DEV__) {
-      console.log('[nativeSpeech] installedLocales', { androidRecognitionServicePackage, installedLocales });
+      console.log('[nativeSpeech] locale availability', {
+        languageCode,
+        isInstalled,
+        installedLocales,
+        androidRecognitionServicePackage,
+      });
     }
-    return installedLocales.some((locale) => normalizeLocale(locale) === normalizedLanguage);
+
+    // ✅ Return true to:
+    // 1. Use on-device if the language pack IS installed
+    // 2. Trigger the native module to PROPOSE downloading the pack if NOT installed
+    // Only return false if there are genuinely no locales available at all
+    return installedLocales.length > 0;
   } catch (error) {
     if (__DEV__) {
       console.warn('[nativeSpeech] failed to determine on-device support', error);
