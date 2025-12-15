@@ -602,7 +602,16 @@ export default function RecordingScreen() {
       // ✅ Ensure offline STT model is available (Android 13+)
       // This will prompt user to download if needed. On other platforms, returns false
       // and we fallback to online recognition.
-      await ensureOfflineSttModel(transcriptionLocale);
+      const modelReady = await ensureOfflineSttModel(transcriptionLocale);
+
+      // Block on Android 13+ if user cancelled/declined the download
+      if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
+        if (__DEV__) {
+          console.log('[Recording] offline model not ready, aborting start');
+        }
+        setIsRecording(false);
+        return;
+      }
 
       await setAudioModeAsync({
         allowsRecording: true,

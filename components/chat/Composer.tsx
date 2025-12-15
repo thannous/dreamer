@@ -14,10 +14,14 @@ import { useComposerHeightContext, useKeyboardStateContext } from '@/context/Cha
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
+import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
   getSpeechLocaleAvailability,
   startNativeSpeechSession,
+  ensureOfflineSttModel,
+  registerOfflineModelPromptHandler,
   type NativeSpeechSession,
+  type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import {
   openGoogleVoiceSettingsBestEffort,
@@ -105,6 +109,8 @@ export function Composer({
     locale: string;
     installedLocales: string[];
   } | null>(null);
+  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
+  const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const baseInputRef = useRef('');
   const containerRef = useRef<View>(null);
@@ -135,6 +141,26 @@ export function Composer({
     })();
   }, [composerHeight, localHeight]);
 
+  // Register offline model prompt handler
+  useEffect(() => {
+    const handler: OfflineModelPromptHandler = {
+      isVisible: showOfflineModelSheet,
+      show: async (locale: string) => {
+        setOfflineModelLocale(locale);
+        setShowOfflineModelSheet(true);
+        await new Promise((resolve) => {
+          const checkInterval = setInterval(() => {
+            if (!showOfflineModelSheet) {
+              clearInterval(checkInterval);
+              resolve(null);
+            }
+          }, 100);
+        });
+      },
+    };
+    registerOfflineModelPromptHandler(handler);
+  }, [showOfflineModelSheet]);
+
   // Cleanup speech session on unmount
   useEffect(() => {
     return () => {
@@ -152,6 +178,17 @@ export function Composer({
           t('recording.alert.permission_required.title'),
           t('recording.alert.permission_required.message')
         );
+        return;
+      }
+
+      // Ensure offline STT model is available (Android 13+)
+      const modelReady = await ensureOfflineSttModel(transcriptionLocale);
+
+      // Block on Android 13+ if user cancelled/declined the download
+      if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
+        if (__DEV__) {
+          console.log('[Composer] offline model not ready, aborting start');
+        }
         return;
       }
 
@@ -380,6 +417,15 @@ export function Composer({
           onOpenSettings={handleLanguagePackMissingOpenSettings}
           onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
         />
+        <OfflineModelDownloadSheet
+          visible={showOfflineModelSheet}
+          onClose={() => setShowOfflineModelSheet(false)}
+          locale={offlineModelLocale}
+          onDownloadComplete={() => {
+            setShowOfflineModelSheet(false);
+            setOfflineModelLocale('');
+          }}
+        />
       </>
     );
   }
@@ -399,6 +445,15 @@ export function Composer({
         installedLocales={languagePackMissingInfo?.installedLocales ?? []}
         onOpenSettings={handleLanguagePackMissingOpenSettings}
         onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
+      />
+      <OfflineModelDownloadSheet
+        visible={showOfflineModelSheet}
+        onClose={() => setShowOfflineModelSheet(false)}
+        locale={offlineModelLocale}
+        onDownloadComplete={() => {
+          setShowOfflineModelSheet(false);
+          setOfflineModelLocale('');
+        }}
       />
     </>
   );
