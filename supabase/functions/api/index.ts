@@ -398,6 +398,27 @@ serve(async (req: Request) => {
 
       const analysisUsed = quotaData?.analysis_count ?? 0;
       const explorationUsed = quotaData?.exploration_count ?? 0;
+      const isUpgraded = quotaData?.is_upgraded ?? false;
+
+      // If fingerprint has been upgraded, block guest access
+      if (isUpgraded) {
+        return new Response(
+          JSON.stringify({
+            tier: 'guest',
+            usage: {
+              analysis: { used: analysisUsed, limit: guestLimits.analysis },
+              exploration: { used: explorationUsed, limit: guestLimits.exploration },
+              messages: { used: 0, limit: guestLimits.messagesPerDream },
+            },
+            canAnalyze: false,
+            canExplore: false,
+            isUpgraded: true,
+            reasons: ['Vous avez déjà utilisé l\'application ! Connectez-vous pour retrouver vos rêves et analyses illimitées.'],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
       const canAnalyze = analysisUsed < guestLimits.analysis;
       const canExplore = explorationUsed < guestLimits.exploration;
 
@@ -419,6 +440,7 @@ serve(async (req: Request) => {
           },
           canAnalyze,
           canExplore,
+          isUpgraded: false,
           reasons,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -429,6 +451,66 @@ serve(async (req: Request) => {
         status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
+    }
+  }
+
+  // Mark fingerprint as upgraded after user signup
+  if (req.method === 'POST' && subPath === '/auth/mark-upgrade') {
+    try {
+      const body = (await req.json().catch(() => ({}))) as {
+        fingerprint?: string;
+      };
+
+      if (!user) {
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized' }),
+          { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
+      if (!body?.fingerprint || typeof body.fingerprint !== 'string') {
+        return new Response(
+          JSON.stringify({ error: 'Missing or invalid fingerprint' }),
+          { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
+      if (!supabaseServiceRoleKey) {
+        console.warn('[api] /auth/mark-upgrade: no service role key available');
+        return new Response(
+          JSON.stringify({ error: 'Service unavailable' }),
+          { status: 503, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+
+      const { error } = await adminClient.rpc('mark_fingerprint_upgraded', {
+        p_fingerprint: body.fingerprint,
+        p_user_id: user.id,
+      });
+
+      if (error) {
+        console.error('[api] /auth/mark-upgrade: failed to mark fingerprint', error);
+        return new Response(
+          JSON.stringify({ error: 'Failed to mark upgrade' }),
+          { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+
+      console.log('[api] /auth/mark-upgrade: success', { userId: user.id });
+      return new Response(
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    } catch (e) {
+      console.error('[api] /auth/mark-upgrade error', e);
+      return new Response(
+        JSON.stringify({ error: String((e as Error).message || e) }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
     }
   }
 
@@ -567,14 +649,21 @@ serve(async (req: Request) => {
       const historyWithUserMsg = [...existingHistory, newUserMessage];
 
       // Try to persist the user message - this triggers quota validation
-      const { error: updateError } = await supabase
-        .from('dreams')
-        .update({ chat_history: historyWithUserMsg })
-        .eq('id', dreamId);
+      let userMessagePersisted = false;
+      try {
+        const { error: updateError } = await supabase
+          .from('dreams')
+          .update({ chat_history: historyWithUserMsg })
+          .eq('id', dreamId);
 
-      if (updateError) {
+        if (updateError) throw updateError;
+        userMessagePersisted = true;
+      } catch (updateError) {
+        const pgCode = (updateError as any)?.code ?? null;
+        const pgMessage = (updateError as any)?.message ?? '';
+
         // ✅ NEW: Handle quota exceeded error from trigger
-        if (updateError.message?.includes('QUOTA_MESSAGE_LIMIT_REACHED')) {
+        if (typeof pgMessage === 'string' && pgMessage.includes('QUOTA_MESSAGE_LIMIT_REACHED')) {
           console.log('[api] /chat: quota exceeded for dream', dreamId, 'user', currentUserId);
           return new Response(
             JSON.stringify({
@@ -587,8 +676,12 @@ serve(async (req: Request) => {
             }
           );
         }
-        // Unexpected error
-        throw updateError;
+
+        // ✅ NEW: Fail open for schema drift issues (e.g., Postgres 42702 ambiguous column)
+        console.warn('[api] /chat: failed to append user message, continuing without persistence', {
+          code: pgCode,
+          message: pgMessage,
+        });
       }
 
       // Quota passed - now call Gemini with the full conversation
@@ -642,10 +735,31 @@ serve(async (req: Request) => {
       const modelMessage = { role: 'model', text: reply.trim() };
       const finalHistory = [...historyWithUserMsg, modelMessage];
 
-      await supabase
-        .from('dreams')
-        .update({ chat_history: finalHistory })
-        .eq('id', dreamId);
+      // Persist model response. If the initial write failed, try again with service role to avoid
+      // blocking the user because of schema drift; this keeps the chat usable.
+      const persistWithClient = async (client: typeof supabase) => {
+        const { error: persistError } = await client
+          .from('dreams')
+          .update({ chat_history: finalHistory })
+          .eq('id', dreamId);
+        if (persistError) throw persistError;
+      };
+
+      try {
+        if (userMessagePersisted) {
+          await persistWithClient(supabase);
+        } else if (supabaseServiceRoleKey) {
+          const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+            auth: { autoRefreshToken: false, persistSession: false },
+          });
+          await persistWithClient(adminClient);
+        }
+      } catch (persistError) {
+        console.warn('[api] /chat: failed to persist model message', {
+          code: (persistError as any)?.code ?? null,
+          message: (persistError as any)?.message ?? String(persistError ?? ''),
+        });
+      }
 
       return new Response(JSON.stringify({ text: reply.trim() }), {
         status: 200,
