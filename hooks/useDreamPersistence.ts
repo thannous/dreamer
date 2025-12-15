@@ -66,6 +66,8 @@ export function useDreamPersistence({
   canUseRemoteSync,
 }: UseDreamPersistenceOptions): UseDreamPersistenceResult {
   const { user } = useAuth();
+  // ✅ FIX: Extract only userId to prevent unnecessary re-renders when user object changes
+  const userId = user?.id;
   const [dreams, setDreams] = useState<DreamAnalysis[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [pendingMutations, setPendingMutations] = useState<DreamMutation[]>([]);
@@ -105,7 +107,7 @@ export function useDreamPersistence({
    * Migrate guest dreams to Supabase when user logs in
    */
   const migrateGuestDreamsToSupabase = useCallback(async () => {
-    if (!canUseRemoteSync || !user) return;
+    if (!canUseRemoteSync || !userId) return;
     const localDreams = await getSavedDreams();
     const unsynced = localDreams.filter((dream) => !dream.remoteId);
     if (!unsynced.length) return;
@@ -115,12 +117,12 @@ export function useDreamPersistence({
         dream.clientRequestId ?? (typeof dream.id === 'number' ? `dream-${dream.id}` : undefined);
       await createDreamInSupabase(
         clientRequestId ? { ...dream, clientRequestId } : dream,
-        user.id
+        userId // ✅ FIX: Use userId directly instead of user object
       );
     }
 
     await saveDreams([]);
-  }, [canUseRemoteSync, user]);
+  }, [canUseRemoteSync, userId]); // ✅ FIX: Depend on userId instead of full user object
 
   /**
    * Load dreams from storage/server

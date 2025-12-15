@@ -181,7 +181,7 @@ export default function JournalDetailScreen() {
     }
   }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
-  const { canAnalyzeNow, canAnalyze, tier, usage } = useQuota();
+  const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading } = useQuota();
   const { t } = useTranslation();
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
@@ -601,6 +601,11 @@ export default function JournalDetailScreen() {
   const onRetryImage = useCallback(async () => {
     if (!dream || isAnalysisLocked) return;
 
+    // Defensive check: verify quota before attempting generation
+    if (!canAnalyzeNow) {
+      return;
+    }
+
     setIsRetryingImage(true);
     try {
       const sourceText = dream.transcript?.trim() || dream.interpretation?.trim();
@@ -630,7 +635,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsRetryingImage(false);
     }
-  }, [dream, isAnalysisLocked, updateDream, t]);
+  }, [canAnalyzeNow, dream, isAnalysisLocked, updateDream, t]);
 
   const handleBackPress = useCallback(() => {
     router.replace('/(tabs)/journal');
@@ -1133,7 +1138,28 @@ export default function JournalDetailScreen() {
                     <View style={styles.imageOverlay} />
                   </>
                 ) : dream.imageGenerationFailed ? (
-                  <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+                  !quotaLoading && canAnalyzeNow ? (
+                    <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
+                  ) : (
+                    <View
+                      style={[
+                        styles.dreamImage,
+                        styles.imagePlaceholderCard,
+                        {
+                          backgroundColor: colors.backgroundSecondary,
+                          borderColor: colors.divider,
+                        },
+                      ]}
+                    >
+                      <Ionicons name="image-outline" size={64} color={colors.textSecondary} />
+                      <Text style={[styles.imagePlaceholderTitle, { color: colors.textPrimary }]}>
+                        {t('journal.detail.image.generation_failed')}
+                      </Text>
+                      <Text style={[styles.imagePlaceholderSubtitle, { color: colors.textSecondary }]}>
+                        {t('journal.detail.image.quota_exceeded_message')}
+                      </Text>
+                    </View>
+                  )
                 ) : dream.analysisStatus === 'pending' ? (
                   <Skeleton style={{ width: '100%', height: '100%' }} />
                 ) : (
@@ -1156,25 +1182,29 @@ export default function JournalDetailScreen() {
                     </Text>
                     {!isRetryingImage && !isAnalysisLocked && (
                       <View style={styles.imageActionsColumn}>
-                        <Pressable
-                          onPress={onRetryImage}
-                          disabled={isRetryingImage || isAnalysisLocked}
-                          style={[
-                            styles.imageActionButton,
-                            shadows.md,
-                            { backgroundColor: colors.accent },
-                            (isRetryingImage || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                          ]}
-                        >
-                          <Ionicons name="refresh" size={18} color={colors.textPrimary} />
-                          <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                            {t('journal.detail.image.generate_action')}
-                          </Text>
-                        </Pressable>
+                        {!quotaLoading && canAnalyzeNow && (
+                          <>
+                            <Pressable
+                              onPress={onRetryImage}
+                              disabled={isRetryingImage || isAnalysisLocked}
+                              style={[
+                                styles.imageActionButton,
+                                shadows.md,
+                                { backgroundColor: colors.accent },
+                                (isRetryingImage || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                              ]}
+                            >
+                              <Ionicons name="refresh" size={18} color={colors.textPrimary} />
+                              <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                                {t('journal.detail.image.generate_action')}
+                              </Text>
+                            </Pressable>
 
-                        <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                          {t('journal.detail.image.or')}
-                        </Text>
+                            <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                              {t('journal.detail.image.or')}
+                            </Text>
+                          </>
+                        )}
 
                         <Pressable
                           onPress={handlePickImage}

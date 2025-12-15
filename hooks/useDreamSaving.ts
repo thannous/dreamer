@@ -36,7 +36,6 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
     (transcript: string): DreamAnalysis =>
       buildDraftDreamPure(transcript, {
         defaultTitle: t('recording.draft.default_title'),
-        initialUserMessagePrefix: t('dream_chat.draft_prefix'),
       }),
     [t]
   );

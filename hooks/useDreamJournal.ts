@@ -12,6 +12,7 @@ import { useNetworkState } from 'expo-network';
 import { useCallback, useMemo } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
 import { deriveUserTier } from '@/lib/quotaTier';
@@ -54,9 +55,11 @@ import { useOfflineSyncQueue } from './useOfflineSyncQueue';
 
 export const useDreamJournal = () => {
   const { user } = useAuth();
+  const { status: subscriptionStatus } = useSubscription();
   const isAuthenticated = Boolean(user);
   const isMockMode = isMockModeEnabled();
   const canUseRemoteSync = isAuthenticated && !isMockMode;
+  const tier = subscriptionStatus?.tier || 'free';
 
   const networkState = useNetworkState();
   const hasNetwork = useMemo(() => {
@@ -366,7 +369,7 @@ export const useDreamJournal = () => {
       options?: { replaceExistingImage?: boolean; lang?: string; onProgress?: (step: AnalysisStep) => void }
     ): Promise<DreamAnalysis> => {
       // Check quota before analyzing
-      const canAnalyze = await quotaService.canAnalyzeDream(user);
+      const canAnalyze = await quotaService.canAnalyzeDream(user, tier);
       if (!canAnalyze) {
         throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, deriveUserTier(user));
       }
@@ -394,29 +397,67 @@ export const useDreamJournal = () => {
       const fingerprint = !user ? await getDeviceFingerprint() : undefined;
 
       // Kick off analysis and image generation in parallel
+      const progressOrder: AnalysisStep[] = [
+        AnalysisStep.ANALYZING,
+        AnalysisStep.GENERATING_IMAGE,
+        AnalysisStep.FINALIZING,
+        AnalysisStep.COMPLETE,
+      ];
+      let progressIndex = progressOrder.indexOf(AnalysisStep.ANALYZING);
+      const emitProgress = (step: AnalysisStep) => {
+        if (!options?.onProgress) return;
+        const nextIndex = progressOrder.indexOf(step);
+        if (nextIndex === -1) return;
+        if (nextIndex >= progressIndex) {
+          progressIndex = nextIndex;
+          options.onProgress(step);
+        }
+      };
+
+      let analysisDone = false;
+      let imageDone = !shouldReplaceImage;
+
       const analysisPromise = analyzeDreamText(transcript, options?.lang, fingerprint)
         .then((result) => {
-          // Analysis completed → notify GENERATING_IMAGE
-          options?.onProgress?.(AnalysisStep.GENERATING_IMAGE);
+          analysisDone = true;
+          if (imageDone) {
+            emitProgress(AnalysisStep.COMPLETE);
+          } else {
+            emitProgress(AnalysisStep.GENERATING_IMAGE);
+          }
           return result;
         });
       const imagePromise = shouldReplaceImage
         ? generateImageFromTranscript(transcript, dream.imageUrl)
             .then((url) => {
-              // Image generated → notify FINALIZING
-              options?.onProgress?.(AnalysisStep.FINALIZING);
+              imageDone = true;
+              if (analysisDone) {
+                emitProgress(AnalysisStep.COMPLETE);
+              } else {
+                emitProgress(AnalysisStep.FINALIZING);
+              }
               return { url, failed: false as const };
             })
             .catch((err) => {
               logger.warn('Image generation failed', err);
+              imageDone = true;
               // Even if image fails, move to FINALIZING
-              options?.onProgress?.(AnalysisStep.FINALIZING);
+              if (analysisDone) {
+                emitProgress(AnalysisStep.COMPLETE);
+              } else {
+                emitProgress(AnalysisStep.FINALIZING);
+              }
               return { url: dream.imageUrl, failed: true as const };
             })
         : Promise.resolve({ url: dream.imageUrl, failed: false as const })
             .then((result) => {
-              // No image to generate, skip directly to FINALIZING
-              options?.onProgress?.(AnalysisStep.FINALIZING);
+              // No image to generate, skip directly to FINALIZING/COMPLETE
+              imageDone = true;
+              if (analysisDone) {
+                emitProgress(AnalysisStep.COMPLETE);
+              } else {
+                emitProgress(AnalysisStep.FINALIZING);
+              }
               return result;
             });
 
@@ -466,24 +507,46 @@ export const useDreamJournal = () => {
           analyzedAt: Date.now(),
           isAnalyzed: true,
         };
-        await updateDream(next);
+
+        try {
+          await updateDream(next);
+        } catch (updateError) {
+          logger.error('[useDreamJournal] Failed to persist completed analysis', updateError);
+          // Even if persistence fails, we want to show success to user and retry sync later
+          // The analysis is complete locally, just sync is failing
+          // Return the completed dream state so UI shows success
+          // The offline queue or next sync will eventually persist it
+        }
 
         if (isMockMode) {
           await markMockAnalysis({ id: dreamId });
         }
 
         quotaService.invalidate(user);
+        emitProgress(AnalysisStep.COMPLETE);
         return next;
       } catch (error) {
         const failedDream: DreamAnalysis = {
           ...currentDreamState,
           analysisStatus: 'failed',
         };
-        await updateDream(failedDream);
+        try {
+          await updateDream(failedDream);
+        } catch (updateFailedError) {
+          logger.error('[useDreamJournal] Failed to persist failed analysis state', updateFailedError);
+          // Persist locally even if Supabase sync fails
+          if (canUseRemoteSync) {
+            await persistRemoteDreams((prev) => upsertDream(prev, failedDream));
+          } else {
+            const currentDreams = dreamsRef.current;
+            const newDreams = currentDreams.map((d) => (d.id === dreamId ? failedDream : d));
+            await persistLocalDreams(newDreams);
+          }
+        }
         throw error;
       }
     },
-    [dreamsRef, updateDream, user]
+    [dreamsRef, updateDream, user, tier]
   );
 
   return {
