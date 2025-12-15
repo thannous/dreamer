@@ -105,6 +105,8 @@ export function useSubscription() {
   const requiresAuth = !user?.id;
   // ✅ FIX: Track reconciliation attempts to enforce max attempt limit
   const reconciliationAttemptsRef = useRef(0);
+  // Track which expiry we've already refreshed to avoid infinite loops on expired plans
+  const expiredExpiryKeyRef = useRef<string | null>(null);
 
   // Extract stable user ID to break circular dependency in tier sync
   const userId = user?.id;
@@ -400,22 +402,30 @@ export function useSubscription() {
   useEffect(() => {
     if (!status || requiresAuth) return;
 
-    // Check if subscription has expired
-    if (status.expiryDate && isEntitlementExpired(status.expiryDate)) {
-      if (__DEV__) {
-        console.log('[useSubscription] Subscription expired, forcing refresh');
-      }
-      // Force refresh from RevenueCat to get latest status
-      initializeSubscription(user?.id ?? null)
-        .then((nextStatus) => {
-          setStatus(nextStatus);
-        })
-        .catch((err) => {
-          if (__DEV__) {
-            console.warn('[useSubscription] Failed to refresh expired status', err);
-          }
-        });
+    // Reset the guard when the status is not expired anymore (new purchase/restore)
+    if (!status.expiryDate || !isEntitlementExpired(status.expiryDate)) {
+      expiredExpiryKeyRef.current = null;
+      return;
     }
+
+    // Avoid infinite refresh loops for the same expired entitlement
+    const expiryKey = status.expiryDate ?? 'no-expiry';
+    if (expiredExpiryKeyRef.current === expiryKey) return;
+    expiredExpiryKeyRef.current = expiryKey;
+
+    if (__DEV__) {
+      console.log('[useSubscription] Subscription expired, forcing refresh');
+    }
+    // Force refresh from RevenueCat to get latest status
+    initializeSubscription(user?.id ?? null)
+      .then((nextStatus) => {
+        setStatus(nextStatus);
+      })
+      .catch((err) => {
+        if (__DEV__) {
+          console.warn('[useSubscription] Failed to refresh expired status', err);
+        }
+      });
   }, [status, requiresAuth, user?.id]);
 
   const purchase = useCallback(async (id: string) => {

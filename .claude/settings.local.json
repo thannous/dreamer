@@ -70,7 +70,8 @@
       "Bash(git log:*)",
       "Bash(./gradlew properties:*)",
       "Bash(cat:*)",
-      "mcp__supabase__list_edge_functions"
+      "mcp__supabase__list_edge_functions",
+      "Bash(git show:*)"
     ],
     "deny": [],
     "ask": []

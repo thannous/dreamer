@@ -31,7 +31,29 @@ const hasWebSpeechAPI = (): boolean => {
 
 let cachedSpeechModule: ExpoSpeechRecognitionModuleType | null | undefined;
 
+// Session token to prevent events from old sessions being processed
+let globalSessionCounter = 0;
+
 const normalizeChunk = (text: string) => text.replace(/\s+/g, ' ').trim().toLowerCase();
+
+/**
+ * Calculate token-based similarity ratio between two normalized strings.
+ * Returns a value between 0 and 1, where 1.0 means perfect match.
+ * Used to detect when STT is replaying the entire transcript with corrections.
+ */
+const calculateSimilarity = (str1: string, str2: string): number => {
+  const tokens1 = str1.split(' ');
+  const tokens2 = str2.split(' ');
+  const maxLen = Math.max(tokens1.length, tokens2.length);
+  if (maxLen === 0) return 1.0;
+
+  let matches = 0;
+  const minLen = Math.min(tokens1.length, tokens2.length);
+  for (let i = 0; i < minLen; i++) {
+    if (tokens1[i] === tokens2[i]) matches++;
+  }
+  return matches / maxLen;
+};
 
 export type SpeechLocaleAvailability = {
   isInstalled: boolean;
@@ -139,22 +161,81 @@ export const mergeFinalChunk = (finalChunks: string[], newChunk: string): string
 
 /**
  * Build the preview string from final chunks and current partial, avoiding duplication.
- * STT engines often replay the entire sentence in partials (e.g., after a final is emitted,
- * the next partial may contain the full sentence plus new words). This function detects
- * when the partial extends the last final chunk and avoids concatenating duplicates.
+ * STT engines often replay the entire transcript in partials with corrections.
+ * This function uses fuzzy matching to detect replays and prefers the newer partial.
+ *
+ * Strategy:
+ * 1. If partial is >80% similar to all finals → prefer partial (likely a replay with corrections)
+ * 2. If partial clearly extends all finals → use partial alone
+ * 3. If partial extends just the last final → replace last final with partial
+ * 4. Otherwise → concatenate (fallback, may create duplicates but preserves content)
  */
 export const buildPreview = (finalChunks: string[], lastPartial: string): string => {
-  const lastFinal = finalChunks[finalChunks.length - 1] ?? '';
-  const normalizedLastFinal = normalizeChunk(lastFinal);
+  if (!lastPartial) {
+    return finalChunks.join(' ').trim();
+  }
+
+  if (finalChunks.length === 0) {
+    return lastPartial.trim();
+  }
+
+  const allFinalsJoined = finalChunks.join(' ');
+  const normalizedAllFinals = normalizeChunk(allFinalsJoined);
   const normalizedPartial = normalizeChunk(lastPartial);
 
-  if (normalizedPartial && normalizedLastFinal && normalizedPartial.startsWith(normalizedLastFinal)) {
-    // The partial extends the last final chunk - use partial instead of concatenating
+  // Case 1: Partial is very similar to finals (>80% tokens match)
+  // This indicates STT is replaying the entire transcript with possible corrections
+  const similarity = calculateSimilarity(normalizedAllFinals, normalizedPartial);
+  if (similarity > 0.8) {
+    if (__DEV__) {
+      console.log('[buildPreview] case 1: prefer partial (replay detected)', {
+        finalsCount: finalChunks.length,
+        partialLength: lastPartial.length,
+        similarity: similarity.toFixed(2),
+      });
+    }
+    // Prefer partial (newer = more accurate)
+    return lastPartial.trim();
+  }
+
+  // Case 2: Partial clearly extends all finals (starts with finals + more)
+  if (normalizedPartial.length > normalizedAllFinals.length &&
+      normalizedPartial.startsWith(normalizedAllFinals)) {
+    if (__DEV__) {
+      console.log('[buildPreview] case 2: partial extends all finals', {
+        finalsCount: finalChunks.length,
+        partialLength: lastPartial.length,
+      });
+    }
+    return lastPartial.trim();
+  }
+
+  // Case 3: Partial extends just the last final chunk
+  const lastFinal = finalChunks[finalChunks.length - 1] ?? '';
+  const normalizedLastFinal = normalizeChunk(lastFinal);
+
+  if (normalizedPartial.length > normalizedLastFinal.length &&
+      normalizedPartial.startsWith(normalizedLastFinal)) {
+    if (__DEV__) {
+      console.log('[buildPreview] case 3: partial extends last final', {
+        finalsCount: finalChunks.length,
+        partialLength: lastPartial.length,
+      });
+    }
     const prefix = finalChunks.slice(0, -1).join(' ');
     return prefix ? `${prefix} ${lastPartial}`.trim() : lastPartial;
   }
 
-  return `${finalChunks.join(' ')} ${lastPartial}`.trim();
+  // Case 4: No clear relationship - concatenate
+  // This might create duplicates, but at least we don't lose content
+  if (__DEV__) {
+    console.log('[buildPreview] case 4: no overlap, concatenating', {
+      finalsCount: finalChunks.length,
+      partialLength: lastPartial.length,
+      similarity: similarity.toFixed(2),
+    });
+  }
+  return `${allFinalsJoined} ${lastPartial}`.trim();
 };
 
 const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModuleType | null> => {
@@ -265,11 +346,18 @@ export async function startNativeSpeechSession(
   languageCode: string,
   options?: NativeSpeechOptions
 ): Promise<NativeSpeechSession | null> {
+  // Increment session counter to uniquely identify this session
+  const sessionId = ++globalSessionCounter;
+
+  if (__DEV__) {
+    console.log('[nativeSpeech] session starting', { sessionId });
+  }
+
   // Ensure the module is loaded asynchronously
   const speechModule = await loadSpeechRecognitionModule();
   if (!speechModule) {
     if (__DEV__) {
-      console.warn('[nativeSpeech] no module, cannot start session');
+      console.warn('[nativeSpeech] no module, cannot start session', { sessionId });
     }
     return null;
   }
@@ -331,6 +419,17 @@ export async function startNativeSpeechSession(
     });
 
     const resultSub = speechModule.addListener('result', (event) => {
+      // Ignore events from old sessions (race condition protection)
+      if (sessionId !== globalSessionCounter) {
+        if (__DEV__) {
+          console.log('[nativeSpeech] ignoring result from old session', {
+            sessionId,
+            current: globalSessionCounter,
+          });
+        }
+        return;
+      }
+
       const transcript = event.results?.[0]?.transcript?.trim();
       if (!transcript) {
         return;
@@ -338,7 +437,12 @@ export async function startNativeSpeechSession(
 
       if (event.isFinal) {
         if (__DEV__) {
-          console.log('[nativeSpeech] result', { isFinal: event.isFinal, transcript });
+          console.log('[nativeSpeech] result', {
+            sessionId,
+            isFinal: event.isFinal,
+            textLength: transcript.length,
+            textSample: transcript.substring(0, 15) + '...',
+          });
         }
         finalChunks = mergeFinalChunk(finalChunks, transcript);
         lastPartial = '';
@@ -353,32 +457,56 @@ export async function startNativeSpeechSession(
     });
 
     const endSub = speechModule.addListener('end', () => {
+      // Ignore events from old sessions
+      if (sessionId !== globalSessionCounter) {
+        if (__DEV__) {
+          console.log('[nativeSpeech] ignoring end from old session', { sessionId, current: globalSessionCounter });
+        }
+        return;
+      }
+
       if (__DEV__) {
-        console.log('[nativeSpeech] end');
+        console.log('[nativeSpeech] end', { sessionId });
       }
       resolveEnd?.();
     });
 
     const audioEndSub = speechModule.addListener('audioend', (event: { uri?: string | null }) => {
+      // Ignore events from old sessions
+      if (sessionId !== globalSessionCounter) {
+        if (__DEV__) {
+          console.log('[nativeSpeech] ignoring audioend from old session', { sessionId });
+        }
+        return;
+      }
+
       if (__DEV__) {
-        console.log('[nativeSpeech] audioend', event);
+        console.log('[nativeSpeech] audioend', { sessionId, hasUri: Boolean(event?.uri) });
       }
       recordedUri = event?.uri ?? null;
     });
 
     const errorSub = speechModule.addListener('error', (event) => {
+      // Ignore events from old sessions
+      if (sessionId !== globalSessionCounter) {
+        if (__DEV__) {
+          console.log('[nativeSpeech] ignoring error from old session', { sessionId });
+        }
+        return;
+      }
+
       const isBenignClientError = event?.error === 'client';
 
       // Android can emit ERROR_CLIENT when we stop/abort; treat it as noise unless debugging.
       if (isBenignClientError) {
         if (__DEV__) {
-          console.log('[nativeSpeech] client error ignored after stop/abort', event);
+          console.log('[nativeSpeech] client error ignored after stop/abort', { sessionId });
         }
         resolveEnd?.();
         return;
       }
 
-      console.warn('[nativeSpeech] error', event);
+      console.warn('[nativeSpeech] error', { sessionId, code: event?.error, message: event?.message });
       lastError = { code: event.error, message: event.message };
       resolveEnd?.();
     });
@@ -403,10 +531,16 @@ export async function startNativeSpeechSession(
 
     const cleanup = () => {
       resolveEnd = null;
-      resultSub.remove();
-      endSub.remove();
-      audioEndSub.remove();
-      errorSub.remove();
+
+      // Guaranteed cleanup: remove all listeners even if one fails
+      try { resultSub.remove(); } catch {}
+      try { endSub.remove(); } catch {}
+      try { audioEndSub.remove(); } catch {}
+      try { errorSub.remove(); } catch {}
+
+      if (__DEV__) {
+        console.log('[nativeSpeech] cleanup complete', { sessionId });
+      }
     };
 
     const stop = async () => {
@@ -449,7 +583,7 @@ export async function startNativeSpeechSession(
         }
         resolveEnd?.();
       }
-      cleanup();
+      cleanup(); // Always cleanup, even after errors
     };
 
     return { stop, abort, hasRecording: supportsRecording };

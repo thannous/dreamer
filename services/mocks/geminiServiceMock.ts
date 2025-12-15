@@ -140,6 +140,7 @@ export async function startOrContinueChat(
   dreamId: string,
   message: string,
   lang: string = 'en',
+  _fingerprint?: string,
 ): Promise<string> {
   console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);
   await delay(1000 + Math.random() * 1000); // 1-2 seconds

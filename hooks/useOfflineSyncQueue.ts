@@ -257,7 +257,15 @@ export function useOfflineSyncQueue({
             } else if (mutation.type === 'update') {
               const remoteId = mutation.dream.remoteId ?? resolveRemoteId(mutation.dream.id);
               if (!remoteId) {
-                throw new Error('Missing remote id for Supabase dream update');
+                // Recovery: if an update is queued without remoteId (e.g. stale cache / older app version),
+                // convert it to a create/upsert so we can obtain a remoteId and unblock the queue.
+                // createDreamInSupabase is idempotent on (user_id, client_request_id).
+                queue[0] = {
+                  ...mutation,
+                  type: 'create',
+                  dream: { ...mutation.dream, remoteId: undefined, pendingSync: true },
+                };
+                continue;
               }
               try {
                 const saved = await updateDreamInSupabase({ ...mutation.dream, remoteId });

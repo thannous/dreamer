@@ -4,8 +4,8 @@
  */
 
 import { Fonts } from '@/constants/theme';
-import { useHasNewMessages } from '@/hooks/useChatList';
 import { useTheme } from '@/context/ThemeContext';
+import { useHasNewMessages } from '@/hooks/useChatList';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -60,7 +60,7 @@ export function ScrollToBottomButton() {
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 160,
     alignSelf: 'center',
     borderRadius: 20,
     paddingHorizontal: 16,
