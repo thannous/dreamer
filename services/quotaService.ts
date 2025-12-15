@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 import type { QuotaProvider, QuotaDreamTarget } from './quota/types';
 import type { QuotaStatus } from '@/lib/types';
+import type { UserTier } from '@/constants/limits';
 import { GuestQuotaProvider } from './quota/GuestQuotaProvider';
 import { MockQuotaProvider } from './quota/MockQuotaProvider';
 import { RemoteGuestQuotaProvider } from './quota/RemoteGuestQuotaProvider';
@@ -84,33 +85,36 @@ class QuotaService {
   /**
    * Check if user can perform a new analysis
    */
-  async canAnalyzeDream(user: User | null): Promise<boolean> {
+  async canAnalyzeDream(user: User | null, tier: UserTier): Promise<boolean> {
     const provider = this.getProvider(user);
-    return provider.canAnalyzeDream(user);
+    return provider.canAnalyzeDream(user, tier);
   }
 
   /**
    * Check if user can explore a specific dream (start/continue chat)
    */
-  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
+  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier): Promise<boolean> {
     const provider = this.getProvider(user);
-    return provider.canExploreDream(target, user);
+    return provider.canExploreDream(target, user, tier);
   }
 
   /**
    * Check if user can send another chat message for a specific dream
    */
-  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
+  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier): Promise<boolean> {
     const provider = this.getProvider(user);
-    return provider.canSendChatMessage(target, user);
+    return provider.canSendChatMessage(target, user, tier);
   }
 
   /**
    * Get complete quota status for user
+   * @param user - Supabase user (null for guests)
+   * @param tier - User's subscription tier from RevenueCat (source of truth)
+   * @param target - Optional dream target for chat-specific quota checks
    */
-  async getQuotaStatus(user: User | null, target?: QuotaDreamTarget): Promise<QuotaStatus> {
+  async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     const provider = this.getProvider(user);
-    return provider.getQuotaStatus(user, target);
+    return provider.getQuotaStatus(user, tier, target);
   }
 
   /**

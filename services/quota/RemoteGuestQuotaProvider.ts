@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 
-import { QUOTAS } from '@/constants/limits';
+import { QUOTAS, type UserTier } from '@/constants/limits';
 import { getApiBaseUrl } from '@/lib/config';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { fetchJSON } from '@/lib/http';
@@ -20,6 +20,7 @@ type RemoteQuotaResponse = {
   usage?: RemoteQuotaUsage;
   canAnalyze?: boolean;
   canExplore?: boolean;
+  isUpgraded?: boolean;
   reasons?: string[];
 };
 
@@ -90,6 +91,22 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
 
   private mapResponseToStatus(remote: RemoteQuotaResponse, fallback: QuotaStatus): QuotaStatus {
     const usage = this.buildUsage(remote.usage, fallback.usage);
+    const isUpgraded = remote.isUpgraded ?? false;
+
+    // If fingerprint has been upgraded, block guest access completely
+    if (isUpgraded) {
+      return {
+        tier: 'guest',
+        usage,
+        canAnalyze: false,
+        canExplore: false,
+        isUpgraded: true,
+        reasons: remote.reasons ?? [
+          'Vous avez déjà utilisé l\'application ! Connectez-vous pour retrouver vos rêves et analyses illimitées.'
+        ],
+      };
+    }
+
     const canAnalyzeByLimit = usage.analysis.limit === null || usage.analysis.used < usage.analysis.limit;
     const canExploreByLimit =
       usage.exploration.limit === null || usage.exploration.used < usage.exploration.limit;
@@ -104,11 +121,12 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       usage,
       canAnalyze,
       canExplore,
+      isUpgraded: false,
       reasons: remote.reasons ?? fallback.reasons,
     };
   }
 
-  private async fetchQuota(target?: QuotaDreamTarget): Promise<QuotaStatus> {
+  private async fetchQuota(target?: QuotaDreamTarget, tier: UserTier = 'guest'): Promise<QuotaStatus> {
     const dreamId = this.resolveDreamId(target);
     const cacheKey = dreamId ? `dream-${dreamId}` : 'global';
     const cached = this.cache.get(cacheKey);
@@ -116,7 +134,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       return cached.value;
     }
 
-    const fallbackStatus = await this.fallback.getQuotaStatus(null, target);
+    const fallbackStatus = await this.fallback.getQuotaStatus(null, tier, target);
     const cacheFallback = () => {
       this.cache.set(cacheKey, { value: fallbackStatus, expiresAt: Date.now() + this.CACHE_TTL });
       return fallbackStatus;
@@ -184,27 +202,27 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     return status.usage.messages.used;
   }
 
-  async canAnalyzeDream(user: User | null): Promise<boolean> {
+  async canAnalyzeDream(user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true;
-    const status = await this.fetchQuota();
+    const status = await this.fetchQuota(undefined, tier);
     return status.canAnalyze;
   }
 
-  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
+  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true;
-    const status = await this.fetchQuota(target);
+    const status = await this.fetchQuota(target, tier);
     return status.canExplore;
   }
 
-  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
+  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true;
-    const status = await this.fetchQuota(target);
+    const status = await this.fetchQuota(target, tier);
     const { used, limit } = status.usage.messages;
     if (limit === null) return true;
     return used < limit;
   }
 
-  async getQuotaStatus(user: User | null, target?: QuotaDreamTarget): Promise<QuotaStatus> {
+  async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     if (user) {
       return {
         tier: 'guest',
@@ -217,7 +235,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         canExplore: true,
       };
     }
-    return this.fetchQuota(target);
+    return this.fetchQuota(target, tier);
   }
 
   invalidate(): void {

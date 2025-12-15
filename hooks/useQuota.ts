@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import { useAuth } from '@/context/AuthContext';
+import { useSubscription } from './useSubscription';
 
 /**
  * React hook for quota management
@@ -26,6 +27,7 @@ function normalizeTarget(input?: QuotaTargetInput) {
 
 export function useQuota(targetInput?: QuotaTargetInput) {
   const { user } = useAuth();
+  const { status: subscriptionStatus, loading: subscriptionLoading } = useSubscription();
   const [quotaStatus, setQuotaStatus] = useState<QuotaStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -37,14 +39,21 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     [baseTarget]
   );
 
+  // Get tier from RevenueCat (source of truth)
+  const tier = subscriptionStatus?.tier || 'free';
+
   /**
    * Fetch quota status
+   * Wait for subscription to load before fetching quota to use RevenueCat tier
    */
   const fetchQuotaStatus = useCallback(async () => {
+    // Don't fetch until subscription is loaded
+    if (subscriptionLoading || !subscriptionStatus) return;
+
     try {
       setLoading(true);
       setError(null);
-      const status = await quotaService.getQuotaStatus(user, baseTarget);
+      const status = await quotaService.getQuotaStatus(user, tier, baseTarget);
       setQuotaStatus(status);
     } catch (err) {
       console.error('Error fetching quota status:', err);
@@ -52,7 +61,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     } finally {
       setLoading(false);
     }
-  }, [user, baseTarget]);
+  }, [user, tier, baseTarget, subscriptionLoading, subscriptionStatus]);
 
   /**
    * Invalidate cache and refetch
@@ -66,17 +75,17 @@ export function useQuota(targetInput?: QuotaTargetInput) {
    * Check if user can analyze a dream
    */
   const canAnalyze = useCallback(async (): Promise<boolean> => {
-    return quotaService.canAnalyzeDream(user);
-  }, [user]);
+    return quotaService.canAnalyzeDream(user, tier);
+  }, [user, tier]);
 
   /**
    * Check if user can explore a specific dream
    */
   const canExplore = useCallback(
     async (override?: QuotaTargetInput): Promise<boolean> => {
-      return quotaService.canExploreDream(resolveTarget(override), user);
+      return quotaService.canExploreDream(resolveTarget(override), user, tier);
     },
-    [user, resolveTarget]
+    [user, tier, resolveTarget]
   );
 
   /**
@@ -84,9 +93,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
    */
   const canChat = useCallback(
     async (override?: QuotaTargetInput): Promise<boolean> => {
-      return quotaService.canSendChatMessage(resolveTarget(override), user);
+      return quotaService.canSendChatMessage(resolveTarget(override), user, tier);
     },
-    [user, resolveTarget]
+    [user, tier, resolveTarget]
   );
 
   /**
@@ -123,7 +132,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
 
   return {
     quotaStatus,
-    loading,
+    loading: loading || subscriptionLoading, // Combine subscription and quota loading states
     error,
     refetch: fetchQuotaStatus,
     invalidate,
@@ -133,7 +142,8 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     getUsageCounts,
 
     // Convenience flags from quota status
-    tier: quotaStatus?.tier || 'guest',
+    // Use tier from RevenueCat (source of truth), not from quotaStatus
+    tier,
     // Default to optimistic while loading to avoid false blocks (gate will fail later if quota is actually exceeded)
     canAnalyzeNow: quotaStatus?.canAnalyze ?? true,
     canExploreNow: quotaStatus?.canExplore ?? true,

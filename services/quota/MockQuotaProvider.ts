@@ -34,13 +34,6 @@ export class MockQuotaProvider implements QuotaProvider {
     return dreams;
   }
 
-  private getTier(user: User | null): UserTier {
-    if (!user) return 'guest';
-    const tier = (user.app_metadata?.tier ?? user.user_metadata?.tier) as UserTier | undefined;
-    if (tier === 'premium' || tier === 'plus') return tier;
-    if (tier === 'guest') return 'guest';
-    return 'free';
-  }
 
   async getUsedAnalysisCount(_user: User | null): Promise<number> {
     return getMockAnalysisCount();
@@ -57,16 +50,14 @@ export class MockQuotaProvider implements QuotaProvider {
     return getUserChatMessageCount(dream);
   }
 
-  async canAnalyzeDream(user: User | null): Promise<boolean> {
-    const tier = this.getTier(user);
+  async canAnalyzeDream(user: User | null, tier: UserTier = 'free'): Promise<boolean> {
     const limit = QUOTAS[tier].analysis;
     if (limit === null) return true;
     const used = await this.getUsedAnalysisCount(user);
     return used < limit;
   }
 
-  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
-    const tier = this.getTier(user);
+  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'free'): Promise<boolean> {
     const limit = QUOTAS[tier].exploration;
     if (limit === null) return true;
 
@@ -84,16 +75,14 @@ export class MockQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
-  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
-    const tier = this.getTier(user);
+  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'free'): Promise<boolean> {
     const limit = QUOTAS[tier].messagesPerDream;
     if (limit === null) return true;
     const used = await this.getUsedMessagesCount(target, user);
     return used < limit;
   }
 
-  async getQuotaStatus(user: User | null, target?: QuotaDreamTarget): Promise<QuotaStatus> {
-    const tier = this.getTier(user);
+  async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     const limits = QUOTAS[tier];
 
     const [analysisUsed, explorationUsed, messagesUsed] = await Promise.all([
@@ -102,8 +91,8 @@ export class MockQuotaProvider implements QuotaProvider {
       target ? this.getUsedMessagesCount(target, user) : Promise.resolve(0),
     ]);
 
-    const canAnalyze = await this.canAnalyzeDream(user);
-    const canExplore = target ? await this.canExploreDream(target, user) : limits.exploration === null || explorationUsed < (limits.exploration ?? 0);
+    const canAnalyze = await this.canAnalyzeDream(user, tier);
+    const canExplore = target ? await this.canExploreDream(target, user, tier) : limits.exploration === null || explorationUsed < (limits.exploration ?? 0);
 
     const reasons: string[] = [];
     if (!canAnalyze && limits.analysis !== null) {
