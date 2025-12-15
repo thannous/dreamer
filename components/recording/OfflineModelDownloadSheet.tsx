@@ -65,10 +65,10 @@ export function OfflineModelDownloadSheet({
     <StandardBottomSheet
       visible={visible}
       onClose={handleCancel}
-      title={t('recording.alert.offline_model.title') || 'Télécharger le pack de langue'}
+      title={t('recording.alert.offline_model_vocal.title') || 'Pack de langue pour la reconnaissance vocale'}
       subtitle={
-        t('recording.alert.offline_model.message', { locale, size: '~45 MB' }) ||
-        `Pour utiliser la reconnaissance vocale hors ligne en ${locale}, téléchargez le modèle (~45 MB).`
+        t('recording.alert.offline_model_vocal.message', { locale, size: '~45 MB' }) ||
+        `Pour enregistrer vos rêves vocalement en ${locale}, téléchargez le pack de langue (~45 MB).`
       }
       actions={{
         primaryLabel: t('common.download') || 'Télécharger',

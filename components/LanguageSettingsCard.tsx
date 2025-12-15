@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useMemo, useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useLanguage } from '@/context/LanguageContext';
@@ -7,6 +7,13 @@ import { useTheme } from '@/context/ThemeContext';
 import type { LanguagePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import {
+  ensureOfflineSttModel,
+  registerOfflineModelPromptHandler,
+  type OfflineModelPromptHandler,
+} from '@/services/nativeSpeechRecognition';
+import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
+import { getTranscriptionLocale } from '@/lib/locale';
 
 const LANGUAGE_LABEL_KEYS: Record<Exclude<LanguagePreference, 'auto'>, string> = {
   en: 'settings.language.option.en.label',
@@ -22,6 +29,29 @@ export default function LanguageSettingsCard() {
   const autoLanguageHint = t('settings.language.option.auto.system_hint', {
     language: systemLanguageLabel,
   });
+
+  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
+  const [offlineModelLocale, setOfflineModelLocale] = useState('');
+
+  // Register offline model prompt handler
+  useEffect(() => {
+    const handler: OfflineModelPromptHandler = {
+      isVisible: showOfflineModelSheet,
+      show: async (locale: string) => {
+        setOfflineModelLocale(locale);
+        setShowOfflineModelSheet(true);
+        await new Promise((resolve) => {
+          const checkInterval = setInterval(() => {
+            if (!showOfflineModelSheet) {
+              clearInterval(checkInterval);
+              resolve(null);
+            }
+          }, 100);
+        });
+      },
+    };
+    registerOfflineModelPromptHandler(handler);
+  }, [showOfflineModelSheet]);
 
   const languageOptions = useMemo(
     () =>
@@ -56,6 +86,17 @@ export default function LanguageSettingsCard() {
 
   const handleSelectLanguage = async (value: LanguagePreference) => {
     try {
+      // Determine effective language for this preference
+      const effectiveLanguage = value === 'auto' ? systemLanguage : value;
+      const locale = getTranscriptionLocale(effectiveLanguage);
+
+      // Ensure offline model (non-blocking - don't wait for result)
+      // User will be prompted if needed, but language change proceeds regardless
+      ensureOfflineSttModel(locale).catch(() => {
+        // Ignore errors - this is best-effort
+      });
+
+      // Apply language change immediately
       await setPreference(value);
     } catch (error) {
       if (__DEV__) {
@@ -137,6 +178,15 @@ export default function LanguageSettingsCard() {
           </View>
         );
       })}
+      <OfflineModelDownloadSheet
+        visible={showOfflineModelSheet}
+        onClose={() => setShowOfflineModelSheet(false)}
+        locale={offlineModelLocale}
+        onDownloadComplete={() => {
+          setShowOfflineModelSheet(false);
+          setOfflineModelLocale('');
+        }}
+      />
     </View>
   );
 }
