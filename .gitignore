@@ -63,3 +63,4 @@ gen-lang-client-0336445544-fc3b036c6e41.json
 # test coverage
 coverage/
 *.lcov
+upload_cert.der

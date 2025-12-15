@@ -30,7 +30,10 @@
     "production": {
       "channel": "production",
       "autoIncrement": true,
-      "android": { "buildType": "app-bundle" },
+      "android": {
+        "buildType": "app-bundle",
+        "credentialsSource": "remote"
+      },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api"
       }

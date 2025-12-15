@@ -128,7 +128,7 @@ export function useDreamPersistence({
 
   /**
    * Migrate unsynced dreams to Supabase (one-shot migration)
-   * Syncs all dreams without remoteId that aren't already pending sync
+   * Pulls unsynced creations from local storage/pending queue instead of remote cache
    */
   const migrateUnsyncedDreams = useCallback(async () => {
     // Guard: only if authenticated + remote sync enabled + network available
@@ -140,11 +140,30 @@ export function useDreamPersistence({
     if (alreadyMigrated === 'true') return;
 
     try {
-      // Load remote dreams (already fetched and cached)
-      const remoteDreams = await getCachedRemoteDreams();
+      // Prefer local sources: pending mutation queue + cached/local storage
+      const [pendingMutationsFromStorage, cachedRemoteDreams, localDreams] = await Promise.all([
+        getPendingDreamMutations(),
+        getCachedRemoteDreams(),
+        getSavedDreams(),
+      ]);
 
-      // Filter: without remoteId AND without pendingSync (to avoid conflict with offline queue)
-      const unsynced = remoteDreams.filter((d) => !d.remoteId && !d.pendingSync);
+      const candidates: DreamAnalysis[] = [
+        ...pendingMutationsFromStorage
+          .filter((mutation) => mutation.type === 'create')
+          .map((mutation) => mutation.dream)
+          .filter((dream) => !dream.remoteId),
+        ...cachedRemoteDreams.filter((dream) => !dream.remoteId),
+        ...localDreams.filter((dream) => !dream.remoteId),
+      ];
+
+      // Deduplicate by clientRequestId (or fallback to local id)
+      const seen = new Set<string>();
+      const unsynced = candidates.filter((dream) => {
+        const key = dream.clientRequestId ?? `id-${dream.id}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
 
       if (unsynced.length === 0) {
         await AsyncStorage.setItem(migrationKey, 'true');
