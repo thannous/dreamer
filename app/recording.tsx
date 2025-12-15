@@ -92,8 +92,50 @@ export default function RecordingScreen() {
   const { user } = useAuth();
   const { canAnalyzeNow, tier, usage } = useQuota();
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
+  const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error'>('limit');
+  const [quotaSheetMessage, setQuotaSheetMessage] = useState('');
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
+  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
+  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
+
+  const resolveOfflineModelPrompt = useCallback(() => {
+    const resolve = offlineModelPromptResolveRef.current;
+    offlineModelPromptResolveRef.current = null;
+    offlineModelPromptPromiseRef.current = null;
+    resolve?.();
+  }, []);
+
+  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
+    if (offlineModelPromptPromiseRef.current) {
+      return offlineModelPromptPromiseRef.current;
+    }
+
+    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
+      offlineModelPromptResolveRef.current = () => {
+        resolve();
+      };
+    });
+
+    return offlineModelPromptPromiseRef.current;
+  }, []);
+
+  const handleOfflineModelPromptShow = useCallback(
+    async (locale: string) => {
+      setOfflineModelLocale(locale);
+      setShowOfflineModelSheet(true);
+      await waitForOfflineModelPromptClose();
+    },
+    [waitForOfflineModelPromptClose]
+  );
+
+  const handleOfflineModelSheetClose = useCallback(() => {
+    setShowOfflineModelSheet(false);
+    setOfflineModelLocale('');
+    resolveOfflineModelPrompt();
+  }, [resolveOfflineModelPrompt]);
+
+  const handleOfflineModelDownloadComplete = useCallback((_success: boolean) => undefined, []);
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
@@ -276,23 +318,16 @@ export default function RecordingScreen() {
   useEffect(() => {
     const handler: OfflineModelPromptHandler = {
       isVisible: showOfflineModelSheet,
-      show: async (locale: string) => {
-        setOfflineModelLocale(locale);
-        setShowOfflineModelSheet(true);
-        // Wait for user response
-        await new Promise((resolve) => {
-          // This will be resolved by onDownloadComplete callback
-          const checkInterval = setInterval(() => {
-            if (!showOfflineModelSheet) {
-              clearInterval(checkInterval);
-              resolve(null);
-            }
-          }, 100);
-        });
-      },
+      show: handleOfflineModelPromptShow,
     };
     registerOfflineModelPromptHandler(handler);
-  }, [showOfflineModelSheet]);
+  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
+
+  useEffect(() => {
+    return () => {
+      resolveOfflineModelPrompt();
+    };
+  }, [resolveOfflineModelPrompt]);
 
   useEffect(() => {
     return () => {
@@ -529,13 +564,10 @@ export default function RecordingScreen() {
         }
       } else {
         if (isRateLimited) {
-          Alert.alert(t('common.error_title'), t('error.rate_limit'));
+          showQuotaSheet({ mode: 'error', message: t('error.rate_limit') });
           return;
         }
-        Alert.alert(
-          t('recording.alert.no_speech.title'),
-          t('recording.alert.no_speech.message')
-        );
+        showQuotaSheet({ mode: 'error', message: t('recording.alert.no_speech.message') });
       }
     } catch (err) {
       if (handleRecorderError('stopRecording', err)) {
@@ -545,7 +577,7 @@ export default function RecordingScreen() {
       if (__DEV__) {
         console.error('Failed to stop recording:', err);
       }
-      Alert.alert(t('common.error_title'), t('recording.alert.stop_failed'));
+      showQuotaSheet({ mode: 'error', message: t('recording.alert.stop_failed') });
     } finally {
       try {
         await setAudioModeAsync({ allowsRecording: false });
@@ -564,14 +596,14 @@ export default function RecordingScreen() {
     combineTranscript,
     lengthLimitMessage,
     handleRecorderError,
+    showQuotaSheet,
   ]);
 
   const startRecording = useCallback(async () => {
     try {
-      // Optimistic UI: show recording state while we spin up permissions/audio mode
-      setIsRecording(true);
       setIsPreparingRecording(true);
-      // Leave isRecordingRef false until audio is actually rolling
+      setIsRecording(false);
+      isRecordingRef.current = false;
 
       if (Platform.OS === 'web') {
         const hasSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
@@ -610,6 +642,8 @@ export default function RecordingScreen() {
           console.log('[Recording] offline model not ready, aborting start');
         }
         setIsRecording(false);
+        setIsPreparingRecording(false);
+        isRecordingRef.current = false;
         return;
       }
 
@@ -656,6 +690,7 @@ export default function RecordingScreen() {
       }
 
       isRecordingRef.current = true;
+      setIsRecording(true);
       setIsPreparingRecording(false);
     } catch (err) {
       nativeSessionRef.current?.abort();
@@ -857,20 +892,27 @@ export default function RecordingScreen() {
   }, [analyzePromptDream]);
 
   // Show quota limit sheet (reusable for both guard and catch paths)
-  const showQuotaSheet = useCallback(() => {
+  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
+    const modeToUse = options?.mode ?? 'limit';
+    const message = options?.message ?? '';
+
     // Close existing sheets to avoid overlay
     if (firstDreamPrompt) setFirstDreamPrompt(null);
     if (analyzePromptDream) setAnalyzePromptDream(null);
 
     // Don't show upsell for paid tiers (edge case: network error)
-    if (tier === 'plus' || tier === 'premium') return false;
+    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
 
+    setQuotaSheetMode(modeToUse);
+    setQuotaSheetMessage(message);
     setShowQuotaLimitSheet(true);
     return true;
   }, [tier, firstDreamPrompt, analyzePromptDream]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
+    setQuotaSheetMode('limit');
+    setQuotaSheetMessage('');
     // Clean up analysis state if needed
     if (pendingAnalysisDream) {
       setPendingAnalysisDream(null);
@@ -937,10 +979,7 @@ export default function RecordingScreen() {
     } catch (error) {
       if (error instanceof QuotaError) {
         // Reuse the same sheet for consistent UX
-        if (!showQuotaSheet()) {
-          // Fallback for premium (should not happen)
-          Alert.alert(t('common.error'), error.userMessage);
-        }
+        showQuotaSheet({ mode: 'error', message: error.userMessage });
         analysisProgress.reset();
         return;
       }
@@ -949,20 +988,19 @@ export default function RecordingScreen() {
     } finally {
       setIsPersisting(false);
     }
-  }, [
-    analysisProgress,
-    analyzeDream,
-    analyzePromptDream,
-    canAnalyzeNow,
-    dreams.length,
-    firstDreamPrompt,
-    language,
-    pendingAnalysisDream,
-    navigateAfterSave,
-    resetComposer,
-    showQuotaSheet,
-    t,
-  ]);
+	  }, [
+	    analysisProgress,
+	    analyzeDream,
+	    analyzePromptDream,
+	    canAnalyzeNow,
+	    dreams.length,
+	    firstDreamPrompt,
+	    language,
+	    pendingAnalysisDream,
+	    navigateAfterSave,
+	    resetComposer,
+	    showQuotaSheet,
+	  ]);
 
   const gradientColors = mode === 'dark'
     ? GradientColors.surreal
@@ -1046,7 +1084,7 @@ export default function RecordingScreen() {
                     isPreparing={isPreparingRecording}
                     transcript={transcript}
                     instructionText={t('recording.instructions')}
-                    disabled={interactionDisabled}
+                    disabled={interactionDisabled || isPreparingRecording}
                     onToggleRecording={toggleRecording}
                     onSwitchToText={switchToTextMode}
                   />
@@ -1168,32 +1206,51 @@ export default function RecordingScreen() {
       <StandardBottomSheet
         visible={showQuotaLimitSheet}
         onClose={handleQuotaLimitDismiss}
-        title={tier === 'guest'
-          ? t('recording.analysis_limit.title_guest')
-          : t('recording.analysis_limit.title_free')}
-        subtitle={tier === 'guest'
-          ? t('recording.analysis_limit.message_guest', {
-            limit: usage?.analysis.limit ?? QUOTAS.guest.analysis ?? 0,
-          })
-          : t('recording.analysis_limit.message_free', {
-            limit: usage?.analysis.limit ?? QUOTAS.free.analysis ?? 0,
-          })}
+        title={
+          quotaSheetMode === 'limit'
+            ? tier === 'guest'
+              ? t('recording.analysis_limit.title_guest')
+              : t('recording.analysis_limit.title_free')
+            : t('common.error_title')
+        }
+        subtitle={
+          quotaSheetMode === 'limit'
+            ? tier === 'guest'
+              ? t('recording.analysis_limit.message_guest', {
+                limit: usage?.analysis.limit ?? QUOTAS.guest.analysis ?? 0,
+              })
+              : t('recording.analysis_limit.message_free', {
+                limit: usage?.analysis.limit ?? QUOTAS.free.analysis ?? 0,
+              })
+            : quotaSheetMessage
+        }
         testID={TID.Sheet.QuotaLimit}
         titleTestID={TID.Text.QuotaLimitTitle}
         actions={{
-          primaryLabel: tier === 'guest'
-            ? t('recording.analysis_limit.cta_guest')
-            : t('recording.analysis_limit.cta_free'),
-          onPrimary: handleQuotaLimitPrimary,
-          primaryTestID: tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree,
-          secondaryLabel: t('recording.analysis_limit.journal'),
-          onSecondary: handleQuotaLimitJournal,
-          secondaryTestID: TID.Button.QuotaLimitJournal,
-          linkLabel: t('recording.analysis_limit.dismiss'),
-          onLink: handleQuotaLimitDismiss,
+          primaryLabel:
+            quotaSheetMode === 'limit'
+              ? tier === 'guest'
+                ? t('recording.analysis_limit.cta_guest')
+                : t('recording.analysis_limit.cta_free')
+              : t('common.ok'),
+          onPrimary:
+            quotaSheetMode === 'limit'
+              ? handleQuotaLimitPrimary
+              : handleQuotaLimitDismiss,
+          primaryTestID:
+            quotaSheetMode === 'limit'
+              ? tier === 'guest'
+                ? TID.Button.QuotaLimitCtaGuest
+                : TID.Button.QuotaLimitCtaFree
+              : TID.Button.QuotaLimitCtaFree,
+          secondaryLabel: quotaSheetMode === 'limit' ? t('recording.analysis_limit.journal') : undefined,
+          onSecondary: quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined,
+          secondaryTestID: quotaSheetMode === 'limit' ? TID.Button.QuotaLimitJournal : undefined,
+          linkLabel: quotaSheetMode === 'limit' ? t('recording.analysis_limit.dismiss') : undefined,
+          onLink: quotaSheetMode === 'limit' ? handleQuotaLimitDismiss : undefined,
         }}
       >
-        {tier === 'free' && (
+        {quotaSheetMode === 'limit' && tier === 'free' && (
           <View style={styles.quotaFeaturesList}>
             <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
               ✓ {t('recording.analysis_limit.feature_analyses')}
@@ -1211,12 +1268,9 @@ export default function RecordingScreen() {
       {/* Offline Model Download Sheet */}
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}
-        onClose={() => setShowOfflineModelSheet(false)}
+        onClose={handleOfflineModelSheetClose}
         locale={offlineModelLocale}
-        onDownloadComplete={() => {
-          setShowOfflineModelSheet(false);
-          setOfflineModelLocale('');
-        }}
+        onDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </>
   );
