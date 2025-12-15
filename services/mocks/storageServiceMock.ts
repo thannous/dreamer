@@ -24,8 +24,9 @@ const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
 
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
-  isEnabled: false,
+  weekdayEnabled: false,
   weekdayTime: '07:00',
+  weekendEnabled: false,
   weekendTime: '10:00',
 };
 

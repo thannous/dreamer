@@ -410,8 +410,9 @@ async function normalizeMutationsForStorage(mutations: DreamMutation[]): Promise
 }
 
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
-  isEnabled: false,
+  weekdayEnabled: false,
   weekdayTime: '07:00',
+  weekendEnabled: false,
   weekendTime: '10:00',
 };
 
@@ -492,7 +493,28 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
   try {
     const savedSettings = await getItem(NOTIFICATION_SETTINGS_KEY);
     if (savedSettings) {
-      return JSON.parse(savedSettings) as NotificationSettings;
+      const parsed = JSON.parse(savedSettings) as unknown;
+
+      // Handle migration from old format with isEnabled to new format with separate flags
+      if (
+        typeof parsed === 'object' &&
+        parsed !== null &&
+        'isEnabled' in parsed &&
+        !('weekdayEnabled' in parsed)
+      ) {
+        const oldFormat = parsed as { isEnabled: boolean; weekdayTime?: string; weekendTime?: string };
+        const migratedSettings: NotificationSettings = {
+          weekdayEnabled: oldFormat.isEnabled,
+          weekdayTime: oldFormat.weekdayTime || '07:00',
+          weekendEnabled: oldFormat.isEnabled,
+          weekendTime: oldFormat.weekendTime || '10:00',
+        };
+        // Save migrated settings back to storage
+        await saveNotificationSettings(migratedSettings);
+        return migratedSettings;
+      }
+
+      return parsed as NotificationSettings;
     }
   } catch (error) {
     if (__DEV__) {
