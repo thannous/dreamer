@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 import type { QuotaProvider, CacheEntry, QuotaDreamTarget } from './types';
 import type { QuotaStatus, DreamAnalysis } from '@/lib/types';
+import type { UserTier } from '@/constants/limits';
 import { QUOTAS } from '@/constants/limits';
 import {
   getAnalyzedDreamCount,
@@ -80,9 +81,10 @@ export class GuestQuotaProvider implements QuotaProvider {
     return getUserChatMessageCount(dream);
   }
 
-  async canAnalyzeDream(user: User | null): Promise<boolean> {
+  async canAnalyzeDream(user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true; // Not a guest, handled by SupabaseQuotaProvider
 
+    // Always use 'guest' tier for guests, ignore tier parameter
     const used = await this.getUsedAnalysisCount(null);
     const limit = QUOTAS.guest.analysis;
 
@@ -90,7 +92,7 @@ export class GuestQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
-  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
+  async canExploreDream(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true; // Not a guest
 
     const dreamId = this.resolveDreamId(target);
@@ -105,6 +107,7 @@ export class GuestQuotaProvider implements QuotaProvider {
     }
 
     // Check if user can start exploring a new dream
+    // Always use 'guest' tier for guests, ignore tier parameter
     const used = await this.getUsedExplorationCount(null);
     const limit = QUOTAS.guest.exploration;
 
@@ -112,9 +115,10 @@ export class GuestQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
-  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean> {
+  async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true; // Not a guest
 
+    // Always use 'guest' tier for guests, ignore tier parameter
     const used = await this.getUsedMessagesCount(target, null);
     const limit = QUOTAS.guest.messagesPerDream;
 
@@ -122,7 +126,7 @@ export class GuestQuotaProvider implements QuotaProvider {
     return used < limit;
   }
 
-  async getQuotaStatus(user: User | null, target?: QuotaDreamTarget): Promise<QuotaStatus> {
+  async getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus> {
     if (user) {
       // Not a guest, return placeholder
       return {

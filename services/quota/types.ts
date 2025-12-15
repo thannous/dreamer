@@ -1,5 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 import type { QuotaStatus, DreamAnalysis } from '@/lib/types';
+import type { UserTier } from '@/constants/limits';
 
 export interface QuotaDreamTarget {
   dreamId?: number;
@@ -23,31 +24,41 @@ export interface QuotaProvider {
 
   /**
    * Get number of user messages sent for a specific dream
-   * @param dreamId - Local dream ID (timestamp)
+   * @param target - Dream target (dreamId or dream object)
+   * @param user - Supabase user (null for guests)
    */
   getUsedMessagesCount(target: QuotaDreamTarget | undefined, user: User | null): Promise<number>;
 
   /**
    * Check if user can perform a new analysis
+   * @param user - Supabase user (null for guests)
+   * @param tier - User's subscription tier from RevenueCat (source of truth)
    */
-  canAnalyzeDream(user: User | null): Promise<boolean>;
+  canAnalyzeDream(user: User | null, tier: UserTier): Promise<boolean>;
 
   /**
    * Check if user can explore a specific dream (start/continue chat)
-   * @param dreamId - Local dream ID
+   * @param target - Dream target (dreamId or dream object)
+   * @param user - Supabase user (null for guests)
+   * @param tier - User's subscription tier from RevenueCat (source of truth)
    */
-  canExploreDream(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean>;
+  canExploreDream(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier): Promise<boolean>;
 
   /**
    * Check if user can send another chat message for a specific dream
-   * @param dreamId - Local dream ID
+   * @param target - Dream target (dreamId or dream object)
+   * @param user - Supabase user (null for guests)
+   * @param tier - User's subscription tier from RevenueCat (source of truth)
    */
-  canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null): Promise<boolean>;
+  canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier): Promise<boolean>;
 
   /**
    * Get complete quota status for user
+   * @param user - Supabase user (null for guests)
+   * @param tier - User's subscription tier from RevenueCat (source of truth)
+   * @param target - Optional dream target for chat-specific quota checks
    */
-  getQuotaStatus(user: User | null, target?: QuotaDreamTarget): Promise<QuotaStatus>;
+  getQuotaStatus(user: User | null, tier: UserTier, target?: QuotaDreamTarget): Promise<QuotaStatus>;
 
   /**
    * Invalidate cache (called after quota-consuming actions)

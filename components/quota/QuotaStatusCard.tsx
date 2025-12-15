@@ -43,7 +43,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { dreams } = useDreams();
   const { colors, shadows } = useTheme();
   const { t } = useTranslation();
-  const { quotaStatus, loading, error, refetch } = useQuota();
+  const { quotaStatus, loading, error, refetch, tier } = useQuota();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
 
   useEffect(() => {
@@ -100,15 +100,13 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
     },
   ]), [quotaStatus?.usage.analysis, quotaStatus?.usage.exploration, recordingLabel, recordingUsage, t]);
 
-  const isPaidTier = quotaStatus?.tier === 'plus' || quotaStatus?.tier === 'premium';
+  const isPaidTier = tier === 'plus' || tier === 'premium';
   const showCta = Boolean(quotaStatus) && !isPaidTier;
-  const ctaLabel = quotaStatus?.tier === 'guest'
+  const ctaLabel = tier === 'guest'
     ? t('settings.quota.cta_guest')
     : t('settings.quota.cta_upgrade');
-  const tierLabel = quotaStatus
-    ? t(`settings.quota.tier.${quotaStatus.tier}` as const)
-    : t('settings.quota.tier.guest');
-  const isGuest = quotaStatus?.tier === 'guest';
+  const tierLabel = t(`settings.quota.tier.${tier}` as const);
+  const isGuest = tier === 'guest';
   const guestRecordingLimit = recordingUsage.limit ?? getGuestDreamRecordingLimit();
 
   const handleUpgrade = () => {
@@ -190,7 +188,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         );
       })}
 
-      {quotaStatus?.tier === 'plus' && (
+      {tier === 'plus' && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
             {t('settings.quota.plus_message')}
@@ -198,7 +196,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         </View>
       )}
 
-      {quotaStatus?.tier === 'premium' && (
+      {tier === 'premium' && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
             {t('settings.quota.premium_message')}
