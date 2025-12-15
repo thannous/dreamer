@@ -8,6 +8,7 @@ import {
     useKeyboardStateContext,
     useMessageListContext,
 } from '@/context/ChatContext';
+import type { ChatMessage } from '@/lib/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NativeModules, Platform } from 'react-native';
 import {
@@ -19,11 +20,21 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 /**
+ * Threshold in pixels to consider "near bottom" for auto-scroll
+ */
+const NEAR_BOTTOM_THRESHOLD = 120;
+
+/**
+ * Character threshold for detecting "long" AI messages
+ * Messages longer than this will scroll to the beginning instead of the end
+ * 280 chars is roughly 75% of a screen in a message bubble
+ */
+const LONG_MESSAGE_THRESHOLD = 280;
+
+/**
  * useMessageListProps - Returns animated props and handlers for the message list
  * Handles contentInset calculation based on composer height
  */
-/** Threshold in pixels to consider "near bottom" for auto-scroll */
-const NEAR_BOTTOM_THRESHOLD = 120;
 
 export function useMessageListProps() {
   const { composerHeight } = useComposerHeightContext();
@@ -234,12 +245,16 @@ export function useInitialScrollToEnd(hasMessages: boolean) {
 }
 
 /**
- * useAutoScrollOnNewMessage - Scroll to end when new messages arrive
- * Uses isNearBottom from context for consistent behavior
- * Sets hasNewMessages when user is scrolled up to show "scroll to bottom" button
+ * useAutoScrollOnNewMessage - Smart auto-scroll when new messages arrive
+ * - For short messages: Scrolls to end (traditional chat behavior)
+ * - For long AI messages: Scrolls to beginning so users can read from start
+ * - For scrolled-up users: Shows "new message" indicator without interrupting
  */
-export function useAutoScrollOnNewMessage(messageCount: number) {
-  const { scrollToEnd, isNearBottom, hasNewMessages } = useMessageListContext();
+export function useAutoScrollOnNewMessage(
+  messageCount: number,
+  messages: ChatMessage[]
+) {
+  const { scrollToEnd, listRef, isNearBottom, hasNewMessages } = useMessageListContext();
   const prevMessageCountRef = useRef(messageCount);
 
   useEffect(() => {
@@ -266,18 +281,35 @@ export function useAutoScrollOnNewMessage(messageCount: number) {
     const nearBottom = isNearBottom.get();
 
     if (nearBottom) {
-      // User is near bottom - auto-scroll to show new message
+      // User is near bottom - smart scroll based on message length
+      const lastMessage = messages[messages.length - 1];
+      const isLongAIMessage =
+        lastMessage?.role === 'model' &&
+        (lastMessage?.text?.length ?? 0) >= LONG_MESSAGE_THRESHOLD;
+
       // Use RAF + timeout to ensure content height is updated
       requestAnimationFrame(() => {
         setTimeout(() => {
-          scrollToEnd({ animated: true });
+          if (isLongAIMessage) {
+            // For long AI messages, scroll to the beginning of the message
+            // so users can read from top to bottom naturally
+            const lastIndex = messages.length - 1;
+            listRef.current?.scrollToIndex({
+              index: lastIndex,
+              animated: true,
+              viewPosition: 0, // 0 = top of message at top of viewport
+            });
+          } else {
+            // For short messages, scroll to bottom (traditional behavior)
+            scrollToEnd({ animated: true });
+          }
         }, 50);
       });
     } else {
       // User has scrolled up - don't interrupt, but show indicator
       hasNewMessages.set(true);
     }
-  }, [messageCount, scrollToEnd, isNearBottom, hasNewMessages]);
+  }, [messageCount, messages, scrollToEnd, listRef, isNearBottom, hasNewMessages]);
 }
 
 /**
