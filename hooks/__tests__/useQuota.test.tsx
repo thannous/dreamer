@@ -110,12 +110,12 @@ describe('useQuota', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      expect(mockGetQuotaStatus).toHaveBeenCalledWith(null, 'free', undefined);
+      expect(mockGetQuotaStatus).toHaveBeenCalledWith(null, 'guest', undefined);
       expect(result.current.quotaStatus).toBeDefined();
     });
 
     it('provides guest tier by default when not authenticated', async () => {
-      // When not authenticated, user is null and tier defaults to 'free'
+      // When not authenticated, user is null and tier defaults to 'guest'
       mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'guest' }));
 
       const { result } = renderHook(() => useQuota());
@@ -124,8 +124,8 @@ describe('useQuota', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      // Guest users get 'free' tier (no subscription), but quotaStatus shows guest limits
-      expect(result.current.tier).toBe('free');
+      // Guest users are marked as guest tier (no subscription), but quotaStatus shows guest limits
+      expect(result.current.tier).toBe('guest');
       expect(result.current.quotaStatus?.tier).toBe('guest');
     });
 
@@ -168,7 +168,7 @@ describe('useQuota', () => {
 
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         null,
-        'free',
+        'guest',
         expect.objectContaining({ dreamId: 123 })
       );
     });
@@ -183,7 +183,7 @@ describe('useQuota', () => {
 
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         null,
-        'free',
+        'guest',
         expect.objectContaining({ dreamId: 456, dream })
       );
     });
@@ -199,7 +199,7 @@ describe('useQuota', () => {
       // Should use dream.id when both provided
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         null,
-        'free',
+        'guest',
         expect.objectContaining({ dreamId: 789 })
       );
     });
@@ -361,7 +361,7 @@ describe('useQuota', () => {
       const canAnalyze = await result.current.canAnalyze();
 
       expect(canAnalyze).toBe(true);
-      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'free');
+      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'guest');
     });
 
     it('checks if user can explore with target', async () => {
@@ -379,7 +379,7 @@ describe('useQuota', () => {
       expect(mockCanExploreDream).toHaveBeenCalledWith(
         expect.objectContaining({ dreamId: 123 }),
         null,
-        'free'
+        'guest'
       );
     });
 
@@ -399,7 +399,7 @@ describe('useQuota', () => {
       expect(mockCanExploreDream).toHaveBeenCalledWith(
         expect.objectContaining({ dreamId: 456 }),
         null,
-        'free'
+        'guest'
       );
     });
 
@@ -418,7 +418,7 @@ describe('useQuota', () => {
       expect(mockCanSendChatMessage).toHaveBeenCalledWith(
         expect.objectContaining({ dreamId: 123 }),
         null,
-        'free'
+        'guest'
       );
     });
   });
@@ -508,7 +508,7 @@ describe('useQuota', () => {
         expect(mockGetQuotaStatus).toHaveBeenCalledTimes(2);
       });
 
-      expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(null, 'free', undefined);
+      expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(null, 'guest', undefined);
     });
   });
 });

@@ -68,7 +68,7 @@ describe('RemoteGuestQuotaProvider', () => {
     const provider = new RemoteGuestQuotaProvider(fallback as any);
 
     // When
-    const status = await provider.getQuotaStatus(null);
+    const status = await provider.getQuotaStatus(null, 'guest');
 
     // Then usage should reflect the fallback counts, not the remote zeros
     expect(status.usage.analysis.used).toBe(1);
@@ -89,13 +89,13 @@ describe('RemoteGuestQuotaProvider', () => {
     });
 
     const provider = new RemoteGuestQuotaProvider(fallback as any);
-    const initial = await provider.getQuotaStatus(null);
+    const initial = await provider.getQuotaStatus(null, 'guest');
     expect(initial.usage.analysis.used).toBe(1);
 
     // When local usage drops and caches are invalidated
     fallback.setAnalysisUsed(0);
     provider.invalidate();
-    const refreshed = await provider.getQuotaStatus(null);
+    const refreshed = await provider.getQuotaStatus(null, 'guest');
 
     // Then refreshed status reflects new fallback counts and calls fallback.invalidate
     expect(refreshed.usage.analysis.used).toBe(0);
