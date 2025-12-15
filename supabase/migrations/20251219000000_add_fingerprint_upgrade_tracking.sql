@@ -62,3 +62,72 @@ BEGIN
     RETURN true;
 END;
 $$;
+
+-- Sécuriser l'incrément des quotas invités pour les fingerprints upgradés
+CREATE OR REPLACE FUNCTION public.increment_guest_quota(
+    p_fingerprint TEXT,
+    p_quota_type TEXT,
+    p_limit INTEGER
+) RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_analysis_count INTEGER := 0;
+    v_exploration_count INTEGER := 0;
+    v_current INTEGER := 0;
+    v_allowed BOOLEAN := false;
+    v_is_upgraded BOOLEAN := false;
+BEGIN
+    IF p_quota_type NOT IN ('analysis', 'exploration') THEN
+        RAISE EXCEPTION 'Invalid quota_type: %. Must be analysis or exploration', p_quota_type;
+    END IF;
+
+    -- Create the entry if missing to lock it below
+    INSERT INTO public.guest_usage (fingerprint_hash)
+    VALUES (p_fingerprint)
+    ON CONFLICT (fingerprint_hash) DO NOTHING;
+
+    SELECT analysis_count, exploration_count, is_upgraded
+    INTO v_analysis_count, v_exploration_count, v_is_upgraded
+    FROM public.guest_usage
+    WHERE fingerprint_hash = p_fingerprint
+    FOR UPDATE;
+
+    IF p_quota_type = 'analysis' THEN
+        v_current := v_analysis_count;
+    ELSE
+        v_current := v_exploration_count;
+    END IF;
+
+    -- If the fingerprint is upgraded (account created), deny guest quota usage
+    IF v_is_upgraded THEN
+        RETURN json_build_object('allowed', false, 'new_count', COALESCE(v_current, 0), 'is_upgraded', true);
+    END IF;
+
+    IF p_quota_type = 'analysis' THEN
+        v_allowed := v_current < p_limit;
+        IF v_allowed THEN
+            UPDATE public.guest_usage
+            SET analysis_count = analysis_count + 1, last_seen_at = now()
+            WHERE fingerprint_hash = p_fingerprint;
+            v_current := v_current + 1;
+        END IF;
+    ELSIF p_quota_type = 'exploration' THEN
+        v_allowed := v_current < p_limit;
+        IF v_allowed THEN
+            UPDATE public.guest_usage
+            SET exploration_count = exploration_count + 1, last_seen_at = now()
+            WHERE fingerprint_hash = p_fingerprint;
+            v_current := v_current + 1;
+        END IF;
+    END IF;
+
+    RETURN json_build_object(
+        'allowed', v_allowed,
+        'new_count', COALESCE(v_current, 0),
+        'is_upgraded', v_is_upgraded
+    );
+END;
+$$;

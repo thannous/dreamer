@@ -59,7 +59,7 @@ export const useDreamJournal = () => {
   const isAuthenticated = Boolean(user);
   const isMockMode = isMockModeEnabled();
   const canUseRemoteSync = isAuthenticated && !isMockMode;
-  const tier = subscriptionStatus?.tier || 'free';
+  const tier = useMemo(() => subscriptionStatus?.tier ?? deriveUserTier(user), [subscriptionStatus?.tier, user]);
 
   const networkState = useNetworkState();
   const hasNetwork = useMemo(() => {
