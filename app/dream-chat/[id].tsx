@@ -367,6 +367,7 @@ export default function DreamChatScreen() {
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
+            setInputText('');
 
             // Persist chat history to dream
             const dreamUpdate: Partial<DreamAnalysis> = {
@@ -752,7 +753,7 @@ export default function DreamChatScreen() {
         <Composer
           value={inputText}
           onChangeText={setInputText}
-          onSend={() => sendMessage()}
+          onSend={(text) => sendMessage(text)}
           placeholder={composerPlaceholder}
           isLoading={isLoading}
           isDisabled={messageLimitReached}

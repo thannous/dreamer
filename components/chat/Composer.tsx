@@ -72,7 +72,7 @@ const KeyboardStickyView: React.ComponentType<{
 interface ComposerProps {
   value: string;
   onChangeText: (text: string) => void;
-  onSend: () => void;
+  onSend: (text?: string) => void;
   placeholder?: string;
   isLoading?: boolean;
   isDisabled?: boolean;
@@ -111,6 +111,8 @@ export function Composer({
   } | null>(null);
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
+  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
+  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const baseInputRef = useRef('');
   const containerRef = useRef<View>(null);
@@ -141,25 +143,58 @@ export function Composer({
     })();
   }, [composerHeight, localHeight]);
 
+  const resolveOfflineModelPrompt = useCallback(() => {
+    const resolve = offlineModelPromptResolveRef.current;
+    offlineModelPromptResolveRef.current = null;
+    offlineModelPromptPromiseRef.current = null;
+    resolve?.();
+  }, []);
+
+  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
+    if (offlineModelPromptPromiseRef.current) {
+      return offlineModelPromptPromiseRef.current;
+    }
+
+    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
+      offlineModelPromptResolveRef.current = () => {
+        resolve();
+      };
+    });
+
+    return offlineModelPromptPromiseRef.current;
+  }, []);
+
+  const handleOfflineModelPromptShow = useCallback(
+    async (locale: string) => {
+      setOfflineModelLocale(locale);
+      setShowOfflineModelSheet(true);
+      await waitForOfflineModelPromptClose();
+    },
+    [waitForOfflineModelPromptClose]
+  );
+
+  const handleOfflineModelSheetClose = useCallback(() => {
+    setShowOfflineModelSheet(false);
+    setOfflineModelLocale('');
+    resolveOfflineModelPrompt();
+  }, [resolveOfflineModelPrompt]);
+
+  const handleOfflineModelDownloadComplete = useCallback((_success: boolean) => undefined, []);
+
   // Register offline model prompt handler
   useEffect(() => {
     const handler: OfflineModelPromptHandler = {
       isVisible: showOfflineModelSheet,
-      show: async (locale: string) => {
-        setOfflineModelLocale(locale);
-        setShowOfflineModelSheet(true);
-        await new Promise((resolve) => {
-          const checkInterval = setInterval(() => {
-            if (!showOfflineModelSheet) {
-              clearInterval(checkInterval);
-              resolve(null);
-            }
-          }, 100);
-        });
-      },
+      show: handleOfflineModelPromptShow,
     };
     registerOfflineModelPromptHandler(handler);
-  }, [showOfflineModelSheet]);
+  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
+
+  useEffect(() => {
+    return () => {
+      resolveOfflineModelPrompt();
+    };
+  }, [resolveOfflineModelPrompt]);
 
   // Cleanup speech session on unmount
   useEffect(() => {
@@ -226,12 +261,12 @@ export function Composer({
     }
   }, [value, transcriptionLocale, onChangeText, t]);
 
-  const stopRecording = useCallback(async () => {
+  const stopRecording = useCallback(async (): Promise<string | undefined> => {
     const nativeSession = nativeSessionRef.current;
     nativeSessionRef.current = null;
     setIsRecording(false);
 
-    if (!nativeSession) return;
+    if (!nativeSession) return value;
 
     try {
       const result = await nativeSession.stop();
@@ -239,7 +274,9 @@ export function Composer({
 
       if (transcript) {
         const base = baseInputRef.current.trim();
-        onChangeText(base ? `${base} ${transcript}` : transcript);
+        const finalText = base ? `${base} ${transcript}` : transcript;
+        onChangeText(finalText);
+        return finalText;
       } else {
         const normalizedError = result.error?.toLowerCase();
         const isRateLimited =
@@ -261,8 +298,9 @@ export function Composer({
             });
             if (fallbackTranscript?.trim()) {
               const base = baseInputRef.current.trim();
-              onChangeText(base ? `${base} ${fallbackTranscript.trim()}` : fallbackTranscript.trim());
-              return;
+              const finalText = base ? `${base} ${fallbackTranscript.trim()}` : fallbackTranscript.trim();
+              onChangeText(finalText);
+              return finalText;
             }
           } catch {
             // ignore and continue to other handling
@@ -278,7 +316,7 @@ export function Composer({
             locale: transcriptionLocale,
             installedLocales: availability?.installedLocales ?? [],
           });
-          return;
+          return baseInputRef.current;
         }
         if (!normalizedError?.includes('no speech')) {
           Alert.alert(
@@ -290,7 +328,8 @@ export function Composer({
     } catch {
       // Silent fail on stop
     }
-  }, [onChangeText, transcriptionLocale, t]);
+    return baseInputRef.current;
+  }, [onChangeText, transcriptionLocale, t, value]);
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -316,6 +355,15 @@ export function Composer({
   }, [keyboardHeight]);
 
   const canSend = value.trim().length > 0 && !isLoading && !isDisabled;
+
+  const handleSend = useCallback(async () => {
+    let textOverride: string | undefined;
+    if (isRecording) {
+      textOverride = await stopRecording();
+    }
+    baseInputRef.current = '';
+    onSend(textOverride?.trim());
+  }, [isRecording, onSend, stopRecording]);
 
   const composerContent = (
     <Animated.View
@@ -389,7 +437,7 @@ export function Composer({
             { backgroundColor: colors.accent },
             !canSend && styles.buttonDisabled,
           ]}
-          onPress={onSend}
+          onPress={handleSend}
           disabled={!canSend}
           testID={sendTestID}
         >
@@ -419,12 +467,9 @@ export function Composer({
         />
         <OfflineModelDownloadSheet
           visible={showOfflineModelSheet}
-          onClose={() => setShowOfflineModelSheet(false)}
+          onClose={handleOfflineModelSheetClose}
           locale={offlineModelLocale}
-          onDownloadComplete={() => {
-            setShowOfflineModelSheet(false);
-            setOfflineModelLocale('');
-          }}
+          onDownloadComplete={handleOfflineModelDownloadComplete}
         />
       </>
     );
@@ -448,12 +493,9 @@ export function Composer({
       />
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}
-        onClose={() => setShowOfflineModelSheet(false)}
+        onClose={handleOfflineModelSheetClose}
         locale={offlineModelLocale}
-        onDownloadComplete={() => {
-          setShowOfflineModelSheet(false);
-          setOfflineModelLocale('');
-        }}
+        onDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </>
   );
