@@ -170,7 +170,7 @@ export default function PaywallScreen() {
                 {"Vous avez déjà utilisé l'application !"}
               </Text>
               <Text style={[styles.upgradedSubtitle, { color: colors.textSecondary }]}>
-                Connectez-vous pour retrouver vos rêves et analyses illimitées.
+                Connectez-vous pour retrouver vos rêves et analyses étendues.
               </Text>
 
               <Pressable
