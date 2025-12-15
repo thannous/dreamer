@@ -101,7 +101,20 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
         try {
           const appUserId = await Purchases.getAppUserID();
           const isAnonymous = await Purchases.isAnonymous();
-          console.log('[RevenueCat] Logged in', { appUserId, isAnonymous });
+          const customerInfo = await Purchases.getCustomerInfo();
+          const status = mapStatus(customerInfo);
+          console.log('[RevenueCat] Logged in', {
+            userId: normalizedUserId,
+            platform: Platform.OS,
+            appUserId,
+            isAnonymous,
+            subscription: {
+              tier: status.tier,
+              isActive: status.isActive,
+              expiryDate: status.expiryDate,
+              productId: status.productId,
+            },
+          });
         } catch {
           // ignore
         }
@@ -119,7 +132,19 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
       try {
         const appUserId = await Purchases.getAppUserID();
         const isAnonymous = await Purchases.isAnonymous();
-        console.log('[RevenueCat] Logged out', { appUserId, isAnonymous });
+        const customerInfo = await Purchases.getCustomerInfo();
+        const status = mapStatus(customerInfo);
+        console.log('[RevenueCat] Logged out', {
+          platform: Platform.OS,
+          appUserId,
+          isAnonymous,
+          subscription: {
+            tier: status.tier,
+            isActive: status.isActive,
+            expiryDate: status.expiryDate,
+            productId: status.productId,
+          },
+        });
       } catch {
         // ignore
       }
