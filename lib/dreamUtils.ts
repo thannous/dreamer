@@ -172,7 +172,6 @@ type BuildDraftDreamOptions = {
   defaultTitle: string;
   maxTitleLength?: number;
   now?: () => number;
-  initialUserMessagePrefix?: string;
 };
 
 /**
@@ -186,7 +185,6 @@ export function buildDraftDream(
   const trimmed = transcript.trim();
   const now = options.now ?? Date.now;
   const title = deriveDraftTitle(trimmed, options.defaultTitle, options.maxTitleLength ?? 64);
-  const initialUserMessagePrefix = options.initialUserMessagePrefix ?? 'Here is my dream:';
 
   return {
     id: now(),
@@ -198,9 +196,7 @@ export function buildDraftDream(
     dreamType: 'Symbolic Dream',
     imageUrl: '',
     thumbnailUrl: undefined,
-    chatHistory: trimmed
-      ? [{ role: 'user', text: `${initialUserMessagePrefix} ${trimmed}` }]
-      : [],
+    chatHistory: [],
     isFavorite: false,
     // Stable idempotency key so offline retries don't duplicate on reconnect
     clientRequestId: generateUUID(),

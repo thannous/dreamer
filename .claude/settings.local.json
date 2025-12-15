@@ -69,7 +69,8 @@
       "Bash(npx supabase:*)",
       "Bash(git log:*)",
       "Bash(./gradlew properties:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__supabase__list_edge_functions"
     ],
     "deny": [],
     "ask": []
