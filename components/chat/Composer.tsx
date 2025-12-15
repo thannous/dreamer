@@ -295,7 +295,11 @@ export function Composer({
           {footerContent}
         </View>
       ) : null}
-      {headerContent}
+      {headerContent ? (
+        <View style={styles.headerContainer}>
+          {headerContent}
+        </View>
+      ) : null}
       <View
         style={[
           styles.inputWrapper,
@@ -447,5 +451,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 12,
     alignItems: 'center',
+  },
+  headerContainer: {
+    marginBottom: 12,
   },
 });

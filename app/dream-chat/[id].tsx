@@ -16,6 +16,9 @@ import { getTranscriptionLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
+import { createDreamInSupabase } from '@/services/supabaseDreamService';
+import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { useNetworkState } from 'expo-network';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
@@ -41,35 +44,6 @@ const getCategoryQuestion = (category: CategoryType, t: (key: string) => string)
   return categoryQuestions[category];
 };
 
-const buildCategoryPrompt = (
-  category: CategoryType,
-  dream: DreamAnalysis,
-  t: (key: string) => string
-): string => {
-  if (category === 'general') return '';
-
-  const dreamContext = `${t('dream_chat.draft_prefix')}
-
-Title: "${dream.title}"
-Type: ${dream.dreamType}
-${dream.theme ? `Theme: ${dream.theme}` : ''}
-
-Original Dream:
-${dream.transcript}
-
-AI Analysis:
-${dream.interpretation}
-
-Key Quote: "${dream.shareableQuote}"
-
----
-
-`;
-
-  const question = getCategoryQuestion(category, t);
-  return dreamContext + 'Now, ' + question.charAt(0).toLowerCase() + question.slice(1);
-};
-
 const QUICK_CATEGORIES = [
   { id: 'symbols', labelKey: 'dream_chat.quick.symbols', icon: 'creation' as const },
   { id: 'emotions', labelKey: 'dream_chat.quick.emotions', icon: 'heart-pulse' as const },
@@ -89,6 +63,7 @@ export default function DreamChatScreen() {
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
+  const { isConnected: hasNetwork } = useNetworkState();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -157,8 +132,8 @@ export default function DreamChatScreen() {
 	        { text: t('common.ok') },
 	        {
 	          text: tier === 'guest'
-              ? t('dream_chat.exploration_limit.cta_guest')
-              : t('dream_chat.exploration_limit.cta_free'),
+              ? t('dream_chat.limit_cta_guest')
+              : t('dream_chat.limit_cta_free'),
 	          onPress: () => router.push('/(tabs)/settings'),
 	        },
 	      ]
@@ -274,14 +249,13 @@ export default function DreamChatScreen() {
       return;
     }
 
-    const categoryPrompt = buildCategoryPrompt(category as CategoryType, dream, t);
     const question = getCategoryQuestion(category as CategoryType, t);
 
-    if (categoryPrompt) {
+    if (question) {
       lastCategorySentKeyRef.current = categoryKey;
       const timeoutId = setTimeout(() => {
         const baseMessages = messages.length > 0 ? messages : dream.chatHistory ?? [];
-        sendMessage(categoryPrompt, question, {
+        sendMessage(question, undefined, {
           baseMessages,
           category: category as Exclude<CategoryType, 'general'>,
         });
@@ -358,6 +332,88 @@ export default function DreamChatScreen() {
         return;
       }
 
+      // ✅ GUARD: Ensure dream is synced before allowing chat
+      // If remoteId is missing, attempt auto-sync or show error
+      // Note: Guests have local-only dreams and don't require sync
+      if (user && !dream.remoteId) {
+        if (hasNetwork) {
+          // Auto-sync the dream with idempotence
+          setIsLoading(true);
+          try {
+            // Ensure clientRequestId for idempotence (prevent duplicates)
+            const dreamToSync = dream.clientRequestId
+              ? dream
+              : { ...dream, clientRequestId: `dream-${dream.id}` };
+
+            const synced = await createDreamInSupabase(dreamToSync, user.id);
+
+            // IMPORTANT: synced.id may differ from dream.id (reconstructed from server's created_at)
+            // Update with the returned dream which has correct id + remoteId
+            await updateDream(synced);
+
+            // Now proceed with chat using synced.remoteId
+            const dreamIdString = String(synced.remoteId);
+            const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
+
+            // Add user message
+            const userMessage: ChatMessage = {
+              role: 'user',
+              text: displayText || textToSend,
+              ...(options?.category ? { meta: { category: options.category } } : {}),
+            };
+            const updatedMessages = [...baseMessages, userMessage];
+
+            const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
+            const finalMessages = [...updatedMessages, aiMessage];
+
+            setMessages(finalMessages);
+
+            // Persist chat history to dream
+            const dreamUpdate: Partial<DreamAnalysis> = {
+              ...synced,
+              chatHistory: finalMessages,
+            };
+
+            await updateDream(dreamUpdate as DreamAnalysis);
+
+            // Invalidate quota cache if this was the first message
+            if (isFirstUserMessage) {
+              if (isMockMode) {
+                await markMockExploration({ id: dreamId });
+              }
+              if (!user && !synced.explorationStartedAt) {
+                incrementLocalExplorationCount().catch((err) => {
+                  if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
+                });
+              }
+            }
+            quotaService.invalidate(user);
+          } catch (error) {
+            setIsLoading(false);
+            if (__DEV__) {
+              console.error('[DreamChat] Sync error:', error);
+            }
+            Alert.alert(
+              t('dream_chat.sync_failed_title'),
+              t('dream_chat.sync_failed_message'),
+              [{ text: t('common.ok') }]
+            );
+            return;
+          } finally {
+            setIsLoading(false);
+          }
+          return;
+        } else {
+          // No network or not authenticated - cannot sync
+          Alert.alert(
+            t('dream_chat.not_synced_title'),
+            t('dream_chat.not_synced_message'),
+            [{ text: t('common.ok') }]
+          );
+          return;
+        }
+      }
+
       // Add user message (use displayText if provided, otherwise use textToSend)
       const userMessage: ChatMessage = {
         role: 'user',
@@ -370,11 +426,46 @@ export default function DreamChatScreen() {
       setIsLoading(true);
 
       try {
-        // ✅ PHASE 2: Get AI response with server-side quota enforcement
-        // Note: No longer send history - server reads from dreams.chat_history
-        // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
+      // ✅ PHASE 2: Get AI response with server-side quota enforcement
+      // Note: No longer send history - server reads from dreams.chat_history
+      // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
+
+      // For guests: send full dream context (no DB entry)
+      // For authenticated: send dreamId (server reads from DB)
+      let aiResponseText: string;
+      let guestFingerprint: string | undefined;
+      if (!user) {
+        try {
+          guestFingerprint = await getDeviceFingerprint();
+        } catch (err) {
+          if (__DEV__) {
+            console.warn('[DreamChat] Failed to get device fingerprint for guest chat', err);
+          }
+        }
+      }
+      if (!user && !dream.remoteId) {
+        // Guest mode: send complete dream context
+        const dreamContext = {
+          transcript: dream.transcript,
+          title: dream.title,
+          interpretation: dream.interpretation,
+          shareableQuote: dream.shareableQuote,
+          dreamType: dream.dreamType,
+          theme: dream.theme,
+          chatHistory: updatedMessages,  // Current messages before AI response
+        };
+        aiResponseText = await startOrContinueChat(
+          String(dream.id),
+          textToSend,
+          language,
+          dreamContext,
+          guestFingerprint
+        );
+      } else {
+        // Authenticated mode: send dreamId (current flow)
         const dreamIdString = String(dream.remoteId ?? dream.id);
-        const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
+        aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
+        }
 
         const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
         const finalMessages = [...updatedMessages, aiMessage];
@@ -423,6 +514,7 @@ export default function DreamChatScreen() {
       dream,
       dreamId,
       explorationBlocked,
+      hasNetwork,
       hasQuotaCheckClearance,
       inputText,
       isMockMode,
@@ -446,10 +538,9 @@ export default function DreamChatScreen() {
       return;
     }
     if (!dream) return;
-    const prompt = buildCategoryPrompt(categoryId as CategoryType, dream, t);
     const question = getCategoryQuestion(categoryId as CategoryType, t);
-    if (prompt) {
-      sendMessage(prompt, question, { category: categoryId as Exclude<CategoryType, 'general'> });
+    if (question) {
+      sendMessage(question, undefined, { category: categoryId as Exclude<CategoryType, 'general'> });
     }
   };
 
@@ -627,6 +718,7 @@ export default function DreamChatScreen() {
         messageLimitReached={messageLimitReached}
         messagesRemaining={messagesRemaining}
         t={t}
+        tier={tier}
       />
     )
     : null;
@@ -683,6 +775,7 @@ type ComposerFooterProps = {
   messageLimitReached: boolean;
   messagesRemaining: number;
   t: (key: string, replacements?: { [k: string]: string | number }) => string;
+  tier: string;
 };
 
 function ComposerFooter({
@@ -692,6 +785,7 @@ function ComposerFooter({
   messageLimitReached,
   messagesRemaining,
   t,
+  tier,
 }: ComposerFooterProps) {
   const { isKeyboardVisible } = useKeyboardStateContext();
 
@@ -710,7 +804,7 @@ function ComposerFooter({
   const limitBannerBackground = mode === 'dark' ? '#3A1212' : '#FEE2E2';
 
   return (
-    <Animated.View style={[styles.footerWrapper, footerAnimatedStyle]} pointerEvents="none">
+    <Animated.View style={[styles.footerWrapper, footerAnimatedStyle]} pointerEvents="box-none">
       {!messageLimitReached && (
         <View
           style={[
@@ -739,10 +833,24 @@ function ComposerFooter({
           testID={TID.Text.ChatLimitBanner}
           style={[styles.limitWarningBanner, { backgroundColor: limitBannerBackground }]}
         >
-          <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
-          <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
-            {t('dream_chat.limit_warning')}
-          </Text>
+          <View style={styles.limitWarningContent}>
+            <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
+            <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
+              {t('dream_chat.limit_warning')}
+            </Text>
+          </View>
+          <View>
+            <Pressable
+              onPress={() => router.push('/(tabs)/settings')}
+              style={styles.limitCtaButton}
+            >
+              <Text style={styles.limitCtaText}>
+                {tier === 'guest'
+                  ? t('dream_chat.limit_cta_guest')
+                  : t('dream_chat.limit_cta_free')}
+              </Text>
+            </Pressable>
+          </View>
         </View>
       )}
     </Animated.View>
@@ -944,20 +1052,37 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   limitWarningBanner: {
+    width: '100%',
+    flexDirection: 'column',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  limitWarningContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    marginHorizontal: 16,
-    marginBottom: 8,
-    borderRadius: 8,
   },
   limitWarningText: {
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 13,
     flex: 1,
     lineHeight: 18,
+  },
+  limitCtaButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: '#EF4444',
+    alignSelf: 'flex-end',
+  },
+  limitCtaText: {
+    color: '#FFFFFF',
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    fontWeight: '600',
   },
   footerWrapper: {
     width: '100%',
