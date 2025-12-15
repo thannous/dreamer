@@ -126,74 +126,99 @@ export function useSubscription() {
       reconciliationAttemptsRef.current = 0;
 
       const run = async () => {
-        for (;;) {
-          // ✅ FIX: Check if this run has been cancelled (new reconciliation started)
-          if (tierReconcileRunIdRef.current !== runId) {
-            if (__DEV__) {
-              console.log('[useSubscription] Reconciliation cancelled (new run started)');
-            }
-            return;
-          }
-
-          // ✅ FIX: Check timeout
-          if (Date.now() - startedAt > timeoutMs) {
-            console.warn('[useSubscription] Reconciliation timeout (30s)', {
-              timestamp: new Date().toISOString(),
-              userId: user?.id,
-              expectedTier,
-              attempts: reconciliationAttemptsRef.current,
-            });
-            if (__DEV__) {
-              console.warn('[useSubscription] Reconciliation timeout (30s)');
-            }
-            syncInProgressRef.current = null; // ✅ Clean up sync state
-            return;
-          }
-
-          // ✅ FIX: Check attempt limit
-          if (++reconciliationAttemptsRef.current > maxAttempts) {
-            console.warn('[useSubscription] Max reconciliation attempts reached', {
-              timestamp: new Date().toISOString(),
-              userId: user?.id,
-              expectedTier,
-              maxAttempts,
-            });
-            if (__DEV__) {
-              console.warn(`[useSubscription] Max attempts (${maxAttempts}) reached`);
-            }
-            syncInProgressRef.current = null; // ✅ Clean up sync state
-            return;
-          }
-
-          // Poll the authoritative user without forcing a JWT refresh on every attempt.
-          // Once the tier matches, refresh the session JWT a single time so DB-side auth.jwt()
-          // reflects the updated app_metadata (used by quota triggers).
-          // ✅ FIX: Don't bypass circuit breaker - respect rate limiting
-          const refreshed = await refreshUser({ bypassCircuitBreaker: false, skipJwtRefresh: true });
-          if (tierReconcileRunIdRef.current !== runId) return;
-
-          const refreshedTier = getTierFromUser(refreshed);
-          if (refreshedTier === expectedTier) {
-            // ✅ FIX: Log successful reconciliation with attempt count
-            console.log('[useSubscription] Tier reconciliation successful', {
-              timestamp: new Date().toISOString(),
-              userId: user?.id,
-              tier: expectedTier,
-              attempts: reconciliationAttemptsRef.current,
-              durationMs: Date.now() - startedAt,
-            });
-            if (__DEV__) {
-              console.log(`[useSubscription] Tier reconciled after ${reconciliationAttemptsRef.current} attempts`);
+        try {
+          for (;;) {
+            // ✅ FIX: Check if this run has been cancelled (new reconciliation started)
+            if (tierReconcileRunIdRef.current !== runId) {
+              if (__DEV__) {
+                console.log('[useSubscription] Reconciliation cancelled (new run started)');
+              }
+              return;
             }
 
-            // Final refresh with JWT
-            const withFreshJwt = await refreshUser({ bypassCircuitBreaker: false, skipJwtRefresh: false });
-            quotaService.invalidate(withFreshJwt ?? refreshed ?? user);
-            syncInProgressRef.current = null; // ✅ Clean up sync state
-            return;
-          }
+            // ✅ FIX: Check timeout
+            if (Date.now() - startedAt > timeoutMs) {
+              console.warn('[useSubscription] Reconciliation timeout (30s)', {
+                timestamp: new Date().toISOString(),
+                userId: user?.id,
+                expectedTier,
+                attempts: reconciliationAttemptsRef.current,
+              });
+              if (__DEV__) {
+                console.warn('[useSubscription] Reconciliation timeout (30s)');
+              }
+              return;
+            }
 
-          await sleep(intervalMs);
+            // ✅ FIX: Check attempt limit
+            if (++reconciliationAttemptsRef.current > maxAttempts) {
+              console.warn('[useSubscription] Max reconciliation attempts reached', {
+                timestamp: new Date().toISOString(),
+                userId: user?.id,
+                expectedTier,
+                maxAttempts,
+              });
+              if (__DEV__) {
+                console.warn(`[useSubscription] Max attempts (${maxAttempts}) reached`);
+              }
+              return;
+            }
+
+            // Poll the authoritative user without forcing a JWT refresh on every attempt.
+            // Once the tier matches, refresh the session JWT a single time so DB-side auth.jwt()
+            // reflects the updated app_metadata (used by quota triggers).
+            // ✅ FIX: Don't bypass circuit breaker - respect rate limiting
+            let refreshed;
+            try {
+              refreshed = await refreshUser({ bypassCircuitBreaker: false, skipJwtRefresh: true });
+            } catch (err) {
+              console.warn('[useSubscription] Reconciliation refresh failed, will retry', {
+                timestamp: new Date().toISOString(),
+                userId: user?.id,
+                expectedTier,
+                attempts: reconciliationAttemptsRef.current,
+                message: (err as Error)?.message,
+              });
+              await sleep(intervalMs);
+              continue;
+            }
+            if (tierReconcileRunIdRef.current !== runId) return;
+
+            const refreshedTier = getTierFromUser(refreshed);
+            if (refreshedTier === expectedTier) {
+              // ✅ FIX: Log successful reconciliation with attempt count
+              console.log('[useSubscription] Tier reconciliation successful', {
+                timestamp: new Date().toISOString(),
+                userId: user?.id,
+                tier: expectedTier,
+                attempts: reconciliationAttemptsRef.current,
+                durationMs: Date.now() - startedAt,
+              });
+              if (__DEV__) {
+                console.log(`[useSubscription] Tier reconciled after ${reconciliationAttemptsRef.current} attempts`);
+              }
+
+              // Final refresh with JWT
+              const withFreshJwt = await refreshUser({ bypassCircuitBreaker: false, skipJwtRefresh: false });
+              quotaService.invalidate(withFreshJwt ?? refreshed ?? user);
+              return;
+            }
+
+            await sleep(intervalMs);
+          }
+        } catch (err) {
+          console.error('[useSubscription] Reconciliation aborted due to error', {
+            timestamp: new Date().toISOString(),
+            userId: user?.id,
+            expectedTier,
+            message: (err as Error)?.message,
+          });
+        } finally {
+          // Only clear sync state if this run is still the latest to avoid clobbering newer runs
+          if (tierReconcileRunIdRef.current === runId) {
+            syncInProgressRef.current = null;
+            lastSyncedTierRef.current = null;
+          }
         }
       };
 

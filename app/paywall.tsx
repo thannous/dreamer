@@ -67,23 +67,23 @@ export default function PaywallScreen() {
   }, [error]);
 
   // ✅ FIX: Automatically navigate away when subscription becomes active
-  const isActiveRef = useRef(isActive);
+  const activeWhenStableRef = useRef(isActive && !loading && !processing && !error);
 
   useEffect(() => {
-    const wasInactive = !isActiveRef.current;
-    const isNowActive = isActive;
+    const isStable = !loading && !processing && !error;
+    const wasActiveAtLastStable = activeWhenStableRef.current;
+    const isActiveNow = isActive && isStable;
 
-    isActiveRef.current = isActive;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-    // Navigate when transitioning from inactive → active
-    // ✅ Check for stable state (no loading, no processing, no error)
-    if (wasInactive && isNowActive && !loading && !processing && !error) {
+    // Navigate when transitioning from inactive → active after a stable purchase flow
+    if (isStable && !wasActiveAtLastStable && isActiveNow) {
       if (__DEV__) {
         console.log('[Paywall] Subscription activated, navigating away');
       }
 
       // ✅ Delay to allow user to see success toast
-      const timeoutId = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         // ✅ Check router is available before navigating
         try {
           if (router.canGoBack()) {
@@ -97,12 +97,16 @@ export default function PaywallScreen() {
           }
         }
       }, 1500);
-
-      // ✅ Cleanup timeout on unmount
-      return () => {
-        clearTimeout(timeoutId);
-      };
     }
+
+    if (isStable) {
+      activeWhenStableRef.current = isActive;
+    }
+
+    // ✅ Cleanup timeout on unmount or dependency change
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [isActive, loading, processing, error]);
 
   const effectiveSelectedId = selectedId ?? (sortedPackages[0]?.id ?? null);
