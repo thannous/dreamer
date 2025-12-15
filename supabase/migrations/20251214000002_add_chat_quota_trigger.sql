@@ -26,6 +26,7 @@ $$;
 CREATE OR REPLACE FUNCTION public.enforce_quota_for_chat()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
