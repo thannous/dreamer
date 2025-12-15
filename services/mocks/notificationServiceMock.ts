@@ -51,13 +51,14 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
   // Clear existing mock notifications
   mockScheduledNotifications = [];
 
-  if (!settings.isEnabled) {
+  if (!settings.weekdayEnabled && !settings.weekendEnabled) {
     console.log('[MOCK NOTIFICATIONS] Notifications disabled, not scheduling');
     return;
   }
 
-  // Parse weekday time
-  const [hours, minutes] = settings.weekdayTime.split(':').map(Number);
+  // Use weekday time if enabled, otherwise weekend time
+  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
+  const [hours, minutes] = timeToUse.split(':').map(Number);
 
   // Create mock notification
   const mockNotification: MockNotificationRequest = {
@@ -75,7 +76,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
 
   mockScheduledNotifications.push(mockNotification);
 
-  console.log(`[MOCK NOTIFICATIONS] Scheduled daily notification for ${settings.weekdayTime}`);
+  console.log(`[MOCK NOTIFICATIONS] Scheduled daily notification for ${timeToUse}`);
   console.log('[MOCK NOTIFICATIONS] Mock notification details:', mockNotification);
 }
 
@@ -84,12 +85,13 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
 
   mockScheduledNotifications = [];
 
-  if (!settings.isEnabled) {
+  if (!settings.weekdayEnabled && !settings.weekendEnabled) {
     console.log('[MOCK NOTIFICATIONS] Notifications disabled, not scheduling ritual reminder');
     return;
   }
 
-  const [hours, minutes] = settings.weekdayTime.split(':').map(Number);
+  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
+  const [hours, minutes] = timeToUse.split(':').map(Number);
 
   const mockNotification: MockNotificationRequest = {
     identifier: `mock-ritual-${Date.now()}`,
@@ -106,7 +108,7 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
 
   mockScheduledNotifications.push(mockNotification);
 
-  console.log(`[MOCK NOTIFICATIONS] Scheduled ritual reminder for ${settings.weekdayTime}`);
+  console.log(`[MOCK NOTIFICATIONS] Scheduled ritual reminder for ${timeToUse}`);
 }
 
 export async function sendTestNotification(): Promise<void> {
