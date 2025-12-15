@@ -182,7 +182,7 @@ const convertToWebpBase64 = async (
     return { base64: base64 ?? '', contentType: contentType ?? 'image/webp' };
   } finally {
     if (cleanupUri) {
-      FileSystem.deleteAsync(cleanupUri, { idempotent: true }).catch(() => {});
+      FileSystemLegacy.deleteAsync(cleanupUri, { idempotent: true }).catch(() => {});
     }
   }
 };
