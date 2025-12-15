@@ -40,7 +40,8 @@ export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
-  const { status: subscriptionStatus, isActive, loading, processing, error, packages, purchase, restore, requiresAuth } = useSubscription();
+  const { status: subscriptionStatus, isActive, loading, processing, error, packages, purchase, restore, requiresAuth } =
+    useSubscription({ loadPackages: true });
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
   const sortedPackages = useMemo(() => sortPackages(packages), [packages]);

@@ -1,12 +1,11 @@
 /**
  * Lightweight behavioral tests for useSubscription.
  * We mock subscriptionService to avoid RevenueCat/native dependencies.
+ *
+ * @vitest-environment happy-dom
  */
-// @vitest-environment happy-dom
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { useSubscription } from './useSubscription';
 
 // Mock __DEV__ global
 (globalThis as any).__DEV__ = true;
@@ -24,10 +23,6 @@ vi.mock('../services/subscriptionService', () => {
   };
 });
 
-vi.mock('../lib/auth', () => ({
-  updateUserTier: vi.fn(async () => null),
-}));
-
 let currentUser: any = { id: 'user-1' };
 const refreshUser = vi.fn(async () => currentUser);
 const setUserTierLocally = vi.fn();
@@ -40,6 +35,32 @@ vi.mock('../context/AuthContext', () => ({
     setUserTierLocally,
   }),
 }));
+
+vi.mock('../services/quotaService', () => ({
+  quotaService: {
+    invalidate: vi.fn(),
+  },
+}));
+
+vi.mock('react-native-purchases', () => ({
+  __esModule: true,
+  default: {
+    syncPurchases: vi.fn().mockResolvedValue(undefined),
+    invalidateCustomerInfoCache: vi.fn(),
+    getCustomerInfo: vi.fn().mockResolvedValue({}),
+  },
+}));
+
+vi.mock('expo-router', () => ({
+  router: {
+    back: vi.fn(),
+    canGoBack: vi.fn(() => false),
+    push: vi.fn(),
+    replace: vi.fn(),
+  },
+}));
+
+const { useSubscription } = await import('./useSubscription');
 
 describe('useSubscription', () => {
   beforeEach(() => {
@@ -84,7 +105,7 @@ describe('useSubscription', () => {
   describe('initialization and loading', () => {
     it('given authenticated user when initializing then loads subscription data', async () => {
       // Given
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderHook(() => useSubscription({ loadPackages: true }));
 
       // When
       await act(async () => {});
@@ -94,6 +115,20 @@ describe('useSubscription', () => {
       expect(result.current.packages).toHaveLength(1);
       expect(result.current.status?.tier).toBe('free');
       expect(result.current.requiresAuth).toBe(false);
+    });
+
+    it('given authenticated user when initializing without packages then skips package loading', async () => {
+      // Given
+      const { loadSubscriptionPackages } = await import('../services/subscriptionService');
+      const { result } = renderHook(() => useSubscription());
+
+      // When
+      await act(async () => {});
+
+      // Then
+      expect(result.current.loading).toBe(false);
+      expect(result.current.packages).toHaveLength(0);
+      expect(vi.mocked(loadSubscriptionPackages)).not.toHaveBeenCalled();
     });
 
     it('given authenticated user when initializing then handles errors gracefully', async () => {
