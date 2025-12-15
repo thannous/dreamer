@@ -71,6 +71,52 @@ export async function getAccessToken(): Promise<string | null> {
   }
 }
 
+/**
+ * Mark the device fingerprint as upgraded after successful signup
+ * This prevents the device from getting fresh guest quotas after creating an account
+ */
+async function markFingerprintUpgraded(): Promise<void> {
+  if (isMockMode) {
+    // No-op in mock mode
+    return;
+  }
+
+  try {
+    const { getDeviceFingerprint } = await import('./deviceFingerprint');
+    const { getApiBaseUrl } = await import('./config');
+    const { fetchJSON } = await import('./http');
+
+    const fingerprint = await getDeviceFingerprint();
+    const token = await getAccessToken();
+
+    if (!token) {
+      if (__DEV__) {
+        console.warn('[Auth] No access token available to mark fingerprint');
+      }
+      return;
+    }
+
+    await fetchJSON(`${getApiBaseUrl()}/auth/mark-upgrade`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: { fingerprint },
+      retries: 2,
+      timeoutMs: 10000,
+    });
+
+    if (__DEV__) {
+      console.log('[Auth] Successfully marked fingerprint as upgraded');
+    }
+  } catch (error) {
+    // Fail silently: the quota will still be enforced server-side
+    if (__DEV__) {
+      console.warn('[Auth] Failed to mark fingerprint as upgraded:', error);
+    }
+  }
+}
+
 export function onAuthChange(cb: (user: User | null) => void) {
   if (isMockMode) {
     return mockAuth.onAuthChange(cb);
@@ -131,6 +177,12 @@ export async function signUpWithEmailPassword(email: string, password: string, u
     options: signUpOptions,
   });
   if (error) throw error;
+
+  // Mark fingerprint as upgraded to prevent quota bypass
+  await markFingerprintUpgraded().catch(() => {
+    // Fail silently if marking fails
+  });
+
   return data.user;
 }
 
@@ -224,6 +276,11 @@ export async function signInWithGoogle(): Promise<User> {
         emailDomain: data.user.email?.split('@')[1] ?? 'unknown'
       });
     }
+
+    // Mark fingerprint as upgraded to prevent quota bypass
+    await markFingerprintUpgraded().catch(() => {
+      // Fail silently if marking fails
+    });
 
     return data.user;
   } catch (error: unknown) {
