@@ -1,11 +1,11 @@
 /**
  * ScrollToBottomButton - Floating button to scroll to the bottom of the chat
- * Appears when user has scrolled up and new messages have arrived
+ * Appears when user has scrolled up (not near the bottom)
  */
 
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
-import { useHasNewMessages } from '@/hooks/useChatList';
+import { useScrollToBottomButton } from '@/hooks/useChatList';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -19,7 +19,7 @@ import Animated, {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function ScrollToBottomButton() {
-  const { hasNewMessages, scrollToBottom } = useHasNewMessages();
+  const { shouldShowButton, scrollToBottom } = useScrollToBottomButton();
   const { colors, mode, shadows } = useTheme();
 
   const buttonStyle = useAnimatedStyle(() => {
@@ -28,7 +28,7 @@ export function ScrollToBottomButton() {
     };
   }, []);
 
-  if (!hasNewMessages) {
+  if (!shouldShowButton) {
     return null;
   }
 
@@ -51,7 +51,7 @@ export function ScrollToBottomButton() {
     >
       <View style={styles.content}>
         <Ionicons name="arrow-down" size={16} color="#FFFFFF" />
-        <Text style={styles.text}>New message</Text>
+        <Text style={styles.text}>Jump to latest</Text>
       </View>
     </AnimatedPressable>
   );

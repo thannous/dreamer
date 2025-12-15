@@ -336,3 +336,36 @@ export function useHasNewMessages() {
 
   return { hasNewMessages: hasNew, scrollToBottom };
 }
+
+/**
+ * useScrollToBottomButton - Hook for scroll-to-bottom button visibility
+ * Shows button when user is not near the bottom of the chat (scrolled up)
+ * Provides scrollToBottom function to jump back to the latest message
+ */
+export function useScrollToBottomButton() {
+  const { isNearBottom, scrollToEnd } = useMessageListContext();
+  const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
+
+  useAnimatedReaction(
+    () => isNearBottom.value.value,
+    (current, prev) => {
+      if (current !== prev) {
+        runOnJS(setIsNearBottomSnapshot)(current);
+      }
+    }
+  );
+
+  const scrollToBottom = useCallback(() => {
+    // Multiple scroll attempts to ensure we reach the bottom
+    // This matches the pattern in useInitialScrollToEnd for consistency
+    scrollToEnd({ animated: true });
+    requestAnimationFrame(() => {
+      scrollToEnd({ animated: true });
+      setTimeout(() => {
+        scrollToEnd({ animated: true });
+      }, 16);
+    });
+  }, [scrollToEnd]);
+
+  return { shouldShowButton: !isNearBottomSnapshot, scrollToBottom };
+}
