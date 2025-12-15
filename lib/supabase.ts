@@ -5,15 +5,101 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 // Secure storage adapter for native platforms (iOS/Android)
+// Stay comfortably under the ~2KB native limit (and leave room for any platform overhead).
+const SECURESTORE_SAFE_CHUNK_SIZE = 1800;
+const SECURESTORE_CHUNKED_PREFIX = '__dreamer_chunked_v1__:';
+
+type SecureStoreChunkHeader = {
+  id: string;
+  count: number;
+};
+
+function formatChunkHeader(header: SecureStoreChunkHeader): string {
+  return `${SECURESTORE_CHUNKED_PREFIX}${header.id}:${header.count}`;
+}
+
+function parseChunkHeader(value: string | null): SecureStoreChunkHeader | null {
+  if (!value?.startsWith(SECURESTORE_CHUNKED_PREFIX)) {
+    return null;
+  }
+
+  const payload = value.slice(SECURESTORE_CHUNKED_PREFIX.length);
+  const [id, countStr] = payload.split(':');
+  const count = Number.parseInt(countStr ?? '', 10);
+  if (!id || !Number.isFinite(count) || count <= 0) {
+    return null;
+  }
+  return { id, count };
+}
+
+function createChunkId(): string {
+  return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function chunkKey(baseKey: string, header: SecureStoreChunkHeader, index: number): string {
+  return `${baseKey}.__chunk_${header.id}_${index}`;
+}
+
+async function cleanupChunkedValue(baseKey: string, header?: SecureStoreChunkHeader | null): Promise<void> {
+  const resolvedHeader = header ?? parseChunkHeader(await SecureStore.getItemAsync(baseKey));
+  if (!resolvedHeader) {
+    return;
+  }
+
+  await Promise.all(
+    Array.from({ length: resolvedHeader.count }, (_, idx) =>
+      SecureStore.deleteItemAsync(chunkKey(baseKey, resolvedHeader, idx))
+    )
+  );
+}
+
+async function readChunkedValue(baseKey: string, header: SecureStoreChunkHeader): Promise<string | null> {
+  const parts = await Promise.all(
+    Array.from({ length: header.count }, (_, idx) => SecureStore.getItemAsync(chunkKey(baseKey, header, idx)))
+  );
+  if (parts.some((part) => typeof part !== 'string')) {
+    return null;
+  }
+  return parts.join('');
+}
+
 const ExpoSecureStoreAdapter = {
-  getItem: (key: string) => {
-    return SecureStore.getItemAsync(key);
+  getItem: async (key: string) => {
+    const value = await SecureStore.getItemAsync(key);
+    if (!value) {
+      return value;
+    }
+    const header = parseChunkHeader(value);
+    if (!header) {
+      return value;
+    }
+    return readChunkedValue(key, header);
   },
-  setItem: (key: string, value: string) => {
-    return SecureStore.setItemAsync(key, value);
+  setItem: async (key: string, value: string) => {
+    const existingHeader = parseChunkHeader(await SecureStore.getItemAsync(key));
+
+    // Most values are small enough to store directly.
+    if (value.length <= SECURESTORE_SAFE_CHUNK_SIZE) {
+      await cleanupChunkedValue(key, existingHeader);
+      return SecureStore.setItemAsync(key, value);
+    }
+
+    // Chunk large values to avoid SecureStore's ~2KB limit (warns today, may throw in future SDKs).
+    // We store a small header in the base key and the content across numbered chunk keys.
+    const chunkSize = SECURESTORE_SAFE_CHUNK_SIZE;
+    const chunks: string[] = [];
+    for (let i = 0; i < value.length; i += chunkSize) {
+      chunks.push(value.slice(i, i + chunkSize));
+    }
+
+    const nextHeader: SecureStoreChunkHeader = { id: createChunkId(), count: chunks.length };
+    await Promise.all(chunks.map((chunk, idx) => SecureStore.setItemAsync(chunkKey(key, nextHeader, idx), chunk)));
+    await SecureStore.setItemAsync(key, formatChunkHeader(nextHeader));
+    await cleanupChunkedValue(key, existingHeader);
   },
-  removeItem: (key: string) => {
-    return SecureStore.deleteItemAsync(key);
+  removeItem: async (key: string) => {
+    await cleanupChunkedValue(key);
+    await SecureStore.deleteItemAsync(key);
   },
 };
 

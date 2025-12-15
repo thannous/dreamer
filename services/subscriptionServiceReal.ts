@@ -30,9 +30,9 @@ if (!globalAny[RC_GLOBAL_KEY]) {
   // Persist across Fast Refresh to avoid duplicate configure warnings
   globalAny[RC_GLOBAL_KEY] = { configured: false, apiKey: null, userId: null };
 }
+const persistedState = globalAny[RC_GLOBAL_KEY]!;
 
-let initialized = false;
-let lastUserId: string | null = null;
+let ensureConfiguredQueue: Promise<void> = Promise.resolve();
 let cachedStatus: SubscriptionStatus | null = null;
 let cachedPackages: InternalPackage[] = [];
 // Keep a live listener-driven cache up to date with RevenueCat (source of truth)
@@ -51,10 +51,13 @@ function resolveApiKey(): string | null {
     if (__DEV__) {
       // En dev on ne veut pas retomber sur la clé extra (qui est celle du Play Store) si l'env est chargé.
       const key = env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
-      console.log('[RC DEBUG] env android key', key);
+      const masked = key ? `${key.slice(0, 6)}…${key.slice(-4)}` : null;
+      console.log('[RC DEBUG] env android key', masked);
       if (!key) {
         console.warn('[RC DEBUG] No env android key found, fallback to extra');
-        console.log('[RC DEBUG] extra android key', extra.revenuecatAndroidKey);
+        const extraKey = extra.revenuecatAndroidKey as string | undefined;
+        const extraMasked = extraKey ? `${extraKey.slice(0, 6)}…${extraKey.slice(-4)}` : null;
+        console.log('[RC DEBUG] extra android key', extraMasked);
       }
       return key ?? extra.revenuecatAndroidKey ?? null;
     }
@@ -67,19 +70,24 @@ function resolveApiKey(): string | null {
 }
 
 async function ensureConfigured(userId?: string | null): Promise<void> {
+  const normalizedUserId = userId ?? null;
+  const run = ensureConfiguredQueue.then(() => ensureConfiguredImpl(normalizedUserId));
+  ensureConfiguredQueue = run.catch(() => {});
+  return run;
+}
+
+async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<void> {
   const apiKey = resolveApiKey();
   if (!apiKey) {
     console.error('[RevenueCat] Missing API key for platform:', Platform.OS);
     throw new Error('Missing RevenueCat API key');
   }
-  const normalizedUserId = userId ?? null;
-  const globalState = globalAny[RC_GLOBAL_KEY]!;
 
-  const sameConfig = globalState.configured && globalState.apiKey === apiKey;
+  const sameConfig = persistedState.configured && persistedState.apiKey === apiKey;
 
   // Best practice: start anonymous, then link authenticated users via logIn/logOut.
   // This prevents orphaning purchases that happened before sign-in and makes webhook `app_user_id` mapping reliable.
-  if (!initialized || !sameConfig) {
+  if (!sameConfig) {
     Purchases.configure({ apiKey });
 
     // Subscribe once to live customer info updates so the app UI reflects
@@ -91,19 +99,16 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
       Purchases.addCustomerInfoUpdateListener(customerInfoListener);
     }
 
-    globalState.configured = true;
-    globalState.apiKey = apiKey;
-    globalState.userId = null;
-    initialized = true;
-    lastUserId = null;
+    persistedState.configured = true;
+    persistedState.apiKey = apiKey;
+    persistedState.userId = null;
     resetCachedState();
   }
 
   if (normalizedUserId) {
-    if (lastUserId !== normalizedUserId) {
+    if (persistedState.userId !== normalizedUserId) {
       await Purchases.logIn(normalizedUserId);
-      lastUserId = normalizedUserId;
-      globalState.userId = normalizedUserId;
+      persistedState.userId = normalizedUserId;
       resetCachedState();
       if (__DEV__) {
         try {
@@ -131,10 +136,9 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
     return;
   }
 
-  if (lastUserId !== null) {
+  if (persistedState.userId !== null) {
     await Purchases.logOut();
-    lastUserId = null;
-    globalState.userId = null;
+    persistedState.userId = null;
     resetCachedState();
     if (__DEV__) {
       try {
@@ -198,18 +202,18 @@ export async function initialize(userId?: string | null): Promise<SubscriptionSt
 }
 
 export function isInitialized(): boolean {
-  return initialized;
+  return persistedState.configured;
 }
 
 export async function refreshStatus(): Promise<SubscriptionStatus> {
-  if (!initialized) {
+  if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
   return fetchStatus();
 }
 
 export async function getStatus(): Promise<SubscriptionStatus | null> {
-  if (!initialized) {
+  if (!persistedState.configured) {
     return null;
   }
 
@@ -218,7 +222,7 @@ export async function getStatus(): Promise<SubscriptionStatus | null> {
 }
 
 export async function loadOfferings(): Promise<PurchasePackage[]> {
-  if (!initialized) {
+  if (!persistedState.configured) {
     return [];
   }
   if (!cachedPackages.length) {
@@ -232,7 +236,7 @@ function findInternalPackage(id: string): InternalPackage | undefined {
 }
 
 export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
-  if (!initialized) {
+  if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
   let internal = findInternalPackage(id);
@@ -250,7 +254,7 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
 }
 
 export async function restorePurchases(): Promise<SubscriptionStatus> {
-  if (!initialized) {
+  if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
   const info = await Purchases.restorePurchases();

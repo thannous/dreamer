@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import type { User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 import Purchases from 'react-native-purchases';
 import { useAuth } from '@/context/AuthContext';
@@ -97,7 +98,19 @@ const globalSyncState: {
   runId: 0,
 };
 
-export function useSubscription() {
+type UseSubscriptionOptions = {
+  loadPackages?: boolean;
+};
+
+const globalAndroidPurchaseSyncState: {
+  inProgress: boolean;
+  lastUserId: string | null;
+} = {
+  inProgress: false,
+  lastUserId: null,
+};
+
+export function useSubscription(options?: UseSubscriptionOptions) {
   const { user, refreshUser, setUserTierLocally } = useAuth();
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
   const [packages, setPackages] = useState<PurchasePackage[]>([]);
@@ -108,10 +121,10 @@ export function useSubscription() {
   const requiresAuth = !user?.id;
   // ✅ FIX: Track reconciliation attempts to enforce max attempt limit
   const reconciliationAttemptsRef = useRef(0);
-  // Avoid spamming sync/restore on Android when status comes back as free
-  const triedAndroidAutoRestoreRef = useRef(false);
   // Track which expiry we've already refreshed to avoid infinite loops on expired plans
   const expiredExpiryKeyRef = useRef<string | null>(null);
+
+  const shouldLoadPackages = options?.loadPackages === true;
 
   // Extract stable user ID to break circular dependency in tier sync
   const userId = user?.id;
@@ -123,7 +136,7 @@ export function useSubscription() {
     'free'
   );
 
-  const getTierFromUser = useCallback((input?: typeof user | null): SubscriptionTier => {
+  const getTierFromUser = useCallback((input?: User | null): SubscriptionTier => {
     return (
       (input?.app_metadata?.tier as SubscriptionTier | undefined) ||
       (input?.user_metadata?.tier as SubscriptionTier | undefined) ||
@@ -272,31 +285,18 @@ export function useSubscription() {
       });
 
       setUserTierLocally(nextStatus.tier);
-      try {
-        // ✅ CRITICAL SECURITY FIX: Tier is now updated ONLY via RevenueCat webhook (admin-only app_metadata)
-        // No need to call updateUserTier() - webhook has already updated app_metadata
-        // Kick a short background reconciliation loop to wait for webhook + refresh JWT.
-        // This prevents users from being stuck on server-side "free" claims for 10-30s after purchase.
-        startTierReconciliation(nextStatus.tier);
-        await refreshUser({ bypassCircuitBreaker: true });
-        console.log('[useSubscription] Tier sync completed', {
-          timestamp: new Date().toISOString(),
-          userId: user?.id,
-          targetTier: nextStatus.tier,
-        });
-      } catch (err) {
-        console.error('[useSubscription] Tier sync failed', {
-          timestamp: new Date().toISOString(),
-          userId: user?.id,
-          targetTier: nextStatus.tier,
-          error: (err as Error).message,
-        });
-        if (__DEV__) {
-          console.warn('[Subscription] Failed to sync tier with auth user', err);
-        }
-      }
+      // ✅ CRITICAL SECURITY FIX: Tier is now updated ONLY via RevenueCat webhook (admin-only app_metadata)
+      // No need to call updateUserTier() - webhook has already updated app_metadata
+      // Kick a short background reconciliation loop to wait for webhook + refresh JWT.
+      // This prevents users from being stuck on server-side "free" claims for 10-30s after purchase.
+      startTierReconciliation(nextStatus.tier);
+      console.log('[useSubscription] Tier sync scheduled', {
+        timestamp: new Date().toISOString(),
+        userId,
+        targetTier: nextStatus.tier,
+      });
     },
-    [refreshUser, setUserTierLocally, startTierReconciliation, user, userId, userTier]
+    [setUserTierLocally, startTierReconciliation, userId, userTier]
   );
 
   useEffect(() => {
@@ -318,7 +318,7 @@ export function useSubscription() {
         }
         const [nextStatus, nextPackages] = await Promise.all([
           getSubscriptionStatus(),
-          loadSubscriptionPackages(),
+          shouldLoadPackages ? loadSubscriptionPackages() : Promise.resolve<PurchasePackage[]>([]),
         ]);
         if (mounted) {
           setStatus(nextStatus);
@@ -326,22 +326,28 @@ export function useSubscription() {
         }
 
         // Android edge case: Play Store reports "déjà abonné" but RevenueCat returns free.
-        // Trigger a one-shot sync + restore to pull the entitlement for the logged-in user.
+        // We avoid calling restorePurchases() automatically (it can alias accounts and is slow).
+        // Instead, do a one-shot syncPurchases + refresh to pull entitlements if needed.
         if (
           Platform.OS === 'android' &&
           !requiresAuth &&
-          !triedAndroidAutoRestoreRef.current &&
+          !globalAndroidPurchaseSyncState.inProgress &&
+          globalAndroidPurchaseSyncState.lastUserId !== user?.id &&
           (nextStatus?.tier === 'free' || nextStatus?.isActive === false)
         ) {
-          triedAndroidAutoRestoreRef.current = true;
+          globalAndroidPurchaseSyncState.inProgress = true;
+          globalAndroidPurchaseSyncState.lastUserId = user?.id ?? null;
           try {
             await Purchases.syncPurchases();
-            const restored = await restoreSubscriptionPurchases();
-            setStatus(restored);
-            // Sync tier so quotas follow the restored entitlement
-            await syncTier(restored);
-          } catch (restoreErr) {
-            console.warn('[useSubscription] Android auto-restore failed', restoreErr);
+            Purchases.invalidateCustomerInfoCache();
+            const refreshed = await getSubscriptionStatus();
+            if (mounted && refreshed) {
+              setStatus(refreshed);
+            }
+          } catch (syncErr) {
+            console.warn('[useSubscription] Android syncPurchases failed', syncErr);
+          } finally {
+            globalAndroidPurchaseSyncState.inProgress = false;
           }
         }
       } catch (e) {
@@ -360,12 +366,7 @@ export function useSubscription() {
     return () => {
       mounted = false;
     };
-  }, [requiresAuth, user?.id]);
-
-  // Reset Android auto-restore guard when user changes
-  useEffect(() => {
-    triedAndroidAutoRestoreRef.current = false;
-  }, [user?.id]);
+  }, [requiresAuth, shouldLoadPackages, user?.id]);
 
   // Keep auth user tier in sync with the RevenueCat status to avoid stale "Free plan" UI/quota states.
   // ✅ FIX: Use ref to track if we've already initiated sync for current status to prevent infinite loops
@@ -383,7 +384,6 @@ export function useSubscription() {
     // when refreshUser returns stale data, the ref will be null and we'll restart sync.
     // The ref will naturally get a new value when status changes (different statusKey).
     if (status.tier === currentTier) {
-      globalSyncState.inProgressTier = null;
       return;
     }
 
