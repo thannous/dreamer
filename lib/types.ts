@@ -144,6 +144,7 @@ export interface QuotaStatus {
   canAnalyze: boolean;
   canExplore: boolean;
   reasons?: string[]; // Reasons why an action is blocked
+  isUpgraded?: boolean; // Whether this device fingerprint has already created an account
 }
 
 /**

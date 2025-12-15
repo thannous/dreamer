@@ -278,7 +278,6 @@ export default function RecordingScreen() {
     (transcriptText?: string): DreamAnalysis =>
       buildDraftDreamPure(transcriptText ?? trimmedTranscript, {
         defaultTitle: t('recording.draft.default_title'),
-        initialUserMessagePrefix: t('dream_chat.draft_prefix'),
       }),
     [trimmedTranscript, t]
   );

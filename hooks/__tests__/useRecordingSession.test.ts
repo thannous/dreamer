@@ -38,6 +38,10 @@ vi.mock('expo-router', () => ({
 }));
 
 vi.mock('../../services/nativeSpeechRecognition', () => ({
+  getSpeechLocaleAvailability: vi.fn().mockResolvedValue({
+    isInstalled: true,
+    installedLocales: [],
+  }),
   startNativeSpeechSession: vi.fn().mockResolvedValue(null),
 }));
 
