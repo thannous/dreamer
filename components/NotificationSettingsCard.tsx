@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, AppState, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Alert, AppState, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -15,17 +15,70 @@ import {
 } from '@/services/notificationService';
 import { getNotificationSettings, saveNotificationSettings } from '@/services/storageService';
 
-export default function NotificationSettingsCard() {
+export interface NotificationSettingsCardHandle {
+  scrollIntoView: () => void;
+}
+
+interface NotificationSettingsCardProps {
+  scrollViewRef?: React.RefObject<ScrollView | null>;
+}
+
+function NotificationSettingsCardComponent(
+  props: NotificationSettingsCardProps,
+  ref: React.ForwardedRef<NotificationSettingsCardHandle>
+) {
   const [settings, setSettings] = useState<NotificationSettings>({
     isEnabled: false,
     weekdayTime: '07:00',
     weekendTime: '10:00',
   });
   const [hasPermissions, setHasPermissions] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showWeekdayPicker, setShowWeekdayPicker] = useState(false);
+  const [showWeekendPicker, setShowWeekendPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const optionsContainerRef = useRef<View>(null);
   const { colors } = useTheme();
   const { t } = useTranslation();
+
+  // Expose scrollIntoView method to parent
+  useImperativeHandle(ref, () => ({
+    scrollIntoView: () => {
+      if (optionsContainerRef.current && props.scrollViewRef?.current) {
+        // Schedule scroll on next frame to ensure layout is complete
+        setTimeout(() => {
+          optionsContainerRef.current?.measure((x, y, width, height, pageX, pageY) => {
+            // y = position relative to parent (ScrollView)
+            // Scroll vers le bas pour montrer les options
+            const scrollToY = y + height + 50;
+            props.scrollViewRef?.current?.scrollTo({
+              y: scrollToY,
+              animated: true,
+            });
+            if (__DEV__) {
+              console.log(`[NotificationSettingsCard] Scroll vers le bas: ${scrollToY}`);
+            }
+          });
+        }, 100);
+      }
+    },
+  }), [props]);
+
+  // Auto-scroll vers le bas quand les notifications sont activées
+  useEffect(() => {
+    if (settings.isEnabled && optionsContainerRef.current && props.scrollViewRef?.current) {
+      // Délai pour que React ait rendu le contenu
+      setTimeout(() => {
+        optionsContainerRef.current?.measure((x, y, width, height, pageX, pageY) => {
+          // Scroll vers le bas pour montrer les options
+          const scrollToY = y + height + 50;
+          props.scrollViewRef?.current?.scrollTo({
+            y: scrollToY,
+            animated: true,
+          });
+        });
+      }, 300);
+    }
+  }, [settings.isEnabled, props]);
 
   const refreshPermissions = useCallback(async () => {
     try {
@@ -90,7 +143,6 @@ export default function NotificationSettingsCard() {
       await saveNotificationSettings(newSettings);
       if (enabled) {
         await scheduleDailyNotification(newSettings);
-        setShowTimePicker(true);
       } else {
         await cancelAllNotifications();
       }
@@ -107,9 +159,9 @@ export default function NotificationSettingsCard() {
     }
   };
 
-  const handleTimeChange = async (event: any, selectedDate?: Date) => {
+  const handleWeekdayTimeChange = async (event: any, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
-      setShowTimePicker(false);
+      setShowWeekdayPicker(false);
     }
 
     if (selectedDate) {
@@ -118,6 +170,32 @@ export default function NotificationSettingsCard() {
       const newTime = `${hours}:${minutes}`;
 
       const newSettings = { ...settings, weekdayTime: newTime };
+      setSettings(newSettings);
+
+      try {
+        await saveNotificationSettings(newSettings);
+        if (settings.isEnabled) {
+          await scheduleDailyNotification(newSettings);
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.error('Failed to update notification time:', error);
+        }
+      }
+    }
+  };
+
+  const handleWeekendTimeChange = async (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowWeekendPicker(false);
+    }
+
+    if (selectedDate) {
+      const hours = selectedDate.getHours().toString().padStart(2, '0');
+      const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
+      const newTime = `${hours}:${minutes}`;
+
+      const newSettings = { ...settings, weekendTime: newTime };
       setSettings(newSettings);
 
       try {
@@ -173,6 +251,39 @@ export default function NotificationSettingsCard() {
     return date;
   };
 
+  const getNextReminderText = (): string => {
+    const now = new Date();
+    const todayDay = now.getDay(); // 0 = Sunday, 6 = Saturday
+    const isWeekend = todayDay === 0 || todayDay === 6;
+    const nextTime = isWeekend ? settings.weekendTime : settings.weekdayTime;
+
+    const [hours, minutes] = nextTime.split(':').map(Number);
+    const nextReminder = new Date();
+    nextReminder.setHours(hours, minutes, 0);
+
+    // If the reminder time has already passed today
+    if (nextReminder <= now) {
+      nextReminder.setDate(nextReminder.getDate() + 1);
+      const nextDay = nextReminder.getDay();
+      // Skip to Monday if it's Sunday
+      if (nextDay === 0) {
+        nextReminder.setDate(nextReminder.getDate() + 1);
+      }
+    }
+
+    const nextDayName = nextReminder.toLocaleDateString('default', { weekday: 'long' });
+    const isTomorrow = nextReminder.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
+    const isToday = nextReminder.toDateString() === now.toDateString();
+
+    if (isToday) {
+      return t('notifications.next_reminder_today', { time: nextTime });
+    }
+    if (isTomorrow) {
+      return t('notifications.next_reminder_tomorrow', { time: nextTime });
+    }
+    return t('notifications.next_reminder', { day: nextDayName, time: nextTime });
+  };
+
   if (isLoading) {
     return (
       <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
@@ -200,9 +311,7 @@ export default function NotificationSettingsCard() {
         <View style={styles.settingInfo}>
           <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>{t('notifications.setting.enable')}</Text>
           <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
-            {settings.isEnabled
-              ? t('notifications.setting.enable_hint_active', { time: settings.weekdayTime })
-              : t('notifications.setting.enable_hint_inactive')}
+            {settings.isEnabled ? getNextReminderText() : t('notifications.setting.enable_hint_inactive')}
           </Text>
         </View>
         <Switch
@@ -214,15 +323,26 @@ export default function NotificationSettingsCard() {
       </View>
 
       {settings.isEnabled && (
-        <>
+        <View ref={optionsContainerRef}>
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
+
+          {/* Explanatory text */}
+          <Text style={[styles.explanatoryText, { color: colors.textSecondary }]}>
+            {t('notifications.setting.different_times')}
+          </Text>
+
+          {/* Weekday Time Picker */}
           <View style={styles.settingRow}>
             <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>{t('notifications.setting.time')}</Text>
-              <Text style={[styles.settingHint, { color: colors.textSecondary }]}>{t('notifications.setting.time_hint')}</Text>
+              <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+                🌅 {t('notifications.setting.weekday')}
+              </Text>
+              <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
+                {t('notifications.setting.time_hint')}
+              </Text>
             </View>
             <Pressable
-              onPress={() => setShowTimePicker(true)}
+              onPress={() => setShowWeekdayPicker(true)}
               style={[
                 styles.timeButton,
                 { backgroundColor: colors.accent, borderColor: colors.accentDark },
@@ -234,20 +354,62 @@ export default function NotificationSettingsCard() {
             </Pressable>
           </View>
 
-          {showTimePicker && (
+          {showWeekdayPicker && (
             <DateTimePicker
               value={getDateFromTime(settings.weekdayTime)}
               mode="time"
               is24Hour={true}
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={handleTimeChange}
+              onChange={handleWeekdayTimeChange}
             />
           )}
 
-          {Platform.OS === 'ios' && showTimePicker && (
+          {Platform.OS === 'ios' && showWeekdayPicker && (
             <Pressable
               style={[styles.doneButton, { backgroundColor: colors.accent }]}
-              onPress={() => setShowTimePicker(false)}
+              onPress={() => setShowWeekdayPicker(false)}
+            >
+              <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
+            </Pressable>
+          )}
+
+          {/* Weekend Time Picker */}
+          <View style={[styles.settingRow, styles.marginTop12]}>
+            <View style={styles.settingInfo}>
+              <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+                🌙 {t('notifications.setting.weekend')}
+              </Text>
+              <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
+                {t('notifications.setting.time_hint')}
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => setShowWeekendPicker(true)}
+              style={[
+                styles.timeButton,
+                { backgroundColor: colors.accent, borderColor: colors.accentDark },
+              ]}
+            >
+              <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
+                {settings.weekendTime}
+              </Text>
+            </Pressable>
+          </View>
+
+          {showWeekendPicker && (
+            <DateTimePicker
+              value={getDateFromTime(settings.weekendTime)}
+              mode="time"
+              is24Hour={true}
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleWeekendTimeChange}
+            />
+          )}
+
+          {Platform.OS === 'ios' && showWeekendPicker && (
+            <Pressable
+              style={[styles.doneButton, { backgroundColor: colors.accent }]}
+              onPress={() => setShowWeekendPicker(false)}
             >
               <Text style={[styles.doneButtonText, { color: colors.backgroundCard }]}>{t('notifications.button.done')}</Text>
             </Pressable>
@@ -266,7 +428,7 @@ export default function NotificationSettingsCard() {
               </Text>
             </Pressable>
           </View>
-        </>
+        </View>
       )}
 
       {!hasPermissions && (
@@ -363,4 +525,17 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk_400Regular',
     lineHeight: 18,
   },
+  explanatoryText: {
+    fontSize: 12,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    marginBottom: ThemeLayout.spacing.md,
+    lineHeight: 18,
+  },
+  marginTop12: {
+    marginTop: 12,
+  },
 });
+
+export default forwardRef<NotificationSettingsCardHandle, NotificationSettingsCardProps>(
+  NotificationSettingsCardComponent
+);
