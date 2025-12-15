@@ -6,7 +6,7 @@
 import { getRandomImageForTheme } from '@/mock-data/assets';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 
-import type { DreamTheme } from '@/lib/types';
+import type { ChatMessage, DreamTheme, DreamType } from '@/lib/types';
 
 import type { AnalysisResult } from '../geminiServiceReal';
 
@@ -140,6 +140,15 @@ export async function startOrContinueChat(
   dreamId: string,
   message: string,
   lang: string = 'en',
+  _dreamContext?: {
+    transcript: string;
+    title: string;
+    interpretation: string;
+    shareableQuote: string;
+    dreamType: DreamType;
+    theme?: DreamTheme;
+    chatHistory?: ChatMessage[];
+  },
   _fingerprint?: string,
 ): Promise<string> {
   console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);

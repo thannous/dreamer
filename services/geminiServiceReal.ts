@@ -9,7 +9,7 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON, HttpError } from '@/lib/http';
 import { classifyImageError, type ImageGenerationErrorResponse } from '@/lib/errors';
-import type { DreamTheme, DreamType } from '@/lib/types';
+import type { ChatMessage, DreamTheme, DreamType } from '@/lib/types';
 
 export type AnalysisResult = {
   title: string;
@@ -209,9 +209,9 @@ export async function startOrContinueChat(
     title: string;
     interpretation: string;
     shareableQuote: string;
-    dreamType: string;
-    theme?: string;
-    chatHistory?: { role: string; text: string }[];
+    dreamType: DreamType;
+    theme?: DreamTheme;
+    chatHistory?: ChatMessage[];
   },
   fingerprint?: string
 ): Promise<string> {
