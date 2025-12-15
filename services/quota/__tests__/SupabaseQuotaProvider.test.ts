@@ -392,7 +392,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(100);
 
       // When
-      const canAnalyze = await provider.canAnalyzeDream(premiumUser);
+      const canAnalyze = await provider.canAnalyzeDream(premiumUser, 'premium');
 
       // Then
       expect(canAnalyze).toBe(true);
@@ -428,7 +428,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedExplorationCount = vi.fn().mockResolvedValue(100);
 
       // When
-      const canExplore = await provider.canExploreDream({ dreamId: 123 }, premiumUser);
+      const canExplore = await provider.canExploreDream({ dreamId: 123 }, premiumUser, 'premium');
 
       // Then
       expect(canExplore).toBe(true);
@@ -688,7 +688,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedAnalysisCount = vi.fn().mockResolvedValue(1000);
 
       // When
-      const result = await provider.canAnalyzeDream(premiumUser);
+      const result = await provider.canAnalyzeDream(premiumUser, 'premium');
 
       // Then
       expect(result).toBe(true);
@@ -701,7 +701,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedExplorationCount = vi.fn().mockResolvedValue(1000);
 
       // When
-      const result = await provider.canExploreDream({ dreamId: 1 }, premiumUser);
+      const result = await provider.canExploreDream({ dreamId: 1 }, premiumUser, 'premium');
 
       // Then
       expect(result).toBe(true);
