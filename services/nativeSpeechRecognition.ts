@@ -1,4 +1,4 @@
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 
@@ -302,6 +302,21 @@ export async function getSpeechLocaleAvailability(languageCode: string): Promise
   }
 }
 
+export type OfflineModelPromptHandler = {
+  show: (locale: string) => Promise<void>;
+  isVisible: boolean;
+};
+
+let offlineModelPromptHandler: OfflineModelPromptHandler | null = null;
+
+/**
+ * Register the offline model prompt handler (called from recording.tsx)
+ * This allows services to trigger the UI without circular dependencies
+ */
+export function registerOfflineModelPromptHandler(handler: OfflineModelPromptHandler) {
+  offlineModelPromptHandler = handler;
+}
+
 /**
  * Ensure offline STT model is available and trigger download if needed (Android 13+).
  * Returns true if the model is already installed or download was successful.
@@ -342,51 +357,22 @@ export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
       return true;
     }
 
-    // Model is missing - prompt user to download
-    return await new Promise<boolean>((resolve) => {
-      Alert.alert(
-        'Télécharger le pack de langue',
-        `Pour utiliser la reconnaissance vocale hors ligne en ${locale}, téléchargez le modèle (~45 MB).`,
-        [
-          {
-            text: 'Annuler',
-            style: 'cancel',
-            onPress: () => {
-              if (__DEV__) {
-                console.log('[nativeSpeech] offline model download cancelled by user', { locale });
-              }
-              resolve(false);
-            },
-          },
-          {
-            text: 'Télécharger',
-            onPress: async () => {
-              try {
-                if (__DEV__) {
-                  console.log('[nativeSpeech] triggering offline model download', { locale });
-                }
-                const res = await speechModule.androidTriggerOfflineModelDownload?.({ locale });
+    // Model is missing - delegate to UI handler if available
+    if (offlineModelPromptHandler) {
+      await offlineModelPromptHandler.show(locale);
+      // After prompt, check again if model was installed
+      const supported2 = await speechModule.getSupportedLocales?.({
+        androidRecognitionServicePackage: 'com.google.android.as',
+      });
+      const installedLocales2 = supported2?.installedLocales ?? [];
+      return installedLocales2.includes(locale);
+    }
 
-                const downloadSuccess = res?.status === 'download_success' || res?.status === 'opened_dialog';
-                if (__DEV__) {
-                  console.log('[nativeSpeech] offline model download response', {
-                    locale,
-                    status: res?.status,
-                    success: downloadSuccess,
-                  });
-                }
-                resolve(downloadSuccess);
-              } catch (error) {
-                if (__DEV__) {
-                  console.warn('[nativeSpeech] offline model download failed', { locale, error });
-                }
-                resolve(false);
-              }
-            },
-          },
-        ]
-      );
-    });
+    // Fallback: no UI handler registered (shouldn't happen in production)
+    if (__DEV__) {
+      console.warn('[nativeSpeech] no offline model prompt handler registered');
+    }
+    return false;
   } catch (error) {
     if (__DEV__) {
       console.warn('[nativeSpeech] failed to ensure offline model', { locale, error });
