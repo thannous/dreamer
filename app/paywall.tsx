@@ -256,6 +256,7 @@ export default function PaywallScreen() {
             features={[
               t('subscription.paywall.card.feature.unlimited_analyses'),
               t('subscription.paywall.card.feature.unlimited_explorations'),
+              t('subscription.paywall.card.feature.recorded_dreams'),
               t('subscription.paywall.card.feature.priority'),
             ]}
             loading={processing}
