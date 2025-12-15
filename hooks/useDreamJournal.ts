@@ -15,7 +15,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
-import { deriveUserTier } from '@/lib/quotaTier';
 import {
   generateMutationId,
   generateUUID,
@@ -59,7 +58,10 @@ export const useDreamJournal = () => {
   const isAuthenticated = Boolean(user);
   const isMockMode = isMockModeEnabled();
   const canUseRemoteSync = isAuthenticated && !isMockMode;
-  const tier = useMemo(() => subscriptionStatus?.tier ?? deriveUserTier(user), [subscriptionStatus?.tier, user]);
+  const tier = useMemo(
+    () => (!user ? 'guest' : subscriptionStatus?.tier ?? 'free'),
+    [subscriptionStatus?.tier, user]
+  );
 
   const networkState = useNetworkState();
   const hasNetwork = useMemo(() => {
@@ -217,7 +219,7 @@ export const useDreamJournal = () => {
           : saved;
         await persistRemoteDreams((prev) => upsertDream(prev, merged));
       } catch (error) {
-        const quotaError = coerceQuotaError(error, deriveUserTier(user));
+        const quotaError = coerceQuotaError(error, tier);
         if (quotaError) {
           throw quotaError;
         }
@@ -372,7 +374,7 @@ export const useDreamJournal = () => {
       // Check quota before analyzing
       const canAnalyze = await quotaService.canAnalyzeDream(user, tier);
       if (!canAnalyze) {
-        throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, deriveUserTier(user));
+        throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
       }
 
       const shouldReplaceImage = options?.replaceExistingImage ?? true;

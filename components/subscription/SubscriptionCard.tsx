@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export type SubscriptionCardProps = {
   title: string;
@@ -30,6 +31,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   ctaTestID,
 }) => {
   const { colors, shadows } = useTheme();
+  const { t } = useTranslation();
 
   const showCta = Boolean(ctaLabel && onPress);
 
@@ -54,10 +56,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         {features.map((feature) => (
           <View key={feature} style={styles.featureRow}>
             <Text style={[styles.featureBullet, { color: colors.accent }]}>•</Text>
-            <Text style={[styles.featureText, { color: colors.textPrimary }]}>{feature}</Text>
-          </View>
-        ))}
-      </View>
+          <Text style={[styles.featureText, { color: colors.textPrimary }]}>{feature}</Text>
+        </View>
+      ))}
+    </View>
 
       {showCta && (
         <Pressable

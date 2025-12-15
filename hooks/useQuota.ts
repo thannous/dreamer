@@ -39,9 +39,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     [baseTarget]
   );
 
-  // Get tier from RevenueCat (source of truth)
-  // For unauthenticated guests, return 'guest'; for authenticated users, return subscription tier or 'free'
-  const tier = !user?.id ? 'guest' : (subscriptionStatus?.tier || 'free');
+  // Get tier from RevenueCat (source of truth). For unauthenticated guests, return 'guest';
+  // for authenticated users, default to 'free' until RevenueCat responds.
+  const tier = !user?.id ? 'guest' : (subscriptionStatus?.tier ?? 'free');
   const isPaidTier = tier === 'plus' || tier === 'premium';
 
   /**
