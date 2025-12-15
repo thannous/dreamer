@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Platform } from 'react-native';
+import Purchases from 'react-native-purchases';
 import { useAuth } from '@/context/AuthContext';
-import { isEntitlementExpired } from '@/lib/revenuecat';
+import { isEntitlementExpired, mapStatus as mapStatusFromInfo } from '@/lib/revenuecat';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import {
@@ -101,10 +103,13 @@ export function useSubscription() {
   const [packages, setPackages] = useState<PurchasePackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const requiresAuth = !user?.id;
   // ✅ FIX: Track reconciliation attempts to enforce max attempt limit
   const reconciliationAttemptsRef = useRef(0);
+  // Avoid spamming sync/restore on Android when status comes back as free
+  const triedAndroidAutoRestoreRef = useRef(false);
   // Track which expiry we've already refreshed to avoid infinite loops on expired plans
   const expiredExpiryKeyRef = useRef<string | null>(null);
 
@@ -319,6 +324,26 @@ export function useSubscription() {
           setStatus(nextStatus);
           setPackages(nextPackages);
         }
+
+        // Android edge case: Play Store reports "déjà abonné" but RevenueCat returns free.
+        // Trigger a one-shot sync + restore to pull the entitlement for the logged-in user.
+        if (
+          Platform.OS === 'android' &&
+          !requiresAuth &&
+          !triedAndroidAutoRestoreRef.current &&
+          (nextStatus?.tier === 'free' || nextStatus?.isActive === false)
+        ) {
+          triedAndroidAutoRestoreRef.current = true;
+          try {
+            await Purchases.syncPurchases();
+            const restored = await restoreSubscriptionPurchases();
+            setStatus(restored);
+            // Sync tier so quotas follow the restored entitlement
+            await syncTier(restored);
+          } catch (restoreErr) {
+            console.warn('[useSubscription] Android auto-restore failed', restoreErr);
+          }
+        }
       } catch (e) {
         if (mounted) {
           setError(formatError(e));
@@ -336,6 +361,11 @@ export function useSubscription() {
       mounted = false;
     };
   }, [requiresAuth, user?.id]);
+
+  // Reset Android auto-restore guard when user changes
+  useEffect(() => {
+    triedAndroidAutoRestoreRef.current = false;
+  }, [user?.id]);
 
   // Keep auth user tier in sync with the RevenueCat status to avoid stale "Free plan" UI/quota states.
   // ✅ FIX: Use ref to track if we've already initiated sync for current status to prevent infinite loops
@@ -524,15 +554,61 @@ export function useSubscription() {
     }
   }, [requiresAuth, syncTier, user, getTierFromUser]);
 
+  const refreshSubscription = useCallback(async () => {
+    if (requiresAuth) {
+      return Promise.reject(new Error('auth_required'));
+    }
+
+    setRefreshing(true);
+    setError(null);
+
+    try {
+      console.log('[useSubscription] Refresh started', {
+        timestamp: new Date().toISOString(),
+        userId: user?.id,
+      });
+
+      // Invalidate cache then get fresh customer info
+      Purchases.invalidateCustomerInfoCache();
+      const info = await Purchases.getCustomerInfo();
+
+      // Map the fresh customer info to our status format
+      const nextStatus = mapStatusFromInfo(info as any);
+
+      console.log('[useSubscription] Refresh completed', {
+        timestamp: new Date().toISOString(),
+        userId: user?.id,
+        tier: nextStatus.tier,
+        isActive: nextStatus.isActive,
+      });
+
+      setStatus(nextStatus);
+      return nextStatus;
+    } catch (e) {
+      console.error('[useSubscription] Refresh failed', {
+        timestamp: new Date().toISOString(),
+        userId: user?.id,
+        error: (e as Error).message,
+      });
+
+      setError(formatError(e));
+      throw e;
+    } finally {
+      setRefreshing(false);
+    }
+  }, [requiresAuth, user]);
+
   return {
     status,
     isActive: status?.isActive ?? false,
     loading,
     processing,
+    refreshing,
     error,
     packages,
     requiresAuth,
     purchase,
     restore,
+    refreshSubscription,
   };
 }
