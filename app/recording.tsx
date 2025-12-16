@@ -1,6 +1,5 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
@@ -23,16 +22,14 @@ import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
-import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
+import { combineTranscript as combineTranscriptPure, normalizeForComparison } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
 import {
   startNativeSpeechSession,
   ensureOfflineSttModel,
-  registerOfflineModelPromptHandler,
   type NativeSpeechSession,
-  type OfflineModelPromptHandler
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import { transcribeAudio } from '@/services/speechToText';
@@ -87,53 +84,6 @@ export default function RecordingScreen() {
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error'>('limit');
   const [quotaSheetMessage, setQuotaSheetMessage] = useState('');
-  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
-  const [offlineModelLocale, setOfflineModelLocale] = useState('');
-  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
-  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
-
-  const resolveOfflineModelPrompt = useCallback(() => {
-    const resolve = offlineModelPromptResolveRef.current;
-    offlineModelPromptResolveRef.current = null;
-    offlineModelPromptPromiseRef.current = null;
-    resolve?.();
-  }, []);
-
-  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
-    if (offlineModelPromptPromiseRef.current) {
-      return offlineModelPromptPromiseRef.current;
-    }
-
-    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
-      offlineModelPromptResolveRef.current = () => {
-        resolve();
-      };
-    });
-
-    return offlineModelPromptPromiseRef.current;
-  }, []);
-
-  const handleOfflineModelPromptShow = useCallback(
-    async (locale: string) => {
-      setOfflineModelLocale(locale);
-      setShowOfflineModelSheet(true);
-      await waitForOfflineModelPromptClose();
-    },
-    [waitForOfflineModelPromptClose]
-  );
-
-  const handleOfflineModelSheetClose = useCallback(() => {
-    setShowOfflineModelSheet(false);
-    setOfflineModelLocale('');
-    resolveOfflineModelPrompt();
-  }, [resolveOfflineModelPrompt]);
-
-  const handleOfflineModelDownloadComplete = useCallback(
-    (_success: boolean) => {
-      handleOfflineModelSheetClose();
-    },
-    [handleOfflineModelSheetClose]
-  );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
@@ -255,21 +205,6 @@ export default function RecordingScreen() {
       }
     })();
   }, [t]);
-
-  // Register offline model prompt handler
-  useEffect(() => {
-    const handler: OfflineModelPromptHandler = {
-      isVisible: showOfflineModelSheet,
-      show: handleOfflineModelPromptShow,
-    };
-    registerOfflineModelPromptHandler(handler);
-  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
-
-  useEffect(() => {
-    return () => {
-      resolveOfflineModelPrompt();
-    };
-  }, [resolveOfflineModelPrompt]);
 
   useEffect(() => {
     return () => {
@@ -1206,14 +1141,6 @@ export default function RecordingScreen() {
           </View>
         )}
       </StandardBottomSheet>
-
-      {/* Offline Model Download Sheet */}
-      <OfflineModelDownloadSheet
-        visible={showOfflineModelSheet}
-        onClose={handleOfflineModelSheetClose}
-        locale={offlineModelLocale}
-        onDownloadComplete={handleOfflineModelDownloadComplete}
-      />
     </>
   );
 }

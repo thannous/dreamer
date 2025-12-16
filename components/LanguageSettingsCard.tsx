@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -9,10 +9,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
   ensureOfflineSttModel,
-  registerOfflineModelPromptHandler,
-  type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { updateLanguagePreference } from '@/lib/languagePreference';
 
 const LANGUAGE_LABEL_KEYS: Record<Exclude<LanguagePreference, 'auto'>, string> = {
@@ -29,69 +26,6 @@ export default function LanguageSettingsCard() {
   const autoLanguageHint = t('settings.language.option.auto.system_hint', {
     language: systemLanguageLabel,
   });
-
-  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
-  const [offlineModelLocale, setOfflineModelLocale] = useState('');
-  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
-  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
-
-  const resolveOfflineModelPrompt = useCallback(() => {
-    const resolve = offlineModelPromptResolveRef.current;
-    offlineModelPromptResolveRef.current = null;
-    offlineModelPromptPromiseRef.current = null;
-    resolve?.();
-  }, []);
-
-  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
-    if (offlineModelPromptPromiseRef.current) {
-      return offlineModelPromptPromiseRef.current;
-    }
-
-    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
-      offlineModelPromptResolveRef.current = () => {
-        resolve();
-      };
-    });
-
-    return offlineModelPromptPromiseRef.current;
-  }, []);
-
-  const handleOfflineModelPromptShow = useCallback(
-    async (locale: string) => {
-      setOfflineModelLocale(locale);
-      setShowOfflineModelSheet(true);
-      await waitForOfflineModelPromptClose();
-    },
-    [waitForOfflineModelPromptClose]
-  );
-
-  const handleOfflineModelSheetClose = useCallback(() => {
-    setShowOfflineModelSheet(false);
-    setOfflineModelLocale('');
-    resolveOfflineModelPrompt();
-  }, [resolveOfflineModelPrompt]);
-
-  const handleOfflineModelDownloadComplete = useCallback(
-    (_success: boolean) => {
-      handleOfflineModelSheetClose();
-    },
-    [handleOfflineModelSheetClose]
-  );
-
-  // Register offline model prompt handler
-  useEffect(() => {
-    const handler: OfflineModelPromptHandler = {
-      isVisible: showOfflineModelSheet,
-      show: handleOfflineModelPromptShow,
-    };
-    registerOfflineModelPromptHandler(handler);
-  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
-
-  useEffect(() => {
-    return () => {
-      resolveOfflineModelPrompt();
-    };
-  }, [resolveOfflineModelPrompt]);
 
   const languageOptions = useMemo(
     () =>
@@ -212,12 +146,6 @@ export default function LanguageSettingsCard() {
           </View>
         );
       })}
-      <OfflineModelDownloadSheet
-        visible={showOfflineModelSheet}
-        onClose={handleOfflineModelSheetClose}
-        locale={offlineModelLocale}
-        onDownloadComplete={handleOfflineModelDownloadComplete}
-      />
     </View>
   );
 }

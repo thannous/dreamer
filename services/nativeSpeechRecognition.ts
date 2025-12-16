@@ -239,6 +239,10 @@ export const buildPreview = (finalChunks: string[], lastPartial: string): string
 };
 
 const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModuleType | null> => {
+  if (cachedSpeechModule !== undefined) {
+    return cachedSpeechModule;
+  }
+
   try {
     // Use dynamic import for ES6 compatibility
     const speechModule = await import('expo-speech-recognition');
@@ -272,6 +276,12 @@ const loadSpeechRecognitionModule = async (): Promise<ExpoSpeechRecognitionModul
     return null;
   }
 };
+
+export function __setCachedSpeechModuleForTests(
+  module: ExpoSpeechRecognitionModuleType | null | undefined
+) {
+  cachedSpeechModule = module;
+}
 
 export async function getSpeechLocaleAvailability(languageCode: string): Promise<SpeechLocaleAvailability | null> {
   const speechModule = await loadSpeechRecognitionModule();
@@ -310,10 +320,10 @@ export type OfflineModelPromptHandler = {
 let offlineModelPromptHandler: OfflineModelPromptHandler | null = null;
 
 /**
- * Register the offline model prompt handler (called from recording.tsx)
+ * Register the offline model prompt handler (wired once from a persistent UI host)
  * This allows services to trigger the UI without circular dependencies
  */
-export function registerOfflineModelPromptHandler(handler: OfflineModelPromptHandler) {
+export function registerOfflineModelPromptHandler(handler: OfflineModelPromptHandler | null) {
   offlineModelPromptHandler = handler;
 }
 

@@ -14,14 +14,11 @@ import { useComposerHeightContext, useKeyboardStateContext } from '@/context/Cha
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
   getSpeechLocaleAvailability,
   startNativeSpeechSession,
   ensureOfflineSttModel,
-  registerOfflineModelPromptHandler,
   type NativeSpeechSession,
-  type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import {
   openGoogleVoiceSettingsBestEffort,
@@ -109,10 +106,6 @@ export function Composer({
     locale: string;
     installedLocales: string[];
   } | null>(null);
-  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
-  const [offlineModelLocale, setOfflineModelLocale] = useState('');
-  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
-  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const baseInputRef = useRef('');
   const containerRef = useRef<View>(null);
@@ -142,64 +135,6 @@ export function Composer({
       composerHeight.value.value = height;
     })();
   }, [composerHeight, localHeight]);
-
-  const resolveOfflineModelPrompt = useCallback(() => {
-    const resolve = offlineModelPromptResolveRef.current;
-    offlineModelPromptResolveRef.current = null;
-    offlineModelPromptPromiseRef.current = null;
-    resolve?.();
-  }, []);
-
-  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
-    if (offlineModelPromptPromiseRef.current) {
-      return offlineModelPromptPromiseRef.current;
-    }
-
-    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
-      offlineModelPromptResolveRef.current = () => {
-        resolve();
-      };
-    });
-
-    return offlineModelPromptPromiseRef.current;
-  }, []);
-
-  const handleOfflineModelPromptShow = useCallback(
-    async (locale: string) => {
-      setOfflineModelLocale(locale);
-      setShowOfflineModelSheet(true);
-      await waitForOfflineModelPromptClose();
-    },
-    [waitForOfflineModelPromptClose]
-  );
-
-  const handleOfflineModelSheetClose = useCallback(() => {
-    setShowOfflineModelSheet(false);
-    setOfflineModelLocale('');
-    resolveOfflineModelPrompt();
-  }, [resolveOfflineModelPrompt]);
-
-  const handleOfflineModelDownloadComplete = useCallback(
-    (_success: boolean) => {
-      handleOfflineModelSheetClose();
-    },
-    [handleOfflineModelSheetClose]
-  );
-
-  // Register offline model prompt handler
-  useEffect(() => {
-    const handler: OfflineModelPromptHandler = {
-      isVisible: showOfflineModelSheet,
-      show: handleOfflineModelPromptShow,
-    };
-    registerOfflineModelPromptHandler(handler);
-  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
-
-  useEffect(() => {
-    return () => {
-      resolveOfflineModelPrompt();
-    };
-  }, [resolveOfflineModelPrompt]);
 
   // Cleanup speech session on unmount
   useEffect(() => {
@@ -470,12 +405,6 @@ export function Composer({
           onOpenSettings={handleLanguagePackMissingOpenSettings}
           onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
         />
-        <OfflineModelDownloadSheet
-          visible={showOfflineModelSheet}
-          onClose={handleOfflineModelSheetClose}
-          locale={offlineModelLocale}
-          onDownloadComplete={handleOfflineModelDownloadComplete}
-        />
       </>
     );
   }
@@ -495,12 +424,6 @@ export function Composer({
         installedLocales={languagePackMissingInfo?.installedLocales ?? []}
         onOpenSettings={handleLanguagePackMissingOpenSettings}
         onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
-      />
-      <OfflineModelDownloadSheet
-        visible={showOfflineModelSheet}
-        onClose={handleOfflineModelSheetClose}
-        locale={offlineModelLocale}
-        onDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </>
   );
