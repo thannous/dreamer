@@ -5,6 +5,7 @@
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
   </url>
   <url>
@@ -692,6 +693,7 @@
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
   </url>
   <url>
@@ -699,6 +701,7 @@
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
   </url>
   <url>
@@ -706,6 +709,7 @@
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
   </url>
 </urlset>
