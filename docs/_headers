@@ -1,0 +1,33 @@
+# Cache headers for favicon
+/favicon.png
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/favicon.ico
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# Cache images
+/logo/*.png
+  Cache-Control: public, max-age=604800, immutable
+
+/img/*.png
+  Cache-Control: public, max-age=604800, immutable
+
+/screenshoot/*.png
+  Cache-Control: public, max-age=604800, immutable
+
+# Cache CSS and JS with long expiry
+/*.css
+  Cache-Control: public, max-age=604800, immutable
+
+/*.js
+  Cache-Control: public, max-age=604800, immutable
+
+# HTML pages - no cache to ensure fresh content
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Security headers
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
