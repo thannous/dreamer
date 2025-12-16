@@ -128,7 +128,12 @@ export default function RecordingScreen() {
     resolveOfflineModelPrompt();
   }, [resolveOfflineModelPrompt]);
 
-  const handleOfflineModelDownloadComplete = useCallback((_success: boolean) => undefined, []);
+  const handleOfflineModelDownloadComplete = useCallback(
+    (_success: boolean) => {
+      handleOfflineModelSheetClose();
+    },
+    [handleOfflineModelSheetClose]
+  );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;

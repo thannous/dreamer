@@ -179,7 +179,12 @@ export function Composer({
     resolveOfflineModelPrompt();
   }, [resolveOfflineModelPrompt]);
 
-  const handleOfflineModelDownloadComplete = useCallback((_success: boolean) => undefined, []);
+  const handleOfflineModelDownloadComplete = useCallback(
+    (_success: boolean) => {
+      handleOfflineModelSheetClose();
+    },
+    [handleOfflineModelSheetClose]
+  );
 
   // Register offline model prompt handler
   useEffect(() => {
