@@ -22,7 +22,7 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Modal,
   Platform,
@@ -55,6 +55,7 @@ export default function JournalListScreen() {
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const [selectedTheme, setSelectedTheme] = useState<DreamTheme | null>(null);
   const [selectedDreamType, setSelectedDreamType] = useState<DreamType | null>(null);
   const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>({
@@ -96,7 +97,7 @@ export default function JournalListScreen() {
   // Apply filters and sort
   const filteredDreams = useMemo(() => {
     const filtered = applyFilters(dreams, {
-      searchQuery,
+      searchQuery: deferredSearchQuery,
       theme: selectedTheme,
       dreamType: selectedDreamType,
       startDate: dateRange.start,
@@ -110,7 +111,7 @@ export default function JournalListScreen() {
       },
     });
     return sortDreamsByDate(filtered, false); // Newest first
-  }, [dreams, searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
+  }, [dreams, deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
 
   // Initialize visible items with first items for immediate loading
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function JournalListScreen() {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
+  }, [deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
 
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
