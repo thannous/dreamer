@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/en/index.html", "destination": "/en/", "permanent": true },
+    { "source": "/fr/index.html", "destination": "/fr/", "permanent": true },
+    { "source": "/es/index.html", "destination": "/es/", "permanent": true },
+    { "source": "/en/blog/index.html", "destination": "/en/blog/", "permanent": true },
+    { "source": "/fr/blog/index.html", "destination": "/fr/blog/", "permanent": true },
+    { "source": "/es/blog/index.html", "destination": "/es/blog/", "permanent": true },
+    { "source": "/en/guides/index.html", "destination": "/en/guides/", "permanent": true },
+    { "source": "/fr/guides/index.html", "destination": "/fr/guides/", "permanent": true },
+    { "source": "/es/guides/index.html", "destination": "/es/guides/", "permanent": true }
+  ]
+}
