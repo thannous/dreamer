@@ -286,59 +286,65 @@ function NotificationSettingsCardComponent(
   const getDateFromTime = (timeString: string): Date => {
     const [hours, minutes] = timeString.split(':').map(Number);
     const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
+    date.setHours(hours, minutes, 0, 0);
     return date;
   };
 
-  const getNextReminderText = (): string => {
+  const getNextReminder = (): { date: Date; time: string } | null => {
     const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
     if (!notificationsEnabled) {
+      return null;
+    }
+
+    const now = new Date();
+
+    // Look ahead up to one full week to find the next enabled day type.
+    for (let daysAhead = 0; daysAhead <= 7; daysAhead += 1) {
+      const candidate = new Date(now);
+      candidate.setDate(candidate.getDate() + daysAhead);
+
+      const day = candidate.getDay(); // 0 = Sunday, 6 = Saturday
+      const isWeekend = day === 0 || day === 6;
+
+      if (isWeekend && !settings.weekendEnabled) {
+        continue;
+      }
+      if (!isWeekend && !settings.weekdayEnabled) {
+        continue;
+      }
+
+      const time = isWeekend ? settings.weekendTime : settings.weekdayTime;
+      const [hours, minutes] = time.split(':').map(Number);
+      candidate.setHours(hours, minutes, 0, 0);
+
+      if (candidate > now) {
+        return { date: candidate, time };
+      }
+    }
+
+    return null;
+  };
+
+  const getNextReminderText = (): string => {
+    const next = getNextReminder();
+    if (!next) {
       return t('notifications.setting.enable_hint_inactive');
     }
 
     const now = new Date();
-    const todayDay = now.getDay(); // 0 = Sunday, 6 = Saturday
-    const isWeekend = todayDay === 0 || todayDay === 6;
-
-    // Determine which time should be used based on enabled periods
-    let nextTime: string;
-    if (settings.weekdayEnabled && settings.weekendEnabled) {
-      // Both enabled - use appropriate time for today
-      nextTime = isWeekend ? settings.weekendTime : settings.weekdayTime;
-    } else if (settings.weekdayEnabled) {
-      // Only weekday enabled
-      nextTime = settings.weekdayTime;
-    } else {
-      // Only weekend enabled
-      nextTime = settings.weekendTime;
-    }
-
-    const [hours, minutes] = nextTime.split(':').map(Number);
-    const nextReminder = new Date();
-    nextReminder.setHours(hours, minutes, 0);
-
-    // If the reminder time has already passed today
-    if (nextReminder <= now) {
-      nextReminder.setDate(nextReminder.getDate() + 1);
-      const nextDay = nextReminder.getDay();
-      // Skip to Monday if it's Sunday
-      if (nextDay === 0) {
-        nextReminder.setDate(nextReminder.getDate() + 1);
-      }
-    }
-
-    const nextDayName = nextReminder.toLocaleDateString('default', { weekday: 'long' });
-    const isTomorrow = nextReminder.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
-    const isToday = nextReminder.toDateString() === now.toDateString();
+    const nextDayName = next.date.toLocaleDateString('default', { weekday: 'long' });
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const isTomorrow = next.date.toDateString() === tomorrow.toDateString();
+    const isToday = next.date.toDateString() === now.toDateString();
 
     if (isToday) {
-      return t('notifications.next_reminder_today', { time: nextTime });
+      return t('notifications.next_reminder_today', { time: next.time });
     }
     if (isTomorrow) {
-      return t('notifications.next_reminder_tomorrow', { time: nextTime });
+      return t('notifications.next_reminder_tomorrow', { time: next.time });
     }
-    return t('notifications.next_reminder', { day: nextDayName, time: nextTime });
+    return t('notifications.next_reminder', { day: nextDayName, time: next.time });
   };
 
   if (isLoading) {
@@ -368,20 +374,20 @@ function NotificationSettingsCardComponent(
 
       {/* Weekday checkbox and time picker */}
       <View style={styles.settingRow}>
-        <View style={styles.settingInfo}>
-          <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
-            🌅 {t('notifications.setting.weekday')}
-          </Text>
-          <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
-            {t('notifications.setting.time_hint')}
-          </Text>
-        </View>
+        <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+          🌅 {t('notifications.setting.weekday')}
+        </Text>
         <View style={styles.controlGroup}>
           <Pressable
             onPress={() => setShowWeekdayPicker(true)}
+            disabled={!settings.weekdayEnabled}
             style={[
               styles.timeButton,
-              { backgroundColor: colors.accent, borderColor: colors.accentDark },
+              {
+                backgroundColor: colors.accent,
+                borderColor: colors.accentDark,
+                opacity: settings.weekdayEnabled ? 1 : 0.5,
+              },
             ]}
           >
             <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>
@@ -419,20 +425,20 @@ function NotificationSettingsCardComponent(
 
       {/* Weekend checkbox and time picker */}
       <View style={[styles.settingRow, styles.marginTop12]}>
-        <View style={styles.settingInfo}>
-          <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
-            🌙 {t('notifications.setting.weekend')}
-          </Text>
-          <Text style={[styles.settingHint, { color: colors.textSecondary }]}>
-            {t('notifications.setting.time_hint')}
-          </Text>
-        </View>
+        <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>
+          🌙 {t('notifications.setting.weekend')}
+        </Text>
         <View style={styles.controlGroup}>
           <Pressable
             onPress={() => setShowWeekendPicker(true)}
+            disabled={!settings.weekendEnabled}
             style={[
               styles.timeButton,
-              { backgroundColor: colors.accent, borderColor: colors.accentDark },
+              {
+                backgroundColor: colors.accent,
+                borderColor: colors.accentDark,
+                opacity: settings.weekendEnabled ? 1 : 0.5,
+              },
             ]}
           >
             <Text style={[styles.timeButtonText, { color: colors.textOnAccentSurface }]}>

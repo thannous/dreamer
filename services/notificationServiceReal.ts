@@ -27,10 +27,83 @@ const NOTIFICATION_PROMPT_KEYS = [
 // Notification channel for Android
 const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 
+type ReminderType = 'daily' | 'ritual';
+const REMINDER_TYPE_DATA_KEY = 'dreamerReminderType';
+
 const getTimeParts = (time: string): { hours: number; minutes: number } => {
   const [hours, minutes] = time.split(':').map(Number);
   return { hours, minutes };
 };
+
+const WEEKDAY_WEEKDAYS: number[] = [2, 3, 4, 5, 6]; // Mon-Fri (1 = Sun, 7 = Sat)
+const WEEKEND_WEEKDAYS: number[] = [1, 7]; // Sun, Sat
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isReminderType(value: unknown): value is ReminderType {
+  return value === 'daily' || value === 'ritual';
+}
+
+function matchesReminderType(request: Notifications.NotificationRequest, reminderType: ReminderType): boolean {
+  const data = request.content.data;
+  if (isRecord(data) && isReminderType(data[REMINDER_TYPE_DATA_KEY])) {
+    return data[REMINDER_TYPE_DATA_KEY] === reminderType;
+  }
+
+  // Legacy fallback (before REMINDER_TYPE_DATA_KEY existed).
+  const legacyUrl = isRecord(data) ? data.url : undefined;
+  const legacyRitualId = isRecord(data) ? data.ritualId : undefined;
+  const legacyIsTest = isRecord(data) ? data.test : undefined;
+
+  if (reminderType === 'ritual') {
+    return typeof legacyRitualId === 'string';
+  }
+
+  return (
+    request.content.title === 'Dream Journal Reminder' &&
+    legacyUrl === '/recording' &&
+    legacyRitualId == null &&
+    legacyIsTest !== true
+  );
+}
+
+async function cancelScheduledReminders(reminderType: ReminderType): Promise<void> {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  const identifiers = scheduled
+    .filter((request) => matchesReminderType(request, reminderType))
+    .map((request) => request.identifier);
+
+  await Promise.all(identifiers.map((id) => Notifications.cancelScheduledNotificationAsync(id)));
+
+  if (__DEV__) {
+    console.log(`Cancelled ${identifiers.length} scheduled ${reminderType} reminders`);
+  }
+}
+
+async function scheduleWeeklyRemindersForDays(params: {
+  days: number[];
+  time: string;
+  content: Notifications.NotificationContentInput;
+}): Promise<void> {
+  const { hours, minutes } = getTimeParts(params.time);
+
+  await Promise.all(
+    params.days.map((weekday) =>
+      Notifications.scheduleNotificationAsync({
+        content: params.content,
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+          weekday,
+          hour: hours,
+          minute: minutes,
+          channelId: NOTIFICATION_CHANNEL_ID,
+        },
+      })
+    )
+  );
+}
 
 /**
  * Normalize permission status across platforms (handles iOS provisional/ephemeral)
@@ -130,11 +203,7 @@ function getRitualReminderBody(ritualId: RitualId): string {
 
 /**
  * Schedule daily notification based on settings
- * Note: expo-notifications doesn't support weekday-specific triggers directly.
- * To implement different times for weekdays vs weekends, we use a simplified
- * approach: schedule using weekday time if enabled, otherwise weekend time if enabled.
- * For a complete implementation with both times firing on their respective days,
- * a backend service or more sophisticated scheduling would be required.
+ * Uses weekly triggers so weekday/weekend toggles actually control which days fire.
  */
 export async function scheduleDailyNotification(settings: NotificationSettings): Promise<void> {
   if (Platform.OS === 'web') {
@@ -142,8 +211,8 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     return;
   }
 
-  // Cancel all existing notifications first
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  // Replace only the daily reminders, leaving ritual reminders intact.
+  await cancelScheduledReminders('daily');
 
   // Check if either weekday or weekend notifications are enabled
   if (!settings.weekdayEnabled && !settings.weekendEnabled) {
@@ -153,35 +222,38 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     return;
   }
 
-  // Determine which time to use
-  // If weekday is enabled, use weekday time; otherwise use weekend time
-  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
-  const { hours, minutes } = getTimeParts(timeToUse);
+  const baseContent: Omit<Notifications.NotificationContentInput, 'body'> = {
+    title: 'Dream Journal Reminder',
+    data: { url: '/recording', [REMINDER_TYPE_DATA_KEY]: 'daily' },
+    sound: true,
+    priority: Notifications.AndroidNotificationPriority.HIGH,
+  };
 
-  // Schedule daily notification
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Dream Journal Reminder',
-      body: getRandomPrompt(),
-      data: { url: '/recording' },
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour: hours,
-      minute: minutes,
-    },
-  });
+  if (settings.weekdayEnabled) {
+    await scheduleWeeklyRemindersForDays({
+      days: WEEKDAY_WEEKDAYS,
+      time: settings.weekdayTime,
+      content: { ...baseContent, body: getRandomPrompt() },
+    });
+  }
+
+  if (settings.weekendEnabled) {
+    await scheduleWeeklyRemindersForDays({
+      days: WEEKEND_WEEKDAYS,
+      time: settings.weekendTime,
+      content: { ...baseContent, body: getRandomPrompt() },
+    });
+  }
 
   if (__DEV__) {
-    if (settings.weekdayEnabled && settings.weekendEnabled) {
-      console.log(`Scheduled daily notification for ${timeToUse} (weekday time used - platform doesn't support different times for weekdays/weekends)`);
-    } else if (settings.weekdayEnabled) {
-      console.log(`Scheduled daily notification for ${settings.weekdayTime} (weekday only)`);
-    } else {
-      console.log(`Scheduled daily notification for ${settings.weekendTime} (weekend only)`);
+    const scheduled: string[] = [];
+    if (settings.weekdayEnabled) {
+      scheduled.push(`weekdays @ ${settings.weekdayTime}`);
     }
+    if (settings.weekendEnabled) {
+      scheduled.push(`weekends @ ${settings.weekendTime}`);
+    }
+    console.log(`Scheduled dream reminders: ${scheduled.join(', ')}`);
   }
 }
 
@@ -190,35 +262,49 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
     return;
   }
 
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  // Replace only the ritual reminders, leaving daily reminders intact.
+  await cancelScheduledReminders('ritual');
 
   // Use same logic as scheduleDailyNotification - check if either is enabled
   if (!settings.weekdayEnabled && !settings.weekendEnabled) {
     return;
   }
 
-  // Use weekday time if enabled, otherwise weekend time
-  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
-  const { hours, minutes } = getTimeParts(timeToUse);
   const t = getTranslator();
 
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: t('inspiration.ritual.title'),
-      body: getRitualReminderBody(ritualId),
-      data: { url: '/recording', ritualId },
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour: hours,
-      minute: minutes,
-    },
-  });
+  const baseContent: Notifications.NotificationContentInput = {
+    title: t('inspiration.ritual.title'),
+    body: getRitualReminderBody(ritualId),
+    data: { url: '/recording', ritualId, [REMINDER_TYPE_DATA_KEY]: 'ritual' },
+    sound: true,
+    priority: Notifications.AndroidNotificationPriority.HIGH,
+  };
+
+  if (settings.weekdayEnabled) {
+    await scheduleWeeklyRemindersForDays({
+      days: WEEKDAY_WEEKDAYS,
+      time: settings.weekdayTime,
+      content: baseContent,
+    });
+  }
+
+  if (settings.weekendEnabled) {
+    await scheduleWeeklyRemindersForDays({
+      days: WEEKEND_WEEKDAYS,
+      time: settings.weekendTime,
+      content: baseContent,
+    });
+  }
 
   if (__DEV__) {
-    console.log(`Scheduled ritual reminder for ${timeToUse} (${ritualId})`);
+    const scheduled: string[] = [];
+    if (settings.weekdayEnabled) {
+      scheduled.push(`weekdays @ ${settings.weekdayTime}`);
+    }
+    if (settings.weekendEnabled) {
+      scheduled.push(`weekends @ ${settings.weekendTime}`);
+    }
+    console.log(`Scheduled ritual reminder (${ritualId}): ${scheduled.join(', ')}`);
   }
 }
 
