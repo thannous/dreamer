@@ -137,7 +137,10 @@ describe('SupabaseQuotaProvider', () => {
     it('given user when getting used messages count then queries Supabase correctly', async () => {
       // Given
       const user = { id: 'test-user' } as any;
-      const dream = { id: 123, chatHistory: Array(10).fill({ role: 'user' }) };
+      const dream = {
+        id: 123,
+        chatHistory: Array.from({ length: 10 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'x' })),
+      };
       const mockStorage = await vi.importMock('../../storageService');
       mockStorage.getCachedRemoteDreams = vi.fn().mockResolvedValue([dream]);
 
@@ -755,7 +758,10 @@ describe('SupabaseQuotaProvider', () => {
         interpretation: '',
         shareableQuote: '',
         imageUrl: '',
-        chatHistory: [{ role: 'user', text: 'hi' }, { role: 'model', text: 'ok' }],
+        chatHistory: [
+          { id: 'm1', role: 'user', text: 'hi' },
+          { id: 'm2', role: 'model', text: 'ok' },
+        ],
         dreamType: 'Symbolic Dream',
       };
       const p = provider as any;
@@ -778,7 +784,7 @@ describe('SupabaseQuotaProvider', () => {
         interpretation: '',
         shareableQuote: '',
         imageUrl: '',
-        chatHistory: Array.from({ length: 20 }, () => ({ role: 'user' as const, text: 'x' })),
+        chatHistory: Array.from({ length: 20 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'x' })),
         dreamType: 'Symbolic Dream',
       };
       const p = provider as any;

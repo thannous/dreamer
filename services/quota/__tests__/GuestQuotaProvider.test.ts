@@ -149,7 +149,7 @@ describe('GuestQuotaProvider', () => {
       // Given
       const dream = buildDream({ 
         id: 123, 
-        chatHistory: Array(5).fill({ role: 'user', text: 'test' }) 
+        chatHistory: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetDreams.mockResolvedValueOnce([dream]);
       const provider = new GuestQuotaProvider();
@@ -165,7 +165,7 @@ describe('GuestQuotaProvider', () => {
       // Given
       const dream = buildDream({ 
         id: 123, 
-        chatHistory: Array(25).fill({ role: 'user', text: 'test' }) 
+        chatHistory: Array.from({ length: 25 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetDreams.mockResolvedValueOnce([dream]);
       const provider = new GuestQuotaProvider();
@@ -219,7 +219,7 @@ describe('GuestQuotaProvider', () => {
       // Given
       const dream = buildDream({
         id: 123,
-        chatHistory: Array(8).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 8 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetDreams.mockResolvedValueOnce([dream]);
       const provider = new GuestQuotaProvider();
@@ -287,9 +287,9 @@ describe('GuestQuotaProvider', () => {
       const dreamB = buildDream({
         id: 11,
         chatHistory: [
-          { role: 'user', text: 'hello' },
-          { role: 'model', text: 'hi' },
-          { role: 'user', text: 'follow-up' },
+          { id: 'm1', role: 'user', text: 'hello' },
+          { id: 'm2', role: 'model', text: 'hi' },
+          { id: 'm3', role: 'user', text: 'follow-up' },
         ]
       });
       mockGetDreams.mockResolvedValueOnce([dreamB]);

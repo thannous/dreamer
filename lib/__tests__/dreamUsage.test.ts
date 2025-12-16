@@ -53,8 +53,8 @@ describe('dreamUsage helpers', () => {
     const exploredByChat = buildDream({
       id: 12,
       chatHistory: [
-        { role: 'user', text: 'hello' },
-        { role: 'model', text: 'hi' },
+        { id: 'm1', role: 'user', text: 'hello' },
+        { id: 'm2', role: 'model', text: 'hi' },
       ],
     });
     const untouched = buildDream({ id: 13 });
@@ -66,7 +66,7 @@ describe('dreamUsage helpers', () => {
   it('does not treat dreams with only the transcript message as explored', () => {
     const transcriptOnly = buildDream({
       id: 14,
-      chatHistory: [{ role: 'user', text: 'Here is my dream: ...' }],
+      chatHistory: [{ id: 'm1', role: 'user', text: 'Here is my dream: ...' }],
     });
 
     expect(isDreamExplored(transcriptOnly)).toBe(false);
@@ -76,9 +76,9 @@ describe('dreamUsage helpers', () => {
     const dreamWithChat = buildDream({
       id: 20,
       chatHistory: [
-        { role: 'user', text: 'hello' },
-        { role: 'model', text: 'hi there' },
-        { role: 'user', text: 'thanks' },
+        { id: 'm1', role: 'user', text: 'hello' },
+        { id: 'm2', role: 'model', text: 'hi there' },
+        { id: 'm3', role: 'user', text: 'thanks' },
       ],
     });
 
@@ -100,8 +100,8 @@ describe('dreamUsage helpers', () => {
       isAnalyzed: true,
       analyzedAt: 8888,
       chatHistory: [
-        { role: 'user', text: 'hi' },
-        { role: 'model', text: 'hello' },
+        { id: 'm1', role: 'user', text: 'hi' },
+        { id: 'm2', role: 'model', text: 'hello' },
       ],
     });
 

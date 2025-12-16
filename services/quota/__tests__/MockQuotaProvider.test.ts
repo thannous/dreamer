@@ -108,11 +108,11 @@ describe('MockQuotaProvider', () => {
       // Given
       const targetDream = buildDream({
         id: 123,
-        chatHistory: Array(5).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       const otherDream = buildDream({
         id: 456,
-        chatHistory: Array(10).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 10 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream, otherDream]);
 
@@ -129,7 +129,7 @@ describe('MockQuotaProvider', () => {
       // Given
       const targetDream = buildDream({
         id: 123,
-        chatHistory: Array(8).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 8 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 
@@ -191,7 +191,7 @@ describe('MockQuotaProvider', () => {
       const exploredDream = buildDream({
         id: 123,
         explorationStartedAt: Date.now(),
-        chatHistory: Array(20).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 20 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetSavedDreams.mockResolvedValueOnce([exploredDream]);
 
@@ -312,7 +312,7 @@ describe('MockQuotaProvider', () => {
       // Given
       const targetDream = buildDream({
         id: 123,
-        chatHistory: Array(10).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 10 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 
@@ -329,7 +329,7 @@ describe('MockQuotaProvider', () => {
       // Given
       const targetDream = buildDream({
         id: 123,
-        chatHistory: Array(25).fill({ role: 'user', text: 'test' })
+        chatHistory: Array.from({ length: 25 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
       });
       mockGetSavedDreams.mockResolvedValueOnce([targetDream]);
 

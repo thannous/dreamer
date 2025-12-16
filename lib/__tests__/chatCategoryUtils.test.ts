@@ -9,23 +9,23 @@ describe('chatCategoryUtils', () => {
   });
 
   it('returns false when only user prompt exists', () => {
-    const history: ChatMessage[] = [{ role: 'user', text: 'Q', meta: { category: 'symbols' } }];
+    const history: ChatMessage[] = [{ id: 'm1', role: 'user', text: 'Q', meta: { category: 'symbols' } }];
     expect(isCategoryExplored(history, 'symbols')).toBe(false);
   });
 
   it('returns false when only error message follows prompt', () => {
     const errorFr = 'Désolé, une erreur est survenue. Réessaie.';
     const history: ChatMessage[] = [
-      { role: 'user', text: 'Q', meta: { category: 'symbols' } },
-      { role: 'model', text: errorFr },
+      { id: 'm1', role: 'user', text: 'Q', meta: { category: 'symbols' } },
+      { id: 'm2', role: 'model', text: errorFr },
     ];
     expect(isCategoryExplored(history, 'symbols')).toBe(false);
   });
 
   it('returns true when a non-error model reply follows prompt', () => {
     const history: ChatMessage[] = [
-      { role: 'user', text: 'Q', meta: { category: 'symbols' } },
-      { role: 'model', text: 'Here is an answer.' },
+      { id: 'm1', role: 'user', text: 'Q', meta: { category: 'symbols' } },
+      { id: 'm2', role: 'model', text: 'Here is an answer.' },
     ];
     expect(isCategoryExplored(history, 'symbols')).toBe(true);
   });
@@ -34,8 +34,8 @@ describe('chatCategoryUtils', () => {
     const promptEn =
       'Tell me about the symbolic meanings in my dream. What do the key symbols represent?';
     const history: ChatMessage[] = [
-      { role: 'user', text: promptEn },
-      { role: 'model', text: 'Answer' },
+      { id: 'm1', role: 'user', text: promptEn },
+      { id: 'm2', role: 'model', text: 'Answer' },
     ];
     expect(isCategoryExplored(history, 'symbols')).toBe(true);
   });

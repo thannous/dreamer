@@ -383,14 +383,14 @@ describe('useDreamStatistics', () => {
         buildDream({
           id: 1,
           chatHistory: [
-            { role: 'user', text: 'Hello' },
-            { role: 'model', text: 'Hi' },
-            { role: 'user', text: 'Thanks' },
+            { id: 'm1', role: 'user', text: 'Hello' },
+            { id: 'm2', role: 'model', text: 'Hi' },
+            { id: 'm3', role: 'user', text: 'Thanks' },
           ],
         }),
         buildDream({
           id: 2,
-          chatHistory: [{ role: 'user', text: 'Question' }],
+          chatHistory: [{ id: 'm1', role: 'user', text: 'Question' }],
         }),
       ];
 
@@ -404,7 +404,7 @@ describe('useDreamStatistics', () => {
         buildDream({
           id: 1,
           explorationStartedAt: Date.now(),
-          chatHistory: [{ role: 'user', text: 'Hello' }],
+          chatHistory: [{ id: 'm1', role: 'user', text: 'Hello' }],
         }),
         buildDream({
           id: 2,
@@ -441,19 +441,19 @@ describe('useDreamStatistics', () => {
           id: 1,
           title: 'Dream 1',
           chatHistory: [
-            { role: 'user', text: 'Q1' },
-            { role: 'model', text: 'A1' },
+            { id: 'm1', role: 'user', text: 'Q1' },
+            { id: 'm2', role: 'model', text: 'A1' },
           ],
         }),
         buildDream({
           id: 2,
           title: 'Dream 2',
           chatHistory: [
-            { role: 'user', text: 'Q1' },
-            { role: 'model', text: 'A1' },
-            { role: 'user', text: 'Q2' },
-            { role: 'model', text: 'A2' },
-            { role: 'user', text: 'Q3' },
+            { id: 'm1', role: 'user', text: 'Q1' },
+            { id: 'm2', role: 'model', text: 'A1' },
+            { id: 'm3', role: 'user', text: 'Q2' },
+            { id: 'm4', role: 'model', text: 'A2' },
+            { id: 'm5', role: 'user', text: 'Q3' },
           ],
         }),
         buildDream({
