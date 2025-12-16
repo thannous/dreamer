@@ -11,11 +11,12 @@ import {
 } from '@expo-google-fonts/space-grotesk';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, NativeModules, Platform } from 'react-native';
 import 'react-native-reanimated';
 
@@ -29,10 +30,13 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 import { useSubscriptionMonitor } from '@/hooks/useSubscriptionMonitor';
 import { initializeGoogleSignIn } from '@/lib/auth';
+import { loadTranslations } from '@/lib/i18n';
+import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
+import type { LanguagePreference } from '@/lib/types';
 import { configureNotificationHandler } from '@/services/notificationService';
 import { migrateExistingGuestQuota } from '@/services/quota/GuestAnalysisCounter';
 import { migrateExistingGuestDreamRecording } from '@/services/quota/GuestDreamCounter';
-import { getFirstLaunchCompleted, saveFirstLaunchCompleted } from '@/services/storageService';
+import { getFirstLaunchCompleted, getLanguagePreference, saveFirstLaunchCompleted } from '@/services/storageService';
 
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
@@ -254,8 +258,59 @@ export default function RootLayout() {
   });
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [shouldFadeSplash, setShouldFadeSplash] = useState(false);
+  const [minimumSplashElapsed, setMinimumSplashElapsed] = useState(false);
+  const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
+  const [initialLanguagePreference, setInitialLanguagePreference] = useState<LanguagePreference>('auto');
   const [hasHandledFirstLaunch, setHasHandledFirstLaunch] = useState(false);
   const isNavigationReady = useNavigationIsReady();
+  const locales = useLocales();
+  const primaryLocale = locales[0];
+  const hasBootstrappedLanguage = useRef(false);
+
+  const systemLanguage = useMemo(
+    () => normalizeAppLanguage(primaryLocale?.languageCode),
+    [primaryLocale?.languageCode]
+  );
+
+  useEffect(() => {
+    if (hasBootstrappedLanguage.current) {
+      return;
+    }
+
+    hasBootstrappedLanguage.current = true;
+    let active = true;
+
+    const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+    (async () => {
+      try {
+        const preference = await Promise.race([
+          getLanguagePreference(),
+          sleep(750).then(() => 'auto' as LanguagePreference),
+        ]);
+        if (!active) {
+          return;
+        }
+        setInitialLanguagePreference(preference);
+
+        const effectiveLanguage = resolveEffectiveLanguage(preference, systemLanguage);
+
+        await Promise.race([loadTranslations(effectiveLanguage).then(() => undefined), sleep(1500)]);
+      } catch (error) {
+        if (__DEV__) {
+          console.warn('[RootLayout] Failed to bootstrap language preference', error);
+        }
+      } finally {
+        if (active) {
+          setLanguageBootstrapped(true);
+        }
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [systemLanguage]);
 
   useEffect(() => {
     if (!fontsLoaded && !fontError) {
@@ -271,7 +326,7 @@ export default function RootLayout() {
         console.warn('Unable to hide native splash screen', error);
       } finally {
         // Wait for the new 3s animation to mostly complete (Phase 1+2 = 1.8s, + part of 3)
-        outroTimer = setTimeout(() => setShouldFadeSplash(true), 2800);
+        outroTimer = setTimeout(() => setMinimumSplashElapsed(true), 2800);
       }
     };
 
@@ -283,6 +338,18 @@ export default function RootLayout() {
       }
     };
   }, [fontError, fontsLoaded]);
+
+  useEffect(() => {
+    if (!minimumSplashElapsed || shouldFadeSplash) {
+      return;
+    }
+
+    if (!languageBootstrapped) {
+      return;
+    }
+
+    setShouldFadeSplash(true);
+  }, [languageBootstrapped, minimumSplashElapsed, shouldFadeSplash]);
 
   useEffect(() => {
     // Migrate existing guest quota counter (runs once, idempotent)
@@ -373,13 +440,15 @@ export default function RootLayout() {
   return (
     <>
       <ErrorBoundary>
-        <LanguageProvider>
-          <ThemeProvider>
-            <AuthProvider>
-              <RootLayoutNav />
-            </AuthProvider>
-          </ThemeProvider>
-        </LanguageProvider>
+        {languageBootstrapped ? (
+          <LanguageProvider initialPreference={initialLanguagePreference}>
+            <ThemeProvider>
+              <AuthProvider>
+                <RootLayoutNav />
+              </AuthProvider>
+            </ThemeProvider>
+          </LanguageProvider>
+        ) : null}
       </ErrorBoundary>
       {showCustomSplash && (
         <AnimatedSplashScreen status={shouldFadeSplash ? 'outro' : 'intro'} onAnimationEnd={handleSplashFinished} />

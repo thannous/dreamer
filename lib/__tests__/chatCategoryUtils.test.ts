@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
 import { isCategoryExplored } from '../chatCategoryUtils';
-import { getTranslator } from '../i18n';
 import type { ChatMessage } from '../types';
 
 describe('chatCategoryUtils', () => {
@@ -15,7 +14,7 @@ describe('chatCategoryUtils', () => {
   });
 
   it('returns false when only error message follows prompt', () => {
-    const errorFr = getTranslator('fr')('dream_chat.error_message');
+    const errorFr = 'Désolé, une erreur est survenue. Réessaie.';
     const history: ChatMessage[] = [
       { role: 'user', text: 'Q', meta: { category: 'symbols' } },
       { role: 'model', text: errorFr },
@@ -32,7 +31,8 @@ describe('chatCategoryUtils', () => {
   });
 
   it('matches legacy prompt text without meta (any supported language)', () => {
-    const promptEn = getTranslator('en')('dream_chat.prompt.symbols');
+    const promptEn =
+      'Tell me about the symbolic meanings in my dream. What do the key symbols represent?';
     const history: ChatMessage[] = [
       { role: 'user', text: promptEn },
       { role: 'model', text: 'Answer' },
@@ -40,4 +40,3 @@ describe('chatCategoryUtils', () => {
     expect(isCategoryExplored(history, 'symbols')).toBe(true);
   });
 });
-

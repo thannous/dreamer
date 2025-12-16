@@ -52,6 +52,7 @@ vi.mock('../../lib/i18n', () => ({
       return result;
     };
   },
+  loadTranslations: () => new Promise(() => {}),
 }));
 
 import { useTranslation } from '../useTranslation';
