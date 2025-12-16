@@ -47,8 +47,12 @@ const {
   mockIncrementLocalAnalysisCount: vi.fn<() => Promise<number>>(),
   mockSyncWithServerCount: vi.fn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
   mockGuestDreamCounterState: { count: 0 },
-  mockUseAuth: vi.fn<() => { user: { id: string } | null }>(),
+  mockUseAuth: vi.fn<
+    () => { user: { id: string; app_metadata?: Record<string, unknown> } | null }
+  >(),
 }));
+
+let mockSubscriptionStatus: any = { tier: 'free' };
 
 // Mock dependencies
 vi.mock('expo-network', () => ({
@@ -74,10 +78,12 @@ vi.mock('../../context/AuthContext', () => ({
 
 // Mock useSubscription
 vi.mock('../useSubscription', () => ({
-  useSubscription: () => ({
-    status: { tier: 'free' },
-    loading: false,
-  }),
+  useSubscription: () => {
+    return {
+      status: mockSubscriptionStatus,
+      loading: false,
+    };
+  },
 }));
 
 // Mock storageService
@@ -163,13 +169,14 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 });
 
 // Helper to set mock user for tests
-const setMockUser = (user: { id: string } | null) => {
+const setMockUser = (user: { id: string; app_metadata?: Record<string, unknown> } | null) => {
   mockUseAuth.mockReturnValue({ user });
 };
 
 describe('useDreamJournal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSubscriptionStatus = { tier: 'free' };
     setMockUser(null);
     mockGuestDreamCounterState.count = 0;
     mockGetSavedDreams.mockResolvedValue([]);
@@ -613,6 +620,32 @@ describe('useDreamJournal', () => {
       }).rejects.toThrow(QuotaError);
 
       expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'guest');
+    });
+
+    it('treats Supabase plus users as plus before RevenueCat resolves', async () => {
+      setMockUser({ id: 'user-1', app_metadata: { tier: 'plus' } });
+      mockSubscriptionStatus = null;
+      mockCanAnalyzeDream.mockResolvedValue(false);
+
+      const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
+      mockGetSavedDreams.mockResolvedValue([existingDream]);
+
+      const { result } = renderHook(() => useDreamJournal());
+
+      await waitFor(() => {
+        expect(result.current.loaded).toBe(true);
+      });
+
+      await expect(async () => {
+        await act(async () => {
+          await result.current.analyzeDream(1, 'My dream transcript');
+        });
+      }).rejects.toThrow(QuotaError);
+
+      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'user-1' }),
+        'plus'
+      );
     });
 
     it('analyzes dream and generates image in parallel', async () => {

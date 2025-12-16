@@ -156,6 +156,35 @@ describe('useQuota', () => {
       expect(result.current.error).toBe(testError);
       expect(result.current.quotaStatus).toBeNull();
     });
+
+    it('treats Supabase plus users as paid while RevenueCat loads', async () => {
+      mockUser = { id: 'user-1', app_metadata: { tier: 'plus' } };
+      mockSubscriptionStatus = null;
+      mockSubscriptionLoading = true;
+
+      const { result } = renderHook(() => useQuota());
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.tier).toBe('plus');
+      expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+      await expect(result.current.canAnalyze()).resolves.toBe(true);
+      expect(mockCanAnalyzeDream).not.toHaveBeenCalled();
+    });
+
+    it('waits for RevenueCat when Supabase tier is free', async () => {
+      mockUser = { id: 'user-1', app_metadata: { tier: 'free' } };
+      mockSubscriptionStatus = null;
+      mockSubscriptionLoading = true;
+
+      const { result } = renderHook(() => useQuota());
+
+      expect(result.current.loading).toBe(true);
+      expect(result.current.tier).toBe('free');
+      expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+    });
   });
 
   describe('quota status with target dream', () => {

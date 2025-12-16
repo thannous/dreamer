@@ -15,6 +15,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
+import { deriveUserTier } from '@/lib/quotaTier';
 import {
   generateMutationId,
   generateUUID,
@@ -58,9 +59,19 @@ export const useDreamJournal = () => {
   const isAuthenticated = Boolean(user);
   const isMockMode = isMockModeEnabled();
   const canUseRemoteSync = isAuthenticated && !isMockMode;
+  const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
   const tier = useMemo(
-    () => (!user ? 'guest' : subscriptionStatus?.tier ?? 'free'),
-    [subscriptionStatus?.tier, user]
+    () => {
+      if (!user) return 'guest';
+
+      // If Supabase already marks the user as paid, treat them as paid immediately.
+      // RevenueCat still overrides once it resolves.
+      const optimisticPaidTier =
+        supabaseTier === 'plus' || supabaseTier === 'premium' ? supabaseTier : null;
+
+      return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
+    },
+    [subscriptionStatus?.tier, supabaseTier, user]
   );
 
   const networkState = useNetworkState();
