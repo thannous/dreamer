@@ -50,6 +50,14 @@ function findHtmlFiles(dir, baseDir = '') {
 }
 
 /**
+ * Normalize URLs to avoid index.html duplicates
+ */
+function normalizeUrl(url) {
+  // Convert trailing /index.html to just /
+  return url.replace(/\/index\.html$/, '/');
+}
+
+/**
  * Extract hreflang links from HTML file
  */
 function extractHreflangs(filePath) {
@@ -63,7 +71,8 @@ function extractHreflangs(filePath) {
 
     while ((match = hreflangRegex.exec(content)) !== null) {
       const [, hreflang, href] = match;
-      hreflangs[hreflang] = href;
+      // Normalize the href to avoid index.html duplicates
+      hreflangs[hreflang] = normalizeUrl(href);
     }
 
     return hreflangs;
@@ -75,9 +84,19 @@ function extractHreflangs(filePath) {
 
 /**
  * Convert relative path to URL
+ * Normalize index.html files to root paths to avoid duplicates
  */
 function pathToUrl(filePath) {
-  return `${DOMAIN}/${filePath.replace(/\\/g, '/')}`;
+  let urlPath = filePath.replace(/\\/g, '/');
+  // Convert index.html to directory path (e.g., en/index.html → en/)
+  urlPath = urlPath.replace(/index\.html$/, '');
+  // Ensure we don't have double slashes
+  urlPath = urlPath.replace(/\/+/g, '/');
+  // Remove trailing slash for consistency, then it becomes the root
+  if (urlPath === '/' || urlPath === '') {
+    urlPath = '';
+  }
+  return `${DOMAIN}/${urlPath}`;
 }
 
 /**
