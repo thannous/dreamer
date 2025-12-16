@@ -6,6 +6,7 @@ import {
 import { useCallback, useRef, useState } from 'react';
 import { Alert, AppState, Platform } from 'react-native';
 
+import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import {
   getSpeechLocaleAvailability,
@@ -13,6 +14,8 @@ import {
   type NativeSpeechSession,
 } from '@/services/nativeSpeechRecognition';
 import { transcribeAudio } from '@/services/speechToText';
+
+const log = createScopedLogger('[useRecordingSession]');
 
 export interface RecordingSessionResult {
   transcript: string;
@@ -85,17 +88,15 @@ export function useRecordingSession({
       try {
         nativeSession?.abort();
       } catch (error) {
-        if (__DEV__) {
-          console.warn(`[Recording] failed to abort native session during ${reason}`, error);
-        }
+        log.warn('failed to abort native session during', reason, error);
       }
 
       if (shouldStopRecorder && !recorderReleasedRef.current) {
         try {
           await audioRecorder.stop();
         } catch (error) {
-          if (!handleRecorderError(`forceStopRecording:${reason}`, error) && __DEV__) {
-            console.warn('[Recording] failed to stop audio recorder during cleanup', error);
+          if (!handleRecorderError(`forceStopRecording:${reason}`, error)) {
+            log.warn('failed to stop audio recorder during cleanup', error);
           }
         }
       }
@@ -103,9 +104,7 @@ export function useRecordingSession({
       try {
         await setAudioModeAsync({ allowsRecording: false });
       } catch (error) {
-        if (__DEV__) {
-          console.warn(`[Recording] failed to reset audio mode during ${reason}`, error);
-        }
+        log.warn('failed to reset audio mode during', reason, error);
       } finally {
         skipRecorderRef.current = false;
         hasAutoStoppedRecordingRef.current = false;
@@ -154,13 +153,11 @@ export function useRecordingSession({
       if (nativeResultPromise) {
         try {
           const nativeResult = await nativeResultPromise;
-          if (__DEV__) {
-            console.log('[Recording] native result', nativeResult);
-          }
+          log.debug('native result', nativeResult);
           transcriptText = nativeResult.transcript?.trim() ?? '';
           recordedUri = nativeResult.recordedUri ?? undefined;
-          if (!transcriptText && nativeResult.error && __DEV__) {
-            console.warn('[Recording] Native STT returned empty result', nativeResult.error);
+          if (!transcriptText && nativeResult.error) {
+            log.warn('Native STT returned empty result', nativeResult.error);
           }
           nativeError = nativeResult.error;
           nativeErrorCode = nativeResult.errorCode;
@@ -174,12 +171,10 @@ export function useRecordingSession({
             normalizedNativeError?.includes('too many requests') ||
             false;
         } catch (error) {
-          if (__DEV__) {
-            console.warn('[Recording] Native STT failed', error);
-          }
+          log.warn('Native STT failed', error);
         }
-      } else if (__DEV__) {
-        console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
+      } else {
+        log.debug('no native session, will rely on backup', { uriPresent: Boolean(uri) });
       }
 
       const hasNativeSession = Boolean(nativeResultPromise);
@@ -189,12 +184,10 @@ export function useRecordingSession({
       if (shouldFallbackToGoogle) {
         try {
           const fallbackUri = uri ?? recordedUri;
-          if (__DEV__) {
-            console.log('[Recording] fallback to Google STT', {
-              locale: transcriptionLocale,
-              uriLength: fallbackUri?.length ?? 0,
-            });
-          }
+          log.debug('fallback to Google STT', {
+            locale: transcriptionLocale,
+            uriLength: fallbackUri?.length ?? 0,
+          });
           transcriptText = await transcribeAudio({
             uri: fallbackUri!,
             languageCode: transcriptionLocale,
@@ -234,17 +227,13 @@ export function useRecordingSession({
         return { transcript: '', error: 'recorder_released' };
       }
       nativeSession?.abort();
-      if (__DEV__) {
-        console.error('Failed to stop recording:', err);
-      }
+      log.error('Failed to stop recording', err);
       return { transcript: '', error: err instanceof Error ? err.message : 'stop_failed' };
     } finally {
       try {
         await setAudioModeAsync({ allowsRecording: false });
       } catch (err) {
-        if (__DEV__) {
-          console.warn('Failed to reset audio mode after recording:', err);
-        }
+        log.warn('Failed to reset audio mode after recording', err);
       }
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
@@ -296,9 +285,9 @@ export function useRecordingSession({
 
         if (__DEV__) {
           if (!nativeSessionRef.current && Platform.OS === 'web') {
-            console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
+            log.warn('web: native session missing; check browser SpeechRecognition support/https');
           }
-          console.log('[Recording] native session', {
+          log.debug('native session', {
             hasSession: Boolean(nativeSessionRef.current),
             locale: transcriptionLocale,
             canPersistAudio,
@@ -310,7 +299,7 @@ export function useRecordingSession({
           await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
           audioRecorder.record();
         } else if (__DEV__) {
-          console.log('[Recording] skipping audioRecorder because native session active');
+          log.debug('skipping audioRecorder because native session active');
         }
 
         setIsRecording(true);
@@ -322,9 +311,7 @@ export function useRecordingSession({
         skipRecorderRef.current = false;
         isRecordingRef.current = false;
         handleRecorderError('startRecording', err);
-        if (__DEV__) {
-          console.error('Failed to start recording:', err);
-        }
+        log.error('Failed to start recording', err);
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       }
     },

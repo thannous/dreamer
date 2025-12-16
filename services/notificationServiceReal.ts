@@ -2,8 +2,11 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
 import { getTranslator } from '@/lib/i18n';
+import { createScopedLogger } from '@/lib/logger';
 import type { RitualId } from '@/lib/inspirationRituals';
 import type { NotificationSettings } from '@/lib/types';
+
+const log = createScopedLogger('[Notifications]');
 
 // Array of smart, motivational notification prompt keys
 const NOTIFICATION_PROMPT_KEYS = [
@@ -148,7 +151,7 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
   // Check if either weekday or weekend notifications are enabled
   if (!settings.weekdayEnabled && !settings.weekendEnabled) {
     if (__DEV__) {
-      console.log('All notification types disabled');
+      log.debug('All notification types disabled');
     }
     return;
   }
@@ -176,11 +179,11 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
 
   if (__DEV__) {
     if (settings.weekdayEnabled && settings.weekendEnabled) {
-      console.log(`Scheduled daily notification for ${timeToUse} (weekday time used - platform doesn't support different times for weekdays/weekends)`);
+      log.debug(`Scheduled daily notification for ${timeToUse} (weekday time used - platform doesn't support different times for weekdays/weekends)`);
     } else if (settings.weekdayEnabled) {
-      console.log(`Scheduled daily notification for ${settings.weekdayTime} (weekday only)`);
+      log.debug(`Scheduled daily notification for ${settings.weekdayTime} (weekday only)`);
     } else {
-      console.log(`Scheduled daily notification for ${settings.weekendTime} (weekend only)`);
+      log.debug(`Scheduled daily notification for ${settings.weekendTime} (weekend only)`);
     }
   }
 }
@@ -218,7 +221,7 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
   });
 
   if (__DEV__) {
-    console.log(`Scheduled ritual reminder for ${timeToUse} (${ritualId})`);
+    log.debug(`Scheduled ritual reminder for ${timeToUse} (${ritualId})`);
   }
 }
 
@@ -242,7 +245,7 @@ export async function sendTestNotification(): Promise<void> {
   });
 
   if (__DEV__) {
-    console.log('Scheduled test notification in 5 seconds');
+    log.debug('Scheduled test notification in 5 seconds');
   }
 }
 
@@ -257,7 +260,7 @@ export async function cancelAllNotifications(): Promise<void> {
   await Notifications.cancelAllScheduledNotificationsAsync();
 
   if (__DEV__) {
-    console.log('Cancelled all notifications');
+    log.debug('Cancelled all notifications');
   }
 }
 

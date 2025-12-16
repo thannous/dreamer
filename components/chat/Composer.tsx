@@ -50,6 +50,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { createScopedLogger } from '@/lib/logger';
+
+const log = createScopedLogger('[Composer]');
 
 // Try to import KeyboardStickyView if the native module exists.
 // Guard with NativeModules so Expo Go (no native module) doesn't throw during require.
@@ -226,9 +229,7 @@ export function Composer({
 
       // Block on Android 13+ if user cancelled/declined the download
       if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
-        if (__DEV__) {
-          console.log('[Composer] offline model not ready, aborting start');
-        }
+        log.debug('offline model not ready, aborting start');
         return;
       }
 

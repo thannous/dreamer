@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
+import { logger } from '@/lib/logger';
 import * as FileSystem from 'expo-file-system';
 import { File } from 'expo-file-system';
 import { Platform } from 'react-native';
@@ -47,7 +48,7 @@ async function readAudioAsBase64(uri: string): Promise<string> {
     }
     return await base64; // handle potential promise
   } catch (error) {
-    console.warn('[speechToText] File API failed, falling back to readAsStringAsync', error);
+    logger.warn('[speechToText] File API failed, falling back to readAsStringAsync', error);
     return FileSystem.readAsStringAsync(uri, {
       encoding: 'base64',
     });
@@ -86,24 +87,18 @@ export async function transcribeAudio({
   uri,
   languageCode = 'fr-FR',
 }: TranscribeParams): Promise<string> {
-  if (__DEV__) {
-    console.log('[speechToText] reading file', uri);
-  }
+  logger.debug('[speechToText] reading file', uri);
 
   const contentBase64 = await readAudioAsBase64(uri);
 
-  if (__DEV__) {
-    console.log('[speechToText] file size (base64 chars)', contentBase64.length);
-  }
+  logger.debug('[speechToText] file size (base64 chars)', contentBase64.length);
 
   // Pick encoding/sample hints based on the recorded file type, with platform defaults as fallback.
   const { encoding, sampleRateHertz } = inferEncodingHint(uri);
 
   const base = getApiBaseUrl();
 
-  if (__DEV__) {
-    console.log('[speechToText] POST', `${base}/transcribe`, { encoding, languageCode, sampleRateHertz });
-  }
+  logger.debug('[speechToText] POST', `${base}/transcribe`, { encoding, languageCode, sampleRateHertz });
 
   try {
     const res = await fetchJSON<{ transcript?: string }>(`${base}/transcribe`, {
@@ -118,15 +113,11 @@ export async function transcribeAudio({
       timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
     });
 
-    if (__DEV__) {
-      console.log('[speechToText] response', res);
-    }
+    logger.debug('[speechToText] response', res);
 
     return res.transcript ?? '';
   } catch (error) {
-    if (__DEV__) {
-      console.error('[speechToText] fetch failed', error);
-    }
+    logger.error('[speechToText] fetch failed', error);
     throw new Error('Failed to transcribe audio. Please try again.');
   }
 }

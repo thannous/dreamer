@@ -21,6 +21,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
+import { createScopedLogger } from '@/lib/logger';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
@@ -55,6 +56,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
+
+const log = createScopedLogger('[Recording]');
 
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
@@ -163,6 +166,15 @@ export default function RecordingScreen() {
     []
   );
 
+  const normalizeForComparison = useCallback((text: string): string => {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }, []);
+
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   const handleTranscriptChange = useCallback(
@@ -214,17 +226,15 @@ export default function RecordingScreen() {
       try {
         nativeSession?.abort();
       } catch (error) {
-        if (__DEV__) {
-          console.warn(`[Recording] failed to abort native session during ${reason}`, error);
-        }
+        log.warn('failed to abort native session during', reason, error);
       }
 
       if (shouldStopRecorder) {
         try {
           await audioRecorder.stop();
         } catch (error) {
-          if (!handleRecorderError(`forceStopRecording:${reason}`, error) && __DEV__) {
-            console.warn('[Recording] failed to stop audio recorder during cleanup', error);
+          if (!handleRecorderError(`forceStopRecording:${reason}`, error)) {
+            log.warn('failed to stop audio recorder during cleanup', error);
           }
         }
       }
@@ -232,9 +242,7 @@ export default function RecordingScreen() {
       try {
         await setAudioModeAsync({ allowsRecording: false });
       } catch (error) {
-        if (__DEV__) {
-          console.warn(`[Recording] failed to reset audio mode during ${reason}`, error);
-        }
+        log.warn('failed to reset audio mode during', reason, error);
       } finally {
         skipRecorderRef.current = false;
         hasAutoStoppedRecordingRef.current = false;
@@ -366,6 +374,24 @@ export default function RecordingScreen() {
     };
   }, [user, pendingGuestLimitDream, addDream, dreams.length, navigateAfterSave, resetComposer, t]);
 
+  // Show quota limit sheet (reusable for both guard and catch paths)
+  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
+    const modeToUse = options?.mode ?? 'limit';
+    const message = options?.message ?? '';
+
+    // Close existing sheets to avoid overlay
+    if (firstDreamPrompt) setFirstDreamPrompt(null);
+    if (analyzePromptDream) setAnalyzePromptDream(null);
+
+    // Don't show upsell for paid tiers (edge case: network error)
+    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
+
+    setQuotaSheetMode(modeToUse);
+    setQuotaSheetMessage(message);
+    setShowQuotaLimitSheet(true);
+    return true;
+  }, [tier, firstDreamPrompt, analyzePromptDream]);
+
   const stopRecording = useCallback(async () => {
     let nativeSession: NativeSpeechSession | null = null;
     let nativeResultPromise: Promise<{
@@ -407,13 +433,11 @@ export default function RecordingScreen() {
       if (nativeResultPromise) {
         try {
           const nativeResult = await nativeResultPromise;
-          if (__DEV__) {
-            console.log('[Recording] native result', nativeResult);
-          }
+          log.debug('native result', nativeResult);
           transcriptText = nativeResult.transcript?.trim() ?? '';
           recordedUri = nativeResult.recordedUri ?? undefined;
-          if (!transcriptText && nativeResult.error && __DEV__) {
-            console.warn('[Recording] Native STT returned empty result', nativeResult.error);
+          if (!transcriptText && nativeResult.error) {
+            log.warn('Native STT returned empty result', nativeResult.error);
           }
           nativeError = nativeResult.error;
           nativeErrorCode = nativeResult.errorCode;
@@ -427,12 +451,10 @@ export default function RecordingScreen() {
             normalizedError?.includes('too many requests') ||
             false;
         } catch (error) {
-          if (__DEV__) {
-            console.warn('[Recording] Native STT failed', error);
-          }
+          log.warn('Native STT failed', error);
         }
-      } else if (__DEV__) {
-        console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
+      } else {
+        log.debug('no native session, will rely on backup', { uriPresent: Boolean(uri) });
       }
 
       // Only fallback to server-side transcription when native speech recognition was not used.
@@ -442,14 +464,12 @@ export default function RecordingScreen() {
       if (shouldFallbackToGoogle) {
         try {
           const fallbackUri = uri ?? recordedUri;
-          if (__DEV__) {
-            console.log('[Recording] fallback to Google STT', {
-              locale: transcriptionLocale,
-              nativeError,
-              nativeErrorCode,
-              uriLength: fallbackUri?.length ?? 0,
-            });
-          }
+          log.debug('fallback to Google STT', {
+            locale: transcriptionLocale,
+            nativeError,
+            nativeErrorCode,
+            uriLength: fallbackUri?.length ?? 0,
+          });
           transcriptText = await transcribeAudio({
             uri: fallbackUri!,
             languageCode: transcriptionLocale,
@@ -470,14 +490,12 @@ export default function RecordingScreen() {
         const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
         const normalizedFinal = normalizeForComparison(transcriptText);
 
-        if (__DEV__) {
-          console.log('[stopRecording]', {
-            baseLength: normalizedBase.length,
-            finalLength: normalizedFinal.length,
-            baseSample: normalizedBase.substring(0, 30) + '...',
-            finalSample: normalizedFinal.substring(0, 30) + '...',
-          });
-        }
+        log.debug('stopRecording', {
+          baseLength: normalizedBase.length,
+          finalLength: normalizedFinal.length,
+          baseSample: normalizedBase.substring(0, 30) + '...',
+          finalSample: normalizedFinal.substring(0, 30) + '...',
+        });
 
         // Calculate similarity: if base and final are very similar (>90%), assume partials gave us the full text
         const baseLen = normalizedBase.length;
@@ -489,11 +507,9 @@ export default function RecordingScreen() {
         // If final is essentially same as base with 90%+ similarity and starts similarly
         // it means partials already gave us the transcript
         if (similarity > 0.9 && normalizedFinal.startsWith(normalizedBase.substring(0, Math.min(20, normalizedBase.length)))) {
-          if (__DEV__) {
-            console.log('[stopRecording] final very similar to base, using final (may have corrections)', {
-              similarity: similarity.toFixed(2),
-            });
-          }
+          log.debug('stopRecording final very similar to base, using final (may have corrections)', {
+            similarity: similarity.toFixed(2),
+          });
           // Use final as-is (it might have corrections from the STT engine)
           baseTranscriptRef.current = transcriptText;
           setTranscript(transcriptText);
@@ -516,17 +532,13 @@ export default function RecordingScreen() {
         return;
       }
       nativeSession?.abort();
-      if (__DEV__) {
-        console.error('Failed to stop recording:', err);
-      }
+      log.error('Failed to stop recording', err);
       showQuotaSheet({ mode: 'error', message: t('recording.alert.stop_failed') });
     } finally {
       try {
         await setAudioModeAsync({ allowsRecording: false });
       } catch (err) {
-        if (__DEV__) {
-          console.warn('Failed to reset audio mode after recording:', err);
-        }
+        log.warn('Failed to reset audio mode after recording', err);
       }
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
@@ -534,12 +546,13 @@ export default function RecordingScreen() {
   }, [
     audioRecorder,
     transcriptionLocale,
-    t,
-    combineTranscript,
-    lengthLimitMessage,
-    handleRecorderError,
-    showQuotaSheet,
-  ]);
+	    t,
+	    combineTranscript,
+      normalizeForComparison,
+	    lengthLimitMessage,
+	    handleRecorderError,
+	    showQuotaSheet,
+	  ]);
 
   const startRecording = useCallback(async () => {
     try {
@@ -580,9 +593,7 @@ export default function RecordingScreen() {
 
       // Block on Android 13+ if user cancelled/declined the download
       if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
-        if (__DEV__) {
-          console.log('[Recording] offline model not ready, aborting start');
-        }
+        log.debug('offline model not ready, aborting start');
         setIsRecording(false);
         setIsPreparingRecording(false);
         isRecordingRef.current = false;
@@ -612,23 +623,21 @@ export default function RecordingScreen() {
       // for a server-side fallback transcription.
       const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
       skipRecorderRef.current = Boolean(nativeSessionRef.current);
-      if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
-        console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
+      if (!nativeSessionRef.current && Platform.OS === 'web') {
+        log.warn('web: native session missing; check browser SpeechRecognition support/https');
       }
-      if (__DEV__) {
-        console.log('[Recording] native session', {
-          hasSession: Boolean(nativeSessionRef.current),
-          locale: transcriptionLocale,
-          canPersistAudio,
-        });
-      }
+      log.debug('native session', {
+        hasSession: Boolean(nativeSessionRef.current),
+        locale: transcriptionLocale,
+        canPersistAudio,
+      });
 
       hasAutoStoppedRecordingRef.current = false;
       if (!skipRecorderRef.current) {
         await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
         audioRecorder.record();
-      } else if (__DEV__) {
-        console.log('[Recording] skipping audioRecorder because native session active');
+      } else {
+        log.debug('skipping audioRecorder because native session active');
       }
 
       isRecordingRef.current = true;
@@ -640,9 +649,7 @@ export default function RecordingScreen() {
       skipRecorderRef.current = false;
       isRecordingRef.current = false;
       handleRecorderError('startRecording', err);
-      if (__DEV__) {
-        console.error('Failed to start recording:', err);
-      }
+      log.error('Failed to start recording', err);
       setIsRecording(false);
       setIsPreparingRecording(false);
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
@@ -750,9 +757,7 @@ export default function RecordingScreen() {
           };
         } catch (err) {
           // Silently fail and proceed with default/derived values
-          if (__DEV__) {
-            console.warn('[Recording] Quick categorization failed:', err);
-          }
+          log.warn('Quick categorization failed', err);
         }
       }
 
@@ -832,24 +837,6 @@ export default function RecordingScreen() {
     blurActiveElement();
     router.push('/(tabs)/journal');
   }, [analyzePromptDream]);
-
-  // Show quota limit sheet (reusable for both guard and catch paths)
-  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
-    const modeToUse = options?.mode ?? 'limit';
-    const message = options?.message ?? '';
-
-    // Close existing sheets to avoid overlay
-    if (firstDreamPrompt) setFirstDreamPrompt(null);
-    if (analyzePromptDream) setAnalyzePromptDream(null);
-
-    // Don't show upsell for paid tiers (edge case: network error)
-    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
-
-    setQuotaSheetMode(modeToUse);
-    setQuotaSheetMessage(message);
-    setShowQuotaLimitSheet(true);
-    return true;
-  }, [tier, firstDreamPrompt, analyzePromptDream]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);

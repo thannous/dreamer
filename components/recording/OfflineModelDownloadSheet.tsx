@@ -1,6 +1,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { createScopedLogger } from '@/lib/logger';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
@@ -11,6 +12,8 @@ type OfflineModelDownloadSheetProps = {
   locale: string;
   onDownloadComplete: (success: boolean) => void;
 };
+
+const log = createScopedLogger('[OfflineModelDownloadSheet]');
 
 export function OfflineModelDownloadSheet({
   visible,
@@ -25,27 +28,21 @@ export function OfflineModelDownloadSheet({
   const handleDownload = useCallback(async () => {
     try {
       setIsDownloading(true);
-      if (__DEV__) {
-        console.log('[OfflineModelDownloadSheet] triggering offline model download', { locale });
-      }
+      log.debug('triggering offline model download', { locale });
 
       const res = await ExpoSpeechRecognitionModule.androidTriggerOfflineModelDownload?.({ locale });
       const downloadSuccess = res?.status === 'download_success' || res?.status === 'opened_dialog';
 
-      if (__DEV__) {
-        console.log('[OfflineModelDownloadSheet] offline model download response', {
-          locale,
-          status: res?.status,
-          success: downloadSuccess,
-        });
-      }
+      log.debug('offline model download response', {
+        locale,
+        status: res?.status,
+        success: downloadSuccess,
+      });
 
       onDownloadComplete(downloadSuccess);
       onClose();
     } catch (error) {
-      if (__DEV__) {
-        console.warn('[OfflineModelDownloadSheet] offline model download failed', { locale, error });
-      }
+      log.warn('offline model download failed', { locale, error });
       onDownloadComplete(false);
       onClose();
     } finally {
@@ -54,9 +51,7 @@ export function OfflineModelDownloadSheet({
   }, [locale, onDownloadComplete, onClose]);
 
   const handleCancel = useCallback(() => {
-    if (__DEV__) {
-      console.log('[OfflineModelDownloadSheet] offline model download cancelled by user', { locale });
-    }
+    log.debug('offline model download cancelled by user', { locale });
     onDownloadComplete(false);
     onClose();
   }, [locale, onDownloadComplete, onClose]);
