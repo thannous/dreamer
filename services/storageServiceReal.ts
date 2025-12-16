@@ -2,6 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
+import { logger } from '@/lib/logger';
 import type {
   DreamAnalysis,
   DreamMutation,
@@ -21,6 +22,7 @@ const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 const MAX_CHAT_HISTORY_FOR_STORAGE = 50;
 const IMAGE_CACHE_DIR = FileSystemLegacy.cacheDirectory ?? FileSystemLegacy.documentDirectory ?? null;
 // Store large payloads on the filesystem to avoid Android CursorWindow limits in AsyncStorage
@@ -53,6 +55,7 @@ type IndexedDBStorage = {
 // In-memory fallback if AsyncStorage is not installed yet
 const memoryStore: Record<string, string> = {};
 let AsyncStorageRef: AsyncStorageModule | null | undefined;
+let SQLiteKvStoreRef: AsyncStorageModule | null | undefined;
 let indexedDBStorage: IndexedDBStorage | null | undefined;
 
 const IDB_DB_NAME = 'gemini_dream_journal';
@@ -207,7 +210,7 @@ const webStorage: StorageLike | null =
     ? ((globalThis as unknown as { localStorage?: StorageLike }).localStorage ?? null)
     : null;
 
-async function getAsyncStorage(): Promise<AsyncStorageModule | null> {
+async function getLegacyAsyncStorage(): Promise<AsyncStorageModule | null> {
   // The web implementation of AsyncStorage is a thin wrapper around localStorage,
   // which does not have enough quota for storing dream images. Force the web
   // platform to use the IndexedDB pathway instead so we can persist large payloads.
@@ -218,7 +221,7 @@ async function getAsyncStorage(): Promise<AsyncStorageModule | null> {
 
   if (AsyncStorageRef !== undefined) return AsyncStorageRef;
   try {
-    const mod = require('@react-native-async-storage/async-storage') as
+    const mod = (await import('@react-native-async-storage/async-storage')) as
       | AsyncStorageModule
       | { default: AsyncStorageModule };
     AsyncStorageRef = 'default' in mod ? mod.default : mod;
@@ -228,7 +231,105 @@ async function getAsyncStorage(): Promise<AsyncStorageModule | null> {
   return AsyncStorageRef;
 }
 
+async function getSQLiteKvStore(): Promise<AsyncStorageModule | null> {
+  // Web support for expo-sqlite requires additional WASM + COOP/COEP setup; keep the
+  // existing IndexedDB/localStorage pathway on web to avoid bundling issues.
+  if (Platform.OS === 'web') {
+    SQLiteKvStoreRef = null;
+    return SQLiteKvStoreRef;
+  }
+
+  if (SQLiteKvStoreRef !== undefined) return SQLiteKvStoreRef;
+  try {
+    const mod = (await import('expo-sqlite/kv-store')) as AsyncStorageModule | { default: AsyncStorageModule };
+    SQLiteKvStoreRef = 'default' in mod ? mod.default : mod;
+  } catch {
+    SQLiteKvStoreRef = null;
+  }
+  return SQLiteKvStoreRef;
+}
+
 async function getItem(key: string): Promise<string | null> {
+  const kv = await getSQLiteKvStore();
+  const legacyAS = await getLegacyAsyncStorage();
+
+  if (Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && kv) {
+    const start = Date.now();
+    try {
+      const value = await kv.getItem(key);
+      if (value != null) {
+        if (__DEV__) {
+          logger.debug('[storageServiceReal] kv-store hit', {
+            key,
+            bytes: value.length,
+            ms: Date.now() - start,
+          });
+        }
+        return value;
+      }
+    } catch (error) {
+      if (__DEV__) {
+        console.warn(`Failed to read kv-store key ${key}`, error);
+      }
+    }
+
+    const fileValue = await readFileBackedItem(key);
+    if (fileValue != null) {
+      await kv.setItem(key, fileValue);
+      await deleteFileBackedItem(key);
+      if (legacyAS) {
+        try {
+          await legacyAS.removeItem(key);
+        } catch {
+          // Best-effort cleanup
+        }
+      }
+      if (__DEV__) {
+        logger.debug('[storageServiceReal] migrated file-backed key to kv-store', {
+          key,
+          bytes: fileValue.length,
+        });
+      }
+      return fileValue;
+    }
+
+    if (legacyAS) {
+      try {
+        const legacyValue = await legacyAS.getItem(key);
+        if (legacyValue != null) {
+          await kv.setItem(key, legacyValue);
+          try {
+            await legacyAS.removeItem(key);
+          } catch {
+            // Best-effort cleanup
+          }
+          if (__DEV__) {
+            logger.debug('[storageServiceReal] migrated AsyncStorage key to kv-store', {
+              key,
+              bytes: legacyValue.length,
+            });
+          }
+          return legacyValue;
+        }
+      } catch (error) {
+        if (__DEV__) {
+          console.warn(`Failed to read legacy AsyncStorage key ${key}`, error);
+        }
+        if (error instanceof Error && error.message.includes('Row too big')) {
+          try {
+            await legacyAS.removeItem(key);
+          } catch {
+            // Best-effort cleanup
+          }
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    return null;
+  }
+
   if (shouldUseFileStorage(key)) {
     const fileValue = await readFileBackedItem(key);
     if (fileValue != null) {
@@ -236,13 +337,40 @@ async function getItem(key: string): Promise<string | null> {
     }
   }
 
-  const AS = await getAsyncStorage();
-  if (AS) {
+  if (kv) {
     try {
-      const value = await AS.getItem(key);
+      const value = await kv.getItem(key);
+      if (value != null) return value;
+    } catch (error) {
+      if (__DEV__) {
+        console.warn(`Failed to read kv-store key ${key}`, error);
+      }
+    }
+
+    if (legacyAS) {
+      try {
+        const legacyValue = await legacyAS.getItem(key);
+        if (legacyValue != null) {
+          await kv.setItem(key, legacyValue);
+          try {
+            await legacyAS.removeItem(key);
+          } catch {
+            // Best-effort cleanup
+          }
+          return legacyValue;
+        }
+      } catch {
+        // Ignore legacy read failures; caller can fall back to other stores.
+      }
+    }
+  }
+
+  if (legacyAS) {
+    try {
+      const value = await legacyAS.getItem(key);
       if (value != null && shouldUseFileStorage(key)) {
         await writeFileBackedItem(key, value);
-        await AS.removeItem(key);
+        await legacyAS.removeItem(key);
       }
       return value;
     } catch (error) {
@@ -251,7 +379,7 @@ async function getItem(key: string): Promise<string | null> {
       }
       if (error instanceof Error && error.message.includes('Row too big')) {
         try {
-          await AS.removeItem(key);
+          await legacyAS.removeItem(key);
         } catch {
           // Best-effort cleanup
         }
@@ -288,12 +416,35 @@ async function getItem(key: string): Promise<string | null> {
 }
 
 async function setItem(key: string, value: string): Promise<void> {
+  const kv = await getSQLiteKvStore();
+  const legacyAS = await getLegacyAsyncStorage();
+
+  if (Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && kv) {
+    const start = Date.now();
+    await kv.setItem(key, value);
+    await deleteFileBackedItem(key);
+    if (legacyAS) {
+      try {
+        await legacyAS.removeItem(key);
+      } catch {
+        // Best-effort cleanup
+      }
+    }
+    if (__DEV__) {
+      logger.debug('[storageServiceReal] kv-store write', {
+        key,
+        bytes: value.length,
+        ms: Date.now() - start,
+      });
+    }
+    return;
+  }
+
   if (shouldUseFileStorage(key)) {
     await writeFileBackedItem(key, value);
-    const AS = await getAsyncStorage();
-    if (AS) {
+    if (legacyAS) {
       try {
-        await AS.removeItem(key);
+        await legacyAS.removeItem(key);
       } catch {
         // Swallow cleanup errors
       }
@@ -301,8 +452,19 @@ async function setItem(key: string, value: string): Promise<void> {
     return;
   }
 
-  const AS = await getAsyncStorage();
-  if (AS) return AS.setItem(key, value);
+  if (kv) {
+    await kv.setItem(key, value);
+    if (legacyAS) {
+      try {
+        await legacyAS.removeItem(key);
+      } catch {
+        // Best-effort cleanup
+      }
+    }
+    return;
+  }
+
+  if (legacyAS) return legacyAS.setItem(key, value);
   const idb = await getIndexedDBStorage();
   if (idb) {
     await idb.setItem(key, value);
@@ -320,8 +482,26 @@ async function removeItem(key: string): Promise<void> {
     await deleteFileBackedItem(key);
   }
 
-  const AS = await getAsyncStorage();
-  if (AS) return AS.removeItem(key);
+  const kv = await getSQLiteKvStore();
+  const legacyAS = await getLegacyAsyncStorage();
+
+  if (kv) {
+    try {
+      await kv.removeItem(key);
+    } catch {
+      // Best-effort cleanup
+    }
+  }
+
+  if (legacyAS) {
+    try {
+      await legacyAS.removeItem(key);
+    } catch {
+      // Best-effort cleanup
+    }
+  }
+
+  if (kv || legacyAS) return;
   const idb = await getIndexedDBStorage();
   if (idb) {
     await idb.removeItem(key);
@@ -658,6 +838,20 @@ export async function saveFirstLaunchCompleted(completed: boolean): Promise<void
     }
     throw new Error('Failed to save first launch flag');
   }
+}
+
+export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  try {
+    return (await getItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`)) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+export async function setDreamsMigrationSynced(userId: string, synced: boolean): Promise<void> {
+  if (!userId) return;
+  await setItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`, synced ? 'true' : 'false');
 }
 
 export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
