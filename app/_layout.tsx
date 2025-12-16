@@ -21,6 +21,7 @@ import 'react-native-reanimated';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { SurrealTheme } from '@/constants/theme';
 import { AuthProvider } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
@@ -235,6 +236,7 @@ function RootLayoutNav() {
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>
+          <OfflineModelPromptHost />
         </DreamsProvider>
         <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
       </KeyboardProviderComponent>
