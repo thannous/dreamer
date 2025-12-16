@@ -135,6 +135,21 @@ export function useSubscription(options?: UseSubscriptionOptions) {
     (user?.user_metadata?.tier as SubscriptionTier | undefined) ||
     'free'
   );
+  const appMetadataTier = user?.app_metadata?.tier as SubscriptionTier | undefined;
+
+  useEffect(() => {
+    if (!userId) return;
+    if (appMetadataTier !== 'plus' && appMetadataTier !== 'premium') return;
+
+    // Optimistically treat Supabase-paid users as active while RevenueCat is loading.
+    // RevenueCat remains the source of truth and will overwrite this once resolved.
+    setStatus((current) => {
+      if (current?.isActive && (current.tier === 'plus' || current.tier === 'premium')) {
+        return current;
+      }
+      return { tier: appMetadataTier, isActive: true };
+    });
+  }, [appMetadataTier, userId]);
 
   const getTierFromUser = useCallback((input?: User | null): SubscriptionTier => {
     return (
