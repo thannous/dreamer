@@ -15,10 +15,14 @@ interface MockNotificationRequest {
   };
   trigger: {
     type: string;
+    weekday?: number;
     hour: number;
     minute: number;
   };
 }
+
+const WEEKDAY_WEEKDAYS: number[] = [2, 3, 4, 5, 6]; // Mon-Fri (1 = Sun, 7 = Sat)
+const WEEKEND_WEEKDAYS: number[] = [1, 7]; // Sun, Sat
 
 // Track mock notification state
 let mockPermissionsGranted = true;
@@ -56,28 +60,38 @@ export async function scheduleDailyNotification(settings: NotificationSettings):
     return;
   }
 
-  // Use weekday time if enabled, otherwise weekend time
-  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
-  const [hours, minutes] = timeToUse.split(':').map(Number);
-
-  // Create mock notification
-  const mockNotification: MockNotificationRequest = {
-    identifier: `mock-notification-${Date.now()}`,
-    content: {
-      title: 'Dream Journal Reminder',
-      body: 'Good morning! Capture your dreams before they fade away.',
-    },
-    trigger: {
-      type: 'daily',
-      hour: hours,
-      minute: minutes,
-    },
+  const createWeeklyMock = (weekday: number, time: string): MockNotificationRequest => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return {
+      identifier: `mock-notification-${weekday}-${Date.now()}`,
+      content: {
+        title: 'Dream Journal Reminder',
+        body: 'Good morning! Capture your dreams before they fade away.',
+      },
+      trigger: {
+        type: 'weekly',
+        weekday,
+        hour: hours,
+        minute: minutes,
+      },
+    };
   };
 
-  mockScheduledNotifications.push(mockNotification);
+  if (settings.weekdayEnabled) {
+    WEEKDAY_WEEKDAYS.forEach((weekday) => {
+      mockScheduledNotifications.push(createWeeklyMock(weekday, settings.weekdayTime));
+    });
+    console.log(`[MOCK NOTIFICATIONS] Scheduled weekday notifications @ ${settings.weekdayTime}`);
+  }
 
-  console.log(`[MOCK NOTIFICATIONS] Scheduled daily notification for ${timeToUse}`);
-  console.log('[MOCK NOTIFICATIONS] Mock notification details:', mockNotification);
+  if (settings.weekendEnabled) {
+    WEEKEND_WEEKDAYS.forEach((weekday) => {
+      mockScheduledNotifications.push(createWeeklyMock(weekday, settings.weekendTime));
+    });
+    console.log(`[MOCK NOTIFICATIONS] Scheduled weekend notifications @ ${settings.weekendTime}`);
+  }
+
+  console.log('[MOCK NOTIFICATIONS] Mock notifications:', mockScheduledNotifications);
 }
 
 export async function scheduleRitualReminder(settings: NotificationSettings, ritualId: RitualId): Promise<void> {
@@ -90,25 +104,36 @@ export async function scheduleRitualReminder(settings: NotificationSettings, rit
     return;
   }
 
-  const timeToUse = settings.weekdayEnabled ? settings.weekdayTime : settings.weekendTime;
-  const [hours, minutes] = timeToUse.split(':').map(Number);
-
-  const mockNotification: MockNotificationRequest = {
-    identifier: `mock-ritual-${Date.now()}`,
-    content: {
-      title: "Today's ritual",
-      body: `Ritual ${ritualId} reminder (mock)`,
-    },
-    trigger: {
-      type: 'daily',
-      hour: hours,
-      minute: minutes,
-    },
+  const createWeeklyMock = (weekday: number, time: string): MockNotificationRequest => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return {
+      identifier: `mock-ritual-${weekday}-${Date.now()}`,
+      content: {
+        title: "Today's ritual",
+        body: `Ritual ${ritualId} reminder (mock)`,
+      },
+      trigger: {
+        type: 'weekly',
+        weekday,
+        hour: hours,
+        minute: minutes,
+      },
+    };
   };
 
-  mockScheduledNotifications.push(mockNotification);
+  if (settings.weekdayEnabled) {
+    WEEKDAY_WEEKDAYS.forEach((weekday) => {
+      mockScheduledNotifications.push(createWeeklyMock(weekday, settings.weekdayTime));
+    });
+    console.log(`[MOCK NOTIFICATIONS] Scheduled weekday ritual reminders @ ${settings.weekdayTime}`);
+  }
 
-  console.log(`[MOCK NOTIFICATIONS] Scheduled ritual reminder for ${timeToUse}`);
+  if (settings.weekendEnabled) {
+    WEEKEND_WEEKDAYS.forEach((weekday) => {
+      mockScheduledNotifications.push(createWeeklyMock(weekday, settings.weekendTime));
+    });
+    console.log(`[MOCK NOTIFICATIONS] Scheduled weekend ritual reminders @ ${settings.weekendTime}`);
+  }
 }
 
 export async function sendTestNotification(): Promise<void> {
