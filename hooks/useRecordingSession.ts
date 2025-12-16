@@ -8,6 +8,7 @@ import { Alert, AppState, Platform } from 'react-native';
 
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import {
+  ensureOfflineSttModel,
   getSpeechLocaleAvailability,
   startNativeSpeechSession,
   type NativeSpeechSession,
@@ -24,11 +25,13 @@ export interface UseRecordingSessionOptions {
   /** Locale for speech recognition (e.g., 'en-US', 'fr-FR') */
   transcriptionLocale: string;
   /** Translation function for error messages */
-  t: (key: string, params?: Record<string, unknown>) => string;
+  t: (key: string, replacements?: Record<string, string | number>) => string;
   /** Callback when partial transcript is received */
-  onPartialTranscript?: (text: string) => void;
+  onPartialTranscript?: (text: string, context: { baseTranscript: string }) => void;
   /** Callback when transcript limit is reached */
   onLimitReached?: () => void;
+  /** Optional callback for language pack missing UI */
+  onLanguagePackMissing?: (info: { locale: string; installedLocales: string[] }) => void;
 }
 
 export function useRecordingSession({
@@ -36,6 +39,7 @@ export function useRecordingSession({
   t,
   onPartialTranscript,
   onLimitReached,
+  onLanguagePackMissing,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
   const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
@@ -207,16 +211,21 @@ export function useRecordingSession({
 
       if (!transcriptText && isLanguagePackMissing) {
         const availability = await getSpeechLocaleAvailability(transcriptionLocale);
-        const installedText = availability?.installedLocales.length
-          ? availability.installedLocales.join(', ')
-          : t('recording.alert.language_pack_missing.none');
-        Alert.alert(
-          t('recording.alert.language_pack_missing.title'),
-          t('recording.alert.language_pack_missing.message', {
-            locale: transcriptionLocale,
-            installed: installedText,
-          })
-        );
+        const installedLocales = availability?.installedLocales ?? [];
+        if (onLanguagePackMissing) {
+          onLanguagePackMissing({ locale: transcriptionLocale, installedLocales });
+        } else {
+          const installedText = installedLocales.length
+            ? installedLocales.join(', ')
+            : t('recording.alert.language_pack_missing.none');
+          Alert.alert(
+            t('recording.alert.language_pack_missing.title'),
+            t('recording.alert.language_pack_missing.message', {
+              locale: transcriptionLocale,
+              installed: installedText,
+            })
+          );
+        }
         return {
           transcript: '',
           recordedUri: recordedUri ?? uri,
@@ -227,7 +236,13 @@ export function useRecordingSession({
       return {
         transcript: transcriptText,
         recordedUri: recordedUri ?? uri,
-        error: !transcriptText && !uri && !hasNativeSession ? 'no_recording' : undefined,
+        error: !transcriptText
+          ? isRateLimited
+            ? 'rate_limited'
+            : !uri && !hasNativeSession
+              ? 'no_recording'
+              : 'no_speech'
+          : undefined,
       };
     } catch (err) {
       if (handleRecorderError('stopRecording', err)) {
@@ -249,11 +264,22 @@ export function useRecordingSession({
       hasAutoStoppedRecordingRef.current = false;
       skipRecorderRef.current = false;
     }
-  }, [audioRecorder, transcriptionLocale, handleRecorderError, t]);
+  }, [audioRecorder, onLanguagePackMissing, transcriptionLocale, handleRecorderError, t]);
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
       try {
+        if (Platform.OS === 'web') {
+          const hasSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
+          if (!hasSecureContext) {
+            Alert.alert(
+              t('recording.alert.permission_required.title'),
+              'Le micro est bloqué car la page n’est pas servie en HTTPS (ou localhost). Ouvre la page en HTTPS ou via localhost pour activer la dictée.'
+            );
+            return { success: false, error: 'insecure_context' };
+          }
+        }
+
         const { granted } = await AudioModule.requestRecordingPermissionsAsync();
         if (!granted) {
           Alert.alert(
@@ -263,16 +289,33 @@ export function useRecordingSession({
           return { success: false, error: 'permission_denied' };
         }
 
+        const modelReady = await ensureOfflineSttModel(transcriptionLocale);
+        if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
+          if (__DEV__) {
+            console.log('[Recording] offline model not ready, aborting start');
+          }
+          return { success: false, error: 'offline_model_not_ready' };
+        }
+
         const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
         if (localeAvailability?.installedLocales.length && !localeAvailability.isInstalled) {
-          const installedText = localeAvailability.installedLocales.join(', ') || t('recording.alert.language_pack_missing.none');
-          Alert.alert(
-            t('recording.alert.language_pack_missing.title'),
-            t('recording.alert.language_pack_missing.message', {
+          if (onLanguagePackMissing) {
+            onLanguagePackMissing({
               locale: transcriptionLocale,
-              installed: installedText,
-            })
-          );
+              installedLocales: localeAvailability.installedLocales,
+            });
+          } else {
+            const installedText =
+              localeAvailability.installedLocales.join(', ') ||
+              t('recording.alert.language_pack_missing.none');
+            Alert.alert(
+              t('recording.alert.language_pack_missing.title'),
+              t('recording.alert.language_pack_missing.message', {
+                locale: transcriptionLocale,
+                installed: installedText,
+              })
+            );
+          }
           return { success: false, error: 'language_pack_missing' };
         }
 
@@ -287,12 +330,12 @@ export function useRecordingSession({
 
         nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
           onPartial: (text) => {
-            onPartialTranscript?.(text);
+            onPartialTranscript?.(text, { baseTranscript: baseTranscriptRef.current });
           },
         });
 
         const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
-        skipRecorderRef.current = Boolean(nativeSessionRef.current);
+        skipRecorderRef.current = canPersistAudio;
 
         if (__DEV__) {
           if (!nativeSessionRef.current && Platform.OS === 'web') {
@@ -328,7 +371,7 @@ export function useRecordingSession({
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       }
     },
-    [audioRecorder, t, transcriptionLocale, onPartialTranscript, handleRecorderError]
+    [audioRecorder, onLanguagePackMissing, t, transcriptionLocale, onPartialTranscript, handleRecorderError]
   );
 
   const toggleRecording = useCallback(

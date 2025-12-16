@@ -5,7 +5,7 @@ import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Alert, AppState } from 'react-native';
 
-import { startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
+import { ensureOfflineSttModel, startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
 import { transcribeAudio } from '../../services/speechToText';
 
 import { useRecordingSession } from '../useRecordingSession';
@@ -42,6 +42,7 @@ vi.mock('../../services/nativeSpeechRecognition', () => ({
     isInstalled: true,
     installedLocales: [],
   }),
+  ensureOfflineSttModel: vi.fn().mockResolvedValue(false),
   startNativeSpeechSession: vi.fn().mockResolvedValue(null),
 }));
 
@@ -86,6 +87,7 @@ describe('useRecordingSession', () => {
       record: vi.fn(),
       stop: vi.fn().mockResolvedValue(undefined),
     } as never);
+    vi.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
     vi.mocked(startNativeSpeechSession).mockResolvedValue(null);
     vi.mocked(transcribeAudio).mockResolvedValue('transcribed text');
     vi.mocked(setAudioModeAsync).mockResolvedValue(undefined);
@@ -616,7 +618,7 @@ describe('useRecordingSession', () => {
         capturedOnPartial?.('partial text');
       });
 
-      expect(onPartialMock).toHaveBeenCalledWith('partial text');
+      expect(onPartialMock).toHaveBeenCalledWith('partial text', { baseTranscript: '' });
     });
   });
 });
