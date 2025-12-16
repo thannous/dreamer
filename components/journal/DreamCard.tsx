@@ -3,7 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
-import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
+import { getDreamThumbnailUri, getImageConfig } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -14,7 +14,6 @@ import Animated from 'react-native-reanimated';
 interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: () => void;
-  shouldLoadImage?: boolean;
   testID?: string;
   badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
 }
@@ -24,7 +23,6 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
-  shouldLoadImage = true,
   testID,
   badges,
 }: DreamCardProps) {
@@ -35,7 +33,7 @@ export const DreamCard = memo(function DreamCard({
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const thumbnailUri = useMemo(() => {
-    return dream.thumbnailUrl || getThumbnailUrl(dream.imageUrl);
+    return getDreamThumbnailUri({ thumbnailUrl: dream.thumbnailUrl, imageUrl: dream.imageUrl }) ?? '';
   }, [dream.thumbnailUrl, dream.imageUrl]);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
@@ -62,22 +60,19 @@ export const DreamCard = memo(function DreamCard({
                 <View style={[styles.placeholderShimmer, { backgroundColor: colors.backgroundSecondary }]} />
               </View>
             )}
-            {/* Actual Thumbnail - only load if shouldLoadImage is true */}
-            {shouldLoadImage && (
-              <Animated.View style={styles.imageWrapper}>
-                <Image
-                  source={{ uri: thumbnailUri }}
-                  style={styles.image}
-                  contentFit={imageConfig.contentFit}
-                  transition={imageConfig.transition}
-                  cachePolicy={imageConfig.cachePolicy}
-                  priority={imageConfig.priority}
-                  onLoad={() => setImageLoaded(true)}
-                  // Placeholder with blur hash for smoother loading
-                  placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-                />
-              </Animated.View>
-            )}
+            <Animated.View style={styles.imageWrapper}>
+              <Image
+                source={{ uri: thumbnailUri }}
+                style={styles.image}
+                contentFit={imageConfig.contentFit}
+                transition={imageConfig.transition}
+                cachePolicy={imageConfig.cachePolicy}
+                priority={imageConfig.priority}
+                onLoad={() => setImageLoaded(true)}
+                // Placeholder with blur hash for smoother loading
+                placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+              />
+            </Animated.View>
           </View>
         )}
         <View style={styles.content}>

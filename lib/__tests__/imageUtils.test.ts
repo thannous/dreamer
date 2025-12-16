@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getThumbnailUrl, getImageConfig, THUMBNAIL_SIZE } from '../imageUtils';
+import { getDreamThumbnailUri, getThumbnailUrl, getImageConfig, THUMBNAIL_SIZE } from '../imageUtils';
 
 describe('imageUtils', () => {
   describe('THUMBNAIL_SIZE', () => {
@@ -86,6 +86,22 @@ describe('imageUtils', () => {
       expect(config.priority).toBe('high');
       expect(config.transition).toBe(300);
       expect(config.contentFit).toBe('cover');
+    });
+  });
+
+  describe('getDreamThumbnailUri', () => {
+    it('returns thumbnailUrl when present', () => {
+      expect(getDreamThumbnailUri({ thumbnailUrl: 'https://example.com/thumb.jpg', imageUrl: 'https://example.com/full.jpg' }))
+        .toBe('https://example.com/thumb.jpg');
+    });
+
+    it('falls back to derived thumbnail when only imageUrl exists', () => {
+      const url = 'https://i.imgur.com/abc123.jpg';
+      expect(getDreamThumbnailUri({ imageUrl: url })).toBe('https://i.imgur.com/abc123s.jpg');
+    });
+
+    it('returns null when no urls are available', () => {
+      expect(getDreamThumbnailUri({})).toBe(null);
     });
   });
 });
