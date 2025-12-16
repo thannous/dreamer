@@ -18,6 +18,7 @@ import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } fr
 import { startOrContinueChat } from '@/services/geminiService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { computeNextInputAfterSend } from './composerUtils';
 import { useNetworkState } from 'expo-network';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
@@ -340,7 +341,7 @@ export default function DreamChatScreen() {
           // Auto-sync the dream with idempotence
           setIsLoading(true);
           if (!messageText) {
-            setInputText((current) => (current.trim() === textToSend ? '' : current));
+            setInputText((current) => computeNextInputAfterSend(current, textToSend));
           }
           try {
             // Ensure clientRequestId for idempotence (prevent duplicates)
@@ -426,7 +427,7 @@ export default function DreamChatScreen() {
       const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
       if (!messageText) {
-        setInputText((current) => (current.trim() === textToSend ? '' : current));
+        setInputText((current) => computeNextInputAfterSend(current, textToSend));
       }
       setIsLoading(true);
 
