@@ -18,6 +18,7 @@ import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } fr
 import { startOrContinueChat } from '@/services/geminiService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { generateUUID } from '@/lib/dreamUtils';
 import { computeNextInputAfterSend } from './composerUtils';
 import { useNetworkState } from 'expo-network';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
@@ -52,6 +53,24 @@ const QUICK_CATEGORIES = [
 ];
 
 const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
+
+const createChatMessage = (
+  role: 'user' | 'model',
+  text: string,
+  options?: { category?: Exclude<CategoryType, 'general'> }
+): ChatMessage => ({
+  id: generateUUID(),
+  role,
+  text,
+  createdAt: Date.now(),
+  ...(options?.category ? { meta: { category: options.category } } : {}),
+});
+
+// Track chat history migrations across screen mounts to prevent duplicate writes when
+// users rapidly open the same chat multiple times.
+const CHAT_HISTORY_MIGRATION_VERSION = 1;
+const chatHistoryMigrationInFlightByDreamId = new Map<number, Promise<void>>();
+const chatHistoryMigrationCompletedByDreamId = new Map<number, number>();
 
 export default function DreamChatScreen() {
   const { t } = useTranslation();
@@ -192,30 +211,75 @@ export default function DreamChatScreen() {
   useEffect(() => {
     if (!dream) return;
 
+    type LegacyChatMessage = Partial<Omit<ChatMessage, 'id'>> & {
+      id?: unknown;
+      createdAt?: unknown;
+    };
+
     // Initialize with existing chat history or start new conversation
     if (dream.chatHistory && dream.chatHistory.length > 0) {
       const localizedPrefix = t('dream_chat.draft_prefix');
+      let didChange = false;
       const normalized = dream.chatHistory.map((msg, index) => {
-        if (index !== 0 || msg.role !== 'user') return msg;
-        const text = msg.text ?? '';
+        const legacyMsg: LegacyChatMessage = msg;
+
+        const rawId = legacyMsg.id;
+        const fallbackId = `legacy-${dream.id}-${index}`;
+        const nextId = typeof rawId === 'string' && rawId.length > 0 ? rawId : fallbackId;
+        if (nextId !== rawId) {
+          didChange = true;
+        }
+
+        const rawCreatedAt = legacyMsg.createdAt;
+        const createdAt =
+          typeof rawCreatedAt === 'number' && Number.isFinite(rawCreatedAt) ? rawCreatedAt : undefined;
+        if (createdAt !== rawCreatedAt && rawCreatedAt !== undefined) {
+          didChange = true;
+        }
+
+        const next: ChatMessage = { ...msg, id: nextId, createdAt };
+
+        if (index !== 0 || next.role !== 'user') return next;
+
+        const text = next.text ?? '';
         for (const legacyPrefix of LEGACY_DRAFT_PREFIXES) {
           if (text.startsWith(legacyPrefix)) {
             const rest = text.slice(legacyPrefix.length).trimStart();
             const updatedText = rest ? `${localizedPrefix} ${rest}` : localizedPrefix;
-            return { ...msg, text: updatedText };
+            if (updatedText !== text) {
+              didChange = true;
+            }
+            return { ...next, text: updatedText };
           }
         }
-        return msg;
+        return next;
       });
 
       setMessages(normalized);
       lastCategorySentKeyRef.current = null; // allow new theme prompts when revisiting
+
+      if (
+        didChange &&
+        chatHistoryMigrationCompletedByDreamId.get(dream.id) !== CHAT_HISTORY_MIGRATION_VERSION &&
+        !chatHistoryMigrationInFlightByDreamId.has(dream.id)
+      ) {
+        const migration = (async () => {
+          try {
+            await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
+            chatHistoryMigrationCompletedByDreamId.set(dream.id, CHAT_HISTORY_MIGRATION_VERSION);
+          } catch (error) {
+            if (__DEV__) {
+              console.warn('[DreamChat] Failed to persist chat history migration', error);
+            }
+          } finally {
+            chatHistoryMigrationInFlightByDreamId.delete(dream.id);
+          }
+        })();
+        chatHistoryMigrationInFlightByDreamId.set(dream.id, migration);
+      }
     } else {
       // Start with initial AI greeting
-      const initialMessage: ChatMessage = {
-        role: 'model',
-        text: t('dream_chat.initial_greeting', { title: dream.title }),
-      };
+      const initialMessage = createChatMessage('model', t('dream_chat.initial_greeting', { title: dream.title }));
       setMessages([initialMessage]);
       lastCategorySentKeyRef.current = null;
     }
@@ -360,14 +424,12 @@ export default function DreamChatScreen() {
             const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
 
             // Add user message
-            const userMessage: ChatMessage = {
-              role: 'user',
-              text: displayText || textToSend,
-              ...(options?.category ? { meta: { category: options.category } } : {}),
-            };
+            const userMessage = createChatMessage('user', displayText || textToSend, {
+              category: options?.category,
+            });
             const updatedMessages = [...baseMessages, userMessage];
 
-            const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
+            const aiMessage = createChatMessage('model', aiResponseText);
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
@@ -419,11 +481,9 @@ export default function DreamChatScreen() {
       }
 
       // Add user message (use displayText if provided, otherwise use textToSend)
-      const userMessage: ChatMessage = {
-        role: 'user',
-        text: displayText || textToSend,
-        ...(options?.category ? { meta: { category: options.category } } : {}),
-      };
+      const userMessage = createChatMessage('user', displayText || textToSend, {
+        category: options?.category,
+      });
       const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
       if (!messageText) {
@@ -473,7 +533,7 @@ export default function DreamChatScreen() {
         aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
         }
 
-        const aiMessage: ChatMessage = { role: 'model', text: aiResponseText };
+        const aiMessage = createChatMessage('model', aiResponseText);
         const finalMessages = [...updatedMessages, aiMessage];
 
         setMessages(finalMessages);
@@ -505,10 +565,7 @@ export default function DreamChatScreen() {
         if (__DEV__) {
           console.error('Chat error:', error);
         }
-        const errorMessage: ChatMessage = {
-          role: 'model',
-          text: t('dream_chat.error_message'),
-        };
+        const errorMessage = createChatMessage('model', t('dream_chat.error_message'));
         setMessages([...updatedMessages, errorMessage]);
       } finally {
         setIsLoading(false);

@@ -135,8 +135,8 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
     mockQuotaEventStore.exploredDreamIds = [200, 201];
     const now2 = Date.now();
     const threeExplored: DreamAnalysis[] = [
-      buildDream({ id: 200, explorationStartedAt: now2, chatHistory: [{ role: 'user', text: 'hi' }] }),
-      buildDream({ id: 201, explorationStartedAt: now2, chatHistory: [{ role: 'user', text: 'hi2' }] }),
+      buildDream({ id: 200, explorationStartedAt: now2, chatHistory: [{ id: 'm1', role: 'user', text: 'hi' }] }),
+      buildDream({ id: 201, explorationStartedAt: now2, chatHistory: [{ id: 'm1', role: 'user', text: 'hi2' }] }),
     ];
     const provider3 = new MockQuotaProvider();
     mockGetSavedDreams.mockResolvedValueOnce(threeExplored);
@@ -151,7 +151,17 @@ describe('Quota rules by user tier (MockQuotaProvider)', () => {
 
   it('Premium: unlimited analyses, explorations, and messages', async () => {
     const heavy: DreamAnalysis[] = Array.from({ length: 50 }).map((_, i) =>
-      buildDream({ id: i + 1000, isAnalyzed: true, analyzedAt: Date.now(), explorationStartedAt: Date.now(), chatHistory: Array.from({ length: 200 }, (_, j) => ({ role: j % 2 === 0 ? 'user' : 'model', text: 'x' })) })
+      buildDream({
+        id: i + 1000,
+        isAnalyzed: true,
+        analyzedAt: Date.now(),
+        explorationStartedAt: Date.now(),
+        chatHistory: Array.from({ length: 200 }, (_, j) => ({
+          id: `m${j}`,
+          role: j % 2 === 0 ? 'user' : 'model',
+          text: 'x',
+        })),
+      })
     );
     mockGetSavedDreams.mockResolvedValue(heavy);
 
