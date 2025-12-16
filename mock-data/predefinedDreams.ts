@@ -33,10 +33,12 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     thumbnailUrl: 'https://picsum.photos/seed/ocean-stars/400/300',
     chatHistory: [
       {
+        id: 'm1',
         role: 'user',
         text: 'Why did I feel so peaceful in this dream?',
       },
       {
+        id: 'm2',
         role: 'model',
         text: 'The sense of peace you felt indicates that you\'re in harmony with your deeper self. Water often represents emotions, and being able to breathe in it suggests you\'re comfortable navigating your emotional landscape. The cosmic elements show you\'re connecting with something greater than yourself, which brings natural tranquility.',
       },
@@ -94,10 +96,12 @@ export const PREDEFINED_DREAMS: Omit<DreamAnalysis, 'id'>[] = [
     thumbnailUrl: 'https://picsum.photos/seed/future-self/400/300',
     chatHistory: [
       {
+        id: 'm1',
         role: 'user',
         text: 'Was this really a message from my future self?',
       },
       {
+        id: 'm2',
         role: 'model',
         text: 'While it\'s more likely a manifestation of your own wisdom and intuition, the message is still valid and meaningful. Your subconscious has access to your deepest knowledge about yourself, your patterns, and your trajectory. In that sense, it truly is your "future self" speaking - the part of you that knows you\'ll grow and overcome current challenges.',
       },

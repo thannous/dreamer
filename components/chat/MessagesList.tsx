@@ -356,7 +356,7 @@ export function MessagesList({
   useEffect(() => {
     if (!didInitialHydrate) return;
     for (let index = 0; index < messages.length; index++) {
-      hasAnimatedMessages.current.add(`${messages[index].role}-${index}`);
+      hasAnimatedMessages.current.add(messages[index].id);
     }
   }, [didInitialHydrate, hasAnimatedMessages, messages]);
 
@@ -377,7 +377,7 @@ export function MessagesList({
   // Render individual message with context
   const renderItem = useCallback(
     ({ item, index }: { item: ChatMessage; index: number }) => {
-      const messageId = `${item.role}-${index}`;
+      const messageId = item.id;
       const isNew = !didInitialHydrate && !hasAnimatedMessages.current.has(messageId);
       const isStreamingMessage =
         isStreamingSnapshot && index === messages.length - 1 && item.role === 'model';
@@ -433,7 +433,7 @@ export function MessagesList({
     ]
   );
 
-  const keyExtractor = useCallback((item: ChatMessage, index: number) => `${item.role}-${index}`, []);
+  const keyExtractor = useCallback((item: ChatMessage) => item.id, []);
 
   // Avoid copying data on every render (can trigger extra list work)
   const listData = messages;
