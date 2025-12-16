@@ -36,6 +36,7 @@ const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
 const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
+const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
 
 export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
@@ -326,6 +327,18 @@ export async function saveFirstLaunchCompleted(completed: boolean): Promise<void
     console.error('[MOCK STORAGE] Failed to save first launch flag:', error);
     throw new Error('Failed to save first launch flag');
   }
+}
+
+export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  const key = `${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`;
+  return mockStorage[key] === 'true';
+}
+
+export async function setDreamsMigrationSynced(userId: string, synced: boolean): Promise<void> {
+  if (!userId) return;
+  const key = `${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`;
+  mockStorage[key] = synced ? 'true' : 'false';
 }
 
 export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
