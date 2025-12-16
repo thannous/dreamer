@@ -177,15 +177,16 @@ describe('storageServiceMock', () => {
     });
   });
 
-  describe('notification settings', () => {
-    it('given saved notification settings when retrieving then returns saved settings', async () => {
-      // Given
-      const testSettings = {
-        isEnabled: true,
-        weekdayTime: '08:00',
-        weekendTime: '11:00',
-      };
-      await saveNotificationSettings(testSettings);
+	  describe('notification settings', () => {
+	    it('given saved notification settings when retrieving then returns saved settings', async () => {
+	      // Given
+	      const testSettings = {
+	        weekdayEnabled: true,
+	        weekdayTime: '08:00',
+	        weekendEnabled: false,
+	        weekendTime: '11:00',
+	      };
+	      await saveNotificationSettings(testSettings);
 
       // When
       const settings = await getNotificationSettings();
@@ -194,21 +195,22 @@ describe('storageServiceMock', () => {
       expect(settings).toEqual(testSettings);
     });
 
-    it('given no saved settings when retrieving then returns default settings', async () => {
+	    it('given no saved settings when retrieving then returns default settings', async () => {
       // Given
       resetMockStorage();
 
       // When
       const settings = await getNotificationSettings();
 
-      // Then
-      expect(settings).toEqual({
-        isEnabled: false,
-        weekdayTime: '07:00',
-        weekendTime: '10:00',
-      });
-    });
-  });
+	      // Then
+	      expect(settings).toEqual({
+	        weekdayEnabled: false,
+	        weekdayTime: '07:00',
+	        weekendEnabled: false,
+	        weekendTime: '10:00',
+	      });
+	    });
+	  });
 
   describe('theme preference', () => {
     it('given saved theme preference when retrieving then returns saved preference', async () => {

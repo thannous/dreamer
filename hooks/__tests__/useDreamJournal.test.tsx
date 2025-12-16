@@ -612,7 +612,7 @@ describe('useDreamJournal', () => {
         });
       }).rejects.toThrow(QuotaError);
 
-      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'free');
+      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'guest');
     });
 
     it('analyzes dream and generates image in parallel', async () => {
