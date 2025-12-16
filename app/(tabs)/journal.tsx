@@ -18,6 +18,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
@@ -74,8 +75,7 @@ export default function JournalListScreen() {
     }
   }, [showDateModal, showThemeModal]);
 
-  // Lazy loading state - track which items should load images
-  const [visibleItemIds, setVisibleItemIds] = useState<Set<number>>(new Set());
+  const prefetchedImageUrisRef = useRef(new Set<string>());
   const viewabilityConfigRef = useRef({
     itemVisiblePercentThreshold: JOURNAL_LIST.VIEWABILITY_THRESHOLD,
     minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
@@ -112,14 +112,18 @@ export default function JournalListScreen() {
     return sortDreamsByDate(filtered, false); // Newest first
   }, [dreams, searchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
 
-  // Initialize visible items with first items for immediate loading
+  // Preload first items to warm expo-image cache (no setState during scroll)
   useEffect(() => {
-    if (filteredDreams.length > 0) {
-      const initialIds = new Set(
-        filteredDreams.slice(0, JOURNAL_LIST.INITIAL_VISIBLE_COUNT).map(d => d.id)
-      );
-      setVisibleItemIds(initialIds);
-    }
+    prefetchedImageUrisRef.current.clear();
+    const initial = filteredDreams.slice(0, JOURNAL_LIST.INITIAL_VISIBLE_COUNT + JOURNAL_LIST.PRELOAD_BUFFER);
+    initial.forEach((dream) => {
+      const thumbnailUri = getDreamThumbnailUri(dream);
+      if (!thumbnailUri || prefetchedImageUrisRef.current.has(thumbnailUri)) {
+        return;
+      }
+      prefetchedImageUrisRef.current.add(thumbnailUri);
+      void preloadImage(thumbnailUri);
+    });
   }, [filteredDreams]);
 
   // Scroll to top when filters change
@@ -178,42 +182,38 @@ export default function JournalListScreen() {
   }
 
   const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
-    setVisibleItemIds((prevIds) => {
-      const newVisibleIds = new Set<number>();
-      const currentFilteredDreams = filteredDreamsRef.current;
+    const currentFilteredDreams = filteredDreamsRef.current;
+    const candidateIndexes = new Set<number>();
 
-      // Add currently visible items and preload buffer
-      viewableItems.forEach((item) => {
-        const dream = item.item as DreamAnalysis | undefined;
-        if (dream?.id) {
-          newVisibleIds.add(dream.id);
-
-          // Preload items ahead and behind
-          if (typeof item.index === 'number') {
-            for (let i = 1; i <= JOURNAL_LIST.PRELOAD_BUFFER; i++) {
-              const nextDream = currentFilteredDreams[item.index + i];
-              const prevDream = currentFilteredDreams[item.index - i];
-              if (nextDream) newVisibleIds.add(nextDream.id);
-              if (prevDream) newVisibleIds.add(prevDream.id);
-            }
-          }
-        }
-      });
-
-      // Only update if the set actually changed to avoid unnecessary re-renders
-      if (
-        prevIds.size === newVisibleIds.size &&
-        [...prevIds].every((id) => newVisibleIds.has(id))
-      ) {
-        return prevIds;
+    viewableItems.forEach((item) => {
+      if (typeof item.index !== 'number') {
+        return;
       }
-      return newVisibleIds;
+      for (let i = -JOURNAL_LIST.PRELOAD_BUFFER; i <= JOURNAL_LIST.PRELOAD_BUFFER; i++) {
+        const idx = item.index + i;
+        if (idx >= 0 && idx < currentFilteredDreams.length) {
+          candidateIndexes.add(idx);
+        }
+      }
+    });
+
+    candidateIndexes.forEach((idx) => {
+      const dream = currentFilteredDreams[idx];
+      if (!dream?.imageUrl) {
+        return;
+      }
+
+      const thumbnailUri = getDreamThumbnailUri(dream);
+      if (!thumbnailUri || prefetchedImageUrisRef.current.has(thumbnailUri)) {
+        return;
+      }
+
+      prefetchedImageUrisRef.current.add(thumbnailUri);
+      void preloadImage(thumbnailUri);
     });
   }).current;
 
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.INITIAL_VISIBLE_COUNT; // Load first 5 immediately
-
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
     const isExplored = isDreamExplored(item);
@@ -261,17 +261,15 @@ export default function JournalListScreen() {
           <DreamCard
             dream={item}
             onPress={() => router.push(`/journal/${item.id}`)}
-            shouldLoadImage={shouldLoadImage}
             badges={mobileBadges}
             testID={TID.List.DreamItem(item.id)}
           />
         </View>
       </View>
     );
-  }, [filteredDreams.length, visibleItemIds, colors, formatDreamListDate, t]);
+  }, [filteredDreams.length, colors, formatDreamListDate, t]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const shouldLoadImage = visibleItemIds.has(item.id) || index < JOURNAL_LIST.DESKTOP_INITIAL_COUNT;
     const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
@@ -323,13 +321,12 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={() => router.push(`/journal/${item.id}`)}
-          shouldLoadImage={shouldLoadImage}
           badges={badges}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [visibleItemIds, colors, formatDreamListDate, t]);
+  }, [colors, formatDreamListDate, t]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -416,7 +413,6 @@ export default function JournalListScreen() {
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
           data={filteredDreams}
-          extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           numColumns={desktopColumns}
@@ -431,7 +427,6 @@ export default function JournalListScreen() {
           testID={TID.List.Dreams}
           ref={flatListRef}
           data={filteredDreams}
-          extraData={visibleItemIds}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}

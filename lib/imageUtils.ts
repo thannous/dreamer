@@ -57,6 +57,23 @@ export function getThumbnailUrl(imageUrl: string, size: number = THUMBNAIL_SIZE)
   }
 }
 
+export function getDreamThumbnailUri(dream: {
+  thumbnailUrl?: string | null;
+  imageUrl?: string | null;
+}): string | null {
+  const thumbnailUrl = dream.thumbnailUrl ?? '';
+  if (thumbnailUrl) {
+    return thumbnailUrl;
+  }
+
+  const imageUrl = dream.imageUrl ?? '';
+  if (!imageUrl) {
+    return null;
+  }
+
+  return getThumbnailUrl(imageUrl);
+}
+
 /**
  * Get optimized image configuration for expo-image based on view type
  */
