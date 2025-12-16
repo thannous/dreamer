@@ -7,13 +7,14 @@ import { getDreamThumbnailUri, getImageConfig } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: () => void;
+  shouldLoadImage?: boolean;
   testID?: string;
   badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
 }
@@ -23,12 +24,12 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
+  shouldLoadImage = true,
   testID,
   badges,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
-  const [imageLoaded, setImageLoaded] = useState(false);
   const { t } = useTranslation();
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
@@ -54,25 +55,21 @@ export const DreamCard = memo(function DreamCard({
       >
         {dream.imageUrl && (
           <View style={styles.imageContainer}>
-            {/* Placeholder */}
-            {!imageLoaded && (
-              <View style={[styles.imagePlaceholder, { backgroundColor: colors.backgroundSecondary }]}>
-                <View style={[styles.placeholderShimmer, { backgroundColor: colors.backgroundSecondary }]} />
+            {/* Actual Thumbnail - only load if shouldLoadImage is true */}
+            {shouldLoadImage && (
+              <View style={styles.imageWrapper}>
+                <Image
+                  source={{ uri: thumbnailUri }}
+                  style={styles.image}
+                  contentFit={imageConfig.contentFit}
+                  transition={imageConfig.transition}
+                  cachePolicy={imageConfig.cachePolicy}
+                  priority={imageConfig.priority}
+                  // Placeholder with blur hash for smoother loading
+                  placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+                />
               </View>
             )}
-            <Animated.View style={styles.imageWrapper}>
-              <Image
-                source={{ uri: thumbnailUri }}
-                style={styles.image}
-                contentFit={imageConfig.contentFit}
-                transition={imageConfig.transition}
-                cachePolicy={imageConfig.cachePolicy}
-                priority={imageConfig.priority}
-                onLoad={() => setImageLoaded(true)}
-                // Placeholder with blur hash for smoother loading
-                placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-              />
-            </Animated.View>
           </View>
         )}
         <View style={styles.content}>
@@ -157,15 +154,6 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-  },
-  imagePlaceholder: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 1,
-  },
-  placeholderShimmer: {
-    width: '100%',
-    height: '100%',
-    opacity: 0.6,
   },
   content: {
     flex: 1,
