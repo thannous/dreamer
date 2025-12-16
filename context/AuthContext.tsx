@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 
 import { isMockModeEnabled } from '@/lib/env';
 import { getCurrentUser, onAuthChange } from '@/lib/auth';
+import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
 import type { SubscriptionTier } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
@@ -30,9 +31,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   const [loading, setLoading] = useState(true);
 
   // Circuit breaker for refresh cascades
-  const refreshAttemptsRef = useRef<number[]>([]);
-  const MAX_REFRESHES_PER_WINDOW = 3;
-  const REFRESH_WINDOW_MS = 10000; // 10 seconds
+  const refreshCircuitBreakerRef = useRef(createCircuitBreaker({ maxAttempts: 3, windowMs: 10000 }));
 
   const ensureSettingsTab = (nextUser: User | null) => {
     if (!nextUser) {
@@ -143,20 +142,11 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       const jwtRefreshTimeoutMs = options?.jwtRefreshTimeoutMs ?? 5000;
 
       if (!bypassCircuitBreaker) {
-        // Circuit breaker: prevent rapid-fire refresh cascades
-        const now = Date.now();
-        refreshAttemptsRef.current = refreshAttemptsRef.current.filter(
-          (timestamp: number) => now - timestamp < REFRESH_WINDOW_MS
-        );
-
-        if (refreshAttemptsRef.current.length >= MAX_REFRESHES_PER_WINDOW) {
-          // ✅ FIX: Log circuit breaker activation for diagnostics
+        const breaker = refreshCircuitBreakerRef.current;
+        if (breaker.shouldBlock()) {
           if (__DEV__) {
-            console.warn(
-              `[AuthContext] Circuit breaker: ${MAX_REFRESHES_PER_WINDOW} refreshes in ${REFRESH_WINDOW_MS}ms. Skipping refresh.`
-            );
+            console.warn('[AuthContext] Circuit breaker: skipping refresh.');
           }
-          // ✅ FIX: Return current user from state using functional update to avoid dependency on user closure
           return await new Promise<User | null>((resolve) => {
             setUser((currentUser) => {
               resolve(currentUser);
@@ -164,8 +154,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
             });
           });
         }
-
-        refreshAttemptsRef.current.push(now);
+        breaker.record();
       }
 
       // Refresh the JWT so DB-side auth.jwt() (used by quota triggers) reflects updated app_metadata.

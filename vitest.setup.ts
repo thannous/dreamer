@@ -81,6 +81,8 @@ vi.mock('expo-crypto', () => ({
 }));
 
 vi.mock('expo-file-system', () => {
+  const fileContents = new Map<string, string>();
+
   class MockFile {
     uri: string;
     constructor(uri: string) {
@@ -88,6 +90,12 @@ vi.mock('expo-file-system', () => {
     }
     base64() {
       return '';
+    }
+    async text() {
+      return fileContents.get(this.uri) ?? '';
+    }
+    write(value: string) {
+      fileContents.set(this.uri, value);
     }
   }
 
@@ -105,5 +113,17 @@ vi.mock('expo-file-system', () => {
     FileSystemUploadType: { RAW: 'raw' },
   };
 });
+
+vi.mock('expo-file-system/legacy', () => ({
+  documentDirectory: '/tmp/',
+  cacheDirectory: '/tmp/',
+  readAsStringAsync: vi.fn().mockResolvedValue(''),
+  writeAsStringAsync: vi.fn().mockResolvedValue(undefined),
+  deleteAsync: vi.fn().mockResolvedValue(undefined),
+  getInfoAsync: vi.fn().mockResolvedValue({ exists: true, isDirectory: false }),
+  makeDirectoryAsync: vi.fn().mockResolvedValue(undefined),
+  EncodingType: { Base64: 'base64' },
+  FileSystemUploadType: { RAW: 'raw' },
+}));
 
 process.env.EXPO_PUBLIC_MOCK_MODE = process.env.EXPO_PUBLIC_MOCK_MODE ?? 'false';
