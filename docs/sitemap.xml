@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://noctalia.app/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/cgu.html</loc>
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
@@ -9,12 +17,28 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/account-deletion.html</loc>
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/blog/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/being-chased-dreams.html</loc>
@@ -95,14 +119,6 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
-  </url>
-  <url>
-    <loc>https://noctalia.app/en/blog/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html</loc>
@@ -201,14 +217,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
-  </url>
-  <url>
     <loc>https://noctalia.app/en/legal-notice.html</loc>
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
@@ -233,12 +241,28 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
   </url>
   <url>
+    <loc>https://noctalia.app/es/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/es/aviso-legal.html</loc>
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/como-recordar-suenos.html</loc>
@@ -295,14 +319,6 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
-  </url>
-  <url>
-    <loc>https://noctalia.app/es/blog/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/por-que-sonamos-ciencia.html</loc>
@@ -433,14 +449,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
-  </url>
-  <url>
     <loc>https://noctalia.app/es/politica-privacidad.html</loc>
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
@@ -455,6 +463,22 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/</loc>
+    <lastmod>2025-12-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves.html</loc>
@@ -511,14 +535,6 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
-  </url>
-  <url>
-    <loc>https://noctalia.app/fr/blog/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/pourquoi-nous-revons-science.html</loc>
@@ -649,14 +665,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
-  </url>
-  <url>
     <loc>https://noctalia.app/fr/mentions-legales.html</loc>
     <lastmod>2025-12-16</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
@@ -679,14 +687,6 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
-  </url>
-  <url>
-    <loc>https://noctalia.app/index.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
   </url>
   <url>
     <loc>https://noctalia.app/mentions-legales.html</loc>
