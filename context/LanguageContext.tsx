@@ -1,16 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocales } from 'expo-localization';
 import { getLanguagePreference, saveLanguagePreference } from '@/services/storageService';
+import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import type { AppLanguage, LanguagePreference } from '@/lib/types';
-
-const SUPPORTED_LANGUAGES: AppLanguage[] = ['en', 'fr', 'es'];
-
-const normalizeLanguage = (code?: string | null): AppLanguage => {
-  if (code && SUPPORTED_LANGUAGES.includes(code as AppLanguage)) {
-    return code as AppLanguage;
-  }
-  return 'en';
-};
 
 const DEFAULT_LOCALE = {
   languageTag: 'en-US',
@@ -41,14 +33,22 @@ export type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [preference, setPreferenceState] = useState<LanguagePreference>('auto');
-  const [loaded, setLoaded] = useState(false);
+type LanguageProviderProps = React.PropsWithChildren<{
+  initialPreference?: LanguagePreference;
+}>;
+
+export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, initialPreference }) => {
+  const [preference, setPreferenceState] = useState<LanguagePreference>(initialPreference ?? 'auto');
+  const [loaded, setLoaded] = useState(() => initialPreference !== undefined);
   const locales = useLocales();
   const primaryLocale = locales[0];
 
   // Load language preference from storage on mount
   useEffect(() => {
+    if (initialPreference !== undefined) {
+      return;
+    }
+
     let mounted = true;
 
     async function loadPreference() {
@@ -73,11 +73,11 @@ export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [initialPreference]);
 
   // Detect system language
   const systemLanguage: AppLanguage = useMemo(
-    () => normalizeLanguage(primaryLocale?.languageCode),
+    () => normalizeAppLanguage(primaryLocale?.languageCode),
     [primaryLocale?.languageCode]
   );
 
@@ -92,10 +92,7 @@ export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }
 
   // Calculate effective language based on preference and system
   const language: AppLanguage = useMemo(() => {
-    if (preference === 'auto') {
-      return systemLanguage;
-    }
-    return preference as AppLanguage;
+    return resolveEffectiveLanguage(preference, systemLanguage);
   }, [preference, systemLanguage]);
 
   // Update preference and save to storage
