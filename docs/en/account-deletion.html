@@ -107,15 +107,34 @@
         </div>
     </main>
 
-    <footer class="py-10 border-t border-white/5 text-center text-gray-600 text-sm">
-        <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <span>(c) 2025 Thanh Chau - Noctalia. All rights reserved.</span>
-            <div class="flex gap-4">
-                <a href="legal-notice.html" class="hover:text-white transition-colors">Legal notice</a>
-                <a href="privacy-policy.html" class="hover:text-white transition-colors">Privacy</a>
-                <a href="terms.html" class="hover:text-white transition-colors">Terms</a>
-                <a href="account-deletion.html" class="text-dream-salmon">Account deletion</a>
+    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
+            <div class="col-span-1 md:col-span-2">
+                <a href="/en/" class="flex items-center gap-2 mb-4">
+                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
+                </a>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Your dream companion.</p>
             </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Resources</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/en/blog/" class="hidden sm:inline-flex hover:text-dream-salmon transition-colors">Blog</a></li>
+                    <li><a href="/en/guides/dream-symbols-dictionary.html" class="hover:text-dream-salmon transition-colors">Dream symbols</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Legal</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="legal-notice.html" class="hover:text-dream-salmon transition-colors">Legal notice</a></li>
+                    <li><a href="privacy-policy.html" class="hover:text-dream-salmon transition-colors">Privacy</a></li>
+                    <li><a href="terms.html" class="hover:text-dream-salmon transition-colors">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+            <span>&copy; 2025 Noctalia Inc.</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> for dreamers</span>
         </div>
     </footer>
     <script>lucide.createIcons();</script>
