@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
+import { createScopedLogger } from '@/lib/logger';
 import { initializeSubscription, isSubscriptionInitialized } from '@/services/subscriptionService';
+
+const log = createScopedLogger('[useSubscriptionInitialize]');
 
 export function useSubscriptionInitialize() {
   const { user, refreshUser } = useAuth();
@@ -29,50 +32,31 @@ export function useSubscriptionInitialize() {
           if (mounted) {
             setInitialized(true);
           }
-          console.log('[useSubscriptionInitialize] Already initialized for user', {
-            timestamp: new Date().toISOString(),
-            userId: user?.id,
-          });
+          log.debug('Already initialized for user', { userId: user?.id ?? null });
           return;
         }
 
-        console.log('[useSubscriptionInitialize] Initializing subscription for user', {
-          timestamp: new Date().toISOString(),
-          userId: user?.id,
-        });
+        log.debug('Initializing subscription for user', { userId: user?.id ?? null });
 
         if (!isSubscriptionInitialized()) {
           await initializeSubscription(user?.id ?? null);
-          console.log('[useSubscriptionInitialize] Subscription SDK initialized', {
-            timestamp: new Date().toISOString(),
-            userId: user?.id,
-          });
+          log.debug('Subscription SDK initialized', { userId: user?.id ?? null });
 
           // Refresh user to ensure app_metadata.tier is synced from server after RevenueCat init.
           // This fixes the race condition where subscription tier from RevenueCat differs from
           // the stale app_metadata in the restored session.
           // ✅ FIX: Use ref instead of direct dependency to avoid circular dependency
           await refreshUserRef.current();
-          console.log('[useSubscriptionInitialize] User refreshed after subscription init', {
-            timestamp: new Date().toISOString(),
-            userId: user?.id,
-          });
+          log.debug('User refreshed after subscription init', { userId: user?.id ?? null });
 
           initializedUserIdRef.current = user?.id ?? null;
         }
         if (mounted) {
           setInitialized(true);
         }
-        console.log('[useSubscriptionInitialize] Subscription initialization completed', {
-          timestamp: new Date().toISOString(),
-          userId: user?.id,
-        });
+        log.debug('Subscription initialization completed', { userId: user?.id ?? null });
       } catch (e) {
-        console.error('[useSubscriptionInitialize] Subscription initialization failed', {
-          timestamp: new Date().toISOString(),
-          userId: user?.id,
-          error: (e as Error).message,
-        });
+        log.error('Subscription initialization failed', { userId: user?.id ?? null }, e);
         if (mounted) {
           setError(e as Error);
           setInitialized(false);

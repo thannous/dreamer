@@ -6,6 +6,9 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
+import { createScopedLogger } from '@/lib/logger';
+
+const log = createScopedLogger('[GoogleSignInButton]');
 
 export default function GoogleSignInButton() {
   const [loading, setLoading] = useState(false);
@@ -14,38 +17,36 @@ export default function GoogleSignInButton() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    console.log('[GoogleSignInButton] User tapped "Continue with Google"');
+    log.debug('User tapped "Continue with Google"');
     try {
       if (Platform.OS === 'web') {
-        console.log('[GoogleSignInButton] Platform is Web, using OAuth popup');
+        log.debug('Platform is Web, using OAuth popup');
         requestStayOnSettingsIntent({ persist: true });
         await signInWithGoogleWeb();
         // Supabase handles redirect/popup; session will be captured via onAuthChange
         return;
       }
 
-      console.log('[GoogleSignInButton] Platform is Native, using Google Sign-In');
-      const user = await signInWithGoogle();
-      console.log('[GoogleSignInButton] ✓ Sign-in successful:', user.email);
+      log.debug('Platform is Native, using Google Sign-In');
+      await signInWithGoogle();
+      log.debug('Sign-in successful');
       requestStayOnSettingsIntent();
       // Navigation is handled by auth state listener in settings screen
     } catch (error: any) {
       clearStayOnSettingsIntent();
-      console.error('[GoogleSignInButton] ❌ Sign-in failed');
-      console.error('[GoogleSignInButton] Error message:', error.message);
-      console.error('[GoogleSignInButton] Full error:', error);
+      log.error('Sign-in failed', error);
 
       // Don't show error if user cancelled
       if (error.message === 'SIGN_IN_CANCELLED') {
-        console.log('[GoogleSignInButton] User cancelled the sign-in dialog');
+        log.debug('User cancelled the sign-in dialog');
       } else if (error.message?.includes('Play Services')) {
-        console.error('[GoogleSignInButton] Play Services error detected');
+        log.error('Play Services error detected', error);
         Alert.alert(
           t('auth.google.play_services_title'),
           t('auth.google.play_services_message')
         );
       } else {
-        console.error('[GoogleSignInButton] Showing generic error alert:', error.message);
+        log.warn('Showing generic error alert', error?.message);
         Alert.alert(
           t('auth.google.error_title'),
           error.message || t('auth.google.error_generic')
