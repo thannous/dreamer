@@ -16,31 +16,22 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
+import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
-import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
 import {
-  startNativeSpeechSession,
-  ensureOfflineSttModel,
   registerOfflineModelPromptHandler,
-  type NativeSpeechSession,
   type OfflineModelPromptHandler
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
-import { transcribeAudio } from '@/services/speechToText';
-import {
-  AudioModule,
-  setAudioModeAsync,
-  useAudioRecorder,
-} from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -63,7 +54,6 @@ export default function RecordingScreen() {
   const { t } = useTranslation();
 
   const [transcript, setTranscript] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
   const [firstDreamPrompt, setFirstDreamPrompt] = useState<DreamAnalysis | null>(null);
   const [analyzePromptDream, setAnalyzePromptDream] = useState<DreamAnalysis | null>(null);
@@ -72,11 +62,6 @@ export default function RecordingScreen() {
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [showGuestLimitSheet, setShowGuestLimitSheet] = useState(false);
   const [pendingGuestLimitDream, setPendingGuestLimitDream] = useState<DreamAnalysis | null>(null);
-  const audioRecorder = useAudioRecorder(RECORDING_OPTIONS);
-  const skipRecorderRef = useRef(false);
-  const recorderReleasedRef = useRef(false);
-  const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
-  const isRecordingRef = useRef(false);
   const recordingTransitionRef = useRef(false);
   const baseTranscriptRef = useRef('');
   const [lengthWarning, setLengthWarning] = useState('');
@@ -163,6 +148,15 @@ export default function RecordingScreen() {
     []
   );
 
+  const normalizeForComparison = useCallback((text: string): string => {
+    return text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }, []);
+
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   const handleTranscriptChange = useCallback(
@@ -175,86 +169,34 @@ export default function RecordingScreen() {
     [clampTranscript, lengthLimitMessage]
   );
 
-  const handleRecorderError = useCallback(
-    (context: string, error: unknown) => {
-      const released = handleRecorderReleaseError(context, error);
-      if (released) {
-        recorderReleasedRef.current = true;
-        isRecordingRef.current = false;
-      }
-      return released;
-    },
-    []
-  );
+  const stopRecordingFromPartialRef = useRef<(() => void) | null>(null);
 
-  const getRecorderIsRecording = useCallback(() => {
-    if (recorderReleasedRef.current) {
-      return false;
-    }
-    return isRecordingRef.current;
-  }, []);
-
-  const forceStopRecording = useCallback(
-    async (reason: 'blur' | 'unmount') => {
-      const hasNativeSession = Boolean(nativeSessionRef.current);
-      const recorderIsRecording = getRecorderIsRecording();
-      const shouldStopRecorder = !skipRecorderRef.current && recorderIsRecording;
-
-      if (!hasNativeSession && !shouldStopRecorder && !isRecordingRef.current) {
-        return;
-      }
-
-      setIsRecording(false);
-      setIsPreparingRecording(false);
-      isRecordingRef.current = false;
-
-      const nativeSession = nativeSessionRef.current;
-      nativeSessionRef.current = null;
-
-      try {
-        nativeSession?.abort();
-      } catch (error) {
-        if (__DEV__) {
-          console.warn(`[Recording] failed to abort native session during ${reason}`, error);
-        }
-      }
-
-      if (shouldStopRecorder) {
-        try {
-          await audioRecorder.stop();
-        } catch (error) {
-          if (!handleRecorderError(`forceStopRecording:${reason}`, error) && __DEV__) {
-            console.warn('[Recording] failed to stop audio recorder during cleanup', error);
-          }
-        }
-      }
-
-      try {
-        await setAudioModeAsync({ allowsRecording: false });
-      } catch (error) {
-        if (__DEV__) {
-          console.warn(`[Recording] failed to reset audio mode during ${reason}`, error);
-        }
-      } finally {
-        skipRecorderRef.current = false;
-        hasAutoStoppedRecordingRef.current = false;
+  const recordingSession = useRecordingSession({
+    transcriptionLocale,
+    t,
+    onPartialTranscript: (text) => {
+      const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
+      setTranscript(combined);
+      baseTranscriptRef.current = combined;
+      setLengthWarning(truncated ? lengthLimitMessage() : '');
+      if (truncated) {
+        stopRecordingFromPartialRef.current?.();
       }
     },
-    [audioRecorder, getRecorderIsRecording, handleRecorderError]
-  );
+  });
 
-  // Request microphone permissions on mount
+  const {
+    isRecording,
+    isRecordingRef,
+    startRecording: startSessionRecording,
+    stopRecording: stopSessionRecording,
+    forceStopRecording,
+    requestPermissions,
+  } = recordingSession;
+
   useEffect(() => {
-    (async () => {
-      const status = await AudioModule.requestRecordingPermissionsAsync();
-      if (!status.granted) {
-        Alert.alert(
-          t('recording.alert.permission_required.title'),
-          t('recording.alert.permission_required.message')
-        );
-      }
-    })();
-  }, [t]);
+    void requestPermissions();
+  }, [requestPermissions]);
 
   // Register offline model prompt handler
   useEffect(() => {
@@ -366,105 +308,29 @@ export default function RecordingScreen() {
     };
   }, [user, pendingGuestLimitDream, addDream, dreams.length, navigateAfterSave, resetComposer, t]);
 
+  // Show quota limit sheet (reusable for both guard and catch paths)
+  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
+    const modeToUse = options?.mode ?? 'limit';
+    const message = options?.message ?? '';
+
+    // Close existing sheets to avoid overlay
+    if (firstDreamPrompt) setFirstDreamPrompt(null);
+    if (analyzePromptDream) setAnalyzePromptDream(null);
+
+    // Don't show upsell for paid tiers (edge case: network error)
+    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
+
+    setQuotaSheetMode(modeToUse);
+    setQuotaSheetMessage(message);
+    setShowQuotaLimitSheet(true);
+    return true;
+  }, [tier, firstDreamPrompt, analyzePromptDream]);
+
   const stopRecording = useCallback(async () => {
-    let nativeSession: NativeSpeechSession | null = null;
-    let nativeResultPromise: Promise<{
-      transcript: string;
-      error?: string;
-      errorCode?: string;
-      recordedUri?: string | null;
-      hasRecording?: boolean;
-    }> | null = null;
-    let nativeError: string | undefined;
-    let nativeErrorCode: string | undefined;
-    let hadNativeSession = false;
-    let isLanguagePackMissing = false;
-    let isRateLimited = false;
     try {
-      setIsRecording(false);
       setIsPreparingRecording(false);
-      isRecordingRef.current = false;
-      nativeSession = nativeSessionRef.current;
-      hadNativeSession = Boolean(nativeSession);
-      nativeSessionRef.current = null;
-      const usedRecorder = !skipRecorderRef.current;
-
-      nativeResultPromise = nativeSession?.stop() ?? null;
-      if (usedRecorder && !recorderReleasedRef.current) {
-        try {
-          await audioRecorder.stop();
-        } catch (error) {
-          if (!handleRecorderError('stopRecording', error)) {
-            throw error;
-          }
-        }
-      }
-      const uri =
-        usedRecorder && !recorderReleasedRef.current ? audioRecorder.uri ?? undefined : undefined;
-
-      let transcriptText = '';
-      let recordedUri: string | undefined;
-      if (nativeResultPromise) {
-        try {
-          const nativeResult = await nativeResultPromise;
-          if (__DEV__) {
-            console.log('[Recording] native result', nativeResult);
-          }
-          transcriptText = nativeResult.transcript?.trim() ?? '';
-          recordedUri = nativeResult.recordedUri ?? undefined;
-          if (!transcriptText && nativeResult.error && __DEV__) {
-            console.warn('[Recording] Native STT returned empty result', nativeResult.error);
-          }
-          nativeError = nativeResult.error;
-          nativeErrorCode = nativeResult.errorCode;
-          const normalizedError = nativeError?.toLowerCase();
-          isLanguagePackMissing =
-            normalizedError?.includes('language-not-supported') ||
-            normalizedError?.includes('not yet downloaded') ||
-            false;
-          isRateLimited =
-            nativeErrorCode === 'too-many-requests' ||
-            normalizedError?.includes('too many requests') ||
-            false;
-        } catch (error) {
-          if (__DEV__) {
-            console.warn('[Recording] Native STT failed', error);
-          }
-        }
-      } else if (__DEV__) {
-        console.log('[Recording] no native session, will rely on backup', { uriPresent: Boolean(uri) });
-      }
-
-      // Only fallback to server-side transcription when native speech recognition was not used.
-      const shouldFallbackToGoogle =
-        (isLanguagePackMissing || isRateLimited || !hadNativeSession) && !transcriptText && (uri || recordedUri);
-
-      if (shouldFallbackToGoogle) {
-        try {
-          const fallbackUri = uri ?? recordedUri;
-          if (__DEV__) {
-            console.log('[Recording] fallback to Google STT', {
-              locale: transcriptionLocale,
-              nativeError,
-              nativeErrorCode,
-              uriLength: fallbackUri?.length ?? 0,
-            });
-          }
-          transcriptText = await transcribeAudio({
-            uri: fallbackUri!,
-            languageCode: transcriptionLocale,
-          });
-        } catch (e) {
-          const msg = e instanceof Error ? e.message : 'Unknown transcription error';
-          Alert.alert(t('recording.alert.transcription_failed.title'), msg);
-        }
-      } else if (!transcriptText && !uri && !hadNativeSession) {
-        Alert.alert(
-          t('recording.alert.recording_invalid.title'),
-          t('recording.alert.recording_invalid.message')
-        );
-        return;
-      }
+      const result = await stopSessionRecording();
+      const transcriptText = result.transcript?.trim() ?? '';
 
       if (transcriptText) {
         const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
@@ -505,158 +371,69 @@ export default function RecordingScreen() {
           setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
         }
       } else {
-        if (isRateLimited) {
+        if (result.error === 'rate_limited') {
           showQuotaSheet({ mode: 'error', message: t('error.rate_limit') });
+          return;
+        }
+        if (result.error === 'language_pack_missing') {
+          return;
+        }
+        if (result.error === 'no_recording') {
+          Alert.alert(
+            t('recording.alert.recording_invalid.title'),
+            t('recording.alert.recording_invalid.message')
+          );
+          return;
+        }
+        if (result.error && result.error !== 'no_speech') {
+          Alert.alert(t('recording.alert.transcription_failed.title'), result.error);
           return;
         }
         showQuotaSheet({ mode: 'error', message: t('recording.alert.no_speech.message') });
       }
     } catch (err) {
-      if (handleRecorderError('stopRecording', err)) {
-        return;
-      }
-      nativeSession?.abort();
       if (__DEV__) {
         console.error('Failed to stop recording:', err);
       }
       showQuotaSheet({ mode: 'error', message: t('recording.alert.stop_failed') });
     } finally {
-      try {
-        await setAudioModeAsync({ allowsRecording: false });
-      } catch (err) {
-        if (__DEV__) {
-          console.warn('Failed to reset audio mode after recording:', err);
-        }
-      }
       hasAutoStoppedRecordingRef.current = false;
-      skipRecorderRef.current = false;
     }
   }, [
-    audioRecorder,
-    transcriptionLocale,
     t,
     combineTranscript,
     lengthLimitMessage,
-    handleRecorderError,
+    normalizeForComparison,
     showQuotaSheet,
+    stopSessionRecording,
   ]);
+
+  useEffect(() => {
+    stopRecordingFromPartialRef.current = () => {
+      void stopRecording();
+    };
+    return () => {
+      stopRecordingFromPartialRef.current = null;
+    };
+  }, [stopRecording]);
 
   const startRecording = useCallback(async () => {
     try {
       setIsPreparingRecording(true);
-      setIsRecording(false);
-      isRecordingRef.current = false;
-
-      if (Platform.OS === 'web') {
-        const hasSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
-        if (!hasSecureContext) {
-          Alert.alert(
-            t('recording.alert.permission_required.title'),
-            'Le micro est bloqué car la page n’est pas servie en HTTPS (ou localhost). Ouvre la page en HTTPS ou via localhost pour activer la dictée.'
-          );
-          setIsRecording(false);
-          setIsPreparingRecording(false);
-          isRecordingRef.current = false;
-          return;
-        }
-      }
-
-      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-      if (!granted) {
-        Alert.alert(
-          t('recording.alert.permission_required.title'),
-          t('recording.alert.permission_required.message')
-        );
-        setIsRecording(false);
-        setIsPreparingRecording(false);
-        isRecordingRef.current = false;
-        return;
-      }
-
-      // ✅ Ensure offline STT model is available (Android 13+)
-      // This will prompt user to download if needed. On other platforms, returns false
-      // and we fallback to online recognition.
-      const modelReady = await ensureOfflineSttModel(transcriptionLocale);
-
-      // Block on Android 13+ if user cancelled/declined the download
-      if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
-        if (__DEV__) {
-          console.log('[Recording] offline model not ready, aborting start');
-        }
-        setIsRecording(false);
-        setIsPreparingRecording(false);
-        isRecordingRef.current = false;
-        return;
-      }
-
-      await setAudioModeAsync({
-        allowsRecording: true,
-        playsInSilentMode: true,
-      });
-
-      recorderReleasedRef.current = false;
-      nativeSessionRef.current?.abort();
       baseTranscriptRef.current = transcript;
-      nativeSessionRef.current = await startNativeSpeechSession(transcriptionLocale, {
-        onPartial: (text) => {
-          const { text: combined, truncated } = combineTranscript(baseTranscriptRef.current, text);
-          setTranscript(combined);
-          baseTranscriptRef.current = combined;
-          setLengthWarning(truncated ? lengthLimitMessage() : '');
-          if (truncated) {
-            void stopRecording();
-          }
-        },
-      });
-      // If native speech recognition is present, don't keep a parallel audio recorder just
-      // for a server-side fallback transcription.
-      const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
-      skipRecorderRef.current = Boolean(nativeSessionRef.current);
-      if (!nativeSessionRef.current && __DEV__ && Platform.OS === 'web') {
-        console.warn('[Recording] web: native session missing; check browser SpeechRecognition support/https');
-      }
-      if (__DEV__) {
-        console.log('[Recording] native session', {
-          hasSession: Boolean(nativeSessionRef.current),
-          locale: transcriptionLocale,
-          canPersistAudio,
-        });
-      }
 
-      hasAutoStoppedRecordingRef.current = false;
-      if (!skipRecorderRef.current) {
-        await audioRecorder.prepareToRecordAsync(RECORDING_OPTIONS);
-        audioRecorder.record();
-      } else if (__DEV__) {
-        console.log('[Recording] skipping audioRecorder because native session active');
+      const response = await startSessionRecording(transcript);
+      if (response.success) {
+        return;
       }
-
-      isRecordingRef.current = true;
-      setIsRecording(true);
-      setIsPreparingRecording(false);
-    } catch (err) {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
-      skipRecorderRef.current = false;
-      isRecordingRef.current = false;
-      handleRecorderError('startRecording', err);
-      if (__DEV__) {
-        console.error('Failed to start recording:', err);
+      if (response.error === 'offline_model_not_ready') {
+        return;
       }
-      setIsRecording(false);
-      setIsPreparingRecording(false);
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
+    } finally {
+      setIsPreparingRecording(false);
     }
-	  }, [
-	    audioRecorder,
-	    t,
-	    transcriptionLocale,
-	    transcript,
-	    combineTranscript,
-	    lengthLimitMessage,
-	    stopRecording,
-	    handleRecorderError,
-	  ]);
+  }, [startSessionRecording, t, transcript]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -672,42 +449,36 @@ export default function RecordingScreen() {
     } finally {
       recordingTransitionRef.current = false;
     }
-  }, [startRecording, stopRecording]);
+  }, [isRecordingRef, startRecording, stopRecording]);
 
   useEffect(() => {
+    if (!isRecording) {
+      return;
+    }
+
     hasAutoStoppedRecordingRef.current = false;
 
     const subscription = AppState.addEventListener('change', (state) => {
-      try {
-        const recorderIsRecording = getRecorderIsRecording();
-        if ((state === 'background' || state === 'inactive') && recorderIsRecording && !hasAutoStoppedRecordingRef.current) {
-          hasAutoStoppedRecordingRef.current = true;
-          void stopRecording();
-        }
-      } catch (error) {
-        handleRecorderError('appStateChange', error);
+      if (
+        (state === 'background' || state === 'inactive') &&
+        !hasAutoStoppedRecordingRef.current
+      ) {
+        hasAutoStoppedRecordingRef.current = true;
+        void stopRecording();
       }
     });
 
     return () => {
       subscription.remove();
-      try {
-        if (getRecorderIsRecording() && !hasAutoStoppedRecordingRef.current) {
-          hasAutoStoppedRecordingRef.current = true;
-          void stopRecording();
-        }
-      } catch (error) {
-        if (!handleRecorderError('appStateCleanup', error)) {
-          throw error;
-        }
+      if (!hasAutoStoppedRecordingRef.current) {
+        hasAutoStoppedRecordingRef.current = true;
+        void stopRecording();
       }
     };
-  }, [getRecorderIsRecording, handleRecorderError, stopRecording]);
+  }, [isRecording, stopRecording]);
 
   const handleSaveDream = useCallback(async () => {
-    const hasActiveRecording =
-      isRecordingRef.current || Boolean(nativeSessionRef.current) || getRecorderIsRecording();
-    if (hasActiveRecording) {
+    if (isRecordingRef.current) {
       await stopRecording();
     }
 
@@ -776,20 +547,20 @@ export default function RecordingScreen() {
     } finally {
       setIsPersisting(false);
     }
-  }, [
-    addDream,
-    buildDraftDream,
-    dreams.length,
-    draftDream,
-    getRecorderIsRecording,
-    language,
-    navigateAfterSave,
-    resetComposer,
-    stopRecording,
-    t,
-    transcript,
-    user,
-  ]);
+		  }, [
+		    addDream,
+		    buildDraftDream,
+		    dreams.length,
+		    draftDream,
+        isRecordingRef,
+		    language,
+		    navigateAfterSave,
+		    resetComposer,
+		    stopRecording,
+		    t,
+		    transcript,
+		    user,
+		  ]);
 
 
   const handleGoToJournal = useCallback(() => {
@@ -832,24 +603,6 @@ export default function RecordingScreen() {
     blurActiveElement();
     router.push('/(tabs)/journal');
   }, [analyzePromptDream]);
-
-  // Show quota limit sheet (reusable for both guard and catch paths)
-  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
-    const modeToUse = options?.mode ?? 'limit';
-    const message = options?.message ?? '';
-
-    // Close existing sheets to avoid overlay
-    if (firstDreamPrompt) setFirstDreamPrompt(null);
-    if (analyzePromptDream) setAnalyzePromptDream(null);
-
-    // Don't show upsell for paid tiers (edge case: network error)
-    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
-
-    setQuotaSheetMode(modeToUse);
-    setQuotaSheetMessage(message);
-    setShowQuotaLimitSheet(true);
-    return true;
-  }, [tier, firstDreamPrompt, analyzePromptDream]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -965,9 +718,7 @@ export default function RecordingScreen() {
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
 
   const switchToTextMode = useCallback(async () => {
-    const hasActiveRecording =
-      isRecordingRef.current || getRecorderIsRecording() || Boolean(nativeSessionRef.current);
-    if (hasActiveRecording) {
+    if (isRecordingRef.current) {
       recordingTransitionRef.current = true;
       try {
         await stopRecording();
@@ -976,11 +727,11 @@ export default function RecordingScreen() {
       }
     }
     setInputMode('text');
-  }, [getRecorderIsRecording, stopRecording]);
+  }, [isRecordingRef, stopRecording]);
 
   const switchToVoiceMode = useCallback(async () => {
     setInputMode('voice');
-    if (isRecordingRef.current || getRecorderIsRecording()) {
+    if (isRecordingRef.current) {
       return;
     }
     recordingTransitionRef.current = true;
@@ -989,7 +740,7 @@ export default function RecordingScreen() {
     } finally {
       recordingTransitionRef.current = false;
     }
-  }, [getRecorderIsRecording, startRecording]);
+  }, [isRecordingRef, startRecording]);
 
   useEffect(() => {
     if (inputMode === 'text') {

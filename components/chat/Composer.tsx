@@ -12,15 +12,12 @@
 import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
-  getSpeechLocaleAvailability,
-  startNativeSpeechSession,
-  ensureOfflineSttModel,
   registerOfflineModelPromptHandler,
-  type NativeSpeechSession,
   type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import {
@@ -28,7 +25,6 @@ import {
   openSpeechRecognitionLanguageSettings,
 } from '@/lib/speechRecognitionSettings';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { AudioModule } from 'expo-audio';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -42,7 +38,6 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { transcribeAudio } from '@/services/speechToText';
 import Animated, {
   runOnUI,
   useAnimatedStyle,
@@ -104,7 +99,6 @@ export function Composer({
   const { composerHeight } = useComposerHeightContext();
   const { keyboardHeight } = useKeyboardStateContext();
 
-  const [isRecording, setIsRecording] = useState(false);
   const [languagePackMissingInfo, setLanguagePackMissingInfo] = useState<{
     locale: string;
     installedLocales: string[];
@@ -113,8 +107,6 @@ export function Composer({
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
-  const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
-  const baseInputRef = useRef('');
   const containerRef = useRef<View>(null);
   const localHeight = useSharedValue(0);
 
@@ -201,140 +193,76 @@ export function Composer({
     };
   }, [resolveOfflineModelPrompt]);
 
-  // Cleanup speech session on unmount
+  const recordingSession = useRecordingSession({
+    transcriptionLocale,
+    t,
+    onPartialTranscript: (text, { baseTranscript }) => {
+      const base = baseTranscript.trim();
+      onChangeText(base ? `${base} ${text}` : text);
+    },
+    onLanguagePackMissing: ({ locale, installedLocales }) => {
+      setLanguagePackMissingInfo({ locale, installedLocales });
+    },
+  });
+
+  const {
+    isRecording,
+    baseTranscriptRef,
+    startRecording: startSessionRecording,
+    stopRecording: stopSessionRecording,
+    setupAppStateListener,
+    forceStopRecording,
+  } = recordingSession;
+
   useEffect(() => {
+    const cleanup = setupAppStateListener();
     return () => {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
+      cleanup();
+      void forceStopRecording('unmount');
     };
-  }, []);
+  }, [forceStopRecording, setupAppStateListener]);
 
   // Speech-to-text handlers
   const startRecording = useCallback(async () => {
-    try {
-      const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-      if (!granted) {
-        Alert.alert(
-          t('recording.alert.permission_required.title'),
-          t('recording.alert.permission_required.message')
-        );
-        return;
-      }
-
-      // Ensure offline STT model is available (Android 13+)
-      const modelReady = await ensureOfflineSttModel(transcriptionLocale);
-
-      // Block on Android 13+ if user cancelled/declined the download
-      if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
-        if (__DEV__) {
-          console.log('[Composer] offline model not ready, aborting start');
-        }
-        return;
-      }
-
-      const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
-      if (localeAvailability?.installedLocales.length && !localeAvailability.isInstalled) {
-        setLanguagePackMissingInfo({
-          locale: transcriptionLocale,
-          installedLocales: localeAvailability.installedLocales,
-        });
-        return;
-      }
-
-      nativeSessionRef.current?.abort();
-      baseInputRef.current = value;
-
-      const session = await startNativeSpeechSession(transcriptionLocale, {
-        onPartial: (text) => {
-          const base = baseInputRef.current.trim();
-          onChangeText(base ? `${base} ${text}` : text);
-        },
-      });
-
-      if (!session) {
-        Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
-        return;
-      }
-
-      nativeSessionRef.current = session;
-      setIsRecording(true);
-    } catch {
-      nativeSessionRef.current?.abort();
-      nativeSessionRef.current = null;
-      setIsRecording(false);
-      Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
+    const response = await startSessionRecording(value);
+    if (response.success) {
+      return;
     }
-  }, [value, transcriptionLocale, onChangeText, t]);
+    if (response.error === 'offline_model_not_ready') {
+      return;
+    }
+    Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
+  }, [startSessionRecording, t, value]);
 
   const stopRecording = useCallback(async (): Promise<string | undefined> => {
-    const nativeSession = nativeSessionRef.current;
-    nativeSessionRef.current = null;
-    setIsRecording(false);
+    const result = await stopSessionRecording();
 
-    if (!nativeSession) return value;
-
-    try {
-      const result = await nativeSession.stop();
-      const transcript = result.transcript?.trim();
-
-      if (transcript) {
-        const base = baseInputRef.current.trim();
-        const finalText = base ? `${base} ${transcript}` : transcript;
-        onChangeText(finalText);
-        return finalText;
-      } else {
-        const normalizedError = result.error?.toLowerCase();
-        const isRateLimited =
-          result.errorCode === 'too-many-requests' ||
-          normalizedError?.includes('too many requests') ||
-          false;
-        const isLanguagePackMissing =
-          result.errorCode === 'language-not-supported' ||
-          normalizedError?.includes('language-not-supported') ||
-          normalizedError?.includes('not yet downloaded') ||
-          false;
-        const recordedUri = result.recordedUri ?? undefined;
-
-        if (isRateLimited && recordedUri) {
-          try {
-            const fallbackTranscript = await transcribeAudio({
-              uri: recordedUri,
-              languageCode: transcriptionLocale,
-            });
-            if (fallbackTranscript?.trim()) {
-              const base = baseInputRef.current.trim();
-              const finalText = base ? `${base} ${fallbackTranscript.trim()}` : fallbackTranscript.trim();
-              onChangeText(finalText);
-              return finalText;
-            }
-          } catch {
-            // ignore and continue to other handling
-          }
-        }
-        if (isRateLimited) {
-          Alert.alert(t('common.error_title'), t('error.rate_limit'));
-          return;
-        }
-        if (isLanguagePackMissing) {
-          const availability = await getSpeechLocaleAvailability(transcriptionLocale);
-          setLanguagePackMissingInfo({
-            locale: transcriptionLocale,
-            installedLocales: availability?.installedLocales ?? [],
-          });
-          return baseInputRef.current;
-        }
-        if (!normalizedError?.includes('no speech')) {
-          Alert.alert(
-            t('recording.alert.no_speech.title'),
-            t('recording.alert.no_speech.message')
-          );
-        }
-      }
-    } catch {
-      // Silent fail on stop
+    const base = baseTranscriptRef.current.trim();
+    const transcript = result.transcript?.trim();
+    if (transcript) {
+      const finalText = base ? `${base} ${transcript}` : transcript;
+      onChangeText(finalText);
+      return finalText;
     }
-    return baseInputRef.current;
-  }, [onChangeText, transcriptionLocale, t, value]);
+
+    if (result.error === 'rate_limited') {
+      Alert.alert(t('common.error_title'), t('error.rate_limit'));
+      return;
+    }
+
+    if (result.error === 'language_pack_missing') {
+      return base;
+    }
+
+    if (result.error === 'no_speech') {
+      Alert.alert(
+        t('recording.alert.no_speech.title'),
+        t('recording.alert.no_speech.message')
+      );
+    }
+
+    return base;
+  }, [baseTranscriptRef, onChangeText, stopSessionRecording, t]);
 
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
@@ -366,7 +294,6 @@ export function Composer({
     if (isRecording) {
       textOverride = await stopRecording();
     }
-    baseInputRef.current = '';
     onSend(textOverride?.trim());
   }, [isRecording, onSend, stopRecording]);
 
