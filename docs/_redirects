@@ -1,0 +1,11 @@
+# Redirect index.html files to directory root (avoid duplicate content)
+/index.html / 301
+/en/index.html /en/ 301
+/fr/index.html /fr/ 301
+/es/index.html /es/ 301
+/en/blog/index.html /en/blog/ 301
+/fr/blog/index.html /fr/blog/ 301
+/es/blog/index.html /es/blog/ 301
+/en/guides/index.html /en/guides/ 301
+/fr/guides/index.html /fr/guides/ 301
+/es/guides/index.html /es/guides/ 301
