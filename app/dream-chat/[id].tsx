@@ -339,6 +339,9 @@ export default function DreamChatScreen() {
         if (hasNetwork) {
           // Auto-sync the dream with idempotence
           setIsLoading(true);
+          if (!messageText) {
+            setInputText((current) => (current.trim() === textToSend ? '' : current));
+          }
           try {
             // Ensure clientRequestId for idempotence (prevent duplicates)
             const dreamToSync = dream.clientRequestId
@@ -367,7 +370,6 @@ export default function DreamChatScreen() {
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
-            setInputText('');
 
             // Persist chat history to dream
             const dreamUpdate: Partial<DreamAnalysis> = {
@@ -423,7 +425,9 @@ export default function DreamChatScreen() {
       };
       const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
-      setInputText('');
+      if (!messageText) {
+        setInputText((current) => (current.trim() === textToSend ? '' : current));
+      }
       setIsLoading(true);
 
       try {
