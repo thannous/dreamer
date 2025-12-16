@@ -116,7 +116,7 @@ export function applyFilters(
   filters: DreamFilters,
   options: ApplyFiltersOptions = {},
 ): DreamAnalysis[] {
-  let filtered = [...dreams];
+  let filtered = dreams;
 
   if (filters.searchQuery) {
     filtered = filterBySearch(filtered, filters.searchQuery, options.searchOptions);
