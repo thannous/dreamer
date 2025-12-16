@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getTranslator } from '../i18n';
+import { getTranslator, loadTranslations } from '../i18n';
 
 const languages: ('en' | 'fr' | 'es')[] = ['en', 'fr', 'es'];
 
@@ -16,7 +16,9 @@ const filterAccessibilityKeys = [
 ] as const;
 
 describe('Journal i18n - badges & filter accessibility', () => {
-  it('has translations for badge labels in all supported languages', () => {
+  it('has translations for badge labels in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
     for (const lang of languages) {
       const t = getTranslator(lang);
 
@@ -29,7 +31,9 @@ describe('Journal i18n - badges & filter accessibility', () => {
     }
   });
 
-  it('has translations for analyzed/explored filter accessibility labels', () => {
+  it('has translations for analyzed/explored filter accessibility labels', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
     for (const lang of languages) {
       const t = getTranslator(lang);
 
@@ -143,8 +147,9 @@ describe('getTranslator replacement functionality', () => {
     expect(result).toBe('Home');
   });
 
-  it('given region-specific language when translating then normalizes to base language', () => {
+  it('given region-specific language when translating then normalizes to base language', async () => {
     // Given
+    await Promise.all([loadTranslations('fr'), loadTranslations('es')]);
     const tFr = getTranslator('fr-FR');
     const tEs = getTranslator('es_MX');
 

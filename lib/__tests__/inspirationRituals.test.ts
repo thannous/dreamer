@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { RITUALS } from '../inspirationRituals';
-import { getTranslator } from '../i18n';
+import { getTranslator, loadTranslations } from '../i18n';
 
 describe('Inspiration rituals configuration', () => {
   it('defines three rituals with four steps each', () => {
@@ -15,8 +15,9 @@ describe('Inspiration rituals configuration', () => {
     }
   });
 
-  it('has translations for ritual labels and descriptions in supported languages', () => {
+  it('has translations for ritual labels and descriptions in supported languages', async () => {
     const languages: Array<'en' | 'fr' | 'es'> = ['en', 'fr', 'es'];
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     for (const lang of languages) {
       const t = getTranslator(lang);

@@ -1,21 +1,38 @@
-import { getTranslator } from '@/lib/i18n';
 import type { ChatMessage, DreamChatCategory } from '@/lib/types';
 
-const CATEGORY_PROMPT_KEYS: Record<Exclude<DreamChatCategory, 'general'>, string> = {
-  symbols: 'dream_chat.prompt.symbols',
-  emotions: 'dream_chat.prompt.emotions',
-  growth: 'dream_chat.prompt.growth',
+const LEGACY_CATEGORY_PROMPTS: Record<
+  Exclude<DreamChatCategory, 'general'>,
+  readonly [en: string, fr: string, es: string]
+> = {
+  symbols: [
+    'Tell me about the symbolic meanings in my dream. What do the key symbols represent?',
+    'Parle-moi des significations symboliques de mon rêve. Que représentent les symboles clés ?',
+    'Cuéntame sobre los significados simbólicos de mi sueño. ¿Qué representan los símbolos clave?',
+  ],
+  emotions: [
+    'Help me understand the emotional landscape of this dream. What emotions am I processing?',
+    'Aide-moi à comprendre le paysage émotionnel de ce rêve. Quelles émotions suis-je en train de travailler ?',
+    'Ayúdame a entender el paisaje emocional de este sueño. ¿Qué emociones estoy procesando?',
+  ],
+  growth: [
+    'What insights for personal growth can you share based on this dream?',
+    'Quelles pistes de croissance personnelle vois-tu dans ce rêve ?',
+    '¿Qué ideas de crecimiento personal puedes compartir a partir de este sueño?',
+  ],
 };
 
-const SUPPORTED_LANGUAGES = ['en', 'fr', 'es'] as const;
+const LEGACY_ERROR_VARIANTS: readonly [en: string, fr: string, es: string] = [
+  'Sorry, I encountered an error. Please try again.',
+  'Désolé, une erreur est survenue. Réessaie.',
+  'Lo siento, ocurrió un error. Inténtalo de nuevo.',
+];
 
 const getPromptVariants = (category: Exclude<DreamChatCategory, 'general'>): string[] => {
-  const key = CATEGORY_PROMPT_KEYS[category];
-  return SUPPORTED_LANGUAGES.map((lang) => getTranslator(lang)(key));
+  return [...LEGACY_CATEGORY_PROMPTS[category]];
 };
 
 const getErrorVariants = (): string[] => {
-  return SUPPORTED_LANGUAGES.map((lang) => getTranslator(lang)('dream_chat.error_message'));
+  return [...LEGACY_ERROR_VARIANTS];
 };
 
 const normalizeText = (value: string): string => value.trim().replace(/\s+/g, ' ');
@@ -63,4 +80,3 @@ export const isCategoryExplored = (
 
   return false;
 };
-

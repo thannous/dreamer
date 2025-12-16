@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getTranslator } from '../i18n';
+import { getTranslator, loadTranslations } from '../i18n';
 
 const languages: ('en' | 'fr' | 'es')[] = ['en', 'fr', 'es'];
 
@@ -21,7 +21,9 @@ const analyzePromptSheetKeys = [
 ] as const;
 
 describe('Recording i18n - bottom sheets', () => {
-  it('has translations for first-dream sheet in all supported languages', () => {
+  it('has translations for first-dream sheet in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
     for (const lang of languages) {
       const t = getTranslator(lang);
 
@@ -34,7 +36,9 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('has translations for analyze-prompt sheet in all supported languages', () => {
+  it('has translations for analyze-prompt sheet in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
     for (const lang of languages) {
       const t = getTranslator(lang);
 
