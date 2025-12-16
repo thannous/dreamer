@@ -3,6 +3,7 @@ import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from './useSubscription';
+import { deriveUserTier } from '@/lib/quotaTier';
 
 /**
  * React hook for quota management
@@ -33,15 +34,23 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const [error, setError] = useState<Error | null>(null);
 
   const baseTarget = useMemo(() => normalizeTarget(targetInput), [targetInput?.dream, targetInput?.dreamId]);
+  const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
 
   const resolveTarget = useCallback(
     (override?: QuotaTargetInput) => normalizeTarget(override) ?? baseTarget,
     [baseTarget]
   );
 
-  // Get tier from RevenueCat (source of truth). For unauthenticated guests, return 'guest';
-  // for authenticated users, default to 'free' until RevenueCat responds.
-  const tier = !user?.id ? 'guest' : (subscriptionStatus?.tier ?? 'free');
+  // RevenueCat is the source of truth, but we should not downgrade paid users while it loads.
+  // If Supabase already indicates a paid tier, treat it as paid until RevenueCat resolves.
+  const tier = useMemo(() => {
+    if (!user?.id) return 'guest';
+
+    const optimisticPaidTier =
+      supabaseTier === 'plus' || supabaseTier === 'premium' ? supabaseTier : null;
+
+    return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
+  }, [subscriptionStatus?.tier, supabaseTier, user?.id]);
   const isPaidTier = tier === 'plus' || tier === 'premium';
 
   /**
@@ -49,9 +58,6 @@ export function useQuota(targetInput?: QuotaTargetInput) {
    * Wait for subscription to load before fetching quota to use RevenueCat tier
    */
   const fetchQuotaStatus = useCallback(async () => {
-    // Don't fetch until subscription is loaded
-    if (subscriptionLoading) return;
-
     // For paid tiers, mirror RevenueCat (source of truth) and short-circuit to unlimited.
     if (isPaidTier) {
       const unlimitedUsage = { used: 0, limit: null, remaining: null } as const;
@@ -69,6 +75,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
       setError(null);
       return;
     }
+
+    // Don't fetch until subscription is loaded (avoids relying on the default 'free' tier).
+    if (subscriptionLoading) return;
 
     try {
       setLoading(true);
@@ -163,7 +172,8 @@ export function useQuota(targetInput?: QuotaTargetInput) {
 
   return {
     quotaStatus,
-    loading: loading || subscriptionLoading, // Combine subscription and quota loading states
+    // Only wait for RevenueCat when we don't have an optimistic paid tier from Supabase.
+    loading: loading || (subscriptionLoading && !isPaidTier),
     error,
     refetch: fetchQuotaStatus,
     invalidate,
