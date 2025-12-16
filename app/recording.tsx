@@ -23,7 +23,7 @@ import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
-import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
+import { combineTranscript as combineTranscriptPure, normalizeForComparison } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
 import { categorizeDream } from '@/services/geminiService';
@@ -134,6 +134,25 @@ export default function RecordingScreen() {
     },
     [handleOfflineModelSheetClose]
   );
+
+  // Show quota limit sheet (reusable for both guard and catch paths)
+  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
+    const modeToUse = options?.mode ?? 'limit';
+    const message = options?.message ?? '';
+
+    // Close existing sheets to avoid overlay
+    if (firstDreamPrompt) setFirstDreamPrompt(null);
+    if (analyzePromptDream) setAnalyzePromptDream(null);
+
+    // Don't show upsell for paid tiers (edge case: network error)
+    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
+
+    setQuotaSheetMode(modeToUse);
+    setQuotaSheetMessage(message);
+    setShowQuotaLimitSheet(true);
+    return true;
+  }, [tier, firstDreamPrompt, analyzePromptDream]);
+
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const isAnalyzing = analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE;
   const interactionDisabled = isPersisting || isAnalyzing;
@@ -832,24 +851,6 @@ export default function RecordingScreen() {
     blurActiveElement();
     router.push('/(tabs)/journal');
   }, [analyzePromptDream]);
-
-  // Show quota limit sheet (reusable for both guard and catch paths)
-  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
-    const modeToUse = options?.mode ?? 'limit';
-    const message = options?.message ?? '';
-
-    // Close existing sheets to avoid overlay
-    if (firstDreamPrompt) setFirstDreamPrompt(null);
-    if (analyzePromptDream) setAnalyzePromptDream(null);
-
-    // Don't show upsell for paid tiers (edge case: network error)
-    if (modeToUse === 'limit' && (tier === 'plus' || tier === 'premium')) return false;
-
-    setQuotaSheetMode(modeToUse);
-    setQuotaSheetMessage(message);
-    setShowQuotaLimitSheet(true);
-    return true;
-  }, [tier, firstDreamPrompt, analyzePromptDream]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
