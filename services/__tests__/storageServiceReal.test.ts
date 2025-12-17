@@ -74,14 +74,25 @@ describe('storageServiceReal', () => {
     const { Platform } = await import('react-native');
     Platform.OS = 'ios';
 
-    const { getInfoAsync } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockResolvedValue({ exists: true, isDirectory: false } as any);
+    const kvStoreData: Record<string, string> = {};
+    const kvStore = {
+      getItem: vi.fn(async (key: string) => kvStoreData[key] ?? null),
+      setItem: vi.fn(async (key: string, value: string) => {
+        kvStoreData[key] = value;
+      }),
+      removeItem: vi.fn(async (key: string) => {
+        delete kvStoreData[key];
+      }),
+    };
+    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
     const asyncStorageModule = await import('@react-native-async-storage/async-storage');
     const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
     const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
-    const setItemSpy = vi.spyOn(AsyncStorage, 'setItem').mockResolvedValue(undefined);
     const getItemSpy = vi.spyOn(AsyncStorage, 'getItem').mockResolvedValue(null);
+
+    const { getInfoAsync } = await import('expo-file-system/legacy');
+    const getInfoSpy = vi.mocked(getInfoAsync);
 
     const storage = await import('../storageServiceReal');
 
@@ -101,19 +112,16 @@ describe('storageServiceReal', () => {
 
     await storage.saveDreams(dreams);
 
-    expect(setItemSpy).not.toHaveBeenCalled();
     expect(removeItemSpy).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
-
-    const { File } = await import('expo-file-system');
-    const file = new File('/tmp/storage/gemini_dream_journal_dreams.json');
-    const raw = await file.text();
-    expect(raw).toContain('"title":"A dream"');
+    expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, expect.stringContaining('"title":"A dream"'));
+    expect(getInfoSpy).not.toHaveBeenCalled();
 
     getItemSpy.mockClear();
     const loaded = await storage.getSavedDreams();
     expect(loaded).toHaveLength(1);
     expect(loaded[0]?.title).toBe('A dream');
     expect(getItemSpy).not.toHaveBeenCalled();
+    expect(kvStore.getItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
   });
 
   it('cleans up native AsyncStorage keys that fail with "Row too big"', async () => {
@@ -122,6 +130,10 @@ describe('storageServiceReal', () => {
 
     const { getInfoAsync } = await import('expo-file-system/legacy');
     vi.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
+
+    vi.doMock('expo-sqlite/kv-store', () => {
+      throw new Error('kv-store unavailable');
+    });
 
     const asyncStorageModule = await import('@react-native-async-storage/async-storage');
     const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
@@ -133,5 +145,66 @@ describe('storageServiceReal', () => {
 
     expect(loaded).toEqual([]);
     expect(removeItemSpy).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+  });
+
+  it('migrates file-backed dreams into kv-store when available', async () => {
+    const { Platform } = await import('react-native');
+    Platform.OS = 'ios';
+
+    // First run: kv-store unavailable -> saveDreams writes to file.
+    vi.doMock('expo-sqlite/kv-store', () => {
+      throw new Error('kv-store unavailable');
+    });
+
+    const storageLegacy = await import('../storageServiceReal');
+
+    const dreams = [
+      {
+        id: 123,
+        title: 'A dream',
+        transcript: 'hello',
+        interpretation: '',
+        shareableQuote: '',
+        imageUrl: '',
+        dreamType: 'Symbolic Dream',
+        chatHistory: [],
+        isFavorite: false,
+      },
+    ] as any;
+
+    await storageLegacy.saveDreams(dreams);
+
+    const { File } = await import('expo-file-system');
+    const file = new File('/tmp/storage/gemini_dream_journal_dreams.json');
+    expect(await file.text()).toContain('"title":"A dream"');
+
+    // Second run: kv-store available -> getSavedDreams migrates file -> kv-store.
+    vi.resetModules();
+    const kvStoreData: Record<string, string> = {};
+    const kvStore = {
+      getItem: vi.fn(async (key: string) => kvStoreData[key] ?? null),
+      setItem: vi.fn(async (key: string, value: string) => {
+        kvStoreData[key] = value;
+      }),
+      removeItem: vi.fn(async (key: string) => {
+        delete kvStoreData[key];
+      }),
+    };
+    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+
+    const { Platform: Platform2 } = await import('react-native');
+    Platform2.OS = 'ios';
+
+    const { getInfoAsync, deleteAsync } = await import('expo-file-system/legacy');
+    vi.mocked(getInfoAsync).mockResolvedValue({ exists: true, isDirectory: false } as any);
+    const deleteSpy = vi.mocked(deleteAsync);
+
+    const storage = await import('../storageServiceReal');
+    const loaded = await storage.getSavedDreams();
+
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0]?.title).toBe('A dream');
+    expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, expect.any(String));
+    expect(deleteSpy).toHaveBeenCalled();
   });
 });

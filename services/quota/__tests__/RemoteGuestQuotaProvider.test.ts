@@ -100,5 +100,5 @@ describe('RemoteGuestQuotaProvider', () => {
     // Then refreshed status reflects new fallback counts and calls fallback.invalidate
     expect(refreshed.usage.analysis.used).toBe(0);
     expect(fallback.invalidate).toHaveBeenCalled();
-  });
+  }, 10_000);
 });

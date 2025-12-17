@@ -46,3 +46,5 @@ export const getRitualStepProgress = service.getRitualStepProgress;
 export const saveRitualStepProgress = service.saveRitualStepProgress;
 export const getFirstLaunchCompleted = service.getFirstLaunchCompleted;
 export const saveFirstLaunchCompleted = service.saveFirstLaunchCompleted;
+export const getDreamsMigrationSynced = service.getDreamsMigrationSynced;
+export const setDreamsMigrationSynced = service.setDreamsMigrationSynced;

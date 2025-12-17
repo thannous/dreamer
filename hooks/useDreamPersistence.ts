@@ -10,7 +10,6 @@
  * This hook is extracted from useDreamJournal for better separation of concerns.
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '../context/AuthContext';
@@ -25,10 +24,12 @@ import {
   upsertDream,
 } from '../lib/dreamUtils';
 import {
+  getDreamsMigrationSynced,
   getCachedRemoteDreams,
   getPendingDreamMutations,
   getSavedDreams,
   saveCachedRemoteDreams,
+  setDreamsMigrationSynced,
   saveDreams,
 } from '../services/storageService';
 import {
@@ -135,9 +136,8 @@ export function useDreamPersistence({
     if (!canUseRemoteSync || !userId) return;
 
     // One-shot: check if already migrated (flag stored locally per user)
-    const migrationKey = `@dreams_migration_synced_${userId}`;
-    const alreadyMigrated = await AsyncStorage.getItem(migrationKey);
-    if (alreadyMigrated === 'true') return;
+    const alreadyMigrated = await getDreamsMigrationSynced(userId);
+    if (alreadyMigrated) return;
 
     try {
       // Prefer local sources: pending mutation queue + cached/local storage
@@ -166,7 +166,7 @@ export function useDreamPersistence({
       });
 
       if (unsynced.length === 0) {
-        await AsyncStorage.setItem(migrationKey, 'true');
+        await setDreamsMigrationSynced(userId, true);
         return;
       }
 
@@ -196,7 +196,7 @@ export function useDreamPersistence({
       }
 
       // Mark as migrated to never run again (even if errors)
-      await AsyncStorage.setItem(migrationKey, 'true');
+      await setDreamsMigrationSynced(userId, true);
     } catch (error) {
       logger.error('Background migration failed', error);
       // Don't mark as migrated in case of catastrophic failure
