@@ -9,8 +9,11 @@ import {
   mapStatus as mapStatusPure,
   type CustomerInfoLike,
 } from '@/lib/revenuecat';
+import { createScopedLogger } from '@/lib/logger';
 
 import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
+
+const log = createScopedLogger('[RevenueCat]');
 
 type InternalPackage = {
   id: string;
@@ -52,12 +55,12 @@ function resolveApiKey(): string | null {
       // En dev on ne veut pas retomber sur la clé extra (qui est celle du Play Store) si l'env est chargé.
       const key = env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY ?? null;
       const masked = key ? `${key.slice(0, 6)}…${key.slice(-4)}` : null;
-      console.log('[RC DEBUG] env android key', masked);
+      log.debug('env android key', masked);
       if (!key) {
-        console.warn('[RC DEBUG] No env android key found, fallback to extra');
+        log.warn('No env android key found, fallback to extra');
         const extraKey = extra.revenuecatAndroidKey as string | undefined;
         const extraMasked = extraKey ? `${extraKey.slice(0, 6)}…${extraKey.slice(-4)}` : null;
-        console.log('[RC DEBUG] extra android key', extraMasked);
+        log.debug('extra android key', extraMasked);
       }
       return key ?? extra.revenuecatAndroidKey ?? null;
     }
@@ -79,7 +82,7 @@ async function ensureConfigured(userId?: string | null): Promise<void> {
 async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<void> {
   const apiKey = resolveApiKey();
   if (!apiKey) {
-    console.error('[RevenueCat] Missing API key for platform:', Platform.OS);
+    log.error('Missing API key for platform', Platform.OS);
     throw new Error('Missing RevenueCat API key');
   }
 
@@ -116,7 +119,7 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
           const isAnonymous = await Purchases.isAnonymous();
           const customerInfo = await Purchases.getCustomerInfo();
           const status = mapStatus(customerInfo);
-          console.log('[RevenueCat] Logged in', {
+          log.debug('Logged in', {
             userId: normalizedUserId,
             platform: Platform.OS,
             appUserId,
@@ -146,7 +149,7 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
         const isAnonymous = await Purchases.isAnonymous();
         const customerInfo = await Purchases.getCustomerInfo();
         const status = mapStatus(customerInfo);
-        console.log('[RevenueCat] Logged out', {
+        log.debug('Logged out', {
           platform: Platform.OS,
           appUserId,
           isAnonymous,

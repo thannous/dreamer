@@ -4,11 +4,13 @@ import { Platform } from 'react-native';
 import { supabase } from './supabase';
 import * as mockAuth from './mockAuth';
 import { isMockModeEnabled } from './env';
+import { createScopedLogger } from './logger';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
 
 const isMockMode = isMockModeEnabled();
+const log = createScopedLogger('[Auth]');
 type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
 
 let googleSignInModule: Promise<GoogleSignInModule> | null = null;
@@ -38,7 +40,7 @@ export function initializeGoogleSignIn() {
   const webClientId = (process?.env as any)?.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID as string | undefined;
 
   if (!webClientId) {
-    console.warn('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured. Google Sign-In will not work.');
+    log.warn('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured. Google Sign-In will not work.');
     return;
   }
 
@@ -52,9 +54,7 @@ export function initializeGoogleSignIn() {
       })
     )
     .catch((error) => {
-      if (__DEV__) {
-        console.warn('[Auth] Failed to initialize Google Sign-In', error);
-      }
+      log.warn('Failed to initialize Google Sign-In', error);
     });
 }
 
@@ -90,9 +90,7 @@ async function markFingerprintUpgraded(): Promise<void> {
     const token = await getAccessToken();
 
     if (!token) {
-      if (__DEV__) {
-        console.warn('[Auth] No access token available to mark fingerprint');
-      }
+      log.warn('No access token available to mark fingerprint');
       return;
     }
 
@@ -106,14 +104,10 @@ async function markFingerprintUpgraded(): Promise<void> {
       timeoutMs: 10000,
     });
 
-    if (__DEV__) {
-      console.log('[Auth] Successfully marked fingerprint as upgraded');
-    }
+    log.debug('Successfully marked fingerprint as upgraded');
   } catch (error) {
     // Fail silently: the quota will still be enforced server-side
-    if (__DEV__) {
-      console.warn('[Auth] Failed to mark fingerprint as upgraded:', error);
-    }
+    log.warn('Failed to mark fingerprint as upgraded', error);
   }
 }
 
@@ -218,64 +212,59 @@ export async function signInWithGoogle(): Promise<User> {
   const { GoogleSignin, statusCodes } = await getGoogleSignInModule();
 
   try {
-    console.log('[Auth] Starting Google Sign-In process...');
+    log.debug('Starting Google Sign-In process');
 
     // Check for Play Services availability (Android)
-    console.log('[Auth] Checking Google Play Services availability...');
+    log.debug('Checking Google Play Services availability');
     await GoogleSignin.hasPlayServices();
-    console.log('[Auth] Play Services available ✓');
+    log.debug('Play Services available');
 
     // Sign in with Google; library throws on cancellation
-    console.log('[Auth] Showing Google Sign-In dialog...');
+    log.debug('Showing Google Sign-In dialog');
     const signInResponse = await GoogleSignin.signIn();
-    console.log('[Auth] Google Sign-In dialog closed');
+    log.debug('Google Sign-In dialog closed');
 
     if ((signInResponse as any)?.type === 'cancelled') {
-      console.log('[Auth] User cancelled Google Sign-In');
+      log.debug('User cancelled Google Sign-In');
       throw new Error('SIGN_IN_CANCELLED');
     }
 
     // Support both current library shape (idToken top-level) and legacy nested shape
-    console.log('[Auth] Extracting ID token from response...');
+    log.debug('Extracting ID token from response');
     const idToken = (signInResponse as any).idToken ?? (signInResponse as any)?.data?.idToken;
     if (!idToken) {
-      console.error('[Auth] ❌ No ID token found in response');
-      console.error('[Auth] Response structure:', JSON.stringify(signInResponse, null, 2));
+      log.error('No ID token found in response');
+      log.debug('Google Sign-In response keys', Object.keys((signInResponse as object) ?? {}));
       throw new Error('No ID token received from Google');
     }
-    console.log('[Auth] ID token extracted successfully ✓');
+    log.debug('ID token extracted successfully');
 
     // Sign in to Supabase with the Google ID token
-    console.log('[Auth] Exchanging ID token with Supabase...');
+    log.debug('Exchanging ID token with Supabase');
     const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
       token: idToken,
     });
 
     if (error) {
-      console.error('[Auth] ❌ Supabase signInWithIdToken failed:');
-      console.error('[Auth] Error code:', error.code);
-      console.error('[Auth] Error message:', error.message);
-      console.error('[Auth] Error status:', error.status);
+      log.error('Supabase signInWithIdToken failed', {
+        code: error.code,
+        status: error.status,
+        message: error.message,
+      });
       throw error;
     }
 
     if (!data.user) {
-      console.error('[Auth] ❌ No user data received from Supabase');
+      log.error('No user data received from Supabase');
       throw new Error('No user data received from Supabase');
     }
 
-    console.log('[Auth] ✓ Successfully signed in with Google');
-    if (__DEV__) {
-      console.log('[Auth] User email:', data.user.email);
-      console.log('[Auth] User ID:', data.user.id);
-    } else {
-      console.log('[Auth] User authenticated:', {
-        hasEmail: Boolean(data.user.email),
-        hasId: Boolean(data.user.id),
-        emailDomain: data.user.email?.split('@')[1] ?? 'unknown'
-      });
-    }
+    log.debug('Successfully signed in with Google', {
+      hasEmail: Boolean(data.user.email),
+      hasId: Boolean(data.user.id),
+      emailDomain: data.user.email?.split('@')[1] ?? 'unknown',
+    });
 
     // Mark fingerprint as upgraded to prevent quota bypass
     await markFingerprintUpgraded().catch(() => {
@@ -284,24 +273,22 @@ export async function signInWithGoogle(): Promise<User> {
 
     return data.user;
   } catch (error: unknown) {
-    console.error('[Auth] ❌ Google Sign-In failed with error:');
-    console.error('[Auth] Error object:', error);
+    log.error('Google Sign-In failed', error);
 
     // Re-throw with more context for specific error codes
     const errorCode = (error as { code?: string })?.code;
     const errorMessage = (error as { message?: string })?.message;
 
-    console.error('[Auth] Error code:', errorCode);
-    console.error('[Auth] Error message:', errorMessage);
+    log.debug('Error details', { errorCode, errorMessage });
 
     if (errorCode === statusCodes.SIGN_IN_CANCELLED) {
-      console.log('[Auth] → User cancelled');
+      log.debug('User cancelled');
       throw new Error('SIGN_IN_CANCELLED');
     } else if (errorCode === statusCodes.IN_PROGRESS) {
-      console.log('[Auth] → Sign-in already in progress');
+      log.debug('Sign-in already in progress');
       throw new Error('Sign-in already in progress');
     } else if (errorCode === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-      console.log('[Auth] → Play Services not available');
+      log.debug('Play Services not available');
       throw new Error('Google Play Services not available or outdated');
     }
     throw error;
@@ -347,7 +334,7 @@ export async function signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   } catch (error) {
-    console.error('Error during sign out:', error);
+    log.error('Error during sign out', error);
     throw error;
   }
 }

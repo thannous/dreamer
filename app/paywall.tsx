@@ -14,8 +14,11 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
+import { createScopedLogger } from '@/lib/logger';
 import { TID } from '@/lib/testIDs';
 import type { PurchasePackage } from '@/lib/types';
+
+const log = createScopedLogger('[Paywall]');
 
 function sortPackages(packages: PurchasePackage[]): PurchasePackage[] {
   return [...packages].sort((a, b) => {
@@ -56,13 +59,9 @@ export default function PaywallScreen() {
 
   // Afficher la bottom sheet quand une erreur survient
   useEffect(() => {
-    if (__DEV__) {
-      console.log('[Paywall] error state changed:', error?.message);
-    }
+    log.debug('error state changed', error?.message);
     if (error) {
-      if (__DEV__) {
-        console.log('[Paywall] showing error bottom sheet');
-      }
+      log.debug('showing error bottom sheet');
       setShowErrorSheet(true);
     }
   }, [error]);

@@ -26,12 +26,24 @@ interface Logger {
 
 const noop = () => {};
 
-// Use console methods directly in dev, noop in production for debug/warn
-// Error is always logged for production debugging
+const isDev = (): boolean => {
+  // In React Native bundles, __DEV__ is replaced at build time.
+  // In tests, __DEV__ is typically set on globalThis.
+  return typeof __DEV__ !== 'undefined' ? __DEV__ : Boolean((globalThis as any).__DEV__);
+};
+
+// debug/warn: only active in dev
+// error: always logged for production debugging
 export const logger: Logger = {
-  debug: __DEV__ ? console.log.bind(console) : noop,
-  warn: __DEV__ ? console.warn.bind(console) : noop,
-  error: console.error.bind(console),
+  debug: (...args: unknown[]) => {
+    if (!isDev()) return;
+    console.log(...args);
+  },
+  warn: (...args: unknown[]) => {
+    if (!isDev()) return;
+    console.warn(...args);
+  },
+  error: (...args: unknown[]) => console.error(...args),
   log: (level: LogLevel, ...args: unknown[]) => {
     switch (level) {
       case 'debug':
