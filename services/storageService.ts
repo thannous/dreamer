@@ -8,6 +8,9 @@
 import * as mockService from './mocks/storageServiceMock';
 import * as realService from './storageServiceReal';
 import { isMockModeEnabled } from '@/lib/env';
+import { createScopedLogger } from '@/lib/logger';
+
+const log = createScopedLogger('[StorageService]');
 
 // Select which implementation to use based on environment
 const isMockMode = isMockModeEnabled();
@@ -15,9 +18,9 @@ const service = isMockMode ? mockService : realService;
 
 if (__DEV__) {
   if (isMockMode) {
-    console.log('[STORAGE SERVICE] Using MOCK implementation');
+    log.debug('Using MOCK implementation');
   } else {
-    console.log('[STORAGE SERVICE] Using REAL implementation');
+    log.debug('Using REAL implementation');
   }
 }
 

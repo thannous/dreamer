@@ -23,6 +23,7 @@ import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
 import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
+import { createScopedLogger } from '@/lib/logger';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis } from '@/lib/types';
@@ -46,6 +47,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
+
+const log = createScopedLogger('[Recording]');
 
 export default function RecordingScreen() {
   const { addDream, dreams, analyzeDream } = useDreams();
@@ -336,14 +339,12 @@ export default function RecordingScreen() {
         const normalizedBase = normalizeForComparison(baseTranscriptRef.current);
         const normalizedFinal = normalizeForComparison(transcriptText);
 
-        if (__DEV__) {
-          console.log('[stopRecording]', {
-            baseLength: normalizedBase.length,
-            finalLength: normalizedFinal.length,
-            baseSample: normalizedBase.substring(0, 30) + '...',
-            finalSample: normalizedFinal.substring(0, 30) + '...',
-          });
-        }
+        log.debug('stopRecording', {
+          baseLength: normalizedBase.length,
+          finalLength: normalizedFinal.length,
+          baseSample: normalizedBase.substring(0, 30) + '...',
+          finalSample: normalizedFinal.substring(0, 30) + '...',
+        });
 
         // Calculate similarity: if base and final are very similar (>90%), assume partials gave us the full text
         const baseLen = normalizedBase.length;
@@ -355,11 +356,9 @@ export default function RecordingScreen() {
         // If final is essentially same as base with 90%+ similarity and starts similarly
         // it means partials already gave us the transcript
         if (similarity > 0.9 && normalizedFinal.startsWith(normalizedBase.substring(0, Math.min(20, normalizedBase.length)))) {
-          if (__DEV__) {
-            console.log('[stopRecording] final very similar to base, using final (may have corrections)', {
-              similarity: similarity.toFixed(2),
-            });
-          }
+          log.debug('final very similar to base, using final (may have corrections)', {
+            similarity: similarity.toFixed(2),
+          });
           // Use final as-is (it might have corrections from the STT engine)
           baseTranscriptRef.current = transcriptText;
           setTranscript(transcriptText);
@@ -392,9 +391,7 @@ export default function RecordingScreen() {
         showQuotaSheet({ mode: 'error', message: t('recording.alert.no_speech.message') });
       }
     } catch (err) {
-      if (__DEV__) {
-        console.error('Failed to stop recording:', err);
-      }
+      log.error('Failed to stop recording:', err);
       showQuotaSheet({ mode: 'error', message: t('recording.alert.stop_failed') });
     } finally {
       hasAutoStoppedRecordingRef.current = false;
@@ -521,9 +518,7 @@ export default function RecordingScreen() {
           };
         } catch (err) {
           // Silently fail and proceed with default/derived values
-          if (__DEV__) {
-            console.warn('[Recording] Quick categorization failed:', err);
-          }
+          log.warn('Quick categorization failed:', err);
         }
       }
 
