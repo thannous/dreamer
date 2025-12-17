@@ -1,4 +1,23 @@
 User-agent: *
 Allow: /
 
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /refacto/
+Disallow: /rg/
+Disallow: /auth/
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /tailwind.config.js
+Disallow: /workbox-config.js
+Disallow: /CONTENT-PLANNING.md
+Disallow: /PRODUCTION_CONSTANTS.md
+Disallow: /PRODUCTION_PREP.md
+Disallow: /android-app-links.md
+Disallow: /recording-screen-implementation.md
+Disallow: /speech-to-text-integration.md
+Disallow: /stt-best-practices.md
+Disallow: /supabase-setup.md
+Disallow: /prompt_landing_page.json
+
 Sitemap: https://noctalia.app/sitemap.xml

@@ -78,7 +78,10 @@
       "Bash(keytool -printcert:*)",
       "Bash(npx react-native:*)",
       "Bash(head:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)"
     ],
     "deny": [],
     "ask": []

@@ -9,22 +9,75 @@
 /logo/*.png
   Cache-Control: public, max-age=604800, immutable
 
+/logo192.png
+  Cache-Control: public, max-age=604800, immutable
+
+/logo512.png
+  Cache-Control: public, max-age=604800, immutable
+
 /img/*.png
+  Cache-Control: public, max-age=604800, immutable
+
+/img/*.jpg
+  Cache-Control: public, max-age=604800, immutable
+
+/img/*.jpeg
+  Cache-Control: public, max-age=604800, immutable
+
+/img/*.webp
   Cache-Control: public, max-age=604800, immutable
 
 /screenshoot/*.png
   Cache-Control: public, max-age=604800, immutable
 
-# Cache CSS and JS with long expiry
-/*.css
+/screenshoot/*.jpg
   Cache-Control: public, max-age=604800, immutable
 
-/*.js
+/screenshoot/*.jpeg
+  Cache-Control: public, max-age=604800, immutable
+
+/screenshoot/*.webp
+  Cache-Control: public, max-age=604800, immutable
+
+# Cache fonts
+/fonts/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache CSS and JS with long expiry
+/css/*
+  Cache-Control: public, max-age=604800, immutable
+
+/js/*
   Cache-Control: public, max-age=604800, immutable
 
 # HTML pages - no cache to ensure fresh content
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
+
+/en/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/fr/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/es/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Prevent indexing of non-public build artifacts (if deployed)
+/node_modules/*
+  X-Robots-Tag: noindex, nofollow
+
+/src/*
+  X-Robots-Tag: noindex, nofollow
+
+/refacto/*
+  X-Robots-Tag: noindex, nofollow
+
+/rg/*
+  X-Robots-Tag: noindex, nofollow
+
+/auth/*
+  X-Robots-Tag: noindex, nofollow
 
 # Security headers
 /*

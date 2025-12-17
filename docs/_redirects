@@ -9,3 +9,20 @@
 /en/guides/index.html /en/guides/ 301
 /fr/guides/index.html /fr/guides/ 301
 /es/guides/index.html /es/guides/ 301
+
+# Normalize trailing slashes on directory routes
+/en /en/ 301
+/fr /fr/ 301
+/es /es/ 301
+/en/blog /en/blog/ 301
+/fr/blog /fr/blog/ 301
+/es/blog /es/blog/ 301
+/en/guides /en/guides/ 301
+/fr/guides /fr/guides/ 301
+/es/guides /es/guides/ 301
+
+# Replace meta-refresh stubs with real 301 redirects
+/cgu.html /fr/cgu.html 301
+/mentions-legales.html /fr/mentions-legales.html 301
+/politique-confidentialite.html /fr/politique-confidentialite.html 301
+/suppression-compte.html /fr/suppression-compte.html 301
