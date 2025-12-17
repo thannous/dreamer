@@ -4,13 +4,13 @@ Configure API base URL
 - Use env var at start time: `EXPO_PUBLIC_API_URL=http://localhost:3000`
 - Or set `extra.apiUrl` in `app.json`
 - Default fallback if unset: `http://localhost:3000`
-- For Supabase, create `.env.supabase` (see docs/supabase-setup.md) then run `npm run start:supabase` to load env vars automatically.
+- For Supabase, create `.env.supabase` (see `doc_web_interne/docs/supabase-setup.md`) then run `npm run start:supabase` to load env vars automatically.
 
 Supabase Edge Functions
 - You can deploy a single function named `api` and route inside it. Then set:
   - `EXPO_PUBLIC_API_URL=https://<project-ref>.functions.supabase.co/api`
   - Requests will go to `/api/analyzeDream`, `/api/generateImage`, etc.
-  - See `supabase/functions/api/index.ts` and `docs/supabase-setup.md`.
+  - See `supabase/functions/api/index.ts` and `doc_web_interne/docs/supabase-setup.md`.
 
 Expected endpoints
 - POST `/transcribe`

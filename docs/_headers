@@ -5,6 +5,10 @@
 /favicon.ico
   Cache-Control: public, max-age=86400, must-revalidate
 
+# Always fetch the latest deployed build version
+/version.txt
+  Cache-Control: no-store
+
 # Cache images
 /logo/*.png
   Cache-Control: public, max-age=604800, immutable
