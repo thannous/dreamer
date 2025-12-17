@@ -81,7 +81,9 @@
       "Bash(git reset:*)",
       "Bash(gh pr list:*)",
       "Bash(gh pr view:*)",
-      "Bash(gh pr diff:*)"
+      "Bash(gh pr diff:*)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []
