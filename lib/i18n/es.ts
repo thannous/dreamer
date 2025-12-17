@@ -248,6 +248,7 @@ const translations: Record<string, string> = {
     'recording.mic.stop_hint': 'Doble toque para detener la grabación',
     'recording.alert.permission_required.title': 'Permiso requerido',
     'recording.alert.permission_required.message': 'Se necesita el micrófono para grabar tus sueños.',
+    'recording.alert.insecure_context': 'El micrófono está bloqueado porque la página no se sirve mediante HTTPS (o localhost). Abre la página en HTTPS o a través de localhost para activar el dictado.',
     'recording.alert.start_failed': 'No se pudo iniciar la grabación. Inténtalo de nuevo.',
     'recording.alert.language_pack_missing.title': 'Falta el paquete de idioma',
     'recording.alert.language_pack_missing.message': 'El paquete de reconocimiento {locale} no está instalado en este dispositivo. Descarga el paquete sin conexión (Google → Ajustes → Voz → Reconocimiento de voz sin conexión) o cambia a un idioma instalado: {installed}.',

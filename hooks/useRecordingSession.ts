@@ -274,7 +274,7 @@ export function useRecordingSession({
           if (!hasSecureContext) {
             Alert.alert(
               t('recording.alert.permission_required.title'),
-              'Le micro est bloqué car la page n’est pas servie en HTTPS (ou localhost). Ouvre la page en HTTPS ou via localhost pour activer la dictée.'
+              t('recording.alert.insecure_context')
             );
             return { success: false, error: 'insecure_context' };
           }
