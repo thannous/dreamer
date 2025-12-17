@@ -341,8 +341,6 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
 
-  // FlashList handles item layout automatically with estimatedItemSize
-
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
       {/* Header */}
