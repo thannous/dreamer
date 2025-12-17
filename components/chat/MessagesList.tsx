@@ -35,9 +35,10 @@ import Animated, {
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withRepeat,
+  withSequence,
   withTiming,
-  interpolate,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
@@ -183,28 +184,24 @@ function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: 
  * AnimatedDot - Single pulsing dot with staggered timing
  */
 function AnimatedDot({ delay, color }: { delay: number; color: string }) {
-  const progress = useSharedValue(0);
+  const opacity = useSharedValue(0.4);
 
   useEffect(() => {
-    progress.value = withRepeat(
-      withTiming(1, { duration: 1200 }, () => {
-        progress.value = 0;
-      }),
-      -1,
-      false
+    opacity.value = withDelay(
+      delay,
+      withRepeat(
+        withSequence(
+          withTiming(1, { duration: 450 }),
+          withTiming(0.4, { duration: 450 })
+        ),
+        -1,
+        false
+      )
     );
-  }, [progress]);
+  }, [delay, opacity]);
 
   const animatedStyle = useAnimatedStyle(() => {
-    const delayedProgress = Math.max(0, progress.value - delay / 1200);
-    const opacity = interpolate(
-      delayedProgress,
-      [0, 0.3, 0.6, 1],
-      [0.4, 1, 0.4, 0.4],
-      'clamp'
-    );
-
-    return { opacity };
+    return { opacity: opacity.value };
   });
 
   return <Animated.View style={[loadingStyles.dot, { backgroundColor: color }, animatedStyle]} />;
