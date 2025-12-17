@@ -19,12 +19,12 @@
 /screenshoot/*.png
   Cache-Control: public, max-age=604800, immutable
 
-# Cache CSS and JS with long expiry
+# CSS and JS: always revalidate so deploys don't serve stale assets
 /*.css
-  Cache-Control: public, max-age=604800, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /*.js
-  Cache-Control: public, max-age=604800, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 # HTML pages - no cache to ensure fresh content
 /*.html
