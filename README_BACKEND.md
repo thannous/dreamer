@@ -25,7 +25,7 @@ Expected endpoints
   - Optional env overrides:
     - `GEMINI_API_BASE` (SDK uses default `https://generativelanguage.googleapis.com`)
     - `GEMINI_API_VERSION` (not used with SDK)
-    - `GEMINI_MODEL` (default `gemini-2.5-pro`; fallback to `gemini-2.5-flash` on failure)
+    - `GEMINI_MODEL` (default `gemini-3-flash-preview`; fallback to `gemini-2.5-flash` on failure)
 
 - POST `/generateImage`
   - Request JSON: `{ "prompt": string }`
