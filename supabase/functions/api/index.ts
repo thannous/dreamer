@@ -913,7 +913,7 @@ serve(async (req: Request) => {
       }
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
 
       let reply = '';
       try {
@@ -1055,7 +1055,7 @@ serve(async (req: Request) => {
       const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
 
       let text = '';
       try {
@@ -1067,7 +1067,7 @@ serve(async (req: Request) => {
         text = result.response.text();
       } catch (err) {
         console.warn('[api] /analyzeDream primary model failed, retrying with flash', primaryModel, err);
-        const fallbackModel = 'gemini-2.5-flash';
+        const fallbackModel = 'gemini-3-flash-preview';
         const model = genAI.getGenerativeModel({ model: fallbackModel });
         const result = await model.generateContent({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -1188,7 +1188,7 @@ serve(async (req: Request) => {
       const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
       const genAI = new GoogleGenerativeAI(apiKey);
-      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-pro';
+      const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
 
       let text = '';
       try {
@@ -1200,7 +1200,7 @@ serve(async (req: Request) => {
         text = result.response.text();
       } catch (err) {
         console.warn('[api] /analyzeDreamFull primary model failed, retrying with flash', primaryModel, err);
-        const fallbackModel = 'gemini-2.5-flash';
+        const fallbackModel = 'gemini-3-flash-preview';
         const model = genAI.getGenerativeModel({ model: fallbackModel });
         const result = await model.generateContent({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
