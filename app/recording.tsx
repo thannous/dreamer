@@ -127,6 +127,7 @@ export default function RecordingScreen() {
   const interactionDisabled = isPersisting || isAnalyzing;
   const isSaveDisabled = !trimmedTranscript || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
+  const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lengthLimitMessage = useCallback(
     () =>
       t('recording.alert.length_limit', { limit: RECORDING.MAX_TRANSCRIPT_CHARS }) ||
@@ -635,8 +636,10 @@ export default function RecordingScreen() {
       return;
     }
     if (!canAnalyzeNow) {
-      showQuotaSheet();
-      return;
+      // "canAnalyzeNow" is a local/optimistic gate; if we can't show a quota sheet (e.g., paid tier),
+      // fall through and let the server-side quota enforcement decide.
+      const shown = showQuotaSheet();
+      if (shown) return;
     }
 
     if (firstDreamPrompt) {
@@ -652,8 +655,12 @@ export default function RecordingScreen() {
     try {
       analysisProgress.reset();
       analysisProgress.setStep(AnalysisStep.ANALYZING);
+      requestAnimationFrame(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      });
 
       const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
+        replaceExistingImage: true,
         lang: language,
         onProgress: (step) => {
           // Update progress as each phase completes
@@ -759,6 +766,7 @@ export default function RecordingScreen() {
           style={styles.keyboardView}
         >
           <ScrollView
+            ref={scrollViewRef}
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
@@ -826,6 +834,7 @@ export default function RecordingScreen() {
           primaryLabel: t('guest.first_dream.sheet.analyze'),
           onPrimary: handleFirstDreamAnalyze,
           primaryDisabled: isPersisting,
+          primaryLoading: isPersisting,
           primaryTestID: TID.Button.FirstDreamAnalyze,
           secondaryLabel: t('guest.first_dream.sheet.journal'),
           onSecondary: handleFirstDreamJournal,
@@ -847,6 +856,7 @@ export default function RecordingScreen() {
           primaryLabel: t('recording.analyze_prompt.sheet.analyze'),
           onPrimary: handleFirstDreamAnalyze,
           primaryDisabled: isPersisting,
+          primaryLoading: isPersisting,
           primaryTestID: TID.Button.AnalyzePromptAnalyze,
           secondaryLabel: t('recording.analyze_prompt.sheet.journal'),
           onSecondary: handleAnalyzePromptJournal,
