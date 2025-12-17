@@ -10,6 +10,17 @@ export type { MockProfile } from './mockAuth';
 const isMockMode = isMockModeEnabled();
 const EMAIL_REDIRECT_WEB = 'https://dream.noctalia.app/recording';
 
+function getWebRedirectTo(): string | undefined {
+  try {
+    const location = (globalThis as typeof globalThis & { location?: Location }).location;
+    if (!location) return undefined;
+    // Preserve the current page (e.g., /settings) so OAuth does not bounce to the Supabase "Site URL".
+    return location.href;
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Initialize Google Sign-In with web client ID
  * Web uses Supabase OAuth popup, so nothing to configure here
@@ -108,10 +119,12 @@ export async function signInWithGoogleWeb(): Promise<void> {
     return;
   }
 
+  const redirectTo = getWebRedirectTo();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
+      ...(redirectTo ? { redirectTo } : {}),
     },
   });
   if (error) throw error;
