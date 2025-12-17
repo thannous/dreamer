@@ -20,8 +20,6 @@ export const RECORDING = {
 } as const;
 
 export const JOURNAL_LIST = {
-  /** Estimated height of each dream card for list optimization */
-  ESTIMATED_ITEM_HEIGHT: 140,
   /** Number of items to load immediately without lazy loading */
   INITIAL_VISIBLE_COUNT: 5,
   /** Number of items to preload ahead/behind viewport */
