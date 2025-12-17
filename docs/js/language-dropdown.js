@@ -4,6 +4,39 @@
  */
 (() => {
   document.addEventListener('DOMContentLoaded', function() {
+    async function injectSiteVersion() {
+      try {
+        const footer = document.querySelector('footer');
+        if (!footer) return;
+
+        const footerBar = footer.querySelector('div.text-center.pt-8.border-t');
+        if (!footerBar) return;
+
+        if (footerBar.querySelector('[data-site-version]')) return;
+
+        const res = await fetch('/version.txt', { cache: 'no-store' });
+        if (!res.ok) return;
+
+        const version = (await res.text()).trim();
+        if (!version) return;
+
+        const target = footerBar.querySelector('span');
+        if (!target) return;
+
+        const versionEl = document.createElement('span');
+        versionEl.dataset.siteVersion = '';
+        versionEl.textContent = ` · v${version}`;
+        versionEl.style.fontFamily =
+          "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace";
+        versionEl.style.opacity = '0.85';
+        target.appendChild(versionEl);
+      } catch {
+        // Best-effort: version should never block page rendering.
+      }
+    }
+
+    injectSiteVersion();
+
     const dropdownButton = document.getElementById('languageDropdownButton');
     const dropdownMenu = document.getElementById('languageDropdownMenu');
     const dropdownChevron = document.getElementById('dropdownChevron');

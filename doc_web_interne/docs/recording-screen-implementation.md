@@ -84,10 +84,10 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 2. `/mnt/c/Users/thann/WebstormProjects/dream-app/components/recording/Waveform.tsx`
    - Animated audio waveform visualization
 
-3. `docs/speech-to-text-integration.md`
+3. `doc_web_interne/docs/speech-to-text-integration.md`
    - Guide for implementing speech-to-text transcription
 
-4. `/mnt/c/Users/thann/WebstormProjects/dream-app/docs/recording-screen-implementation.md`
+4. `doc_web_interne/docs/recording-screen-implementation.md`
    - This summary document
 
 ### Modified Files:
@@ -122,7 +122,7 @@ Successfully implemented a React Native Expo recording screen that faithfully re
 ## Future Enhancements
 
 ### Speech-to-Text Integration
-Transcription now runs natively first (via `expo-speech-recognition`) with Google Cloud Speech-to-Text as a backup. See `docs/speech-to-text-integration.md` for the current flow and setup.
+Transcription now runs natively first (via `expo-speech-recognition`) with Google Cloud Speech-to-Text as a backup. See `doc_web_interne/docs/speech-to-text-integration.md` for the current flow and setup.
 
 ### Additional Features
 1. **Real-time transcription**: Display text as user speaks

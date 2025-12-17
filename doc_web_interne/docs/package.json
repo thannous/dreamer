@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Noctalia landing pages",
   "scripts": {
-    "build:css": "tailwindcss -i src/input.css -o css/styles.min.css --minify",
-    "watch:css": "tailwindcss -i src/input.css -o css/styles.min.css --watch"
+    "build:css": "tailwindcss -c tailwind.config.js -i src/input.css -o ../../docs/css/styles.min.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i src/input.css -o ../../docs/css/styles.min.css --watch"
   },
   "devDependencies": {
     "@fontsource-variable/fraunces": "^5.2.9",
