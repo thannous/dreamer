@@ -51,6 +51,7 @@ export function useRecordingSession({
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
   const recordingTransitionRef = useRef(false);
+  const stopPromiseRef = useRef<Promise<RecordingSessionResult> | null>(null);
   const hasAutoStoppedRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
 
@@ -97,7 +98,10 @@ export function useRecordingSession({
 
       if (shouldStopRecorder && !recorderReleasedRef.current) {
         try {
-          await audioRecorder.stop();
+          const status = audioRecorder.getStatus();
+          if (status.isRecording) {
+            await audioRecorder.stop();
+          }
         } catch (error) {
           if (!handleRecorderError(`forceStopRecording:${reason}`, error)) {
             log.warn('failed to stop audio recorder during cleanup', error);
@@ -118,140 +122,161 @@ export function useRecordingSession({
   );
 
   const stopRecording = useCallback(async (): Promise<RecordingSessionResult> => {
-    let nativeSession: NativeSpeechSession | null = null;
-    let nativeResultPromise: Promise<{
-      transcript: string;
-      error?: string;
-      errorCode?: string;
-      recordedUri?: string | null;
-      hasRecording?: boolean;
-    }> | null = null;
-    let nativeErrorCode: string | undefined;
-    let nativeError: string | undefined;
-    let isLanguagePackMissing = false;
-    let isRateLimited = false;
+    if (stopPromiseRef.current) {
+      return stopPromiseRef.current;
+    }
 
-    try {
-      setIsRecording(false);
-      isRecordingRef.current = false;
-      nativeSession = nativeSessionRef.current;
-      nativeSessionRef.current = null;
-      const usedRecorder = !skipRecorderRef.current;
+    const promise = (async (): Promise<RecordingSessionResult> => {
+      let nativeSession: NativeSpeechSession | null = null;
+      let nativeResultPromise: Promise<{
+        transcript: string;
+        error?: string;
+        errorCode?: string;
+        recordedUri?: string | null;
+        hasRecording?: boolean;
+      }> | null = null;
+      let nativeErrorCode: string | undefined;
+      let nativeError: string | undefined;
+      let isLanguagePackMissing = false;
+      let isRateLimited = false;
 
-      nativeResultPromise = nativeSession?.stop() ?? null;
-      if (usedRecorder && !recorderReleasedRef.current) {
-        try {
-          await audioRecorder.stop();
-        } catch (error) {
-          if (!handleRecorderError('stopRecording', error)) {
-            throw error;
-          }
-        }
-      }
-      const uri =
-        usedRecorder && !recorderReleasedRef.current ? audioRecorder.uri ?? undefined : undefined;
-
-      let transcriptText = '';
-      let recordedUri: string | undefined;
-
-      if (nativeResultPromise) {
-        try {
-          const nativeResult = await nativeResultPromise;
-          log.debug('native result', nativeResult);
-          transcriptText = nativeResult.transcript?.trim() ?? '';
-          recordedUri = nativeResult.recordedUri ?? undefined;
-          if (!transcriptText && nativeResult.error) {
-            log.warn('Native STT returned empty result', nativeResult.error);
-          }
-          nativeError = nativeResult.error;
-          nativeErrorCode = nativeResult.errorCode;
-          const normalizedNativeError = nativeError?.toLowerCase();
-          isLanguagePackMissing =
-            normalizedNativeError?.includes('language-not-supported') ||
-            normalizedNativeError?.includes('not yet downloaded') ||
-            false;
-          isRateLimited =
-            nativeErrorCode === 'too-many-requests' ||
-            normalizedNativeError?.includes('too many requests') ||
-            false;
-        } catch (error) {
-          log.warn('Native STT failed', error);
-        }
-      } else {
-        log.debug('no native session, will rely on backup', { uriPresent: Boolean(uri) });
-      }
-
-      const hasNativeSession = Boolean(nativeResultPromise);
-      const shouldFallbackToGoogle =
-        (isLanguagePackMissing || isRateLimited || !hasNativeSession) && !transcriptText && (uri || recordedUri);
-
-      if (shouldFallbackToGoogle) {
-        try {
-          const fallbackUri = uri ?? recordedUri;
-          log.debug('fallback to Google STT', {
-            locale: transcriptionLocale,
-            uriLength: fallbackUri?.length ?? 0,
-          });
-          transcriptText = await transcribeAudio({
-            uri: fallbackUri!,
-            languageCode: transcriptionLocale,
-          });
-        } catch (e) {
-          const msg = e instanceof Error ? e.message : 'Unknown transcription error';
-          return { transcript: '', error: msg };
-        }
-      }
-
-      if (!transcriptText && isLanguagePackMissing) {
-        const availability = await getSpeechLocaleAvailability(transcriptionLocale);
-        const installedLocales = availability?.installedLocales ?? [];
-        if (onLanguagePackMissing) {
-          onLanguagePackMissing({ locale: transcriptionLocale, installedLocales });
-        } else {
-          const installedText = installedLocales.length
-            ? installedLocales.join(', ')
-            : t('recording.alert.language_pack_missing.none');
-          Alert.alert(
-            t('recording.alert.language_pack_missing.title'),
-            t('recording.alert.language_pack_missing.message', {
-              locale: transcriptionLocale,
-              installed: installedText,
-            })
-          );
-        }
-        return {
-          transcript: '',
-          recordedUri: recordedUri ?? uri,
-          error: 'language_pack_missing',
-        };
-      }
-
-      return {
-        transcript: transcriptText,
-        recordedUri: recordedUri ?? uri,
-        error: !transcriptText
-          ? isRateLimited
-            ? 'rate_limited'
-            : !uri && !hasNativeSession
-              ? 'no_recording'
-              : 'no_speech'
-          : undefined,
-      };
-    } catch (err) {
-      if (handleRecorderError('stopRecording', err)) {
-        return { transcript: '', error: 'recorder_released' };
-      }
-      nativeSession?.abort();
-      log.error('Failed to stop recording', err);
-      return { transcript: '', error: err instanceof Error ? err.message : 'stop_failed' };
-    } finally {
       try {
-        await setAudioModeAsync({ allowsRecording: false });
+        setIsRecording(false);
+        isRecordingRef.current = false;
+        nativeSession = nativeSessionRef.current;
+        nativeSessionRef.current = null;
+        const usedRecorder = !skipRecorderRef.current;
+
+        nativeResultPromise = nativeSession?.stop() ?? null;
+        if (usedRecorder && !recorderReleasedRef.current) {
+          try {
+            const status = audioRecorder.getStatus();
+            if (status.isRecording) {
+              await audioRecorder.stop();
+            }
+          } catch (error) {
+            if (!handleRecorderError('stopRecording', error)) {
+              throw error;
+            }
+          }
+        }
+
+        const uri =
+          usedRecorder && !recorderReleasedRef.current ? audioRecorder.uri ?? undefined : undefined;
+
+        let transcriptText = '';
+        let recordedUri: string | undefined;
+
+        if (nativeResultPromise) {
+          try {
+            const nativeResult = await nativeResultPromise;
+            log.debug('native result', nativeResult);
+            transcriptText = nativeResult.transcript?.trim() ?? '';
+            recordedUri = nativeResult.recordedUri ?? undefined;
+            if (!transcriptText && nativeResult.error) {
+              log.warn('Native STT returned empty result', nativeResult.error);
+            }
+            nativeError = nativeResult.error;
+            nativeErrorCode = nativeResult.errorCode;
+            const normalizedNativeError = nativeError?.toLowerCase();
+            isLanguagePackMissing =
+              normalizedNativeError?.includes('language-not-supported') ||
+              normalizedNativeError?.includes('not yet downloaded') ||
+              false;
+            isRateLimited =
+              nativeErrorCode === 'too-many-requests' ||
+              normalizedNativeError?.includes('too many requests') ||
+              false;
+          } catch (error) {
+            log.warn('Native STT failed', error);
+          }
+        } else {
+          log.debug('no native session, will rely on backup', { uriPresent: Boolean(uri) });
+        }
+
+        const hasNativeSession = Boolean(nativeResultPromise);
+        const shouldFallbackToGoogle =
+          (isLanguagePackMissing || isRateLimited || !hasNativeSession) &&
+          !transcriptText &&
+          (uri || recordedUri);
+
+        if (shouldFallbackToGoogle) {
+          try {
+            const fallbackUri = uri ?? recordedUri;
+            log.debug('fallback to Google STT', {
+              locale: transcriptionLocale,
+              uriLength: fallbackUri?.length ?? 0,
+            });
+            transcriptText = await transcribeAudio({
+              uri: fallbackUri!,
+              languageCode: transcriptionLocale,
+            });
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : 'Unknown transcription error';
+            return { transcript: '', error: msg };
+          }
+        }
+
+        if (!transcriptText && isLanguagePackMissing) {
+          const availability = await getSpeechLocaleAvailability(transcriptionLocale);
+          const installedLocales = availability?.installedLocales ?? [];
+          if (onLanguagePackMissing) {
+            onLanguagePackMissing({ locale: transcriptionLocale, installedLocales });
+          } else {
+            const installedText = installedLocales.length
+              ? installedLocales.join(', ')
+              : t('recording.alert.language_pack_missing.none');
+            Alert.alert(
+              t('recording.alert.language_pack_missing.title'),
+              t('recording.alert.language_pack_missing.message', {
+                locale: transcriptionLocale,
+                installed: installedText,
+              })
+            );
+          }
+          return {
+            transcript: '',
+            recordedUri: recordedUri ?? uri,
+            error: 'language_pack_missing',
+          };
+        }
+
+        return {
+          transcript: transcriptText,
+          recordedUri: recordedUri ?? uri,
+          error: !transcriptText
+            ? isRateLimited
+              ? 'rate_limited'
+              : !uri && !hasNativeSession
+                ? 'no_recording'
+                : 'no_speech'
+            : undefined,
+        };
       } catch (err) {
-        log.warn('Failed to reset audio mode after recording', err);
+        if (handleRecorderError('stopRecording', err)) {
+          return { transcript: '', error: 'recorder_released' };
+        }
+        nativeSession?.abort();
+        log.error('Failed to stop recording', err);
+        return { transcript: '', error: err instanceof Error ? err.message : 'stop_failed' };
+      } finally {
+        try {
+          await setAudioModeAsync({ allowsRecording: false });
+        } catch (err) {
+          log.warn('Failed to reset audio mode after recording', err);
+        }
+        hasAutoStoppedRecordingRef.current = false;
+        skipRecorderRef.current = false;
       }
-      hasAutoStoppedRecordingRef.current = false;
-      skipRecorderRef.current = false;
+    })();
+
+    stopPromiseRef.current = promise;
+    try {
+      return await promise;
+    } finally {
+      if (stopPromiseRef.current === promise) {
+        stopPromiseRef.current = null;
+      }
     }
   }, [audioRecorder, onLanguagePackMissing, transcriptionLocale, handleRecorderError, t]);
 

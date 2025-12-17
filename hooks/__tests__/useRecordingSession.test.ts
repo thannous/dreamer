@@ -10,6 +10,31 @@ import { transcribeAudio } from '../../services/speechToText';
 
 import { useRecordingSession } from '../useRecordingSession';
 
+function createMockRecorder(overrides?: Record<string, unknown>) {
+  let isRecording = false;
+
+  const recorder: Record<string, unknown> = {
+    uri: null,
+    prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
+    record: vi.fn(() => {
+      isRecording = true;
+    }),
+    stop: vi.fn().mockImplementation(async () => {
+      isRecording = false;
+    }),
+    getStatus: vi.fn(() => ({
+      canRecord: isRecording,
+      isRecording,
+      durationMillis: 0,
+      mediaServicesDidReset: false,
+      url: recorder.uri,
+    })),
+    ...overrides,
+  };
+
+  return recorder;
+}
+
 // Mock dependencies
 vi.mock('expo-audio', () => ({
   AudioModule: {
@@ -24,13 +49,7 @@ vi.mock('expo-audio', () => ({
     },
   },
   setAudioModeAsync: vi.fn().mockResolvedValue(undefined),
-  useAudioRecorder: vi.fn().mockReturnValue({
-    isRecording: false,
-    uri: null,
-    prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
-    record: vi.fn(),
-    stop: vi.fn().mockResolvedValue(undefined),
-  }),
+  useAudioRecorder: vi.fn().mockReturnValue(createMockRecorder()),
 }));
 
 vi.mock('expo-router', () => ({
@@ -80,13 +99,7 @@ describe('useRecordingSession', () => {
     vi.clearAllMocks();
     // Reset default mock implementations
     vi.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
-    vi.mocked(useAudioRecorder).mockReturnValue({
-      isRecording: false,
-      uri: null,
-      prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
-      record: vi.fn(),
-      stop: vi.fn().mockResolvedValue(undefined),
-    } as never);
+    vi.mocked(useAudioRecorder).mockReturnValue(createMockRecorder() as never);
     vi.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
     vi.mocked(startNativeSpeechSession).mockResolvedValue(null);
     vi.mocked(transcribeAudio).mockResolvedValue('transcribed text');
@@ -203,6 +216,44 @@ describe('useRecordingSession', () => {
       expect(response?.transcript).toBe('');
     });
 
+    it('should be safe to call stopRecording twice concurrently', async () => {
+      const recorder = createMockRecorder({ uri: '/path/to/recorded.caf' });
+      vi.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+
+      await act(async () => {
+        await Promise.all([result.current.stopRecording(), result.current.stopRecording()]);
+      });
+
+      expect(recorder.stop as any).toHaveBeenCalledTimes(1);
+    });
+
+    it('should be safe to call stopRecording twice sequentially', async () => {
+      const recorder = createMockRecorder({ uri: '/path/to/recorded.caf' });
+      vi.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+
+      await act(async () => {
+        await result.current.stopRecording();
+      });
+
+      await act(async () => {
+        await result.current.stopRecording();
+      });
+
+      expect(recorder.stop as any).toHaveBeenCalledTimes(1);
+    });
+
     it('should handle native session transcript', async () => {
       vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
         stop: vi.fn().mockResolvedValue({ transcript: 'native transcript', recordedUri: '/path/to/audio.caf' }),
@@ -250,13 +301,9 @@ describe('useRecordingSession', () => {
 
     it('should fallback to Google STT when native session is unavailable', async () => {
       vi.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
-      vi.mocked(useAudioRecorder).mockReturnValue({
-        isRecording: false,
-        uri: '/path/to/recorded.caf',
-        prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
-        record: vi.fn(),
-        stop: vi.fn().mockResolvedValue(undefined),
-      } as never);
+      vi.mocked(useAudioRecorder).mockReturnValue(
+        createMockRecorder({ uri: '/path/to/recorded.caf' }) as never
+      );
 
       vi.mocked(transcribeAudio).mockResolvedValueOnce('google transcript');
 
@@ -301,13 +348,9 @@ describe('useRecordingSession', () => {
     });
 
     it('should handle transcription error', async () => {
-      vi.mocked(useAudioRecorder).mockReturnValue({
-        isRecording: false,
-        uri: '/path/to/recorded.caf',
-        prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
-        record: vi.fn(),
-        stop: vi.fn().mockResolvedValue(undefined),
-      } as never);
+      vi.mocked(useAudioRecorder).mockReturnValue(
+        createMockRecorder({ uri: '/path/to/recorded.caf' }) as never
+      );
 
       vi.mocked(transcribeAudio).mockRejectedValueOnce(new Error('Transcription failed'));
 
@@ -518,13 +561,11 @@ describe('useRecordingSession', () => {
 
   describe('error handling', () => {
     it('should handle audio recorder error during start', async () => {
-      vi.mocked(useAudioRecorder).mockReturnValue({
-        isRecording: false,
-        uri: null,
-        prepareToRecordAsync: vi.fn().mockRejectedValue(new Error('Recorder init failed')),
-        record: vi.fn(),
-        stop: vi.fn().mockResolvedValue(undefined),
-      } as never);
+      vi.mocked(useAudioRecorder).mockReturnValue(
+        createMockRecorder({
+          prepareToRecordAsync: vi.fn().mockRejectedValue(new Error('Recorder init failed')),
+        }) as never
+      );
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -538,13 +579,12 @@ describe('useRecordingSession', () => {
     });
 
     it('should handle recorder already released error gracefully', async () => {
-      vi.mocked(useAudioRecorder).mockReturnValue({
-        isRecording: false,
-        uri: '/path/audio.caf',
-        prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
-        record: vi.fn(),
-        stop: vi.fn().mockRejectedValue(new Error('Recorder was already released')),
-      } as never);
+      vi.mocked(useAudioRecorder).mockReturnValue(
+        createMockRecorder({
+          uri: '/path/audio.caf',
+          stop: vi.fn().mockRejectedValue(new Error('Recorder was already released')),
+        }) as never
+      );
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
