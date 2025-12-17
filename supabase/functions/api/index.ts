@@ -20,6 +20,32 @@ const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 6000;
 const DREAM_CONTEXT_INTERPRETATION_MAX_CHARS = 4000;
 const GUEST_LIMITS = { analysis: 2, exploration: 2, messagesPerDream: 10 } as const;
 
+// JSON schemas for structured outputs
+const ANALYZE_DREAM_SCHEMA = {
+  type: 'object',
+  properties: {
+    title: { type: 'string' },
+    interpretation: { type: 'string' },
+    shareableQuote: { type: 'string' },
+    theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
+    dreamType: { type: 'string', enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'] },
+    imagePrompt: { type: 'string' }
+  },
+  required: ['title', 'interpretation', 'shareableQuote', 'theme', 'dreamType', 'imagePrompt'],
+  additionalProperties: false
+};
+
+const CATEGORIZE_DREAM_SCHEMA = {
+  type: 'object',
+  properties: {
+    title: { type: 'string' },
+    theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
+    dreamType: { type: 'string', enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'] }
+  },
+  required: ['title', 'theme', 'dreamType'],
+  additionalProperties: false
+};
+
 function truncateForPrompt(input: unknown, maxChars: number): { text: string; truncated: boolean } {
   const text = String(input ?? '').trim();
   if (text.length <= maxChars) return { text, truncated: false };
@@ -338,6 +364,94 @@ const resolveGeminiApiBase = (): string => {
   if (!raw) return 'https://generativelanguage.googleapis.com';
   // Keep user-specified versioning; do not force v1.
   return raw.replace(/\/v1$/, '').replace(/\/v1beta$/, '');
+};
+
+/**
+ * Unified helper for Gemini API calls with automatic fallback and structured outputs support
+ */
+const callGeminiWithFallback = async (
+  apiKey: string,
+  primaryModel: string,
+  fallbackModel: string,
+  contents: any[],
+  systemInstruction: string,
+  config: {
+    temperature?: number;
+    responseMimeType?: string;
+    responseJsonSchema?: any;
+  }
+): Promise<{ text: string; raw: any }> => {
+  const client = new GoogleGenerativeAI(apiKey);
+
+  // Lower temperature for JSON generation (more deterministic)
+  const temperature = config.responseMimeType === 'application/json' ? 0.2 : (config.temperature ?? 0.7);
+
+  const makeCall = async (modelName: string) => {
+    const model = client.getGenerativeModel({ model: modelName });
+    const response = await model.generateContent({
+      contents,
+      systemInstruction,
+      generationConfig: {
+        temperature,
+        ...(config.responseMimeType && { responseMimeType: config.responseMimeType }),
+        ...(config.responseJsonSchema && { responseSchema: config.responseJsonSchema })
+      }
+    });
+    // Return full response object for better observability
+    const text = response.response.text() ?? '';
+    return { text, raw: response };
+  };
+
+  try {
+    return await makeCall(primaryModel);
+  } catch (err) {
+    // Don't retry non-retryable errors (401, 403, 400)
+    const errMsg = String((err as any)?.message ?? err);
+    if (errMsg.includes('401') || errMsg.includes('403') || errMsg.includes('Invalid request')) {
+      console.error('[api] Non-retryable error, not falling back', { error: errMsg });
+      throw err;
+    }
+
+    console.warn('[api] Primary model failed, retrying with fallback', primaryModel, err);
+    return await makeCall(fallbackModel);
+  }
+};
+
+/**
+ * Classify errors from Gemini API for better error handling
+ */
+const classifyGeminiError = (error: any): {
+  status: number;
+  userMessage: string;
+  canRetry: boolean;
+  retryAfter?: number;
+} => {
+  const message = String(error?.message ?? error);
+
+  // Check for specific error codes in message
+  if (message.includes('401')) {
+    return { status: 401, userMessage: 'Authentication failed', canRetry: false };
+  }
+  if (message.includes('403')) {
+    return { status: 403, userMessage: 'Access denied', canRetry: false };
+  }
+  if (message.includes('400') || message.includes('Invalid request')) {
+    return { status: 400, userMessage: 'Invalid request format', canRetry: false };
+  }
+  if (message.includes('404')) {
+    return { status: 404, userMessage: 'Model not found', canRetry: false };
+  }
+  if (message.includes('429') || message.toLowerCase().includes('rate limit')) {
+    return { status: 429, userMessage: 'Rate limit exceeded', canRetry: true, retryAfter: 60 };
+  }
+  if (message.toLowerCase().includes('timeout')) {
+    return { status: 504, userMessage: 'Request timeout', canRetry: true };
+  }
+  if (message.includes('500') || message.includes('502') || message.includes('503')) {
+    return { status: 500, userMessage: 'Server error, please retry', canRetry: true };
+  }
+
+  return { status: 500, userMessage: 'Unexpected error', canRetry: false };
 };
 
 serve(async (req: Request) => {
@@ -912,29 +1026,15 @@ serve(async (req: Request) => {
         if (t) contents.push({ role: r, parts: [{ text: t }] });
       }
 
-      const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
-
-      let reply = '';
-      try {
-        const model = genAI.getGenerativeModel({ model: primaryModel });
-        const result = await model.generateContent({
-          contents,
-          systemInstruction: systemPreamble,
-          generationConfig: { temperature: 0.7 },
-        });
-        reply = result.response.text();
-      } catch (err) {
-        console.warn('[api] /chat primary model failed, retrying with flash-lite', primaryModel, err);
-        const fallbackModel = 'gemini-2.5-flash-lite';
-        const model = genAI.getGenerativeModel({ model: fallbackModel });
-        const result = await model.generateContent({
-          contents,
-          systemInstruction: systemPreamble,
-          generationConfig: { temperature: 0.7 },
-        });
-        reply = result.response.text();
-      }
+      const { text: reply } = await callGeminiWithFallback(
+        apiKey,
+        primaryModel,
+        'gemini-2.5-flash-lite',
+        contents,
+        systemPreamble,
+        { temperature: 0.7 }
+      );
 
       if (typeof reply !== 'string' || !reply.trim()) {
         throw new Error('Empty model response');
@@ -979,8 +1079,9 @@ serve(async (req: Request) => {
       });
     } catch (e) {
       console.error('[api] /chat error', e);
-      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-        status: 400,
+      const errorInfo = classifyGeminiError(e);
+      return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+        status: errorInfo.status,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
@@ -1046,46 +1147,41 @@ serve(async (req: Request) => {
 
       const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
       const systemInstruction = lang === 'fr'
-        ? 'Réponds uniquement en JSON strict.'
+        ? 'Analyse les rêves. Retourne UNIQUEMENT du JSON valide.'
         : lang === 'es'
-          ? 'Responde solo en JSON estricto.'
-          : 'Return ONLY strict JSON.';
+          ? 'Analiza sueños. Devuelve SOLO JSON válido.'
+          : 'Analyze dreams. Return ONLY valid JSON.';
 
-      // Ask the model to return strict JSON (no schema fields here to keep compatibility)
-      const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
-      const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
-
-      let text = '';
-      try {
-        const model = genAI.getGenerativeModel({ model: primaryModel });
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7 },
-        });
-        text = result.response.text();
-      } catch (err) {
-        console.warn('[api] /analyzeDream primary model failed, retrying with flash', primaryModel, err);
-        const fallbackModel = 'gemini-3-flash-preview';
-        const model = genAI.getGenerativeModel({ model: fallbackModel });
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7 },
-        });
-        text = result.response.text();
-      }
+      const { text } = await callGeminiWithFallback(
+        apiKey,
+        primaryModel,
+        'gemini-3-flash-preview',
+        [{ role: 'user', parts: [{ text: prompt }] }],
+        systemInstruction,
+        {
+          responseMimeType: 'application/json',
+          responseJsonSchema: ANALYZE_DREAM_SCHEMA
+        }
+      );
 
       console.log('[api] /analyzeDream model raw length', text.length);
 
+      // Structured outputs guarantee valid JSON, but still need to parse
       let analysis: any;
       try {
         analysis = JSON.parse(text);
-      } catch {
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) analysis = JSON.parse(match[0]);
+      } catch (parseErr) {
+        console.error('[api] /analyzeDream: unexpected JSON parse failure', parseErr, { text });
+        throw new Error('Failed to parse model response');
       }
-      if (!analysis) throw new Error('Failed to parse Gemini response');
+
+      // Validate required fields
+      if (!analysis.title || !analysis.interpretation) {
+        throw new Error('Missing required fields in model response');
+      }
 
       const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
         ? analysis.theme
@@ -1112,8 +1208,9 @@ serve(async (req: Request) => {
       );
     } catch (e) {
       console.error('[api] /analyzeDream error', e);
-      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-        status: 400,
+      const errorInfo = classifyGeminiError(e);
+      return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+        status: errorInfo.status,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
@@ -1179,46 +1276,39 @@ serve(async (req: Request) => {
 
       const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
       const systemInstruction = lang === 'fr'
-        ? 'Réponds uniquement en JSON strict.'
+        ? 'Analyse les rêves. Retourne UNIQUEMENT du JSON valide.'
         : lang === 'es'
-          ? 'Responde solo en JSON estricto.'
-          : 'Return ONLY strict JSON.';
+          ? 'Analiza sueños. Devuelve SOLO JSON válido.'
+          : 'Analyze dreams. Return ONLY valid JSON.';
 
       // 1) Analyze the dream
-      const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
-      const genAI = new GoogleGenerativeAI(apiKey);
       const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
-
-      let text = '';
-      try {
-        const model = genAI.getGenerativeModel({ model: primaryModel });
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7 },
-        });
-        text = result.response.text();
-      } catch (err) {
-        console.warn('[api] /analyzeDreamFull primary model failed, retrying with flash', primaryModel, err);
-        const fallbackModel = 'gemini-3-flash-preview';
-        const model = genAI.getGenerativeModel({ model: fallbackModel });
-        const result = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7 },
-        });
-        text = result.response.text();
-      }
+      const { text } = await callGeminiWithFallback(
+        apiKey,
+        primaryModel,
+        'gemini-3-flash-preview',
+        [{ role: 'user', parts: [{ text: prompt }] }],
+        systemInstruction,
+        {
+          responseMimeType: 'application/json',
+          responseJsonSchema: ANALYZE_DREAM_SCHEMA
+        }
+      );
 
       console.log('[api] /analyzeDreamFull model raw length', text.length);
 
       let analysis: any;
       try {
         analysis = JSON.parse(text);
-      } catch {
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) analysis = JSON.parse(match[0]);
+      } catch (parseErr) {
+        console.error('[api] /analyzeDreamFull: unexpected JSON parse failure', parseErr, { text });
+        throw new Error('Failed to parse model response');
       }
-      if (!analysis) throw new Error('Failed to parse Gemini response');
+      if (!analysis.title || !analysis.interpretation) {
+        throw new Error('Missing required fields in model response');
+      }
 
       const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
         ? analysis.theme
@@ -1275,14 +1365,15 @@ serve(async (req: Request) => {
       );
     } catch (e) {
       console.error('[api] /analyzeDreamFull error', e);
+      const errorInfo = classifyGeminiError(e);
       return new Response(
         JSON.stringify({
-          error: String((e as Error).message || e),
+          error: errorInfo.userMessage,
           ...(e as any)?.blockReason ? { blockReason: (e as any).blockReason } : {},
           ...(e as any)?.promptFeedback ? { promptFeedback: (e as any).promptFeedback } : {},
         }),
         {
-          status: 400,
+          status: errorInfo.status,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         }
       );
@@ -1308,32 +1399,36 @@ serve(async (req: Request) => {
 
       const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
       const systemInstruction = lang === 'fr'
-        ? 'Réponds uniquement en JSON strict.'
+        ? 'Catégorise rapidement. Retourne UNIQUEMENT du JSON valide.'
         : lang === 'es'
-          ? 'Responde solo en JSON estricto.'
-          : 'Return ONLY strict JSON.';
+          ? 'Categoriza rápidamente. Devuelve SOLO JSON válido.'
+          : 'Categorize quickly. Return ONLY valid JSON.';
 
-      const prompt = `You analyze user dreams. ${systemInstruction} with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
-      const genAI = new GoogleGenerativeAI(apiKey);
-      // Use flash-lite model for speed/cost as requested
-      const modelName = 'gemini-2.5-flash-lite';
-      const model = genAI.getGenerativeModel({ model: modelName });
-
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7 },
-      });
-      const text = result.response.text();
+      // Use flash-lite model for speed/cost
+      const { text } = await callGeminiWithFallback(
+        apiKey,
+        'gemini-2.5-flash-lite',
+        'gemini-2.5-flash-lite',
+        [{ role: 'user', parts: [{ text: prompt }] }],
+        systemInstruction,
+        {
+          responseMimeType: 'application/json',
+          responseJsonSchema: CATEGORIZE_DREAM_SCHEMA
+        }
+      );
 
       let analysis: any;
       try {
         analysis = JSON.parse(text);
-      } catch {
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) analysis = JSON.parse(match[0]);
+      } catch (parseErr) {
+        console.error('[api] /categorizeDream: unexpected JSON parse failure', parseErr, { text });
+        throw new Error('Failed to parse model response');
       }
-      if (!analysis) throw new Error('Failed to parse Gemini response');
+      if (!analysis.title || !analysis.theme || !analysis.dreamType) {
+        throw new Error('Missing required fields in model response');
+      }
 
       const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
         ? analysis.theme
@@ -1352,8 +1447,9 @@ serve(async (req: Request) => {
       );
     } catch (e) {
       console.error('[api] /categorizeDream error', e);
-      return new Response(JSON.stringify({ error: String((e as Error).message || e) }), {
-        status: 400,
+      const errorInfo = classifyGeminiError(e);
+      return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+        status: errorInfo.status,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
@@ -1380,12 +1476,15 @@ serve(async (req: Request) => {
       // If we have a transcript but no prompt, generate the prompt first
       if (!prompt && transcript) {
         console.log('[api] /generateImage generating prompt from transcript');
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
-        const promptGenResult = await model.generateContent({
-          contents: [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
-        });
-        prompt = promptGenResult.response.text().trim();
+        const { text: generatedPrompt } = await callGeminiWithFallback(
+          apiKey,
+          'gemini-2.5-flash-lite',
+          'gemini-2.5-flash-lite',
+          [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
+          'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
+          { temperature: 0.8 }
+        );
+        prompt = generatedPrompt.trim();
         console.log('[api] /generateImage generated prompt:', prompt);
       }
 
@@ -1432,9 +1531,9 @@ serve(async (req: Request) => {
     } catch (e) {
       console.error('[api] /generateImage error', e);
       const err = e as any;
-      const status = err?.isTransient === true ? 503 : 400;
+      const errorInfo = classifyGeminiError(e);
       console.error('[api] /generateImage error details', {
-        status,
+        status: errorInfo.status,
         blockReason: err?.blockReason ?? null,
         finishReason: err?.finishReason ?? null,
         retryAttempts: err?.retryAttempts ?? null,
@@ -1443,7 +1542,7 @@ serve(async (req: Request) => {
       });
       return new Response(
         JSON.stringify({
-          error: String(err?.message || e),
+          error: errorInfo.userMessage,
           ...(err?.blockReason != null ? { blockReason: err.blockReason } : {}),
           ...(err?.finishReason != null ? { finishReason: err.finishReason } : {}),
           ...(err?.promptFeedback != null ? { promptFeedback: err.promptFeedback } : {}),
@@ -1451,7 +1550,7 @@ serve(async (req: Request) => {
           ...(err?.isTransient != null ? { isTransient: err.isTransient } : {}),
         }),
         {
-          status,
+          status: errorInfo.status,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         }
       );
