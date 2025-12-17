@@ -3,6 +3,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
+import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, getImageConfig } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,10 +14,9 @@ import Animated from 'react-native-reanimated';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
-  onPress: () => void;
+  onPress: (dream: DreamAnalysis) => void;
   shouldLoadImage?: boolean;
   testID?: string;
-  badges?: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[];
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -26,7 +26,6 @@ export const DreamCard = memo(function DreamCard({
   onPress,
   shouldLoadImage = true,
   testID,
-  badges,
 }: DreamCardProps) {
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
@@ -42,11 +41,41 @@ export const DreamCard = memo(function DreamCard({
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
 
+  const isExplored = isDreamExplored(dream);
+  const isAnalyzed = isDreamAnalyzed(dream);
+  const isFavorite = !!dream.isFavorite;
+
+  const badges = useMemo(() => {
+    const list: { label?: string; icon?: string; variant: 'accent' | 'secondary' }[] = [];
+    if (isExplored) {
+      list.push({
+        label: t('journal.badge.explored'),
+        icon: 'chatbubble-ellipses-outline',
+        variant: 'accent',
+      });
+    }
+    if (!isExplored && isAnalyzed) {
+      list.push({
+        label: t('journal.badge.analyzed'),
+        icon: 'sparkles',
+        variant: 'secondary',
+      });
+    }
+    if (isFavorite) {
+      list.push({
+        label: t('journal.badge.favorite'),
+        icon: 'heart',
+        variant: 'secondary',
+      });
+    }
+    return list;
+  }, [isExplored, isAnalyzed, isFavorite, t]);
+
   return (
     <Animated.View>
       <AnimatedPressable
         style={[styles.card, { backgroundColor: colors.backgroundCard }, animatedStyle]}
-        onPress={onPress}
+        onPress={() => onPress(dream)}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         accessibilityRole="button"
@@ -79,14 +108,14 @@ export const DreamCard = memo(function DreamCard({
           <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
             {dream.interpretation || dream.transcript}
           </Text>
-          {(dream.theme || (badges && badges.length > 0)) && (
+          {(dream.theme || badges.length > 0) && (
             <View style={styles.tagContainer}>
               {dream.theme && (
                 <View style={[styles.tag, { backgroundColor: getTagColor(dream.theme, colors) }]}>
                   <Text style={[styles.tagText, { color: colors.textPrimary }]}>{themeLabel}</Text>
                 </View>
               )}
-              {badges?.map((badge, i) => {
+              {badges.map((badge, i) => {
                 const isAccent = badge.variant === 'accent';
                 const key = badge.label || badge.icon || String(i);
 

@@ -17,7 +17,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
-import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
+import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
@@ -171,6 +171,10 @@ export default function JournalListScreen() {
     setShowExploredOnly((prev) => !prev);
   }, []);
 
+  const handleDreamPress = useCallback((dream: DreamAnalysis) => {
+    router.push(`/journal/${dream.id}`);
+  }, []);
+
   // Track viewable items for lazy loading with preloading
   const filteredDreamsRef = useRef(filteredDreams);
   useEffect(() => {
@@ -215,34 +219,7 @@ export default function JournalListScreen() {
   }).current;
 
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const isFavorite = !!item.isFavorite;
-    const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
-
-    const mobileBadges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      mobileBadges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      mobileBadges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      mobileBadges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
       <View style={styles.timelineItem}>
@@ -261,47 +238,22 @@ export default function JournalListScreen() {
           </Text>
           <DreamCard
             dream={item}
-            onPress={() => router.push(`/journal/${item.id}`)}
-            badges={mobileBadges}
+            onPress={handleDreamPress}
             testID={TID.List.DreamItem(item.id)}
           />
         </View>
       </View>
     );
-  }, [filteredDreams.length, colors, formatDreamListDate, t]);
+  }, [filteredDreams.length, colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
-    const isExplored = isDreamExplored(item);
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     const isHero = isRecent && hasImage;
-    const badges: { label?: string; icon?: string; variant?: 'accent' | 'secondary' }[] = [];
-
-    if (isExplored) {
-      badges.push({
-        label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
-        variant: 'accent',
-      });
-    }
-    if (!isExplored && isAnalyzed) {
-      badges.push({
-        label: t('journal.badge.analyzed'),
-        icon: 'sparkles',
-        variant: 'secondary',
-      });
-    }
-    if (isFavorite) {
-      badges.push({
-        label: t('journal.badge.favorite'),
-        icon: 'heart',
-        variant: 'secondary',
-      });
-    }
 
     return (
       <View
@@ -321,13 +273,12 @@ export default function JournalListScreen() {
         </View>
         <DreamCard
           dream={item}
-          onPress={() => router.push(`/journal/${item.id}`)}
-          badges={badges}
+          onPress={handleDreamPress}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [colors, formatDreamListDate, t]);
+  }, [colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
