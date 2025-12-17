@@ -100,7 +100,8 @@
             "minSdkVersion": 33
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
