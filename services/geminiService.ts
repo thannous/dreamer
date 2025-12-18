@@ -9,8 +9,8 @@ import * as realService from './geminiServiceReal';
 import * as mockService from './mocks/geminiServiceMock';
 import { isMockModeEnabled } from '@/lib/env';
 
-// Export type that's shared between both implementations
-export type { AnalysisResult } from './geminiServiceReal';
+// Export types that are shared between both implementations
+export type { AnalysisResult, CategorizeDreamResult } from './geminiServiceReal';
 
 // Select which implementation to use based on environment
 const isMockMode = isMockModeEnabled();
@@ -31,6 +31,7 @@ export const analyzeDreamWithImage = service.analyzeDreamWithImage;
 export const analyzeDreamWithImageResilient = service.analyzeDreamWithImageResilient;
 export const generateImageForDream = service.generateImageForDream;
 export const generateImageFromTranscript = service.generateImageFromTranscript;
+export const generateImageWithReference = service.generateImageWithReference;
 export const startOrContinueChat = service.startOrContinueChat;
 export const resetChat = service.resetChat;
 export const generateSpeechForText = service.generateSpeechForText;

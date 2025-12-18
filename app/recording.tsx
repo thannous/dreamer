@@ -1,4 +1,6 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
+import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
+import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
@@ -26,8 +28,8 @@ import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis } from '@/lib/types';
-import { categorizeDream } from '@/services/geminiService';
+import type { DreamAnalysis, ReferenceImage } from '@/lib/types';
+import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import {
   registerOfflineModelPromptHandler,
   type OfflineModelPromptHandler
@@ -51,7 +53,7 @@ import {
 const log = createScopedLogger('[Recording]');
 
 export default function RecordingScreen() {
-  const { addDream, dreams, analyzeDream } = useDreams();
+  const { addDream, updateDream, dreams, analyzeDream } = useDreams();
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
@@ -79,6 +81,21 @@ export default function RecordingScreen() {
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
+
+  // Subject detection for reference image generation
+  const [showSubjectProposition, setShowSubjectProposition] = useState(false);
+  const [detectedSubjectType, setDetectedSubjectType] = useState<'person' | 'animal' | null>(null);
+  const [showReferencePickerSheet, setShowReferencePickerSheet] = useState(false);
+  const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
+  const [pendingSubjectDream, setPendingSubjectDream] = useState<DreamAnalysis | null>(null);
+  const [pendingSubjectMetadata, setPendingSubjectMetadata] = useState<{
+    title: string;
+    theme?: string;
+    dreamType?: string;
+    hasPerson?: boolean | null;
+    hasAnimal?: boolean | null;
+    imagePrompt?: string;
+  } | null>(null);
 
   const resolveOfflineModelPrompt = useCallback(() => {
     const resolve = offlineModelPromptResolveRef.current;
@@ -510,13 +527,30 @@ export default function RecordingScreen() {
         : buildDraftDream(latestTranscript);
 
       // Attempt quick categorization if we have a transcript
+      let subjectDetected = false;
+      let detectedType: 'person' | 'animal' | null = null;
+      let categorizationResult: Awaited<ReturnType<typeof categorizeDream>> | null = null;
+
       if (latestTranscript) {
         try {
-          const metadata = await categorizeDream(latestTranscript, language);
+          categorizationResult = await categorizeDream(latestTranscript, language);
           dreamToSave = {
             ...dreamToSave,
-            ...metadata,
+            title: categorizationResult.title,
+            theme: categorizationResult.theme,
+            dreamType: categorizationResult.dreamType,
+            hasPerson: categorizationResult.hasPerson,
+            hasAnimal: categorizationResult.hasAnimal,
           };
+
+          // Check if a subject was detected
+          if (categorizationResult.hasPerson === true) {
+            subjectDetected = true;
+            detectedType = 'person';
+          } else if (categorizationResult.hasAnimal === true) {
+            subjectDetected = true;
+            detectedType = 'animal';
+          }
         } catch (err) {
           // Silently fail and proceed with default/derived values
           log.warn('Quick categorization failed:', err);
@@ -525,6 +559,22 @@ export default function RecordingScreen() {
 
       const savedDream = await addDream(dreamToSave);
       setDraftDream(savedDream);
+
+      // If subject detected, show proposition instead of navigating
+      if (subjectDetected && detectedType && canAnalyzeNow) {
+        setPendingSubjectDream(savedDream);
+        setPendingSubjectMetadata(categorizationResult ? {
+          title: categorizationResult.title,
+          theme: categorizationResult.theme,
+          dreamType: categorizationResult.dreamType,
+          hasPerson: categorizationResult.hasPerson,
+          hasAnimal: categorizationResult.hasAnimal,
+        } : null);
+        setDetectedSubjectType(detectedType);
+        setShowSubjectProposition(true);
+        resetComposer();
+        return;
+      }
 
       resetComposer();
       navigateAfterSave(savedDream, preCount);
@@ -546,6 +596,7 @@ export default function RecordingScreen() {
 		  }, [
 		    addDream,
 		    buildDraftDream,
+		    canAnalyzeNow,
 		    dreams.length,
 		    draftDream,
         isRecordingRef,
@@ -629,6 +680,115 @@ export default function RecordingScreen() {
     setPendingAnalysisDream(null);
     analysisProgress.reset();
   }, [analyzePromptDream, pendingAnalysisDream, analysisProgress]);
+
+  // Subject proposition handlers
+  const handleSubjectAccept = useCallback(() => {
+    setShowSubjectProposition(false);
+    setShowReferencePickerSheet(true);
+  }, []);
+
+  const handleSubjectDismiss = useCallback(() => {
+    setShowSubjectProposition(false);
+    setDetectedSubjectType(null);
+    // Continue with normal analysis without reference images
+    const dream = pendingSubjectDream;
+    const metadata = pendingSubjectMetadata;
+    if (dream && metadata) {
+      setPendingSubjectDream(null);
+      setPendingSubjectMetadata(null);
+      // Proceed to normal analysis
+      setAnalyzePromptDream({
+        ...dream,
+        ...metadata,
+        hasPerson: metadata.hasPerson,
+        hasAnimal: metadata.hasAnimal,
+      } as DreamAnalysis);
+    }
+  }, [pendingSubjectDream, pendingSubjectMetadata]);
+
+  const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
+    setReferenceImages(images);
+  }, []);
+
+  const handleReferencePickerClose = useCallback(() => {
+    setShowReferencePickerSheet(false);
+    setReferenceImages([]);
+    setDetectedSubjectType(null);
+    // Continue with normal analysis without reference images
+    const dream = pendingSubjectDream;
+    const metadata = pendingSubjectMetadata;
+    if (dream && metadata) {
+      setPendingSubjectDream(null);
+      setPendingSubjectMetadata(null);
+      setAnalyzePromptDream({
+        ...dream,
+        ...metadata,
+        hasPerson: metadata.hasPerson,
+        hasAnimal: metadata.hasAnimal,
+      } as DreamAnalysis);
+    }
+  }, [pendingSubjectDream, pendingSubjectMetadata]);
+
+  const handleGenerateWithReference = useCallback(async () => {
+    if (!pendingSubjectDream || !pendingSubjectMetadata || referenceImages.length === 0) {
+      return;
+    }
+
+    setShowReferencePickerSheet(false);
+    setIsPersisting(true);
+
+    try {
+      analysisProgress.reset();
+      analysisProgress.setStep(AnalysisStep.GENERATING_IMAGE);
+
+      // Generate image with reference
+      const imageUrl = await generateImageWithReference({
+        transcript: pendingSubjectDream.transcript,
+        imagePrompt: pendingSubjectMetadata.imagePrompt ?? pendingSubjectDream.transcript,
+        referenceImages,
+        lang: language,
+      });
+
+      // Update dream with image and metadata
+      const updatedDream: DreamAnalysis = {
+        ...pendingSubjectDream,
+        ...pendingSubjectMetadata,
+        imageUrl,
+        imageSource: 'ai',
+        hasPerson: pendingSubjectMetadata.hasPerson,
+        hasAnimal: pendingSubjectMetadata.hasAnimal,
+      } as DreamAnalysis;
+
+      await updateDream(updatedDream);
+
+      analysisProgress.setStep(AnalysisStep.COMPLETE);
+      setDraftDream(updatedDream);
+
+      // Cleanup
+      setPendingSubjectDream(null);
+      setPendingSubjectMetadata(null);
+      setReferenceImages([]);
+      setDetectedSubjectType(null);
+      resetComposer();
+
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      router.push(`/journal/${updatedDream.id}`);
+    } catch (error) {
+      log.error('Generate with reference failed:', error);
+      const classified = classifyError(error as Error);
+      analysisProgress.setError(classified);
+    } finally {
+      setIsPersisting(false);
+    }
+  }, [
+    analysisProgress,
+    language,
+    pendingSubjectDream,
+    pendingSubjectMetadata,
+    referenceImages,
+    resetComposer,
+    updateDream,
+  ]);
 
   const handleFirstDreamAnalyze = useCallback(async () => {
     const dream = firstDreamPrompt ?? analyzePromptDream ?? pendingAnalysisDream;
@@ -963,6 +1123,42 @@ export default function RecordingScreen() {
         )}
       </StandardBottomSheet>
 
+      {/* Subject Proposition */}
+      {showSubjectProposition && detectedSubjectType && (
+        <View style={styles.subjectPropositionOverlay}>
+          <SubjectProposition
+            subjectType={detectedSubjectType}
+            onAccept={handleSubjectAccept}
+            onDismiss={handleSubjectDismiss}
+          />
+        </View>
+      )}
+
+      {/* Reference Image Picker Sheet */}
+      <StandardBottomSheet
+        visible={showReferencePickerSheet}
+        onClose={handleReferencePickerClose}
+        title={detectedSubjectType === 'person'
+          ? t('reference_image.title_person')
+          : t('reference_image.title_animal')}
+        actions={{
+          primaryLabel: t('subject_proposition.accept'),
+          onPrimary: handleGenerateWithReference,
+          primaryDisabled: referenceImages.length === 0 || isPersisting,
+          primaryLoading: isPersisting,
+          secondaryLabel: t('subject_proposition.skip'),
+          onSecondary: handleReferencePickerClose,
+        }}
+      >
+        {detectedSubjectType && (
+          <ReferenceImagePicker
+            subjectType={detectedSubjectType}
+            onImagesSelected={handleReferenceImagesSelected}
+            maxImages={2}
+          />
+        )}
+      </StandardBottomSheet>
+
       {/* Offline Model Download Sheet */}
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}
@@ -1027,5 +1223,12 @@ const styles = StyleSheet.create({
   quotaFeature: {
     fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 14,
+  },
+  subjectPropositionOverlay: {
+    position: 'absolute',
+    bottom: 100,
+    left: 16,
+    right: 16,
+    zIndex: 100,
   },
 });

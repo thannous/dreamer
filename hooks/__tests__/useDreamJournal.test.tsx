@@ -432,6 +432,24 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('skips Supabase update when dream is unchanged', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101 });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+
+      const { result } = renderHook(() => useDreamJournal());
+
+      await waitFor(() => {
+        expect(result.current.loaded).toBe(true);
+      });
+
+      await act(async () => {
+        await result.current.updateDream({ ...existingDream });
+      });
+
+      expect(mockUpdateDreamInSupabase).not.toHaveBeenCalled();
+    });
+
     it('queues update when Supabase update fails', async () => {
       setMockUser({ id: 'user-1' });
       const existingDream = buildDream({ id: 1, remoteId: 101 });

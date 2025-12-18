@@ -6,11 +6,11 @@
 import { getRandomImageForTheme } from '@/mock-data/assets';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 
-import type { ChatMessage, DreamTheme, DreamType } from '@/lib/types';
+import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
 
-import type { AnalysisResult } from '../geminiServiceReal';
+import type { AnalysisResult, CategorizeDreamResult } from '../geminiServiceReal';
 
-export type { AnalysisResult } from '../geminiServiceReal';
+export type { AnalysisResult, CategorizeDreamResult } from '../geminiServiceReal';
 
 /**
  * Simulate network delay
@@ -37,20 +37,44 @@ export async function analyzeDream(
 
 /**
  * Mock fast categorization (0.5-1 second)
+ * Now includes hasPerson/hasAnimal detection
  */
 export async function categorizeDream(
   transcript: string,
   lang = 'en'
-): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
+): Promise<CategorizeDreamResult> {
   console.log('[MOCK] categorizeDream called with transcript:', transcript.slice(0, 50) + '...', 'lang:', lang);
   await delay(500 + Math.random() * 500); // 0.5-1 second
 
   const result = generateAnalysisResult(transcript);
-  console.log('[MOCK] categorizeDream returning:', result.title);
+
+  // Simulate subject detection based on transcript content
+  const transcriptLower = transcript.toLowerCase();
+  const hasPerson = transcriptLower.includes('person') ||
+    transcriptLower.includes('friend') ||
+    transcriptLower.includes('family') ||
+    transcriptLower.includes('mother') ||
+    transcriptLower.includes('father') ||
+    transcriptLower.includes('sister') ||
+    transcriptLower.includes('brother') ||
+    transcriptLower.includes('someone') ||
+    Math.random() > 0.7; // 30% chance randomly
+
+  const hasAnimal = transcriptLower.includes('animal') ||
+    transcriptLower.includes('dog') ||
+    transcriptLower.includes('cat') ||
+    transcriptLower.includes('bird') ||
+    transcriptLower.includes('horse') ||
+    transcriptLower.includes('creature') ||
+    Math.random() > 0.85; // 15% chance randomly
+
+  console.log('[MOCK] categorizeDream returning:', result.title, { hasPerson, hasAnimal });
   return {
     title: result.title,
     theme: result.theme,
     dreamType: result.dreamType,
+    hasPerson,
+    hasAnimal,
   };
 }
 
@@ -184,4 +208,27 @@ export async function generateSpeechForText(text: string): Promise<string> {
 
   console.log('[MOCK] generateSpeechForText returning dummy audio');
   return dummyAudioBase64;
+}
+
+/**
+ * Mock image generation with reference subjects (3-5 seconds)
+ * Returns a placeholder image regardless of reference images
+ */
+export async function generateImageWithReference(
+  request: ReferenceImageGenerationRequest
+): Promise<string> {
+  console.log('[MOCK] generateImageWithReference called with', {
+    transcriptLength: request.transcript.length,
+    promptLength: request.imagePrompt.length,
+    referenceCount: request.referenceImages.length,
+    subjectTypes: request.referenceImages.map(img => img.type),
+  });
+
+  await delay(3000 + Math.random() * 2000); // 3-5 seconds
+
+  // Return a random placeholder image
+  const imageUrl = getRandomImageForTheme('surreal');
+
+  console.log('[MOCK] generateImageWithReference returning:', imageUrl);
+  return imageUrl;
 }

@@ -28,6 +28,7 @@ import {
 import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
+import { MarkdownText } from './MarkdownText';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import Animated, {
@@ -39,6 +40,7 @@ import Animated, {
   withRepeat,
   withSequence,
   withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
@@ -140,6 +142,37 @@ function HandwritingText({ text, style, animate }: HandwritingTextProps) {
 
 function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: ChatMessage; index: number; isStreaming: boolean; shouldHandwrite: boolean }) {
   const { colors, mode } = useTheme();
+  const [showMarkdown, setShowMarkdown] = useState(false);
+  const markdownOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (showMarkdown) {
+      markdownOpacity.value = withTiming(1, {
+        duration: 300,
+        easing: Easing.out(Easing.quad),
+      });
+    } else {
+      markdownOpacity.value = 0;
+    }
+  }, [markdownOpacity, showMarkdown]);
+
+  const animatedMarkdownStyle = useAnimatedStyle(() => ({
+    opacity: markdownOpacity.value,
+  }));
+
+  // Determine if we're currently animating (either handwriting or streaming)
+  const isAnimating = shouldHandwrite || isStreaming;
+
+  // Transition from plain text to markdown when animation completes
+  useEffect(() => {
+    if (!isAnimating) {
+      // Animation complete - fade in markdown
+      setShowMarkdown(true);
+    } else {
+      // Reset markdown visibility when animation starts
+      setShowMarkdown(false);
+    }
+  }, [isAnimating]);
 
   const textStyle = [styles.messageText, { color: colors.textPrimary }];
 
@@ -155,16 +188,36 @@ function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: 
         borderWidth: 1,
       };
 
-  const messageContent = shouldHandwrite ? (
-    <HandwritingText text={message.text} style={textStyle} animate={shouldHandwrite} />
-  ) : (
-    <TextFadeInStaggeredIfStreaming
-      isStreaming={isStreaming}
-      style={textStyle}
-    >
-      {message.text}
-    </TextFadeInStaggeredIfStreaming>
-  );
+  // PLAIN TEXT during animation (avoids invalid markdown)
+  // MARKDOWN after animation (with smooth crossfade)
+  let messageContent: React.ReactNode;
+
+  if (isAnimating) {
+    // Display plain text during animation
+    if (shouldHandwrite) {
+      messageContent = (
+        <HandwritingText text={message.text} style={textStyle} animate={shouldHandwrite} />
+      );
+    } else {
+      messageContent = (
+        <TextFadeInStaggeredIfStreaming
+          isStreaming={isStreaming}
+          style={textStyle}
+        >
+          {message.text}
+        </TextFadeInStaggeredIfStreaming>
+      );
+    }
+  } else {
+    // Animation complete - render markdown with crossfade
+    messageContent = (
+      <Animated.View style={animatedMarkdownStyle}>
+        <MarkdownText style={textStyle}>
+          {message.text}
+        </MarkdownText>
+      </Animated.View>
+    );
+  }
 
   return (
     <FadeInStaggered>

@@ -592,6 +592,29 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_13': 'Morning ritual: Capture your dreams for reflection.',
     'notifications.prompt.morning_14': 'What story did your mind tell you last night?',
     'notifications.prompt.morning_15': 'Dreams fade fast. Take a minute to preserve yours.',
+
+    // Reference image picker
+    'reference_image.title_person': 'Add a photo of this person',
+    'reference_image.title_animal': 'Add a photo of this animal',
+    'reference_image.subtitle': 'Add 1-2 clear reference photos to personalize the dream image with their likeness.',
+    'reference_image.selected_count': '{count}/{max} photo(s) selected',
+    'reference_image.permission_title': 'Photo Access Required',
+    'reference_image.permission_message': 'Please allow access to your photo library to add reference images.',
+    'reference_image.compression_error_title': 'Image Too Large',
+    'reference_image.compression_error_message': 'This image could not be compressed to the required size. Please try a different photo.',
+    'reference_image.pick_error': 'Failed to select image. Please try again.',
+
+    // Subject proposition
+    'subject_proposition.title_person': 'Person detected in your dream',
+    'subject_proposition.title_animal': 'Animal detected in your dream',
+    'subject_proposition.message_person': 'Add a reference photo to include their likeness in the generated dream image.',
+    'subject_proposition.message_animal': 'Add a reference photo to include their likeness in the generated dream image.',
+    'subject_proposition.accept': 'Add photo',
+    'subject_proposition.skip': 'Skip',
+
+    // Journal detail - subject actions
+    'journal.detail.add_person': 'Add person',
+    'journal.detail.add_animal': 'Add animal',
   };
 
 export default translations;

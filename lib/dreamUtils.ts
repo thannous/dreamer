@@ -4,7 +4,7 @@
  */
 
 import { getThumbnailUrl } from '@/lib/imageUtils';
-import type { DreamAnalysis, DreamMutation } from '@/lib/types';
+import type { ChatMessage, DreamAnalysis, DreamMutation } from '@/lib/types';
 
 /**
  * Sort dreams by ID (timestamp) in descending order (newest first)
@@ -55,6 +55,158 @@ export const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
     thumbnailUrl: hasImage ? derivedThumbnail : undefined,
     imageGenerationFailed: hasImage ? false : dream.imageGenerationFailed,
   };
+};
+
+type NormalizedChatMessage = {
+  id: string;
+  role: ChatMessage['role'];
+  text: string;
+  createdAt: number | null;
+  category: string | null;
+};
+
+const normalizeChatMessage = (message: ChatMessage): NormalizedChatMessage => ({
+  id: message.id,
+  role: message.role,
+  text: message.text,
+  createdAt: message.createdAt ?? null,
+  category: message.meta?.category ?? null,
+});
+
+const areChatHistoriesEqual = (a: ChatMessage[], b: ChatMessage[]): boolean => {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let index = 0; index < a.length; index += 1) {
+    const left = normalizeChatMessage(a[index]);
+    const right = normalizeChatMessage(b[index]);
+    if (
+      left.id !== right.id ||
+      left.role !== right.role ||
+      left.text !== right.text ||
+      left.createdAt !== right.createdAt ||
+      left.category !== right.category
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
+type DreamRemoteComparable = {
+  transcript: string;
+  title: string;
+  interpretation: string;
+  shareableQuote: string;
+  imageUrl: string | null;
+  chatHistory: ChatMessage[];
+  theme: string | null;
+  dreamType: string;
+  isFavorite: boolean;
+  imageGenerationFailed: boolean;
+  hasPerson: boolean | null | undefined;
+  hasAnimal: boolean | null | undefined;
+  isAnalyzed: boolean;
+  analyzedAt: number | null;
+  analysisStatus: string;
+  analysisRequestId: string | null;
+  explorationStartedAt: number | null;
+  clientRequestId: string | null;
+};
+
+const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
+  const hasImage = Boolean(dream.imageUrl?.trim());
+  return {
+    transcript: dream.transcript ?? '',
+    title: dream.title ?? '',
+    interpretation: dream.interpretation ?? '',
+    shareableQuote: dream.shareableQuote ?? '',
+    imageUrl: dream.imageUrl?.trim() ? dream.imageUrl : null,
+    chatHistory: Array.isArray(dream.chatHistory) ? dream.chatHistory : [],
+    theme: dream.theme ?? null,
+    dreamType: dream.dreamType ?? 'Symbolic Dream',
+    isFavorite: dream.isFavorite ?? false,
+    imageGenerationFailed: hasImage ? false : dream.imageGenerationFailed ?? false,
+    hasPerson: dream.hasPerson,
+    hasAnimal: dream.hasAnimal,
+    isAnalyzed: dream.isAnalyzed ?? false,
+    analyzedAt: dream.analyzedAt ?? null,
+    analysisStatus: dream.analysisStatus ?? 'none',
+    analysisRequestId: dream.analysisRequestId ?? null,
+    explorationStartedAt: dream.explorationStartedAt ?? null,
+    clientRequestId: dream.clientRequestId ?? null,
+  };
+};
+
+/**
+ * Compares whether two dreams would produce the same Supabase row payload.
+ * Useful to avoid sending unnecessary PATCH updates.
+ */
+export const areDreamsEqualForRemoteSync = (a: DreamAnalysis, b: DreamAnalysis): boolean => {
+  if (a === b) return true;
+  const left = toRemoteComparable(a);
+  const right = toRemoteComparable(b);
+
+  if (
+    left.transcript !== right.transcript ||
+    left.title !== right.title ||
+    left.interpretation !== right.interpretation ||
+    left.shareableQuote !== right.shareableQuote ||
+    left.imageUrl !== right.imageUrl ||
+    left.theme !== right.theme ||
+    left.dreamType !== right.dreamType ||
+    left.isFavorite !== right.isFavorite ||
+    left.imageGenerationFailed !== right.imageGenerationFailed ||
+    left.hasPerson !== right.hasPerson ||
+    left.hasAnimal !== right.hasAnimal ||
+    left.isAnalyzed !== right.isAnalyzed ||
+    left.analyzedAt !== right.analyzedAt ||
+    left.analysisStatus !== right.analysisStatus ||
+    left.analysisRequestId !== right.analysisRequestId ||
+    left.explorationStartedAt !== right.explorationStartedAt ||
+    left.clientRequestId !== right.clientRequestId
+  ) {
+    return false;
+  }
+
+  return areChatHistoriesEqual(left.chatHistory, right.chatHistory);
+};
+
+/**
+ * Compares whether two dreams represent the same local app state after normalization.
+ * If true, callers can safely skip both local persistence and remote sync.
+ */
+export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis): boolean => {
+  if (a === b) return true;
+  const left = normalizeDreamImages(a);
+  const right = normalizeDreamImages(b);
+
+  if (left.id !== right.id) return false;
+  if ((left.remoteId ?? null) !== (right.remoteId ?? null)) return false;
+  if ((left.clientRequestId ?? null) !== (right.clientRequestId ?? null)) return false;
+  if (left.transcript !== right.transcript) return false;
+  if (left.title !== right.title) return false;
+  if (left.interpretation !== right.interpretation) return false;
+  if (left.shareableQuote !== right.shareableQuote) return false;
+  if (left.imageUrl !== right.imageUrl) return false;
+  if ((left.thumbnailUrl ?? null) !== (right.thumbnailUrl ?? null)) return false;
+  if ((left.imageUpdatedAt ?? null) !== (right.imageUpdatedAt ?? null)) return false;
+  if ((left.imageSource ?? null) !== (right.imageSource ?? null)) return false;
+  if ((left.theme ?? null) !== (right.theme ?? null)) return false;
+  if (left.dreamType !== right.dreamType) return false;
+  if ((left.isFavorite ?? false) !== (right.isFavorite ?? false)) return false;
+  if ((left.imageGenerationFailed ?? false) !== (right.imageGenerationFailed ?? false)) return false;
+  if (left.hasPerson !== right.hasPerson) return false;
+  if (left.hasAnimal !== right.hasAnimal) return false;
+  if ((left.pendingSync ?? false) !== (right.pendingSync ?? false)) return false;
+  if ((left.isAnalyzed ?? false) !== (right.isAnalyzed ?? false)) return false;
+  if ((left.analyzedAt ?? null) !== (right.analyzedAt ?? null)) return false;
+  if ((left.analysisStatus ?? 'none') !== (right.analysisStatus ?? 'none')) return false;
+  if ((left.analysisRequestId ?? null) !== (right.analysisRequestId ?? null)) return false;
+  if ((left.explorationStartedAt ?? null) !== (right.explorationStartedAt ?? null)) return false;
+
+  const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
+  const rightChat = Array.isArray(right.chatHistory) ? right.chatHistory : [];
+  return areChatHistoriesEqual(leftChat, rightChat);
 };
 
 /**

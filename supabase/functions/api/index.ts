@@ -1,13 +1,15 @@
 // Deno Deploy / Supabase Edge Function (name: api)
 // Routes:
 // - POST /api/analyzeDream { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt }
-// - POST /api/categorizeDream { transcript } -> { title, theme, dreamType }
+// - POST /api/categorizeDream { transcript } -> { title, theme, dreamType, hasPerson, hasAnimal }
 // - POST /api/generateImage { prompt } -> { imageUrl | imageBytes }
+// - POST /api/generateImageWithReference { prompt, referenceImages } -> { imageUrl } (auth required)
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
-import { GoogleGenerativeAI } from 'https://esm.sh/@google/generative-ai@0.21.0?target=deno';
+import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
+import { ApiError, GoogleGenAI, Modality } from 'https://esm.sh/@google/genai@1.34.0?target=deno';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 
@@ -23,27 +25,35 @@ const GUEST_LIMITS = { analysis: 2, exploration: 2, messagesPerDream: 10 } as co
 // JSON schemas for structured outputs
 const ANALYZE_DREAM_SCHEMA = {
   type: 'object',
+  additionalProperties: false,
   properties: {
     title: { type: 'string' },
     interpretation: { type: 'string' },
     shareableQuote: { type: 'string' },
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
-    dreamType: { type: 'string', enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'] },
-    imagePrompt: { type: 'string' }
+    dreamType: {
+      type: 'string',
+      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'],
+    },
+    imagePrompt: { type: 'string' },
   },
   required: ['title', 'interpretation', 'shareableQuote', 'theme', 'dreamType', 'imagePrompt'],
-  additionalProperties: false
 };
 
 const CATEGORIZE_DREAM_SCHEMA = {
   type: 'object',
+  additionalProperties: false,
   properties: {
     title: { type: 'string' },
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
-    dreamType: { type: 'string', enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'] }
+    dreamType: {
+      type: 'string',
+      enum: ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'],
+    },
+    hasPerson: { type: 'boolean' },
+    hasAnimal: { type: 'boolean' },
   },
-  required: ['title', 'theme', 'dreamType'],
-  additionalProperties: false
+  required: ['title', 'theme', 'dreamType', 'hasPerson', 'hasAnimal'],
 };
 
 function truncateForPrompt(input: unknown, maxChars: number): { text: string; truncated: boolean } {
@@ -166,86 +176,50 @@ const parseStorageObjectKey = (url: string, bucket: string): string | null => {
 };
 
 const optimizeImage = async (
-  imageBase64: string,
+  image: { base64: string; contentType: string },
   options: { maxWidth?: number; maxHeight?: number; quality?: number } = {}
 ): Promise<{ base64: string; contentType: string }> => {
-  // Force WEBP output to keep stored images small (<500KB–1MB in practice)
-  const { maxWidth = 1024, maxHeight = 1024, quality = 68 } = options;
+  const { maxWidth = 1024, maxHeight = 1024, quality = 78 } = options;
+  const originalBase64 = image.base64;
+  const originalContentType = image.contentType || 'image/png';
+
   try {
-    const bytes = Uint8Array.from(atob(imageBase64), (c) => c.charCodeAt(0));
+    const bytes = Uint8Array.from(atob(originalBase64), (c) => c.charCodeAt(0));
     const img = await Image.decode(bytes);
     const scale = Math.min(1, maxWidth / img.width, maxHeight / img.height);
     if (scale < 1) {
       img.resize(Math.max(1, Math.round(img.width * scale)), Math.max(1, Math.round(img.height * scale)));
     }
+
     const q = Math.min(100, Math.max(1, Math.round(quality)));
-    const optimizedBytes = await img.encodeWEBP(q);
-    const optimizedBase64 = btoa(String.fromCharCode(...optimizedBytes));
-    return { base64: optimizedBase64, contentType: 'image/webp' };
+    const optimizedBytes = await img.encodeJPEG(q);
+    return { base64: encodeBase64(optimizedBytes), contentType: 'image/jpeg' };
   } catch (err) {
     console.warn('[api] optimizeImage fallback (using original bytes)', err);
-    return { base64: imageBase64, contentType: 'image/webp' };
+    return { base64: originalBase64, contentType: originalContentType };
   }
 };
 
 async function generateImageFromPrompt(options: {
   prompt: string;
   apiKey: string;
-  model: string;
-  apiBase?: string;
   aspectRatio?: string;
-}): Promise<{ imageBase64?: string; raw: any; retryAttempts?: number }> {
-  const { prompt, apiKey, model, apiBase = 'https://generativelanguage.googleapis.com' } = options;
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-goog-api-key': apiKey,
-  };
+  model?: string;
+}): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
+  const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel() } = options;
+  const client = new GoogleGenAI({ apiKey });
 
-  const lowerModel = model.toLowerCase();
-  const supportsImageModel = lowerModel.includes('image') || lowerModel.includes('imagen');
-  const resolvedModel = supportsImageModel ? model : resolveImageModel();
-  // Image models (Gemini image + Imagen) are served from v1beta.
-  const apiVersion = 'v1beta';
-
-  if (!supportsImageModel) {
-    throw new Error(
-      `Unsupported image model "${model}". Use the image-capable model "gemini-2.5-flash-image".`
-    );
-  }
-
-  const endpoint = `${apiBase}/${apiVersion}/models/${resolvedModel}:generateContent`;
-  const createBody = () => ({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    // Request an image modality explicitly; do not force responseMimeType (reserved for text/json).
-    generationConfig: { responseModalities: ['IMAGE'] },
-  });
-
-  const extractInlineData = (json: any): string | undefined => {
-    const parts = json?.candidates?.[0]?.content?.parts;
+  const extractInlineData = (
+    response: any
+  ): { data?: string; mimeType?: string; finishReason?: string | null; promptFeedback?: any } => {
+    const parts = response?.candidates?.[0]?.content?.parts;
     const inlinePart = Array.isArray(parts) ? parts.find((p: any) => p?.inlineData?.data) : undefined;
-    return inlinePart?.inlineData?.data as string | undefined;
-  };
-
-  const getBlockReason = (json: any): string | null => {
-    return (json?.promptFeedback?.blockReason ?? json?.promptFeedback?.block_reason ?? null) as string | null;
-  };
-
-  const requestOnce = async (): Promise<any> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(createBody()),
-    });
-    if (!res.ok) {
-      const bodyText = await res.text();
-      const err = new Error(`Gemini image error ${res.status}: ${bodyText}`);
-      (err as any).httpStatus = res.status;
-      (err as any).isTransient = res.status === 429 || res.status >= 500;
-      const retryAfter = res.headers.get('retry-after');
-      if (retryAfter) (err as any).retryAfter = retryAfter;
-      throw err;
-    }
-    return (await res.json()) as any;
+    return {
+      data: inlinePart?.inlineData?.data as string | undefined,
+      mimeType: inlinePart?.inlineData?.mimeType as string | undefined,
+      finishReason: response?.candidates?.[0]?.finishReason ?? null,
+      promptFeedback: response?.promptFeedback ?? null,
+    };
   };
 
   // Retry configuration with exponential backoff
@@ -254,27 +228,35 @@ async function generateImageFromPrompt(options: {
   const attempts: { blockReason: string | null; finishReason: string | null; promptFeedback: any }[] = [];
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    let json: any;
+    let response: any;
     try {
-      json = await requestOnce();
+      response = await client.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          responseModalities: [Modality.IMAGE],
+          imageConfig: { aspectRatio },
+        },
+      });
     } catch (error) {
       const err = error as any;
       const msg = String(err?.message ?? error);
+      const status = err instanceof ApiError ? err.status : (typeof err?.httpStatus === 'number' ? err.httpStatus : null);
       const isTransient =
-        Boolean(err?.isTransient) ||
-        msg.includes('429') ||
+        (typeof status === 'number' && (status === 429 || status >= 500)) ||
         msg.toLowerCase().includes('timeout') ||
         msg.toLowerCase().includes('fetch failed');
 
       if (err && typeof err === 'object') {
         err.isTransient = isTransient;
+        if (typeof err.httpStatus !== 'number' && typeof status === 'number') err.httpStatus = status;
         if (err.retryAttempts == null) err.retryAttempts = attempt;
       }
 
       attempts.push({
         blockReason: null,
         finishReason: null,
-        promptFeedback: { requestError: msg, httpStatus: err?.httpStatus ?? null },
+        promptFeedback: { requestError: msg, httpStatus: status },
       });
 
       if (isTransient && attempt < MAX_RETRIES) {
@@ -282,24 +264,30 @@ async function generateImageFromPrompt(options: {
         const jitter = Math.random() * 100;
         console.log(
           `[api] Gemini image request error on attempt ${attempt}/${MAX_RETRIES}, retrying in ${Math.round(delay + jitter)}ms...`,
-          { httpStatus: err?.httpStatus ?? null }
+          { httpStatus: status }
         );
         await new Promise((r) => setTimeout(r, delay + jitter));
         continue;
       }
       throw err ?? error;
     }
-    const image = extractInlineData(json);
-    if (image) {
+    const extracted = extractInlineData(response);
+    if (extracted.data) {
       if (attempt > 1) {
         console.log(`[api] Gemini image succeeded on attempt ${attempt}/${MAX_RETRIES}`);
       }
-      return { imageBase64: image, raw: json, retryAttempts: attempt };
+      return {
+        imageBase64: extracted.data,
+        mimeType: extracted.mimeType ?? 'image/png',
+        raw: response,
+        retryAttempts: attempt,
+      };
     }
 
-    const blockReason = getBlockReason(json);
-    const finishReason = json?.candidates?.[0]?.finishReason ?? null;
-    const promptFeedback = json?.promptFeedback ?? null;
+    const blockReason =
+      (response?.promptFeedback?.blockReason ?? response?.promptFeedback?.block_reason ?? null) as string | null;
+    const finishReason = extracted.finishReason ?? null;
+    const promptFeedback = extracted.promptFeedback ?? null;
 
     attempts.push({ blockReason, finishReason, promptFeedback });
 
@@ -344,26 +332,157 @@ async function generateImageFromPrompt(options: {
 }
 
 /**
+ * Generate image with inline reference images (for person/animal reference)
+ */
+async function generateImageWithReferences(options: {
+  prompt: string;
+  apiKey: string;
+  referenceImages: Array<{ data: string; mimeType: string; type: string }>;
+  aspectRatio?: string;
+  model?: string;
+}): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
+  const { prompt, apiKey, referenceImages, aspectRatio = '9:16', model = resolveImageModel() } = options;
+  const client = new GoogleGenAI({ apiKey });
+
+  const extractInlineData = (
+    response: any
+  ): { data?: string; mimeType?: string; finishReason?: string | null; promptFeedback?: any } => {
+    const parts = response?.candidates?.[0]?.content?.parts;
+    const inlinePart = Array.isArray(parts) ? parts.find((p: any) => p?.inlineData?.data) : undefined;
+    return {
+      data: inlinePart?.inlineData?.data as string | undefined,
+      mimeType: inlinePart?.inlineData?.mimeType as string | undefined,
+      finishReason: response?.candidates?.[0]?.finishReason ?? null,
+      promptFeedback: response?.promptFeedback ?? null,
+    };
+  };
+
+  // Build content parts with text + inline_data for each reference image
+  const parts: any[] = [{ text: prompt }];
+  for (const ref of referenceImages) {
+    parts.push({
+      inlineData: {
+        data: ref.data,
+        mimeType: ref.mimeType,
+      },
+    });
+  }
+
+  // Retry configuration with exponential backoff
+  const MAX_RETRIES = 3;
+  const BASE_DELAY_MS = 500;
+  const attempts: { blockReason: string | null; finishReason: string | null; promptFeedback: any }[] = [];
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    let response: any;
+    try {
+      response = await client.models.generateContent({
+        model,
+        contents: [{ role: 'user', parts }],
+        config: {
+          responseModalities: [Modality.IMAGE],
+          imageConfig: { aspectRatio },
+        },
+      });
+    } catch (error) {
+      const err = error as any;
+      const msg = String(err?.message ?? error);
+      const status = err instanceof ApiError ? err.status : (typeof err?.httpStatus === 'number' ? err.httpStatus : null);
+      const isTransient =
+        (typeof status === 'number' && (status === 429 || status >= 500)) ||
+        msg.toLowerCase().includes('timeout') ||
+        msg.toLowerCase().includes('fetch failed');
+
+      if (err && typeof err === 'object') {
+        err.isTransient = isTransient;
+        if (typeof err.httpStatus !== 'number' && typeof status === 'number') err.httpStatus = status;
+        if (err.retryAttempts == null) err.retryAttempts = attempt;
+      }
+
+      attempts.push({
+        blockReason: null,
+        finishReason: null,
+        promptFeedback: { requestError: msg, httpStatus: status },
+      });
+
+      if (isTransient && attempt < MAX_RETRIES) {
+        const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+        const jitter = Math.random() * 100;
+        console.log(
+          `[api] Gemini image with references request error on attempt ${attempt}/${MAX_RETRIES}, retrying in ${Math.round(delay + jitter)}ms...`,
+          { httpStatus: status }
+        );
+        await new Promise((r) => setTimeout(r, delay + jitter));
+        continue;
+      }
+      throw err ?? error;
+    }
+    const extracted = extractInlineData(response);
+    if (extracted.data) {
+      if (attempt > 1) {
+        console.log(`[api] Gemini image with references succeeded on attempt ${attempt}/${MAX_RETRIES}`);
+      }
+      return {
+        imageBase64: extracted.data,
+        mimeType: extracted.mimeType ?? 'image/png',
+        raw: response,
+        retryAttempts: attempt,
+      };
+    }
+
+    const blockReason =
+      (response?.promptFeedback?.blockReason ?? response?.promptFeedback?.block_reason ?? null) as string | null;
+    const finishReason = extracted.finishReason ?? null;
+    const promptFeedback = extracted.promptFeedback ?? null;
+
+    attempts.push({ blockReason, finishReason, promptFeedback });
+
+    // If there's a blockReason, the content was explicitly blocked - don't retry
+    if (blockReason) {
+      console.warn(`[api] Gemini image with references blocked on attempt ${attempt}`, {
+        blockReason,
+        finishReason,
+        promptFeedback,
+      });
+      const err = new Error(`Gemini image error: content blocked (blockReason=${blockReason})`);
+      (err as any).blockReason = blockReason;
+      (err as any).finishReason = finishReason;
+      (err as any).promptFeedback = promptFeedback;
+      (err as any).retryAttempts = attempt;
+      (err as any).isTransient = false;
+      throw err;
+    }
+
+    // Transient failure - retry with exponential backoff + jitter
+    if (attempt < MAX_RETRIES) {
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+      const jitter = Math.random() * 100;
+      console.log(`[api] Gemini image with references no inlineData on attempt ${attempt}/${MAX_RETRIES}, retrying in ${Math.round(delay + jitter)}ms...`);
+      await new Promise((r) => setTimeout(r, delay + jitter));
+    }
+  }
+
+  // All retries exhausted - transient failure
+  const lastAttempt = attempts[attempts.length - 1];
+  console.warn(`[api] Gemini image with references failed after ${MAX_RETRIES} attempts`, { attempts });
+
+  const err = new Error(
+    `Gemini image error: no inlineData returned after ${MAX_RETRIES} attempts${lastAttempt?.finishReason ? ` (finishReason=${lastAttempt.finishReason})` : ''}`
+  );
+  (err as any).blockReason = null;
+  (err as any).finishReason = lastAttempt?.finishReason ?? null;
+  (err as any).promptFeedback = lastAttempt?.promptFeedback ?? null;
+  (err as any).retryAttempts = MAX_RETRIES;
+  (err as any).isTransient = true;
+  throw err;
+}
+
+/**
  * Normalize the image model to a supported Gemini image model. Avoids using Imagen
  * models that are not available on the Gemini API endpoints.
  */
 const resolveImageModel = (): string => {
-  const envModel = Deno.env.get('IMAGEN_MODEL');
-  if (envModel && envModel !== 'gemini-2.5-flash-image') {
-    console.warn(`[api] IMAGEN_MODEL ${envModel} overridden; forcing gemini-2.5-flash-image`);
-  }
-  return 'gemini-2.5-flash-image';
-};
-
-/**
- * Normalize the Gemini API base. If a versioned path (v1beta) is provided, prefer v1
- * for image models to avoid 404/not supported errors.
- */
-const resolveGeminiApiBase = (): string => {
-  const raw = Deno.env.get('GEMINI_API_BASE');
-  if (!raw) return 'https://generativelanguage.googleapis.com';
-  // Keep user-specified versioning; do not force v1.
-  return raw.replace(/\/v1$/, '').replace(/\/v1beta$/, '');
+  return Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
 };
 
 /**
@@ -381,37 +500,45 @@ const callGeminiWithFallback = async (
     responseJsonSchema?: any;
   }
 ): Promise<{ text: string; raw: any }> => {
-  const client = new GoogleGenerativeAI(apiKey);
+  const client = new GoogleGenAI({ apiKey });
 
   // Lower temperature for JSON generation (more deterministic)
   const temperature = config.responseMimeType === 'application/json' ? 0.2 : (config.temperature ?? 0.7);
 
   const makeCall = async (modelName: string) => {
-    const model = client.getGenerativeModel({ model: modelName });
-    const response = await model.generateContent({
+    const response = await client.models.generateContent({
+      model: modelName,
       contents,
-      systemInstruction,
-      generationConfig: {
+      config: {
+        systemInstruction,
         temperature,
-        ...(config.responseMimeType && { responseMimeType: config.responseMimeType }),
-        ...(config.responseJsonSchema && { responseSchema: config.responseJsonSchema })
-      }
+        ...(config.responseMimeType ? { responseMimeType: config.responseMimeType } : {}),
+        ...(config.responseJsonSchema ? { responseJsonSchema: config.responseJsonSchema } : {}),
+      },
     });
     // Return full response object for better observability
-    const text = response.response.text() ?? '';
+    const text = response.text ?? '';
     return { text, raw: response };
   };
 
   try {
     return await makeCall(primaryModel);
   } catch (err) {
-    // Don't retry non-retryable errors (401, 403, 400)
-    const errMsg = String((err as any)?.message ?? err);
+    const error = err as any;
+    // Don't fallback on non-retryable errors (per docs, ApiError exposes status codes)
+    if (error instanceof ApiError) {
+      if ([400, 401, 403, 404].includes(error.status)) throw error;
+      if (primaryModel === fallbackModel) throw error;
+      console.warn('[api] Primary model failed, retrying with fallback', { primaryModel, status: error.status });
+      return await makeCall(fallbackModel);
+    }
+
+    const errMsg = String(error?.message ?? error);
     if (errMsg.includes('401') || errMsg.includes('403') || errMsg.includes('Invalid request')) {
       console.error('[api] Non-retryable error, not falling back', { error: errMsg });
       throw err;
     }
-
+    if (primaryModel === fallbackModel) throw err;
     console.warn('[api] Primary model failed, retrying with fallback', primaryModel, err);
     return await makeCall(fallbackModel);
   }
@@ -426,6 +553,27 @@ const classifyGeminiError = (error: any): {
   canRetry: boolean;
   retryAfter?: number;
 } => {
+  if (error instanceof ApiError) {
+    const status = error.status ?? 500;
+    if (status === 401) return { status: 401, userMessage: 'Authentication failed', canRetry: false };
+    if (status === 403) return { status: 403, userMessage: 'Access denied', canRetry: false };
+    if (status === 400) return { status: 400, userMessage: 'Invalid request format', canRetry: false };
+    if (status === 404) return { status: 404, userMessage: 'Model not found', canRetry: false };
+    if (status === 429) return { status: 429, userMessage: 'Rate limit exceeded', canRetry: true, retryAfter: 60 };
+    if (status >= 500) return { status, userMessage: 'Server error, please retry', canRetry: true };
+    return { status, userMessage: error.message ?? 'Request failed', canRetry: false };
+  }
+
+  const httpStatus = typeof error?.httpStatus === 'number' ? error.httpStatus : null;
+  if (httpStatus === 401) return { status: 401, userMessage: 'Authentication failed', canRetry: false };
+  if (httpStatus === 403) return { status: 403, userMessage: 'Access denied', canRetry: false };
+  if (httpStatus === 400) return { status: 400, userMessage: 'Invalid request format', canRetry: false };
+  if (httpStatus === 404) return { status: 404, userMessage: 'Model not found', canRetry: false };
+  if (httpStatus === 429) return { status: 429, userMessage: 'Rate limit exceeded', canRetry: true, retryAfter: 60 };
+  if (typeof httpStatus === 'number' && httpStatus >= 500) {
+    return { status: httpStatus, userMessage: 'Server error, please retry', canRetry: true };
+  }
+
   const message = String(error?.message ?? error);
 
   // Check for specific error codes in message
@@ -475,7 +623,7 @@ serve(async (req: Request) => {
 
   const uploadImageToStorage = async (
     imageBase64: string,
-    contentType: string = 'image/webp'
+    contentType: string = 'image/png'
   ): Promise<string | null> => {
     if (!imageBase64) return null;
     if (!supabaseServiceRoleKey) {
@@ -1317,13 +1465,9 @@ serve(async (req: Request) => {
       // 2) Generate image from the prompt
       const imagePrompt = String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere');
 
-      const apiBase = resolveGeminiApiBase();
-      const imageModel = resolveImageModel();
-      const { imageBase64, raw: imgJson } = await generateImageFromPrompt({
+      const { imageBase64, mimeType, raw: imgJson } = await generateImageFromPrompt({
         prompt: imagePrompt,
         apiKey,
-        model: imageModel,
-        apiBase,
         aspectRatio: '9:16',
       });
 
@@ -1341,9 +1485,12 @@ serve(async (req: Request) => {
       }
 
       const optimized =
-        (await optimizeImage(imageBase64, { maxWidth: 1024, maxHeight: 1024, quality: 68 }).catch(() => null)) ?? {
+        (await optimizeImage(
+          { base64: imageBase64, contentType: mimeType ?? 'image/png' },
+          { maxWidth: 1024, maxHeight: 1024, quality: 78 }
+        ).catch(() => null)) ?? {
           base64: imageBase64,
-          contentType: 'image/webp',
+          contentType: mimeType ?? 'image/png',
         };
 
       const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
@@ -1404,7 +1551,12 @@ serve(async (req: Request) => {
           ? 'Categoriza rápidamente. Devuelve SOLO JSON válido.'
           : 'Categorize quickly. Return ONLY valid JSON.';
 
-      const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream"}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.\nDream transcript:\n${transcript}`;
+      const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "hasPerson": boolean, "hasAnimal": boolean}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.
+
+"hasPerson": true if the dream mentions any person (self, friend, stranger, family member, character, figure, etc.), false otherwise
+"hasAnimal": true if the dream mentions any animal (pet, wild animal, creature, bird, mythical being, etc.), false otherwise
+
+Dream transcript:\n${transcript}`;
 
       // Use flash-lite model for speed/cost
       const { text } = await callGeminiWithFallback(
@@ -1426,7 +1578,7 @@ serve(async (req: Request) => {
         console.error('[api] /categorizeDream: unexpected JSON parse failure', parseErr, { text });
         throw new Error('Failed to parse model response');
       }
-      if (!analysis.title || !analysis.theme || !analysis.dreamType) {
+      if (!analysis.title || !analysis.theme || !analysis.dreamType || typeof analysis.hasPerson !== 'boolean' || typeof analysis.hasAnimal !== 'boolean') {
         throw new Error('Missing required fields in model response');
       }
 
@@ -1442,6 +1594,8 @@ serve(async (req: Request) => {
           title: String(analysis.title ?? 'New Dream'),
           theme,
           dreamType,
+          hasPerson: Boolean(analysis.hasPerson),
+          hasAnimal: Boolean(analysis.hasAnimal),
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
@@ -1488,13 +1642,9 @@ serve(async (req: Request) => {
         console.log('[api] /generateImage generated prompt:', prompt);
       }
 
-      const apiBase = resolveGeminiApiBase();
-      const imageModel = resolveImageModel();
-      const { imageBase64, raw: imgJson } = await generateImageFromPrompt({
+      const { imageBase64, mimeType, raw: imgJson } = await generateImageFromPrompt({
         prompt,
         apiKey,
-        model: imageModel,
-        apiBase,
         aspectRatio: '9:16',
       });
 
@@ -1512,9 +1662,12 @@ serve(async (req: Request) => {
       }
 
       const optimized =
-        (await optimizeImage(imageBase64, { maxWidth: 1024, maxHeight: 1024, quality: 68 }).catch(() => null)) ?? {
+        (await optimizeImage(
+          { base64: imageBase64, contentType: mimeType ?? 'image/png' },
+          { maxWidth: 1024, maxHeight: 1024, quality: 78 }
+        ).catch(() => null)) ?? {
           base64: imageBase64,
-          contentType: 'image/webp',
+          contentType: mimeType ?? 'image/png',
         };
 
       const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
@@ -1533,6 +1686,196 @@ serve(async (req: Request) => {
       const err = e as any;
       const errorInfo = classifyGeminiError(e);
       console.error('[api] /generateImage error details', {
+        status: errorInfo.status,
+        blockReason: err?.blockReason ?? null,
+        finishReason: err?.finishReason ?? null,
+        retryAttempts: err?.retryAttempts ?? null,
+        isTransient: err?.isTransient ?? null,
+        httpStatus: err?.httpStatus ?? null,
+      });
+      return new Response(
+        JSON.stringify({
+          error: errorInfo.userMessage,
+          ...(err?.blockReason != null ? { blockReason: err.blockReason } : {}),
+          ...(err?.finishReason != null ? { finishReason: err.finishReason } : {}),
+          ...(err?.promptFeedback != null ? { promptFeedback: err.promptFeedback } : {}),
+          ...(err?.retryAttempts != null ? { retryAttempts: err.retryAttempts } : {}),
+          ...(err?.isTransient != null ? { isTransient: err.isTransient } : {}),
+        }),
+        {
+          status: errorInfo.status,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
+    }
+  }
+
+  // Auth-required: Generate image with reference images (person/animal)
+  if (req.method === 'POST' && subPath === '/generateImageWithReference') {
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    try {
+      const body = (await req.json()) as {
+        prompt?: string;
+        transcript?: string;
+        referenceImages?: Array<{ data: string; mimeType: string; type: string }>;
+        previousImageUrl?: string;
+      };
+
+      let prompt = String(body?.prompt ?? '').trim();
+      const transcript = String(body?.transcript ?? '').trim();
+      const referenceImages = body?.referenceImages ?? [];
+      const previousImageUrl = String(body?.previousImageUrl ?? '').trim();
+
+      // Validation: either prompt or transcript required
+      if (!prompt && !transcript) {
+        return new Response(JSON.stringify({ error: 'Missing prompt or transcript' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      // Validation: max 2 reference images
+      if (!Array.isArray(referenceImages) || referenceImages.length === 0 || referenceImages.length > 2) {
+        return new Response(JSON.stringify({ error: 'Must provide 1-2 reference images' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      // Validation: check reference image sizes
+      const MAX_REFERENCE_SIZE = 1.5 * 1024 * 1024; // 1.5MB per image
+      const MAX_TOTAL_PAYLOAD = 4 * 1024 * 1024; // 4MB total
+      let totalSize = 0;
+
+      for (const ref of referenceImages) {
+        if (!ref.data || !ref.mimeType || !ref.type) {
+          return new Response(JSON.stringify({ error: 'Invalid reference image format' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+
+        // Validate mimeType
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(ref.mimeType)) {
+          return new Response(JSON.stringify({ error: 'Invalid image mimeType. Must be jpeg, png, or webp' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+
+        // Validate type
+        if (!['person', 'animal'].includes(ref.type)) {
+          return new Response(JSON.stringify({ error: 'Invalid reference type. Must be person or animal' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+
+        // Check size
+        const size = ref.data.length * 0.75; // Base64 overhead
+        totalSize += size;
+
+        if (size > MAX_REFERENCE_SIZE) {
+          return new Response(JSON.stringify({ error: `Reference image too large (max ${MAX_REFERENCE_SIZE / 1024 / 1024}MB)` }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+      }
+
+      if (totalSize > MAX_TOTAL_PAYLOAD) {
+        return new Response(JSON.stringify({ error: `Total payload too large (max ${MAX_TOTAL_PAYLOAD / 1024 / 1024}MB)` }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      const apiKey = Deno.env.get('GEMINI_API_KEY');
+      if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+      console.log('[api] /generateImageWithReference request', {
+        userId: user.id,
+        hasPrompt: !!prompt,
+        hasTranscript: !!transcript,
+        referenceCount: referenceImages.length,
+        referenceTypes: referenceImages.map(r => r.type),
+      });
+
+      // If we have a transcript but no prompt, generate the prompt first
+      if (!prompt && transcript) {
+        console.log('[api] /generateImageWithReference generating prompt from transcript');
+        const { text: generatedPrompt } = await callGeminiWithFallback(
+          apiKey,
+          'gemini-2.5-flash-lite',
+          'gemini-2.5-flash-lite',
+          [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
+          'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
+          { temperature: 0.8 }
+        );
+        prompt = generatedPrompt.trim();
+        console.log('[api] /generateImageWithReference generated prompt:', prompt);
+      }
+
+      // Generate image with reference images
+      const { imageBase64, mimeType, raw: imgJson } = await generateImageWithReferences({
+        prompt,
+        apiKey,
+        referenceImages,
+        aspectRatio: '9:16',
+      });
+
+      if (!imageBase64) {
+        return new Response(
+          JSON.stringify({
+            error: 'No image returned',
+            raw: imgJson,
+          }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          }
+        );
+      }
+
+      // Optimize and upload the generated image
+      const optimized =
+        (await optimizeImage(
+          { base64: imageBase64, contentType: mimeType ?? 'image/png' },
+          { maxWidth: 1024, maxHeight: 1024, quality: 78 }
+        ).catch(() => null)) ?? {
+          base64: imageBase64,
+          contentType: mimeType ?? 'image/png',
+        };
+
+      const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
+      const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
+
+      // Delete previous image if provided
+      if (previousImageUrl) {
+        await deleteImageFromStorage(previousImageUrl, user.id);
+      }
+
+      console.log('[api] /generateImageWithReference success', {
+        userId: user.id,
+        imageUploaded: !!storedImageUrl,
+        previousImageDeleted: !!previousImageUrl,
+      });
+
+      return new Response(JSON.stringify({ imageUrl }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    } catch (e) {
+      console.error('[api] /generateImageWithReference error', e);
+      const err = e as any;
+      const errorInfo = classifyGeminiError(e);
+      console.error('[api] /generateImageWithReference error details', {
         status: errorInfo.status,
         blockReason: err?.blockReason ?? null,
         finishReason: err?.finishReason ?? null,

@@ -429,6 +429,8 @@ type SupabaseDreamRow = {
   analysis_request_id?: string | null;
   exploration_started_at?: string | null;
   client_request_id?: string | null;
+  has_person?: boolean | null;
+  has_animal?: boolean | null;
 };
 
 const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
@@ -456,6 +458,9 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
     analysisRequestId: row.analysis_request_id ?? undefined,
     explorationStartedAt: row.exploration_started_at ? Date.parse(row.exploration_started_at) : undefined,
     clientRequestId: row.client_request_id ?? undefined,
+    // Map subject detection: null from DB -> undefined (not checked), true/false preserved
+    hasPerson: row.has_person === null ? undefined : row.has_person,
+    hasAnimal: row.has_animal === null ? undefined : row.has_animal,
   };
 };
 
@@ -484,6 +489,9 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumn
       ? { exploration_started_at: new Date(dream.explorationStartedAt).toISOString() }
       : {}),
     ...(dream.clientRequestId != null ? { client_request_id: dream.clientRequestId } : {}),
+    // Only include subject detection when explicitly set (undefined = not checked, omit to preserve DB)
+    ...(dream.hasPerson !== undefined ? { has_person: dream.hasPerson } : {}),
+    ...(dream.hasAnimal !== undefined ? { has_animal: dream.hasAnimal } : {}),
   };
 
   if (!includeImageColumns) return { ...base, ...quotaFields };

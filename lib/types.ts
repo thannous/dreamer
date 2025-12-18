@@ -47,6 +47,11 @@ export interface DreamAnalysis {
   imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
   pendingSync?: boolean;
 
+  // Subject detection for reference image generation
+  // undefined = not yet checked, null = unknown/couldn't determine, true/false = explicitly detected
+  hasPerson?: boolean | null;
+  hasAnimal?: boolean | null;
+
   // Quota-related fields
   isAnalyzed?: boolean; // Whether AI analysis has been performed (separates recording from analysis)
   analyzedAt?: number; // Timestamp when analysis was completed
@@ -172,3 +177,22 @@ export type OfflineAction =
       timestamp: number;
       retries?: number;
     };
+
+/**
+ * Reference image for subject-driven image generation
+ */
+export interface ReferenceImage {
+  uri: string;
+  mimeType: string;
+  type: 'person' | 'animal';
+}
+
+/**
+ * Request for generating an image with reference subjects
+ */
+export interface ReferenceImageGenerationRequest {
+  transcript: string;
+  imagePrompt: string;
+  referenceImages: ReferenceImage[];
+  lang?: string;
+}

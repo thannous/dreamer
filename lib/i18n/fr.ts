@@ -593,6 +593,29 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_13': 'Rituel du matin : Capturez vos rêves pour réflexion.',
     'notifications.prompt.morning_14': 'Quelle histoire votre esprit vous a-t-il racontée cette nuit ?',
     'notifications.prompt.morning_15': 'Les rêves s\'estompent vite. Prenez une minute pour préserver les vôtres.',
+
+    // Reference image picker
+    'reference_image.title_person': 'Ajouter une photo de cette personne',
+    'reference_image.title_animal': 'Ajouter une photo de cet animal',
+    'reference_image.subtitle': 'Ajoutez 1-2 photos de reference claires pour personnaliser l\'image du reve avec leur apparence.',
+    'reference_image.selected_count': '{count}/{max} photo(s) selectionnee(s)',
+    'reference_image.permission_title': 'Acces aux photos requis',
+    'reference_image.permission_message': 'Veuillez autoriser l\'acces a votre bibliotheque photo pour ajouter des images de reference.',
+    'reference_image.compression_error_title': 'Image trop volumineuse',
+    'reference_image.compression_error_message': 'Cette image n\'a pas pu etre compresse a la taille requise. Essayez une autre photo.',
+    'reference_image.pick_error': 'Impossible de selectionner l\'image. Reessayez.',
+
+    // Subject proposition
+    'subject_proposition.title_person': 'Personne detectee dans votre reve',
+    'subject_proposition.title_animal': 'Animal detecte dans votre reve',
+    'subject_proposition.message_person': 'Ajoutez une photo de reference pour inclure son apparence dans l\'image du reve generee.',
+    'subject_proposition.message_animal': 'Ajoutez une photo de reference pour inclure son apparence dans l\'image du reve generee.',
+    'subject_proposition.accept': 'Ajouter une photo',
+    'subject_proposition.skip': 'Ignorer',
+
+    // Journal detail - subject actions
+    'journal.detail.add_person': 'Ajouter une personne',
+    'journal.detail.add_animal': 'Ajouter un animal',
   };
 
 export default translations;
