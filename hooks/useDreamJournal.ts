@@ -17,6 +17,8 @@ import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
 import { deriveUserTier } from '@/lib/quotaTier';
 import {
+  areDreamsEqualForLocalState,
+  areDreamsEqualForRemoteSync,
   generateMutationId,
   generateUUID,
   normalizeDreamImages,
@@ -190,6 +192,11 @@ export const useDreamJournal = () => {
     async (updatedDream: DreamAnalysis) => {
       const normalizedDream = normalizeDreamImages(updatedDream);
       const currentDreams = dreamsRef.current;
+      const existingDream = currentDreams.find((d) => d.id === normalizedDream.id);
+
+      if (existingDream && areDreamsEqualForLocalState(existingDream, normalizedDream)) {
+        return;
+      }
 
       if (!canUseRemoteSync) {
         const newDreams = currentDreams.map((d) => (d.id === normalizedDream.id ? normalizedDream : d));
@@ -220,6 +227,10 @@ export const useDreamJournal = () => {
       if (!hasNetwork) {
         const pendingVersion = { ...normalizedDream, pendingSync: true, remoteId };
         await queueAndPersist(pendingVersion);
+        return;
+      }
+
+      if (existingDream && areDreamsEqualForRemoteSync(existingDream, normalizedDream)) {
         return;
       }
 

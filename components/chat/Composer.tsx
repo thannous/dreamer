@@ -108,6 +108,7 @@ export function Composer({
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
   const containerRef = useRef<View>(null);
+  const textInputRef = useRef<TextInput>(null);
   const localHeight = useSharedValue(0);
 
   const handleLanguagePackMissingClose = useCallback(() => {
@@ -264,6 +265,18 @@ export function Composer({
     return base;
   }, [baseTranscriptRef, onChangeText, stopSessionRecording, t]);
 
+  const handleTextInputPress = useCallback(async () => {
+    if (isRecording) {
+      await stopRecording();
+      // Focus input and place cursor at the end
+      setTimeout(() => {
+        textInputRef.current?.focus();
+        const textLength = value.length;
+        textInputRef.current?.setSelection(textLength, textLength);
+      }, 0);
+    }
+  }, [isRecording, stopRecording, value]);
+
   const toggleRecording = useCallback(async () => {
     if (isRecording) {
       await stopRecording();
@@ -328,6 +341,7 @@ export function Composer({
         ]}
       >
         <TextInput
+          ref={textInputRef}
           testID={testID}
           style={[styles.input, { color: colors.textPrimary }]}
           placeholder={
@@ -338,6 +352,7 @@ export function Composer({
           placeholderTextColor={mode === 'dark' ? '#e4def7' : colors.textSecondary}
           value={value}
           onChangeText={onChangeText}
+          onPressIn={handleTextInputPress}
           multiline
           maxLength={500}
           editable={!isLoading && !isDisabled && !isRecording}

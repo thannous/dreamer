@@ -586,6 +586,29 @@ const translations: Record<string, string> = {
     'notifications.prompt.morning_13': 'Ritual matutino: Captura tus sueños para reflexión.',
     'notifications.prompt.morning_14': '¿Qué historia te contó tu mente anoche?',
     'notifications.prompt.morning_15': 'Los sueños se desvanecen rápido. Toma un minuto para preservar los tuyos.',
+
+    // Reference image picker
+    'reference_image.title_person': 'Agregar una foto de esta persona',
+    'reference_image.title_animal': 'Agregar una foto de este animal',
+    'reference_image.subtitle': 'Agrega 1-2 fotos de referencia claras para personalizar la imagen del sueno con su apariencia.',
+    'reference_image.selected_count': '{count}/{max} foto(s) seleccionada(s)',
+    'reference_image.permission_title': 'Acceso a fotos requerido',
+    'reference_image.permission_message': 'Por favor, permite el acceso a tu biblioteca de fotos para agregar imagenes de referencia.',
+    'reference_image.compression_error_title': 'Imagen demasiado grande',
+    'reference_image.compression_error_message': 'Esta imagen no pudo comprimirse al tamano requerido. Intenta con otra foto.',
+    'reference_image.pick_error': 'No se pudo seleccionar la imagen. Intentalo de nuevo.',
+
+    // Subject proposition
+    'subject_proposition.title_person': 'Persona detectada en tu sueno',
+    'subject_proposition.title_animal': 'Animal detectado en tu sueno',
+    'subject_proposition.message_person': 'Agrega una foto de referencia para incluir su apariencia en la imagen del sueno generada.',
+    'subject_proposition.message_animal': 'Agrega una foto de referencia para incluir su apariencia en la imagen del sueno generada.',
+    'subject_proposition.accept': 'Agregar foto',
+    'subject_proposition.skip': 'Omitir',
+
+    // Journal detail - subject actions
+    'journal.detail.add_person': 'Agregar persona',
+    'journal.detail.add_animal': 'Agregar animal',
   };
 
 export default translations;

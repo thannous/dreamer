@@ -9,7 +9,7 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON, HttpError } from '@/lib/http';
 import { classifyImageError, type ImageGenerationErrorResponse } from '@/lib/errors';
-import type { ChatMessage, DreamTheme, DreamType } from '@/lib/types';
+import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
 
 export type AnalysisResult = {
   title: string;
@@ -34,9 +34,14 @@ export async function analyzeDream(
   });
 }
 
-export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>> {
+export type CategorizeDreamResult = Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'> & {
+  hasPerson?: boolean | null;
+  hasAnimal?: boolean | null;
+};
+
+export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<CategorizeDreamResult> {
   const base = getApiBaseUrl();
-  return fetchJSON<Pick<AnalysisResult, 'title' | 'theme' | 'dreamType'>>(`${base}/categorizeDream`, {
+  return fetchJSON<CategorizeDreamResult>(`${base}/categorizeDream`, {
     method: 'POST',
     body: { transcript, lang },
     retries: 1,
@@ -242,4 +247,86 @@ export async function generateSpeechForText(text: string): Promise<string> {
   });
   if (!res.audioBase64) throw new Error('No audio returned');
   return res.audioBase64;
+}
+
+/**
+ * Generate a dream image with reference subjects (person/animal).
+ * Reference images should be pre-compressed (512px max, WEBP, quality 0.7)
+ * and will be encoded to base64 at send time.
+ *
+ * @param request - The request containing transcript, prompt, and reference images
+ * @returns The generated image URL or base64 data URI
+ */
+export async function generateImageWithReference(
+  request: ReferenceImageGenerationRequest
+): Promise<string> {
+  const base = getApiBaseUrl();
+
+  // Import FileSystem for reading file URIs on native
+  const FileSystem = await import('expo-file-system');
+  const FileSystemLegacy = await import('expo-file-system/legacy');
+
+  // Convert reference images to base64 at send time
+  const referenceImagesBase64 = await Promise.all(
+    request.referenceImages.map(async (img) => {
+      let base64: string;
+
+      if (img.uri.startsWith('data:')) {
+        // Already a data URI, extract base64
+        const match = /^data:[^;]+;base64,(.+)$/i.exec(img.uri);
+        base64 = match?.[1] ?? '';
+      } else if (img.uri.startsWith('file://')) {
+        // Read from file system
+        const file = new FileSystem.File(img.uri);
+        base64 = await file.base64();
+      } else {
+        // Try legacy API for cache URIs
+        base64 = await FileSystemLegacy.readAsStringAsync(img.uri, {
+          encoding: FileSystemLegacy.EncodingType.Base64,
+        });
+      }
+
+      return {
+        base64,
+        mimeType: img.mimeType,
+        type: img.type,
+      };
+    })
+  );
+
+  try {
+    const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImageWithReference`, {
+      method: 'POST',
+      body: {
+        transcript: request.transcript,
+        imagePrompt: request.imagePrompt,
+        referenceImages: referenceImagesBase64,
+        lang: request.lang ?? 'en',
+      },
+      timeoutMs: 90000, // Longer timeout for reference image processing
+      retries: 1,
+    });
+
+    if (res.imageUrl) return res.imageUrl;
+    if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
+    throw new Error('Invalid image response from backend');
+  } catch (error) {
+    if (error instanceof HttpError && error.body && typeof error.body === 'object' && error.body !== null) {
+      const body = error.body as Partial<ImageGenerationErrorResponse>;
+      if (typeof body.error === 'string') {
+        if (__DEV__) {
+          console.warn('[geminiService] generateImageWithReference failed', {
+            status: error.status,
+            blockReason: body.blockReason ?? null,
+            finishReason: body.finishReason ?? null,
+            retryAttempts: body.retryAttempts ?? null,
+            isTransient: body.isTransient ?? null,
+          });
+        }
+        const classified = classifyImageError(body as ImageGenerationErrorResponse);
+        throw new Error(classified.userMessage);
+      }
+    }
+    throw error;
+  }
 }

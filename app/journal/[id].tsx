@@ -1,7 +1,9 @@
 import { Toast } from '@/components/Toast';
 import { ImageRetry } from '@/components/journal/ImageRetry';
+import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { GradientColors } from '@/constants/gradients';
 import { QUOTAS } from '@/constants/limits';
@@ -22,8 +24,8 @@ import { QuotaError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamTheme, DreamType, DreamChatCategory } from '@/lib/types';
-import { generateImageFromTranscript } from '@/services/geminiService';
+import type { DreamAnalysis, DreamTheme, DreamType, DreamChatCategory, ReferenceImage } from '@/lib/types';
+import { generateImageFromTranscript, categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -177,6 +179,14 @@ export default function JournalDetailScreen() {
   const [analysisNotice, setAnalysisNotice] = useState<AnalysisNotice | null>(null);
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
+
+  // Reference image generation state
+  const [showReferenceSheet, setShowReferenceSheet] = useState(false);
+  const [referenceSubjectType, setReferenceSubjectType] = useState<'person' | 'animal' | null>(null);
+  const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
+  const [isGeneratingWithReference, setIsGeneratingWithReference] = useState(false);
+  const hasBackfilledSubjectRef = useRef(false);
+
   useEffect(() => {
     if (isShareModalVisible) {
       blurActiveElement();
@@ -255,6 +265,34 @@ export default function JournalDetailScreen() {
       hideSub.remove();
     };
   }, []);
+
+  // Lazy backfill hasPerson/hasAnimal if undefined and transcript exists
+  useEffect(() => {
+    if (!dream) return;
+    if (hasBackfilledSubjectRef.current) return;
+    if (dream.hasPerson !== undefined || dream.hasAnimal !== undefined) return;
+    if (!dream.transcript?.trim()) return;
+
+    hasBackfilledSubjectRef.current = true;
+
+    (async () => {
+      try {
+        const result = await categorizeDream(dream.transcript, language);
+        if (result.hasPerson !== undefined || result.hasAnimal !== undefined) {
+          await updateDream({
+            ...dream,
+            hasPerson: result.hasPerson,
+            hasAnimal: result.hasAnimal,
+          });
+        }
+      } catch (err) {
+        // Silently fail - this is a background optimization
+        if (__DEV__) {
+          console.warn('[JournalDetail] Lazy backfill failed:', err);
+        }
+      }
+    })();
+  }, [dream, language, updateDream]);
 
   useEffect(() => {
     if (!isEditingTranscript || !scrollViewRef.current) {
@@ -468,6 +506,62 @@ export default function JournalDetailScreen() {
       setIsPickingImage(false);
     }
   }, [dream, isAnalysisLocked, updateDream, t]);
+
+  // Reference image generation handlers
+  const handleAddSubject = useCallback((type: 'person' | 'animal') => {
+    setReferenceSubjectType(type);
+    setReferenceImages([]);
+    setShowReferenceSheet(true);
+  }, []);
+
+  const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
+    setReferenceImages(images);
+  }, []);
+
+  const handleReferenceSheetClose = useCallback(() => {
+    setShowReferenceSheet(false);
+    setReferenceSubjectType(null);
+    setReferenceImages([]);
+  }, []);
+
+  const handleGenerateWithReference = useCallback(async () => {
+    if (!dream || referenceImages.length === 0) return;
+
+    setShowReferenceSheet(false);
+    setIsGeneratingWithReference(true);
+
+    try {
+      const imageUrl = await generateImageWithReference({
+        transcript: dream.transcript,
+        imagePrompt: dream.transcript,
+        referenceImages,
+        lang: language,
+      });
+
+      const imageUpdatedAt = Date.now();
+      const analysisRequestId = generateUUID();
+      const updatedDream: DreamAnalysis = {
+        ...dream,
+        imageUrl,
+        thumbnailUrl: imageUrl,
+        imageGenerationFailed: false,
+        imageUpdatedAt,
+        analysisRequestId,
+        imageSource: 'ai',
+      };
+
+      await updateDream(updatedDream);
+
+      // Cleanup
+      setReferenceSubjectType(null);
+      setReferenceImages([]);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : t('common.unknown_error');
+      Alert.alert(t('common.error_title'), msg);
+    } finally {
+      setIsGeneratingWithReference(false);
+    }
+  }, [dream, language, referenceImages, t, updateDream]);
 
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
@@ -1194,6 +1288,47 @@ export default function JournalDetailScreen() {
                             <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
                               {t('journal.detail.image.or')}
                             </Text>
+
+                            {/* Add Person/Animal buttons when detected */}
+                            {dream.hasPerson === true && (
+                              <Pressable
+                                onPress={() => handleAddSubject('person')}
+                                disabled={isGeneratingWithReference || isAnalysisLocked}
+                                style={[
+                                  styles.imageActionButton,
+                                  styles.imageActionButtonSecondary,
+                                  { borderColor: colors.divider },
+                                  (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                                ]}
+                              >
+                                <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
+                                <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                                  {t('journal.detail.add_person')}
+                                </Text>
+                              </Pressable>
+                            )}
+
+                            {dream.hasAnimal === true && (
+                              <Pressable
+                                onPress={() => handleAddSubject('animal')}
+                                disabled={isGeneratingWithReference || isAnalysisLocked}
+                                style={[
+                                  styles.imageActionButton,
+                                  styles.imageActionButtonSecondary,
+                                  { borderColor: colors.divider },
+                                  (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                                ]}
+                              >
+                                <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
+                                <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                                  {t('journal.detail.add_animal')}
+                                </Text>
+                              </Pressable>
+                            )}
+
+                            <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                              {t('journal.detail.image.or')}
+                            </Text>
                           </>
                         )}
 
@@ -1745,6 +1880,32 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         </Modal>
+
+        {/* Reference Image Picker Sheet */}
+        <StandardBottomSheet
+          visible={showReferenceSheet}
+          onClose={handleReferenceSheetClose}
+          title={referenceSubjectType === 'person'
+            ? t('reference_image.title_person')
+            : t('reference_image.title_animal')}
+          actions={{
+            primaryLabel: t('subject_proposition.accept'),
+            onPrimary: handleGenerateWithReference,
+            primaryDisabled: referenceImages.length === 0 || isGeneratingWithReference,
+            primaryLoading: isGeneratingWithReference,
+            secondaryLabel: t('subject_proposition.skip'),
+            onSecondary: handleReferenceSheetClose,
+          }}
+        >
+          {referenceSubjectType && (
+            <ReferenceImagePicker
+              subjectType={referenceSubjectType}
+              onImagesSelected={handleReferenceImagesSelected}
+              maxImages={2}
+            />
+          )}
+        </StandardBottomSheet>
+
         {favoriteError ? (
           <Toast
             message={favoriteError}
