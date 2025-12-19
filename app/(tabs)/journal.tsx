@@ -173,7 +173,7 @@ export default function JournalListScreen() {
 
   const handleDreamPress = useCallback((dream: DreamAnalysis) => {
     router.push(`/journal/${dream.id}`);
-  }, [router]);
+  }, []);
 
   // Track viewable items for lazy loading with preloading
   const filteredDreamsRef = useRef(filteredDreams);
@@ -362,6 +362,8 @@ export default function JournalListScreen() {
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
+          // @ts-expect-error: estimatedItemSize is missing in FlashList types but required for performance
+          estimatedItemSize={160}
           data={filteredDreams}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
@@ -376,6 +378,8 @@ export default function JournalListScreen() {
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
+          // @ts-expect-error: estimatedItemSize is missing in FlashList types but required for performance
+          estimatedItemSize={160}
           data={filteredDreams}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
