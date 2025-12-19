@@ -50,10 +50,21 @@ export const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
     ? (dream.thumbnailUrl || getThumbnailUrl(dream.imageUrl))
     : undefined;
 
+  const newImageGenerationFailed = hasImage ? false : dream.imageGenerationFailed;
+
+  // Perf: Return same object if nothing changes
+  // This preserves referential equality for React.memo and FlashList
+  if (
+    dream.thumbnailUrl === derivedThumbnail &&
+    dream.imageGenerationFailed === newImageGenerationFailed
+  ) {
+    return dream;
+  }
+
   return {
     ...dream,
-    thumbnailUrl: hasImage ? derivedThumbnail : undefined,
-    imageGenerationFailed: hasImage ? false : dream.imageGenerationFailed,
+    thumbnailUrl: derivedThumbnail,
+    imageGenerationFailed: newImageGenerationFailed,
   };
 };
 
@@ -212,8 +223,18 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
 /**
  * Normalize a list of dreams
  */
-export const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] =>
-  list.map((dream) => normalizeDreamImages(dream));
+export const normalizeDreamList = (list: DreamAnalysis[]): DreamAnalysis[] => {
+  let hasChanges = false;
+  const normalized = list.map((dream) => {
+    const next = normalizeDreamImages(dream);
+    if (next !== dream) {
+      hasChanges = true;
+    }
+    return next;
+  });
+
+  return hasChanges ? normalized : list;
+};
 
 /**
  * Upsert a dream into a list (insert or update by id/remoteId)

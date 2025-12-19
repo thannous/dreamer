@@ -154,6 +154,24 @@ describe('dreamUtils', () => {
 
       expect(result.thumbnailUrl).toBeUndefined();
     });
+
+    it('given normalized dream when normalizing again then returns same object reference', () => {
+      const dream = buildDream({
+        imageUrl: 'https://example.com/img.jpg',
+        thumbnailUrl: 'https://example.com/img.jpg?thumb',
+        imageGenerationFailed: false,
+      });
+      const result = normalizeDreamImages(dream);
+
+      expect(result).toBe(dream);
+    });
+
+    it('given dream needing no changes when normalizing then returns same object reference', () => {
+      const dream = buildDream({ imageUrl: '', thumbnailUrl: undefined });
+      const result = normalizeDreamImages(dream);
+
+      expect(result).toBe(dream);
+    });
   });
 
   describe('normalizeDreamList', () => {
@@ -172,6 +190,25 @@ describe('dreamUtils', () => {
 
     it('given empty list when normalizing then returns empty list', () => {
       expect(normalizeDreamList([])).toEqual([]);
+    });
+
+    it('given list with no changes needed when normalizing then returns same array reference', () => {
+      const dreams = [
+        buildDream({ imageUrl: '', thumbnailUrl: undefined }),
+      ];
+      const result = normalizeDreamList(dreams);
+
+      expect(result).toBe(dreams);
+    });
+
+    it('given list with changes needed when normalizing then returns new array', () => {
+      const dreams = [
+        buildDream({ imageUrl: 'https://example.com/img.jpg', thumbnailUrl: undefined }),
+      ];
+      const result = normalizeDreamList(dreams);
+
+      expect(result).not.toBe(dreams);
+      expect(result[0].thumbnailUrl).toBeDefined();
     });
   });
 
