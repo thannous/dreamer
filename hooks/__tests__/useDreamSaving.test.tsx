@@ -2,8 +2,10 @@
  * @vitest-environment happy-dom
  */
 import { act, renderHook } from '@testing-library/react';
+import { Alert } from 'react-native';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 // Use vi.hoisted to ensure mock functions are available during module loading
 const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = vi.hoisted(() => ({
   mockCategorizeDream: vi.fn().mockResolvedValue({
@@ -14,6 +16,12 @@ const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = vi.hoisted(() =>
   mockAnalyzeDream: vi.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
   mockAddDream: vi.fn().mockImplementation((dream: unknown) => Promise.resolve({ ...dream as object, id: Date.now() })),
 }));
+
+let currentUser: any = { id: 'test-user' };
+let canAnalyzeNow = true;
+let tier = 'free';
+const mockGetGuestRecordedDreamCount = vi.fn();
+const mockIsGuestDreamLimitReached = vi.fn();
 
 // Mock all dependencies
 vi.mock('react-native', () => ({
@@ -35,9 +43,9 @@ vi.mock('expo-router', () => ({
 
 // Use relative paths for mocks
 vi.mock('../../context/AuthContext', () => ({
-  useAuth: vi.fn().mockReturnValue({
-    user: { id: 'test-user' },
-  }),
+  useAuth: vi.fn(() => ({
+    user: currentUser,
+  })),
 }));
 
 vi.mock('../../context/DreamsContext', () => ({
@@ -49,9 +57,10 @@ vi.mock('../../context/DreamsContext', () => ({
 }));
 
 vi.mock('../useQuota', () => ({
-  useQuota: vi.fn().mockReturnValue({
-    canAnalyzeNow: true,
-  }),
+  useQuota: vi.fn(() => ({
+    canAnalyzeNow,
+    tier,
+  })),
 }));
 
 vi.mock('../useTranslation', () => ({
@@ -65,12 +74,25 @@ vi.mock('../../services/geminiService', () => ({
   categorizeDream: mockCategorizeDream,
 }));
 
+vi.mock('../../services/quota/GuestDreamCounter', () => ({
+  getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
+}));
+
+vi.mock('../../lib/guestLimits', () => ({
+  isGuestDreamLimitReached: mockIsGuestDreamLimitReached,
+}));
+
 // Import after mocks are set up
 const { useDreamSaving } = await import('../useDreamSaving');
 
 describe('useDreamSaving', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    currentUser = { id: 'test-user' };
+    canAnalyzeNow = true;
+    tier = 'free';
+    mockGetGuestRecordedDreamCount.mockResolvedValue(0);
+    mockIsGuestDreamLimitReached.mockReturnValue(false);
   });
 
   it('should initialize with isPersisting false', () => {
@@ -203,5 +225,65 @@ describe('useDreamSaving', () => {
     });
 
     expect(mockAnalyzeDream).toHaveBeenCalledWith(draft.id, draft.transcript, { lang: 'fr' });
+  });
+
+  it('still saves dreams when quick categorization fails', async () => {
+    mockCategorizeDream.mockRejectedValueOnce(new Error('categorize failed'));
+    const { result } = renderHook(() => useDreamSaving());
+
+    let savedDream;
+    await act(async () => {
+      savedDream = await result.current.saveDream('Test dream');
+    });
+
+    expect(mockAddDream).toHaveBeenCalled();
+    expect(savedDream).not.toBeNull();
+  });
+
+  it('halts save and notifies when guest limit is reached', async () => {
+    currentUser = null;
+    mockGetGuestRecordedDreamCount.mockResolvedValueOnce(10);
+    mockIsGuestDreamLimitReached.mockReturnValueOnce(true);
+    const onGuestLimitReached = vi.fn();
+
+    const { result } = renderHook(() => useDreamSaving({ onGuestLimitReached }));
+
+    let savedDream;
+    await act(async () => {
+      savedDream = await result.current.saveDream('Guest dream');
+    });
+
+    expect(savedDream).toBeNull();
+    expect(onGuestLimitReached).toHaveBeenCalled();
+    expect(mockAddDream).not.toHaveBeenCalled();
+  });
+
+  it('handles guest quota errors from storage', async () => {
+    mockAddDream.mockRejectedValueOnce(new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest'));
+    const onGuestLimitReached = vi.fn();
+    const { result } = renderHook(() => useDreamSaving({ onGuestLimitReached }));
+
+    let saved;
+    await act(async () => {
+      saved = await result.current.saveDream('Quota dream');
+    });
+
+    expect(saved).toBeNull();
+    expect(onGuestLimitReached).toHaveBeenCalled();
+  });
+
+  it('shows analysis limit alert when quota prevents analysis', async () => {
+    canAnalyzeNow = false;
+    tier = 'guest';
+    const { result } = renderHook(() => useDreamSaving());
+    const draft = result.current.buildDraftDream('Limit dream');
+
+    let analyzed;
+    await act(async () => {
+      analyzed = await result.current.analyzeAndSaveDream(draft);
+    });
+
+    expect(analyzed).toBeNull();
+    expect(Alert.alert).toHaveBeenCalled();
   });
 });

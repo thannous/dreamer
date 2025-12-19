@@ -55,10 +55,11 @@ const buildAnalysisResult = (overrides = {}) => ({
 });
 
 // Helper to create a mock fetch response
-const mockFetchResponse = (data: unknown, ok = true, status = 200) => {
+const mockFetchResponse = (data: unknown, ok = true, status = 200, statusText = 'OK') => {
   return Promise.resolve({
     ok,
     status,
+    statusText,
     json: () => Promise.resolve(data),
     text: () => Promise.resolve(JSON.stringify(data)),
   } as Response);
@@ -381,6 +382,21 @@ describe('geminiServiceReal', () => {
         'Invalid image response from backend'
       );
     });
+
+    it('throws a classified message when content is blocked', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+        mockFetchResponse(
+          { error: 'Blocked by policy', blockReason: 'safety' },
+          false,
+          400,
+          'Bad Request'
+        )
+      );
+
+      await expect(generateImageForDream('prompt')).rejects.toThrow(
+        'This dream\'s imagery couldn\'t be generated due to content guidelines.'
+      );
+    });
   });
 
   describe('generateImageFromTranscript', () => {
@@ -433,6 +449,21 @@ describe('geminiServiceReal', () => {
 
       await expect(generateImageFromTranscript('dream')).rejects.toThrow(
         'Invalid image response from backend'
+      );
+    });
+
+    it('throws a classified message when image generation is blocked', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+        mockFetchResponse(
+          { error: 'No inlineData', finishReason: 'IMAGE_OTHER' },
+          false,
+          429,
+          'Too Many Requests'
+        )
+      );
+
+      await expect(generateImageFromTranscript('dream')).rejects.toThrow(
+        'The image service is temporarily busy. Your dream has been saved and you can retry later.'
       );
     });
   });
