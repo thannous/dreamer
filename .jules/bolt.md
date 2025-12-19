@@ -8,3 +8,7 @@
 ## 2025-12-16 - List Item Memoization
 **Learning:** For FlashList performance, stable props are crucial. Inline functions (like `onPress`) and derived arrays (like `badges`) passed as props break `React.memo`.
 **Action:** Move derived UI state (badges) inside the item component and use stable callbacks for interactions.
+
+## 2025-12-19 - FlashList Type Definitions
+**Learning:** The `@shopify/flash-list` (v2.0.2) types in this project do not expose `estimatedItemSize` on the component props, despite it being a required prop for performance.
+**Action:** Use `// @ts-expect-error` when adding `estimatedItemSize` to `FlashList` components to avoid build errors while ensuring performance.
