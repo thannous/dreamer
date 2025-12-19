@@ -1,8 +1,8 @@
 /* @vitest-environment happy-dom */
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AuthApiError } from '@supabase/auth-js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { TID } from '../../../lib/testIDs';
 import { EmailAuthCard } from '../EmailAuthCard';
@@ -11,15 +11,23 @@ const {
   mockAlert,
   mockRequestStayOnSettingsIntent,
   mockSignInWithEmailPassword,
+  mockSignUpWithEmailPassword,
+  mockSignOut,
   mockResendVerificationEmail,
 } = vi.hoisted(() => ({
   mockAlert: vi.fn(),
   mockRequestStayOnSettingsIntent: vi.fn(),
   mockSignInWithEmailPassword: vi.fn(),
+  mockSignUpWithEmailPassword: vi.fn(),
+  mockSignOut: vi.fn(),
   mockResendVerificationEmail: vi.fn(),
 }));
 
 vi.stubGlobal('__DEV__', false);
+
+let currentUser: any = null;
+let authLoading = false;
+let supabaseConfigured = true;
 
 vi.mock('react-native', () => {
   return {
@@ -69,7 +77,7 @@ vi.mock('react-native', () => {
 });
 
 vi.mock('../../../context/AuthContext', () => ({
-  useAuth: () => ({ user: null, loading: false }),
+  useAuth: () => ({ user: currentUser, loading: authLoading }),
 }));
 
 vi.mock('../../../context/ThemeContext', () => ({
@@ -110,8 +118,8 @@ vi.mock('../EmailVerificationBanner', () => ({
 vi.mock('../../../lib/auth', () => ({
   signInMock: vi.fn(),
   signInWithEmailPassword: mockSignInWithEmailPassword,
-  signOut: vi.fn(),
-  signUpWithEmailPassword: vi.fn(),
+  signOut: mockSignOut,
+  signUpWithEmailPassword: mockSignUpWithEmailPassword,
   resendVerificationEmail: mockResendVerificationEmail,
 }));
 
@@ -120,7 +128,9 @@ vi.mock('../../../lib/navigationIntents', () => ({
 }));
 
 vi.mock('../../../lib/supabase', () => ({
-  isSupabaseConfigured: true,
+  get isSupabaseConfigured() {
+    return supabaseConfigured;
+  },
 }));
 
 vi.mock('../EmailVerificationDialog', () => ({
@@ -139,8 +149,18 @@ vi.mock('../../../constants/journalTheme', () => ({
 }));
 
 describe('EmailAuthCard', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
+    currentUser = null;
+    authLoading = false;
+    supabaseConfigured = true;
+    mockSignInWithEmailPassword.mockResolvedValue(undefined);
+    mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
+    mockSignOut.mockResolvedValue(undefined);
   });
 
   it('shows unverified prompt and allows resending verification email when sign-in fails for confirmation', async () => {
@@ -179,5 +199,105 @@ describe('EmailAuthCard', () => {
     expect(mockRequestStayOnSettingsIntent).toHaveBeenCalled();
 
     vi.useRealTimers();
+  });
+
+  it('signs in with valid credentials and clears the password', async () => {
+    render(<EmailAuthCard />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), {
+      target: { value: ' user@example.com ' },
+    });
+    fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), {
+      target: { value: 'password' },
+    });
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSignIn));
+
+    await waitFor(() => {
+      expect(mockSignInWithEmailPassword).toHaveBeenCalledWith('user@example.com', 'password');
+    });
+
+    expect(mockRequestStayOnSettingsIntent).toHaveBeenCalled();
+    await waitFor(() => {
+      expect((screen.getByTestId(TID.Input.AuthPassword) as HTMLInputElement).value).toBe('');
+    });
+  });
+
+  it('starts verification flow on sign-up when email is unconfirmed', async () => {
+    render(<EmailAuthCard />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), {
+      target: { value: 'user@example.com' },
+    });
+    fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), {
+      target: { value: 'password' },
+    });
+
+    await waitFor(() => {
+      expect((screen.getByTestId(TID.Button.AuthSignUp) as HTMLButtonElement).disabled).toBe(false);
+    });
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSignUp));
+
+    await waitFor(() => {
+      expect(mockSignUpWithEmailPassword).toHaveBeenCalledWith('user@example.com', 'password', 'en');
+    });
+
+    expect(mockRequestStayOnSettingsIntent).toHaveBeenCalled();
+  });
+
+  it('does not show unverified banner when sign-up returns confirmed email', async () => {
+    mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: '2024-01-01' });
+
+    render(<EmailAuthCard />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), {
+      target: { value: 'user@example.com' },
+    });
+    fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), {
+      target: { value: 'password' },
+    });
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSignUp));
+
+    await waitFor(() => {
+      expect(mockSignUpWithEmailPassword).toHaveBeenCalled();
+    });
+
+    expect(screen.queryByText('settings.account.banner.unverified.title')).toBeNull();
+  });
+
+  it('shows validation errors for invalid email and short password', async () => {
+    render(<EmailAuthCard />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), {
+      target: { value: 'invalid' },
+    });
+    fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), {
+      target: { value: '123' },
+    });
+
+    expect(screen.getByText('auth.email.invalid')).toBeDefined();
+    expect(screen.getByText('auth.password.too_short')).toBeDefined();
+  });
+
+  it('shows configuration hint when supabase is not configured', () => {
+    supabaseConfigured = false;
+
+    render(<EmailAuthCard />);
+
+    expect(screen.getByText('settings.account.hint.configure_supabase')).toBeDefined();
+  });
+
+  it('renders signed-in state and allows sign-out', async () => {
+    currentUser = { email: 'user@example.com' };
+
+    render(<EmailAuthCard />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.AuthSignOut));
+
+    await waitFor(() => {
+      expect(mockSignOut).toHaveBeenCalled();
+    });
   });
 });

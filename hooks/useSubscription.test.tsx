@@ -4,7 +4,7 @@
  *
  * @vitest-environment happy-dom
  */
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock __DEV__ global
@@ -22,6 +22,14 @@ vi.mock('../services/subscriptionService', () => {
     restoreSubscriptionPurchases: vi.fn(async () => ({ tier: 'plus', isActive: true })),
   };
 });
+
+const mockMapStatusFromInfo = vi.fn(() => ({ tier: 'free', isActive: false }));
+const mockIsEntitlementExpired = vi.fn(() => false);
+
+vi.mock('../lib/revenuecat', () => ({
+  isEntitlementExpired: (...args: unknown[]) => mockIsEntitlementExpired(...args),
+  mapStatus: (...args: unknown[]) => mockMapStatusFromInfo(...args),
+}));
 
 let currentUser: any = { id: 'user-1' };
 const refreshUser = vi.fn(async () => currentUser);
@@ -63,9 +71,21 @@ vi.mock('expo-router', () => ({
 const { useSubscription } = await import('./useSubscription');
 
 describe('useSubscription', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     currentUser = { id: 'user-1' };
+    mockIsEntitlementExpired.mockReturnValue(false);
+    mockMapStatusFromInfo.mockReturnValue({ tier: 'free', isActive: false });
+
+    const service = await import('../services/subscriptionService');
+    vi.mocked(service.initializeSubscription).mockResolvedValue({ tier: 'free', isActive: false } as any);
+    vi.mocked(service.isSubscriptionInitialized).mockReturnValue(false);
+    vi.mocked(service.getSubscriptionStatus).mockResolvedValue({ tier: 'free', isActive: false } as any);
+    vi.mocked(service.loadSubscriptionPackages).mockResolvedValue([
+      { id: 'mock_monthly', interval: 'monthly', priceFormatted: '$4.99', currency: 'USD' },
+    ] as any);
+    vi.mocked(service.purchaseSubscriptionPackage).mockResolvedValue({ tier: 'plus', isActive: true } as any);
+    vi.mocked(service.restoreSubscriptionPurchases).mockResolvedValue({ tier: 'plus', isActive: true } as any);
   });
 
   describe('authentication handling', () => {
@@ -99,6 +119,13 @@ describe('useSubscription', () => {
 
       // When/Then
       await expect(result.current.restore()).rejects.toThrow('auth_required');
+    });
+
+    it('given unauthenticated user when refreshing then rejects with auth error', async () => {
+      currentUser = null;
+      const { result } = renderHook(() => useSubscription());
+
+      await expect(result.current.refreshSubscription()).rejects.toThrow('auth_required');
     });
   });
 
@@ -151,6 +178,7 @@ describe('useSubscription', () => {
     it('given authenticated user when purchasing successfully then upgrades subscription', async () => {
       // Given
       const { result } = renderHook(() => useSubscription());
+      await act(async () => {});
 
       // When
       await act(async () => {
@@ -200,6 +228,7 @@ describe('useSubscription', () => {
     it('given authenticated user when restoring successfully then updates subscription', async () => {
       // Given
       const { result } = renderHook(() => useSubscription());
+      await act(async () => {});
 
       // When
       await act(async () => {
@@ -242,6 +271,59 @@ describe('useSubscription', () => {
 
       // Then
       expect(result.current.error?.message).toBe('subscription.error.not_initialized');
+    });
+  });
+
+  describe('refresh and cancellation flows', () => {
+    it('refreshes subscription status from RevenueCat', async () => {
+      const { result } = renderHook(() => useSubscription());
+      await act(async () => {});
+
+      mockMapStatusFromInfo.mockReturnValueOnce({ tier: 'plus', isActive: true });
+
+      await act(async () => {
+        await result.current.refreshSubscription();
+      });
+
+      expect(mockMapStatusFromInfo).toHaveBeenCalled();
+      expect(result.current.status?.tier).toBe('plus');
+      expect(result.current.refreshing).toBe(false);
+    });
+
+    it('does not set error state when purchase is cancelled', async () => {
+      const { purchaseSubscriptionPackage } = await import('../services/subscriptionService');
+      vi.mocked(purchaseSubscriptionPackage).mockRejectedValueOnce({ userCancelled: true, message: 'cancelled' });
+
+      const { result } = renderHook(() => useSubscription());
+
+      await act(async () => {
+        await expect(result.current.purchase('mock_monthly')).rejects.toBeDefined();
+      });
+
+      await waitFor(() => {
+        expect(result.current.error).toBeNull();
+      });
+    });
+
+    it('refreshes status when entitlement is expired', async () => {
+      const { getSubscriptionStatus, initializeSubscription } = await import('../services/subscriptionService');
+      vi.mocked(getSubscriptionStatus).mockResolvedValueOnce({
+        tier: 'plus',
+        isActive: true,
+        expiryDate: '2020-01-01T00:00:00Z',
+      } as any);
+      vi.mocked(initializeSubscription).mockResolvedValueOnce({ tier: 'free', isActive: false } as any);
+      mockIsEntitlementExpired.mockReturnValueOnce(true);
+
+      const { result } = renderHook(() => useSubscription());
+
+      await act(async () => {});
+      await act(async () => {});
+
+      expect(initializeSubscription).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(result.current.status?.tier).toBe('free');
+      });
     });
   });
 

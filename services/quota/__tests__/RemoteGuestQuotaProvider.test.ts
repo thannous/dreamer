@@ -1,22 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { RemoteGuestQuotaProvider } from '../RemoteGuestQuotaProvider';
 import type { QuotaStatus } from '@/lib/types';
 
-vi.mock('@/lib/http', () => ({
+vi.mock('../../../lib/http', () => ({
   fetchJSON: vi.fn(),
 }));
 
-vi.mock('@/lib/deviceFingerprint', () => ({
+vi.mock('../../../lib/deviceFingerprint', () => ({
   getDeviceFingerprint: vi.fn().mockResolvedValue('fingerprint'),
 }));
 
-vi.mock('@/lib/config', () => ({
+vi.mock('../../../lib/config', () => ({
   getApiBaseUrl: () => 'https://example.com',
 }));
 
-const { fetchJSON } = await import('@/lib/http');
-const mockFetchJSON = vi.mocked(fetchJSON);
+vi.mock('../GuestAnalysisCounter', () => ({
+  syncWithServerCount: vi.fn(),
+}));
+
+let mockFetchJSON: ReturnType<typeof vi.fn>;
+let mockSyncWithServerCount: ReturnType<typeof vi.fn>;
 
 const buildUsage = (analysisUsed: number) => ({
   analysis: { used: analysisUsed, limit: 2, remaining: Math.max(2 - analysisUsed, 0) },
@@ -46,9 +49,15 @@ const createFallback = (initialAnalysisUsed: number) => {
 };
 
 describe('RemoteGuestQuotaProvider', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    vi.resetModules();
     vi.clearAllMocks();
+    const { fetchJSON } = await import('../../../lib/http');
+    mockFetchJSON = vi.mocked(fetchJSON);
+    const { syncWithServerCount } = await import('../GuestAnalysisCounter');
+    mockSyncWithServerCount = vi.mocked(syncWithServerCount);
     mockFetchJSON.mockReset();
+    mockSyncWithServerCount.mockResolvedValue(undefined);
   });
 
   it('merges local guest usage when remote response does not track counts', async () => {
@@ -65,6 +74,7 @@ describe('RemoteGuestQuotaProvider', () => {
       canExplore: true,
     });
 
+    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
 
     // When
@@ -88,6 +98,7 @@ describe('RemoteGuestQuotaProvider', () => {
       },
     });
 
+    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const initial = await provider.getQuotaStatus(null, 'guest');
     expect(initial.usage.analysis.used).toBe(1);
@@ -101,4 +112,82 @@ describe('RemoteGuestQuotaProvider', () => {
     expect(refreshed.usage.analysis.used).toBe(0);
     expect(fallback.invalidate).toHaveBeenCalled();
   }, 10_000);
+
+  it('blocks guest access when remote marks fingerprint as upgraded', async () => {
+    const fallback = createFallback(0);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      isUpgraded: true,
+      usage: {
+        analysis: { used: 1, limit: 2 },
+        exploration: { used: 1, limit: 2 },
+        messages: { used: 1, limit: 5 },
+      },
+    });
+
+    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.isUpgraded).toBe(true);
+    expect(status.canAnalyze).toBe(false);
+    expect(status.canExplore).toBe(false);
+    expect(status.reasons?.length).toBeGreaterThan(0);
+  });
+
+  it('respects remote flags and usage limits', async () => {
+    const fallback = createFallback(0);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      canAnalyze: false,
+      canExplore: false,
+      usage: {
+        analysis: { used: 2, limit: 2 },
+        exploration: { used: 2, limit: 2 },
+        messages: { used: 1, limit: 1 },
+      },
+    });
+
+    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.canAnalyze).toBe(false);
+    expect(status.canExplore).toBe(false);
+    expect(status.usage.analysis.remaining).toBe(0);
+  });
+
+  it('avoids re-fetching when endpoint becomes unavailable', async () => {
+    const fallback = createFallback(0);
+    mockFetchJSON.mockRejectedValueOnce(new Error('HTTP 401'));
+
+    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const first = await provider.getQuotaStatus(null, 'guest');
+    const second = await provider.getQuotaStatus(null, 'guest');
+
+    expect(first.usage.analysis.used).toBe(0);
+    expect(second.usage.analysis.used).toBe(0);
+    expect(mockFetchJSON).toHaveBeenCalledTimes(1);
+  });
+
+  it('syncs server counts and allows unlimited messages', async () => {
+    const fallback = createFallback(0);
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      usage: {
+        analysis: { used: 2, limit: 2 },
+        exploration: { used: 1, limit: 2 },
+        messages: { used: 4, limit: null },
+      },
+    });
+
+    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const canSend = await provider.canSendChatMessage(undefined, null, 'guest');
+
+    expect(canSend).toBe(true);
+    expect(mockSyncWithServerCount).toHaveBeenCalledWith(2, 'analysis');
+    expect(mockSyncWithServerCount).toHaveBeenCalledWith(1, 'exploration');
+  });
 });
