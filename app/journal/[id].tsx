@@ -20,7 +20,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
-import { QuotaError } from '@/lib/errors';
+import { classifyError, QuotaError, type ClassifiedError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
@@ -557,8 +557,17 @@ export default function JournalDetailScreen() {
       setReferenceSubjectType(null);
       setReferenceImages([]);
     } catch (error) {
-      const msg = error instanceof Error ? error.message : t('common.unknown_error');
-      Alert.alert(t('common.error_title'), msg);
+      const classified = error && typeof error === 'object' && 'userMessage' in error && 'canRetry' in error
+        ? (error as ClassifiedError)
+        : classifyError(error instanceof Error ? error : new Error('Unknown error'), t);
+      if (classified.canRetry) {
+        Alert.alert(t('common.error_title'), classified.userMessage, [
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('analysis.retry'), onPress: () => void handleGenerateWithReference() },
+        ]);
+      } else {
+        Alert.alert(t('common.error_title'), classified.userMessage);
+      }
     } finally {
       setIsGeneratingWithReference(false);
     }

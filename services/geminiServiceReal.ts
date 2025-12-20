@@ -327,7 +327,10 @@ export async function generateImageWithReference(
           });
         }
         const classified = classifyImageError(body as ImageGenerationErrorResponse);
-        throw new Error(classified.userMessage);
+        const enriched = Object.assign(new Error(classified.userMessage), classified, {
+          originalError: error instanceof Error ? error : classified.originalError,
+        });
+        throw enriched;
       }
     }
     throw error;
