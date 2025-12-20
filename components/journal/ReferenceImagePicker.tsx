@@ -29,7 +29,7 @@ interface SelectedImage {
   mimeType: string;
 }
 
-const MAX_COMPRESSED_SIZE_BYTES = 2 * 1024 * 1024; // 2MB decoded payload
+const MAX_COMPRESSED_SIZE_BYTES = 1.5 * 1024 * 1024; // 1.5MB decoded payload
 const MAX_DIMENSION = 512;
 const WEBP_QUALITY = 0.7;
 

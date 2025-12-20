@@ -744,8 +744,9 @@ export default function RecordingScreen() {
       // Generate image with reference
       const imageUrl = await generateImageWithReference({
         transcript: pendingSubjectDream.transcript,
-        imagePrompt: pendingSubjectMetadata.imagePrompt ?? pendingSubjectDream.transcript,
+        prompt: pendingSubjectMetadata.imagePrompt ?? pendingSubjectDream.transcript,
         referenceImages,
+        previousImageUrl: pendingSubjectDream.imageUrl || undefined,
         lang: language,
       });
 

@@ -217,9 +217,10 @@ export async function generateSpeechForText(text: string): Promise<string> {
 export async function generateImageWithReference(
   request: ReferenceImageGenerationRequest
 ): Promise<string> {
+  const promptText = request.prompt ?? request.transcript;
   console.log('[MOCK] generateImageWithReference called with', {
     transcriptLength: request.transcript.length,
-    promptLength: request.imagePrompt.length,
+    promptLength: promptText.length,
     referenceCount: request.referenceImages.length,
     subjectTypes: request.referenceImages.map(img => img.type),
   });
