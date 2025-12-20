@@ -57,6 +57,7 @@ export default function RecordingScreen() {
   const { colors, mode } = useTheme();
   const { language } = useLanguage();
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const [transcript, setTranscript] = useState('');
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -72,7 +73,6 @@ export default function RecordingScreen() {
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
-  const { user } = useAuth();
   const { canAnalyzeNow, tier, usage } = useQuota();
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error'>('limit');
@@ -561,7 +561,7 @@ export default function RecordingScreen() {
       setDraftDream(savedDream);
 
       // If subject detected, show proposition instead of navigating
-      if (subjectDetected && detectedType && canAnalyzeNow) {
+      if (subjectDetected && detectedType && canAnalyzeNow && user) {
         setPendingSubjectDream(savedDream);
         setPendingSubjectMetadata(categorizationResult ? {
           title: categorizationResult.title,

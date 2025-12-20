@@ -8,6 +8,7 @@ import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { GradientColors } from '@/constants/gradients';
 import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -162,6 +163,7 @@ export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
   const { dreams, toggleFavorite, updateDream, deleteDream, analyzeDream } = useDreams();
+  const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const { language } = useLanguage();
   useClearWebFocus();
@@ -196,9 +198,11 @@ export default function JournalDetailScreen() {
   const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading } = useQuota();
   const { t } = useTranslation();
   const isPremium = tier === 'premium' || tier === 'plus';
+  const canUseReference = Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
+  const showReferenceActions = canUseReference && (dream?.hasPerson === true || dream?.hasAnimal === true);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
     [dream, t]
@@ -509,10 +513,13 @@ export default function JournalDetailScreen() {
 
   // Reference image generation handlers
   const handleAddSubject = useCallback((type: 'person' | 'animal') => {
+    if (!canUseReference) {
+      return;
+    }
     setReferenceSubjectType(type);
     setReferenceImages([]);
     setShowReferenceSheet(true);
-  }, []);
+  }, [canUseReference]);
 
   const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
     setReferenceImages(images);
@@ -525,7 +532,7 @@ export default function JournalDetailScreen() {
   }, []);
 
   const handleGenerateWithReference = useCallback(async () => {
-    if (!dream || referenceImages.length === 0) return;
+    if (!dream || referenceImages.length === 0 || !canUseReference) return;
 
     setShowReferenceSheet(false);
     setIsGeneratingWithReference(true);
@@ -571,7 +578,7 @@ export default function JournalDetailScreen() {
     } finally {
       setIsGeneratingWithReference(false);
     }
-  }, [dream, language, referenceImages, t, updateDream]);
+  }, [canUseReference, dream, language, referenceImages, t, updateDream]);
 
   const openShareModal = useCallback(() => {
     setShareCopyStatus('idle');
@@ -1295,50 +1302,58 @@ export default function JournalDetailScreen() {
                               </Text>
                             </Pressable>
 
-                            <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                              {t('journal.detail.image.or')}
-                            </Text>
-
-                            {/* Add Person/Animal buttons when detected */}
-                            {dream.hasPerson === true && (
-                              <Pressable
-                                onPress={() => handleAddSubject('person')}
-                                disabled={isGeneratingWithReference || isAnalysisLocked}
-                                style={[
-                                  styles.imageActionButton,
-                                  styles.imageActionButtonSecondary,
-                                  { borderColor: colors.divider },
-                                  (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                                ]}
-                              >
-                                <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
-                                <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                                  {t('journal.detail.add_person')}
+                            {showReferenceActions ? (
+                              <>
+                                <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                                  {t('journal.detail.image.or')}
                                 </Text>
-                              </Pressable>
-                            )}
 
-                            {dream.hasAnimal === true && (
-                              <Pressable
-                                onPress={() => handleAddSubject('animal')}
-                                disabled={isGeneratingWithReference || isAnalysisLocked}
-                                style={[
-                                  styles.imageActionButton,
-                                  styles.imageActionButtonSecondary,
-                                  { borderColor: colors.divider },
-                                  (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                                ]}
-                              >
-                                <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
-                                <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                                  {t('journal.detail.add_animal')}
+                                {/* Add Person/Animal buttons when detected */}
+                                {dream.hasPerson === true && (
+                                  <Pressable
+                                    onPress={() => handleAddSubject('person')}
+                                    disabled={isGeneratingWithReference || isAnalysisLocked}
+                                    style={[
+                                      styles.imageActionButton,
+                                      styles.imageActionButtonSecondary,
+                                      { borderColor: colors.divider },
+                                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                                    ]}
+                                  >
+                                    <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
+                                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                                      {t('journal.detail.add_person')}
+                                    </Text>
+                                  </Pressable>
+                                )}
+
+                                {dream.hasAnimal === true && (
+                                  <Pressable
+                                    onPress={() => handleAddSubject('animal')}
+                                    disabled={isGeneratingWithReference || isAnalysisLocked}
+                                    style={[
+                                      styles.imageActionButton,
+                                      styles.imageActionButtonSecondary,
+                                      { borderColor: colors.divider },
+                                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                                    ]}
+                                  >
+                                    <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
+                                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                                      {t('journal.detail.add_animal')}
+                                    </Text>
+                                  </Pressable>
+                                )}
+
+                                <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                                  {t('journal.detail.image.or')}
                                 </Text>
-                              </Pressable>
+                              </>
+                            ) : (
+                              <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                                {t('journal.detail.image.or')}
+                              </Text>
                             )}
-
-                            <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                              {t('journal.detail.image.or')}
-                            </Text>
                           </>
                         )}
 
@@ -1375,6 +1390,49 @@ export default function JournalDetailScreen() {
                   </View>
                 )}
               </View>
+              {dream.imageUrl &&
+                showReferenceActions &&
+                !isAnalysisLocked &&
+                !quotaLoading &&
+                canAnalyzeNow && (
+                  <View style={[styles.imageActionsRow, { marginTop: 12 }]}>
+                    {dream.hasPerson === true && (
+                      <Pressable
+                        onPress={() => handleAddSubject('person')}
+                        disabled={isGeneratingWithReference || isAnalysisLocked}
+                        style={[
+                          styles.imageActionButton,
+                          styles.imageActionButtonSecondary,
+                          { borderColor: colors.divider },
+                          (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                        ]}
+                      >
+                        <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
+                        <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                          {t('journal.detail.add_person')}
+                        </Text>
+                      </Pressable>
+                    )}
+
+                    {dream.hasAnimal === true && (
+                      <Pressable
+                        onPress={() => handleAddSubject('animal')}
+                        disabled={isGeneratingWithReference || isAnalysisLocked}
+                        style={[
+                          styles.imageActionButton,
+                          styles.imageActionButtonSecondary,
+                          { borderColor: colors.divider },
+                          (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                        ]}
+                      >
+                        <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
+                        <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                          {t('journal.detail.add_animal')}
+                        </Text>
+                      </Pressable>
+                    )}
+                  </View>
+                )}
             </View>
 
           )}
