@@ -9,6 +9,22 @@ export interface FilterBySearchOptions {
  * Filter dreams by search query
  * Searches in title, transcript, and interpretation
  */
+function matchesSearch(dream: DreamAnalysis, normalizedQuery: string, options: FilterBySearchOptions): boolean {
+  const dreamTypeLabel = options.dreamTypeLabelResolver?.(dream.dreamType);
+  const searchableText = [
+    dream.title,
+    dream.transcript,
+    dream.interpretation,
+    dream.dreamType,
+    dreamTypeLabel,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .join(' ')
+    .toLowerCase();
+
+  return searchableText.includes(normalizedQuery);
+}
+
 export function filterBySearch(
   dreams: DreamAnalysis[],
   query: string,
@@ -18,21 +34,7 @@ export function filterBySearch(
 
   const normalizedQuery = query.toLowerCase();
 
-  return dreams.filter((dream) => {
-    const dreamTypeLabel = options.dreamTypeLabelResolver?.(dream.dreamType);
-    const searchableText = [
-      dream.title,
-      dream.transcript,
-      dream.interpretation,
-      dream.dreamType,
-      dreamTypeLabel,
-    ]
-      .filter((value): value is string => Boolean(value))
-      .join(' ')
-      .toLowerCase();
-
-    return searchableText.includes(normalizedQuery);
-  });
+  return dreams.filter((dream) => matchesSearch(dream, normalizedQuery, options));
 }
 
 /**
@@ -116,39 +118,45 @@ export function applyFilters(
   filters: DreamFilters,
   options: ApplyFiltersOptions = {},
 ): DreamAnalysis[] {
-  let filtered = dreams;
+  const rawQuery = filters.searchQuery || '';
+  const hasSearch = !!rawQuery.trim();
+  const normalizedQuery = rawQuery.toLowerCase();
+  const { theme, dreamType, favoritesOnly, analyzedOnly, exploredOnly, startDate, endDate } = filters;
 
-  if (filters.searchQuery) {
-    filtered = filterBySearch(filtered, filters.searchQuery, options.searchOptions);
+  // Pre-calculate end of day if endDate exists
+  let endOfDay: Date | null = null;
+  if (endDate) {
+    endOfDay = new Date(endDate);
+    endOfDay.setHours(23, 59, 59, 999);
   }
 
-  if (filters.theme) {
-    filtered = filterByTheme(filtered, filters.theme);
-  }
+  return dreams.filter((dream) => {
+    // Cheap checks first
+    if (favoritesOnly && !dream.isFavorite) return false;
 
-  if (filters.dreamType) {
-    filtered = filterByDreamType(filtered, filters.dreamType);
-  }
+    if (analyzedOnly) {
+      if (!isDreamAnalyzed(dream) && !isDreamExplored(dream)) return false;
+    }
 
-  if (filters.favoritesOnly) {
-    filtered = filterByFavorites(filtered, filters.favoritesOnly);
-  }
+    if (exploredOnly && !isDreamExplored(dream)) return false;
 
-  if (filters.analyzedOnly) {
-    // Treat explored dreams as effectively "analyzed" for journal filters:
-    // in the product, exploration always happens on top of an analysis.
-    filtered = filtered.filter((dream) => isDreamAnalyzed(dream) || isDreamExplored(dream));
-  }
+    if (theme && dream.theme !== theme) return false;
 
-  if (filters.exploredOnly) {
-    filtered = filtered.filter((dream) => isDreamExplored(dream));
-  }
+    if (dreamType && dream.dreamType !== dreamType) return false;
 
-  if (filters.startDate || filters.endDate) {
-    filtered = filterByDateRange(filtered, filters.startDate || null, filters.endDate || null);
-  }
+    if (startDate || endDate) {
+      const dreamDate = new Date(dream.id);
+      if (startDate && dreamDate < startDate) return false;
+      if (endOfDay && dreamDate > endOfDay) return false;
+    }
 
-  return filtered;
+    // Expensive check last
+    if (hasSearch) {
+      return matchesSearch(dream, normalizedQuery, options.searchOptions || {});
+    }
+
+    return true;
+  });
 }
 
 /**

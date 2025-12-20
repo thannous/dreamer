@@ -8,3 +8,7 @@
 ## 2025-12-16 - List Item Memoization
 **Learning:** For FlashList performance, stable props are crucial. Inline functions (like `onPress`) and derived arrays (like `badges`) passed as props break `React.memo`.
 **Action:** Move derived UI state (badges) inside the item component and use stable callbacks for interactions.
+
+## 2025-12-17 - Single Pass Filtering
+**Learning:** Chaining `.filter()` methods creates intermediate arrays and iterates the list multiple times (O(N*K)). For lists with expensive filter predicates (like text search), this overhead is significant.
+**Action:** Combine all filter predicates into a single `filter()` callback, ordering cheap checks (booleans, enums) before expensive ones (string manipulation/search).
