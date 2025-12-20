@@ -22,7 +22,7 @@ import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
-import { classifyError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
@@ -776,7 +776,9 @@ export default function RecordingScreen() {
       router.push(`/journal/${updatedDream.id}`);
     } catch (error) {
       log.error('Generate with reference failed:', error);
-      const classified = classifyError(error as Error);
+      const classified = error && typeof error === 'object' && 'userMessage' in error && 'canRetry' in error
+        ? (error as ClassifiedError)
+        : classifyError(error instanceof Error ? error : new Error('Unknown error'), t);
       analysisProgress.setError(classified);
     } finally {
       setIsPersisting(false);
@@ -788,6 +790,7 @@ export default function RecordingScreen() {
     pendingSubjectMetadata,
     referenceImages,
     resetComposer,
+    t,
     updateDream,
   ]);
 
@@ -965,7 +968,13 @@ export default function RecordingScreen() {
                     progress={analysisProgress.progress}
                     message={analysisProgress.message}
                     error={analysisProgress.error}
-                    onRetry={pendingAnalysisDream ? handleFirstDreamAnalyze : undefined}
+                    onRetry={
+                      pendingAnalysisDream
+                        ? handleFirstDreamAnalyze
+                        : pendingSubjectDream
+                          ? handleGenerateWithReference
+                          : undefined
+                    }
                   />
                 )}
               </View>
