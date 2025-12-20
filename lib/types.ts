@@ -192,7 +192,8 @@ export interface ReferenceImage {
  */
 export interface ReferenceImageGenerationRequest {
   transcript: string;
-  imagePrompt: string;
+  prompt?: string;
   referenceImages: ReferenceImage[];
+  previousImageUrl?: string;
   lang?: string;
 }

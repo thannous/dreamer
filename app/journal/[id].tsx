@@ -533,8 +533,9 @@ export default function JournalDetailScreen() {
     try {
       const imageUrl = await generateImageWithReference({
         transcript: dream.transcript,
-        imagePrompt: dream.transcript,
+        prompt: dream.transcript,
         referenceImages,
+        previousImageUrl: dream.imageUrl || undefined,
         lang: language,
       });
 

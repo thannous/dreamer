@@ -267,7 +267,7 @@ export async function generateImageWithReference(
   const FileSystemLegacy = await import('expo-file-system/legacy');
 
   // Convert reference images to base64 at send time
-  const referenceImagesBase64 = await Promise.all(
+  const referenceImagesPayload = await Promise.all(
     request.referenceImages.map(async (img) => {
       let base64: string;
 
@@ -287,7 +287,7 @@ export async function generateImageWithReference(
       }
 
       return {
-        base64,
+        data: base64,
         mimeType: img.mimeType,
         type: img.type,
       };
@@ -295,12 +295,15 @@ export async function generateImageWithReference(
   );
 
   try {
+    const prompt = request.prompt?.trim();
+    const previousImageUrl = request.previousImageUrl?.trim();
     const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImageWithReference`, {
       method: 'POST',
       body: {
         transcript: request.transcript,
-        imagePrompt: request.imagePrompt,
-        referenceImages: referenceImagesBase64,
+        ...(prompt ? { prompt } : {}),
+        referenceImages: referenceImagesPayload,
+        ...(previousImageUrl ? { previousImageUrl } : {}),
         lang: request.lang ?? 'en',
       },
       timeoutMs: 90000, // Longer timeout for reference image processing
