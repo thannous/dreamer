@@ -173,7 +173,7 @@ export default function JournalListScreen() {
 
   const handleDreamPress = useCallback((dream: DreamAnalysis) => {
     router.push(`/journal/${dream.id}`);
-  }, [router]);
+  }, []);
 
   // Track viewable items for lazy loading with preloading
   const filteredDreamsRef = useRef(filteredDreams);
