@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
   messageRow: {
     flexDirection: 'row',
     marginBottom: 16,
-    margin:12,
+    marginHorizontal: 8,
     gap: 8,
   },
   messageRowAI: {
@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   messageBubble: {
-    maxWidth: '75%',
+    maxWidth: '85%',
     borderRadius: 12,
     padding: 12,
   },
