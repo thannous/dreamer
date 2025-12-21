@@ -353,6 +353,7 @@ const translations: Record<string, string> = {
     'notifications.next_reminder_today': 'Aujourd\'hui à {time}',
     'notifications.next_reminder_tomorrow': 'Demain à {time}',
     'settings.title': 'Paramètres',
+    'settings.app_version': 'Version {version}',
     'settings.account.title': 'Compte',
     'settings.account.description_signed_out': 'Connectez-vous pour synchroniser vos rêves sur tous vos appareils',
     'settings.account.description_signed_in': 'Vous êtes connecté et vos données se synchronisent',

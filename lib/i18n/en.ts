@@ -352,6 +352,7 @@ const translations: Record<string, string> = {
     'notifications.next_reminder_today': 'Today at {time}',
     'notifications.next_reminder_tomorrow': 'Tomorrow at {time}',
     'settings.title': 'Settings',
+    'settings.app_version': 'Version {version}',
     'settings.account.title': 'Account',
     'settings.account.description_signed_out': 'Sign in to sync your dreams across devices',
     'settings.account.description_signed_in': "You're signed in and syncing",

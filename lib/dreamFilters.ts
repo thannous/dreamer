@@ -78,16 +78,17 @@ export function filterByDateRange(
 ): DreamAnalysis[] {
   if (!startDate && !endDate) return dreams;
 
+  // Perf: compute end-of-day once to avoid per-item Date allocations on the JS thread.
+  const endOfDay = endDate ? new Date(endDate) : null;
+  if (endOfDay) {
+    endOfDay.setHours(23, 59, 59, 999);
+  }
+
   return dreams.filter((dream) => {
     const dreamDate = new Date(dream.id);
 
     if (startDate && dreamDate < startDate) return false;
-    if (endDate) {
-      // Set end date to end of day
-      const endOfDay = new Date(endDate);
-      endOfDay.setHours(23, 59, 59, 999);
-      if (dreamDate > endOfDay) return false;
-    }
+    if (endOfDay && dreamDate > endOfDay) return false;
 
     return true;
   });
