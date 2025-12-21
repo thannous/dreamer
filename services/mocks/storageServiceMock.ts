@@ -364,6 +364,11 @@ export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<v
   }
 }
 
+export async function clearRemoteDreamStorage(): Promise<void> {
+  delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
+  delete mockStorage[DREAM_MUTATIONS_KEY];
+}
+
 export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
   console.log('[MOCK STORAGE] getPendingDreamMutations called');
   try {

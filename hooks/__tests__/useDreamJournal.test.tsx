@@ -28,6 +28,7 @@ const {
   mockSyncWithServerCount,
   mockGuestDreamCounterState,
   mockUseAuth,
+  mockGetAccessToken,
 } = vi.hoisted(() => ({
   mockGetSavedDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
   mockSaveDreams: vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
@@ -48,8 +49,9 @@ const {
   mockSyncWithServerCount: vi.fn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
   mockGuestDreamCounterState: { count: 0 },
   mockUseAuth: vi.fn<
-    () => { user: { id: string; app_metadata?: Record<string, unknown> } | null }
+    () => { user: { id: string; app_metadata?: Record<string, unknown> } | null; sessionReady: boolean }
   >(),
+  mockGetAccessToken: vi.fn<() => Promise<string | null>>(),
 }));
 
 let mockSubscriptionStatus: any = { tier: 'free' };
@@ -123,6 +125,14 @@ vi.mock('../../lib/imageUtils', () => ({
   getThumbnailUrl: mockGetThumbnailUrl,
 }));
 
+vi.mock('../../lib/auth', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../lib/auth')>();
+  return {
+    ...actual,
+    getAccessToken: mockGetAccessToken,
+  };
+});
+
 // Mock GuestAnalysisCounter
 vi.mock('../../services/quota/GuestAnalysisCounter', () => ({
   incrementLocalAnalysisCount: mockIncrementLocalAnalysisCount,
@@ -140,13 +150,18 @@ vi.mock('../../services/quota/GuestDreamCounter', () => ({
 }));
 
 // Mock logger
-vi.mock('../../lib/logger', () => ({
-  logger: {
+vi.mock('../../lib/logger', () => {
+  const scopedLogger = {
     debug: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-  },
-}));
+    log: vi.fn(),
+  };
+  return {
+    logger: scopedLogger,
+    createScopedLogger: vi.fn(() => scopedLogger),
+  };
+});
 
 // Import after mocks
 const { useDreamJournal } = await import('../useDreamJournal');
@@ -170,7 +185,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 
 // Helper to set mock user for tests
 const setMockUser = (user: { id: string; app_metadata?: Record<string, unknown> } | null) => {
-  mockUseAuth.mockReturnValue({ user });
+  mockUseAuth.mockReturnValue({ user, sessionReady: Boolean(user) });
 };
 
 describe('useDreamJournal', () => {
@@ -189,6 +204,7 @@ describe('useDreamJournal', () => {
     mockGetThumbnailUrl.mockImplementation((url) => url ? `${url}-thumb` : undefined);
     mockIncrementLocalAnalysisCount.mockResolvedValue(1);
     mockSyncWithServerCount.mockResolvedValue(1);
+    mockGetAccessToken.mockResolvedValue('test-token');
   });
 
   describe('initialization and loading', () => {

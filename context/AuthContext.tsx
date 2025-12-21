@@ -3,15 +3,18 @@ import type { User } from '@supabase/supabase-js';
 import { router } from 'expo-router';
 
 import { isMockModeEnabled } from '@/lib/env';
-import { getCurrentUser, onAuthChange } from '@/lib/auth';
+import { getCurrentUser, onAuthChange, wasAccountCreatedOnDevice } from '@/lib/auth';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
+import { clearRemoteDreamStorage } from '@/services/storageService';
 import type { SubscriptionTier } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 
 export type AuthContextValue = {
   user: User | null;
   loading: boolean;
+  sessionReady: boolean;
+  returningGuestBlocked: boolean;
   refreshUser: (options?: RefreshUserOptions) => Promise<User | null>;
   setUserTierLocally: (tier: SubscriptionTier) => void;
 };
@@ -25,13 +28,47 @@ export type RefreshUserOptions = {
 };
 
 const isMockMode = isMockModeEnabled();
+const SESSION_READY_RETRIES = 4;
+const SESSION_READY_DELAY_MS = 150;
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+async function waitForSessionReady(): Promise<boolean> {
+  for (let attempt = 0; attempt <= SESSION_READY_RETRIES; attempt += 1) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.access_token) {
+        return true;
+      }
+    } catch {
+      // Ignore transient session fetch errors and retry.
+    }
+    if (attempt < SESSION_READY_RETRIES) {
+      await sleep(SESSION_READY_DELAY_MS);
+    }
+  }
+  return false;
+}
 
 export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sessionReady, setSessionReady] = useState(false);
+  const [returningGuestBlocked, setReturningGuestBlocked] = useState(false);
+  const userRef = useRef<User | null>(null);
+  const sessionReadyRef = useRef(false);
+  const previousUserIdRef = useRef<string | null>(null);
 
   // Circuit breaker for refresh cascades
   const refreshCircuitBreakerRef = useRef(createCircuitBreaker({ maxAttempts: 3, windowMs: 10000 }));
+
+  useEffect(() => {
+    userRef.current = user;
+  }, [user]);
+
+  useEffect(() => {
+    sessionReadyRef.current = sessionReady;
+  }, [sessionReady]);
 
   const ensureSettingsTab = (nextUser: User | null) => {
     if (!nextUser) {
@@ -68,6 +105,22 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
               });
             }
             setUser(mockUser);
+            setSessionReady(Boolean(mockUser));
+            previousUserIdRef.current = mockUser?.id ?? null;
+
+            // Check if returning guest should be blocked
+            if (!mockUser) {
+              const accountCreated = await wasAccountCreatedOnDevice();
+              if (accountCreated) {
+                setReturningGuestBlocked(true);
+                if (__DEV__) {
+                  console.log('[AuthContext] Returning guest blocked (mock mode)');
+                }
+              }
+            } else {
+              setReturningGuestBlocked(false);
+            }
+
             setLoading(false);
             ensureSettingsTab(mockUser);
           }
@@ -87,6 +140,22 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
             });
           }
           setUser(sessionUser);
+          setSessionReady(Boolean(data.session?.access_token));
+          previousUserIdRef.current = sessionUser?.id ?? null;
+
+          // Check if returning guest should be blocked
+          if (!sessionUser) {
+            const accountCreated = await wasAccountCreatedOnDevice();
+            if (accountCreated) {
+              setReturningGuestBlocked(true);
+              if (__DEV__) {
+                console.log('[AuthContext] Returning guest blocked');
+              }
+            }
+          } else {
+            setReturningGuestBlocked(false);
+          }
+
           setLoading(false);
           ensureSettingsTab(sessionUser);
         }
@@ -116,7 +185,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     bootstrap();
 
-    const unsubscribe = onAuthChange((nextUser) => {
+    const unsubscribe = onAuthChange(async (nextUser, session) => {
       if (__DEV__) {
         console.log('[AuthContext] onAuthChange', {
           hasUser: !!nextUser,
@@ -124,7 +193,46 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           tier: nextUser?.app_metadata?.tier ?? nextUser?.user_metadata?.tier,
         });
       }
+      const previousUserId = previousUserIdRef.current;
+      const nextUserId = nextUser?.id ?? null;
+      if (previousUserId !== nextUserId) {
+        try {
+          await clearRemoteDreamStorage();
+        } catch (error) {
+          if (__DEV__) {
+            console.warn('[AuthContext] Failed to clear remote dream cache', error);
+          }
+        }
+      }
+
+      previousUserIdRef.current = nextUserId;
       setUser(nextUser);
+      if (isMockMode) {
+        setSessionReady(Boolean(nextUser));
+      } else if (!nextUser) {
+        setSessionReady(false);
+      } else if (session?.access_token) {
+        setSessionReady(true);
+      } else {
+        const ready = await waitForSessionReady();
+        if (mounted) {
+          setSessionReady(ready);
+        }
+      }
+
+      // Update returning guest blocked state
+      if (nextUser) {
+        // User is logged in, so they're not a blocked returning guest
+        setReturningGuestBlocked(false);
+      } else {
+        // User logged out, check if they had created an account before
+        const accountCreated = await wasAccountCreatedOnDevice();
+        setReturningGuestBlocked(accountCreated);
+        if (__DEV__ && accountCreated) {
+          console.log('[AuthContext] Returning guest blocked after logout');
+        }
+      }
+
       setLoading(false);
       ensureSettingsTab(nextUser);
     });
@@ -140,6 +248,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       const bypassCircuitBreaker = options?.bypassCircuitBreaker === true;
       const skipJwtRefresh = options?.skipJwtRefresh === true;
       const jwtRefreshTimeoutMs = options?.jwtRefreshTimeoutMs ?? 5000;
+      const existingUser = userRef.current;
 
       if (!bypassCircuitBreaker) {
         const breaker = refreshCircuitBreakerRef.current;
@@ -167,8 +276,25 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           // Best-effort: if refresh fails, fall back to getUser() which may still succeed.
         });
       }
-      const current = await getCurrentUser();
+
+      if (existingUser && !sessionReadyRef.current) {
+        const ready = await waitForSessionReady();
+        if (ready) {
+          setSessionReady(true);
+        }
+      }
+
+      let current = await getCurrentUser();
+      if (!current && existingUser) {
+        if (__DEV__) {
+          console.warn('[AuthContext] refreshUser returned null, keeping existing user');
+        }
+        setLoading(false);
+        return existingUser;
+      }
+
       setUser(current);
+      setSessionReady(Boolean(current));
       setLoading(false);
       return current;
     } catch (err) {
@@ -198,8 +324,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, refreshUser, setUserTierLocally }),
-    [user, loading, refreshUser, setUserTierLocally]
+    () => ({ user, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally }),
+    [user, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

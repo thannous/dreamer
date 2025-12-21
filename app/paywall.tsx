@@ -54,8 +54,9 @@ export default function PaywallScreen() {
 
   const [showErrorSheet, setShowErrorSheet] = useState(false);
 
-  // If device fingerprint is upgraded, show message encouraging login
-  const isDeviceUpgraded = quotaStatus?.isUpgraded ?? false;
+  // If device fingerprint is upgraded, show message encouraging login (guest-only guard).
+  // `isUpgraded` is a guest quota concept (device fingerprint was used to create an account before).
+  const isDeviceUpgraded = requiresAuth && quotaStatus?.isUpgraded === true;
 
   // Afficher la bottom sheet quand une erreur survient
   useEffect(() => {
@@ -104,7 +105,7 @@ export default function PaywallScreen() {
     }
   };
 
-  const activeTierKey = subscriptionStatus?.tier === 'premium' ? 'premium' : 'plus';
+  const activeTierKey = 'plus';
   const headerTitle = isActive
     ? t(`subscription.paywall.header.${activeTierKey}` as const)
     : t('subscription.paywall.header.free');

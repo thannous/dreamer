@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
@@ -59,14 +60,20 @@ export function DesktopSidebar() {
   const { t } = useTranslation();
   const pathname = usePathname();
   const { colors } = useTheme();
+  const { returningGuestBlocked } = useAuth();
   const appVersion = getAppVersionString({ prefix: 'v' });
 
-  const navItems: { icon: IconName; label: string; href: string; testID?: string }[] = [
+  // When returning guest is blocked, only show settings
+  const allNavItems: { icon: IconName; label: string; href: string; testID?: string }[] = [
     { icon: 'house.fill', label: t('nav.home'), href: '/', testID: TID.Tab.Home },
     { icon: 'book.fill', label: t('nav.journal'), href: '/journal', testID: TID.Tab.Journal },
     { icon: 'chart.bar.fill', label: t('nav.stats'), href: '/statistics', testID: TID.Tab.Stats },
     { icon: 'gear', label: t('nav.settings'), href: '/settings', testID: TID.Tab.Settings },
   ];
+
+  const navItems = returningGuestBlocked
+    ? allNavItems.filter((item) => item.href === '/settings')
+    : allNavItems;
 
   const isActive = (href: string) => {
     if (href === '/') {

@@ -1,11 +1,10 @@
 /* @vitest-environment happy-dom */
 import React from 'react';
 import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { AuthApiError } from '@supabase/auth-js';
+import { Alert } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { TID } from '../../../lib/testIDs';
-import { EmailAuthCard } from '../EmailAuthCard';
+import { TID } from '@/lib/testIDs';
 
 const {
   mockAlert,
@@ -29,58 +28,28 @@ let currentUser: any = null;
 let authLoading = false;
 let supabaseConfigured = true;
 
-vi.mock('react-native', () => {
-  return {
-    __esModule: true,
-    Alert: { alert: mockAlert },
-    ActivityIndicator: (props: any) => <div data-testid="activity" {...props} />,
-    Animated: {
-      Value: class {
-        value: number;
-        constructor(value: number) {
-          this.value = value;
-        }
-        setValue(next: number) {
-          this.value = next;
-        }
-        interpolate() { return this; }
-      },
-      View: ({ children }: any) => <div>{children}</div>,
-      timing: () => ({ start: (cb?: () => void) => cb?.() }),
-      spring: () => ({ start: (cb?: () => void) => cb?.() }),
-      parallel: () => ({ start: (cb?: () => void) => cb?.() }),
-    },
-    Easing: {
-      ease: 'ease',
-      in: () => 'in',
-      out: () => 'out',
-      inOut: () => 'inOut',
-    },
-    Platform: { OS: 'web', select: (obj: any) => obj.web ?? obj.default },
-    Pressable: ({ children, onPress, disabled, testID }: any) => (
-      <button data-testid={testID} disabled={disabled} onClick={onPress}>
-        {typeof children === 'function' ? children({ pressed: false }) : children}
-      </button>
-    ),
-    StyleSheet: { create: (styles: any) => styles },
-    Text: ({ children, testID }: any) => <span data-testid={testID}>{children}</span>,
-    TextInput: ({ onChangeText, value, testID }: any) => (
-      <input data-testid={testID} value={value} onChange={(event) => onChangeText(event.target.value)} />
-    ),
-    View: ({ children }: any) => <div>{children}</div>,
-    Dimensions: { get: () => ({ width: 375, height: 812 }) },
-    Keyboard: { dismiss: vi.fn() },
-    KeyboardAvoidingView: ({ children }: any) => <div>{children}</div>,
-    ScrollView: ({ children }: any) => <div>{children}</div>,
-    TouchableWithoutFeedback: ({ children, onPress }: any) => <div onClick={onPress}>{children}</div>,
-  };
+vi.mock('@supabase/auth-js', () => {
+  class AuthApiError extends Error {
+    status: number;
+    code: string;
+    constructor(message: string, status: number, code: string) {
+      super(message);
+      this.status = status;
+      this.code = code;
+    }
+  }
+
+  const isAuthApiError = (error: unknown): error is AuthApiError =>
+    Boolean(error && typeof error === 'object' && 'status' in error && 'code' in error);
+
+  return { AuthApiError, isAuthApiError };
 });
 
-vi.mock('../../../context/AuthContext', () => ({
+vi.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: currentUser, loading: authLoading }),
 }));
 
-vi.mock('../../../context/ThemeContext', () => ({
+vi.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {
       accent: '#f58c8c',
@@ -93,13 +62,13 @@ vi.mock('../../../context/ThemeContext', () => ({
   }),
 }));
 
-vi.mock('../../../hooks/useTranslation', () => ({
+vi.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-vi.mock('../../../context/LanguageContext', () => ({
+vi.mock('@/context/LanguageContext', () => ({
   useLanguage: () => ({
     language: 'en',
     locale: { languageTag: 'en-US' },
@@ -107,15 +76,20 @@ vi.mock('../../../context/LanguageContext', () => ({
   }),
 }));
 
-vi.mock('../GoogleSignInButton', () => ({
+vi.mock('@/components/auth/GoogleSignInButton', () => ({
   default: () => <div data-testid="google-sign-in" />,
 }));
 
-vi.mock('../EmailVerificationBanner', () => ({
+vi.mock('@/components/auth/EmailVerificationBanner', () => ({
   default: () => <div data-testid="banner" />,
 }));
 
-vi.mock('../../../lib/auth', () => ({
+vi.mock('@/components/icons/DreamIcons', () => ({
+  EyeIcon: () => <div data-testid="eye-icon" />,
+  EyeOffIcon: () => <div data-testid="eye-off-icon" />,
+}));
+
+vi.mock('@/lib/auth', () => ({
   signInMock: vi.fn(),
   signInWithEmailPassword: mockSignInWithEmailPassword,
   signOut: mockSignOut,
@@ -123,30 +97,33 @@ vi.mock('../../../lib/auth', () => ({
   resendVerificationEmail: mockResendVerificationEmail,
 }));
 
-vi.mock('../../../lib/navigationIntents', () => ({
+vi.mock('@/lib/navigationIntents', () => ({
   requestStayOnSettingsIntent: mockRequestStayOnSettingsIntent,
 }));
 
-vi.mock('../../../lib/supabase', () => ({
+vi.mock('@/lib/supabase', () => ({
   get isSupabaseConfigured() {
     return supabaseConfigured;
   },
 }));
 
-vi.mock('../EmailVerificationDialog', () => ({
+vi.mock('@/components/auth/EmailVerificationDialog', () => ({
   EmailVerificationDialog: () => <div data-testid="email-verification-dialog" />,
 }));
 
-vi.mock('../../ui/StandardBottomSheet', () => ({
+vi.mock('@/components/ui/StandardBottomSheet', () => ({
   StandardBottomSheet: () => <div data-testid="standard-bottom-sheet" />,
 }));
 
-vi.mock('../../../constants/journalTheme', () => ({
+vi.mock('@/constants/journalTheme', () => ({
   ThemeLayout: {
     borderRadius: { sm: 4, md: 8, lg: 12 },
     spacing: { xs: 4, sm: 8, md: 16, lg: 24 },
   },
 }));
+
+const { AuthApiError } = await import('@supabase/auth-js');
+const { EmailAuthCard } = await import('../EmailAuthCard');
 
 describe('EmailAuthCard', () => {
   afterEach(() => {
@@ -158,6 +135,7 @@ describe('EmailAuthCard', () => {
     currentUser = null;
     authLoading = false;
     supabaseConfigured = true;
+    Alert.alert = mockAlert;
     mockSignInWithEmailPassword.mockResolvedValue(undefined);
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
     mockSignOut.mockResolvedValue(undefined);

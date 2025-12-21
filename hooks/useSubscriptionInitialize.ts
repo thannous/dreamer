@@ -27,34 +27,41 @@ export function useSubscriptionInitialize() {
 
     const run = async () => {
       try {
+        const nextUserId = user?.id ?? null;
+
         // ✅ Avoid re-initialization for the same user
-        if (initializedUserIdRef.current === (user?.id ?? null)) {
+        // We still call initializeSubscription when user changes to ensure Purchases.logIn/logOut
+        // keeps RevenueCat aligned with the current Supabase user.
+        if (initializedUserIdRef.current === nextUserId && isSubscriptionInitialized()) {
           if (mounted) {
             setInitialized(true);
+            setError(null);
           }
-          log.debug('Already initialized for user', { userId: user?.id ?? null });
+          log.debug('Already initialized for user', { userId: nextUserId });
           return;
         }
 
-        log.debug('Initializing subscription for user', { userId: user?.id ?? null });
+        log.debug('Initializing subscription for user', { userId: nextUserId });
 
-        if (!isSubscriptionInitialized()) {
-          await initializeSubscription(user?.id ?? null);
-          log.debug('Subscription SDK initialized', { userId: user?.id ?? null });
+        // Always call initializeSubscription to ensure correct Purchases user linking on auth changes.
+        await initializeSubscription(nextUserId);
+        log.debug('Subscription SDK initialized', { userId: nextUserId });
 
+        if (nextUserId) {
           // Refresh user to ensure app_metadata.tier is synced from server after RevenueCat init.
           // This fixes the race condition where subscription tier from RevenueCat differs from
           // the stale app_metadata in the restored session.
           // ✅ FIX: Use ref instead of direct dependency to avoid circular dependency
           await refreshUserRef.current();
-          log.debug('User refreshed after subscription init', { userId: user?.id ?? null });
-
-          initializedUserIdRef.current = user?.id ?? null;
+          log.debug('User refreshed after subscription init', { userId: nextUserId });
         }
+        initializedUserIdRef.current = nextUserId;
+
         if (mounted) {
           setInitialized(true);
+          setError(null);
         }
-        log.debug('Subscription initialization completed', { userId: user?.id ?? null });
+        log.debug('Subscription initialization completed', { userId: nextUserId });
       } catch (e) {
         log.error('Subscription initialization failed', { userId: user?.id ?? null }, e);
         if (mounted) {

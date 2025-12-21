@@ -5,6 +5,7 @@ import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } fro
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
 import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
@@ -12,6 +13,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -21,6 +23,7 @@ import { TID } from '@/lib/testIDs';
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
+  const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
@@ -29,14 +32,13 @@ export default function SettingsScreen() {
   useClearWebFocus();
 
   const {
-    status: subscriptionStatus,
     isActive,
     loading: subscriptionLoading,
   } = useSubscription();
 
   const subscriptionCopy = useMemo(() => {
     if (isActive) {
-      const activeTierKey = subscriptionStatus?.tier === 'premium' ? 'premium' : 'plus';
+      const activeTierKey = 'plus';
       return {
         title: t(`subscription.settings.title.${activeTierKey}` as const),
         subtitle: t(`subscription.settings.subtitle.${activeTierKey}` as const),
@@ -50,7 +52,7 @@ export default function SettingsScreen() {
       badge: undefined,
       cta: t('subscription.settings.cta.free'),
     };
-  }, [isActive, subscriptionStatus?.tier, t]);
+  }, [isActive, t]);
 
   const subscriptionFeatures = useMemo(
     () => [
@@ -67,6 +69,58 @@ export default function SettingsScreen() {
   const handleOpenPaywall = useCallback(() => {
     router.push('/paywall');
   }, []);
+
+  // When returning guest is blocked, show only the auth hub
+  if (returningGuestBlocked) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+        <ScreenContainer>
+          <View
+            style={[
+              styles.header,
+              { paddingTop: insets.top + ThemeLayout.spacing.sm },
+            ]}
+          >
+            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+              {t('auth.returning_guest.title')}
+            </Text>
+          </View>
+        </ScreenContainer>
+
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <ScreenContainer>
+            {/* Welcome back banner */}
+            <View style={[styles.returningGuestBanner, { backgroundColor: colors.backgroundCard }]}>
+              <IconSymbol name="person.crop.circle.badge.exclamationmark" size={48} color={colors.accent} />
+              <Text style={[styles.returningGuestTitle, { color: colors.textPrimary }]}>
+                {t('auth.returning_guest.banner_title')}
+              </Text>
+              <Text style={[styles.returningGuestMessage, { color: colors.textSecondary }]}>
+                {t('auth.returning_guest.message')}
+              </Text>
+            </View>
+
+            {/* Auth card */}
+            <View style={styles.sectionSpacing}>
+              <EmailAuthCard isCompact={isCompactLayout} />
+            </View>
+
+            {/* Language settings */}
+            <View style={styles.sectionSpacing}>
+              <LanguageSettingsCard />
+            </View>
+          </ScreenContainer>
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
@@ -180,5 +234,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
     letterSpacing: 0.2,
+  },
+  returningGuestBanner: {
+    alignItems: 'center',
+    padding: ThemeLayout.spacing.lg,
+    borderRadius: ThemeLayout.borderRadius.lg,
+    gap: ThemeLayout.spacing.sm,
+  },
+  returningGuestTitle: {
+    fontSize: 20,
+    fontFamily: 'SpaceGrotesk_700Bold',
+    textAlign: 'center',
+    marginTop: ThemeLayout.spacing.sm,
+  },
+  returningGuestMessage: {
+    fontSize: 14,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });

@@ -29,6 +29,7 @@ const MAPPING = {
   calendar: 'event',
   pencil: 'edit',
   'arrow.triangle.2.circlepath': 'autorenew',
+  'person.crop.circle.badge.exclamationmark': 'account-circle',
 } as IconMapping;
 
 /**

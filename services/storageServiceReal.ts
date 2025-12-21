@@ -57,6 +57,41 @@ const memoryStore: Record<string, string> = {};
 let AsyncStorageRef: AsyncStorageModule | null | undefined;
 let SQLiteKvStoreRef: AsyncStorageModule | null | undefined;
 let indexedDBStorage: IndexedDBStorage | null | undefined;
+// Serialize kv-store access to avoid SQLite "database is locked" errors.
+let kvLock: Promise<void> = Promise.resolve();
+
+const KV_RETRY_LIMIT = 2;
+const KV_RETRY_DELAY_MS = 60;
+
+const extractErrorText = (error: unknown): string => {
+  if (!error) return '';
+  if (typeof error === 'string') return error;
+  if (error instanceof Error) {
+    const cause = (error as Error & { cause?: unknown }).cause;
+    const causeText =
+      typeof cause === 'string' ? cause : cause instanceof Error ? cause.message : '';
+    return `${error.message} ${causeText}`.trim();
+  }
+  if (typeof error === 'object' && error && 'message' in error) {
+    const message = (error as { message?: unknown }).message;
+    return typeof message === 'string' ? message : '';
+  }
+  return '';
+};
+
+const isSQLiteBusyError = (error: unknown): boolean => {
+  const text = extractErrorText(error).toLowerCase();
+  if (text.includes('database is locked') || text.includes('sqlite_busy')) {
+    return true;
+  }
+  if (typeof error === 'object' && error && 'code' in error) {
+    const code = (error as { code?: unknown }).code;
+    if (typeof code === 'string' && code.toLowerCase().includes('sqlite')) {
+      return true;
+    }
+  }
+  return false;
+};
 
 const IDB_DB_NAME = 'gemini_dream_journal';
 const IDB_STORE_NAME = 'storage';
@@ -249,6 +284,29 @@ async function getSQLiteKvStore(): Promise<AsyncStorageModule | null> {
   return SQLiteKvStoreRef;
 }
 
+async function withKvLock<T>(operation: () => Promise<T>): Promise<T> {
+  const run = kvLock.then(operation, operation);
+  kvLock = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
+async function withKvRetry<T>(operation: () => Promise<T>): Promise<T> {
+  for (let attempt = 0; attempt <= KV_RETRY_LIMIT; attempt += 1) {
+    try {
+      return await withKvLock(operation);
+    } catch (error) {
+      if (!isSQLiteBusyError(error) || attempt === KV_RETRY_LIMIT) {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, KV_RETRY_DELAY_MS * (attempt + 1)));
+    }
+  }
+  throw new Error('KV retry exhausted');
+}
+
 async function getItem(key: string): Promise<string | null> {
   const kv = await getSQLiteKvStore();
   const legacyAS = await getLegacyAsyncStorage();
@@ -256,7 +314,7 @@ async function getItem(key: string): Promise<string | null> {
   if (Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && kv) {
     const start = Date.now();
     try {
-      const value = await kv.getItem(key);
+      const value = await withKvRetry(() => kv.getItem(key));
       if (value != null) {
         if (__DEV__) {
           logger.debug('[storageServiceReal] kv-store hit', {
@@ -275,7 +333,7 @@ async function getItem(key: string): Promise<string | null> {
 
     const fileValue = await readFileBackedItem(key);
     if (fileValue != null) {
-      await kv.setItem(key, fileValue);
+      await withKvRetry(() => kv.setItem(key, fileValue));
       await deleteFileBackedItem(key);
       if (legacyAS) {
         try {
@@ -297,7 +355,7 @@ async function getItem(key: string): Promise<string | null> {
       try {
         const legacyValue = await legacyAS.getItem(key);
         if (legacyValue != null) {
-          await kv.setItem(key, legacyValue);
+          await withKvRetry(() => kv.setItem(key, legacyValue));
           try {
             await legacyAS.removeItem(key);
           } catch {
@@ -339,7 +397,7 @@ async function getItem(key: string): Promise<string | null> {
 
   if (kv) {
     try {
-      const value = await kv.getItem(key);
+      const value = await withKvRetry(() => kv.getItem(key));
       if (value != null) return value;
     } catch (error) {
       if (__DEV__) {
@@ -351,7 +409,7 @@ async function getItem(key: string): Promise<string | null> {
       try {
         const legacyValue = await legacyAS.getItem(key);
         if (legacyValue != null) {
-          await kv.setItem(key, legacyValue);
+          await withKvRetry(() => kv.setItem(key, legacyValue));
           try {
             await legacyAS.removeItem(key);
           } catch {
@@ -421,23 +479,34 @@ async function setItem(key: string, value: string): Promise<void> {
 
   if (Platform.OS !== 'web' && FILE_BACKED_KEYS.has(key) && kv) {
     const start = Date.now();
-    await kv.setItem(key, value);
-    await deleteFileBackedItem(key);
-    if (legacyAS) {
-      try {
-        await legacyAS.removeItem(key);
-      } catch {
-        // Best-effort cleanup
+    try {
+      await withKvRetry(() => kv.setItem(key, value));
+      await deleteFileBackedItem(key);
+      if (legacyAS) {
+        try {
+          await legacyAS.removeItem(key);
+        } catch {
+          // Best-effort cleanup
+        }
       }
+      if (__DEV__) {
+        logger.debug('[storageServiceReal] kv-store write', {
+          key,
+          bytes: value.length,
+          ms: Date.now() - start,
+        });
+      }
+      return;
+    } catch (error) {
+      if (isSQLiteBusyError(error) && shouldUseFileStorage(key)) {
+        await writeFileBackedItem(key, value);
+        if (__DEV__) {
+          logger.warn('[storageServiceReal] kv-store busy; wrote file-backed value', { key });
+        }
+        return;
+      }
+      throw error;
     }
-    if (__DEV__) {
-      logger.debug('[storageServiceReal] kv-store write', {
-        key,
-        bytes: value.length,
-        ms: Date.now() - start,
-      });
-    }
-    return;
   }
 
   if (shouldUseFileStorage(key)) {
@@ -453,15 +522,23 @@ async function setItem(key: string, value: string): Promise<void> {
   }
 
   if (kv) {
-    await kv.setItem(key, value);
-    if (legacyAS) {
-      try {
-        await legacyAS.removeItem(key);
-      } catch {
-        // Best-effort cleanup
+    try {
+      await withKvRetry(() => kv.setItem(key, value));
+      if (legacyAS) {
+        try {
+          await legacyAS.removeItem(key);
+        } catch {
+          // Best-effort cleanup
+        }
       }
+      return;
+    } catch (error) {
+      if (isSQLiteBusyError(error) && legacyAS) {
+        await legacyAS.setItem(key, value);
+        return;
+      }
+      throw error;
     }
-    return;
   }
 
   if (legacyAS) return legacyAS.setItem(key, value);
@@ -487,7 +564,7 @@ async function removeItem(key: string): Promise<void> {
 
   if (kv) {
     try {
-      await kv.removeItem(key);
+      await withKvRetry(() => kv.removeItem(key));
     } catch {
       // Best-effort cleanup
     }
@@ -874,10 +951,20 @@ export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<v
     await setItem(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized));
   } catch (error) {
     if (__DEV__) {
-      console.error('Failed to cache remote dreams:', error);
+      if (isSQLiteBusyError(error)) {
+        logger.debug('[storageServiceReal] cache write skipped while SQLite busy');
+      } else {
+        console.error('Failed to cache remote dreams:', error);
+      }
     }
-    throw new Error('Failed to cache remote dreams');
   }
+}
+
+export async function clearRemoteDreamStorage(): Promise<void> {
+  await Promise.all([
+    removeItem(REMOTE_DREAMS_CACHE_KEY),
+    removeItem(DREAM_MUTATIONS_KEY),
+  ]);
 }
 
 export async function getPendingDreamMutations(): Promise<DreamMutation[]> {

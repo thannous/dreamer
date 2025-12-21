@@ -1,4 +1,4 @@
-import type { User } from '@supabase/supabase-js';
+import type { Session, User } from '@supabase/supabase-js';
 
 import * as mockAuth from './mockAuth';
 import { isMockModeEnabled } from './env';
@@ -42,13 +42,13 @@ export async function getAccessToken(): Promise<string | null> {
   }
 }
 
-export function onAuthChange(cb: (user: User | null) => void) {
+export function onAuthChange(cb: (user: User | null, session: Session | null) => void) {
   if (isMockMode) {
     return mockAuth.onAuthChange(cb);
   }
 
   const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-    cb(session?.user ?? null);
+    cb(session?.user ?? null, session ?? null);
   });
   return () => data.subscription.unsubscribe();
 }

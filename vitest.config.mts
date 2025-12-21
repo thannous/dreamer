@@ -3,12 +3,19 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  plugins: [
+    tsconfigPaths({
+      projects: [
+        path.resolve(__dirname, 'tsconfig.json'),
+        path.resolve(__dirname, 'tsconfig.test.json'),
+      ],
+    }),
+  ],
   resolve: {
-    alias: {
-      'react-native': path.resolve(__dirname, 'tests/react-native-stub.ts'),
-      '@expo/vector-icons': path.resolve(__dirname, 'tests/expo-vector-icons-stub.ts'),
-    },
+    alias: [
+      { find: /^react-native$/, replacement: path.resolve(__dirname, 'tests/react-native-stub.ts') },
+      { find: /^@expo\/vector-icons$/, replacement: path.resolve(__dirname, 'tests/expo-vector-icons-stub.ts') },
+    ],
   },
   test: {
     environment: 'node',
@@ -17,5 +24,10 @@ export default defineConfig({
     ],
     setupFiles: ['vitest.setup.ts'],
     exclude: ['node_modules', '.expo', 'expo', 'dist', '.eas-local-work'],
+    server: {
+      deps: {
+        inline: ['react-native'],
+      },
+    },
   },
 });

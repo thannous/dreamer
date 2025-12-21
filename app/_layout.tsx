@@ -24,7 +24,7 @@ import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { SurrealTheme } from '@/constants/theme';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
@@ -111,6 +111,7 @@ function useNavigationIsReady(): boolean {
 
 function RootLayoutNav() {
   const { mode } = useTheme();
+  const { user, returningGuestBlocked } = useAuth();
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   const hasInitialNavigated = useRef(false);
@@ -123,12 +124,42 @@ function RootLayoutNav() {
     pathnameRef.current = pathname;
   }, [pathname]);
 
+  // Guard: Redirect returning guests (account created but logged out) to settings
+  useEffect(() => {
+    if (!isNavigationReady || !returningGuestBlocked || user) {
+      return;
+    }
+
+    const currentPath = pathnameRef.current ?? pathname;
+    const allowedRoutes = ['/settings', '/(tabs)/settings'];
+    const isOnAllowedRoute = allowedRoutes.some(
+      (route) => currentPath === route || currentPath?.startsWith(`${route}/`)
+    );
+
+    if (!isOnAllowedRoute) {
+      if (__DEV__) {
+        console.log('[RootLayoutNav] Redirecting returning guest to settings', {
+          currentPath,
+        });
+      }
+      router.replace('/(tabs)/settings');
+    }
+  }, [isNavigationReady, returningGuestBlocked, user, pathname]);
+
   useEffect(() => {
     if (!isNavigationReady) {
       return;
     }
 
     const navigateToRecording = (reason: 'initial' | 'appState') => {
+      // Don't navigate to recording if returning guest is blocked
+      if (returningGuestBlocked && !user) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] skip recording redirect, returning guest blocked');
+        }
+        return;
+      }
+
       const currentPath = pathnameRef.current ?? pathname;
       const isInSettings =
         currentPath?.includes('/settings') ||
@@ -195,7 +226,7 @@ function RootLayoutNav() {
     return () => {
       subscription.remove();
     };
-  }, [isNavigationReady, pathname]);
+  }, [isNavigationReady, pathname, returningGuestBlocked, user]);
 
   useEffect(() => {
     if (!isNavigationReady) {
@@ -203,6 +234,15 @@ function RootLayoutNav() {
     }
 
     function redirect(notification: Notifications.Notification) {
+      // Don't allow deep linking if returning guest is blocked
+      if (returningGuestBlocked && !user) {
+        if (__DEV__) {
+          console.log('[RootLayoutNav] Blocking notification deep link for returning guest');
+        }
+        router.replace('/(tabs)/settings');
+        return;
+      }
+
       const url = notification.request.content.data?.url;
 
       // For now we only support deep linking into the recording screen
@@ -225,7 +265,7 @@ function RootLayoutNav() {
         subscription.remove();
       };
     }
-  }, [isNavigationReady]);
+  }, [isNavigationReady, returningGuestBlocked, user]);
 
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>

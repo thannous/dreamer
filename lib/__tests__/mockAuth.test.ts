@@ -192,8 +192,8 @@ describe('mockAuth', () => {
       // Then
       expect(callback1).toHaveBeenCalledTimes(1); // Called after sign in
       expect(callback2).toHaveBeenCalledTimes(1); // Called after sign in
-      expect(callback1).toHaveBeenCalledWith(expect.any(Object)); // Called with user object
-      expect(callback2).toHaveBeenCalledWith(expect.any(Object)); // Called with user object
+      expect(callback1).toHaveBeenCalledWith(expect.any(Object), null); // Called with user object
+      expect(callback2).toHaveBeenCalledWith(expect.any(Object), null); // Called with user object
     });
   });
 

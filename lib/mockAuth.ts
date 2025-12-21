@@ -1,4 +1,4 @@
-import type { User } from '@supabase/supabase-js';
+import type { Session, User } from '@supabase/supabase-js';
 
 import type { UserTier } from '@/constants/limits';
 import { resetMockQuotaEvents } from '@/services/quota/MockQuotaEventStore';
@@ -39,11 +39,12 @@ const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
 };
 
 let currentUser: User | null = null;
-const listeners = new Set<(user: User | null) => void>();
+let accountCreatedOnDevice = false;
+const listeners = new Set<(user: User | null, session: Session | null) => void>();
 
 function emitAuthChange(): void {
   listeners.forEach((listener) => {
-    listener(currentUser);
+    listener(currentUser, null);
   });
 }
 
@@ -142,7 +143,7 @@ export async function resendVerificationEmail(_email?: string): Promise<void> {
   emitAuthChange();
 }
 
-export function onAuthChange(callback: (user: User | null) => void): () => void {
+export function onAuthChange(callback: (user: User | null, session: Session | null) => void): () => void {
   listeners.add(callback);
   return () => {
     listeners.delete(callback);
@@ -170,4 +171,25 @@ export async function updateUserTier(tier: UserTier): Promise<User | null> {
   } as User;
   emitAuthChange();
   return currentUser;
+}
+
+/**
+ * Mark that an account has been created on this device (mock implementation).
+ */
+export async function markAccountCreatedOnDevice(): Promise<void> {
+  accountCreatedOnDevice = true;
+}
+
+/**
+ * Check if an account was ever created on this device (mock implementation).
+ */
+export async function wasAccountCreatedOnDevice(): Promise<boolean> {
+  return accountCreatedOnDevice;
+}
+
+/**
+ * Reset the account created flag (for testing purposes).
+ */
+export function resetAccountCreatedFlag(): void {
+  accountCreatedOnDevice = false;
 }

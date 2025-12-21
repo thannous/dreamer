@@ -240,6 +240,35 @@ describe('auth helpers', () => {
     );
   });
 
+  it('waits briefly for access token before marking fingerprint', async () => {
+    vi.useFakeTimers();
+    try {
+      mockSupabaseAuth.getSession
+        .mockResolvedValueOnce({ data: { session: null } })
+        .mockResolvedValueOnce({ data: { session: null } })
+        .mockResolvedValueOnce({
+          data: { session: { access_token: 'access-token', user: { id: 'user-1' } } },
+        });
+
+      const auth = await loadAuth();
+      const signUpPromise = auth.signUpWithEmailPassword('user@example.com', 'pass', 'en');
+
+      await vi.runAllTimersAsync();
+      await signUpPromise;
+
+      expect(mockFetchJSON).toHaveBeenCalledWith(
+        'https://api.example.com/auth/mark-upgrade',
+        expect.objectContaining({
+          method: 'POST',
+          headers: { Authorization: 'Bearer access-token' },
+          body: { fingerprint: 'device-1' },
+        })
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('resends verification email and throws on failure', async () => {
     const auth = await loadAuth();
 
