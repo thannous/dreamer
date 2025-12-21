@@ -121,8 +121,6 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    }
+    "runtimeVersion": "1.0.0"
   }
 }

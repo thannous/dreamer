@@ -18,6 +18,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { EmailVerificationDialog } from '@/components/auth/EmailVerificationDialog';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
+import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import {
   resendVerificationEmail,
   signInMock,
@@ -80,6 +81,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false });
   const [submitting, setSubmitting] = useState<'signin' | 'signup' | 'signout' | null>(null);
   const [mockProfileLoading, setMockProfileLoading] = useState<MockProfile | null>(null);
@@ -121,6 +123,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
   const resetSensitiveInputs = useCallback(() => {
     setPassword('');
+    setPasswordVisible(false);
   }, []);
 
   const clearPendingVerification = useCallback(() => {
@@ -380,6 +383,8 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const verificationEmail = pendingVerification?.email ?? unverifiedEmail ?? trimmedEmail;
   const verificationVisible = Boolean(pendingVerification?.visible && !user);
   const resendButtonLabel = t('settings.account.banner.unverified.action');
+  const passwordToggleLabel = passwordVisible ? t('auth.password.hide') : t('auth.password.show');
+  const passwordToggleColor = passwordVisible ? colors.textPrimary : colors.textSecondary;
   const handleCloseVerificationDialog = useCallback(() => {
     setPendingVerification((current) => (current ? { ...current, visible: false } : null));
   }, []);
@@ -410,23 +415,43 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
         </Text>
       )}
 
-      <TextInput
-        testID={TID.Input.AuthPassword}
-        style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
-        placeholder={t('settings.account.placeholder.password')}
-        placeholderTextColor={colors.textSecondary}
-        value={password}
-        onChangeText={(value) => {
-          setPassword(value);
-          if (!touched.password) {
-            setTouched((prev) => ({ ...prev, password: true }));
-          }
-        }}
-        onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
-        secureTextEntry
-        textContentType="password"
-        onSubmitEditing={attemptSignIn}
-      />
+      <View style={styles.inputWithToggle}>
+        <TextInput
+          testID={TID.Input.AuthPassword}
+          style={[
+            styles.input,
+            styles.inputWithToggleField,
+            { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary },
+          ]}
+          placeholder={t('settings.account.placeholder.password')}
+          placeholderTextColor={colors.textSecondary}
+          value={password}
+          onChangeText={(value) => {
+            setPassword(value);
+            if (!touched.password) {
+              setTouched((prev) => ({ ...prev, password: true }));
+            }
+          }}
+          onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
+          secureTextEntry={!passwordVisible}
+          textContentType="password"
+          onSubmitEditing={attemptSignIn}
+        />
+        <Pressable
+          testID={TID.Button.AuthTogglePassword}
+          accessibilityRole="button"
+          accessibilityLabel={passwordToggleLabel}
+          hitSlop={8}
+          onPress={() => setPasswordVisible((prev) => !prev)}
+          style={({ pressed }) => [styles.passwordToggle, pressed && styles.passwordTogglePressed]}
+        >
+          {passwordVisible ? (
+            <EyeIcon size={18} color={passwordToggleColor} />
+          ) : (
+            <EyeOffIcon size={18} color={passwordToggleColor} slashColor={colors.backgroundSecondary} />
+          )}
+        </Pressable>
+      </View>
       {showPasswordError && (
         <Text style={[styles.errorText, { color: colors.textSecondary }]}>
           {t('auth.password.too_short', { count: PASSWORD_MIN_LENGTH })}
@@ -714,6 +739,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
     width: '100%',
+  },
+  inputWithToggle: {
+    position: 'relative',
+    width: '100%',
+    marginBottom: ThemeLayout.spacing.xs,
+  },
+  inputWithToggleField: {
+    marginBottom: 0,
+    paddingRight: ThemeLayout.spacing.xl + ThemeLayout.spacing.lg,
+  },
+  passwordToggle: {
+    position: 'absolute',
+    right: ThemeLayout.spacing.md,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
+  passwordTogglePressed: {
+    opacity: 0.7,
   },
   row: {
     flexDirection: 'row',
