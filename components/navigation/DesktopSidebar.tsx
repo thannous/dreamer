@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getAppVersionString } from '@/lib/appVersion';
 import { TID } from '@/lib/testIDs';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
@@ -58,6 +59,7 @@ export function DesktopSidebar() {
   const { t } = useTranslation();
   const pathname = usePathname();
   const { colors } = useTheme();
+  const appVersion = getAppVersionString({ prefix: 'v' });
 
   const navItems: { icon: IconName; label: string; href: string; testID?: string }[] = [
     { icon: 'house.fill', label: t('nav.home'), href: '/', testID: TID.Tab.Home },
@@ -101,7 +103,9 @@ export function DesktopSidebar() {
 
       {/* Footer Section */}
       <View style={[styles.footer, { borderTopColor: colors.divider }]}>
-        <Text style={[styles.footerText, { color: colors.textSecondary }]}>v1.0.0</Text>
+        {appVersion ? (
+          <Text style={[styles.footerText, { color: colors.textSecondary }]}>{appVersion}</Text>
+        ) : null}
       </View>
     </View>
   );

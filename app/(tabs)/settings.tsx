@@ -16,6 +16,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getAppVersionString } from '@/lib/appVersion';
 import { TID } from '@/lib/testIDs';
 
 export default function SettingsScreen() {
@@ -24,6 +25,7 @@ export default function SettingsScreen() {
   const { width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
+  const appVersion = getAppVersionString();
   useClearWebFocus();
 
   const {
@@ -120,6 +122,13 @@ export default function SettingsScreen() {
               </View>
             )}
           </View>
+          {appVersion ? (
+            <View style={styles.versionContainer}>
+              <Text style={[styles.versionText, { color: colors.textSecondary }]}>
+                {t('settings.app_version', { version: appVersion })}
+              </Text>
+            </View>
+          ) : null}
         </ScreenContainer>
       </ScrollView>
     </View>
@@ -162,5 +171,14 @@ const styles = StyleSheet.create({
   },
   sectionSpacing: {
     marginTop: ThemeLayout.spacing.md,
+  },
+  versionContainer: {
+    marginTop: ThemeLayout.spacing.lg,
+    alignItems: 'center',
+  },
+  versionText: {
+    fontSize: 12,
+    fontFamily: 'SpaceGrotesk_400Regular',
+    letterSpacing: 0.2,
   },
 });

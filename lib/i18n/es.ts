@@ -350,6 +350,7 @@ const translations: Record<string, string> = {
     'notifications.next_reminder_today': 'Hoy a las {time}',
     'notifications.next_reminder_tomorrow': 'Mañana a las {time}',
     'settings.title': 'Configuración',
+    'settings.app_version': 'Versión {version}',
     'settings.account.title': 'Cuenta',
     'settings.account.description_signed_out': 'Inicia sesión para sincronizar tus sueños en todos tus dispositivos',
     'settings.account.description_signed_in': 'Estás conectado y sincronizando',
