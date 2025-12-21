@@ -29,7 +29,7 @@ import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { MarkdownText } from './MarkdownText';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import Animated, {
   runOnJS,
@@ -61,7 +61,8 @@ interface MessagesListProps {
 /**
  * UserMessage - Styled user message bubble
  */
-function UserMessage({ message }: { message: ChatMessage; index: number }) {
+// Perf: memoize message bubbles so list-level rerenders don't re-render every visible message on the JS thread.
+const UserMessage = memo(function UserMessage({ message }: { message: ChatMessage; index: number }) {
   const { colors } = useTheme();
 
   return (
@@ -76,7 +77,7 @@ function UserMessage({ message }: { message: ChatMessage; index: number }) {
       </View>
     </View>
   );
-}
+});
 
 /**
  * AssistantMessage - Styled AI message bubble with streaming support
@@ -140,7 +141,7 @@ function HandwritingText({ text, style, animate }: HandwritingTextProps) {
   );
 }
 
-function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: ChatMessage; index: number; isStreaming: boolean; shouldHandwrite: boolean }) {
+const AssistantMessage = memo(function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: ChatMessage; index: number; isStreaming: boolean; shouldHandwrite: boolean }) {
   const { colors, mode } = useTheme();
   const [showMarkdown, setShowMarkdown] = useState(false);
   const markdownOpacity = useSharedValue(0);
@@ -231,7 +232,7 @@ function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: 
       </View>
     </FadeInStaggered>
   );
-}
+});
 
 /**
  * AnimatedDot - Single pulsing dot with staggered timing
