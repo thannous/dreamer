@@ -17,6 +17,7 @@ import { logger } from '../lib/logger';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import {
   applyPendingMutations,
+  areDreamsEqualForLocalState,
   type DreamListUpdater,
   normalizeDreamList,
   resolveDreamListUpdater,
@@ -59,6 +60,17 @@ export type UseDreamPersistenceResult = {
   reloadDreams: () => Promise<void>;
 };
 
+const areDreamListsEqual = (left: DreamAnalysis[], right: DreamAnalysis[]): boolean => {
+  if (left === right) return true;
+  if (left.length !== right.length) return false;
+  for (let index = 0; index < left.length; index += 1) {
+    if (!areDreamsEqualForLocalState(left[index], right[index])) {
+      return false;
+    }
+  }
+  return true;
+};
+
 /**
  * Hook for managing dream persistence (storage/loading)
  *
@@ -87,6 +99,10 @@ export function useDreamPersistence({
   const persistLocalDreams = useCallback(async (newDreams: DreamAnalysis[]) => {
     const normalized = normalizeDreamList(newDreams);
     const sorted = sortDreams(normalized);
+    if (areDreamListsEqual(dreamsRef.current, sorted)) {
+      return;
+    }
+    dreamsRef.current = sorted;
     setDreams(sorted);
     await saveDreams(sorted);
   }, []);
@@ -100,6 +116,10 @@ export function useDreamPersistence({
       const resolved = resolveDreamListUpdater(updater, dreamsRef.current);
       const normalized = normalizeDreamList(resolved);
       const sorted = sortDreams(normalized);
+      if (areDreamListsEqual(dreamsRef.current, sorted)) {
+        return;
+      }
+      dreamsRef.current = sorted;
       setDreams(sorted);
       await saveCachedRemoteDreams(sorted);
     },
@@ -214,7 +234,11 @@ export function useDreamPersistence({
       if (!canUseRemoteSync) {
         const localDreams = await getSavedDreams();
         if (mounted.current) {
-          setDreams(sortDreams(normalizeDreamList(localDreams)));
+          const nextDreams = sortDreams(normalizeDreamList(localDreams));
+          if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
+            dreamsRef.current = nextDreams;
+            setDreams(nextDreams);
+          }
           setPendingMutations([]);
         }
         return { pendingMutations: [] };
@@ -241,15 +265,23 @@ export function useDreamPersistence({
         const normalizedRemote = normalizeDreamList(remoteDreams);
         await saveCachedRemoteDreams(sortDreams(normalizedRemote));
         const hydrated = normalizeDreamList(applyPendingMutations(normalizedRemote, pendingMutations));
+        const nextDreams = sortDreams(hydrated);
         if (mounted.current) {
-          setDreams(sortDreams(hydrated));
+          if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
+            dreamsRef.current = nextDreams;
+            setDreams(nextDreams);
+          }
         }
       } catch (error) {
         logger.error('Failed to load dreams from remote', error);
         // Use pre-fetched cached dreams instead of sequential read
         const fallback = normalizeDreamList(applyPendingMutations(cached, pendingMutations));
         if (mounted.current) {
-          setDreams(sortDreams(fallback));
+          const nextDreams = sortDreams(fallback);
+          if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
+            dreamsRef.current = nextDreams;
+            setDreams(nextDreams);
+          }
         }
       }
 
@@ -266,7 +298,10 @@ export function useDreamPersistence({
     } catch (error) {
       logger.error('Failed to load dreams', error);
       if (mounted.current) {
-        setDreams([]);
+        if (dreamsRef.current.length > 0) {
+          dreamsRef.current = [];
+          setDreams([]);
+        }
         setPendingMutations([]);
       }
       return { pendingMutations: [] };
