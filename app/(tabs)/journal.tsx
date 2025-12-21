@@ -77,6 +77,8 @@ export default function JournalListScreen() {
   }, [showDateModal, showThemeModal]);
 
   const prefetchedImageUrisRef = useRef(new Set<string>());
+  // Perf: reuse this Set to avoid per-scroll allocations/GC on the JS thread from viewability callbacks.
+  const candidateIndexesRef = useRef(new Set<number>());
   const viewabilityConfigRef = useRef({
     itemVisiblePercentThreshold: JOURNAL_LIST.VIEWABILITY_THRESHOLD,
     minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
@@ -188,7 +190,8 @@ export default function JournalListScreen() {
 
   const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
     const currentFilteredDreams = filteredDreamsRef.current;
-    const candidateIndexes = new Set<number>();
+    const candidateIndexes = candidateIndexesRef.current;
+    candidateIndexes.clear();
 
     viewableItems.forEach((item) => {
       if (typeof item.index !== 'number') {
@@ -216,6 +219,8 @@ export default function JournalListScreen() {
       prefetchedImageUrisRef.current.add(thumbnailUri);
       void preloadImage(thumbnailUri);
     });
+
+    candidateIndexes.clear();
   }).current;
 
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
