@@ -8,6 +8,7 @@ import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT, TAB_BAR_CONTENT_BOTTOM_PADDING, TAB_BAR_HEIGHT, TAB_BAR_MARGIN } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
+import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -58,6 +59,7 @@ function TabBarItem({ label, icon, focused, palette, colors }: {
 
 export default function TabLayout() {
   const { colors, mode } = useTheme();
+  const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -127,7 +129,10 @@ export default function TabLayout() {
       }}>
       <Tabs.Screen
         name="index"
-        options={{
+        options={returningGuestBlocked ? {
+          href: null,
+          title: t('nav.home'),
+        } : {
           title: t('nav.home'),
           tabBarButton: (props) => (
             <HapticTab {...props} testID={TID.Tab.Home} accessibilityLabel={t('nav.home')} />
@@ -139,7 +144,10 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="journal"
-        options={{
+        options={returningGuestBlocked ? {
+          href: null,
+          title: t('nav.journal'),
+        } : {
           title: t('nav.journal'),
           tabBarButton: (props) => (
             <HapticTab {...props} testID={TID.Tab.Journal} accessibilityLabel={t('nav.journal')} />
@@ -151,7 +159,10 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="statistics"
-        options={{
+        options={returningGuestBlocked ? {
+          href: null,
+          title: t('nav.stats'),
+        } : {
           title: t('nav.stats'),
           tabBarButton: (props) => (
             <HapticTab {...props} testID={TID.Tab.Stats} accessibilityLabel={t('nav.stats')} />

@@ -10,7 +10,6 @@ import { quotaService } from '@/services/quotaService';
 import {
   getSubscriptionStatus,
   initializeSubscription,
-  isSubscriptionInitialized,
   loadSubscriptionPackages,
   purchaseSubscriptionPackage,
   restoreSubscriptionPurchases,
@@ -52,6 +51,7 @@ function isUserCancelledError(e: unknown): boolean {
 function formatError(e: unknown): Error {
   if (e instanceof Error) {
     const msg = e.message.toLowerCase();
+    const error = e as RevenueCatError;
 
     // Network error
     if (msg.includes('network_error') || msg.includes('networkerror')) {
@@ -68,6 +68,16 @@ function formatError(e: unknown): Error {
     if (msg.includes('billing_unavailable') ||
         msg.includes('service_unavailable')) {
       return new Error('subscription.error.store_unavailable');
+    }
+
+    if (
+      error.code === 'RECEIPT_ALREADY_IN_USE' ||
+      error.code === 'ReceiptAlreadyInUseError' ||
+      error.code === 'RECEIPT_IN_USE' ||
+      msg.includes('receipt_already_in_use') ||
+      msg.includes('receipt already in use')
+    ) {
+      return new Error('subscription.error.receipt_already_in_use');
     }
 
     // Generic purchase error
@@ -130,21 +140,24 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   const userId = user?.id;
   // Extract user tier independently from user object reference
   // to avoid re-triggering effects when user object changes
-  const userTier = (
+  const userTierRaw = (
     (user?.app_metadata?.tier as SubscriptionTier | undefined) ||
     (user?.user_metadata?.tier as SubscriptionTier | undefined) ||
     'free'
   );
-  const appMetadataTier = user?.app_metadata?.tier as SubscriptionTier | undefined;
+  const userTier: SubscriptionTier = userTierRaw === 'premium' ? 'plus' : userTierRaw;
+  const appMetadataTierRaw = user?.app_metadata?.tier as SubscriptionTier | undefined;
+  const appMetadataTier: SubscriptionTier | undefined =
+    appMetadataTierRaw === 'premium' ? 'plus' : appMetadataTierRaw;
 
   useEffect(() => {
     if (!userId) return;
-    if (appMetadataTier !== 'plus' && appMetadataTier !== 'premium') return;
+    if (appMetadataTier !== 'plus') return;
 
     // Optimistically treat Supabase-paid users as active while RevenueCat is loading.
     // RevenueCat remains the source of truth and will overwrite this once resolved.
     setStatus((current) => {
-      if (current?.isActive && (current.tier === 'plus' || current.tier === 'premium')) {
+      if (current?.isActive && current.tier === 'plus') {
         return current;
       }
       return { tier: appMetadataTier, isActive: true };
@@ -152,11 +165,12 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   }, [appMetadataTier, userId]);
 
   const getTierFromUser = useCallback((input?: User | null): SubscriptionTier => {
-    return (
+    const tier = (
       (input?.app_metadata?.tier as SubscriptionTier | undefined) ||
       (input?.user_metadata?.tier as SubscriptionTier | undefined) ||
       'free'
     );
+    return tier === 'premium' ? 'plus' : tier;
   }, []);
 
   const startTierReconciliation = useCallback(
@@ -328,11 +342,11 @@ export function useSubscription(options?: UseSubscriptionOptions) {
           }
           return;
         }
-        if (!isSubscriptionInitialized()) {
-          await initializeSubscription(user?.id ?? null);
-        }
+        // Always ensure RevenueCat is configured and logged in for the current user.
+        // This avoids purchases/status being attributed to a stale anonymous/appUserId.
+        const initializedStatus = await initializeSubscription(user?.id ?? null);
         const [nextStatus, nextPackages] = await Promise.all([
-          getSubscriptionStatus(),
+          Promise.resolve(initializedStatus),
           shouldLoadPackages ? loadSubscriptionPackages() : Promise.resolve<PurchasePackage[]>([]),
         ]);
         if (mounted) {
@@ -480,6 +494,9 @@ export function useSubscription(options?: UseSubscriptionOptions) {
     setProcessing(true);
     setError(null);
     try {
+      // Ensure Purchases is configured + logged into the current user right before purchasing.
+      // This prevents purchases from being attached to an anonymous/stale RevenueCat user.
+      await initializeSubscription(user?.id ?? null);
       console.log('[useSubscription] Purchase started', {
         timestamp: new Date().toISOString(),
         userId: user?.id,
@@ -535,6 +552,8 @@ export function useSubscription(options?: UseSubscriptionOptions) {
     setProcessing(true);
     setError(null);
     try {
+      // Ensure Purchases is configured + logged into the current user right before restoring.
+      await initializeSubscription(user?.id ?? null);
       console.log('[useSubscription] Purchase restore started', {
         timestamp: new Date().toISOString(),
         userId: user?.id,

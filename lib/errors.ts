@@ -272,7 +272,8 @@ export class QuotaError extends Error {
     this.code = code;
     this.tier = tier;
     this.userMessage = userMessage || QuotaError.getDefaultMessage(code, tier);
-    this.canUpgrade = tier !== 'premium';
+    // Only guests/free users can upgrade (top tier is "plus").
+    this.canUpgrade = tier === 'guest' || tier === 'free';
   }
 
   private static getDefaultMessage(code: QuotaErrorCode, tier: SubscriptionTier): string {

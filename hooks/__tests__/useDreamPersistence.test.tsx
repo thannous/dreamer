@@ -12,6 +12,7 @@ const mockUser = vi.hoisted(() => ({ current: { id: 'user-123' } as { id: string
 vi.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockUser.current,
+    sessionReady: Boolean(mockUser.current),
   }),
 }));
 

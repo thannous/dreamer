@@ -7,7 +7,7 @@ const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Methods': 'POST,OPTIONS',
 };
 
-type Tier = 'free' | 'plus' | 'premium';
+type Tier = 'free' | 'plus';
 type InferredTier = Tier | null;
 
 const PREMIUM_ENTITLEMENT_KEYS = [
@@ -129,22 +129,19 @@ function getAppUserIdCandidates(payload: any): string[] {
 }
 
 function tierFromEntitlementKey(key: string): InferredTier {
-  if (PREMIUM_ENTITLEMENT_KEYS.includes(key)) return 'premium';
+  // ✅ No more "premium" tier: legacy premium entitlements grant "plus".
+  if (PREMIUM_ENTITLEMENT_KEYS.includes(key)) return 'plus';
   if (PLUS_ENTITLEMENT_KEYS.includes(key)) return 'plus';
   return null;
 }
 
 function inferTierFromEntitlementKeys(keys: string[]): InferredTier {
-  let inferred: InferredTier = null;
-
   for (const key of keys) {
     const mapped = tierFromEntitlementKey(key);
     if (!mapped) continue;
-    if (mapped === 'premium') return 'premium';
-    if (!inferred) inferred = mapped;
+    return mapped;
   }
 
-  if (inferred) return inferred;
   return keys.length > 0 ? null : 'free';
 }
 

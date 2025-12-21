@@ -187,10 +187,12 @@ describe('QuotaError', () => {
   it('should set canUpgrade correctly', () => {
     const guestError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'guest');
     const freeError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'free');
+    const plusError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'plus');
     const premiumError = new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, 'premium');
 
     expect(guestError.canUpgrade).toBe(true);
     expect(freeError.canUpgrade).toBe(true);
+    expect(plusError.canUpgrade).toBe(false);
     expect(premiumError.canUpgrade).toBe(false);
   });
 

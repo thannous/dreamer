@@ -38,6 +38,7 @@ export const getLanguagePreference = service.getLanguagePreference;
 export const saveLanguagePreference = service.saveLanguagePreference;
 export const getCachedRemoteDreams = service.getCachedRemoteDreams;
 export const saveCachedRemoteDreams = service.saveCachedRemoteDreams;
+export const clearRemoteDreamStorage = service.clearRemoteDreamStorage;
 export const getPendingDreamMutations = service.getPendingDreamMutations;
 export const savePendingDreamMutations = service.savePendingDreamMutations;
 export const getRitualPreference = service.getRitualPreference;

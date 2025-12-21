@@ -81,13 +81,16 @@ const areDreamListsEqual = (left: DreamAnalysis[], right: DreamAnalysis[]): bool
 export function useDreamPersistence({
   canUseRemoteSync,
 }: UseDreamPersistenceOptions): UseDreamPersistenceResult {
-  const { user } = useAuth();
+  const { user, sessionReady } = useAuth();
   // ✅ FIX: Extract only userId to prevent unnecessary re-renders when user object changes
   const userId = user?.id;
+  const authSessionReady = Boolean(userId) && sessionReady;
   const [dreams, setDreams] = useState<DreamAnalysis[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [pendingMutations, setPendingMutations] = useState<DreamMutation[]>([]);
   const dreamsRef = useRef<DreamAnalysis[]>([]);
+  const sessionReadyRef = useRef(authSessionReady);
+  const previousUserIdRef = useRef<string | null>(null);
 
   const ensureAccessToken = useCallback(
     async (options?: { retries?: number; delayMs?: number; logLabel?: string }): Promise<boolean> => {
@@ -114,6 +117,16 @@ export function useDreamPersistence({
   useEffect(() => {
     dreamsRef.current = dreams;
   }, [dreams]);
+
+  useEffect(() => {
+    if (previousUserIdRef.current && previousUserIdRef.current !== (userId ?? null)) {
+      dreamsRef.current = [];
+      setDreams([]);
+      setPendingMutations([]);
+      setLoaded(false);
+    }
+    previousUserIdRef.current = userId ?? null;
+  }, [userId]);
 
   /**
    * Persist dreams to local storage (for guest users)
@@ -293,13 +306,7 @@ export function useDreamPersistence({
       const cached = cachedResult.status === 'fulfilled' ? cachedResult.value : [];
 
       try {
-        await migrateGuestDreamsToSupabase();
-      } catch (migrationError) {
-        logger.warn('Failed to migrate guest dreams', migrationError);
-      }
-
-      try {
-        const hasSession = await ensureAccessToken({
+        const hasSession = authSessionReady || await ensureAccessToken({
           retries: 5,
           delayMs: 250,
           logLabel: '[useDreamPersistence] Skipping remote dream load: auth session not ready',
@@ -316,6 +323,12 @@ export function useDreamPersistence({
             setPendingMutations(pendingMutations);
           }
           return { pendingMutations };
+        }
+
+        try {
+          await migrateGuestDreamsToSupabase();
+        } catch (migrationError) {
+          logger.warn('Failed to migrate guest dreams', migrationError);
         }
 
         const remoteDreams = await fetchDreamsFromSupabase();
@@ -367,7 +380,7 @@ export function useDreamPersistence({
         setLoaded(true);
       }
     }
-  }, [canUseRemoteSync, migrateGuestDreamsToSupabase, migrateUnsyncedDreams]);
+  }, [canUseRemoteSync, authSessionReady, migrateGuestDreamsToSupabase, migrateUnsyncedDreams]);
 
   /**
    * Public reload function
@@ -385,6 +398,13 @@ export function useDreamPersistence({
       mounted.current = false;
     };
   }, [loadDreams]);
+
+  useEffect(() => {
+    if (!sessionReadyRef.current && authSessionReady && canUseRemoteSync) {
+      void reloadDreams();
+    }
+    sessionReadyRef.current = authSessionReady;
+  }, [authSessionReady, canUseRemoteSync, reloadDreams]);
 
   return {
     dreams,
