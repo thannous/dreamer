@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { computeNextInputAfterSend } from '../composerUtils';
+import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 
 describe('computeNextInputAfterSend', () => {
   it('clears when the current text matches the sent text', () => {

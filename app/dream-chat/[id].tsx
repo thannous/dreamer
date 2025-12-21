@@ -19,7 +19,7 @@ import { startOrContinueChat } from '@/services/geminiService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { generateUUID } from '@/lib/dreamUtils';
-import { computeNextInputAfterSend } from './composerUtils';
+import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { useNetworkState } from 'expo-network';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
