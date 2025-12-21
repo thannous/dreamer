@@ -10,6 +10,7 @@
     "start:supabase": "node ./scripts/start-supabase.js",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
+    "android:windows": "powershell -ExecutionPolicy Bypass -File .\\scripts\\run-android.ps1",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "build:web": "npx expo export -p web && npx workbox-cli generateSW workbox-config.js",

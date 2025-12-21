@@ -492,6 +492,8 @@ const translations: Record<string, string> = {
     'auth.google.error_generic': 'An error occurred during Google Sign-In. Please try again.',
     'auth.email.invalid': 'Enter a valid email address.',
     'auth.password.too_short': 'Use at least {{count}} characters.',
+    'auth.password.show': 'Show',
+    'auth.password.hide': 'Hide',
     'stats.title': 'Statistics',
     'stats.loading': 'Loading statistics...',
     'stats.empty': 'No dreams yet.\nStart recording to see your statistics!',

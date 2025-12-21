@@ -490,6 +490,8 @@ const translations: Record<string, string> = {
     'auth.google.error_generic': 'Ocurrió un error durante el inicio de sesión con Google. Inténtalo de nuevo.',
     'auth.email.invalid': 'Introduce un correo electrónico válido.',
     'auth.password.too_short': 'Usa al menos {{count}} caracteres.',
+    'auth.password.show': 'Mostrar',
+    'auth.password.hide': 'Ocultar',
     'stats.title': 'Estadísticas',
     'stats.loading': 'Cargando estadísticas...',
     'stats.empty': 'Todavía no hay sueños.\n¡Empieza a registrar para ver tus estadísticas!',
