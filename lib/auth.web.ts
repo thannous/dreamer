@@ -10,6 +10,20 @@ export type { MockProfile } from './mockAuth';
 const isMockMode = isMockModeEnabled();
 const EMAIL_REDIRECT_WEB = 'https://dream.noctalia.app/recording';
 
+async function ensureSessionPersistence(session: Session | null): Promise<void> {
+  if (!session?.access_token || !session?.refresh_token) return;
+  try {
+    await supabase.auth.setSession({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    });
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[auth.web] failed to persist session', error);
+    }
+  }
+}
+
 function getWebRedirectTo(): string | undefined {
   try {
     const location = (globalThis as typeof globalThis & { location?: Location }).location;
@@ -73,6 +87,7 @@ export async function signInWithEmailPassword(email: string, password: string) {
 
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
+  await ensureSessionPersistence(data.session ?? null);
   return data.user;
 }
 
@@ -91,6 +106,7 @@ export async function signUpWithEmailPassword(email: string, password: string, u
     options: signUpOptions,
   });
   if (error) throw error;
+  await ensureSessionPersistence(data.session ?? null);
   return data.user;
 }
 
