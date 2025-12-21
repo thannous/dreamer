@@ -249,6 +249,9 @@ export async function signUpWithEmailPassword(email: string, password: string, u
   });
   if (error) throw error;
   await ensureSessionPersistence(data.session ?? null, 'signUpWithEmailPassword');
+  if (data.user) {
+    await markAccountCreated();
+  }
 
   // Mark fingerprint as upgraded to prevent quota bypass
   await markFingerprintUpgraded().catch(() => {
