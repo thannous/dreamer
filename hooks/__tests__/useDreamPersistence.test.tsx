@@ -21,6 +21,8 @@ const mockSaveDreams = vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
 const mockGetCachedRemoteDreams = vi.fn<() => Promise<DreamAnalysis[]>>();
 const mockSaveCachedRemoteDreams = vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
 const mockGetPendingMutations = vi.fn<() => Promise<DreamMutation[]>>();
+const mockGetDreamsMigrationSynced = vi.fn<() => Promise<boolean>>();
+const mockSetDreamsMigrationSynced = vi.fn<(userId: string, synced: boolean) => Promise<void>>();
 
 vi.mock('../../services/storageService', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
@@ -28,6 +30,15 @@ vi.mock('../../services/storageService', () => ({
   getCachedRemoteDreams: () => mockGetCachedRemoteDreams(),
   saveCachedRemoteDreams: (dreams: DreamAnalysis[]) => mockSaveCachedRemoteDreams(dreams),
   getPendingDreamMutations: () => mockGetPendingMutations(),
+  getDreamsMigrationSynced: () => mockGetDreamsMigrationSynced(),
+  setDreamsMigrationSynced: (userId: string, synced: boolean) =>
+    mockSetDreamsMigrationSynced(userId, synced),
+}));
+
+const mockGetAccessToken = vi.fn<() => Promise<string | null>>();
+
+vi.mock('../../lib/auth', () => ({
+  getAccessToken: () => mockGetAccessToken(),
 }));
 
 // Mock supabase service
@@ -72,8 +83,11 @@ describe('useDreamPersistence', () => {
     mockGetCachedRemoteDreams.mockResolvedValue([]);
     mockSaveCachedRemoteDreams.mockResolvedValue(undefined);
     mockGetPendingMutations.mockResolvedValue([]);
+    mockGetDreamsMigrationSynced.mockResolvedValue(false);
+    mockSetDreamsMigrationSynced.mockResolvedValue(undefined);
     mockFetchFromSupabase.mockResolvedValue([]);
     mockCreateInSupabase.mockResolvedValue(undefined);
+    mockGetAccessToken.mockResolvedValue('access-token');
   });
 
   afterEach(() => {

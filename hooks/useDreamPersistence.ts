@@ -13,6 +13,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '../context/AuthContext';
+import { getAccessToken } from '../lib/auth';
 import { logger } from '../lib/logger';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import {
@@ -88,6 +89,27 @@ export function useDreamPersistence({
   const [pendingMutations, setPendingMutations] = useState<DreamMutation[]>([]);
   const dreamsRef = useRef<DreamAnalysis[]>([]);
 
+  const ensureAccessToken = useCallback(
+    async (options?: { retries?: number; delayMs?: number; logLabel?: string }): Promise<boolean> => {
+      const retries = options?.retries ?? 0;
+      const delayMs = options?.delayMs ?? 200;
+
+      for (let attempt = 0; attempt <= retries; attempt += 1) {
+        const token = await getAccessToken();
+        if (token) return true;
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+      }
+
+      if (options?.logLabel) {
+        logger.warn(options.logLabel);
+      }
+      return false;
+    },
+    [getAccessToken, logger]
+  );
+
   // Keep ref in sync with state
   useEffect(() => {
     dreamsRef.current = dreams;
@@ -131,6 +153,12 @@ export function useDreamPersistence({
    */
   const migrateGuestDreamsToSupabase = useCallback(async () => {
     if (!canUseRemoteSync || !userId) return;
+    const hasSession = await ensureAccessToken({
+      retries: 1,
+      delayMs: 150,
+      logLabel: '[useDreamPersistence] Skipping guest dream migration: auth session not ready',
+    });
+    if (!hasSession) return;
     const localDreams = await getSavedDreams();
     const unsynced = localDreams.filter((dream) => !dream.remoteId);
     if (!unsynced.length) return;
@@ -145,7 +173,7 @@ export function useDreamPersistence({
     }
 
     await saveDreams([]);
-  }, [canUseRemoteSync, userId]); // ✅ FIX: Depend on userId instead of full user object
+  }, [canUseRemoteSync, ensureAccessToken, userId]); // ✅ FIX: Depend on userId instead of full user object
 
   /**
    * Migrate unsynced dreams to Supabase (one-shot migration)
@@ -158,6 +186,13 @@ export function useDreamPersistence({
     // One-shot: check if already migrated (flag stored locally per user)
     const alreadyMigrated = await getDreamsMigrationSynced(userId);
     if (alreadyMigrated) return;
+
+    const hasSession = await ensureAccessToken({
+      retries: 3,
+      delayMs: 200,
+      logLabel: '[useDreamPersistence] Skipping unsynced dream migration: auth session not ready',
+    });
+    if (!hasSession) return;
 
     try {
       // Prefer local sources: pending mutation queue + cached/local storage
@@ -193,6 +228,7 @@ export function useDreamPersistence({
       logger.debug(`Migrating ${unsynced.length} unsynced dreams`);
 
       // Sync each dream one by one
+      let hadFailures = false;
       for (const dream of unsynced) {
         try {
           // Ensure clientRequestId for idempotence (prevent duplicates if dream already on server)
@@ -211,17 +247,19 @@ export function useDreamPersistence({
           logger.debug(`Migrated dream ${dream.id} → remoteId ${synced.remoteId}`);
         } catch (error) {
           logger.warn('Migration failed for dream', dream.id, error);
+          hadFailures = true;
           // Continue with others (don't block entire migration)
         }
       }
 
-      // Mark as migrated to never run again (even if errors)
-      await setDreamsMigrationSynced(userId, true);
+      if (!hadFailures) {
+        await setDreamsMigrationSynced(userId, true);
+      }
     } catch (error) {
       logger.error('Background migration failed', error);
       // Don't mark as migrated in case of catastrophic failure
     }
-  }, [canUseRemoteSync, userId, persistRemoteDreams]);
+  }, [canUseRemoteSync, ensureAccessToken, userId, persistRemoteDreams]);
 
   /**
    * Load dreams from storage/server
@@ -261,6 +299,25 @@ export function useDreamPersistence({
       }
 
       try {
+        const hasSession = await ensureAccessToken({
+          retries: 5,
+          delayMs: 250,
+          logLabel: '[useDreamPersistence] Skipping remote dream load: auth session not ready',
+        });
+
+        if (!hasSession) {
+          const fallback = normalizeDreamList(applyPendingMutations(cached, pendingMutations));
+          if (mounted.current) {
+            const nextDreams = sortDreams(fallback);
+            if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
+              dreamsRef.current = nextDreams;
+              setDreams(nextDreams);
+            }
+            setPendingMutations(pendingMutations);
+          }
+          return { pendingMutations };
+        }
+
         const remoteDreams = await fetchDreamsFromSupabase();
         const normalizedRemote = normalizeDreamList(remoteDreams);
         await saveCachedRemoteDreams(sortDreams(normalizedRemote));
