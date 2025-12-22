@@ -9,6 +9,11 @@ export interface ChatMessage {
   createdAt?: number;
   meta?: {
     category?: DreamChatCategory;
+    isError?: boolean;
+    retry?: {
+      messageText: string;
+      displayText?: string;
+    };
   };
 }
 

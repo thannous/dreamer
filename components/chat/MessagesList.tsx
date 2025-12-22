@@ -29,8 +29,17 @@ import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { MarkdownText } from './MarkdownText';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type TextStyle,
+  type ViewStyle,
+} from 'react-native';
 import Animated, {
   runOnJS,
   useAnimatedReaction,
@@ -40,10 +49,9 @@ import Animated, {
   withRepeat,
   withSequence,
   withTiming,
-  Easing,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FadeInStaggered, TextFadeInStaggeredIfStreaming } from './FadeInStaggered';
+import { FadeInStaggered } from './FadeInStaggered';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
@@ -56,6 +64,8 @@ interface MessagesListProps {
   ListFooterComponent?: LegendListComponent;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  onRetryMessage?: (message: ChatMessage) => void;
+  retryA11yLabel?: string;
 }
 
 /**
@@ -87,24 +97,47 @@ const HANDWRITING_MIN_DURATION = 650;
 const HANDWRITING_MAX_DURATION = 2400;
 const HANDWRITING_TICK_MS = 16;
 
+const stripMarkdownForHandwriting = (value: string): string => {
+  return value
+    .replace(/```/g, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*[-+*]\s+/gm, '');
+};
+
 type HandwritingTextProps = {
   text: string;
   style?: StyleProp<TextStyle>;
   animate: boolean;
+  onComplete?: () => void;
 };
 
-function HandwritingText({ text, style, animate }: HandwritingTextProps) {
+function HandwritingText({ text, style, animate, onComplete }: HandwritingTextProps) {
   const [displayedText, setDisplayedText] = useState(animate ? '' : text);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didCompleteRef = useRef(false);
 
   useEffect(() => {
+    didCompleteRef.current = false;
     if (!animate) {
       setDisplayedText(text);
+      if (!didCompleteRef.current) {
+        didCompleteRef.current = true;
+        onComplete?.();
+      }
       return undefined;
     }
 
     if (timerRef.current) {
       clearInterval(timerRef.current);
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
     setDisplayedText('');
@@ -115,7 +148,29 @@ function HandwritingText({ text, style, animate }: HandwritingTextProps) {
     );
     const step = Math.max(1, Math.ceil(text.length / (totalDuration / HANDWRITING_TICK_MS)));
 
+    if (__DEV__) {
+      console.debug('[HandwritingText] start', {
+        length: text.length,
+        totalDuration,
+        step,
+      });
+    }
+
     let index = 0;
+    const finish = () => {
+      if (!didCompleteRef.current) {
+        didCompleteRef.current = true;
+        if (__DEV__) {
+          console.debug('[HandwritingText] complete', { length: text.length });
+        }
+        onComplete?.();
+      }
+    };
+
+    timeoutRef.current = setTimeout(() => {
+      finish();
+    }, totalDuration + HANDWRITING_TICK_MS);
+
     timerRef.current = setInterval(() => {
       index = Math.min(text.length, index + step);
       setDisplayedText(text.slice(0, index));
@@ -123,6 +178,11 @@ function HandwritingText({ text, style, animate }: HandwritingTextProps) {
       if (index >= text.length && timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        finish();
       }
     }, HANDWRITING_TICK_MS);
 
@@ -131,8 +191,12 @@ function HandwritingText({ text, style, animate }: HandwritingTextProps) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
     };
-  }, [animate, text]);
+  }, [animate, onComplete, text]);
 
   return (
     <Text style={style}>
@@ -141,41 +205,75 @@ function HandwritingText({ text, style, animate }: HandwritingTextProps) {
   );
 }
 
-const AssistantMessage = memo(function AssistantMessage({ message, isStreaming, shouldHandwrite }: { message: ChatMessage; index: number; isStreaming: boolean; shouldHandwrite: boolean }) {
+const AssistantMessage = memo(function AssistantMessage({
+  message,
+  isStreaming,
+  shouldHandwrite,
+  isRetryableError,
+  onRetry,
+  retryA11yLabel,
+}: {
+  message: ChatMessage;
+  index: number;
+  isStreaming: boolean;
+  shouldHandwrite: boolean;
+  isRetryableError: boolean;
+  onRetry?: () => void;
+  retryA11yLabel?: string;
+}) {
   const { colors, mode } = useTheme();
-  const [showMarkdown, setShowMarkdown] = useState(false);
-  const markdownOpacity = useSharedValue(0);
-
-  useEffect(() => {
-    if (showMarkdown) {
-      markdownOpacity.value = withTiming(1, {
-        duration: 300,
-        easing: Easing.out(Easing.quad),
+  const [handwritingComplete, setHandwritingComplete] = useState(!shouldHandwrite);
+  // Deferred state to prevent abrupt view tree changes during Android draw cycle.
+  // The switch to MarkdownText is delayed by one frame to let the view hierarchy stabilize.
+  const [deferredHandwritingComplete, setDeferredHandwritingComplete] = useState(!shouldHandwrite);
+  const handwritingText = useMemo(() => stripMarkdownForHandwriting(message.text), [message.text]);
+  const handleHandwritingComplete = useCallback(() => {
+    setHandwritingComplete(true);
+    // On Android, defer the visual switch to MarkdownText to avoid NullPointerException
+    // in ViewGroup.dispatchDraw when the view tree changes during a draw cycle.
+    if (Platform.OS === 'android') {
+      requestAnimationFrame(() => {
+        setDeferredHandwritingComplete(true);
       });
     } else {
-      markdownOpacity.value = 0;
+      setDeferredHandwritingComplete(true);
     }
-  }, [markdownOpacity, showMarkdown]);
+  }, []);
 
-  const animatedMarkdownStyle = useAnimatedStyle(() => ({
-    opacity: markdownOpacity.value,
-  }));
-
-  // Determine if we're currently animating (either handwriting or streaming)
-  const isAnimating = shouldHandwrite || isStreaming;
-
-  // Transition from plain text to markdown when animation completes
   useEffect(() => {
-    if (!isAnimating) {
-      // Animation complete - fade in markdown
-      setShowMarkdown(true);
-    } else {
-      // Reset markdown visibility when animation starts
-      setShowMarkdown(false);
+    if (shouldHandwrite) {
+      setHandwritingComplete(false);
+      setDeferredHandwritingComplete(false);
     }
-  }, [isAnimating]);
+  }, [message.id, shouldHandwrite]);
+
+  // Use deferred state for determining when to show complex MarkdownText on Android.
+  // This prevents view tree corruption when switching components during draw.
+  const isHandwritingActive = shouldHandwrite && !deferredHandwritingComplete;
+  const isAnimating = isHandwritingActive;
 
   const textStyle = [styles.messageText, { color: colors.textPrimary }];
+
+  useEffect(() => {
+    if (!__DEV__) return;
+    console.debug('[AssistantMessage] render state', {
+      id: message.id,
+      isStreaming,
+      shouldHandwrite,
+      handwritingComplete,
+      isAnimating,
+      activeTextLength: isAnimating ? handwritingText.length : message.text.length,
+      fullTextLength: message.text.length,
+    });
+  }, [
+    handwritingText.length,
+    handwritingComplete,
+    isAnimating,
+    isStreaming,
+    message.id,
+    message.text.length,
+    shouldHandwrite,
+  ]);
 
   const aiBubbleStyle = mode === 'dark'
     ? {
@@ -189,36 +287,18 @@ const AssistantMessage = memo(function AssistantMessage({ message, isStreaming, 
         borderWidth: 1,
       };
 
-  // PLAIN TEXT during animation (avoids invalid markdown)
-  // MARKDOWN after animation (with smooth crossfade)
-  let messageContent: React.ReactNode;
-
-  if (isAnimating) {
-    // Display plain text during animation
-    if (shouldHandwrite) {
-      messageContent = (
-        <HandwritingText text={message.text} style={textStyle} animate={shouldHandwrite} />
-      );
-    } else {
-      messageContent = (
-        <TextFadeInStaggeredIfStreaming
-          isStreaming={isStreaming}
-          style={textStyle}
-        >
-          {message.text}
-        </TextFadeInStaggeredIfStreaming>
-      );
-    }
-  } else {
-    // Animation complete - render markdown with crossfade
-    messageContent = (
-      <Animated.View style={animatedMarkdownStyle}>
-        <MarkdownText style={textStyle}>
-          {message.text}
-        </MarkdownText>
-      </Animated.View>
-    );
-  }
+  const messageContent = isHandwritingActive ? (
+    <HandwritingText
+      text={handwritingText}
+      style={textStyle}
+      animate={isHandwritingActive}
+      onComplete={handleHandwritingComplete}
+    />
+  ) : (
+    <MarkdownText style={textStyle}>
+      {message.text}
+    </MarkdownText>
+  );
 
   return (
     <FadeInStaggered>
@@ -229,6 +309,23 @@ const AssistantMessage = memo(function AssistantMessage({ message, isStreaming, 
         <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
           {messageContent}
         </View>
+        {isRetryableError && onRetry && (
+          <Pressable
+            onPress={onRetry}
+            accessibilityRole="button"
+            accessibilityLabel={retryA11yLabel}
+            style={({ pressed }) => [
+              styles.retryButton,
+              {
+                backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : colors.backgroundSecondary,
+                borderColor: colors.divider,
+              },
+              pressed && styles.retryButtonPressed,
+            ]}
+          >
+            <MaterialCommunityIcons name="refresh" size={18} color={colors.textSecondary} />
+          </Pressable>
+        )}
       </View>
     </FadeInStaggered>
   );
@@ -351,6 +448,8 @@ export function MessagesList({
   ListFooterComponent,
   style,
   contentContainerStyle,
+  onRetryMessage,
+  retryA11yLabel,
 }: MessagesListProps) {
   const handwritingAnimatedMessages = useRef<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(0);
@@ -387,6 +486,15 @@ export function MessagesList({
   const [isStreamingSnapshot, setIsStreamingSnapshot] = useState(false);
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const lastErrorMessageId = useMemo(() => {
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      const message = messages[index];
+      if (message.role === 'model' && message.meta?.isError) {
+        return message.id;
+      }
+    }
+    return null;
+  }, [messages]);
 
   // Sync shared value to JS state to avoid reading .value during render
   useEffect(() => {
@@ -435,6 +543,13 @@ export function MessagesList({
       const allowHandwrite = isNearBottomSnapshot && !isUserScrolling;
       const hasAnimatedHandwriting = handwritingAnimatedMessages.current.has(messageId);
       let shouldHandwrite = false;
+      const isRetryableError = Boolean(
+        onRetryMessage &&
+          item.role === 'model' &&
+          item.meta?.isError &&
+          lastErrorMessageId &&
+          item.id === lastErrorMessageId
+      );
 
       if (
         !hasAnimatedHandwriting &&
@@ -468,6 +583,9 @@ export function MessagesList({
               index={index}
               isStreaming={isStreamingMessage}
               shouldHandwrite={shouldHandwrite}
+              isRetryableError={isRetryableError}
+              onRetry={isRetryableError ? () => onRetryMessage?.(item) : undefined}
+              retryA11yLabel={retryA11yLabel}
             />
           )}
         </MessageContextProvider>
@@ -480,7 +598,10 @@ export function MessagesList({
       isNearBottomSnapshot,
       isStreamingSnapshot,
       isUserScrolling,
+      lastErrorMessageId,
       messages.length,
+      onRetryMessage,
+      retryA11yLabel,
     ]
   );
 
@@ -489,6 +610,9 @@ export function MessagesList({
   // Avoid copying data on every render (can trigger extra list work)
   const listData = messages;
   const shouldRecycleItems = Platform.OS !== 'android';
+  const lastMessageRole = messages.length ? messages[messages.length - 1].role : undefined;
+  const shouldMaintainScrollAtEnd =
+    isNearBottomSnapshot && lastMessageRole === 'user' && !isStreamingSnapshot;
 
   const loadingAccessibility = isLoading
     ? { accessibilityState: { busy: true }, accessibilityLabel: loadingText }
@@ -531,7 +655,7 @@ export function MessagesList({
         // if the user is already near the bottom (threshold ~10% from end)
         // Note: onDataChange is handled by useAutoScrollOnNewMessage hook for smart scrolling
         maintainScrollAtEnd={
-          isNearBottomSnapshot
+          shouldMaintainScrollAtEnd
             ? {
                 onLayout: true,
                 onItemLayout: true,
@@ -587,5 +711,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
+  },
+  retryButton: {
+    alignSelf: 'center',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  },
+  retryButtonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.95 }],
   },
 });

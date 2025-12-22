@@ -9,6 +9,15 @@ export const Platform = {
 
 export const NativeModules: Record<string, unknown> = {};
 
+export type AppStateStatus = 'active' | 'background' | 'inactive' | 'unknown';
+
+export const AppState = {
+  currentState: 'active' as AppStateStatus,
+  addEventListener: (_event: 'change', _listener: (state: AppStateStatus) => void) => {
+    return { remove: () => {} };
+  },
+};
+
 export const Alert = {
   alert: () => {},
 };

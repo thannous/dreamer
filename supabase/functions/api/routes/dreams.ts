@@ -1,0 +1,378 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
+import { ANALYZE_DREAM_SCHEMA, CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
+import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';
+import { generateImageFromPrompt } from '../services/geminiImages.ts';
+import { optimizeImage } from '../services/image.ts';
+import { createStorageHelpers } from '../services/storage.ts';
+import type { ApiContext } from '../types.ts';
+
+export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
+  const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
+
+  try {
+    const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
+    const transcript = String(body?.transcript ?? '').trim();
+    const lang = String(body?.lang ?? 'en');
+    const fingerprint = body?.fingerprint;
+    if (!transcript) throw new Error('Missing transcript');
+
+    const apiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+    console.log('[api] /analyzeDream request', {
+      userId: user?.id ?? null,
+      transcriptLength: transcript.length,
+      lang,
+      snippet: transcript.slice(0, 80),
+      hasFingerprint: !!fingerprint,
+    });
+
+    let quotaUsed: { analysis: number } | undefined;
+    if (!user && supabaseServiceRoleKey) {
+      if (!fingerprint) {
+        console.warn('[api] /analyzeDream: guest without fingerprint, allowing in degraded mode');
+      } else {
+        const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
+
+        const guestAnalysisLimit = GUEST_LIMITS.analysis;
+        const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+          p_fingerprint: fingerprint,
+          p_quota_type: 'analysis',
+          p_limit: guestAnalysisLimit,
+        });
+
+        if (quotaError) {
+          console.error('[api] /analyzeDream: quota check failed', quotaError);
+        } else if (!quotaResult?.allowed) {
+          console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
+          return new Response(
+            JSON.stringify({
+              error: 'Guest analysis limit reached',
+              code: 'QUOTA_EXCEEDED',
+              usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
+            }),
+            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
+        } else {
+          quotaUsed = { analysis: quotaResult.new_count };
+        }
+      }
+    }
+
+    const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
+    const systemInstruction = lang === 'fr'
+      ? 'Analyse les rêves. Retourne UNIQUEMENT du JSON valide.'
+      : lang === 'es'
+        ? 'Analiza sueños. Devuelve SOLO JSON válido.'
+        : 'Analyze dreams. Return ONLY valid JSON.';
+
+    const prompt = `You analyze user dreams with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
+
+    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
+    const { text } = await callGeminiWithFallback(
+      apiKey,
+      primaryModel,
+      'gemini-3-flash-preview',
+      [{ role: 'user', parts: [{ text: prompt }] }],
+      systemInstruction,
+      {
+        responseMimeType: 'application/json',
+        responseJsonSchema: ANALYZE_DREAM_SCHEMA
+      }
+    );
+
+    console.log('[api] /analyzeDream model raw length', text.length);
+
+    let analysis: any;
+    try {
+      analysis = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('[api] /analyzeDream: unexpected JSON parse failure', parseErr, { text });
+      throw new Error('Failed to parse model response');
+    }
+
+    if (!analysis.title || !analysis.interpretation) {
+      throw new Error('Missing required fields in model response');
+    }
+
+    const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
+      ? analysis.theme
+      : 'surreal';
+
+    console.log('[api] /analyzeDream success', {
+      userId: user?.id ?? null,
+      theme,
+      titleLength: String(analysis.title ?? '').length,
+      quotaUsed,
+    });
+
+    return new Response(
+      JSON.stringify({
+        title: String(analysis.title ?? ''),
+        interpretation: String(analysis.interpretation ?? ''),
+        shareableQuote: String(analysis.shareableQuote ?? ''),
+        theme,
+        dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
+        imagePrompt: String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere'),
+        ...(quotaUsed && { quotaUsed }),
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (e) {
+    console.error('[api] /analyzeDream error', e);
+    const errorInfo = classifyGeminiError(e);
+    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+      status: errorInfo.status,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+}
+
+export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response> {
+  const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
+
+  try {
+    const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
+    const transcript = String(body?.transcript ?? '').trim();
+    const lang = String(body?.lang ?? 'en');
+    const fingerprint = body?.fingerprint;
+    if (!transcript) throw new Error('Missing transcript');
+
+    const apiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+    console.log('[api] /analyzeDreamFull request', {
+      userId: user?.id ?? null,
+      transcriptLength: transcript.length,
+      lang,
+      snippet: transcript.slice(0, 80),
+      hasFingerprint: !!fingerprint,
+    });
+
+    let quotaUsed: { analysis: number } | undefined;
+    if (!user && supabaseServiceRoleKey) {
+      if (!fingerprint) {
+        console.warn('[api] /analyzeDreamFull: guest without fingerprint, allowing in degraded mode');
+      } else {
+        const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
+
+        const guestAnalysisLimit = GUEST_LIMITS.analysis;
+        const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+          p_fingerprint: fingerprint,
+          p_quota_type: 'analysis',
+          p_limit: guestAnalysisLimit,
+        });
+
+        if (quotaError) {
+          console.error('[api] /analyzeDreamFull: quota check failed', quotaError);
+        } else if (!quotaResult?.allowed) {
+          console.log('[api] /analyzeDreamFull: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
+          return new Response(
+            JSON.stringify({
+              error: 'Guest analysis limit reached',
+              code: 'QUOTA_EXCEEDED',
+              usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
+            }),
+            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
+        } else {
+          quotaUsed = { analysis: quotaResult.new_count };
+        }
+      }
+    }
+
+    const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
+    const systemInstruction = lang === 'fr'
+      ? 'Analyse les rêves. Retourne UNIQUEMENT du JSON valide.'
+      : lang === 'es'
+        ? 'Analiza sueños. Devuelve SOLO JSON válido.'
+        : 'Analyze dreams. Return ONLY valid JSON.';
+
+    const prompt = `You analyze user dreams with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
+
+    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
+    const { text } = await callGeminiWithFallback(
+      apiKey,
+      primaryModel,
+      'gemini-3-flash-preview',
+      [{ role: 'user', parts: [{ text: prompt }] }],
+      systemInstruction,
+      {
+        responseMimeType: 'application/json',
+        responseJsonSchema: ANALYZE_DREAM_SCHEMA
+      }
+    );
+
+    console.log('[api] /analyzeDreamFull model raw length', text.length);
+
+    let analysis: any;
+    try {
+      analysis = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('[api] /analyzeDreamFull: unexpected JSON parse failure', parseErr, { text });
+      throw new Error('Failed to parse model response');
+    }
+    if (!analysis.title || !analysis.interpretation) {
+      throw new Error('Missing required fields in model response');
+    }
+
+    const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
+      ? analysis.theme
+      : 'surreal';
+
+    const imagePrompt = String(analysis.imagePrompt ?? 'dreamlike, surreal night atmosphere');
+
+    const { imageBase64, mimeType, raw: imgJson } = await generateImageFromPrompt({
+      prompt: imagePrompt,
+      apiKey,
+      aspectRatio: '9:16',
+    });
+
+    if (!imageBase64) {
+      return new Response(
+        JSON.stringify({
+          error: 'No image returned',
+          raw: imgJson,
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
+      );
+    }
+
+    const optimized =
+      (await optimizeImage(
+        { base64: imageBase64, contentType: mimeType ?? 'image/png' },
+        { maxWidth: 1024, maxHeight: 1024, quality: 78 }
+      ).catch(() => null)) ?? {
+        base64: imageBase64,
+        contentType: mimeType ?? 'image/png',
+      };
+
+    const { uploadImageToStorage } = createStorageHelpers({
+      supabaseUrl,
+      supabaseServiceRoleKey,
+      storageBucket,
+      ownerId: user?.id ?? null,
+    });
+    const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
+    const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
+
+    return new Response(
+      JSON.stringify({
+        title: String(analysis.title ?? ''),
+        interpretation: String(analysis.interpretation ?? ''),
+        shareableQuote: String(analysis.shareableQuote ?? ''),
+        theme,
+        dreamType: String(analysis.dreamType ?? 'Symbolic Dream'),
+        imagePrompt,
+        imageUrl,
+        imageBytes: optimized.base64,
+        ...(quotaUsed && { quotaUsed }),
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (e) {
+    console.error('[api] /analyzeDreamFull error', e);
+    const errorInfo = classifyGeminiError(e);
+    return new Response(
+      JSON.stringify({
+        error: errorInfo.userMessage,
+        ...(e as any)?.blockReason ? { blockReason: (e as any).blockReason } : {},
+        ...(e as any)?.promptFeedback ? { promptFeedback: (e as any).promptFeedback } : {},
+      }),
+      {
+        status: errorInfo.status,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      }
+    );
+  }
+}
+
+export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> {
+  const { req, user } = ctx;
+
+  try {
+    const body = (await req.json()) as { transcript?: string; lang?: string };
+    const transcript = String(body?.transcript ?? '').trim();
+    const lang = String(body?.lang ?? 'en');
+    if (!transcript) throw new Error('Missing transcript');
+
+    const apiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+    console.log('[api] /categorizeDream request', {
+      userId: user?.id ?? null,
+      transcriptLength: transcript.length,
+      lang,
+    });
+
+    const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
+    const systemInstruction = lang === 'fr'
+      ? 'Catégorise rapidement. Retourne UNIQUEMENT du JSON valide.'
+      : lang === 'es'
+        ? 'Categoriza rápidamente. Devuelve SOLO JSON válido.'
+        : 'Categorize quickly. Return ONLY valid JSON.';
+
+    const prompt = `You analyze user dreams with keys: {"title": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "hasPerson": boolean, "hasAnimal": boolean}. Choose the single most appropriate theme and dreamType from that list. The title MUST be in ${langName}.
+
+"hasPerson": true if the dream mentions any person (self, friend, stranger, family member, character, figure, etc.), false otherwise
+"hasAnimal": true if the dream mentions any animal (pet, wild animal, creature, bird, mythical being, etc.), false otherwise
+
+Dream transcript:\n${transcript}`;
+
+    const { text } = await callGeminiWithFallback(
+      apiKey,
+      'gemini-2.5-flash-lite',
+      'gemini-2.5-flash-lite',
+      [{ role: 'user', parts: [{ text: prompt }] }],
+      systemInstruction,
+      {
+        responseMimeType: 'application/json',
+        responseJsonSchema: CATEGORIZE_DREAM_SCHEMA
+      }
+    );
+
+    let analysis: any;
+    try {
+      analysis = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('[api] /categorizeDream: unexpected JSON parse failure', parseErr, { text });
+      throw new Error('Failed to parse model response');
+    }
+    if (!analysis.title || !analysis.theme || !analysis.dreamType || typeof analysis.hasPerson !== 'boolean' || typeof analysis.hasAnimal !== 'boolean') {
+      throw new Error('Missing required fields in model response');
+    }
+
+    const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
+      ? analysis.theme
+      : 'surreal';
+    const dreamType = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'].includes(analysis.dreamType)
+      ? analysis.dreamType
+      : 'Symbolic Dream';
+
+    return new Response(
+      JSON.stringify({
+        title: String(analysis.title ?? 'New Dream'),
+        theme,
+        dreamType,
+        hasPerson: Boolean(analysis.hasPerson),
+        hasAnimal: Boolean(analysis.hasAnimal),
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (e) {
+    console.error('[api] /categorizeDream error', e);
+    const errorInfo = classifyGeminiError(e);
+    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+      status: errorInfo.status,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+}
