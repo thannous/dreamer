@@ -5,6 +5,7 @@ import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/li
 
 let initialized = false;
 let currentStatus: SubscriptionStatus | null = null;
+let currentStatusUserId: string | null = null;
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
 
 const mockPackages: PurchasePackage[] = [
@@ -59,13 +60,19 @@ function buildStatusFromTier(tier: SubscriptionTier): SubscriptionStatus {
 }
 
 async function syncStatusWithCurrentUser(): Promise<SubscriptionStatus> {
-  // If the user has purchased (currentStatus is paid), preserve that state
-  // since the mock doesn't have real backend sync
+  const user = await getCurrentUser();
+  const userId = user?.id ?? null;
+
+  if (currentStatusUserId !== userId) {
+    currentStatus = null;
+    currentStatusUserId = userId;
+  }
+
+  // If the user has purchased (currentStatus is paid), preserve that state for this user
   if (currentStatus?.tier === 'plus' || currentStatus?.tier === 'premium') {
     return currentStatus;
   }
 
-  const user = await getCurrentUser();
   const tier = mapTierFromUser(user);
   const nextStatus = buildStatusFromTier(tier);
 
@@ -104,7 +111,7 @@ export async function loadOfferings(): Promise<PurchasePackage[]> {
   return mockPackages;
 }
 
-function setTier(tier: SubscriptionTier, productId: string | null): SubscriptionStatus {
+function setTier(tier: SubscriptionTier, productId: string | null, userId: string | null): SubscriptionStatus {
   const status: SubscriptionStatus = {
     tier,
     isActive: tier === 'plus' || tier === 'premium',
@@ -112,6 +119,7 @@ function setTier(tier: SubscriptionTier, productId: string | null): Subscription
     productId,
   };
   currentStatus = status;
+  currentStatusUserId = userId;
   return status;
 }
 
@@ -120,7 +128,9 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
     throw new Error('Purchases not initialized');
   }
   const pkg = mockPackages.find((item) => item.id === id) ?? mockPackages[0];
-  return setTier('plus', pkg.id);
+  const user = await getCurrentUser();
+  const userId = user?.id ?? null;
+  return setTier('plus', pkg.id, userId);
 }
 
 export async function restorePurchases(): Promise<SubscriptionStatus> {
