@@ -81,7 +81,10 @@
       "Bash(git reset:*)",
       "Bash(node scripts/generate-sitemap.js:*)",
       "Bash(node scripts/generate-sitemap-v2.js:*)",
-      "Bash(npm run generate-sitemap:*)"
+      "Bash(npm run generate-sitemap:*)",
+      "Bash(git -C /home/tchau@france.groupe.intra/WebstormProjects/dreamer status --short)",
+      "Bash(git -C /home/tchau@france.groupe.intra/WebstormProjects/dreamer check-ignore -v /home/tchau@france.groupe.intra/WebstormProjects/dreamer/android)",
+      "Bash(git -C /home/tchau@france.groupe.intra/WebstormProjects/dreamer ls-files:*)"
     ],
     "deny": [],
     "ask": []

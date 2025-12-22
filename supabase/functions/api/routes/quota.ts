@@ -15,8 +15,12 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
     if (guestCheck instanceof Response) {
       return guestCheck;
     }
-    const fingerprint = guestCheck.fingerprint;
-    if (!fingerprint) {
+    const fingerprint =
+      guestCheck.fingerprint ??
+      req.headers.get('x-guest-fingerprint')?.trim() ??
+      body?.fingerprint?.trim() ??
+      null;
+    if (!fingerprint && !user) {
       return new Response(JSON.stringify({ error: 'Guest session required' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
