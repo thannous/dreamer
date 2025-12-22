@@ -1,5 +1,10 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import {
+  inferTierFromEntitlementKeys,
+  inferTierFromSubscriber,
+  type RevenueCatV1SubscriberResponse,
+} from '../../lib/revenuecatSubscriber.ts';
 
 const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -10,21 +15,10 @@ const corsHeaders: Record<string, string> = {
 type Tier = 'free' | 'plus';
 type InferredTier = Tier | null;
 
-const PREMIUM_ENTITLEMENT_KEYS = [
-  'premium',
-  'noctalia_premium',
-  'noctalia-premium',
-  'noctaliaPremium',
-  'Noctalia Premium',
-];
-
-const PLUS_ENTITLEMENT_KEYS = [
-  'plus',
-  'noctalia_plus',
-  'noctalia-plus',
-  'noctaliaPlus',
-  'Noctalia Plus',
-];
+function normalizeTierForComparison(tier: string | null | undefined): Tier {
+  if (tier === 'plus' || tier === 'premium') return 'plus';
+  return 'free';
+}
 
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -128,23 +122,6 @@ function getAppUserIdCandidates(payload: any): string[] {
   return Array.from(ids);
 }
 
-function tierFromEntitlementKey(key: string): InferredTier {
-  // ✅ No more "premium" tier: legacy premium entitlements grant "plus".
-  if (PREMIUM_ENTITLEMENT_KEYS.includes(key)) return 'plus';
-  if (PLUS_ENTITLEMENT_KEYS.includes(key)) return 'plus';
-  return null;
-}
-
-function inferTierFromEntitlementKeys(keys: string[]): InferredTier {
-  for (const key of keys) {
-    const mapped = tierFromEntitlementKey(key);
-    if (!mapped) continue;
-    return mapped;
-  }
-
-  return keys.length > 0 ? null : 'free';
-}
-
 async function rcFetchJson<T>(url: string, apiKey: string, timeoutMs = 8000): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -179,51 +156,6 @@ function getRevenueCatApiKey(): string {
     throw new Error('Missing REVENUECAT_SECRET_API_KEY');
   }
   return apiKey;
-}
-
-type RevenueCatV1Entitlement = {
-  expires_date?: string | null;
-  grace_period_expires_date?: string | null;
-};
-
-type RevenueCatV1SubscriberResponse = {
-  subscriber?: {
-    original_app_user_id?: string | null;
-    aliases?: string[] | null;
-    entitlements?: Record<string, RevenueCatV1Entitlement>;
-  };
-};
-
-function isActiveEntitlementV1(ent: RevenueCatV1Entitlement, nowMs: number): boolean {
-  const grace = ent.grace_period_expires_date;
-  if (typeof grace === 'string' && grace.trim()) {
-    const graceMs = new Date(grace).getTime();
-    if (Number.isFinite(graceMs) && graceMs > nowMs) return true;
-  }
-
-  const expires = ent.expires_date;
-  if (expires === null || expires === undefined) {
-    // No expiration typically means lifetime/non-expiring entitlement.
-    return true;
-  }
-
-  if (typeof expires === 'string' && expires.trim()) {
-    const expiresMs = new Date(expires).getTime();
-    return Number.isFinite(expiresMs) && expiresMs > nowMs;
-  }
-
-  return false;
-}
-
-function inferTierFromSubscriberV1(subscriber: RevenueCatV1SubscriberResponse): InferredTier {
-  const entitlements = subscriber?.subscriber?.entitlements ?? {};
-  const nowMs = Date.now();
-
-  const activeEntitlementKeys = Object.entries(entitlements)
-    .filter(([_, ent]) => isActiveEntitlementV1(ent, nowMs))
-    .map(([key]) => key);
-
-  return inferTierFromEntitlementKeys(activeEntitlementKeys);
 }
 
 function getSubscriberIdsFromRevenueCat(subscriber: RevenueCatV1SubscriberResponse): string[] {
@@ -470,7 +402,7 @@ serve(async (req: Request) => {
 
     let newTier: InferredTier = null;
     if (subscriberV1) {
-      newTier = inferTierFromSubscriberV1(subscriberV1);
+      newTier = inferTierFromSubscriber(subscriberV1);
     } else {
       newTier = inferTierFromWebhookPayload(payload);
     }
@@ -482,6 +414,23 @@ serve(async (req: Request) => {
       usedSubscriberV1Data: Boolean(subscriberV1),
       entitlementIds: payload?.event?.entitlement_ids ?? [],
     });
+
+    // Protection order-based: Pour CANCELLATION, vérifier si l'expiration est passée
+    const eventType = payload?.event?.type;
+    const expirationAtMs = payload?.event?.expiration_at_ms;
+    const nowMs = Date.now();
+
+    if (eventType === 'CANCELLATION' && typeof expirationAtMs === 'number' && nowMs > expirationAtMs) {
+      console.log('[revenuecat-webhook] CANCELLATION received after expiration, forcing tier to free', {
+        timestamp: new Date().toISOString(),
+        userId: resolvedUserId,
+        expirationAtMs,
+        nowMs,
+        deltaMs: nowMs - expirationAtMs,
+        originalInferredTier: newTier,
+      });
+      newTier = 'free';
+    }
 
     if (newTier === null) {
       console.warn('[revenuecat-webhook] Tier is null, skipping update', {
@@ -496,15 +445,112 @@ serve(async (req: Request) => {
       });
     }
 
-    const currentTier = userData.user.app_metadata?.tier as Tier | undefined;
-    if (currentTier === newTier) {
+    const currentTier = userData.user.app_metadata?.tier as string | undefined;
+    const currentAppMeta = (userData.user.app_metadata ?? {}) as Record<string, unknown>;
+
+    // Cache tier from subscriber (calculé une seule fois)
+    const tierFromSubscriber = subscriberV1 ? inferTierFromSubscriber(subscriberV1, nowMs) : null;
+    const normalizedCurrentTier = normalizeTierForComparison(currentTier);
+    const normalizedNewTier = normalizeTierForComparison(newTier);
+
+    // Protection supplémentaire: Empêcher CANCELLATION d'upgrader un utilisateur déjà 'free'
+    // Ceci couvre le cas où EXPIRATION a déjà été traité mais CANCELLATION arrive après
+    const isUpgrade = normalizedNewTier === 'plus' && normalizedCurrentTier === 'free';
+    if (isUpgrade && eventType === 'CANCELLATION') {
+      const hasActiveEntitlement = tierFromSubscriber === 'plus';
+      if (!hasActiveEntitlement) {
+        console.warn('[revenuecat-webhook] Blocking CANCELLATION from upgrading expired user', {
+          timestamp: new Date().toISOString(),
+          userId: resolvedUserId,
+          currentTier: normalizedCurrentTier,
+          attemptedTier: newTier,
+          eventType,
+          tierFromSubscriber,
+        });
+        return new Response(JSON.stringify({
+          ok: true,
+          blocked: true,
+          reason: 'CANCELLATION cannot upgrade without active entitlement',
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+      console.log('[revenuecat-webhook] Allowing CANCELLATION upgrade due to active entitlement', {
+        timestamp: new Date().toISOString(),
+        userId: resolvedUserId,
+        tierFromSubscriber,
+      });
+    }
+
+    const rawEventTimestampMs = payload?.event?.event_timestamp_ms;
+    const eventTimestampMs = typeof rawEventTimestampMs === 'number'
+      ? rawEventTimestampMs
+      : typeof rawEventTimestampMs === 'string'
+        ? Number(rawEventTimestampMs)
+        : null;
+    const validEventTimestampMs = eventTimestampMs !== null && Number.isFinite(eventTimestampMs)
+      ? eventTimestampMs
+      : null;
+    const rawLastEventTimestampMs = currentAppMeta.last_tier_event_timestamp_ms;
+    const lastEventTimestampMs = typeof rawLastEventTimestampMs === 'number'
+      ? rawLastEventTimestampMs
+      : typeof rawLastEventTimestampMs === 'string'
+        ? Number(rawLastEventTimestampMs)
+        : undefined;
+    const validLastEventTimestampMs = Number.isFinite(lastEventTimestampMs)
+      ? lastEventTimestampMs
+      : undefined;
+
+    if (
+      validEventTimestampMs !== null &&
+      typeof validLastEventTimestampMs === 'number' &&
+      validEventTimestampMs < validLastEventTimestampMs
+    ) {
+      console.log('[revenuecat-webhook] Ignoring older event', {
+        timestamp: new Date().toISOString(),
+        userId: resolvedUserId,
+        eventTimestampMs: validEventTimestampMs,
+        lastEventTimestampMs: validLastEventTimestampMs,
+        deltaMs: validLastEventTimestampMs - validEventTimestampMs,
+      });
+      return new Response(JSON.stringify({
+        ok: true,
+        skipped: true,
+        reason: 'event older than last processed',
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const shouldUpdateTimestamp = validEventTimestampMs !== null &&
+      (validLastEventTimestampMs === undefined || validEventTimestampMs > validLastEventTimestampMs);
+
+    if (normalizedCurrentTier === normalizedNewTier) {
+      if (shouldUpdateTimestamp) {
+        const { error: updateError } = await supabase.auth.admin.updateUserById(resolvedUserId, {
+          app_metadata: {
+            ...currentAppMeta,
+            last_tier_event_timestamp_ms: validEventTimestampMs,
+          },
+        });
+        if (updateError) {
+          console.warn('[revenuecat-webhook] Failed to update timestamp', { error: updateError.message });
+        }
+      }
       console.log('[revenuecat-webhook] Tier unchanged', {
         timestamp: new Date().toISOString(),
         userId: resolvedUserId,
         tier: newTier,
         eventType: payload?.event?.type,
       });
-      return new Response(JSON.stringify({ ok: true, tier: newTier, unchanged: true }), {
+      return new Response(JSON.stringify({
+        ok: true,
+        skipped: true,
+        reason: 'tier unchanged',
+        timestampUpdated: shouldUpdateTimestamp,
+      }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -518,8 +564,13 @@ serve(async (req: Request) => {
       eventType: payload?.event?.type,
     });
 
-    const currentAppMeta = (userData.user.app_metadata ?? {}) as Record<string, unknown>;
-    const updatedAppMeta = { ...currentAppMeta, tier: newTier };
+    const updatedAppMeta = {
+      ...currentAppMeta,
+      tier: newTier,
+      tier_updated_at: new Date().toISOString(),
+      tier_source: 'revenuecat_webhook',
+      ...(validEventTimestampMs !== null && { last_tier_event_timestamp_ms: validEventTimestampMs }),
+    };
 
     const { error: updateError } = await supabase.auth.admin.updateUserById(resolvedUserId, {
       app_metadata: updatedAppMeta,

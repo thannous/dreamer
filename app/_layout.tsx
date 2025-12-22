@@ -29,7 +29,7 @@ import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
-import { useSubscriptionMonitor } from '@/hooks/useSubscriptionMonitor';
+// useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { initializeGoogleSignIn } from '@/lib/auth';
 import { loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
@@ -118,7 +118,7 @@ function RootLayoutNav() {
   const isNavigationReady = useNavigationIsReady();
 
   useSubscriptionInitialize();
-  useSubscriptionMonitor();
+  // Note: useSubscriptionMonitor est maintenant intégré dans useSubscription
 
   useEffect(() => {
     pathnameRef.current = pathname;

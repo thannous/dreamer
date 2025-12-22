@@ -15,6 +15,7 @@ vi.mock('../services/subscriptionService', () => {
     initializeSubscription: vi.fn(async () => ({ tier: 'free', isActive: false })),
     isSubscriptionInitialized: vi.fn(() => false),
     getSubscriptionStatus: vi.fn(async () => ({ tier: 'free', isActive: false })),
+    refreshSubscriptionStatus: vi.fn(async () => ({ tier: 'free', isActive: false })),
     loadSubscriptionPackages: vi.fn(async () => [
       { id: 'mock_monthly', interval: 'monthly', priceFormatted: '$4.99', currency: 'USD' },
     ]),
@@ -22,6 +23,10 @@ vi.mock('../services/subscriptionService', () => {
     restoreSubscriptionPurchases: vi.fn(async () => ({ tier: 'plus', isActive: true })),
   };
 });
+
+vi.mock('../services/subscriptionSyncService', () => ({
+  syncSubscriptionFromServer: vi.fn(async () => ({ ok: true })),
+}));
 
 const mockMapStatusFromInfo = vi.fn(() => ({ tier: 'free', isActive: false }));
 const mockIsEntitlementExpired = vi.fn(() => false);
@@ -53,6 +58,8 @@ vi.mock('../services/quotaService', () => ({
 vi.mock('react-native-purchases', () => ({
   __esModule: true,
   default: {
+    addCustomerInfoUpdateListener: vi.fn(),
+    removeCustomerInfoUpdateListener: vi.fn(),
     syncPurchases: vi.fn().mockResolvedValue(undefined),
     invalidateCustomerInfoCache: vi.fn(),
     getCustomerInfo: vi.fn().mockResolvedValue({}),
@@ -81,6 +88,7 @@ describe('useSubscription', () => {
     vi.mocked(service.initializeSubscription).mockResolvedValue({ tier: 'free', isActive: false } as any);
     vi.mocked(service.isSubscriptionInitialized).mockReturnValue(false);
     vi.mocked(service.getSubscriptionStatus).mockResolvedValue({ tier: 'free', isActive: false } as any);
+    vi.mocked(service.refreshSubscriptionStatus).mockResolvedValue({ tier: 'free', isActive: false } as any);
     vi.mocked(service.loadSubscriptionPackages).mockResolvedValue([
       { id: 'mock_monthly', interval: 'monthly', priceFormatted: '$4.99', currency: 'USD' },
     ] as any);
