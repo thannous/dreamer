@@ -96,6 +96,7 @@
       ],
       "expo-localization",
       "expo-notifications",
+      "./plugins/withDisableNotificationsBootActions",
       "expo-speech-recognition",
       [
         "expo-build-properties",
