@@ -1,0 +1,15 @@
+
+> noctalia@1.0.0 web
+> expo start --web
+
+Starting project at /app
+React Compiler enabled
+Starting Metro Bundler
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 77.6% (1477/1677)
+Web Bundled 5981ms node_modules/expo-router/entry.js (2242 modules)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 32ms node_modules/expo-modules-core/src/index.ts (1 module)
+Web Bundled 52ms lib/deviceFingerprint.ts (1 module)
