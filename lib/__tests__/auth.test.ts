@@ -11,6 +11,7 @@ const mockSupabaseAuth = {
   getUser: vi.fn(),
   signInWithPassword: vi.fn(),
   signUp: vi.fn(),
+  setSession: vi.fn(),
   resend: vi.fn(),
   signInWithIdToken: vi.fn(),
   signInWithOAuth: vi.fn(),
@@ -133,6 +134,11 @@ describe('auth helpers', () => {
       error: null,
     });
 
+    mockSupabaseAuth.setSession.mockResolvedValue({
+      data: { session: null },
+      error: null,
+    });
+
     mockSupabaseAuth.signOut.mockResolvedValue({ error: null });
     mockSupabaseAuth.signInWithOAuth.mockResolvedValue({ error: null });
     mockFetchJSON.mockResolvedValue({ ok: true });
@@ -192,6 +198,24 @@ describe('auth helpers', () => {
     await expect(auth.signInWithEmailPassword('user@example.com', 'pass')).rejects.toThrow('bad creds');
   });
 
+  it('persists session after email sign-in when session is returned', async () => {
+    mockSupabaseAuth.signInWithPassword.mockResolvedValueOnce({
+      data: {
+        user: { id: 'user-1' },
+        session: { access_token: 'access-token', refresh_token: 'refresh-token' },
+      },
+      error: null,
+    });
+    const auth = await loadAuth();
+
+    await auth.signInWithEmailPassword('user@example.com', 'pass');
+
+    expect(mockSupabaseAuth.setSession).toHaveBeenCalledWith({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+    });
+  });
+
   it('falls back to session when getUser fails', async () => {
     mockSupabaseAuth.getUser.mockResolvedValueOnce({
       data: { user: null },
@@ -240,6 +264,24 @@ describe('auth helpers', () => {
     );
   });
 
+  it('persists session after signup when session is returned', async () => {
+    mockSupabaseAuth.signUp.mockResolvedValueOnce({
+      data: {
+        user: { id: 'user-1' },
+        session: { access_token: 'access-token', refresh_token: 'refresh-token' },
+      },
+      error: null,
+    });
+    const auth = await loadAuth();
+
+    await auth.signUpWithEmailPassword('user@example.com', 'pass', 'en');
+
+    expect(mockSupabaseAuth.setSession).toHaveBeenCalledWith({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
+    });
+  });
+
   it('waits briefly for access token before marking fingerprint', async () => {
     vi.useFakeTimers();
     try {
@@ -280,6 +322,13 @@ describe('auth helpers', () => {
   });
 
   it('signs in with Google and returns user', async () => {
+    mockSupabaseAuth.signInWithIdToken.mockResolvedValueOnce({
+      data: {
+        user: { id: 'user-1', email: 'user@example.com' },
+        session: { access_token: 'access-token', refresh_token: 'refresh-token' },
+      },
+      error: null,
+    });
     defaultGoogleModule.GoogleSignin.signIn.mockResolvedValueOnce({ idToken: 'token-123' });
     const auth = await loadAuth();
 
@@ -289,6 +338,10 @@ describe('auth helpers', () => {
     expect(mockSupabaseAuth.signInWithIdToken).toHaveBeenCalledWith({
       provider: 'google',
       token: 'token-123',
+    });
+    expect(mockSupabaseAuth.setSession).toHaveBeenCalledWith({
+      access_token: 'access-token',
+      refresh_token: 'refresh-token',
     });
     expect(user.id).toBe('user-1');
   });
