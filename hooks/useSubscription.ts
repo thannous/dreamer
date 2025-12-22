@@ -138,6 +138,9 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   // Track which expiry we've already refreshed to avoid infinite loops on expired plans
   const expiredExpiryKeyRef = useRef<string | null>(null);
   const lastSyncAttemptRef = useRef<{ userId: string | null; at: number } | null>(null);
+  const lastUserIdRef = useRef<string | null>(null);
+  // ✅ FIX: Use ref to track if we've already initiated sync for current status to prevent infinite loops
+  const syncInitiatedForStatusRef = useRef<string | null>(null);
 
   const shouldLoadPackages = options?.loadPackages === true;
 
@@ -154,6 +157,23 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   const appMetadataTierRaw = user?.app_metadata?.tier as SubscriptionTier | undefined;
   const appMetadataTier: SubscriptionTier | undefined =
     appMetadataTierRaw === 'premium' ? 'plus' : appMetadataTierRaw;
+
+  useEffect(() => {
+    if (lastUserIdRef.current === userId) return;
+
+    lastUserIdRef.current = userId ?? null;
+    syncInitiatedForStatusRef.current = null;
+    expiredExpiryKeyRef.current = null;
+    lastSyncAttemptRef.current = null;
+    reconciliationAttemptsRef.current = 0;
+    globalSyncState.lastSyncedTier = null;
+    globalSyncState.lastSyncAt = null;
+    globalSyncState.inProgressTier = null;
+
+    setStatus(null);
+    setPackages([]);
+    setError(null);
+  }, [userId]);
 
   useEffect(() => {
     if (!userId) return;
@@ -427,8 +447,6 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   }, [requiresAuth, shouldLoadPackages, user?.id]);
 
   // Keep auth user tier in sync with the RevenueCat status to avoid stale "Free plan" UI/quota states.
-  // ✅ FIX: Use ref to track if we've already initiated sync for current status to prevent infinite loops
-  const syncInitiatedForStatusRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!status || requiresAuth) return;
