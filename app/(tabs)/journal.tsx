@@ -376,6 +376,9 @@ export default function JournalListScreen() {
           renderItem={renderDreamItemDesktop}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
+          // Perf: Improve FlashList initial render and scroll performance
+          // @ts-expect-error: estimatedItemSize is missing in some type definitions but required for performance
+          estimatedItemSize={150}
           numColumns={desktopColumns}
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
@@ -392,6 +395,9 @@ export default function JournalListScreen() {
           renderItem={renderDreamItem}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
+          // Perf: Improve FlashList initial render and scroll performance
+          // @ts-expect-error: estimatedItemSize is missing in some type definitions but required for performance
+          estimatedItemSize={150}
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
