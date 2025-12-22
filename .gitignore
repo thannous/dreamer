@@ -52,9 +52,18 @@ supabase_windows_amd64.tar.gz
 
 app-example
 
-# generated native folders
+# iOS - managed workflow (not tracked)
 /ios
-/android
+
+# Android - bare workflow (tracked for EAS Build)
+# Only ignore build artifacts, not source files
+/android/.gradle/
+/android/build/
+/android/app/build/
+/android/local.properties
+/android/.idea/
+/android/*.iml
+/android/app/*.iml
 .eas/keys/*.json
 eas-sumit.json
 gen-lang-client-0336445544-fc3b036c6e41.json
