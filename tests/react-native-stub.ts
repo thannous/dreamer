@@ -60,6 +60,7 @@ export const Pressable = ({ children, onPress, disabled, testID }: any) =>
 
 export const StyleSheet = {
   create: (styles: any) => styles,
+  absoluteFill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
 };
 
 export const Text = ({ children, testID }: any) =>
@@ -74,9 +75,19 @@ export const TextInput = ({ onChangeText, value, testID }: any) =>
 
 export const View = ({ children }: any) => React.createElement('div', null, children);
 
+export const Modal = ({ visible, children }: any) =>
+  visible ? React.createElement('div', null, children) : null;
+
 export const Dimensions = {
   get: () => ({ width: 375, height: 812 }),
 };
+
+export const useWindowDimensions = () => ({
+  width: 375,
+  height: 812,
+  scale: 2,
+  fontScale: 1,
+});
 
 export const Keyboard = {
   dismiss: () => {},

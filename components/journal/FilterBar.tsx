@@ -88,6 +88,11 @@ function CloseIcon({ size = 16, color = '#FFFFFF' }) {
   );
 }
 
+function ActiveCheck({ visible, color }: { visible: boolean; color: string }) {
+  if (!visible) return null;
+  return <Ionicons name="checkmark" size={12} color={color} />;
+}
+
 function getDateRangeBadge(
   dateRange: { start: Date | null; end: Date | null } | undefined,
   t: (key: string) => string
@@ -166,6 +171,7 @@ export const FilterBar = memo(function FilterBar({
           {t('journal.filter.theme')}
           {themeFilterSuffix}
         </Text>
+        <ActiveCheck visible={activeFilters.theme} color={activeIconColor} />
       </Pressable>
 
       <Pressable
@@ -183,6 +189,7 @@ export const FilterBar = memo(function FilterBar({
           {t('journal.filter.date')}
           {dateRangeBadge && ` • ${dateRangeBadge}`}
         </Text>
+        <ActiveCheck visible={activeFilters.date} color={activeIconColor} />
       </Pressable>
 
       <Pressable
@@ -199,6 +206,7 @@ export const FilterBar = memo(function FilterBar({
         <Text style={[styles.filterButtonText, { color: activeFilters.favorites ? activeIconColor : iconColor }]}>
           {t('journal.filter.favorites')}
         </Text>
+        <ActiveCheck visible={activeFilters.favorites} color={activeIconColor} />
       </Pressable>
 
       <Pressable
@@ -212,6 +220,7 @@ export const FilterBar = memo(function FilterBar({
         testID={analyzedButtonTestID}
       >
         <AnalyzedIcon size={16} color={activeFilters.analyzed ? activeIconColor : iconColor} />
+        <ActiveCheck visible={activeFilters.analyzed} color={activeIconColor} />
       </Pressable>
 
       <Pressable
@@ -225,6 +234,7 @@ export const FilterBar = memo(function FilterBar({
         testID={exploredButtonTestID}
       >
         <ExploredIcon size={16} color={activeFilters.explored ? activeIconColor : iconColor} />
+        <ActiveCheck visible={activeFilters.explored} color={activeIconColor} />
       </Pressable>
 
       {hasActiveFilters && (

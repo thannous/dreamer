@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: ThemeLayout.borderRadius.md,
     paddingHorizontal: ThemeLayout.spacing.md,
-    paddingVertical: ThemeLayout.spacing.sm,
+    paddingVertical: 6,
   },
   iconContainer: {
     marginRight: ThemeLayout.spacing.sm,
