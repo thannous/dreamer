@@ -30,7 +30,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { MarkdownText } from './MarkdownText';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import Animated, {
   runOnJS,
   useAnimatedReaction,
@@ -434,7 +434,7 @@ export function MessagesList({
         isStreamingSnapshot && index === messages.length - 1 && item.role === 'model';
       const allowHandwrite = isNearBottomSnapshot && !isUserScrolling;
       const hasAnimatedHandwriting = handwritingAnimatedMessages.current.has(messageId);
-      let shouldHandwrite = hasAnimatedHandwriting && allowHandwrite;
+      let shouldHandwrite = false;
 
       if (
         !hasAnimatedHandwriting &&
@@ -488,6 +488,7 @@ export function MessagesList({
 
   // Avoid copying data on every render (can trigger extra list work)
   const listData = messages;
+  const shouldRecycleItems = Platform.OS !== 'android';
 
   const loadingAccessibility = isLoading
     ? { accessibilityState: { busy: true }, accessibilityLabel: loadingText }
@@ -523,7 +524,7 @@ export function MessagesList({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.contentContainer, { paddingTop: insets.top + 8 }, contentContainerStyle]}
         // LegendList specific props for chat UX
-        recycleItems={true}
+        recycleItems={shouldRecycleItems}
         estimatedItemSize={80}
         // Enable maintainScrollAtEnd for chat-style auto-scroll behavior
         // This keeps the list anchored at the bottom during layout/size changes
