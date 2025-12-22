@@ -347,7 +347,8 @@ export default function RecordingScreen() {
     return true;
   }, [tier, firstDreamPrompt, analyzePromptDream]);
 
-  const stopRecording = useCallback(async () => {
+  const stopRecording = useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
     try {
       setIsPreparingRecording(false);
       const result = await stopSessionRecording();
@@ -388,6 +389,9 @@ export default function RecordingScreen() {
           setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
         }
       } else {
+        if (silent) {
+          return;
+        }
         if (result.error === 'rate_limited') {
           showQuotaSheet({ mode: 'error', message: t('error.rate_limit') });
           return;
@@ -425,7 +429,7 @@ export default function RecordingScreen() {
 
   useEffect(() => {
     stopRecordingFromPartialRef.current = () => {
-      void stopRecording();
+      void stopRecording({ silent: true });
     };
     return () => {
       stopRecordingFromPartialRef.current = null;
@@ -479,7 +483,7 @@ export default function RecordingScreen() {
         !hasAutoStoppedRecordingRef.current
       ) {
         hasAutoStoppedRecordingRef.current = true;
-        void stopRecording();
+        void stopRecording({ silent: true });
       }
     });
 
@@ -487,7 +491,7 @@ export default function RecordingScreen() {
       subscription.remove();
       if (!hasAutoStoppedRecordingRef.current) {
         hasAutoStoppedRecordingRef.current = true;
-        void stopRecording();
+        void stopRecording({ silent: true });
       }
     };
   }, [isRecording, stopRecording]);
@@ -887,7 +891,7 @@ export default function RecordingScreen() {
     if (isRecordingRef.current) {
       recordingTransitionRef.current = true;
       try {
-        await stopRecording();
+        await stopRecording({ silent: true });
       } finally {
         recordingTransitionRef.current = false;
       }
