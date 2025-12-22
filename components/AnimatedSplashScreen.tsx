@@ -29,10 +29,10 @@ const PARTICLE_COUNT = 30;
 
 const COLORS = {
   bgStart: '#000000',
-  bgEnd: '#1e1b4b', // Indigo 950
+  bgEnd: '#1a0f2b', // SurrealTheme.bgStart (Deep Purple)
   gold: '#FCD34D', // Amber 300 - Pale Gold
-  cyan: '#22D3EE', // Cyan 400 - Bioluminescent
-  moonFill: '#0f172a', // Slate 900/Midnight Blue
+  cyan: '#C4B5FD', // Violet 300 - Soft Lavender (Replaced Cyan)
+  moonFill: '#2e1d47', // SurrealTheme.darkAccent
   text: '#F8FAFC', // Slate 50
 };
 

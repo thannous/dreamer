@@ -7,6 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 export type SubscriptionCardProps = {
   title: string;
   subtitle?: string;
+  expiryLabel?: string;
   badge?: string;
   features: string[];
   loading?: boolean;
@@ -20,6 +21,7 @@ export type SubscriptionCardProps = {
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   title,
   subtitle,
+  expiryLabel,
   badge,
   features,
   loading,
@@ -40,6 +42,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
           {subtitle ? (
             <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
+          ) : null}
+          {expiryLabel ? (
+            <Text style={[styles.expiryLabel, { color: colors.textSecondary }]}>{expiryLabel}</Text>
           ) : null}
         </View>
         {badge ? (
@@ -103,6 +108,11 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 4,
     fontSize: 14,
+    fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  expiryLabel: {
+    marginTop: 6,
+    fontSize: 12,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
   badge: {

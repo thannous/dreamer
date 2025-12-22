@@ -40,6 +40,7 @@ export const DreamCard = memo(function DreamCard({
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
+  const imageRecyclingKey = `${dream.id}-${dream.imageUpdatedAt ?? 0}`;
 
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
@@ -94,6 +95,7 @@ export const DreamCard = memo(function DreamCard({
                   transition={imageConfig.transition}
                   cachePolicy={imageConfig.cachePolicy}
                   priority={imageConfig.priority}
+                  recyclingKey={imageRecyclingKey}
                   // Placeholder with blur hash for smoother loading
                   placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
                 />

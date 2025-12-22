@@ -69,16 +69,16 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#E6D5E8",
+          "backgroundColor": "#1a0f2b",
           "dark": {
-            "backgroundColor": "#1e1b4b"
+            "backgroundColor": "#1a0f2b"
           }
         }
       ],
       [
         "expo-audio",
         {
-          "microphonePermission": "Allow Dream Weaver to access your microphone to record your dreams."
+          "microphonePermission": "Allow Noctalia to access your microphone to record your dreams."
         }
       ],
       "expo-font",

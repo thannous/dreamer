@@ -9,7 +9,7 @@
  * - Memoized component to prevent re-renders on scroll
  */
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type TextStyle } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import * as Linking from 'expo-linking';
@@ -47,6 +47,28 @@ function isAllowedScheme(url: string): boolean {
 const MarkdownTextComponent: React.FC<MarkdownTextProps> = ({ children, style }) => {
   const { colors } = useTheme();
   const [renderError, setRenderError] = useState(false);
+
+  useEffect(() => {
+    if (renderError) {
+      if (__DEV__) {
+        console.warn('[MarkdownText] Resetting render error after content change', {
+          length: children.length,
+          preview: children.slice(0, 80),
+        });
+      }
+      setRenderError(false);
+    }
+  }, [children, renderError]);
+
+  useEffect(() => {
+    if (__DEV__) {
+      console.debug('[MarkdownText] Render', {
+        length: children.length,
+        preview: children.slice(0, 80),
+        renderError,
+      });
+    }
+  }, [children, renderError]);
 
   // Create markdown styles once (memoized)
   const markdownStyles = useMemo(() => {
@@ -111,7 +133,13 @@ const MarkdownTextComponent: React.FC<MarkdownTextProps> = ({ children, style })
     );
   } catch (error) {
     // Render error handler
-    console.error('[MarkdownText] Markdown rendering error:', error);
+    if (__DEV__) {
+      console.error('[MarkdownText] Markdown rendering error', {
+        length: children.length,
+        preview: children.slice(0, 80),
+        error,
+      });
+    }
     setRenderError(true);
     return (
       <Text style={[styles.plainText, style]}>

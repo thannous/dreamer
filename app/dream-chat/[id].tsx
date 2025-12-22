@@ -9,6 +9,9 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
+import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { generateUUID } from '@/lib/dreamUtils';
 import { isMockModeEnabled } from '@/lib/env';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
@@ -16,17 +19,14 @@ import { getTranscriptionLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
-import { createDreamInSupabase } from '@/services/supabaseDreamService';
-import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
-import { generateUUID } from '@/lib/dreamUtils';
-import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
-import { useNetworkState } from 'expo-network';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
+import { createDreamInSupabase } from '@/services/supabaseDreamService';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNetworkState } from 'expo-network';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -57,13 +57,15 @@ const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
 const createChatMessage = (
   role: 'user' | 'model',
   text: string,
-  options?: { category?: Exclude<CategoryType, 'general'> }
+  options?: { category?: Exclude<CategoryType, 'general'>; meta?: ChatMessage['meta'] }
 ): ChatMessage => ({
   id: generateUUID(),
   role,
   text,
   createdAt: Date.now(),
-  ...(options?.category ? { meta: { category: options.category } } : {}),
+  ...(options?.category || options?.meta
+    ? { meta: { ...(options?.meta ?? {}), ...(options?.category ? { category: options.category } : {}) } }
+    : {}),
 });
 
 // Track chat history migrations across screen mounts to prevent duplicate writes when
@@ -341,6 +343,7 @@ export default function DreamChatScreen() {
     ) => {
       const textToSend = messageText || inputText.trim();
       if (!textToSend || !dream) return;
+      const resolvedDisplayText = displayText ?? textToSend;
 
       if (messageLimit !== null && messagesRemaining <= 0) {
         showMessageLimitAlert();
@@ -404,9 +407,7 @@ export default function DreamChatScreen() {
         if (hasNetwork) {
           // Auto-sync the dream with idempotence
           setIsLoading(true);
-          if (!messageText) {
-            setInputText((current) => computeNextInputAfterSend(current, textToSend));
-          }
+          setInputText((current) => computeNextInputAfterSend(current, textToSend));
           try {
             // Ensure clientRequestId for idempotence (prevent duplicates)
             const dreamToSync = dream.clientRequestId
@@ -424,7 +425,7 @@ export default function DreamChatScreen() {
             const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
 
             // Add user message
-            const userMessage = createChatMessage('user', displayText || textToSend, {
+            const userMessage = createChatMessage('user', resolvedDisplayText, {
               category: options?.category,
             });
             const updatedMessages = [...baseMessages, userMessage];
@@ -481,14 +482,12 @@ export default function DreamChatScreen() {
       }
 
       // Add user message (use displayText if provided, otherwise use textToSend)
-      const userMessage = createChatMessage('user', displayText || textToSend, {
+      const userMessage = createChatMessage('user', resolvedDisplayText, {
         category: options?.category,
       });
       const updatedMessages = [...baseMessages, userMessage];
       setMessages(updatedMessages);
-      if (!messageText) {
-        setInputText((current) => computeNextInputAfterSend(current, textToSend));
-      }
+      setInputText((current) => computeNextInputAfterSend(current, textToSend));
       setIsLoading(true);
 
       try {
@@ -565,7 +564,15 @@ export default function DreamChatScreen() {
         if (__DEV__) {
           console.error('Chat error:', error);
         }
-        const errorMessage = createChatMessage('model', t('dream_chat.error_message'));
+        const errorMessage = createChatMessage('model', t('dream_chat.error_message'), {
+          meta: {
+            isError: true,
+            retry: {
+              messageText: textToSend,
+              displayText: resolvedDisplayText,
+            },
+          },
+        });
         setMessages([...updatedMessages, errorMessage]);
       } finally {
         setIsLoading(false);
@@ -593,6 +600,18 @@ export default function DreamChatScreen() {
     ]
   );
 
+  const handleRetryMessage = useCallback(
+    (message: ChatMessage) => {
+      if (isLoading) return;
+      const retry = message.meta?.retry;
+      if (!retry) return;
+      const baseMessages = messages.filter((msg) => msg.id !== message.id);
+      setMessages(baseMessages);
+      sendMessage(retry.messageText, retry.displayText, { baseMessages });
+    },
+    [isLoading, messages, sendMessage]
+  );
+
   const handleQuickCategory = (categoryId: string) => {
     // Block if quota check not complete or exploration blocked
     if (!hasQuotaCheckClearance || isQuotaGateBlocked) return;
@@ -614,6 +633,8 @@ export default function DreamChatScreen() {
   const imageGradientColors = mode === 'dark'
     ? (['transparent', 'rgba(19, 16, 34, 0.9)', '#131022'] as const)
     : (['transparent', colors.backgroundDark + 'E6', colors.backgroundDark] as const);
+
+  const dreamImageUri = dream.imageUrl?.trim();
 
   const handleBackPress = useCallback(() => {
     if (router.canGoBack()) {
@@ -715,15 +736,25 @@ export default function DreamChatScreen() {
   const headerComponent = (
     <>
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: dream.imageUrl }}
-          style={styles.dreamImage}
-          contentFit={imageConfig.contentFit}
-          transition={imageConfig.transition}
-          cachePolicy={imageConfig.cachePolicy}
-          priority={imageConfig.priority}
-          placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
-        />
+        {dreamImageUri ? (
+          <Image
+            source={{ uri: dreamImageUri }}
+            style={styles.dreamImage}
+            contentFit={imageConfig.contentFit}
+            transition={imageConfig.transition}
+            cachePolicy={imageConfig.cachePolicy}
+            priority={imageConfig.priority}
+            placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+          />
+        ) : (
+          <View
+            style={[
+              styles.dreamImage,
+              styles.imagePlaceholder,
+              { backgroundColor: colors.backgroundSecondary },
+            ]}
+          />
+        )}
         <LinearGradient
           colors={imageGradientColors}
           style={styles.imageGradient}
@@ -809,6 +840,9 @@ export default function DreamChatScreen() {
             loadingText={t('dream_chat.thinking')}
             ListHeaderComponent={headerComponent}
             style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
+            contentContainerStyle={styles.messagesContent}
+            onRetryMessage={handleRetryMessage}
+            retryA11yLabel={t('analysis.retry')}
           />
         </KeyboardAwareChatContent>
 
@@ -992,7 +1026,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 300,
+    height: 450,
     position: 'relative',
   },
   dreamImage: {
@@ -1015,9 +1049,16 @@ const styles = StyleSheet.create({
     // color: set dynamically
     lineHeight: 28,
   },
+  imagePlaceholder: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
   messagesContainer: {
     flex: 1,
     // backgroundColor: set dynamically
+  },
+  messagesContent: {
+    paddingTop: 0,
   },
   quickCategoriesContainer: {
     marginTop: 16,

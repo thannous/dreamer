@@ -25,8 +25,7 @@
     "test:e2e:guest-limit": "maestro test maestro/guest-dream-limit.yml",
     "build:apk": "echo 'Usage: npm run build:apk:mock | npm run build:apk:prod'",
     "build:apk:mock": "EXPO_PUBLIC_MOCK_MODE=true EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile preview --local",
-    "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local",
-    "postinstall": "patch-package"
+    "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local"
   },
   "dependencies": {
     "@expo-google-fonts/lora": "^0.4.2",
@@ -75,9 +74,8 @@
     "expo-updates": "^29.0.15",
     "expo-web-browser": "~15.0.10",
     "moti": "^0.30.0",
-    "patch-package": "^8.0.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-gifted-charts": "^1.4.64",

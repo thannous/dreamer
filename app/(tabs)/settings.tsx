@@ -34,6 +34,7 @@ export default function SettingsScreen() {
   const {
     isActive,
     loading: subscriptionLoading,
+    status: subscriptionStatus,
   } = useSubscription();
 
   const subscriptionCopy = useMemo(() => {
@@ -53,6 +54,31 @@ export default function SettingsScreen() {
       cta: t('subscription.settings.cta.free'),
     };
   }, [isActive, t]);
+
+  const formattedExpiryDate = useMemo(() => {
+    const expiryDate = subscriptionStatus?.expiryDate;
+    if (!expiryDate) return null;
+    try {
+      const date = new Date(expiryDate);
+      const dateStr = date.toLocaleDateString(undefined, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      const timeStr = date.toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      return `${dateStr} à ${timeStr}`;
+    } catch {
+      return null;
+    }
+  }, [subscriptionStatus?.expiryDate]);
+
+  const subscriptionExpiryLabel = useMemo(() => {
+    if (!isActive || !formattedExpiryDate) return undefined;
+    return t('subscription.paywall.expiry_date', { date: formattedExpiryDate });
+  }, [formattedExpiryDate, isActive, t]);
 
   const subscriptionFeatures = useMemo(
     () => [
@@ -152,6 +178,7 @@ export default function SettingsScreen() {
               <SubscriptionCard
                 title={subscriptionCopy.title}
                 subtitle={subscriptionCopy.subtitle}
+                expiryLabel={subscriptionExpiryLabel}
                 badge={subscriptionCopy.badge}
                 features={subscriptionFeatures}
                 loading={subscriptionLoading}

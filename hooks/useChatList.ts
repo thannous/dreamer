@@ -266,6 +266,14 @@ export function useAutoScrollOnNewMessage(
 
     prevMessageCountRef.current = messageCount;
 
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === 'model') {
+      if (!isNearBottom.get()) {
+        hasNewMessages.set(true);
+      }
+      return;
+    }
+
     // For new chats (1-2 messages), always scroll to bottom
     if (messageCount <= 2) {
       // Use RAF + timeout to wait for content to be measured
@@ -282,7 +290,6 @@ export function useAutoScrollOnNewMessage(
 
     if (nearBottom) {
       // User is near bottom - smart scroll based on message length
-      const lastMessage = messages[messages.length - 1];
       const isLongAIMessage =
         lastMessage?.role === 'model' &&
         (lastMessage?.text?.length ?? 0) >= LONG_MESSAGE_THRESHOLD;

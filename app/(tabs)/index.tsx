@@ -13,7 +13,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
-import { MotiText, MotiView } from '@/lib/moti';
+import { MotiText } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { NotificationSettings, ThemeMode } from '@/lib/types';
 import { scheduleRitualReminder } from '@/services/notificationService';
@@ -332,12 +332,7 @@ export default function InspirationScreen() {
         >
           <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
             <View style={[styles.sectionSpacing, isDesktopLayout && styles.desktopHeroSection]}>
-              <MotiView
-                key={`ritual-${showAnimations}`}
-                from={{ opacity: 0, translateY: 12, scale: 0.98 }}
-                animate={{ opacity: 1, translateY: 0, scale: 1 }}
-                transition={{ type: 'timing', duration: 700 }}
-              >
+              <View>
                 <RitualCard
                   colors={colors}
                   shadows={shadows}
@@ -349,7 +344,7 @@ export default function InspirationScreen() {
                   onChangeRitual={handleRitualChange}
                   onToggleStep={handleToggleRitualStep}
                 />
-              </MotiView>
+              </View>
             </View>
 
             <View
