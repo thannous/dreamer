@@ -453,6 +453,8 @@ export function useSubscription(options?: UseSubscriptionOptions) {
       } catch (e) {
         if (mounted) {
           setError(formatError(e));
+          // Clear transition guard to avoid getting stuck after init failures.
+          isUserTransitioningRef.current = false;
         }
       } finally {
         if (mounted) {
