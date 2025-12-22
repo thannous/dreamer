@@ -8,11 +8,12 @@ import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 
 // Mock user state
 const mockUser = vi.hoisted(() => ({ current: { id: 'user-123' } as { id: string } | null }));
+const mockSessionReady = vi.hoisted(() => ({ current: true }));
 
 vi.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockUser.current,
-    sessionReady: Boolean(mockUser.current),
+    sessionReady: mockSessionReady.current,
   }),
 }));
 
@@ -79,6 +80,7 @@ describe('useDreamPersistence', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockUser.current = { id: 'user-123' };
+    mockSessionReady.current = true;
     mockGetSavedDreams.mockResolvedValue([]);
     mockSaveDreams.mockResolvedValue(undefined);
     mockGetCachedRemoteDreams.mockResolvedValue([]);
@@ -146,6 +148,24 @@ describe('useDreamPersistence', () => {
   });
 
   describe('authenticated mode (remote sync)', () => {
+    it('loads dreams when session is not ready but access token exists', async () => {
+      mockSessionReady.current = false;
+      const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
+      mockFetchFromSupabase.mockResolvedValue(remoteDreams);
+
+      const { result } = renderHook(() =>
+        useDreamPersistence({ canUseRemoteSync: true })
+      );
+
+      await waitFor(() => {
+        expect(result.current.loaded).toBe(true);
+      });
+
+      expect(mockGetAccessToken).toHaveBeenCalled();
+      expect(mockFetchFromSupabase).toHaveBeenCalled();
+      expect(result.current.dreams).toHaveLength(1);
+    });
+
     it('loads dreams from Supabase', async () => {
       const remoteDreams = [buildDream({ id: 1, remoteId: 101 })];
       mockFetchFromSupabase.mockResolvedValue(remoteDreams);
