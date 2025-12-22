@@ -9,15 +9,15 @@
 // - POST /api/subscription/sync { source? } -> { ok, tier, updated, currentTier }
 // - POST /api/subscription/reconcile { batchSize?, maxTotal?, minAgeHours? } -> { ok, processed, updated, changed }
 
-import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
+import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
+import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 import { ApiError, GoogleGenAI, Modality } from 'https://esm.sh/@google/genai@1.34.0?target=deno';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
 import {
   inferTierFromSubscriber,
-  type RevenueCatV1SubscriberResponse,
   type Tier as RevenueCatTier,
+  type RevenueCatV1SubscriberResponse,
 } from '../../lib/revenuecatSubscriber.ts';
 
 const corsHeaders = {
@@ -318,7 +318,7 @@ async function generateImageFromPrompt(options: {
   aspectRatio?: string;
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
-  const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel() } = options;
+  const { prompt, apiKey, aspectRatio = '4:5', model = resolveImageModel() } = options;
   const client = new GoogleGenAI({ apiKey });
 
   const extractInlineData = (
@@ -449,7 +449,7 @@ async function generateImageFromPrompt(options: {
 async function generateImageWithReferences(options: {
   prompt: string;
   apiKey: string;
-  referenceImages: Array<{ data: string; mimeType: string; type: string }>;
+  referenceImages: { data: string; mimeType: string; type: string }[];
   aspectRatio?: string;
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
@@ -2058,7 +2058,7 @@ Dream transcript:\n${transcript}`;
       const body = (await req.json()) as {
         prompt?: string;
         transcript?: string;
-        referenceImages?: Array<{ data: string; mimeType: string; type: string }>;
+        referenceImages?: { data: string; mimeType: string; type: string }[];
         previousImageUrl?: string;
       };
 
