@@ -23,7 +23,6 @@ import 'react-native-reanimated';
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
-import { SurrealTheme } from '@/constants/theme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
@@ -31,6 +30,7 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { initializeGoogleSignIn } from '@/lib/auth';
+import { initGuestSession } from '@/lib/guestSession';
 import { loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import type { LanguagePreference } from '@/lib/types';
@@ -315,6 +315,10 @@ export default function RootLayout() {
   );
 
   useEffect(() => {
+    void initGuestSession();
+  }, []);
+
+  useEffect(() => {
     if (hasBootstrappedLanguage.current) {
       return;
     }
@@ -404,38 +408,10 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-
     // Configure notification handler on app startup
     configureNotificationHandler();
     // Initialize Google Sign-In configuration early (native platforms)
     initializeGoogleSignIn();
-
-    // Configure Android navigation bar to match app theme lazily to avoid importing
-    // native-only modules on unsupported platforms (e.g., web builds).
-    if (Platform.OS === 'android') {
-      (async () => {
-        try {
-          const NavigationBar = await import('expo-navigation-bar');
-          const { isEdgeToEdge } = await import('react-native-is-edge-to-edge');
-          if (!isMounted) {
-            return;
-          }
-          if (!isEdgeToEdge()) {
-            await NavigationBar.setBackgroundColorAsync(SurrealTheme.bgStart);
-          }
-          await NavigationBar.setButtonStyleAsync('light');
-        } catch (error) {
-          if (__DEV__) {
-            console.warn('[RootLayout] Failed to configure Android navigation bar', error);
-          }
-        }
-      })();
-    }
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
   ActivityIndicator,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -109,7 +108,7 @@ export function ReferenceImagePicker({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: maxImages > 1,
         selectionLimit: maxImages - selectedImages.length,
-        allowsEditing: Platform.OS !== 'web' && maxImages === 1,
+        allowsEditing: false,
         quality: 0.9,
       });
 

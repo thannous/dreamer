@@ -106,7 +106,6 @@ const getMimeTypeFromExtension = (ext: string): string => {
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const THEME_CATEGORIES: Exclude<DreamChatCategory, 'general'>[] = ['symbols', 'emotions', 'growth'];
-const nativeDriver = Platform.OS !== 'web';
 
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -200,7 +199,7 @@ export default function JournalDetailScreen() {
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPremium = tier === 'premium' || tier === 'plus';
-  const canGenerateImage = isPremium && !quotaLoading && canAnalyzeNow;
+  const canGenerateImage = !quotaLoading && (isPremium || tier === 'guest');
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
@@ -410,8 +409,7 @@ export default function JournalDetailScreen() {
       const ImagePicker = await import('expo-image-picker');
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: Platform.OS !== 'web',
-        aspect: Platform.OS !== 'web' ? [2, 3] : undefined,
+        allowsEditing: false,
         quality: 0.9,
         base64: Platform.OS === 'web',
       });
