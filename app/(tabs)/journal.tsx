@@ -296,6 +296,10 @@ export default function JournalListScreen() {
   ), [searchQuery, selectedTheme, dateRange.start, dateRange.end, showFavoritesOnly, colors, t]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
+  const getDreamItemType = useCallback(
+    (item: DreamAnalysis) => (item.imageUrl && !item.imageGenerationFailed ? 'with-image' : 'text-only'),
+    []
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
@@ -370,6 +374,8 @@ export default function JournalListScreen() {
           data={filteredDreams}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
+          // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
+          getItemType={getDreamItemType}
           numColumns={desktopColumns}
           contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
@@ -384,6 +390,8 @@ export default function JournalListScreen() {
           data={filteredDreams}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
+          // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
+          getItemType={getDreamItemType}
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
