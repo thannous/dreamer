@@ -3,7 +3,7 @@
     "name": "Noctalia",
     "slug": "noctalia",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -28,7 +28,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "allowBackup": false,
-      "edgeToEdgeEnabled": true,
+      "edgeToEdgeEnabled": false,
       "predictiveBackGestureEnabled": false,
       "intentFilters": [
         {
@@ -98,7 +98,8 @@
         "expo-build-properties",
         {
           "android": {
-            "minSdkVersion": 33
+            "minSdkVersion": 33,
+            "enableMinifyInReleaseBuilds": true
           }
         }
       ],
