@@ -1,10 +1,10 @@
 import { Toast } from '@/components/Toast';
+import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { ImageRetry } from '@/components/journal/ImageRetry';
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
-import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
+import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { GradientColors } from '@/constants/gradients';
 import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
@@ -13,20 +13,21 @@ import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
-import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
+import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { classifyError, QuotaError, type ClassifiedError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
+import { MotiView } from '@/lib/moti';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
-import type { DreamAnalysis, DreamTheme, DreamType, DreamChatCategory, ReferenceImage } from '@/lib/types';
-import { generateImageFromTranscript, categorizeDream, generateImageWithReference } from '@/services/geminiService';
+import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
+import { categorizeDream, generateImageFromTranscript, generateImageWithReference } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -35,8 +36,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
-  Animated,
-  Easing,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -117,18 +116,19 @@ const generateUUID = (): string => {
 };
 
 const Skeleton = ({ style }: { style: StyleProp<ViewStyle> }) => {
-  const opacity = useRef(new Animated.Value(0.3)).current;
-  useEffect(() => {
-    const anim = Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: nativeDriver }),
-        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: nativeDriver }),
-      ])
-    );
-    anim.start();
-    return () => anim.stop();
-  }, [opacity]);
-  return <Animated.View style={[style, { opacity, backgroundColor: 'rgba(150,150,150,0.2)' }]} />;
+  return (
+    <MotiView
+      from={{ opacity: 0.3 }}
+      animate={{ opacity: 0.7 }}
+      transition={{
+        type: 'timing',
+        duration: 800,
+        loop: true,
+        repeatReverse: true,
+      }}
+      style={[style, { backgroundColor: 'rgba(150,150,150,0.2)' }]}
+    />
+  );
 };
 
 const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: StyleProp<TextStyle>; shouldAnimate: boolean }) => {
@@ -221,8 +221,6 @@ export default function JournalDetailScreen() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const metadataPulse = useRef(new Animated.Value(0)).current;
-  const transcriptPulse = useRef(new Animated.Value(0)).current;
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
 
   const sortedDreamTypes = useMemo(() => {
@@ -307,63 +305,6 @@ export default function JournalDetailScreen() {
     });
   }, [isEditingTranscript, transcriptSectionOffset]);
 
-  useEffect(() => {
-    let animation: Animated.CompositeAnimation | undefined;
-    if (isEditing) {
-      animation = Animated.loop(
-        Animated.sequence([
-          Animated.timing(metadataPulse, {
-            toValue: 1,
-            duration: 900,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: nativeDriver,
-          }),
-          Animated.timing(metadataPulse, {
-            toValue: 0,
-            duration: 900,
-            easing: Easing.in(Easing.quad),
-            useNativeDriver: nativeDriver,
-          }),
-        ]),
-      );
-      animation.start();
-    } else {
-      metadataPulse.stopAnimation();
-      metadataPulse.setValue(0);
-    }
-    return () => {
-      animation?.stop();
-    };
-  }, [isEditing, metadataPulse]);
-
-  useEffect(() => {
-    let animation: Animated.CompositeAnimation | undefined;
-    if (isEditingTranscript) {
-      animation = Animated.loop(
-        Animated.sequence([
-          Animated.timing(transcriptPulse, {
-            toValue: 1,
-            duration: 900,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: nativeDriver,
-          }),
-          Animated.timing(transcriptPulse, {
-            toValue: 0,
-            duration: 900,
-            easing: Easing.in(Easing.quad),
-            useNativeDriver: nativeDriver,
-          }),
-        ]),
-      );
-      animation.start();
-    } else {
-      transcriptPulse.stopAnimation();
-      transcriptPulse.setValue(0);
-    }
-    return () => {
-      animation?.stop();
-    };
-  }, [isEditingTranscript, transcriptPulse]);
 
   const { shareImageRef, shareComposite } = useDreamShareComposite();
 
@@ -669,21 +610,21 @@ export default function JournalDetailScreen() {
     }
   }, [dream, isAnalysisLocked, toggleFavorite, t]);
 
-	  const deleteAndNavigate = useCallback(async () => {
-	    if (!dream) return;
-	    try {
-	      setIsDeleting(true);
-	      await deleteDream(dream.id);
-	      setShowDeleteSheet(false);
-	      router.replace('/(tabs)/journal');
-	    } catch (error) {
-	      if (__DEV__) {
-	        console.error('Failed to delete dream', error);
-	      }
-	      Alert.alert(t('common.error_title'), t('common.unknown_error'));
-	      setIsDeleting(false);
-	    }
-	  }, [deleteDream, dream, t]);
+  const deleteAndNavigate = useCallback(async () => {
+    if (!dream) return;
+    try {
+      setIsDeleting(true);
+      await deleteDream(dream.id);
+      setShowDeleteSheet(false);
+      router.replace('/(tabs)/journal');
+    } catch (error) {
+      if (__DEV__) {
+        console.error('Failed to delete dream', error);
+      }
+      Alert.alert(t('common.error_title'), t('common.unknown_error'));
+      setIsDeleting(false);
+    }
+  }, [deleteDream, dream, t]);
 
   const handleCloseDeleteSheet = useCallback(() => {
     if (isDeleting) return;
@@ -863,9 +804,9 @@ export default function JournalDetailScreen() {
       } finally {
         setIsAnalyzing(false);
       }
-	    },
-	    [analyzeDream, dream, ensureAnalyzeAllowed, language, showAnalysisNotice, t, tier]
-	  );
+    },
+    [analyzeDream, dream, ensureAnalyzeAllowed, language, showAnalysisNotice, t, tier]
+  );
 
   const handleAnalyze = useCallback(async () => {
     if (!dream) return;
@@ -952,22 +893,6 @@ export default function JournalDetailScreen() {
     ? 'rgba(19, 16, 34, 0.3)'
     : 'rgba(0, 0, 0, 0.03)';
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
-  const metadataSaveAnimatedStyle = useMemo(() => ({
-    transform: [
-      {
-        scale: metadataPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] }),
-      },
-    ],
-    opacity: metadataPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 0.85] }),
-  }), [metadataPulse]);
-  const transcriptSaveAnimatedStyle = useMemo(() => ({
-    transform: [
-      {
-        scale: transcriptPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] }),
-      },
-    ],
-    opacity: transcriptPulse.interpolate({ inputRange: [0, 1], outputRange: [1, 0.85] }),
-  }), [transcriptPulse]);
 
   // Use a single surface color for the main content card and its inner accent cards/buttons
   // so we don't get a darker band/padding effect on Android where slight
@@ -999,7 +924,24 @@ export default function JournalDetailScreen() {
   }
 
   const renderTranscriptBody = () => (
-    <>
+    <MotiView
+      animate={{
+        borderColor: isEditingTranscript ? colors.accent : 'transparent',
+        borderWidth: isEditingTranscript ? 2 : 0,
+        opacity: isEditingTranscript ? [0.8, 1, 0.8] : 1,
+      }}
+      transition={{
+        type: 'timing',
+        duration: 1800,
+        loop: true,
+      }}
+      style={[
+        styles.transcript,
+        {
+          borderColor: 'transparent',
+        }
+      ]}
+    >
       <View style={styles.transcriptHeader}>
         <Text style={[styles.transcriptTitle, { color: colors.textPrimary }]}>
           {t('journal.original_transcript')}
@@ -1021,13 +963,22 @@ export default function JournalDetailScreen() {
           ]}
           hitSlop={8}
         >
-          <Animated.View style={transcriptSaveAnimatedStyle}>
+          <MotiView
+            animate={{
+              scale: isEditingTranscript ? [1, 1.15, 1] : 1,
+            }}
+            transition={{
+              type: 'timing',
+              duration: 1800,
+              loop: true,
+            }}
+          >
             <Ionicons
               name={isEditingTranscript ? 'checkmark' : 'pencil'}
               size={18}
               color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
             />
-          </Animated.View>
+          </MotiView>
         </Pressable>
       </View>
       {isEditingTranscript ? (
@@ -1048,11 +999,21 @@ export default function JournalDetailScreen() {
       ) : (
         <Text style={[styles.transcript, { color: colors.textSecondary }]}>{dream.transcript}</Text>
       )}
-    </>
+    </MotiView>
   );
 
   const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => (
-    <View
+    <MotiView
+      animate={{
+        borderColor: isEditing ? colors.accent : (variant === 'floating' ? colors.divider : accentSurfaceBorderColor),
+        borderWidth: isEditing ? 2 : (variant === 'floating' ? 1 : 0),
+        opacity: isEditing ? [0.8, 1, 0.8] : 1,
+      }}
+      transition={{
+        type: 'timing',
+        duration: 1800,
+        loop: true,
+      }}
       style={[
         styles.metadataCard,
         variant === 'floating' && styles.metadataFloatingCard,
@@ -1186,15 +1147,24 @@ export default function JournalDetailScreen() {
         ]}
         hitSlop={8}
       >
-        <Animated.View style={metadataSaveAnimatedStyle}>
+        <MotiView
+          animate={{
+            scale: isEditing ? [1, 1.15, 1] : 1,
+          }}
+          transition={{
+            type: 'timing',
+            duration: 1800,
+            loop: true,
+          }}
+        >
           <Ionicons
             name={isEditing ? 'checkmark' : 'pencil'}
             size={16}
             color={isEditing ? colors.textPrimary : colors.textSecondary}
           />
-        </Animated.View>
+        </MotiView>
       </Pressable>
-    </View>
+    </MotiView>
   );
 
   return (

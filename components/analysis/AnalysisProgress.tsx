@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Fonts } from '@/constants/theme';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
@@ -33,7 +33,7 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
       {!showError && (
         <View style={styles.progressBarContainer}>
           <View style={[styles.progressBarBackground, { backgroundColor: colors.backgroundDark }]}>
-            <Animated.View
+            <View
               style={[
                 styles.progressBarFill,
                 { backgroundColor: colors.accent },

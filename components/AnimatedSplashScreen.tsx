@@ -1,23 +1,23 @@
+import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useEffect, useMemo, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
-    Easing,
-    interpolate,
-    interpolateColor,
-    runOnJS,
-    useAnimatedProps,
-    useAnimatedStyle,
-    useSharedValue,
-    withSequence,
-    withRepeat,
-    withTiming,
-    type SharedValue
+  Easing,
+  interpolate,
+  interpolateColor,
+  runOnJS,
+  useAnimatedProps,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+  type SharedValue
 } from 'react-native-reanimated';
 import Svg, { Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { Fonts } from '@/constants/theme';
-
 const DEFAULT_VIEWPORT = { width: 360, height: 640 };
 const seededRandom = (seed: number) => {
   const x = Math.sin(seed) * 10000;
@@ -101,6 +101,23 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       // Phase 4: Fill, Glow, Text (2.4s -> 3.4s)
       withTiming(4, { duration: 1000, easing: Easing.out(Easing.quad) })
     );
+
+    // Add haptic feedback for key milestones
+    const triggerHaptics = async () => {
+      if (Platform.OS === 'web') return;
+
+      // Phase 2: Moon drawn (approx 1.8s)
+      setTimeout(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }, 1800);
+
+      // Phase 3-4: Star drawn / Ripple / Fill (approx 2.4s-3.4s)
+      setTimeout(() => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }, 2400);
+    };
+
+    triggerHaptics();
   }, [phase]);
 
   useEffect(() => {
@@ -135,7 +152,7 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
   const moonPathProps = useAnimatedProps(() => {
     // Draw from phase 1 to 2
     const drawProgress = interpolate(phase.value, [1, 2], [0, 1], 'clamp');
-    
+
     // Fill Opacity: Increases in Phase 3-4
     const fillOpacity = interpolate(phase.value, [3, 3.8], [0, 1], 'clamp');
 
@@ -153,14 +170,14 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
   const starPathProps = useAnimatedProps(() => {
     // Draw from phase 2 to 3
     const drawProgress = interpolate(phase.value, [2, 3], [0, 1], 'clamp');
-    
+
     // Color transition: Gold -> Cyan
     const strokeColor = interpolateColor(
       phase.value,
       [2.8, 3.5],
       [COLORS.gold, COLORS.cyan]
     );
-    
+
     const fillOpacity = interpolate(phase.value, [3, 3.5], [0, 1], 'clamp');
 
     return {
@@ -168,7 +185,7 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       stroke: strokeColor,
       strokeWidth: 2,
       fill: COLORS.cyan, // Star fills with Cyan
-      fillOpacity: fillOpacity, 
+      fillOpacity: fillOpacity,
       opacity: interpolate(phase.value, [1.8, 2], [0, 1], 'clamp'),
     };
   });
@@ -190,13 +207,13 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
       transform: [{ translateY: interpolate(textProgress, [0, 1], [10, 0]) }],
     };
   });
-  
+
   const glowStyle = useAnimatedStyle(() => {
-     // Glow appears when star fills
-     const baseOpacity = interpolate(phase.value, [3, 4], [0, 0.8], 'clamp');
-     return {
-       opacity: baseOpacity,
-     };
+    // Glow appears when star fills
+    const baseOpacity = interpolate(phase.value, [3, 4], [0, 0.8], 'clamp');
+    return {
+      opacity: baseOpacity,
+    };
   });
 
   return (
@@ -218,29 +235,29 @@ const AnimatedSplashScreen = ({ status = 'intro', onAnimationEnd }: AnimatedSpla
 
       {/* Central Content */}
       <View style={styles.content}>
-         {/* Glow behind Star */}
-         <Animated.View style={[styles.starGlowContainer, glowStyle]}>
-           <Svg height="100%" width="100%" viewBox="0 0 100 100">
-             <Defs>
-               <RadialGradient id="cyanGlow" cx="50%" cy="50%" rx="50%" ry="50%">
-                 <Stop offset="0%" stopColor={COLORS.cyan} stopOpacity="0.8" />
-                 <Stop offset="100%" stopColor={COLORS.cyan} stopOpacity="0" />
-               </RadialGradient>
-             </Defs>
-             <Rect x="0" y="0" width="100" height="100" fill="url(#cyanGlow)" />
-           </Svg>
-         </Animated.View>
+        {/* Glow behind Star */}
+        <Animated.View style={[styles.starGlowContainer, glowStyle]}>
+          <Svg height="100%" width="100%" viewBox="0 0 100 100">
+            <Defs>
+              <RadialGradient id="cyanGlow" cx="50%" cy="50%" rx="50%" ry="50%">
+                <Stop offset="0%" stopColor={COLORS.cyan} stopOpacity="0.8" />
+                <Stop offset="100%" stopColor={COLORS.cyan} stopOpacity="0" />
+              </RadialGradient>
+            </Defs>
+            <Rect x="0" y="0" width="100" height="100" fill="url(#cyanGlow)" />
+          </Svg>
+        </Animated.View>
 
-         {/* Ripple Effect */}
-         <Animated.View style={[styles.ripple, rippleStyle]} />
+        {/* Ripple Effect */}
+        <Animated.View style={[styles.ripple, rippleStyle]} />
 
         {/* Logo SVG */}
         <View style={styles.logoContainer}>
           <Svg width={280} height={280} viewBox="0 0 280 280" style={styles.svg}>
             <Defs>
-                {/* Optional Defs */}
+              {/* Optional Defs */}
             </Defs>
-            
+
             {/* Moon */}
             <AnimatedPath
               d={MOON_PATH}
@@ -295,14 +312,14 @@ const Particle = ({
 
     // Convergence to center in Phase 1-2
     const progress = interpolate(phase.value, [0, 2], [0, 1], 'clamp');
-    
+
     const targetX = viewport.width / 2;
     const targetY = viewport.height / 2 - 20; // Approx logo center
-    
+
     // Interpolate position
     const currentX = interpolate(progress, [0, 1], [randomX, targetX]);
     const currentY = interpolate(progress, [0, 1], [randomY, targetY]);
-    
+
     // Fade out as they converge
     const opacity = interpolate(progress, [0, 0.8, 1], [0, 0.6, 0]);
 
@@ -314,7 +331,7 @@ const Particle = ({
       height: size,
       borderRadius: size / 2,
       backgroundColor: COLORS.gold, // Stardust gold
-      opacity, 
+      opacity,
       transform: [
         { translateX: currentX },
         { translateY: currentY + floatY },
@@ -353,7 +370,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.regular, 
+    fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 36,
     letterSpacing: 8, // Wide tracking for "Light" feel
     color: COLORS.text,

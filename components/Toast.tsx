@@ -1,5 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Platform, StyleSheet, Text, type ViewStyle } from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { Platform, StyleSheet, Text, type ViewStyle } from 'react-native';
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -19,51 +27,48 @@ export const Toast: React.FC<ToastProps> = ({
   onHide,
   testID,
 }) => {
-  const nativeDriver = Platform.OS !== 'web';
   const { colors, shadows } = useTheme();
-  const opacity = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(16)).current;
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(16);
+  const handleHide = useCallback(() => onHide?.(), [onHide]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 220,
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: nativeDriver,
-      }),
-      Animated.spring(translateY, {
-        toValue: 0,
-        damping: 12,
-        mass: 0.6,
-        stiffness: 120,
-        useNativeDriver: nativeDriver,
-      }),
-    ]).start();
+    opacity.value = withTiming(1, {
+      duration: 220,
+      easing: Easing.out(Easing.quad),
+    });
+    translateY.value = withSpring(0, {
+      damping: 12,
+      mass: 0.6,
+      stiffness: 120,
+    });
 
     const timeout = setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(opacity, {
-          toValue: 0,
-          duration: 180,
-          easing: Easing.in(Easing.quad),
-          useNativeDriver: nativeDriver,
-        }),
-        Animated.timing(translateY, {
-          toValue: 16,
-          duration: 180,
-          easing: Easing.in(Easing.quad),
-          useNativeDriver: nativeDriver,
-        }),
-      ]).start(() => {
-        if (onHide) {
-          onHide();
-        }
+      opacity.value = withTiming(0, {
+        duration: 180,
+        easing: Easing.in(Easing.quad),
       });
+      translateY.value = withTiming(
+        16,
+        {
+          duration: 180,
+          easing: Easing.in(Easing.quad),
+        },
+        (finished) => {
+          if (finished) {
+            runOnJS(handleHide)();
+          }
+        }
+      );
     }, durationMs);
 
     return () => clearTimeout(timeout);
-  }, [durationMs, nativeDriver, onHide, opacity, translateY]);
+  }, [durationMs, handleHide, opacity, translateY]);
 
   const backgroundColor =
     mode === 'success'
@@ -78,7 +83,7 @@ export const Toast: React.FC<ToastProps> = ({
     <Animated.View
       style={[
         styles.container,
-        { opacity, transform: [{ translateY }] },
+        animatedStyle,
         { backgroundColor },
         shadows.md,
         pointerEventsStyle,
