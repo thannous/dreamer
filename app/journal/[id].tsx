@@ -21,6 +21,7 @@ import { blurActiveElement } from '@/lib/accessibility';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
+import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, type ClassifiedError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { MotiView } from '@/lib/moti';
@@ -197,8 +198,10 @@ export default function JournalDetailScreen() {
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
   const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading } = useQuota();
   const { t } = useTranslation();
+  const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPremium = tier === 'premium' || tier === 'plus';
-  const canUseReference = Boolean(user);
+  const canGenerateImage = isPremium && !quotaLoading && canAnalyzeNow;
+  const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
@@ -1210,7 +1213,7 @@ export default function JournalDetailScreen() {
                     <View style={styles.imageOverlay} />
                   </>
                 ) : dream.imageGenerationFailed ? (
-                  !quotaLoading && canAnalyzeNow ? (
+                  canGenerateImage ? (
                     <ImageRetry onRetry={onRetryImage} isRetrying={isRetryingImage} />
                   ) : (
                     <View
@@ -1254,7 +1257,7 @@ export default function JournalDetailScreen() {
                     </Text>
                     {!isRetryingImage && !isAnalysisLocked && (
                       <View style={styles.imageActionsColumn}>
-                        {!quotaLoading && canAnalyzeNow && (
+                        {canGenerateImage && (
                           <>
                             <Pressable
                               onPress={onRetryImage}
@@ -1371,49 +1374,45 @@ export default function JournalDetailScreen() {
             {!isEditing && renderMetadataCard()}
 
             {/* Reference Image Actions - Add Person/Animal */}
-            {dream.imageUrl &&
-              showReferenceActions &&
-              !isAnalysisLocked &&
-              !quotaLoading &&
-              canAnalyzeNow && (
-                <View style={[styles.imageActionsRow, { marginBottom: 16 }]}>
-                  {dream.hasPerson === true && (
-                    <Pressable
-                      onPress={() => handleAddSubject('person')}
-                      disabled={isGeneratingWithReference || isAnalysisLocked}
-                      style={[
-                        styles.imageActionButton,
-                        styles.imageActionButtonSecondary,
-                        { borderColor: colors.divider },
-                        (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                      ]}
-                    >
-                      <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
-                      <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                        {t('journal.detail.add_person')}
-                      </Text>
-                    </Pressable>
-                  )}
+            {dream.imageUrl && showReferenceActions && !isAnalysisLocked && canGenerateImage && (
+              <View style={[styles.imageActionsRow, { marginBottom: 16 }]}>
+                {dream.hasPerson === true && (
+                  <Pressable
+                    onPress={() => handleAddSubject('person')}
+                    disabled={isGeneratingWithReference || isAnalysisLocked}
+                    style={[
+                      styles.imageActionButton,
+                      styles.imageActionButtonSecondary,
+                      { borderColor: colors.divider },
+                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                    ]}
+                  >
+                    <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
+                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                      {t('journal.detail.add_person')}
+                    </Text>
+                  </Pressable>
+                )}
 
-                  {dream.hasAnimal === true && (
-                    <Pressable
-                      onPress={() => handleAddSubject('animal')}
-                      disabled={isGeneratingWithReference || isAnalysisLocked}
-                      style={[
-                        styles.imageActionButton,
-                        styles.imageActionButtonSecondary,
-                        { borderColor: colors.divider },
-                        (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                      ]}
-                    >
-                      <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
-                      <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                        {t('journal.detail.add_animal')}
-                      </Text>
-                    </Pressable>
-                  )}
-                </View>
-              )}
+                {dream.hasAnimal === true && (
+                  <Pressable
+                    onPress={() => handleAddSubject('animal')}
+                    disabled={isGeneratingWithReference || isAnalysisLocked}
+                    style={[
+                      styles.imageActionButton,
+                      styles.imageActionButtonSecondary,
+                      { borderColor: colors.divider },
+                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
+                    ]}
+                  >
+                    <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
+                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
+                      {t('journal.detail.add_animal')}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            )}
 
             {(dream.isAnalyzed || dream.analysisStatus === 'pending') && (
               <>
@@ -1923,7 +1922,7 @@ export default function JournalDetailScreen() {
 
         {/* Reference Image Picker Sheet */}
         <StandardBottomSheet
-          visible={showReferenceSheet}
+          visible={referenceImagesEnabled && showReferenceSheet}
           onClose={handleReferenceSheetClose}
           title={referenceSubjectType === 'person'
             ? t('reference_image.title_person')
@@ -1937,7 +1936,7 @@ export default function JournalDetailScreen() {
             onSecondary: handleReferenceSheetClose,
           }}
         >
-          {referenceSubjectType && (
+          {referenceImagesEnabled && referenceSubjectType && (
             <ReferenceImagePicker
               subjectType={referenceSubjectType}
               onImagesSelected={handleReferenceImagesSelected}

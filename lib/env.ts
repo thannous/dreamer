@@ -14,3 +14,10 @@ export function isMockModeEnabled(): boolean {
   return (getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_MODE') ?? '').toLowerCase() === 'true';
 }
 
+export function isReferenceImagesEnabled(): boolean {
+  const value = getExpoPublicEnvValue('EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED');
+  if (!value) {
+    return true;
+  }
+  return value.toLowerCase() === 'true';
+}

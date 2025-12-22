@@ -22,6 +22,7 @@ import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
+import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
@@ -58,6 +59,7 @@ export default function RecordingScreen() {
   const { language } = useLanguage();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const referenceImagesEnabled = isReferenceImagesEnabled();
 
   const [transcript, setTranscript] = useState('');
   const [draftDream, setDraftDream] = useState<DreamAnalysis | null>(null);
@@ -565,7 +567,7 @@ export default function RecordingScreen() {
       setDraftDream(savedDream);
 
       // If subject detected, show proposition instead of navigating
-      if (subjectDetected && detectedType && canAnalyzeNow && user) {
+      if (referenceImagesEnabled && subjectDetected && detectedType && canAnalyzeNow && user) {
         setPendingSubjectDream(savedDream);
         setPendingSubjectMetadata(categorizationResult ? {
           title: categorizationResult.title,
@@ -606,6 +608,7 @@ export default function RecordingScreen() {
         isRecordingRef,
 		    language,
 		    navigateAfterSave,
+        referenceImagesEnabled,
 		    resetComposer,
 		    stopRecording,
 		    t,
@@ -734,7 +737,7 @@ export default function RecordingScreen() {
   }, [pendingSubjectDream, pendingSubjectMetadata]);
 
   const handleGenerateWithReference = useCallback(async () => {
-    if (!pendingSubjectDream || !pendingSubjectMetadata || referenceImages.length === 0) {
+    if (!referenceImagesEnabled || !pendingSubjectDream || !pendingSubjectMetadata || referenceImages.length === 0) {
       return;
     }
 
@@ -793,6 +796,7 @@ export default function RecordingScreen() {
     pendingSubjectDream,
     pendingSubjectMetadata,
     referenceImages,
+    referenceImagesEnabled,
     resetComposer,
     t,
     updateDream,
@@ -1138,7 +1142,7 @@ export default function RecordingScreen() {
       </StandardBottomSheet>
 
       {/* Subject Proposition */}
-      {showSubjectProposition && detectedSubjectType && (
+      {referenceImagesEnabled && showSubjectProposition && detectedSubjectType && (
         <View style={styles.subjectPropositionOverlay}>
           <SubjectProposition
             subjectType={detectedSubjectType}
@@ -1150,7 +1154,7 @@ export default function RecordingScreen() {
 
       {/* Reference Image Picker Sheet */}
       <StandardBottomSheet
-        visible={showReferencePickerSheet}
+        visible={referenceImagesEnabled && showReferencePickerSheet}
         onClose={handleReferencePickerClose}
         title={detectedSubjectType === 'person'
           ? t('reference_image.title_person')
@@ -1164,7 +1168,7 @@ export default function RecordingScreen() {
           onSecondary: handleReferencePickerClose,
         }}
       >
-        {detectedSubjectType && (
+        {referenceImagesEnabled && detectedSubjectType && (
           <ReferenceImagePicker
             subjectType={detectedSubjectType}
             onImagesSelected={handleReferenceImagesSelected}
