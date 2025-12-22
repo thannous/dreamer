@@ -6,12 +6,19 @@
 // - POST /api/generateImageWithReference { prompt, referenceImages } -> { imageUrl } (auth required)
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
+// - POST /api/subscription/sync { source? } -> { ok, tier, updated, currentTier }
+// - POST /api/subscription/reconcile { batchSize?, maxTotal?, minAgeHours? } -> { ok, processed, updated, changed }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 import { ApiError, GoogleGenAI, Modality } from 'https://esm.sh/@google/genai@1.34.0?target=deno';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { Image } from 'https://deno.land/x/imagescript@1.3.0/mod.ts';
+import {
+  inferTierFromSubscriber,
+  type RevenueCatV1SubscriberResponse,
+  type Tier as RevenueCatTier,
+} from '../../lib/revenuecatSubscriber.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,6 +28,111 @@ const corsHeaders = {
 const DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS = 6000;
 const DREAM_CONTEXT_INTERPRETATION_MAX_CHARS = 4000;
 const GUEST_LIMITS = { analysis: 2, exploration: 2, messagesPerDream: 10 } as const;
+const SUBSCRIPTION_SYNC_TIMEOUT_MS = 8000;
+const RECONCILE_MAX_DURATION_MS = 25000;
+const RECONCILE_DEFAULT_BATCH = 150;
+const RECONCILE_MAX_BATCH = 300;
+const RECONCILE_DEFAULT_MAX_TOTAL = 1000;
+const RECONCILE_DEFAULT_MIN_AGE_HOURS = 24;
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+function getOptionalEnv(name: string): string | null {
+  const value = Deno.env.get(name);
+  if (!value || !value.trim()) return null;
+  return value.trim();
+}
+
+function getRevenueCatApiKey(): string {
+  const apiKey =
+    getOptionalEnv('REVENUECAT_SECRET_API_KEY') ??
+    getOptionalEnv('REVENUECAT_API_KEY') ??
+    getOptionalEnv('REVENUECAT_SECRET_KEY');
+  if (!apiKey) {
+    throw new Error('Missing REVENUECAT_SECRET_API_KEY');
+  }
+  return apiKey;
+}
+
+function getReconcileSecret(): string | null {
+  return (
+    getOptionalEnv('REVENUECAT_RECONCILE_SECRET') ??
+    getOptionalEnv('REVENUECAT_RECONCILE_AUTH') ??
+    getOptionalEnv('REVENUECAT_RECONCILE_AUTHORIZATION')
+  );
+}
+
+function normalizeTier(value: unknown): RevenueCatTier {
+  if (value === 'plus' || value === 'premium') return 'plus';
+  return 'free';
+}
+
+function getTierUpdatedAt(meta: Record<string, unknown> | null | undefined): string | null {
+  const raw = meta?.tier_updated_at;
+  if (typeof raw === 'string' && raw.trim()) return raw;
+  return null;
+}
+
+function buildUpdatedMetadata(
+  meta: Record<string, unknown>,
+  tier: RevenueCatTier,
+  source: string
+): Record<string, unknown> {
+  const nowMs = Date.now();
+  const lastEventTimestampMs =
+    typeof meta.last_tier_event_timestamp_ms === 'number'
+      ? meta.last_tier_event_timestamp_ms
+      : null;
+  const nextEventTimestampMs =
+    lastEventTimestampMs && lastEventTimestampMs > nowMs
+      ? lastEventTimestampMs
+      : nowMs;
+
+  return {
+    ...meta,
+    tier,
+    tier_updated_at: new Date().toISOString(),
+    tier_source: source,
+    last_tier_event_timestamp_ms: nextEventTimestampMs,
+  };
+}
+
+async function fetchRevenueCatSubscriber(
+  appUserId: string,
+  apiKey: string,
+  timeoutMs: number = SUBSCRIPTION_SYNC_TIMEOUT_MS
+): Promise<RevenueCatV1SubscriberResponse> {
+  const url = `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: 'application/json',
+      },
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      const bodyText = await res.text().catch(() => '');
+      throw new Error(`RevenueCat API failed: HTTP ${res.status} ${res.statusText}: ${bodyText}`);
+    }
+
+    return (await res.json()) as RevenueCatV1SubscriberResponse;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 // JSON schemas for structured outputs
 const ANALYZE_DREAM_SCHEMA = {
@@ -620,6 +732,229 @@ serve(async (req: Request) => {
 
   const storageBucket = Deno.env.get('SUPABASE_STORAGE_BUCKET') ?? 'dream-images';
   const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+  if (req.method === 'POST' && subPath === '/subscription/sync') {
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    if (!supabaseServiceRoleKey) {
+      return new Response(JSON.stringify({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const body = (await req.json().catch(() => ({}))) as { source?: string };
+    const source = typeof body?.source === 'string' && body.source.trim() ? body.source.trim() : 'app_launch';
+
+    let subscriber: RevenueCatV1SubscriberResponse;
+    try {
+      subscriber = await fetchRevenueCatSubscriber(user.id, getRevenueCatApiKey());
+    } catch (error) {
+      console.error('[api] /subscription/sync RevenueCat lookup failed', {
+        userId: user.id,
+        message: (error as Error).message,
+      });
+      return new Response(JSON.stringify({ error: 'RevenueCat lookup failed' }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const inferredTier = inferTierFromSubscriber(subscriber);
+    if (inferredTier === null) {
+      return new Response(JSON.stringify({ ok: true, skipped: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const currentMeta = (user.app_metadata ?? {}) as Record<string, unknown>;
+    const currentTier = normalizeTier(currentMeta.tier ?? user.user_metadata?.tier);
+    const tierUpdatedAt = getTierUpdatedAt(currentMeta);
+    const shouldUpdate = currentTier !== inferredTier || !tierUpdatedAt;
+
+    if (shouldUpdate) {
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+      const updatedMeta = buildUpdatedMetadata(currentMeta, inferredTier, source);
+      const { error } = await adminClient.auth.admin.updateUserById(user.id, {
+        app_metadata: updatedMeta,
+      });
+      if (error) {
+        console.error('[api] /subscription/sync metadata update failed', {
+          userId: user.id,
+          message: error.message,
+        });
+        return new Response(JSON.stringify({ error: 'Failed to update user metadata' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+    }
+
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        tier: inferredTier,
+        updated: shouldUpdate,
+        currentTier,
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+
+  if (req.method === 'POST' && subPath === '/subscription/reconcile') {
+    const secret = getReconcileSecret();
+    if (!secret) {
+      return new Response(JSON.stringify({ error: 'Missing REVENUECAT_RECONCILE_SECRET' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const provided = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '').trim();
+    if (!provided || !timingSafeEqual(provided, secret)) {
+      return new Response(JSON.stringify({ error: 'Invalid reconcile authentication' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    if (!supabaseServiceRoleKey) {
+      return new Response(JSON.stringify({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const body = (await req.json().catch(() => ({}))) as {
+      batchSize?: number;
+      maxTotal?: number;
+      minAgeHours?: number;
+    };
+    const batchSizeInput = Number(body?.batchSize);
+    const maxTotalInput = Number(body?.maxTotal);
+    const minAgeHoursInput = Number(body?.minAgeHours);
+    const batchSize = Math.min(
+      Math.max(Number.isFinite(batchSizeInput) ? batchSizeInput : RECONCILE_DEFAULT_BATCH, 1),
+      RECONCILE_MAX_BATCH
+    );
+    const maxTotal = Math.min(
+      Math.max(Number.isFinite(maxTotalInput) ? maxTotalInput : RECONCILE_DEFAULT_MAX_TOTAL, 1),
+      RECONCILE_DEFAULT_MAX_TOTAL
+    );
+    const minAgeHours = Math.max(
+      Number.isFinite(minAgeHoursInput) ? minAgeHoursInput : RECONCILE_DEFAULT_MIN_AGE_HOURS,
+      0
+    );
+    const minAgeMs = minAgeHours * 60 * 60 * 1000;
+
+    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    const apiKey = getRevenueCatApiKey();
+    const startedAt = Date.now();
+    let processed = 0;
+    let updated = 0;
+    let changed = 0;
+    let skipped = 0;
+    let errors = 0;
+    let lastId: string | null = null;
+
+    while (processed < maxTotal && Date.now() - startedAt < RECONCILE_MAX_DURATION_MS) {
+      let query = adminClient
+        .schema('auth')
+        .from('users')
+        .select('id, raw_app_meta_data')
+        .or('raw_app_meta_data->>tier.eq.plus,raw_app_meta_data->>tier.eq.premium')
+        .order('id', { ascending: true })
+        .limit(batchSize);
+
+      if (lastId) {
+        query = query.gt('id', lastId);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.error('[api] /subscription/reconcile user fetch failed', error.message);
+        break;
+      }
+      if (!data?.length) break;
+
+      for (const row of data) {
+        processed += 1;
+        lastId = row.id;
+
+        const meta = (row.raw_app_meta_data ?? {}) as Record<string, unknown>;
+        const currentTier = normalizeTier(meta.tier);
+        const lastSyncedAt = getTierUpdatedAt(meta);
+        const lastSyncedMs = lastSyncedAt ? new Date(lastSyncedAt).getTime() : null;
+        if (lastSyncedMs && Number.isFinite(lastSyncedMs) && Date.now() - lastSyncedMs < minAgeMs) {
+          skipped += 1;
+          continue;
+        }
+
+        let subscriber: RevenueCatV1SubscriberResponse;
+        try {
+          subscriber = await fetchRevenueCatSubscriber(row.id, apiKey);
+        } catch (error) {
+          errors += 1;
+          console.warn('[api] /subscription/reconcile RevenueCat lookup failed', {
+            userId: row.id,
+            message: (error as Error).message,
+          });
+          continue;
+        }
+
+        const inferredTier = inferTierFromSubscriber(subscriber);
+        if (inferredTier === null) {
+          skipped += 1;
+          continue;
+        }
+
+        if (inferredTier !== currentTier) {
+          changed += 1;
+        }
+
+        const updatedMeta = buildUpdatedMetadata(meta, inferredTier, 'revenuecat_reconcile');
+        const { error: updateError } = await adminClient.auth.admin.updateUserById(row.id, {
+          app_metadata: updatedMeta,
+        });
+
+        if (updateError) {
+          errors += 1;
+          console.warn('[api] /subscription/reconcile metadata update failed', {
+            userId: row.id,
+            message: updateError.message,
+          });
+          continue;
+        }
+
+        updated += 1;
+      }
+    }
+
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        processed,
+        updated,
+        changed,
+        skipped,
+        errors,
+        lastId,
+        durationMs: Date.now() - startedAt,
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
 
   const uploadImageToStorage = async (
     imageBase64: string,

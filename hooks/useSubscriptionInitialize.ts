@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { createScopedLogger } from '@/lib/logger';
 import { initializeSubscription, isSubscriptionInitialized } from '@/services/subscriptionService';
+import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 
 const log = createScopedLogger('[useSubscriptionInitialize]');
 
@@ -21,6 +22,7 @@ export function useSubscriptionInitialize() {
   // ✅ FIX: Track if initialization has completed for this user
   // Prevents redundant initialization calls
   const initializedUserIdRef = useRef<string | null>(null);
+  const syncedUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -28,6 +30,10 @@ export function useSubscriptionInitialize() {
     const run = async () => {
       try {
         const nextUserId = user?.id ?? null;
+
+        if (!nextUserId) {
+          syncedUserIdRef.current = null;
+        }
 
         // ✅ Avoid re-initialization for the same user
         // We still call initializeSubscription when user changes to ensure Purchases.logIn/logOut
@@ -46,6 +52,17 @@ export function useSubscriptionInitialize() {
         // Always call initializeSubscription to ensure correct Purchases user linking on auth changes.
         await initializeSubscription(nextUserId);
         log.debug('Subscription SDK initialized', { userId: nextUserId });
+
+        if (nextUserId && syncedUserIdRef.current !== nextUserId) {
+          try {
+            await syncSubscriptionFromServer('app_launch');
+            log.debug('Subscription sync requested', { userId: nextUserId });
+          } catch (syncError) {
+            log.warn('Subscription sync failed', { userId: nextUserId }, syncError);
+          } finally {
+            syncedUserIdRef.current = nextUserId;
+          }
+        }
 
         if (nextUserId) {
           // Refresh user to ensure app_metadata.tier is synced from server after RevenueCat init.

@@ -14,6 +14,10 @@ import {
   purchaseSubscriptionPackage,
   restoreSubscriptionPurchases,
 } from '@/services/subscriptionService';
+import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
+import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerInfoListener';
+import { useSubscriptionExpiryTimer } from './useSubscriptionExpiryTimer';
+import { useSubscriptionMonitor } from './useSubscriptionMonitor';
 
 type RevenueCatError = Error & {
   userCancelled?: boolean;
@@ -133,6 +137,7 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   const reconciliationAttemptsRef = useRef(0);
   // Track which expiry we've already refreshed to avoid infinite loops on expired plans
   const expiredExpiryKeyRef = useRef<string | null>(null);
+  const lastSyncAttemptRef = useRef<{ userId: string | null; at: number } | null>(null);
 
   const shouldLoadPackages = options?.loadPackages === true;
 
@@ -172,6 +177,30 @@ export function useSubscription(options?: UseSubscriptionOptions) {
     );
     return tier === 'premium' ? 'plus' : tier;
   }, []);
+
+  const syncSubscription = useCallback(async (source: string) => {
+    if (!userId) {
+      lastSyncAttemptRef.current = null;
+      return;
+    }
+    const now = Date.now();
+    const cooldownMs = 60 * 1000;
+    if (
+      lastSyncAttemptRef.current &&
+      lastSyncAttemptRef.current.userId === userId &&
+      now - lastSyncAttemptRef.current.at < cooldownMs
+    ) {
+      return;
+    }
+    lastSyncAttemptRef.current = { userId, at: now };
+    try {
+      await syncSubscriptionFromServer(source);
+    } catch (err) {
+      if (__DEV__) {
+        console.warn('[useSubscription] Subscription sync failed', err);
+      }
+    }
+  }, [userId]);
 
   const startTierReconciliation = useCallback(
     (expectedTier: SubscriptionTier) => {
@@ -617,6 +646,7 @@ export function useSubscription(options?: UseSubscriptionOptions) {
       });
 
       setStatus(nextStatus);
+      await syncSubscription('manual_refresh');
       return nextStatus;
     } catch (e) {
       console.error('[useSubscription] Refresh failed', {
@@ -630,7 +660,42 @@ export function useSubscription(options?: UseSubscriptionOptions) {
     } finally {
       setRefreshing(false);
     }
-  }, [requiresAuth, user]);
+  }, [requiresAuth, syncSubscription, user]);
+
+  // Écouter les changements de status au resume de l'app
+  // Ceci permet de mettre à jour l'UI quand l'abonnement expire pendant que l'app est en arrière-plan
+  const applyStatusUpdate = useCallback((source: string, newStatus: SubscriptionStatus) => {
+    if (__DEV__) {
+      console.log(`[useSubscription] Status updated from ${source}:`, {
+        tier: newStatus.tier,
+        isActive: newStatus.isActive,
+        expiryDate: newStatus.expiryDate,
+      });
+    }
+    setStatus(newStatus);
+  }, []);
+
+  const handleStatusFromMonitor = useCallback((newStatus: SubscriptionStatus) => {
+    applyStatusUpdate('resume', newStatus);
+    void syncSubscription('resume');
+  }, [applyStatusUpdate, syncSubscription]);
+
+  const handleStatusFromCustomerInfo = useCallback((newStatus: SubscriptionStatus) => {
+    applyStatusUpdate('customer_info', newStatus);
+  }, [applyStatusUpdate]);
+
+  const handleStatusFromExpiryTimer = useCallback((newStatus: SubscriptionStatus) => {
+    applyStatusUpdate('expiry_timer', newStatus);
+  }, [applyStatusUpdate]);
+
+  useSubscriptionMonitor(handleStatusFromMonitor);
+  useSubscriptionCustomerInfoListener(handleStatusFromCustomerInfo, !requiresAuth);
+  useSubscriptionExpiryTimer({
+    status,
+    userId,
+    enabled: !requiresAuth,
+    onStatusChange: handleStatusFromExpiryTimer,
+  });
 
   return {
     status,

@@ -46,11 +46,25 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const tier = useMemo(() => {
     if (!user?.id) return 'guest';
 
+    // Fallback conservateur: uniquement si l'expiration est largement passée
+    // et que l'abonnement ne renouvelle pas.
+    if (subscriptionStatus?.expiryDate && subscriptionStatus?.tier === 'plus') {
+      const expiryTime = new Date(subscriptionStatus.expiryDate).getTime();
+      const now = Date.now();
+      const marginMs = 24 * 60 * 60 * 1000;
+      if (expiryTime + marginMs < now && subscriptionStatus.willRenew === false) {
+        if (__DEV__) {
+          console.warn('[useQuota] Subscription expired (24h+ margin, willRenew=false), tier should be free');
+        }
+        return 'free';
+      }
+    }
+
     const optimisticPaidTier =
       supabaseTier === 'plus' || supabaseTier === 'premium' ? supabaseTier : null;
 
     return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
-  }, [subscriptionStatus?.tier, supabaseTier, user?.id]);
+  }, [subscriptionStatus?.tier, subscriptionStatus?.expiryDate, subscriptionStatus?.willRenew, supabaseTier, user?.id]);
   const isPaidTier = tier === 'plus' || tier === 'premium';
 
   /**
