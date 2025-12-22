@@ -1,11 +1,12 @@
 import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from 'expo-router';
 import { MotiView } from '@/lib/moti';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
+import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Pressable, StyleSheet, type AccessibilityState } from 'react-native';
+import { Platform, Pressable, StyleSheet, type AccessibilityState } from 'react-native';
 
 interface MicButtonProps {
   isRecording: boolean;
@@ -38,7 +39,12 @@ export function MicButton({ isRecording, isPreparing, onPress, testID, accessibi
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => {
+        if (Platform.OS !== 'web') {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        }
+        onPress();
+      }}
       disabled={disabled}
       style={[styles.container, disabled && styles.disabled]}
       accessibilityRole="button"

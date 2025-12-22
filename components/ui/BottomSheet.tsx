@@ -1,9 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Animated,
-  Easing,
   Modal,
-  Platform,
   Pressable,
   Text,
   StyleSheet,
@@ -11,6 +8,13 @@ import {
   type ViewStyle,
   View,
 } from 'react-native';
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { blurActiveElement } from '@/lib/accessibility';
 
@@ -44,9 +48,9 @@ export function BottomSheet({
   backdropColor = 'rgba(0,0,0,0.45)',
   testID,
 }: BottomSheetProps) {
-  const nativeDriver = Platform.OS !== 'web';
-  const translateY = useRef(new Animated.Value(0)).current;
   const [isMounted, setIsMounted] = useState(visible);
+  const translateY = useSharedValue(0);
+  const handleUnmount = useCallback(() => setIsMounted(false), []);
   const normalizedChildren = useMemo(
     () =>
       React.Children.toArray(children).map((child, index) => {
@@ -67,26 +71,30 @@ export function BottomSheet({
     if (visible) {
       blurActiveElement();
       setIsMounted(true);
-      translateY.setValue(400);
-      Animated.timing(translateY, {
-        toValue: 0,
+      translateY.value = 400;
+      translateY.value = withTiming(0, {
         duration: 260,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: nativeDriver,
-      }).start();
-    } else if (isMounted) {
-      Animated.timing(translateY, {
-        toValue: 400,
-        duration: 220,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: nativeDriver,
-      }).start(({ finished }) => {
-        if (finished) {
-          setIsMounted(false);
-        }
       });
+    } else if (isMounted) {
+      translateY.value = withTiming(
+        400,
+        {
+          duration: 220,
+          easing: Easing.in(Easing.cubic),
+        },
+        (finished) => {
+          if (finished) {
+            runOnJS(handleUnmount)();
+          }
+        }
+      );
     }
-  }, [isMounted, nativeDriver, translateY, visible]);
+  }, [handleUnmount, isMounted, translateY, visible]);
+
+  const sheetAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
 
   if (!isMounted) {
     return null;
@@ -102,7 +110,7 @@ export function BottomSheet({
     >
       <View style={styles.wrapper}>
         <Pressable style={[styles.backdrop, { backgroundColor: backdropColor }]} onPress={onClose} />
-        <Animated.View style={[styles.sheet, style, { transform: [{ translateY }] }]} testID={testID}>
+        <Animated.View style={[styles.sheet, style, sheetAnimatedStyle]} testID={testID}>
           {normalizedChildren}
         </Animated.View>
       </View>
