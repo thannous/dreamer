@@ -199,7 +199,7 @@ export default function JournalDetailScreen() {
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPremium = tier === 'premium' || tier === 'plus';
-  const canGenerateImage = !quotaLoading && (isPremium || tier === 'guest');
+  const canGenerateImage = !quotaLoading && canAnalyzeNow && (isPremium || tier === 'guest');
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
