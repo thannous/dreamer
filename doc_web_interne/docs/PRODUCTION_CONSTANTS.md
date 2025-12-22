@@ -25,6 +25,27 @@
   - Valeur prod : `false`.  
   - Où placer : variable EAS en `plaintext` (`eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_MOCK_MODE --value false`) ou dans le profil `env` si besoin.
 
+## Guest sessions (Play Integrity – v1)
+- [ ] `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER`  
+  - Pourquoi : initialiser le provider Play Integrity côté app (Android).  
+  - Où récupérer : Google Cloud Console → Project number (pas Project ID).  
+  - Où placer : variable EAS en `plaintext` (`eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER --value <project_number>`).
+- [ ] `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`  
+  - Pourquoi : vérifier les tokens Play Integrity côté Edge Function.  
+  - Où récupérer : Service account JSON (Google Cloud Console).  
+  - Où placer : secret Supabase Functions (base64 du JSON).
+- [ ] `PLAY_INTEGRITY_PACKAGE_NAME`  
+  - Pourquoi : valider que le token correspond au bon package.  
+  - Valeur prod : `com.tanuki75.noctalia`.  
+  - Où placer : secret Supabase Functions (plaintext).
+- [ ] `GUEST_SESSION_SECRET`  
+  - Pourquoi : signer les tokens `x-guest-token`.  
+  - Où placer : secret Supabase Functions (plaintext, long random).
+- [ ] `ALLOW_INSECURE_GUEST_SESSION=true`  
+  - Pourquoi : autoriser iOS sans App Attest en v1.  
+  - Où placer : secret Supabase Functions (plaintext).  
+  - Note : à désactiver quand App Attest est prêt.
+
 ## Google OAuth (auth)
 - [x] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`  
   - Pourquoi : OAuth web + échange d’ID token pour Supabase.  

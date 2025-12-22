@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
+import { requireGuestSession } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
 export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
@@ -10,28 +11,28 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
       fingerprint?: string;
       targetDreamId?: number | null;
     };
+    const guestCheck = await requireGuestSession(req, body, user);
+    if (guestCheck instanceof Response) {
+      return guestCheck;
+    }
+    const fingerprint = guestCheck.fingerprint;
+    if (!fingerprint) {
+      return new Response(JSON.stringify({ error: 'Guest session required' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
     console.log('[api] /quota/status request', {
       userId: user?.id ?? null,
-      fingerprint: body?.fingerprint ? '[redacted]' : null,
+      fingerprint: fingerprint ? '[redacted]' : null,
       targetDreamId: body?.targetDreamId ?? null,
     });
 
-    // Si pas de fingerprint, retourner mode dégradé (client enforcera localement)
-    if (!body?.fingerprint || !supabaseServiceRoleKey) {
-      console.log('[api] /quota/status: no fingerprint or service key, returning degraded mode');
+    if (!supabaseServiceRoleKey) {
+      console.log('[api] /quota/status: missing service key');
       return new Response(
-        JSON.stringify({
-          tier: 'guest',
-          usage: {
-            analysis: { used: 0, limit: GUEST_LIMITS.analysis },
-            exploration: { used: 0, limit: GUEST_LIMITS.exploration },
-            messages: { used: 0, limit: GUEST_LIMITS.messagesPerDream },
-          },
-          canAnalyze: true,
-          canExplore: true,
-          reasons: [],
-        }),
-        { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        JSON.stringify({ error: 'Service unavailable' }),
+        { status: 503, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
@@ -41,7 +42,7 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
     });
 
     const { data: quotaData, error: quotaError } = await adminClient.rpc('get_guest_quota_status', {
-      p_fingerprint: body.fingerprint,
+      p_fingerprint: fingerprint,
     });
 
     if (quotaError) {

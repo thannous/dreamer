@@ -13,9 +13,7 @@ CREATE TABLE IF NOT EXISTS public.quota_limits (
   CONSTRAINT quota_limits_quota_limit_check CHECK (quota_limit IS NULL OR quota_limit >= 0),
   CONSTRAINT quota_limits_pk PRIMARY KEY (tier, period, quota_type)
 );
-
 ALTER TABLE public.quota_limits ENABLE ROW LEVEL SECURITY;
-
 DO $$
 BEGIN
   -- Read-only for everyone (anon + authenticated) so the app can render limits.
@@ -50,7 +48,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Seed defaults. Re-runnable.
 INSERT INTO public.quota_limits (tier, period, quota_type, quota_limit)
 VALUES
@@ -67,4 +64,3 @@ ON CONFLICT (tier, period, quota_type)
 DO UPDATE SET
   quota_limit = EXCLUDED.quota_limit,
   updated_at = now();
-

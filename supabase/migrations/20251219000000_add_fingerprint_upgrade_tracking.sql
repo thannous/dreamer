@@ -8,11 +8,9 @@ ALTER TABLE public.guest_usage
 ADD COLUMN is_upgraded BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN upgraded_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
 ADD COLUMN upgraded_at TIMESTAMPTZ;
-
 -- Créer des index pour recherche rapide
 CREATE INDEX idx_guest_usage_is_upgraded ON public.guest_usage(is_upgraded);
 CREATE INDEX idx_guest_usage_upgraded_user_id ON public.guest_usage(upgraded_user_id);
-
 -- Mettre à jour la fonction get_guest_quota_status pour inclure le statut is_upgraded
 CREATE OR REPLACE FUNCTION public.get_guest_quota_status(
     p_fingerprint TEXT
@@ -38,7 +36,6 @@ BEGIN
     );
 END;
 $$;
-
 -- Créer une nouvelle fonction pour marquer un fingerprint comme upgradé
 CREATE OR REPLACE FUNCTION public.mark_fingerprint_upgraded(
     p_fingerprint TEXT,
@@ -62,7 +59,6 @@ BEGIN
     RETURN true;
 END;
 $$;
-
 -- Sécuriser l'incrément des quotas invités pour les fingerprints upgradés
 CREATE OR REPLACE FUNCTION public.increment_guest_quota(
     p_fingerprint TEXT,

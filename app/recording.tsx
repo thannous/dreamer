@@ -50,6 +50,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const log = createScopedLogger('[Recording]');
 
@@ -59,6 +60,7 @@ export default function RecordingScreen() {
   const { language } = useLanguage();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const referenceImagesEnabled = isReferenceImagesEnabled();
 
   const [transcript, setTranscript] = useState('');
@@ -396,6 +398,13 @@ export default function RecordingScreen() {
         }
         if (result.error === 'rate_limited') {
           showQuotaSheet({ mode: 'error', message: t('error.rate_limit') });
+          return;
+        }
+        if (result.error === 'stt_unavailable') {
+          Alert.alert(
+            t('recording.alert.stt_unavailable.title'),
+            t('recording.alert.stt_unavailable.message')
+          );
           return;
         }
         if (result.error === 'language_pack_missing') {
@@ -944,7 +953,15 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
           >
             {/* Main Content */}
-            <View style={styles.mainContent}>
+            <View
+              style={[
+                styles.mainContent,
+                {
+                  paddingTop: 24 + insets.top,
+                  paddingBottom: 24 + insets.bottom,
+                },
+              ]}
+            >
               <View style={styles.bodySection}>
                 {inputMode === 'voice' ? (
                   <RecordingVoiceInput

@@ -15,19 +15,19 @@ import { corsHeaders } from './lib/constants.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
+import { handleGuestSession } from './routes/guestSession.ts';
 import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
 import { handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
-import { handleTranscribe } from './routes/transcribe.ts';
 import type { ApiContext } from './types.ts';
 
 type RouteHandler = (ctx: ApiContext) => Promise<Response>;
 
 const routes = new Map<string, RouteHandler>([
+  ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
   ['POST /subscription/sync', handleSubscriptionSync],
   ['POST /subscription/reconcile', handleSubscriptionReconcile],
   ['POST /quota/status', handleQuotaStatus],
   ['POST /auth/mark-upgrade', handleAuthMarkUpgrade],
-  ['POST /transcribe', handleTranscribe],
   ['POST /chat', handleChat],
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],

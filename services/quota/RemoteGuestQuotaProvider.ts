@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { QUOTAS, type UserTier } from '@/constants/limits';
 import { getApiBaseUrl } from '@/lib/config';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { getGuestHeaders } from '@/lib/guestSession';
 import { fetchJSON } from '@/lib/http';
 import type { QuotaStatus } from '@/lib/types';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
@@ -146,12 +147,14 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
 
     try {
       const fingerprint = await getDeviceFingerprint();
+      const headers = await getGuestHeaders();
       const response = await fetchJSON<RemoteQuotaResponse>(`${getApiBaseUrl()}/quota/status`, {
         method: 'POST',
         body: {
           fingerprint,
           targetDreamId: dreamId ?? null,
         },
+        headers,
         retries: 1,
         timeoutMs: 10000,
       });

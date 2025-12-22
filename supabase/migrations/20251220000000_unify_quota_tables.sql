@@ -10,7 +10,6 @@
 
 -- Enable pgcrypto if needed
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- ============================================================================
 -- STEP 1: Create new unified quota_usage table
 -- ============================================================================
@@ -26,17 +25,13 @@ CREATE TABLE IF NOT EXISTS public.quota_usage (
     CONSTRAINT quota_usage_quota_type_check
       CHECK (quota_type IN ('analysis', 'exploration'))
 );
-
 -- Indexes optimized for common queries
 CREATE INDEX IF NOT EXISTS idx_quota_usage_user_type_time
   ON public.quota_usage(user_id, quota_type, occurred_at);
-
 CREATE INDEX IF NOT EXISTS idx_quota_usage_dream
   ON public.quota_usage(dream_id);
-
 -- Enable RLS
 ALTER TABLE public.quota_usage ENABLE ROW LEVEL SECURITY;
-
 -- Policy: Users can only see their own quota usage
 DO $$
 BEGIN
@@ -54,7 +49,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- ============================================================================
 -- STEP 2: Migrate data from user_quota_events to quota_usage
 -- ============================================================================
@@ -63,7 +57,6 @@ INSERT INTO public.quota_usage (id, user_id, dream_id, quota_type, occurred_at, 
 SELECT id, user_id, dream_id, quota_type, occurred_at, NULL
 FROM public.user_quota_events
 ON CONFLICT DO NOTHING;
-
 -- Note: We do NOT migrate quota_events because:
 -- - Each chat message doesn't need to be logged (redundant with dreams.chat_history)
 -- - Message count is calculated directly from chat_history JSON
@@ -114,7 +107,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- ============================================================================
 -- STEP 4: Update enforce_authenticated_monthly_quota trigger function
 -- ============================================================================
@@ -235,7 +227,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- ============================================================================
 -- STEP 5: Simplify enforce_quota_for_chat() - remove logging
 -- ============================================================================
@@ -322,7 +313,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- ============================================================================
 -- STEP 6: Verify trigger still exists and is properly configured
 -- ============================================================================
@@ -333,20 +323,16 @@ CREATE TRIGGER trg_enforce_quota_for_chat
   ON public.dreams
   FOR EACH ROW
   EXECUTE FUNCTION public.enforce_quota_for_chat();
-
 -- ============================================================================
 -- STEP 7: Drop old tables and functions (CLEANUP)
 -- ============================================================================
 
 -- Drop the old logging table for chat quotas (no longer needed)
 DROP TABLE IF EXISTS public.quota_events;
-
 -- Drop the old quota events table (replaced by quota_usage)
 DROP TABLE IF EXISTS public.user_quota_events;
-
 -- Drop the old helper function (no longer used in triggers)
 DROP FUNCTION IF EXISTS public.count_user_messages(jsonb);
-
 -- ============================================================================
 -- STEP 8: Add helpful comment to document the table
 -- ============================================================================

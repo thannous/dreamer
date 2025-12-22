@@ -1,0 +1,168 @@
+import * as AppIntegrity from '@expo/app-integrity';
+import * as Crypto from 'expo-crypto';
+import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
+
+import { fetchJSON } from '@/lib/http';
+import { getApiBaseUrl } from '@/lib/config';
+import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
+import { getAccessToken } from '@/lib/auth';
+import { getExpoPublicEnvValue } from '@/lib/env';
+import { logger } from '@/lib/logger';
+
+type GuestSessionResponse = {
+  token: string;
+  expiresAt: string;
+};
+
+type GuestSessionRecord = {
+  token: string;
+  expiresAt: number;
+  fingerprint: string;
+};
+
+const STORAGE_KEY = 'guest-session-v1';
+const EXPIRY_SAFETY_MS = 30_000;
+
+let cached: GuestSessionRecord | null = null;
+let preparePromise: Promise<void> | null = null;
+
+const decodeStored = (raw: string | null): GuestSessionRecord | null => {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as GuestSessionResponse & { fingerprint?: string };
+    if (!parsed.token || !parsed.expiresAt || !parsed.fingerprint) return null;
+    const expiresAt = Date.parse(parsed.expiresAt);
+    if (!Number.isFinite(expiresAt)) return null;
+    return { token: parsed.token, expiresAt, fingerprint: parsed.fingerprint };
+  } catch {
+    return null;
+  }
+};
+
+const isSessionValid = (session: GuestSessionRecord | null): session is GuestSessionRecord => {
+  if (!session) return false;
+  return session.expiresAt - EXPIRY_SAFETY_MS > Date.now();
+};
+
+export async function initGuestSession(): Promise<void> {
+  if (Platform.OS !== 'android') return;
+  if (preparePromise) return preparePromise;
+
+  preparePromise = (async () => {
+    const cloudProjectNumber = getExpoPublicEnvValue('EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER');
+    if (!cloudProjectNumber) {
+      logger.warn('[guestSession] Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER');
+      return;
+    }
+    try {
+      await AppIntegrity.prepareIntegrityTokenProviderAsync(cloudProjectNumber);
+      logger.debug('[guestSession] Play Integrity provider ready');
+    } catch (error) {
+      logger.warn('[guestSession] Failed to prepare Play Integrity provider', error);
+    }
+  })();
+
+  return preparePromise;
+}
+
+const createRequestHash = async (fingerprint: string): Promise<string> => {
+  const seed = `${fingerprint}:${Date.now()}:${Crypto.randomUUID()}`;
+  return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, seed);
+};
+
+const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecord | null> => {
+  const base = getApiBaseUrl();
+  const requestHash = await createRequestHash(fingerprint);
+  let integrityToken: string | null = null;
+
+  if (Platform.OS === 'android') {
+    await initGuestSession();
+    try {
+      integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+    } catch (error) {
+      logger.warn('[guestSession] Play Integrity request failed', error);
+      return null;
+    }
+  }
+
+  const response = await fetchJSON<GuestSessionResponse>(`${base}/guest/session`, {
+    method: 'POST',
+    body: {
+      fingerprint,
+      requestHash,
+      integrityToken,
+      platform: Platform.OS,
+    },
+    timeoutMs: 10000,
+  });
+
+  const expiresAt = Date.parse(response.expiresAt);
+  if (!Number.isFinite(expiresAt)) {
+    return null;
+  }
+
+  return {
+    token: response.token,
+    expiresAt,
+    fingerprint,
+  };
+};
+
+const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
+  if (cached && isSessionValid(cached)) {
+    return cached;
+  }
+
+  if (Platform.OS === 'web') {
+    return null;
+  }
+
+  const accessToken = await getAccessToken();
+  if (accessToken) {
+    return null;
+  }
+
+  let stored: GuestSessionRecord | null = null;
+  try {
+    stored = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY));
+  } catch {
+    stored = null;
+  }
+  if (stored && isSessionValid(stored)) {
+    cached = stored;
+    return stored;
+  }
+
+  const fingerprint = await getDeviceFingerprint();
+  const fresh = await fetchGuestSession(fingerprint);
+  if (!fresh) {
+    return null;
+  }
+
+  cached = fresh;
+  try {
+    await SecureStore.setItemAsync(
+      STORAGE_KEY,
+      JSON.stringify({ token: fresh.token, expiresAt: new Date(fresh.expiresAt).toISOString(), fingerprint })
+    );
+  } catch {
+    // Ignore storage failures; session will remain in memory.
+  }
+  return fresh;
+};
+
+export async function getGuestHeaders(): Promise<Record<string, string>> {
+  try {
+    const session = await ensureGuestSession();
+    if (!session) return {};
+    return {
+      'x-guest-token': session.token,
+      'x-guest-fingerprint': session.fingerprint,
+      'x-guest-platform': Platform.OS,
+    };
+  } catch (error) {
+    logger.warn('[guestSession] Failed to resolve guest session', error);
+    return {};
+  }
+}

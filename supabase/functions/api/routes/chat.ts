@@ -2,6 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt } from '../lib/prompts.ts';
 import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';
+import { requireGuestSession } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
 export async function handleChat(ctx: ApiContext): Promise<Response> {
@@ -26,7 +27,11 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
 
     const dreamId = String(body?.dreamId ?? '').trim();
     const userMessage = String(body?.message ?? '').trim();
-    const fingerprint = typeof body?.fingerprint === 'string' ? body.fingerprint : null;
+    const guestCheck = await requireGuestSession(req, body, user);
+    if (guestCheck instanceof Response) {
+      return guestCheck;
+    }
+    const fingerprint = guestCheck.fingerprint;
 
     if (!dreamId) {
       return new Response(JSON.stringify({ error: 'dreamId is required' }), {
@@ -97,43 +102,39 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       dream = dbDream;
     }
 
-    if (!user) {
-      if (!fingerprint) {
-        console.warn('[api] /chat: guest without fingerprint, allowing in degraded mode');
-      } else if (supabaseServiceRoleKey) {
-        const userMessagesInContext = Array.isArray(dream.chat_history)
-          ? (dream.chat_history as { role?: string }[]).filter((msg) => msg?.role === 'user').length
-          : 0;
+    if (!user && supabaseServiceRoleKey && fingerprint) {
+      const userMessagesInContext = Array.isArray(dream.chat_history)
+        ? (dream.chat_history as { role?: string }[]).filter((msg) => msg?.role === 'user').length
+        : 0;
 
-        if (userMessagesInContext === 1) {
-          const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-            auth: { autoRefreshToken: false, persistSession: false },
+      if (userMessagesInContext === 1) {
+        const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+          auth: { autoRefreshToken: false, persistSession: false },
+        });
+
+        const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+          p_fingerprint: fingerprint,
+          p_quota_type: 'exploration',
+          p_limit: GUEST_LIMITS.exploration,
+        });
+
+        if (quotaError) {
+          console.error('[api] /chat: guest exploration quota check failed', quotaError);
+        } else if (!quotaResult?.allowed) {
+          console.log('[api] /chat: guest exploration quota exceeded', {
+            fingerprint: '[redacted]',
+            used: quotaResult?.new_count,
           });
-
-          const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-            p_fingerprint: fingerprint,
-            p_quota_type: 'exploration',
-            p_limit: GUEST_LIMITS.exploration,
-          });
-
-          if (quotaError) {
-            console.error('[api] /chat: guest exploration quota check failed', quotaError);
-          } else if (!quotaResult?.allowed) {
-            console.log('[api] /chat: guest exploration quota exceeded', {
-              fingerprint: '[redacted]',
-              used: quotaResult?.new_count,
-            });
-            return new Response(
-              JSON.stringify({
-                error: 'Guest exploration limit reached',
-                code: 'QUOTA_EXCEEDED',
-                usage: {
-                  exploration: { used: quotaResult?.new_count ?? GUEST_LIMITS.exploration, limit: GUEST_LIMITS.exploration },
-                },
-              }),
-              { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-            );
-          }
+          return new Response(
+            JSON.stringify({
+              error: 'Guest exploration limit reached',
+              code: 'QUOTA_EXCEEDED',
+              usage: {
+                exploration: { used: quotaResult?.new_count ?? GUEST_LIMITS.exploration, limit: GUEST_LIMITS.exploration },
+              },
+            }),
+            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
         }
       }
     }

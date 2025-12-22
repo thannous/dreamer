@@ -634,7 +634,7 @@ export default function DreamChatScreen() {
     ? (['transparent', 'rgba(19, 16, 34, 0.9)', '#131022'] as const)
     : (['transparent', colors.backgroundDark + 'E6', colors.backgroundDark] as const);
 
-  const dreamImageUri = dream.imageUrl?.trim();
+  const dreamImageUri = dream?.imageUrl?.trim();
 
   const handleBackPress = useCallback(() => {
     if (router.canGoBack()) {

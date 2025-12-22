@@ -14,7 +14,6 @@ import {
   startNativeSpeechSession,
   type NativeSpeechSession,
 } from '@/services/nativeSpeechRecognition';
-import { transcribeAudio } from '@/services/speechToText';
 
 const log = createScopedLogger('[useRecordingSession]');
 
@@ -191,30 +190,16 @@ export function useRecordingSession({
             log.warn('Native STT failed', error);
           }
         } else {
-          log.debug('no native session, will rely on backup', { uriPresent: Boolean(uri) });
+          log.debug('no native session available', { uriPresent: Boolean(uri) });
         }
 
         const hasNativeSession = Boolean(nativeResultPromise);
-        const shouldFallbackToGoogle =
-          (isLanguagePackMissing || isRateLimited || !hasNativeSession) &&
-          !transcriptText &&
-          (uri || recordedUri);
-
-        if (shouldFallbackToGoogle) {
-          try {
-            const fallbackUri = uri ?? recordedUri;
-            log.debug('fallback to Google STT', {
-              locale: transcriptionLocale,
-              uriLength: fallbackUri?.length ?? 0,
-            });
-            transcriptText = await transcribeAudio({
-              uri: fallbackUri!,
-              languageCode: transcriptionLocale,
-            });
-          } catch (e) {
-            const msg = e instanceof Error ? e.message : 'Unknown transcription error';
-            return { transcript: '', error: msg };
-          }
+        if (!hasNativeSession && !transcriptText) {
+          return {
+            transcript: '',
+            recordedUri: recordedUri ?? uri,
+            error: 'stt_unavailable',
+          };
         }
 
         if (!transcriptText && isLanguagePackMissing) {
@@ -292,6 +277,11 @@ export function useRecordingSession({
             );
             return { success: false, error: 'insecure_context' };
           }
+          Alert.alert(
+            t('recording.alert.stt_unavailable.title'),
+            t('recording.alert.stt_unavailable.message')
+          );
+          return { success: false, error: 'stt_unavailable' };
         }
 
         const { granted } = await AudioModule.requestRecordingPermissionsAsync();
@@ -352,8 +342,8 @@ export function useRecordingSession({
         skipRecorderRef.current = canPersistAudio;
 
         if (__DEV__) {
-          if (!nativeSessionRef.current && Platform.OS === 'web') {
-            log.warn('web: native session missing; check browser SpeechRecognition support/https');
+          if (!nativeSessionRef.current) {
+            log.warn('native session missing; check speech recognition availability/build config');
           }
           log.debug('native session', {
             hasSession: Boolean(nativeSessionRef.current),

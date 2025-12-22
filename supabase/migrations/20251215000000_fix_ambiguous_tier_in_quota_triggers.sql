@@ -153,7 +153,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 CREATE OR REPLACE FUNCTION public.enforce_quota_for_chat()
 RETURNS TRIGGER
 LANGUAGE plpgsql

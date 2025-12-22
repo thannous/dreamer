@@ -10,6 +10,10 @@ vi.mock('../../lib/auth', () => ({
   getAccessToken: () => Promise.resolve(null),
 }));
 
+vi.mock('../../lib/guestSession', () => ({
+  getGuestHeaders: () => Promise.resolve({}),
+}));
+
 // Mock errors module
 vi.mock('../../lib/errors', async () => {
   const actual = await vi.importActual<typeof import('../../lib/errors')>('../../lib/errors');

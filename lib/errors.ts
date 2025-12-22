@@ -6,7 +6,7 @@ import type { SubscriptionTier } from '@/lib/types';
 /**
  * Translation function type for i18n support
  */
-export type TranslateFunction = (key: string, params?: Record<string, unknown>) => string;
+export type TranslateFunction = (key: string, params?: Record<string, string | number>) => string;
 
 /**
  * Default error messages (English fallback)

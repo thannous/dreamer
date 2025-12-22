@@ -21,7 +21,6 @@ AS $$
   FROM jsonb_array_elements(COALESCE(history, '[]'::jsonb)) AS msg
   WHERE msg->>'role' = 'user';
 $$;
-
 -- Main quota enforcement trigger for chat messages
 CREATE OR REPLACE FUNCTION public.enforce_quota_for_chat()
 RETURNS TRIGGER
@@ -142,7 +141,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- Apply the trigger BEFORE updating chat_history to fail fast
 DROP TRIGGER IF EXISTS trg_enforce_quota_for_chat ON public.dreams;
 CREATE TRIGGER trg_enforce_quota_for_chat
