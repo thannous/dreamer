@@ -18,11 +18,8 @@ import {
 } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
-  useAutoScrollOnNewMessage,
-  useInitialScrollToEnd,
   useKeyboardAwareMessageList,
   useMessageListProps,
-  useScrollWhenComposerSizeUpdates,
   useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
 import type { ChatMessage } from '@/lib/types';
@@ -31,6 +28,7 @@ import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { MarkdownText } from './MarkdownText';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  InteractionManager,
   Platform,
   Pressable,
   StyleSheet,
@@ -109,38 +107,37 @@ const stripMarkdownForHandwriting = (value: string): string => {
     .replace(/^\s*[-+*]\s+/gm, '');
 };
 
+const MARKDOWN_HINT_REGEX =
+  /(^#{1,6}\s|```|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*\n]+\*|_[^_\n]+_|!\[[^\]]*]\([^)]+\)|\[[^\]]+]\([^)]+\)|^\s*[-+*]\s+|^\s*\d+\.\s+|^\s*>)/m;
+
+const hasMarkdownSyntax = (value: string): boolean => {
+  return MARKDOWN_HINT_REGEX.test(value);
+};
+
 type HandwritingTextProps = {
   text: string;
   style?: StyleProp<TextStyle>;
   animate: boolean;
-  onComplete?: () => void;
 };
 
-function HandwritingText({ text, style, animate, onComplete }: HandwritingTextProps) {
+function HandwritingText({ text, style, animate }: HandwritingTextProps) {
   const [displayedText, setDisplayedText] = useState(animate ? '' : text);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const didCompleteRef = useRef(false);
 
   useEffect(() => {
-    didCompleteRef.current = false;
     if (!animate) {
       setDisplayedText(text);
-      if (!didCompleteRef.current) {
-        didCompleteRef.current = true;
-        onComplete?.();
-      }
       return undefined;
     }
 
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
 
     setDisplayedText('');
+    if (text.length === 0) {
+      return undefined;
+    }
 
     const totalDuration = Math.min(
       HANDWRITING_MAX_DURATION,
@@ -157,19 +154,6 @@ function HandwritingText({ text, style, animate, onComplete }: HandwritingTextPr
     }
 
     let index = 0;
-    const finish = () => {
-      if (!didCompleteRef.current) {
-        didCompleteRef.current = true;
-        if (__DEV__) {
-          console.debug('[HandwritingText] complete', { length: text.length });
-        }
-        onComplete?.();
-      }
-    };
-
-    timeoutRef.current = setTimeout(() => {
-      finish();
-    }, totalDuration + HANDWRITING_TICK_MS);
 
     timerRef.current = setInterval(() => {
       index = Math.min(text.length, index + step);
@@ -178,11 +162,6 @@ function HandwritingText({ text, style, animate, onComplete }: HandwritingTextPr
       if (index >= text.length && timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-        finish();
       }
     }, HANDWRITING_TICK_MS);
 
@@ -191,12 +170,8 @@ function HandwritingText({ text, style, animate, onComplete }: HandwritingTextPr
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
     };
-  }, [animate, onComplete, text]);
+  }, [animate, text]);
 
   return (
     <Text style={style}>
@@ -222,35 +197,56 @@ const AssistantMessage = memo(function AssistantMessage({
   retryA11yLabel?: string;
 }) {
   const { colors, mode } = useTheme();
-  const [handwritingComplete, setHandwritingComplete] = useState(!shouldHandwrite);
-  // Deferred state to prevent abrupt view tree changes during Android draw cycle.
-  // The switch to MarkdownText is delayed by one frame to let the view hierarchy stabilize.
-  const [deferredHandwritingComplete, setDeferredHandwritingComplete] = useState(!shouldHandwrite);
+  const shouldHandwritePlainText = useMemo(
+    () => shouldHandwrite && !hasMarkdownSyntax(message.text),
+    [message.text, shouldHandwrite]
+  );
+  const [showMarkdown, setShowMarkdown] = useState(!shouldHandwritePlainText);
   const handwritingText = useMemo(() => stripMarkdownForHandwriting(message.text), [message.text]);
-  const handleHandwritingComplete = useCallback(() => {
-    setHandwritingComplete(true);
+  const markdownTextRef = useRef(shouldHandwritePlainText ? '' : message.text);
+  const runAfterInteractionsRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
+  const deferMarkdownSwitch = useCallback(() => {
     // On Android, defer the visual switch to MarkdownText to avoid NullPointerException
     // in ViewGroup.dispatchDraw when the view tree changes during a draw cycle.
-    if (Platform.OS === 'android') {
+    if (showMarkdown) return;
+    const applySwitch = () => {
       requestAnimationFrame(() => {
-        setDeferredHandwritingComplete(true);
+        setShowMarkdown(true);
       });
+    };
+    if (Platform.OS === 'android') {
+      runAfterInteractionsRef.current?.cancel();
+      runAfterInteractionsRef.current = InteractionManager.runAfterInteractions(applySwitch);
     } else {
-      setDeferredHandwritingComplete(true);
+      applySwitch();
     }
+  }, [showMarkdown]);
+
+  useEffect(() => {
+    return () => {
+      runAfterInteractionsRef.current?.cancel();
+    };
   }, []);
 
   useEffect(() => {
-    if (shouldHandwrite) {
-      setHandwritingComplete(false);
-      setDeferredHandwritingComplete(false);
-    }
-  }, [message.id, shouldHandwrite]);
+    setShowMarkdown(!shouldHandwritePlainText);
+    runAfterInteractionsRef.current?.cancel();
+  }, [message.id, shouldHandwritePlainText]);
 
-  // Use deferred state for determining when to show complex MarkdownText on Android.
-  // This prevents view tree corruption when switching components during draw.
-  const isHandwritingActive = shouldHandwrite && !deferredHandwritingComplete;
-  const isAnimating = isHandwritingActive;
+  useEffect(() => {
+    if (!shouldHandwritePlainText) return;
+    if (!isStreaming && !showMarkdown) {
+      deferMarkdownSwitch();
+    }
+  }, [deferMarkdownSwitch, isStreaming, shouldHandwritePlainText, showMarkdown]);
+
+  const shouldAnimateHandwriting = shouldHandwritePlainText && isStreaming;
+  const shouldShowPlainText = shouldHandwritePlainText && !showMarkdown;
+  const markdownText = shouldHandwritePlainText && isStreaming ? markdownTextRef.current : message.text;
+
+  if (!shouldHandwritePlainText || !isStreaming) {
+    markdownTextRef.current = message.text;
+  }
 
   const textStyle = [styles.messageText, { color: colors.textPrimary }];
 
@@ -260,19 +256,21 @@ const AssistantMessage = memo(function AssistantMessage({
       id: message.id,
       isStreaming,
       shouldHandwrite,
-      handwritingComplete,
-      isAnimating,
-      activeTextLength: isAnimating ? handwritingText.length : message.text.length,
+      shouldHandwritePlainText,
+      showMarkdown,
+      shouldShowPlainText,
+      activeTextLength: shouldShowPlainText ? handwritingText.length : message.text.length,
       fullTextLength: message.text.length,
     });
   }, [
     handwritingText.length,
-    handwritingComplete,
-    isAnimating,
     isStreaming,
     message.id,
     message.text.length,
+    shouldHandwritePlainText,
+    shouldShowPlainText,
     shouldHandwrite,
+    showMarkdown,
   ]);
 
   const aiBubbleStyle = mode === 'dark'
@@ -287,13 +285,50 @@ const AssistantMessage = memo(function AssistantMessage({
         borderWidth: 1,
       };
 
-  const messageContent = isHandwritingActive ? (
-    <HandwritingText
-      text={handwritingText}
-      style={textStyle}
-      animate={isHandwritingActive}
-      onComplete={handleHandwritingComplete}
-    />
+  // On Android, we use a single-layer approach to avoid NullPointerException in ViewGroup.dispatchDraw
+  // when the view tree changes during a draw cycle. iOS can use the dual-layer approach safely.
+  const messageContent = shouldHandwritePlainText ? (
+    <View style={styles.messageContent}>
+      {Platform.OS === 'android' ? (
+        // Android: Single layer - only render the active component to avoid draw cycle conflicts
+        shouldShowPlainText ? (
+          <HandwritingText
+            text={handwritingText}
+            style={textStyle}
+            animate={shouldAnimateHandwriting}
+          />
+        ) : (
+          <MarkdownText style={textStyle}>
+            {markdownText}
+          </MarkdownText>
+        )
+      ) : (
+        // iOS: Dual layer with opacity switching - safe on iOS
+        <>
+          <View
+            style={[styles.contentLayer, shouldShowPlainText ? styles.layerHidden : styles.layerVisible]}
+            pointerEvents={shouldShowPlainText ? 'none' : 'auto'}
+          >
+            <MarkdownText style={textStyle}>
+              {markdownText}
+            </MarkdownText>
+          </View>
+          <View
+            style={[
+              styles.contentLayerOverlay,
+              shouldShowPlainText ? styles.layerVisible : styles.layerHidden,
+            ]}
+            pointerEvents={shouldShowPlainText ? 'auto' : 'none'}
+          >
+            <HandwritingText
+              text={handwritingText}
+              style={textStyle}
+              animate={shouldAnimateHandwriting}
+            />
+          </View>
+        </>
+      )}
+    </View>
   ) : (
     <MarkdownText style={textStyle}>
       {message.text}
@@ -473,16 +508,12 @@ export function MessagesList({
 
   // Apply composable hooks for chat behavior
   useKeyboardAwareMessageList();
-  useScrollWhenComposerSizeUpdates();
   useUpdateLastMessageIndex(messages.length);
-  useAutoScrollOnNewMessage(messages.length, messages);
-  useInitialScrollToEnd(messages.length > 0);
 
   const { animatedProps, ref, onContentSizeChange, onScroll } = useMessageListProps();
   const { isStreaming, hasAnimatedMessages } = useNewMessageAnimationContext();
   const { isNearBottom } = useMessageListContext();
   const { colors } = useTheme();
-  const scrollViewRef = useRef<Animated.ScrollView | null>(null);
   const [isStreamingSnapshot, setIsStreamingSnapshot] = useState(false);
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
@@ -551,7 +582,9 @@ export function MessagesList({
           item.id === lastErrorMessageId
       );
 
-      if (
+      if (hasAnimatedHandwriting && allowHandwrite) {
+        shouldHandwrite = true;
+      } else if (
         !hasAnimatedHandwriting &&
         canHandwriteNewAiMessage &&
         isNew &&
@@ -610,9 +643,6 @@ export function MessagesList({
   // Avoid copying data on every render (can trigger extra list work)
   const listData = messages;
   const shouldRecycleItems = Platform.OS !== 'android';
-  const lastMessageRole = messages.length ? messages[messages.length - 1].role : undefined;
-  const shouldMaintainScrollAtEnd =
-    isNearBottomSnapshot && lastMessageRole === 'user' && !isStreamingSnapshot;
 
   const loadingAccessibility = isLoading
     ? { accessibilityState: { busy: true }, accessibilityLabel: loadingText }
@@ -633,7 +663,6 @@ export function MessagesList({
     >
       <AnimatedLegendList
         ref={ref}
-        refScrollView={scrollViewRef}
         animatedProps={animatedProps}
         data={listData}
         renderItem={renderItem}
@@ -650,19 +679,6 @@ export function MessagesList({
         // LegendList specific props for chat UX
         recycleItems={shouldRecycleItems}
         estimatedItemSize={80}
-        // Enable maintainScrollAtEnd for chat-style auto-scroll behavior
-        // This keeps the list anchored at the bottom during layout/size changes
-        // if the user is already near the bottom (threshold ~10% from end)
-        // Note: onDataChange is handled by useAutoScrollOnNewMessage hook for smart scrolling
-        maintainScrollAtEnd={
-          shouldMaintainScrollAtEnd
-            ? {
-                onLayout: true,
-                onItemLayout: true,
-              }
-            : undefined
-        }
-        maintainScrollAtEndThreshold={0.1}
         ListHeaderComponent={ListHeaderComponent ?? null}
         ListFooterComponent={footerComponent}
       />
@@ -711,6 +727,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
+  },
+  messageContent: {
+    width: '100%',
+  },
+  contentLayer: {
+    width: '100%',
+  },
+  contentLayerOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  layerHidden: {
+    opacity: 0,
+  },
+  layerVisible: {
+    opacity: 1,
   },
   retryButton: {
     alignSelf: 'center',

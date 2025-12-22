@@ -1,7 +1,15 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
@@ -91,6 +99,7 @@ export default function SettingsScreen() {
 
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
+  const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : undefined;
 
   const handleOpenPaywall = useCallback(() => {
     router.push('/paywall');
@@ -99,7 +108,10 @@ export default function SettingsScreen() {
   // When returning guest is blocked, show only the auth hub
   if (returningGuestBlocked) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+      <KeyboardAvoidingView
+        behavior={keyboardBehavior}
+        style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+      >
         <ScreenContainer>
           <View
             style={[
@@ -119,6 +131,7 @@ export default function SettingsScreen() {
             styles.scrollContent,
             { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
           ]}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           <ScreenContainer>
@@ -144,12 +157,15 @@ export default function SettingsScreen() {
             </View>
           </ScreenContainer>
         </ScrollView>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+    <KeyboardAvoidingView
+      behavior={keyboardBehavior}
+      style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+    >
       <ScreenContainer>
         <View
           style={[
@@ -167,6 +183,7 @@ export default function SettingsScreen() {
           styles.scrollContent,
           { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
         ]}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         <ScreenContainer>
@@ -212,7 +229,7 @@ export default function SettingsScreen() {
           ) : null}
         </ScreenContainer>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

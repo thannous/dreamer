@@ -725,17 +725,21 @@ const styles = StyleSheet.create({
   },
   modalOptionCheckWrapper: {
     position: 'absolute',
-    right: ThemeLayout.spacing.md,
     top: 0,
+    right: 0,
     bottom: 0,
-    justifyContent: 'center',
+    left: 0,
   },
   modalOptionCheckBadge: {
+    position: 'absolute',
+    right: ThemeLayout.spacing.md,
+    top: '50%',
     width: 22,
     height: 22,
     borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
+    transform: [{ translateY: -11 }],
   },
   modalCancelButton: {
     marginTop: ThemeLayout.spacing.md,

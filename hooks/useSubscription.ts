@@ -141,6 +141,9 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   const lastUserIdRef = useRef<string | null>(null);
   // ✅ FIX: Use ref to track if we've already initiated sync for current status to prevent infinite loops
   const syncInitiatedForStatusRef = useRef<string | null>(null);
+  const lastSyncedStatusKeyRef = useRef<string | null>(null);
+  // ✅ FIX: Guard against stale RevenueCat listener updates during user transition
+  const isUserTransitioningRef = useRef(false);
 
   const shouldLoadPackages = options?.loadPackages === true;
 
@@ -161,14 +164,21 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   useEffect(() => {
     if (lastUserIdRef.current === userId) return;
 
+    // ✅ FIX: Mark transition start to ignore stale RevenueCat listener updates
+    isUserTransitioningRef.current = true;
+
     lastUserIdRef.current = userId ?? null;
     syncInitiatedForStatusRef.current = null;
     expiredExpiryKeyRef.current = null;
     lastSyncAttemptRef.current = null;
     reconciliationAttemptsRef.current = 0;
+    lastSyncedStatusKeyRef.current = null;
     globalSyncState.lastSyncedTier = null;
     globalSyncState.lastSyncAt = null;
     globalSyncState.inProgressTier = null;
+    // ✅ FIX: Increment runId to cancel any running reconciliation from previous user
+    // This prevents "Invalid Refresh Token" errors when switching accounts
+    globalSyncState.runId++;
 
     setStatus(null);
     setPackages([]);
@@ -221,6 +231,14 @@ export function useSubscription(options?: UseSubscriptionOptions) {
       }
     }
   }, [userId]);
+
+  const syncOnStatusChange = useCallback((source: string, nextStatus: SubscriptionStatus | null) => {
+    if (!userId || !nextStatus || requiresAuth) return;
+    const statusKey = `${nextStatus.tier}-${nextStatus.isActive}-${nextStatus.expiryDate ?? 'no-expiry'}`;
+    if (lastSyncedStatusKeyRef.current === statusKey) return;
+    lastSyncedStatusKeyRef.current = statusKey;
+    void syncSubscription(source);
+  }, [requiresAuth, syncSubscription, userId]);
 
   const startTierReconciliation = useCallback(
     (expectedTier: SubscriptionTier) => {
@@ -388,6 +406,8 @@ export function useSubscription(options?: UseSubscriptionOptions) {
           if (mounted) {
             setStatus(null);
             setPackages([]);
+            // ✅ FIX: Clear transition flag even when logged out
+            isUserTransitioningRef.current = false;
           }
           return;
         }
@@ -401,6 +421,8 @@ export function useSubscription(options?: UseSubscriptionOptions) {
         if (mounted) {
           setStatus(nextStatus);
           setPackages(nextPackages);
+          // ✅ FIX: Clear transition flag - fresh status is now set for current user
+          isUserTransitioningRef.current = false;
         }
 
         // Android edge case: Play Store reports "déjà abonné" but RevenueCat returns free.
@@ -445,6 +467,10 @@ export function useSubscription(options?: UseSubscriptionOptions) {
       mounted = false;
     };
   }, [requiresAuth, shouldLoadPackages, user?.id]);
+
+  useEffect(() => {
+    syncOnStatusChange('status_change', status);
+  }, [status, syncOnStatusChange]);
 
   // Keep auth user tier in sync with the RevenueCat status to avoid stale "Free plan" UI/quota states.
 
@@ -522,16 +548,30 @@ export function useSubscription(options?: UseSubscriptionOptions) {
     if (__DEV__) {
       console.log('[useSubscription] Subscription expired, forcing refresh');
     }
+
+    // ✅ FIX: Track mounted state and current userId to prevent stale updates after user switch
+    let mounted = true;
+    const currentUserId = user?.id;
+
     // Force refresh from RevenueCat to get latest status
-    initializeSubscription(user?.id ?? null)
+    initializeSubscription(currentUserId ?? null)
       .then((nextStatus) => {
-        setStatus(nextStatus);
+        // ✅ FIX: Only apply if still mounted and user hasn't changed
+        if (mounted && !isUserTransitioningRef.current && lastUserIdRef.current === currentUserId) {
+          setStatus(nextStatus);
+        } else if (__DEV__) {
+          console.log('[useSubscription] Ignoring expired status refresh - user changed or transitioning');
+        }
       })
       .catch((err) => {
         if (__DEV__) {
           console.warn('[useSubscription] Failed to refresh expired status', err);
         }
       });
+
+    return () => {
+      mounted = false;
+    };
   }, [status, requiresAuth, user?.id]);
 
   const purchase = useCallback(async (id: string) => {
@@ -694,15 +734,40 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   }, []);
 
   const handleStatusFromMonitor = useCallback((newStatus: SubscriptionStatus) => {
+    // ✅ FIX: Ignore stale updates during user transition
+    if (isUserTransitioningRef.current) {
+      if (__DEV__) {
+        console.log('[useSubscription] Ignoring monitor update during user transition');
+      }
+      return;
+    }
     applyStatusUpdate('resume', newStatus);
     void syncSubscription('resume');
   }, [applyStatusUpdate, syncSubscription]);
 
   const handleStatusFromCustomerInfo = useCallback((newStatus: SubscriptionStatus) => {
+    // ✅ FIX: Ignore stale RevenueCat updates during user transition
+    // This prevents showing previous user's subscription after account switch
+    if (isUserTransitioningRef.current) {
+      if (__DEV__) {
+        console.log('[useSubscription] Ignoring customer_info update during user transition');
+      }
+      return;
+    }
     applyStatusUpdate('customer_info', newStatus);
-  }, [applyStatusUpdate]);
+    if (newStatus.tier === 'free' || newStatus.isActive === false) {
+      void syncSubscription('customer_info_free');
+    }
+  }, [applyStatusUpdate, syncSubscription]);
 
   const handleStatusFromExpiryTimer = useCallback((newStatus: SubscriptionStatus) => {
+    // ✅ FIX: Ignore stale updates during user transition
+    if (isUserTransitioningRef.current) {
+      if (__DEV__) {
+        console.log('[useSubscription] Ignoring expiry_timer update during user transition');
+      }
+      return;
+    }
     applyStatusUpdate('expiry_timer', newStatus);
   }, [applyStatusUpdate]);
 
