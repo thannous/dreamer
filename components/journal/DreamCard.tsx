@@ -8,7 +8,7 @@ import { getDreamThumbnailUri, getImageConfig } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React, { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -20,6 +20,7 @@ interface DreamCardProps {
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const failedThumbnailUris = new Set<string>();
 
 export const DreamCard = memo(function DreamCard({
   dream,
@@ -32,9 +33,26 @@ export const DreamCard = memo(function DreamCard({
   const { t } = useTranslation();
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
-  const thumbnailUri = useMemo(() => {
-    return getDreamThumbnailUri({ thumbnailUrl: dream.thumbnailUrl, imageUrl: dream.imageUrl }) ?? '';
-  }, [dream.thumbnailUrl, dream.imageUrl]);
+  const thumbnailUri = useMemo(() => (
+    getDreamThumbnailUri({ thumbnailUrl: dream.thumbnailUrl, imageUrl: dream.imageUrl }) ?? ''
+  ), [dream.thumbnailUrl, dream.imageUrl]);
+  const fullImageUri = dream.imageUrl?.trim() ?? '';
+  const trimmedThumbnailUri = thumbnailUri.trim();
+  const [useFullImage, setUseFullImage] = useState(false);
+
+  useEffect(() => {
+    if (trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri)) {
+      setUseFullImage(true);
+      return;
+    }
+    setUseFullImage(false);
+  }, [trimmedThumbnailUri, fullImageUri]);
+
+  const preferFullImage = useFullImage || (trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri));
+  const imageUri = preferFullImage
+    ? fullImageUri
+    : (trimmedThumbnailUri || fullImageUri);
+  const hasImage = Boolean(imageUri);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
 
@@ -83,19 +101,27 @@ export const DreamCard = memo(function DreamCard({
         accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
         testID={testID}
       >
-        {dream.imageUrl && (
+        {hasImage && (
           <View style={styles.imageContainer}>
             {/* Actual Thumbnail - only load if shouldLoadImage is true */}
             {shouldLoadImage && (
               <View style={styles.imageWrapper}>
                 <Image
-                  source={{ uri: thumbnailUri }}
+                  source={{ uri: imageUri }}
                   style={styles.image}
                   contentFit={imageConfig.contentFit}
                   transition={imageConfig.transition}
                   cachePolicy={imageConfig.cachePolicy}
                   priority={imageConfig.priority}
                   recyclingKey={imageRecyclingKey}
+                  onError={() => {
+                    if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
+                      failedThumbnailUris.add(trimmedThumbnailUri);
+                    }
+                    if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
+                      setUseFullImage(true);
+                    }
+                  }}
                   // Placeholder with blur hash for smoother loading
                   placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
                 />

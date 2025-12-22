@@ -21,6 +21,7 @@ import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
+import { Ionicons } from '@expo/vector-icons';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
@@ -207,10 +208,6 @@ export default function JournalListScreen() {
 
     candidateIndexes.forEach((idx) => {
       const dream = currentFilteredDreams[idx];
-      if (!dream?.imageUrl) {
-        return;
-      }
-
       const thumbnailUri = getDreamThumbnailUri(dream);
       if (!thumbnailUri || prefetchedImageUrisRef.current.has(thumbnailUri)) {
         return;
@@ -252,7 +249,7 @@ export default function JournalListScreen() {
   }, [filteredDreams.length, colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const hasImage = !!item.imageUrl && !item.imageGenerationFailed;
+    const hasImage = Boolean(item.thumbnailUrl || item.imageUrl);
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
@@ -297,7 +294,7 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback(
-    (item: DreamAnalysis) => (item.imageUrl && !item.imageGenerationFailed ? 'with-image' : 'text-only'),
+    (item: DreamAnalysis) => (item.thumbnailUrl || item.imageUrl ? 'with-image' : 'text-only'),
     []
   );
 
@@ -462,6 +459,13 @@ export default function JournalListScreen() {
                 <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
                   {getDreamThemeLabel(theme, t) ?? theme}
                 </Text>
+                {selectedTheme === theme && (
+                  <View style={styles.modalOptionCheckWrapper}>
+                    <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
+                      <Ionicons name="checkmark" size={14} color={colors.accent} />
+                    </View>
+                  </View>
+                )}
               </Pressable>
             ))}
             <View style={{ height: 16 }} />
@@ -480,6 +484,13 @@ export default function JournalListScreen() {
                 <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
                   {getDreamTypeLabel(dreamType, t) ?? dreamType}
                 </Text>
+                {selectedDreamType === dreamType && (
+                  <View style={styles.modalOptionCheckWrapper}>
+                    <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
+                      <Ionicons name="checkmark" size={14} color={colors.accent} />
+                    </View>
+                  </View>
+                )}
               </Pressable>
             ))}
             <Pressable
@@ -711,6 +722,20 @@ const styles = StyleSheet.create({
     fontFamily: 'SpaceGrotesk_500Medium',
     textAlign: 'center',
     textTransform: 'capitalize',
+  },
+  modalOptionCheckWrapper: {
+    position: 'absolute',
+    right: ThemeLayout.spacing.md,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
+  modalOptionCheckBadge: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalCancelButton: {
     marginTop: ThemeLayout.spacing.md,
