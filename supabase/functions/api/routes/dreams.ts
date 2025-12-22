@@ -24,7 +24,6 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       userId: user?.id ?? null,
       transcriptLength: transcript.length,
       lang,
-      snippet: transcript.slice(0, 80),
       hasFingerprint: !!fingerprint,
     });
 
@@ -148,7 +147,6 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       userId: user?.id ?? null,
       transcriptLength: transcript.length,
       lang,
-      snippet: transcript.slice(0, 80),
       hasFingerprint: !!fingerprint,
     });
 
