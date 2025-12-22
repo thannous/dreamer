@@ -249,7 +249,7 @@ export default function JournalListScreen() {
   }, [filteredDreams.length, colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
-    const hasImage = Boolean(item.thumbnailUrl || item.imageUrl);
+    const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
     const isRecent = index < 3;
     const isFavorite = !!item.isFavorite;
     const isAnalyzed = isDreamAnalyzed(item);
@@ -294,7 +294,10 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback(
-    (item: DreamAnalysis) => (item.thumbnailUrl || item.imageUrl ? 'with-image' : 'text-only'),
+    (item: DreamAnalysis) =>
+      !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
+        ? 'with-image'
+        : 'text-only',
     []
   );
 

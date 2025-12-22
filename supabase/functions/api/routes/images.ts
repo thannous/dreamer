@@ -66,17 +66,18 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
         contentType: mimeType ?? 'image/png',
       };
 
+    const ownerId = user?.id ?? 'guest';
     const { uploadImageToStorage, deleteImageFromStorage } = createStorageHelpers({
       supabaseUrl,
       supabaseServiceRoleKey,
       storageBucket,
-      ownerId: user?.id ?? null,
+      ownerId,
     });
     const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
     const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
 
     if (previousImageUrl) {
-      await deleteImageFromStorage(previousImageUrl, user?.id ?? null);
+      await deleteImageFromStorage(previousImageUrl, ownerId);
     }
 
     return new Response(JSON.stringify({ imageUrl, imageBytes: optimized.base64, prompt }), {
