@@ -252,6 +252,8 @@ const translations: Record<string, string> = {
     'recording.alert.permission_required.title': 'Autorisation requise',
     'recording.alert.permission_required.message': 'L’accès au micro est nécessaire pour enregistrer vos rêves.',
     'recording.alert.insecure_context': 'Le micro est bloqué car la page n’est pas servie en HTTPS (ou via localhost). Ouvrez la page en HTTPS ou via localhost pour activer la dictée.',
+    'recording.alert.stt_unavailable.title': 'Transcription vocale indisponible',
+    'recording.alert.stt_unavailable.message': "La reconnaissance vocale hors ligne n'est pas disponible sur cet appareil. Saisissez votre rêve au clavier.",
     'recording.alert.start_failed': 'Impossible de démarrer l’enregistrement. Réessayez.',
     'recording.alert.language_pack_missing.title': 'Pack de langue manquant',
     'recording.alert.language_pack_missing.message': "La reconnaissance {locale} n'est pas installée sur cet appareil. Téléchargez le pack de langue hors ligne (Google -> Paramètres -> Voix -> Reconnaissance vocale hors connexion) ou choisissez une langue installée : {installed}.",

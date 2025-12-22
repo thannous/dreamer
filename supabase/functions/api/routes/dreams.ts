@@ -5,6 +5,7 @@ import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.
 import { generateImageFromPrompt } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
+import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
 export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
@@ -14,7 +15,11 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
     const transcript = String(body?.transcript ?? '').trim();
     const lang = String(body?.lang ?? 'en');
-    const fingerprint = body?.fingerprint;
+    const guestCheck = await requireGuestSession(req, body, user);
+    if (guestCheck instanceof Response) {
+      return guestCheck;
+    }
+    const fingerprint = guestCheck.fingerprint;
     if (!transcript) throw new Error('Missing transcript');
 
     const apiKey = Deno.env.get('GEMINI_API_KEY');
@@ -28,36 +33,32 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     });
 
     let quotaUsed: { analysis: number } | undefined;
-    if (!user && supabaseServiceRoleKey) {
-      if (!fingerprint) {
-        console.warn('[api] /analyzeDream: guest without fingerprint, allowing in degraded mode');
+    if (!user && supabaseServiceRoleKey && fingerprint) {
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+
+      const guestAnalysisLimit = GUEST_LIMITS.analysis;
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+        p_fingerprint: fingerprint,
+        p_quota_type: 'analysis',
+        p_limit: guestAnalysisLimit,
+      });
+
+      if (quotaError) {
+        console.error('[api] /analyzeDream: quota check failed', quotaError);
+      } else if (!quotaResult?.allowed) {
+        console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
+        return new Response(
+          JSON.stringify({
+            error: 'Guest analysis limit reached',
+            code: 'QUOTA_EXCEEDED',
+            usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
+          }),
+          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
       } else {
-        const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-          auth: { autoRefreshToken: false, persistSession: false },
-        });
-
-        const guestAnalysisLimit = GUEST_LIMITS.analysis;
-        const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-          p_fingerprint: fingerprint,
-          p_quota_type: 'analysis',
-          p_limit: guestAnalysisLimit,
-        });
-
-        if (quotaError) {
-          console.error('[api] /analyzeDream: quota check failed', quotaError);
-        } else if (!quotaResult?.allowed) {
-          console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
-          return new Response(
-            JSON.stringify({
-              error: 'Guest analysis limit reached',
-              code: 'QUOTA_EXCEEDED',
-              usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
-            }),
-            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        } else {
-          quotaUsed = { analysis: quotaResult.new_count };
-        }
+        quotaUsed = { analysis: quotaResult.new_count };
       }
     }
 
@@ -134,6 +135,10 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
   const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
   try {
+    const authCheck = requireUser(user);
+    if (authCheck) {
+      return authCheck;
+    }
     const body = (await req.json()) as { transcript?: string; lang?: string; fingerprint?: string };
     const transcript = String(body?.transcript ?? '').trim();
     const lang = String(body?.lang ?? 'en');
@@ -149,40 +154,6 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       lang,
       hasFingerprint: !!fingerprint,
     });
-
-    let quotaUsed: { analysis: number } | undefined;
-    if (!user && supabaseServiceRoleKey) {
-      if (!fingerprint) {
-        console.warn('[api] /analyzeDreamFull: guest without fingerprint, allowing in degraded mode');
-      } else {
-        const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-          auth: { autoRefreshToken: false, persistSession: false },
-        });
-
-        const guestAnalysisLimit = GUEST_LIMITS.analysis;
-        const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
-          p_fingerprint: fingerprint,
-          p_quota_type: 'analysis',
-          p_limit: guestAnalysisLimit,
-        });
-
-        if (quotaError) {
-          console.error('[api] /analyzeDreamFull: quota check failed', quotaError);
-        } else if (!quotaResult?.allowed) {
-          console.log('[api] /analyzeDreamFull: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
-          return new Response(
-            JSON.stringify({
-              error: 'Guest analysis limit reached',
-              code: 'QUOTA_EXCEEDED',
-              usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
-            }),
-            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-          );
-        } else {
-          quotaUsed = { analysis: quotaResult.new_count };
-        }
-      }
-    }
 
     const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
     const systemInstruction = lang === 'fr'
@@ -298,6 +269,10 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
 
   try {
     const body = (await req.json()) as { transcript?: string; lang?: string };
+    const guestCheck = await requireGuestSession(req, null, user);
+    if (guestCheck instanceof Response) {
+      return guestCheck;
+    }
     const transcript = String(body?.transcript ?? '').trim();
     const lang = String(body?.lang ?? 'en');
     if (!transcript) throw new Error('Missing transcript');

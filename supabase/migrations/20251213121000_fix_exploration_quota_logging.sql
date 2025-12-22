@@ -52,7 +52,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- 2) Auto-set exploration_started_at from chat_history.
 CREATE OR REPLACE FUNCTION public.set_exploration_started_at_from_chat_history()
 RETURNS TRIGGER
@@ -91,14 +90,12 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 DROP TRIGGER IF EXISTS trg_00_set_exploration_started_at_from_chat_history ON public.dreams;
 CREATE TRIGGER trg_00_set_exploration_started_at_from_chat_history
 BEFORE INSERT OR UPDATE OF chat_history
 ON public.dreams
 FOR EACH ROW
 EXECUTE FUNCTION public.set_exploration_started_at_from_chat_history();
-
 -- 3) Ensure enforcement runs even when exploration_started_at is set by another trigger.
 DROP TRIGGER IF EXISTS trg_10_enforce_authenticated_monthly_quota ON public.dreams;
 CREATE TRIGGER trg_10_enforce_authenticated_monthly_quota
@@ -106,7 +103,6 @@ BEFORE INSERT OR UPDATE
 ON public.dreams
 FOR EACH ROW
 EXECUTE FUNCTION public.enforce_authenticated_monthly_quota();
-
 -- 4) Ensure quota logging runs even when exploration_started_at is set by another trigger.
 -- We avoid "UPDATE OF ..." here because that only fires when the UPDATE statement
 -- explicitly touches those columns (not when another trigger mutates NEW.*).

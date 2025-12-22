@@ -10,6 +10,7 @@ import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON, HttpError } from '@/lib/http';
 import { classifyImageError, type ImageGenerationErrorResponse } from '@/lib/errors';
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
+import { getGuestHeaders } from '@/lib/guestSession';
 
 export type AnalysisResult = {
   title: string;
@@ -27,9 +28,11 @@ export async function analyzeDream(
   fingerprint?: string
 ): Promise<AnalysisResult> {
   const base = getApiBaseUrl();
+  const headers = await getGuestHeaders();
   return fetchJSON<AnalysisResult>(`${base}/analyzeDream`, {
     method: 'POST',
     body: { transcript, lang, ...(fingerprint && { fingerprint }) },
+    headers,
     retries: 1, // One automatic retry
   });
 }
@@ -41,9 +44,11 @@ export type CategorizeDreamResult = Pick<AnalysisResult, 'title' | 'theme' | 'dr
 
 export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<CategorizeDreamResult> {
   const base = getApiBaseUrl();
+  const headers = await getGuestHeaders();
   return fetchJSON<CategorizeDreamResult>(`${base}/categorizeDream`, {
     method: 'POST',
     body: { transcript, lang },
+    headers,
     retries: 1,
   });
 }
@@ -125,9 +130,11 @@ export async function analyzeDreamWithImageResilient(
 export async function generateImageForDream(prompt: string, previousImageUrl?: string): Promise<string> {
   const base = getApiBaseUrl();
   try {
+    const headers = await getGuestHeaders();
     const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImage`, {
       method: 'POST',
       body: { prompt, previousImageUrl },
+      headers,
       timeoutMs: 60000,
       retries: 2,
       retryDelay: 1200,
@@ -159,10 +166,12 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
 export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
   const base = getApiBaseUrl();
   try {
+    const headers = await getGuestHeaders();
     const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
       method: 'POST',
       // Let the backend generate a short image prompt from the transcript.
       body: { transcript, previousImageUrl },
+      headers,
       timeoutMs: 60000, // Image generation can take time
       retries: 2,
       retryDelay: 1200,
@@ -221,6 +230,7 @@ export async function startOrContinueChat(
   fingerprint?: string
 ): Promise<string> {
   const base = getApiBaseUrl();
+  const headers = await getGuestHeaders();
   const res = await fetchJSON<{ text: string }>(`${base}/chat`, {
     method: 'POST',
     body: {
@@ -230,6 +240,7 @@ export async function startOrContinueChat(
       ...(dreamContext && { dreamContext }),
       ...(fingerprint && { fingerprint }),
     },
+    headers,
   });
   return res.text;
 }

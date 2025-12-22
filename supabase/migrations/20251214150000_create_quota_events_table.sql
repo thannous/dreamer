@@ -4,7 +4,6 @@
 
 -- Enable pgcrypto for UUID generation if not already enabled
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- Table to track chat message quota enforcement events
 CREATE TABLE IF NOT EXISTS public.quota_events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -19,27 +18,20 @@ CREATE TABLE IF NOT EXISTS public.quota_events (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT quota_events_quota_type_check CHECK (quota_type IN ('chat_message'))
 );
-
 -- Indexes for efficient querying
 CREATE INDEX IF NOT EXISTS idx_quota_events_user_id
   ON public.quota_events(user_id);
-
 CREATE INDEX IF NOT EXISTS idx_quota_events_dream_id
   ON public.quota_events(dream_id);
-
 CREATE INDEX IF NOT EXISTS idx_quota_events_created_at
   ON public.quota_events(created_at DESC);
-
 CREATE INDEX IF NOT EXISTS idx_quota_events_blocked
   ON public.quota_events(blocked);
-
 -- Composite index for common queries (user's blocked events over time)
 CREATE INDEX IF NOT EXISTS idx_quota_events_user_blocked_time
   ON public.quota_events(user_id, blocked, created_at DESC);
-
 -- Enable RLS and restrict direct reads to the owning user
 ALTER TABLE public.quota_events ENABLE ROW LEVEL SECURITY;
-
 -- Policy: Users can view their own quota events
 DO $$
 BEGIN
@@ -57,7 +49,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- NOTE: No INSERT/UPDATE policies needed - the trigger function that writes to this table
 -- uses SECURITY DEFINER, allowing it to bypass RLS. This ensures quota enforcement
--- cannot be bypassed by users.
+-- cannot be bypassed by users.;

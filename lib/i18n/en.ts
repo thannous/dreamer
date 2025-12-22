@@ -251,6 +251,8 @@ const translations: Record<string, string> = {
     'recording.alert.permission_required.title': 'Permission Required',
     'recording.alert.permission_required.message': 'Microphone permission is required to record dreams.',
     'recording.alert.insecure_context': 'The microphone is blocked because this page is not served over HTTPS (or localhost). Open the page over HTTPS or via localhost to enable dictation.',
+    'recording.alert.stt_unavailable.title': 'Voice transcription unavailable',
+    'recording.alert.stt_unavailable.message': 'This device does not support on-device speech recognition. Please type your dream instead.',
     'recording.alert.start_failed': 'Failed to start recording. Please try again.',
     'recording.alert.language_pack_missing.title': 'Language pack missing',
     'recording.alert.language_pack_missing.message': '{locale} speech is not installed on this device. Download the offline speech pack in Google settings (Google app → Settings → Voice → Offline speech recognition) or switch to an installed language: {installed}.',

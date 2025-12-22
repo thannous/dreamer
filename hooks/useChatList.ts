@@ -267,10 +267,10 @@ export function useAutoScrollOnNewMessage(
     prevMessageCountRef.current = messageCount;
 
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.role === 'model') {
-      if (!isNearBottom.get()) {
-        hasNewMessages.set(true);
-      }
+    const nearBottom = isNearBottom.get();
+    const isModelMessage = lastMessage?.role === 'model';
+    if (isModelMessage && !nearBottom) {
+      hasNewMessages.set(true);
       return;
     }
 
@@ -286,12 +286,10 @@ export function useAutoScrollOnNewMessage(
     }
 
     // Check if user is near bottom using the shared value
-    const nearBottom = isNearBottom.get();
-
     if (nearBottom) {
       // User is near bottom - smart scroll based on message length
       const isLongAIMessage =
-        lastMessage?.role === 'model' &&
+        isModelMessage &&
         (lastMessage?.text?.length ?? 0) >= LONG_MESSAGE_THRESHOLD;
 
       // Use RAF + timeout to ensure content height is updated

@@ -50,6 +50,5 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- No need to recreate the trigger, just replace the function
--- The trigger trg_00_set_exploration_started_at_from_chat_history will continue to use this function
+-- The trigger trg_00_set_exploration_started_at_from_chat_history will continue to use this function;

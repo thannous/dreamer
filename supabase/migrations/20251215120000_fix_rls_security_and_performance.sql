@@ -17,7 +17,6 @@
 
 -- First, ensure RLS is enabled (idempotent)
 ALTER TABLE public.guest_usage ENABLE ROW LEVEL SECURITY;
-
 -- Create explicit deny-all policy for SELECT (blocks direct reads)
 -- Uses false to deny all rows - access only via SECURITY DEFINER functions
 DO $$
@@ -37,7 +36,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Create explicit deny-all policy for INSERT (blocks direct inserts)
 DO $$
 BEGIN
@@ -56,7 +54,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Create explicit deny-all policy for UPDATE (blocks direct updates)
 DO $$
 BEGIN
@@ -76,7 +73,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Create explicit deny-all policy for DELETE (blocks direct deletes)
 DO $$
 BEGIN
@@ -95,13 +91,11 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Add comment explaining the security model
 COMMENT ON TABLE public.guest_usage IS
   'Tracks quota usage for anonymous/guest users by fingerprint hash. '
   'RLS policies deny ALL direct access. Access is ONLY allowed via SECURITY DEFINER functions: '
   'increment_guest_quota() and get_guest_quota_status(). This prevents quota bypass attacks.';
-
 -- ============================================================================
 -- STEP 2: Optimize quota_usage RLS policy to use subquery for auth.uid()
 -- ============================================================================
@@ -111,19 +105,16 @@ COMMENT ON TABLE public.guest_usage IS
 
 -- Drop the existing inefficient policy
 DROP POLICY IF EXISTS quota_usage_select_own ON public.quota_usage;
-
 -- Create optimized policy with subquery pattern
 CREATE POLICY quota_usage_select_own
   ON public.quota_usage
   FOR SELECT
   TO authenticated
   USING (user_id = (select auth.uid()));
-
 -- Add comment explaining the optimization
 COMMENT ON POLICY quota_usage_select_own ON public.quota_usage IS
   'Users can only view their own quota usage. Uses (select auth.uid()) pattern '
   'for performance - evaluates auth.uid() once per query instead of per row.';
-
 -- ============================================================================
 -- STEP 3: Remove unused index idx_quota_usage_dream
 -- ============================================================================
@@ -133,7 +124,6 @@ COMMENT ON POLICY quota_usage_select_own ON public.quota_usage IS
 -- - The composite index idx_quota_usage_user_type_time handles all common queries
 
 DROP INDEX IF EXISTS public.idx_quota_usage_dream;
-
 -- ============================================================================
 -- STEP 4: Consolidate quota_limits RLS policies
 -- ============================================================================
@@ -150,7 +140,6 @@ DROP INDEX IF EXISTS public.idx_quota_usage_dream;
 
 -- Drop the existing write policy that incorrectly uses FOR ALL
 DROP POLICY IF EXISTS quota_limits_write_service_role ON public.quota_limits;
-
 -- Recreate as separate INSERT/UPDATE/DELETE policies for service_role only
 -- Note: service_role bypasses RLS anyway, but this documents intent
 
@@ -172,7 +161,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- For UPDATE operations by service_role
 DO $$
 BEGIN
@@ -192,7 +180,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- For DELETE operations by service_role
 DO $$
 BEGIN
@@ -211,13 +198,11 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Update comment on table to document security model
 COMMENT ON TABLE public.quota_limits IS
   'Configuration table for quota limits by tier/period/quota_type. '
   'Read access: ALL users (anon + authenticated) via quota_limits_select_all. '
   'Write access: service_role ONLY via separate insert/update/delete policies.';
-
 -- ============================================================================
 -- DOWN Migration (Rollback)
 -- ============================================================================
@@ -249,4 +234,4 @@ COMMENT ON TABLE public.quota_limits IS
 --   FOR ALL
 --   TO authenticated
 --   USING ((select auth.role()) = 'service_role')
---   WITH CHECK ((select auth.role()) = 'service_role');
+--   WITH CHECK ((select auth.role()) = 'service_role');;

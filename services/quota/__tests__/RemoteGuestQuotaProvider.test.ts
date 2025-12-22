@@ -10,6 +10,10 @@ vi.mock('../../../lib/deviceFingerprint', () => ({
   getDeviceFingerprint: vi.fn().mockResolvedValue('fingerprint'),
 }));
 
+vi.mock('../../../lib/guestSession', () => ({
+  getGuestHeaders: vi.fn().mockResolvedValue({}),
+}));
+
 vi.mock('../../../lib/config', () => ({
   getApiBaseUrl: () => 'https://example.com',
 }));

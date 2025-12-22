@@ -1,8 +1,10 @@
-import { corsHeaders } from '../lib/constants.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';
 import { generateImageFromPrompt, generateImageWithReferences } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
+import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
 export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
@@ -10,6 +12,11 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
 
   try {
     const body = (await req.json()) as { prompt?: string; transcript?: string; previousImageUrl?: string };
+    const guestCheck = await requireGuestSession(req, null, user);
+    if (guestCheck instanceof Response) {
+      return guestCheck;
+    }
+    const fingerprint = guestCheck.fingerprint;
     let prompt = String(body?.prompt ?? '').trim();
     const transcript = String(body?.transcript ?? '').trim();
     const previousImageUrl = String(body?.previousImageUrl ?? '').trim();
@@ -23,6 +30,35 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
 
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+    if (!user && supabaseServiceRoleKey && fingerprint) {
+      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+        p_fingerprint: fingerprint,
+        p_quota_type: 'image',
+        p_limit: GUEST_LIMITS.image,
+      });
+
+      if (quotaError) {
+        console.error('[api] /generateImage: quota check failed', quotaError);
+      } else if (!quotaResult?.allowed) {
+        console.log('[api] /generateImage: guest image quota exceeded', {
+          fingerprint: '[redacted]',
+          used: quotaResult?.new_count,
+        });
+        return new Response(
+          JSON.stringify({
+            error: 'Guest image limit reached',
+            code: 'QUOTA_EXCEEDED',
+            usage: { image: { used: quotaResult?.new_count ?? GUEST_LIMITS.image, limit: GUEST_LIMITS.image } },
+          }),
+          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
+    }
 
     if (!prompt && transcript) {
       console.log('[api] /generateImage generating prompt from transcript');
@@ -66,7 +102,7 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
         contentType: mimeType ?? 'image/png',
       };
 
-    const ownerId = user?.id ?? 'guest';
+    const ownerId = user?.id ?? (fingerprint ? `guest_${fingerprint}` : 'guest');
     const { uploadImageToStorage, deleteImageFromStorage } = createStorageHelpers({
       supabaseUrl,
       supabaseServiceRoleKey,
@@ -116,11 +152,9 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
 export async function handleGenerateImageWithReference(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+  const authCheck = requireUser(user);
+  if (authCheck) {
+    return authCheck;
   }
 
   try {

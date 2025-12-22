@@ -147,7 +147,6 @@ $$;
 CREATE OR REPLACE FUNCTION public.enforce_quota_for_chat()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
@@ -231,7 +230,7 @@ BEGIN
     );
 
     -- Raise exception to abort the transaction
-    RAISE EXCEPTION 'QUOTA_MESSAGE_LIMIT_REACHED: Tier \"%\" allows max % messages per dream, attempted %',
+    RAISE EXCEPTION 'QUOTA_MESSAGE_LIMIT_REACHED: Tier "%" allows max % messages per dream, attempted %',
       tier, message_limit, new_count
       USING ERRCODE = 'P0001';
   END IF;
@@ -261,4 +260,4 @@ BEGIN
 
   RETURN NEW;
 END;
-$$;
+$$;;

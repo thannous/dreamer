@@ -1,5 +1,6 @@
 create extension if not exists pg_cron;
 create extension if not exists pg_net;
+
 do $$
 declare
   job_name text := 'revenuecat_reconcile_daily';
@@ -31,4 +32,4 @@ declare
   $job$;
 begin
   perform cron.schedule(job_name, '0 3 * * *', job_sql);
-end $$;
+end $$;;

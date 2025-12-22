@@ -3,9 +3,8 @@
 
 -- Activer pgcrypto si pas déjà fait
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- Table pour tracker l'usage des invités par fingerprint
-CREATE TABLE public.guest_usage (
+CREATE TABLE IF NOT EXISTS public.guest_usage (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     fingerprint_hash TEXT NOT NULL UNIQUE,
     analysis_count INTEGER NOT NULL DEFAULT 0,
@@ -15,13 +14,10 @@ CREATE TABLE public.guest_usage (
     CONSTRAINT analysis_count_non_negative CHECK (analysis_count >= 0),
     CONSTRAINT exploration_count_non_negative CHECK (exploration_count >= 0)
 );
-
 -- Index pour recherche rapide par fingerprint
-CREATE INDEX idx_guest_usage_fingerprint ON public.guest_usage(fingerprint_hash);
-
+CREATE INDEX IF NOT EXISTS idx_guest_usage_fingerprint ON public.guest_usage(fingerprint_hash);
 -- Activer RLS - pas de policies publiques, accès uniquement via SECURITY DEFINER function
 ALTER TABLE public.guest_usage ENABLE ROW LEVEL SECURITY;
-
 -- Fonction atomique: check + increment quota
 -- Utilise FOR UPDATE pour éviter les race conditions
 CREATE OR REPLACE FUNCTION public.increment_guest_quota(
@@ -72,7 +68,6 @@ BEGIN
     RETURN json_build_object('allowed', v_allowed, 'new_count', COALESCE(v_current, 0));
 END;
 $$;
-
 -- Fonction pour obtenir le statut quota d'un invité
 CREATE OR REPLACE FUNCTION public.get_guest_quota_status(
     p_fingerprint TEXT

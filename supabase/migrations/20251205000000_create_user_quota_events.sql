@@ -4,7 +4,6 @@
 
 -- Enable pgcrypto for UUID generation if not already enabled
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- Table to track authenticated user quota usage events
 CREATE TABLE IF NOT EXISTS public.user_quota_events (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -14,17 +13,13 @@ CREATE TABLE IF NOT EXISTS public.user_quota_events (
     occurred_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT user_quota_events_quota_type_check CHECK (quota_type IN ('analysis', 'exploration'))
 );
-
 -- Indexes for efficient queries by user, type and time
 CREATE INDEX IF NOT EXISTS idx_user_quota_events_user_type_time
   ON public.user_quota_events(user_id, quota_type, occurred_at);
-
 CREATE INDEX IF NOT EXISTS idx_user_quota_events_dream
   ON public.user_quota_events(dream_id);
-
 -- Enable RLS and restrict direct reads to the owning user
 ALTER TABLE public.user_quota_events ENABLE ROW LEVEL SECURITY;
-
 DO $$
 BEGIN
   IF NOT EXISTS (
@@ -41,7 +36,6 @@ BEGIN
   END IF;
 END
 $$;
-
 -- Helper function: log quota usage when dreams are analyzed or explored.
 -- SECURITY DEFINER so that it can write to user_quota_events from triggers
 -- even with RLS enabled on the events table.
@@ -86,16 +80,13 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- Trigger on dreams to log usage events whenever analysis or exploration is set.
 DROP TRIGGER IF EXISTS trg_log_quota_event_on_dreams ON public.dreams;
-
 CREATE TRIGGER trg_log_quota_event_on_dreams
 AFTER INSERT OR UPDATE OF is_analyzed, analyzed_at, exploration_started_at
 ON public.dreams
 FOR EACH ROW
 EXECUTE FUNCTION public.log_user_quota_event();
-
 -- Backfill existing analyzed/explored dreams into user_quota_events.
 -- This keeps current quotas consistent while ensuring future deletions
 -- do not reduce usage counts.
@@ -114,7 +105,6 @@ WHERE d.user_id IS NOT NULL
       AND e.dream_id = d.id
       AND e.quota_type = 'analysis'
   );
-
 INSERT INTO public.user_quota_events (user_id, dream_id, quota_type, occurred_at)
 SELECT d.user_id,
        d.id,
@@ -130,4 +120,3 @@ WHERE d.user_id IS NOT NULL
       AND e.dream_id = d.id
       AND e.quota_type = 'exploration'
   );
-

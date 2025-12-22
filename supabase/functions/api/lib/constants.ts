@@ -1,9 +1,10 @@
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type, x-guest-token, x-guest-fingerprint, x-guest-platform',
 };
 
-export const GUEST_LIMITS = { analysis: 2, exploration: 2, messagesPerDream: 10 } as const;
+export const GUEST_LIMITS = { analysis: 2, exploration: 2, image: 2, messagesPerDream: 10 } as const;
 
 export const RECONCILE_MAX_DURATION_MS = 25000;
 export const RECONCILE_DEFAULT_BATCH = 150;

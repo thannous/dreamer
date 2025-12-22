@@ -1,69 +1,36 @@
 drop extension if exists "pg_net";
-
 create extension if not exists "pg_net" with schema "public";
-
 alter table "public"."dreams" drop constraint "dreams_user_id_fkey";
-
 drop index if exists "public"."idx_quota_usage_dream";
-
 alter table "public"."dreams" drop column "updated_at";
-
 alter table "public"."dreams" alter column "chat_history" set not null;
-
 alter table "public"."dreams" alter column "created_at" drop not null;
-
 alter table "public"."dreams" alter column "dream_type" drop default;
-
 alter table "public"."dreams" alter column "id" drop default;
-
 alter table "public"."dreams" alter column "id" add generated always as identity;
-
 alter table "public"."dreams" alter column "image_generation_failed" drop not null;
-
 alter table "public"."dreams" alter column "interpretation" drop default;
-
 alter table "public"."dreams" alter column "is_analyzed" drop not null;
-
 alter table "public"."dreams" alter column "is_favorite" drop not null;
-
 alter table "public"."dreams" alter column "shareable_quote" drop default;
-
 alter table "public"."dreams" alter column "title" drop default;
-
 alter table "public"."dreams" alter column "transcript" drop default;
-
 alter table "public"."dreams" alter column "user_id" set not null;
-
 alter table "public"."waitlist_subscribers" add column "locale" text;
-
 alter table "public"."waitlist_subscribers" add column "source" text;
-
 alter table "public"."waitlist_subscribers" alter column "id" set default gen_random_uuid();
-
 alter table "public"."waitlist_subscribers" alter column "id" set data type uuid using "id"::uuid;
-
 drop sequence if exists "public"."dreams_id_seq";
-
 drop sequence if exists "public"."waitlist_subscribers_id_seq";
-
 CREATE UNIQUE INDEX waitlist_subscribers_email_key ON public.waitlist_subscribers USING btree (email);
-
 alter table "public"."quota_usage" add constraint "quota_usage_quota_type_check" CHECK ((quota_type = ANY (ARRAY['analysis'::text, 'exploration'::text]))) not valid;
-
 alter table "public"."quota_usage" validate constraint "quota_usage_quota_type_check";
-
 alter table "public"."waitlist_subscribers" add constraint "waitlist_subscribers_email_key" UNIQUE using index "waitlist_subscribers_email_key";
-
 alter table "public"."waitlist_subscribers" add constraint "waitlist_subscribers_email_valid" CHECK ((((length(email) >= 3) AND (length(email) <= 320)) AND (email ~* '^[^\s@]+@[^\s@]+\.[^\s@]+$'::text))) not valid;
-
 alter table "public"."waitlist_subscribers" validate constraint "waitlist_subscribers_email_valid";
-
 alter table "public"."dreams" add constraint "dreams_user_id_fkey" FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE not valid;
-
 alter table "public"."dreams" validate constraint "dreams_user_id_fkey";
-
 set check_function_bodies = off;
-
 CREATE OR REPLACE FUNCTION public.enforce_authenticated_monthly_quota()
  RETURNS trigger
  LANGUAGE plpgsql
@@ -205,9 +172,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$function$
-;
-
+$function$;
 CREATE OR REPLACE FUNCTION public.enforce_quota_for_chat()
  RETURNS trigger
  LANGUAGE plpgsql
@@ -342,46 +307,30 @@ BEGIN
 
   RETURN NEW;
 END;
-$function$
-;
-
+$function$;
 CREATE TRIGGER tr_check_filters BEFORE INSERT OR UPDATE ON realtime.subscription FOR EACH ROW EXECUTE FUNCTION realtime.subscription_check_filters();
-
-
-  create policy "Authenticated delete dream-images"
+create policy "Authenticated delete dream-images"
   on "storage"."objects"
   as permissive
   for delete
   to authenticated
 using (((bucket_id = 'dream-images'::text) AND ((auth.uid())::text = split_part(name, '/'::text, 1))));
-
-
-
-  create policy "Authenticated update dream-images"
+create policy "Authenticated update dream-images"
   on "storage"."objects"
   as permissive
   for update
   to authenticated
 using (((bucket_id = 'dream-images'::text) AND ((auth.uid())::text = split_part(name, '/'::text, 1))))
 with check (((bucket_id = 'dream-images'::text) AND ((auth.uid())::text = split_part(name, '/'::text, 1))));
-
-
-
-  create policy "Authenticated upload to dream-images"
+create policy "Authenticated upload to dream-images"
   on "storage"."objects"
   as permissive
   for insert
   to authenticated
 with check (((bucket_id = 'dream-images'::text) AND ((auth.uid())::text = split_part(name, '/'::text, 1))));
-
-
-
-  create policy "Public read access for dream-images"
+create policy "Public read access for dream-images"
   on "storage"."objects"
   as permissive
   for select
   to public
 using ((bucket_id = 'dream-images'::text));
-
-
-

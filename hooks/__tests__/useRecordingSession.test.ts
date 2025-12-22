@@ -6,8 +6,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Alert, AppState } from 'react-native';
 
 import { ensureOfflineSttModel, startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
-import { transcribeAudio } from '../../services/speechToText';
-
 import { useRecordingSession } from '../useRecordingSession';
 
 function createMockRecorder(overrides?: Record<string, unknown>) {
@@ -65,10 +63,6 @@ vi.mock('../../services/nativeSpeechRecognition', () => ({
   startNativeSpeechSession: vi.fn().mockResolvedValue(null),
 }));
 
-vi.mock('../../services/speechToText', () => ({
-  transcribeAudio: vi.fn().mockResolvedValue('transcribed text'),
-}));
-
 vi.mock('react-native', () => ({
   Alert: {
     alert: vi.fn(),
@@ -102,7 +96,6 @@ describe('useRecordingSession', () => {
     vi.mocked(useAudioRecorder).mockReturnValue(createMockRecorder() as never);
     vi.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
     vi.mocked(startNativeSpeechSession).mockResolvedValue(null);
-    vi.mocked(transcribeAudio).mockResolvedValue('transcribed text');
     vi.mocked(setAudioModeAsync).mockResolvedValue(undefined);
   });
 
@@ -277,7 +270,7 @@ describe('useRecordingSession', () => {
       expect(response?.recordedUri).toBe('/path/to/audio.caf');
     });
 
-    it('should not fallback to Google STT when native session exists (even if transcript is empty)', async () => {
+    it('should return no_speech when native session exists but transcript is empty', async () => {
       vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
         stop: vi.fn().mockResolvedValue({ transcript: '', recordedUri: '/path/to/audio.caf' }),
         abort: vi.fn(),
@@ -295,17 +288,15 @@ describe('useRecordingSession', () => {
         response = await result.current.stopRecording();
       });
 
-      expect(transcribeAudio).not.toHaveBeenCalled();
       expect(response?.transcript).toBe('');
+      expect(response?.error).toBe('no_speech');
     });
 
-    it('should fallback to Google STT when native session is unavailable', async () => {
+    it('should return stt_unavailable when native session is unavailable', async () => {
       vi.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
       vi.mocked(useAudioRecorder).mockReturnValue(
         createMockRecorder({ uri: '/path/to/recorded.caf' }) as never
       );
-
-      vi.mocked(transcribeAudio).mockResolvedValueOnce('google transcript');
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -318,14 +309,12 @@ describe('useRecordingSession', () => {
         response = await result.current.stopRecording();
       });
 
-      expect(transcribeAudio).toHaveBeenCalledWith({
-        uri: '/path/to/recorded.caf',
-        languageCode: 'en-US',
-      });
-      expect(response?.transcript).toBe('google transcript');
+      expect(response?.transcript).toBe('');
+      expect(response?.recordedUri).toBe('/path/to/recorded.caf');
+      expect(response?.error).toBe('stt_unavailable');
     });
 
-    it('should not call Google STT when native error is "no speech"', async () => {
+    it('should return no_speech when native error is "no speech"', async () => {
       vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
         stop: vi.fn().mockResolvedValue({ transcript: '', error: 'no speech detected', recordedUri: '/path/audio.caf' }),
         abort: vi.fn(),
@@ -343,16 +332,12 @@ describe('useRecordingSession', () => {
         response = await result.current.stopRecording();
       });
 
-      expect(transcribeAudio).not.toHaveBeenCalled();
       expect(response?.transcript).toBe('');
+      expect(response?.error).toBe('no_speech');
     });
 
-    it('should handle transcription error', async () => {
-      vi.mocked(useAudioRecorder).mockReturnValue(
-        createMockRecorder({ uri: '/path/to/recorded.caf' }) as never
-      );
-
-      vi.mocked(transcribeAudio).mockRejectedValueOnce(new Error('Transcription failed'));
+    it('should return stt_unavailable when no native session and no transcript', async () => {
+      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -366,7 +351,7 @@ describe('useRecordingSession', () => {
       });
 
       expect(response?.transcript).toBe('');
-      expect(response?.error).toBe('Transcription failed');
+      expect(response?.error).toBe('stt_unavailable');
     });
   });
 

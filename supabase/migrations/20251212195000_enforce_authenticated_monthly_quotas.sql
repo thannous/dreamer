@@ -43,7 +43,6 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 -- 2) Enforce quotas when a dream becomes "explored" or "analyzed".
 -- Uses an advisory lock to make concurrent requests for the same user/month serial.
 CREATE OR REPLACE FUNCTION public.enforce_authenticated_monthly_quota()
@@ -135,9 +134,7 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
 DROP TRIGGER IF EXISTS trg_enforce_authenticated_monthly_quota ON public.dreams;
-
 CREATE TRIGGER trg_enforce_authenticated_monthly_quota
 BEFORE INSERT OR UPDATE OF is_analyzed, analyzed_at, exploration_started_at
 ON public.dreams

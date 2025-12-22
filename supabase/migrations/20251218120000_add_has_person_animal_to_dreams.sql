@@ -8,9 +8,7 @@
 
 ALTER TABLE IF EXISTS public.dreams
 ADD COLUMN IF NOT EXISTS has_person BOOLEAN DEFAULT NULL;
-
 ALTER TABLE IF EXISTS public.dreams
 ADD COLUMN IF NOT EXISTS has_animal BOOLEAN DEFAULT NULL;
-
 COMMENT ON COLUMN public.dreams.has_person IS 'Whether the dream contains people or characters. NULL means not yet categorized.';
 COMMENT ON COLUMN public.dreams.has_animal IS 'Whether the dream contains animals. NULL means not yet categorized.';
