@@ -1,0 +1,40 @@
+{
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/en/index.html", "destination": "/en/", "permanent": true },
+    { "source": "/fr/index.html", "destination": "/fr/", "permanent": true },
+    { "source": "/es/index.html", "destination": "/es/", "permanent": true },
+    { "source": "/en/blog/index.html", "destination": "/en/blog/", "permanent": true },
+    { "source": "/fr/blog/index.html", "destination": "/fr/blog/", "permanent": true },
+    { "source": "/es/blog/index.html", "destination": "/es/blog/", "permanent": true },
+    { "source": "/en/guides/index.html", "destination": "/en/guides/", "permanent": true },
+    { "source": "/fr/guides/index.html", "destination": "/fr/guides/", "permanent": true },
+    { "source": "/es/guides/index.html", "destination": "/es/guides/", "permanent": true },
+    { "source": "/cgu.html", "destination": "/cgu", "permanent": true },
+    { "source": "/mentions-legales.html", "destination": "/mentions-legales", "permanent": true },
+    { "source": "/politique-confidentialite.html", "destination": "/politique-confidentialite", "permanent": true },
+    { "source": "/suppression-compte.html", "destination": "/suppression-compte", "permanent": true },
+    { "source": "/en/:path*.html", "destination": "/en/:path*", "permanent": true },
+    { "source": "/fr/:path*.html", "destination": "/fr/:path*", "permanent": true },
+    { "source": "/es/:path*.html", "destination": "/es/:path*", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/en/", "destination": "/en/index.html" },
+    { "source": "/fr/", "destination": "/fr/index.html" },
+    { "source": "/es/", "destination": "/es/index.html" },
+    { "source": "/en/blog/", "destination": "/en/blog/index.html" },
+    { "source": "/fr/blog/", "destination": "/fr/blog/index.html" },
+    { "source": "/es/blog/", "destination": "/es/blog/index.html" },
+    { "source": "/en/guides/", "destination": "/en/guides/index.html" },
+    { "source": "/fr/guides/", "destination": "/fr/guides/index.html" },
+    { "source": "/es/guides/", "destination": "/es/guides/index.html" },
+    { "source": "/cgu", "destination": "/cgu.html" },
+    { "source": "/mentions-legales", "destination": "/mentions-legales.html" },
+    { "source": "/politique-confidentialite", "destination": "/politique-confidentialite.html" },
+    { "source": "/suppression-compte", "destination": "/suppression-compte.html" },
+    { "source": "/en/:path*", "destination": "/en/:path*.html" },
+    { "source": "/fr/:path*", "destination": "/fr/:path*.html" },
+    { "source": "/es/:path*", "destination": "/es/:path*.html" }
+  ]
+}
