@@ -18,7 +18,9 @@ export class HttpError<TBody = unknown> extends Error {
     bodyText: string;
     body?: TBody;
   }) {
-    super(`HTTP ${options.status} ${options.statusText}: ${options.bodyText}`);
+    // Security: avoid including response bodies in `Error.message` (often logged and shown to users),
+    // since they can contain sensitive/internal details from the backend (e.g., stack traces).
+    super(`HTTP ${options.status} ${options.statusText}`);
     this.status = options.status;
     this.statusText = options.statusText;
     this.url = options.url;
@@ -123,6 +125,19 @@ function shouldAttachSupabaseAuth(targetUrl: string): boolean {
   }
 }
 
+const LOCAL_INSECURE_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '10.0.2.2']);
+
+function isSecureTransport(targetUrl: string): boolean {
+  try {
+    const parsed = new URL(targetUrl, 'http://localhost');
+    if (parsed.protocol === 'https:') return true;
+    if (parsed.protocol !== 'http:') return false;
+    return LOCAL_INSECURE_HOSTS.has(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
 function isSupabaseFunctionsUrl(targetUrl: string): boolean {
   try {
     const parsed = new URL(targetUrl, 'http://localhost');
@@ -145,16 +160,22 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
     };
 
     const allowSupabaseAuth = shouldAttachSupabaseAuth(url);
-    const isFunctionRequest = allowSupabaseAuth && isSupabaseFunctionsUrl(url);
+    // Avoid sending Supabase auth headers over cleartext transport for non-local hosts.
+    const canAttachSupabaseAuth = allowSupabaseAuth && isSecureTransport(url);
+    const isFunctionRequest = canAttachSupabaseAuth && isSupabaseFunctionsUrl(url);
+
+    if (allowSupabaseAuth && !canAttachSupabaseAuth && __DEV__) {
+      console.warn('[HTTP] Skipping Supabase auth headers for insecure URL; use HTTPS in non-local environments.');
+    }
 
     // Attach Supabase access token if present and not explicitly overridden
     try {
-      if (allowSupabaseAuth && !headers.Authorization) {
+      if (canAttachSupabaseAuth && !headers.Authorization) {
         const token = await getAccessToken();
         if (token) headers.Authorization = `Bearer ${token}`;
       }
       // Fallback to anon/legacy function key so public Supabase functions work for guests (prevents 401)
-      if (allowSupabaseAuth) {
+      if (canAttachSupabaseAuth) {
         const anonKey = isFunctionRequest ? getSupabaseFunctionJwt() : getSupabaseAnonKey();
         if (anonKey) {
           // Edge Functions expect an Authorization header even for guests.
