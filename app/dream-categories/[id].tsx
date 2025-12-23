@@ -82,7 +82,12 @@ export default function DreamCategoriesScreen() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
+          <Pressable
+            onPress={() => router.back()}
+            style={styles.backButton}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.back_button')}
+          >
             <MaterialCommunityIcons name="arrow-left" size={24} color={colors.textPrimary} />
           </Pressable>
           <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('dream_categories.explore_title')}</Text>
