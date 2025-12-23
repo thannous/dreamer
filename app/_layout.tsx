@@ -15,10 +15,10 @@ import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, NativeModules, Platform } from 'react-native';
 import 'react-native-reanimated';
+import { SystemBars } from 'react-native-edge-to-edge';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -282,7 +282,12 @@ function RootLayoutNav() {
           </Stack>
           <OfflineModelPromptHost />
         </DreamsProvider>
-        <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+        <SystemBars
+          style={{
+            statusBar: mode === 'dark' ? 'light' : 'dark',
+            navigationBar: mode === 'dark' ? 'light' : 'dark',
+          }}
+        />
       </KeyboardProviderComponent>
     </NavigationThemeProvider>
   );
