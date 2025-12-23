@@ -71,6 +71,25 @@ export const DreamCard = memo(function DreamCard({
     return list;
   }, [isExplored, isAnalyzed, isFavorite, t]);
 
+  const accessibilityLabel = useMemo(() => {
+    const parts = [dream.title || t('journal.card.accessibility.open')];
+
+    if (themeLabel) {
+      parts.push(t('journal.card.accessibility.theme', { theme: themeLabel }));
+    }
+
+    badges.forEach((b) => {
+      if (b.label) parts.push(b.label);
+    });
+
+    const snippet = dream.interpretation || dream.transcript;
+    if (snippet) {
+      parts.push(t('journal.card.accessibility.snippet', { text: snippet }));
+    }
+
+    return parts.join('. ');
+  }, [dream.title, dream.interpretation, dream.transcript, themeLabel, badges, t]);
+
   return (
     <Animated.View>
       <AnimatedPressable
@@ -79,7 +98,8 @@ export const DreamCard = memo(function DreamCard({
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         accessibilityRole="button"
-        accessibilityLabel={dream.title || t('journal.card.accessibility.open')}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint={t('journal.card.accessibility.hint')}
         testID={testID}
       >
         {dream.imageUrl && (
