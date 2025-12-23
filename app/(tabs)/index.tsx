@@ -10,6 +10,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { useAppState } from '@/hooks/useAppState';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
@@ -34,6 +35,8 @@ const TIP_KEYS = [
   'inspiration.tips.observePatterns',
   'inspiration.tips.prepareNight',
 ] as const;
+
+const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
 const getLocalDateKey = (): string => {
   const now = new Date();
@@ -163,22 +166,40 @@ export default function InspirationScreen() {
     return found ?? RITUALS[0];
   }, [selectedRitualId]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const todayKey = getLocalDateKey();
-      if (progressDate !== todayKey) {
-        setRitualProgress({});
-        setProgressDate(todayKey);
-        void saveRitualStepProgress({ date: todayKey, steps: {} }).catch((error) => {
-          if (__DEV__) {
-            console.error('[InspirationScreen] Failed to reset ritual progress', error);
-          }
+  const refreshProgressOnDateChange = useCallback(() => {
+    const todayKey = getLocalDateKey();
+    if (progressDate !== todayKey) {
+      if (__DEV__) {
+        console.log('[InspirationScreen] Date changed, resetting ritual progress', {
+          old: progressDate,
+          new: todayKey,
         });
       }
-    }, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
+      setRitualProgress({});
+      setProgressDate(todayKey);
+      void saveRitualStepProgress({ date: todayKey, steps: {} }).catch((error) => {
+        if (__DEV__) {
+          console.error('[InspirationScreen] Failed to reset ritual progress', error);
+        }
+      });
+    }
   }, [progressDate]);
+
+  // Check on focus
+  useFocusEffect(
+    useCallback(() => {
+      refreshProgressOnDateChange();
+    }, [refreshProgressOnDateChange])
+  );
+
+  // Check when returning to foreground
+  useAppState(refreshProgressOnDateChange);
+
+  // Periodic check to reset progress if the date changes while the screen stays open
+  useEffect(() => {
+    const timer = setInterval(refreshProgressOnDateChange, DATE_CHECK_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [refreshProgressOnDateChange]);
 
   useEffect(() => {
     let isMounted = true;
