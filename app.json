@@ -127,6 +127,9 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": "1.0.1"
+    "runtimeVersion": "1.0.1",
+    "updates": {
+      "url": "https://u.expo.dev/cfd1b275-9dad-40d7-9d9a-147c7bb38415"
+    }
   }
 }
