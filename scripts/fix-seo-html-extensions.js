@@ -39,6 +39,14 @@ function processFile(filePath) {
     // 6. Fix meta refresh redirects to clean paths
     content = content.replace(/(http-equiv="refresh" content="[^"]*url=\/[^"]+)\.html"/gi, '$1"');
 
+    // 7. Remove redundant language "badge" pill links (EN/FR/ES) next to dropdown
+    // These are extra anchors styled like a pill and labelled with a language code,
+    // which duplicates the dropdown and can end up misplaced in the DOM.
+    content = content.replace(
+        /\s*<a\s+[^>]*\bhreflang=(["'])(?:en|fr|es)\1[^>]*\bclass=(["'])[^"']*hidden\s+sm:inline-flex[^"']*rounded-full[^"']*border\s+border-white\/10[^"']*hover:border-dream-salmon[^"']*transition-colors[^"']*\2[^>]*>[\s\S]*?<\/a>\s*/g,
+        '\n'
+    );
+
     if (content !== originalContent) {
         console.log(`Updating ${filePath}`);
         fs.writeFileSync(filePath, content, 'utf8');
