@@ -565,6 +565,7 @@ const translations: Record<string, string> = {
     'dream_chat.input.recording_placeholder': 'Escuchando...',
     'dream_chat.mic.start': 'Iniciar dictado',
     'dream_chat.mic.stop': 'Detener dictado',
+    'dream_chat.send': 'Enviar mensaje',
     'dream_chat.message_counter': '{used}/{limit} mensajes',
     'dream_chat.limit_reached': '• Límite alcanzado',
     'dream_chat.limit_warning': 'Has alcanzado el límite de mensajes para este sueño. Pasa a premium para continuar la conversación.',

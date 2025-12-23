@@ -386,6 +386,9 @@ export function Composer({
           ]}
           onPress={handleSend}
           disabled={!canSend}
+          accessibilityRole="button"
+          accessibilityLabel={t('dream_chat.send')}
+          accessibilityState={{ disabled: !canSend }}
           testID={sendTestID}
         >
           <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
