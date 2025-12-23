@@ -3,13 +3,13 @@
     "name": "Noctalia",
     "slug": "noctalia",
     "version": "1.0.1",
-    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
+      "requireFullScreen": false,
       "bundleIdentifier": "com.tanuki75.noctalia",
       "associatedDomains": [
         "applinks:dream.noctalia.app"
