@@ -1,13 +1,13 @@
 import {
-    Lora_400Regular,
-    Lora_400Regular_Italic,
-    Lora_700Bold,
-    Lora_700Bold_Italic,
+  Lora_400Regular,
+  Lora_400Regular_Italic,
+  Lora_700Bold,
+  Lora_700Bold_Italic,
 } from '@expo-google-fonts/lora';
 import {
-    SpaceGrotesk_400Regular,
-    SpaceGrotesk_500Medium,
-    SpaceGrotesk_700Bold,
+  SpaceGrotesk_400Regular,
+  SpaceGrotesk_500Medium,
+  SpaceGrotesk_700Bold,
 } from '@expo-google-fonts/space-grotesk';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -16,9 +16,9 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, useNavigationContainerRef, usePathname, useRootNavigationState } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AppState, NativeModules, Platform } from 'react-native';
-import 'react-native-reanimated';
+import { NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
+import 'react-native-reanimated';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -27,6 +27,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { useAppState } from '@/hooks/useAppState';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { initializeGoogleSignIn } from '@/lib/auth';
@@ -73,7 +74,7 @@ SplashScreen.preventAutoHideAsync();
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
     ? // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('react-native-keyboard-controller').KeyboardProvider
+    require('react-native-keyboard-controller').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
 export const unstable_settings = {
@@ -146,12 +147,12 @@ function RootLayoutNav() {
     }
   }, [isNavigationReady, returningGuestBlocked, user, pathname]);
 
-  useEffect(() => {
-    if (!isNavigationReady) {
-      return;
-    }
+  const navigateToRecording = useCallback(
+    (reason: 'initial' | 'appState') => {
+      if (!isNavigationReady) {
+        return;
+      }
 
-    const navigateToRecording = (reason: 'initial' | 'appState') => {
       // Don't navigate to recording if returning guest is blocked
       if (returningGuestBlocked && !user) {
         if (__DEV__) {
@@ -202,31 +203,35 @@ function RootLayoutNav() {
       if (currentPath !== '/recording') {
         router.replace('/recording');
       }
-    };
+    },
+    [isNavigationReady, pathname, returningGuestBlocked, user]
+  );
+
+  const handleForeground = useCallback(() => {
+    if (!isNavigationReady) {
+      return;
+    }
+
+    if (__DEV__) {
+      console.log('[RootLayoutNav] App returned to foreground, checking recording redirect', {
+        currentPath: pathnameRef.current,
+      });
+    }
+    navigateToRecording('appState');
+  }, [isNavigationReady, navigateToRecording]);
+
+  useAppState(handleForeground);
+
+  useEffect(() => {
+    if (!isNavigationReady || hasInitialNavigated.current) {
+      return;
+    }
 
     // Only navigate to recording on initial app launch, not on subsequent
     // isNavigationReady changes (e.g., language change causing navigation state reset)
-    if (!hasInitialNavigated.current) {
-      hasInitialNavigated.current = true;
-      navigateToRecording('initial');
-    }
-
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (__DEV__) {
-        console.log('[RootLayoutNav] AppState change', {
-          state,
-          currentPath: pathnameRef.current,
-        });
-      }
-      if (state === 'active') {
-        navigateToRecording('appState');
-      }
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, [isNavigationReady, pathname, returningGuestBlocked, user]);
+    hasInitialNavigated.current = true;
+    navigateToRecording('initial');
+  }, [isNavigationReady, navigateToRecording]);
 
   useEffect(() => {
     if (!isNavigationReady) {
