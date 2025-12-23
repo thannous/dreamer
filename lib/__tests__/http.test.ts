@@ -105,7 +105,7 @@ describe('http', () => {
       );
     });
 
-    it('given HTTP error when fetching then throws with status and body text', async () => {
+    it('given HTTP error when fetching then throws without leaking body in message', async () => {
       global.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 404,
@@ -113,9 +113,7 @@ describe('http', () => {
         text: () => Promise.resolve('Resource not found'),
       });
 
-      await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow(
-        'HTTP 404 Not Found: Resource not found'
-      );
+      await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow('HTTP 404 Not Found');
     });
 
     it('given Supabase URL when fetching then attaches auth headers', async () => {
@@ -136,6 +134,20 @@ describe('http', () => {
           }),
         })
       );
+    });
+
+    it('given insecure Supabase URL when fetching then skips auth headers', async () => {
+      mockGetAccessToken.mockResolvedValue('user-access-token');
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      });
+
+      await fetchJSON('http://test.supabase.co/rest/v1/dreams');
+
+      const request = (global.fetch as any).mock.calls[0][1];
+      expect(request.headers.Authorization).toBeUndefined();
+      expect(request.headers.apikey).toBeUndefined();
     });
 
     it('given Supabase URL without auth token when fetching then uses anon key for apikey', async () => {
