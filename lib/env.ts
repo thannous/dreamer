@@ -16,8 +16,5 @@ export function isMockModeEnabled(): boolean {
 
 export function isReferenceImagesEnabled(): boolean {
   const value = getExpoPublicEnvValue('EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED');
-  if (!value) {
-    return true;
-  }
-  return value.toLowerCase() === 'true';
+  return (value ?? '').toLowerCase() === 'true';
 }

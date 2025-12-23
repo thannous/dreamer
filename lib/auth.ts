@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 
 import { supabase } from './supabase';
 import * as mockAuth from './mockAuth';
-import { isMockModeEnabled } from './env';
+import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
 import type { SubscriptionTier } from './types';
 
@@ -18,6 +18,8 @@ const ACCESS_TOKEN_WAIT_DELAY_MS = 150;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 let googleSignInModule: Promise<GoogleSignInModule> | null = null;
+let googleSignInConfigurePromise: Promise<void> | null = null;
+let googleSignInConfigured = false;
 
 async function ensureSessionPersistence(session: Session | null, label: string): Promise<void> {
   if (!session?.access_token || !session?.refresh_token) return;
@@ -43,6 +45,47 @@ async function getGoogleSignInModule(): Promise<GoogleSignInModule> {
   return googleSignInModule;
 }
 
+function getGoogleWebClientId(): string | undefined {
+  return getExpoPublicEnvValue('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
+}
+
+async function ensureGoogleSignInConfigured(): Promise<void> {
+  if (isMockMode || Platform.OS === 'web') {
+    return;
+  }
+
+  if (googleSignInConfigured) {
+    return;
+  }
+
+  if (googleSignInConfigurePromise) {
+    return googleSignInConfigurePromise;
+  }
+
+  const webClientId = getGoogleWebClientId();
+  if (!webClientId) {
+    throw new Error('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured. Google Sign-In cannot be initialized.');
+  }
+
+  googleSignInConfigurePromise = getGoogleSignInModule()
+    .then(({ GoogleSignin }) =>
+      GoogleSignin.configure({
+        webClientId,
+        scopes: ['openid', 'email', 'profile'],
+        offlineAccess: false,
+      })
+    )
+    .then(() => {
+      googleSignInConfigured = true;
+    })
+    .catch((error) => {
+      googleSignInConfigurePromise = null;
+      throw error;
+    });
+
+  return googleSignInConfigurePromise;
+}
+
 /**
  * Initialize Google Sign-In with web client ID
  * Should be called once at app startup
@@ -53,25 +96,10 @@ export function initializeGoogleSignIn() {
     return;
   }
 
-  const webClientId = (process?.env as any)?.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID as string | undefined;
-
-  if (!webClientId) {
-    log.warn('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured. Google Sign-In will not work.');
-    return;
-  }
-
   // Lazy load module to avoid importing native-only code on web bundles
-  getGoogleSignInModule()
-    .then(({ GoogleSignin }) =>
-      GoogleSignin.configure({
-        webClientId,
-        scopes: ['openid', 'email', 'profile'],
-        offlineAccess: false,
-      })
-    )
-    .catch((error) => {
-      log.warn('Failed to initialize Google Sign-In', error);
-    });
+  ensureGoogleSignInConfigured().catch((error) => {
+    log.warn('Failed to initialize Google Sign-In', error);
+  });
 }
 
 export async function getAccessToken(): Promise<string | null> {
@@ -294,6 +322,9 @@ export async function signInWithGoogle(): Promise<User> {
 
   try {
     log.debug('Starting Google Sign-In process');
+
+    // Ensure Google Sign-In is configured even if init hasn't completed yet
+    await ensureGoogleSignInConfigured();
 
     // Check for Play Services availability (Android)
     log.debug('Checking Google Play Services availability');

@@ -5,7 +5,12 @@
   },
   "build": {
     "release": {
-      "android": { "buildType": "app-bundle" }
+      "android": { "buildType": "app-bundle" },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "359653779023-6hivlgk9tpgq9g8ng5qpoipjjs780m8h.apps.googleusercontent.com",
+        "EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED": "false"
+      }
     },
     "development": {
       "developmentClient": true,
@@ -19,7 +24,9 @@
       "channel": "production",
       "android": { "buildType": "apk", "credentialsSource": "local" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api"
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "359653779023-6hivlgk9tpgq9g8ng5qpoipjjs780m8h.apps.googleusercontent.com",
+        "EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED": "false"
       }
     },
     "e2e-test": {
@@ -35,7 +42,9 @@
         "credentialsSource": "remote"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api"
+        "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "359653779023-6hivlgk9tpgq9g8ng5qpoipjjs780m8h.apps.googleusercontent.com",
+        "EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED": "false"
       }
     }
   },

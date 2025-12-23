@@ -67,6 +67,10 @@ const loadAuth = async (options?: {
 
   vi.doMock('../env', () => ({
     isMockModeEnabled: () => mockMode,
+    getExpoPublicEnvValue: (key: string) => {
+      const value = process.env[key];
+      return typeof value === 'string' ? value : undefined;
+    },
   }));
 
   vi.doMock('../logger', () => ({
@@ -166,10 +170,11 @@ describe('auth helpers', () => {
     const auth = await loadAuth();
 
     auth.initializeGoogleSignIn();
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(mockLogger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured')
-    );
+    expect(mockLogger.warn).toHaveBeenCalledWith('Failed to initialize Google Sign-In', expect.any(Error));
+    const error = mockLogger.warn.mock.calls[0]?.[1] as Error | undefined;
+    expect(error?.message).toContain('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID not configured');
   });
 
   it('returns access token when available', async () => {
@@ -322,6 +327,7 @@ describe('auth helpers', () => {
   });
 
   it('signs in with Google and returns user', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
     mockSupabaseAuth.signInWithIdToken.mockResolvedValueOnce({
       data: {
         user: { id: 'user-1', email: 'user@example.com' },
@@ -347,6 +353,7 @@ describe('auth helpers', () => {
   });
 
   it('throws when Google sign-in is cancelled', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
     defaultGoogleModule.GoogleSignin.signIn.mockResolvedValueOnce({ type: 'cancelled' });
     const auth = await loadAuth();
 
@@ -354,6 +361,7 @@ describe('auth helpers', () => {
   });
 
   it('maps Google sign-in errors to friendly messages', async () => {
+    process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
     defaultGoogleModule.GoogleSignin.signIn.mockRejectedValueOnce({
       code: defaultGoogleModule.statusCodes.IN_PROGRESS,
       message: 'busy',
