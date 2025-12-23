@@ -1,464 +1,472 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://noctalia.app/cgu.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+    <loc>https://noctalia.app/</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/cgu</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/</loc>
-    <lastmod>2025-12-16</lastmod>
+    <lastmod>2025-12-23</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/account-deletion.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+    <loc>https://noctalia.app/en/account-deletion</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/</loc>
-    <lastmod>2025-12-16</lastmod>
+    <lastmod>2025-12-23</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/being-chased-dreams.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-ser-perseguido.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/being-chased-dreams.html"/>
+    <loc>https://noctalia.app/en/blog/being-chased-dreams</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-ser-perseguido"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/being-chased-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/death-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-muerte.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/death-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-muerte"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/dream-incubation-guide.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-incubacion-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide.html"/>
+    <loc>https://noctalia.app/en/blog/dream-incubation-guide</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-incubacion-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/dream-interpretation-history.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
+    <loc>https://noctalia.app/en/blog/dream-interpretation-history</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/dream-journal-guide.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-diario-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide.html"/>
+    <loc>https://noctalia.app/en/blog/dream-journal-guide</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-diario-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/dreams-about-ex.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-ex.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-about-ex.html"/>
+    <loc>https://noctalia.app/en/blog/dreams-about-ex</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-ex"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-about-ex"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/dreams-mental-health.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-salud-mental.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-mental-health.html"/>
+    <loc>https://noctalia.app/en/blog/dreams-mental-health</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-salud-mental"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-mental-health"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/falling-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-caer.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/falling-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/falling-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-caer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/flying-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-volar.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/flying-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-volar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/how-to-remember-dreams.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
+    <loc>https://noctalia.app/en/blog/how-to-remember-dreams</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html"/>
+    <loc>https://noctalia.app/en/blog/lucid-dreaming-beginners-guide</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/precognitive-dreams-science.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-premonitorios-ciencia.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science.html"/>
+    <loc>https://noctalia.app/en/blog/precognitive-dreams-science</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-premonitorios-ciencia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/pregnancy-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-embarazo.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/pregnancy-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-embarazo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/recurring-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/significado-suenos-recurrentes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/recurring-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/significado-suenos-recurrentes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/rem-sleep-dreams.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-rem-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams.html"/>
+    <loc>https://noctalia.app/en/blog/rem-sleep-dreams</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-rem-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/sleep-paralysis-guide.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-paralisis-sueno.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide.html"/>
+    <loc>https://noctalia.app/en/blog/sleep-paralysis-guide</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-paralisis-sueno"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/snake-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-serpientes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/snake-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-serpientes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/stop-nightmares-guide.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-pesadillas.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stop-nightmares-guide.html"/>
+    <loc>https://noctalia.app/en/blog/stop-nightmares-guide</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-pesadillas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/teeth-falling-out-dreams.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-dientes-caen.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/teeth-falling-out-dreams.html"/>
+    <loc>https://noctalia.app/en/blog/teeth-falling-out-dreams</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-dientes-caen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/water-dreams-meaning.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-agua.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning.html"/>
+    <loc>https://noctalia.app/en/blog/water-dreams-meaning</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-agua"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/blog/why-we-dream-science.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science.html"/>
+    <loc>https://noctalia.app/en/blog/why-we-dream-science</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/guides/dream-symbols-dictionary.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/guides/diccionario-simbolos-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
+    <loc>https://noctalia.app/en/guides/dream-symbols-dictionary</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/guides/diccionario-simbolos-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/legal-notice.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+    <loc>https://noctalia.app/en/legal-notice</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/privacy-policy.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
+    <loc>https://noctalia.app/en/privacy-policy</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy"/>
   </url>
   <url>
-    <loc>https://noctalia.app/en/terms.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+    <loc>https://noctalia.app/en/terms</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/</loc>
-    <lastmod>2025-12-16</lastmod>
+    <lastmod>2025-12-23</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/aviso-legal.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+    <loc>https://noctalia.app/es/aviso-legal</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/</loc>
-    <lastmod>2025-12-16</lastmod>
+    <lastmod>2025-12-23</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/como-recordar-suenos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
+    <loc>https://noctalia.app/es/blog/como-recordar-suenos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/guia-diario-suenos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-diario-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide.html"/>
+    <loc>https://noctalia.app/es/blog/guia-diario-suenos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-diario-suenos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/guia-incubacion-suenos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-incubacion-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide.html"/>
+    <loc>https://noctalia.app/es/blog/guia-incubacion-suenos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-incubacion-suenos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/guia-paralisis-sueno.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-paralisis-sueno.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide.html"/>
+    <loc>https://noctalia.app/es/blog/guia-paralisis-sueno</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-paralisis-sueno"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/guia-pesadillas.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-pesadillas.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stop-nightmares-guide.html"/>
+    <loc>https://noctalia.app/es/blog/guia-pesadillas</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-pesadillas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html"/>
+    <loc>https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/historia-interpretacion-suenos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
+    <loc>https://noctalia.app/es/blog/historia-interpretacion-suenos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/por-que-sonamos-ciencia.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science.html"/>
+    <loc>https://noctalia.app/es/blog/por-que-sonamos-ciencia</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/significado-suenos-recurrentes.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/significado-suenos-recurrentes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/significado-suenos-recurrentes</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/significado-suenos-recurrentes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/sueno-rem-suenos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-rem-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams.html"/>
+    <loc>https://noctalia.app/es/blog/sueno-rem-suenos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-rem-suenos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-con-ex.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-ex.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-about-ex.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-con-ex</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-ex"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-about-ex"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-con-serpientes.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-serpientes.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-con-serpientes</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-serpientes"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-de-agua.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-agua.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-de-agua</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-agua"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-de-caer.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-caer.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/falling-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-de-caer</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-caer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-de-embarazo.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-embarazo.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-de-embarazo</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-embarazo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-de-muerte.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-muerte.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-de-muerte</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-muerte"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-de-volar.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-volar.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-de-volar</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-volar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-dientes-caen.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-dientes-caen.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/teeth-falling-out-dreams.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-dientes-caen</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-dientes-caen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-premonitorios-ciencia.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-premonitorios-ciencia.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-premonitorios-ciencia</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-premonitorios-ciencia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-salud-mental.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-salud-mental.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-mental-health.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-salud-mental</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-salud-mental"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-mental-health"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/blog/suenos-ser-perseguido.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-ser-perseguido.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/being-chased-dreams.html"/>
+    <loc>https://noctalia.app/es/blog/suenos-ser-perseguido</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-ser-perseguido"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/being-chased-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/eliminacion-cuenta.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+    <loc>https://noctalia.app/es/eliminacion-cuenta</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/guides/diccionario-simbolos-suenos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/guides/diccionario-simbolos-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
+    <loc>https://noctalia.app/es/guides/diccionario-simbolos-suenos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/guides/diccionario-simbolos-suenos"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/politica-privacidad.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
+    <loc>https://noctalia.app/es/politica-privacidad</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy"/>
   </url>
   <url>
-    <loc>https://noctalia.app/es/terminos.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+    <loc>https://noctalia.app/es/terminos</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/</loc>
-    <lastmod>2025-12-16</lastmod>
+    <lastmod>2025-12-23</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/"/>
@@ -466,242 +474,242 @@
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/</loc>
-    <lastmod>2025-12-16</lastmod>
+    <lastmod>2025-12-23</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams.html"/>
+    <loc>https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/como-recordar-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/guide-cauchemars.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-pesadillas.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stop-nightmares-guide.html"/>
+    <loc>https://noctalia.app/fr/blog/guide-cauchemars</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-cauchemars"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-pesadillas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/stop-nightmares-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/guide-incubation-reves.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-incubacion-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide.html"/>
+    <loc>https://noctalia.app/fr/blog/guide-incubation-reves</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-incubation-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-incubacion-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/guide-journal-reves.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-diario-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide.html"/>
+    <loc>https://noctalia.app/fr/blog/guide-journal-reves</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-journal-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-journal-guide"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-diario-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/guide-paralysie-sommeil.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-paralisis-sueno.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide.html"/>
+    <loc>https://noctalia.app/fr/blog/guide-paralysie-sommeil</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-paralysie-sommeil"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-paralisis-sueno"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/guide-reve-lucide-debutant.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide.html"/>
+    <loc>https://noctalia.app/fr/blog/guide-reve-lucide-debutant</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/guide-reve-lucide-debutant"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/guia-suenos-lucidos-principiantes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/lucid-dreaming-beginners-guide"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/histoire-interpretation-reves.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history.html"/>
+    <loc>https://noctalia.app/fr/blog/histoire-interpretation-reves</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/pourquoi-nous-revons-science.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science.html"/>
+    <loc>https://noctalia.app/fr/blog/pourquoi-nous-revons-science</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-nous-revons-science"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-de-chute.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-caer.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/falling-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-de-chute</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-chute"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-caer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/falling-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-de-grossesse.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-embarazo.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-de-grossesse</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-grossesse"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-embarazo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/pregnancy-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-de-mort.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-muerte.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-de-mort</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-mort"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-muerte"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-de-serpents.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-serpientes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-de-serpents</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-serpents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-serpientes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-de-voler.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-volar.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-de-voler</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-de-voler"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-volar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/flying-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-dents-qui-tombent.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-dientes-caen.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/teeth-falling-out-dreams.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-dents-qui-tombent</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-dents-qui-tombent"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-dientes-caen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/teeth-falling-out-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-eau.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-agua.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-eau</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-eau"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-de-agua"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-etre-poursuivi.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-ser-perseguido.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/being-chased-dreams.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-etre-poursuivi</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-etre-poursuivi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/being-chased-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-ser-perseguido"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/being-chased-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-ex-partenaire.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-ex.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-about-ex.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-ex-partenaire</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-ex-partenaire"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-about-ex"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-con-ex"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-about-ex"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-premonitoires-science.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-premonitorios-ciencia.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-premonitoires-science</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-premonitoires-science"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-premonitorios-ciencia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/reves-sante-mentale.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health.html"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-salud-mental.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-mental-health.html"/>
+    <loc>https://noctalia.app/fr/blog/reves-sante-mentale</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dreams-mental-health"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/reves-sante-mentale"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/suenos-salud-mental"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dreams-mental-health"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/signification-reves-recurrents.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/significado-suenos-recurrentes.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning.html"/>
+    <loc>https://noctalia.app/fr/blog/signification-reves-recurrents</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/signification-reves-recurrents"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/significado-suenos-recurrentes"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/recurring-dreams-meaning"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/blog/sommeil-paradoxal-reves.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-rem-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams.html"/>
+    <loc>https://noctalia.app/fr/blog/sommeil-paradoxal-reves</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-paradoxal-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-rem-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/cgu.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms.html"/>
+    <loc>https://noctalia.app/fr/cgu</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/guides/dictionnaire-symboles-reves.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/guides/diccionario-simbolos-suenos.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary.html"/>
+    <loc>https://noctalia.app/fr/guides/dictionnaire-symboles-reves</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/guides/dictionnaire-symboles-reves"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/guides/diccionario-simbolos-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/mentions-legales.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+    <loc>https://noctalia.app/fr/mentions-legales</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/politique-confidentialite.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
+    <loc>https://noctalia.app/fr/politique-confidentialite</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy"/>
   </url>
   <url>
-    <loc>https://noctalia.app/fr/suppression-compte.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+    <loc>https://noctalia.app/fr/suppression-compte</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion"/>
   </url>
   <url>
-    <loc>https://noctalia.app/mentions-legales.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice.html"/>
+    <loc>https://noctalia.app/mentions-legales</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/legal-notice"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/aviso-legal"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/legal-notice"/>
   </url>
   <url>
-    <loc>https://noctalia.app/politique-confidentialite.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy.html"/>
+    <loc>https://noctalia.app/politique-confidentialite</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/politique-confidentialite"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/politica-privacidad"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/privacy-policy"/>
   </url>
   <url>
-    <loc>https://noctalia.app/suppression-compte.html</loc>
-    <lastmod>2025-12-16</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion.html"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion.html"/>
+    <loc>https://noctalia.app/suppression-compte</loc>
+    <lastmod>2025-12-23</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/suppression-compte"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/account-deletion"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/eliminacion-cuenta"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/account-deletion"/>
   </url>
 </urlset>
