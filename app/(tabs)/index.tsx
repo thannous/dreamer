@@ -38,6 +38,9 @@ const TIP_KEYS = [
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
+/**
+ * Returns a local-time YYYY-MM-DD key used to scope daily ritual progress.
+ */
 const getLocalDateKey = (): string => {
   const now = new Date();
   const year = now.getFullYear();
@@ -110,6 +113,11 @@ const MYTH_CARDS: CopyCard[] = [
   },
 ];
 
+/**
+ * Inspiration / rituals screen.
+ *
+ * Tracks daily ritual progress and resets it when the local date changes.
+ */
 export default function InspirationScreen() {
   const { colors, shadows, mode } = useTheme();
   const { t } = useTranslation();

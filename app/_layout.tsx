@@ -77,10 +77,20 @@ const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
     require('react-native-keyboard-controller').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
+/**
+ * Expo Router settings for this app.
+ *
+ * See: https://docs.expo.dev/router/reference/unstable-settings/
+ */
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+/**
+ * Returns `true` once the root navigation container is fully ready.
+ *
+ * This is used to avoid redirects and side-effects before navigation is mounted.
+ */
 function useNavigationIsReady(): boolean {
   const navigationRef = useNavigationContainerRef();
   const rootNavigationState = useRootNavigationState();
@@ -110,6 +120,13 @@ function useNavigationIsReady(): boolean {
   return navigationReady && !!rootNavigationState?.key;
 }
 
+/**
+ * Navigation wrapper that applies route guards and initial redirects.
+ *
+ * - Redirects returning guests to settings when blocked
+ * - Redirects to `/recording` on initial launch and on foreground
+ * - Handles notification deep links (native only)
+ */
 function RootLayoutNav() {
   const { mode } = useTheme();
   const { user, returningGuestBlocked } = useAuth();
@@ -298,6 +315,12 @@ function RootLayoutNav() {
   );
 }
 
+/**
+ * App root layout.
+ *
+ * Bootstraps fonts and language preference, mounts providers, and renders the
+ * navigation tree (plus the animated splash overlay).
+ */
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     SpaceGrotesk_400Regular,

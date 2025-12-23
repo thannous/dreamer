@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 
 import { useAppState } from '@/hooks/useAppState';
@@ -7,7 +7,12 @@ import { getSubscriptionStatus, refreshSubscriptionStatus } from '@/services/sub
 
 type OnStatusChange = (status: SubscriptionStatus) => void;
 
-async function refreshStatus() {
+/**
+ * Refreshes the subscription status when returning to foreground.
+ *
+ * On native platforms, prefers a forced refresh and falls back to cached status.
+ */
+async function refreshStatus(): Promise<SubscriptionStatus | null> {
   try {
     let status: SubscriptionStatus | null = null;
 
@@ -34,10 +39,14 @@ async function refreshStatus() {
  * Hook qui surveille l'état de l'app et rafraîchit le status d'abonnement au resume.
  *
  * @param onStatusChange - Callback appelé quand le status est rafraîchi
+ * @returns void
  */
 export function useSubscriptionMonitor(onStatusChange?: OnStatusChange) {
   const onStatusChangeRef = useRef(onStatusChange);
-  onStatusChangeRef.current = onStatusChange;
+
+  useEffect(() => {
+    onStatusChangeRef.current = onStatusChange;
+  }, [onStatusChange]);
 
   const handleForeground = useCallback(async () => {
     if (!onStatusChangeRef.current) return;
@@ -49,4 +58,3 @@ export function useSubscriptionMonitor(onStatusChange?: OnStatusChange) {
 
   useAppState(handleForeground);
 }
-

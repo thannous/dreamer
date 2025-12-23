@@ -3,6 +3,13 @@ import Constants from 'expo-constants';
 import { getAccessToken } from './auth';
 import { classifyError, ErrorType } from './errors';
 
+/**
+ * HTTP error thrown by `fetchJSON()` when a non-2xx response is returned.
+ *
+ * Security note: `Error.message` intentionally excludes the response body to avoid
+ * accidentally leaking backend internals via logs or surfaced errors. Use `bodyText`
+ * or `body` explicitly when you need the response payload.
+ */
 export class HttpError<TBody = unknown> extends Error {
   public readonly name = 'HttpError';
   public readonly status: number;
