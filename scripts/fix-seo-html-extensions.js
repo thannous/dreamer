@@ -47,6 +47,22 @@ function processFile(filePath) {
         '\n'
     );
 
+    // 8. Remove duplicated language dropdown blocks (duplicate IDs)
+    // Some pages accidentally include the language dropdown twice, causing duplicate IDs and broken JS/a11y.
+    // We keep the first occurrence and remove subsequent duplicates.
+    const dropdownBlockRegex = /<div class="language-dropdown-wrapper relative" id="languageDropdown">[\s\S]*?<div class="language-dropdown-menu[\s\S]*?id="languageDropdownMenu">[\s\S]*?<\/div>\s*<\/div>/g;
+    const dropdownBlocks = content.match(dropdownBlockRegex);
+    if (dropdownBlocks && dropdownBlocks.length > 1) {
+        let keptFirst = false;
+        content = content.replace(dropdownBlockRegex, (match) => {
+            if (!keptFirst) {
+                keptFirst = true;
+                return match;
+            }
+            return '';
+        });
+    }
+
     if (content !== originalContent) {
         console.log(`Updating ${filePath}`);
         fs.writeFileSync(filePath, content, 'utf8');
