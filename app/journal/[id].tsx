@@ -22,7 +22,7 @@ import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { isReferenceImagesEnabled } from '@/lib/env';
-import { classifyError, QuotaError, type ClassifiedError } from '@/lib/errors';
+import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
 import { MotiView } from '@/lib/moti';
 import { sortWithSelectionFirst } from '@/lib/sorting';
@@ -180,6 +180,7 @@ export default function JournalDetailScreen() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [analysisNotice, setAnalysisNotice] = useState<AnalysisNotice | null>(null);
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
+  const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
 
   // Reference image generation state
@@ -195,7 +196,7 @@ export default function JournalDetailScreen() {
     }
   }, [isShareModalVisible]);
   const { formatDreamDate, formatDreamTime } = useLocaleFormatting();
-  const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading } = useQuota();
+  const { canAnalyzeNow, canAnalyze, tier, usage, loading: quotaLoading, quotaStatus } = useQuota();
   const { t } = useTranslation();
   const referenceImagesEnabled = isReferenceImagesEnabled();
   const isPremium = tier === 'premium' || tier === 'plus';
@@ -720,6 +721,7 @@ export default function JournalDetailScreen() {
       if (!allowed) {
         // Don't show for premium users
         if (tier === 'plus' || tier === 'premium') return false;
+        setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
         setShowQuotaLimitSheet(true);
         return false;
       }
@@ -735,7 +737,7 @@ export default function JournalDetailScreen() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, tier, showAnalysisNotice, t]);
+  }, [canAnalyze, canAnalyzeNow, quotaStatus?.isUpgraded, showAnalysisNotice, t, tier, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -744,11 +746,15 @@ export default function JournalDetailScreen() {
   const handleQuotaLimitPrimary = useCallback(() => {
     setShowQuotaLimitSheet(false);
     if (tier === 'guest') {
-      router.push('/(tabs)/settings');
+      if (quotaSheetMode === 'login') {
+        router.push('/(tabs)/settings?section=account');
+      } else {
+        router.push('/(tabs)/settings');
+      }
     } else {
       router.push('/paywall');
     }
-  }, [tier]);
+  }, [quotaSheetMode, tier]);
 
   const handleQuotaLimitSecondary = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -787,8 +793,14 @@ export default function JournalDetailScreen() {
         setAnalysisNotice(null);
       } catch (error) {
         if (error instanceof QuotaError) {
+          if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
+            setQuotaSheetMode('login');
+            setShowQuotaLimitSheet(true);
+            return;
+          }
           // Show quota limit sheet with upgrade CTA for non-premium users
           if (tier !== 'premium') {
+            setQuotaSheetMode('quota');
             setShowQuotaLimitSheet(true);
           } else {
             // Premium users should never hit quota errors, but show a notice if they do
@@ -1798,19 +1810,25 @@ export default function JournalDetailScreen() {
             style={[styles.sheetTitle, { color: colors.textPrimary }]}
             testID={TID.Text.QuotaLimitTitle}
           >
-            {tier === 'guest'
-              ? t('journal.detail.quota_limit.title_guest')
-              : t('journal.detail.quota_limit.title_free')}
+            {tier === 'guest' && quotaSheetMode === 'login'
+              ? t('journal.detail.quota_limit.title_login')
+              : tier === 'guest'
+                ? t('journal.detail.quota_limit.title_guest')
+                : t('journal.detail.quota_limit.title_free')}
           </Text>
           <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-            {tier === 'guest'
-              ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis! })
-              : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis! })}
+            {tier === 'guest' && quotaSheetMode === 'login'
+              ? t('journal.detail.quota_limit.message_login')
+              : tier === 'guest'
+                ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis! })
+                : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis! })}
           </Text>
           <BottomSheetActions
-            primaryLabel={tier === 'guest'
-              ? t('journal.detail.quota_limit.cta_guest')
-              : t('journal.detail.quota_limit.cta_free')}
+            primaryLabel={tier === 'guest' && quotaSheetMode === 'login'
+              ? t('journal.detail.quota_limit.cta_login')
+              : tier === 'guest'
+                ? t('journal.detail.quota_limit.cta_guest')
+                : t('journal.detail.quota_limit.cta_free')}
             onPrimary={handleQuotaLimitPrimary}
             primaryTestID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
             secondaryLabel={t('journal.detail.quota_limit.journal')}
