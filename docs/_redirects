@@ -9,30 +9,3 @@
 /en/guides/index.html /en/guides/ 301
 /fr/guides/index.html /fr/guides/ 301
 /es/guides/index.html /es/guides/ 301
-
-# Pretty URLs: redirect .html -> extensionless
-/cgu.html /cgu 301
-/mentions-legales.html /mentions-legales 301
-/politique-confidentialite.html /politique-confidentialite 301
-/suppression-compte.html /suppression-compte 301
-/en/*.html /en/:splat 301
-/fr/*.html /fr/:splat 301
-/es/*.html /es/:splat 301
-
-# Pretty URLs: serve extensionless routes (rewrite to .html)
-/en/ /en/index.html 200
-/fr/ /fr/index.html 200
-/es/ /es/index.html 200
-/en/blog/ /en/blog/index.html 200
-/fr/blog/ /fr/blog/index.html 200
-/es/blog/ /es/blog/index.html 200
-/en/guides/ /en/guides/index.html 200
-/fr/guides/ /fr/guides/index.html 200
-/es/guides/ /es/guides/index.html 200
-/cgu /cgu.html 200
-/mentions-legales /mentions-legales.html 200
-/politique-confidentialite /politique-confidentialite.html 200
-/suppression-compte /suppression-compte.html 200
-/en/* /en/:splat.html 200
-/fr/* /fr/:splat.html 200
-/es/* /es/:splat.html 200
