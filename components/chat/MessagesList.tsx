@@ -25,7 +25,6 @@ import {
 import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
-import { MarkdownText } from './MarkdownText';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   InteractionManager,
@@ -50,6 +49,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered } from './FadeInStaggered';
+import { MarkdownText } from './MarkdownText';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
@@ -279,15 +279,15 @@ const AssistantMessage = memo(function AssistantMessage({
 
   const aiBubbleStyle = mode === 'dark'
     ? {
-        backgroundColor: colors.backgroundCard,
-        borderColor: 'rgba(255,255,255,0.12)',
-        borderWidth: 1,
-      }
+      backgroundColor: colors.backgroundCard,
+      borderColor: 'rgba(255,255,255,0.12)',
+      borderWidth: 1,
+    }
     : {
-        backgroundColor: colors.backgroundSecondary,
-        borderColor: colors.divider,
-        borderWidth: 1,
-      };
+      backgroundColor: colors.backgroundSecondary,
+      borderColor: colors.divider,
+      borderWidth: 1,
+    };
 
   // On Android, we use a single-layer approach to avoid NullPointerException in ViewGroup.dispatchDraw
   // when the view tree changes during a draw cycle. iOS can use the dual-layer approach safely.
@@ -400,32 +400,53 @@ function AnimatedDot({ delay, color }: { delay: number; color: string }) {
 /**
  * LoadingIndicator - Shows thinking state
  * Exported for use in Composer headerContent
+ *
+ * IMPORTANT: Uses visibility control instead of conditional rendering to prevent
+ * Android NullPointerException in ViewGroup.dispatchDraw when animated views
+ * are removed mid-animation.
  */
-export function LoadingIndicator({ text }: { text?: string }) {
+export function LoadingIndicator({ text, visible = true }: { text?: string; visible?: boolean }) {
   const { colors } = useTheme();
 
+  // Animate visibility to prevent Android crash when removing animated views
+  const animatedVisibilityStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(visible ? 1 : 0, { duration: 150 }),
+      // Use maxHeight instead of height to allow content to size naturally when visible
+      maxHeight: withTiming(visible ? 100 : 0, { duration: 150 }),
+    };
+  }, [visible]);
+
   return (
-    <View style={loadingStyles.container}>
-      <View style={[loadingStyles.avatar, { backgroundColor: colors.accent }]}>
-        <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
-      </View>
-      <View style={[loadingStyles.bubble, { backgroundColor: colors.backgroundSecondary }]}>
-        <View style={loadingStyles.dots}>
-          <AnimatedDot delay={0} color={colors.accent} />
-          <AnimatedDot delay={150} color={colors.accent} />
-          <AnimatedDot delay={300} color={colors.accent} />
+    <Animated.View
+      style={[loadingStyles.wrapper, animatedVisibilityStyle]}
+      pointerEvents={visible ? 'auto' : 'none'}
+    >
+      <View style={loadingStyles.container}>
+        <View style={[loadingStyles.avatar, { backgroundColor: colors.accent }]}>
+          <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
         </View>
-        {text && (
-          <Text style={[loadingStyles.text, { color: colors.textSecondary }]}>
-            {text}
-          </Text>
-        )}
+        <View style={[loadingStyles.bubble, { backgroundColor: colors.backgroundSecondary }]}>
+          <View style={loadingStyles.dots}>
+            <AnimatedDot delay={0} color={colors.accent} />
+            <AnimatedDot delay={150} color={colors.accent} />
+            <AnimatedDot delay={300} color={colors.accent} />
+          </View>
+          {text && (
+            <Text style={[loadingStyles.text, { color: colors.textSecondary }]}>
+              {text}
+            </Text>
+          )}
+        </View>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
 const loadingStyles = StyleSheet.create({
+  wrapper: {
+    overflow: 'hidden',
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -580,10 +601,10 @@ export function MessagesList({
       let shouldHandwrite = false;
       const isRetryableError = Boolean(
         onRetryMessage &&
-          item.role === 'model' &&
-          item.meta?.isError &&
-          lastErrorMessageId &&
-          item.id === lastErrorMessageId
+        item.role === 'model' &&
+        item.meta?.isError &&
+        lastErrorMessageId &&
+        item.id === lastErrorMessageId
       );
 
       if (hasAnimatedHandwriting && allowHandwrite) {
