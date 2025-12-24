@@ -9,6 +9,7 @@ export type { MockProfile } from './mockAuth';
 
 const isMockMode = isMockModeEnabled();
 const EMAIL_REDIRECT_WEB = 'https://dream.noctalia.app/recording';
+const WEB_REDIRECT_FALLBACK = 'https://dream.noctalia.app';
 
 async function ensureSessionPersistence(session: Session | null): Promise<void> {
   if (!session?.access_token || !session?.refresh_token) return;
@@ -24,14 +25,16 @@ async function ensureSessionPersistence(session: Session | null): Promise<void> 
   }
 }
 
-function getWebRedirectTo(): string | undefined {
+function getWebRedirectTo(): string {
   try {
-    const location = (globalThis as typeof globalThis & { location?: Location }).location;
-    if (!location) return undefined;
-    // Preserve the current page (e.g., /settings) so OAuth does not bounce to the Supabase "Site URL".
-    return location.href;
+    const location = (
+      globalThis as typeof globalThis & { location?: { origin?: string } }
+    ).location;
+    if (!location?.origin) return WEB_REDIRECT_FALLBACK;
+    // Use origin to keep the Supabase redirect allow-list minimal.
+    return location.origin;
   } catch {
-    return undefined;
+    return WEB_REDIRECT_FALLBACK;
   }
 }
 
@@ -135,12 +138,11 @@ export async function signInWithGoogleWeb(): Promise<void> {
     return;
   }
 
-  const redirectTo = getWebRedirectTo();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
-      ...(redirectTo ? { redirectTo } : {}),
+      redirectTo: getWebRedirectTo(),
     },
   });
   if (error) throw error;

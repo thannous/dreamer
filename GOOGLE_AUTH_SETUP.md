@@ -132,11 +132,19 @@ eas credentials
 ### 2.2 Configure Redirect URLs
 
 1. Navigate to **Authentication** > **URL Configuration**
-2. Add redirect URL:
+2. Set **Site URL** to:
    ```
+   https://dream.noctalia.app
+   ```
+3. In **Redirect URLs**, add:
+   ```
+   https://dream.noctalia.app
    noctalia://google-auth
    ```
-3. Save
+4. Save
+
+Note: Web OAuth uses `redirectTo` with the current origin. If it is not allowlisted,
+Supabase falls back to the Site URL.
 
 ## Step 3: Configure Environment Variables
 
