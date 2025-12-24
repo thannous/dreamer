@@ -216,12 +216,7 @@ export default function RecordingScreen() {
     startRecording: startSessionRecording,
     stopRecording: stopSessionRecording,
     forceStopRecording,
-    requestPermissions,
   } = recordingSession;
-
-  useEffect(() => {
-    void requestPermissions();
-  }, [requestPermissions]);
 
   // Register offline model prompt handler
   useEffect(() => {
