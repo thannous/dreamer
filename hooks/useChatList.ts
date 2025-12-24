@@ -8,6 +8,7 @@ import {
     useKeyboardStateContext,
     useMessageListContext,
 } from '@/context/ChatContext';
+import { isChatDebugEnabled } from '@/lib/env';
 import type { ChatMessage } from '@/lib/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NativeModules, Platform } from 'react-native';
@@ -350,17 +351,31 @@ export function useHasNewMessages() {
 export function useScrollToBottomButton() {
   const { isNearBottom, scrollToEnd } = useMessageListContext();
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
+  const debugChat = __DEV__ && isChatDebugEnabled();
+  const debugLogNearBottom = useCallback(
+    (value: boolean) => {
+      if (!debugChat) return;
+      console.debug('[ChatList] isNearBottom changed', { value, ts: Date.now() });
+    },
+    [debugChat]
+  );
 
   useAnimatedReaction(
     () => isNearBottom.value.value,
     (current, prev) => {
       if (current !== prev) {
         runOnJS(setIsNearBottomSnapshot)(current);
+        if (debugChat) {
+          runOnJS(debugLogNearBottom)(current);
+        }
       }
     }
   );
 
   const scrollToBottom = useCallback(() => {
+    if (debugChat) {
+      console.debug('[ChatList] scrollToBottom pressed', { ts: Date.now() });
+    }
     // Multiple scroll attempts to ensure we reach the bottom
     // This matches the pattern in useInitialScrollToEnd for consistency
     scrollToEnd({ animated: true });
