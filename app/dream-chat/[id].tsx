@@ -12,7 +12,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { generateUUID } from '@/lib/dreamUtils';
-import { isMockModeEnabled } from '@/lib/env';
+import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
 import { QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
@@ -82,6 +82,7 @@ export default function DreamChatScreen() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isMockMode = isMockModeEnabled();
+  const debugChat = __DEV__ && isChatDebugEnabled();
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
@@ -105,6 +106,29 @@ export default function DreamChatScreen() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!debugChat) return;
+    console.debug('[DreamChat] mount', {
+      dreamId,
+      routeId: id,
+      hasUser: Boolean(user),
+      ts: Date.now(),
+    });
+    return () => {
+      console.debug('[DreamChat] unmount', { dreamId, ts: Date.now() });
+    };
+  }, [debugChat, dreamId, id, user]);
+
+  useEffect(() => {
+    if (!debugChat) return;
+    console.debug('[DreamChat] state', {
+      dreamId,
+      messageCount: messages.length,
+      isLoading,
+      ts: Date.now(),
+    });
+  }, [debugChat, dreamId, isLoading, messages.length]);
 
   // Speech recognition locale based on language
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
@@ -150,16 +174,16 @@ export default function DreamChatScreen() {
     Alert.alert(
       t('dream_chat.message_limit.title'),
       t('dream_chat.limit_warning'),
-	      [
-	        { text: t('common.ok') },
-	        {
-	          text: tier === 'guest'
-              ? t('dream_chat.limit_cta_guest')
-              : t('dream_chat.limit_cta_free'),
-	          onPress: () => router.push('/(tabs)/settings'),
-	        },
-	      ]
-	    );
+      [
+        { text: t('common.ok') },
+        {
+          text: tier === 'guest'
+            ? t('dream_chat.limit_cta_guest')
+            : t('dream_chat.limit_cta_free'),
+          onPress: () => router.push('/(tabs)/settings'),
+        },
+      ]
+    );
   }, [t, tier]);
 
   const runQuotaCheck = useCallback(async () => {
@@ -345,6 +369,16 @@ export default function DreamChatScreen() {
       if (!textToSend || !dream) return;
       const resolvedDisplayText = displayText ?? textToSend;
 
+      if (debugChat) {
+        const baseMessages = options?.baseMessages ?? messages;
+        console.debug('[DreamChat] sendMessage start', {
+          dreamId: dream.id,
+          baseMessageCount: baseMessages.length,
+          textLength: textToSend.length,
+          ts: Date.now(),
+        });
+      }
+
       if (messageLimit !== null && messagesRemaining <= 0) {
         showMessageLimitAlert();
         return;
@@ -491,51 +525,60 @@ export default function DreamChatScreen() {
       setIsLoading(true);
 
       try {
-      // ✅ PHASE 2: Get AI response with server-side quota enforcement
-      // Note: No longer send history - server reads from dreams.chat_history
-      // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
+        // ✅ PHASE 2: Get AI response with server-side quota enforcement
+        // Note: No longer send history - server reads from dreams.chat_history
+        // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
 
-      // For guests: send full dream context (no DB entry)
-      // For authenticated: send dreamId (server reads from DB)
-      let aiResponseText: string;
-      let guestFingerprint: string | undefined;
-      if (!user) {
-        try {
-          guestFingerprint = await getDeviceFingerprint();
-        } catch (err) {
-          if (__DEV__) {
-            console.warn('[DreamChat] Failed to get device fingerprint for guest chat', err);
+        // For guests: send full dream context (no DB entry)
+        // For authenticated: send dreamId (server reads from DB)
+        let aiResponseText: string;
+        let guestFingerprint: string | undefined;
+        if (!user) {
+          try {
+            guestFingerprint = await getDeviceFingerprint();
+          } catch (err) {
+            if (__DEV__) {
+              console.warn('[DreamChat] Failed to get device fingerprint for guest chat', err);
+            }
           }
         }
-      }
-      if (!user && !dream.remoteId) {
-        // Guest mode: send complete dream context
-        const dreamContext = {
-          transcript: dream.transcript,
-          title: dream.title,
-          interpretation: dream.interpretation,
-          shareableQuote: dream.shareableQuote,
-          dreamType: dream.dreamType,
-          theme: dream.theme,
-          chatHistory: updatedMessages,  // Current messages before AI response
-        };
-        aiResponseText = await startOrContinueChat(
-          String(dream.id),
-          textToSend,
-          language,
-          dreamContext,
-          guestFingerprint
-        );
-      } else {
-        // Authenticated mode: send dreamId (current flow)
-        const dreamIdString = String(dream.remoteId ?? dream.id);
-        aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
+        if (!user && !dream.remoteId) {
+          // Guest mode: send complete dream context
+          const dreamContext = {
+            transcript: dream.transcript,
+            title: dream.title,
+            interpretation: dream.interpretation,
+            shareableQuote: dream.shareableQuote,
+            dreamType: dream.dreamType,
+            theme: dream.theme,
+            chatHistory: updatedMessages,  // Current messages before AI response
+          };
+          aiResponseText = await startOrContinueChat(
+            String(dream.id),
+            textToSend,
+            language,
+            dreamContext,
+            guestFingerprint
+          );
+        } else {
+          // Authenticated mode: send dreamId (current flow)
+          const dreamIdString = String(dream.remoteId ?? dream.id);
+          aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
         }
 
         const aiMessage = createChatMessage('model', aiResponseText);
         const finalMessages = [...updatedMessages, aiMessage];
 
         setMessages(finalMessages);
+        if (debugChat) {
+          console.debug('[DreamChat] sendMessage success', {
+            dreamId: dream.id,
+            userMessageCount: updatedMessages.length,
+            aiTextLength: aiResponseText.length,
+            finalMessageCount: finalMessages.length,
+            ts: Date.now(),
+          });
+        }
 
         // Persist chat history to dream
         // Note: exploration_started_at is set server-side by the DB trigger
@@ -561,6 +604,13 @@ export default function DreamChatScreen() {
         }
         quotaService.invalidate(user);
       } catch (error) {
+        if (debugChat) {
+          console.debug('[DreamChat] sendMessage error', {
+            dreamId: dream.id,
+            ts: Date.now(),
+            error,
+          });
+        }
         if (__DEV__) {
           console.error('Chat error:', error);
         }
@@ -579,6 +629,7 @@ export default function DreamChatScreen() {
       }
     },
     [
+      debugChat,
       canChat,
       canExplore,
       dream,
@@ -803,23 +854,24 @@ export default function DreamChatScreen() {
   const shouldShowCounter = typeof messageLimit === 'number' &&
     (userMessageCount >= 15 || messageLimitReached);
 
-  const composerFooter = shouldShowCounter
-    ? (
-      <ComposerFooter
-        colors={colors}
-        mode={mode}
-        messageCounterLabel={messageCounterLabel}
-        messageLimitReached={messageLimitReached}
-        messagesRemaining={messagesRemaining}
-        t={t}
-        tier={tier}
-      />
-    )
-    : null;
+  // IMPORTANT: Always render these components to prevent Android NullPointerException
+  // when animated views are removed mid-animation. Use visible prop instead.
+  const composerFooter = (
+    <ComposerFooter
+      colors={colors}
+      mode={mode}
+      messageCounterLabel={messageCounterLabel}
+      messageLimitReached={messageLimitReached}
+      messagesRemaining={messagesRemaining}
+      t={t}
+      tier={tier}
+      visible={shouldShowCounter}
+    />
+  );
 
-  const composerHeader = isLoading
-    ? <LoadingIndicator text={t('dream_chat.thinking')} />
-    : null;
+  const composerHeader = (
+    <LoadingIndicator text={t('dream_chat.thinking')} visible={isLoading} />
+  );
 
   return (
     <ChatProvider isStreaming={isLoading}>
@@ -873,8 +925,16 @@ type ComposerFooterProps = {
   messagesRemaining: number;
   t: (key: string, replacements?: { [k: string]: string | number }) => string;
   tier: string;
+  visible?: boolean;
 };
 
+/**
+ * ComposerFooter - Message counter and limit warning
+ *
+ * IMPORTANT: Uses visibility control instead of conditional rendering to prevent
+ * Android NullPointerException in ViewGroup.dispatchDraw when animated views
+ * are removed mid-animation.
+ */
 function ComposerFooter({
   colors,
   mode,
@@ -883,16 +943,20 @@ function ComposerFooter({
   messagesRemaining,
   t,
   tier,
+  visible = true,
 }: ComposerFooterProps) {
   const { isKeyboardVisible } = useKeyboardStateContext();
 
   const footerAnimatedStyle = useAnimatedStyle(() => {
-    const hidden = isKeyboardVisible.value.value;
+    // Hide when keyboard is visible OR when not visible
+    const hidden = isKeyboardVisible.value.value || !visible;
     return {
       opacity: withTiming(hidden ? 0 : 1, { duration: 150 }),
       transform: [{ translateY: withTiming(hidden ? 8 : 0, { duration: 150 }) }],
+      // Collapse height when not visible to prevent layout issues
+      maxHeight: withTiming(visible ? 100 : 0, { duration: 150 }),
     };
-  }, [isKeyboardVisible]);
+  }, [isKeyboardVisible, visible]);
 
   const isLowRemaining = messagesRemaining <= 5;
   const pillBackground = mode === 'dark' ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.9)';
@@ -901,7 +965,10 @@ function ComposerFooter({
   const limitBannerBackground = mode === 'dark' ? '#3A1212' : '#FEE2E2';
 
   return (
-    <Animated.View style={[styles.footerWrapper, footerAnimatedStyle]} pointerEvents="box-none">
+    <Animated.View
+      style={[styles.footerWrapper, footerAnimatedStyle]}
+      pointerEvents={visible ? 'box-none' : 'none'}
+    >
       {!messageLimitReached && (
         <View
           style={[
