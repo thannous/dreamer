@@ -25,16 +25,22 @@ async function ensureSessionPersistence(session: Session | null): Promise<void> 
   }
 }
 
-function getWebRedirectTo(): string {
+function getWebRedirectTo(): string | undefined {
   try {
     const location = (
       globalThis as typeof globalThis & { location?: { origin?: string } }
     ).location;
-    if (!location?.origin) return WEB_REDIRECT_FALLBACK;
+    if (!location?.origin) return undefined;
+
+    const fallbackOrigin = new URL(WEB_REDIRECT_FALLBACK).origin;
+    if (location.origin !== fallbackOrigin) {
+      return undefined;
+    }
+
     // Use origin to keep the Supabase redirect allow-list minimal.
     return location.origin;
   } catch {
-    return WEB_REDIRECT_FALLBACK;
+    return undefined;
   }
 }
 
@@ -138,11 +144,12 @@ export async function signInWithGoogleWeb(): Promise<void> {
     return;
   }
 
+  const redirectTo = getWebRedirectTo();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'openid email profile',
-      redirectTo: getWebRedirectTo(),
+      ...(redirectTo ? { redirectTo } : {}),
     },
   });
   if (error) throw error;
