@@ -4,7 +4,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { DreamAnalysis, DreamMutation } from '../../lib/types';
+import type { DreamAnalysis, DreamMutation, QuotaStatus } from '../../lib/types';
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 
 // Hoist mock functions
@@ -21,7 +21,7 @@ const {
   mockFetchDreamsFromSupabase,
   mockAnalyzeDreamText,
   mockGenerateImageFromTranscript,
-  mockCanAnalyzeDream,
+  mockGetQuotaStatus,
   mockInvalidateQuota,
   mockGetThumbnailUrl,
   mockIncrementLocalAnalysisCount,
@@ -42,7 +42,7 @@ const {
   mockFetchDreamsFromSupabase: vi.fn<() => Promise<DreamAnalysis[]>>(),
   mockAnalyzeDreamText: vi.fn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
   mockGenerateImageFromTranscript: vi.fn<(transcript: string, previousImageUrl?: string) => Promise<string>>(),
-  mockCanAnalyzeDream: vi.fn<(user: unknown, tier: string) => Promise<boolean>>(),
+  mockGetQuotaStatus: vi.fn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
   mockInvalidateQuota: vi.fn<(user: unknown) => void>(),
   mockGetThumbnailUrl: vi.fn<(url: string | undefined) => string | undefined>(),
   mockIncrementLocalAnalysisCount: vi.fn<() => Promise<number>>(),
@@ -115,7 +115,7 @@ vi.mock('../../services/geminiService', () => ({
 // Mock quotaService
 vi.mock('../../services/quotaService', () => ({
   quotaService: {
-    canAnalyzeDream: mockCanAnalyzeDream,
+    getQuotaStatus: mockGetQuotaStatus,
     invalidate: mockInvalidateQuota,
   },
 }));
@@ -183,6 +183,19 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   ...overrides,
 });
 
+const buildQuotaStatus = (overrides: Partial<QuotaStatus> = {}): QuotaStatus => ({
+  tier: 'guest',
+  canAnalyze: true,
+  canExplore: true,
+  usage: {
+    analysis: { used: 0, limit: 3, remaining: 3 },
+    exploration: { used: 0, limit: 1, remaining: 1 },
+    messages: { used: 0, limit: 20, remaining: 20 },
+  },
+  reasons: [],
+  ...overrides,
+});
+
 // Helper to set mock user for tests
 const setMockUser = (user: { id: string; app_metadata?: Record<string, unknown> } | null) => {
   mockUseAuth.mockReturnValue({ user, sessionReady: Boolean(user) });
@@ -205,6 +218,7 @@ describe('useDreamJournal', () => {
     mockIncrementLocalAnalysisCount.mockResolvedValue(1);
     mockSyncWithServerCount.mockResolvedValue(1);
     mockGetAccessToken.mockResolvedValue('test-token');
+    mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus());
   });
 
   describe('initialization and loading', () => {
@@ -624,7 +638,7 @@ describe('useDreamJournal', () => {
 
   describe('analyzeDream', () => {
     beforeEach(() => {
-      mockCanAnalyzeDream.mockResolvedValue(true);
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: true }));
       mockAnalyzeDreamText.mockResolvedValue({
         title: 'Analyzed Title',
         interpretation: 'Deep meaning',
@@ -637,7 +651,7 @@ describe('useDreamJournal', () => {
     });
 
     it('checks quota before analyzing', async () => {
-      mockCanAnalyzeDream.mockResolvedValue(false);
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ canAnalyze: false }));
       const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
 
@@ -653,13 +667,13 @@ describe('useDreamJournal', () => {
         });
       }).rejects.toThrow(QuotaError);
 
-      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(null, 'guest');
+      expect(mockGetQuotaStatus).toHaveBeenCalledWith(null, 'guest');
     });
 
     it('treats Supabase plus users as plus before RevenueCat resolves', async () => {
       setMockUser({ id: 'user-1', app_metadata: { tier: 'plus' } });
       mockSubscriptionStatus = null;
-      mockCanAnalyzeDream.mockResolvedValue(false);
+      mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'plus', canAnalyze: false }));
 
       const existingDream = buildDream({ id: 1, isAnalyzed: false, analysisStatus: 'none' });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
@@ -676,7 +690,7 @@ describe('useDreamJournal', () => {
         });
       }).rejects.toThrow(QuotaError);
 
-      expect(mockCanAnalyzeDream).toHaveBeenCalledWith(
+      expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         expect.objectContaining({ id: 'user-1' }),
         'plus'
       );
