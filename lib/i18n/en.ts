@@ -626,6 +626,12 @@ const translations: Record<string, string> = {
     'reference_image.compression_error_title': 'Image Too Large',
     'reference_image.compression_error_message': 'This image could not be compressed to the required size. Please try a different photo.',
     'reference_image.pick_error': 'Failed to select image. Please try again.',
+    'reference_image.camera_permission_title': 'Camera Access Required',
+    'reference_image.camera_permission_message': 'Please allow camera access to take a photo.',
+    'reference_image.permission_denied_permanently': 'Access was denied. You can enable it in your device settings.',
+    'reference_image.open_settings': 'Open Settings',
+    'reference_image.take_photo': 'Take a photo',
+    'reference_image.pick_from_gallery': 'Choose from gallery',
 
     // Subject proposition
     'subject_proposition.title_person': 'Person detected in your dream',
