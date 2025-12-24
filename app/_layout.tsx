@@ -23,6 +23,8 @@ import 'react-native-reanimated';
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
+import { VercelAnalytics } from '@/components/VercelAnalytics';
+import { VercelSpeedInsights } from '@/components/VercelSpeedInsights';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
@@ -303,6 +305,8 @@ function RootLayoutNav() {
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>
           <OfflineModelPromptHost />
+          <VercelAnalytics />
+          <VercelSpeedInsights />
         </DreamsProvider>
         <SystemBars
           style={{
