@@ -52,6 +52,25 @@ const defaultGoogleModule = {
   },
 };
 
+const waitForAssertion = async (
+  assertion: () => void,
+  timeoutMs = 500,
+  intervalMs = 10
+) => {
+  const start = Date.now();
+  while (true) {
+    try {
+      assertion();
+      return;
+    } catch (error) {
+      if (Date.now() - start >= timeoutMs) {
+        throw error;
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+};
+
 const loadAuth = async (options?: {
   mockMode?: boolean;
   platformOS?: 'ios' | 'web';
@@ -155,15 +174,15 @@ describe('auth helpers', () => {
     expect(Platform.OS).toBe('ios');
 
     auth.initializeGoogleSignIn();
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    expect(defaultGoogleModule.GoogleSignin.configure).toHaveBeenCalledWith(
-      expect.objectContaining({
-        webClientId: 'client-id',
-        scopes: ['openid', 'email', 'profile'],
-        offlineAccess: false,
-      })
-    );
+    await waitForAssertion(() => {
+      expect(defaultGoogleModule.GoogleSignin.configure).toHaveBeenCalledWith(
+        expect.objectContaining({
+          webClientId: 'client-id',
+          scopes: ['openid', 'email', 'profile'],
+          offlineAccess: false,
+        })
+      );
+    });
   });
 
   it('warns when Google Sign-In client id is missing', async () => {
@@ -378,7 +397,10 @@ describe('auth helpers', () => {
 
     expect(mockSupabaseAuth.signInWithOAuth).toHaveBeenCalledWith({
       provider: 'google',
-      options: { scopes: 'openid email profile' },
+      options: {
+        scopes: 'openid email profile',
+        redirectTo: 'https://dream.noctalia.app',
+      },
     });
   });
 
