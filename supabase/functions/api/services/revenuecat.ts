@@ -12,10 +12,7 @@ function getOptionalEnv(name: string): string | null {
 }
 
 export function getRevenueCatApiKey(): string {
-  const apiKey =
-    getOptionalEnv('REVENUECAT_SECRET_API_KEY') ??
-    getOptionalEnv('REVENUECAT_API_KEY') ??
-    getOptionalEnv('REVENUECAT_SECRET_KEY');
+  const apiKey = getOptionalEnv('REVENUECAT_SECRET_API_KEY');
   if (!apiKey) {
     throw new Error('Missing REVENUECAT_SECRET_API_KEY');
   }
