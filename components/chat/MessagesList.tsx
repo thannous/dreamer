@@ -202,7 +202,11 @@ const AssistantMessage = memo(function AssistantMessage({
     [message.text, shouldHandwrite]
   );
   const [showMarkdown, setShowMarkdown] = useState(!shouldHandwritePlainText);
-  const handwritingText = useMemo(() => stripMarkdownForHandwriting(message.text), [message.text]);
+  const handwritingText = useMemo(() => {
+    // Perf: `stripMarkdownForHandwriting()` runs ~7 regex passes over the full string.
+    // Only compute it when handwriting mode is actually active; most model messages contain Markdown.
+    return shouldHandwritePlainText ? stripMarkdownForHandwriting(message.text) : '';
+  }, [message.text, shouldHandwritePlainText]);
   const markdownTextRef = useRef(shouldHandwritePlainText ? '' : message.text);
   const runAfterInteractionsRef = useRef<ReturnType<typeof InteractionManager.runAfterInteractions> | null>(null);
   const deferMarkdownSwitch = useCallback(() => {
