@@ -14,12 +14,25 @@ const log = createScopedLogger('[Auth]');
 type GoogleSignInModule = typeof import('@react-native-google-signin/google-signin');
 const ACCESS_TOKEN_WAIT_RETRIES = 2;
 const ACCESS_TOKEN_WAIT_DELAY_MS = 150;
+const WEB_REDIRECT_FALLBACK = 'https://dream.noctalia.app';
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 let googleSignInModule: Promise<GoogleSignInModule> | null = null;
 let googleSignInConfigurePromise: Promise<void> | null = null;
 let googleSignInConfigured = false;
+
+function getWebRedirectTo(): string {
+  try {
+    const location = (
+      globalThis as typeof globalThis & { location?: { origin?: string } }
+    ).location;
+    if (!location?.origin) return WEB_REDIRECT_FALLBACK;
+    return location.origin;
+  } catch {
+    return WEB_REDIRECT_FALLBACK;
+  }
+}
 
 async function ensureSessionPersistence(session: Session | null, label: string): Promise<void> {
   if (!session?.access_token || !session?.refresh_token) return;
@@ -423,6 +436,7 @@ export async function signInWithGoogleWeb(): Promise<void> {
     provider: 'google',
     options: {
       scopes: 'openid email profile',
+      redirectTo: getWebRedirectTo(),
     },
   });
   if (error) throw error;

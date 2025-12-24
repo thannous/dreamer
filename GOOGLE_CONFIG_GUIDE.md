@@ -225,18 +225,27 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 7. Cliquer **Save**
 
 8. Aller à **Authentication** > **URL Configuration**
-9. Dans **Redirect URLs**, ajouter :
+9. Dans **Site URL**, mettre :
    ```
+   https://dream.noctalia.app
+   ```
+10. Dans **Redirect URLs**, ajouter :
+   ```
+   https://dream.noctalia.app
    noctalia://google-auth
    ```
-10. Cliquer **Save**
+11. Cliquer **Save**
+
+Note: pour le web, `redirectTo` utilise l'origin courante. Si elle n'est pas
+autorisee, Supabase retombe sur la Site URL.
 
 ### ✅ Validation :
 - [X] Google provider activé dans Supabase
 - [X] Client ID et Secret ajoutés
 - [X] **Skip nonce check** est COCHÉ ✅
 - [X] Authorized Client IDs contient Web + Android
-- [X] Redirect URL `noctalia://google-auth` ajoutée
+- [X] Site URL `https://dream.noctalia.app` definie
+- [X] Redirect URLs `https://dream.noctalia.app` + `noctalia://google-auth` ajoutees
 
 ---
 
