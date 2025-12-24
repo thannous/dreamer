@@ -39,6 +39,7 @@ import { configureNotificationHandler } from '@/services/notificationService';
 import { migrateExistingGuestQuota } from '@/services/quota/GuestAnalysisCounter';
 import { migrateExistingGuestDreamRecording } from '@/services/quota/GuestDreamCounter';
 import { getFirstLaunchCompleted, getLanguagePreference, saveFirstLaunchCompleted } from '@/services/storageService';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Expo devtools keeps the screen awake in development, which can throw when the native activity
 // isn't ready (seen as "Unable to activate keep awake"). Swallow the failure to avoid red screens
@@ -504,6 +505,7 @@ export default function RootLayout() {
       {showCustomSplash && (
         <AnimatedSplashScreen status={shouldFadeSplash ? 'outro' : 'intro'} onAnimationEnd={handleSplashFinished} />
       )}
+      {Platform.OS === 'web' && <SpeedInsights />}
     </>
   );
 }
