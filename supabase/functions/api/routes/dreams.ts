@@ -8,6 +8,19 @@ import { createStorageHelpers } from '../services/storage.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
+type GuestQuotaStatus = {
+  analysis_count?: number;
+  exploration_count?: number;
+  image_count?: number;
+  is_upgraded?: boolean;
+};
+
+const toCount = (value: unknown): number => {
+  if (typeof value !== 'number') return 0;
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.floor(value));
+};
+
 export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
@@ -32,35 +45,52 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       hasFingerprint: !!fingerprint,
     });
 
-    let quotaUsed: { analysis: number } | undefined;
-    if (!user && supabaseServiceRoleKey && fingerprint) {
-      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-        auth: { autoRefreshToken: false, persistSession: false },
-      });
+    const guestAnalysisLimit = GUEST_LIMITS.analysis;
+    const adminClient =
+      !user && supabaseServiceRoleKey && fingerprint
+        ? createClient(supabaseUrl, supabaseServiceRoleKey, {
+            auth: { autoRefreshToken: false, persistSession: false },
+          })
+        : null;
 
-      const guestAnalysisLimit = GUEST_LIMITS.analysis;
-      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+    if (adminClient && fingerprint) {
+      const { data: status, error: statusError } = await adminClient.rpc('get_guest_quota_status', {
         p_fingerprint: fingerprint,
-        p_quota_type: 'analysis',
-        p_limit: guestAnalysisLimit,
       });
 
-      if (quotaError) {
-        console.error('[api] /analyzeDream: quota check failed', quotaError);
-      } else if (!quotaResult?.allowed) {
-        console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used: quotaResult?.new_count });
-        return new Response(
-          JSON.stringify({
-            error: 'Guest analysis limit reached',
-            code: 'QUOTA_EXCEEDED',
-            usage: { analysis: { used: quotaResult?.new_count ?? guestAnalysisLimit, limit: guestAnalysisLimit } },
-          }),
-          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-        );
+      if (statusError) {
+        console.error('[api] /analyzeDream: quota status check failed', statusError);
       } else {
-        quotaUsed = { analysis: quotaResult.new_count };
+        const parsed = (status ?? {}) as GuestQuotaStatus;
+        const used = toCount(parsed.analysis_count);
+        const isUpgraded = !!parsed.is_upgraded;
+        if (isUpgraded) {
+          return new Response(
+            JSON.stringify({
+              error: 'Login required',
+              code: 'GUEST_DEVICE_UPGRADED',
+              isUpgraded: true,
+              usage: { analysis: { used, limit: guestAnalysisLimit } },
+            }),
+            { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
+        }
+
+        if (used >= guestAnalysisLimit) {
+          console.log('[api] /analyzeDream: guest quota exceeded', { fingerprint: '[redacted]', used });
+          return new Response(
+            JSON.stringify({
+              error: 'Guest analysis limit reached',
+              code: 'QUOTA_EXCEEDED',
+              usage: { analysis: { used, limit: guestAnalysisLimit } },
+            }),
+            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
+        }
       }
     }
+
+    let quotaUsed: { analysis: number } | undefined;
 
     const langName = lang === 'fr' ? 'French' : lang === 'es' ? 'Spanish' : 'English';
     const systemInstruction = lang === 'fr'
@@ -101,6 +131,31 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     const theme = ['surreal', 'mystical', 'calm', 'noir'].includes(analysis.theme)
       ? analysis.theme
       : 'surreal';
+
+    if (adminClient && fingerprint) {
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+        p_fingerprint: fingerprint,
+        p_quota_type: 'analysis',
+        p_limit: guestAnalysisLimit,
+      });
+
+      if (quotaError) {
+        console.error('[api] /analyzeDream: quota increment failed', quotaError);
+      } else if (!quotaResult?.allowed) {
+        const used = toCount((quotaResult as any)?.new_count);
+        console.log('[api] /analyzeDream: guest quota exceeded at commit', { fingerprint: '[redacted]', used });
+        return new Response(
+          JSON.stringify({
+            error: 'Guest analysis limit reached',
+            code: 'QUOTA_EXCEEDED',
+            usage: { analysis: { used, limit: guestAnalysisLimit } },
+          }),
+          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      } else {
+        quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
+      }
+    }
 
     console.log('[api] /analyzeDream success', {
       userId: user?.id ?? null,

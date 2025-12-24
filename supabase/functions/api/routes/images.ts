@@ -7,6 +7,19 @@ import { createStorageHelpers } from '../services/storage.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
+type GuestQuotaStatus = {
+  analysis_count?: number;
+  exploration_count?: number;
+  image_count?: number;
+  is_upgraded?: boolean;
+};
+
+const toCount = (value: unknown): number => {
+  if (typeof value !== 'number') return 0;
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.floor(value));
+};
+
 export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
@@ -31,32 +44,47 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
-    if (!user && supabaseServiceRoleKey && fingerprint) {
-      const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-        auth: { autoRefreshToken: false, persistSession: false },
-      });
+    const guestImageLimit = GUEST_LIMITS.image;
+    const adminClient =
+      !user && supabaseServiceRoleKey && fingerprint
+        ? createClient(supabaseUrl, supabaseServiceRoleKey, {
+            auth: { autoRefreshToken: false, persistSession: false },
+          })
+        : null;
 
-      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+    if (adminClient && fingerprint) {
+      const { data: status, error: statusError } = await adminClient.rpc('get_guest_quota_status', {
         p_fingerprint: fingerprint,
-        p_quota_type: 'image',
-        p_limit: GUEST_LIMITS.image,
       });
 
-      if (quotaError) {
-        console.error('[api] /generateImage: quota check failed', quotaError);
-      } else if (!quotaResult?.allowed) {
-        console.log('[api] /generateImage: guest image quota exceeded', {
-          fingerprint: '[redacted]',
-          used: quotaResult?.new_count,
-        });
-        return new Response(
-          JSON.stringify({
-            error: 'Guest image limit reached',
-            code: 'QUOTA_EXCEEDED',
-            usage: { image: { used: quotaResult?.new_count ?? GUEST_LIMITS.image, limit: GUEST_LIMITS.image } },
-          }),
-          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-        );
+      if (statusError) {
+        console.error('[api] /generateImage: quota status check failed', statusError);
+      } else {
+        const parsed = (status ?? {}) as GuestQuotaStatus;
+        const used = toCount(parsed.image_count);
+        const isUpgraded = !!parsed.is_upgraded;
+        if (isUpgraded) {
+          return new Response(
+            JSON.stringify({
+              error: 'Login required',
+              code: 'GUEST_DEVICE_UPGRADED',
+              isUpgraded: true,
+              usage: { image: { used, limit: guestImageLimit } },
+            }),
+            { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
+        }
+        if (used >= guestImageLimit) {
+          console.log('[api] /generateImage: guest image quota exceeded', { fingerprint: '[redacted]', used });
+          return new Response(
+            JSON.stringify({
+              error: 'Guest image limit reached',
+              code: 'QUOTA_EXCEEDED',
+              usage: { image: { used, limit: guestImageLimit } },
+            }),
+            { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+          );
+        }
       }
     }
 
@@ -114,6 +142,32 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
 
     if (previousImageUrl) {
       await deleteImageFromStorage(previousImageUrl, ownerId);
+    }
+
+    if (adminClient && fingerprint) {
+      const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
+        p_fingerprint: fingerprint,
+        p_quota_type: 'image',
+        p_limit: guestImageLimit,
+      });
+
+      if (quotaError) {
+        console.error('[api] /generateImage: quota increment failed', quotaError);
+      } else if (!quotaResult?.allowed) {
+        const used = toCount((quotaResult as any)?.new_count);
+        console.log('[api] /generateImage: guest image quota exceeded at commit', { fingerprint: '[redacted]', used });
+        if (storedImageUrl) {
+          await deleteImageFromStorage(storedImageUrl, ownerId);
+        }
+        return new Response(
+          JSON.stringify({
+            error: 'Guest image limit reached',
+            code: 'QUOTA_EXCEEDED',
+            usage: { image: { used, limit: guestImageLimit } },
+          }),
+          { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+        );
+      }
     }
 
     return new Response(JSON.stringify({ imageUrl, imageBytes: optimized.base64, prompt }), {

@@ -26,7 +26,7 @@ export interface UseDreamSavingOptions {
 export function useDreamSaving(options: UseDreamSavingOptions = {}) {
   const { addDream, dreams, analyzeDream } = useDreams();
   const { user } = useAuth();
-  const { canAnalyzeNow, tier } = useQuota();
+  const { canAnalyzeNow, tier, quotaStatus } = useQuota();
   const { t, currentLang } = useTranslation();
 
   const [isPersisting, setIsPersisting] = useState(false);
@@ -112,12 +112,17 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
     ): Promise<DreamAnalysis | null> => {
       if (!canAnalyzeNow) {
         const limit = QUOTAS[tier].analysis ?? 0;
-        const title = tier === 'guest'
-          ? t('recording.alert.analysis_limit.title_guest')
-          : t('recording.alert.analysis_limit.title_free');
-        const message = tier === 'guest'
-          ? t('recording.alert.analysis_limit.message_guest', { limit })
-          : t('recording.alert.analysis_limit.message_free', { limit });
+        const isUpgradedGuest = !user && quotaStatus?.isUpgraded;
+        const title = isUpgradedGuest
+          ? t('recording.alert.analysis_limit.title_login')
+          : tier === 'guest'
+            ? t('recording.alert.analysis_limit.title_guest')
+            : t('recording.alert.analysis_limit.title_free');
+        const message = isUpgradedGuest
+          ? t('recording.alert.analysis_limit.message_login')
+          : tier === 'guest'
+            ? t('recording.alert.analysis_limit.message_guest', { limit })
+            : t('recording.alert.analysis_limit.message_free', { limit });
 
         Alert.alert(
           title,
@@ -125,7 +130,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
           [
             {
               text: t('recording.alert.limit.cta'),
-              onPress: () => router.push('/(tabs)/settings'),
+              onPress: () => router.push(isUpgradedGuest ? '/(tabs)/settings?section=account' : '/(tabs)/settings'),
             },
             { text: t('common.cancel'), style: 'cancel' },
           ]
@@ -147,23 +152,29 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         return analyzedDream;
       } catch (error) {
         if (error instanceof QuotaError) {
-          const title = error.tier === 'guest'
-            ? t('recording.alert.analysis_limit.title_guest')
-            : t('recording.alert.analysis_limit.title_free');
+          const isLoginRequired = error.code === QuotaErrorCode.LOGIN_REQUIRED && error.tier === 'guest';
+          const title = isLoginRequired
+            ? t('recording.alert.analysis_limit.title_login')
+            : error.tier === 'guest'
+              ? t('recording.alert.analysis_limit.title_guest')
+              : t('recording.alert.analysis_limit.title_free');
+          const message = isLoginRequired
+            ? t('recording.alert.analysis_limit.message_login')
+            : error.userMessage;
           Alert.alert(
             title,
-            error.userMessage,
+            message,
             [
               {
                 text: t('recording.alert.limit.cta'),
-                onPress: () => router.push('/(tabs)/settings'),
+                onPress: () => router.push(isLoginRequired ? '/(tabs)/settings?section=account' : '/(tabs)/settings'),
               },
               { text: t('common.cancel'), style: 'cancel' },
             ]
           );
           onProgress?.reset();
         } else {
-          const classified = classifyError(error as Error);
+          const classified = classifyError(error as Error, t);
           onProgress?.setError(classified);
         }
         return null;
@@ -171,7 +182,7 @@ export function useDreamSaving(options: UseDreamSavingOptions = {}) {
         setIsPersisting(false);
       }
     },
-    [analyzeDream, canAnalyzeNow, currentLang, options, t, tier]
+    [analyzeDream, canAnalyzeNow, currentLang, options, quotaStatus?.isUpgraded, t, tier, user]
   );
 
   const resetDraft = useCallback(() => {

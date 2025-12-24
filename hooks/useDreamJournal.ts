@@ -393,9 +393,12 @@ export const useDreamJournal = () => {
       transcript: string,
       options?: { replaceExistingImage?: boolean; lang?: string; onProgress?: (step: AnalysisStep) => void }
     ): Promise<DreamAnalysis> => {
-      // Check quota before analyzing
-      const canAnalyze = await quotaService.canAnalyzeDream(user, tier);
-      if (!canAnalyze) {
+      // Check quota before analyzing (need details to distinguish "quota reached" vs "login required")
+      const status = await quotaService.getQuotaStatus(user, tier);
+      if (!status.canAnalyze) {
+        if (!user && status.isUpgraded) {
+          throw new QuotaError(QuotaErrorCode.LOGIN_REQUIRED, 'guest');
+        }
         throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
       }
 

@@ -77,9 +77,9 @@ export default function RecordingScreen() {
   const [lengthWarning, setLengthWarning] = useState('');
   const analysisProgress = useAnalysisProgress();
   const hasAutoStoppedRecordingRef = useRef(false);
-  const { canAnalyzeNow, tier, usage } = useQuota();
+  const { canAnalyzeNow, tier, usage, quotaStatus } = useQuota();
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
-  const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error'>('limit');
+  const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error' | 'login'>('limit');
   const [quotaSheetMessage, setQuotaSheetMessage] = useState('');
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
@@ -334,7 +334,7 @@ export default function RecordingScreen() {
   }, [user, pendingGuestLimitDream, addDream, dreams.length, navigateAfterSave, resetComposer, t]);
 
   // Show quota limit sheet (reusable for both guard and catch paths)
-  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error'; message?: string }) => {
+  const showQuotaSheet = useCallback((options?: { mode?: 'limit' | 'error' | 'login'; message?: string }) => {
     const modeToUse = options?.mode ?? 'limit';
     const message = options?.message ?? '';
 
@@ -680,9 +680,16 @@ export default function RecordingScreen() {
 
   const handleQuotaLimitPrimary = useCallback(() => {
     setShowQuotaLimitSheet(false);
-    // Both guests and free users go to paywall for upgrade
+    if (quotaSheetMode === 'login') {
+      router.push('/(tabs)/settings?section=account');
+      return;
+    }
+    if (tier === 'guest') {
+      router.push('/(tabs)/settings');
+      return;
+    }
     router.push('/paywall');
-  }, []);
+  }, [quotaSheetMode, tier]);
 
   const handleQuotaLimitJournal = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -819,7 +826,8 @@ export default function RecordingScreen() {
     if (!canAnalyzeNow) {
       // "canAnalyzeNow" is a local/optimistic gate; if we can't show a quota sheet (e.g., paid tier),
       // fall through and let the server-side quota enforcement decide.
-      const shown = showQuotaSheet();
+      const mode = !user && quotaStatus?.isUpgraded ? 'login' : 'limit';
+      const shown = showQuotaSheet({ mode });
       if (shown) return;
     }
 
@@ -856,12 +864,12 @@ export default function RecordingScreen() {
       navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
     } catch (error) {
       if (error instanceof QuotaError) {
-        // Reuse the same sheet for consistent UX
-        showQuotaSheet({ mode: 'error', message: error.userMessage });
+        const mode = error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest' ? 'login' : 'limit';
+        showQuotaSheet({ mode });
         analysisProgress.reset();
         return;
       }
-      const classified = classifyError(error as Error);
+      const classified = classifyError(error as Error, t);
       analysisProgress.setError(classified);
     } finally {
       setIsPersisting(false);
@@ -875,9 +883,13 @@ export default function RecordingScreen() {
 	    firstDreamPrompt,
 	    language,
 	    pendingAnalysisDream,
+	    quotaStatus?.isUpgraded,
 	    navigateAfterSave,
 	    resetComposer,
 	    showQuotaSheet,
+	    t,
+	    tier,
+	    user,
 	  ]);
 
   const gradientColors = mode === 'dark'
@@ -1100,42 +1112,50 @@ export default function RecordingScreen() {
         visible={showQuotaLimitSheet}
         onClose={handleQuotaLimitDismiss}
         title={
-          quotaSheetMode === 'limit'
-            ? tier === 'guest'
-              ? t('recording.analysis_limit.title_guest')
-              : t('recording.analysis_limit.title_free')
-            : t('common.error_title')
+          quotaSheetMode === 'login'
+            ? t('recording.analysis_limit.title_login')
+            : quotaSheetMode === 'limit'
+              ? tier === 'guest'
+                ? t('recording.analysis_limit.title_guest')
+                : t('recording.analysis_limit.title_free')
+              : t('common.error_title')
         }
         subtitle={
-          quotaSheetMode === 'limit'
-            ? tier === 'guest'
-              ? t('recording.analysis_limit.message_guest', {
-                limit: usage?.analysis.limit ?? QUOTAS.guest.analysis ?? 0,
-              })
-              : t('recording.analysis_limit.message_free', {
-                limit: usage?.analysis.limit ?? QUOTAS.free.analysis ?? 0,
-              })
-            : quotaSheetMessage
+          quotaSheetMode === 'login'
+            ? t('recording.analysis_limit.message_login')
+            : quotaSheetMode === 'limit'
+              ? tier === 'guest'
+                ? t('recording.analysis_limit.message_guest', {
+                  limit: usage?.analysis.limit ?? QUOTAS.guest.analysis ?? 0,
+                })
+                : t('recording.analysis_limit.message_free', {
+                  limit: usage?.analysis.limit ?? QUOTAS.free.analysis ?? 0,
+                })
+              : quotaSheetMessage
         }
         testID={TID.Sheet.QuotaLimit}
         titleTestID={TID.Text.QuotaLimitTitle}
         actions={{
           primaryLabel:
-            quotaSheetMode === 'limit'
-              ? tier === 'guest'
-                ? t('recording.analysis_limit.cta_guest')
-                : t('recording.analysis_limit.cta_free')
-              : t('common.ok'),
+            quotaSheetMode === 'login'
+              ? t('recording.analysis_limit.cta_login')
+              : quotaSheetMode === 'limit'
+                ? tier === 'guest'
+                  ? t('recording.analysis_limit.cta_guest')
+                  : t('recording.analysis_limit.cta_free')
+                : t('common.ok'),
           onPrimary:
-            quotaSheetMode === 'limit'
-              ? handleQuotaLimitPrimary
-              : handleQuotaLimitDismiss,
+            quotaSheetMode === 'error'
+              ? handleQuotaLimitDismiss
+              : handleQuotaLimitPrimary,
           primaryTestID:
             quotaSheetMode === 'limit'
               ? tier === 'guest'
                 ? TID.Button.QuotaLimitCtaGuest
                 : TID.Button.QuotaLimitCtaFree
-              : TID.Button.QuotaLimitCtaFree,
+              : quotaSheetMode === 'login'
+                ? TID.Button.QuotaLimitCtaGuest
+                : TID.Button.QuotaLimitCtaFree,
           secondaryLabel: quotaSheetMode === 'limit' ? t('recording.analysis_limit.journal') : undefined,
           onSecondary: quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined,
           secondaryTestID: quotaSheetMode === 'limit' ? TID.Button.QuotaLimitJournal : undefined,

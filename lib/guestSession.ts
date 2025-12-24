@@ -25,7 +25,7 @@ const STORAGE_KEY = 'guest-session-v1';
 const EXPIRY_SAFETY_MS = 30_000;
 
 let cached: GuestSessionRecord | null = null;
-let preparePromise: Promise<void> | null = null;
+let preparePromise: Promise<boolean> | null = null;
 
 const decodeStored = (raw: string | null): GuestSessionRecord | null => {
   if (!raw) return null;
@@ -45,25 +45,39 @@ const isSessionValid = (session: GuestSessionRecord | null): session is GuestSes
   return session.expiresAt - EXPIRY_SAFETY_MS > Date.now();
 };
 
-export async function initGuestSession(): Promise<void> {
-  if (Platform.OS !== 'android') return;
+const isProviderInvalidError = (error: unknown): boolean => {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    message.includes('ERR_APP_INTEGRITY_PROVIDER_INVALID') ||
+    message.includes('prepareIntegrityTokenProviderAsync')
+  );
+};
+
+export async function initGuestSession(): Promise<boolean> {
+  if (Platform.OS !== 'android') return false;
   if (preparePromise) return preparePromise;
 
   preparePromise = (async () => {
     const cloudProjectNumber = getExpoPublicEnvValue('EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER');
     if (!cloudProjectNumber) {
       logger.warn('[guestSession] Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER');
-      return;
+      return false;
     }
     try {
       await AppIntegrity.prepareIntegrityTokenProviderAsync(cloudProjectNumber);
       logger.debug('[guestSession] Play Integrity provider ready');
+      return true;
     } catch (error) {
       logger.warn('[guestSession] Failed to prepare Play Integrity provider', error);
+      return false;
     }
   })();
 
-  return preparePromise;
+  const prepared = await preparePromise;
+  if (!prepared) {
+    preparePromise = null;
+  }
+  return prepared;
 }
 
 const createRequestHash = async (fingerprint: string): Promise<string> => {
@@ -77,12 +91,31 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
   let integrityToken: string | null = null;
 
   if (Platform.OS === 'android') {
-    await initGuestSession();
+    const prepared = await initGuestSession();
+    if (!prepared) {
+      logger.warn('[guestSession] Play Integrity provider not ready');
+      return null;
+    }
     try {
       integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
     } catch (error) {
-      logger.warn('[guestSession] Play Integrity request failed', error);
-      return null;
+      if (isProviderInvalidError(error)) {
+        preparePromise = null;
+        const retried = await initGuestSession();
+        if (!retried) {
+          logger.warn('[guestSession] Play Integrity provider unavailable after retry', error);
+          return null;
+        }
+        try {
+          integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
+        } catch (retryError) {
+          logger.warn('[guestSession] Play Integrity request failed after retry', retryError);
+          return null;
+        }
+      } else {
+        logger.warn('[guestSession] Play Integrity request failed', error);
+        return null;
+      }
     }
   }
 

@@ -1,6 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { requireGuestSession } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
 export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
@@ -11,18 +10,10 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
       fingerprint?: string;
       targetDreamId?: number | null;
     };
-    const guestCheck = await requireGuestSession(req, body, user);
-    if (guestCheck instanceof Response) {
-      return guestCheck;
-    }
-    const fingerprint =
-      guestCheck.fingerprint ??
-      req.headers.get('x-guest-fingerprint')?.trim() ??
-      body?.fingerprint?.trim() ??
-      null;
+    const fingerprint = req.headers.get('x-guest-fingerprint')?.trim() ?? body?.fingerprint?.trim() ?? null;
     if (!fingerprint && !user) {
-      return new Response(JSON.stringify({ error: 'Guest session required' }), {
-        status: 401,
+      return new Response(JSON.stringify({ error: 'Missing fingerprint' }), {
+        status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
@@ -85,7 +76,7 @@ export async function handleQuotaStatus(ctx: ApiContext): Promise<Response> {
           canAnalyze: false,
           canExplore: false,
           isUpgraded: true,
-          reasons: ["Vous avez déjà utilisé l'application ! Connectez-vous pour retrouver vos rêves et analyses illimitées."],
+          reasons: ['Cet appareil est déjà lié à un compte. Connectez-vous pour retrouver vos rêves.'],
         }),
         { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );

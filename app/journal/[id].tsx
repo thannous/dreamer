@@ -811,8 +811,8 @@ export default function JournalDetailScreen() {
             );
           }
         } else {
-          const msg = error instanceof Error ? error.message : t('common.unknown_error');
-          showAnalysisNotice(t('analysis_error.title'), msg, 'error');
+          const classified = classifyError(error as Error, t);
+          showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error');
         }
       } finally {
         setIsAnalyzing(false);
