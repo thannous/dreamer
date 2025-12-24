@@ -620,6 +620,12 @@ const translations: Record<string, string> = {
     'reference_image.compression_error_title': 'Imagen demasiado grande',
     'reference_image.compression_error_message': 'Esta imagen no pudo comprimirse al tamano requerido. Intenta con otra foto.',
     'reference_image.pick_error': 'No se pudo seleccionar la imagen. Intentalo de nuevo.',
+    'reference_image.camera_permission_title': 'Acceso a la camara requerido',
+    'reference_image.camera_permission_message': 'Por favor, permite el acceso a la camara para tomar una foto.',
+    'reference_image.permission_denied_permanently': 'El acceso fue denegado. Puedes habilitarlo en la configuracion del dispositivo.',
+    'reference_image.open_settings': 'Abrir configuracion',
+    'reference_image.take_photo': 'Tomar una foto',
+    'reference_image.pick_from_gallery': 'Elegir de la galeria',
 
     // Subject proposition
     'subject_proposition.title_person': 'Persona detectada en tu sueno',

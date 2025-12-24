@@ -627,6 +627,12 @@ const translations: Record<string, string> = {
     'reference_image.compression_error_title': 'Image trop volumineuse',
     'reference_image.compression_error_message': 'Cette image n\'a pas pu etre compresse a la taille requise. Essayez une autre photo.',
     'reference_image.pick_error': 'Impossible de selectionner l\'image. Reessayez.',
+    'reference_image.camera_permission_title': 'Acces a la camera requis',
+    'reference_image.camera_permission_message': 'Veuillez autoriser l\'acces a la camera pour prendre une photo.',
+    'reference_image.permission_denied_permanently': 'L\'acces a ete refuse. Vous pouvez l\'autoriser dans les reglages de votre appareil.',
+    'reference_image.open_settings': 'Ouvrir les reglages',
+    'reference_image.take_photo': 'Prendre une photo',
+    'reference_image.pick_from_gallery': 'Choisir depuis la galerie',
 
     // Subject proposition
     'subject_proposition.title_person': 'Personne detectee dans votre reve',

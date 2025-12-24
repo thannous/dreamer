@@ -6,6 +6,8 @@ import {
   Text,
   View,
   Alert,
+  Platform,
+  Linking,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,6 +80,8 @@ async function compressImage(uri: string): Promise<{ uri: string; mimeType: stri
   }
 }
 
+const isWeb = Platform.OS === 'web';
+
 export function ReferenceImagePicker({
   subjectType,
   onImagesSelected,
@@ -86,20 +90,67 @@ export function ReferenceImagePicker({
   const { t } = useTranslation();
   const { colors, shadows } = useTheme();
 
+  const showPermissionDeniedAlert = useCallback(
+    (titleKey: string, messageKey: string, canAskAgain: boolean) => {
+      if (canAskAgain) {
+        Alert.alert(t(titleKey), t(messageKey));
+      } else {
+        Alert.alert(t(titleKey), t('reference_image.permission_denied_permanently'), [
+          { text: t('common.cancel'), style: 'cancel' },
+          {
+            text: t('reference_image.open_settings'),
+            onPress: () => Linking.openSettings(),
+          },
+        ]);
+      }
+    },
+    [t]
+  );
+
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const processSelectedAssets = useCallback(
+    async (assets: { uri: string }[]) => {
+      const newImages: SelectedImage[] = [];
+      for (const asset of assets) {
+        const compressed = await compressImage(asset.uri);
+        if (compressed) {
+          newImages.push(compressed);
+        } else {
+          Alert.alert(
+            t('reference_image.compression_error_title'),
+            t('reference_image.compression_error_message')
+          );
+        }
+      }
+
+      if (newImages.length > 0) {
+        const allImages = [...selectedImages, ...newImages].slice(0, maxImages);
+        setSelectedImages(allImages);
+
+        const referenceImages: ReferenceImage[] = allImages.map((img) => ({
+          uri: img.uri,
+          mimeType: img.mimeType,
+          type: subjectType,
+        }));
+        onImagesSelected(referenceImages);
+      }
+    },
+    [maxImages, selectedImages, subjectType, onImagesSelected, t]
+  );
 
   const handlePickImages = useCallback(async () => {
     try {
       setIsLoading(true);
       const ImagePicker = await import('expo-image-picker');
 
-      // Request permissions first
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status, canAskAgain } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert(
-          t('reference_image.permission_title'),
-          t('reference_image.permission_message')
+        showPermissionDeniedAlert(
+          'reference_image.permission_title',
+          'reference_image.permission_message',
+          canAskAgain
         );
         return;
       }
@@ -116,32 +167,7 @@ export function ReferenceImagePicker({
         return;
       }
 
-      // Compress each selected image
-      const newImages: SelectedImage[] = [];
-      for (const asset of result.assets) {
-        const compressed = await compressImage(asset.uri);
-        if (compressed) {
-          newImages.push(compressed);
-        } else {
-          Alert.alert(
-            t('reference_image.compression_error_title'),
-            t('reference_image.compression_error_message')
-          );
-        }
-      }
-
-      if (newImages.length > 0) {
-        const allImages = [...selectedImages, ...newImages].slice(0, maxImages);
-        setSelectedImages(allImages);
-
-        // Notify parent with full reference images
-        const referenceImages: ReferenceImage[] = allImages.map((img) => ({
-          uri: img.uri,
-          mimeType: img.mimeType,
-          type: subjectType,
-        }));
-        onImagesSelected(referenceImages);
-      }
+      await processSelectedAssets(result.assets);
     } catch (error) {
       if (__DEV__) {
         console.error('[ReferenceImagePicker] Pick error:', error);
@@ -150,7 +176,44 @@ export function ReferenceImagePicker({
     } finally {
       setIsLoading(false);
     }
-  }, [maxImages, selectedImages, subjectType, onImagesSelected, t]);
+  }, [maxImages, selectedImages, t, processSelectedAssets, showPermissionDeniedAlert]);
+
+  const handleTakePhoto = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const ImagePicker = await import('expo-image-picker');
+
+      const { status, canAskAgain } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        showPermissionDeniedAlert(
+          'reference_image.camera_permission_title',
+          'reference_image.camera_permission_message',
+          canAskAgain
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 0.9,
+        cameraType: ImagePicker.CameraType.front,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        return;
+      }
+
+      await processSelectedAssets(result.assets);
+    } catch (error) {
+      if (__DEV__) {
+        console.error('[ReferenceImagePicker] Camera error:', error);
+      }
+      Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [t, processSelectedAssets, showPermissionDeniedAlert]);
 
   const handleRemoveImage = useCallback(
     (index: number) => {
@@ -168,7 +231,6 @@ export function ReferenceImagePicker({
   );
 
   const canAddMore = selectedImages.length < maxImages;
-  const iconName = subjectType === 'person' ? 'person-outline' : 'paw-outline';
 
   return (
     <View style={styles.container}>
@@ -198,24 +260,44 @@ export function ReferenceImagePicker({
         ))}
 
         {canAddMore && (
-          <Pressable
-            onPress={handlePickImages}
-            disabled={isLoading}
-            style={[
-              styles.addButton,
-              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              isLoading && styles.addButtonDisabled,
-            ]}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={colors.textSecondary} />
-            ) : (
-              <>
-                <Ionicons name={iconName} size={28} color={colors.textSecondary} />
-                <Ionicons name="add" size={16} color={colors.textSecondary} style={styles.plusIcon} />
-              </>
+          <>
+            {!isWeb && (
+              <Pressable
+                onPress={handleTakePhoto}
+                disabled={isLoading}
+                accessibilityLabel={t('reference_image.take_photo')}
+                accessibilityRole="button"
+                style={[
+                  styles.addButton,
+                  { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+                  isLoading && styles.addButtonDisabled,
+                ]}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color={colors.textSecondary} />
+                ) : (
+                  <Ionicons name="camera-outline" size={28} color={colors.textSecondary} />
+                )}
+              </Pressable>
             )}
-          </Pressable>
+            <Pressable
+              onPress={handlePickImages}
+              disabled={isLoading}
+              accessibilityLabel={t('reference_image.pick_from_gallery')}
+              accessibilityRole="button"
+              style={[
+                styles.addButton,
+                { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
+                isLoading && styles.addButtonDisabled,
+              ]}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={colors.textSecondary} />
+              ) : (
+                <Ionicons name="images-outline" size={28} color={colors.textSecondary} />
+              )}
+            </Pressable>
+          </>
         )}
       </View>
 
@@ -278,11 +360,6 @@ const styles = StyleSheet.create({
   },
   addButtonDisabled: {
     opacity: 0.6,
-  },
-  plusIcon: {
-    position: 'absolute',
-    bottom: 12,
-    right: 12,
   },
   hint: {
     fontFamily: Fonts.spaceGrotesk.regular,
