@@ -17,6 +17,8 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
   'error.client': 'Invalid request. Please check your input and try again.',
+  'error.login_required': 'This device is already linked to an account. Please sign in to continue.',
+  'error.guest_session': 'App verification failed. Please try again in a moment.',
   'error.image_transient': 'The image service is temporarily busy. Your dream has been saved and you can retry later.',
   'error.image_blocked': 'This dream\'s imagery couldn\'t be generated due to content guidelines.',
   'error.unknown': 'An unexpected error occurred.',
@@ -41,6 +43,24 @@ export interface ClassifiedError {
   canRetry: boolean;
 }
 
+type HttpErrorDetails = {
+  status: number;
+  body?: Record<string, unknown> | null;
+  url?: string;
+};
+
+const getHttpErrorDetails = (error: unknown): HttpErrorDetails | null => {
+  if (!error || typeof error !== 'object') return null;
+  const candidate = error as Record<string, unknown>;
+  const status = candidate.status;
+  if (typeof status !== 'number') return null;
+  const body = candidate.body && typeof candidate.body === 'object'
+    ? (candidate.body as Record<string, unknown>)
+    : null;
+  const url = typeof candidate.url === 'string' ? candidate.url : undefined;
+  return { status, body, url };
+};
+
 /**
  * Classifies an error and returns metadata about it.
  * Optionally accepts a translation function for i18n support.
@@ -55,6 +75,45 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
     }
     return DEFAULT_ERROR_MESSAGES[fallbackKey ?? key] ?? error.message;
   };
+
+  const httpDetails = getHttpErrorDetails(error);
+  if (httpDetails) {
+    const status = httpDetails.status;
+    const body = httpDetails.body ?? {};
+    const code = typeof body.code === 'string' ? body.code : '';
+    const bodyError = typeof body.error === 'string' ? body.error : '';
+    const isUpgraded = body.isUpgraded === true;
+
+    if ((status === 401 || status === 403) &&
+      (code === 'GUEST_DEVICE_UPGRADED' || isUpgraded || /login required/i.test(bodyError))
+    ) {
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.login_required'),
+        canRetry: false,
+      };
+    }
+
+    if (status === 401 && bodyError) {
+      const lowered = bodyError.toLowerCase();
+      if (
+        lowered.includes('integrity') ||
+        lowered.includes('guest session') ||
+        lowered.includes('missing integrity token') ||
+        lowered.includes('guest sessions')
+      ) {
+        return {
+          type: ErrorType.CLIENT,
+          message: error.message,
+          originalError: error,
+          userMessage: translate('error.guest_session'),
+          canRetry: true,
+        };
+      }
+    }
+  }
 
   // Network/connectivity errors
   if (
@@ -250,6 +309,7 @@ export enum QuotaErrorCode {
   ANALYSIS_LIMIT_REACHED = 'ANALYSIS_LIMIT_REACHED',
   EXPLORATION_LIMIT_REACHED = 'EXPLORATION_LIMIT_REACHED',
   MESSAGE_LIMIT_REACHED = 'MESSAGE_LIMIT_REACHED',
+  LOGIN_REQUIRED = 'LOGIN_REQUIRED',
   GUEST_LIMIT_REACHED = 'GUEST_LIMIT_REACHED', // Backward compatibility
 }
 
@@ -300,6 +360,9 @@ export class QuotaError extends Error {
           return `You have reached the limit of ${limit ?? 0} messages for this dream. Upgrade to Noctalia Plus for unlimited conversations!`;
         }
         return 'Message limit reached.';
+
+      case QuotaErrorCode.LOGIN_REQUIRED:
+        return 'This device is already linked to an account. Please sign in to continue.';
 
       case QuotaErrorCode.GUEST_LIMIT_REACHED:
         return `You have reached the limit of ${QUOTAS.guest.exploration ?? 0} dreams in guest mode. Create a free account to continue!`;

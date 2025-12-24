@@ -45,6 +45,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
+  const isUpgradedGuest = !user && Boolean(quotaStatus?.isUpgraded);
 
   useEffect(() => {
     if (user) {
@@ -103,7 +104,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const isPaidTier = tier === 'plus' || tier === 'premium';
   const showCta = Boolean(quotaStatus) && !isPaidTier;
   const ctaLabel = tier === 'guest'
-    ? t('settings.quota.cta_guest')
+    ? (isUpgradedGuest ? t('settings.quota.cta_login') : t('settings.quota.cta_guest'))
     : t('settings.quota.cta_upgrade');
   const tierLabel = t(`settings.quota.tier.${tier}` as const);
   const isGuest = tier === 'guest';
@@ -143,7 +144,17 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         </Pressable>
       )}
 
-      {isGuest && (
+      {isGuest && isUpgradedGuest && (
+        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
+          <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
+            {(quotaStatus?.reasons && quotaStatus.reasons.length > 0)
+              ? quotaStatus.reasons[0]
+              : t('settings.quota.upgraded_message')}
+          </Text>
+        </View>
+      )}
+
+      {isGuest && !isUpgradedGuest && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
             {t('settings.quota.guest_message', {

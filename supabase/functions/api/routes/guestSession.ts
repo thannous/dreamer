@@ -28,6 +28,13 @@ export async function handleGuestSession(req: Request): Promise<Response> {
       });
     }
 
+    console.log('[api] /guest/session request', {
+      platform,
+      fingerprintLength: fingerprint.length,
+      hasRequestHash: !!requestHash,
+      hasIntegrityToken: !!integrityToken,
+    });
+
     if (platform === 'android') {
       if (!requestHash || !integrityToken) {
         return new Response(JSON.stringify({ error: 'Missing integrity token' }), {
@@ -36,7 +43,16 @@ export async function handleGuestSession(req: Request): Promise<Response> {
         });
       }
 
-      const verdict = await verifyAndroidIntegrity({ integrityToken, requestHash });
+      let verdict: { ok: boolean; reason?: string };
+      try {
+        verdict = await verifyAndroidIntegrity({ integrityToken, requestHash });
+      } catch (error) {
+        console.error('[api] /guest/session integrity error', {
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        });
+        throw error;
+      }
       if (!verdict.ok) {
         return new Response(JSON.stringify({ error: `Integrity check failed (${verdict.reason ?? 'unknown'})` }), {
           status: 401,
@@ -56,7 +72,10 @@ export async function handleGuestSession(req: Request): Promise<Response> {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (error) {
-    console.error('[api] /guest/session error', error);
+    console.error('[api] /guest/session error', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return new Response(JSON.stringify({ error: 'Failed to create guest session' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

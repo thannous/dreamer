@@ -136,17 +136,33 @@ const decodeIntegrityToken = async (packageName: string, integrityToken: string)
     throw new Error(`Play Integrity decode failed: ${response.status} ${text}`);
   }
 
-  const data = (await response.json()) as { tokenPayloadExternal?: string };
-  if (!data.tokenPayloadExternal) {
+  const data = (await response.json().catch(() => null)) as { tokenPayloadExternal?: unknown } | null;
+  if (!data?.tokenPayloadExternal) {
     throw new Error('Play Integrity decode missing tokenPayloadExternal');
   }
 
-  const parts = data.tokenPayloadExternal.split('.');
-  if (parts.length < 2) {
-    throw new Error('Play Integrity payload invalid');
+  const tokenPayloadExternal = data.tokenPayloadExternal;
+  if (typeof tokenPayloadExternal === 'object' && tokenPayloadExternal !== null) {
+    return tokenPayloadExternal as IntegrityPayload;
   }
 
-  return base64UrlDecodeJson<IntegrityPayload>(parts[1]);
+  if (typeof tokenPayloadExternal === 'string') {
+    const trimmed = tokenPayloadExternal.trim();
+    if (trimmed.startsWith('{')) {
+      try {
+        return JSON.parse(trimmed) as IntegrityPayload;
+      } catch {
+        // Fall through to JWT decoding attempt.
+      }
+    }
+
+    const parts = trimmed.split('.');
+    if (parts.length >= 2) {
+      return base64UrlDecodeJson<IntegrityPayload>(parts[1]);
+    }
+  }
+
+  throw new Error('Play Integrity payload invalid');
 };
 
 const verdictAllows = (verdicts?: string[]): boolean => {
@@ -163,7 +179,16 @@ export const verifyAndroidIntegrity = async (options: {
     throw new Error('Missing PLAY_INTEGRITY_PACKAGE_NAME');
   }
 
-  const payload = await decodeIntegrityToken(packageName, options.integrityToken);
+  let payload: IntegrityPayload;
+  try {
+    payload = await decodeIntegrityToken(packageName, options.integrityToken);
+  } catch (error) {
+    console.error('[api] Play Integrity decode error', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return { ok: false, reason: 'decode_error' };
+  }
   const requestDetails = payload.requestDetails;
   const requestPackageName = requestDetails?.requestPackageName;
   const nonce = requestDetails?.nonce ?? requestDetails?.requestHash ?? null;
