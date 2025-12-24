@@ -1,11 +1,15 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "com.tanuki75.noctalia",
       "sha256_cert_fingerprints": [
-        "6A:8C:B2:E2:CD:D2:C1:FD:D7:C5:CF:00:D7:C3:CC:58:61:C2:CD:3F:AF:49:F6:9A:31:25:35:A4:4F:EE:0F"
+        "6A:8C:B2:E2:CD:D2:C1:FD:D7:C5:CF:00:D7:C3:CC:58:61:C2:CD:3F:AF:49:F6:9A:31:25:35:A4:4F:EE:0F",
+        "6A:8C:B2:E2:CD:D2:C1:FD:D7:C5:CF:CF:00:D7:C3:CC:58:61:C2:CD:3F:AF:49:F6:9A:31:25:35:A4:4F:EE:0F"
       ]
     }
   }
