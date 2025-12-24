@@ -380,7 +380,10 @@ export default function DreamChatScreen() {
       }
 
       if (messageLimit !== null && messagesRemaining <= 0) {
-        showMessageLimitAlert();
+        // Only show alert for new explorations; existing explorations have the banner
+        if (!isExistingExploration) {
+          showMessageLimitAlert();
+        }
         return;
       }
 
@@ -638,6 +641,7 @@ export default function DreamChatScreen() {
       hasNetwork,
       hasQuotaCheckClearance,
       inputText,
+      isExistingExploration,
       isMockMode,
       language,
       messageLimit,
@@ -667,7 +671,10 @@ export default function DreamChatScreen() {
     // Block if quota check not complete or exploration blocked
     if (!hasQuotaCheckClearance || isQuotaGateBlocked) return;
     if (messageLimitReached) {
-      showMessageLimitAlert();
+      // Only show alert for new explorations; existing explorations have the banner
+      if (!isExistingExploration) {
+        showMessageLimitAlert();
+      }
       return;
     }
     if (!dream) return;
