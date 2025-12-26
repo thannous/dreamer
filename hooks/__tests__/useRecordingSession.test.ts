@@ -304,7 +304,7 @@ describe('useRecordingSession', () => {
         await result.current.startRecording('');
       });
 
-      let response: { transcript: string; error?: string } | undefined;
+      let response: { transcript: string; error?: string; recordedUri?: string | null } | undefined;
       await act(async () => {
         response = await result.current.stopRecording();
       });

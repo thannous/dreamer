@@ -68,6 +68,7 @@ export default function SettingsScreen() {
     if (!expiryDate) return null;
     try {
       const date = new Date(expiryDate);
+      if (Number.isNaN(date.getTime())) return null;
       const dateStr = date.toLocaleDateString(undefined, {
         day: 'numeric',
         month: 'long',

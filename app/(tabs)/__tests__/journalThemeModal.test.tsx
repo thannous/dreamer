@@ -138,4 +138,20 @@ describe('Journal theme modal', () => {
 
     expect(screen.getAllByTestId('icon-checkmark')).toHaveLength(1);
   });
+
+  it('[E] Given a theme is selected When selecting it again Then it clears the selection', () => {
+    render(<JournalListScreen />);
+
+    // Given
+    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByText('Mystique'));
+
+    // When
+    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    fireEvent.click(screen.getByText('Mystique'));
+
+    // Then
+    fireEvent.click(screen.getByTestId('open-theme-modal'));
+    expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
+  });
 });

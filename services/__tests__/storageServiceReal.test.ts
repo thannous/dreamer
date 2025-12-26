@@ -601,9 +601,8 @@ describe('storageServiceReal', () => {
 
     const asyncStorageModule = await import('@react-native-async-storage/async-storage');
     const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
-    vi.spyOn(AsyncStorage, 'getItem').mockImplementation(async (key: string) =>
-      key === RECORDING_TRANSCRIPT_KEY ? 'legacy transcript' : null,
-    );
+    vi.spyOn(AsyncStorage, 'getItem').mockImplementation((async (key: string) =>
+      key === RECORDING_TRANSCRIPT_KEY ? 'legacy transcript' : null) as any);
     const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
 
     const storage = await import('../storageServiceReal');

@@ -14,6 +14,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
+import { getLocalDateKey, shouldResetDailyProgress } from '@/lib/ritualProgressUtils';
 import { MotiText } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { NotificationSettings, ThemeMode } from '@/lib/types';
@@ -37,17 +38,6 @@ const TIP_KEYS = [
 ] as const;
 
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
-
-/**
- * Returns a local-time YYYY-MM-DD key used to scope daily ritual progress.
- */
-const getLocalDateKey = (): string => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = `${now.getMonth() + 1}`.padStart(2, '0');
-  const day = `${now.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
 
 type CopyCard = {
   id: string;
@@ -175,8 +165,9 @@ export default function InspirationScreen() {
   }, [selectedRitualId]);
 
   const refreshProgressOnDateChange = useCallback(() => {
-    const todayKey = getLocalDateKey();
-    if (progressDate !== todayKey) {
+    const now = new Date();
+    if (shouldResetDailyProgress(progressDate, now)) {
+      const todayKey = getLocalDateKey(now);
       if (__DEV__) {
         console.log('[InspirationScreen] Date changed, resetting ritual progress', {
           old: progressDate,

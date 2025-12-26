@@ -9,5 +9,5 @@ export function VercelSpeedInsights() {
     return null;
   }
 
-  return <SpeedInsights pathname={pathname} />;
+  return <SpeedInsights route={pathname} />;
 }

@@ -28,8 +28,8 @@ vi.mock('../services/subscriptionSyncService', () => ({
   syncSubscriptionFromServer: vi.fn(async () => ({ ok: true })),
 }));
 
-const mockMapStatusFromInfo = vi.fn(() => ({ tier: 'free', isActive: false }));
-const mockIsEntitlementExpired = vi.fn(() => false);
+const mockMapStatusFromInfo = vi.fn((..._args: unknown[]) => ({ tier: 'free', isActive: false }));
+const mockIsEntitlementExpired = vi.fn((..._args: unknown[]) => false);
 
 vi.mock('../lib/revenuecat', () => ({
   isEntitlementExpired: (...args: unknown[]) => mockIsEntitlementExpired(...args),
