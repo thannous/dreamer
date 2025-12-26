@@ -143,6 +143,7 @@ export default function DreamCategoriesScreen() {
             { backgroundColor: colors.accent },
             pressed && styles.freeChatButtonPressed,
           ]}
+          testID={TID.Button.DreamFreeChat}
           onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
         >
           <MaterialCommunityIcons name="chat-processing-outline" size={24} color={colors.textPrimary} />

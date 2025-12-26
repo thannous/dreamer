@@ -7,6 +7,7 @@ export const TID = {
   Input: {
     SearchDreams: 'input.searchDreams',
     DreamTranscript: 'input.dreamTranscript',
+    DreamTitle: 'input.dreamTitle',
     AuthEmail: 'input.auth.email',
     AuthPassword: 'input.auth.password',
   },
@@ -25,6 +26,7 @@ export const TID = {
     MockProfile: (profile: string) => `btn.mockProfile.${profile}`,
     ExploreDream: 'btn.exploreDream',
     DreamCategory: (id: string) => `btn.dreamCategory.${id}`,
+    DreamFreeChat: 'btn.dreamCategory.freeChat',
     AuthSignIn: 'btn.auth.signIn',
     AuthSignUp: 'btn.auth.signUp',
     AuthSignOut: 'btn.auth.signOut',
@@ -70,6 +72,8 @@ export const TID = {
     SearchBar: 'component.searchBar',
     EmailVerificationBanner: 'component.emailVerificationBanner',
     InspirationTip: 'component.inspiration.tip',
+    MetadataCard: 'component.metadataCard',
+    TranscriptCard: 'component.transcriptCard',
   },
   Toast: {
     PaywallSuccess: 'toast.paywall.success',

@@ -1,0 +1,38 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
+- tapOn: "(See dream journal|Voir journal)"
+- waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres)"
+- waitForAnimationToEnd
+- assertVisible: "(Settings|Param.tres)"
+- runFlow:
+    when:
+      visible: "(Sign Out|Se d.connecter)"
+    commands:
+      - tapOn: "(Sign Out|Se d.connecter)"
+      - waitForAnimationToEnd
+- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
+- tapOn: "(Existing user|Utilisateur existant)"
+- waitForAnimationToEnd
+- assertVisible: "mock\\.existing@dreamer\\.app"
+- tapOn: "(Home|Accueil)"
+- waitForAnimationToEnd
+- tapOn:
+    id: "btn.addDream"
+- waitForAnimationToEnd
+- assertVisible:
+    id: "screen.recording"
+- tapOn:
+    id: "input.dreamTranscript"
+- inputText: "I walked through a quiet garden under a silver moon."
+- tapOn:
+    id: "btn.saveDream"
+- waitForAnimationToEnd
+- assertVisible:
+    id: "text.analyzePromptTitle"
+- tapOn:
+    id: "btn.analyzePrompt.journal"
+- waitForAnimationToEnd
+- assertVisible: "Dream Journey"

@@ -1,0 +1,95 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
+- tapOn: "(See dream journal|Voir journal)"
+- waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres)"
+- waitForAnimationToEnd
+- assertVisible: "(Settings|Param.tres)"
+- runFlow:
+    when:
+      visible: "(Sign Out|Se d.connecter)"
+    commands:
+      - tapOn: "(Sign Out|Se d.connecter)"
+      - waitForAnimationToEnd
+- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
+- tapOn: "(Existing user|Utilisateur existant)"
+- waitForAnimationToEnd
+- assertVisible: "mock\\.existing@dreamer\\.app"
+- tapOn: "Journal"
+- waitForAnimationToEnd
+- tapOn: "The Infinite Library"
+- waitForAnimationToEnd
+- assertVisible: "The Infinite Library"
+- evalScript: ${output.foundEditTranscript = 0}
+- evalScript: ${output.editTranscriptScrolls = 0}
+- runFlow:
+    when:
+      visible:
+        id: "btn.editTranscript"
+    commands:
+      - evalScript: ${output.foundEditTranscript = 1}
+- repeat:
+    while:
+      true: ${output.foundEditTranscript == 0 && output.editTranscriptScrolls < 6}
+    commands:
+      - evalScript: ${output.editTranscriptScrolls = output.editTranscriptScrolls + 1}
+      - swipe:
+          start: 50%, 80%
+          end: 50%, 30%
+      - runFlow:
+          when:
+            visible:
+              id: "btn.editTranscript"
+          commands:
+            - evalScript: ${output.foundEditTranscript = 1}
+- assertVisible:
+    id: "btn.editTranscript"
+- tapOn:
+    id: "btn.editTranscript"
+    retryTapIfNoChange: true
+    waitToSettleTimeoutMs: 500
+- waitForAnimationToEnd
+- assertVisible:
+    id: "input.dreamTranscript"
+- tapOn:
+    id: "input.dreamTranscript"
+- eraseText
+- inputText: "E2E transcript update."
+- evalScript: ${output.foundEditTranscript = 0}
+- evalScript: ${output.editTranscriptScrolls = 0}
+- runFlow:
+    when:
+      visible:
+        id: "btn.editTranscript"
+    commands:
+      - evalScript: ${output.foundEditTranscript = 1}
+- repeat:
+    while:
+      true: ${output.foundEditTranscript == 0 && output.editTranscriptScrolls < 6}
+    commands:
+      - evalScript: ${output.editTranscriptScrolls = output.editTranscriptScrolls + 1}
+      - swipe:
+          start: 50%, 80%
+          end: 50%, 30%
+      - runFlow:
+          when:
+            visible:
+              id: "btn.editTranscript"
+          commands:
+            - evalScript: ${output.foundEditTranscript = 1}
+- assertVisible:
+    id: "btn.editTranscript"
+- tapOn:
+    id: "btn.editTranscript"
+    retryTapIfNoChange: true
+    waitToSettleTimeoutMs: 500
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "(Update this dream\\?|Mettre . jour le r.ve .*\\?)"
+    commands:
+      - tapOn: "(Later|Plus tard)"
+      - waitForAnimationToEnd
+- assertVisible: "E2E transcript update."

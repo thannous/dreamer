@@ -1,0 +1,47 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
+- tapOn: "(See dream journal|Voir journal)"
+- waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres)"
+- waitForAnimationToEnd
+- assertVisible: "(Settings|Param.tres)"
+- runFlow:
+    when:
+      visible: "(Sign Out|Se d.connecter)"
+    commands:
+      - tapOn: "(Sign Out|Se d.connecter)"
+      - waitForAnimationToEnd
+- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
+- tapOn: "(Existing user|Utilisateur existant)"
+- waitForAnimationToEnd
+- assertVisible: "mock\\.existing@dreamer\\.app"
+- tapOn: "Journal"
+- waitForAnimationToEnd
+- tapOn: "The Infinite Library"
+- waitForAnimationToEnd
+- assertVisible: "The Infinite Library"
+- scrollUntilVisible:
+    element:
+      text: "The Infinite Library"
+    direction: DOWN
+    visibilityPercentage: 30
+- waitForAnimationToEnd
+- tapOn: "Edit dream details"
+- waitForAnimationToEnd
+- assertVisible:
+    id: "input.dreamTitle"
+- tapOn:
+    id: "input.dreamTitle"
+- eraseText
+- inputText: "The Infinite Archive"
+- scrollUntilVisible:
+    element:
+      text: "The Infinite Archive"
+    direction: DOWN
+    visibilityPercentage: 30
+- waitForAnimationToEnd
+- tapOn: "Edit dream details"
+- waitForAnimationToEnd
+- assertVisible: "The Infinite Archive"
