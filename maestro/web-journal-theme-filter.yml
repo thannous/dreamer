@@ -19,11 +19,10 @@ url: "http://localhost:8081"
 - assertVisible: "mock\\.existing@dreamer\\.app"
 - tapOn: "Journal"
 - waitForAnimationToEnd
-- tapOn:
-    id: "btn.filterTheme"
+- assertVisible: "(Theme|Th.me)"
+- tapOn: "(Theme|Th.me)"
 - waitForAnimationToEnd
-- assertVisible:
-    id: "modal.theme"
+- assertVisible: "Select Theme"
 - tapOn: "(Mystical|Mystique)"
 - waitForAnimationToEnd
 - assertVisible: "The Infinite Library"

@@ -14,6 +14,9 @@ export const TID = {
   Button: {
     AddDream: 'btn.addDream',
     RecordToggle: 'btn.recordToggle',
+    SwitchToText: 'btn.recording.switchToText',
+    SwitchToVoice: 'btn.recording.switchToVoice',
+    ClearDream: 'btn.recording.clearDream',
     SaveDream: 'btn.saveDream',
     NavigateJournal: 'btn.navigateJournal',
     NavigateSettings: 'btn.navigateSettings',
@@ -53,6 +56,13 @@ export const TID = {
     PaywallRestore: 'btn.paywall.restore',
     PaywallClose: 'btn.paywall.close',
     SubscriptionSettingsCta: 'btn.subscription.settingsCta',
+    EditMetadata: 'btn.editMetadata',
+    EditTranscript: 'btn.editTranscript',
+    DreamFavorite: 'btn.dream.favorite',
+    DreamShare: 'btn.dream.share',
+    DreamDelete: 'btn.dream.delete',
+    ShareCopy: 'btn.share.copy',
+    ShareClose: 'btn.share.close',
   },
   Tab: {
     Home: 'tab.home',

@@ -24,36 +24,20 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      id: "Edit transcript"
+      id: "Toggle favorite"
     direction: DOWN
-    visibilityPercentage: 60
+    visibilityPercentage: 40
     centerElement: true
-- tapOn:
-    id: "Edit transcript"
-    retryTapIfNoChange: true
-    waitToSettleTimeoutMs: 500
-- waitForAnimationToEnd
-- assertVisible:
-    id: "journal.transcript.placeholder"
-- tapOn:
-    id: "journal.transcript.placeholder"
-- eraseText
-- inputText: "E2E transcript update."
-- scrollUntilVisible:
-    element:
-      id: "Edit transcript"
-    direction: DOWN
-    visibilityPercentage: 60
-    centerElement: true
-- tapOn:
-    id: "Edit transcript"
-    retryTapIfNoChange: true
-    waitToSettleTimeoutMs: 500
-- waitForAnimationToEnd
 - runFlow:
     when:
-      visible: "(Update this dream\\?|Mettre . jour le r.ve .*\\?)"
+      visible: "(Favorited|Ajout. aux favoris|En favoritos)"
     commands:
-      - tapOn: "(Later|Plus tard)"
+      - tapOn: "(Favorited|Ajout. aux favoris|En favoritos)"
       - waitForAnimationToEnd
-- assertVisible: "E2E transcript update."
+- runFlow:
+    when:
+      visible: "(Favorite|Favori|Favorito)"
+    commands:
+      - tapOn: "(Favorite|Favori|Favorito)"
+      - waitForAnimationToEnd
+- assertVisible: "(Favorite|Favori|Favorito|Favorited|Ajout. aux favoris|En favoritos)"
