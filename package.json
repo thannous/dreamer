@@ -109,6 +109,7 @@
     "happy-dom": "^20.0.10",
     "jsdom": "^27.2.0",
     "madge": "^8.0.0",
+    "sharp": "^0.34.5",
     "supabase": "^2.54.11",
     "typescript": "~5.9.2",
     "vite-tsconfig-paths": "^5.1.1",
