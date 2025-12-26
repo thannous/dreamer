@@ -1,0 +1,96 @@
+url: "http://localhost:8081"
+---
+- launchApp
+- assertVisible: "(Whisper your dream into the ether.*|Chuchote)"
+- tapOn: "(See dream journal|Voir journal)"
+- waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres)"
+- waitForAnimationToEnd
+- assertVisible: "(Settings|Param.tres)"
+- runFlow:
+    when:
+      visible: "(Sign Out|Se d.connecter)"
+    commands:
+      - tapOn: "(Sign Out|Se d.connecter)"
+      - waitForAnimationToEnd
+- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
+- tapOn: "(Existing user|Utilisateur existant)"
+- waitForAnimationToEnd
+- assertVisible: "mock\\.existing@dreamer\\.app"
+- tapOn: "Journal"
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      text: "Ocean of Stars"
+    direction: DOWN
+- tapOn: "Ocean of Stars"
+- waitForAnimationToEnd
+- assertVisible: "Ocean of Stars"
+- scrollUntilVisible:
+    element:
+      id: "btn.exploreDream"
+    direction: DOWN
+    visibilityPercentage: 30
+    centerElement: true
+- tapOn:
+    id: "btn.exploreDream"
+    retryTapIfNoChange: true
+    waitToSettleTimeoutMs: 500
+- waitForAnimationToEnd
+- evalScript: ${output.chatReady = 0}
+- evalScript: ${output.chatAttempts = 0}
+- repeat:
+    while:
+      true: ${output.chatReady == 0 && output.chatAttempts < 3}
+    commands:
+      - evalScript: ${output.chatAttempts = output.chatAttempts + 1}
+      - runFlow:
+          when:
+            visible:
+              id: "chat.input.message"
+          commands:
+            - evalScript: ${output.chatReady = 1}
+      - runFlow:
+          when:
+            visible:
+              id: "btn.dreamCategory.freeChat"
+          commands:
+            - tapOn:
+                id: "btn.dreamCategory.freeChat"
+                retryTapIfNoChange: true
+                waitToSettleTimeoutMs: 500
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible:
+              id: "btn.dreamCategory.symbols"
+          commands:
+            - tapOn:
+                id: "btn.dreamCategory.symbols"
+                retryTapIfNoChange: true
+                waitToSettleTimeoutMs: 500
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible:
+              id: "btn.exploreDream"
+          commands:
+            - tapOn:
+                id: "btn.exploreDream"
+                retryTapIfNoChange: true
+                waitToSettleTimeoutMs: 500
+            - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: "chat.input.message"
+    direction: DOWN
+    visibilityPercentage: 30
+- assertVisible:
+    id: "chat.input.message"
+- tapOn:
+    id: "chat.input.message"
+- inputText: "Tell me more about the symbols"
+- tapOn:
+    id: "chat.button.send"
+- waitForAnimationToEnd
+- assertVisible: "Tell me more about the symbols"

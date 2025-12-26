@@ -915,6 +915,7 @@ export default function JournalDetailScreen() {
 
   const renderTranscriptBody = () => (
     <MotiView
+      testID={TID.Component.TranscriptCard}
       animate={{
         borderColor: isEditingTranscript ? colors.accent : 'transparent',
         borderWidth: isEditingTranscript ? 2 : 0,
@@ -942,6 +943,7 @@ export default function JournalDetailScreen() {
             setIsEditingTranscript(true);
           }}
           testID="btn.editTranscript"
+          accessibilityLabel="Edit transcript"
           disabled={isAnalysisLocked}
           style={({ pressed }) => [
             styles.transcriptEditButton,
@@ -973,6 +975,7 @@ export default function JournalDetailScreen() {
       </View>
       {isEditingTranscript ? (
         <TextInput
+          testID={TID.Input.DreamTranscript}
           style={[styles.transcriptInput, {
             color: colors.textPrimary,
             borderColor: colors.divider,
@@ -994,6 +997,7 @@ export default function JournalDetailScreen() {
 
   const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => (
     <MotiView
+      testID={TID.Component.MetadataCard}
       animate={{
         borderColor: isEditing ? colors.accent : (variant === 'floating' ? colors.divider : accentSurfaceBorderColor),
         borderWidth: isEditing ? 2 : (variant === 'floating' ? 1 : 0),
@@ -1030,6 +1034,7 @@ export default function JournalDetailScreen() {
 
       {isEditing ? (
         <TextInput
+          testID={TID.Input.DreamTitle}
           style={[styles.metadataTitleInput, { color: colors.textPrimary, borderColor: colors.divider }]}
           selectTextOnFocus
           value={editableTitle}
@@ -1127,6 +1132,7 @@ export default function JournalDetailScreen() {
       <Pressable
         onPress={isEditing ? handleSave : startMetadataEditing}
         testID="btn.editMetadata"
+        accessibilityLabel="Edit dream details"
         disabled={isAnalysisLocked}
         style={({ pressed }) => [
           styles.editButton,
