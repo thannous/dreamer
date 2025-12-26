@@ -23,7 +23,7 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Modal,
@@ -78,6 +78,7 @@ export default function JournalListScreen() {
   }, [showDateModal, showThemeModal]);
 
   const prefetchedImageUrisRef = useRef(new Set<string>());
+  const isNavigatingRef = useRef(false);
   // Perf: reuse this Set to avoid per-scroll allocations/GC on the JS thread from viewability callbacks.
   const candidateIndexesRef = useRef(new Set<number>());
   const viewabilityConfigRef = useRef({
@@ -138,6 +139,12 @@ export default function JournalListScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly]);
 
+  useFocusEffect(
+    useCallback(() => {
+      isNavigatingRef.current = false;
+    }, [])
+  );
+
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedTheme(null);
@@ -175,6 +182,10 @@ export default function JournalListScreen() {
   }, []);
 
   const handleDreamPress = useCallback((dream: DreamAnalysis) => {
+    if (isNavigatingRef.current) {
+      return;
+    }
+    isNavigatingRef.current = true;
     router.push(`/journal/${dream.id}`);
   }, []);
 
