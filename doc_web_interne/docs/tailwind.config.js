@@ -3,6 +3,7 @@ module.exports = {
   content: [
     '../../docs/**/*.html'
   ],
+  safelist: ['leading-normal', 'md:leading-normal'],
   theme: {
     extend: {
       colors: {
