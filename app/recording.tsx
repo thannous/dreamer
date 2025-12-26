@@ -7,7 +7,7 @@ import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { RECORDING } from '@/constants/appConfig';
+import { RECORDING, REFERENCE_IMAGES } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { QUOTAS } from '@/constants/limits';
@@ -557,9 +557,6 @@ export default function RecordingScreen() {
           if (categorizationResult.hasPerson === true) {
             subjectDetected = true;
             detectedType = 'person';
-          } else if (categorizationResult.hasAnimal === true) {
-            subjectDetected = true;
-            detectedType = 'animal';
           }
         } catch (err) {
           // Silently fail and proceed with default/derived values
@@ -1204,7 +1201,7 @@ export default function RecordingScreen() {
           <ReferenceImagePicker
             subjectType={detectedSubjectType}
             onImagesSelected={handleReferenceImagesSelected}
-            maxImages={2}
+            maxImages={REFERENCE_IMAGES.MAX_UPLOADS}
           />
         )}
       </StandardBottomSheet>

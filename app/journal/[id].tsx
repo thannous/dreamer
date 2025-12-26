@@ -5,6 +5,7 @@ import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker'
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
+import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
 import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
@@ -182,7 +183,7 @@ export default function JournalDetailScreen() {
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
-  const showReferenceActions = canUseReference && (dream?.hasPerson === true || dream?.hasAnimal === true);
+  const showReferenceActions = canUseReference && dream?.hasPerson === true;
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
     [dream, t]
@@ -1274,7 +1275,7 @@ export default function JournalDetailScreen() {
                                   {t('journal.detail.image.or')}
                                 </Text>
 
-                                {/* Add Person/Animal buttons when detected */}
+                                {/* Add Person button when detected */}
                                 {dream.hasPerson === true && (
                                   <Pressable
                                     onPress={() => handleAddSubject('person')}
@@ -1289,24 +1290,6 @@ export default function JournalDetailScreen() {
                                     <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
                                     <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
                                       {t('journal.detail.add_person')}
-                                    </Text>
-                                  </Pressable>
-                                )}
-
-                                {dream.hasAnimal === true && (
-                                  <Pressable
-                                    onPress={() => handleAddSubject('animal')}
-                                    disabled={isGeneratingWithReference || isAnalysisLocked}
-                                    style={[
-                                      styles.imageActionButton,
-                                      styles.imageActionButtonSecondary,
-                                      { borderColor: colors.divider },
-                                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                                    ]}
-                                  >
-                                    <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
-                                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                                      {t('journal.detail.add_animal')}
                                     </Text>
                                   </Pressable>
                                 )}
@@ -1366,7 +1349,7 @@ export default function JournalDetailScreen() {
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
 
-            {/* Reference Image Actions - Add Person/Animal */}
+            {/* Reference Image Actions - Add Person */}
             {dream.imageUrl && showReferenceActions && !isAnalysisLocked && canGenerateImage && (
               <View style={[styles.imageActionsRow, { marginBottom: 16 }]}>
                 {dream.hasPerson === true && (
@@ -1383,24 +1366,6 @@ export default function JournalDetailScreen() {
                     <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
                     <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
                       {t('journal.detail.add_person')}
-                    </Text>
-                  </Pressable>
-                )}
-
-                {dream.hasAnimal === true && (
-                  <Pressable
-                    onPress={() => handleAddSubject('animal')}
-                    disabled={isGeneratingWithReference || isAnalysisLocked}
-                    style={[
-                      styles.imageActionButton,
-                      styles.imageActionButtonSecondary,
-                      { borderColor: colors.divider },
-                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                    ]}
-                  >
-                    <Ionicons name="paw-outline" size={18} color={colors.textPrimary} />
-                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                      {t('journal.detail.add_animal')}
                     </Text>
                   </Pressable>
                 )}
@@ -1939,7 +1904,7 @@ export default function JournalDetailScreen() {
             <ReferenceImagePicker
               subjectType={referenceSubjectType}
               onImagesSelected={handleReferenceImagesSelected}
-              maxImages={2}
+              maxImages={REFERENCE_IMAGES.MAX_UPLOADS}
             />
           )}
         </StandardBottomSheet>

@@ -44,6 +44,11 @@ export const TIMEOUTS = {
   ANIMATION_SLOW_MS: 500,
 } as const;
 
+export const REFERENCE_IMAGES = {
+  /** Maximum number of reference images a user can upload */
+  MAX_UPLOADS: 1,
+} as const;
+
 export const DESKTOP_LAYOUT = {
   /** Breakpoint for desktop layout */
   BREAKPOINT: 1024,

@@ -620,7 +620,7 @@ const translations: Record<string, string> = {
     // Reference image picker
     'reference_image.title_person': 'Ajouter une photo de cette personne',
     'reference_image.title_animal': 'Ajouter une photo de cet animal',
-    'reference_image.subtitle': 'Ajoutez 1-2 photos de reference claires pour personnaliser l\'image du reve avec leur apparence.',
+    'reference_image.subtitle': 'Ajoutez 1 photo de reference claire pour personnaliser l\'image du reve avec son apparence.',
     'reference_image.selected_count': '{count}/{max} photo(s) selectionnee(s)',
     'reference_image.permission_title': 'Acces aux photos requis',
     'reference_image.permission_message': 'Veuillez autoriser l\'acces a votre bibliotheque photo pour ajouter des images de reference.',

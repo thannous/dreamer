@@ -13,6 +13,7 @@ import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
 
+import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -85,7 +86,7 @@ const isWeb = Platform.OS === 'web';
 export function ReferenceImagePicker({
   subjectType,
   onImagesSelected,
-  maxImages = 2,
+  maxImages = REFERENCE_IMAGES.MAX_UPLOADS,
 }: ReferenceImagePickerProps) {
   const { t } = useTranslation();
   const { colors, shadows } = useTheme();
