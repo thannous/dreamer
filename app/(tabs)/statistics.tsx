@@ -27,6 +27,7 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { splitLabelText } from '@/lib/pieLabelUtils';
 import type { DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
@@ -50,56 +51,6 @@ const MIN_LABEL_LINE = 14;
 const MAX_LABEL_LINE = 28;
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-
-const truncateLabelLine = (text: string, allowedLength = MAX_LABEL_CHARS_PER_LINE) => {
-  if (text.length <= allowedLength) return text;
-  return `${text.slice(0, Math.max(allowedLength - 1, 1))}…`;
-};
-
-const splitLabelText = (label: string): string[] => {
-  const sanitized = label.trim();
-  if (!sanitized) return [''];
-
-  const words = sanitized.split(/\s+/);
-  const lines: string[] = [];
-  let currentLine = '';
-
-  const pushLine = () => {
-    if (!currentLine) return;
-    lines.push(currentLine);
-    currentLine = '';
-  };
-
-  words.forEach((word) => {
-    const candidate = currentLine ? `${currentLine} ${word}` : word;
-    if (candidate.length <= MAX_LABEL_CHARS_PER_LINE) {
-      currentLine = candidate;
-      return;
-    }
-
-    pushLine();
-    currentLine = word.length > MAX_LABEL_CHARS_PER_LINE ? truncateLabelLine(word) : word;
-    if (lines.length >= MAX_LABEL_LINES) {
-      currentLine = truncateLabelLine(currentLine);
-    }
-  });
-
-  pushLine();
-
-  if (!lines.length) {
-    lines.push(truncateLabelLine(sanitized));
-  }
-
-  if (lines.length > MAX_LABEL_LINES) {
-    const limited = lines.slice(0, MAX_LABEL_LINES);
-    limited[MAX_LABEL_LINES - 1] = truncateLabelLine(
-      `${limited[MAX_LABEL_LINES - 1]} ${lines.slice(MAX_LABEL_LINES).join(' ')}`.trim(),
-    );
-    return limited;
-  }
-
-  return lines;
-};
 
 function getLabelHeight(lineCount: number) {
   const safeCount = Math.max(1, lineCount);
@@ -315,7 +266,10 @@ export default function StatisticsScreen() {
   const pieChartData: DreamPieDataItem[] = useMemo(() => 
     topDreamTypes.map((item, index) => {
       const typeLabel = getDreamTypeLabel(item.type as DreamType, t) ?? item.type;
-      const typeLines = splitLabelText(typeLabel);
+      const typeLines = splitLabelText(typeLabel, {
+        maxCharsPerLine: MAX_LABEL_CHARS_PER_LINE,
+        maxLines: MAX_LABEL_LINES,
+      });
       const labelHeight = getLabelHeight(typeLines.length);
 
       return {

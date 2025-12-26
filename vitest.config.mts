@@ -15,6 +15,7 @@ export default defineConfig({
     alias: [
       { find: /^react-native$/, replacement: path.resolve(__dirname, 'tests/react-native-stub.ts') },
       { find: /^@expo\/vector-icons$/, replacement: path.resolve(__dirname, 'tests/expo-vector-icons-stub.ts') },
+      { find: /^expo-linear-gradient$/, replacement: path.resolve(__dirname, 'tests/expo-linear-gradient-stub.ts') },
     ],
   },
   test: {

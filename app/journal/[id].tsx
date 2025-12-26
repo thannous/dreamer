@@ -24,6 +24,7 @@ import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
+import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { MotiView } from '@/lib/moti';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
@@ -77,30 +78,6 @@ const getShareNavigator = (): ShareNavigator | undefined => {
     return undefined;
   }
   return navigator as ShareNavigator;
-};
-
-const SHARE_IMAGE_FALLBACK_EXTENSION = 'jpg';
-
-const getFileExtensionFromUrl = (url?: string): string => {
-  if (!url) return SHARE_IMAGE_FALLBACK_EXTENSION;
-  const cleanUrl = url.split('?')[0] ?? '';
-  const match = cleanUrl.match(/\.([a-z0-9]+)$/i);
-  if (!match) return SHARE_IMAGE_FALLBACK_EXTENSION;
-  const ext = match[1].toLowerCase();
-  if (ext === 'jpeg') return 'jpg';
-  return ext;
-};
-
-const getMimeTypeFromExtension = (ext: string): string => {
-  switch (ext) {
-    case 'png':
-      return 'image/png';
-    case 'webp':
-      return 'image/webp';
-    case 'jpg':
-    default:
-      return 'image/jpeg';
-  }
 };
 
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];

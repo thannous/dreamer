@@ -14,30 +14,11 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
+import { calculateAnnualDiscount, sortPackages } from '@/lib/paywallUtils';
 import { createScopedLogger } from '@/lib/logger';
 import { TID } from '@/lib/testIDs';
-import type { PurchasePackage } from '@/lib/types';
 
 const log = createScopedLogger('[Paywall]');
-
-function sortPackages(packages: PurchasePackage[]): PurchasePackage[] {
-  return [...packages].sort((a, b) => {
-    if (a.interval === b.interval) return 0;
-    if (a.interval === 'monthly') return -1;
-    return 1;
-  });
-}
-
-function calculateAnnualDiscount(packages: PurchasePackage[]): number | null {
-  const monthly = packages.find((p) => p.interval === 'monthly');
-  const annual = packages.find((p) => p.interval === 'annual');
-  if (!monthly || !annual || monthly.price <= 0 || annual.price <= 0) {
-    return null;
-  }
-  const yearlyFromMonthly = monthly.price * 12;
-  const savings = ((yearlyFromMonthly - annual.price) / yearlyFromMonthly) * 100;
-  return Math.round(savings);
-}
 
 export default function PaywallScreen() {
   const { colors } = useTheme();
@@ -127,6 +108,7 @@ export default function PaywallScreen() {
     if (!expiryDate) return null;
     try {
       const date = new Date(expiryDate);
+      if (Number.isNaN(date.getTime())) return null;
       const dateStr = date.toLocaleDateString(undefined, {
         day: 'numeric',
         month: 'long',
