@@ -9,3 +9,21 @@
 /en/guides/index.html /en/guides/ 301
 /fr/guides/index.html /fr/guides/ 301
 /es/guides/index.html /es/guides/ 301
+
+# Normalize directory paths without trailing slash
+/fr/blog /fr/blog/ 301
+/en/blog /en/blog/ 301
+/es/blog /es/blog/ 301
+/fr/guides /fr/guides/ 301
+/en/guides /en/guides/ 301
+/es/guides /es/guides/ 301
+
+# Pretty URLs: serve extensionless pages by rewriting to underlying *.html files
+# (keeps canonicals/hreflangs clean while still serving static HTML files)
+/fr/*/ /fr/:splat/index.html 200
+/en/*/ /en/:splat/index.html 200
+/es/*/ /es/:splat/index.html 200
+
+/fr/* /fr/:splat.html 200
+/en/* /en/:splat.html 200
+/es/* /es/:splat.html 200
