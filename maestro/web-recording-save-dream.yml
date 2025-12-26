@@ -19,16 +19,23 @@ url: "http://localhost:8081"
 - assertVisible: "mock\\.existing@dreamer\\.app"
 - tapOn: "(Home|Accueil)"
 - waitForAnimationToEnd
-- tapOn:
-    id: "btn.addDream"
+- tapOn: "(Add New Dream|Ajouter un r.ve|Agregar sue.o)"
 - waitForAnimationToEnd
 - assertVisible:
     id: "screen.recording"
+- runFlow:
+    when:
+      visible:
+        id: "btn.recording.switchToText"
+    commands:
+      - tapOn:
+          id: "btn.recording.switchToText"
+      - waitForAnimationToEnd
 - tapOn:
-    id: "input.dreamTranscript"
+    id: "(Dream transcript input|Zone de texte du r.ve|Entrada del sue.o)"
 - inputText: "I walked through a quiet garden under a silver moon."
 - tapOn:
-    id: "btn.saveDream"
+    id: "(Save this dream to your journal|Enregistrer ce r.ve dans votre journal|Guardar este sue.o en tu diario)"
 - waitForAnimationToEnd
 - assertVisible:
     id: "text.analyzePromptTitle"

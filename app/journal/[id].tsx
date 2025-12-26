@@ -943,7 +943,7 @@ export default function JournalDetailScreen() {
             setEditableTranscript(dream.transcript || '');
             setIsEditingTranscript(true);
           }}
-          testID="btn.editTranscript"
+          testID={TID.Button.EditTranscript}
           accessibilityLabel="Edit transcript"
           disabled={isAnalysisLocked}
           style={({ pressed }) => [
@@ -986,6 +986,7 @@ export default function JournalDetailScreen() {
           value={editableTranscript}
           onChangeText={setEditableTranscript}
           placeholder={t('journal.transcript.placeholder') || 'Edit transcript...'}
+          accessibilityLabel={t('journal.transcript.placeholder') || 'Edit transcript...'}
           placeholderTextColor={colors.textSecondary}
           textAlignVertical="top"
           autoFocus
@@ -1036,11 +1037,13 @@ export default function JournalDetailScreen() {
       {isEditing ? (
         <TextInput
           testID={TID.Input.DreamTitle}
+          nativeID={TID.Input.DreamTitle}
           style={[styles.metadataTitleInput, { color: colors.textPrimary, borderColor: colors.divider }]}
           selectTextOnFocus
           value={editableTitle}
           onChangeText={setEditableTitle}
           placeholder={t('journal.detail.title_placeholder')}
+          accessibilityLabel={t('journal.detail.title_placeholder')}
           placeholderTextColor={colors.textSecondary}
         />
       ) : (
@@ -1132,7 +1135,7 @@ export default function JournalDetailScreen() {
 
       <Pressable
         onPress={isEditing ? handleSave : startMetadataEditing}
-        testID="btn.editMetadata"
+        testID={TID.Button.EditMetadata}
         accessibilityLabel="Edit dream details"
         disabled={isAnalysisLocked}
         style={({ pressed }) => [
@@ -1449,6 +1452,8 @@ export default function JournalDetailScreen() {
               <Pressable
                 onPress={handleToggleFavorite}
                 disabled={isAnalysisLocked}
+                testID={TID.Button.DreamFavorite}
+                accessibilityLabel="Toggle favorite"
                 style={[
                   styles.actionButton,
                   shadows.sm,
@@ -1476,6 +1481,8 @@ export default function JournalDetailScreen() {
               <Pressable
                 onPress={onShare}
                 disabled={isSharing || isAnalysisLocked}
+                testID={TID.Button.DreamShare}
+                accessibilityLabel="Share dream"
                 style={[
                   styles.actionButton,
                   shadows.sm,
@@ -1518,6 +1525,8 @@ export default function JournalDetailScreen() {
               style={styles.deleteLink}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               accessibilityRole="link"
+              testID={TID.Button.DreamDelete}
+              accessibilityLabel="Delete dream"
             >
               <Ionicons name="trash-outline" size={18} color="#EF4444" />
               <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
@@ -1851,6 +1860,8 @@ export default function JournalDetailScreen() {
                 <Pressable
                   style={[styles.shareCopyButton, { backgroundColor: colors.accent }]}
                   onPress={handleCopyShareText}
+                  testID={TID.Button.ShareCopy}
+                  accessibilityLabel="Copy share text"
                 >
                   <Ionicons
                     name={shareCopyStatus === 'success' ? 'checkmark' : 'copy-outline'}
@@ -1874,6 +1885,8 @@ export default function JournalDetailScreen() {
               <Pressable
                 style={[styles.shareCloseButton, { borderColor: colors.divider }]}
                 onPress={closeShareModal}
+                testID={TID.Button.ShareClose}
+                accessibilityLabel="Close share modal"
               >
                 <Text style={[styles.shareCloseButtonText, { color: colors.textSecondary }]}
                 >

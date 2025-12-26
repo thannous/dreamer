@@ -24,24 +24,55 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      text: "The Infinite Library"
+      id: "Edit dream details"
     direction: DOWN
-    visibilityPercentage: 30
+    visibilityPercentage: 20
+    centerElement: true
+- tapOn:
+    id: "Edit dream details"
+    point: "50%,50%"
+    retryTapIfNoChange: true
+    waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
-- tapOn: "Edit dream details"
-- waitForAnimationToEnd
-- assertVisible:
-    id: "input.dreamTitle"
+- scrollUntilVisible:
+    element:
+      id: "input.dreamTitle"
+    direction: UP
+    visibilityPercentage: 40
+    centerElement: true
 - tapOn:
     id: "input.dreamTitle"
 - eraseText
 - inputText: "The Infinite Archive"
 - scrollUntilVisible:
     element:
-      text: "The Infinite Archive"
-    direction: DOWN
-    visibilityPercentage: 30
-- waitForAnimationToEnd
-- tapOn: "Edit dream details"
+      id: "Edit dream details"
+    direction: UP
+    visibilityPercentage: 20
+    centerElement: true
+- tapOn:
+    id: "Edit dream details"
+    point: "50%,50%"
+    retryTapIfNoChange: true
+    waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
 - assertVisible: "The Infinite Archive"
+- tapOn:
+    id: "btn.navigateJournal"
+- waitForAnimationToEnd
+- assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"
+- tapOn: "(Settings|Param.tres)"
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "(Sign Out|Se d.connecter)"
+    commands:
+      - tapOn: "(Sign Out|Se d.connecter)"
+      - waitForAnimationToEnd
+- assertVisible: "(Quick sign-in.*|Connexion rapide.*)"
+- tapOn: "(Existing user|Utilisateur existant)"
+- waitForAnimationToEnd
+- assertVisible: "mock\\.existing@dreamer\\.app"
+- tapOn: "Journal"
+- waitForAnimationToEnd
+- assertVisible: "The Infinite Library"

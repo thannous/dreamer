@@ -19,41 +19,21 @@ url: "http://localhost:8081"
 - assertVisible: "mock\\.existing@dreamer\\.app"
 - tapOn: "Journal"
 - waitForAnimationToEnd
-- tapOn: "The Infinite Library"
+- tapOn: "Garden in the Clouds"
 - waitForAnimationToEnd
-- assertVisible: "The Infinite Library"
+- assertVisible: "Garden in the Clouds"
 - scrollUntilVisible:
     element:
-      id: "Edit transcript"
+      id: "Delete dream"
     direction: DOWN
     visibilityPercentage: 60
     centerElement: true
 - tapOn:
-    id: "Edit transcript"
+    id: "Delete dream"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
-- assertVisible:
-    id: "journal.transcript.placeholder"
-- tapOn:
-    id: "journal.transcript.placeholder"
-- eraseText
-- inputText: "E2E transcript update."
-- scrollUntilVisible:
-    element:
-      id: "Edit transcript"
-    direction: DOWN
-    visibilityPercentage: 60
-    centerElement: true
-- tapOn:
-    id: "Edit transcript"
-    retryTapIfNoChange: true
-    waitToSettleTimeoutMs: 500
+- assertVisible: "(Delete dream|Delete Dream|Supprimer le r.ve|Eliminar sue.o)"
+- tapOn: "(Delete|Supprimer|Eliminar)"
 - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: "(Update this dream\\?|Mettre . jour le r.ve .*\\?)"
-    commands:
-      - tapOn: "(Later|Plus tard)"
-      - waitForAnimationToEnd
-- assertVisible: "E2E transcript update."
+- assertVisible: "(Dream Journey|Voyage onirique|Viaje on.rico)"

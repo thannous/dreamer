@@ -24,36 +24,25 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      id: "Edit transcript"
+      id: "Share dream"
     direction: DOWN
     visibilityPercentage: 60
     centerElement: true
 - tapOn:
-    id: "Edit transcript"
+    id: "Share dream"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
-- assertVisible:
-    id: "journal.transcript.placeholder"
-- tapOn:
-    id: "journal.transcript.placeholder"
-- eraseText
-- inputText: "E2E transcript update."
-- scrollUntilVisible:
-    element:
-      id: "Edit transcript"
-    direction: DOWN
-    visibilityPercentage: 60
-    centerElement: true
-- tapOn:
-    id: "Edit transcript"
-    retryTapIfNoChange: true
-    waitToSettleTimeoutMs: 500
-- waitForAnimationToEnd
+- assertVisible: "(Share your dream|Partager ton r.ve|Comparte tu sue.o)"
 - runFlow:
     when:
-      visible: "(Update this dream\\?|Mettre . jour le r.ve .*\\?)"
+      visible:
+        id: "Copy share text"
     commands:
-      - tapOn: "(Later|Plus tard)"
+      - tapOn:
+          id: "Copy share text"
       - waitForAnimationToEnd
-- assertVisible: "E2E transcript update."
+      - assertVisible: "(Copied!|Copi.!|Copiado)"
+- tapOn:
+    id: "Close share modal"
+- waitForAnimationToEnd

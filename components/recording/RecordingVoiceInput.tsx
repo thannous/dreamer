@@ -75,7 +75,7 @@ export function RecordingVoiceInput({
         <Pressable
           onPress={onSwitchToText}
           style={styles.modeSwitchButton}
-          testID="button-switch-to-text"
+          testID={TID.Button.SwitchToText}
         >
           <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
             {switchButtonLabel + ' \u270E'}

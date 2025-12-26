@@ -63,7 +63,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
           <Pressable
             onPress={onSwitchToVoice}
             style={[styles.modeSwitchButton, styles.modeSwitchVoiceButton]}
-            testID="button-switch-to-voice"
+            testID={TID.Button.SwitchToVoice}
           >
             <Ionicons
               name="mic-outline"
@@ -84,7 +84,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
                 styles.modeSwitchVoiceButton,
                 !value.trim() && styles.hiddenButton,
               ]}
-              testID="button-clear-dream"
+              testID={TID.Button.ClearDream}
               disabled={disabled || !value.trim()}
               accessibilityElementsHidden={!value.trim()}
               importantForAccessibility={value.trim() ? 'yes' : 'no-hide-descendants'}

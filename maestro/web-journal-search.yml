@@ -20,11 +20,9 @@ url: "http://localhost:8081"
 - tapOn: "Journal"
 - waitForAnimationToEnd
 - assertVisible: "Dream Journey"
-- tapOn:
-    id: "input.searchDreams"
+- assertVisible: "(Search your dream journey.*|Recherchez votre voyage onirique.*)"
+- tapOn: "(Search your dream journey.*|Recherchez votre voyage onirique.*)"
 - inputText: "Ocean"
 - assertVisible: "Ocean of Stars"
-- tapOn:
-    id: "input.searchDreams"
 - eraseText
 - assertVisible: "The Infinite Library"
