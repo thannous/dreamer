@@ -53,33 +53,54 @@ function findHtmlFiles(dir, baseDir = '') {
  * Normalize URLs to avoid index.html duplicates
  */
 function normalizeUrl(url) {
-  // Convert trailing /index.html to just /
-  return url.replace(/\/index\.html$/, '/');
+  return url
+    // Convert trailing /index.html to just /
+    .replace(/\/index\.html$/, '/')
+    // Convert trailing .html to clean URL
+    .replace(/\.html$/, '');
 }
 
 /**
- * Extract hreflang links from HTML file
+ * Extract hreflang links from HTML content
  */
-function extractHreflangs(filePath) {
-  try {
-    const content = fs.readFileSync(filePath, 'utf8');
+function extractHreflangsFromContent(content) {
+  // Match hreflang link tags (support single or double quotes)
+  const hreflangRegex = /<link\s+rel=(["'])alternate\1\s+hreflang=(["'])([^"']+)\2\s+href=(["'])([^"']+)\4/gi;
+  const hreflangs = {};
+  let match;
 
-    // Match hreflang link tags
-    const hreflangRegex = /<link\s+rel="alternate"\s+hreflang="([^"]+)"\s+href="([^"]+)"/g;
-    const hreflangs = {};
-    let match;
-
-    while ((match = hreflangRegex.exec(content)) !== null) {
-      const [, hreflang, href] = match;
-      // Normalize the href to avoid index.html duplicates
-      hreflangs[hreflang] = normalizeUrl(href);
-    }
-
-    return hreflangs;
-  } catch (error) {
-    console.error(`Error reading file ${filePath}:`, error.message);
-    return {};
+  while ((match = hreflangRegex.exec(content)) !== null) {
+    const [, , , hreflang, , href] = match;
+    hreflangs[hreflang] = normalizeUrl(href);
   }
+
+  return hreflangs;
+}
+
+/**
+ * Extract canonical URL from HTML content
+ */
+function extractCanonicalFromContent(content) {
+  const canonicalRegex = /<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2/i;
+  const match = content.match(canonicalRegex);
+  return match ? normalizeUrl(match[3]) : null;
+}
+
+/**
+ * Determine whether a page is indexable (so it can appear in sitemap)
+ */
+function isIndexable(content) {
+  // Exclude meta refresh redirects (typically non-canonical stubs)
+  if (/<meta\s+http-equiv=(["'])refresh\1/i.test(content)) {
+    return false;
+  }
+
+  const robotsMatch = content.match(/<meta\s+name=(["'])robots\1\s+content=(["'])([^"']+)\2/i);
+  if (!robotsMatch) {
+    return true;
+  }
+
+  return !robotsMatch[3].toLowerCase().includes('noindex');
 }
 
 /**
@@ -90,13 +111,15 @@ function pathToUrl(filePath) {
   let urlPath = filePath.replace(/\\/g, '/');
   // Convert index.html to directory path (e.g., en/index.html → en/)
   urlPath = urlPath.replace(/index\.html$/, '');
+  // Convert other .html pages to clean URLs (e.g., en/privacy-policy.html → en/privacy-policy)
+  urlPath = urlPath.replace(/\.html$/, '');
   // Ensure we don't have double slashes
   urlPath = urlPath.replace(/\/+/g, '/');
   // Remove trailing slash for consistency, then it becomes the root
   if (urlPath === '/' || urlPath === '') {
     urlPath = '';
   }
-  return `${DOMAIN}/${urlPath}`;
+  return normalizeUrl(`${DOMAIN}/${urlPath}`);
 }
 
 /**
@@ -104,16 +127,33 @@ function pathToUrl(filePath) {
  */
 function groupUrlsByContent(files) {
   const urlToHreflangs = new Map();
-  const processedUrls = new Set();
 
   for (const file of files) {
     const fullPath = path.join(DOCS_DIR, file);
-    const hreflangs = extractHreflangs(fullPath);
-    const url = pathToUrl(file);
+    let content = '';
 
+    try {
+      content = fs.readFileSync(fullPath, 'utf8');
+    } catch (error) {
+      console.error(`Error reading file ${fullPath}:`, error.message);
+      continue;
+    }
+
+    if (!isIndexable(content)) {
+      continue;
+    }
+
+    const urlFromPath = pathToUrl(file);
+    const canonical = extractCanonicalFromContent(content);
+
+    // Only include canonical pages (sitemap, canonical and hreflang must tell the same story)
+    if (!canonical || canonical !== urlFromPath) {
+      continue;
+    }
+
+    const hreflangs = extractHreflangsFromContent(content);
     if (hreflangs && Object.keys(hreflangs).length > 0) {
-      // Store the hreflang data we found
-      urlToHreflangs.set(url, hreflangs);
+      urlToHreflangs.set(canonical, hreflangs);
     }
   }
 

@@ -15,6 +15,7 @@
     "web": "expo start --web",
     "build:web": "npx expo export -p web && npx workbox-cli generateSW workbox-config.js",
     "generate-sitemap": "node ./scripts/generate-sitemap-v2.js",
+    "validate-seo": "node ./scripts/validate-i18n-seo.js",
     "fix-seo-urls": "node ./scripts/fix-seo-html-extensions.js",
     "lint": "expo lint",
     "typecheck:app": "tsc --noEmit",
