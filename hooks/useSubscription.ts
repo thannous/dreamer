@@ -4,6 +4,7 @@ import type { User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 import Purchases from 'react-native-purchases';
 import { useAuth } from '@/context/AuthContext';
+import { isMockModeEnabled } from '@/lib/env';
 import { isEntitlementExpired, mapStatus as mapStatusFromInfo } from '@/lib/revenuecat';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
@@ -132,6 +133,7 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   const [processing, setProcessing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const isMockMode = isMockModeEnabled();
   const requiresAuth = !user?.id;
   // ✅ FIX: Track reconciliation attempts to enforce max attempt limit
   const reconciliationAttemptsRef = useRef(0);
@@ -209,6 +211,9 @@ export function useSubscription(options?: UseSubscriptionOptions) {
   }, []);
 
   const syncSubscription = useCallback(async (source: string) => {
+    if (isMockMode) {
+      return;
+    }
     if (!userId) {
       lastSyncAttemptRef.current = null;
       return;
@@ -230,7 +235,7 @@ export function useSubscription(options?: UseSubscriptionOptions) {
         console.warn('[useSubscription] Subscription sync failed', err);
       }
     }
-  }, [userId]);
+  }, [isMockMode, userId]);
 
   const syncOnStatusChange = useCallback((source: string, nextStatus: SubscriptionStatus | null) => {
     if (!userId || !nextStatus || requiresAuth) return;

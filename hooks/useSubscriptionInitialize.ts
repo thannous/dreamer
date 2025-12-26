@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
+import { isMockModeEnabled } from '@/lib/env';
 import { createScopedLogger } from '@/lib/logger';
 import { initializeSubscription, isSubscriptionInitialized } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
@@ -11,6 +12,7 @@ export function useSubscriptionInitialize() {
   const { user, refreshUser } = useAuth();
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const isMockMode = isMockModeEnabled();
 
   // ✅ FIX: Store refreshUser in a ref to break the circular dependency
   // Prevents re-triggering when refreshUser callback is recreated
@@ -53,7 +55,7 @@ export function useSubscriptionInitialize() {
         await initializeSubscription(nextUserId);
         log.debug('Subscription SDK initialized', { userId: nextUserId });
 
-        if (nextUserId && syncedUserIdRef.current !== nextUserId) {
+        if (!isMockMode && nextUserId && syncedUserIdRef.current !== nextUserId) {
           try {
             await syncSubscriptionFromServer('app_launch');
             log.debug('Subscription sync requested', { userId: nextUserId });

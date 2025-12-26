@@ -440,7 +440,7 @@ export default function DreamChatScreen() {
       // ✅ GUARD: Ensure dream is synced before allowing chat
       // If remoteId is missing, attempt auto-sync or show error
       // Note: Guests have local-only dreams and don't require sync
-      if (user && !dream.remoteId) {
+      if (user && !dream.remoteId && !isMockMode) {
         if (hasNetwork) {
           // Auto-sync the dream with idempotence
           setIsLoading(true);
