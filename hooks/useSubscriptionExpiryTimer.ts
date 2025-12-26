@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import Purchases from 'react-native-purchases';
 
 import type { SubscriptionStatus } from '@/lib/types';
+import { isMockModeEnabled } from '@/lib/env';
 import { getSubscriptionStatus, refreshSubscriptionStatus } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 
@@ -60,6 +61,7 @@ function scheduleRetry() {
 async function refreshFromTimer(source: string, expiryKey: string | null) {
   if (refreshInFlight) return;
   refreshInFlight = true;
+  const isMockMode = isMockModeEnabled();
 
   try {
     try {
@@ -80,7 +82,7 @@ async function refreshFromTimer(source: string, expiryKey: string | null) {
       notifyCallbacks(nextStatus);
     }
 
-    if (latestUserId) {
+    if (latestUserId && !isMockMode) {
       try {
         await syncSubscriptionFromServer(source);
       } catch (err) {
