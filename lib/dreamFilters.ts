@@ -14,9 +14,10 @@ export function filterBySearch(
   query: string,
   options: FilterBySearchOptions = {},
 ): DreamAnalysis[] {
-  if (!query.trim()) return dreams;
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) return dreams;
 
-  const normalizedQuery = query.toLowerCase();
+  const normalizedQuery = trimmedQuery.toLowerCase();
 
   return dreams.filter((dream) => matchesSearch(dream, normalizedQuery, options));
 }
@@ -30,6 +31,8 @@ function matchesSearch(
   normalizedQuery: string,
   options: FilterBySearchOptions = {}
 ): boolean {
+  const dreamTypeLabel = options.dreamTypeLabelResolver?.(dream.dreamType);
+
   // Check title (most likely match)
   if (dream.title && dream.title.toLowerCase().includes(normalizedQuery)) return true;
 
@@ -43,12 +46,21 @@ function matchesSearch(
   if (dream.dreamType && dream.dreamType.toLowerCase().includes(normalizedQuery)) return true;
 
   // Check localized dream type label
-  if (options.dreamTypeLabelResolver) {
-    const dreamTypeLabel = options.dreamTypeLabelResolver(dream.dreamType);
-    if (dreamTypeLabel && dreamTypeLabel.toLowerCase().includes(normalizedQuery)) return true;
-  }
+  if (dreamTypeLabel && dreamTypeLabel.toLowerCase().includes(normalizedQuery)) return true;
 
-  return false;
+  // Preserve cross-field matching by checking the joined text
+  const searchableText = [
+    dream.title,
+    dream.transcript,
+    dream.interpretation,
+    dream.dreamType,
+    dreamTypeLabel,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .join(' ')
+    .toLowerCase();
+
+  return searchableText.includes(normalizedQuery);
 }
 
 /**
@@ -148,8 +160,9 @@ export function applyFilters(
     searchQuery,
   } = filters;
 
-  const hasSearchQuery = Boolean(searchQuery && searchQuery.trim());
-  const normalizedQuery = hasSearchQuery ? searchQuery!.toLowerCase() : '';
+  const trimmedQuery = searchQuery?.trim() ?? '';
+  const hasSearchQuery = Boolean(trimmedQuery);
+  const normalizedQuery = hasSearchQuery ? trimmedQuery.toLowerCase() : '';
   const startTime = startDate ? startDate.getTime() : null;
   const endOfDayTime = endDate ? new Date(endDate).setHours(23, 59, 59, 999) : null;
 
