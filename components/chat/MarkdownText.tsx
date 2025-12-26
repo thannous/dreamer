@@ -34,6 +34,22 @@ const getScheme = (url: string): string | null => {
 };
 
 /**
+ * Security: never log full user-provided URLs in production.
+ * They can contain sensitive query params (auth tokens), emails, or phone numbers.
+ */
+function getSafeUrlForLog(url: string): string {
+  const scheme = getScheme(url) ?? 'unknown';
+
+  if (scheme === 'http' || scheme === 'https') {
+    const match = /^https?:\/\/([^/?#]+)/i.exec(url.trim());
+    const host = match?.[1]?.split('@').pop();
+    return host ? `${scheme}://${host}/…` : `${scheme}://[redacted]`;
+  }
+
+  return `${scheme}:[redacted]`;
+}
+
+/**
  * Check if URL scheme is allowed
  */
 function isAllowedScheme(url: string): boolean {
@@ -80,22 +96,24 @@ const MarkdownTextComponent: React.FC<MarkdownTextProps> = ({ children, style })
     (url: string) => {
       // Validate URL scheme
       if (!isAllowedScheme(url)) {
-        console.warn(`[MarkdownText] Blocked unsafe URL scheme: ${url}`);
+        const scheme = getScheme(url) ?? 'unknown';
+        console.warn(`[MarkdownText] Blocked unsafe URL scheme: ${scheme}`);
         return false;
       }
 
       // Open URL asynchronously without blocking
       (async () => {
+        const urlForLog = __DEV__ ? url : getSafeUrlForLog(url);
         try {
           // Check if the device can open this URL
           const canOpen = await Linking.canOpenURL(url);
           if (canOpen) {
             await Linking.openURL(url);
           } else {
-            console.warn(`[MarkdownText] Device cannot open URL: ${url}`);
+            console.warn(`[MarkdownText] Device cannot open URL: ${urlForLog}`);
           }
         } catch (error) {
-          console.warn(`[MarkdownText] Error opening URL: ${url}`, error);
+          console.warn(`[MarkdownText] Error opening URL: ${urlForLog}`, error);
         }
       })();
 
