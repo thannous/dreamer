@@ -8,6 +8,7 @@ import {
   getRevenueCatApiKey,
   getTierUpdatedAt,
   normalizeTier,
+  RevenueCatHttpError,
 } from '../services/revenuecat.ts';
 import { inferTierFromSubscriber } from '../../../lib/revenuecatSubscriber.ts';
 
@@ -40,16 +41,61 @@ export async function handleSubscriptionSync(ctx: ApiContext): Promise<Response>
   const body = (await req.json().catch(() => ({}))) as { source?: string };
   const source = typeof body?.source === 'string' && body.source.trim() ? body.source.trim() : 'app_launch';
 
-  let subscriber;
+  let apiKey: string;
   try {
-    subscriber = await fetchRevenueCatSubscriber(user.id, getRevenueCatApiKey());
+    apiKey = getRevenueCatApiKey();
   } catch (error) {
-    console.error('[api] /subscription/sync RevenueCat lookup failed', {
+    console.error('[api] /subscription/sync RevenueCat not configured', {
       userId: user.id,
       message: (error as Error).message,
     });
-    return new Response(JSON.stringify({ error: 'RevenueCat lookup failed' }), {
-      status: 502,
+    return new Response(JSON.stringify({ error: 'RevenueCat not configured' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+
+  let subscriber;
+  try {
+    subscriber = await fetchRevenueCatSubscriber(user.id, apiKey);
+  } catch (error) {
+    const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
+    const status = isRevenueCatHttpError ? error.status : null;
+
+    const truncatedBodyText = isRevenueCatHttpError ? error.bodyText.slice(0, 500) : null;
+    const upstreamStatus = !isRevenueCatHttpError
+      ? 503
+      : status === 401 || status === 403
+        ? 500
+        : status === 404
+          ? 200
+          : status === 429 || status >= 500
+            ? 503
+            : 502;
+
+    console.error('[api] /subscription/sync RevenueCat lookup failed', {
+      userId: user.id,
+      message: (error as Error).message,
+      status,
+      bodyText: truncatedBodyText,
+    });
+
+    if (upstreamStatus === 200) {
+      return new Response(JSON.stringify({ ok: true, skipped: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const clientError =
+      upstreamStatus === 500
+        ? 'RevenueCat authentication failed'
+        : upstreamStatus === 503
+          ? 'RevenueCat temporarily unavailable'
+          : 'RevenueCat lookup failed';
+
+    return new Response(JSON.stringify({ error: clientError }), {
+      status: upstreamStatus,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
@@ -124,6 +170,19 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
     });
   }
 
+  let apiKey: string;
+  try {
+    apiKey = getRevenueCatApiKey();
+  } catch (error) {
+    console.error('[api] /subscription/reconcile RevenueCat not configured', {
+      message: (error as Error).message,
+    });
+    return new Response(JSON.stringify({ error: 'RevenueCat not configured' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+
   const body = (await req.json().catch(() => ({}))) as {
     batchSize?: number;
     maxTotal?: number;
@@ -150,7 +209,6 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  const apiKey = getRevenueCatApiKey();
   const startedAt = Date.now();
   let processed = 0;
   let updated = 0;
@@ -196,10 +254,13 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
       try {
         subscriber = await fetchRevenueCatSubscriber(row.id, apiKey);
       } catch (error) {
+        const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
         errors += 1;
         console.warn('[api] /subscription/reconcile RevenueCat lookup failed', {
           userId: row.id,
           message: (error as Error).message,
+          status: isRevenueCatHttpError ? error.status : null,
+          bodyText: isRevenueCatHttpError ? error.bodyText.slice(0, 200) : null,
         });
         continue;
       }

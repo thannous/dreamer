@@ -11,10 +11,31 @@ function getOptionalEnv(name: string): string | null {
   return value.trim();
 }
 
+export class RevenueCatHttpError extends Error {
+  public readonly name = 'RevenueCatHttpError';
+  public readonly status: number;
+  public readonly statusText: string;
+  public readonly url: string;
+  public readonly bodyText: string;
+
+  constructor(options: { status: number; statusText: string; url: string; bodyText: string }) {
+    super(`RevenueCat API failed: HTTP ${options.status} ${options.statusText}`);
+    this.status = options.status;
+    this.statusText = options.statusText;
+    this.url = options.url;
+    this.bodyText = options.bodyText;
+  }
+}
+
 export function getRevenueCatApiKey(): string {
-  const apiKey = getOptionalEnv('REVENUECAT_SECRET_API_KEY');
+  const apiKey =
+    getOptionalEnv('REVENUECAT_SECRET_API_KEY') ??
+    getOptionalEnv('REVENUECAT_API_KEY') ??
+    getOptionalEnv('REVENUECAT_SECRET_KEY');
   if (!apiKey) {
-    throw new Error('Missing REVENUECAT_SECRET_API_KEY');
+    throw new Error(
+      'Missing REVENUECAT_SECRET_API_KEY (or REVENUECAT_API_KEY / REVENUECAT_SECRET_KEY)'
+    );
   }
   return apiKey;
 }
@@ -83,7 +104,12 @@ export async function fetchRevenueCatSubscriber(
 
     if (!res.ok) {
       const bodyText = await res.text().catch(() => '');
-      throw new Error(`RevenueCat API failed: HTTP ${res.status} ${res.statusText}: ${bodyText}`);
+      throw new RevenueCatHttpError({
+        status: res.status,
+        statusText: res.statusText,
+        url,
+        bodyText,
+      });
     }
 
     return (await res.json()) as RevenueCatV1SubscriberResponse;
