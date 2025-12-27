@@ -2,11 +2,35 @@
  * Image utility functions for optimizing image loading and display
  */
 
+type DreamImageVersionSource = {
+  imageUpdatedAt?: number | null;
+  analysisRequestId?: string | null;
+  analyzedAt?: number | null;
+  id?: number | null;
+};
+
 /**
  * Thumbnail dimensions for list views
  * Optimized for 80x80 display with 2x pixel density = 160x160 actual pixels
  */
 export const THUMBNAIL_SIZE = 160;
+
+export const getDreamImageVersion = (dream: DreamImageVersionSource): string | number | undefined => {
+  return dream.imageUpdatedAt ?? dream.analysisRequestId ?? dream.analyzedAt ?? dream.id ?? undefined;
+};
+
+export const withCacheBuster = (url: string, version?: string | number): string => {
+  if (!version) return url;
+  if (url.startsWith('data:') || url.startsWith('file:')) return url;
+  try {
+    const parsed = new URL(url);
+    parsed.searchParams.set('v', String(version));
+    return parsed.toString();
+  } catch {
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}v=${version}`;
+  }
+};
 
 /**
  * Generate a thumbnail URL from a full-size image URL
@@ -60,10 +84,11 @@ export function getThumbnailUrl(imageUrl: string, size: number = THUMBNAIL_SIZE)
 export function getDreamThumbnailUri(dream: {
   thumbnailUrl?: string | null;
   imageUrl?: string | null;
-}): string | null {
+} & DreamImageVersionSource): string | null {
+  const version = getDreamImageVersion(dream);
   const thumbnailUrl = dream.thumbnailUrl ?? '';
   if (thumbnailUrl) {
-    return thumbnailUrl;
+    return withCacheBuster(thumbnailUrl, version);
   }
 
   const imageUrl = dream.imageUrl ?? '';
@@ -71,7 +96,7 @@ export function getDreamThumbnailUri(dream: {
     return null;
   }
 
-  return getThumbnailUrl(imageUrl);
+  return withCacheBuster(getThumbnailUrl(imageUrl), version);
 }
 
 /**

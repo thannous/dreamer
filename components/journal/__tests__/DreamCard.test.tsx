@@ -3,6 +3,7 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import type { DreamAnalysis } from '@/lib/types';
 
 vi.mock('react-native-reanimated', async () => {
@@ -80,18 +81,21 @@ describe('DreamCard image fallback', () => {
       chatHistory: [],
       dreamType: 'Symbolic Dream',
     };
+    const version = getDreamImageVersion(dream);
+    const expectedThumbnail = withCacheBuster(dream.thumbnailUrl, version);
+    const expectedFull = withCacheBuster(dream.imageUrl, version);
 
     const { unmount } = render(<DreamCard dream={dream} onPress={vi.fn()} />);
 
-    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(dream.thumbnailUrl);
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedThumbnail);
 
     fireEvent.error(screen.getByTestId('dream-image'));
 
-    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(dream.imageUrl);
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
 
     unmount();
     render(<DreamCard dream={dream} onPress={vi.fn()} />);
 
-    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(dream.imageUrl);
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
   });
 });

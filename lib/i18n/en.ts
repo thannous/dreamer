@@ -187,6 +187,7 @@ const translations: Record<string, string> = {
     'journal.detail.image.generate_action': 'Generate an image',
     'journal.detail.image.add_from_library': 'Add from your device',
     'journal.detail.image.adding_from_library': 'Importing image...',
+    'journal.detail.image.crop_error': 'Unable to crop the image to 9:16. Try another photo.',
     'journal.detail.image.or': 'or',
     'journal.detail.image.replace_user_button': 'Replace image from device',
     'journal.detail.image.ai_locked_note': 'This image was generated automatically. To change it, edit the transcript and re-analyze (this will update the dream).',

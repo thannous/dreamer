@@ -187,6 +187,7 @@ const translations: Record<string, string> = {
     'journal.detail.image.generate_action': 'Generar una imagen',
     'journal.detail.image.add_from_library': 'Añadir desde mi dispositivo',
     'journal.detail.image.adding_from_library': 'Importando imagen...',
+    'journal.detail.image.crop_error': 'No se pudo recortar la imagen a 9:16. Prueba con otra foto.',
     'journal.detail.image.or': 'o',
     'journal.detail.image.replace_user_button': 'Reemplazar imagen desde mi dispositivo',
     'journal.detail.image.ai_locked_note': 'Imagen generada automáticamente. Para cambiarla, modifica el transcript y vuelve a analizar (se actualizará el sueño).',

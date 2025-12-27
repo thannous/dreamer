@@ -4,7 +4,7 @@ import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
-import { getDreamThumbnailUri, getImageConfig } from '@/lib/imageUtils';
+import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -33,10 +33,24 @@ export const DreamCard = memo(function DreamCard({
   const { t } = useTranslation();
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
+  const imageVersion = useMemo(
+    () => getDreamImageVersion(dream),
+    [dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]
+  );
   const thumbnailUri = useMemo(() => (
-    getDreamThumbnailUri({ thumbnailUrl: dream.thumbnailUrl, imageUrl: dream.imageUrl }) ?? ''
-  ), [dream.thumbnailUrl, dream.imageUrl]);
-  const fullImageUri = dream.imageUrl?.trim() ?? '';
+    getDreamThumbnailUri({
+      thumbnailUrl: dream.thumbnailUrl,
+      imageUrl: dream.imageUrl,
+      imageUpdatedAt: dream.imageUpdatedAt,
+      analysisRequestId: dream.analysisRequestId,
+      analyzedAt: dream.analyzedAt,
+      id: dream.id,
+    }) ?? ''
+  ), [dream.thumbnailUrl, dream.imageUrl, dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]);
+  const fullImageUri = useMemo(() => {
+    const uri = dream.imageUrl?.trim() ?? '';
+    return uri ? withCacheBuster(uri, imageVersion) : '';
+  }, [dream.imageUrl, imageVersion]);
   const trimmedThumbnailUri = thumbnailUri.trim();
   const [useFullImage, setUseFullImage] = useState(false);
 
@@ -58,7 +72,7 @@ export const DreamCard = memo(function DreamCard({
 
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
-  const imageRecyclingKey = `${dream.id}-${dream.imageUpdatedAt ?? 0}`;
+  const imageRecyclingKey = `${dream.id}-${imageVersion ?? 0}`;
 
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);

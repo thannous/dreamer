@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { getDreamThumbnailUri, getThumbnailUrl, getImageConfig, THUMBNAIL_SIZE } from '../imageUtils';
+import {
+  getDreamImageVersion,
+  getDreamThumbnailUri,
+  getImageConfig,
+  getThumbnailUrl,
+  THUMBNAIL_SIZE,
+  withCacheBuster,
+} from '../imageUtils';
 
 describe('imageUtils', () => {
   describe('THUMBNAIL_SIZE', () => {
@@ -102,6 +109,32 @@ describe('imageUtils', () => {
 
     it('returns null when no urls are available', () => {
       expect(getDreamThumbnailUri({})).toBe(null);
+    });
+
+    it('adds cache buster when version is available', () => {
+      const result = getDreamThumbnailUri({
+        thumbnailUrl: 'https://example.com/thumb.jpg',
+        imageUpdatedAt: 123,
+      });
+      expect(result).toBe('https://example.com/thumb.jpg?v=123');
+    });
+  });
+
+  describe('getDreamImageVersion', () => {
+    it('prefers imageUpdatedAt', () => {
+      expect(getDreamImageVersion({ imageUpdatedAt: 10, analysisRequestId: 'abc', analyzedAt: 20, id: 30 }))
+        .toBe(10);
+    });
+  });
+
+  describe('withCacheBuster', () => {
+    it('keeps data urls unchanged', () => {
+      const dataUrl = 'data:image/png;base64,ABC123';
+      expect(withCacheBuster(dataUrl, 42)).toBe(dataUrl);
+    });
+
+    it('adds v param to http urls', () => {
+      expect(withCacheBuster('https://example.com/image.jpg', 42)).toBe('https://example.com/image.jpg?v=42');
     });
   });
 });
