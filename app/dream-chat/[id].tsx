@@ -723,6 +723,9 @@ export default function DreamChatScreen() {
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </Pressable>
@@ -758,6 +761,9 @@ export default function DreamChatScreen() {
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </Pressable>
@@ -887,6 +893,7 @@ export default function DreamChatScreen() {
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
           accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
