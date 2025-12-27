@@ -25,6 +25,37 @@ async function ensureSessionPersistence(session: Session | null): Promise<void> 
   }
 }
 
+async function markAccountCreatedOnDevice(): Promise<void> {
+  if (isMockMode) {
+    return mockAuth.markAccountCreatedOnDevice();
+  }
+
+  try {
+    const { markAccountCreatedOnDevice: markDeviceAccountCreated } = await import('./deviceFingerprint');
+    await markDeviceAccountCreated();
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[auth.web] failed to mark account as created', error);
+    }
+  }
+}
+
+export async function wasAccountCreatedOnDevice(): Promise<boolean> {
+  if (isMockMode) {
+    return mockAuth.wasAccountCreatedOnDevice();
+  }
+
+  try {
+    const { wasAccountCreatedOnDevice: deviceWasAccountCreatedOnDevice } = await import('./deviceFingerprint');
+    return deviceWasAccountCreatedOnDevice();
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[auth.web] failed to check account created status', error);
+    }
+    return false;
+  }
+}
+
 function getWebRedirectTo(): string | undefined {
   try {
     const location = (
@@ -66,12 +97,19 @@ export async function getAccessToken(): Promise<string | null> {
 }
 
 export function onAuthChange(cb: (user: User | null, session: Session | null) => void) {
+  const handleAuthChange = (user: User | null, session: Session | null) => {
+    if (user) {
+      void markAccountCreatedOnDevice();
+    }
+    cb(user, session);
+  };
+
   if (isMockMode) {
-    return mockAuth.onAuthChange(cb);
+    return mockAuth.onAuthChange(handleAuthChange);
   }
 
   const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-    cb(session?.user ?? null, session ?? null);
+    handleAuthChange(session?.user ?? null, session ?? null);
   });
   return () => data.subscription.unsubscribe();
 }
