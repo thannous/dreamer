@@ -41,6 +41,10 @@ let cachedPackages: InternalPackage[] = [];
 // Keep a live listener-driven cache up to date with RevenueCat (source of truth)
 let customerInfoListener: ((info: CustomerInfo) => void) | null = null;
 
+function isAnonymousAppUserId(appUserId: string | null | undefined): boolean {
+  return typeof appUserId === 'string' && appUserId.startsWith('$RCAnonymousID:');
+}
+
 function resetCachedState(): void {
   cachedStatus = null;
   cachedPackages = [];
@@ -167,6 +171,20 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
   }
 }
 
+async function assertIdentifiedUser(): Promise<void> {
+  if (!persistedState.configured) {
+    throw new Error('Purchases not initialized');
+  }
+  if (!persistedState.userId) {
+    throw new Error('Purchases user not identified');
+  }
+  const appUserId = await Purchases.getAppUserID();
+  const isAnonymous = await Purchases.isAnonymous();
+  if (isAnonymous || isAnonymousAppUserId(appUserId)) {
+    throw new Error('Purchases user not identified');
+  }
+}
+
 // Use pure functions from lib/revenuecat.ts for mapping
 function mapStatus(info: CustomerInfo | null): SubscriptionStatus {
   return mapStatusPure(info as CustomerInfoLike);
@@ -242,6 +260,7 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
+  await assertIdentifiedUser();
   let internal = findInternalPackage(id);
   if (!internal) {
     await fetchPackages();
@@ -260,8 +279,20 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
+  await assertIdentifiedUser();
   const info = await Purchases.restorePurchases();
   const status = mapStatus(info);
   cachedStatus = status;
   return status;
+}
+
+export async function logOutUser(): Promise<void> {
+  if (!persistedState.configured) {
+    persistedState.userId = null;
+    resetCachedState();
+    return;
+  }
+  await Purchases.logOut();
+  persistedState.userId = null;
+  resetCachedState();
 }

@@ -3,6 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('subscriptionServiceMock', () => {
   beforeEach(() => {
     vi.resetModules();
+    vi.doMock('@/lib/auth', () => ({
+      getCurrentUser: vi.fn().mockResolvedValue(null),
+    }));
   });
 
   describe('initialization behavior', () => {
@@ -258,6 +261,19 @@ describe('subscriptionServiceMock', () => {
       expect(status.tier).toBe('plus');
       expect(status.isActive).toBe(true);
       expect(status.productId).toBe('mock_monthly');
+    });
+  });
+
+  describe('logout behavior', () => {
+    it('given initialized service when logging out then clears initialization state', async () => {
+      const service = await import('./subscriptionServiceMock');
+      await service.initialize();
+      await service.purchasePackage('mock_monthly');
+
+      await service.logOutUser();
+
+      expect(service.isInitialized()).toBe(false);
+      await expect(service.getStatus()).resolves.toBeNull();
     });
   });
 

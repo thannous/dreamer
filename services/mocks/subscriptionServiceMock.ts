@@ -146,3 +146,9 @@ export async function refreshStatus(): Promise<SubscriptionStatus> {
   }
   return syncStatusWithCurrentUser();
 }
+
+export async function logOutUser(): Promise<void> {
+  initialized = false;
+  currentStatus = null;
+  currentStatusUserId = null;
+}

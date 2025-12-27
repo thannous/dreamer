@@ -19,6 +19,7 @@ const {
     loadOfferings: vi.fn(),
     purchasePackage: vi.fn(),
     restorePurchases: vi.fn(),
+    logOutUser: vi.fn(),
   });
 
   return {
@@ -115,5 +116,15 @@ describe('subscriptionService', () => {
     await service.refreshSubscriptionStatus();
 
     expect(realService.getStatus).toHaveBeenCalled();
+  });
+
+  it('given mock mode__when logging out subscription user__then uses mock implementation', async () => {
+    setMockMode(true);
+
+    const service = await import('../subscriptionService');
+    await service.logOutSubscriptionUser();
+
+    expect(mockService.logOutUser).toHaveBeenCalled();
+    expect(realService.logOutUser).not.toHaveBeenCalled();
   });
 });

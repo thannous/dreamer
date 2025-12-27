@@ -457,6 +457,7 @@ const translations: Record<string, string> = {
     'subscription.error.receipt_already_in_use': 'Cet abonnement est déjà associé à un autre compte Noctalia. Connectez-vous au compte d’origine pour restaurer les achats.',
     'subscription.error.purchase_failed': 'L’achat a échoué. Veuillez réessayer.',
     'subscription.error.not_initialized': 'Service des achats non initialisé. Veuillez redémarrer l’application.',
+    'subscription.error.not_logged_in': 'Veuillez vous reconnecter pour finaliser l’achat.',
     'subscription.error.unknown': 'Une erreur inconnue est survenue.',
     'subscription.refresh.button': 'Rafraîchir l\'abonnement',
     'subscription.refresh.success': 'Votre abonnement a été rafraîchi avec succès.',

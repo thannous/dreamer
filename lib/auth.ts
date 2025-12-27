@@ -452,6 +452,19 @@ export async function signOut() {
   }
 
   try {
+    try {
+      const subscriptionService = await import('@/services/subscriptionService');
+      const logOut =
+        subscriptionService.logOutSubscriptionUser ??
+        (subscriptionService as { default?: { logOutSubscriptionUser?: () => Promise<void> } }).default
+          ?.logOutSubscriptionUser;
+      if (logOut) {
+        await logOut();
+      }
+    } catch (error) {
+      log.warn('RevenueCat logout failed', error);
+    }
+
     // Sign out from Google if signed in
     if (Platform.OS !== 'web') {
       const { GoogleSignin } = await getGoogleSignInModule();

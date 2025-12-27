@@ -1500,6 +1500,26 @@ export default function JournalDetailScreen() {
               </Pressable>
             )}
 
+            {!shouldShowFloatingExploreButton &&
+              !isEditing &&
+              !isEditingTranscript &&
+              primaryAction !== 'analyze' &&
+              (dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
+              <Pressable
+                testID={TID.Button.ExploreDream}
+                style={[styles.exploreButton, shadows.md, {
+                  backgroundColor: colors.accent,
+                  borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+                  opacity: isAnalysisLocked ? 0.8 : 1,
+                }]}
+                onPress={handleExplorePress}
+                disabled={isAnalysisLocked}
+              >
+                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
+              </Pressable>
+            )}
+
             <View style={styles.actionsRow}>
               <Pressable
                 onPress={handleToggleFavorite}
