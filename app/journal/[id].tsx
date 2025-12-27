@@ -454,7 +454,7 @@ export default function JournalDetailScreen() {
       const allowCropInPicker = Platform.OS === 'android';
       const pickerQuality = allowCropInPicker ? 1 : 0.9;
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: allowCropInPicker,
         ...(allowCropInPicker ? { aspect: [9, 16] as [number, number] } : {}),
         quality: pickerQuality,

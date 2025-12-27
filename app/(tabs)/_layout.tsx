@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { DESKTOP_BREAKPOINT, TAB_BAR_CONTENT_BOTTOM_PADDING, TAB_BAR_HEIGHT, TAB_BAR_MARGIN } from '@/constants/layout';
+import { DESKTOP_BREAKPOINT, TAB_BAR_CONTENT_BOTTOM_PADDING, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -18,32 +18,23 @@ type IconName = Parameters<typeof IconSymbol>[0]['name'];
 type TabPalette = {
   barBg: string;
   barBorder: string;
-  iconBg: string;
-  iconActiveBg: string;
   text: string;
   textActive: string;
 };
 
-function TabBarItem({ label, icon, focused, palette, colors }: {
+function TabBarItem({ label, icon, focused, palette }: {
   label: string;
   icon: IconName;
   focused: boolean;
   palette: TabPalette;
-  colors: ReturnType<typeof useTheme>['colors'];
 }) {
   return (
     <View style={styles.tabItem}>
-      <View
-        style={[
-          styles.iconBadge,
-          { backgroundColor: focused ? palette.iconActiveBg : palette.iconBg },
-        ]}>
-        <IconSymbol
-          size={20}
-          name={icon}
-          color={focused ? colors.backgroundCard : palette.text}
-        />
-      </View>
+      <IconSymbol
+        size={24}
+        name={icon}
+        color={focused ? palette.textActive : palette.text}
+      />
       <Text
         style={[
           styles.tabLabel,
@@ -58,46 +49,30 @@ function TabBarItem({ label, icon, focused, palette, colors }: {
 }
 
 export default function TabLayout() {
-  const { colors, mode } = useTheme();
+  const { colors } = useTheme();
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
 
-  const bottomSpacing = TAB_BAR_MARGIN + insets.bottom;
-  const sceneBottomPadding = bottomSpacing + TAB_BAR_CONTENT_BOTTOM_PADDING; // allow content to sit under the tab bar
+  const sceneBottomPadding = TAB_BAR_HEIGHT + insets.bottom + TAB_BAR_CONTENT_BOTTOM_PADDING;
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
 
-  const palette: TabPalette = mode === 'dark'
-    ? {
-        barBg: colors.backgroundCard,
-        barBorder: colors.divider,
-        iconBg: colors.backgroundSecondary,
-        iconActiveBg: colors.accent,
-        text: colors.textSecondary,
-        textActive: colors.textPrimary,
-      }
-    : {
-        barBg: colors.backgroundCard,
-        barBorder: colors.divider,
-        iconBg: colors.accentLight,
-        iconActiveBg: colors.accent,
-        text: colors.textSecondary,
-        textActive: colors.textPrimary,
-      };
+  const palette: TabPalette = {
+    barBg: colors.navbarBg,
+    barBorder: colors.navbarBorder,
+    text: colors.navbarTextInactive,
+    textActive: colors.navbarTextActive,
+  };
 
   const baseTabBarStyle: ViewStyle = {
     position: 'absolute',
-    borderTopWidth: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: palette.barBg,
-    borderRadius: 28,
-    marginHorizontal: 20,
-    bottom: bottomSpacing,
-    paddingHorizontal: 20,
-    paddingVertical: 6,
-    height: TAB_BAR_HEIGHT,
-    borderWidth: 0,
-    borderColor: palette.barBorder,
+    height: TAB_BAR_HEIGHT + insets.bottom,
+    paddingBottom: insets.bottom,
     shadowColor: 'transparent',
   };
 
@@ -138,7 +113,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Home} accessibilityLabel={t('nav.home')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="house.fill" label={t('nav.home')} focused={focused} palette={palette} colors={colors} />
+            <TabBarItem icon="house" label={t('nav.home')} focused={focused} palette={palette} />
           ),
         }}
       />
@@ -153,7 +128,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Journal} accessibilityLabel={t('nav.journal')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="book.fill" label={t('nav.journal')} focused={focused} palette={palette} colors={colors} />
+            <TabBarItem icon="book" label={t('nav.journal')} focused={focused} palette={palette} />
           ),
         }}
       />
@@ -168,7 +143,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Stats} accessibilityLabel={t('nav.stats')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="chart.bar.fill" label={t('nav.stats')} focused={focused} palette={palette} colors={colors} />
+            <TabBarItem icon="chart.bar" label={t('nav.stats')} focused={focused} palette={palette} />
           ),
         }}
       />
@@ -180,7 +155,7 @@ export default function TabLayout() {
             <HapticTab {...props} testID={TID.Tab.Settings} accessibilityLabel={t('nav.settings')} />
           ),
           tabBarIcon: ({ focused }) => (
-            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} colors={colors} />
+            <TabBarItem icon="gear" label={t('nav.settings')} focused={focused} palette={palette} />
           ),
         }}
       />
@@ -218,21 +193,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 0,
-    paddingHorizontal: 6,
-    borderRadius: 20,
-    gap: 3,
-  },
-  iconBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 4,
   },
   tabLabel: {
     fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    letterSpacing: 0.2,
+    fontSize: 10,
+    letterSpacing: 0.3,
   },
 });

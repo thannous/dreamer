@@ -11,6 +11,7 @@ import { router } from 'expo-router';
 import { Fonts } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
 import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
+import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 
 type UsageEntry = {
   used: number;
@@ -109,6 +110,20 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const tierLabel = t(`settings.quota.tier.${tier}` as const);
   const isGuest = tier === 'guest';
   const guestRecordingLimit = recordingUsage.limit ?? getGuestDreamRecordingLimit();
+  const freeResetMessage = useMemo(() => {
+    if (tier !== 'free') return null;
+    try {
+      const { periodEnd } = getMonthlyQuotaPeriod();
+      const dateStr = periodEnd.toLocaleDateString(undefined, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      return t('settings.quota.free_reset_message', { date: dateStr });
+    } catch {
+      return null;
+    }
+  }, [t, tier]);
 
   const handleUpgrade = () => {
     if (onUpgradePress) {
@@ -211,6 +226,14 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textPrimary }]}>
             {t('settings.quota.premium_message')}
+          </Text>
+        </View>
+      )}
+
+      {tier === 'free' && freeResetMessage && (
+        <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
+          <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
+            {freeResetMessage}
           </Text>
         </View>
       )}

@@ -27,6 +27,12 @@ export interface ThemeColors {
   divider: string;
   overlay: string;
 
+  // Navbar colors
+  navbarBg: string;
+  navbarBorder: string;
+  navbarTextActive: string;
+  navbarTextInactive: string;
+
   // Tag colors
   tags: {
     surreal: string;
@@ -61,6 +67,12 @@ export const DarkTheme: ThemeColors = {
   divider: '#2f2153', // Dividers
   overlay: 'rgba(27, 21, 51, 0.85)', // Semi-transparent overlay
 
+  // Navbar colors
+  navbarBg: 'rgb(26, 15, 43)', // Same as backgroundDark
+  navbarBorder: '#2f2153', // Same as divider
+  navbarTextActive: '#FFFFFF', // White for active tab
+  navbarTextInactive: '#9B8EC7', // Muted purple for inactive tabs
+
   // Tag colors
   tags: {
     surreal: '#6b5a8e',
@@ -94,6 +106,12 @@ export const LightTheme: ThemeColors = {
   timeline: '#D4CFBF', // Timeline - soft beige
   divider: '#E8E4DC', // Dividers - very light beige
   overlay: 'rgba(248, 246, 242, 0.9)', // Semi-transparent cream overlay
+
+  // Navbar colors
+  navbarBg: '#F8F6F2', // Same as backgroundDark (light theme)
+  navbarBorder: '#E8E4DC', // Same as divider
+  navbarTextActive: '#2A2838', // Dark text for active tab
+  navbarTextInactive: '#9B98AC', // Muted gray for inactive tabs
 
   // Tag colors - pastel versions
   tags: {

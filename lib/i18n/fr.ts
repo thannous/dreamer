@@ -392,6 +392,7 @@ const translations: Record<string, string> = {
     'settings.quota.recording_label_total': 'Rêves enregistrés (total)',
     'settings.quota.plus_message': 'Vous êtes sur Noctalia Plus : analyses étendues et explorations plus longues.',
     'settings.quota.premium_message': 'Vous êtes sur Premium : profitez de tout ce qui est inclus dans Premium.',
+    'settings.quota.free_reset_message': 'Vos quotas gratuits sont réinitialisés le {{date}}.',
     'settings.quota.guest_message': "Mode invité : vous pouvez enregistrer {recordLimit} rêves, lancer {analysisLimit} analyses et explorer {explorationLimit} rêves pour tester l'application.",
     'settings.quota.cta_guest': 'Créer un compte gratuit',
     'settings.quota.cta_login': 'Se connecter',

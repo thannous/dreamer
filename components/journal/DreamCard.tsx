@@ -16,6 +16,7 @@ interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: (dream: DreamAnalysis) => void;
   shouldLoadImage?: boolean;
+  isScrolling?: boolean;
   testID?: string;
 }
 
@@ -26,6 +27,7 @@ export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
   shouldLoadImage = true,
+  isScrolling = false,
   testID,
 }: DreamCardProps) {
   const { colors } = useTheme();
@@ -73,6 +75,9 @@ export const DreamCard = memo(function DreamCard({
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
   const imageRecyclingKey = `${dream.id}-${imageVersion ?? 0}`;
+  const imageTransition = isScrolling ? 0 : imageConfig.transition;
+  const imagePlaceholder = isScrolling ? null : { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
+  const imagePriority = isScrolling ? 'low' : imageConfig.priority;
 
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
@@ -124,9 +129,9 @@ export const DreamCard = memo(function DreamCard({
                   source={{ uri: imageUri }}
                   style={styles.image}
                   contentFit={imageConfig.contentFit}
-                  transition={imageConfig.transition}
+                  transition={imageTransition}
                   cachePolicy={imageConfig.cachePolicy}
-                  priority={imageConfig.priority}
+                  priority={imagePriority}
                   recyclingKey={imageRecyclingKey}
                   onError={() => {
                     if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
@@ -136,8 +141,7 @@ export const DreamCard = memo(function DreamCard({
                       setUseFullImage(true);
                     }
                   }}
-                  // Placeholder with blur hash for smoother loading
-                  placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
+                  placeholder={imagePlaceholder}
                 />
               </View>
             )}
@@ -147,8 +151,8 @@ export const DreamCard = memo(function DreamCard({
           <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>
             {dream.title}
           </Text>
-          <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
-            {dream.interpretation || dream.transcript}
+          <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={3}>
+            {dream.transcript}
           </Text>
           {(dream.theme || badges.length > 0) && (
             <View style={styles.tagContainer}>
@@ -209,13 +213,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'stretch',
     overflow: 'hidden',
-    minHeight: 96,
+    minHeight: 180,
   },
   imageContainer: {
-    width: 96,
+    width: 120,
     flexShrink: 0,
     alignSelf: 'stretch',
-    minHeight: 96,
+    minHeight: 160,
     overflow: 'hidden',
     position: 'relative',
   },

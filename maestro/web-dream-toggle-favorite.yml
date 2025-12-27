@@ -28,10 +28,20 @@ url: "http://localhost:8081"
     direction: DOWN
     visibilityPercentage: 40
     centerElement: true
-- tapOn:
-    id: "btn.dream.favorite"
-- waitForAnimationToEnd
-- tapOn:
-    id: "btn.dream.favorite"
-- waitForAnimationToEnd
 - assertVisible: "(Favorite|Favori|Favorito|Favorited|Ajout. aux favoris|En favoritos)"
+- runFlow:
+    when:
+      visible: "(Favorite|Favori|Favorito)"
+    commands:
+      - tapOn:
+          id: "btn.dream.favorite"
+      - waitForAnimationToEnd
+      - assertVisible: "(Favorited|Ajout. aux favoris|En favoritos)"
+- runFlow:
+    when:
+      visible: "(Favorited|Ajout. aux favoris|En favoritos)"
+    commands:
+      - tapOn:
+          id: "btn.dream.favorite"
+      - waitForAnimationToEnd
+      - assertVisible: "(Favorite|Favori|Favorito)"
