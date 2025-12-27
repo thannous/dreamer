@@ -24,20 +24,14 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      id: "Toggle favorite"
+      id: "btn.dream.favorite"
     direction: DOWN
     visibilityPercentage: 40
     centerElement: true
-- runFlow:
-    when:
-      visible: "(Favorited|Ajout. aux favoris|En favoritos)"
-    commands:
-      - tapOn: "(Favorited|Ajout. aux favoris|En favoritos)"
-      - waitForAnimationToEnd
-- runFlow:
-    when:
-      visible: "(Favorite|Favori|Favorito)"
-    commands:
-      - tapOn: "(Favorite|Favori|Favorito)"
-      - waitForAnimationToEnd
+- tapOn:
+    id: "btn.dream.favorite"
+- waitForAnimationToEnd
+- tapOn:
+    id: "btn.dream.favorite"
+- waitForAnimationToEnd
 - assertVisible: "(Favorite|Favori|Favorito|Favorited|Ajout. aux favoris|En favoritos)"
