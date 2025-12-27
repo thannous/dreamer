@@ -31,7 +31,7 @@ const ALT_TEXT_MAPPING = {
   'being-chased-dreams': 'Dark corridor illustrating the feeling of being chased in a dream',
   'death-dreams-meaning': 'Foggy forest representing transformation and the symbolic meaning of death',
   'dream-incubation-guide': 'Peaceful bedroom setup for practicing dream incubation',
-  'dream-interpretation-history': 'Ancient temple under target starry sky representing dream history',
+  'dream-interpretation-history': 'Ancient temple under a starry sky representing dream history',
   'dream-journal-guide': 'Open dream journal with a pen on a wooden bedside table',
   'dreams-about-ex': 'Reflective silhouette symbolizing memories of past relationships',
   'dreams-mental-health': 'Person in peaceful contemplation of their inner mental landscape',
