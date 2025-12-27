@@ -14,6 +14,18 @@ export type RevenueCatV1SubscriberResponse = {
   };
 };
 
+export type RevenueCatV2ActiveEntitlement = {
+  entitlement_id?: string | null;
+  expires_at?: number | null;
+};
+
+export type RevenueCatV2CustomerResponse = {
+  id?: string | null;
+  active_entitlements?: {
+    items?: RevenueCatV2ActiveEntitlement[] | null;
+  } | null;
+};
+
 const PREMIUM_ENTITLEMENT_KEYS = [
   'premium',
   'noctalia_premium',
@@ -66,6 +78,18 @@ export function isActiveEntitlement(ent: RevenueCatV1Entitlement, nowMs: number 
   return false;
 }
 
+export function isActiveEntitlementV2(
+  ent: RevenueCatV2ActiveEntitlement,
+  nowMs: number = Date.now()
+): boolean {
+  const expiresAt = ent.expires_at;
+  if (expiresAt === null || expiresAt === undefined) return true;
+  if (typeof expiresAt === 'number' && Number.isFinite(expiresAt)) {
+    return expiresAt > nowMs;
+  }
+  return false;
+}
+
 export function inferTierFromSubscriber(
   subscriber: RevenueCatV1SubscriberResponse | null,
   nowMs: number = Date.now()
@@ -75,6 +99,20 @@ export function inferTierFromSubscriber(
   const activeEntitlementKeys = Object.entries(entitlements)
     .filter(([_, ent]) => isActiveEntitlement(ent, nowMs))
     .map(([key]) => key);
+
+  return inferTierFromEntitlementKeys(activeEntitlementKeys);
+}
+
+export function inferTierFromCustomer(
+  customer: RevenueCatV2CustomerResponse | null,
+  nowMs: number = Date.now()
+): InferredTier {
+  if (!customer) return null;
+  const items = customer.active_entitlements?.items ?? [];
+  const activeEntitlementKeys = items
+    .filter((ent) => isActiveEntitlementV2(ent, nowMs))
+    .map((ent) => (typeof ent.entitlement_id === 'string' ? ent.entitlement_id.trim() : ''))
+    .filter(Boolean);
 
   return inferTierFromEntitlementKeys(activeEntitlementKeys);
 }
