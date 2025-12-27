@@ -188,6 +188,7 @@ const translations: Record<string, string> = {
     'journal.detail.image.generate_action': 'Générer une image',
     'journal.detail.image.add_from_library': 'Ajouter depuis mon appareil',
     'journal.detail.image.adding_from_library': "Import de l'image...",
+    'journal.detail.image.crop_error': "Impossible de recadrer l'image au format 9:16. Essayez une autre photo.",
     'journal.detail.image.or': 'ou',
     'journal.detail.image.replace_user_button': "Remplacer l'image depuis mon appareil",
     'journal.detail.image.ai_locked_note': "Image générée automatiquement. Pour la changer, modifie le transcript et relance l'analyse (les infos du rêve seront mises à jour).",

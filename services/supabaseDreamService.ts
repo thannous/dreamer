@@ -5,7 +5,7 @@ import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
-import { Platform } from 'react-native';
+import { Image, Platform } from 'react-native';
 import type { ChatMessage, DreamAnalysis, DreamType, DreamTheme } from '@/lib/types';
 
 const DREAMS_TABLE = 'dreams';
@@ -74,6 +74,20 @@ const writeBase64TempFile = async (base64: string, extension: string = 'png'): P
   // Use legacy API to avoid deprecation errors on Hermes while remaining compatible.
   await FileSystemLegacy.writeAsStringAsync(uri, base64, { encoding: 'base64' });
   return uri;
+};
+
+const getImageDimensions = async (uri: string): Promise<{ width: number; height: number } | null> => {
+  if (typeof Image?.getSize !== 'function') {
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    Image.getSize(
+      uri,
+      (width, height) => resolve({ width, height }),
+      () => resolve(null)
+    );
+  });
 };
 
 type WebpOptions = {
@@ -154,7 +168,15 @@ const convertToWebpBase64 = async (
       // Heuristic: only resize when payload is likely large to avoid upscaling tiny images.
       const shouldResize = !base64 || base64.length > 400_000;
       if (shouldResize) {
-        actions.push({ resize: { width: maxDimension, height: maxDimension } });
+        const dimensions = await getImageDimensions(sourceUri);
+        const longestSide = dimensions ? Math.max(dimensions.width, dimensions.height) : null;
+        if (dimensions && longestSide && longestSide > maxDimension) {
+          if (dimensions.width >= dimensions.height) {
+            actions.push({ resize: { width: maxDimension } });
+          } else {
+            actions.push({ resize: { height: maxDimension } });
+          }
+        }
       }
     }
 

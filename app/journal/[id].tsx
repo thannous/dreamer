@@ -24,7 +24,7 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
-import { getImageConfig, getThumbnailUrl } from '@/lib/imageUtils';
+import { getDreamImageVersion, getImageConfig, getThumbnailUrl, withCacheBuster } from '@/lib/imageUtils';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { MotiView } from '@/lib/moti';
 import { sortWithSelectionFirst } from '@/lib/sorting';
@@ -32,7 +32,7 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageFromTranscript, generateImageWithReference } from '@/services/geminiService';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { Image, type ImageLoadEventData } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -84,6 +84,9 @@ const getShareNavigator = (): ShareNavigator | undefined => {
 const DREAM_TYPES: DreamType[] = ['Lucid Dream', 'Recurring Dream', 'Nightmare', 'Symbolic Dream'];
 const DREAM_THEMES: DreamTheme[] = ['surreal', 'mystical', 'calm', 'noir'];
 const THEME_CATEGORIES: Exclude<DreamChatCategory, 'general'>[] = ['symbols', 'emotions', 'growth'];
+const IMAGE_FALLBACK_RATIO = 2 / 3;
+const DREAM_IMAGE_ASPECT = 9 / 16;
+const DREAM_IMAGE_CROP_EPSILON = 0.01;
 
 const generateUUID = (): string => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -91,6 +94,64 @@ const generateUUID = (): string => {
     const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
+};
+
+type PickedImageAsset = {
+  uri: string;
+  width?: number;
+  height?: number;
+  base64?: string | null;
+  mimeType?: string | null;
+};
+
+const getCenteredCropRect = (width: number, height: number, targetAspect: number) => {
+  if (!width || !height) return null;
+  const currentAspect = width / height;
+  if (Math.abs(currentAspect - targetAspect) <= DREAM_IMAGE_CROP_EPSILON) return null;
+
+  if (currentAspect > targetAspect) {
+    const cropWidth = Math.floor(height * targetAspect);
+    const originX = Math.max(0, Math.floor((width - cropWidth) / 2));
+    return { originX, originY: 0, width: cropWidth, height };
+  }
+
+  const cropHeight = Math.floor(width / targetAspect);
+  const originY = Math.max(0, Math.floor((height - cropHeight) / 2));
+  return { originX: 0, originY, width, height: cropHeight };
+};
+
+const cropDreamImageToAspect = async (
+  asset: PickedImageAsset,
+  errorMessage: string
+): Promise<PickedImageAsset> => {
+  if (!asset.width || !asset.height) {
+    throw new Error(errorMessage);
+  }
+
+  const crop = getCenteredCropRect(asset.width, asset.height, DREAM_IMAGE_ASPECT);
+  if (!crop) {
+    return asset;
+  }
+
+  try {
+    const manipulator = await import('expo-image-manipulator');
+    const result = await manipulator.manipulateAsync(asset.uri, [{ crop }], {
+      compress: 1,
+      format: manipulator.SaveFormat.JPEG,
+      base64: Platform.OS === 'web',
+    });
+
+    return {
+      ...asset,
+      uri: result.uri,
+      width: result.width,
+      height: result.height,
+      base64: result.base64 ?? asset.base64 ?? null,
+      mimeType: 'image/jpeg',
+    };
+  } catch {
+    throw new Error(errorMessage);
+  }
 };
 
 const Skeleton = ({ style }: { style: StyleProp<ViewStyle> }) => {
@@ -386,10 +447,13 @@ export default function JournalDetailScreen() {
     try {
       setIsPickingImage(true);
       const ImagePicker = await import('expo-image-picker');
+      const allowCropInPicker = Platform.OS === 'android';
+      const pickerQuality = allowCropInPicker ? 1 : 0.9;
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 0.9,
+        mediaTypes: ImagePicker.MediaType.Images,
+        allowsEditing: allowCropInPicker,
+        ...(allowCropInPicker ? { aspect: [9, 16] as [number, number] } : {}),
+        quality: pickerQuality,
         base64: Platform.OS === 'web',
       });
 
@@ -397,14 +461,18 @@ export default function JournalDetailScreen() {
         return;
       }
 
-      const asset = result.assets[0];
+      const asset = result.assets[0] as PickedImageAsset | undefined;
       if (!asset) {
         return;
       }
 
-      const selectedUri = Platform.OS === 'web' && asset.base64
-        ? `data:${asset.mimeType ?? 'image/jpeg'};base64,${asset.base64}`
-        : asset.uri;
+      const croppedAsset = await cropDreamImageToAspect(
+        asset,
+        t('journal.detail.image.crop_error')
+      );
+      const selectedUri = Platform.OS === 'web' && croppedAsset.base64
+        ? `data:${croppedAsset.mimeType ?? 'image/jpeg'};base64,${croppedAsset.base64}`
+        : croppedAsset.uri;
 
       if (!selectedUri) {
         return;
@@ -522,14 +590,28 @@ export default function JournalDetailScreen() {
       setShareCopyStatus('error');
     }
   }, [shareMessage]);
+  const handleImageLoad = useCallback((event: ImageLoadEventData) => {
+    const { width, height } = event.source ?? {};
+    if (!width || !height) return;
+    const ratio = width / height;
+    if (!Number.isFinite(ratio) || ratio <= 0) return;
+    setImageAspectRatio(ratio);
+  }, []);
 
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
-  const imageCacheKey = useMemo(() => {
+  const imageVersion = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
-    const version = dream.imageUpdatedAt ?? dream.analysisRequestId ?? dream.analyzedAt ?? dream.id;
-    return `${dream.imageUrl}|${version}`;
+    return getDreamImageVersion(dream);
   }, [dream?.analysisRequestId, dream?.analyzedAt, dream?.id, dream?.imageUpdatedAt, dream?.imageUrl]);
+  const imageCacheKey = useMemo(() => {
+    if (!dream?.imageUrl || !imageVersion) return undefined;
+    return `${dream.imageUrl}|${imageVersion}`;
+  }, [dream?.imageUrl, imageVersion]);
+  const displayImageUrl = useMemo(() => {
+    if (!dream?.imageUrl) return undefined;
+    return withCacheBuster(dream.imageUrl, imageVersion);
+  }, [dream?.imageUrl, imageVersion]);
 
 
   // Define callbacks before early return (hooks must be called unconditionally)
@@ -1194,17 +1276,18 @@ export default function JournalDetailScreen() {
           {/* Dream Image */}
           {!shouldHideHeroMedia && (
             <View style={styles.imageContainer}>
-              <View style={styles.imageFrame}>
-                {dream.imageUrl ? (
+            <View style={[styles.imageFrame, { aspectRatio: imageAspectRatio ?? IMAGE_FALLBACK_RATIO }]}>
+              {dream.imageUrl ? (
                   <>
                     <Image
-                      key={imageCacheKey ?? dream.imageUrl}
-                      source={{ uri: dream.imageUrl, cacheKey: imageCacheKey }}
+                      key={displayImageUrl ?? dream.imageUrl}
+                      source={{ uri: displayImageUrl ?? dream.imageUrl, cacheKey: imageCacheKey }}
                       style={styles.dreamImage}
-                      contentFit={imageConfig.contentFit}
+                      contentFit="contain"
                       transition={imageConfig.transition}
                       cachePolicy={imageConfig.cachePolicy}
                       priority={imageConfig.priority}
+                      onLoad={handleImageLoad}
                       placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
                     />
                     <View style={styles.imageOverlay} />
@@ -1995,7 +2078,6 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 480,
     alignSelf: 'center',
-    aspectRatio: 2 / 3,
     overflow: 'hidden',
     position: 'relative',
   },

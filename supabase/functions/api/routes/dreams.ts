@@ -273,7 +273,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const optimized =
       (await optimizeImage(
         { base64: imageBase64, contentType: mimeType ?? 'image/png' },
-        { maxWidth: 1024, maxHeight: 1024, quality: 78 }
+        { maxWidth: 1024, maxHeight: 1024, quality: 78, aspectRatio: 9 / 16 }
       ).catch(() => null)) ?? {
         base64: imageBase64,
         contentType: mimeType ?? 'image/png',
