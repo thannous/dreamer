@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { ANALYZE_DREAM_SCHEMA, CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
 import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';

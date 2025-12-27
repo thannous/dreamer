@@ -10,7 +10,7 @@
 // - POST /api/subscription/reconcile { batchSize?, maxTotal?, minAgeHours? } -> { ok, processed, updated, changed }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from './lib/constants.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';

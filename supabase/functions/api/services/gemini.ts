@@ -1,4 +1,127 @@
-import { ApiError, GoogleGenAI } from 'https://esm.sh/@google/genai@1.34.0?target=deno';
+type GeminiInlineData = {
+  data: string;
+  mimeType: string;
+};
+
+type GeminiPart = {
+  text?: string;
+  inlineData?: GeminiInlineData;
+};
+
+type GeminiContent = {
+  role?: string;
+  parts: GeminiPart[];
+};
+
+type GeminiGenerationConfig = {
+  temperature?: number;
+  responseMimeType?: string;
+  responseJsonSchema?: unknown;
+  responseModalities?: string[];
+  imageConfig?: {
+    aspectRatio?: string;
+  };
+};
+
+export class ApiError extends Error {
+  public readonly status: number;
+  public readonly httpStatus: number;
+  public readonly body?: unknown;
+
+  constructor(options: { message: string; status: number; body?: unknown }) {
+    super(options.message);
+    this.name = 'ApiError';
+    this.status = options.status;
+    this.httpStatus = options.status;
+    this.body = options.body;
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+}
+
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+
+const normalizeContents = (contents: GeminiContent[] | string): GeminiContent[] => {
+  if (Array.isArray(contents)) return contents;
+  return [{ role: 'user', parts: [{ text: String(contents) }] }];
+};
+
+const normalizeSystemInstruction = (
+  systemInstruction?: string | GeminiContent
+): GeminiContent | undefined => {
+  if (!systemInstruction) return undefined;
+  if (typeof systemInstruction === 'string') {
+    return { role: 'user', parts: [{ text: systemInstruction }] };
+  }
+  if (typeof systemInstruction === 'object' && Array.isArray(systemInstruction.parts)) {
+    return systemInstruction;
+  }
+  return { role: 'user', parts: [{ text: String(systemInstruction) }] };
+};
+
+const extractText = (response: any): string => {
+  const parts = response?.candidates?.[0]?.content?.parts;
+  if (!Array.isArray(parts)) return '';
+  return parts
+    .map((part: any) => (typeof part?.text === 'string' ? part.text : ''))
+    .join('');
+};
+
+export const requestGeminiGenerateContent = async (options: {
+  apiKey: string;
+  model: string;
+  contents: GeminiContent[] | string;
+  systemInstruction?: string | GeminiContent;
+  config?: GeminiGenerationConfig;
+}): Promise<any> => {
+  const { apiKey, model, contents, systemInstruction, config } = options;
+
+  const payload: Record<string, unknown> = {
+    contents: normalizeContents(contents),
+  };
+
+  const normalizedSystem = normalizeSystemInstruction(systemInstruction);
+  if (normalizedSystem) {
+    payload.systemInstruction = normalizedSystem;
+  }
+
+  if (config && Object.keys(config).length > 0) {
+    payload.generationConfig = config;
+  }
+
+  const res = await fetch(
+    `${GEMINI_API_BASE}/models/${encodeURIComponent(model)}:generateContent`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  const bodyText = await res.text();
+  let data: any = null;
+  if (bodyText.trim()) {
+    try {
+      data = JSON.parse(bodyText);
+    } catch {
+      data = null;
+    }
+  }
+
+  if (!res.ok) {
+    const fallbackText = bodyText && bodyText.trim() ? bodyText : undefined;
+    const message =
+      data?.error?.message ??
+      fallbackText ??
+      res.statusText ??
+      'Gemini API error';
+    throw new ApiError({ message, status: res.status, body: data ?? bodyText });
+  }
+
+  return data ?? {};
+};
 
 /**
  * Classify errors from Gemini API for better error handling
@@ -73,25 +196,23 @@ export const callGeminiWithFallback = async (
     responseJsonSchema?: any;
   }
 ): Promise<{ text: string; raw: any }> => {
-  const client = new GoogleGenAI({ apiKey });
-
   // Lower temperature for JSON generation (more deterministic)
   const temperature = config.responseMimeType === 'application/json' ? 0.2 : (config.temperature ?? 0.7);
 
   const makeCall = async (modelName: string) => {
-    const response = await client.models.generateContent({
+    const raw = await requestGeminiGenerateContent({
+      apiKey,
       model: modelName,
       contents,
+      systemInstruction,
       config: {
-        systemInstruction,
         temperature,
         ...(config.responseMimeType ? { responseMimeType: config.responseMimeType } : {}),
         ...(config.responseJsonSchema ? { responseJsonSchema: config.responseJsonSchema } : {}),
       },
     });
-    // Return full response object for better observability
-    const text = response.text ?? '';
-    return { text, raw: response };
+    const text = extractText(raw);
+    return { text, raw };
   };
 
   try {
