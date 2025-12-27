@@ -109,6 +109,7 @@ vi.mock('@shopify/flash-list', () => ({
 
 vi.mock('expo-router', () => ({
   router: { push: vi.fn() },
+  useFocusEffect: vi.fn((cb: () => void | (() => void)) => cb()),
 }));
 
 vi.mock('react-native-reanimated', () => ({
