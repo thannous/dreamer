@@ -20,7 +20,7 @@
     "fix-seo-urls": "node ./scripts/fix-seo-html-extensions.js",
     "ti-97:add-sources-trust": "node ./scripts/ti-97-add-sources-trust.js",
     "ti-97:audit-assertive": "node ./scripts/ti-97-audit-assertive-phrases.js",
-    "lint": "expo lint",
+    "lint": "expo lint app components hooks lib context constants services tests",
     "typecheck:app": "tsc --noEmit",
     "typecheck:tests": "tsc -p tsconfig.test.json --noEmit",
     "test": "vitest",
