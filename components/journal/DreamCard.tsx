@@ -54,15 +54,19 @@ export const DreamCard = memo(function DreamCard({
     return uri ? withCacheBuster(uri, imageVersion) : '';
   }, [dream.imageUrl, imageVersion]);
   const trimmedThumbnailUri = thumbnailUri.trim();
-  const [useFullImage, setUseFullImage] = useState(false);
+
+  // OPTIMIZATION: Initialize state with known failed status to avoid double-render on mount
+  const [useFullImage, setUseFullImage] = useState(() => {
+    return !!trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri);
+  });
 
   useEffect(() => {
-    if (trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri)) {
-      setUseFullImage(true);
-      return;
+    const shouldFallback = !!trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri);
+    // Only update if state doesn't match derived reality
+    if (useFullImage !== shouldFallback) {
+      setUseFullImage(shouldFallback);
     }
-    setUseFullImage(false);
-  }, [trimmedThumbnailUri, fullImageUri]);
+  }, [trimmedThumbnailUri, fullImageUri, useFullImage]);
 
   const preferFullImage = useFullImage || (trimmedThumbnailUri && failedThumbnailUris.has(trimmedThumbnailUri));
   const imageUri = preferFullImage
