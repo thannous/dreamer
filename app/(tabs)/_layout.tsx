@@ -74,6 +74,8 @@ export default function TabLayout() {
     height: TAB_BAR_HEIGHT + insets.bottom,
     paddingBottom: insets.bottom,
     shadowColor: 'transparent',
+    borderTopWidth: 0,
+    elevation: 0,
   };
 
   // On desktop web with sidebar, hide the tab bar

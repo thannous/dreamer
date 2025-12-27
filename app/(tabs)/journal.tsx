@@ -497,7 +497,7 @@ export default function JournalListScreen() {
           style={[
             styles.floatingButtonContainer,
             isDesktopLayout && styles.floatingButtonDesktop,
-            { bottom: floatingOffset },
+            { bottom: floatingOffset - 60 },
           ]}
         >
           <Pressable
