@@ -4,8 +4,11 @@
  *
  * @vitest-environment happy-dom
  */
+import React, { type PropsWithChildren } from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { SubscriptionProvider } from '../context/SubscriptionContext';
+import type { UseSubscriptionOptions } from './useSubscription';
 
 // Mock __DEV__ global
 (globalThis as any).__DEV__ = true;
@@ -77,6 +80,13 @@ vi.mock('expo-router', () => ({
 
 const { useSubscription } = await import('./useSubscription');
 
+const wrapper = ({ children }: PropsWithChildren) => (
+  <SubscriptionProvider>{children}</SubscriptionProvider>
+);
+
+const renderSubscriptionHook = (options?: UseSubscriptionOptions) =>
+  renderHook(() => useSubscription(options), { wrapper });
+
 describe('useSubscription', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -100,7 +110,7 @@ describe('useSubscription', () => {
     it('given unauthenticated user when using subscription then requires auth', async () => {
       // Given
       currentUser = null;
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When
       // Hook renders automatically
@@ -114,7 +124,7 @@ describe('useSubscription', () => {
     it('given unauthenticated user when purchasing then rejects with auth error', async () => {
       // Given
       currentUser = null;
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When/Then
       await expect(result.current.purchase('mock_monthly')).rejects.toThrow('auth_required');
@@ -123,7 +133,7 @@ describe('useSubscription', () => {
     it('given unauthenticated user when restoring then rejects with auth error', async () => {
       // Given
       currentUser = null;
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When/Then
       await expect(result.current.restore()).rejects.toThrow('auth_required');
@@ -131,7 +141,7 @@ describe('useSubscription', () => {
 
     it('given unauthenticated user when refreshing then rejects with auth error', async () => {
       currentUser = null;
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       await expect(result.current.refreshSubscription()).rejects.toThrow('auth_required');
     });
@@ -140,14 +150,16 @@ describe('useSubscription', () => {
   describe('initialization and loading', () => {
     it('given authenticated user when initializing then loads subscription data', async () => {
       // Given
-      const { result } = renderHook(() => useSubscription({ loadPackages: true }));
+      const { result } = renderSubscriptionHook({ loadPackages: true });
 
       // When
       await act(async () => {});
 
       // Then
+      await waitFor(() => {
+        expect(result.current.packages).toHaveLength(1);
+      });
       expect(result.current.loading).toBe(false);
-      expect(result.current.packages).toHaveLength(1);
       expect(result.current.status?.tier).toBe('free');
       expect(result.current.requiresAuth).toBe(false);
     });
@@ -155,7 +167,7 @@ describe('useSubscription', () => {
     it('given authenticated user when initializing without packages then skips package loading', async () => {
       // Given
       const { loadSubscriptionPackages } = await import('../services/subscriptionService');
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When
       await act(async () => {});
@@ -171,7 +183,7 @@ describe('useSubscription', () => {
       const { initializeSubscription } = await import('../services/subscriptionService');
       vi.mocked(initializeSubscription).mockRejectedValue(new Error('Purchases not initialized'));
       
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When
       await act(async () => {});
@@ -185,7 +197,7 @@ describe('useSubscription', () => {
   describe('purchase functionality', () => {
     it('given authenticated user when purchasing successfully then upgrades subscription', async () => {
       // Given
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
       await act(async () => {});
 
       // When
@@ -204,7 +216,7 @@ describe('useSubscription', () => {
       const { purchaseSubscriptionPackage } = await import('../services/subscriptionService');
       vi.mocked(purchaseSubscriptionPackage).mockRejectedValue(new Error('Purchase failed'));
       
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When/Then
       await act(async () => {
@@ -220,7 +232,7 @@ describe('useSubscription', () => {
       const { purchaseSubscriptionPackage } = await import('../services/subscriptionService');
       vi.mocked(purchaseSubscriptionPackage).mockRejectedValue(new Error('Purchases not initialized'));
       
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When
       await act(async () => {
@@ -235,7 +247,7 @@ describe('useSubscription', () => {
   describe('restore functionality', () => {
     it('given authenticated user when restoring successfully then updates subscription', async () => {
       // Given
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
       await act(async () => {});
 
       // When
@@ -254,7 +266,7 @@ describe('useSubscription', () => {
       const { restoreSubscriptionPurchases } = await import('../services/subscriptionService');
       vi.mocked(restoreSubscriptionPurchases).mockRejectedValue(new Error('Restore failed'));
       
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When/Then
       await act(async () => {
@@ -270,7 +282,7 @@ describe('useSubscription', () => {
       const { restoreSubscriptionPurchases } = await import('../services/subscriptionService');
       vi.mocked(restoreSubscriptionPurchases).mockRejectedValue(new Error('Purchases not initialized'));
       
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When
       await act(async () => {
@@ -284,7 +296,7 @@ describe('useSubscription', () => {
 
   describe('refresh and cancellation flows', () => {
     it('refreshes subscription status from RevenueCat', async () => {
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
       await act(async () => {});
 
       mockMapStatusFromInfo.mockReturnValueOnce({ tier: 'plus', isActive: true });
@@ -302,7 +314,7 @@ describe('useSubscription', () => {
       const { purchaseSubscriptionPackage } = await import('../services/subscriptionService');
       vi.mocked(purchaseSubscriptionPackage).mockRejectedValueOnce({ userCancelled: true, message: 'cancelled' });
 
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       await act(async () => {
         await expect(result.current.purchase('mock_monthly')).rejects.toBeDefined();
@@ -323,7 +335,7 @@ describe('useSubscription', () => {
       vi.mocked(initializeSubscription).mockResolvedValueOnce({ tier: 'free', isActive: false } as any);
       mockIsEntitlementExpired.mockReturnValueOnce(true);
 
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       await act(async () => {});
       await act(async () => {});
@@ -338,7 +350,7 @@ describe('useSubscription', () => {
   describe('error handling and formatting', () => {
     it('given unknown error when formatting then returns generic error message', async () => {
       // Given
-      const { result } = renderHook(() => useSubscription());
+      const { result } = renderSubscriptionHook();
 
       // When
       await act(async () => {
