@@ -28,6 +28,7 @@ import { VercelSpeedInsights } from '@/components/VercelSpeedInsights';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { DreamsProvider } from '@/context/DreamsContext';
 import { LanguageProvider } from '@/context/LanguageContext';
+import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
@@ -499,7 +500,9 @@ export default function RootLayout() {
           <LanguageProvider initialPreference={initialLanguagePreference}>
             <ThemeProvider>
               <AuthProvider>
-                <RootLayoutNav />
+                <SubscriptionProvider>
+                  <RootLayoutNav />
+                </SubscriptionProvider>
               </AuthProvider>
             </ThemeProvider>
           </LanguageProvider>
