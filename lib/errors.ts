@@ -210,11 +210,12 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
   }
 
   // Unknown errors
+  // Security: avoid surfacing raw error messages to end users to prevent leaking internal details.
   return {
     type: ErrorType.UNKNOWN,
     message: error.message,
     originalError: error,
-    userMessage: `${translate('error.unknown')}: ${error.message}`,
+    userMessage: translate('error.unknown'),
     canRetry: true,
   };
 }
