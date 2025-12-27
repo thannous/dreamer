@@ -4,7 +4,6 @@ import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
-import { TimelineIndicator } from '@/components/journal/TimelineIndicator';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
@@ -38,6 +37,22 @@ import {
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const SCROLL_IDLE_MS = 140;
+const PREFETCH_CACHE_LIMIT = 250;
+const PREFETCH_MAX_PER_FLUSH = 8;
+
+const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
+  // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
+  if (uri.includes('-thumb')) return true;
+  // Cloudinary transforms often include w_/h_ in path.
+  if (uri.includes('cloudinary.com') && uri.includes('/upload/') && (uri.includes('w_') || uri.includes('h_'))) return true;
+  // Firebase/GCS uses a size query (if supported by the host).
+  if (uri.includes('size=')) return true;
+  // Imgur "small square" suffix.
+  if (/[a-zA-Z0-9]s\.(png|jpe?g|webp)(\?|$)/.test(uri)) return true;
+  return false;
+};
 
 export default function JournalListScreen() {
   const { dreams } = useDreams();
@@ -79,12 +94,21 @@ export default function JournalListScreen() {
 
   const prefetchedImageUrisRef = useRef(new Set<string>());
   const isNavigatingRef = useRef(false);
-  // Perf: reuse this Set to avoid per-scroll allocations/GC on the JS thread from viewability callbacks.
-  const candidateIndexesRef = useRef(new Set<number>());
+  const viewableRangeRef = useRef<{ min: number; max: number } | null>(null);
   const viewabilityConfigRef = useRef({
     itemVisiblePercentThreshold: JOURNAL_LIST.VIEWABILITY_THRESHOLD,
     minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
   });
+
+  const isScrollingRef = useRef(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const setScrolling = useCallback((next: boolean) => {
+    if (isScrollingRef.current === next) return;
+    isScrollingRef.current = next;
+    setIsScrolling(next);
+  }, []);
 
   // Animations
   const themeModalAnim = useModalSlide(showThemeModal);
@@ -117,19 +141,36 @@ export default function JournalListScreen() {
     return sortDreamsByDate(filtered, false); // Newest first
   }, [dreams, deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
 
+  const rememberPrefetchedUri = useCallback((uri: string): boolean => {
+    const cache = prefetchedImageUrisRef.current;
+    if (cache.has(uri)) return false;
+    cache.add(uri);
+    while (cache.size > PREFETCH_CACHE_LIMIT) {
+      const oldest = cache.values().next().value as string | undefined;
+      if (!oldest) break;
+      cache.delete(oldest);
+    }
+    return true;
+  }, []);
+
   // Preload first items to warm expo-image cache (no setState during scroll)
   useEffect(() => {
     prefetchedImageUrisRef.current.clear();
     const initial = filteredDreams.slice(0, JOURNAL_LIST.INITIAL_VISIBLE_COUNT + JOURNAL_LIST.PRELOAD_BUFFER);
     initial.forEach((dream) => {
       const thumbnailUri = getDreamThumbnailUri(dream);
-      if (!thumbnailUri || prefetchedImageUrisRef.current.has(thumbnailUri)) {
+      if (!thumbnailUri) {
         return;
       }
-      prefetchedImageUrisRef.current.add(thumbnailUri);
+      if (!isLikelyOptimizedThumbnailUri(thumbnailUri)) {
+        return;
+      }
+      if (!rememberPrefetchedUri(thumbnailUri)) {
+        return;
+      }
       void preloadImage(thumbnailUri);
     });
-  }, [filteredDreams]);
+  }, [filteredDreams, rememberPrefetchedUri]);
 
   // Scroll to top when filters change
   useEffect(() => {
@@ -189,7 +230,7 @@ export default function JournalListScreen() {
     router.push(`/journal/${dream.id}`);
   }, []);
 
-  // Track viewable items for lazy loading with preloading
+  // Track viewable items and prefetch thumbnails once scrolling is idle.
   const filteredDreamsRef = useRef(filteredDreams);
   useEffect(() => {
     filteredDreamsRef.current = filteredDreams;
@@ -200,64 +241,92 @@ export default function JournalListScreen() {
     changed: ViewToken[];
   }
 
-  const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
+  const flushPrefetch = useCallback(async () => {
+    if (isScrollingRef.current) return;
+
+    const range = viewableRangeRef.current;
     const currentFilteredDreams = filteredDreamsRef.current;
-    const candidateIndexes = candidateIndexesRef.current;
-    candidateIndexes.clear();
+    if (!range || currentFilteredDreams.length === 0) return;
+
+    const start = Math.max(0, range.min - JOURNAL_LIST.PRELOAD_BUFFER);
+    const end = Math.min(currentFilteredDreams.length - 1, range.max + JOURNAL_LIST.PRELOAD_BUFFER);
+    const urisToPrefetch: string[] = [];
+
+    for (let idx = start; idx <= end && urisToPrefetch.length < PREFETCH_MAX_PER_FLUSH; idx++) {
+      const dream = currentFilteredDreams[idx];
+      const thumbnailUri = getDreamThumbnailUri(dream);
+      if (!thumbnailUri) continue;
+      if (!isLikelyOptimizedThumbnailUri(thumbnailUri)) continue;
+      if (!rememberPrefetchedUri(thumbnailUri)) continue;
+      urisToPrefetch.push(thumbnailUri);
+    }
+
+    for (const uri of urisToPrefetch) {
+      await preloadImage(uri);
+    }
+  }, [rememberPrefetchedUri]);
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
+    let min = Number.POSITIVE_INFINITY;
+    let max = Number.NEGATIVE_INFINITY;
 
     viewableItems.forEach((item) => {
       if (typeof item.index !== 'number') {
         return;
       }
-      for (let i = -JOURNAL_LIST.PRELOAD_BUFFER; i <= JOURNAL_LIST.PRELOAD_BUFFER; i++) {
-        const idx = item.index + i;
-        if (idx >= 0 && idx < currentFilteredDreams.length) {
-          candidateIndexes.add(idx);
-        }
-      }
+      if (item.index < min) min = item.index;
+      if (item.index > max) max = item.index;
     });
 
-    candidateIndexes.forEach((idx) => {
-      const dream = currentFilteredDreams[idx];
-      const thumbnailUri = getDreamThumbnailUri(dream);
-      if (!thumbnailUri || prefetchedImageUrisRef.current.has(thumbnailUri)) {
-        return;
-      }
-
-      prefetchedImageUrisRef.current.add(thumbnailUri);
-      void preloadImage(thumbnailUri);
-    });
-
-    candidateIndexes.clear();
+    if (min !== Number.POSITIVE_INFINITY && max !== Number.NEGATIVE_INFINITY) {
+      viewableRangeRef.current = { min, max };
+    }
   }).current;
 
-  const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+  const scheduleIdle = useCallback(() => {
+    if (scrollIdleTimeoutRef.current) {
+      clearTimeout(scrollIdleTimeoutRef.current);
+    }
+
+    scrollIdleTimeoutRef.current = setTimeout(() => {
+      setScrolling(false);
+      void flushPrefetch();
+    }, SCROLL_IDLE_MS);
+  }, [flushPrefetch, setScrolling]);
+
+  const handleScrollBegin = useCallback(() => {
+    setScrolling(true);
+    if (scrollIdleTimeoutRef.current) {
+      clearTimeout(scrollIdleTimeoutRef.current);
+    }
+  }, [setScrolling]);
+
+  useEffect(() => {
+    return () => {
+      if (scrollIdleTimeoutRef.current) {
+        clearTimeout(scrollIdleTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const renderDreamItem = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
 
     return (
-      <View style={styles.timelineItem}>
-        {/* Timeline indicator column */}
-        <View style={styles.timelineColumn}>
-          <TimelineIndicator dreamType={item.dreamType} />
-          {/* Timeline line - don't show for last item */}
-          {index < filteredDreams.length - 1 && <View style={[styles.timelineLine, { backgroundColor: colors.timeline }]} />}
-        </View>
-
-        {/* Content column */}
-        <View style={styles.contentColumn}>
-          <Text style={[styles.date, { color: colors.textSecondary }]}>
-            {formatDreamListDate(item.id)}
-            {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
-          </Text>
-          <DreamCard
-            dream={item}
-            onPress={handleDreamPress}
-            testID={TID.List.DreamItem(item.id)}
-          />
-        </View>
+      <View style={styles.listItem}>
+        <Text style={[styles.date, { color: colors.textSecondary }]}>
+          {formatDreamListDate(item.id)}
+          {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
+        </Text>
+        <DreamCard
+          dream={item}
+          onPress={handleDreamPress}
+          isScrolling={isScrolling}
+          testID={TID.List.DreamItem(item.id)}
+        />
       </View>
     );
-  }, [filteredDreams.length, colors, formatDreamListDate, t, handleDreamPress]);
+  }, [colors, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
@@ -287,11 +356,12 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
+          isScrolling={isScrolling}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [colors, formatDreamListDate, t, handleDreamPress]);
+  }, [colors, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -376,13 +446,14 @@ export default function JournalListScreen() {
         <UpsellCard />
       </View>
 
-      {/* Timeline / Bento List */}
+      {/* List */}
       {isDesktopLayout ? (
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
           data={filteredDreams}
+          extraData={isScrolling}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
@@ -393,12 +464,17 @@ export default function JournalListScreen() {
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
+          onScrollBeginDrag={handleScrollBegin}
+          onScrollEndDrag={scheduleIdle}
+          onMomentumScrollBegin={handleScrollBegin}
+          onMomentumScrollEnd={scheduleIdle}
         />
       ) : (
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
           data={filteredDreams}
+          extraData={isScrolling}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
@@ -408,6 +484,10 @@ export default function JournalListScreen() {
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
           onViewableItemsChanged={onViewableItemsChanged}
+          onScrollBeginDrag={handleScrollBegin}
+          onScrollEndDrag={scheduleIdle}
+          onMomentumScrollBegin={handleScrollBegin}
+          onMomentumScrollEnd={scheduleIdle}
         />
       )}
 
@@ -599,7 +679,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.xs,
   },
   desktopDate: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'SpaceGrotesk_400Regular',
   },
   desktopBadgesRow: {
@@ -643,25 +723,11 @@ const styles = StyleSheet.create({
   desktopCardWithImage: {
     flex: 1.2,
   },
-  timelineItem: {
-    flexDirection: 'row',
+  listItem: {
     marginBottom: ThemeLayout.spacing.lg,
   },
-  timelineColumn: {
-    width: 36,
-    alignItems: 'center',
-    marginRight: ThemeLayout.spacing.md,
-  },
-  timelineLine: {
-    flex: 1,
-    width: ThemeLayout.timelineLineWidth,
-    marginTop: 4,
-  },
-  contentColumn: {
-    flex: 1,
-  },
   date: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
     marginBottom: 8,
     marginLeft: 4,
