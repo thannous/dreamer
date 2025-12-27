@@ -35,6 +35,10 @@ const mockMockAuth = {
   updateUserTier: vi.fn(),
 };
 
+const mockSubscriptionService = {
+  logOutSubscriptionUser: vi.fn(),
+};
+
 const mockFetchJSON = vi.fn();
 const mockGetDeviceFingerprint = vi.fn(async () => 'device-1');
 
@@ -113,6 +117,8 @@ const loadAuth = async (options?: {
   vi.doMock('../http', () => ({
     fetchJSON: mockFetchJSON,
   }));
+
+  vi.doMock('@/services/subscriptionService', () => mockSubscriptionService);
 
   if (googleModule) {
     vi.doMock('@react-native-google-signin/google-signin', () => googleModule);
@@ -409,6 +415,7 @@ describe('auth helpers', () => {
 
     await auth.signOut();
 
+    expect(mockSubscriptionService.logOutSubscriptionUser).toHaveBeenCalled();
     expect(defaultGoogleModule.GoogleSignin.signOut).toHaveBeenCalled();
     expect(mockSupabaseAuth.signOut).toHaveBeenCalled();
   });

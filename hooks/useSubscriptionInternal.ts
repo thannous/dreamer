@@ -95,6 +95,10 @@ function formatError(e: unknown): Error {
       return new Error('subscription.error.not_initialized');
     }
 
+    if (msg.includes('user not identified') || msg.includes('not logged in')) {
+      return new Error('subscription.error.not_logged_in');
+    }
+
     return e;
   }
   return new Error('subscription.error.unknown');

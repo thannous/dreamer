@@ -456,6 +456,7 @@ const translations: Record<string, string> = {
     'subscription.error.receipt_already_in_use': 'This subscription is already linked to another Noctalia account. Sign in with the original account to restore purchases.',
     'subscription.error.purchase_failed': 'The purchase failed. Please try again.',
     'subscription.error.not_initialized': 'Purchase service not initialized. Please restart the app.',
+    'subscription.error.not_logged_in': 'Please sign in again to complete the purchase.',
     'subscription.error.unknown': 'An unknown error occurred.',
     'subscription.refresh.button': 'Refresh Subscription',
     'subscription.refresh.success': 'Your subscription has been refreshed successfully.',

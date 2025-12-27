@@ -17,3 +17,4 @@ export const refreshSubscriptionStatus = service.refreshStatus ?? service.getSta
 export const loadSubscriptionPackages = service.loadOfferings;
 export const purchaseSubscriptionPackage = service.purchasePackage;
 export const restoreSubscriptionPurchases = service.restorePurchases;
+export const logOutSubscriptionUser = service.logOutUser ?? (async () => {});

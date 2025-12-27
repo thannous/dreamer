@@ -2,12 +2,14 @@ import type { Session, User } from '@supabase/supabase-js';
 
 import * as mockAuth from './mockAuth';
 import { isMockModeEnabled } from './env';
+import { createScopedLogger } from './logger';
 import { supabase } from './supabase';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
 
 const isMockMode = isMockModeEnabled();
+const log = createScopedLogger('[Auth]');
 const EMAIL_REDIRECT_WEB = 'https://dream.noctalia.app/recording';
 const WEB_REDIRECT_FALLBACK = 'https://dream.noctalia.app';
 
@@ -211,6 +213,19 @@ export async function signOut() {
   if (isMockMode) {
     await mockAuth.signOut();
     return;
+  }
+
+  try {
+    const subscriptionService = await import('@/services/subscriptionService');
+    const logOut =
+      subscriptionService.logOutSubscriptionUser ??
+      (subscriptionService as { default?: { logOutSubscriptionUser?: () => Promise<void> } }).default
+        ?.logOutSubscriptionUser;
+    if (logOut) {
+      await logOut();
+    }
+  } catch (error) {
+    log.warn('RevenueCat logout failed', error);
   }
 
   const { error } = await supabase.auth.signOut();

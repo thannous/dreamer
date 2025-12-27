@@ -42,6 +42,10 @@ function normalizeTierForComparison(tier: string | null | undefined): Tier {
   return 'free';
 }
 
+function isRevenueCatAnonymousId(id: string): boolean {
+  return id.startsWith('$RCAnonymousID:');
+}
+
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let result = 0;
@@ -125,11 +129,37 @@ function getAppUserIdCandidates(payload: any): string[] {
     ids.add(trimmed);
   };
 
+  const addValue = (value: unknown) => {
+    if (!value) return;
+    if (Array.isArray(value)) {
+      for (const item of value) addValue(item);
+      return;
+    }
+    if (typeof value === 'object') {
+      const record = value as Record<string, unknown>;
+      add(record.app_user_id);
+      add(record.appUserId);
+      add(record.original_app_user_id);
+      add(record.originalAppUserId);
+      add(record.id);
+      return;
+    }
+    add(value);
+  };
+
   add(payload?.event?.app_user_id);
   add(payload?.app_user_id);
   add(payload?.event?.original_app_user_id);
   add(payload?.original_app_user_id);
   add(payload?.event?.customer_info?.original_app_user_id);
+  add(payload?.event?.transferred_from_app_user_id);
+  add(payload?.event?.transferred_to_app_user_id);
+  addValue(payload?.event?.transferred_from);
+  addValue(payload?.event?.transferred_to);
+  addValue(payload?.event?.transferredFrom);
+  addValue(payload?.event?.transferredTo);
+  addValue(payload?.event?.transfer_from);
+  addValue(payload?.event?.transfer_to);
 
   const aliases =
     payload?.event?.aliases ??
@@ -425,11 +455,20 @@ serve(async (req: Request) => {
 
   const candidateIds = getAppUserIdCandidates(payload);
   if (!candidateIds.length) {
-    console.error('[revenuecat-webhook] Missing app_user_id in payload', {
+    const eventType = payload?.event?.type;
+    const logPayload = {
       timestamp: new Date().toISOString(),
-      eventType: payload?.event?.type,
+      eventType,
       hasPayload: Boolean(payload),
-    });
+    };
+    if (eventType === 'TRANSFER') {
+      console.warn('[revenuecat-webhook] Missing app_user_id in payload', logPayload);
+      return new Response(JSON.stringify({ ok: true, skipped: true, reason: 'missing app_user_id' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+    console.error('[revenuecat-webhook] Missing app_user_id in payload', logPayload);
     return new Response(JSON.stringify({ error: 'Missing app_user_id' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -508,12 +547,24 @@ serve(async (req: Request) => {
 
     const resolved = await resolveSupabaseUserByCandidates(supabase, allUserIdCandidates);
     if (!resolved) {
-      console.warn('[revenuecat-webhook] User not found for RevenueCat ids', {
+      const hasOnlyAnonymous =
+        allUserIdCandidates.length > 0 && allUserIdCandidates.every((id) => isRevenueCatAnonymousId(id));
+      const logPayload = {
         timestamp: new Date().toISOString(),
         candidateCount: allUserIdCandidates.length,
         eventType: payload?.event?.type,
         appUserIdUsed,
-      });
+        anonymousOnly: hasOnlyAnonymous,
+      };
+      if (hasOnlyAnonymous) {
+        console.log('[revenuecat-webhook] Anonymous RevenueCat user, skipping update', logPayload);
+        return new Response(JSON.stringify({ ok: true, skipped: true, reason: 'anonymous_user' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      console.warn('[revenuecat-webhook] User not found for RevenueCat ids', logPayload);
       return new Response(JSON.stringify({ error: 'User not found', details: 'User not found' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
