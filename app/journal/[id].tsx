@@ -1222,7 +1222,10 @@ export default function JournalDetailScreen() {
       <Pressable
         onPress={isEditing ? handleSave : startMetadataEditing}
         testID={TID.Button.EditMetadata}
+        nativeID={TID.Button.EditMetadata}
         accessibilityLabel="Edit dream details"
+        accessibilityRole="button"
+        accessible
         disabled={isAnalysisLocked}
         style={({ pressed }) => [
           styles.editButton,
@@ -1264,6 +1267,9 @@ export default function JournalDetailScreen() {
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
           testID={TID.Button.NavigateJournal}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
         </Pressable>
