@@ -24,29 +24,29 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      id: "Edit transcript"
+      id: "btn.editTranscript"
     direction: DOWN
     visibilityPercentage: 60
     centerElement: true
 - tapOn:
-    id: "Edit transcript"
+    id: "btn.editTranscript"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
 - assertVisible:
-    id: "journal.transcript.placeholder"
+    id: "input.dreamTranscript"
 - tapOn:
-    id: "journal.transcript.placeholder"
+    id: "input.dreamTranscript"
 - eraseText
 - inputText: "E2E transcript update."
 - scrollUntilVisible:
     element:
-      id: "Edit transcript"
+      id: "btn.editTranscript"
     direction: DOWN
     visibilityPercentage: 60
     centerElement: true
 - tapOn:
-    id: "Edit transcript"
+    id: "btn.editTranscript"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd

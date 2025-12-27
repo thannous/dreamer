@@ -24,12 +24,12 @@ url: "http://localhost:8081"
 - assertVisible: "Garden in the Clouds"
 - scrollUntilVisible:
     element:
-      id: "Delete dream"
+      id: "btn.dream.delete"
     direction: DOWN
     visibilityPercentage: 60
     centerElement: true
 - tapOn:
-    id: "Delete dream"
+    id: "btn.dream.delete"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd

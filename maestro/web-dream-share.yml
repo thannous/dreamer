@@ -24,12 +24,12 @@ url: "http://localhost:8081"
 - assertVisible: "The Infinite Library"
 - scrollUntilVisible:
     element:
-      id: "Share dream"
+      id: "btn.dream.share"
     direction: DOWN
     visibilityPercentage: 60
     centerElement: true
 - tapOn:
-    id: "Share dream"
+    id: "btn.dream.share"
     retryTapIfNoChange: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
@@ -37,12 +37,12 @@ url: "http://localhost:8081"
 - runFlow:
     when:
       visible:
-        id: "Copy share text"
+        id: "btn.share.copy"
     commands:
       - tapOn:
-          id: "Copy share text"
+          id: "btn.share.copy"
       - waitForAnimationToEnd
       - assertVisible: "(Copied!|Copi.!|Copiado)"
 - tapOn:
-    id: "Close share modal"
+    id: "btn.share.close"
 - waitForAnimationToEnd

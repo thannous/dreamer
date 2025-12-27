@@ -32,10 +32,10 @@ url: "http://localhost:8081"
           id: "btn.recording.switchToText"
       - waitForAnimationToEnd
 - tapOn:
-    id: "(Dream transcript input|Zone de texte du r.ve|Entrada del sue.o)"
+    id: "input.dreamTranscript"
 - inputText: "I walked through a quiet garden under a silver moon."
 - tapOn:
-    id: "(Save this dream to your journal|Enregistrer ce r.ve dans votre journal|Guardar este sue.o en tu diario)"
+    id: "btn.saveDream"
 - waitForAnimationToEnd
 - assertVisible:
     id: "text.analyzePromptTitle"
