@@ -634,6 +634,9 @@ const translations: Record<string, string> = {
     'reference_image.open_settings': 'Ouvrir les reglages',
     'reference_image.take_photo': 'Prendre une photo',
     'reference_image.pick_from_gallery': 'Choisir depuis la galerie',
+    'reference_image.confirm': 'Valider',
+    'reference_image.remove_photo': 'Supprimer la photo {index}',
+    'reference_image.remove_photo_hint': 'Supprime cette photo de votre sélection.',
 
     // Subject proposition
     'subject_proposition.title_person': 'Personne detectee dans votre reve',

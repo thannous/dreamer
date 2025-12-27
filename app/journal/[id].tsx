@@ -221,6 +221,7 @@ export default function JournalDetailScreen() {
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
+  const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -244,7 +245,9 @@ export default function JournalDetailScreen() {
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
-  const showReferenceActions = canUseReference && dream?.hasPerson === true;
+  useEffect(() => {
+    setImageAspectRatio(null);
+  }, [dream?.imageUrl]);
   const dreamTypeLabel = useMemo(
     () => (dream ? getDreamTypeLabel(dream.dreamType, t) ?? dream.dreamType : undefined),
     [dream, t]
@@ -366,6 +369,7 @@ export default function JournalDetailScreen() {
   }, [primaryAction, t]);
   const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
   const isAnalysisLocked = !!dream && (dream.analysisStatus === 'pending' || isAnalyzing);
+  const isAnalysisPending = dream?.analysisStatus === 'pending';
   const shareMessage = useMemo(() => {
     if (!dream) return '';
     const sections: string[] = [];
@@ -1355,40 +1359,9 @@ export default function JournalDetailScreen() {
                               </Text>
                             </Pressable>
 
-                            {showReferenceActions ? (
-                              <>
-                                <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                                  {t('journal.detail.image.or')}
-                                </Text>
-
-                                {/* Add Person button when detected */}
-                                {dream.hasPerson === true && (
-                                  <Pressable
-                                    onPress={() => handleAddSubject('person')}
-                                    disabled={isGeneratingWithReference || isAnalysisLocked}
-                                    style={[
-                                      styles.imageActionButton,
-                                      styles.imageActionButtonSecondary,
-                                      { borderColor: colors.divider },
-                                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                                    ]}
-                                  >
-                                    <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
-                                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                                      {t('journal.detail.add_person')}
-                                    </Text>
-                                  </Pressable>
-                                )}
-
-                                <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                                  {t('journal.detail.image.or')}
-                                </Text>
-                              </>
-                            ) : (
-                              <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
-                                {t('journal.detail.image.or')}
-                              </Text>
-                            )}
+                            <Text style={[styles.imageOrText, { color: colors.textSecondary }]}>
+                              {t('journal.detail.image.or')}
+                            </Text>
                           </>
                         )}
 
@@ -1435,54 +1408,31 @@ export default function JournalDetailScreen() {
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
 
-            {/* Reference Image Actions - Add Person */}
-            {dream.imageUrl && showReferenceActions && !isAnalysisLocked && canGenerateImage && (
-              <View style={[styles.imageActionsRow, { marginBottom: 16 }]}>
-                {dream.hasPerson === true && (
-                  <Pressable
-                    onPress={() => handleAddSubject('person')}
-                    disabled={isGeneratingWithReference || isAnalysisLocked}
-                    style={[
-                      styles.imageActionButton,
-                      styles.imageActionButtonSecondary,
-                      { borderColor: colors.divider },
-                      (isGeneratingWithReference || isAnalysisLocked) && styles.imageActionButtonDisabled,
-                    ]}
-                  >
-                    <Ionicons name="person-outline" size={18} color={colors.textPrimary} />
-                    <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
-                      {t('journal.detail.add_person')}
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            )}
-
-            {(dream.isAnalyzed || dream.analysisStatus === 'pending') && (
+            {(dream.isAnalyzed || isAnalysisPending) && (
               <>
                 {/* Quote */}
-                {dream.shareableQuote ? (
+                {isAnalysisPending ? (
+                  <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
+                ) : dream.shareableQuote ? (
                   <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
                     <Text style={[styles.quote, { color: colors.textPrimary }]}>
                       &quot;{dream.shareableQuote}&quot;
                     </Text>
                   </View>
-                ) : dream.analysisStatus === 'pending' ? (
-                  <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
                 ) : null}
 
-                {dream.interpretation ? (
-                  <TypewriterText
-                    text={dream.interpretation}
-                    style={[styles.interpretation, { color: colors.textSecondary }]}
-                    shouldAnimate={dream.analysisStatus === 'pending'}
-                  />
-                ) : dream.analysisStatus === 'pending' ? (
+                {isAnalysisPending ? (
                   <View style={{ gap: 8, marginBottom: 16 }}>
                     <Skeleton style={{ height: 16, width: '100%', borderRadius: 4 }} />
                     <Skeleton style={{ height: 16, width: '90%', borderRadius: 4 }} />
                     <Skeleton style={{ height: 16, width: '95%', borderRadius: 4 }} />
                   </View>
+                ) : dream.interpretation ? (
+                  <TypewriterText
+                    text={dream.interpretation}
+                    style={[styles.interpretation, { color: colors.textSecondary }]}
+                    shouldAnimate={false}
+                  />
                 ) : null}
 
                 {/* Action Buttons */}
@@ -1988,7 +1938,9 @@ export default function JournalDetailScreen() {
             ? t('reference_image.title_person')
             : t('reference_image.title_animal')}
           actions={{
-            primaryLabel: t('subject_proposition.accept'),
+            primaryLabel: referenceImages.length >= REFERENCE_IMAGES.MAX_UPLOADS
+              ? t('reference_image.confirm')
+              : t('subject_proposition.accept'),
             onPrimary: handleGenerateWithReference,
             primaryDisabled: referenceImages.length === 0 || isGeneratingWithReference,
             primaryLoading: isGeneratingWithReference,

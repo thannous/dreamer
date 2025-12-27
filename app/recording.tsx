@@ -537,8 +537,6 @@ export default function RecordingScreen() {
         : buildDraftDream(latestTranscript);
 
       // Attempt quick categorization if we have a transcript
-      let subjectDetected = false;
-      let detectedType: 'person' | 'animal' | null = null;
       let categorizationResult: Awaited<ReturnType<typeof categorizeDream>> | null = null;
 
       if (latestTranscript) {
@@ -553,11 +551,6 @@ export default function RecordingScreen() {
             hasAnimal: categorizationResult.hasAnimal,
           };
 
-          // Check if a subject was detected
-          if (categorizationResult.hasPerson === true) {
-            subjectDetected = true;
-            detectedType = 'person';
-          }
         } catch (err) {
           // Silently fail and proceed with default/derived values
           log.warn('Quick categorization failed:', err);
@@ -566,22 +559,6 @@ export default function RecordingScreen() {
 
       const savedDream = await addDream(dreamToSave);
       setDraftDream(savedDream);
-
-      // If subject detected, show proposition instead of navigating
-      if (referenceImagesEnabled && subjectDetected && detectedType && canAnalyzeNow && user) {
-        setPendingSubjectDream(savedDream);
-        setPendingSubjectMetadata(categorizationResult ? {
-          title: categorizationResult.title,
-          theme: categorizationResult.theme,
-          dreamType: categorizationResult.dreamType,
-          hasPerson: categorizationResult.hasPerson,
-          hasAnimal: categorizationResult.hasAnimal,
-        } : null);
-        setDetectedSubjectType(detectedType);
-        setShowSubjectProposition(true);
-        resetComposer();
-        return;
-      }
 
       resetComposer();
       navigateAfterSave(savedDream, preCount);
@@ -603,13 +580,11 @@ export default function RecordingScreen() {
 		  }, [
 		    addDream,
 		    buildDraftDream,
-		    canAnalyzeNow,
 		    dreams.length,
 		    draftDream,
         isRecordingRef,
 		    language,
 		    navigateAfterSave,
-        referenceImagesEnabled,
 		    resetComposer,
 		    stopRecording,
 		    t,
@@ -696,6 +671,56 @@ export default function RecordingScreen() {
     analysisProgress.reset();
   }, [analyzePromptDream, pendingAnalysisDream, analysisProgress]);
 
+  const runAnalysis = useCallback(async (dream: DreamAnalysis) => {
+    setPendingAnalysisDream(dream);
+
+    setIsPersisting(true);
+    const preCount = dreams.length;
+    try {
+      analysisProgress.reset();
+      analysisProgress.setStep(AnalysisStep.ANALYZING);
+      requestAnimationFrame(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      });
+
+      const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
+        replaceExistingImage: true,
+        lang: language,
+        onProgress: (step) => {
+          // Update progress as each phase completes
+          analysisProgress.setStep(step);
+        },
+      });
+
+      analysisProgress.setStep(AnalysisStep.COMPLETE);
+      setPendingAnalysisDream(null);
+      resetComposer();
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
+    } catch (error) {
+      if (error instanceof QuotaError) {
+        const mode = error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest' ? 'login' : 'limit';
+        showQuotaSheet({ mode });
+        analysisProgress.reset();
+        return;
+      }
+      const classified = classifyError(error as Error, t);
+      analysisProgress.setError(classified);
+    } finally {
+      setIsPersisting(false);
+    }
+  }, [
+    analysisProgress,
+    analyzeDream,
+    dreams.length,
+    language,
+    navigateAfterSave,
+    resetComposer,
+    showQuotaSheet,
+    t,
+    tier,
+  ]);
+
   // Subject proposition handlers
   const handleSubjectAccept = useCallback(() => {
     setShowSubjectProposition(false);
@@ -705,21 +730,21 @@ export default function RecordingScreen() {
   const handleSubjectDismiss = useCallback(() => {
     setShowSubjectProposition(false);
     setDetectedSubjectType(null);
-    // Continue with normal analysis without reference images
     const dream = pendingSubjectDream;
     const metadata = pendingSubjectMetadata;
-    if (dream && metadata) {
-      setPendingSubjectDream(null);
-      setPendingSubjectMetadata(null);
-      // Proceed to normal analysis
-      setAnalyzePromptDream({
-        ...dream,
-        ...metadata,
-        hasPerson: metadata.hasPerson,
-        hasAnimal: metadata.hasAnimal,
-      } as DreamAnalysis);
+    setPendingSubjectDream(null);
+    setPendingSubjectMetadata(null);
+    if (!dream) {
+      return;
     }
-  }, [pendingSubjectDream, pendingSubjectMetadata]);
+    const dreamToAnalyze = metadata ? {
+      ...dream,
+      ...metadata,
+      hasPerson: metadata.hasPerson,
+      hasAnimal: metadata.hasAnimal,
+    } as DreamAnalysis : dream;
+    void runAnalysis(dreamToAnalyze);
+  }, [pendingSubjectDream, pendingSubjectMetadata, runAnalysis]);
 
   const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
     setReferenceImages(images);
@@ -729,20 +754,21 @@ export default function RecordingScreen() {
     setShowReferencePickerSheet(false);
     setReferenceImages([]);
     setDetectedSubjectType(null);
-    // Continue with normal analysis without reference images
     const dream = pendingSubjectDream;
     const metadata = pendingSubjectMetadata;
-    if (dream && metadata) {
-      setPendingSubjectDream(null);
-      setPendingSubjectMetadata(null);
-      setAnalyzePromptDream({
-        ...dream,
-        ...metadata,
-        hasPerson: metadata.hasPerson,
-        hasAnimal: metadata.hasAnimal,
-      } as DreamAnalysis);
+    setPendingSubjectDream(null);
+    setPendingSubjectMetadata(null);
+    if (!dream) {
+      return;
     }
-  }, [pendingSubjectDream, pendingSubjectMetadata]);
+    const dreamToAnalyze = metadata ? {
+      ...dream,
+      ...metadata,
+      hasPerson: metadata.hasPerson,
+      hasAnimal: metadata.hasAnimal,
+    } as DreamAnalysis : dream;
+    void runAnalysis(dreamToAnalyze);
+  }, [pendingSubjectDream, pendingSubjectMetadata, runAnalysis]);
 
   const handleGenerateWithReference = useCallback(async () => {
     if (!referenceImagesEnabled || !pendingSubjectDream || !pendingSubjectMetadata || referenceImages.length === 0) {
@@ -829,60 +855,38 @@ export default function RecordingScreen() {
     if (analyzePromptDream) {
       setAnalyzePromptDream(null);
     }
-    setPendingAnalysisDream(dream);
 
-    setIsPersisting(true);
-    const preCount = dreams.length;
-    try {
-      analysisProgress.reset();
-      analysisProgress.setStep(AnalysisStep.ANALYZING);
-      requestAnimationFrame(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
+    const shouldOfferReference = !pendingAnalysisDream
+      && referenceImagesEnabled
+      && Boolean(user)
+      && dream.hasPerson === true;
+
+    if (shouldOfferReference) {
+      setPendingSubjectDream(dream);
+      setPendingSubjectMetadata({
+        title: dream.title,
+        theme: dream.theme,
+        dreamType: dream.dreamType,
+        hasPerson: dream.hasPerson,
+        hasAnimal: dream.hasAnimal,
       });
-
-      const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
-        replaceExistingImage: true,
-        lang: language,
-        onProgress: (step) => {
-          // Update progress as each phase completes
-          analysisProgress.setStep(step);
-        },
-      });
-
-      analysisProgress.setStep(AnalysisStep.COMPLETE);
-      setPendingAnalysisDream(null);
-      resetComposer();
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      navigateAfterSave(analyzedDream, preCount, { skipFirstDreamSheet: true });
-    } catch (error) {
-      if (error instanceof QuotaError) {
-        const mode = error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest' ? 'login' : 'limit';
-        showQuotaSheet({ mode });
-        analysisProgress.reset();
-        return;
-      }
-      const classified = classifyError(error as Error, t);
-      analysisProgress.setError(classified);
-    } finally {
-      setIsPersisting(false);
+      setDetectedSubjectType('person');
+      setShowSubjectProposition(true);
+      return;
     }
-	  }, [
-	    analysisProgress,
-	    analyzeDream,
-	    analyzePromptDream,
-	    canAnalyzeNow,
-	    dreams.length,
-	    firstDreamPrompt,
-	    language,
-	    pendingAnalysisDream,
-	    quotaStatus?.isUpgraded,
-	    navigateAfterSave,
-	    resetComposer,
-	    showQuotaSheet,
-	    t,
-	    tier,
-	    user,
-	  ]);
+
+    await runAnalysis(dream);
+  }, [
+    analyzePromptDream,
+    canAnalyzeNow,
+    firstDreamPrompt,
+    pendingAnalysisDream,
+    quotaStatus?.isUpgraded,
+    referenceImagesEnabled,
+    runAnalysis,
+    showQuotaSheet,
+    user,
+  ]);
 
   const gradientColors = mode === 'dark'
     ? GradientColors.surreal
@@ -1173,11 +1177,14 @@ export default function RecordingScreen() {
       {/* Subject Proposition */}
       {referenceImagesEnabled && showSubjectProposition && detectedSubjectType && (
         <View style={styles.subjectPropositionOverlay}>
-          <SubjectProposition
-            subjectType={detectedSubjectType}
-            onAccept={handleSubjectAccept}
-            onDismiss={handleSubjectDismiss}
-          />
+          <View style={styles.subjectPropositionBackdrop} />
+          <View style={[styles.subjectPropositionCard, { marginBottom: 100 + insets.bottom }]}>
+            <SubjectProposition
+              subjectType={detectedSubjectType}
+              onAccept={handleSubjectAccept}
+              onDismiss={handleSubjectDismiss}
+            />
+          </View>
         </View>
       )}
 
@@ -1272,10 +1279,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   subjectPropositionOverlay: {
-    position: 'absolute',
-    bottom: 100,
-    left: 16,
-    right: 16,
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
     zIndex: 100,
+  },
+  subjectPropositionBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(10, 6, 24, 0.45)',
+  },
+  subjectPropositionCard: {
+    paddingHorizontal: 16,
   },
 });
