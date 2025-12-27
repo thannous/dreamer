@@ -131,6 +131,13 @@ describe('getUserErrorMessage', () => {
     expect(message).toBe('No internet connection. Please check your network and try again.');
   });
 
+  it('should not leak raw error details for unknown errors', () => {
+    const error = new Error('Sensitive stack detail');
+    const message = getUserErrorMessage(error);
+
+    expect(message).toBe('An unexpected error occurred.');
+  });
+
   it('should use translation function when provided', () => {
     const mockTranslate = vi.fn().mockReturnValue('Pas de connexion');
     const error = new Error('Network failed');
