@@ -153,7 +153,9 @@ function getRevenueCatApiKey(): string {
     getOptionalEnv('REVENUECAT_API_KEY') ??
     getOptionalEnv('REVENUECAT_SECRET_KEY');
   if (!apiKey) {
-    throw new Error('Missing REVENUECAT_SECRET_API_KEY');
+    throw new Error(
+      'Missing REVENUECAT_SECRET_API_KEY (or REVENUECAT_API_KEY / REVENUECAT_SECRET_KEY)'
+    );
   }
   return apiKey;
 }
