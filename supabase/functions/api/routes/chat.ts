@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt } from '../lib/prompts.ts';
 import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';

@@ -1,4 +1,4 @@
-import { ApiError, GoogleGenAI, Modality } from 'https://esm.sh/@google/genai@1.34.0?target=deno';
+import { ApiError, requestGeminiGenerateContent } from './gemini.ts';
 
 /**
  * Normalize the image model to a supported Gemini image model. Avoids using Imagen
@@ -15,7 +15,6 @@ export async function generateImageFromPrompt(options: {
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
   const { prompt, apiKey, aspectRatio = '9:16', model = resolveImageModel() } = options;
-  const client = new GoogleGenAI({ apiKey });
 
   const extractInlineData = (
     response: any
@@ -38,11 +37,12 @@ export async function generateImageFromPrompt(options: {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     let response: any;
     try {
-      response = await client.models.generateContent({
+      response = await requestGeminiGenerateContent({
+        apiKey,
         model,
-        contents: prompt,
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
-          responseModalities: [Modality.IMAGE],
+          responseModalities: ['IMAGE'],
           imageConfig: { aspectRatio },
         },
       });
@@ -150,7 +150,6 @@ export async function generateImageWithReferences(options: {
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {
   const { prompt, apiKey, referenceImages, aspectRatio = '9:16', model = resolveImageModel() } = options;
-  const client = new GoogleGenAI({ apiKey });
 
   const extractInlineData = (
     response: any
@@ -184,11 +183,12 @@ export async function generateImageWithReferences(options: {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     let response: any;
     try {
-      response = await client.models.generateContent({
+      response = await requestGeminiGenerateContent({
+        apiKey,
         model,
         contents: [{ role: 'user', parts }],
         config: {
-          responseModalities: [Modality.IMAGE],
+          responseModalities: ['IMAGE'],
           imageConfig: { aspectRatio },
         },
       });
