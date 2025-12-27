@@ -13,7 +13,7 @@ import {
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
-import { CameraView, type CameraType, useCameraPermissions } from 'expo-camera';
+import type { CameraType, CameraView as ExpoCameraView } from 'expo-camera';
 
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { Fonts } from '@/constants/theme';
@@ -32,6 +32,13 @@ interface SelectedImage {
   uri: string;
   mimeType: string;
 }
+
+type CameraPermission = {
+  granted: boolean;
+  canAskAgain: boolean;
+};
+
+type ExpoCameraModule = typeof import('expo-camera');
 
 const MAX_COMPRESSED_SIZE_BYTES = 1.5 * 1024 * 1024; // 1.5MB decoded payload
 const MAX_DIMENSION = 512;
@@ -93,8 +100,9 @@ export function ReferenceImagePicker({
   const { t } = useTranslation();
   const { colors, shadows } = useTheme();
   const pendingHandledRef = useRef(false);
-  const cameraRef = useRef<CameraView | null>(null);
-  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const cameraRef = useRef<ExpoCameraView | null>(null);
+  const [expoCamera, setExpoCamera] = useState<ExpoCameraModule | null>(null);
+  const [cameraPermission, setCameraPermission] = useState<CameraPermission | null>(null);
 
   const showPermissionDeniedAlert = useCallback(
     (titleKey: string, messageKey: string, canAskAgain: boolean) => {
@@ -120,6 +128,44 @@ export function ReferenceImagePicker({
   const [isCapturing, setIsCapturing] = useState(false);
   const cameraFacing: CameraType = subjectType === 'person' ? 'front' : 'back';
   const canAddMore = selectedImages.length < maxImages;
+
+  const loadExpoCamera = useCallback(async (): Promise<ExpoCameraModule | null> => {
+    if (expoCamera) {
+      return expoCamera;
+    }
+
+    try {
+      const camera = await import('expo-camera');
+      setExpoCamera(camera);
+      return camera;
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[ReferenceImagePicker] expo-camera unavailable:', error);
+      }
+      return null;
+    }
+  }, [expoCamera]);
+
+  const ensureCameraPermission = useCallback(async (camera: ExpoCameraModule) => {
+    try {
+      const existing = await camera.Camera.getCameraPermissionsAsync();
+      if (existing.granted) {
+        const permission = { granted: true, canAskAgain: existing.canAskAgain };
+        setCameraPermission(permission);
+        return permission;
+      }
+
+      const requested = await camera.Camera.requestCameraPermissionsAsync();
+      const permission = { granted: requested.granted, canAskAgain: requested.canAskAgain };
+      setCameraPermission(permission);
+      return permission;
+    } catch (error) {
+      if (__DEV__) {
+        console.error('[ReferenceImagePicker] Camera permission error:', error);
+      }
+      return null;
+    }
+  }, []);
 
   const processSelectedAssets = useCallback(
     async (assets: { uri: string }[]) => {
@@ -167,7 +213,11 @@ export function ReferenceImagePicker({
         const ImagePicker = await import('expo-image-picker');
         const pendingResult = await ImagePicker.getPendingResultAsync();
 
-        if (!isMounted || !pendingResult || pendingResult.canceled || !pendingResult.assets?.length) {
+        if (!isMounted || !pendingResult || !('canceled' in pendingResult)) {
+          return;
+        }
+
+        if (pendingResult.canceled || pendingResult.assets.length === 0) {
           return;
         }
 
@@ -242,7 +292,7 @@ export function ReferenceImagePicker({
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: maxImages > 1,
         selectionLimit: maxImages - selectedImages.length,
         allowsEditing: false,
@@ -264,15 +314,62 @@ export function ReferenceImagePicker({
     }
   }, [canAddMore, maxImages, selectedImages, t, processSelectedAssets, showPermissionDeniedAlert]);
 
+  const handleTakePhotoWithImagePicker = useCallback(async () => {
+    if (!canAddMore) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const ImagePicker = await import('expo-image-picker');
+
+      const { status, canAskAgain } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        showPermissionDeniedAlert(
+          'reference_image.camera_permission_title',
+          'reference_image.camera_permission_message',
+          canAskAgain
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: false,
+        quality: 0.9,
+        cameraType:
+          subjectType === 'person' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        return;
+      }
+
+      await processSelectedAssets(result.assets);
+    } catch (error) {
+      if (__DEV__) {
+        console.error('[ReferenceImagePicker] Launch camera error:', error);
+      }
+      Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [canAddMore, processSelectedAssets, showPermissionDeniedAlert, subjectType, t]);
+
   const handleTakePhoto = useCallback(async () => {
     if (!canAddMore) {
       return;
     }
 
     try {
+      const camera = await loadExpoCamera();
+      if (!camera) {
+        await handleTakePhotoWithImagePicker();
+        return;
+      }
+
       const permission = cameraPermission?.granted
         ? cameraPermission
-        : await requestCameraPermission();
+        : await ensureCameraPermission(camera);
       if (!permission?.granted) {
         showPermissionDeniedAlert(
           'reference_image.camera_permission_title',
@@ -290,7 +387,15 @@ export function ReferenceImagePicker({
       }
       Alert.alert(t('common.error_title'), t('reference_image.pick_error'));
     }
-  }, [cameraPermission, requestCameraPermission, showPermissionDeniedAlert, t, canAddMore]);
+  }, [
+    canAddMore,
+    cameraPermission,
+    ensureCameraPermission,
+    handleTakePhotoWithImagePicker,
+    loadExpoCamera,
+    showPermissionDeniedAlert,
+    t,
+  ]);
 
   const handleRemoveImage = useCallback(
     (index: number) => {
@@ -307,9 +412,11 @@ export function ReferenceImagePicker({
     [selectedImages, subjectType, onImagesSelected]
   );
 
+  const CameraView = expoCamera?.CameraView;
+
   return (
     <View style={styles.container}>
-      {isCameraVisible && (
+      {isCameraVisible && CameraView && (
         <Modal
           visible={isCameraVisible}
           animationType="slide"
