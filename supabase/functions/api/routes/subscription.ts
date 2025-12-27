@@ -1,16 +1,18 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, RECONCILE_DEFAULT_BATCH, RECONCILE_DEFAULT_MAX_TOTAL, RECONCILE_DEFAULT_MIN_AGE_HOURS, RECONCILE_MAX_BATCH, RECONCILE_MAX_DURATION_MS } from '../lib/constants.ts';
 import type { ApiContext } from '../types.ts';
 import {
   buildUpdatedMetadata,
-  fetchRevenueCatSubscriber,
+  fetchRevenueCatCustomer,
+  getRevenueCatEntitlementLookup,
   getReconcileSecret,
   getRevenueCatApiKey,
+  getRevenueCatProjectId,
   getTierUpdatedAt,
   normalizeTier,
   RevenueCatHttpError,
 } from '../services/revenuecat.ts';
-import { inferTierFromSubscriber } from '../../../lib/revenuecatSubscriber.ts';
+import { inferTierFromCustomer } from '../../../lib/revenuecatSubscriber.ts';
 
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -42,8 +44,10 @@ export async function handleSubscriptionSync(ctx: ApiContext): Promise<Response>
   const source = typeof body?.source === 'string' && body.source.trim() ? body.source.trim() : 'app_launch';
 
   let apiKey: string;
+  let projectId: string;
   try {
     apiKey = getRevenueCatApiKey();
+    projectId = getRevenueCatProjectId();
   } catch (error) {
     console.error('[api] /subscription/sync RevenueCat not configured', {
       userId: user.id,
@@ -55,9 +59,9 @@ export async function handleSubscriptionSync(ctx: ApiContext): Promise<Response>
     });
   }
 
-  let subscriber;
+  let customer;
   try {
-    subscriber = await fetchRevenueCatSubscriber(user.id, apiKey);
+    customer = await fetchRevenueCatCustomer(user.id, apiKey, projectId);
   } catch (error) {
     const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
     const status = isRevenueCatHttpError ? error.status : null;
@@ -100,7 +104,18 @@ export async function handleSubscriptionSync(ctx: ApiContext): Promise<Response>
     });
   }
 
-  const inferredTier = inferTierFromSubscriber(subscriber);
+  let entitlementLookup: Record<string, string> | null = null;
+  try {
+    entitlementLookup = await getRevenueCatEntitlementLookup(apiKey, projectId);
+  } catch (error) {
+    console.warn('[api] /subscription/sync entitlement lookup failed', {
+      userId: user.id,
+      message: (error as Error).message,
+    });
+    entitlementLookup = null;
+  }
+
+  const inferredTier = inferTierFromCustomer(customer, Date.now(), entitlementLookup ?? undefined);
   if (inferredTier === null) {
     return new Response(JSON.stringify({ ok: true, skipped: true }), {
       status: 200,
@@ -171,8 +186,10 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
   }
 
   let apiKey: string;
+  let projectId: string;
   try {
     apiKey = getRevenueCatApiKey();
+    projectId = getRevenueCatProjectId();
   } catch (error) {
     console.error('[api] /subscription/reconcile RevenueCat not configured', {
       message: (error as Error).message,
@@ -181,6 +198,19 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
+  }
+
+  let entitlementLookup: Record<string, string> | null = null;
+  try {
+    entitlementLookup = await getRevenueCatEntitlementLookup(apiKey, projectId);
+    console.log('[api] /subscription/reconcile entitlement lookup loaded', {
+      count: Object.keys(entitlementLookup).length,
+    });
+  } catch (error) {
+    console.warn('[api] /subscription/reconcile entitlement lookup failed', {
+      message: (error as Error).message,
+    });
+    entitlementLookup = null;
   }
 
   const body = (await req.json().catch(() => ({}))) as {
@@ -250,9 +280,9 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
         continue;
       }
 
-      let subscriber;
+      let customer;
       try {
-        subscriber = await fetchRevenueCatSubscriber(row.id, apiKey);
+        customer = await fetchRevenueCatCustomer(row.id, apiKey, projectId);
       } catch (error) {
         const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
         errors += 1;
@@ -265,7 +295,7 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
         continue;
       }
 
-      const inferredTier = inferTierFromSubscriber(subscriber);
+      const inferredTier = inferTierFromCustomer(customer, Date.now(), entitlementLookup ?? undefined);
       if (inferredTier === null) {
         skipped += 1;
         continue;

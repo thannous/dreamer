@@ -1,9 +1,11 @@
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 import {
   inferTierFromEntitlementKeys,
-  inferTierFromSubscriber,
-  type RevenueCatV1SubscriberResponse,
+  inferTierFromCustomer,
+  mapEntitlementKeys,
+  type RevenueCatEntitlementLookupById,
+  type RevenueCatV2CustomerResponse,
 } from '../../lib/revenuecatSubscriber.ts';
 
 const corsHeaders: Record<string, string> = {
@@ -14,6 +16,26 @@ const corsHeaders: Record<string, string> = {
 
 type Tier = 'free' | 'plus';
 type InferredTier = Tier | null;
+
+type RevenueCatV2Entitlement = {
+  id?: string | null;
+  lookup_key?: string | null;
+  display_name?: string | null;
+};
+
+type RevenueCatV2EntitlementsResponse = {
+  items?: RevenueCatV2Entitlement[] | null;
+  next_page?: string | null;
+};
+
+type RevenueCatEntitlementCache = {
+  map: RevenueCatEntitlementLookupById;
+  fetchedAt: number;
+};
+
+const ENTITLEMENT_CACHE_TTL_MS = 5 * 60 * 1000;
+let entitlementCache: RevenueCatEntitlementCache | null = null;
+let entitlementCachePromise: Promise<RevenueCatEntitlementLookupById> | null = null;
 
 function normalizeTierForComparison(tier: string | null | undefined): Tier {
   if (tier === 'plus' || tier === 'premium') return 'plus';
@@ -160,30 +182,110 @@ function getRevenueCatApiKey(): string {
   return apiKey;
 }
 
-function getSubscriberIdsFromRevenueCat(subscriber: RevenueCatV1SubscriberResponse): string[] {
-  const ids = new Set<string>();
-  const add = (v: unknown) => {
-    if (typeof v !== 'string') return;
-    const t = v.trim();
-    if (!t) return;
-    ids.add(t);
-  };
+function getRevenueCatProjectId(): string {
+  const projectId = getOptionalEnv('REVENUECAT_PROJECT_ID');
+  if (!projectId) {
+    throw new Error('Missing REVENUECAT_PROJECT_ID');
+  }
+  return projectId;
+}
 
-  add(subscriber?.subscriber?.original_app_user_id);
-  const aliases = subscriber?.subscriber?.aliases;
-  if (Array.isArray(aliases)) {
-    aliases.forEach(add);
+type RevenueCatV2AliasesResponse = {
+  items?: Array<{ id?: string | null }> | null;
+};
+
+async function fetchCustomerV2(
+  appUserId: string,
+  apiKey: string,
+  projectId: string
+): Promise<RevenueCatV2CustomerResponse> {
+  const url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(
+    projectId
+  )}/customers/${encodeURIComponent(appUserId)}`;
+  return rcFetchJson<RevenueCatV2CustomerResponse>(url, apiKey, 8000);
+}
+
+async function fetchCustomerAliasesV2(
+  appUserId: string,
+  apiKey: string,
+  projectId: string
+): Promise<string[]> {
+  const url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(
+    projectId
+  )}/customers/${encodeURIComponent(appUserId)}/aliases`;
+  const data = await rcFetchJson<RevenueCatV2AliasesResponse>(url, apiKey, 8000);
+  const items = Array.isArray(data.items) ? data.items : [];
+  return items
+    .map((item) => (typeof item.id === 'string' ? item.id.trim() : ''))
+    .filter(Boolean);
+}
+
+function normalizeEntitlementField(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+async function fetchEntitlementLookupMap(
+  apiKey: string,
+  projectId: string
+): Promise<RevenueCatEntitlementLookupById> {
+  const map: RevenueCatEntitlementLookupById = {};
+  let url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/entitlements`;
+  let pageCount = 0;
+
+  while (url && pageCount < 10) {
+    const data = await rcFetchJson<RevenueCatV2EntitlementsResponse>(url, apiKey, 8000);
+    const items = Array.isArray(data.items) ? data.items : [];
+
+    for (const item of items) {
+      const id = normalizeEntitlementField(item.id);
+      const lookup =
+        normalizeEntitlementField(item.lookup_key) ?? normalizeEntitlementField(item.display_name);
+      if (id && lookup) {
+        map[id] = lookup;
+      }
+    }
+
+    pageCount += 1;
+    const nextPage = normalizeEntitlementField(data.next_page);
+    if (!nextPage) break;
+    url = nextPage.startsWith('http') ? nextPage : `https://api.revenuecat.com${nextPage}`;
   }
 
-  return Array.from(ids);
+  return map;
 }
 
-async function fetchSubscriberV1(appUserId: string, apiKey: string): Promise<RevenueCatV1SubscriberResponse> {
-  const url = `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}`;
-  return rcFetchJson<RevenueCatV1SubscriberResponse>(url, apiKey, 8000);
+async function getEntitlementLookupMap(): Promise<RevenueCatEntitlementLookupById> {
+  const now = Date.now();
+  if (entitlementCache && now - entitlementCache.fetchedAt < ENTITLEMENT_CACHE_TTL_MS) {
+    return entitlementCache.map;
+  }
+
+  if (entitlementCachePromise) {
+    return entitlementCachePromise;
+  }
+
+  const apiKey = getRevenueCatApiKey();
+  const projectId = getRevenueCatProjectId();
+  entitlementCachePromise = fetchEntitlementLookupMap(apiKey, projectId)
+    .then((map) => {
+      entitlementCache = { map, fetchedAt: Date.now() };
+      entitlementCachePromise = null;
+      return map;
+    })
+    .catch((error) => {
+      entitlementCachePromise = null;
+      throw error;
+    });
+
+  return entitlementCachePromise;
 }
 
-function inferTierFromWebhookPayload(payload: any): InferredTier {
+function inferTierFromWebhookPayload(
+  payload: any,
+  entitlementLookupById?: RevenueCatEntitlementLookupById
+): InferredTier {
   const eventType = payload?.event?.type;
   if (eventType === 'EXPIRATION') return 'free';
 
@@ -205,7 +307,8 @@ function inferTierFromWebhookPayload(payload: any): InferredTier {
   }
 
   if (entitlementIds.length > 0) {
-    return inferTierFromEntitlementKeys(entitlementIds);
+    const mappedKeys = mapEntitlementKeys(entitlementIds, entitlementLookupById);
+    return inferTierFromEntitlementKeys(mappedKeys);
   }
 
   // No reliable entitlement state -> avoid accidental downgrade.
@@ -226,22 +329,29 @@ async function resolveSupabaseUserByCandidates(
   return null;
 }
 
-async function fetchSubscriberFromAnyCandidate(
+async function fetchCustomerFromAnyCandidate(
   appUserIdCandidates: string[],
-): Promise<{ appUserIdUsed: string; subscriber: RevenueCatV1SubscriberResponse }> {
+): Promise<{ appUserIdUsed: string; customer: RevenueCatV2CustomerResponse; aliasIds: string[] }> {
   const apiKey = getRevenueCatApiKey();
+  const projectId = getRevenueCatProjectId();
   let lastError: unknown = null;
 
   for (const id of appUserIdCandidates) {
     try {
-      const subscriber = await fetchSubscriberV1(id, apiKey);
-      return { appUserIdUsed: id, subscriber };
+      const customer = await fetchCustomerV2(id, apiKey, projectId);
+      let aliasIds: string[] = [];
+      try {
+        aliasIds = await fetchCustomerAliasesV2(id, apiKey, projectId);
+      } catch {
+        aliasIds = [];
+      }
+      return { appUserIdUsed: id, customer, aliasIds };
     } catch (e) {
       lastError = e;
     }
   }
 
-  throw (lastError as Error) ?? new Error('RevenueCat subscriber lookup failed');
+  throw (lastError as Error) ?? new Error('RevenueCat customer lookup failed');
 }
 
 serve(async (req: Request) => {
@@ -351,31 +461,50 @@ serve(async (req: Request) => {
   }
 
   try {
-    // RevenueCat official recommendation: normalize using GET /subscribers after receiving a webhook.
+    // RevenueCat official recommendation: normalize using GET /customers after receiving a webhook.
     // This also lets us resolve Supabase userId from RevenueCat aliases, even if the webhook itself
     // does not include the UUID.
-    let subscriberV1: RevenueCatV1SubscriberResponse | null = null;
+    let entitlementLookupById: RevenueCatEntitlementLookupById | null = null;
+    try {
+      entitlementLookupById = await getEntitlementLookupMap();
+      console.log('[revenuecat-webhook] Entitlement lookup loaded', {
+        timestamp: new Date().toISOString(),
+        count: Object.keys(entitlementLookupById).length,
+      });
+    } catch (e) {
+      console.warn('[revenuecat-webhook] Failed to load entitlement lookup', {
+        timestamp: new Date().toISOString(),
+        error: (e as Error).message,
+      });
+      entitlementLookupById = null;
+    }
+
+    let customerV2: RevenueCatV2CustomerResponse | null = null;
+    let customerAliasIds: string[] = [];
     let appUserIdUsed = primaryAppUserId;
     try {
-      const result = await fetchSubscriberFromAnyCandidate(revenueCatLookupCandidates);
-      subscriberV1 = result.subscriber;
+      const result = await fetchCustomerFromAnyCandidate(revenueCatLookupCandidates);
+      customerV2 = result.customer;
+      customerAliasIds = result.aliasIds;
       appUserIdUsed = result.appUserIdUsed;
-      console.log('[revenuecat-webhook] RevenueCat subscriber fetched successfully', {
+      console.log('[revenuecat-webhook] RevenueCat customer fetched successfully', {
         timestamp: new Date().toISOString(),
         appUserIdUsed: result.appUserIdUsed,
         candidatesCount: revenueCatLookupCandidates.length,
       });
     } catch (e) {
-      console.warn('[revenuecat-webhook] RevenueCat subscriber lookup failed, falling back to webhook parsing', {
+      console.warn('[revenuecat-webhook] RevenueCat customer lookup failed, falling back to webhook parsing', {
         timestamp: new Date().toISOString(),
         message: (e as Error)?.message ?? String(e),
         candidatesCount: revenueCatLookupCandidates.length,
       });
-      subscriberV1 = null;
+      customerV2 = null;
+      customerAliasIds = [];
     }
 
-    const subscriberIds = subscriberV1 ? getSubscriberIdsFromRevenueCat(subscriberV1) : [];
-    const allUserIdCandidates = Array.from(new Set([...candidateIds, appUserIdUsed, ...subscriberIds])).filter(Boolean);
+    const allUserIdCandidates = Array.from(
+      new Set([...candidateIds, appUserIdUsed, ...customerAliasIds])
+    ).filter(Boolean);
 
     const resolved = await resolveSupabaseUserByCandidates(supabase, allUserIdCandidates);
     if (!resolved) {
@@ -402,25 +531,38 @@ serve(async (req: Request) => {
       appUserId: appUserIdUsed,
     });
 
+    const nowMs = Date.now();
     let newTier: InferredTier = null;
-    if (subscriberV1) {
-      newTier = inferTierFromSubscriber(subscriberV1);
+    if (customerV2) {
+      newTier = inferTierFromCustomer(customerV2, nowMs, entitlementLookupById ?? undefined);
     } else {
-      newTier = inferTierFromWebhookPayload(payload);
+      newTier = inferTierFromWebhookPayload(payload, entitlementLookupById ?? undefined);
     }
+
+    const entitlementIdsForLog: string[] = [];
+    const entitlementIdsRaw = payload?.event?.entitlement_ids;
+    if (Array.isArray(entitlementIdsRaw)) {
+      for (const item of entitlementIdsRaw) {
+        if (typeof item === 'string' && item.trim()) entitlementIdsForLog.push(item.trim());
+      }
+    }
+    const mappedEntitlementKeysForLog = mapEntitlementKeys(
+      entitlementIdsForLog,
+      entitlementLookupById ?? undefined
+    );
 
     console.log('[revenuecat-webhook] Tier inference', {
       timestamp: new Date().toISOString(),
       userId: resolvedUserId,
       inferredTier: newTier,
-      usedSubscriberV1Data: Boolean(subscriberV1),
-      entitlementIds: payload?.event?.entitlement_ids ?? [],
+      usedCustomerData: Boolean(customerV2),
+      entitlementIds: entitlementIdsForLog,
+      entitlementKeys: mappedEntitlementKeysForLog,
     });
 
     // Protection order-based: Pour CANCELLATION, vérifier si l'expiration est passée
     const eventType = payload?.event?.type;
     const expirationAtMs = payload?.event?.expiration_at_ms;
-    const nowMs = Date.now();
 
     if (eventType === 'CANCELLATION' && typeof expirationAtMs === 'number' && nowMs > expirationAtMs) {
       console.log('[revenuecat-webhook] CANCELLATION received after expiration, forcing tier to free', {
@@ -439,7 +581,7 @@ serve(async (req: Request) => {
         timestamp: new Date().toISOString(),
         userId: resolvedUserId,
         eventType: payload?.event?.type,
-        reason: 'Could not infer tier from webhook or subscriber data',
+        reason: 'Could not infer tier from webhook or customer data',
       });
       return new Response(JSON.stringify({ ok: true, skipped: true }), {
         status: 200,
@@ -450,8 +592,10 @@ serve(async (req: Request) => {
     const currentTier = userData.user.app_metadata?.tier as string | undefined;
     const currentAppMeta = (userData.user.app_metadata ?? {}) as Record<string, unknown>;
 
-    // Cache tier from subscriber (calculé une seule fois)
-    const tierFromSubscriber = subscriberV1 ? inferTierFromSubscriber(subscriberV1, nowMs) : null;
+    // Cache tier from customer (calculé une seule fois)
+    const tierFromCustomer = customerV2
+      ? inferTierFromCustomer(customerV2, nowMs, entitlementLookupById ?? undefined)
+      : null;
     const normalizedCurrentTier = normalizeTierForComparison(currentTier);
     const normalizedNewTier = normalizeTierForComparison(newTier);
 
@@ -459,7 +603,7 @@ serve(async (req: Request) => {
     // Ceci couvre le cas où EXPIRATION a déjà été traité mais CANCELLATION arrive après
     const isUpgrade = normalizedNewTier === 'plus' && normalizedCurrentTier === 'free';
     if (isUpgrade && eventType === 'CANCELLATION') {
-      const hasActiveEntitlement = tierFromSubscriber === 'plus';
+      const hasActiveEntitlement = tierFromCustomer === 'plus';
       if (!hasActiveEntitlement) {
         console.warn('[revenuecat-webhook] Blocking CANCELLATION from upgrading expired user', {
           timestamp: new Date().toISOString(),
@@ -467,7 +611,7 @@ serve(async (req: Request) => {
           currentTier: normalizedCurrentTier,
           attemptedTier: newTier,
           eventType,
-          tierFromSubscriber,
+          tierFromCustomer,
         });
         return new Response(JSON.stringify({
           ok: true,
@@ -481,7 +625,7 @@ serve(async (req: Request) => {
       console.log('[revenuecat-webhook] Allowing CANCELLATION upgrade due to active entitlement', {
         timestamp: new Date().toISOString(),
         userId: resolvedUserId,
-        tierFromSubscriber,
+        tierFromCustomer,
       });
     }
 
