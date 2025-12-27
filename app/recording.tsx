@@ -272,10 +272,17 @@ export default function RecordingScreen() {
     baseTranscriptRef.current = '';
   }, []);
 
+  const navigateToJournalDetail = useCallback((dreamId: string | number) => {
+    router.replace('/(tabs)/journal');
+    requestAnimationFrame(() => {
+      router.push(`/journal/${dreamId}`);
+    });
+  }, []);
+
   const navigateAfterSave = useCallback(
     (savedDream: DreamAnalysis, previousDreamCount: number, options?: { skipFirstDreamSheet?: boolean }) => {
       if (options?.skipFirstDreamSheet) {
-        router.replace(`/journal/${savedDream.id}`);
+        navigateToJournalDetail(savedDream.id);
         return;
       }
 
@@ -286,7 +293,7 @@ export default function RecordingScreen() {
 
       setAnalyzePromptDream(savedDream);
     },
-    []
+    [navigateToJournalDetail]
   );
 
   useEffect(() => {
@@ -662,14 +669,14 @@ export default function RecordingScreen() {
     setShowQuotaLimitSheet(false);
     const dream = analyzePromptDream ?? pendingAnalysisDream;
     if (dream) {
-      router.push(`/journal/${dream.id}`);
+      navigateToJournalDetail(dream.id);
     } else {
       router.push('/(tabs)/journal');
     }
     // Cleanup
     setPendingAnalysisDream(null);
     analysisProgress.reset();
-  }, [analyzePromptDream, pendingAnalysisDream, analysisProgress]);
+  }, [analyzePromptDream, pendingAnalysisDream, analysisProgress, navigateToJournalDetail]);
 
   const runAnalysis = useCallback(async (dream: DreamAnalysis) => {
     setPendingAnalysisDream(dream);
@@ -814,7 +821,7 @@ export default function RecordingScreen() {
       resetComposer();
 
       await new Promise((resolve) => setTimeout(resolve, 300));
-      router.push(`/journal/${updatedDream.id}`);
+      navigateToJournalDetail(updatedDream.id);
     } catch (error) {
       log.error('Generate with reference failed:', error);
       const classified = error && typeof error === 'object' && 'userMessage' in error && 'canRetry' in error
@@ -827,6 +834,7 @@ export default function RecordingScreen() {
   }, [
     analysisProgress,
     language,
+    navigateToJournalDetail,
     pendingSubjectDream,
     pendingSubjectMetadata,
     referenceImages,
