@@ -14,8 +14,8 @@ import { useAppState } from '@/hooks/useAppState';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { RITUALS, type RitualConfig, type RitualId } from '@/lib/inspirationRituals';
-import { getLocalDateKey, shouldResetDailyProgress } from '@/lib/ritualProgressUtils';
 import { MotiText } from '@/lib/moti';
+import { getLocalDateKey, shouldResetDailyProgress } from '@/lib/ritualProgressUtils';
 import { TID } from '@/lib/testIDs';
 import type { NotificationSettings, ThemeMode } from '@/lib/types';
 import { scheduleRitualReminder } from '@/services/notificationService';
@@ -466,7 +466,7 @@ export default function InspirationScreen() {
           style={[
             styles.floatingButtonContainer,
             isDesktopLayout && styles.floatingButtonDesktop,
-            { bottom: floatingOffset },
+            { bottom: floatingOffset - 60 },
           ]}
         >
           <Pressable

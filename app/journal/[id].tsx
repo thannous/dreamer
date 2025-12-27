@@ -50,6 +50,9 @@ import {
   Text,
   TextInput,
   View,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type StyleProp,
   type TextStyle,
   type ViewStyle
@@ -222,6 +225,8 @@ export default function JournalDetailScreen() {
   const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
+  const [showFloatingExploreButton, setShowFloatingExploreButton] = useState(false);
+  const [isScrollViewScrollable, setIsScrollViewScrollable] = useState<boolean | null>(null);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -266,6 +271,7 @@ export default function JournalDetailScreen() {
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [transcriptSectionOffset, setTranscriptSectionOffset] = useState(0);
   const scrollViewRef = useRef<ScrollView | null>(null);
+  const scrollMetricsRef = useRef({ layoutHeight: 0, contentHeight: 0 });
   const lastAnalysisNoticeRef = useRef<AnalysisNotice | null>(null);
 
   const sortedDreamTypes = useMemo(() => {
@@ -602,6 +608,29 @@ export default function JournalDetailScreen() {
     setImageAspectRatio(ratio);
   }, []);
 
+  const updateScrollability = useCallback(() => {
+    const { layoutHeight, contentHeight } = scrollMetricsRef.current;
+    if (!layoutHeight || !contentHeight) return;
+    const scrollable = contentHeight - layoutHeight > 8;
+    setIsScrollViewScrollable((prev) => (prev === scrollable ? prev : scrollable));
+  }, []);
+
+  const handleScrollViewLayout = useCallback((event: LayoutChangeEvent) => {
+    scrollMetricsRef.current.layoutHeight = event.nativeEvent.layout.height;
+    updateScrollability();
+  }, [updateScrollability]);
+
+  const handleScrollContentSizeChange = useCallback((_width: number, height: number) => {
+    scrollMetricsRef.current.contentHeight = height;
+    updateScrollability();
+  }, [updateScrollability]);
+
+  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    const threshold = 200;
+    setShowFloatingExploreButton(scrollY > threshold);
+  }, []);
+
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
   const imageVersion = useMemo(() => {
@@ -783,8 +812,8 @@ export default function JournalDetailScreen() {
     try {
       const allowed = canAnalyzeNow || (await canAnalyze());
       if (!allowed) {
-        // Don't show for premium users
-        if (tier === 'plus' || tier === 'premium') return false;
+        // Don't show for paid users
+        if (isPremium) return false;
         setQuotaSheetMode(!user && quotaStatus?.isUpgraded ? 'login' : 'quota');
         setShowQuotaLimitSheet(true);
         return false;
@@ -801,7 +830,7 @@ export default function JournalDetailScreen() {
       );
       return false;
     }
-  }, [canAnalyze, canAnalyzeNow, quotaStatus?.isUpgraded, showAnalysisNotice, t, tier, user]);
+  }, [canAnalyze, canAnalyzeNow, isPremium, quotaStatus?.isUpgraded, showAnalysisNotice, t, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
     setShowQuotaLimitSheet(false);
@@ -862,8 +891,8 @@ export default function JournalDetailScreen() {
             setShowQuotaLimitSheet(true);
             return;
           }
-          // Show quota limit sheet with upgrade CTA for non-premium users
-          if (tier !== 'premium') {
+          // Show quota limit sheet with upgrade CTA for non-paid users
+          if (!isPremium) {
             setQuotaSheetMode('quota');
             setShowQuotaLimitSheet(true);
           } else {
@@ -882,7 +911,7 @@ export default function JournalDetailScreen() {
         setIsAnalyzing(false);
       }
     },
-    [analyzeDream, dream, ensureAnalyzeAllowed, language, showAnalysisNotice, t, tier]
+    [analyzeDream, dream, ensureAnalyzeAllowed, isPremium, language, showAnalysisNotice, t, tier]
   );
 
   const handleAnalyze = useCallback(async () => {
@@ -970,6 +999,7 @@ export default function JournalDetailScreen() {
     ? 'rgba(19, 16, 34, 0.3)'
     : 'rgba(0, 0, 0, 0.03)';
   const floatingTranscriptBottom = Platform.OS === 'ios' ? 32 : 24;
+  const shouldShowFloatingExploreButton = showFloatingExploreButton || isScrollViewScrollable === false;
 
   // Use a single surface color for the main content card and its inner accent cards/buttons
   // so we don't get a darker band/padding effect on Android where slight
@@ -1278,9 +1308,13 @@ export default function JournalDetailScreen() {
           style={styles.scrollView}
           contentContainerStyle={[
             styles.scrollContent,
-            (isEditing || isEditingTranscript) && { paddingBottom: 220 },
+            { paddingBottom: (isEditing || isEditingTranscript) ? 220 : 100 },
           ]}
           keyboardShouldPersistTaps="handled"
+          onLayout={handleScrollViewLayout}
+          onContentSizeChange={handleScrollContentSizeChange}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
         >
 
           {/* Dream Image */}
@@ -1440,27 +1474,6 @@ export default function JournalDetailScreen() {
                     shouldAnimate={false}
                   />
                 ) : null}
-
-                {/* Action Buttons */}
-                {(dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
-                  <Pressable
-                    testID={TID.Button.ExploreDream}
-                    style={[styles.exploreButton, shadows.xl, {
-                      backgroundColor: colors.accent,
-                      borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
-                      opacity: isPrimaryActionBusy || isAnalysisLocked ? 0.8 : 1,
-                    }]}
-                    onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
-                    disabled={isPrimaryActionBusy || isAnalysisLocked}
-                  >
-                    {isPrimaryActionBusy ? (
-                      <ActivityIndicator color={colors.textPrimary} />
-                    ) : (
-                      <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
-                    )}
-                    <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
-                  </Pressable>
-                )}
               </>
             )}
 
@@ -1572,6 +1585,41 @@ export default function JournalDetailScreen() {
             </Pressable>
           </View>
         </ScrollView>
+
+        {/* Floating Explore/Analyze Button */}
+        {shouldShowFloatingExploreButton &&
+          !isEditing &&
+          !isEditingTranscript &&
+          (dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: 20 }}
+            transition={{ type: 'timing', duration: 250 }}
+            style={[styles.floatingExploreButton, shadows.xl]}
+          >
+            <Pressable
+              testID={`${TID.Button.ExploreDream}-floating`}
+              style={[styles.exploreButton, {
+                backgroundColor: colors.accent,
+                borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+                opacity: isPrimaryActionBusy || isAnalysisLocked ? 0.8 : 1,
+                marginTop: 0,
+                marginBottom: 0,
+              }]}
+              onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
+              disabled={isPrimaryActionBusy || isAnalysisLocked}
+            >
+              {isPrimaryActionBusy ? (
+                <ActivityIndicator color={colors.textPrimary} />
+              ) : (
+                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+              )}
+              <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
+            </Pressable>
+          </MotiView>
+        )}
+
         {isEditing && (
           <View
             style={[
@@ -2289,6 +2337,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     // shadow: applied via theme shadows.xl
     borderWidth: 1,
+  },
+  floatingExploreButton: {
+    position: 'absolute',
+    bottom: 24,
+    left: 16,
+    right: 16,
+    zIndex: 100,
   },
   exploreButtonText: {
     fontSize: 17,
