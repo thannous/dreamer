@@ -1253,8 +1253,20 @@ export default function JournalDetailScreen() {
         onPress={isEditing ? handleSave : startMetadataEditing}
         testID={TID.Button.EditMetadata}
         nativeID={TID.Button.EditMetadata}
-        accessibilityLabel="Edit dream details"
+        accessibilityLabel={
+          isEditing
+            ? t('journal.detail.edit_metadata.save_accessibility')
+            : t('journal.detail.edit_metadata.edit_accessibility')
+        }
         accessibilityRole="button"
+        accessibilityHint={
+          isAnalysisLocked
+            ? t('journal.detail.edit_metadata.locked_hint')
+            : isEditing
+              ? t('journal.detail.edit_metadata.save_hint')
+              : t('journal.detail.edit_metadata.edit_hint')
+        }
+        accessibilityState={{ disabled: isAnalysisLocked }}
         accessible
         disabled={isAnalysisLocked}
         style={({ pressed }) => [
