@@ -168,6 +168,43 @@ describe('dreamFilters', () => {
       // Then
       expect(result).toHaveLength(0);
     });
+
+    it('given multi-word query spanning fields when filtering then matches via joined text', () => {
+      // Given
+      const dreams: DreamAnalysis[] = [
+        buildDream({
+          title: 'Hello',
+          transcript: 'World',
+          interpretation: '',
+          dreamType: 'Symbolic Dream',
+        }),
+      ];
+      const query = 'hello world';
+
+      // When
+      const result = filterBySearch(dreams, query);
+
+      // Then
+      expect(result).toHaveLength(1);
+      expect(result[0].title).toBe('Hello');
+    });
+
+    it('given a resolver when title already matches then does not resolve localized labels', () => {
+      // Given
+      const resolver = vi.fn(() => 'Should not be called');
+      const dreams: DreamAnalysis[] = [
+        buildDream({ title: 'Needle A', dreamType: 'Nightmare' }),
+        buildDream({ title: 'Needle B', dreamType: 'Nightmare' }),
+      ];
+      const query = 'needle';
+
+      // When
+      const result = filterBySearch(dreams, query, { dreamTypeLabelResolver: resolver });
+
+      // Then
+      expect(result).toHaveLength(2);
+      expect(resolver).not.toHaveBeenCalled();
+    });
   });
 
   describe('filterByTheme', () => {

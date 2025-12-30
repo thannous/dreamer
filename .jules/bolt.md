@@ -17,3 +17,8 @@
 **Learning:** `stripMarkdownForHandwriting()` was running on every assistant render even when handwriting mode was inactive, doing multiple full-string regex passes during streaming updates.
 
 **Action:** When a derived value is only used in a specific UI mode (handwriting, animations, etc.), guard the computation behind the mode flag so streaming updates don't pay the cost unnecessarily.
+
+## 2025-12-30 - Skip Joined-Text Search For Single Tokens
+**Learning:** `matchesSearch()` in `lib/dreamFilters.ts` built a joined/`toLowerCase()` string for every dream even for single-token queries where cross-field phrase matching is impossible (fields are joined with spaces). This showed up as ~38ms avg filtering time over 20k dreams with long transcripts.
+
+**Action:** In search filters, only run cross-field “joined text” matching when the normalized query contains whitespace, and lazily compute localized label fields to avoid extra work on early matches. Keep a perf test (`tests/perf/filterBySearch.perf.test.ts`) to catch regressions.
