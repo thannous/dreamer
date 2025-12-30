@@ -1,9 +1,10 @@
-import React, { memo, useMemo } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { memo, useMemo, useRef } from 'react';
+import { View, TextInput, StyleSheet, Pressable } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { Ionicons } from '@expo/vector-icons';
 
 interface SearchBarProps {
   value: string;
@@ -34,6 +35,7 @@ export const SearchBar = memo(function SearchBar({
   const { colors } = useTheme();
   const { t } = useTranslation();
   const placeholderText = useMemo(() => placeholder ?? t('journal.search_placeholder'), [placeholder, t]);
+  const inputRef = useRef<TextInput>(null);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundSecondary }]} testID={testID}>
@@ -41,6 +43,7 @@ export const SearchBar = memo(function SearchBar({
         <SearchIcon size={20} color={colors.textSecondary} />
       </View>
       <TextInput
+        ref={inputRef}
         style={[styles.input, { color: colors.textPrimary }]}
         testID={inputTestID}
         value={value}
@@ -51,6 +54,20 @@ export const SearchBar = memo(function SearchBar({
         autoCapitalize="none"
         autoCorrect={false}
       />
+      {value.length > 0 && (
+        <Pressable
+          onPress={() => {
+            onChangeText('');
+            requestAnimationFrame(() => inputRef.current?.focus());
+          }}
+          accessibilityRole="button"
+          accessibilityLabel={t('common.clear')}
+          hitSlop={8}
+          style={({ pressed }) => [styles.clearButton, pressed && styles.clearButtonPressed]}
+        >
+          <Ionicons name="close-circle" size={18} color={colors.textSecondary} />
+        </Pressable>
+      )}
     </View>
   );
 });
@@ -70,5 +87,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_400Regular',
+  },
+  clearButton: {
+    marginLeft: ThemeLayout.spacing.sm,
+  },
+  clearButtonPressed: {
+    opacity: 0.7,
   },
 });
