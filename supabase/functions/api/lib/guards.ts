@@ -41,7 +41,9 @@ export const requireGuestSession = async (
   const platform = req.headers.get('x-guest-platform')?.trim() ?? undefined;
   const verified = await verifyGuestToken(token, fingerprint, platform);
   if (!verified.ok) {
-    return unauthorized(`Invalid guest session (${verified.reason ?? 'unknown'})`);
+    // Security: avoid returning verification reasons (expired/bad_signature/etc.),
+    // which can help attackers iterate on token forging or session probing.
+    return unauthorized('Invalid guest session');
   }
 
   return { fingerprint };
