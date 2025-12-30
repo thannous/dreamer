@@ -30,7 +30,10 @@
     "e2e-test": {
       "withoutCredentials": true,
       "ios": { "simulator": true },
-      "android": { "buildType": "apk" }
+      "android": { "buildType": "apk" },
+      "env": {
+        "EXPO_PUBLIC_MOCK_MODE": "true"
+      }
     },
     "production": {
       "channel": "production",

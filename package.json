@@ -27,7 +27,7 @@
     "test:e2e": "maestro test maestro/mock-existing-user.yml",
     "test:e2e:mock-quotas": "maestro test maestro/mock-existing-quotas.yml",
     "test:e2e:quotas": "maestro test maestro/guest-quota-flow.yml",
-    "test:e2e:guest-limit": "maestro test maestro/guest-dream-limit.yml",
+    "test:e2e:guest-limit": "maestro test maestro/guest-dream-limit-signup.yml",
     "build:apk": "echo 'Usage: npm run build:apk:mock | npm run build:apk:prod'",
     "build:apk:mock": "EXPO_PUBLIC_MOCK_MODE=true EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile preview --local",
     "build:apk:prod": "rm -f .env.local && EAS_LOCAL_BUILD_ARTIFACTS_DIR=dist eas build -p android --profile production-apk --local"

@@ -1,5 +1,8 @@
 appId: com.tanuki75.noctalia
 ---
+# Ensure a clean guest state for quotas
+- launchApp:
+      clearState: true
 # Guest dream 1 - analyze and explore, hit chat message limit
 - tapOn:
       id: input.dreamTranscript
