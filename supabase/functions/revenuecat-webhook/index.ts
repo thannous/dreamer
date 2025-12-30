@@ -408,7 +408,8 @@ serve(async (req: Request) => {
       timestamp: new Date().toISOString(),
       error: (e as Error).message,
     });
-    return new Response(JSON.stringify({ error: `Failed to read body: ${(e as Error).message}` }), {
+    // Security: don't echo internal error details to callers (webhook sender doesn't need them).
+    return new Response(JSON.stringify({ error: 'Failed to read request body' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -426,7 +427,8 @@ serve(async (req: Request) => {
       timestamp: new Date().toISOString(),
       error: (e as Error).message,
     });
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
+    // Security: keep error messages generic to avoid leaking configuration/state to attackers.
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -441,7 +443,7 @@ serve(async (req: Request) => {
       error: (e as Error).message,
       bodyLength: rawBody.length,
     });
-    return new Response(JSON.stringify({ error: `Invalid JSON: ${(e as Error).message}` }), {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -493,7 +495,8 @@ serve(async (req: Request) => {
       timestamp: new Date().toISOString(),
       error: (e as Error).message,
     });
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
+    // Security: avoid leaking which env vars are missing (service keys, URLs, etc.).
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -782,7 +785,8 @@ serve(async (req: Request) => {
         error: updateError.message,
         eventType: payload?.event?.type,
       });
-      return new Response(JSON.stringify({ error: 'Failed to update user metadata', details: updateError.message }), {
+      // Security: don't echo internal backend errors to callers.
+      return new Response(JSON.stringify({ error: 'Failed to update user metadata' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -809,7 +813,8 @@ serve(async (req: Request) => {
       eventType: payload?.event?.type,
       appUserIds: candidateIds.slice(0, 1), // Log first candidate only to avoid over-logging
     });
-    return new Response(JSON.stringify({ error: (e as Error).message }), {
+    // Security: generic response; details stay in logs.
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
