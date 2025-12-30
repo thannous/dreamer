@@ -1,7 +1,8 @@
 # Ensure the bundle identifier matches the local dev build (Expo Go / dev client).
 appId: com.tanuki75.noctalia
 ---
-- launchApp
+- launchApp:
+      clearState: true
 - runFlow:
       when:
           visible:
