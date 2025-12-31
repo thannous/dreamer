@@ -456,6 +456,7 @@ export default function JournalListScreen() {
           extraData={isScrolling}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
+          estimatedItemSize={240}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           numColumns={desktopColumns}
@@ -477,6 +478,7 @@ export default function JournalListScreen() {
           extraData={isScrolling}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
+          estimatedItemSize={240}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
