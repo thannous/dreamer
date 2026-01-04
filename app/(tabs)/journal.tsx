@@ -14,7 +14,7 @@ import { useModalSlide } from '@/hooks/useJournalAnimations';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
-import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } from '@/lib/dreamFilters';
+import { applyFilters, getUniqueDreamTypes, getUniqueThemes } from '@/lib/dreamFilters';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
@@ -122,9 +122,11 @@ export default function JournalListScreen() {
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
   const availableDreamTypes = useMemo(() => getUniqueDreamTypes(dreams), [dreams]);
 
-  // Apply filters and sort
+  // Apply filters
+  // Dreams are already sorted by date (newest first) in the context.
+  // applyFilters preserves this order (using Array.prototype.filter), so we skip redundant sorting.
   const filteredDreams = useMemo(() => {
-    const filtered = applyFilters(dreams, {
+    return applyFilters(dreams, {
       searchQuery: deferredSearchQuery,
       theme: selectedTheme,
       dreamType: selectedDreamType,
@@ -138,7 +140,6 @@ export default function JournalListScreen() {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
       },
     });
-    return sortDreamsByDate(filtered, false); // Newest first
   }, [dreams, deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
 
   const rememberPrefetchedUri = useCallback((uri: string): boolean => {
