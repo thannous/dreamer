@@ -101,13 +101,10 @@ export default function JournalListScreen() {
   });
 
   const isScrollingRef = useRef(false);
-  const [isScrolling, setIsScrolling] = useState(false);
   const scrollIdleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setScrolling = useCallback((next: boolean) => {
-    if (isScrollingRef.current === next) return;
     isScrollingRef.current = next;
-    setIsScrolling(next);
   }, []);
 
   // Animations
@@ -124,7 +121,7 @@ export default function JournalListScreen() {
 
   // Apply filters and sort
   const filteredDreams = useMemo(() => {
-    const filtered = applyFilters(dreams, {
+    return applyFilters(dreams, {
       searchQuery: deferredSearchQuery,
       theme: selectedTheme,
       dreamType: selectedDreamType,
@@ -138,7 +135,6 @@ export default function JournalListScreen() {
         dreamTypeLabelResolver: (dreamType) => getDreamTypeLabel(dreamType, t),
       },
     });
-    return sortDreamsByDate(filtered, false); // Newest first
   }, [dreams, deferredSearchQuery, selectedTheme, selectedDreamType, dateRange, showFavoritesOnly, showAnalyzedOnly, showExploredOnly, t]);
 
   const rememberPrefetchedUri = useCallback((uri: string): boolean => {
@@ -321,12 +317,11 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
-          isScrolling={isScrolling}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [colors, formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
@@ -356,12 +351,11 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
-          isScrolling={isScrolling}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
     );
-  }, [colors, formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [colors, formatDreamListDate, t, handleDreamPress]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -453,7 +447,6 @@ export default function JournalListScreen() {
           ref={flatListRef}
           key={`desktop-${desktopColumns}`}
           data={filteredDreams}
-          extraData={isScrolling}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItemDesktop}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
@@ -474,7 +467,6 @@ export default function JournalListScreen() {
           testID={TID.List.Dreams}
           ref={flatListRef}
           data={filteredDreams}
-          extraData={isScrolling}
           keyExtractor={keyExtractor}
           renderItem={renderDreamItem}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
