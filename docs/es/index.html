@@ -19,7 +19,7 @@
     <meta property="og:title" content="Noctalia – App de diario de sueños con IA">
     <meta property="og:description" content="Captura tus sueños con la voz, explóralos con IA y descubre lo que tus noches te están contando.">
     <meta property="og:url" content="https://noctalia.app/es/">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
+    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
     <meta property="og:locale" content="es_ES">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="fr_FR">
@@ -27,7 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Noctalia – App de diario de sueños con IA">
     <meta name="twitter:description" content="Tu compañero inteligente de sueños para grabar, analizar y explorar tus noches.">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
+    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
     <meta name="twitter:site" content="@NoctaliaDreams">
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -83,16 +83,46 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
+            "@type": "Organization",
+            "@id": "https://noctalia.app/#organization",
+            "name": "Noctalia",
+            "url": "https://noctalia.app",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/logo/logo_noctalia.png",
+                "width": 512,
+                "height": 512
+            },
+            "description": "App de diario de sueños con IA para capturar y explorar tus sueños.",
+            "sameAs": [
+                "https://www.instagram.com/noctaliadreams/",
+                "https://x.com/NoctaliaDreams",
+                "https://www.tiktok.com/@noctaliadreams"
+            ]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": "https://noctalia.app/#website",
+            "name": "Noctalia",
+            "url": "https://noctalia.app",
+            "publisher": { "@id": "https://noctalia.app/#organization" },
+            "inLanguage": ["es", "en", "fr"]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "MobileApplication",
             "name": "Noctalia",
             "description": "App de diario de sueños con IA. Captura sueños con la voz, explóralos con análisis de IA y comprende mejor tus noches.",
-            "operatingSystem": ["Android"],
+            "operatingSystem": "Android",
             "applicationCategory": "LifestyleApplication",
             "inLanguage": "es",
-            "author": {
-                "@type": "Organization",
-                "name": "Noctalia"
-            },
+            "publisher": { "@id": "https://noctalia.app/#organization" },
+            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
             "screenshot": [
                 "https://noctalia.app/img/en/recording-800w.jpg",
                 "https://noctalia.app/img/en/analizing-800w.jpg",
@@ -110,21 +140,6 @@
                 "price": "0",
                 "priceCurrency": "EUR"
             }
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "logo": "https://noctalia.app/logo/logo_noctalia.png",
-            "description": "App de diario de sueños con IA para capturar y explorar tus sueños.",
-            "sameAs": [
-                "https://www.instagram.com/noctaliadreams/",
-                "https://x.com/NoctaliaDreams",
-                "https://www.tiktok.com/@noctaliadreams"
-            ]
         }
     </script>
 </head>

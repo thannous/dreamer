@@ -84,16 +84,46 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
+            "@type": "Organization",
+            "@id": "https://noctalia.app/#organization",
+            "name": "Noctalia",
+            "url": "https://noctalia.app",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/logo/logo_noctalia.png",
+                "width": 512,
+                "height": 512
+            },
+            "description": "Application de journal de rêves intelligent pour capturer et explorer vos rêves.",
+            "sameAs": [
+                "https://www.instagram.com/noctaliadreams/",
+                "https://x.com/NoctaliaDreams",
+                "https://www.tiktok.com/@noctaliadreams"
+            ]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": "https://noctalia.app/#website",
+            "name": "Noctalia",
+            "url": "https://noctalia.app",
+            "publisher": { "@id": "https://noctalia.app/#organization" },
+            "inLanguage": ["fr", "en", "es"]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "MobileApplication",
             "name": "Noctalia",
             "description": "Application de journal de rêves propulsée par l'IA. Capturez vos rêves à la voix, explorez-les et comprenez mieux vos nuits.",
-            "operatingSystem": ["Android"],
+            "operatingSystem": "Android",
             "applicationCategory": "LifestyleApplication",
             "inLanguage": "fr",
-            "author": {
-                "@type": "Organization",
-                "name": "Noctalia"
-            },
+            "publisher": { "@id": "https://noctalia.app/#organization" },
+            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
             "screenshot": [
                 "https://noctalia.app/img/en/recording-800w.jpg",
                 "https://noctalia.app/img/en/analizing-800w.jpg",
@@ -111,21 +141,6 @@
                 "price": "0",
                 "priceCurrency": "EUR"
             }
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "logo": "https://noctalia.app/logo/logo_noctalia.png",
-            "description": "Application de journal de rêves intelligent pour capturer et explorer vos rêves.",
-            "sameAs": [
-                "https://www.instagram.com/noctaliadreams/",
-                "https://x.com/NoctaliaDreams",
-                "https://www.tiktok.com/@noctaliadreams"
-            ]
         }
     </script>
 </head>
