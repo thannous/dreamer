@@ -29,12 +29,13 @@
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css">
     <link rel="stylesheet" href="/css/language-dropdown.css">
     <!-- Lucide Icons (deferred) -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="/js/lucide.min.js" defer></script>
 
     <style>
         ::-webkit-scrollbar {
@@ -336,13 +337,18 @@
 
             <!-- Featured Image -->
             <figure class="mb-12 rounded-2xl overflow-hidden">
-                <img
-                    src="/img/blog/dream-memory-hero.jpg"
-                    alt="Personne dormant paisiblement, illustration de la mémoire des rêves"
-                    class="w-full h-auto"
-                    width="1200" height="600"
-                    loading="eager"
-                >
+                <picture>
+                    <source type="image/webp" srcset="/img/blog/dream-memory-hero-600w.webp 600w, /img/blog/dream-memory-hero-1200w.webp 1200w" sizes="(min-width: 1024px) 1024px, 92vw">
+                    <img
+                        src="/img/blog/dream-memory-hero.jpg"
+                        srcset="/img/blog/dream-memory-hero-600w.jpg 600w, /img/blog/dream-memory-hero.jpg 1200w"
+                        sizes="(min-width: 1024px) 1024px, 92vw"
+                        alt="Personne dormant paisiblement, illustration de la mémoire des rêves"
+                        class="w-full h-auto"
+                        width="1200" height="600"
+                        loading="eager"
+                    >
+                </picture>
             </figure>
 
             <!-- Table of Contents -->

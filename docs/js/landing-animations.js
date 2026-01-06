@@ -7,99 +7,107 @@
     document.querySelectorAll('.reveal').forEach((el) => el.classList.add('active'));
   };
 
-  if (!gsapLib || !ScrollTrigger) {
-    console.warn('[landing-animations] GSAP non chargé, animations par défaut.');
-    showStaticState();
-    return;
-  }
-
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) {
+  const allowDesktopAnimations = window.matchMedia('(min-width: 768px)').matches;
+  if (!gsapLib || !ScrollTrigger || prefersReducedMotion || !allowDesktopAnimations) {
+    if (!gsapLib || !ScrollTrigger) {
+      console.warn('[landing-animations] GSAP non chargé, animations par défaut.');
+    }
     showStaticState();
     return;
   }
 
-  gsapLib.registerPlugin(ScrollTrigger);
-  ScrollTrigger.getAll().forEach((t) => t.kill());
-  ScrollTrigger.clearMatchMedia();
+  const scheduleInit = (callback) => {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(callback, { timeout: 1500 });
+    } else {
+      window.setTimeout(callback, 200);
+    }
+  };
 
-  const easeSoft = 'power1.out';
+  scheduleInit(() => {
+    gsapLib.registerPlugin(ScrollTrigger);
+    ScrollTrigger.getAll().forEach((t) => t.kill());
+    ScrollTrigger.clearMatchMedia();
 
-  const heroItems = gsapLib.utils.toArray('.hero-anim');
-  if (heroItems.length) {
-    gsapLib.set(heroItems, { autoAlpha: 0, y: 14 });
-    gsapLib.to(heroItems, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 1,
-      ease: easeSoft,
-      stagger: 0.12,
-      delay: 0.15,
-    });
-  }
+    const easeSoft = 'power1.out';
 
-  gsapLib.utils.toArray('.reveal').forEach((el) => {
-    gsapLib.fromTo(
-      el,
-      { autoAlpha: 0, y: 22 },
-      {
+    const heroItems = gsapLib.utils.toArray('.hero-anim');
+    if (heroItems.length) {
+      gsapLib.set(heroItems, { autoAlpha: 0, y: 14 });
+      gsapLib.to(heroItems, {
         autoAlpha: 1,
         y: 0,
+        duration: 1,
+        ease: easeSoft,
+        stagger: 0.12,
+        delay: 0.15,
+      });
+    }
+
+    gsapLib.utils.toArray('.reveal').forEach((el) => {
+      gsapLib.fromTo(
+        el,
+        { autoAlpha: 0, y: 22 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.9,
+          ease: easeSoft,
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+            once: true,
+          },
+        },
+      );
+    });
+
+    const line = document.querySelector('.step-line');
+    if (line) {
+      gsapLib.fromTo(
+        line,
+        { transformOrigin: 'left center', scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: 1,
+          ease: easeSoft,
+          scrollTrigger: {
+            trigger: line.closest('section') || line,
+            start: 'top 80%',
+            once: true,
+          },
+        },
+      );
+    }
+
+    const cards = gsapLib.utils.toArray('[data-step-card], [data-phone]');
+    cards.forEach((el) => {
+      gsapLib.from(el, {
+        autoAlpha: 0,
+        y: 18,
         duration: 0.9,
         ease: easeSoft,
-        immediateRender: false,
         scrollTrigger: {
           trigger: el,
           start: 'top 85%',
           toggleActions: 'play none none none',
           once: true,
         },
-      },
-    );
-  });
-
-  const line = document.querySelector('.step-line');
-  if (line) {
-    gsapLib.fromTo(
-      line,
-      { transformOrigin: 'left center', scaleX: 0 },
-      {
-        scaleX: 1,
-        duration: 1,
-        ease: easeSoft,
-        scrollTrigger: {
-          trigger: line.closest('section') || line,
-          start: 'top 80%',
-          once: true,
-        },
-      },
-    );
-  }
-
-  const cards = gsapLib.utils.toArray('[data-step-card], [data-phone]');
-  cards.forEach((el) => {
-    gsapLib.from(el, {
-      autoAlpha: 0,
-      y: 18,
-      duration: 0.9,
-      ease: easeSoft,
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-        once: true,
-      },
+      });
     });
-  });
 
-  gsapLib.utils.toArray('[data-phone]').forEach((phone) => {
-    phone.addEventListener('mouseenter', () => {
-      gsapLib.to(phone, { y: -6, duration: 0.3, ease: easeSoft });
+    gsapLib.utils.toArray('[data-phone]').forEach((phone) => {
+      phone.addEventListener('mouseenter', () => {
+        gsapLib.to(phone, { y: -6, duration: 0.3, ease: easeSoft });
+      });
+      phone.addEventListener('mouseleave', () => {
+        gsapLib.to(phone, { y: 0, duration: 0.3, ease: easeSoft });
+      });
     });
-    phone.addEventListener('mouseleave', () => {
-      gsapLib.to(phone, { y: 0, duration: 0.3, ease: easeSoft });
-    });
-  });
 
-  ScrollTrigger.refresh();
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+  });
 })();
