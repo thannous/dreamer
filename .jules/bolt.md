@@ -22,3 +22,7 @@
 **Learning:** `matchesSearch()` in `lib/dreamFilters.ts` built a joined/`toLowerCase()` string for every dream even for single-token queries where cross-field phrase matching is impossible (fields are joined with spaces). This showed up as ~38ms avg filtering time over 20k dreams with long transcripts.
 
 **Action:** In search filters, only run cross-field “joined text” matching when the normalized query contains whitespace, and lazily compute localized label fields to avoid extra work on early matches. Keep a perf test (`tests/perf/filterBySearch.perf.test.ts`) to catch regressions.
+
+## 2025-01-20 - Scroll State in List Items
+**Learning:** Passing frequent `isScrolling` state updates to `FlashList` items (via props/extraData) triggers massive re-renders on scroll start/stop, outweighing any micro-optimization benefits (like disabling transitions).
+**Action:** Avoid passing scroll state to list items. Use static configurations for list items or `useRef` if logic (like prefetching) needs to know scroll state without UI updates.

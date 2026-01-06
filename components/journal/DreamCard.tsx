@@ -16,7 +16,6 @@ interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: (dream: DreamAnalysis) => void;
   shouldLoadImage?: boolean;
-  isScrolling?: boolean;
   testID?: string;
 }
 
@@ -27,7 +26,6 @@ export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
   shouldLoadImage = true,
-  isScrolling = false,
   testID,
 }: DreamCardProps) {
   const { colors } = useTheme();
@@ -79,9 +77,12 @@ export const DreamCard = memo(function DreamCard({
   // Get optimized image config for thumbnails
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
   const imageRecyclingKey = `${dream.id}-${imageVersion ?? 0}`;
-  const imageTransition = isScrolling ? 0 : imageConfig.transition;
-  const imagePlaceholder = isScrolling ? null : { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
-  const imagePriority = isScrolling ? 'low' : imageConfig.priority;
+
+  // OPTIMIZATION: Removed dynamic scroll-based props (transition, priority, placeholder)
+  // because toggling them causes full list re-renders that outweigh the benefits.
+  const imageTransition = imageConfig.transition;
+  const imagePlaceholder = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
+  const imagePriority = imageConfig.priority;
 
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
