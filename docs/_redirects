@@ -1,11 +1,20 @@
-# Redirect index.html files to directory root (avoid duplicate content)
+# Cloudflare Pages redirects with placeholders
+# Docs: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Redirect index.html files to directory root
 /index.html / 301
-/en/index.html /en/ 301
-/fr/index.html /fr/ 301
-/es/index.html /es/ 301
-/en/blog/index.html /en/blog/ 301
-/fr/blog/index.html /fr/blog/ 301
-/es/blog/index.html /es/blog/ 301
-/en/guides/index.html /en/guides/ 301
-/fr/guides/index.html /fr/guides/ 301
-/es/guides/index.html /es/guides/ 301
+/:lang/index.html /:lang/ 301
+/:lang/blog/index.html /:lang/blog/ 301
+/:lang/guides/index.html /:lang/guides/ 301
+
+# Redirect all .html pages to clean URLs (301 permanent)
+# Pattern-based redirects for blog, guides, and localized pages
+/:lang/blog/:slug.html /:lang/blog/:slug 301
+/:lang/guides/:slug.html /:lang/guides/:slug 301
+/:lang/:page.html /:lang/:page 301
+
+# Root level legacy French pages (no lang prefix)
+/cgu.html /fr/cgu 301
+/mentions-legales.html /fr/mentions-legales 301
+/politique-confidentialite.html /fr/politique-confidentialite 301
+/suppression-compte.html /fr/suppression-compte 301
