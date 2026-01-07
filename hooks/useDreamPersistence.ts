@@ -333,9 +333,11 @@ export function useDreamPersistence({
 
         const remoteDreams = await fetchDreamsFromSupabase();
         const normalizedRemote = normalizeDreamList(remoteDreams);
-        await saveCachedRemoteDreams(sortDreams(normalizedRemote));
+        // remoteDreams is already sorted by ID (created_at) from Supabase.
+        await saveCachedRemoteDreams(normalizedRemote);
         const hydrated = normalizeDreamList(applyPendingMutations(normalizedRemote, pendingMutations));
-        const nextDreams = sortDreams(hydrated);
+        // applyPendingMutations returns a sorted list, so no need to re-sort.
+        const nextDreams = hydrated;
         if (mounted.current) {
           if (!areDreamListsEqual(dreamsRef.current, nextDreams)) {
             dreamsRef.current = nextDreams;
