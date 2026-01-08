@@ -12,7 +12,12 @@
       el.style.visibility = 'visible';
       el.style.transform = '';
     });
-    getRevealItems().forEach((el) => el.classList.add('active'));
+    getRevealItems().forEach((el) => {
+      el.classList.add('active');
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+      el.style.transform = '';
+    });
   };
 
   const shouldAnimate = () => {
