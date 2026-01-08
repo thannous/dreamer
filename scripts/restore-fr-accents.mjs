@@ -243,7 +243,8 @@ function collectWordsFromHtml(html, wordSet) {
       continue;
     }
 
-    const shouldProcess = !inStyle && !inCode && (!inScript || scriptType === 'application/ld+json');
+    // Exclude JSON-LD blocks to prevent corrupting schema.org URLs and structured data
+    const shouldProcess = !inStyle && !inCode && !inScript;
     if (!shouldProcess) continue;
 
     collectWordsFromText(part, wordSet);
@@ -422,7 +423,8 @@ function applyReplacements(html, replacements) {
       return part;
     }
 
-    const shouldProcess = !inStyle && !inCode && (!inScript || scriptType === 'application/ld+json');
+    // Exclude JSON-LD blocks to prevent corrupting schema.org URLs and structured data
+    const shouldProcess = !inStyle && !inCode && !inScript;
     if (!shouldProcess) return part;
 
     const { text, count } = replaceText(part, replacements);
