@@ -2,20 +2,24 @@
   const gsapLib = window.gsap;
   const ScrollTrigger = window.ScrollTrigger;
 
+  const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim'));
+  const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
+
   const showStaticState = () => {
-    document.querySelectorAll('.hero-anim').forEach((el) => el.classList.remove('opacity-0'));
-    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('active'));
+    getHeroItems().forEach((el) => {
+      el.classList.remove('opacity-0');
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+      el.style.transform = '';
+    });
+    getRevealItems().forEach((el) => el.classList.add('active'));
   };
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const allowDesktopAnimations = window.matchMedia('(min-width: 768px)').matches;
-  if (!gsapLib || !ScrollTrigger || prefersReducedMotion || !allowDesktopAnimations) {
-    if (!gsapLib || !ScrollTrigger) {
-      console.warn('[landing-animations] GSAP non chargé, animations par défaut.');
-    }
-    showStaticState();
-    return;
-  }
+  const shouldAnimate = () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const allowDesktopAnimations = window.matchMedia('(min-width: 768px)').matches;
+    return !!(gsapLib && ScrollTrigger && !prefersReducedMotion && allowDesktopAnimations);
+  };
 
   const scheduleInit = (callback) => {
     if (typeof window.requestIdleCallback === 'function') {
@@ -25,7 +29,7 @@
     }
   };
 
-  scheduleInit(() => {
+  const initAnimations = () => {
     gsapLib.registerPlugin(ScrollTrigger);
     ScrollTrigger.getAll().forEach((t) => t.kill());
     ScrollTrigger.clearMatchMedia();
@@ -109,5 +113,47 @@
     });
 
     requestAnimationFrame(() => ScrollTrigger.refresh());
+  };
+
+  const boot = (forceImmediate = false) => {
+    if (!shouldAnimate()) {
+      if (!gsapLib || !ScrollTrigger) {
+        console.warn('[landing-animations] GSAP non chargé, animations par défaut.');
+      }
+      showStaticState();
+      return;
+    }
+
+    if (forceImmediate) {
+      initAnimations();
+    } else {
+      scheduleInit(initAnimations);
+    }
+  };
+
+  boot();
+
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) {
+      return;
+    }
+
+    const heroItems = getHeroItems();
+    const heroHidden = heroItems.some((el) => window.getComputedStyle(el).opacity === '0');
+    if (heroHidden) {
+      boot(true);
+      return;
+    }
+
+    const revealItems = getRevealItems();
+    const revealHidden = revealItems.some((el) => window.getComputedStyle(el).opacity === '0');
+    if (revealHidden) {
+      showStaticState();
+      return;
+    }
+
+    if (ScrollTrigger) {
+      ScrollTrigger.refresh(true);
+    }
   });
 })();
