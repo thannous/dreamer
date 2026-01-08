@@ -17,3 +17,7 @@ Add entries only for critical UX/a11y learnings in this format:
 ## 2025-12-30 - Icon-only toggles must announce intent
 **Learning:** A single icon button that switches between “edit” and “save” can be ambiguous for screen readers if its `accessibilityLabel` doesn’t change with state, and confusing when disabled without an explanation.
 **Action:** For any stateful icon-only action, localize `accessibilityLabel` and `accessibilityHint` per state (e.g., edit vs save) and add `accessibilityState={{ disabled: true }}` plus a “why disabled” hint when locked by background work.
+
+## 2026-01-08 - Don’t ship dead CTAs on static pages
+**Learning:** A styled `<button>` without any handler on static landing pages looks tappable but is a dead end; for navigation (e.g., to a store listing) it should be a real `<a href>` and the URL should be localized per page so it still works without JS.
+**Action:** Prefer anchors for navigational CTAs, and audit per-locale “store” constants/rewrites so both JS and no-JS paths point to the same localized destination.
