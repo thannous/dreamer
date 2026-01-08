@@ -201,6 +201,14 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/blog/why-we-forget-dreams</loc>
+    <lastmod>2026-01-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-olvidamos-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/guides/dream-symbols-dictionary</loc>
     <lastmod>2026-01-06</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
@@ -311,6 +319,14 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/histoire-interpretation-reves"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/historia-interpretacion-suenos"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/por-que-olvidamos-suenos</loc>
+    <lastmod>2026-01-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-olvidamos-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/por-que-sonamos-ciencia</loc>
@@ -535,6 +551,14 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-dream-science"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-sonamos-ciencia"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil</loc>
+    <lastmod>2026-01-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/por-que-olvidamos-suenos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-forget-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/reves-de-chute</loc>
