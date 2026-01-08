@@ -234,19 +234,41 @@
             </nav>
 
             <!-- Header -->
-            <header class="text-center mb-12">
-                <h1
-                    class="font-serif text-4xl md:text-6xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-normal md:leading-normal pb-2">
-                    Ressources Noctalia
-                </h1>
-                <p class="text-lg text-purple-200/70 max-w-2xl mx-auto">
-                    Guides, science du sommeil, interprétation et références : des ressources Noctalia pour comprendre
-                    vos rêves et mieux vous en souvenir.
-                </p>
-            </header>
+	            <header class="text-center mb-12">
+	                <h1
+	                    class="font-serif text-4xl md:text-6xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-normal md:leading-normal pb-2">
+	                    Ressources Noctalia
+	                </h1>
+	                <p class="text-lg text-purple-200/70 max-w-2xl mx-auto">
+	                    Guides, science du sommeil, interprétation et références : des ressources Noctalia pour comprendre
+	                    vos rêves et mieux vous en souvenir.
+	                </p>
+	            </header>
 
-            <!-- Search and Filters -->
-            <div class="mb-10 space-y-6">
+	            <!-- Topic Hubs -->
+	            <section class="mb-10">
+	                <h2 class="font-serif text-2xl text-dream-cream mb-6 text-center">Explorer par thématique</h2>
+	                <div class="grid md:grid-cols-3 gap-6">
+	                    <a href="reve-lucide" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
+	                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
+	                        <h3 class="font-serif text-lg text-dream-cream mb-2">Rêve lucide</h3>
+	                        <p class="text-sm text-gray-400">Guides et techniques pour débuter et progresser.</p>
+	                    </a>
+	                    <a href="journal-de-reves" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
+	                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
+	                        <h3 class="font-serif text-lg text-dream-cream mb-2">Journal de rêves</h3>
+	                        <p class="text-sm text-gray-400">Rappel, routines, REM et meilleures pratiques.</p>
+	                    </a>
+	                    <a href="signification-des-reves" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
+	                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
+	                        <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves</h3>
+	                        <p class="text-sm text-gray-400">Interprétation, symboles et rêves récurrents.</p>
+	                    </a>
+	                </div>
+	            </section>
+	
+	            <!-- Search and Filters -->
+	            <div class="mb-10 space-y-6">
                 <!-- Search Bar -->
                 <div class="relative max-w-md mx-auto">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50"></i>
@@ -272,11 +294,11 @@
                         <button data-category="interpretation"
                             class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white"
                             data-testid="filter-interpretation">Interprétation</button>
-                        <button data-category="reve-lucide"
-                            class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white"
-                            data-testid="filter-lucid">
-                            Rêve lucide lucide
-                        </button>
+	                        <button data-category="reve-lucide"
+	                            class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white"
+	                            data-testid="filter-lucid">
+	                            Rêve lucide
+	                        </button>
                         <button data-category="science"
                             class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white"
                             data-testid="filter-science">

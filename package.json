@@ -19,6 +19,7 @@
     "serve:docs": "node ./scripts/serve-docs.js",
     "fix-seo-urls": "node ./scripts/fix-seo-html-extensions.js",
     "docs:fix-fr-accents": "node ./scripts/restore-fr-accents.mjs --write",
+    "ti-124:add-hub-pills": "node ./scripts/ti-124-add-hub-pills.js",
     "ti-97:add-sources-trust": "node ./scripts/ti-97-add-sources-trust.js",
     "ti-97:audit-assertive": "node ./scripts/ti-97-audit-assertive-phrases.js",
     "lint": "expo lint app components hooks lib context constants services tests",
