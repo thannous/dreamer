@@ -45,6 +45,37 @@
 
     dropdownButton.setAttribute('aria-controls', 'languageDropdownMenu');
 
+    function getCurrentLanguage() {
+      const langAttr = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+      if (langAttr) return langAttr.split('-')[0];
+
+      const match = window.location.pathname.match(/^\/(en|fr|es)(\/|$)/i);
+      return match ? match[1].toLowerCase() : '';
+    }
+
+    function syncLanguageMenuA11y() {
+      const currentLanguage = getCurrentLanguage();
+      const items = getMenuItems();
+
+      items.forEach((item) => {
+        item.removeAttribute('aria-current');
+
+        const itemLanguage = ((item.getAttribute('hreflang') || '').toLowerCase().split('-')[0]) || '';
+        const href = (item.getAttribute('href') || '').toLowerCase();
+        const isCurrent =
+          !!currentLanguage &&
+          ((itemLanguage && itemLanguage === currentLanguage) ||
+            (!itemLanguage && new RegExp(`(^|/)${currentLanguage}(/|$)`).test(href)));
+
+        if (isCurrent) item.setAttribute('aria-current', 'page');
+
+        item.querySelectorAll('[data-lucide="check"]').forEach((checkIcon) => {
+          checkIcon.setAttribute('aria-hidden', 'true');
+          checkIcon.setAttribute('focusable', 'false');
+        });
+      });
+    }
+
     function getMenuItems() {
       return Array.from(dropdownMenu.querySelectorAll('[role="menuitem"]'));
     }
@@ -88,6 +119,7 @@
       if (isExpanded) {
         closeDropdown();
       } else {
+        syncLanguageMenuA11y();
         openDropdown();
       }
     });
@@ -97,11 +129,17 @@
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        if (!isExpanded) openDropdown();
+        if (!isExpanded) {
+          syncLanguageMenuA11y();
+          openDropdown();
+        }
         focusMenuItem(0);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        if (!isExpanded) openDropdown();
+        if (!isExpanded) {
+          syncLanguageMenuA11y();
+          openDropdown();
+        }
         focusMenuItem(-1);
       }
     });
