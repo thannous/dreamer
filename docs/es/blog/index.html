@@ -246,26 +246,62 @@
 	            </header>
 
 	            <!-- Topic Hubs -->
-	            <section class="mb-10">
-	                <h2 class="font-serif text-2xl text-dream-cream mb-6 text-center">Explorar por tema</h2>
-	                <div class="grid md:grid-cols-3 gap-6">
-	                    <a href="suenos-lucidos" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-	                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
-	                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños lúcidos</h3>
-	                        <p class="text-sm text-gray-400">Guías y técnicas para progresar con seguridad.</p>
-	                    </a>
-	                    <a href="diario-de-suenos" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-	                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
-	                        <h3 class="font-serif text-lg text-dream-cream mb-2">Diario de sueños</h3>
-	                        <p class="text-sm text-gray-400">Recuerdo, rutinas, REM y buenas prácticas.</p>
-	                    </a>
-	                    <a href="significado-de-suenos" class="glass-panel rounded-2xl p-6 block hover:border-dream-salmon/30 transition-colors">
-	                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Hub</span>
-	                        <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de sueños</h3>
-	                        <p class="text-sm text-gray-400">Interpretación, símbolos y temas recurrentes.</p>
-	                    </a>
-	                </div>
-	            </section>
+            <section class="mb-14">
+                <h2 class="font-serif text-2xl text-dream-cream mb-8 text-center">Explorar por tema</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Card 1 - Sueños lúcidos -->
+                    <a href="suenos-lucidos" class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-purple-900/40 via-dream-dark/60 to-dream-dark hover:border-purple-400/30 transition-all duration-500">
+                        <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-colors"></div>
+                        <div class="relative">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/30 to-purple-600/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                                <i data-lucide="eye" class="w-7 h-7 text-purple-300"></i>
+                            </div>
+                            <h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors">Sueños lúcidos</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Guías y técnicas para progresar con seguridad.</p>
+                            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                                <span class="text-xs text-purple-300/60">5 artículos</span>
+                                <span class="inline-flex items-center gap-1 text-sm text-dream-salmon group-hover:gap-2 transition-all">
+                                    Descubrir <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Card 2 - Diario de sueños -->
+                    <a href="diario-de-suenos" class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-blue-900/40 via-dream-dark/60 to-dream-dark hover:border-blue-400/30 transition-all duration-500">
+                        <div class="absolute -top-12 -right-12 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-colors"></div>
+                        <div class="relative">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/30 to-blue-600/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                                <i data-lucide="book-open" class="w-7 h-7 text-blue-300"></i>
+                            </div>
+                            <h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors">Diario de sueños</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Recuerdo, rutinas, REM y buenas prácticas.</p>
+                            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                                <span class="text-xs text-blue-300/60">4 artículos</span>
+                                <span class="inline-flex items-center gap-1 text-sm text-dream-salmon group-hover:gap-2 transition-all">
+                                    Descubrir <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Card 3 - Significado de sueños -->
+                    <a href="significado-de-suenos" class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-pink-900/40 via-dream-dark/60 to-dream-dark hover:border-pink-400/30 transition-all duration-500">
+                        <div class="absolute -top-12 -right-12 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl group-hover:bg-pink-500/30 transition-colors"></div>
+                        <div class="relative">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500/30 to-pink-600/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                                <i data-lucide="sparkles" class="w-7 h-7 text-pink-300"></i>
+                            </div>
+                            <h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors">Significado de sueños</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Interpretación, símbolos y temas recurrentes.</p>
+                            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                                <span class="text-xs text-pink-300/60">12 artículos</span>
+                                <span class="inline-flex items-center gap-1 text-sm text-dream-salmon group-hover:gap-2 transition-all">
+                                    Descubrir <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </section>
 	
 	            <!-- Search and Filters -->
 	            <div class="mb-10 space-y-6">
