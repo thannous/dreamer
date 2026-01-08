@@ -43,6 +43,19 @@
 
     if (!dropdownButton || !dropdownMenu) return;
 
+    dropdownButton.setAttribute('aria-controls', 'languageDropdownMenu');
+
+    function getMenuItems() {
+      return Array.from(dropdownMenu.querySelectorAll('[role="menuitem"]'));
+    }
+
+    function focusMenuItem(index) {
+      const items = getMenuItems();
+      if (!items.length) return;
+      const nextIndex = ((index % items.length) + items.length) % items.length;
+      items[nextIndex].focus();
+    }
+
     /**
      * Opens the dropdown menu
      */
@@ -79,6 +92,39 @@
       }
     });
 
+    dropdownButton.addEventListener('keydown', function(e) {
+      const isExpanded = dropdownButton.getAttribute('aria-expanded') === 'true';
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!isExpanded) openDropdown();
+        focusMenuItem(0);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!isExpanded) openDropdown();
+        focusMenuItem(-1);
+      }
+    });
+
+    dropdownMenu.addEventListener('keydown', function(e) {
+      const items = getMenuItems();
+      if (!items.length) return;
+
+      const activeIndex = items.indexOf(document.activeElement);
+
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        e.preventDefault();
+        closeDropdown();
+        dropdownButton.focus();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        focusMenuItem(activeIndex + 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        focusMenuItem(activeIndex - 1);
+      }
+    });
+
     /**
      * Close dropdown when clicking outside
      */
@@ -93,8 +139,9 @@
      * Close dropdown on ESC key
      */
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' || e.key === 'Esc') {
+      if ((e.key === 'Escape' || e.key === 'Esc') && dropdownButton.getAttribute('aria-expanded') === 'true') {
         closeDropdown();
+        dropdownButton.focus();
       }
     });
 
