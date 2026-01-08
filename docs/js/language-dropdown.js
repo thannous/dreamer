@@ -4,6 +4,68 @@
  */
 (() => {
   document.addEventListener('DOMContentLoaded', function() {
+    function initHeaderAutoHide() {
+      const header = document.getElementById('navbar') || document.querySelector('nav.fixed');
+      if (!header) return;
+
+      if (!document.getElementById('nav-scroll-style')) {
+        const style = document.createElement('style');
+        style.id = 'nav-scroll-style';
+        style.textContent = `
+          .nav-scroll-animate {
+            transition: transform 0.3s ease, opacity 0.2s ease;
+            will-change: transform, opacity;
+          }
+          .nav-scroll-hidden {
+            transform: translateY(-120%);
+            opacity: 0;
+            pointer-events: none;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      header.classList.add('nav-scroll-animate');
+
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+      const directionThreshold = 8;
+      const hideOffset = 64;
+      const showOffset = 8;
+
+      const update = () => {
+        const current = window.scrollY;
+        const delta = current - lastScrollY;
+
+        if (Math.abs(delta) < directionThreshold) {
+          ticking = false;
+          return;
+        }
+
+        if (current <= showOffset) {
+          header.classList.remove('nav-scroll-hidden');
+        } else if (delta > 0 && current > hideOffset) {
+          header.classList.add('nav-scroll-hidden');
+        } else if (delta < 0) {
+          header.classList.remove('nav-scroll-hidden');
+        }
+
+        lastScrollY = current;
+        ticking = false;
+      };
+
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+    }
+
     async function injectSiteVersion() {
       try {
         const footer = document.querySelector('footer');
@@ -35,6 +97,7 @@
       }
     }
 
+    initHeaderAutoHide();
     injectSiteVersion();
 
     const dropdownButton = document.getElementById('languageDropdownButton');
