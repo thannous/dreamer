@@ -8,6 +8,10 @@ function hasFaviconIco(content) {
   return /<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/favicon\.ico["'][^>]*>/i.test(content);
 }
 
+function hasFaviconPng(content) {
+  return /<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/favicon\.png["'][^>]*>/i.test(content);
+}
+
 function ensureFaviconIco(content) {
   if (hasFaviconIco(content)) return { content, changed: false };
 
@@ -29,6 +33,34 @@ function ensureFaviconIco(content) {
   return { content, changed: false };
 }
 
+function ensureFaviconPng(content) {
+  if (hasFaviconPng(content)) return { content, changed: false };
+
+  const icoLineMatch = content.match(
+    /(^[ \t]*<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/favicon\.ico["'][^>]*>\s*$)/im
+  );
+  const firstIconLink = content.match(/(^[ \t]*<link\s+[^>]*rel=["']icon["'][^>]*>\s*$)/im);
+  const indentMatch = (icoLineMatch?.[1] || firstIconLink?.[1])?.match(/^[ \t]*/);
+  const indent = indentMatch ? indentMatch[0] : '    ';
+
+  const pngLine = `${indent}<link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">\n`;
+
+  if (icoLineMatch) {
+    return { content: content.replace(icoLineMatch[1], `${icoLineMatch[1]}\n${pngLine.trimEnd()}`), changed: true };
+  }
+
+  if (firstIconLink) {
+    return { content: content.replace(firstIconLink[1], pngLine + firstIconLink[1]), changed: true };
+  }
+
+  // Fallback: insert before </head>
+  if (/<\/head>/i.test(content)) {
+    return { content: content.replace(/<\/head>/i, `${pngLine}</head>`), changed: true };
+  }
+
+  return { content, changed: false };
+}
+
 function upsertSizesAttribute(tag, sizesValue) {
   if (/\ssizes=/.test(tag)) return tag;
   return tag.replace(/\s*(\/?>)\s*$/, (_match, close) => ` sizes="${sizesValue}"${close}`);
@@ -38,27 +70,35 @@ function normalizeIconLines(content) {
   let changed = false;
   let out = content;
 
-  // Ensure explicit sizes on our PNG icons.
+  // Google Search requires favicons to be a multiple of 48px (e.g. 192x192).
+  // Replace the 512x512 marketing logo favicon with our compliant favicon.png.
   out = out.replace(
-    /(^[ \t]*<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/logo\/logo_noctalia\.png["'][^>]*>\s*$)/gim,
-    (match) => {
-      const updated = upsertSizesAttribute(match, '512x512');
-      if (updated !== match) changed = true;
-      return updated;
+    /(^[ \t]*)(<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/logo\/logo_noctalia\.png["'][^>]*>\s*$)/gim,
+    (_match, indent) => {
+      changed = true;
+      return `${indent}<link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">`;
     }
   );
 
   out = out.replace(
-    /(^[ \t]*<link\s+[^>]*rel=["']apple-touch-icon["'][^>]*href=["']\/logo\/logo_noctalia\.png["'][^>]*>\s*$)/gim,
-    (match) => {
-      const updated = upsertSizesAttribute(match, '512x512');
-      if (updated !== match) changed = true;
-      return updated;
+    /(^[ \t]*)(<link\s+[^>]*rel=["']apple-touch-icon["'][^>]*href=["']\/logo\/logo_noctalia\.png["'][^>]*>\s*$)/gim,
+    (_match, indent) => {
+      changed = true;
+      return `${indent}<link rel="apple-touch-icon" href="/favicon.png" sizes="192x192">`;
     }
   );
 
   out = out.replace(
     /(^[ \t]*<link\s+[^>]*rel=["']apple-touch-icon["'][^>]*href=["']\/logo192\.png["'][^>]*>\s*$)/gim,
+    (match) => {
+      const updated = upsertSizesAttribute(match, '192x192');
+      if (updated !== match) changed = true;
+      return updated;
+    }
+  );
+
+  out = out.replace(
+    /(^[ \t]*<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/favicon\.png["'][^>]*>\s*$)/gim,
     (match) => {
       const updated = upsertSizesAttribute(match, '192x192');
       if (updated !== match) changed = true;
@@ -74,6 +114,21 @@ function normalizeIconLines(content) {
       return updated;
     }
   );
+
+  // Dedupe duplicated favicon.png lines (can happen after migrations).
+  const faviconPngLineRegex = /^[ \t]*<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/favicon\.png["'][^>]*>\s*$/i;
+  const lines = out.split('\n');
+  let seenFaviconPngLine = false;
+  const dedupedLines = lines.filter((line) => {
+    if (!faviconPngLineRegex.test(line)) return true;
+    if (seenFaviconPngLine) {
+      changed = true;
+      return false;
+    }
+    seenFaviconPngLine = true;
+    return true;
+  });
+  out = dedupedLines.join('\n');
 
   return { content: out, changed };
 }
@@ -91,6 +146,10 @@ function processFile(filePath) {
   const normalizeResult = normalizeIconLines(content);
   content = normalizeResult.content;
   changed ||= normalizeResult.changed;
+
+  const pngResult = ensureFaviconPng(content);
+  content = pngResult.content;
+  changed ||= pngResult.changed;
 
   if (changed) {
     fs.writeFileSync(filePath, content, 'utf8');
