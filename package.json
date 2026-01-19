@@ -17,6 +17,7 @@
     "generate-sitemap": "node ./scripts/generate-sitemap-v2.js",
     "validate-seo": "node ./scripts/validate-i18n-seo.js",
     "serve:docs": "node ./scripts/serve-docs.js",
+    "docs:update-reading-times": "node ./scripts/update-reading-times.js --write",
     "fix-seo-urls": "node ./scripts/fix-seo-html-extensions.js",
     "docs:fix-fr-accents": "node ./scripts/restore-fr-accents.mjs --write",
     "ti-124:add-hub-pills": "node ./scripts/ti-124-add-hub-pills.js",
