@@ -113,4 +113,4 @@ Each article should follow this structure (~2500 words, 12 min read):
 - All articles must include Schema.org markup (Article, FAQPage, BreadcrumbList)
 - Images: use Unsplash for hero images, reuse `/img/en/` for all languages
 - Publication dates: use actual creation date
-- Read time: calculate based on word count (~250 words/min)
+- Read time: calculate based on word count (~300 words/min)

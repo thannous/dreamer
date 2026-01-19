@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 
-const WPM = 250;
+const WPM = 300;
 
 const LOCALES = [
   { code: 'fr', phrase: 'min de lecture' },
