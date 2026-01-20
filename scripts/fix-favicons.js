@@ -80,11 +80,30 @@ function normalizeIconLines(content) {
     }
   );
 
+  // Remove secondary icon declarations using logo192 (keeps favicon.ico + favicon.png for consistency).
+  out = out.replace(
+    /^[ \t]*<link\s+[^>]*rel=["']icon["'][^>]*href=["']\/logo192\.png["'][^>]*>\s*$/gim,
+    () => {
+      changed = true;
+      return '';
+    }
+  );
+
   out = out.replace(
     /(^[ \t]*)(<link\s+[^>]*rel=["']apple-touch-icon["'][^>]*href=["']\/logo\/logo_noctalia\.png["'][^>]*>\s*$)/gim,
     (_match, indent) => {
       changed = true;
-      return `${indent}<link rel="apple-touch-icon" href="/favicon.png" sizes="192x192">`;
+      return `${indent}<link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">`;
+    }
+  );
+
+  // Normalize apple-touch-icon to logo192.png across pages.
+  out = out.replace(
+    /(^[ \t]*<link\s+[^>]*rel=["']apple-touch-icon["'][^>]*href=["']\/favicon\.png["'][^>]*>\s*$)/gim,
+    (match) => {
+      const updated = match.replace('/favicon.png', '/logo192.png');
+      if (updated !== match) changed = true;
+      return updated;
     }
   );
 
