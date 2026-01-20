@@ -12,10 +12,22 @@ const path = require('path');
 const DOCS_DIR = path.join(__dirname, '../docs');
 const SITEMAP_PATH = path.join(DOCS_DIR, 'sitemap.xml');
 const DOMAIN = 'https://noctalia.app';
-const TODAY = new Date().toISOString().split('T')[0];
 
 // Directories to exclude from sitemap
 const EXCLUDED_DIRS = ['node_modules', '.git', 'auth'];
+
+function formatIsoDate(date) {
+  return date.toISOString().split('T')[0];
+}
+
+function getLastmodFromFilePath(fullPath) {
+  try {
+    const stat = fs.statSync(fullPath);
+    return formatIsoDate(stat.mtime);
+  } catch {
+    return formatIsoDate(new Date());
+  }
+}
 
 /**
  * Recursively find all HTML files in docs directory
@@ -126,7 +138,7 @@ function pathToUrl(filePath) {
  * Group URLs by their canonical relationship (same content in different languages)
  */
 function groupUrlsByContent(files) {
-  const urlToHreflangs = new Map();
+  const urlToMeta = new Map();
 
   for (const file of files) {
     const fullPath = path.join(DOCS_DIR, file);
@@ -153,20 +165,20 @@ function groupUrlsByContent(files) {
 
     const hreflangs = extractHreflangsFromContent(content);
     if (hreflangs && Object.keys(hreflangs).length > 0) {
-      urlToHreflangs.set(canonical, hreflangs);
+      urlToMeta.set(canonical, { hreflangs, lastmod: getLastmodFromFilePath(fullPath) });
     }
   }
 
-  return urlToHreflangs;
+  return urlToMeta;
 }
 
 /**
  * Generate XML for a URL entry with its hreflangs
  */
-function generateUrlEntry(url, hreflangs) {
+function generateUrlEntry(url, hreflangs, lastmod) {
   let xml = '  <url>\n';
   xml += `    <loc>${escapeXml(url)}</loc>\n`;
-  xml += `    <lastmod>${TODAY}</lastmod>\n`;
+  xml += `    <lastmod>${escapeXml(lastmod || formatIsoDate(new Date()))}</lastmod>\n`;
 
   // Add hreflang alternate links from the HTML file
   // Only add hreflangs that point to valid URLs
@@ -199,16 +211,16 @@ function escapeXml(str) {
 /**
  * Generate the complete sitemap XML
  */
-function generateSitemap(urlToHreflangs) {
+function generateSitemap(urlToMeta) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
 
   // Sort URLs for consistent output
-  const sortedUrls = Array.from(urlToHreflangs.keys()).sort();
+  const sortedUrls = Array.from(urlToMeta.keys()).sort();
 
   for (const url of sortedUrls) {
-    const hreflangs = urlToHreflangs.get(url);
-    xml += generateUrlEntry(url, hreflangs);
+    const meta = urlToMeta.get(url);
+    xml += generateUrlEntry(url, meta?.hreflangs, meta?.lastmod);
   }
 
   xml += '</urlset>\n';
@@ -225,24 +237,24 @@ function main() {
   console.log(`✅ Found ${files.length} HTML files`);
 
   // Group URLs by their hreflang relationships
-  const urlToHreflangs = groupUrlsByContent(files);
-  console.log(`✅ Extracted hreflang data from ${urlToHreflangs.size} URLs`);
+  const urlToMeta = groupUrlsByContent(files);
+  console.log(`✅ Extracted hreflang data from ${urlToMeta.size} URLs`);
 
   // Generate sitemap
-  const sitemap = generateSitemap(urlToHreflangs);
+  const sitemap = generateSitemap(urlToMeta);
 
   // Write sitemap
   fs.writeFileSync(SITEMAP_PATH, sitemap, 'utf8');
   console.log(`✅ Sitemap generated successfully!`);
   console.log(`📍 Location: ${SITEMAP_PATH}`);
-  console.log(`📊 URLs in sitemap: ${urlToHreflangs.size}`);
+  console.log(`📊 URLs in sitemap: ${urlToMeta.size}`);
 
   // Analyze hreflang distribution
   let urlsWithHreflangs = 0;
   let multilingualCount = 0;
   const langCounts = {};
 
-  for (const hreflangs of urlToHreflangs.values()) {
+  for (const { hreflangs } of urlToMeta.values()) {
     if (Object.keys(hreflangs).length > 0) {
       urlsWithHreflangs++;
       const langCount = Object.keys(hreflangs).filter(h => h !== 'x-default').length;
