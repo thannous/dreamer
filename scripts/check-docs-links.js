@@ -138,12 +138,7 @@ function classifyUrl(raw) {
       const u = new URL(toExternalUrl(trimmed));
       if (INTERNAL_HOSTS.has(u.hostname)) {
         const pathname = u.pathname || '/';
-        const ext = path.posix.extname(pathname).toLowerCase();
-        const looksLikePage = pathname.endsWith('/') || ext === '' || ext === '.html';
-        if (looksLikePage) {
-          return { kind: 'internal', path: pathname, fragment: (u.hash || '').replace(/^#/, '') };
-        }
-        return { kind: 'external', url: u.toString() };
+        return { kind: 'internal', path: pathname, fragment: (u.hash || '').replace(/^#/, '') };
       }
       return { kind: 'external', url: u.toString() };
     } catch {

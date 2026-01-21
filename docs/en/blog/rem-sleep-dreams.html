@@ -20,20 +20,31 @@
     <meta property="og:title" content="REM Sleep: Why Your Brain Needs Dreams | Noctalia">
     <meta property="og:description" content="Explore the science of REM sleep and its vital role in dreaming. Learn how sleep cycles work and optimize your REM phases for better memory and dream recall.">
     <meta property="og:url" content="https://noctalia.app/en/blog/rem-sleep-dreams">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
+    <meta property="og:image" content="https://noctalia.app/img/blog/rem-sleep-dreams.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Visual representation of REM sleep brain activity and eye movement">
+
     <meta property="article:published_time" content="2025-12-11">
     <meta property="article:modified_time" content="2026-01-06">
     <meta property="article:author" content="Noctalia">
+    <meta name="robots" content="max-image-preview:large">
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="REM Sleep: Why Your Brain Needs Dreams | Noctalia">
     <meta name="twitter:description" content="Explore the science of REM sleep and its vital role in dreaming. Learn how sleep cycles work and optimize your REM phases for better memory and dream recall.">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/rem-sleep-dreams.webp">
+    <meta name="twitter:image:alt" content="Visual representation of REM sleep brain activity and eye movement">
+
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/css/styles.min.css">
-    <link rel="stylesheet" href="/css/language-dropdown.css">
-    <script src="/js/lucide.min.js" defer></script>
+    <!-- Preload featured image -->
+    <link rel="preload" href="/img/blog/rem-sleep-dreams.webp" as="image" type="image/webp">
+
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260108-1734">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260108-1734">
+    <script src="/js/lucide.min.js?v=20260108-1734" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -76,11 +87,35 @@
             "@type": "BlogPosting",
             "headline": "REM Sleep and Dreams: Understanding Your Brain's Nightly Reset",
             "description": "Discover the science of REM sleep and why it's crucial for dreaming. Learn about sleep cycles, REM vs non-REM dreams, and how to optimize your REM sleep.",
-            "image": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
-            "author": { "@type": "Organization", "name": "Noctalia" },
-            "publisher": { "@type": "Organization", "name": "Noctalia", "logo": { "@type": "ImageObject", "url": "https://noctalia.app/logo/logo_noctalia.png" } },
-            "datePublished": "2025-12-11", "dateModified": "2026-01-06",
-            "mainEntityOfPage": { "@type": "WebPage", "@id": "https://noctalia.app/en/blog/rem-sleep-dreams" }
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
+                "width": 1200,
+                "height": 630
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "Noctalia"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Noctalia",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://noctalia.app/logo/logo_noctalia.png"
+                }
+            },
+            "datePublished": "2025-12-11",
+            "dateModified": "2026-01-06",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "https://noctalia.app/en/blog/rem-sleep-dreams"
+            },
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "wordCount": 1787,
+            "timeRequired": "PT6M",
+            "url": "https://noctalia.app/en/blog/rem-sleep-dreams"
         }
     </script>
 
@@ -211,7 +246,7 @@
             <figure class="mb-12 rounded-2xl overflow-hidden">
                 <img src="../../img/blog/rem-sleep-dreams.webp"
                     alt="Visual representation of REM sleep brain activity and eye movement"
-                    class="w-full h-auto" width="1200" height="600" loading="eager">
+                    class="w-full h-auto" width="1200" height="630" loading="eager" fetchpriority="high">
             </figure>
             <!-- Table of Contents -->
             <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -777,6 +812,6 @@
             });
         });
     </script>
-        <script src="/js/language-dropdown.js?v=20251217-1825" defer></script>
+        <script src="/js/language-dropdown.js?v=20260108-1734" defer></script>
 </body>
 </html>
