@@ -7,11 +7,26 @@
 /:lang/blog/index.html /:lang/blog/ 301
 /:lang/guides/index.html /:lang/guides/ 301
 
+# Redirect legacy renamed slugs (avoid soft-404 fallback to home)
+/fr/blog/comment-se-souvenir-reves.html /fr/blog/comment-se-souvenir-de-ses-reves 301
+/fr/blog/comment-se-souvenir-reves /fr/blog/comment-se-souvenir-de-ses-reves 301
+/fr/blog/reves-poursuite.html /fr/blog/reves-etre-poursuivi 301
+/fr/blog/reves-poursuite /fr/blog/reves-etre-poursuivi 301
+/fr/blog/reves-recurrents.html /fr/blog/signification-reves-recurrents 301
+/fr/blog/reves-recurrents /fr/blog/signification-reves-recurrents 301
+/es/blog/como-recordar-tus-suenos.html /es/blog/como-recordar-suenos 301
+/es/blog/como-recordar-tus-suenos /es/blog/como-recordar-suenos 301
+/es/condiciones.html /es/terminos 301
+/es/condiciones /es/terminos 301
+
 # Redirect all .html pages to clean URLs (301 permanent)
 # Pattern-based redirects for blog, guides, and localized pages
 /:lang/blog/:slug.html /:lang/blog/:slug 301
 /:lang/guides/:slug.html /:lang/guides/:slug 301
 /:lang/:page.html /:lang/:page 301
+
+# Legacy typo: keep old screenshot URLs working
+/screenshoot/* /screenshot/:splat 301
 
 # Root level legacy French pages (no lang prefix)
 /cgu.html /fr/cgu 301
