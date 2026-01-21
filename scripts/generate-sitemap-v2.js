@@ -8,7 +8,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
+const REPO_ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(__dirname, '../docs');
 const SITEMAP_PATH = path.join(DOCS_DIR, 'sitemap.xml');
 const DOMAIN = 'https://noctalia.app';
@@ -20,13 +22,49 @@ function formatIsoDate(date) {
   return date.toISOString().split('T')[0];
 }
 
-function getLastmodFromFilePath(fullPath) {
+function toPosixPath(p) {
+  return p.split(path.sep).join('/');
+}
+
+let cachedHeadLastmod = undefined;
+
+function readGitIsoDate(args) {
   try {
-    const stat = fs.statSync(fullPath);
-    return formatIsoDate(stat.mtime);
-  } catch {
-    return formatIsoDate(new Date());
+    const out = execFileSync('git', args, {
+      cwd: REPO_ROOT,
+      stdio: 'pipe',
+      encoding: 'utf8',
+    }).trim();
+    if (!out) return null;
+    return out;
+  } catch (error) {
+    const stdout =
+      error && typeof error === 'object'
+        ? typeof error.stdout === 'string'
+          ? error.stdout
+          : Buffer.isBuffer(error.stdout)
+            ? error.stdout.toString('utf8')
+            : null
+        : null;
+
+    const out = (stdout || '').trim();
+    if (out) return out;
+    return null;
   }
+}
+
+function getGitHeadLastmod() {
+  if (cachedHeadLastmod !== undefined) return cachedHeadLastmod;
+  const iso = readGitIsoDate(['log', '-1', '--format=%cI']);
+  cachedHeadLastmod = iso ? iso.split('T')[0] : null;
+  return cachedHeadLastmod;
+}
+
+function getLastmodFromFilePath(fullPath) {
+  const relPath = toPosixPath(path.relative(REPO_ROOT, fullPath));
+  const iso = readGitIsoDate(['log', '-1', '--format=%cI', '--', relPath]);
+  if (iso) return iso.split('T')[0];
+  return getGitHeadLastmod();
 }
 
 /**
@@ -178,7 +216,9 @@ function groupUrlsByContent(files) {
 function generateUrlEntry(url, hreflangs, lastmod) {
   let xml = '  <url>\n';
   xml += `    <loc>${escapeXml(url)}</loc>\n`;
-  xml += `    <lastmod>${escapeXml(lastmod || formatIsoDate(new Date()))}</lastmod>\n`;
+  if (lastmod) {
+    xml += `    <lastmod>${escapeXml(lastmod)}</lastmod>\n`;
+  }
 
   // Add hreflang alternate links from the HTML file
   // Only add hreflangs that point to valid URLs
