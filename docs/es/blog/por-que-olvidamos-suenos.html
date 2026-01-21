@@ -20,19 +20,28 @@
     <meta property="og:title" content="Por que olvidamos los suenos al despertar? La ciencia lo explica">
     <meta property="og:description" content="Descubre por que olvidamos el 95% de nuestros suenos al despertar. Aprende sobre la quimica cerebral y tecnicas para recordar.">
     <meta property="og:url" content="https://noctalia.app/es/blog/por-que-olvidamos-suenos">
-    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
+    <meta property="og:image" content="https://noctalia.app/img/blog/how-to-remember-dreams.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Ilustracion de un cerebro dormido con suenos que se desvanecen progresivamente">
+
     <meta property="og:locale" content="es_ES">
     <meta property="article:published_time" content="2026-01-08">
     <meta property="article:modified_time" content="2026-01-08">
     <meta property="article:author" content="Noctalia">
+    <meta name="robots" content="max-image-preview:large">
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Por que olvidamos los suenos al despertar? La ciencia lo explica">
     <meta name="twitter:description" content="La ciencia explica por que el 95% de nuestros suenos se desvanecen al despertar.">
-    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
-        <meta name="robots" content="max-image-preview:large">
-<link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/how-to-remember-dreams.webp">
+    <meta name="twitter:image:alt" content="Ilustracion de un cerebro dormido con suenos que se desvanecen progresivamente">
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Preload featured image -->
+    <link rel="preload" href="/img/blog/how-to-remember-dreams.webp" as="image" type="image/webp">
+
     <link rel="stylesheet" href="/css/styles.min.css?v=20260108-1734">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=20260108-1734">
     <script src="/js/lucide.min.js?v=20260108-1734" defer></script>
@@ -78,7 +87,12 @@
             "@type": "BlogPosting",
             "headline": "Por que olvidamos los suenos al despertar? La ciencia lo explica",
             "description": "Descubre los mecanismos cerebrales y neuroquimicos que explican por que olvidamos la gran mayoria de nuestros suenos al despertar, y como mejorar tu memoria onirica.",
-            "image": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+                "width": 1200,
+                "height": 630
+            },
             "author": {
                 "@type": "Organization",
                 "name": "Noctalia"
@@ -232,7 +246,7 @@
             <figure class="mb-12 rounded-2xl overflow-hidden">
                 <img src="../../img/blog/how-to-remember-dreams.webp"
                     alt="Ilustracion de un cerebro dormido con suenos que se desvanecen progresivamente"
-                    class="w-full h-auto" width="1200" height="600" loading="eager">
+                    class="w-full h-auto" width="1200" height="630" loading="eager" fetchpriority="high">
             </figure>
             <!-- Table of Contents -->
             <nav class="glass-panel rounded-2xl p-6 mb-12">
