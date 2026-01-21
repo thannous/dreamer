@@ -16,6 +16,16 @@ expo-env.d.ts
 # JetBrains IDE
 .idea/caches/
 
+# Agent skills (any hidden dir)
+**/.*/skills/
+**/.agent/
+**/.agents/
+**/.codex/
+**/.claude/
+**/.windsurf/
+**/.gemini/
+**/.github/
+
 # Native
 .kotlin/
 *.orig.*
