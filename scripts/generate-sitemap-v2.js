@@ -60,11 +60,22 @@ function getGitHeadLastmod() {
   return cachedHeadLastmod;
 }
 
+function getLastmodFromFilesystem(fullPath) {
+  try {
+    const stats = fs.statSync(fullPath);
+    return formatIsoDate(stats.mtime);
+  } catch {
+    return formatIsoDate(new Date());
+  }
+}
+
 function getLastmodFromFilePath(fullPath) {
   const relPath = toPosixPath(path.relative(REPO_ROOT, fullPath));
   const iso = readGitIsoDate(['log', '-1', '--format=%cI', '--', relPath]);
   if (iso) return iso.split('T')[0];
-  return getGitHeadLastmod();
+  const head = getGitHeadLastmod();
+  if (head) return head;
+  return getLastmodFromFilesystem(fullPath);
 }
 
 /**

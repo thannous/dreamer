@@ -130,7 +130,7 @@ function insertAfterLine(head, anchorRegex, insertion) {
   return head.replace(anchorRegex, (line) => `${line}\n${insertion}`);
 }
 
-function enhanceArticleHead(head, { slug, imageUrl, featuredAlt }) {
+function enhanceArticleHead(head, { imageUrl, featuredAlt, preloadHref }) {
   const indent = detectHeadIndent(head);
   let next = normalizeHeadIndentation(head);
 
@@ -208,22 +208,37 @@ function enhanceArticleHead(head, { slug, imageUrl, featuredAlt }) {
   }
 
   // Preload featured image (helps LCP on articles).
-  const preloadBlock =
-    `${indent}<!-- Preload featured image -->\n` +
-    `${indent}<link rel="preload" href="/img/blog/${escapeHtmlAttr(slug)}.webp" as="image" type="image/webp">\n`;
+  const safePreloadHref = preloadHref ? String(preloadHref).trim() : '';
+  const shouldPreload = safePreloadHref.startsWith('/img/');
+  const lowerHref = safePreloadHref.toLowerCase();
+  const mime =
+    lowerHref.endsWith('.webp')
+      ? 'image/webp'
+      : lowerHref.endsWith('.png')
+        ? 'image/png'
+        : lowerHref.endsWith('.jpg') || lowerHref.endsWith('.jpeg')
+          ? 'image/jpeg'
+          : null;
+  const typeAttr = mime ? ` type="${mime}"` : '';
+  const preloadBlock = shouldPreload
+    ? `${indent}<!-- Preload featured image -->\n` +
+      `${indent}<link rel="preload" href="${escapeHtmlAttr(safePreloadHref)}" as="image"${typeAttr}>\n`
+    : null;
 
   const frauncesPreloadLine =
     /^\s*<link\s+rel=(["'])preload\1\s+href=(["'])\/fonts\/Fraunces-Variable\.woff2\2[^>]*>[ \t]*$/im;
   const lastFontPreloadLine = /^\s*<link\s+rel=(["'])preload\1[^>]*\/fonts\/[^>]*>[ \t]*$/gim;
-  if (frauncesPreloadLine.test(next)) {
-    next = insertAfterLine(next, frauncesPreloadLine, preloadBlock);
-  } else {
-    const fontMatches = Array.from(next.matchAll(lastFontPreloadLine));
-    if (fontMatches.length > 0) {
-      const last = fontMatches[fontMatches.length - 1][0];
-      next = next.replace(last, `${last}\n${preloadBlock}`);
+  if (preloadBlock) {
+    if (frauncesPreloadLine.test(next)) {
+      next = insertAfterLine(next, frauncesPreloadLine, preloadBlock);
     } else {
-      next = `${preloadBlock}${next}`;
+      const fontMatches = Array.from(next.matchAll(lastFontPreloadLine));
+      if (fontMatches.length > 0) {
+        const last = fontMatches[fontMatches.length - 1][0];
+        next = next.replace(last, `${last}\n${preloadBlock}`);
+      } else {
+        next = `${preloadBlock}${next}`;
+      }
     }
   }
 
@@ -251,23 +266,22 @@ function findBlogHtmlFiles() {
   return out.sort((a, b) => a.absPath.localeCompare(b.absPath));
 }
 
-function fixFeaturedImageTag(html, slug) {
-  const imgPath = `../../img/blog/${slug}.webp`;
-  const imgTagRegex = new RegExp(
-    `<img\\b([^>]*\\s)src=(["'])${escapeRegExp(imgPath)}\\2([^>]*)>`,
-    'i',
-  );
-
-  const match = html.match(imgTagRegex);
+function fixFeaturedImageTag(html) {
+  const featuredImgRegex =
+    /(<!--\s*Featured Image\s*-->[\s\S]*?<figure\b[^>]*>[\s\S]*?)(<img\b[^>]*>)/i;
+  const match = html.match(featuredImgRegex);
   if (!match) return html;
 
-  let tag = match[0];
+  let tag = match[2];
 
   // Ensure correct intrinsic size for the 1200x630 optimized images
-  if (/\bheight=/.test(tag)) {
-    tag = tag.replace(/\bheight=(["'])600\1/gi, 'height="630"');
-  } else {
-    tag = tag.replace(/\bwidth=(["'])1200\1/i, 'width="1200" height="630"');
+  tag = tag.replace(/\bheight=(["'])600\1/gi, 'height="630"');
+  if (!/\bheight=/.test(tag)) {
+    if (/\bwidth=(["'])1200\1/i.test(tag)) {
+      tag = tag.replace(/\bwidth=(["'])1200\1/i, 'width="1200" height="630"');
+    } else if (!/\bwidth=/.test(tag)) {
+      tag = tag.replace(/>$/, ' width="1200" height="630">');
+    }
   }
 
   // Promote loading priority on the featured image
@@ -279,7 +293,48 @@ function fixFeaturedImageTag(html, slug) {
     }
   }
 
-  return html.replace(match[0], tag);
+  return html.replace(featuredImgRegex, (full, before, imgTag) => `${before}${tag}`);
+}
+
+function resolveImageUrlFromSrc(src) {
+  if (!src) return null;
+  const value = String(src).trim();
+  if (!value) return null;
+  if (/^https?:\/\//i.test(value)) return value;
+  if (value.startsWith('//')) return `https:${value}`;
+  if (value.startsWith('/')) return `${DOMAIN}${value}`;
+  const idx = value.indexOf('img/blog/');
+  if (idx !== -1) return `${DOMAIN}/${value.slice(idx)}`;
+  return null;
+}
+
+function getPreloadHrefFromImageUrl(imageUrl) {
+  if (!imageUrl) return null;
+  try {
+    const url = new URL(imageUrl);
+    const base = new URL(DOMAIN);
+    if (url.host !== base.host) return null;
+    return url.pathname;
+  } catch {
+    return null;
+  }
+}
+
+function findFeaturedImageFromDocument(document) {
+  const prose = document.querySelector('.prose');
+  if (prose) {
+    let prev = prose.previousElementSibling;
+    while (prev) {
+      if (prev.tagName && prev.tagName.toLowerCase() === 'figure') {
+        const img = prev.querySelector('img');
+        if (img) return img;
+      }
+      prev = prev.previousElementSibling;
+    }
+  }
+
+  const imgInFigure = document.querySelector('figure img');
+  return imgInFigure || null;
 }
 
 function updateBlogPostingJsonLd(html, { lang, slug, imageUrl, minutes, words }) {
@@ -343,33 +398,33 @@ function processArticle({ lang, slug, absPath }) {
     return { changed: false, reason: 'not-blogposting' };
   }
 
-  const imageFilePath = path.join(BLOG_IMG_DIR, `${slug}.webp`);
-  const hasImage = fs.existsSync(imageFilePath);
-  const imageUrl = hasImage ? `${DOMAIN}/img/blog/${slug}.webp` : null;
-
   const readingInfo = computeReadingInfoFromHtml(raw);
   if (!readingInfo) {
     return { changed: false, reason: 'no-reading-info' };
   }
 
   const dom = new JSDOM(raw);
-  const featuredImg = dom.window.document.querySelector(`img[src$="/img/blog/${slug}.webp"]`);
+  const featuredImg = findFeaturedImageFromDocument(dom.window.document);
+  const featuredSrc = featuredImg ? featuredImg.getAttribute('src') : null;
   const featuredAlt = featuredImg ? featuredImg.getAttribute('alt') : null;
+
+  const imageFilePath = path.join(BLOG_IMG_DIR, `${slug}.webp`);
+  const fallbackImageUrl = fs.existsSync(imageFilePath) ? `${DOMAIN}/img/blog/${slug}.webp` : null;
+  const imageUrl = resolveImageUrlFromSrc(featuredSrc) || fallbackImageUrl;
+  const preloadHref = getPreloadHrefFromImageUrl(imageUrl);
 
   let next = raw;
 
   if (imageUrl) {
     const headParts = splitHead(next);
     if (headParts) {
-      const enhancedHead = enhanceArticleHead(headParts.head, { slug, imageUrl, featuredAlt });
+      const enhancedHead = enhanceArticleHead(headParts.head, { imageUrl, featuredAlt, preloadHref });
       const normalizedHead = enhancedHead.startsWith('\n') ? enhancedHead : `\n${enhancedHead}`;
       next = `${headParts.beforeHead}${normalizedHead}${headParts.afterHead}`;
     }
   }
 
-  if (imageUrl) {
-    next = fixFeaturedImageTag(next, slug);
-  }
+  next = fixFeaturedImageTag(next);
 
   const jsonRes = updateBlogPostingJsonLd(next, {
     lang,
