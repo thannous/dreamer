@@ -1,0 +1,1045 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-01-21",
+    "totalSymbols": 42,
+    "languages": ["en", "fr", "es"]
+  },
+  "categories": {
+    "nature": { "en": "Nature", "fr": "Nature", "es": "Naturaleza" },
+    "animals": { "en": "Animals", "fr": "Animaux", "es": "Animales" },
+    "body": { "en": "Body", "fr": "Corps", "es": "Cuerpo" },
+    "places": { "en": "Places", "fr": "Lieux", "es": "Lugares" },
+    "objects": { "en": "Objects", "fr": "Objets", "es": "Objetos" },
+    "actions": { "en": "Actions", "fr": "Actions", "es": "Acciones" },
+    "people": { "en": "People", "fr": "Personnes", "es": "Personas" },
+    "celestial": { "en": "Celestial", "fr": "Céleste", "es": "Celestial" }
+  },
+  "symbols": [
+    {
+      "id": "water",
+      "category": "nature",
+      "priority": 1,
+      "en": {
+        "slug": "water",
+        "name": "Water",
+        "shortDescription": "Water represents emotions and the subconscious. Calm water suggests inner peace, while turbulent water indicates emotional turmoil.",
+        "askYourself": ["What is my current emotional state?", "Are there emotions I'm suppressing?"]
+      },
+      "fr": {
+        "slug": "eau",
+        "name": "Eau",
+        "shortDescription": "L'eau représente les émotions et l'inconscient. Une eau calme suggère la paix intérieure, tandis qu'une eau agitée indique des turbulences émotionnelles.",
+        "askYourself": ["Quel est mon état émotionnel actuel ?", "Y a-t-il des émotions que je réprime ?"]
+      },
+      "es": {
+        "slug": "agua",
+        "name": "Agua",
+        "shortDescription": "El agua representa las emociones y el subconsciente. El agua tranquila sugiere paz interior, mientras que el agua turbulenta indica agitación emocional.",
+        "askYourself": ["¿Cuál es mi estado emocional actual?", "¿Hay emociones que estoy reprimiendo?"]
+      },
+      "relatedSymbols": ["ocean", "rain", "flood"],
+      "relatedArticles": { "en": "water-dreams-meaning", "fr": "reves-eau", "es": "suenos-de-agua" }
+    },
+    {
+      "id": "teeth",
+      "category": "body",
+      "priority": 1,
+      "en": {
+        "slug": "teeth",
+        "name": "Teeth (losing teeth)",
+        "shortDescription": "Losing teeth is a very common dream. It symbolizes anxiety, fear of aging, loss of power, or concerns about appearance and self-image.",
+        "askYourself": ["Am I anxious about my appearance?", "Am I afraid of losing something important?"]
+      },
+      "fr": {
+        "slug": "dents",
+        "name": "Dents (perdre ses dents)",
+        "shortDescription": "Perdre ses dents est un rêve très courant. Il symbolise l'anxiété, la peur de vieillir, la perte de pouvoir ou des préoccupations sur l'apparence et l'image de soi.",
+        "askYourself": ["Suis-je anxieux à propos de mon apparence ?", "Ai-je peur de perdre quelque chose d'important ?"]
+      },
+      "es": {
+        "slug": "dientes",
+        "name": "Dientes (perder dientes)",
+        "shortDescription": "Perder dientes es un sueño muy común. Simboliza ansiedad, miedo al envejecimiento, pérdida de poder o preocupaciones sobre la apariencia y la autoimagen.",
+        "askYourself": ["¿Estoy ansioso por mi apariencia?", "¿Tengo miedo de perder algo importante?"]
+      },
+      "relatedSymbols": ["mouth", "body", "mirror"],
+      "relatedArticles": { "en": "teeth-falling-out-dreams", "fr": "reves-dents-qui-tombent", "es": "suenos-dientes-caen" }
+    },
+    {
+      "id": "falling",
+      "category": "actions",
+      "priority": 1,
+      "en": {
+        "slug": "falling",
+        "name": "Falling",
+        "shortDescription": "Falling is one of the most common dreams. It symbolizes loss of control, insecurity, or fear of failure. It can also indicate a need to let go.",
+        "askYourself": ["In which area of my life do I feel out of control?", "What do I need to release?"]
+      },
+      "fr": {
+        "slug": "chute",
+        "name": "Chute",
+        "shortDescription": "La chute est l'un des rêves les plus courants. Elle symbolise la perte de contrôle, l'insécurité ou la peur de l'échec. Elle peut aussi indiquer un besoin de lâcher prise.",
+        "askYourself": ["Dans quel domaine de ma vie je me sens en perte de contrôle ?", "Qu'est-ce que je dois lâcher ?"]
+      },
+      "es": {
+        "slug": "caida",
+        "name": "Caída",
+        "shortDescription": "Caer es uno de los sueños más comunes. Simboliza pérdida de control, inseguridad o miedo al fracaso. También puede indicar necesidad de soltar.",
+        "askYourself": ["¿En qué área de mi vida me siento fuera de control?", "¿Qué necesito soltar?"]
+      },
+      "relatedSymbols": ["flying", "cliff", "stairs"],
+      "relatedArticles": { "en": "falling-dreams-meaning", "fr": "reves-de-chute", "es": "suenos-de-caer" }
+    },
+    {
+      "id": "flying",
+      "category": "actions",
+      "priority": 1,
+      "en": {
+        "slug": "flying",
+        "name": "Flying",
+        "shortDescription": "Flying through the air is an euphoric dream symbolizing freedom, transcendence, and overcoming limits. Difficulty flying can indicate perceived obstacles.",
+        "askYourself": ["What do I need to free myself from?", "What limits am I ready to transcend?"]
+      },
+      "fr": {
+        "slug": "voler",
+        "name": "Voler",
+        "shortDescription": "Voler dans les airs est un rêve euphorique symbolisant la liberté, la transcendance et le dépassement des limites. Difficulté à voler peut indiquer des obstacles perçus.",
+        "askYourself": ["De quoi ai-je besoin de me libérer ?", "Quelles limites suis-je prêt à dépasser ?"]
+      },
+      "es": {
+        "slug": "volar",
+        "name": "Volar",
+        "shortDescription": "Volar por el aire es un sueño eufórico que simboliza libertad, trascendencia y superación de límites. La dificultad para volar puede indicar obstáculos percibidos.",
+        "askYourself": ["¿De qué necesito liberarme?", "¿Qué límites estoy listo para trascender?"]
+      },
+      "relatedSymbols": ["bird", "plane", "falling"],
+      "relatedArticles": { "en": "flying-dreams-meaning", "fr": "reves-de-voler", "es": "suenos-de-volar" }
+    },
+    {
+      "id": "snake",
+      "category": "animals",
+      "priority": 1,
+      "en": {
+        "slug": "snake",
+        "name": "Snake",
+        "shortDescription": "The snake is a complex symbol: transformation, wisdom, sexuality, or danger. Its meaning depends greatly on your personal relationship with snakes.",
+        "askYourself": ["Is there a transformation underway?", "What does the snake personally represent to me?"]
+      },
+      "fr": {
+        "slug": "serpent",
+        "name": "Serpent",
+        "shortDescription": "Le serpent est un symbole complexe : transformation, sagesse, sexualité ou danger. Sa signification dépend beaucoup de votre relation personnelle avec les serpents.",
+        "askYourself": ["Y a-t-il une transformation en cours ?", "Qu'est-ce que le serpent représente pour moi personnellement ?"]
+      },
+      "es": {
+        "slug": "serpiente",
+        "name": "Serpiente",
+        "shortDescription": "La serpiente es un símbolo complejo: transformación, sabiduría, sexualidad o peligro. Su significado depende mucho de tu relación personal con las serpientes.",
+        "askYourself": ["¿Hay una transformación en curso?", "¿Qué representa personalmente la serpiente para mí?"]
+      },
+      "relatedSymbols": ["spider", "death", "transformation"],
+      "relatedArticles": { "en": "snake-dreams-meaning", "fr": "reves-de-serpents", "es": "suenos-con-serpientes" }
+    },
+    {
+      "id": "death",
+      "category": "actions",
+      "priority": 1,
+      "en": {
+        "slug": "death",
+        "name": "Death",
+        "shortDescription": "Death in dreams rarely symbolizes literal death. It represents the end of a phase, major transformation, or the need to let go of something.",
+        "askYourself": ["What needs to \"die\" in my life so I can evolve?"]
+      },
+      "fr": {
+        "slug": "mort",
+        "name": "Mort",
+        "shortDescription": "La mort dans les rêves symbolise rarement une mort littérale. Elle représente la fin d'une phase, une transformation majeure ou le besoin de laisser partir quelque chose.",
+        "askYourself": ["Qu'est-ce qui doit \"mourir\" dans ma vie pour que je puisse évoluer ?"]
+      },
+      "es": {
+        "slug": "muerte",
+        "name": "Muerte",
+        "shortDescription": "La muerte en sueños raramente simboliza muerte literal. Representa el fin de una fase, transformación importante o necesidad de dejar ir algo.",
+        "askYourself": ["¿Qué necesita \"morir\" en mi vida para poder evolucionar?"]
+      },
+      "relatedSymbols": ["deceased-person", "snake", "transformation"],
+      "relatedArticles": { "en": "death-dreams-meaning", "fr": "reves-de-mort", "es": "suenos-de-muerte" }
+    },
+    {
+      "id": "chase",
+      "category": "actions",
+      "priority": 1,
+      "en": {
+        "slug": "being-chased",
+        "name": "Chase / Being Chased",
+        "shortDescription": "Being chased often symbolizes avoiding a problem or emotion. What's chasing you usually represents what you're fleeing in waking life.",
+        "askYourself": ["What am I avoiding?", "What fear am I running from?"]
+      },
+      "fr": {
+        "slug": "poursuite",
+        "name": "Poursuite / Être poursuivi",
+        "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
+        "askYourself": ["Qu'est-ce que j'évite d'affronter ?", "Quelle peur est-ce que je fuis ?"]
+      },
+      "es": {
+        "slug": "persecucion",
+        "name": "Persecución / Ser Perseguido",
+        "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
+        "askYourself": ["¿Qué estoy evitando?", "¿De qué miedo estoy huyendo?"]
+      },
+      "relatedSymbols": ["running", "fear", "monster"],
+      "relatedArticles": { "en": "being-chased-dreams", "fr": "reves-etre-poursuivi", "es": "suenos-ser-perseguido" }
+    },
+    {
+      "id": "house",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "house",
+        "name": "House",
+        "shortDescription": "A house represents the self and psychological state. Each room can symbolize a different aspect of your personality. A ruined house can indicate a need for inner reconstruction.",
+        "askYourself": ["How is my inner space?", "Are there \"rooms\" of myself that I'm neglecting?"]
+      },
+      "fr": {
+        "slug": "maison",
+        "name": "Maison",
+        "shortDescription": "La maison représente le soi et l'état psychologique. Chaque pièce peut symboliser un aspect différent de votre personnalité. Une maison en ruine peut indiquer un besoin de reconstruction intérieure.",
+        "askYourself": ["Comment va mon espace intérieur ?", "Y a-t-il des \"pièces\" de moi que je néglige ?"]
+      },
+      "es": {
+        "slug": "casa",
+        "name": "Casa",
+        "shortDescription": "Una casa representa el yo y el estado psicológico. Cada habitación puede simbolizar un aspecto diferente de tu personalidad. Una casa en ruinas puede indicar necesidad de reconstrucción interior.",
+        "askYourself": ["¿Cómo está mi espacio interior?", "¿Hay \"habitaciones\" de mí mismo que estoy descuidando?"]
+      },
+      "relatedSymbols": ["door", "room", "stairs"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "ocean",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "ocean",
+        "name": "Ocean / Sea",
+        "shortDescription": "The ocean represents the collective unconscious and deep emotions. Swimming in the ocean can indicate self-exploration, while drowning suggests being overwhelmed by emotions.",
+        "askYourself": ["Am I letting myself be carried or overwhelmed by my emotions?"]
+      },
+      "fr": {
+        "slug": "mer",
+        "name": "Mer / Océan",
+        "shortDescription": "La mer représente l'inconscient collectif et les émotions profondes. Nager dans la mer peut indiquer l'exploration de soi, tandis que se noyer suggère d'être submergé par les émotions.",
+        "askYourself": ["Est-ce que je me laisse porter ou submerger par mes émotions ?"]
+      },
+      "es": {
+        "slug": "oceano",
+        "name": "Océano / Mar",
+        "shortDescription": "El océano representa el inconsciente colectivo y emociones profundas. Nadar en el océano puede indicar autoexploración, mientras que ahogarse sugiere estar abrumado por emociones.",
+        "askYourself": ["¿Me estoy dejando llevar o abrumar por mis emociones?"]
+      },
+      "relatedSymbols": ["water", "drowning", "waves"],
+      "relatedArticles": { "en": "water-dreams-meaning", "fr": "reves-eau", "es": "suenos-de-agua" }
+    },
+    {
+      "id": "baby",
+      "category": "people",
+      "priority": 2,
+      "en": {
+        "slug": "baby",
+        "name": "Baby",
+        "shortDescription": "A baby symbolizes new beginnings, innocence, or a budding project. It can represent a vulnerable part of yourself that needs attention.",
+        "askYourself": ["What new project or idea am I developing?", "Is there a part of me that needs care?"]
+      },
+      "fr": {
+        "slug": "bebe",
+        "name": "Bébé",
+        "shortDescription": "Le bébé symbolise un nouveau départ, l'innocence ou un projet naissant. Il peut représenter une partie vulnérable de vous-même qui a besoin d'attention.",
+        "askYourself": ["Quel nouveau projet ou idée suis-je en train de développer ?", "Y a-t-il une partie de moi qui a besoin de soins ?"]
+      },
+      "es": {
+        "slug": "bebe",
+        "name": "Bebé",
+        "shortDescription": "Un bebé simboliza nuevos comienzos, inocencia o un proyecto naciente. Puede representar una parte vulnerable de ti mismo que necesita atención.",
+        "askYourself": ["¿Qué nuevo proyecto o idea estoy desarrollando?", "¿Hay una parte de mí que necesita cuidado?"]
+      },
+      "relatedSymbols": ["child", "pregnancy", "birth"],
+      "relatedArticles": { "en": "pregnancy-dreams-meaning", "fr": "reves-de-grossesse", "es": "suenos-de-embarazo" }
+    },
+    {
+      "id": "dog",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "dog",
+        "name": "Dog",
+        "shortDescription": "Dogs represent loyalty, friendship, and protection. An aggressive dog can symbolize internal conflict or a perceived threat in your environment.",
+        "askYourself": ["Who are my loyal allies?", "Do I feel protected?"]
+      },
+      "fr": {
+        "slug": "chien",
+        "name": "Chien",
+        "shortDescription": "Le chien représente la loyauté, l'amitié et la protection. Un chien agressif peut symboliser un conflit interne ou une menace perçue dans votre environnement.",
+        "askYourself": ["Qui sont mes alliés fidèles ?", "Est-ce que je me sens protégé ?"]
+      },
+      "es": {
+        "slug": "perro",
+        "name": "Perro",
+        "shortDescription": "Los perros representan lealtad, amistad y protección. Un perro agresivo puede simbolizar conflicto interno o una amenaza percibida en tu entorno.",
+        "askYourself": ["¿Quiénes son mis aliados leales?", "¿Me siento protegido?"]
+      },
+      "relatedSymbols": ["cat", "wolf", "animal"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "cat",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "cat",
+        "name": "Cat",
+        "shortDescription": "Cats symbolize independence, feminine intuition, and mystery. They can represent your wild side or a situation escaping your control.",
+        "askYourself": ["Am I listening to my intuition enough?", "Do I need more independence?"]
+      },
+      "fr": {
+        "slug": "chat",
+        "name": "Chat",
+        "shortDescription": "Le chat symbolise l'indépendance, l'intuition féminine et les mystères. Il peut représenter votre côté sauvage ou une situation qui échappe à votre contrôle.",
+        "askYourself": ["Suis-je assez à l'écoute de mon intuition ?", "Ai-je besoin de plus d'indépendance ?"]
+      },
+      "es": {
+        "slug": "gato",
+        "name": "Gato",
+        "shortDescription": "Los gatos simbolizan independencia, intuición femenina y misterio. Pueden representar tu lado salvaje o una situación que escapa a tu control.",
+        "askYourself": ["¿Estoy escuchando suficiente mi intuición?", "¿Necesito más independencia?"]
+      },
+      "relatedSymbols": ["dog", "lion", "animal"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "spider",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "spider",
+        "name": "Spider",
+        "shortDescription": "Spiders often symbolize creativity, patience, and weaving one's destiny. They can also represent fears or feeling trapped.",
+        "askYourself": ["Do I feel trapped in a situation?", "Am I weaving something new?"]
+      },
+      "fr": {
+        "slug": "araignee",
+        "name": "Araignée",
+        "shortDescription": "L'araignée symbolise souvent la créativité, la patience et le tissage de son destin. Elle peut aussi représenter des peurs ou un sentiment d'être pris au piège.",
+        "askYourself": ["Est-ce que je me sens pris au piège dans une situation ?", "Suis-je en train de tisser quelque chose de nouveau ?"]
+      },
+      "es": {
+        "slug": "arana",
+        "name": "Araña",
+        "shortDescription": "Las arañas suelen simbolizar creatividad, paciencia y tejer el propio destino. También pueden representar miedos o sentirse atrapado.",
+        "askYourself": ["¿Me siento atrapado en una situación?", "¿Estoy tejiendo algo nuevo?"]
+      },
+      "relatedSymbols": ["snake", "web", "insect"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "fire",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "fire",
+        "name": "Fire",
+        "shortDescription": "Fire symbolizes passion, transformation, and purification. Controlled fire represents positive energy, while a wildfire can indicate anger or destruction.",
+        "askYourself": ["What ignites my passion?", "Is there a situation consuming me?"]
+      },
+      "fr": {
+        "slug": "feu",
+        "name": "Feu",
+        "shortDescription": "Le feu symbolise la passion, la transformation et la purification. Un feu contrôlé représente l'énergie positive, tandis qu'un incendie peut indiquer la colère ou la destruction.",
+        "askYourself": ["Qu'est-ce qui m'enflamme de passion ?", "Y a-t-il une situation qui me consume ?"]
+      },
+      "es": {
+        "slug": "fuego",
+        "name": "Fuego",
+        "shortDescription": "El fuego simboliza pasión, transformación y purificación. Un fuego controlado representa energía positiva, mientras que un incendio puede indicar ira o destrucción.",
+        "askYourself": ["¿Qué enciende mi pasión?", "¿Hay una situación que me está consumiendo?"]
+      },
+      "relatedSymbols": ["smoke", "burning", "destruction"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "car",
+      "category": "objects",
+      "priority": 2,
+      "en": {
+        "slug": "car",
+        "name": "Car",
+        "shortDescription": "A car represents control over your life. Being in the driver's seat indicates control; being a passenger can suggest someone else is directing your life.",
+        "askYourself": ["Am I in control of my life?", "Who is directing my trajectory?"]
+      },
+      "fr": {
+        "slug": "voiture",
+        "name": "Voiture",
+        "shortDescription": "La voiture représente le contrôle sur votre vie. Être au volant indique le contrôle, être passager peut suggérer que quelqu'un d'autre dirige votre vie.",
+        "askYourself": ["Est-ce que je suis aux commandes de ma vie ?", "Qui dirige ma trajectoire ?"]
+      },
+      "es": {
+        "slug": "coche",
+        "name": "Coche",
+        "shortDescription": "Un coche representa el control sobre tu vida. Estar al volante indica control; ser pasajero puede sugerir que alguien más dirige tu vida.",
+        "askYourself": ["¿Tengo control de mi vida?", "¿Quién está dirigiendo mi trayectoria?"]
+      },
+      "relatedSymbols": ["driving", "road", "crash"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "door",
+      "category": "objects",
+      "priority": 2,
+      "en": {
+        "slug": "door",
+        "name": "Door",
+        "shortDescription": "A door symbolizes opportunities, transitions, and new beginnings. A closed door can indicate obstacles, while an open door suggests possibilities.",
+        "askYourself": ["What new opportunities are available to me?", "What's blocking me?"]
+      },
+      "fr": {
+        "slug": "porte",
+        "name": "Porte",
+        "shortDescription": "La porte symbolise les opportunités, les transitions et les nouveaux départs. Une porte fermée peut indiquer des obstacles, tandis qu'une porte ouverte suggère des possibilités.",
+        "askYourself": ["Quelles nouvelles opportunités s'offrent à moi ?", "Qu'est-ce qui me bloque ?"]
+      },
+      "es": {
+        "slug": "puerta",
+        "name": "Puerta",
+        "shortDescription": "Una puerta simboliza oportunidades, transiciones y nuevos comienzos. Una puerta cerrada puede indicar obstáculos, mientras que una abierta sugiere posibilidades.",
+        "askYourself": ["¿Qué nuevas oportunidades están disponibles para mí?", "¿Qué me está bloqueando?"]
+      },
+      "relatedSymbols": ["house", "key", "window"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "exam",
+      "category": "actions",
+      "priority": 2,
+      "en": {
+        "slug": "exam",
+        "name": "Exam / Test",
+        "shortDescription": "Dreaming of an exam, especially failing one, symbolizes anxiety about evaluation, perfectionism, or impostor syndrome. This is a very common dream among adults.",
+        "askYourself": ["Am I afraid of not measuring up?", "In what area do I feel judged?"]
+      },
+      "fr": {
+        "slug": "examen",
+        "name": "Examen / Test",
+        "shortDescription": "Rêver d'un examen, surtout raté, symbolise l'anxiété face à l'évaluation, le perfectionnisme ou le syndrome de l'imposteur. C'est un rêve très courant chez les adultes.",
+        "askYourself": ["Ai-je peur de ne pas être à la hauteur ?", "Dans quel domaine je me sens jugé ?"]
+      },
+      "es": {
+        "slug": "examen",
+        "name": "Examen / Prueba",
+        "shortDescription": "Soñar con un examen, especialmente suspenderlo, simboliza ansiedad sobre la evaluación, perfeccionismo o síndrome del impostor. Este es un sueño muy común entre adultos.",
+        "askYourself": ["¿Tengo miedo de no estar a la altura?", "¿En qué área me siento juzgado?"]
+      },
+      "relatedSymbols": ["school", "failure", "stress"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "nudity",
+      "category": "body",
+      "priority": 2,
+      "en": {
+        "slug": "nudity",
+        "name": "Nudity",
+        "shortDescription": "Being naked in public symbolizes vulnerability, fear of judgment, or feeling exposed. This is a very common dream related to social anxiety.",
+        "askYourself": ["Am I afraid of being judged?", "Is there something I'm hiding from others?"]
+      },
+      "fr": {
+        "slug": "nudite",
+        "name": "Nudité",
+        "shortDescription": "Être nu en public symbolise la vulnérabilité, la peur du jugement ou le sentiment d'être exposé. C'est un rêve très courant lié à l'anxiété sociale.",
+        "askYourself": ["Ai-je peur d'être jugé ?", "Y a-t-il quelque chose que je cache aux autres ?"]
+      },
+      "es": {
+        "slug": "desnudez",
+        "name": "Desnudez",
+        "shortDescription": "Estar desnudo en público simboliza vulnerabilidad, miedo al juicio o sentirse expuesto. Este es un sueño muy común relacionado con la ansiedad social.",
+        "askYourself": ["¿Tengo miedo de ser juzgado?", "¿Hay algo que estoy ocultando a los demás?"]
+      },
+      "relatedSymbols": ["clothes", "shame", "exposure"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "deceased-person",
+      "category": "people",
+      "priority": 2,
+      "en": {
+        "slug": "deceased-person",
+        "name": "Deceased Person",
+        "shortDescription": "Dreaming of a deceased loved one can represent grief, memories, or a message from your subconscious. It can also symbolize a part of you associated with that person.",
+        "askYourself": ["What message could this person bring me?", "What did they represent to me?"]
+      },
+      "fr": {
+        "slug": "defunt",
+        "name": "Défunt / Personne décédée",
+        "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
+        "askYourself": ["Quel message cette personne pourrait-elle m'apporter ?", "Qu'est-ce qu'elle représentait pour moi ?"]
+      },
+      "es": {
+        "slug": "persona-fallecida",
+        "name": "Persona Fallecida",
+        "shortDescription": "Soñar con un ser querido fallecido puede representar duelo, recuerdos o un mensaje de tu subconsciente. También puede simbolizar una parte de ti asociada con esa persona.",
+        "askYourself": ["¿Qué mensaje podría traerme esta persona?", "¿Qué representaba para mí?"]
+      },
+      "relatedSymbols": ["death", "ghost", "memory"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "bird",
+      "category": "animals",
+      "priority": 2,
+      "en": {
+        "slug": "bird",
+        "name": "Bird",
+        "shortDescription": "Birds symbolize freedom, spiritual aspiration, and higher perspectives. A caged bird can represent feeling trapped.",
+        "askYourself": ["Do I feel free?", "What are my highest aspirations?"]
+      },
+      "fr": {
+        "slug": "oiseau",
+        "name": "Oiseau",
+        "shortDescription": "L'oiseau symbolise la liberté, l'aspiration spirituelle et les perspectives élevées. Un oiseau en cage peut représenter un sentiment d'être prisonnier.",
+        "askYourself": ["Est-ce que je me sens libre ?", "Quelles sont mes aspirations les plus élevées ?"]
+      },
+      "es": {
+        "slug": "pajaro",
+        "name": "Pájaro",
+        "shortDescription": "Los pájaros simbolizan libertad, aspiración espiritual y perspectivas elevadas. Un pájaro enjaulado puede representar sentirse atrapado.",
+        "askYourself": ["¿Me siento libre?", "¿Cuáles son mis aspiraciones más elevadas?"]
+      },
+      "relatedSymbols": ["flying", "cage", "freedom"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "bridge",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "bridge",
+        "name": "Bridge",
+        "shortDescription": "A bridge symbolizes transition, passage from one state to another. Crossing a bridge suggests change, while a collapsed bridge indicates obstacles.",
+        "askYourself": ["What transition am I going through?", "Am I ready to move on?"]
+      },
+      "fr": {
+        "slug": "pont",
+        "name": "Pont",
+        "shortDescription": "Le pont symbolise une transition, un passage d'un état à un autre. Traverser un pont suggère un changement, tandis qu'un pont effondré indique des obstacles.",
+        "askYourself": ["Quelle transition suis-je en train de vivre ?", "Suis-je prêt à passer à autre chose ?"]
+      },
+      "es": {
+        "slug": "puente",
+        "name": "Puente",
+        "shortDescription": "Un puente simboliza transición, paso de un estado a otro. Cruzar un puente sugiere cambio, mientras que un puente colapsado indica obstáculos.",
+        "askYourself": ["¿Qué transición estoy atravesando?", "¿Estoy preparado para seguir adelante?"]
+      },
+      "relatedSymbols": ["road", "water", "crossing"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "stairs",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "stairs",
+        "name": "Stairs",
+        "shortDescription": "Stairs symbolize progression, social or spiritual ascension. Going up indicates growth; going down can suggest exploration of the subconscious.",
+        "askYourself": ["Am I progressing in my life?", "What direction am I taking?"]
+      },
+      "fr": {
+        "slug": "escalier",
+        "name": "Escalier",
+        "shortDescription": "L'escalier symbolise la progression, l'ascension sociale ou spirituelle. Monter indique la croissance, descendre peut suggérer l'exploration de l'inconscient.",
+        "askYourself": ["Est-ce que je progresse dans ma vie ?", "Quelle direction est-ce que je prends ?"]
+      },
+      "es": {
+        "slug": "escaleras",
+        "name": "Escaleras",
+        "shortDescription": "Las escaleras simbolizan progresión, ascenso social o espiritual. Subir indica crecimiento; bajar puede sugerir exploración del subconsciente.",
+        "askYourself": ["¿Estoy progresando en mi vida?", "¿Qué dirección estoy tomando?"]
+      },
+      "relatedSymbols": ["house", "climbing", "elevator"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "moon",
+      "category": "celestial",
+      "priority": 2,
+      "en": {
+        "slug": "moon",
+        "name": "Moon",
+        "shortDescription": "The moon symbolizes femininity, intuition, and natural cycles. It also represents hidden aspects of the self and deep emotions.",
+        "askYourself": ["Am I listening to my intuition?", "What cycles are passing through my life?"]
+      },
+      "fr": {
+        "slug": "lune",
+        "name": "Lune",
+        "shortDescription": "La lune symbolise la féminité, l'intuition et les cycles naturels. Elle représente aussi les aspects cachés de soi et les émotions profondes.",
+        "askYourself": ["Suis-je à l'écoute de mon intuition ?", "Quels cycles traversent ma vie ?"]
+      },
+      "es": {
+        "slug": "luna",
+        "name": "Luna",
+        "shortDescription": "La luna simboliza feminidad, intuición y ciclos naturales. También representa aspectos ocultos del yo y emociones profundas.",
+        "askYourself": ["¿Estoy escuchando mi intuición?", "¿Qué ciclos están pasando por mi vida?"]
+      },
+      "relatedSymbols": ["sun", "night", "stars"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "sun",
+      "category": "celestial",
+      "priority": 2,
+      "en": {
+        "slug": "sun",
+        "name": "Sun",
+        "shortDescription": "The sun symbolizes consciousness, vital energy, and optimism. It represents clarity, truth, and spiritual illumination.",
+        "askYourself": ["What gives me energy?", "What truth do I need to see?"]
+      },
+      "fr": {
+        "slug": "soleil",
+        "name": "Soleil",
+        "shortDescription": "Le soleil symbolise la conscience, l'énergie vitale et l'optimisme. Il représente la clarté, la vérité et l'illumination spirituelle.",
+        "askYourself": ["Qu'est-ce qui m'apporte de l'énergie ?", "Quelle vérité ai-je besoin de voir ?"]
+      },
+      "es": {
+        "slug": "sol",
+        "name": "Sol",
+        "shortDescription": "El sol simboliza consciencia, energía vital y optimismo. Representa claridad, verdad e iluminación espiritual.",
+        "askYourself": ["¿Qué me da energía?", "¿Qué verdad necesito ver?"]
+      },
+      "relatedSymbols": ["moon", "light", "day"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "rain",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "rain",
+        "name": "Rain",
+        "shortDescription": "Rain can symbolize purification, renewal, or sadness. A gentle rain suggests healing, while a storm indicates intense emotions.",
+        "askYourself": ["Do I need to let my emotions flow?", "What renewal is possible?"]
+      },
+      "fr": {
+        "slug": "pluie",
+        "name": "Pluie",
+        "shortDescription": "La pluie peut symboliser la purification, le renouveau ou la tristesse. Une pluie douce suggère la guérison, tandis qu'un orage indique des émotions intenses.",
+        "askYourself": ["Ai-je besoin de laisser couler mes émotions ?", "Quel renouveau est possible ?"]
+      },
+      "es": {
+        "slug": "lluvia",
+        "name": "Lluvia",
+        "shortDescription": "La lluvia puede simbolizar purificación, renovación o tristeza. Una lluvia suave sugiere sanación, mientras que una tormenta indica emociones intensas.",
+        "askYourself": ["¿Necesito dejar fluir mis emociones?", "¿Qué renovación es posible?"]
+      },
+      "relatedSymbols": ["water", "storm", "clouds"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "forest",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "forest",
+        "name": "Forest",
+        "shortDescription": "The forest represents the subconscious, mystery, and self-exploration. Getting lost in a forest can symbolize confusion or searching for direction in life.",
+        "askYourself": ["Am I ready to explore my subconscious?", "What's hidden within me?"]
+      },
+      "fr": {
+        "slug": "foret",
+        "name": "Forêt",
+        "shortDescription": "La forêt représente l'inconscient, le mystère et l'exploration de soi. Se perdre en forêt peut symboliser la confusion ou la recherche de direction dans la vie.",
+        "askYourself": ["Suis-je prêt à explorer mon inconscient ?", "Qu'est-ce qui est caché en moi ?"]
+      },
+      "es": {
+        "slug": "bosque",
+        "name": "Bosque",
+        "shortDescription": "El bosque representa el subconsciente, el misterio y la autoexploración. Perderse en un bosque puede simbolizar confusión o búsqueda de dirección en la vida.",
+        "askYourself": ["¿Estoy preparado para explorar mi subconsciente?", "¿Qué está oculto dentro de mí?"]
+      },
+      "relatedSymbols": ["tree", "darkness", "path"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "tree",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "tree",
+        "name": "Tree",
+        "shortDescription": "A tree symbolizes personal growth, family roots, and the cycle of life. A dead tree can represent the end of a phase or a need for renewal.",
+        "askYourself": ["Am I well grounded in my life?", "What part of me needs to grow?"]
+      },
+      "fr": {
+        "slug": "arbre",
+        "name": "Arbre",
+        "shortDescription": "L'arbre symbolise la croissance personnelle, les racines familiales et le cycle de la vie. Un arbre mort peut représenter la fin d'une phase ou un besoin de renouveau.",
+        "askYourself": ["Suis-je bien ancré dans ma vie ?", "Quelle partie de moi a besoin de croître ?"]
+      },
+      "es": {
+        "slug": "arbol",
+        "name": "Árbol",
+        "shortDescription": "Un árbol simboliza el crecimiento personal, las raíces familiares y el ciclo de la vida. Un árbol muerto puede representar el fin de una fase o necesidad de renovación.",
+        "askYourself": ["¿Estoy bien enraizado en mi vida?", "¿Qué parte de mí necesita crecer?"]
+      },
+      "relatedSymbols": ["forest", "roots", "leaves"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "mountain",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "mountain",
+        "name": "Mountain",
+        "shortDescription": "A mountain represents challenges, ambitious goals, and spiritual quest. Climbing a mountain symbolizes efforts to reach your goals.",
+        "askYourself": ["What challenge am I facing?", "Is the effort worth it?"]
+      },
+      "fr": {
+        "slug": "montagne",
+        "name": "Montagne",
+        "shortDescription": "La montagne représente les défis, les objectifs ambitieux et la quête spirituelle. Gravir une montagne symbolise les efforts pour atteindre vos buts.",
+        "askYourself": ["Quel défi suis-je en train de relever ?", "Est-ce que l'effort en vaut la peine ?"]
+      },
+      "es": {
+        "slug": "montana",
+        "name": "Montaña",
+        "shortDescription": "Una montaña representa desafíos, metas ambiciosas y búsqueda espiritual. Escalar una montaña simboliza esfuerzos para alcanzar tus objetivos.",
+        "askYourself": ["¿Qué desafío estoy enfrentando?", "¿Vale la pena el esfuerzo?"]
+      },
+      "relatedSymbols": ["climbing", "peak", "valley"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "lion",
+      "category": "animals",
+      "priority": 3,
+      "en": {
+        "slug": "lion",
+        "name": "Lion",
+        "shortDescription": "The lion represents strength, courage, and leadership. It can symbolize your own power or an authority figure in your life.",
+        "askYourself": ["Am I in touch with my inner strength?", "How do I express my power?"]
+      },
+      "fr": {
+        "slug": "lion",
+        "name": "Lion",
+        "shortDescription": "Le lion représente la force, le courage et le leadership. Il peut symboliser votre propre puissance ou une figure d'autorité dans votre vie.",
+        "askYourself": ["Suis-je en contact avec ma force intérieure ?", "Comment j'exprime mon pouvoir ?"]
+      },
+      "es": {
+        "slug": "leon",
+        "name": "León",
+        "shortDescription": "El león representa fuerza, coraje y liderazgo. Puede simbolizar tu propio poder o una figura de autoridad en tu vida.",
+        "askYourself": ["¿Estoy en contacto con mi fuerza interior?", "¿Cómo expreso mi poder?"]
+      },
+      "relatedSymbols": ["cat", "power", "king"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "mirror",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "mirror",
+        "name": "Mirror",
+        "shortDescription": "A mirror symbolizes introspection and self-image. A distorted reflection can indicate an altered perception of yourself or a need to see yourself more clearly.",
+        "askYourself": ["How do I perceive myself?", "Is my self-image realistic?"]
+      },
+      "fr": {
+        "slug": "miroir",
+        "name": "Miroir",
+        "shortDescription": "Le miroir symbolise l'introspection et l'image de soi. Un reflet déformé peut indiquer une perception altérée de soi-même ou un besoin de vous voir plus clairement.",
+        "askYourself": ["Comment je me perçois ?", "Est-ce que mon image de moi est réaliste ?"]
+      },
+      "es": {
+        "slug": "espejo",
+        "name": "Espejo",
+        "shortDescription": "Un espejo simboliza introspección y autoimagen. Un reflejo distorsionado puede indicar una percepción alterada de ti mismo o necesidad de verte con más claridad.",
+        "askYourself": ["¿Cómo me percibo a mí mismo?", "¿Es realista mi autoimagen?"]
+      },
+      "relatedSymbols": ["reflection", "glass", "self"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "money",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "money",
+        "name": "Money",
+        "shortDescription": "Money in dreams often represents self-worth, power, or vital energy. Losing money can symbolize a sense of loss or insecurity.",
+        "askYourself": ["How do I feel about my self-worth?", "What has value to me?"]
+      },
+      "fr": {
+        "slug": "argent",
+        "name": "Argent",
+        "shortDescription": "L'argent dans les rêves représente souvent la valeur personnelle, le pouvoir ou l'énergie vitale. Perdre de l'argent peut symboliser un sentiment de perte ou d'insécurité.",
+        "askYourself": ["Comment je me sens par rapport à ma valeur personnelle ?", "Qu'est-ce qui a de la valeur pour moi ?"]
+      },
+      "es": {
+        "slug": "dinero",
+        "name": "Dinero",
+        "shortDescription": "El dinero en sueños a menudo representa autoestima, poder o energía vital. Perder dinero puede simbolizar una sensación de pérdida o inseguridad.",
+        "askYourself": ["¿Cómo me siento sobre mi autoestima?", "¿Qué tiene valor para mí?"]
+      },
+      "relatedSymbols": ["wealth", "loss", "power"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "blood",
+      "category": "body",
+      "priority": 3,
+      "en": {
+        "slug": "blood",
+        "name": "Blood",
+        "shortDescription": "Blood represents life force, family bonds, or energy loss. Losing blood can symbolize exhaustion or sacrifice.",
+        "askYourself": ["Is something draining my energy?", "What bonds connect me to my family?"]
+      },
+      "fr": {
+        "slug": "sang",
+        "name": "Sang",
+        "shortDescription": "Le sang représente la force vitale, les liens familiaux ou une perte d'énergie. Perdre du sang peut symboliser l'épuisement ou un sacrifice.",
+        "askYourself": ["Est-ce que quelque chose draine mon énergie ?", "Quels liens me connectent à ma famille ?"]
+      },
+      "es": {
+        "slug": "sangre",
+        "name": "Sangre",
+        "shortDescription": "La sangre representa fuerza vital, lazos familiares o pérdida de energía. Perder sangre puede simbolizar agotamiento o sacrificio.",
+        "askYourself": ["¿Algo está drenando mi energía?", "¿Qué lazos me conectan a mi familia?"]
+      },
+      "relatedSymbols": ["wound", "injury", "family"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "child",
+      "category": "people",
+      "priority": 3,
+      "en": {
+        "slug": "child",
+        "name": "Child",
+        "shortDescription": "A child often represents your inner child, innocence, or aspects of your past. It can also symbolize a new project or a developing part of yourself.",
+        "askYourself": ["How is my inner child?", "Are there past wounds to heal?"]
+      },
+      "fr": {
+        "slug": "enfant",
+        "name": "Enfant",
+        "shortDescription": "L'enfant représente souvent votre enfant intérieur, l'innocence ou des aspects de votre passé. Il peut aussi symboliser un nouveau projet ou une partie de vous en développement.",
+        "askYourself": ["Comment va mon enfant intérieur ?", "Y a-t-il des blessures du passé à guérir ?"]
+      },
+      "es": {
+        "slug": "nino",
+        "name": "Niño",
+        "shortDescription": "Un niño a menudo representa tu niño interior, inocencia o aspectos de tu pasado. También puede simbolizar un nuevo proyecto o una parte de ti en desarrollo.",
+        "askYourself": ["¿Cómo está mi niño interior?", "¿Hay heridas del pasado que sanar?"]
+      },
+      "relatedSymbols": ["baby", "innocence", "play"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "clothes",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "clothes",
+        "name": "Clothes",
+        "shortDescription": "Clothes represent the image you project to the world. Inappropriate clothing can indicate feeling out of place.",
+        "askYourself": ["Does my public image reflect who I really am?"]
+      },
+      "fr": {
+        "slug": "vetements",
+        "name": "Vêtements",
+        "shortDescription": "Les vêtements représentent l'image que vous projetez au monde. Des vêtements inappropriés peuvent indiquer un sentiment de ne pas être à sa place.",
+        "askYourself": ["Est-ce que mon image publique reflète qui je suis vraiment ?"]
+      },
+      "es": {
+        "slug": "ropa",
+        "name": "Ropa",
+        "shortDescription": "La ropa representa la imagen que proyectas al mundo. Ropa inapropiada puede indicar sentirse fuera de lugar.",
+        "askYourself": ["¿Mi imagen pública refleja quién soy realmente?"]
+      },
+      "relatedSymbols": ["nudity", "identity", "appearance"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "path",
+      "category": "places",
+      "priority": 3,
+      "en": {
+        "slug": "path",
+        "name": "Path / Road",
+        "shortDescription": "A path represents your life journey and future choices. A blocked path suggests obstacles, while a crossroads symbolizes an important decision.",
+        "askYourself": ["Am I on the right path?", "Is there a decision I'm avoiding?"]
+      },
+      "fr": {
+        "slug": "chemin",
+        "name": "Chemin / Route",
+        "shortDescription": "Le chemin représente votre parcours de vie et les choix à venir. Un chemin bloqué suggère des obstacles, tandis qu'un carrefour symbolise une décision importante.",
+        "askYourself": ["Suis-je sur le bon chemin ?", "Y a-t-il une décision que j'évite ?"]
+      },
+      "es": {
+        "slug": "camino",
+        "name": "Camino",
+        "shortDescription": "Un camino representa tu viaje de vida y las elecciones futuras. Un camino bloqueado sugiere obstáculos, mientras que una encrucijada simboliza una decisión importante.",
+        "askYourself": ["¿Estoy en el camino correcto?", "¿Hay una decisión que estoy evitando?"]
+      },
+      "relatedSymbols": ["road", "crossroads", "journey"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "phone",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "phone",
+        "name": "Phone",
+        "shortDescription": "A phone represents communication. A phone that doesn't work can indicate difficulties connecting with others or a message you can't convey.",
+        "askYourself": ["Is there someone I need to talk to?", "Am I communicating effectively?"]
+      },
+      "fr": {
+        "slug": "telephone",
+        "name": "Téléphone",
+        "shortDescription": "Le téléphone représente la communication. Un téléphone qui ne fonctionne pas peut indiquer des difficultés à se connecter avec les autres ou un message que vous n'arrivez pas à transmettre.",
+        "askYourself": ["Y a-t-il quelqu'un à qui je dois parler ?", "Est-ce que je communique efficacement ?"]
+      },
+      "es": {
+        "slug": "telefono",
+        "name": "Teléfono",
+        "shortDescription": "Un teléfono representa comunicación. Un teléfono que no funciona puede indicar dificultades para conectar con otros o un mensaje que no puedes transmitir.",
+        "askYourself": ["¿Hay alguien con quien necesito hablar?", "¿Estoy comunicándome eficazmente?"]
+      },
+      "relatedSymbols": ["communication", "connection", "message"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "plane",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "plane",
+        "name": "Plane",
+        "shortDescription": "A plane represents high ambitions, desire to escape, or a journey of transformation. A crashing plane can indicate fear of failure.",
+        "askYourself": ["What are my long-term goals?", "Do I need to gain perspective?"]
+      },
+      "fr": {
+        "slug": "avion",
+        "name": "Avion",
+        "shortDescription": "L'avion représente les ambitions élevées, le désir de s'échapper ou un voyage de transformation. Un avion qui s'écrase peut indiquer une peur de l'échec.",
+        "askYourself": ["Quels sont mes objectifs à long terme ?", "Est-ce que j'ai besoin de prendre de la hauteur ?"]
+      },
+      "es": {
+        "slug": "avion",
+        "name": "Avión",
+        "shortDescription": "Un avión representa ambiciones elevadas, deseo de escapar o un viaje de transformación. Un avión que se estrella puede indicar miedo al fracaso.",
+        "askYourself": ["¿Cuáles son mis metas a largo plazo?", "¿Necesito ganar perspectiva?"]
+      },
+      "relatedSymbols": ["flying", "travel", "crash"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "train",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "train",
+        "name": "Train",
+        "shortDescription": "A train symbolizes life's journey and its trajectory. Missing a train can indicate a missed opportunity or fear of not meeting your goals on time.",
+        "askYourself": ["Am I on the right track?", "Am I afraid of missing something?"]
+      },
+      "fr": {
+        "slug": "train",
+        "name": "Train",
+        "shortDescription": "Le train symbolise le voyage de la vie et sa trajectoire. Rater un train peut indiquer une opportunité manquée ou la peur de ne pas être à l'heure dans vos objectifs.",
+        "askYourself": ["Suis-je sur la bonne trajectoire ?", "Ai-je peur de rater quelque chose ?"]
+      },
+      "es": {
+        "slug": "tren",
+        "name": "Tren",
+        "shortDescription": "Un tren simboliza el viaje de la vida y su trayectoria. Perder un tren puede indicar una oportunidad perdida o miedo a no cumplir tus objetivos a tiempo.",
+        "askYourself": ["¿Estoy en el camino correcto?", "¿Tengo miedo de perderme algo?"]
+      },
+      "relatedSymbols": ["travel", "journey", "station"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "night",
+      "category": "celestial",
+      "priority": 3,
+      "en": {
+        "slug": "night",
+        "name": "Night / Darkness",
+        "shortDescription": "Night represents the unknown, hidden fears, or the subconscious. It can also symbolize a period of uncertainty or introspection.",
+        "askYourself": ["What am I not seeing clearly?", "What fears are hidden within me?"]
+      },
+      "fr": {
+        "slug": "nuit",
+        "name": "Nuit / Obscurité",
+        "shortDescription": "La nuit représente l'inconnu, les peurs cachées ou l'inconscient. Elle peut aussi symboliser une période d'incertitude ou d'introspection.",
+        "askYourself": ["Qu'est-ce que je ne vois pas clairement ?", "Quelles peurs sont cachées en moi ?"]
+      },
+      "es": {
+        "slug": "noche",
+        "name": "Noche / Oscuridad",
+        "shortDescription": "La noche representa lo desconocido, miedos ocultos o el subconsciente. También puede simbolizar un período de incertidumbre o introspección.",
+        "askYourself": ["¿Qué no estoy viendo con claridad?", "¿Qué miedos están ocultos dentro de mí?"]
+      },
+      "relatedSymbols": ["moon", "darkness", "fear"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "key",
+      "category": "objects",
+      "priority": 3,
+      "en": {
+        "slug": "key",
+        "name": "Key",
+        "shortDescription": "A key symbolizes access, solutions, and new opportunities. Losing a key can indicate feeling blocked or having lost an opportunity.",
+        "askYourself": ["What door am I ready to open?", "What solution am I missing?"]
+      },
+      "fr": {
+        "slug": "cle",
+        "name": "Clé",
+        "shortDescription": "La clé symbolise l'accès, les solutions et les nouvelles opportunités. Perdre une clé peut indiquer un sentiment d'être bloqué ou d'avoir perdu une opportunité.",
+        "askYourself": ["Quelle porte suis-je prêt à ouvrir ?", "Quelle solution me manque ?"]
+      },
+      "es": {
+        "slug": "llave",
+        "name": "Llave",
+        "shortDescription": "Una llave simboliza acceso, soluciones y nuevas oportunidades. Perder una llave puede indicar sentirse bloqueado o haber perdido una oportunidad.",
+        "askYourself": ["¿Qué puerta estoy listo para abrir?", "¿Qué solución me falta?"]
+      },
+      "relatedSymbols": ["door", "lock", "secret"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "mouth",
+      "category": "body",
+      "priority": 3,
+      "en": {
+        "slug": "mouth",
+        "name": "Mouth",
+        "shortDescription": "The mouth represents communication, self-expression, and needs. A closed mouth can indicate difficulty expressing yourself or keeping secrets.",
+        "askYourself": ["Is there something I need to say?", "Am I holding back from expressing myself?"]
+      },
+      "fr": {
+        "slug": "bouche",
+        "name": "Bouche",
+        "shortDescription": "La bouche représente la communication, l'expression de soi et les besoins. Une bouche fermée peut indiquer une difficulté à s'exprimer ou des secrets gardés.",
+        "askYourself": ["Y a-t-il quelque chose que j'ai besoin de dire ?", "Est-ce que je me retiens de m'exprimer ?"]
+      },
+      "es": {
+        "slug": "boca",
+        "name": "Boca",
+        "shortDescription": "La boca representa comunicación, expresión personal y necesidades. Una boca cerrada puede indicar dificultad para expresarse o secretos guardados.",
+        "askYourself": ["¿Hay algo que necesito decir?", "¿Me estoy conteniendo de expresarme?"]
+      },
+      "relatedSymbols": ["teeth", "voice", "communication"],
+      "relatedArticles": {}
+    }
+  ]
+}
