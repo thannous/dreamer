@@ -30,6 +30,10 @@
 
 # Root level legacy French pages (no lang prefix)
 /cgu.html /fr/cgu 301
+/cgu /fr/cgu 301
 /mentions-legales.html /fr/mentions-legales 301
+/mentions-legales /fr/mentions-legales 301
 /politique-confidentialite.html /fr/politique-confidentialite 301
+/politique-confidentialite /fr/politique-confidentialite 301
 /suppression-compte.html /fr/suppression-compte 301
+/suppression-compte /fr/suppression-compte 301
