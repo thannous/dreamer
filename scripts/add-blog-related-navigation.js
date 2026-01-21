@@ -24,6 +24,10 @@ const SUPPORTED_LANGS = ['en', 'fr', 'es'];
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 const UI = {
   fr: {
     prev: 'Article précédent',
@@ -152,7 +156,11 @@ function parseBlogIndex(lang) {
     const title = titleAttr || (card.querySelector('h2')?.textContent || '').replace(/\s+/g, ' ').trim() || href;
 
     const category = (card.getAttribute('data-category') || '').trim() || null;
-    items.push({ slug: href, title, category });
+    const excerpt =
+      (card.querySelector('p')?.textContent || '').replace(/\s+/g, ' ').trim() ||
+      (card.getAttribute('data-excerpt') || '').trim() ||
+      null;
+    items.push({ slug: href, title, category, excerpt });
   }
 
   const bySlug = new Map(items.map((it) => [it.slug, it]));
@@ -191,14 +199,36 @@ function pickRelated({ items, currentSlug, category, max = 3 }) {
   return out.slice(0, max);
 }
 
-function detectExistingRelatedSection(html) {
-  return (
-    /data-blog-related=/.test(html) ||
-    /<!--\s*Related Articles\s*-->/.test(html) ||
-    /<h2\b[^>]*>\s*(Related Articles|Articles liés|Artículos relacionados|À lire ensuite|Read next|Para seguir leyendo)\s*<\/h2>/i.test(
-      html,
-    )
+function removeBlockBetweenMarkers(html, startMarker, endMarker) {
+  const re = new RegExp(`${escapeRegExp(startMarker)}[\\s\\S]*?${escapeRegExp(endMarker)}\\s*`, 'g');
+  return html.replace(re, '');
+}
+
+function removeLegacyRelatedSections(html) {
+  let next = html;
+
+  // Remove our previous generated related block (if any).
+  next = removeBlockBetweenMarkers(next, '<!-- Blog Related Start -->', '<!-- Blog Related End -->');
+
+  // Remove legacy blocks that start with the known comment.
+  next = next.replace(
+    /\n?[ \t]*<!--\s*Related Articles\s*-->\s*\n\s*<section\b[\s\S]*?<\/section>\s*/gi,
+    '\n',
   );
+
+  // Remove any <section> that contains a known related heading (covers hand-written variants).
+  const headingAlternatives =
+    '(Related Articles|Articles liés|Artículos relacionados|À lire ensuite|Read next|Para seguir leyendo)';
+  const sectionWithHeading = new RegExp(
+    `<section\\b[\\s\\S]*?<h2\\b[^>]*>\\s*${headingAlternatives}\\s*<\\/h2>[\\s\\S]*?<\\/section>\\s*`,
+    'gi',
+  );
+  next = next.replace(sectionWithHeading, '\n');
+
+  // Clean up excessive blank lines left behind.
+  next = next.replace(/\n[ \t]*\n(?:[ \t]*\n)+/g, '\n\n');
+
+  return next;
 }
 
 function buildNavBlock({ lang, prev, next }) {
@@ -267,10 +297,13 @@ function buildRelatedBlock({ lang, related }) {
       const labelHtml = label
         ? `<span class="text-xs text-dream-salmon uppercase mb-2 block">${label}</span>\n`
         : '';
+      const excerpt = (item.excerpt || '').trim();
+      const excerptHtml = excerpt ? `<p class="text-sm text-gray-400">${excerpt}</p>\n` : '';
       return (
         `        <a href="${item.slug}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">\n` +
         `            ${labelHtml}` +
         `            <h3 class="font-serif text-lg text-dream-cream mb-2">${item.title}</h3>\n` +
+        `            ${excerptHtml}` +
         `        </a>`
       );
     })
@@ -301,9 +334,19 @@ function indentBlock(blockHtml, indent) {
 function getIndentBefore(html, needle) {
   const idx = html.lastIndexOf(needle);
   if (idx === -1) return '';
-  const before = html.slice(0, idx);
-  const match = before.match(/\n([ \t]*)$/);
-  return match ? match[1] : '';
+  const lineStart = html.lastIndexOf('\n', idx) + 1;
+  const line = html.slice(lineStart, idx);
+  const match = line.match(/^[ \t]*/);
+  const baseIndent = match ? match[0] : '';
+
+  // If closing tag is at column 0, try to align with the closest preceding <section> indentation.
+  if (!baseIndent) {
+    const before = html.slice(0, idx);
+    const sectionMatches = Array.from(before.matchAll(/\n([ \t]+)<section\b/gi));
+    if (sectionMatches.length > 0) return sectionMatches[sectionMatches.length - 1][1];
+  }
+
+  return baseIndent;
 }
 
 function replaceOrInsertBlock(html, { markerStart, markerEnd, blockHtml, insertBefore }) {
@@ -347,7 +390,6 @@ function processArticle({ file, indexData }) {
   });
 
   let nextHtml = raw;
-  const hasRelatedAlready = detectExistingRelatedSection(raw);
 
   // Head rel=prev/next (absolute)
   nextHtml = insertPrevNextLinks(nextHtml, {
@@ -364,16 +406,15 @@ function processArticle({ file, indexData }) {
     insertBefore: '</article>',
   });
 
-  // Related section: only add if none detected (avoid duplicating handcrafted sections).
-  if (!hasRelatedAlready) {
-    const relatedBlock = buildRelatedBlock({ lang: file.lang, related });
-    nextHtml = replaceOrInsertBlock(nextHtml, {
-      markerStart: '<!-- Blog Related Start -->',
-      markerEnd: '<!-- Blog Related End -->',
-      blockHtml: relatedBlock,
-      insertBefore: '</article>',
-    });
-  }
+  // Normalize related section: remove any existing variant, then insert our standardized block.
+  nextHtml = removeLegacyRelatedSections(nextHtml);
+  const relatedBlock = buildRelatedBlock({ lang: file.lang, related });
+  nextHtml = replaceOrInsertBlock(nextHtml, {
+    markerStart: '<!-- Blog Related Start -->',
+    markerEnd: '<!-- Blog Related End -->',
+    blockHtml: relatedBlock,
+    insertBefore: '</article>',
+  });
 
   // Keep diffs tidy.
   nextHtml = nextHtml.replace(/\n[ \t]*\n(?:[ \t]*\n)+/g, '\n\n');
