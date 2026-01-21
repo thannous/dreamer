@@ -98,12 +98,36 @@ function send(res, statusCode, headers, body) {
 
 function main() {
   const port = parsePort();
+  const notFoundPath = safeJoin(DOCS_DIR, '/404.html');
+  const has404 = Boolean(notFoundPath && existsFile(notFoundPath));
 
   const server = http.createServer((req, res) => {
     const urlPath = req.url || '/';
 
     const filePath = resolveRequestToFile(urlPath);
     if (!filePath) {
+      if (has404 && notFoundPath) {
+        try {
+          const data = fs.readFileSync(notFoundPath);
+          return send(
+            res,
+            404,
+            {
+              'Content-Type': 'text/html; charset=utf-8',
+              'Cache-Control': 'no-store'
+            },
+            data
+          );
+        } catch (error) {
+          return send(
+            res,
+            500,
+            { 'Content-Type': 'text/plain; charset=utf-8' },
+            `Server error: ${String(error && error.message ? error.message : error)}`
+          );
+        }
+      }
+
       return send(res, 404, { 'Content-Type': 'text/plain; charset=utf-8' }, 'File not found');
     }
 
@@ -138,4 +162,3 @@ function main() {
 }
 
 main();
-
