@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth blog-index">
 
 <head>
     <meta charset="UTF-8">
@@ -35,102 +35,10 @@
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=20260108-1734">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=20260108-1734">
+    <!-- Blog CSS -->
+    <link rel="stylesheet" href="/css/blog.min.css?v=20260108-1734">
     <!-- Lucide Icons (deferred) -->
     <script src="/js/lucide.min.js?v=20260108-1734" defer></script>
-
-    <style>
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #0a0514;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #4c1d95;
-            border-radius: 4px;
-        }
-
-        .aurora-bg {
-            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
-            background-size: 200% 200%;
-            animation: aurora 20s ease infinite;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            z-index: -1;
-            opacity: 0.5;
-            max-width: 100vw;
-            max-height: 100vw;
-        }
-
-        .glass-panel {
-            background: rgba(20, 10, 40, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .glass-panel:hover {
-            background: rgba(20, 10, 40, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-button {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .glass-button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.02);
-        }
-
-        @keyframes aurora {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
-        html,
-        body {
-            overflow-x: hidden;
-        }
-
-        .article-card {
-            transition: all 0.3s ease;
-        }
-
-        .article-card:hover .article-image {
-            transform: scale(1.05);
-        }
-    </style>
 
     <script type="application/ld+json">
         {
@@ -551,7 +459,7 @@
                             <img src="../../img/blog/how-to-remember-dreams.webp"
                                 alt="Why we forget our dreams"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -818,7 +726,7 @@
                             <img src="../../img/blog/being-chased-dreams.webp"
                                 alt="Dark corridor illustrating the feeling of being chased in a dream"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/being-chased-dreams-480w.webp 480w, ../../img/blog/being-chased-dreams-800w.webp 800w, ../../img/blog/being-chased-dreams-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -844,7 +752,7 @@
                             <img src="../../img/blog/death-dreams-meaning.webp"
                                 alt="Foggy forest representing transformation and the symbolic meaning of death"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -870,7 +778,7 @@
                             <img src="../../img/blog/water-dreams-meaning.webp"
                                 alt="Vast ocean surface representing the depths of the emotional subconscious"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -896,7 +804,7 @@
                             <img src="../../img/blog/dreams-about-ex.webp"
                                 alt="Reflective silhouette symbolizing memories of past relationships"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -922,7 +830,7 @@
                             <img src="../../img/blog/pregnancy-dreams-meaning.webp"
                                 alt="Soft light and symbols representing growth and new beginnings"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -948,7 +856,7 @@
                             <img src="../../img/blog/stop-nightmares-guide.webp"
                                 alt="Dawn light breaking through darkness, symbolizing freedom from nightmares"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -974,7 +882,7 @@
                             <img src="../../img/blog/sleep-paralysis-guide.webp"
                                 alt="Deep purple and blue atmosphere depicting the state of sleep paralysis"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/sleep-paralysis-guide-480w.webp 480w, ../../img/blog/sleep-paralysis-guide-800w.webp 800w, ../../img/blog/sleep-paralysis-guide-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -1000,7 +908,7 @@
                             <img src="../../img/blog/dream-journal-guide.webp"
                                 alt="Open dream journal with a pen on a wooden bedside table"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -1026,7 +934,7 @@
                             <img src="../../img/blog/dreams-mental-health.webp"
                                 alt="Person in peaceful contemplation of their inner mental landscape"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/dreams-mental-health-480w.webp 480w, ../../img/blog/dreams-mental-health-800w.webp 800w, ../../img/blog/dreams-mental-health-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -1052,7 +960,7 @@
                             <img src="../../img/blog/why-we-dream-science.webp"
                                 alt="Glowing neural connections inside a human brain silhouette"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/why-we-dream-science-480w.webp 480w, ../../img/blog/why-we-dream-science-800w.webp 800w, ../../img/blog/why-we-dream-science-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -1078,7 +986,7 @@
                             <img src="../../img/blog/rem-sleep-dreams.webp"
                                 alt="Visual representation of REM sleep brain activity and eye movement"
                                 class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-                                width="800" height="450" loading="lazy">
+                                width="800" height="450" loading="lazy" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
                         </div>
                         <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
@@ -1104,7 +1012,7 @@
 	                            <img src="../../img/blog/dream-interpretation-history.webp"
 	                                alt="Ancient temple under a starry sky representing dream history"
 	                                class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500"
-	                                width="800" height="450" loading="lazy">
+	                                width="800" height="450" loading="lazy" srcset="../../img/blog/dream-interpretation-history-480w.webp 480w, ../../img/blog/dream-interpretation-history-800w.webp 800w, ../../img/blog/dream-interpretation-history-1200w.webp 1200w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw">
 	                        </div>
 	                        <div class="p-6">
                             <div class="flex items-center gap-3 mb-3">
