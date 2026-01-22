@@ -15,6 +15,22 @@
 const fs = require('fs');
 const path = require('path');
 
+function readDocsAssetVersionOrExit() {
+  const versionPath = path.join(__dirname, '..', 'version.txt');
+  if (!fs.existsSync(versionPath)) {
+    console.error('Missing `docs/version.txt` (needed for cache-busting).');
+    process.exit(1);
+  }
+
+  const version = fs.readFileSync(versionPath, 'utf8').trim();
+  if (!version) {
+    console.error('Empty `docs/version.txt` (needed for cache-busting).');
+    process.exit(1);
+  }
+
+  return version;
+}
+
 // Configuration
 const CONFIG = {
   dataDir: path.join(__dirname, '..', 'data'),
@@ -30,7 +46,7 @@ const CONFIG = {
   },
   datePublished: '2025-01-21',
   dateModified: '2025-01-21',
-  cssVersion: '20260121'
+  cssVersion: readDocsAssetVersionOrExit()
 };
 
 // Parse command line arguments
@@ -184,6 +200,22 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+function safeJsonStringifyForHtml(data, space = 4) {
+  return JSON.stringify(data, null, space).replace(/</g, '\\u003c');
+}
+
+function indentLines(text, indent) {
+  const prefix = ' '.repeat(indent);
+  return text.split('\n').map(line => prefix + line).join('\n');
+}
+
+function renderJsonLd(data, indent = 4) {
+  return indentLines(
+    `<script type="application/ld+json">\n${safeJsonStringifyForHtml(data)}\n</script>`,
+    indent
+  );
+}
+
 // Generate HTML page for a symbol
 function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
@@ -245,6 +277,64 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   // Generate FAQ answer for variations
   const faqVariationsAnswer = variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' ');
+
+  const definedTermJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTerm',
+    name: symbolData.name,
+    description: symbolData.shortDescription,
+    inDefinedTermSet: {
+      '@type': 'DefinedTermSet',
+      name: t.symbols,
+      url: `https://noctalia.app/${lang}/guides/${t.dictionary_slug}`
+    },
+    url: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`
+  };
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: metaTitle,
+    description: metaDescription,
+    image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
+    author: { '@type': 'Organization', name: 'Noctalia' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Noctalia',
+      logo: { '@type': 'ImageObject', url: 'https://noctalia.app/logo/logo_noctalia.png' }
+    },
+    datePublished: CONFIG.datePublished,
+    dateModified: CONFIG.dateModified,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}` },
+    inLanguage: lang
+  };
+
+  const breadcrumbListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.home, item: `https://noctalia.app/${lang}/` },
+      { '@type': 'ListItem', position: 2, name: t.symbols, item: `https://noctalia.app/${lang}/guides/${t.dictionary_slug}` },
+      { '@type': 'ListItem', position: 3, name: symbolData.name, item: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}` }
+    ]
+  };
+
+  const faqPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `${t.faq_what_means} ${symbolData.name}?`,
+        acceptedAnswer: { '@type': 'Answer', text: symbolData.shortDescription }
+      },
+      {
+        '@type': 'Question',
+        name: t.faq_common_interpretations,
+        acceptedAnswer: { '@type': 'Answer', text: faqVariationsAnswer }
+      }
+    ]
+  };
 
   // Language dropdown items
   const langItems = {
@@ -338,74 +428,16 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     </style>
 
     <!-- Schema.org DefinedTerm -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "DefinedTerm",
-        "name": "${escapeHtml(symbolData.name)}",
-        "description": "${escapeHtml(symbolData.shortDescription)}",
-        "inDefinedTermSet": {
-            "@type": "DefinedTermSet",
-            "name": "${t.symbols}",
-            "url": "https://noctalia.app/${lang}/guides/${t.dictionary_slug}"
-        },
-        "url": "https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}"
-    }
-    </script>
+${renderJsonLd(definedTermJsonLd)}
 
     <!-- Schema.org Article -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "${escapeHtml(metaTitle)}",
-        "description": "${escapeHtml(metaDescription)}",
-        "image": "https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg",
-        "author": { "@type": "Organization", "name": "Noctalia" },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Noctalia",
-            "logo": { "@type": "ImageObject", "url": "https://noctalia.app/logo/logo_noctalia.png" }
-        },
-        "datePublished": "${CONFIG.datePublished}",
-        "dateModified": "${CONFIG.dateModified}",
-        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}" },
-        "inLanguage": "${lang}"
-    }
-    </script>
+${renderJsonLd(articleJsonLd)}
 
     <!-- Schema.org BreadcrumbList -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "${t.home}", "item": "https://noctalia.app/${lang}/" },
-            { "@type": "ListItem", "position": 2, "name": "${t.symbols}", "item": "https://noctalia.app/${lang}/guides/${t.dictionary_slug}" },
-            { "@type": "ListItem", "position": 3, "name": "${escapeHtml(symbolData.name)}", "item": "https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}" }
-        ]
-    }
-    </script>
+${renderJsonLd(breadcrumbListJsonLd)}
 
     <!-- Schema.org FAQPage -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "${t.faq_what_means} ${escapeHtml(symbolData.name)}?",
-                "acceptedAnswer": { "@type": "Answer", "text": "${escapeHtml(symbolData.shortDescription)}" }
-            },
-            {
-                "@type": "Question",
-                "name": "${t.faq_common_interpretations}",
-                "acceptedAnswer": { "@type": "Answer", "text": "${escapeHtml(faqVariationsAnswer)}" }
-            }
-        ]
-    }
-    </script>
+${renderJsonLd(faqPageJsonLd)}
 </head>
 
 <body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
