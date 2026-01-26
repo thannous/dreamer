@@ -23,6 +23,7 @@ const { JSDOM } = require('jsdom');
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_CONCURRENCY = 8;
 const INTERNAL_HOSTS = new Set(['noctalia.app', 'www.noctalia.app']);
+const IGNORED_PATH_PREFIXES = ['/cdn-cgi/'];
 
 function parseArg(prefix) {
   const arg = process.argv.find((a) => a.startsWith(prefix));
@@ -78,6 +79,12 @@ function isSkippableUrl(raw) {
   if (lower.startsWith('javascript:')) return true;
   if (lower.startsWith('data:')) return true;
   return false;
+}
+
+function isIgnoredPath(pathname) {
+  if (!pathname) return false;
+  const normalized = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  return IGNORED_PATH_PREFIXES.some((prefix) => normalized.startsWith(prefix));
 }
 
 function hasExtension(posixPath) {
@@ -138,6 +145,7 @@ function classifyUrl(raw) {
       const u = new URL(toExternalUrl(trimmed));
       if (INTERNAL_HOSTS.has(u.hostname)) {
         const pathname = u.pathname || '/';
+        if (isIgnoredPath(pathname)) return { kind: 'skip' };
         return { kind: 'internal', path: pathname, fragment: (u.hash || '').replace(/^#/, '') };
       }
       return { kind: 'external', url: u.toString() };
@@ -147,6 +155,7 @@ function classifyUrl(raw) {
   }
   const { withoutHash, hash } = splitHash(trimmed);
   const withoutQueryAndHash = stripQueryAndHash(withoutHash);
+  if (isIgnoredPath(withoutQueryAndHash)) return { kind: 'skip' };
   return { kind: 'internal', path: withoutQueryAndHash, fragment: hash };
 }
 
