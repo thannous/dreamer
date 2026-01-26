@@ -3,11 +3,28 @@
 
 # Root should serve `index.html` (language detection + fallback links) to avoid an extra 301 hop.
 
+# Normalize common host/protocol variants (when supported by the platform)
+http://noctalia.app/* https://noctalia.app/:splat 301
+http://www.noctalia.app/* https://noctalia.app/:splat 301
+https://www.noctalia.app/* https://noctalia.app/:splat 301
+
 # Redirect index.html files to directory root
 /index.html / 301
+/index / 301
 /:lang/index.html /:lang/ 301
+/:lang/index /:lang/ 301
 /:lang/blog/index.html /:lang/blog/ 301
+/:lang/blog/index /:lang/blog/ 301
 /:lang/guides/index.html /:lang/guides/ 301
+/:lang/guides/index /:lang/guides/ 301
+
+# Normalize a few legacy French slugs containing diacritics
+/fr/blog/rêves-ex-partenaire.html /fr/blog/reves-ex-partenaire 301
+/fr/blog/rêves-ex-partenaire /fr/blog/reves-ex-partenaire 301
+/fr/blog/rêves-de-voler.html /fr/blog/reves-de-voler 301
+/fr/blog/rêves-de-voler /fr/blog/reves-de-voler 301
+/fr/blog/rêves-dents-qui-tombent.html /fr/blog/reves-dents-qui-tombent 301
+/fr/blog/rêves-dents-qui-tombent /fr/blog/reves-dents-qui-tombent 301
 
 # Redirect legacy renamed slugs (avoid soft-404 fallback to home)
 /fr/blog/comment-se-souvenir-reves.html /fr/blog/comment-se-souvenir-de-ses-reves 301
