@@ -36,6 +36,10 @@
     { "source": "/politique-confidentialite.html", "destination": "/fr/politique-confidentialite", "permanent": true },
     { "source": "/suppression-compte", "destination": "/fr/suppression-compte", "permanent": true },
     { "source": "/suppression-compte.html", "destination": "/fr/suppression-compte", "permanent": true },
+
+    { "source": "/fr/conditions", "destination": "/fr/cgu", "permanent": true },
+    { "source": "/fr/conditions.html", "destination": "/fr/cgu", "permanent": true },
+    { "source": "/waitlist", "destination": "/en/", "permanent": true },
     { "source": "/en/:path*.html", "destination": "/en/:path*", "permanent": true },
     { "source": "/fr/:path*.html", "destination": "/fr/:path*", "permanent": true },
     { "source": "/es/:path*.html", "destination": "/es/:path*", "permanent": true }

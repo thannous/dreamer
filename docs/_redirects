@@ -58,3 +58,8 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /politique-confidentialite /fr/politique-confidentialite 301
 /suppression-compte.html /fr/suppression-compte 301
 /suppression-compte /fr/suppression-compte 301
+
+# Legacy/unknown entrypoints
+/fr/conditions.html /fr/cgu 301
+/fr/conditions /fr/cgu 301
+/waitlist /en/ 301
