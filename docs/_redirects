@@ -1,11 +1,10 @@
 # Cloudflare Pages redirects with placeholders
 # Docs: https://developers.cloudflare.com/pages/configuration/redirects/
 
-# Canonical default language root
-/ /en/ 301
+# Root should serve `index.html` (language detection + fallback links) to avoid an extra 301 hop.
 
 # Redirect index.html files to directory root
-/index.html /en/ 301
+/index.html / 301
 /:lang/index.html /:lang/ 301
 /:lang/blog/index.html /:lang/blog/ 301
 /:lang/guides/index.html /:lang/guides/ 301
