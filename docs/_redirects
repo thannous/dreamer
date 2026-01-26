@@ -21,6 +21,8 @@
 /es/blog/como-recordar-tus-suenos /es/blog/como-recordar-suenos 301
 /es/condiciones.html /es/terminos 301
 /es/condiciones /es/terminos 301
+/fr/conditions-utilisation /fr/cgu 301
+/fr/conditions-utilisation.html /fr/cgu 301
 
 # Redirect all .html pages to clean URLs (301 permanent)
 # Pattern-based redirects for blog, guides, and localized pages
