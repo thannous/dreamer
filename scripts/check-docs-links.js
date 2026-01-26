@@ -11,6 +11,7 @@
  * Options:
  *   --docs-dir=path         Defaults to ./docs
  *   --external              Also checks http(s) external links
+ *   --include-templates     Include template HTML in checks (defaults to off)
  *   --concurrency=N         External link concurrency (default: 8)
  *   --timeout-ms=N          External link timeout in ms (default: 10000)
  *   --max-external=N        Limit number of external URLs checked
@@ -34,7 +35,7 @@ function toPosix(p) {
   return p.split(path.sep).join('/');
 }
 
-function walkFiles(dirAbs) {
+function walkFiles(dirAbs, { ignoreDirs } = {}) {
   const results = [];
   const stack = [dirAbs];
   while (stack.length) {
@@ -43,7 +44,7 @@ function walkFiles(dirAbs) {
     for (const entry of entries) {
       const full = path.join(current, entry.name);
       if (entry.isDirectory()) {
-        if (entry.name === 'node_modules' || entry.name === '.git') continue;
+        if (ignoreDirs && ignoreDirs.has(entry.name)) continue;
         stack.push(full);
         continue;
       }
@@ -72,6 +73,7 @@ function splitHash(raw) {
 function isSkippableUrl(raw) {
   const trimmed = String(raw || '').trim();
   if (!trimmed) return true;
+  if (trimmed.includes('{{') || trimmed.includes('}}')) return true;
   const lower = trimmed.toLowerCase();
   if (lower.startsWith('mailto:')) return true;
   if (lower.startsWith('tel:')) return true;
@@ -248,6 +250,7 @@ async function main() {
   const docsDirArg = parseArg('--docs-dir=');
   const docsDirAbs = path.resolve(docsDirArg || path.join(__dirname, '../docs'));
   const checkExternal = process.argv.includes('--external');
+  const includeTemplates = process.argv.includes('--include-templates');
   const timeoutMs = Number(parseArg('--timeout-ms=')) || DEFAULT_TIMEOUT_MS;
   const concurrency = Number(parseArg('--concurrency=')) || DEFAULT_CONCURRENCY;
   const maxExternalRaw = parseArg('--max-external=');
@@ -258,7 +261,9 @@ async function main() {
     process.exit(1);
   }
 
-  const allFilesAbs = walkFiles(docsDirAbs);
+  const ignoreDirs = new Set(['node_modules', '.git']);
+  if (!includeTemplates) ignoreDirs.add('templates');
+  const allFilesAbs = walkFiles(docsDirAbs, { ignoreDirs });
   const relativeFiles = allFilesAbs.map((abs) => toPosix(path.relative(docsDirAbs, abs)));
   const relativeFilesSet = new Set(relativeFiles);
   const htmlFiles = relativeFiles.filter((p) => p.toLowerCase().endsWith('.html'));
@@ -267,6 +272,7 @@ async function main() {
   console.log(`- HTML pages: ${htmlFiles.length}`);
   console.log(`- Total files: ${relativeFiles.length}`);
   console.log(`- External check: ${checkExternal ? 'ON' : 'OFF'}`);
+  console.log(`- Templates included: ${includeTemplates ? 'YES' : 'NO'}`);
 
   const anchorsCache = new Map(); // rel html path -> Set(ids)
   const readHtml = (rel) => fs.readFileSync(path.join(docsDirAbs, rel), 'utf8');

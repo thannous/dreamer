@@ -507,7 +507,7 @@ ${renderJsonLd(faqPageJsonLd)}
                         <i data-lucide="sparkles" class="w-4 h-4"></i>
                         ${t.dream_symbol}
                     </span>
-                    <a href="/${lang}/guides/${t.dictionary_slug}#${symbol.category}"
+                    <a href="/${lang}/guides/${t.dictionary_slug}"
                        class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
                         ${categoryName}
                     </a>
