@@ -148,7 +148,21 @@ function classifyUrl(raw) {
       if (INTERNAL_HOSTS.has(u.hostname)) {
         const pathname = u.pathname || '/';
         if (isIgnoredPath(pathname)) return { kind: 'skip' };
-        return { kind: 'internal', path: pathname, fragment: (u.hash || '').replace(/^#/, '') };
+        const isProtocolRelative = trimmed.startsWith('//');
+        const isHttp = u.protocol === 'http:';
+        const recommendedUrl = isProtocolRelative
+          ? `https:${trimmed}`
+          : isHttp
+            ? u.toString().replace(/^http:/, 'https:')
+            : u.toString();
+        return {
+          kind: 'internal',
+          path: pathname,
+          fragment: (u.hash || '').replace(/^#/, ''),
+          protocol: u.protocol,
+          isProtocolRelative,
+          recommendedUrl
+        };
       }
       return { kind: 'external', url: u.toString() };
     } catch {
@@ -330,6 +344,18 @@ async function main() {
       const internalPath = classified.path || '';
       const fragment = classified.fragment || '';
 
+      if (
+        (classified.protocol && classified.protocol.toLowerCase() === 'http:') ||
+        classified.isProtocolRelative
+      ) {
+        brokenInternal.push({
+          type: 'insecure-protocol',
+          from: pageRel,
+          raw: link.raw,
+          recommended: classified.recommendedUrl
+        });
+      }
+
       const isRootRelative = internalPath.startsWith('/');
       const base = isRootRelative ? '' : pageDirPosix === '.' ? '' : `${pageDirPosix}/`;
       const combined = normalizeInternalPath(isRootRelative ? internalPath : `${base}${internalPath}`);
@@ -380,11 +406,14 @@ async function main() {
   const missingTargets = brokenInternal.filter((b) => b.type === 'missing-target');
   const missingAnchors = brokenInternal.filter((b) => b.type === 'missing-anchor');
   const invalidUrls = brokenInternal.filter((b) => b.type === 'invalid-url');
+  const insecureProtocols = brokenInternal.filter((b) => b.type === 'insecure-protocol');
 
   console.log('\nResults');
   console.log('-------');
   console.log(`Link references scanned: ${totalLinkRefs}`);
-  console.log(`Broken internal: ${brokenInternal.length} (missing target=${missingTargets.length}, missing anchor=${missingAnchors.length}, invalid=${invalidUrls.length})`);
+  console.log(
+    `Broken internal: ${brokenInternal.length} (missing target=${missingTargets.length}, missing anchor=${missingAnchors.length}, invalid=${invalidUrls.length}, insecure protocol=${insecureProtocols.length})`
+  );
   if (checkExternal) {
     console.log(`Broken external: ${brokenExternal.length}`);
   }
@@ -396,6 +425,8 @@ async function main() {
         console.log(`- [missing target] from=${b.from} href=${b.raw} resolved=${b.resolvedPath}`);
       } else if (b.type === 'missing-anchor') {
         console.log(`- [missing anchor] from=${b.from} href=${b.raw} target=${b.target} #${b.fragment}`);
+      } else if (b.type === 'insecure-protocol') {
+        console.log(`- [insecure protocol] from=${b.from} href=${b.raw} → use=${b.recommended}`);
       } else {
         console.log(`- [invalid url] from=${b.from} href=${b.raw}`);
       }
