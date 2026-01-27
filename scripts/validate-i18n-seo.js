@@ -120,6 +120,10 @@ function main() {
   const files = findHtmlFiles(DOCS_DIR);
   const canonicalToFile = new Map();
   const canonicalToHreflangs = new Map();
+  const xDefaultRoot = normalizeUrl(`${DOMAIN}/`);
+  const languageHomes = new Set(
+    SUPPORTED_LANGS.map((lang) => normalizeUrl(`${DOMAIN}/${lang}/`))
+  );
 
   for (const file of files) {
     const fullPath = path.join(DOCS_DIR, file);
@@ -152,9 +156,13 @@ function main() {
       continue;
     }
 
-    // Convention: x-default should match the English variant
-    if (hreflangs['x-default'] !== hreflangs['en']) {
-      errors.push(`[x-default mismatch] ${file} x-default=${hreflangs['x-default']} en=${hreflangs['en']}`);
+    // Convention:
+    // - language homepages (/en/, /fr/, /es/) use x-default pointing to the language selector (/)
+    // - all other pages use x-default matching the English equivalent URL
+    const isLangHome = languageHomes.has(canonical);
+    const expectedXDefault = isLangHome ? xDefaultRoot : hreflangs['en'];
+    if (hreflangs['x-default'] !== expectedXDefault) {
+      errors.push(`[x-default mismatch] ${file} x-default=${hreflangs['x-default']} expected=${expectedXDefault}`);
       continue;
     }
 
@@ -216,4 +224,3 @@ function main() {
 }
 
 main();
-

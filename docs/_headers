@@ -23,6 +23,16 @@
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# Non-indexable utility/template pages
+/templates/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/auth/callback/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/404*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
 # Static assets (safe with cache-busting/versioning)
 /css/*
   Cache-Control: public, max-age=31556952, immutable
