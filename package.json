@@ -16,6 +16,8 @@
     "build:web": "npx expo export -p web && npx workbox-cli generateSW workbox-config.js",
     "generate-sitemap": "node ./scripts/generate-sitemap-v2.js",
     "validate-seo": "node ./scripts/validate-i18n-seo.js",
+    "docs:check-links": "node ./scripts/check-docs-links.js",
+    "docs:check-crosslinks": "node ./scripts/check-blog-crosslinking-plan.js",
     "serve:docs": "node ./scripts/serve-docs.js",
     "docs:update-reading-times": "node ./scripts/update-reading-times.js --write",
     "docs:enhance-articles-seo": "node ./scripts/enhance-blog-articles-seo.js",
