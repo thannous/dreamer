@@ -222,6 +222,46 @@ function groupUrlsByContent(files) {
 }
 
 /**
+ * Determine priority for a URL based on its type
+ * @returns {string} Priority value (0.0 - 1.0)
+ */
+function getPriority(url) {
+  // Homepage gets highest priority
+  if (url.match(/^https:\/\/noctalia\.app\/(en|fr|es)\/?$/)) {
+    return '1.0';
+  }
+
+  // Dictionary/guide hub pages get high priority
+  if (url.includes('/guides/')) {
+    return '0.8';
+  }
+
+  // About pages get medium-high priority
+  if (url.includes('/about') || url.includes('/a-propos') || url.includes('/sobre')) {
+    return '0.7';
+  }
+
+  // Blog posts get medium priority
+  if (url.includes('/blog/')) {
+    return '0.6';
+  }
+
+  // Symbol pages get medium priority
+  if (url.includes('/symbols/') || url.includes('/symboles/') || url.includes('/simbolos/')) {
+    return '0.6';
+  }
+
+  // Legal pages get lower priority
+  if (url.includes('privacy') || url.includes('terms') || url.includes('legal') ||
+      url.includes('politique') || url.includes('cgu') || url.includes('politica')) {
+    return '0.3';
+  }
+
+  // Default priority
+  return '0.5';
+}
+
+/**
  * Generate XML for a URL entry with its hreflangs
  */
 function generateUrlEntry(url, hreflangs, lastmod) {
@@ -230,6 +270,10 @@ function generateUrlEntry(url, hreflangs, lastmod) {
   if (lastmod) {
     xml += `    <lastmod>${escapeXml(lastmod)}</lastmod>\n`;
   }
+
+  // Add priority hint to help crawlers prioritize pages
+  const priority = getPriority(url);
+  xml += `    <priority>${priority}</priority>\n`;
 
   // Add hreflang alternate links from the HTML file
   // Only add hreflangs that point to valid URLs
