@@ -61,6 +61,7 @@
         html, body { overflow-x: hidden; }
         .symbol-card { transition: all 0.3s ease; }
         .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
+        .symbol-card:focus { outline: none; border-color: rgba(253, 164, 129, 0.3); box-shadow: 0 0 0 2px rgba(253, 164, 129, 0.25); }
         .letter-nav { scroll-behavior: smooth; }
         .letter-link { transition: all 0.2s ease; }
         .letter-link:hover, .letter-link.active { color: #FDA481; transform: scale(1.1); }
@@ -1021,6 +1022,53 @@
             const searchInput = document.getElementById('searchInput');
             const symbolCards = document.querySelectorAll('.symbol-card');
             const sections = document.querySelectorAll('#symbolsList > section');
+
+            // Make the whole symbol card clickable + keyboard accessible.
+            // Keep only one tab stop: focus the card, not the inner title link.
+            symbolCards.forEach((card) => {
+                const link = card.querySelector('a[href]');
+                if (!link) return;
+
+                const href = link.getAttribute('href');
+                if (!href) return;
+
+                card.style.cursor = 'pointer';
+                card.setAttribute('role', 'link');
+                card.setAttribute('tabindex', '0');
+
+                const title = card.querySelector('h3')?.textContent?.trim();
+                if (title) card.setAttribute('aria-label', title);
+
+                link.setAttribute('tabindex', '-1');
+
+                const navigate = (openInNewTab = false) => {
+                    if (openInNewTab) {
+                        window.open(href, '_blank', 'noopener');
+                        return;
+                    }
+                    window.location.href = href;
+                };
+
+                card.addEventListener('click', (e) => {
+                    // If user clicked an anchor (title), let the browser handle it.
+                    if (e.target.closest('a')) return;
+
+                    // Respect ctrl/cmd click behavior.
+                    if (e.metaKey || e.ctrlKey) {
+                        navigate(true);
+                        return;
+                    }
+
+                    navigate(false);
+                });
+
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        navigate(e.metaKey || e.ctrlKey);
+                    }
+                });
+            });
 
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase().trim();
