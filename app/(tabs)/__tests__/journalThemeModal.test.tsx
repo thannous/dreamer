@@ -113,13 +113,54 @@ vi.mock('@shopify/flash-list', () => ({
 vi.mock('expo-router', () => ({
   router: { push: vi.fn() },
   useFocusEffect: vi.fn((cb: () => void | (() => void)) => cb()),
+  useNavigation: () => ({ setOptions: vi.fn() }),
 }));
 
-vi.mock('react-native-reanimated', () => ({
-  default: {
-    View: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  },
+vi.mock('expo-haptics', () => ({
+  impactAsync: vi.fn(),
+  ImpactFeedbackStyle: { Light: 'light', Medium: 'medium', Heavy: 'heavy' },
 }));
+
+vi.mock('@/components/ui/BottomSheet', () => ({
+  BottomSheet: ({ children, visible, testID }: { children: React.ReactNode; visible: boolean; testID?: string }) => (
+    visible ? <div data-testid={testID}>{children}</div> : null
+  ),
+}));
+
+vi.mock('@/components/journal/EmptyState', () => ({
+  EmptyState: () => <div data-testid="empty-state" />,
+}));
+
+vi.mock('react-native-reanimated', () => {
+  const View = ({ children, style, entering, ...props }: { children?: React.ReactNode; style?: any; entering?: any; [key: string]: any }) => <div {...props}>{children}</div>;
+  const createAnimatedComponent = (Component: any) => {
+    return ({ style, entering, ...props }: any) => <Component {...props} />;
+  };
+  const springifyChain = { damping: () => springifyChain };
+  const enteringChain = {
+    delay: () => enteringChain,
+    duration: () => enteringChain,
+    springify: () => springifyChain,
+  };
+  return {
+    default: {
+      View,
+      createAnimatedComponent,
+    },
+    FadeInDown: enteringChain,
+    SlideInDown: { springify: () => ({ damping: () => ({}) }) },
+    useAnimatedStyle: () => ({}),
+    useSharedValue: (val: any) => ({ value: val }),
+    withTiming: (val: any) => val,
+    withSpring: (val: any) => val,
+    withDelay: (_d: number, val: any) => val,
+    interpolate: () => 1,
+    Extrapolation: { CLAMP: 'clamp' },
+    runOnJS: (fn: any) => fn,
+    cancelAnimation: () => {},
+    Easing: { out: () => {}, in: () => {}, cubic: {} },
+  };
+});
 
 vi.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ bottom: 0, top: 0, left: 0, right: 0 }),

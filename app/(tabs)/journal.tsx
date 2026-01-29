@@ -2,6 +2,7 @@ import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
+import { EmptyState } from '@/components/journal/EmptyState';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
 import { BottomSheet } from '@/components/ui/BottomSheet';
@@ -22,8 +23,8 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
-import { router, useFocusEffect } from 'expo-router';
-import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { router, useFocusEffect, useNavigation } from 'expo-router';
+import React, { useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -33,11 +34,13 @@ import {
   type ViewToken,
   useWindowDimensions,
 } from 'react-native';
+import Animated, { FadeInDown, SlideInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
+const MAX_ANIMATED_ITEMS = 15;
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -62,7 +65,34 @@ export default function JournalListScreen() {
   const insets = useSafeAreaInsets();
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+  const isNative = Platform.OS !== 'web';
   const desktopColumns = width >= 1440 ? 4 : 3;
+
+  // Native search bar
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    if (isNative) {
+      navigation.setOptions({
+        headerShown: true,
+        headerTitle: t('journal.title'),
+        headerLargeTitle: true,
+        headerStyle: { backgroundColor: colors.backgroundDark },
+        headerTintColor: colors.textPrimary,
+        headerShadowVisible: false,
+        headerSearchBarOptions: {
+          placeholder: t('journal.search_placeholder'),
+          onChangeText: (event: { nativeEvent: { text: string } }) => {
+            setSearchQuery(event.nativeEvent.text);
+          },
+          hideWhenScrolling: true,
+          tintColor: colors.accent,
+          textColor: colors.textPrimary,
+          headerIconColor: colors.textSecondary,
+        },
+      });
+    }
+  }, [isNative, navigation, t, colors]);
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -75,6 +105,9 @@ export default function JournalListScreen() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showAnalyzedOnly, setShowAnalyzedOnly] = useState(false);
   const [showExploredOnly, setShowExploredOnly] = useState(false);
+
+  // Track which items have been animated to prevent re-animation on FlashList recycle
+  const animatedIdsRef = useRef(new Set<number>());
 
   // Modal states
   const [showThemeModal, setShowThemeModal] = useState(false);
@@ -318,16 +351,37 @@ export default function JournalListScreen() {
     const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
     const isFirstItem = index === 0;
 
+    // Stagger enter animation only for the first batch; skip if already animated
+    const shouldAnimate = index < MAX_ANIMATED_ITEMS && !animatedIdsRef.current.has(item.id);
+    if (shouldAnimate) {
+      animatedIdsRef.current.add(item.id);
+    }
+
+    const card = (
+      <DreamCard
+        dream={item}
+        onPress={handleDreamPress}
+        isScrolling={isScrolling}
+        testID={TID.List.DreamItem(item.id)}
+        dateLabel={dateStr}
+        variant={isFirstItem ? 'featured' : 'standard'}
+      />
+    );
+
+    if (shouldAnimate) {
+      return (
+        <Animated.View
+          style={styles.listItem}
+          entering={FadeInDown.delay(index * 30).duration(300).springify()}
+        >
+          {card}
+        </Animated.View>
+      );
+    }
+
     return (
       <View style={styles.listItem}>
-        <DreamCard
-          dream={item}
-          onPress={handleDreamPress}
-          isScrolling={isScrolling}
-          testID={TID.List.DreamItem(item.id)}
-          dateLabel={dateStr}
-          variant={isFirstItem ? 'featured' : 'standard'}
-        />
+        {card}
       </View>
     );
   }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
@@ -367,15 +421,10 @@ export default function JournalListScreen() {
     );
   }, [desktopDateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
+  const hasActiveFilter = !!(searchQuery || selectedTheme || selectedDreamType || dateRange.start || dateRange.end || showFavoritesOnly || showAnalyzedOnly || showExploredOnly);
   const renderEmptyState = useCallback(() => (
-    <View style={styles.emptyState}>
-      <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
-        {searchQuery || selectedTheme || dateRange.start || dateRange.end || showFavoritesOnly
-          ? t('journal.empty.filtered')
-          : t('journal.empty.default')}
-      </Text>
-    </View>
-  ), [searchQuery, selectedTheme, dateRange.start, dateRange.end, showFavoritesOnly, colors, t]);
+    <EmptyState hasActiveFilter={hasActiveFilter} />
+  ), [hasActiveFilter]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback(
@@ -390,28 +439,33 @@ export default function JournalListScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
-      {/* Header */}
-      <View
-        style={[
-          styles.header,
-          isDesktopLayout && styles.headerDesktop,
-          { paddingTop: insets.top + ThemeLayout.spacing.sm },
-        ]}
-      >
-        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('journal.title')}</Text>
-      </View>
+      {/* Header — only on web (native uses headerSearchBarOptions) */}
+      {!isNative && (
+        <View
+          style={[
+            styles.header,
+            isDesktopLayout && styles.headerDesktop,
+            { paddingTop: insets.top + ThemeLayout.spacing.sm },
+          ]}
+        >
+          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('journal.title')}</Text>
+        </View>
+      )}
 
       {/* Search and Filters */}
       <View
         style={filtersContainerStyle}
       >
-        <SearchBar
-          testID={TID.Component.SearchBar}
-          inputTestID={TID.Input.SearchDreams}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholder={t('journal.search_placeholder')}
-        />
+        {/* Custom SearchBar on web only — native uses header search bar */}
+        {!isNative && (
+          <SearchBar
+            testID={TID.Component.SearchBar}
+            inputTestID={TID.Input.SearchDreams}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t('journal.search_placeholder')}
+          />
+        )}
         <FilterBar
           items={[
             {
@@ -500,6 +554,7 @@ export default function JournalListScreen() {
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
+          contentInsetAdjustmentBehavior="automatic"
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
@@ -513,7 +568,8 @@ export default function JournalListScreen() {
 
       {/* Add Dream Button */}
       {showAddButton && (
-        <View
+        <Animated.View
+          entering={SlideInDown.springify().damping(20)}
           style={[
             styles.floatingButtonContainer,
             isDesktopLayout && styles.floatingButtonDesktop,
@@ -532,7 +588,7 @@ export default function JournalListScreen() {
               {t('journal.add_button.label')}
             </Text>
           </Pressable>
-        </View>
+        </Animated.View>
       )}
 
       {/* Theme Selection BottomSheet */}
@@ -724,16 +780,7 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.lg,
   },
   // date style removed — date is now inside DreamCard as an overline
-  emptyState: {
-    paddingTop: 60,
-    alignItems: 'center',
-  },
-  emptyStateText: {
-    fontSize: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
+  // empty state styles moved to EmptyState component
   floatingButtonContainer: {
     position: 'absolute',
     width: '100%',

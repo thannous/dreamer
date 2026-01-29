@@ -4,8 +4,10 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
-import React, { memo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import React, { memo, useCallback, useEffect } from 'react';
+import { Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored';
@@ -139,6 +141,62 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => 
   }
 };
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+/**
+ * Animated filter pill with scale bounce on toggle and background color transition.
+ */
+function FilterPill({
+  isActive,
+  activeColor,
+  inactiveColor,
+  onPress,
+  accessibilityLabel,
+  testID,
+  children,
+}: {
+  isActive: boolean;
+  activeColor: string;
+  inactiveColor: string;
+  onPress: () => void;
+  accessibilityLabel?: string;
+  testID?: string;
+  children: React.ReactNode;
+}) {
+  const scale = useSharedValue(1);
+
+  // Bounce on active state change
+  useEffect(() => {
+    scale.value = withSpring(1.05, { damping: 12, stiffness: 200 }, () => {
+      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+    });
+  }, [isActive, scale]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    backgroundColor: withTiming(isActive ? activeColor : inactiveColor, { duration: 200 }),
+  }));
+
+  const handlePress = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    onPress();
+  }, [onPress]);
+
+  return (
+    <AnimatedPressable
+      style={[styles.filterButton, animatedStyle]}
+      onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      testID={testID}
+    >
+      {children}
+    </AnimatedPressable>
+  );
+}
+
 export const FilterBar = memo(function FilterBar({
   items,
   onClear,
@@ -176,14 +234,12 @@ export const FilterBar = memo(function FilterBar({
             : baseLabel;
 
         return (
-          <Pressable
+          <FilterPill
             key={item.id}
-            style={[
-              styles.filterButton,
-              { backgroundColor: isActive ? colors.accent : colors.backgroundSecondary },
-            ]}
+            isActive={isActive}
+            activeColor={colors.accent}
+            inactiveColor={colors.backgroundSecondary}
             onPress={item.onPress}
-            accessibilityRole="button"
             accessibilityLabel={getAccessibilityLabel(item.id, t)}
             testID={item.testID}
           >
@@ -192,7 +248,7 @@ export const FilterBar = memo(function FilterBar({
               <Text style={[styles.filterButtonText, { color }]}>{label}</Text>
             ) : null}
             <ActiveCheck visible={isActive} color={activeIconColor} />
-          </Pressable>
+          </FilterPill>
         );
       })}
 
