@@ -7,14 +7,14 @@
 **Pattern:** `[symbol] dream meaning` + `rêver de [symbole]` + `soñar con [símbolo]`
 
 **Couverture actuelle:**
-- **56 symboles** dans la base de données (playbook glossary)
-- **56 symboles** avec contenu enrichi détaillé (**100%** ✅)
-- **168 pages symboles** générées (56 × 3 langues)
+- **57 symboles** dans la base de données (playbook glossary)
+- **57 symboles** avec contenu enrichi détaillé (**100%** ✅)
+- **171 pages symboles** générées (57 × 3 langues)
 - **24 pages catégorie** générées (8 × 3 langues) avec cross-links vers guides
 - **24 pages curation** générées (8 × 3 langues)
 - **3 pages dictionnaire** (1 × 3 langues)
 - **78 pages blog** (25 articles + index, × 3 langues)
-- **315 URLs** dans `sitemap.xml` (symboles + catégories + guides + blog + pages)
+- **318 URLs** dans `sitemap.xml` (symboles + catégories + guides + blog + pages)
 
 ### 🎯 Phases Complétées
 
