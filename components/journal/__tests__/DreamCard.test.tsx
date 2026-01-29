@@ -33,6 +33,7 @@ vi.mock('@/context/ThemeContext', () => ({
       backgroundSecondary: '#222',
       textPrimary: '#fff',
       textSecondary: '#aaa',
+      textTertiary: '#666',
       accent: '#6b5a8e',
       textOnAccentSurface: '#fff',
       tags: {
@@ -42,6 +43,7 @@ vi.mock('@/context/ThemeContext', () => ({
         noir: '#3d3d5c',
       },
     },
+    shadows: { sm: {}, md: {}, lg: {}, xl: {} },
   }),
 }));
 
