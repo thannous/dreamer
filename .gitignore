@@ -44,6 +44,8 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 docs/docs-server.*.log
+docs/*.bak
+docs/**/*.bak
 
 # macOS
 .DS_Store
