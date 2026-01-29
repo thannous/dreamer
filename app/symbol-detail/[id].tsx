@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useMemo } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -28,19 +28,11 @@ export default function SymbolDetailScreen() {
   if (!symbol) {
     return (
       <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.backgroundDark,
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: ThemeLayout.spacing.md,
-        }}>
+        style={[styles.emptyState, { backgroundColor: colors.backgroundDark }]}
+      >
         <Text
-          style={{
-            fontFamily: Fonts.spaceGrotesk.medium,
-            fontSize: 16,
-            color: colors.textSecondary,
-          }}>
+          style={[styles.emptyText, { color: colors.textSecondary }]}
+        >
           {t('symbols.not_found')}
         </Text>
       </View>
@@ -56,27 +48,17 @@ export default function SymbolDetailScreen() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.backgroundDark }}
-      contentContainerStyle={{ paddingBottom: 40 }}
+      style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+      contentContainerStyle={styles.scrollContent}
       contentInsetAdjustmentBehavior="automatic">
       {/* Category badge */}
       <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 6,
-          paddingHorizontal: ThemeLayout.spacing.lg,
-          paddingTop: ThemeLayout.spacing.lg,
-        }}>
+        style={styles.categoryRow}
+      >
         <IconSymbol name={categoryIcon} size={16} color={colors.accent} />
         <Text
-          style={{
-            fontFamily: Fonts.spaceGrotesk.medium,
-            fontSize: 12,
-            color: colors.accent,
-            textTransform: 'uppercase',
-            letterSpacing: 0.5,
-          }}>
+          style={[styles.categoryText, { color: colors.accent }]}
+        >
           {categoryName}
         </Text>
       </View>
@@ -84,49 +66,30 @@ export default function SymbolDetailScreen() {
       {/* Title */}
       <Text
         selectable
-        style={{
-          fontFamily: Fonts.lora.bold,
-          fontSize: 28,
-          color: colors.textPrimary,
-          paddingHorizontal: ThemeLayout.spacing.lg,
-          paddingTop: ThemeLayout.spacing.sm,
-        }}>
+        style={[styles.title, { color: colors.textPrimary }]}
+      >
         {content.name}
       </Text>
 
       {/* Short description */}
       <Text
         selectable
-        style={{
-          fontFamily: Fonts.spaceGrotesk.regular,
-          fontSize: 15,
-          color: colors.textSecondary,
-          lineHeight: 22,
-          paddingHorizontal: ThemeLayout.spacing.lg,
-          paddingTop: ThemeLayout.spacing.sm,
-        }}>
+        style={[styles.description, { color: colors.textSecondary }]}
+      >
         {content.shortDescription}
       </Text>
 
       {/* Full interpretation */}
       {paragraphs.length > 0 && (
-        <View style={{ paddingTop: ThemeLayout.spacing.xl }}>
+        <View style={styles.sectionBlock}>
           <SectionTitle text={t('symbols.interpretation')} colors={colors} />
-          <View
-            style={{
-              paddingHorizontal: ThemeLayout.spacing.lg,
-              gap: ThemeLayout.spacing.md,
-            }}>
+          <View style={styles.sectionBody}>
             {paragraphs.map((p, i) => (
               <Text
-                key={i}
+                key={`${p}-${i}`}
                 selectable
-                style={{
-                  fontFamily: Fonts.lora.regular,
-                  fontSize: 15,
-                  color: colors.textPrimary,
-                  lineHeight: 24,
-                }}>
+                style={[styles.paragraphText, { color: colors.textPrimary }]}
+              >
                 {p}
               </Text>
             ))}
@@ -136,15 +99,16 @@ export default function SymbolDetailScreen() {
 
       {/* Variations */}
       {extended?.variations && extended.variations.length > 0 && (
-        <View style={{ paddingTop: ThemeLayout.spacing.xl }}>
+        <View style={styles.sectionBlock}>
           <SectionTitle text={t('symbols.variations')} colors={colors} />
-          <View
-            style={{
-              paddingHorizontal: ThemeLayout.spacing.lg,
-              gap: ThemeLayout.spacing.sm,
-            }}>
-            {extended.variations.map((v, i) => (
-              <VariationCard key={i} variation={v} colors={colors} shadows={shadows} />
+          <View style={styles.variationsList}>
+            {extended.variations.map((v) => (
+              <VariationCard
+                key={`${v.context}-${v.meaning}`}
+                variation={v}
+                colors={colors}
+                shadows={shadows}
+              />
             ))}
           </View>
         </View>
@@ -152,31 +116,16 @@ export default function SymbolDetailScreen() {
 
       {/* Ask yourself */}
       {content.askYourself.length > 0 && (
-        <View style={{ paddingTop: ThemeLayout.spacing.xl }}>
+        <View style={styles.sectionBlock}>
           <SectionTitle text={t('symbols.ask_yourself')} colors={colors} />
-          <View
-            style={{
-              paddingHorizontal: ThemeLayout.spacing.lg,
-              gap: ThemeLayout.spacing.sm,
-            }}>
+          <View style={styles.askList}>
             {content.askYourself.map((q, i) => (
-              <View
-                key={i}
-                style={{
-                  flexDirection: 'row',
-                  gap: ThemeLayout.spacing.sm,
-                  alignItems: 'flex-start',
-                }}>
+              <View key={`${q}-${i}`} style={styles.askRow}>
                 <IconSymbol name="questionmark.circle.fill" size={18} color={colors.accent} />
                 <Text
                   selectable
-                  style={{
-                    flex: 1,
-                    fontFamily: Fonts.lora.regularItalic,
-                    fontSize: 15,
-                    color: colors.textPrimary,
-                    lineHeight: 22,
-                  }}>
+                  style={[styles.askText, { color: colors.textPrimary }]}
+                >
                   {q}
                 </Text>
               </View>
@@ -187,15 +136,9 @@ export default function SymbolDetailScreen() {
 
       {/* Related symbols */}
       {symbol.relatedSymbols.length > 0 && (
-        <View style={{ paddingTop: ThemeLayout.spacing.xl }}>
+        <View style={styles.sectionBlock}>
           <SectionTitle text={t('symbols.related')} colors={colors} />
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              gap: ThemeLayout.spacing.sm,
-              paddingHorizontal: ThemeLayout.spacing.lg,
-            }}>
+          <View style={styles.relatedList}>
             {symbol.relatedSymbols.map((relId) => {
               const related = getSymbolById(relId);
               if (!related) return null;
@@ -206,27 +149,22 @@ export default function SymbolDetailScreen() {
                   onPress={() => router.push(`/symbol-detail/${relId}` as any)}
                   accessibilityRole="button"
                   accessibilityLabel={relContent.name}
-                  style={({ pressed }) => ({
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 6,
-                    paddingHorizontal: 14,
-                    paddingVertical: 8,
-                    borderRadius: ThemeLayout.borderRadius.full,
-                    backgroundColor: colors.backgroundCard,
-                    opacity: pressed ? 0.7 : 1,
-                  })}>
+                  style={({ pressed }) => [
+                    styles.relatedButton,
+                    {
+                      backgroundColor: colors.backgroundCard,
+                      opacity: pressed ? 0.7 : 1,
+                    },
+                  ]}
+                >
                   <IconSymbol
                     name={getCategoryIcon(related.category)}
                     size={14}
                     color={colors.accent}
                   />
                   <Text
-                    style={{
-                      fontFamily: Fonts.spaceGrotesk.medium,
-                      fontSize: 13,
-                      color: colors.textPrimary,
-                    }}>
+                    style={[styles.relatedName, { color: colors.textPrimary }]}
+                  >
                     {relContent.name}
                   </Text>
                   <IconSymbol name="arrow.right" size={12} color={colors.textTertiary} />
@@ -243,15 +181,8 @@ export default function SymbolDetailScreen() {
 function SectionTitle({ text, colors }: { text: string; colors: any }) {
   return (
     <Text
-      style={{
-        fontFamily: Fonts.spaceGrotesk.bold,
-        fontSize: 14,
-        color: colors.textSecondary,
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-        paddingHorizontal: ThemeLayout.spacing.lg,
-        paddingBottom: ThemeLayout.spacing.sm,
-      }}>
+      style={[styles.sectionTitle, { color: colors.textSecondary }]}
+    >
       {text}
     </Text>
   );
@@ -268,33 +199,137 @@ function VariationCard({
 }) {
   return (
     <View
-      style={{
-        backgroundColor: colors.backgroundCard,
-        borderRadius: ThemeLayout.borderRadius.md,
-        borderCurve: 'continuous',
-        padding: ThemeLayout.spacing.md,
-        gap: 6,
-        ...shadows.sm,
-      }}>
+      style={[styles.variationCard, { backgroundColor: colors.backgroundCard }, shadows.sm]}
+    >
       <Text
         selectable
-        style={{
-          fontFamily: Fonts.spaceGrotesk.medium,
-          fontSize: 14,
-          color: colors.accent,
-        }}>
+        style={[styles.variationContext, { color: colors.accent }]}
+      >
         {variation.context}
       </Text>
       <Text
         selectable
-        style={{
-          fontFamily: Fonts.spaceGrotesk.regular,
-          fontSize: 14,
-          color: colors.textPrimary,
-          lineHeight: 20,
-        }}>
+        style={[styles.variationMeaning, { color: colors.textPrimary }]}
+      >
         {variation.meaning}
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: ThemeLayout.spacing.md,
+  },
+  emptyText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 16,
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    paddingTop: ThemeLayout.spacing.lg,
+  },
+  categoryText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  title: {
+    fontFamily: Fonts.lora.bold,
+    fontSize: 28,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    paddingTop: ThemeLayout.spacing.sm,
+  },
+  description: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    lineHeight: 22,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    paddingTop: ThemeLayout.spacing.sm,
+  },
+  sectionBlock: {
+    paddingTop: ThemeLayout.spacing.xl,
+  },
+  sectionBody: {
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    gap: ThemeLayout.spacing.md,
+  },
+  paragraphText: {
+    fontFamily: Fonts.lora.regular,
+    fontSize: 15,
+    lineHeight: 24,
+  },
+  variationsList: {
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    gap: ThemeLayout.spacing.sm,
+  },
+  askList: {
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    gap: ThemeLayout.spacing.sm,
+  },
+  askRow: {
+    flexDirection: 'row',
+    gap: ThemeLayout.spacing.sm,
+    alignItems: 'flex-start',
+  },
+  askText: {
+    flex: 1,
+    fontFamily: Fonts.lora.regularItalic,
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  relatedList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: ThemeLayout.spacing.sm,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+  },
+  relatedButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: ThemeLayout.borderRadius.full,
+  },
+  relatedName: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+  },
+  sectionTitle: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 14,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    paddingHorizontal: ThemeLayout.spacing.lg,
+    paddingBottom: ThemeLayout.spacing.sm,
+  },
+  variationCard: {
+    borderRadius: ThemeLayout.borderRadius.md,
+    borderCurve: 'continuous',
+    padding: ThemeLayout.spacing.md,
+    gap: 6,
+  },
+  variationContext: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+  },
+  variationMeaning: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+});

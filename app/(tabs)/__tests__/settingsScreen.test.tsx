@@ -18,6 +18,12 @@ let capturedSubscriptionProps: any = null;
 
 vi.mock('expo-router', () => ({
   router: { push: mockPush },
+  useFocusEffect: (cb: () => void | (() => void)) => {
+    React.useEffect(() => {
+      const cleanup = cb();
+      return typeof cleanup === 'function' ? cleanup : undefined;
+    }, [cb]);
+  },
 }));
 
 vi.mock('@react-navigation/bottom-tabs', () => ({
@@ -26,6 +32,7 @@ vi.mock('@react-navigation/bottom-tabs', () => ({
 
 vi.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+  SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock('@/hooks/useClearWebFocus', () => ({
@@ -98,6 +105,35 @@ vi.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="icon-symbol" />,
 }));
 
+vi.mock('react-native-reanimated', () => {
+  const View = ({ children, ...props }: { children?: React.ReactNode; [key: string]: any }) => (
+    <div {...props}>{children}</div>
+  );
+  const createAnimatedComponent = (Component: any) => {
+    const AnimatedComponent = ({ children, ...props }: any) => (
+      <Component {...props}>{children}</Component>
+    );
+    AnimatedComponent.displayName = 'ReanimatedAnimatedComponent';
+    return AnimatedComponent;
+  };
+  return {
+    default: {
+      View,
+      createAnimatedComponent,
+    },
+    useAnimatedStyle: () => ({}),
+    useSharedValue: (val: any) => ({ value: val }),
+    withTiming: (val: any) => val,
+    withSpring: (val: any) => val,
+    withDelay: (_d: number, val: any) => val,
+    interpolate: () => 1,
+    Extrapolation: { CLAMP: 'clamp' },
+    runOnJS: (fn: any) => fn,
+    cancelAnimation: () => {},
+    Easing: { out: () => {}, in: () => {}, cubic: {} },
+  };
+});
+
 const { default: SettingsScreen } = await import('../settings');
 
 describe('Settings screen', () => {
@@ -141,4 +177,3 @@ describe('Settings screen', () => {
     expect(capturedSubscriptionProps?.expiryLabel).toBeUndefined();
   });
 });
-

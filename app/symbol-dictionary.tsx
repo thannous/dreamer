@@ -1,6 +1,7 @@
+import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Pressable, SectionList, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { CategoryHeader } from '@/components/symbols/CategoryHeader';
 import { SymbolCard } from '@/components/symbols/SymbolCard';
@@ -21,6 +22,19 @@ type Section = {
   category: SymbolCategory;
   data: DreamSymbol[];
 };
+
+type Row =
+  | {
+      type: 'header';
+      id: string;
+      category: SymbolCategory;
+      count: number;
+    }
+  | {
+      type: 'item';
+      id: string;
+      symbol: DreamSymbol;
+    };
 
 export default function SymbolDictionaryScreen() {
   const { colors } = useTheme();
@@ -64,60 +78,69 @@ export default function SymbolDictionaryScreen() {
     }));
   }, [searchQuery, selectedCategory, lang, categories]);
 
+  const listData: Row[] = useMemo(() => {
+    const rows: Row[] = [];
+    sections.forEach((section) => {
+      rows.push({
+        type: 'header',
+        id: `header-${section.category}`,
+        category: section.category,
+        count: section.data.length,
+      });
+      section.data.forEach((symbol) => {
+        rows.push({
+          type: 'item',
+          id: symbol.id,
+          symbol,
+        });
+      });
+    });
+    return rows;
+  }, [sections]);
+
   const handleSymbolPress = useCallback((id: string) => {
     router.push(`/symbol-detail/${id}` as any);
   }, []);
 
   const renderItem = useCallback(
-    ({ item }: { item: DreamSymbol }) => (
-      <SymbolCard symbol={item} language={lang} onPress={() => handleSymbolPress(item.id)} />
-    ),
+    ({ item }: ListRenderItemInfo<Row>) => {
+      if (item.type === 'header') {
+        return (
+          <CategoryHeader category={item.category} count={item.count} language={lang} />
+        );
+      }
+      return <SymbolCard symbol={item.symbol} language={lang} onPress={handleSymbolPress} />;
+    },
     [lang, handleSymbolPress],
   );
 
-  const renderSectionHeader = useCallback(
-    ({ section }: { section: Section }) => (
-      <CategoryHeader category={section.category} count={section.data.length} language={lang} />
+  const keyExtractor = useCallback((item: Row) => item.id, []);
+  const getItemType = useCallback((item: Row) => item.type, []);
+
+  const renderEmptyComponent = useCallback(
+    () => (
+      <View style={styles.emptyState}>
+        <IconSymbol name="magnifyingglass" size={32} color={colors.textTertiary} />
+        <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+          {t('symbols.no_results')}
+        </Text>
+      </View>
     ),
-    [lang],
+    [colors.textSecondary, colors.textTertiary, t],
   );
 
-  const keyExtractor = useCallback((item: DreamSymbol) => item.id, []);
-
   return (
-    <View style={{ flex: 1, backgroundColor: colors.backgroundDark }}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
       {/* Search bar */}
-      <View
-        style={{
-          paddingHorizontal: ThemeLayout.spacing.md,
-          paddingTop: ThemeLayout.spacing.sm,
-          paddingBottom: ThemeLayout.spacing.xs,
-          gap: ThemeLayout.spacing.sm,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: colors.backgroundCard,
-            borderRadius: ThemeLayout.borderRadius.md,
-            borderCurve: 'continuous',
-            paddingHorizontal: ThemeLayout.spacing.md,
-            gap: ThemeLayout.spacing.sm,
-            height: 44,
-          }}>
+      <View style={styles.searchContainer}>
+        <View style={[styles.searchBar, { backgroundColor: colors.backgroundCard }]}>
           <IconSymbol name="magnifyingglass" size={18} color={colors.textTertiary} />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholder={t('symbols.search_placeholder')}
             placeholderTextColor={colors.textTertiary}
-            style={{
-              flex: 1,
-              fontFamily: Fonts.spaceGrotesk.regular,
-              fontSize: 15,
-              color: colors.textPrimary,
-              paddingVertical: 0,
-            }}
+            style={[styles.searchInput, { color: colors.textPrimary }]}
             returnKeyType="search"
             autoCorrect={false}
           />
@@ -129,21 +152,29 @@ export default function SymbolDictionaryScreen() {
         </View>
 
         {/* Category filter chips */}
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: ThemeLayout.spacing.xs }}>
+        <View style={styles.chipRow}>
           <Pressable
             onPress={() => setSelectedCategory(null)}
-            style={{
-              paddingHorizontal: 12,
-              paddingVertical: 6,
-              borderRadius: ThemeLayout.borderRadius.full,
-              backgroundColor: selectedCategory === null ? colors.accent : colors.backgroundCard,
-            }}>
+            style={({ pressed }) => [
+              styles.chip,
+              {
+                backgroundColor:
+                  selectedCategory === null ? colors.accent : colors.backgroundCard,
+              },
+              pressed && styles.chipPressed,
+            ]}
+          >
             <Text
-              style={{
-                fontFamily: Fonts.spaceGrotesk.medium,
-                fontSize: 12,
-                color: selectedCategory === null ? colors.textOnAccentSurface : colors.textSecondary,
-              }}>
+              style={[
+                styles.chipText,
+                {
+                  color:
+                    selectedCategory === null
+                      ? colors.textOnAccentSurface
+                      : colors.textSecondary,
+                },
+              ]}
+            >
               {t('symbols.all_categories')}
             </Text>
           </Pressable>
@@ -151,19 +182,26 @@ export default function SymbolDictionaryScreen() {
             <Pressable
               key={cat}
               onPress={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-              style={{
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: ThemeLayout.borderRadius.full,
-                backgroundColor: selectedCategory === cat ? colors.accent : colors.backgroundCard,
-              }}>
+              style={({ pressed }) => [
+                styles.chip,
+                {
+                  backgroundColor:
+                    selectedCategory === cat ? colors.accent : colors.backgroundCard,
+                },
+                pressed && styles.chipPressed,
+              ]}
+            >
               <Text
-                style={{
-                  fontFamily: Fonts.spaceGrotesk.medium,
-                  fontSize: 12,
-                  color:
-                    selectedCategory === cat ? colors.textOnAccentSurface : colors.textSecondary,
-                }}>
+                style={[
+                  styles.chipText,
+                  {
+                    color:
+                      selectedCategory === cat
+                        ? colors.textOnAccentSurface
+                        : colors.textSecondary,
+                  },
+                ]}
+              >
                 {getCategoryName(cat, lang)}
               </Text>
             </Pressable>
@@ -172,34 +210,73 @@ export default function SymbolDictionaryScreen() {
       </View>
 
       {/* Symbol list */}
-      <SectionList
-        sections={sections}
+      <FlashList
+        data={listData}
         renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader}
         keyExtractor={keyExtractor}
-        contentContainerStyle={{ paddingBottom: ThemeLayout.spacing.xl }}
-        stickySectionHeadersEnabled={false}
-        ListEmptyComponent={
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingVertical: 60,
-              gap: ThemeLayout.spacing.sm,
-            }}>
-            <IconSymbol name="magnifyingglass" size={32} color={colors.textTertiary} />
-            <Text
-              style={{
-                fontFamily: Fonts.spaceGrotesk.regular,
-                fontSize: 15,
-                color: colors.textSecondary,
-                textAlign: 'center',
-              }}>
-              {t('symbols.no_results')}
-            </Text>
-          </View>
-        }
+        getItemType={getItemType}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={renderEmptyComponent}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  searchContainer: {
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingTop: ThemeLayout.spacing.sm,
+    paddingBottom: ThemeLayout.spacing.xs,
+    gap: ThemeLayout.spacing.sm,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: ThemeLayout.borderRadius.md,
+    borderCurve: 'continuous',
+    paddingHorizontal: ThemeLayout.spacing.md,
+    gap: ThemeLayout.spacing.sm,
+    height: 44,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    paddingVertical: 0,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: ThemeLayout.spacing.xs,
+  },
+  chip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: ThemeLayout.borderRadius.full,
+  },
+  chipPressed: {
+    opacity: 0.8,
+  },
+  chipText: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 12,
+  },
+  listContent: {
+    paddingBottom: ThemeLayout.spacing.xl,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+    gap: ThemeLayout.spacing.sm,
+  },
+  emptyText: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 15,
+    textAlign: 'center',
+  },
+});

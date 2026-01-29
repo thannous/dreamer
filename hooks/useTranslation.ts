@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getTranslator, loadTranslations } from '@/lib/i18n';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -24,6 +24,6 @@ export const useTranslation = () => {
     };
   }, [language]);
 
-  const t = getTranslator(language);
+  const t = useMemo(() => getTranslator(language), [language]);
   return { t, currentLang: language };
 };
