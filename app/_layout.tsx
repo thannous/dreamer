@@ -1,3 +1,6 @@
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
+
 import {
   Lora_400Regular,
   Lora_400Regular_Italic,
@@ -18,7 +21,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
-import 'react-native-reanimated';
 
 import AnimatedSplashScreen from '@/components/AnimatedSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -73,6 +75,8 @@ if (__DEV__) {
 
 // Prevent the splash screen from auto-hiding before fonts are loaded
 SplashScreen.preventAutoHideAsync();
+
+const ROOT_VIEW_STYLE = { flex: 1 } as const;
 
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
@@ -494,7 +498,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <GestureHandlerRootView style={ROOT_VIEW_STYLE}>
       <ErrorBoundary>
         {languageBootstrapped ? (
           <LanguageProvider initialPreference={initialLanguagePreference}>
@@ -511,6 +515,6 @@ export default function RootLayout() {
       {showCustomSplash && (
         <AnimatedSplashScreen status={shouldFadeSplash ? 'outro' : 'intro'} onAnimationEnd={handleSplashFinished} />
       )}
-    </>
+    </GestureHandlerRootView>
   );
 }
