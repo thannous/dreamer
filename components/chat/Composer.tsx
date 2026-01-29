@@ -80,7 +80,7 @@ type ComposerContextValue = {
   handleTextInputPress: () => void;
   handleSend: () => void;
   toggleRecording: () => void;
-  textInputRef: React.RefObject<TextInput>;
+  textInputRef: React.RefObject<TextInput | null>;
 };
 
 const ComposerContext = createContext<ComposerContextValue | null>(null);
