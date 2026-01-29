@@ -649,6 +649,18 @@ const translations: Record<string, string> = {
     // Journal detail - subject actions
     'journal.detail.add_person': 'Agregar persona',
     'journal.detail.add_animal': 'Agregar animal',
+
+    // Symbol dictionary
+    'symbols.dictionary_title': 'Diccionario de símbolos',
+    'symbols.dictionary_subtitle': 'Explora los símbolos oníricos y sus significados',
+    'symbols.search_placeholder': 'Buscar símbolos...',
+    'symbols.all_categories': 'Todo',
+    'symbols.interpretation': 'Interpretación',
+    'symbols.variations': 'Variaciones comunes',
+    'symbols.ask_yourself': 'Preguntas para reflexionar',
+    'symbols.related': 'Símbolos relacionados',
+    'symbols.not_found': 'Símbolo no encontrado',
+    'symbols.no_results': 'No se encontraron símbolos',
   };
 
 export default translations;

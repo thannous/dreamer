@@ -655,6 +655,18 @@ const translations: Record<string, string> = {
     // Journal detail - subject actions
     'journal.detail.add_person': 'Add person',
     'journal.detail.add_animal': 'Add animal',
+
+    // Symbol dictionary
+    'symbols.dictionary_title': 'Symbol Dictionary',
+    'symbols.dictionary_subtitle': 'Explore dream symbols and their meanings',
+    'symbols.search_placeholder': 'Search symbols...',
+    'symbols.all_categories': 'All',
+    'symbols.interpretation': 'Interpretation',
+    'symbols.variations': 'Common Variations',
+    'symbols.ask_yourself': 'Ask Yourself',
+    'symbols.related': 'Related Symbols',
+    'symbols.not_found': 'Symbol not found',
+    'symbols.no_results': 'No symbols found',
   };
 
 export default translations;
