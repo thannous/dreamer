@@ -6,9 +6,11 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
-  View,
+  useWindowDimensions,
 } from 'react-native';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
+  cancelAnimation,
   Easing,
   runOnJS,
   useAnimatedStyle,
@@ -34,6 +36,10 @@ type BottomSheetProps = {
    * Test ID for E2E testing.
    */
   testID?: string;
+  /**
+   * Whether users can swipe down to dismiss the sheet (default: true).
+   */
+  enablePanDownToClose?: boolean;
 };
 
 /**
@@ -47,9 +53,13 @@ export function BottomSheet({
   style,
   backdropColor = 'rgba(0,0,0,0.45)',
   testID,
+  enablePanDownToClose = true,
 }: BottomSheetProps) {
   const [isMounted, setIsMounted] = useState(visible);
+  const { height: windowHeight } = useWindowDimensions();
+  const hiddenTranslateY = Math.max(400, windowHeight);
   const translateY = useSharedValue(0);
+  const backdropOpacity = useSharedValue(0);
   const handleUnmount = useCallback(() => setIsMounted(false), []);
   const normalizedChildren = useMemo(
     () =>
@@ -71,14 +81,23 @@ export function BottomSheet({
     if (visible) {
       blurActiveElement();
       setIsMounted(true);
-      translateY.value = 400;
+      backdropOpacity.value = 0;
+      translateY.value = hiddenTranslateY;
       translateY.value = withTiming(0, {
         duration: 260,
         easing: Easing.out(Easing.cubic),
       });
+      backdropOpacity.value = withTiming(1, {
+        duration: 220,
+        easing: Easing.out(Easing.cubic),
+      });
     } else if (isMounted) {
+      backdropOpacity.value = withTiming(0, {
+        duration: 200,
+        easing: Easing.in(Easing.cubic),
+      });
       translateY.value = withTiming(
-        400,
+        hiddenTranslateY,
         {
           duration: 220,
           easing: Easing.in(Easing.cubic),
@@ -90,11 +109,51 @@ export function BottomSheet({
         }
       );
     }
-  }, [handleUnmount, isMounted, translateY, visible]);
+  }, [backdropOpacity, handleUnmount, hiddenTranslateY, isMounted, translateY, visible]);
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
+
+  const backdropAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: backdropOpacity.value,
+  }));
+
+  const panGesture = useMemo(() => {
+    const closeThreshold = Math.min(180, hiddenTranslateY * 0.25);
+    const closeVelocity = 1200;
+
+    return Gesture.Pan()
+      .enabled(enablePanDownToClose)
+      .activeOffsetY([-10, 10])
+      .failOffsetY([0, 999999])
+      .failOffsetX([-15, 15])
+      .onBegin(() => {
+        cancelAnimation(translateY);
+        cancelAnimation(backdropOpacity);
+      })
+      .onUpdate((event) => {
+        const nextTranslateY = Math.max(0, event.translationY);
+        translateY.value = nextTranslateY;
+        backdropOpacity.value = Math.max(0, Math.min(1, 1 - nextTranslateY / hiddenTranslateY));
+      })
+      .onEnd((event) => {
+        const shouldClose = translateY.value > closeThreshold || event.velocityY > closeVelocity;
+        if (shouldClose) {
+          runOnJS(onClose)();
+          return;
+        }
+
+        translateY.value = withTiming(0, {
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
+        });
+        backdropOpacity.value = withTiming(1, {
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
+        });
+      });
+  }, [backdropOpacity, enablePanDownToClose, hiddenTranslateY, onClose, translateY]);
 
   if (!isMounted) {
     return null;
@@ -108,12 +167,16 @@ export function BottomSheet({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <View style={styles.wrapper}>
-        <Pressable style={[styles.backdrop, { backgroundColor: backdropColor }]} onPress={onClose} />
-        <Animated.View style={[styles.sheet, style, sheetAnimatedStyle]} testID={testID}>
-          {normalizedChildren}
+      <GestureHandlerRootView style={styles.wrapper}>
+        <Animated.View style={[styles.backdrop, { backgroundColor: backdropColor }, backdropAnimatedStyle]}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         </Animated.View>
-      </View>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View style={[styles.sheet, style, sheetAnimatedStyle]} testID={testID}>
+            {normalizedChildren}
+          </Animated.View>
+        </GestureDetector>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
