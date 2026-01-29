@@ -1603,6 +1603,222 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/guides/dream-symbols-dictionary"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/symbols/nature</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/nature"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nature"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/naturaleza"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/nature"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/nature</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/nature"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nature"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/naturaleza"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/nature"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/naturaleza</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/nature"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/nature"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/naturaleza"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/nature"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/animals</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/animals"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/animaux"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/animales"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/animals"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/animaux</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/animals"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/animaux"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/animales"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/animals"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/animales</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/animals"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/animaux"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/animales"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/animals"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/body</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/body"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/corps"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/cuerpo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/body"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/corps</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/body"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/corps"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/cuerpo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/body"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/cuerpo</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/body"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/corps"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/cuerpo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/body"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/places</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/places"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/lieux"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/lugares"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/places"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/lieux</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/places"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/lieux"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/lugares"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/places"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/lugares</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/places"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/lieux"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/lugares"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/places"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/objects</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/objects"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/objets"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/objetos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/objects"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/objets</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/objects"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/objets"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/objetos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/objects"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/objetos</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/objects"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/objets"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/objetos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/objects"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/actions</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/actions"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/actions"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/acciones"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/actions"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/actions</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/actions"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/actions"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/acciones"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/actions"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/acciones</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/actions"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/actions"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/acciones"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/actions"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/people</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/people"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/personnes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/personas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/people"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/personnes</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/people"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/personnes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/personas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/people"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/personas</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/people"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/personnes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/personas"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/people"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/celestial</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/celestial"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/celeste"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/celestial"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/celestial"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/celeste</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/celestial"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/celeste"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/celestial"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/celestial"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/celestial</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/celestial"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/celeste"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/celestial"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/celestial"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/fr/mentions-legales</loc>
     <lastmod>2026-01-26</lastmod>
     <priority>0.3</priority>
