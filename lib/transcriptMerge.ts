@@ -36,7 +36,6 @@ export function combineTranscript({
   const trimmedBase = base.trim();
 
   if (devLog) {
-    // eslint-disable-next-line no-console
     console.log('[combineTranscript]', {
       baseLength: trimmedBase.length,
       additionLength: trimmedAddition.length,
@@ -93,4 +92,3 @@ export function combineTranscript({
   const combined = trimmedBase ? `${trimmedBase}\n${trimmedAddition}` : trimmedAddition;
   return clampTranscript(combined, maxChars);
 }
-

@@ -105,7 +105,7 @@ export async function analyzeDreamWithImageResilient(
         return { ...res, imageUrl: null, imageGenerationFailed: true };
       }
     }
-  } catch (error) {
+  } catch {
     // Combined call failed entirely, try analysis only as fallback
     try {
       // Note: fingerprint already consumed on combined call if it was provided,

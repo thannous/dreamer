@@ -24,8 +24,6 @@ interface Logger {
   log: (level: LogLevel, ...args: unknown[]) => void;
 }
 
-const noop = () => {};
-
 const isDev = (): boolean => {
   // In React Native bundles, __DEV__ is replaced at build time.
   // In tests, __DEV__ is typically set on globalThis.
