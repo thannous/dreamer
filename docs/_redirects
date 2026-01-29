@@ -18,6 +18,7 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /:lang/guides/index.html /:lang/guides/ 301
 /:lang/guides/index /:lang/guides/ 301
 
+
 # Normalize a few legacy French slugs containing diacritics
 /fr/blog/rêves-ex-partenaire.html /fr/blog/reves-ex-partenaire 301
 /fr/blog/rêves-ex-partenaire /fr/blog/reves-ex-partenaire 301
