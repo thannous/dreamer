@@ -3554,6 +3554,511 @@
           }
         ]
       }
+    },
+    "wolf": {
+      "en": {
+        "fullInterpretation": "<p>Wolves are powerful archetypal symbols that appear in human mythology and dreams across cultures. These magnificent creatures embody the wild, untamed aspects of nature and our own psyche. When a wolf appears in your dreams, it often speaks to primal instincts, social dynamics, and the balance between civilization and wildness within yourself.</p>\n<p>The wolf can represent conflicting symbolic meanings depending on the dream context. On one hand, wolves symbolize fierce independence, keen instincts, and survival intelligence. They remind us of our animal nature—the intuitive, instinctual part of ourselves that knows things without rational explanation. If you're suppressing your instincts or intuition in waking life, a wolf may appear to remind you to trust your gut feelings.</p>\n<p>Simultaneously, wolves are deeply social creatures with complex pack hierarchies and strong family bonds. Dreaming of wolves can relate to your relationship with community, family, or social groups. Are you a lone wolf by choice or isolation? Do you feel you belong to your \"pack,\" or are you struggling to find your place? The wolf can illuminate questions about loyalty, belonging, and social identity.</p>\n<p>The wolf's behavior in your dream matters significantly. A threatening or aggressive wolf might represent perceived danger, someone you don't trust, or your own suppressed anger and aggression. A friendly or protective wolf could symbolize a guardian figure, loyal ally, or your own inner strength coming to your aid. A howling wolf might represent a call to authenticity or expression of loneliness.</p>",
+        "variations": [
+          {
+            "context": "Wolf attacking",
+            "meaning": "May represent feeling threatened, facing aggression from others, or confronting suppressed anger and instinctual energy within yourself."
+          },
+          {
+            "context": "Lone wolf",
+            "meaning": "Often symbolizes independence, isolation, or choosing to walk your own path separate from the pack or social expectations."
+          },
+          {
+            "context": "Wolf pack",
+            "meaning": "Represents community, family dynamics, social hierarchies, or questions about your role and belonging within groups."
+          },
+          {
+            "context": "Friendly or protective wolf",
+            "meaning": "May symbolize a loyal ally, guardian figure, or your own inner strength and instincts protecting and guiding you."
+          },
+          {
+            "context": "Werewolf transformation",
+            "meaning": "Could indicate fear of losing control, the struggle between civilized and wild aspects of self, or transformative change."
+          },
+          {
+            "context": "Wolf howling",
+            "meaning": "Suggests need for self-expression, calling out to your tribe, or acknowledging feelings of loneliness and longing."
+          },
+          {
+            "context": "Being chased by a wolf",
+            "meaning": "Often represents running from your instincts, avoiding wildness or authentic self, or fleeing from something that feels threatening."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les loups sont de puissants symboles archétypaux qui apparaissent dans la mythologie humaine et les rêves à travers les cultures. Ces créatures magnifiques incarnent les aspects sauvages et indomptés de la nature et de notre propre psyché. Quand un loup apparaît dans vos rêves, il parle souvent d'instincts primordiaux, de dynamiques sociales et de l'équilibre entre civilisation et sauvagerie en vous-même.</p>\n<p>Le loup peut représenter des significations symboliques contradictoires selon le contexte du rêve. D'une part, les loups symbolisent l'indépendance farouche, les instincts aiguisés et l'intelligence de survie. Ils nous rappellent notre nature animale—la partie intuitive et instinctive de nous-mêmes qui sait des choses sans explication rationnelle. Si vous réprimez vos instincts ou votre intuition dans la vie éveillée, un loup peut apparaître pour vous rappeler de faire confiance à vos pressentiments.</p>\n<p>Simultanément, les loups sont des créatures profondément sociales avec des hiérarchies de meute complexes et de forts liens familiaux. Rêver de loups peut se rapporter à votre relation avec la communauté, la famille ou les groupes sociaux. Êtes-vous un loup solitaire par choix ou par isolement ? Sentez-vous que vous appartenez à votre \"meute,\" ou luttez-vous pour trouver votre place ?</p>\n<p>Le comportement du loup dans votre rêve importe significativement. Un loup menaçant ou agressif pourrait représenter un danger perçu, quelqu'un en qui vous n'avez pas confiance, ou votre propre colère et agressivité réprimées. Un loup amical ou protecteur pourrait symboliser une figure gardienne, un allié loyal, ou votre propre force intérieure venant à votre aide.</p>",
+        "variations": [
+          {
+            "context": "Loup qui attaque",
+            "meaning": "Peut représenter se sentir menacé, faire face à l'agression d'autres ou confronter la colère et l'énergie instinctive réprimées en vous-même."
+          },
+          {
+            "context": "Loup solitaire",
+            "meaning": "Symbolise souvent l'indépendance, l'isolement ou le choix de suivre votre propre chemin séparé de la meute ou des attentes sociales."
+          },
+          {
+            "context": "Meute de loups",
+            "meaning": "Représente la communauté, les dynamiques familiales, les hiérarchies sociales ou les questions sur votre rôle et appartenance dans les groupes."
+          },
+          {
+            "context": "Loup amical ou protecteur",
+            "meaning": "Peut symboliser un allié loyal, une figure gardienne, ou votre propre force intérieure et instincts vous protégeant et guidant."
+          },
+          {
+            "context": "Transformation en loup-garou",
+            "meaning": "Pourrait indiquer la peur de perdre le contrôle, la lutte entre aspects civilisés et sauvages du soi, ou changement transformatif."
+          },
+          {
+            "context": "Loup qui hurle",
+            "meaning": "Suggère besoin d'expression de soi, appel à votre tribu, ou reconnaissance de sentiments de solitude et désir."
+          },
+          {
+            "context": "Être poursuivi par un loup",
+            "meaning": "Représente souvent fuir vos instincts, éviter la sauvagerie ou le soi authentique, ou fuir quelque chose qui semble menaçant."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los lobos son poderosos símbolos arquetípicos que aparecen en la mitología humana y los sueños a través de las culturas. Estas magníficas criaturas encarnan los aspectos salvajes e indomables de la naturaleza y nuestra propia psique. Cuando un lobo aparece en tus sueños, a menudo habla de instintos primordiales, dinámicas sociales y el equilibrio entre civilización y salvajismo dentro de ti mismo.</p>\n<p>El lobo puede representar significados simbólicos conflictivos dependiendo del contexto del sueño. Por un lado, los lobos simbolizan independencia feroz, instintos agudos e inteligencia de supervivencia. Nos recuerdan nuestra naturaleza animal—la parte intuitiva e instintiva de nosotros mismos que sabe cosas sin explicación racional. Si estás suprimiendo tus instintos o intuición en la vida despierta, un lobo puede aparecer para recordarte confiar en tus corazonadas.</p>\n<p>Simultáneamente, los lobos son criaturas profundamente sociales con jerarquías de manada complejas y fuertes lazos familiares. Soñar con lobos puede relacionarse con tu relación con la comunidad, familia o grupos sociales. ¿Eres un lobo solitario por elección o aislamiento? ¿Sientes que perteneces a tu \"manada,\" o estás luchando por encontrar tu lugar?</p>\n<p>El comportamiento del lobo en tu sueño importa significativamente. Un lobo amenazante o agresivo podría representar peligro percibido, alguien en quien no confías, o tu propia ira y agresión suprimidas. Un lobo amigable o protector podría simbolizar una figura guardiana, aliado leal, o tu propia fuerza interior viniendo en tu ayuda.</p>",
+        "variations": [
+          {
+            "context": "Lobo atacando",
+            "meaning": "Puede representar sentirse amenazado, enfrentar agresión de otros, o confrontar ira y energía instintiva suprimida dentro de ti mismo."
+          },
+          {
+            "context": "Lobo solitario",
+            "meaning": "A menudo simboliza independencia, aislamiento, o elegir caminar tu propio camino separado de la manada o expectativas sociales."
+          },
+          {
+            "context": "Manada de lobos",
+            "meaning": "Representa comunidad, dinámicas familiares, jerarquías sociales, o preguntas sobre tu rol y pertenencia dentro de grupos."
+          },
+          {
+            "context": "Lobo amigable o protector",
+            "meaning": "Puede simbolizar un aliado leal, figura guardiana, o tu propia fuerza interior e instintos protegiéndote y guiándote."
+          },
+          {
+            "context": "Transformación en hombre lobo",
+            "meaning": "Podría indicar miedo a perder control, lucha entre aspectos civilizados y salvajes del yo, o cambio transformativo."
+          },
+          {
+            "context": "Lobo aullando",
+            "meaning": "Sugiere necesidad de autoexpresión, llamado a tu tribu, o reconocimiento de sentimientos de soledad y anhelo."
+          },
+          {
+            "context": "Ser perseguido por un lobo",
+            "meaning": "A menudo representa huir de tus instintos, evitar salvajismo o yo auténtico, o huir de algo que se siente amenazante."
+          }
+        ]
+      }
+    },
+    "horse": {
+      "en": {
+        "fullInterpretation": "<p>Horses have been companions to humanity for millennia, and their presence in dreams carries profound symbolic weight. These noble creatures represent freedom, power, grace, and the journey of life itself. When a horse appears in your dreams, it often speaks to your personal vitality, your desires for independence, and the drive that propels you forward through life's terrain.</p>\n<p>At their essence, horses symbolize unbridled freedom and the wild, untamed spirit. A horse running free across open fields embodies the part of you that longs to break free from constraints, to express yourself authentically, and to move through life with grace and power. If you're feeling restricted, controlled, or constrained in waking life, dreaming of horses may reflect your yearning for liberation.</p>\n<p>Horses also represent personal power and vitality. The strength and energy of a horse can mirror your own life force, confidence, and drive. A strong, healthy horse might indicate you're feeling powerful and capable, while a sick, injured, or dying horse could reflect feeling drained, weakened, or that your vitality is compromised in some way.</p>\n<p>The relationship between rider and horse in dreams is particularly significant. If you're riding a horse confidently, it suggests you're in control of your instincts, drives, and the direction of your life. Struggling to control a horse might indicate that powerful feelings or situations feel difficult to manage. Being thrown from a horse could represent losing control or being overpowered by circumstances or emotions.</p>",
+        "variations": [
+          {
+            "context": "Wild horse running free",
+            "meaning": "Symbolizes freedom, untamed spirit, desire for liberation, or authentic self-expression without constraints."
+          },
+          {
+            "context": "Riding a horse confidently",
+            "meaning": "Indicates feeling in control of your life direction, harnessing personal power, or successfully managing your drives and instincts."
+          },
+          {
+            "context": "Horse running free",
+            "meaning": "Represents liberation, breaking free from constraints, or the joy of movement and progress without restriction."
+          },
+          {
+            "context": "Sick or dying horse",
+            "meaning": "May reflect depleted energy, loss of vitality, feeling weakened, or that something once strong is now compromised."
+          },
+          {
+            "context": "White horse",
+            "meaning": "Often symbolizes purity, spiritual journey, noble intentions, or a heroic aspect of yourself coming to aid."
+          },
+          {
+            "context": "Black horse",
+            "meaning": "Can represent mystery, the unknown, shadow aspects of self, or powerful instinctual energy that feels dark or dangerous."
+          },
+          {
+            "context": "Horse race",
+            "meaning": "Suggests competition, striving to win, feeling pressure to perform, or measuring yourself against others in life's journey."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les chevaux ont été compagnons de l'humanité pendant des millénaires, et leur présence dans les rêves porte un poids symbolique profond. Ces nobles créatures représentent la liberté, la puissance, la grâce et le voyage de la vie elle-même. Quand un cheval apparaît dans vos rêves, il parle souvent de votre vitalité personnelle, de vos désirs d'indépendance, et de la force qui vous propulse à travers le terrain de la vie.</p>\n<p>Dans leur essence, les chevaux symbolisent la liberté débridée et l'esprit sauvage et indompté. Un cheval courant libre à travers des champs ouverts incarne la partie de vous qui aspire à se libérer des contraintes, à s'exprimer authentiquement, et à se déplacer dans la vie avec grâce et puissance. Si vous vous sentez restreint, contrôlé ou contraint dans la vie éveillée, rêver de chevaux peut refléter votre aspiration à la libération.</p>\n<p>Les chevaux représentent aussi la puissance personnelle et la vitalité. La force et l'énergie d'un cheval peuvent refléter votre propre force vitale, confiance et dynamisme. Un cheval fort et en bonne santé pourrait indiquer que vous vous sentez puissant et capable, tandis qu'un cheval malade, blessé ou mourant pourrait refléter un sentiment d'épuisement, d'affaiblissement ou que votre vitalité est compromise d'une manière ou d'une autre.</p>\n<p>La relation entre cavalier et cheval dans les rêves est particulièrement significative. Si vous montez un cheval avec confiance, cela suggère que vous contrôlez vos instincts, vos pulsions et la direction de votre vie. Lutter pour contrôler un cheval pourrait indiquer que des sentiments ou situations puissants semblent difficiles à gérer.</p>",
+        "variations": [
+          {
+            "context": "Cheval sauvage courant libre",
+            "meaning": "Symbolise liberté, esprit indompté, désir de libération, ou expression authentique de soi sans contraintes."
+          },
+          {
+            "context": "Monter un cheval avec confiance",
+            "meaning": "Indique sentiment de contrôle de la direction de votre vie, exploitation de la puissance personnelle, ou gestion réussie de vos pulsions et instincts."
+          },
+          {
+            "context": "Cheval courant libre",
+            "meaning": "Représente libération, se libérer des contraintes, ou la joie du mouvement et du progrès sans restriction."
+          },
+          {
+            "context": "Cheval malade ou mourant",
+            "meaning": "Peut refléter énergie épuisée, perte de vitalité, sentiment d'affaiblissement, ou que quelque chose autrefois fort est maintenant compromis."
+          },
+          {
+            "context": "Cheval blanc",
+            "meaning": "Symbolise souvent pureté, voyage spirituel, intentions nobles, ou aspect héroïque de vous-même venant en aide."
+          },
+          {
+            "context": "Cheval noir",
+            "meaning": "Peut représenter mystère, l'inconnu, aspects d'ombre du soi, ou énergie instinctive puissante qui semble sombre ou dangereuse."
+          },
+          {
+            "context": "Course de chevaux",
+            "meaning": "Suggère compétition, effort pour gagner, pression de performer, ou se mesurer aux autres dans le voyage de la vie."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los caballos han sido compañeros de la humanidad durante milenios, y su presencia en sueños lleva un peso simbólico profundo. Estas nobles criaturas representan libertad, poder, gracia y el viaje de la vida misma. Cuando un caballo aparece en tus sueños, a menudo habla de tu vitalidad personal, tus deseos de independencia y el impulso que te propulsa a través del terreno de la vida.</p>\n<p>En su esencia, los caballos simbolizan libertad desenfrenada y el espíritu salvaje e indomable. Un caballo corriendo libre a través de campos abiertos encarna la parte de ti que anhela liberarse de restricciones, expresarte auténticamente y moverte por la vida con gracia y poder. Si te sientes restringido, controlado o limitado en la vida despierta, soñar con caballos puede reflejar tu anhelo de liberación.</p>\n<p>Los caballos también representan poder personal y vitalidad. La fuerza y energía de un caballo pueden reflejar tu propia fuerza vital, confianza e impulso. Un caballo fuerte y saludable podría indicar que te sientes poderoso y capaz, mientras que un caballo enfermo, herido o moribundo podría reflejar sentirse agotado, debilitado, o que tu vitalidad está comprometida de alguna manera.</p>\n<p>La relación entre jinete y caballo en sueños es particularmente significativa. Si estás montando un caballo con confianza, sugiere que controlas tus instintos, impulsos y la dirección de tu vida. Luchar para controlar un caballo podría indicar que sentimientos o situaciones poderosas se sienten difíciles de manejar.</p>",
+        "variations": [
+          {
+            "context": "Caballo salvaje corriendo libre",
+            "meaning": "Simboliza libertad, espíritu indomable, deseo de liberación, o autoexpresión auténtica sin restricciones."
+          },
+          {
+            "context": "Montar un caballo con confianza",
+            "meaning": "Indica sentir control de la dirección de tu vida, aprovechar poder personal, o manejar exitosamente tus impulsos e instintos."
+          },
+          {
+            "context": "Caballo corriendo libre",
+            "meaning": "Representa liberación, liberarse de restricciones, o la alegría del movimiento y progreso sin restricción."
+          },
+          {
+            "context": "Caballo enfermo o moribundo",
+            "meaning": "Puede reflejar energía agotada, pérdida de vitalidad, sentirse debilitado, o que algo una vez fuerte ahora está comprometido."
+          },
+          {
+            "context": "Caballo blanco",
+            "meaning": "A menudo simboliza pureza, viaje espiritual, intenciones nobles, o aspecto heroico de ti mismo viniendo en ayuda."
+          },
+          {
+            "context": "Caballo negro",
+            "meaning": "Puede representar misterio, lo desconocido, aspectos sombra del yo, o energía instintiva poderosa que se siente oscura o peligrosa."
+          },
+          {
+            "context": "Carrera de caballos",
+            "meaning": "Sugiere competencia, esfuerzo por ganar, presión de rendir, o medirse contra otros en el viaje de la vida."
+          }
+        ]
+      }
+    },
+    "ex-partner": {
+      "en": {
+        "fullInterpretation": "<p>Dreams about ex-partners are among the most emotionally complex and commonly misinterpreted dream experiences. The appearance of a former romantic partner in your dreams can stir up confusion, guilt (especially if you're in a new relationship), or even make you question your current feelings. However, these dreams rarely mean what they seem on the surface—they're usually not about wanting to get back together or still being \"in love\" with your ex.</p>\n<p>More often, ex-partner dreams reflect unresolved emotional business. Relationships, especially significant ones, leave lasting imprints on our psyche. An ex might appear in your dreams when you're processing unresolved feelings—not necessarily romantic feelings, but perhaps anger, hurt, regret, or questions about what went wrong. These dreams can be your mind's way of continuing to process and heal from the relationship, even years after it ended.</p>\n<p>Importantly, an ex-partner in dreams often symbolizes something beyond the actual person. They may represent a part of yourself you associate with that period of your life, qualities or characteristics that you connected with them, or lessons from that relationship that remain relevant. For example, if your ex was very adventurous, dreaming of them might actually be about your own desire for more adventure or risk-taking in your current life.</p>\n<p>The context and emotions in the dream matter significantly. Are you getting back together joyfully, or are you fighting? Is your ex with someone new, triggering jealousy or relief? Are you saying goodbye in a healthy way, or endlessly trying to resolve an argument? The dream's narrative can reveal what aspect of that relationship or that time in your life you're still processing.</p>",
+        "variations": [
+          {
+            "context": "Getting back together with ex",
+            "meaning": "Usually not literal desire to reunite; often represents nostalgia, missing qualities they had, or yearning for aspects of yourself from that time."
+          },
+          {
+            "context": "Ex with someone new",
+            "meaning": "May trigger feelings about being replaced, moving on, comparison with current relationship, or accepting that chapter is truly closed."
+          },
+          {
+            "context": "Fighting or arguing with ex",
+            "meaning": "Suggests unresolved conflict, continued processing of hurt or anger, or internal dialogue about what went wrong and who was at fault."
+          },
+          {
+            "context": "Missing your ex",
+            "meaning": "Often represents missing aspects of yourself from that time, the comfort of familiarity, or qualities in the relationship you wish you had now."
+          },
+          {
+            "context": "Ex apologizing",
+            "meaning": "May reflect your desire for closure, validation of your feelings, or your own process of forgiving and moving forward."
+          },
+          {
+            "context": "Happy, peaceful ex",
+            "meaning": "Could indicate you've processed the relationship healthily, found closure, or integrated the lessons from that relationship."
+          },
+          {
+            "context": "Unfinished conversation with ex",
+            "meaning": "Suggests there are things left unsaid, need for closure, or questions about the relationship that still linger in your mind."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les rêves d'ex-partenaires sont parmi les expériences de rêve les plus émotionnellement complexes et communément mal interprétées. L'apparition d'un ancien partenaire romantique dans vos rêves peut susciter confusion, culpabilité (surtout si vous êtes dans une nouvelle relation), ou même vous faire questionner vos sentiments actuels. Cependant, ces rêves signifient rarement ce qu'ils semblent en surface—ils ne concernent généralement pas le désir de se remettre ensemble ou d'être toujours \"amoureux\" de votre ex.</p>\n<p>Plus souvent, les rêves d'ex-partenaires reflètent des affaires émotionnelles non résolues. Les relations, surtout les significatives, laissent des empreintes durables sur notre psyché. Un ex peut apparaître dans vos rêves quand vous traitez des sentiments non résolus—pas nécessairement des sentiments romantiques, mais peut-être de la colère, de la douleur, des regrets, ou des questions sur ce qui a mal tourné. Ces rêves peuvent être la façon dont votre esprit continue à traiter et guérir de la relation, même des années après qu'elle se soit terminée.</p>\n<p>Fait important, un ex-partenaire dans les rêves symbolise souvent quelque chose au-delà de la personne réelle. Ils peuvent représenter une partie de vous-même que vous associez à cette période de votre vie, des qualités ou caractéristiques que vous avez connectées avec eux, ou des leçons de cette relation qui restent pertinentes.</p>\n<p>Le contexte et les émotions dans le rêve importent significativement. Vous remettez-vous ensemble joyeusement, ou vous battez-vous ? Votre ex est-il avec quelqu'un de nouveau, déclenchant jalousie ou soulagement ? Dites-vous au revoir de manière saine, ou essayez-vous sans fin de résoudre une dispute ?</p>",
+        "variations": [
+          {
+            "context": "Se remettre ensemble avec l'ex",
+            "meaning": "Généralement pas un désir littéral de réunion ; représente souvent nostalgie, manque de qualités qu'ils avaient, ou aspiration à des aspects de vous-même de cette époque."
+          },
+          {
+            "context": "Ex avec quelqu'un de nouveau",
+            "meaning": "Peut déclencher des sentiments d'être remplacé, d'avancer, de comparaison avec relation actuelle, ou d'acceptation que ce chapitre est vraiment clos."
+          },
+          {
+            "context": "Se battre ou argumenter avec l'ex",
+            "meaning": "Suggère conflit non résolu, traitement continu de douleur ou colère, ou dialogue interne sur ce qui a mal tourné et qui était en faute."
+          },
+          {
+            "context": "Manquer votre ex",
+            "meaning": "Représente souvent le manque d'aspects de vous-même de cette époque, le confort de la familiarité, ou qualités dans la relation que vous souhaitez avoir maintenant."
+          },
+          {
+            "context": "Ex s'excusant",
+            "meaning": "Peut refléter votre désir de clôture, validation de vos sentiments, ou votre propre processus de pardonner et d'avancer."
+          },
+          {
+            "context": "Ex heureux et paisible",
+            "meaning": "Pourrait indiquer que vous avez traité la relation sainement, trouvé la clôture, ou intégré les leçons de cette relation."
+          },
+          {
+            "context": "Conversation inachevée avec l'ex",
+            "meaning": "Suggère qu'il y a des choses non dites, besoin de clôture, ou questions sur la relation qui persistent dans votre esprit."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los sueños sobre ex-parejas están entre las experiencias de sueño más emocionalmente complejas y comúnmente malinterpretadas. La aparición de un ex-compañero romántico en tus sueños puede provocar confusión, culpa (especialmente si estás en una nueva relación), o incluso hacerte cuestionar tus sentimientos actuales. Sin embargo, estos sueños rara vez significan lo que parecen en la superficie—usualmente no se tratan de querer volver juntos o seguir \"enamorado\" de tu ex.</p>\n<p>Más a menudo, los sueños de ex-parejas reflejan asuntos emocionales no resueltos. Las relaciones, especialmente las significativas, dejan impresiones duraderas en nuestra psique. Un ex puede aparecer en tus sueños cuando estás procesando sentimientos no resueltos—no necesariamente sentimientos románticos, sino quizás ira, dolor, arrepentimiento, o preguntas sobre qué salió mal. Estos sueños pueden ser la forma de tu mente de continuar procesando y sanando de la relación, incluso años después de que terminó.</p>\n<p>Importantemente, una ex-pareja en sueños a menudo simboliza algo más allá de la persona real. Pueden representar una parte de ti mismo que asocias con ese período de tu vida, cualidades o características que conectaste con ellos, o lecciones de esa relación que permanecen relevantes.</p>\n<p>El contexto y las emociones en el sueño importan significativamente. ¿Están volviéndose juntos alegremente, o están peleando? ¿Tu ex está con alguien nuevo, provocando celos o alivio? ¿Están diciendo adiós de manera saludable, o tratando sin fin de resolver una discusión?</p>",
+        "variations": [
+          {
+            "context": "Volver con el ex",
+            "meaning": "Usualmente no deseo literal de reunirse; a menudo representa nostalgia, echar de menos cualidades que tenían, o anhelo de aspectos de ti mismo de ese tiempo."
+          },
+          {
+            "context": "Ex con alguien nuevo",
+            "meaning": "Puede provocar sentimientos sobre ser reemplazado, seguir adelante, comparación con relación actual, o aceptar que ese capítulo está verdaderamente cerrado."
+          },
+          {
+            "context": "Pelear o discutir con el ex",
+            "meaning": "Sugiere conflicto no resuelto, procesamiento continuo de dolor o ira, o diálogo interno sobre qué salió mal y quién tuvo la culpa."
+          },
+          {
+            "context": "Extrañar a tu ex",
+            "meaning": "A menudo representa extrañar aspectos de ti mismo de ese tiempo, la comodidad de lo familiar, o cualidades en la relación que deseas tener ahora."
+          },
+          {
+            "context": "Ex pidiendo disculpas",
+            "meaning": "Puede reflejar tu deseo de cierre, validación de tus sentimientos, o tu propio proceso de perdonar y seguir adelante."
+          },
+          {
+            "context": "Ex feliz y en paz",
+            "meaning": "Podría indicar que has procesado la relación saludablemente, encontrado cierre, o integrado las lecciones de esa relación."
+          },
+          {
+            "context": "Conversación inconclusa con el ex",
+            "meaning": "Sugiere que hay cosas sin decir, necesidad de cierre, o preguntas sobre la relación que aún persisten en tu mente."
+          }
+        ]
+      }
+    },
+    "rainbow": {
+      "en": {
+        "fullInterpretation": "<p>Rainbows are among the most universally positive symbols in dreams, carrying meanings of hope, promise, and beauty emerging from difficulty. Throughout history and across cultures, rainbows have been seen as bridges between earth and heaven, physical and spiritual realms, or present struggles and future possibilities. When a rainbow appears in your dreams, it often signals that you're moving through or past a difficult period into something more hopeful.</p>\n<p>The fundamental symbolism of rainbows connects to their natural occurrence—they appear after rain, when sunlight breaks through storm clouds. This process mirrors psychological and emotional journeys we all experience: the idea that challenges, sadness, or turbulent times can give way to beauty, clarity, and renewed hope. Dreaming of a rainbow may indicate you're beginning to see the positive possibilities that can emerge from your current struggles.</p>\n<p>Rainbows also symbolize wholeness and integration. The spectrum contains all colors, representing completeness and the harmonious integration of different aspects. In Jungian psychology, this could relate to individuation—the process of integrating different parts of the psyche into a balanced whole. A rainbow might appear when you're successfully integrating conflicting aspects of yourself or finding balance among competing needs or identities.</p>\n<p>The position and accessibility of the rainbow in your dream adds nuance to its meaning. Seeing a rainbow at a distance might represent hope that feels far away but visible. Walking under a rainbow or touching it could indicate you're actively experiencing transformation or receiving blessings. A fading rainbow might suggest fleeting opportunities or the transient nature of joy, reminding you to appreciate beautiful moments while they last.</p>",
+        "variations": [
+          {
+            "context": "Rainbow after a storm",
+            "meaning": "Classic symbol of hope and renewal after difficulty; suggests emerging from challenges into a period of peace and possibility."
+          },
+          {
+            "context": "Double rainbow",
+            "meaning": "Amplified hope and promise; may indicate especially positive transformation or feeling doubly blessed after hardship."
+          },
+          {
+            "context": "Fading rainbow",
+            "meaning": "Could represent fleeting hope, transient beauty, or awareness that positive moments are temporary and should be cherished."
+          },
+          {
+            "context": "Rainbow bridge",
+            "meaning": "Symbolizes transition between states, connection between earth and spiritual realms, or passage to new life chapter."
+          },
+          {
+            "context": "Reaching for or touching rainbow",
+            "meaning": "May represent actively pursuing hope and dreams, experiencing transformation directly, or receiving blessings and good fortune."
+          },
+          {
+            "context": "Rainbow colors",
+            "meaning": "The full spectrum can symbolize wholeness, diversity, integration of all aspects of self, or creative potential."
+          },
+          {
+            "context": "Rainbow without rain",
+            "meaning": "Might indicate unexpected hope or blessings, miracles, or finding beauty and promise without preceding struggle."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les arcs-en-ciel sont parmi les symboles les plus universellement positifs dans les rêves, portant des significations d'espoir, de promesse et de beauté émergeant de la difficulté. À travers l'histoire et les cultures, les arcs-en-ciel ont été vus comme des ponts entre terre et ciel, royaumes physiques et spirituels, ou luttes présentes et possibilités futures. Quand un arc-en-ciel apparaît dans vos rêves, il signale souvent que vous traversez ou dépassez une période difficile vers quelque chose de plus plein d'espoir.</p>\n<p>Le symbolisme fondamental des arcs-en-ciel se connecte à leur occurrence naturelle—ils apparaissent après la pluie, quand la lumière du soleil perce à travers les nuages d'orage. Ce processus reflète les voyages psychologiques et émotionnels que nous expérimentons tous : l'idée que les défis, la tristesse ou les temps turbulents peuvent céder la place à la beauté, la clarté et l'espoir renouvelé. Rêver d'un arc-en-ciel peut indiquer que vous commencez à voir les possibilités positives qui peuvent émerger de vos luttes actuelles.</p>\n<p>Les arcs-en-ciel symbolisent aussi la complétude et l'intégration. Le spectre contient toutes les couleurs, représentant la complétude et l'intégration harmonieuse de différents aspects. En psychologie jungienne, cela pourrait se rapporter à l'individuation—le processus d'intégration de différentes parties de la psyché en un tout équilibré.</p>\n<p>La position et l'accessibilité de l'arc-en-ciel dans votre rêve ajoutent des nuances à sa signification. Voir un arc-en-ciel au loin pourrait représenter un espoir qui semble lointain mais visible. Marcher sous un arc-en-ciel ou le toucher pourrait indiquer que vous vivez activement une transformation ou recevez des bénédictions.</p>",
+        "variations": [
+          {
+            "context": "Arc-en-ciel après une tempête",
+            "meaning": "Symbole classique d'espoir et de renouveau après difficulté ; suggère émerger des défis vers une période de paix et de possibilité."
+          },
+          {
+            "context": "Double arc-en-ciel",
+            "meaning": "Espoir et promesse amplifiés ; peut indiquer transformation spécialement positive ou sentiment d'être doublement béni après épreuve."
+          },
+          {
+            "context": "Arc-en-ciel qui s'estompe",
+            "meaning": "Pourrait représenter espoir éphémère, beauté transitoire, ou conscience que moments positifs sont temporaires et doivent être chéris."
+          },
+          {
+            "context": "Pont arc-en-ciel",
+            "meaning": "Symbolise transition entre états, connexion entre terre et royaumes spirituels, ou passage à nouveau chapitre de vie."
+          },
+          {
+            "context": "Atteindre ou toucher l'arc-en-ciel",
+            "meaning": "Peut représenter poursuite active d'espoir et rêves, expérience directe de transformation, ou réception de bénédictions et bonne fortune."
+          },
+          {
+            "context": "Couleurs de l'arc-en-ciel",
+            "meaning": "Le spectre complet peut symboliser complétude, diversité, intégration de tous aspects du soi, ou potentiel créatif."
+          },
+          {
+            "context": "Arc-en-ciel sans pluie",
+            "meaning": "Pourrait indiquer espoir ou bénédictions inattendus, miracles, ou trouver beauté et promesse sans lutte précédente."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los arcoíris están entre los símbolos más universalmente positivos en sueños, llevando significados de esperanza, promesa y belleza emergiendo de la dificultad. A través de la historia y las culturas, los arcoíris han sido vistos como puentes entre tierra y cielo, reinos físicos y espirituales, o luchas presentes y posibilidades futuras. Cuando un arcoíris aparece en tus sueños, a menudo señala que estás moviendo a través o pasando un período difícil hacia algo más esperanzador.</p>\n<p>El simbolismo fundamental de los arcoíris se conecta a su ocurrencia natural—aparecen después de la lluvia, cuando la luz del sol atraviesa las nubes de tormenta. Este proceso refleja viajes psicológicos y emocionales que todos experimentamos: la idea de que los desafíos, tristeza o tiempos turbulentos pueden dar paso a belleza, claridad y esperanza renovada. Soñar con un arcoíris puede indicar que estás comenzando a ver las posibilidades positivas que pueden emerger de tus luchas actuales.</p>\n<p>Los arcoíris también simbolizan totalidad e integración. El espectro contiene todos los colores, representando completitud y la integración armoniosa de diferentes aspectos. En psicología junguiana, esto podría relacionarse con la individuación—el proceso de integrar diferentes partes de la psique en un todo equilibrado.</p>\n<p>La posición y accesibilidad del arcoíris en tu sueño añade matices a su significado. Ver un arcoíris a distancia podría representar esperanza que se siente lejana pero visible. Caminar bajo un arcoíris o tocarlo podría indicar que estás experimentando activamente transformación o recibiendo bendiciones.</p>",
+        "variations": [
+          {
+            "context": "Arcoíris después de tormenta",
+            "meaning": "Símbolo clásico de esperanza y renovación después de dificultad; sugiere emerger de desafíos hacia un período de paz y posibilidad."
+          },
+          {
+            "context": "Doble arcoíris",
+            "meaning": "Esperanza y promesa amplificadas; puede indicar transformación especialmente positiva o sentirse doblemente bendecido después de dificultad."
+          },
+          {
+            "context": "Arcoíris desvaneciéndose",
+            "meaning": "Podría representar esperanza fugaz, belleza transitoria, o conciencia de que momentos positivos son temporales y deben ser apreciados."
+          },
+          {
+            "context": "Puente arcoíris",
+            "meaning": "Simboliza transición entre estados, conexión entre tierra y reinos espirituales, o paso a nuevo capítulo de vida."
+          },
+          {
+            "context": "Alcanzar o tocar arcoíris",
+            "meaning": "Puede representar búsqueda activa de esperanza y sueños, experimentar transformación directamente, o recibir bendiciones y buena fortuna."
+          },
+          {
+            "context": "Colores del arcoíris",
+            "meaning": "El espectro completo puede simbolizar totalidad, diversidad, integración de todos aspectos del yo, o potencial creativo."
+          },
+          {
+            "context": "Arcoíris sin lluvia",
+            "meaning": "Podría indicar esperanza o bendiciones inesperadas, milagros, o encontrar belleza y promesa sin lucha precedente."
+          }
+        ]
+      }
+    },
+    "storm": {
+      "en": {
+        "fullInterpretation": "<p>Storms in dreams are powerful symbols of emotional turbulence, dramatic change, and forces that feel beyond your control. These intense weather phenomena mirror the inner storms we experience—periods of upheaval, conflict, overwhelming emotions, or life circumstances that shake our foundations. When a storm appears in your dreams, it often reflects a situation in your waking life that feels chaotic, threatening, or dramatically transformative.</p>\n<p>The destructive aspect of storms can represent feelings of being overwhelmed or threatened. Thunder, lightning, powerful winds, and driving rain create an atmosphere of danger and chaos. If you're experiencing high stress, intense conflict, or facing circumstances that feel overwhelming, a storm dream might be expressing these feelings symbolically. The storm externalizes internal turmoil, making visible the emotional chaos you may be experiencing.</p>\n<p>However, storms also serve an essential natural function—they clear the air, water the earth, and often precede renewal and growth. From this perspective, storm dreams can indicate a necessary but difficult process of clearing away what no longer serves you, releasing pent-up emotions, or breaking down old structures to make room for new growth. The destruction storms bring is not always negative; sometimes we need things torn down to rebuild them better.</p>\n<p>Your position relative to the storm matters. Are you caught in it, desperately seeking shelter? Are you watching it safely from inside? Are you somehow walking through it unharmed? These scenarios reflect your relationship to the chaotic forces in your life—whether you feel victimized by them, protected from them, or strangely empowered despite them.</p>",
+        "variations": [
+          {
+            "context": "Approaching storm",
+            "meaning": "May indicate awareness of impending conflict, change, or emotional upheaval that hasn't arrived yet but feels inevitable."
+          },
+          {
+            "context": "Severe storm or hurricane",
+            "meaning": "Often represents intense emotional crisis, major life upheaval, or situation that feels massively overwhelming and out of control."
+          },
+          {
+            "context": "Storm passing",
+            "meaning": "Suggests difficult period is ending, resolution after conflict, or emotional calm returning after turbulence."
+          },
+          {
+            "context": "Storm damage",
+            "meaning": "May reflect aftermath of conflict or crisis, assessing what's been lost or damaged, or needing to rebuild after upheaval."
+          },
+          {
+            "context": "Thunder and lightning",
+            "meaning": "Can symbolize sudden insights, shocking revelations, anger, or dramatic, illuminating moments amid chaos."
+          },
+          {
+            "context": "Tornado or hurricane",
+            "meaning": "Represents especially intense, focused destruction; feeling your life is being uprooted or turned upside down."
+          },
+          {
+            "context": "Calm after the storm",
+            "meaning": "Classic symbol of peace following turmoil, clarity after confusion, or the renewal and growth that follows necessary destruction."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les orages dans les rêves sont de puissants symboles de turbulence émotionnelle, de changement dramatique et de forces qui semblent hors de votre contrôle. Ces phénomènes météorologiques intenses reflètent les tempêtes intérieures que nous vivons—périodes de bouleversement, conflit, émotions accablantes ou circonstances de vie qui secouent nos fondations. Quand un orage apparaît dans vos rêves, il reflète souvent une situation dans votre vie éveillée qui semble chaotique, menaçante ou dramatiquement transformatrice.</p>\n<p>L'aspect destructeur des orages peut représenter des sentiments d'être submergé ou menacé. Le tonnerre, les éclairs, les vents puissants et la pluie battante créent une atmosphère de danger et de chaos. Si vous vivez un stress élevé, un conflit intense ou faites face à des circonstances qui semblent accablantes, un rêve d'orage pourrait exprimer ces sentiments symboliquement. L'orage extériorise la tourmente intérieure, rendant visible le chaos émotionnel que vous pouvez vivre.</p>\n<p>Cependant, les orages servent aussi une fonction naturelle essentielle—ils purifient l'air, arrosent la terre et précèdent souvent le renouveau et la croissance. De cette perspective, les rêves d'orage peuvent indiquer un processus nécessaire mais difficile d'élimination de ce qui ne vous sert plus, de libération d'émotions refoulées, ou de démolition de vieilles structures pour faire place à une nouvelle croissance.</p>\n<p>Votre position par rapport à l'orage importe. Êtes-vous pris dedans, cherchant désespérément un abri ? L'observez-vous en sécurité de l'intérieur ? Marchez-vous à travers sans dommage ? Ces scénarios reflètent votre relation aux forces chaotiques dans votre vie.</p>",
+        "variations": [
+          {
+            "context": "Orage qui approche",
+            "meaning": "Peut indiquer conscience d'un conflit, changement ou bouleversement émotionnel imminent qui n'est pas encore arrivé mais semble inévitable."
+          },
+          {
+            "context": "Orage sévère ou ouragan",
+            "meaning": "Représente souvent crise émotionnelle intense, bouleversement majeur de vie, ou situation qui semble massivement accablante et hors de contrôle."
+          },
+          {
+            "context": "Orage qui passe",
+            "meaning": "Suggère que période difficile se termine, résolution après conflit, ou calme émotionnel revenant après turbulence."
+          },
+          {
+            "context": "Dommages d'orage",
+            "meaning": "Peut refléter conséquences de conflit ou crise, évaluation de ce qui a été perdu ou endommagé, ou besoin de reconstruire après bouleversement."
+          },
+          {
+            "context": "Tonnerre et éclairs",
+            "meaning": "Peuvent symboliser insights soudains, révélations choquantes, colère, ou moments dramatiques et illuminants au milieu du chaos."
+          },
+          {
+            "context": "Tornade ou ouragan",
+            "meaning": "Représente destruction spécialement intense et concentrée ; sentiment que votre vie est déracinée ou retournée."
+          },
+          {
+            "context": "Calme après la tempête",
+            "meaning": "Symbole classique de paix suivant la tourmente, clarté après confusion, ou renouveau et croissance qui suivent la destruction nécessaire."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Las tormentas en sueños son símbolos poderosos de turbulencia emocional, cambio dramático y fuerzas que se sienten fuera de tu control. Estos intensos fenómenos meteorológicos reflejan las tormentas internas que experimentamos—períodos de agitación, conflicto, emociones abrumadoras o circunstancias de vida que sacuden nuestros cimientos. Cuando una tormenta aparece en tus sueños, a menudo refleja una situación en tu vida despierta que se siente caótica, amenazante o dramáticamente transformativa.</p>\n<p>El aspecto destructivo de las tormentas puede representar sentimientos de estar abrumado o amenazado. Truenos, relámpagos, vientos poderosos y lluvia torrencial crean una atmósfera de peligro y caos. Si estás experimentando alto estrés, conflicto intenso o enfrentando circunstancias que se sienten abrumadoras, un sueño de tormenta podría estar expresando estos sentimientos simbólicamente. La tormenta exterioriza turbulencia interna, haciendo visible el caos emocional que puedes estar experimentando.</p>\n<p>Sin embargo, las tormentas también sirven una función natural esencial—limpian el aire, riegan la tierra y a menudo preceden renovación y crecimiento. Desde esta perspectiva, los sueños de tormenta pueden indicar un proceso necesario pero difícil de limpiar lo que ya no te sirve, liberar emociones reprimidas, o derribar viejas estructuras para hacer espacio para nuevo crecimiento.</p>\n<p>Tu posición relativa a la tormenta importa. ¿Estás atrapado en ella, buscando desesperadamente refugio? ¿La estás observando a salvo desde adentro? ¿Estás caminando a través de ella sin daño? Estos escenarios reflejan tu relación con las fuerzas caóticas en tu vida.</p>",
+        "variations": [
+          {
+            "context": "Tormenta acercándose",
+            "meaning": "Puede indicar conciencia de conflicto inminente, cambio o agitación emocional que no ha llegado aún pero se siente inevitable."
+          },
+          {
+            "context": "Tormenta severa o huracán",
+            "meaning": "A menudo representa crisis emocional intensa, agitación mayor de vida, o situación que se siente masivamente abrumadora y fuera de control."
+          },
+          {
+            "context": "Tormenta pasando",
+            "meaning": "Sugiere que período difícil está terminando, resolución después de conflicto, o calma emocional regresando después de turbulencia."
+          },
+          {
+            "context": "Daño de tormenta",
+            "meaning": "Puede reflejar consecuencias de conflicto o crisis, evaluar lo que se ha perdido o dañado, o necesidad de reconstruir después de agitación."
+          },
+          {
+            "context": "Truenos y relámpagos",
+            "meaning": "Pueden simbolizar perspectivas repentinas, revelaciones chocantes, ira, o momentos dramáticos e iluminadores en medio del caos."
+          },
+          {
+            "context": "Tornado o huracán",
+            "meaning": "Representa destrucción especialmente intensa y enfocada; sentir que tu vida está siendo desarraigada o volteada."
+          },
+          {
+            "context": "Calma después de la tormenta",
+            "meaning": "Símbolo clásico de paz siguiendo turbulencia, claridad después de confusión, o renovación y crecimiento que sigue destrucción necesaria."
+          }
+        ]
+      }
     }
   }
 }

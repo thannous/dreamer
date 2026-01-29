@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-01-29",
-    "totalSymbols": 51,
+    "totalSymbols": 56,
     "languages": ["en", "fr", "es"]
   },
   "categories": {
@@ -1289,6 +1289,131 @@
         "askYourself": ["¿Dónde me siento sin dirección en mi vida?", "¿Qué guía o claridad necesito?"]
       },
       "relatedSymbols": ["maze", "path", "wandering"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "wolf",
+      "category": "animals",
+      "priority": 3,
+      "en": {
+        "slug": "wolf",
+        "name": "Wolf",
+        "shortDescription": "Wolves in dreams symbolize instinct, pack mentality, and untamed aspects of the self. They can represent both danger and loyalty depending on the dream context.",
+        "askYourself": ["What instincts am I suppressing?", "How do I relate to my community or pack?"]
+      },
+      "fr": {
+        "slug": "loup",
+        "name": "Loup",
+        "shortDescription": "Les loups dans les rêves symbolisent l'instinct, la mentalité de meute et les aspects sauvages du soi. Ils peuvent représenter à la fois le danger et la loyauté selon le contexte du rêve.",
+        "askYourself": ["Quels instincts est-ce que je réprime ?", "Comment je me rapporte à ma communauté ou ma meute ?"]
+      },
+      "es": {
+        "slug": "lobo",
+        "name": "Lobo",
+        "shortDescription": "Los lobos en sueños simbolizan el instinto, la mentalidad de manada y aspectos salvajes del yo. Pueden representar tanto peligro como lealtad según el contexto del sueño.",
+        "askYourself": ["¿Qué instintos estoy suprimiendo?", "¿Cómo me relaciono con mi comunidad o manada?"]
+      },
+      "relatedSymbols": ["dog", "animal", "pack"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "horse",
+      "category": "animals",
+      "priority": 3,
+      "en": {
+        "slug": "horse",
+        "name": "Horse",
+        "shortDescription": "Horses represent freedom, power, and life's journey. They symbolize personal strength, sexual energy, and the desire to move forward in life.",
+        "askYourself": ["Where do I need more freedom in my life?", "What journey am I on?"]
+      },
+      "fr": {
+        "slug": "cheval",
+        "name": "Cheval",
+        "shortDescription": "Les chevaux représentent la liberté, la puissance et le voyage de la vie. Ils symbolisent la force personnelle, l'énergie sexuelle et le désir d'avancer dans la vie.",
+        "askYourself": ["Où ai-je besoin de plus de liberté dans ma vie ?", "Quel voyage suis-je en train de faire ?"]
+      },
+      "es": {
+        "slug": "caballo",
+        "name": "Caballo",
+        "shortDescription": "Los caballos representan libertad, poder y el viaje de la vida. Simbolizan fuerza personal, energía sexual y el deseo de avanzar en la vida.",
+        "askYourself": ["¿Dónde necesito más libertad en mi vida?", "¿Qué viaje estoy haciendo?"]
+      },
+      "relatedSymbols": ["animal", "running", "freedom"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "ex-partner",
+      "category": "people",
+      "priority": 3,
+      "en": {
+        "slug": "ex-partner",
+        "name": "Ex-Partner",
+        "shortDescription": "Dreaming of an ex-partner often represents unresolved feelings, lessons from past relationships, or aspects of yourself you associate with that person rather than literal desire to reconnect.",
+        "askYourself": ["What unresolved feelings do I still have?", "What did this relationship teach me?"]
+      },
+      "fr": {
+        "slug": "ex-partenaire",
+        "name": "Ex-Partenaire",
+        "shortDescription": "Rêver d'un ex-partenaire représente souvent des sentiments non résolus, des leçons de relations passées ou des aspects de vous-même que vous associez à cette personne plutôt qu'un désir littéral de se reconnecter.",
+        "askYourself": ["Quels sentiments non résolus ai-je encore ?", "Qu'est-ce que cette relation m'a appris ?"]
+      },
+      "es": {
+        "slug": "ex-pareja",
+        "name": "Ex-Pareja",
+        "shortDescription": "Soñar con una ex-pareja a menudo representa sentimientos no resueltos, lecciones de relaciones pasadas o aspectos de ti mismo que asocias con esa persona en lugar de un deseo literal de reconectar.",
+        "askYourself": ["¿Qué sentimientos no resueltos todavía tengo?", "¿Qué me enseñó esta relación?"]
+      },
+      "relatedSymbols": ["relationship", "love", "past"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "rainbow",
+      "category": "celestial",
+      "priority": 3,
+      "en": {
+        "slug": "rainbow",
+        "name": "Rainbow",
+        "shortDescription": "Rainbows symbolize hope, transformation, and promise after difficult times. They represent the beauty that emerges after storms and the connection between heaven and earth.",
+        "askYourself": ["What hope is emerging after a difficult period?", "What transformation am I experiencing?"]
+      },
+      "fr": {
+        "slug": "arc-en-ciel",
+        "name": "Arc-en-ciel",
+        "shortDescription": "Les arcs-en-ciel symbolisent l'espoir, la transformation et la promesse après des moments difficiles. Ils représentent la beauté qui émerge après les tempêtes et le lien entre le ciel et la terre.",
+        "askYourself": ["Quel espoir émerge après une période difficile ?", "Quelle transformation suis-je en train de vivre ?"]
+      },
+      "es": {
+        "slug": "arcoiris",
+        "name": "Arcoíris",
+        "shortDescription": "Los arcoíris simbolizan esperanza, transformación y promesa después de tiempos difíciles. Representan la belleza que emerge después de las tormentas y la conexión entre cielo y tierra.",
+        "askYourself": ["¿Qué esperanza está emergiendo después de un período difícil?", "¿Qué transformación estoy experimentando?"]
+      },
+      "relatedSymbols": ["rain", "storm", "sky"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "storm",
+      "category": "nature",
+      "priority": 3,
+      "en": {
+        "slug": "storm",
+        "name": "Storm",
+        "shortDescription": "Storms symbolize emotional turbulence, dramatic change, and powerful forces beyond your control. They can represent both destruction and necessary cleansing.",
+        "askYourself": ["What emotional turbulence am I experiencing?", "What needs to be cleared away in my life?"]
+      },
+      "fr": {
+        "slug": "orage",
+        "name": "Orage",
+        "shortDescription": "Les orages symbolisent la turbulence émotionnelle, le changement dramatique et les forces puissantes hors de votre contrôle. Ils peuvent représenter à la fois la destruction et la purification nécessaire.",
+        "askYourself": ["Quelle turbulence émotionnelle suis-je en train de vivre ?", "Qu'est-ce qui doit être éliminé dans ma vie ?"]
+      },
+      "es": {
+        "slug": "tormenta",
+        "name": "Tormenta",
+        "shortDescription": "Las tormentas simbolizan turbulencia emocional, cambio dramático y fuerzas poderosas fuera de tu control. Pueden representar tanto destrucción como limpieza necesaria.",
+        "askYourself": ["¿Qué turbulencia emocional estoy experimentando?", "¿Qué necesita ser eliminado en mi vida?"]
+      },
+      "relatedSymbols": ["rain", "thunder", "lightning"],
       "relatedArticles": {}
     }
   ]
