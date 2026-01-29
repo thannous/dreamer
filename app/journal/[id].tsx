@@ -1,13 +1,17 @@
 import { Toast } from '@/components/Toast';
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { ImageRetry } from '@/components/journal/ImageRetry';
-import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
-import { BottomSheet } from '@/components/ui/BottomSheet';
-import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
-import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { REFERENCE_IMAGES } from '@/constants/appConfig';
+import {
+  AnalysisNoticeSheet,
+  DeleteConfirmSheet,
+  ImageErrorSheet,
+  QuotaLimitSheet,
+  ReanalyzeSheet,
+  ReferenceImageSheet,
+  ReplaceImageSheet,
+  type AnalysisNotice,
+} from '@/components/journal/JournalDetailSheets';
 import { GradientColors } from '@/constants/gradients';
-import { QUOTAS } from '@/constants/limits';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -70,12 +74,6 @@ interface ShareImageData {
   extension: string;
   mimeType: string;
 }
-
-type AnalysisNotice = {
-  title: string;
-  message: string;
-  tone?: 'success' | 'warning' | 'error' | 'info';
-};
 
 const getShareNavigator = (): ShareNavigator | undefined => {
   if (typeof navigator === 'undefined') {
@@ -854,22 +852,6 @@ export default function JournalDetailScreen() {
     router.push('/(tabs)/journal');
   }, []);
 
-  const getAnalysisToneColor = useCallback(
-    (tone: AnalysisNotice['tone']) => {
-      switch (tone) {
-        case 'success':
-          return '#22C55E';
-        case 'warning':
-          return '#F59E0B';
-        case 'error':
-          return '#EF4444';
-        default:
-          return colors.accent;
-      }
-    },
-    [colors.accent]
-  );
-
   const runAnalyze = useCallback(
     async (replaceImage: boolean, skipAllowanceCheck = false) => {
       if (!dream) return;
@@ -978,15 +960,6 @@ export default function JournalDetailScreen() {
     ? GradientColors.dreamJournal
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
   const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNoticeRef.current;
-  const analysisToneColor = getAnalysisToneColor(displayedAnalysisNotice?.tone);
-  const analysisToneBackground = mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
-  const analysisIconName = displayedAnalysisNotice?.tone === 'success'
-    ? 'checkmark-circle'
-    : displayedAnalysisNotice?.tone === 'warning'
-      ? 'alert-circle'
-      : displayedAnalysisNotice?.tone === 'error'
-        ? 'close-circle'
-        : 'information-circle';
 
   const keyboardBehavior: 'padding' | 'height' | undefined = Platform.select({
     ios: 'padding',
@@ -1727,224 +1700,49 @@ export default function JournalDetailScreen() {
             </View>
           </View>
         )}
-        <BottomSheet
+        <AnalysisNoticeSheet
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}
-          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-          style={[
-            styles.noticeSheet,
-            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-            shadows.xl,
-          ]}
-          testID={TID.Sheet.AnalysisNotice}
-        >
-          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-          <View style={styles.noticeHeader}>
-            <View style={[styles.noticeIcon, { backgroundColor: analysisToneBackground }]}>
-              <Ionicons name={analysisIconName} size={24} color={analysisToneColor} />
-            </View>
-            <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-              {displayedAnalysisNotice?.title}
-            </Text>
-          </View>
-          <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
-            {displayedAnalysisNotice?.message}
-          </Text>
-          <BottomSheetActions
-            primaryLabel={t('common.ok')}
-            onPrimary={handleDismissAnalysisNotice}
-          />
-        </BottomSheet>
-        <BottomSheet
+          notice={displayedAnalysisNotice}
+        />
+        <ReplaceImageSheet
           visible={showReplaceImageSheet}
           onClose={handleDismissReplaceSheet}
-          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-          style={[
-            styles.replaceImageSheet,
-            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-            shadows.xl,
-          ]}
-        >
-          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-          <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-            {t('journal.detail.image_replace.title')}
-          </Text>
-          <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-            {t('journal.detail.image_replace.subtitle')}
-          </Text>
-          <BottomSheetActions
-            primaryLabel={t('journal.detail.image_replace.replace')}
-            onPrimary={handleReplaceImage}
-            primaryDisabled={isAnalysisLocked}
-            secondaryLabel={t('journal.detail.image_replace.keep')}
-            onSecondary={handleKeepImage}
-            secondaryDisabled={isAnalysisLocked}
-            linkLabel={t('common.cancel')}
-            onLink={handleDismissReplaceSheet}
-          />
-        </BottomSheet>
-        <BottomSheet
+          onReplace={handleReplaceImage}
+          onKeep={handleKeepImage}
+          isLocked={isAnalysisLocked}
+        />
+        <ReanalyzeSheet
           visible={showReanalyzeSheet}
           onClose={handleDismissReanalyzeSheet}
-          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-          style={[
-            styles.replaceImageSheet,
-            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-            shadows.xl,
-          ]}
-        >
-          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-          <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-            {t('journal.detail.reanalyze_prompt.title')}
-          </Text>
-          <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-            {t('journal.detail.reanalyze_prompt.message')}
-          </Text>
-          <Pressable
-            onPress={toggleRegenerateImageOnReanalyze}
-            accessibilityRole="checkbox"
-            accessibilityState={{ checked: regenerateImageOnReanalyze }}
-            disabled={isAnalysisLocked}
-            style={[
-              styles.sheetCheckboxRow,
-              { borderColor: colors.divider, backgroundColor: colors.backgroundSecondary },
-              isAnalysisLocked && { opacity: 0.5 },
-            ]}
-          >
-            <View
-              style={[
-                styles.sheetCheckboxBox,
-                {
-                  borderColor: colors.divider,
-                  backgroundColor: regenerateImageOnReanalyze ? colors.accent : 'transparent',
-                },
-              ]}
-            >
-              {regenerateImageOnReanalyze ? (
-                <Ionicons name="checkmark" size={16} color={colors.textOnAccentSurface} />
-              ) : null}
-            </View>
-            <View style={styles.sheetCheckboxContent}>
-              <Text style={[styles.sheetCheckboxLabel, { color: colors.textPrimary }]}>
-                {t('journal.detail.reanalyze_prompt.regenerate_label')}
-              </Text>
-              <Text style={[styles.sheetCheckboxNote, { color: colors.textSecondary }]}>
-                {t('journal.detail.reanalyze_prompt.regenerate_note')}
-              </Text>
-            </View>
-          </Pressable>
-          <BottomSheetActions
-            primaryLabel={t('journal.detail.reanalyze_prompt.reanalyze')}
-            onPrimary={handleConfirmReanalyze}
-            primaryDisabled={isAnalysisLocked}
-            secondaryLabel={t('journal.detail.reanalyze_prompt.later')}
-            onSecondary={handleDismissReanalyzeSheet}
-            secondaryDisabled={isAnalysisLocked}
-          />
-        </BottomSheet>
-        <BottomSheet
+          onConfirm={handleConfirmReanalyze}
+          isLocked={isAnalysisLocked}
+          regenerateImage={regenerateImageOnReanalyze}
+          onToggleRegenerate={toggleRegenerateImageOnReanalyze}
+        />
+        <DeleteConfirmSheet
           visible={showDeleteSheet}
           onClose={handleCloseDeleteSheet}
-          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.35)'}
-          style={[
-            styles.deleteSheet,
-            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-            shadows.xl,
-          ]}
-        >
-          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-          <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-            {t('journal.detail.delete_confirm.title')}
-          </Text>
-          <Text style={[styles.deleteSheetMessage, { color: colors.textSecondary }]}>
-            {t('journal.detail.delete_confirm.message')}
-          </Text>
-          <BottomSheetActions
-            primaryLabel={t('journal.detail.delete_confirm.confirm')}
-            onPrimary={handleConfirmDelete}
-            primaryDisabled={isDeleting}
-            primaryLoading={isDeleting}
-            primaryVariant="danger"
-            secondaryLabel={t('common.cancel')}
-            onSecondary={handleCloseDeleteSheet}
-            secondaryDisabled={isDeleting}
-          />
-        </BottomSheet>
-        <BottomSheet
+          onConfirm={handleConfirmDelete}
+          isDeleting={isDeleting}
+        />
+        <QuotaLimitSheet
           visible={showQuotaLimitSheet}
           onClose={handleQuotaLimitDismiss}
-          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-          style={[
-            styles.quotaLimitSheet,
-            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-            shadows.xl,
-          ]}
-          testID={TID.Sheet.QuotaLimit}
-        >
-          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-          <Text
-            style={[styles.sheetTitle, { color: colors.textPrimary }]}
-            testID={TID.Text.QuotaLimitTitle}
-          >
-            {tier === 'guest' && quotaSheetMode === 'login'
-              ? t('journal.detail.quota_limit.title_login')
-              : tier === 'guest'
-                ? t('journal.detail.quota_limit.title_guest')
-                : t('journal.detail.quota_limit.title_free')}
-          </Text>
-          <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
-            {tier === 'guest' && quotaSheetMode === 'login'
-              ? t('journal.detail.quota_limit.message_login')
-              : tier === 'guest'
-                ? t('journal.detail.quota_limit.message_guest', { limit: usage?.analysis.limit ?? QUOTAS.guest.analysis! })
-                : t('journal.detail.quota_limit.message_free', { limit: usage?.analysis.limit ?? QUOTAS.free.analysis! })}
-          </Text>
-          <BottomSheetActions
-            primaryLabel={tier === 'guest' && quotaSheetMode === 'login'
-              ? t('journal.detail.quota_limit.cta_login')
-              : tier === 'guest'
-                ? t('journal.detail.quota_limit.cta_guest')
-                : t('journal.detail.quota_limit.cta_free')}
-            onPrimary={handleQuotaLimitPrimary}
-            primaryTestID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
-            secondaryLabel={t('journal.detail.quota_limit.journal')}
-            onSecondary={handleQuotaLimitSecondary}
-            secondaryTestID={TID.Button.QuotaLimitJournal}
-            linkLabel={t('journal.detail.quota_limit.dismiss')}
-            onLink={handleQuotaLimitDismiss}
-          />
-        </BottomSheet>
-        <BottomSheet
+          onPrimary={handleQuotaLimitPrimary}
+          onSecondary={handleQuotaLimitSecondary}
+          onLink={handleQuotaLimitDismiss}
+          tier={tier}
+          mode={quotaSheetMode}
+          usageLimit={usage?.analysis.limit}
+        />
+        <ImageErrorSheet
           visible={Boolean(imageErrorMessage)}
           onClose={handleDismissImageError}
-          backdropColor={mode === 'dark' ? 'rgba(2, 0, 12, 0.75)' : 'rgba(0, 0, 0, 0.25)'}
-          style={[
-            styles.noticeSheet,
-            { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-            shadows.xl,
-          ]}
-        >
-          <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
-          <View style={styles.noticeHeader}>
-            <View style={[styles.noticeIcon, { backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)' }]}>
-              <Ionicons name="alert-circle" size={24} color="#EF4444" />
-            </View>
-            <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-              {t('image_retry.generation_failed')}
-            </Text>
-          </View>
-          <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
-            {imageErrorMessage ?? t('common.unknown_error')}
-          </Text>
-          <BottomSheetActions
-            primaryLabel={t('analysis.retry')}
-            onPrimary={handleRetryImageError}
-            secondaryLabel={t('common.cancel')}
-            onSecondary={handleDismissImageError}
-            primaryDisabled={isRetryingImage}
-            primaryLoading={isRetryingImage}
-          />
-        </BottomSheet>
+          onRetry={handleRetryImageError}
+          isRetrying={isRetryingImage}
+          message={imageErrorMessage}
+        />
         <Modal
           visible={isShareModalVisible}
           transparent
@@ -2016,32 +1814,16 @@ export default function JournalDetailScreen() {
           </View>
         </Modal>
 
-        {/* Reference Image Picker Sheet */}
-        <StandardBottomSheet
+        <ReferenceImageSheet
           visible={referenceImagesEnabled && showReferenceSheet}
+          subjectType={referenceSubjectType}
+          referenceImages={referenceImages}
+          isGenerating={isGeneratingWithReference}
           onClose={handleReferenceSheetClose}
-          title={referenceSubjectType === 'person'
-            ? t('reference_image.title_person')
-            : t('reference_image.title_animal')}
-          actions={{
-            primaryLabel: referenceImages.length >= REFERENCE_IMAGES.MAX_UPLOADS
-              ? t('reference_image.confirm')
-              : t('subject_proposition.accept'),
-            onPrimary: handleGenerateWithReference,
-            primaryDisabled: referenceImages.length === 0 || isGeneratingWithReference,
-            primaryLoading: isGeneratingWithReference,
-            secondaryLabel: t('subject_proposition.skip'),
-            onSecondary: handleReferenceSheetClose,
-          }}
-        >
-          {referenceImagesEnabled && referenceSubjectType && (
-            <ReferenceImagePicker
-              subjectType={referenceSubjectType}
-              onImagesSelected={handleReferenceImagesSelected}
-              maxImages={REFERENCE_IMAGES.MAX_UPLOADS}
-            />
-          )}
-        </StandardBottomSheet>
+          onPrimary={handleGenerateWithReference}
+          onSecondary={handleReferenceSheetClose}
+          onImagesSelected={handleReferenceImagesSelected}
+        />
 
         {favoriteError ? (
           <Toast
@@ -2475,145 +2257,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
     letterSpacing: 0.3,
-  },
-  deleteSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 12,
-  },
-  deleteSheetMessage: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 22,
-  },
-  deleteSheetActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
-    marginTop: 12,
-  },
-  deleteCancelButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  deleteCancelText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.3,
-  },
-  deleteConfirmButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 12,
-    minWidth: 120,
-    alignItems: 'center',
-  },
-  deleteConfirmText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.3,
-    color: '#FFF',
-  },
-  replaceImageSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 12,
-  },
-  noticeSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 14,
-  },
-  noticeHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  noticeIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  noticeMessage: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 22,
-  },
-  noticeActionButton: {
-    marginTop: 4,
-  },
-  quotaLimitSheet: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 24,
-    borderWidth: 1,
-    gap: 12,
-  },
-  sheetHandle: {
-    width: 44,
-    height: 4,
-    borderRadius: 999,
-    alignSelf: 'center',
-    marginBottom: 12,
-    opacity: 0.7,
-  },
-  sheetTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.lora.bold,
-  },
-  sheetSubtitle: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 22,
-  },
-  sheetCheckboxRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  sheetCheckboxBox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 1,
-  },
-  sheetCheckboxContent: {
-    flex: 1,
-    gap: 2,
-  },
-  sheetCheckboxLabel: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    lineHeight: 20,
-  },
-  sheetCheckboxNote: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 18,
   },
   sheetButtons: {
     flexDirection: 'row',
