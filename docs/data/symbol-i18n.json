@@ -37,7 +37,35 @@
     "faq_what_means": "What does it mean to dream about",
     "faq_common_interpretations": "What are the most common interpretations?",
     "meta_title_template": "{symbol} Dream Meaning: What Does It Mean to Dream About {symbol}?",
-    "meta_description_template": "Discover what {symbol} means in dreams. {short_description} Learn to interpret your {symbol} dreams with Noctalia."
+    "meta_description_template": "Discover what {symbol} means in dreams. {short_description} Learn to interpret your {symbol} dreams with Noctalia.",
+    "category_meta_title_template": "{category} Dream Symbols: Meanings & Interpretations",
+    "category_meta_description_template": "Explore dream symbols related to {category}. Discover what {category_lower} symbols mean in your dreams and learn to interpret them with Noctalia.",
+    "category_h1_template": "{category} Dream Symbols",
+    "category_intro_template": "Explore the meanings of {category_lower} symbols in dreams. Each symbol carries unique significance that can help you understand your subconscious mind.",
+    "browse_by_category": "Browse by Category",
+    "other_categories": "Other Categories",
+    "symbols_in_category": "symbols",
+    "explore_category": "Explore {category}",
+    "category_slugs": {
+      "nature": "nature",
+      "animals": "animals",
+      "body": "body",
+      "places": "places",
+      "objects": "objects",
+      "actions": "actions",
+      "people": "people",
+      "celestial": "celestial"
+    },
+    "category_intros": {
+      "nature": "Nature symbols in dreams connect us to our primal instincts and the forces of the natural world. Water, fire, and earth elements often reflect our emotional states and life circumstances.",
+      "animals": "Animals in dreams often represent our instincts, emotions, and aspects of our personality. Each creature carries symbolic meaning rooted in both cultural traditions and personal associations.",
+      "body": "Body-related dream symbols connect to our sense of self, health, and physical existence. These dreams often reflect anxieties about appearance, aging, or personal power.",
+      "places": "Places in dreams represent different aspects of our psyche and life situations. Houses often symbolize the self, while bridges represent transitions and new beginnings.",
+      "objects": "Objects in dreams carry symbolic meaning based on their function and personal associations. They often represent tools, obstacles, or aspects of daily life requiring attention.",
+      "actions": "Action-based dreams like flying or falling reflect our feelings of control, freedom, or vulnerability in waking life. These are among the most common and powerful dream experiences.",
+      "people": "People appearing in dreams often represent aspects of ourselves or our relationships. Strangers may embody unknown parts of our psyche, while familiar faces reflect our connections.",
+      "celestial": "Celestial symbols like the sun, moon, and stars connect to our spiritual nature and the rhythms of life. They often represent guidance, cycles, and transcendent experiences."
+    }
   },
   "fr": {
     "locale": "fr_FR",
@@ -77,7 +105,35 @@
     "faq_what_means": "Que signifie rêver de",
     "faq_common_interpretations": "Quelles sont les interprétations les plus courantes ?",
     "meta_title_template": "Rêver de {symbol} : Signification et interprétation",
-    "meta_description_template": "Découvrez ce que signifie {symbol} dans les rêves. {short_description} Apprenez à interpréter vos rêves de {symbol} avec Noctalia."
+    "meta_description_template": "Découvrez ce que signifie {symbol} dans les rêves. {short_description} Apprenez à interpréter vos rêves de {symbol} avec Noctalia.",
+    "category_meta_title_template": "Symboles de rêves : {category} - Significations",
+    "category_meta_description_template": "Explorez les symboles de rêves liés à {category}. Découvrez ce que les symboles de {category_lower} signifient dans vos rêves avec Noctalia.",
+    "category_h1_template": "Symboles de rêves : {category}",
+    "category_intro_template": "Explorez la signification des symboles de {category_lower} dans les rêves. Chaque symbole porte une signification unique qui peut vous aider à comprendre votre inconscient.",
+    "browse_by_category": "Parcourir par catégorie",
+    "other_categories": "Autres catégories",
+    "symbols_in_category": "symboles",
+    "explore_category": "Explorer {category}",
+    "category_slugs": {
+      "nature": "nature",
+      "animals": "animaux",
+      "body": "corps",
+      "places": "lieux",
+      "objects": "objets",
+      "actions": "actions",
+      "people": "personnes",
+      "celestial": "celeste"
+    },
+    "category_intros": {
+      "nature": "Les symboles de la nature dans les rêves nous connectent à nos instincts primaires et aux forces du monde naturel. L'eau, le feu et les éléments terrestres reflètent souvent nos états émotionnels.",
+      "animals": "Les animaux dans les rêves représentent souvent nos instincts, émotions et aspects de notre personnalité. Chaque créature porte une signification symbolique enracinée dans les traditions culturelles.",
+      "body": "Les symboles corporels dans les rêves sont liés à notre sens de soi, notre santé et notre existence physique. Ces rêves reflètent souvent des anxiétés concernant l'apparence ou le pouvoir personnel.",
+      "places": "Les lieux dans les rêves représentent différents aspects de notre psyché. Les maisons symbolisent souvent le soi, tandis que les ponts représentent les transitions.",
+      "objects": "Les objets dans les rêves portent une signification symbolique basée sur leur fonction et associations personnelles. Ils représentent souvent des outils ou obstacles de la vie quotidienne.",
+      "actions": "Les rêves d'action comme voler ou tomber reflètent nos sentiments de contrôle, liberté ou vulnérabilité. Ce sont parmi les expériences oniriques les plus courantes et puissantes.",
+      "people": "Les personnes apparaissant dans les rêves représentent souvent des aspects de nous-mêmes ou de nos relations. Les inconnus peuvent incarner des parties inconnues de notre psyché.",
+      "celestial": "Les symboles célestes comme le soleil, la lune et les étoiles nous connectent à notre nature spirituelle. Ils représentent souvent la guidance, les cycles et les expériences transcendantes."
+    }
   },
   "es": {
     "locale": "es_ES",
@@ -117,6 +173,34 @@
     "faq_what_means": "¿Qué significa soñar con",
     "faq_common_interpretations": "¿Cuáles son las interpretaciones más comunes?",
     "meta_title_template": "Soñar con {symbol}: Significado e interpretación",
-    "meta_description_template": "Descubre qué significa {symbol} en los sueños. {short_description} Aprende a interpretar tus sueños de {symbol} con Noctalia."
+    "meta_description_template": "Descubre qué significa {symbol} en los sueños. {short_description} Aprende a interpretar tus sueños de {symbol} con Noctalia.",
+    "category_meta_title_template": "Símbolos de sueños: {category} - Significados",
+    "category_meta_description_template": "Explora los símbolos de sueños relacionados con {category}. Descubre qué significan los símbolos de {category_lower} en tus sueños con Noctalia.",
+    "category_h1_template": "Símbolos de sueños: {category}",
+    "category_intro_template": "Explora el significado de los símbolos de {category_lower} en los sueños. Cada símbolo tiene un significado único que puede ayudarte a comprender tu subconsciente.",
+    "browse_by_category": "Explorar por categoría",
+    "other_categories": "Otras categorías",
+    "symbols_in_category": "símbolos",
+    "explore_category": "Explorar {category}",
+    "category_slugs": {
+      "nature": "naturaleza",
+      "animals": "animales",
+      "body": "cuerpo",
+      "places": "lugares",
+      "objects": "objetos",
+      "actions": "acciones",
+      "people": "personas",
+      "celestial": "celestial"
+    },
+    "category_intros": {
+      "nature": "Los símbolos de la naturaleza en los sueños nos conectan con nuestros instintos primarios y las fuerzas del mundo natural. El agua, el fuego y los elementos terrestres reflejan nuestros estados emocionales.",
+      "animals": "Los animales en los sueños representan nuestros instintos, emociones y aspectos de nuestra personalidad. Cada criatura tiene un significado simbólico arraigado en las tradiciones culturales.",
+      "body": "Los símbolos corporales en los sueños están conectados con nuestro sentido del yo, la salud y la existencia física. Estos sueños reflejan ansiedades sobre la apariencia o el poder personal.",
+      "places": "Los lugares en los sueños representan diferentes aspectos de nuestra psique. Las casas simbolizan el yo, mientras que los puentes representan transiciones.",
+      "objects": "Los objetos en los sueños tienen significado simbólico basado en su función y asociaciones personales. Representan herramientas u obstáculos de la vida cotidiana.",
+      "actions": "Los sueños de acción como volar o caer reflejan nuestros sentimientos de control, libertad o vulnerabilidad. Son de las experiencias oníricas más comunes y poderosas.",
+      "people": "Las personas que aparecen en los sueños representan aspectos de nosotros mismos o de nuestras relaciones. Los desconocidos pueden encarnar partes desconocidas de nuestra psique.",
+      "celestial": "Los símbolos celestiales como el sol, la luna y las estrellas nos conectan con nuestra naturaleza espiritual. Representan guía, ciclos y experiencias trascendentes."
+    }
   }
 }
