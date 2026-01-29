@@ -1,10 +1,11 @@
 /**
  * @vitest-environment happy-dom
  */
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ErrorType, type ClassifiedError } from '../../lib/errors';
+import { useAnalysisProgress, AnalysisStep } from '../useAnalysisProgress';
 
 // Mock useTranslation
 vi.mock('../useTranslation', () => ({
@@ -13,7 +14,6 @@ vi.mock('../useTranslation', () => ({
   }),
 }));
 
-import { useAnalysisProgress, AnalysisStep } from '../useAnalysisProgress';
 
 describe('useAnalysisProgress', () => {
   beforeEach(() => {

@@ -4,6 +4,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { useLocaleFormatting } from '../useLocaleFormatting';
 // Mock useLanguage
 const mockLocale = {
   languageTag: 'en-US',
@@ -28,7 +29,6 @@ vi.mock('../../lib/dateUtils', () => ({
   getCurrentMoonCycleTimestamp: vi.fn((locale: string) => `moon-cycle-${locale}`),
 }));
 
-import { useLocaleFormatting } from '../useLocaleFormatting';
 
 describe('useLocaleFormatting', () => {
   const testTimestamp = new Date('2024-03-15T10:30:00').getTime();

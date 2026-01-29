@@ -16,7 +16,7 @@ describe('Inspiration rituals configuration', () => {
   });
 
   it('has translations for ritual labels and descriptions in supported languages', async () => {
-    const languages: Array<'en' | 'fr' | 'es'> = ['en', 'fr', 'es'];
+    const languages: ('en' | 'fr' | 'es')[] = ['en', 'fr', 'es'];
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     for (const lang of languages) {

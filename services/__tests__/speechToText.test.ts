@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from '../speechToText';
+
 type PlatformOSType = 'ios' | 'android' | 'macos' | 'windows' | 'web';
 const { Platform } = vi.hoisted(() => {
   const Platform = { OS: 'ios' as PlatformOSType };
@@ -46,7 +48,6 @@ vi.mock('../../lib/http', () => ({
   fetchJSON: mockFetchJSON,
 }));
 
-import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from '../speechToText';
 const mockReadAsStringAsync = readAsStringAsync;
 const mockFileBase64 = fileBase64;
 

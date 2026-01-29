@@ -4,6 +4,13 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  getGuestRecordedDreamCount,
+  getLocalDreamRecordingCount,
+  incrementLocalDreamRecordingCount,
+  migrateExistingGuestDreamRecording,
+} from '../GuestDreamCounter';
+
 const { mockStorage, mockGetSavedDreams } = vi.hoisted(() => {
   const storage = new Map<string, string>();
   return {
@@ -30,12 +37,6 @@ vi.mock('../../storageServiceReal', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
 }));
 
-import {
-  getGuestRecordedDreamCount,
-  getLocalDreamRecordingCount,
-  incrementLocalDreamRecordingCount,
-  migrateExistingGuestDreamRecording,
-} from '../GuestDreamCounter';
 
 const DREAM_RECORDING_KEY = 'guest_total_dream_recording_count_v1';
 const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
@@ -83,4 +84,3 @@ describe('GuestDreamCounter', () => {
     expect(mockStorage.get(DREAM_RECORDING_KEY)).toBe('2');
   });
 });
-

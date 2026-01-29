@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { syncSubscriptionFromServer } from './subscriptionSyncService';
+
 const { mockFetchJSON } = vi.hoisted(() => ({
   mockFetchJSON: vi.fn(),
 }));
@@ -12,7 +14,6 @@ vi.mock('../lib/http', () => ({
   fetchJSON: mockFetchJSON,
 }));
 
-import { syncSubscriptionFromServer } from './subscriptionSyncService';
 
 describe('subscriptionSyncService', () => {
   beforeEach(() => {

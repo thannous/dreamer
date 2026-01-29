@@ -4,6 +4,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { usePrefersReducedMotion } from '../usePrefersReducedMotion';
 // Hoist mocks
 const { mockIsReduceMotionEnabled, mockAddEventListener, mockRemove } = vi.hoisted(() => ({
   mockIsReduceMotionEnabled: vi.fn(),
@@ -19,7 +20,6 @@ vi.mock('react-native', () => ({
   },
 }));
 
-import { usePrefersReducedMotion } from '../usePrefersReducedMotion';
 
 describe('usePrefersReducedMotion', () => {
   beforeEach(() => {

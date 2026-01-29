@@ -5,6 +5,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
+import { useOfflineSyncQueue } from '../useOfflineSyncQueue';
 
 // Mock AuthContext
 const mockUser = vi.hoisted(() => ({ current: { id: 'user-123' } as { id: string } | null }));
@@ -43,7 +44,6 @@ vi.mock('../../lib/logger', () => ({
   },
 }));
 
-import { useOfflineSyncQueue } from '../useOfflineSyncQueue';
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),

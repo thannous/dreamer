@@ -84,7 +84,7 @@ describe('DreamCard image fallback', () => {
       dreamType: 'Symbolic Dream',
     };
     const version = getDreamImageVersion(dream);
-    const expectedThumbnail = withCacheBuster(dream.thumbnailUrl, version);
+    const expectedThumbnail = withCacheBuster(dream.thumbnailUrl!, version);
     const expectedFull = withCacheBuster(dream.imageUrl, version);
 
     const { unmount } = render(<DreamCard dream={dream} onPress={vi.fn()} />);

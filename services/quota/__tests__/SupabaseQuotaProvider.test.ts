@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { QUOTA_CONFIG, QUOTAS } from '../../../constants/limits';
+import { QUOTA_CONFIG } from '../../../constants/limits';
 import { supabase } from '../../../lib/supabase';
 import type { DreamAnalysis } from '../../../lib/types';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';

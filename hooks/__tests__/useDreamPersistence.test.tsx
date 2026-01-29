@@ -5,6 +5,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
+import { useDreamPersistence } from '../useDreamPersistence';
 
 // Mock user state
 const mockUser = vi.hoisted(() => ({ current: { id: 'user-123' } as { id: string } | null }));
@@ -62,7 +63,6 @@ vi.mock('../../lib/logger', () => ({
   },
 }));
 
-import { useDreamPersistence } from '../useDreamPersistence';
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),

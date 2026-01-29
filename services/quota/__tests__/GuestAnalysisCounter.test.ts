@@ -7,6 +7,15 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  getLocalAnalysisCount,
+  getLocalExplorationCount,
+  incrementLocalAnalysisCount,
+  incrementLocalExplorationCount,
+  syncWithServerCount,
+  migrateExistingGuestQuota,
+} from '../GuestAnalysisCounter';
+
 // Use vi.hoisted to ensure mocks are available during module loading
 const { mockStorage, mockGetSavedDreams, dreamUsageConfig } = vi.hoisted(() => {
   const storage = new Map<string, string>();
@@ -48,14 +57,6 @@ vi.mock('@/lib/dreamUsage', () => ({
 }));
 
 // Import after mocks are set up
-import {
-  getLocalAnalysisCount,
-  getLocalExplorationCount,
-  incrementLocalAnalysisCount,
-  incrementLocalExplorationCount,
-  syncWithServerCount,
-  migrateExistingGuestQuota,
-} from '../GuestAnalysisCounter';
 
 const ANALYSIS_KEY = 'guest_total_analysis_count_v1';
 const EXPLORATION_KEY = 'guest_total_exploration_count_v1';

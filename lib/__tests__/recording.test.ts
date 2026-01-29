@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { RECORDING } from '../../constants/appConfig';
+import { handleRecorderReleaseError, isRecorderReleasedError, RECORDING_OPTIONS } from '../recording';
+
 vi.mock('expo-audio', () => ({
   RecordingPresets: {
     HIGH_QUALITY: {
@@ -10,9 +13,6 @@ vi.mock('expo-audio', () => ({
   AudioQuality: { MEDIUM: 'medium' },
   IOSOutputFormat: { LINEARPCM: 'linearpcm' },
 }));
-
-import { RECORDING } from '../../constants/appConfig';
-import { handleRecorderReleaseError, isRecorderReleasedError, RECORDING_OPTIONS } from '../recording';
 
 describe('recording utilities', () => {
   const originalDev = (globalThis as any).__DEV__;

@@ -134,7 +134,9 @@ vi.mock('@/components/journal/EmptyState', () => ({
 vi.mock('react-native-reanimated', () => {
   const View = ({ children, style, entering, ...props }: { children?: React.ReactNode; style?: any; entering?: any; [key: string]: any }) => <div {...props}>{children}</div>;
   const createAnimatedComponent = (Component: any) => {
-    return ({ style, entering, ...props }: any) => <Component {...props} />;
+    const AnimatedComponent = ({ style, entering, ...props }: any) => <Component {...props} />;
+    AnimatedComponent.displayName = 'ReanimatedAnimatedComponent';
+    return AnimatedComponent;
   };
   const springifyChain = { damping: () => springifyChain };
   const enteringChain = {
