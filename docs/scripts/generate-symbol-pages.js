@@ -594,6 +594,24 @@ ${renderJsonLd(faqPageJsonLd)}
                 </ul>
             </section>
 
+            <!-- FAQ -->
+            <section class="mb-10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
+                    <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
+                    ${t.section_faq}
+                </h2>
+                <div class="grid gap-4">
+                    <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                        <h3 class="font-medium text-dream-cream mb-2">${t.faq_what_means} ${escapeHtml(symbolData.name)}?</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(symbolData.shortDescription)}</p>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                        <h3 class="font-medium text-dream-cream mb-2">${t.faq_common_interpretations}</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(faqVariationsAnswer)}</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Related Symbols -->
             ${relatedSymbols.length > 0 ? `<section class="mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
