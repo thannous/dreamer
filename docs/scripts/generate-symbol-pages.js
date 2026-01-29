@@ -31,6 +31,17 @@ function readDocsAssetVersionOrExit() {
   return version;
 }
 
+function isoDateFromDocsVersion(version) {
+  const match = version.match(/^(\d{4})(\d{2})(\d{2})/);
+  if (match) {
+    const [, year, month, day] = match;
+    return `${year}-${month}-${day}`;
+  }
+  return new Date().toISOString().slice(0, 10);
+}
+
+const DOCS_ASSET_VERSION = readDocsAssetVersionOrExit();
+
 // Configuration
 const CONFIG = {
   dataDir: path.join(__dirname, '..', 'data'),
@@ -45,8 +56,9 @@ const CONFIG = {
     es: 'simbolos'
   },
   datePublished: '2025-01-21',
-  dateModified: '2025-01-21',
-  cssVersion: readDocsAssetVersionOrExit()
+  // Keep the historical publish date but refresh `dateModified` on each docs build.
+  dateModified: isoDateFromDocsVersion(DOCS_ASSET_VERSION),
+  cssVersion: DOCS_ASSET_VERSION
 };
 
 // Parse command line arguments
@@ -149,22 +161,44 @@ function getExtendedContent(symbolId, extended, lang) {
   };
 }
 
+function firstSentence(text) {
+  if (!text) return null;
+  const trimmed = String(text).trim();
+  if (!trimmed) return null;
+  const match = trimmed.match(/^(.+?[.!?])(\s|$)/);
+  return (match ? match[1] : trimmed).trim();
+}
+
 // Generate default interpretation from short description
-function generateDefaultInterpretation(shortDescription, symbolName, lang) {
+function generateDefaultInterpretation({ shortDescription, symbolName, lang, categoryIntro, askYourself }) {
+  const lower = symbolName.toLowerCase();
+  const categorySentence = firstSentence(categoryIntro);
+  const firstQuestion = Array.isArray(askYourself) ? askYourself[0] : null;
+
+  const questionLead = {
+    en: 'A helpful question to reflect on:',
+    fr: 'Une question utile à se poser :',
+    es: 'Una pregunta útil para reflexionar:'
+  };
+
   const templates = {
     en: `<p>${shortDescription}</p>
-<p>When ${symbolName.toLowerCase()} appears in your dreams, it often reflects important aspects of your inner life and current circumstances. The specific context and emotions you experience in the dream provide valuable clues to its personal meaning for you.</p>
-<p>Consider what ${symbolName.toLowerCase()} means to you personally. Your individual associations and life experiences shape the symbol's significance in your dreams. Cultural background, personal memories, and current life situations all influence how this symbol manifests in your unconscious mind.</p>
-<p>Pay attention to the feelings that accompany this dream symbol. Are you feeling peaceful, anxious, curious, or fearful? These emotional responses often point to areas of your waking life that need attention or reflection.</p>`,
+${categorySentence ? `<p>${categorySentence}</p>` : ''}
+<p>When ${lower} appears in your dreams, it often reflects important aspects of your inner life and current circumstances. The specific context and emotions you experience in the dream provide valuable clues to its personal meaning for you.</p>
+${firstQuestion ? `<p>${questionLead.en} ${firstQuestion}</p>` : ''}
+<p>Consider what ${lower} means to you personally. Your individual associations and life experiences shape the symbol's significance in your dreams.</p>`,
     fr: `<p>${shortDescription}</p>
-<p>Lorsque ${symbolName.toLowerCase()} apparaît dans vos rêves, cela reflète souvent des aspects importants de votre vie intérieure et de vos circonstances actuelles. Le contexte spécifique et les émotions que vous ressentez dans le rêve fournissent des indices précieux sur sa signification personnelle.</p>
-<p>Réfléchissez à ce que ${symbolName.toLowerCase()} signifie pour vous personnellement. Vos associations individuelles et vos expériences de vie façonnent la signification du symbole dans vos rêves. L'origine culturelle, les souvenirs personnels et les situations de vie actuelles influencent tous la façon dont ce symbole se manifeste dans votre inconscient.</p>
-<p>Faites attention aux sentiments qui accompagnent ce symbole de rêve. Vous sentez-vous paisible, anxieux, curieux ou craintif ? Ces réponses émotionnelles pointent souvent vers des domaines de votre vie éveillée qui nécessitent attention ou réflexion.</p>`,
+${categorySentence ? `<p>${categorySentence}</p>` : ''}
+<p>Lorsque ${lower} apparaît dans vos rêves, cela reflète souvent des aspects importants de votre vie intérieure et de vos circonstances actuelles. Le contexte spécifique et les émotions que vous ressentez dans le rêve fournissent des indices précieux sur sa signification personnelle.</p>
+${firstQuestion ? `<p>${questionLead.fr} ${firstQuestion}</p>` : ''}
+<p>Réfléchissez à ce que ${lower} signifie pour vous personnellement. Vos associations individuelles et vos expériences de vie façonnent la signification du symbole dans vos rêves.</p>`,
     es: `<p>${shortDescription}</p>
-<p>Cuando ${symbolName.toLowerCase()} aparece en tus sueños, a menudo refleja aspectos importantes de tu vida interior y circunstancias actuales. El contexto específico y las emociones que experimentas en el sueño proporcionan pistas valiosas sobre su significado personal para ti.</p>
-<p>Considera qué significa ${symbolName.toLowerCase()} para ti personalmente. Tus asociaciones individuales y experiencias de vida dan forma al significado del símbolo en tus sueños. El trasfondo cultural, los recuerdos personales y las situaciones de vida actuales influyen en cómo este símbolo se manifiesta en tu mente inconsciente.</p>
-<p>Presta atención a los sentimientos que acompañan este símbolo onírico. ¿Te sientes tranquilo, ansioso, curioso o temeroso? Estas respuestas emocionales a menudo señalan áreas de tu vida despierta que necesitan atención o reflexión.</p>`
+${categorySentence ? `<p>${categorySentence}</p>` : ''}
+<p>Cuando ${lower} aparece en tus sueños, a menudo refleja aspectos importantes de tu vida interior y circunstancias actuales. El contexto específico y las emociones que experimentas en el sueño proporcionan pistas valiosas sobre su significado personal para ti.</p>
+${firstQuestion ? `<p>${questionLead.es} ${firstQuestion}</p>` : ''}
+<p>Considera qué significa ${lower} para ti personalmente. Tus asociaciones individuales y experiencias de vida dan forma al significado del símbolo en tus sueños.</p>`
   };
+
   return templates[lang];
 }
 
@@ -224,12 +258,19 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const metaTitle = generateMetaTitle(symbol, i18n, lang);
   const metaDescription = generateMetaDescription(symbol, i18n, lang);
   const categoryName = getCategoryName(symbol, i18n, lang);
+  const categoryIntroForDefaults = i18n[lang].category_intros?.[symbol.category] || null;
   const relatedSymbols = getRelatedSymbols(symbol, allSymbols, lang);
   const extendedContent = getExtendedContent(symbol.id, extended, lang);
 
   // Use extended content or generate defaults
   const fullInterpretation = extendedContent.fullInterpretation ||
-    generateDefaultInterpretation(symbolData.shortDescription, symbolData.name, lang);
+    generateDefaultInterpretation({
+      shortDescription: symbolData.shortDescription,
+      symbolName: symbolData.name,
+      lang,
+      categoryIntro: categoryIntroForDefaults,
+      askYourself: symbolData.askYourself
+    });
   const variations = extendedContent.variations.length > 0 ?
     extendedContent.variations :
     generateDefaultVariations(symbolData.name, lang);
@@ -778,6 +819,7 @@ function generateCategoryMetaDescription(categoryId, i18n, lang) {
 function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang) {
   const t = i18n[lang];
   const categoryName = getCategoryNameById(categoryId, lang);
+  const categorySchemaName = t.category_h1_template.replace(/{category}/g, categoryName);
   const categorySlug = t.category_slugs[categoryId];
   const hreflang = generateCategoryHreflangUrls(categoryId, i18n);
   const metaTitle = generateCategoryMetaTitle(categoryId, i18n, lang);
@@ -836,7 +878,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n
     },
     about: {
       '@type': 'Thing',
-      name: `${categoryName} Dream Symbols`
+      name: categorySchemaName
     },
     publisher: {
       '@type': 'Organization',
@@ -851,7 +893,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n
   const itemListJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: `${categoryName} Dream Symbols`,
+    name: categorySchemaName,
     description: categoryIntro,
     numberOfItems: symbolsCount,
     itemListElement: symbolsInCategory.map((s, i) => ({
