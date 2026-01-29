@@ -1,5 +1,6 @@
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import React, { useMemo } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Dimensions,
   Platform,
@@ -12,7 +13,10 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { GradientText } from '@/components/inspiration/GradientText';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
 import { PieChart } from 'react-native-gifted-charts';
@@ -20,6 +24,7 @@ import { Line, Rect, Svg, Text as SvgText } from 'react-native-svg';
 
 import type { ThemeColors } from '@/constants/journalTheme';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamStatistics } from '@/hooks/useDreamStatistics';
@@ -27,6 +32,7 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { MotiView } from '@/lib/moti';
 import { splitLabelText } from '@/lib/pieLabelUtils';
 import type { DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
@@ -196,10 +202,15 @@ interface StatCardProps {
 }
 
 function StatCard({ title, value, subtitle, colors, valueTestID }: StatCardProps) {
+  const { mode } = useTheme();
   const valueText = typeof value === 'number' ? String(value) : value;
   const accessibilityLabel = `${title}: ${valueText}`;
+  const opacity = mode === 'dark' ? 0.3 : 0.7;
+  const opacityHex = Math.round(opacity * 255).toString(16).padStart(2, '0');
+  const cardBg = `${colors.backgroundCard}${opacityHex}`;
+
   return (
-    <View style={[styles.statCard, { backgroundColor: colors.backgroundCard }]}>
+    <View style={[styles.statCard, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: 1 }]}>
       <Text style={[styles.statTitle, { color: colors.textSecondary }]}>{title}</Text>
       <Text
         style={[styles.statValue, { color: colors.accent }]}
@@ -239,6 +250,23 @@ export default function StatisticsScreen() {
   const insets = useSafeAreaInsets();
   const stats = useDreamStatistics(dreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+
+  const headerGradientColors = useMemo(
+    () =>
+      mode === 'dark'
+        ? ([colors.accentLight, colors.accent] as const)
+        : ([colors.textPrimary, colors.accentDark] as const),
+    [colors.accent, colors.accentDark, colors.accentLight, colors.textPrimary, mode],
+  );
+
+  const [showAnimations, setShowAnimations] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      setShowAnimations(true);
+      return () => setShowAnimations(false);
+    }, []),
+  );
 
   // Memoize color arrays to avoid re-allocation churn
   const dreamTypeColors = useMemo(() =>
@@ -294,6 +322,7 @@ export default function StatisticsScreen() {
   if (!loaded) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+        <AtmosphericBackground />
         <ScreenContainer>
           <View
             style={[
@@ -301,7 +330,24 @@ export default function StatisticsScreen() {
               { paddingTop: insets.top + ThemeLayout.spacing.sm },
             ]}
           >
-            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
+            <MotiView
+              key={`header-${showAnimations}`}
+              from={{ opacity: 0, translateY: 16 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 700 }}
+            >
+              <GradientText colors={headerGradientColors} style={styles.headerTitle}>
+                {t('stats.title')}
+              </GradientText>
+            </MotiView>
+            <MotiView
+              key={`header-rule-${showAnimations}`}
+              from={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ type: 'timing', duration: 600, delay: 350 }}
+            >
+              <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
+            </MotiView>
           </View>
         </ScreenContainer>
         <View style={styles.loadingContainer}>
@@ -314,6 +360,7 @@ export default function StatisticsScreen() {
   if (dreams.length === 0) {
     return (
       <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+        <AtmosphericBackground />
         <ScreenContainer>
           <View
             style={[
@@ -321,7 +368,24 @@ export default function StatisticsScreen() {
               { paddingTop: insets.top + ThemeLayout.spacing.sm },
             ]}
           >
-            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
+            <MotiView
+              key={`header-${showAnimations}`}
+              from={{ opacity: 0, translateY: 16 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 700 }}
+            >
+              <GradientText colors={headerGradientColors} style={styles.headerTitle}>
+                {t('stats.title')}
+              </GradientText>
+            </MotiView>
+            <MotiView
+              key={`header-rule-${showAnimations}`}
+              from={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ type: 'timing', duration: 600, delay: 350 }}
+            >
+              <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
+            </MotiView>
           </View>
         </ScreenContainer>
         <View style={styles.emptyState}>
@@ -333,6 +397,7 @@ export default function StatisticsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+      <AtmosphericBackground />
       <ScreenContainer>
         <View
           style={[
@@ -340,7 +405,24 @@ export default function StatisticsScreen() {
             { paddingTop: insets.top + ThemeLayout.spacing.sm },
           ]}
         >
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('stats.title')}</Text>
+          <MotiView
+            key={`header-${showAnimations}`}
+            from={{ opacity: 0, translateY: 16 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 700 }}
+          >
+            <GradientText colors={headerGradientColors} style={styles.headerTitle}>
+              {t('stats.title')}
+            </GradientText>
+          </MotiView>
+          <MotiView
+            key={`header-rule-${showAnimations}`}
+            from={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ type: 'timing', duration: 600, delay: 350 }}
+          >
+            <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
+          </MotiView>
         </View>
       </ScreenContainer>
 
@@ -354,63 +436,90 @@ export default function StatisticsScreen() {
         <ScreenContainer>
           <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
             {/* Overview Cards */}
-            <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
-              <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.overview')}</Text>
-              <View style={styles.statsGrid}>
-                <StatCard
-                  title={t('stats.card.total_dreams')}
-                  value={formatNumber(stats.totalDreams)}
-                  colors={colors}
-                />
-                <StatCard
-                  title={t('stats.card.favorites')}
-                  value={formatNumber(stats.favoriteDreams)}
-                  colors={colors}
-                />
-                <StatCard
-                  title={t('stats.card.this_week')}
-                  value={formatNumber(stats.dreamsThisWeek)}
-                  colors={colors}
-                />
-                <StatCard
-                  title={t('stats.card.this_month')}
-                  value={formatNumber(stats.dreamsThisMonth)}
-                  colors={colors}
-                />
+            <MotiView
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 600, delay: 100 }}
+            >
+              <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
+                <View style={styles.sectionHeadingRow}>
+                  <View style={[styles.sectionHeadingIcon, { backgroundColor: `${colors.accent}30` }]}>
+                    <IconSymbol name="chart.bar.fill" size={14} color={colors.accent} />
+                  </View>
+                  <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.overview')}</Text>
+                </View>
+                <View style={styles.statsGrid}>
+                  <StatCard
+                    title={t('stats.card.total_dreams')}
+                    value={formatNumber(stats.totalDreams)}
+                    colors={colors}
+                  />
+                  <StatCard
+                    title={t('stats.card.favorites')}
+                    value={formatNumber(stats.favoriteDreams)}
+                    colors={colors}
+                  />
+                  <StatCard
+                    title={t('stats.card.this_week')}
+                    value={formatNumber(stats.dreamsThisWeek)}
+                    colors={colors}
+                  />
+                  <StatCard
+                    title={t('stats.card.this_month')}
+                    value={formatNumber(stats.dreamsThisMonth)}
+                    colors={colors}
+                  />
+                </View>
               </View>
-            </View>
+            </MotiView>
 
             {/* Streaks */}
-            <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
-              <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.streaks')}</Text>
-              <View style={styles.statsRow}>
-                <StatCard
-                  title={t('stats.card.current_streak')}
-                  value={formatNumber(stats.currentStreak)}
-                  subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-                  colors={colors}
-                />
-                <StatCard
-                  title={t('stats.card.longest_streak')}
-                  value={formatNumber(stats.longestStreak)}
-                  subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
-                  colors={colors}
-                />
+            <MotiView
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 600, delay: 200 }}
+            >
+              <View style={[styles.section, isDesktopLayout && styles.sectionStreaksDesktop]}>
+                <View style={styles.sectionHeadingRow}>
+                  <View style={[styles.sectionHeadingIcon, { backgroundColor: `${colors.accent}30` }]}>
+                    <IconSymbol name="flame.fill" size={14} color={colors.accent} />
+                  </View>
+                  <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.streaks')}</Text>
+                </View>
+                <View style={styles.statsRow}>
+                  <StatCard
+                    title={t('stats.card.current_streak')}
+                    value={formatNumber(stats.currentStreak)}
+                    subtitle={stats.currentStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
+                    colors={colors}
+                  />
+                  <StatCard
+                    title={t('stats.card.longest_streak')}
+                    value={formatNumber(stats.longestStreak)}
+                    subtitle={stats.longestStreak === 1 ? t('stats.card.day') : t('stats.card.days')}
+                    colors={colors}
+                  />
+                </View>
+                <View style={styles.singleStatCard}>
+                  <StatCard
+                    title={t('stats.card.average_per_week')}
+                    value={formatNumber(stats.averageDreamsPerWeek, {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1,
+                    })}
+                    colors={colors}
+                  />
+                </View>
               </View>
-              <View style={styles.singleStatCard}>
-                <StatCard
-                  title={t('stats.card.average_per_week')}
-                  value={formatNumber(stats.averageDreamsPerWeek, {
-                    minimumFractionDigits: 1,
-                    maximumFractionDigits: 1,
-                  })}
-                  colors={colors}
-                />
-              </View>
-            </View>
+            </MotiView>
 
             {/* Dream Type Distribution */}
             {stats.dreamTypeDistribution.length > 0 && (
+              <MotiView
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 600, delay: 300 }}
+              >
               <ChartSection
                 title={t('stats.section.dream_types')}
                 colors={colors}
@@ -538,12 +647,23 @@ export default function StatisticsScreen() {
                   </View>
                 </View>
               </ChartSection>
+              </MotiView>
             )}
 
             {/* Top Themes */}
             {stats.topThemes.length > 0 && (
+              <MotiView
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 600, delay: 400 }}
+              >
               <View style={[styles.section, isDesktopLayout && styles.sectionTopThemesDesktop]}>
-                <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.top_themes')}</Text>
+                <View style={styles.sectionHeadingRow}>
+                  <View style={[styles.sectionHeadingIcon, { backgroundColor: `${colors.accent}30` }]}>
+                    <IconSymbol name="star.fill" size={14} color={colors.accent} />
+                  </View>
+                  <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.top_themes')}</Text>
+                </View>
                 <View style={styles.themesContainer}>
                   {stats.topThemes.map((theme, index) => (
                     <View key={theme.theme} style={[styles.themeItem, { backgroundColor: colors.backgroundCard }]}>
@@ -566,11 +686,22 @@ export default function StatisticsScreen() {
                   ))}
                 </View>
               </View>
+              </MotiView>
             )}
 
             {/* Engagement */}
+            <MotiView
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'timing', duration: 600, delay: 500 }}
+            >
             <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
-              <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.engagement')}</Text>
+              <View style={styles.sectionHeadingRow}>
+                <View style={[styles.sectionHeadingIcon, { backgroundColor: `${colors.accent}30` }]}>
+                  <IconSymbol name="bubble.left.and.bubble.right.fill" size={14} color={colors.accent} />
+                </View>
+                <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{t('stats.section.engagement')}</Text>
+              </View>
               <View style={styles.statsRow}>
                 <StatCard
                   title={t('stats.engagement.total_chats')}
@@ -607,6 +738,7 @@ export default function StatisticsScreen() {
                 </View>
               )}
             </View>
+            </MotiView>
           </View>
         </ScreenContainer>
       </ScrollView>
@@ -625,9 +757,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
-    letterSpacing: -0.3,
+    fontSize: 20,
+    fontFamily: Fonts.fraunces.semiBold,
+    letterSpacing: 0.5,
+  },
+  headerRule: {
+    width: 36,
+    height: 2.5,
+    borderRadius: 1.5,
+    marginTop: 10,
+    opacity: 0.7,
   },
   scrollView: {
     flex: 1,
@@ -662,9 +801,22 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sectionTitle: {
-    fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: 18,
+    fontFamily: Fonts.fraunces.semiBold,
+    letterSpacing: 0.3,
+  },
+  sectionHeadingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: ThemeLayout.spacing.md,
+  },
+  sectionHeadingIcon: {
+    width: 26,
+    height: 26,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   statsGrid: {
     flexDirection: 'row',
@@ -702,8 +854,9 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.sm,
   },
   chartTitle: {
-    fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontSize: 18,
+    fontFamily: Fonts.fraunces.semiBold,
+    letterSpacing: 0.3,
     marginBottom: ThemeLayout.spacing.xs,
   },
   chartContainer: {

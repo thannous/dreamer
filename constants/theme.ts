@@ -41,6 +41,13 @@ export const Fonts = {
     bold: 'Lora_700Bold',
     boldItalic: 'Lora_700Bold_Italic',
   },
+  // Fraunces - for dreamlike titles/quotes (Noctalia style)
+  fraunces: {
+    regular: 'Fraunces_400Regular',
+    medium: 'Fraunces_500Medium',
+    semiBold: 'Fraunces_600SemiBold',
+    bold: 'Fraunces_700Bold',
+  },
   // Platform fallbacks
   ...Platform.select({
     ios: {
@@ -57,6 +64,20 @@ export const Fonts = {
     },
   }),
 };
+
+/**
+ * Returns a semi-transparent version of backgroundCard for glassmorphism effect.
+ * Dark mode uses 30% opacity, light mode uses 70% opacity.
+ */
+export function getGlassCardBackground(backgroundCard: string, mode: 'light' | 'dark'): string {
+  const opacity = mode === 'dark' ? 0.3 : 0.7;
+  const opacityHex = Math.round(opacity * 255)
+    .toString(16)
+    .padStart(2, '0');
+  return `${backgroundCard}${opacityHex}`;
+}
+
+export const GLASS_CARD_BORDER_WIDTH = 1;
 
 export const SurrealTheme = {
   bgStart: '#1a0f2b',

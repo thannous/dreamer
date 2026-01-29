@@ -2,6 +2,12 @@ import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import {
+  Fraunces_400Regular,
+  Fraunces_500Medium,
+  Fraunces_600SemiBold,
+  Fraunces_700Bold,
+} from '@expo-google-fonts/fraunces';
+import {
   Lora_400Regular,
   Lora_400Regular_Italic,
   Lora_700Bold,
@@ -310,6 +316,7 @@ function RootLayoutNav() {
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="symbol-dictionary" options={{ title: 'Symbols' }} />
             <Stack.Screen name="symbol-detail/[id]" options={{ title: '' }} />
+            <Stack.Screen name="ritual/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>
@@ -343,6 +350,10 @@ export default function RootLayout() {
     Lora_400Regular_Italic,
     Lora_700Bold,
     Lora_700Bold_Italic,
+    Fraunces_400Regular,
+    Fraunces_500Medium,
+    Fraunces_600SemiBold,
+    Fraunces_700Bold,
   });
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [shouldFadeSplash, setShouldFadeSplash] = useState(false);

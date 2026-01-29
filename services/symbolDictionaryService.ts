@@ -27,6 +27,12 @@ export function getAllSymbols(): DreamSymbol[] {
   return symbolsData.symbols;
 }
 
+export function getPopularSymbols(): DreamSymbol[] {
+  return symbolsData.symbols
+    .filter((s) => s.priority === 1)
+    .sort((a, b) => a.priority - b.priority);
+}
+
 export function getCategories(): Record<SymbolCategory, SymbolCategoryInfo> {
   return symbolsData.categories;
 }
@@ -78,6 +84,25 @@ const CATEGORY_ICONS: Record<SymbolCategory, IconSymbolName> = {
 
 export function getCategoryIcon(category: SymbolCategory): IconSymbolName {
   return CATEGORY_ICONS[category];
+}
+
+/**
+ * Per-symbol icon mapping for symbols that have a more specific icon
+ * than their category default. Falls back to category icon.
+ */
+const SYMBOL_ICONS: Partial<Record<string, IconSymbolName>> = {
+  water: 'drop.fill',
+  moon: 'moon.stars.fill',
+  falling: 'arrow.down.to.line',
+  flying: 'bird.fill',
+  snake: 'pawprint.fill',
+  death: 'heart.slash.fill',
+  chase: 'figure.run',
+  lucid: 'eye.fill',
+};
+
+export function getSymbolIcon(symbolId: string, category: SymbolCategory): IconSymbolName {
+  return SYMBOL_ICONS[symbolId] ?? CATEGORY_ICONS[category];
 }
 
 export function getCategoryName(category: SymbolCategory, language: SymbolLanguage): string {

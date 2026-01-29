@@ -3,6 +3,7 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef,
 import { Alert, AppState, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { NotificationSettings } from '@/lib/types';
@@ -38,7 +39,8 @@ function NotificationSettingsCardComponent(
   const [showWeekendPicker, setShowWeekendPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const optionsContainerRef = useRef<View>(null);
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
 
   // Expose scrollIntoView method to parent
@@ -349,7 +351,7 @@ function NotificationSettingsCardComponent(
 
   if (isLoading) {
     return (
-      <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
+      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.title')}</Text>
         <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.loading')}</Text>
       </View>
@@ -358,7 +360,7 @@ function NotificationSettingsCardComponent(
 
   if (Platform.OS === 'web') {
     return (
-      <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
+      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.title')}</Text>
         <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.unsupported')}</Text>
       </View>
@@ -368,7 +370,7 @@ function NotificationSettingsCardComponent(
   const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.card.title')}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.card.description')}</Text>
 

@@ -44,7 +44,7 @@
     {
       "id": "teeth",
       "category": "body",
-      "priority": 1,
+      "priority": 2,
       "en": {
         "slug": "teeth",
         "name": "Teeth (losing teeth)",
@@ -594,7 +594,7 @@
     {
       "id": "moon",
       "category": "celestial",
-      "priority": 2,
+      "priority": 1,
       "en": {
         "slug": "moon",
         "name": "Moon",

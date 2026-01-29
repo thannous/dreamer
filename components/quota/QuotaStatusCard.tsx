@@ -8,7 +8,7 @@ import { useQuota } from '@/hooks/useQuota';
 import { TID } from '@/lib/testIDs';
 import { getGuestDreamRecordingLimit } from '@/lib/guestLimits';
 import { router } from 'expo-router';
-import { Fonts } from '@/constants/theme';
+import { Fonts, getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { QUOTAS } from '@/constants/limits';
 import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
@@ -42,7 +42,8 @@ const getProgress = (usage?: UsageEntry) => {
 export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
-  const { colors, shadows } = useTheme();
+  const { colors, shadows, mode } = useTheme();
+  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
@@ -138,7 +139,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.backgroundCard }, shadows.md]}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, shadows.md]}>
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>

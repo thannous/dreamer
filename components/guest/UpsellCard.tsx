@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { router } from 'expo-router';
@@ -13,7 +14,8 @@ type Props = {
 export const UpsellCard: React.FC<Props> = ({ testID }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
-  const { colors, shadows } = useTheme();
+  const { colors, shadows, mode } = useTheme();
+  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
 
   if (user) return null;
@@ -21,7 +23,7 @@ export const UpsellCard: React.FC<Props> = ({ testID }) => {
   if (dreams.length < 1) return null;
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.backgroundCard }, shadows.md]} testID={testID}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, shadows.md]} testID={testID}>
       <Text style={[styles.title, { color: colors.textPrimary }]}>{t('guest.upsell.title')}</Text>
       <View style={styles.benefits}>
         <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.unlimited')}</Text>

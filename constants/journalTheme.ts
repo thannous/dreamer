@@ -104,7 +104,7 @@ export const LightTheme: ThemeColors = {
 
   // UI elements
   timeline: '#D4CFBF', // Timeline - soft beige
-  divider: '#E8E4DC', // Dividers - very light beige
+  divider: '#D5CFC4', // Dividers - visible beige with contrast
   overlay: 'rgba(248, 246, 242, 0.9)', // Semi-transparent cream overlay
 
   // Navbar colors
