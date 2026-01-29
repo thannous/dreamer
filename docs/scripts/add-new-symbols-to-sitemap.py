@@ -6,32 +6,32 @@ from pathlib import Path
 
 SITEMAP_PATH = Path(__file__).resolve().parent.parent / "sitemap.xml"
 
-# New symbols with their slugs (Tier 2)
+# New symbols with their slugs (Tier 3)
 new_symbols = [
     {
-        'en': 'swimming',
-        'fr': 'nager',
-        'es': 'nadar'
+        'en': 'wolf',
+        'fr': 'loup',
+        'es': 'lobo'
     },
     {
-        'en': 'crying',
-        'fr': 'pleurer',
-        'es': 'llorar'
+        'en': 'horse',
+        'fr': 'cheval',
+        'es': 'caballo'
     },
     {
-        'en': 'elevator',
-        'fr': 'ascenseur',
-        'es': 'ascensor'
+        'en': 'ex-partner',
+        'fr': 'ex-partenaire',
+        'es': 'ex-pareja'
     },
     {
-        'en': 'cliff',
-        'fr': 'falaise',
-        'es': 'acantilado'
+        'en': 'rainbow',
+        'fr': 'arc-en-ciel',
+        'es': 'arcoiris'
     },
     {
-        'en': 'lost',
-        'fr': 'perdu',
-        'es': 'perdido'
+        'en': 'storm',
+        'fr': 'orage',
+        'es': 'tormenta'
     }
 ]
 

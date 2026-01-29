@@ -2483,5 +2483,140 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/perdido" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/lost" />
   </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/wolf</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/wolf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/loup" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/lobo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/wolf" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/loup</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/wolf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/loup" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/lobo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/wolf" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/lobo</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/wolf" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/loup" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/lobo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/wolf" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/horse</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/horse" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/cheval" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/caballo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/horse" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/cheval</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/horse" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/cheval" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/caballo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/horse" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/caballo</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/horse" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/cheval" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/caballo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/horse" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/ex-partner</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/ex-partner" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ex-partenaire" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/ex-pareja" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/ex-partner" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/ex-partenaire</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/ex-partner" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ex-partenaire" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/ex-pareja" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/ex-partner" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/ex-pareja</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/ex-partner" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/ex-partenaire" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/ex-pareja" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/ex-partner" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/rainbow</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/rainbow" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/arc-en-ciel" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/arcoiris" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/rainbow" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/arc-en-ciel</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/rainbow" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/arc-en-ciel" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/arcoiris" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/rainbow" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/arcoiris</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/rainbow" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/arc-en-ciel" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/arcoiris" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/rainbow" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/symbols/storm</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/storm" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/orage" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/tormenta" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/storm" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/orage</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/storm" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/orage" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/tormenta" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/storm" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/tormenta</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/storm" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/orage" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/tormenta" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/storm" />
+  </url>
 
 </urlset>
