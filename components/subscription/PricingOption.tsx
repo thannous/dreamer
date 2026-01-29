@@ -2,6 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 export type PricingOptionProps = {
@@ -104,12 +105,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   subtitle: {
     marginTop: 2,
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   badge: {
     borderRadius: ThemeLayout.borderRadius.full,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   priceRow: {
     flexDirection: 'row',
@@ -127,11 +128,11 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 20,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   interval: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
 });
 

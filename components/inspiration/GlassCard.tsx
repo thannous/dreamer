@@ -2,6 +2,7 @@ import { BlurView } from 'expo-blur';
 import React, { type ReactNode } from 'react';
 import { Platform, Pressable, type PressableProps, StyleSheet, type ViewStyle } from 'react-native';
 
+import { GlassCardTokens } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { MotiView } from '@/lib/moti';
 
@@ -75,9 +76,9 @@ export function GlassCard({
     backgroundColor: isWeb
       ? glassBackgroundColor
       : 'transparent',
-    borderWidth: 1,
+    borderWidth: GlassCardTokens.borderWidth,
     borderColor: colors.divider,
-    borderRadius: 24,
+    borderRadius: GlassCardTokens.borderRadius,
     overflow: 'hidden',
     ...(disableShadow ? undefined : shadows.lg),
   };

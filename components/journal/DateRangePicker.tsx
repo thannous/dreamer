@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Platform } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -201,13 +202,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.lg,
     textAlign: 'center',
   },
   sectionLabel: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: ThemeLayout.spacing.sm,
   },
   quickSelectContainer: {
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
   },
   quickButtonText: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   customRangeContainer: {
     marginBottom: ThemeLayout.spacing.lg,
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
   },
   dateLabel: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     width: 60,
   },
   dateButton: {
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
   },
   dateButtonText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -264,12 +265,12 @@ const styles = StyleSheet.create({
   clearButton: {},
   clearButtonText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   applyButton: {},
   applyButtonText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   cancelButton: {
     paddingVertical: 12,
@@ -277,6 +278,6 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
 });

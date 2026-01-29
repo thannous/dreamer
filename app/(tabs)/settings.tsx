@@ -10,11 +10,11 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { GradientText } from '@/components/inspiration/GradientText';
+import { GlassCard } from '@/components/inspiration/GlassCard';
+import { PageHeader } from '@/components/inspiration/PageHeader';
+import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import LanguageSettingsCard from '@/components/LanguageSettingsCard';
 import NotificationSettingsCard from '@/components/NotificationSettingsCard';
@@ -22,8 +22,8 @@ import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import ThemeSettingsCard from '@/components/ThemeSettingsCard';
-import { ThemeLayout } from '@/constants/journalTheme';
-import { Fonts, getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -33,25 +33,36 @@ import { getAppVersionString } from '@/lib/appVersion';
 import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 
+// ─── Section Divider ──────────────────────────────────────────────────────────
+
+function SectionDivider({
+  color,
+  delay = 0,
+}: {
+  color: string;
+  delay?: number;
+}) {
+  return (
+    <MotiView
+      from={{ opacity: 0, scaleX: 0 }}
+      animate={{ opacity: 1, scaleX: 1 }}
+      transition={{ type: 'timing', duration: 500, delay }}
+    >
+      <View style={[styles.sectionDivider, { backgroundColor: color }]} />
+    </MotiView>
+  );
+}
+
+// ─── Main Screen ──────────────────────────────────────────────────────────────
+
 export default function SettingsScreen() {
-  const { colors, mode } = useTheme();
+  const { colors } = useTheme();
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
-  const insets = useSafeAreaInsets();
   const appVersion = getAppVersionString();
   useClearWebFocus();
-
-  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
-
-  const headerGradientColors = useMemo(
-    () =>
-      mode === 'dark'
-        ? ([colors.accentLight, colors.accent] as const)
-        : ([colors.textPrimary, colors.accentDark] as const),
-    [colors.accent, colors.accentDark, colors.accentLight, colors.textPrimary, mode],
-  );
 
   const [showAnimations, setShowAnimations] = useState(false);
 
@@ -137,33 +148,7 @@ export default function SettingsScreen() {
         style={[styles.container, { backgroundColor: colors.backgroundDark }]}
       >
         <AtmosphericBackground />
-        <ScreenContainer>
-          <View
-            style={[
-              styles.header,
-              { paddingTop: insets.top + ThemeLayout.spacing.sm },
-            ]}
-          >
-            <MotiView
-              key={`header-${showAnimations}`}
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 700 }}
-            >
-              <GradientText colors={headerGradientColors} style={styles.headerTitle}>
-                {t('auth.returning_guest.title')}
-              </GradientText>
-            </MotiView>
-            <MotiView
-              key={`header-rule-${showAnimations}`}
-              from={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ type: 'timing', duration: 600, delay: 350 }}
-            >
-              <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
-            </MotiView>
-          </View>
-        </ScreenContainer>
+        <PageHeader titleKey="auth.returning_guest.title" showAnimations={showAnimations} />
 
         <ScrollView
           style={styles.scrollView}
@@ -176,12 +161,15 @@ export default function SettingsScreen() {
         >
           <ScreenContainer>
             {/* Welcome back banner */}
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 100 }}
+            <GlassCard
+              intensity="moderate"
+              disableShadow
+              enableAnimation
+              animationDelay={100}
+              style={styles.returningGuestGlassCard}
             >
-              <View style={[styles.returningGuestBanner, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
+              <View style={[styles.returningGuestAccentStripe, { backgroundColor: colors.accent }]} />
+              <View style={styles.returningGuestInner}>
                 <IconSymbol name="person.crop.circle.badge.exclamationmark" size={48} color={colors.accent} />
                 <Text style={[styles.returningGuestTitle, { color: colors.textPrimary }]}>
                   {t('auth.returning_guest.banner_title')}
@@ -190,7 +178,7 @@ export default function SettingsScreen() {
                   {t('auth.returning_guest.message')}
                 </Text>
               </View>
-            </MotiView>
+            </GlassCard>
 
             {/* Auth card */}
             <MotiView
@@ -198,7 +186,7 @@ export default function SettingsScreen() {
               animate={{ opacity: 1, translateY: 0 }}
               transition={{ type: 'timing', duration: 500, delay: 200 }}
             >
-              <View style={styles.sectionSpacing}>
+              <View style={styles.settingsSectionCards}>
                 <EmailAuthCard isCompact={isCompactLayout} />
               </View>
             </MotiView>
@@ -209,7 +197,7 @@ export default function SettingsScreen() {
               animate={{ opacity: 1, translateY: 0 }}
               transition={{ type: 'timing', duration: 500, delay: 300 }}
             >
-              <View style={styles.sectionSpacing}>
+              <View style={styles.settingsSectionCards}>
                 <LanguageSettingsCard />
               </View>
             </MotiView>
@@ -225,33 +213,7 @@ export default function SettingsScreen() {
       style={[styles.container, { backgroundColor: colors.backgroundDark }]}
     >
       <AtmosphericBackground />
-      <ScreenContainer>
-        <View
-          style={[
-            styles.header,
-            { paddingTop: insets.top + ThemeLayout.spacing.sm },
-          ]}
-        >
-          <MotiView
-            key={`header-${showAnimations}`}
-            from={{ opacity: 0, translateY: 16 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 700 }}
-          >
-            <GradientText colors={headerGradientColors} style={styles.headerTitle}>
-              {t('settings.title')}
-            </GradientText>
-          </MotiView>
-          <MotiView
-            key={`header-rule-${showAnimations}`}
-            from={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ type: 'timing', duration: 600, delay: 350 }}
-          >
-            <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
-          </MotiView>
-        </View>
-      </ScreenContainer>
+      <PageHeader titleKey="settings.title" showAnimations={showAnimations} />
 
       <ScrollView
         style={styles.scrollView}
@@ -264,80 +226,160 @@ export default function SettingsScreen() {
       >
         <ScreenContainer>
           <View style={[styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop]}>
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 100 }}
-            >
-              <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                <EmailAuthCard isCompact={isCompactLayout} />
-              </View>
-            </MotiView>
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 200 }}
-            >
-              <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-                <SubscriptionCard
-                  title={subscriptionCopy.title}
-                  subtitle={subscriptionCopy.subtitle}
-                  expiryLabel={subscriptionExpiryLabel}
-                  badge={subscriptionCopy.badge}
-                  features={subscriptionFeatures}
-                  loading={subscriptionLoading}
-                  ctaLabel={subscriptionCopy.cta}
-                  onPress={handleOpenPaywall}
-                  disabled={subscriptionLoading}
-                  ctaTestID={TID.Button.SubscriptionSettingsCta}
+
+            {/* ─── Account Section ─── */}
+            <View style={styles.settingsSection}>
+              <MotiView
+                from={{ opacity: 0, translateY: 16 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 500, delay: 100 }}
+              >
+                <SectionHeading
+                  title={t('settings.section.account')}
+                  icon="person.fill"
+                  colors={colors}
                 />
+              </MotiView>
+              <MotiView
+                from={{ opacity: 0, translateY: 16 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 500, delay: 200 }}
+              >
+                <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                  <EmailAuthCard isCompact={isCompactLayout} />
+                </View>
+              </MotiView>
+            </View>
+
+            <SectionDivider color={colors.accent} delay={250} />
+
+            {/* ─── Subscription Section ─── */}
+            <View style={styles.settingsSection}>
+              <MotiView
+                from={{ opacity: 0, translateY: 16 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 500, delay: 300 }}
+              >
+                <SectionHeading
+                  title={t('settings.section.subscription')}
+                  icon="crown.fill"
+                  colors={colors}
+                />
+              </MotiView>
+              <View style={styles.settingsSectionCards}>
+                <MotiView
+                  from={{ opacity: 0, translateY: 16 }}
+                  animate={{ opacity: 1, translateY: 0 }}
+                  transition={{ type: 'timing', duration: 500, delay: 400 }}
+                >
+                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                    <SubscriptionCard
+                      title={subscriptionCopy.title}
+                      subtitle={subscriptionCopy.subtitle}
+                      expiryLabel={subscriptionExpiryLabel}
+                      badge={subscriptionCopy.badge}
+                      features={subscriptionFeatures}
+                      loading={subscriptionLoading}
+                      ctaLabel={subscriptionCopy.cta}
+                      onPress={handleOpenPaywall}
+                      disabled={subscriptionLoading}
+                      ctaTestID={TID.Button.SubscriptionSettingsCta}
+                    />
+                  </View>
+                </MotiView>
+                <MotiView
+                  from={{ opacity: 0, translateY: 16 }}
+                  animate={{ opacity: 1, translateY: 0 }}
+                  transition={{ type: 'timing', duration: 500, delay: 500 }}
+                >
+                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                    <QuotaStatusCard />
+                  </View>
+                </MotiView>
               </View>
-            </MotiView>
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 300 }}
-            >
-              <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-                <QuotaStatusCard />
-              </View>
-            </MotiView>
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 400 }}
-            >
-              <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-                <ThemeSettingsCard />
-              </View>
-            </MotiView>
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 500 }}
-            >
-              <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-                <LanguageSettingsCard />
-              </View>
-            </MotiView>
-            {Platform.OS !== 'web' && (
+            </View>
+
+            <SectionDivider color={colors.accent} delay={550} />
+
+            {/* ─── Preferences Section ─── */}
+            <View style={styles.settingsSection}>
               <MotiView
                 from={{ opacity: 0, translateY: 16 }}
                 animate={{ opacity: 1, translateY: 0 }}
                 transition={{ type: 'timing', duration: 500, delay: 600 }}
               >
-                <View style={[styles.sectionSpacing, isDesktopLayout && styles.sectionItemDesktop]}>
-                  <NotificationSettingsCard />
-                </View>
+                <SectionHeading
+                  title={t('settings.section.preferences')}
+                  icon="slider.horizontal.3"
+                  colors={colors}
+                />
               </MotiView>
+              <View style={styles.settingsSectionCards}>
+                <MotiView
+                  from={{ opacity: 0, translateY: 16 }}
+                  animate={{ opacity: 1, translateY: 0 }}
+                  transition={{ type: 'timing', duration: 500, delay: 700 }}
+                >
+                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                    <ThemeSettingsCard />
+                  </View>
+                </MotiView>
+                <MotiView
+                  from={{ opacity: 0, translateY: 16 }}
+                  animate={{ opacity: 1, translateY: 0 }}
+                  transition={{ type: 'timing', duration: 500, delay: 800 }}
+                >
+                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                    <LanguageSettingsCard />
+                  </View>
+                </MotiView>
+              </View>
+            </View>
+
+            {/* ─── Notifications Section (native only) ─── */}
+            {Platform.OS !== 'web' && (
+              <>
+                <SectionDivider color={colors.accent} delay={850} />
+                <View style={styles.settingsSection}>
+                  <MotiView
+                    from={{ opacity: 0, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 900 }}
+                  >
+                    <SectionHeading
+                      title={t('settings.section.notifications')}
+                      icon="bell.fill"
+                      colors={colors}
+                    />
+                  </MotiView>
+                  <MotiView
+                    from={{ opacity: 0, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 1000 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <NotificationSettingsCard />
+                    </View>
+                  </MotiView>
+                </View>
+              </>
             )}
           </View>
+
+          {/* ─── Version Footer ─── */}
           {appVersion ? (
-            <View style={styles.versionContainer}>
-              <Text style={[styles.versionText, { color: colors.textSecondary }]}>
-                {t('settings.app_version', { version: appVersion })}
-              </Text>
-            </View>
+            <MotiView
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ type: 'timing', duration: 600, delay: 1100 }}
+            >
+              <View style={styles.versionContainer}>
+                <View style={[styles.versionDecoLine, { backgroundColor: `${colors.accent}40` }]} />
+                <Text style={[styles.versionText, { color: colors.textSecondary }]}>
+                  {t('settings.app_version', { version: appVersion })}
+                </Text>
+              </View>
+            </MotiView>
           ) : null}
         </ScreenContainer>
       </ScrollView>
@@ -348,24 +390,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: Platform.OS === 'ios' ? 60 : 20,
-    paddingBottom: ThemeLayout.spacing.sm,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.fraunces.semiBold,
-    letterSpacing: 0.5,
-  },
-  headerRule: {
-    width: 36,
-    height: 2.5,
-    borderRadius: 1.5,
-    marginTop: 10,
-    opacity: 0.7,
   },
   scrollView: {
     flex: 1,
@@ -386,34 +410,68 @@ const styles = StyleSheet.create({
     minWidth: 320,
     paddingHorizontal: ThemeLayout.spacing.sm,
   },
-  sectionSpacing: {
-    marginTop: ThemeLayout.spacing.md,
+
+  // Settings sections
+  settingsSection: {
+    marginBottom: 36,
   },
-  versionContainer: {
-    marginTop: ThemeLayout.spacing.lg,
-    alignItems: 'center',
+  settingsSectionCards: {
+    gap: 12,
   },
-  versionText: {
-    fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
-    letterSpacing: 0.2,
+
+  // Section divider
+  sectionDivider: {
+    ...DecoLines.rule,
+    opacity: 0.3,
+    marginBottom: 28,
   },
-  returningGuestBanner: {
+
+  // Returning guest
+  returningGuestGlassCard: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    padding: 0,
+    marginBottom: ThemeLayout.spacing.md,
+  },
+  returningGuestAccentStripe: {
+    height: 3,
+    width: '100%',
+    opacity: 0.85,
+  },
+  returningGuestInner: {
     alignItems: 'center',
     padding: ThemeLayout.spacing.lg,
-    borderRadius: ThemeLayout.borderRadius.lg,
     gap: ThemeLayout.spacing.sm,
   },
   returningGuestTitle: {
     fontSize: 20,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.fraunces.semiBold,
     textAlign: 'center',
     marginTop: ThemeLayout.spacing.sm,
   },
   returningGuestMessage: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     lineHeight: 20,
+  },
+
+  // Version footer
+  versionContainer: {
+    marginTop: 48,
+    alignItems: 'center',
+    gap: 12,
+  },
+  versionDecoLine: {
+    width: 36,
+    height: 2,
+    borderRadius: 1,
+  },
+  versionText: {
+    fontSize: 11,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    opacity: 0.5,
   },
 });

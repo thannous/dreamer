@@ -79,6 +79,12 @@ export function getGlassCardBackground(backgroundCard: string, mode: 'light' | '
 
 export const GLASS_CARD_BORDER_WIDTH = 1;
 
+export const GlassCardTokens = {
+  borderWidth: GLASS_CARD_BORDER_WIDTH,
+  borderRadius: 24,
+  getBackground: getGlassCardBackground,
+} as const;
+
 export const SurrealTheme = {
   bgStart: '#1a0f2b',
   bgEnd: '#3b2a50',

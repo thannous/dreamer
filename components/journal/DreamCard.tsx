@@ -1,5 +1,5 @@
 import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
-import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -40,7 +40,7 @@ export const DreamCard = memo(function DreamCard({
   variant = 'standard',
 }: DreamCardProps) {
   const { colors, shadows, mode } = useTheme();
-  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
+  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const { t } = useTranslation();
   const handlePress = useCallback(() => {
@@ -136,7 +136,7 @@ export const DreamCard = memo(function DreamCard({
     return (
       <Animated.View>
         <AnimatedPressable
-          style={[styles.cardVertical, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, animatedStyle]}
+          style={[styles.cardVertical, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
           onPress={handlePress}
           onPressIn={onPressIn}
           onPressOut={onPressOut}
@@ -253,7 +253,7 @@ export const DreamCard = memo(function DreamCard({
   return (
     <Animated.View>
       <AnimatedPressable
-        style={[styles.card, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, animatedStyle]}
+        style={[styles.card, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
         onPress={handlePress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   },
   dateOverline: {
     fontSize: 11,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
@@ -410,21 +410,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'Lora_700Bold',
+    fontFamily: Fonts.lora.bold,
   },
   titleFeatured: {
     fontSize: 20,
-    fontFamily: 'Lora_700Bold',
+    fontFamily: Fonts.lora.bold,
   },
   shareableQuote: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     fontStyle: 'italic',
     lineHeight: 20,
   },
   description: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
   },
   tagContainer: {
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   stateBadge: {
     paddingHorizontal: 10,
@@ -452,6 +452,6 @@ const styles = StyleSheet.create({
   },
   stateBadgeText: {
     fontSize: 11,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
 });

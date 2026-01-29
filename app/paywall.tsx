@@ -9,6 +9,7 @@ import { PricingOption } from '@/components/subscription/PricingOption';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useQuota } from '@/hooks/useQuota';
@@ -390,16 +391,16 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 22,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   headerSubtitle: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: 8,
   },
   expiryDate: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: 8,
   },
   closeButton: {
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
   },
   closeLabel: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   loadingRow: {
     flexDirection: 'row',
@@ -421,7 +422,7 @@ const styles = StyleSheet.create({
   },
   loadingLabel: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   scroll: {
     flex: 1,
@@ -446,7 +447,7 @@ const styles = StyleSheet.create({
   },
   primaryLabel: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -457,17 +458,17 @@ const styles = StyleSheet.create({
   },
   secondaryLabel: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   notice: {
     marginTop: 8,
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   emptyText: {
     marginTop: ThemeLayout.spacing.md,
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
   },
   upgradedMessageContainer: {
@@ -478,13 +479,13 @@ const styles = StyleSheet.create({
   },
   upgradedTitle: {
     fontSize: 20,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.md,
     textAlign: 'center',
   },
   upgradedSubtitle: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
     lineHeight: 20,

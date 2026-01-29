@@ -15,7 +15,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { EmailVerificationDialog } from '@/components/auth/EmailVerificationDialog';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
@@ -76,7 +76,7 @@ type Props = {
 
 export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   const { colors, mode } = useTheme();
-  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
+  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { language } = useLanguage();
@@ -516,7 +516,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
   const cardContent = user ? (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
     >
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.account.title')}
@@ -561,7 +561,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     </View>
   ) : (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}
     >
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.account.title')}
@@ -715,7 +715,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
@@ -724,12 +724,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   cardDescription: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 20,
   },
@@ -739,7 +739,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: ThemeLayout.spacing.xs,
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     width: '100%',
   },
   inputWithToggle: {
@@ -785,11 +785,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   btnText: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
   },
   btnTextSecondary: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
   },
   btnTextCompact: {
@@ -797,7 +797,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginTop: ThemeLayout.spacing.sm,
     lineHeight: 18,
   },
@@ -811,14 +811,14 @@ const styles = StyleSheet.create({
   },
   userLabel: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: 4,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   userEmail: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   divider: {
     flexDirection: 'row',
@@ -832,7 +832,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -842,7 +842,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: ThemeLayout.spacing.xs,
   },
   mockSection: {
@@ -850,11 +850,11 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.md,
   },
   mockSectionTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
   },
   mockSectionSubtitle: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 13,
     marginTop: 4,
   },
@@ -874,11 +874,11 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   mockButtonTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 15,
   },
   mockButtonSubtitle: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     fontSize: 13,
     marginTop: 2,
   },
@@ -893,13 +893,13 @@ const styles = StyleSheet.create({
   },
   unverifiedTitle: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   unverifiedMessage: {
     fontSize: 14,
     marginBottom: ThemeLayout.spacing.sm,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   unverifiedAction: {
     borderRadius: ThemeLayout.borderRadius.sm,
@@ -916,12 +916,12 @@ const styles = StyleSheet.create({
   },
   unverifiedActionText: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   unverifiedStatus: {
     marginTop: ThemeLayout.spacing.xs,
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
 });
 
