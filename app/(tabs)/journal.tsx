@@ -4,13 +4,13 @@ import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { FilterBar } from '@/components/journal/FilterBar';
 import { SearchBar } from '@/components/journal/SearchBar';
+import { BottomSheet } from '@/components/ui/BottomSheet';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
-import { useModalSlide } from '@/hooks/useJournalAnimations';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
@@ -25,23 +25,19 @@ import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Modal,
   Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
-  type ViewStyle,
   type ViewToken,
   useWindowDimensions,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
-const WEB_BACKDROP_BLUR = { backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' } as ViewStyle;
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -67,8 +63,6 @@ export default function JournalListScreen() {
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
-  const webBackdropBlur = Platform.OS === 'web' ? WEB_BACKDROP_BLUR : undefined;
-
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -110,13 +104,10 @@ export default function JournalListScreen() {
   }, []);
 
   // Animations
-  const themeModalAnim = useModalSlide(showThemeModal);
-  const dateModalAnim = useModalSlide(showDateModal);
   const floatingOffset = TAB_BAR_HEIGHT;
   // Always show add button - quota is now enforced on analysis, not recording
   const showAddButton = true;
   const listBottomPadding = floatingOffset + (showAddButton ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.xs : ThemeLayout.spacing.sm);
-  const dateTextStyle = useMemo(() => [styles.date, { color: colors.textSecondary }], [colors.textSecondary]);
   const desktopDateTextStyle = useMemo(() => [styles.desktopDate, { color: colors.textSecondary }], [colors.textSecondary]);
   const listContentStyle = useMemo(
     () => [styles.listContent, { paddingBottom: listBottomPadding }],
@@ -322,24 +313,24 @@ export default function JournalListScreen() {
     };
   }, []);
 
-  const renderDreamItem = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
+  const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
+    const isFirstItem = index === 0;
 
     return (
       <View style={styles.listItem}>
-        <Text style={dateTextStyle}>
-          {formatDreamListDate(item.id)}
-          {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
-        </Text>
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
           isScrolling={isScrolling}
           testID={TID.List.DreamItem(item.id)}
+          dateLabel={dateStr}
+          variant={isFirstItem ? 'featured' : 'standard'}
         />
       </View>
     );
-  }, [dateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
@@ -388,10 +379,12 @@ export default function JournalListScreen() {
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback(
-    (item: DreamAnalysis) =>
-      !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
-        ? 'with-image'
-        : 'text-only',
+    (item: DreamAnalysis, index: number) =>
+      index === 0
+        ? 'featured'
+        : !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
+          ? 'with-image'
+          : 'text-only',
     []
   );
 
@@ -420,28 +413,46 @@ export default function JournalListScreen() {
           placeholder={t('journal.search_placeholder')}
         />
         <FilterBar
-          onThemePress={() => setShowThemeModal(true)}
-          onDatePress={() => setShowDateModal(true)}
-          onFavoritesPress={handleFavoritesToggle}
-          onAnalyzedPress={handleAnalyzedToggle}
-          onExploredPress={handleExploredToggle}
-          onClearPress={handleClearFilters}
-          activeFilters={{
-            theme: selectedTheme !== null || selectedDreamType !== null,
-            date: dateRange.start !== null || dateRange.end !== null,
-            favorites: showFavoritesOnly,
-            analyzed: showAnalyzedOnly,
-            explored: showExploredOnly,
-          }}
+          items={[
+            {
+              id: 'theme',
+              label: t('journal.filter.theme'),
+              active: selectedTheme !== null || selectedDreamType !== null,
+              onPress: () => setShowThemeModal(true),
+              testID: TID.Button.FilterTheme,
+            },
+            {
+              id: 'date',
+              label: t('journal.filter.date'),
+              active: dateRange.start !== null || dateRange.end !== null,
+              onPress: () => setShowDateModal(true),
+              testID: TID.Button.FilterDate,
+            },
+            {
+              id: 'favorites',
+              label: t('journal.filter.favorites'),
+              active: showFavoritesOnly,
+              onPress: handleFavoritesToggle,
+              testID: TID.Button.FilterFavorites,
+            },
+            {
+              id: 'analyzed',
+              active: showAnalyzedOnly,
+              onPress: handleAnalyzedToggle,
+              testID: TID.Button.FilterAnalyzed,
+            },
+            {
+              id: 'explored',
+              active: showExploredOnly,
+              onPress: handleExploredToggle,
+              testID: TID.Button.FilterExplored,
+            },
+          ]}
+          onClear={handleClearFilters}
           dateRange={dateRange}
           selectedTheme={selectedTheme}
           selectedDreamType={selectedDreamType}
-          themeButtonTestID={TID.Button.FilterTheme}
-          dateButtonTestID={TID.Button.FilterDate}
-          favoritesButtonTestID={TID.Button.FilterFavorites}
-          analyzedButtonTestID={TID.Button.FilterAnalyzed}
-          exploredButtonTestID={TID.Button.FilterExplored}
-          clearButtonTestID={TID.Button.ClearFilters}
+          clearTestID={TID.Button.ClearFilters}
         />
       </View>
 
@@ -524,116 +535,89 @@ export default function JournalListScreen() {
         </View>
       )}
 
-      {/* Theme Selection Modal */}
-      <Modal
+      {/* Theme Selection BottomSheet */}
+      <BottomSheet
         visible={showThemeModal}
-        animationType="none"
-        transparent
-        onRequestClose={() => setShowThemeModal(false)}
+        onClose={() => setShowThemeModal(false)}
+        style={{ backgroundColor: colors.backgroundCard }}
+        testID={TID.Modal.Theme}
       >
-        <Animated.View
-          style={[
-            styles.modalOverlay,
-            webBackdropBlur,
-            { backgroundColor: colors.overlay },
-            themeModalAnim.backdropStyle,
-          ]}
-        >
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setShowThemeModal(false)} />
-          <Animated.View
-            style={[styles.modalContent, { backgroundColor: colors.backgroundCard }, themeModalAnim.contentStyle]}
-            testID={TID.Modal.Theme}
+        <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+          {t('journal.theme_modal.title')}
+        </Text>
+        <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+          {t('journal.detail.theme_label')}
+        </Text>
+        {availableThemes.map((theme) => (
+          <Pressable
+            key={theme}
+            style={[
+              styles.modalOption,
+              { backgroundColor: selectedTheme === theme ? colors.accent : colors.backgroundSecondary },
+            ]}
+            onPress={() => handleThemeSelect(theme)}
           >
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              {t('journal.theme_modal.title')}
+            <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
+              {getDreamThemeLabel(theme, t) ?? theme}
             </Text>
-            <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
-              {t('journal.detail.theme_label')}
+            {selectedTheme === theme && (
+              <View style={styles.modalOptionCheckWrapper}>
+                <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
+                  <Ionicons name="checkmark" size={14} color={colors.accent} />
+                </View>
+              </View>
+            )}
+          </Pressable>
+        ))}
+        <View style={{ height: 16 }} />
+        <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
+          {t('journal.detail.dream_type_label')}
+        </Text>
+        {availableDreamTypes.map((dreamType) => (
+          <Pressable
+            key={dreamType}
+            style={[
+              styles.modalOption,
+              { backgroundColor: selectedDreamType === dreamType ? colors.accent : colors.backgroundSecondary },
+            ]}
+            onPress={() => handleDreamTypeSelect(dreamType)}
+          >
+            <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
+              {getDreamTypeLabel(dreamType, t) ?? dreamType}
             </Text>
-            {availableThemes.map((theme) => (
-              <Pressable
-                key={theme}
-                style={[
-                  styles.modalOption,
-                  { backgroundColor: selectedTheme === theme ? colors.accent : colors.backgroundSecondary },
-                ]}
-                onPress={() => handleThemeSelect(theme)}
-              >
-                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
-                  {getDreamThemeLabel(theme, t) ?? theme}
-                </Text>
-                {selectedTheme === theme && (
-                  <View style={styles.modalOptionCheckWrapper}>
-                    <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
-                      <Ionicons name="checkmark" size={14} color={colors.accent} />
-                    </View>
-                  </View>
-                )}
-              </Pressable>
-            ))}
-            <View style={{ height: 16 }} />
-            <Text style={[styles.modalSubtext, { color: colors.textSecondary }]}>
-              {t('journal.detail.dream_type_label')}
-            </Text>
-            {availableDreamTypes.map((dreamType) => (
-              <Pressable
-                key={dreamType}
-                style={[
-                  styles.modalOption,
-                  { backgroundColor: selectedDreamType === dreamType ? colors.accent : colors.backgroundSecondary },
-                ]}
-                onPress={() => handleDreamTypeSelect(dreamType)}
-              >
-                <Text style={[styles.modalOptionText, { color: colors.textPrimary }]}>
-                  {getDreamTypeLabel(dreamType, t) ?? dreamType}
-                </Text>
-                {selectedDreamType === dreamType && (
-                  <View style={styles.modalOptionCheckWrapper}>
-                    <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
-                      <Ionicons name="checkmark" size={14} color={colors.accent} />
-                    </View>
-                  </View>
-                )}
-              </Pressable>
-            ))}
-            <Pressable
-              style={styles.modalCancelButton}
-              onPress={() => setShowThemeModal(false)}
-            >
-              <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>
-                {t('common.cancel')}
-              </Text>
-            </Pressable>
-          </Animated.View>
-        </Animated.View>
-      </Modal>
-
-      {/* Date Range Modal */}
-      <Modal
-        visible={showDateModal}
-        animationType="none"
-        transparent
-        onRequestClose={() => setShowDateModal(false)}
-      >
-        <Animated.View
-          style={[
-            styles.modalOverlay,
-            webBackdropBlur,
-            { backgroundColor: colors.overlay },
-            dateModalAnim.backdropStyle,
-          ]}
+            {selectedDreamType === dreamType && (
+              <View style={styles.modalOptionCheckWrapper}>
+                <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
+                  <Ionicons name="checkmark" size={14} color={colors.accent} />
+                </View>
+              </View>
+            )}
+          </Pressable>
+        ))}
+        <Pressable
+          style={styles.modalCancelButton}
+          onPress={() => setShowThemeModal(false)}
         >
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setShowDateModal(false)} />
-          <Animated.View style={dateModalAnim.contentStyle} testID={TID.Modal.DateRange}>
-            <DateRangePicker
-              startDate={dateRange.start}
-              endDate={dateRange.end}
-              onRangeChange={handleDateRangeChange}
-              onClose={() => setShowDateModal(false)}
-            />
-          </Animated.View>
-        </Animated.View>
-      </Modal>
+          <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>
+            {t('common.cancel')}
+          </Text>
+        </Pressable>
+      </BottomSheet>
+
+      {/* Date Range BottomSheet */}
+      <BottomSheet
+        visible={showDateModal}
+        onClose={() => setShowDateModal(false)}
+        style={{ backgroundColor: colors.backgroundCard }}
+        testID={TID.Modal.DateRange}
+      >
+        <DateRangePicker
+          startDate={dateRange.start}
+          endDate={dateRange.end}
+          onRangeChange={handleDateRangeChange}
+          onClose={() => setShowDateModal(false)}
+        />
+      </BottomSheet>
     </View>
   );
 }
@@ -739,12 +723,7 @@ const styles = StyleSheet.create({
   listItem: {
     marginBottom: ThemeLayout.spacing.lg,
   },
-  date: {
-    fontSize: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
-    marginBottom: 8,
-    marginLeft: 4,
-  },
+  // date style removed — date is now inside DreamCard as an overline
   emptyState: {
     paddingTop: 60,
     alignItems: 'center',
@@ -779,18 +758,6 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 16,
     fontFamily: 'SpaceGrotesk_700Bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: ThemeLayout.spacing.lg,
-  },
-  modalContent: {
-    borderRadius: ThemeLayout.borderRadius.lg,
-    padding: ThemeLayout.spacing.lg,
-    width: '100%',
-    maxWidth: 400,
   },
   modalTitle: {
     fontSize: 20,

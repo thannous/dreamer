@@ -72,7 +72,7 @@ export const TIMING_CONFIGS: Record<string, WithTimingConfig> = {
 
 // Scale values for press interactions
 export const SCALE = {
-  press: 0.95,
+  press: 0.97,
   default: 1,
   enlarged: 1.05,
 } as const;
