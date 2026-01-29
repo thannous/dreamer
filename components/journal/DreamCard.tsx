@@ -8,13 +8,13 @@ import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBu
 import { DreamAnalysis } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import React, { memo, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 interface DreamCardProps {
   dream: DreamAnalysis;
-  onPress: (dream: DreamAnalysis) => void;
+  onPress: (dreamId: number) => void;
   shouldLoadImage?: boolean;
   isScrolling?: boolean;
   testID?: string;
@@ -33,6 +33,9 @@ export const DreamCard = memo(function DreamCard({
   const { colors } = useTheme();
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const { t } = useTranslation();
+  const handlePress = useCallback(() => {
+    onPress(dream.id);
+  }, [onPress, dream.id]);
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const imageVersion = useMemo(
@@ -117,7 +120,7 @@ export const DreamCard = memo(function DreamCard({
     <Animated.View>
       <AnimatedPressable
         style={[styles.card, { backgroundColor: colors.backgroundCard }, animatedStyle]}
-        onPress={() => onPress(dream)}
+        onPress={handlePress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
         accessibilityRole="button"
@@ -208,6 +211,35 @@ export const DreamCard = memo(function DreamCard({
         </View>
       </AnimatedPressable>
     </Animated.View>
+  );
+}, (prev, next) => {
+  if (prev === next) return true;
+  if (prev.onPress !== next.onPress) return false;
+  if (prev.isScrolling !== next.isScrolling) return false;
+  if (prev.shouldLoadImage !== next.shouldLoadImage) return false;
+  if (prev.testID !== next.testID) return false;
+
+  const prevDream = prev.dream;
+  const nextDream = next.dream;
+  if (prevDream === nextDream) return true;
+
+  const prevHasModelMessage = prevDream.chatHistory?.some((message) => message.role === 'model') ?? false;
+  const nextHasModelMessage = nextDream.chatHistory?.some((message) => message.role === 'model') ?? false;
+
+  return (
+    prevDream.id === nextDream.id
+    && prevDream.title === nextDream.title
+    && prevDream.transcript === nextDream.transcript
+    && prevDream.theme === nextDream.theme
+    && prevDream.isFavorite === nextDream.isFavorite
+    && prevDream.thumbnailUrl === nextDream.thumbnailUrl
+    && prevDream.imageUrl === nextDream.imageUrl
+    && prevDream.imageUpdatedAt === nextDream.imageUpdatedAt
+    && prevDream.analysisRequestId === nextDream.analysisRequestId
+    && prevDream.analyzedAt === nextDream.analyzedAt
+    && prevDream.isAnalyzed === nextDream.isAnalyzed
+    && prevDream.explorationStartedAt === nextDream.explorationStartedAt
+    && prevHasModelMessage === nextHasModelMessage
   );
 });
 
