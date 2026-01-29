@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -58,6 +58,9 @@ export function BottomSheet({
   const [isMounted, setIsMounted] = useState(visible);
   const { height: windowHeight } = useWindowDimensions();
   const hiddenTranslateY = Math.max(400, windowHeight);
+  const hiddenTranslateYRef = useRef(hiddenTranslateY);
+  hiddenTranslateYRef.current = hiddenTranslateY;
+  const prevVisibleRef = useRef(false);
   const translateY = useSharedValue(0);
   const backdropOpacity = useSharedValue(0);
   const handleUnmount = useCallback(() => setIsMounted(false), []);
@@ -78,11 +81,14 @@ export function BottomSheet({
   );
 
   useEffect(() => {
-    if (visible) {
+    const wasVisible = prevVisibleRef.current;
+    prevVisibleRef.current = visible;
+
+    if (visible && !wasVisible) {
       blurActiveElement();
       setIsMounted(true);
       backdropOpacity.value = 0;
-      translateY.value = hiddenTranslateY;
+      translateY.value = hiddenTranslateYRef.current;
       translateY.value = withTiming(0, {
         duration: 260,
         easing: Easing.out(Easing.cubic),
@@ -91,13 +97,13 @@ export function BottomSheet({
         duration: 220,
         easing: Easing.out(Easing.cubic),
       });
-    } else if (isMounted) {
+    } else if (!visible && wasVisible && isMounted) {
       backdropOpacity.value = withTiming(0, {
         duration: 200,
         easing: Easing.in(Easing.cubic),
       });
       translateY.value = withTiming(
-        hiddenTranslateY,
+        hiddenTranslateYRef.current,
         {
           duration: 220,
           easing: Easing.in(Easing.cubic),
@@ -109,7 +115,7 @@ export function BottomSheet({
         }
       );
     }
-  }, [backdropOpacity, handleUnmount, hiddenTranslateY, isMounted, translateY, visible]);
+  }, [backdropOpacity, handleUnmount, isMounted, translateY, visible]);
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
