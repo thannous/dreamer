@@ -698,6 +698,13 @@ function main() {
     console.log(`🎯 Filtered to priority ${priority}: ${symbolsToGenerate.length} symbols`);
   }
 
+  // Filter by symbol id(s) if specified (comma-separated)
+  if (args.id) {
+    const ids = String(args.id).split(',').map(s => s.trim()).filter(Boolean);
+    symbolsToGenerate = symbolsToGenerate.filter(s => ids.includes(s.id));
+    console.log(`🔎 Filtered to ids: ${ids.join(', ')} (${symbolsToGenerate.length} symbols)`);
+  }
+
   // Filter by language if specified
   let languages = CONFIG.languages;
   if (args.lang) {

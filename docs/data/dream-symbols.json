@@ -367,6 +367,31 @@
       "relatedArticles": {}
     },
     {
+      "id": "flood",
+      "category": "nature",
+      "priority": 2,
+      "en": {
+        "slug": "flood",
+        "name": "Flood",
+        "shortDescription": "A flood often symbolizes overwhelming emotions, sudden change, or feeling that problems are \"spilling over.\" It can also represent cleansing and a chance to rebuild after disruption.",
+        "askYourself": ["What feels overwhelming right now?", "Where in my life do I need to set stronger boundaries?"]
+      },
+      "fr": {
+        "slug": "inondation",
+        "name": "Inondation",
+        "shortDescription": "Une inondation symbolise souvent des émotions débordantes, un changement soudain ou la sensation que les problèmes vous submergent. Elle peut aussi représenter une purification et une opportunité de repartir sur de nouvelles bases.",
+        "askYourself": ["Qu'est-ce qui me submerge en ce moment ?", "Où ai-je besoin de poser des limites plus claires ?"]
+      },
+      "es": {
+        "slug": "inundacion",
+        "name": "Inundación",
+        "shortDescription": "Una inundación suele simbolizar emociones abrumadoras, cambios repentinos o sentir que los problemas se desbordan. También puede representar limpieza y la oportunidad de reconstruir tras una sacudida.",
+        "askYourself": ["¿Qué se siente abrumador ahora mismo?", "¿Dónde necesito poner límites más firmes en mi vida?"]
+      },
+      "relatedSymbols": ["water", "ocean", "rain", "storm"],
+      "relatedArticles": {}
+    },
+    {
       "id": "car",
       "category": "objects",
       "priority": 2,

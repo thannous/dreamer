@@ -469,6 +469,15 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/fire" />
   </url>
   <url>
+    <loc>https://noctalia.app/en/symbols/flood</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/flood" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/inondation" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/inundacion" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/flood" />
+  </url>
+  <url>
     <loc>https://noctalia.app/en/symbols/flying</loc>
     <lastmod>2026-01-26</lastmod>
     <priority>0.6</priority>
@@ -1214,6 +1223,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/feu" />
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/fuego" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/fire" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/simbolos/inundacion</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/flood" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/inondation" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/inundacion" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/flood" />
   </url>
   <url>
     <loc>https://noctalia.app/es/simbolos/gato</loc>
@@ -1970,6 +1988,15 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/feu" />
     <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/fuego" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/fire" />
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/symboles/inondation</loc>
+    <lastmod>2026-01-29</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/flood" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/inondation" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/inundacion" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/flood" />
   </url>
   <url>
     <loc>https://noctalia.app/fr/symboles/foret</loc>
