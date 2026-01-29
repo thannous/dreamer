@@ -41,6 +41,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
+const WEB_BACKDROP_BLUR = { backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' } as ViewStyle;
 
 const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
   // Supabase thumbnails use a `-thumb` filename suffix (see `services/supabaseDreamService.ts`).
@@ -66,9 +67,7 @@ export default function JournalListScreen() {
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
-  const webBackdropBlur: ViewStyle | undefined = Platform.OS === 'web'
-    ? { backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' } as ViewStyle
-    : undefined;
+  const webBackdropBlur = Platform.OS === 'web' ? WEB_BACKDROP_BLUR : undefined;
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -117,6 +116,20 @@ export default function JournalListScreen() {
   // Always show add button - quota is now enforced on analysis, not recording
   const showAddButton = true;
   const listBottomPadding = floatingOffset + (showAddButton ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.xs : ThemeLayout.spacing.sm);
+  const dateTextStyle = useMemo(() => [styles.date, { color: colors.textSecondary }], [colors.textSecondary]);
+  const desktopDateTextStyle = useMemo(() => [styles.desktopDate, { color: colors.textSecondary }], [colors.textSecondary]);
+  const listContentStyle = useMemo(
+    () => [styles.listContent, { paddingBottom: listBottomPadding }],
+    [listBottomPadding]
+  );
+  const listContentDesktopStyle = useMemo(
+    () => [styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }],
+    [listBottomPadding]
+  );
+  const filtersContainerStyle = useMemo(
+    () => [styles.filtersContainer, { backgroundColor: colors.backgroundDark }, isDesktopLayout && styles.filtersContainerDesktop],
+    [colors.backgroundDark, isDesktopLayout]
+  );
 
   // Get available themes
   const availableThemes = useMemo(() => getUniqueThemes(dreams), [dreams]);
@@ -222,12 +235,12 @@ export default function JournalListScreen() {
     setShowExploredOnly((prev) => !prev);
   }, []);
 
-  const handleDreamPress = useCallback((dream: DreamAnalysis) => {
+  const handleDreamPress = useCallback((dreamId: number) => {
     if (isNavigatingRef.current) {
       return;
     }
     isNavigatingRef.current = true;
-    router.push(`/journal/${dream.id}`);
+    router.push(`/journal/${dreamId}`);
   }, []);
 
   // Track viewable items and prefetch thumbnails once scrolling is idle.
@@ -314,7 +327,7 @@ export default function JournalListScreen() {
 
     return (
       <View style={styles.listItem}>
-        <Text style={[styles.date, { color: colors.textSecondary }]}>
+        <Text style={dateTextStyle}>
           {formatDreamListDate(item.id)}
           {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
         </Text>
@@ -326,7 +339,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [colors, formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [dateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
@@ -348,7 +361,7 @@ export default function JournalListScreen() {
         ]}
       >
         <View style={styles.desktopMetaRow}> 
-          <Text style={[styles.desktopDate, { color: colors.textSecondary }] }>
+          <Text style={desktopDateTextStyle}>
             {formatDreamListDate(item.id)}
             {dreamTypeLabel ? ` • ${dreamTypeLabel}` : ''}
           </Text>
@@ -361,7 +374,7 @@ export default function JournalListScreen() {
         />
       </View>
     );
-  }, [colors, formatDreamListDate, t, handleDreamPress, isScrolling]);
+  }, [desktopDateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const renderEmptyState = useCallback(() => (
     <View style={styles.emptyState}>
@@ -397,11 +410,7 @@ export default function JournalListScreen() {
 
       {/* Search and Filters */}
       <View
-        style={[
-          styles.filtersContainer,
-          { backgroundColor: colors.backgroundDark },
-          isDesktopLayout && styles.filtersContainerDesktop,
-        ]}
+        style={filtersContainerStyle}
       >
         <SearchBar
           testID={TID.Component.SearchBar}
@@ -439,7 +448,7 @@ export default function JournalListScreen() {
       {/* Guest Upsell */}
       <View
         style={[
-          { paddingHorizontal: ThemeLayout.spacing.md, marginBottom: ThemeLayout.spacing.sm },
+          styles.upsellContainer,
           isDesktopLayout && styles.upsellDesktop,
         ]}
       >
@@ -459,7 +468,7 @@ export default function JournalListScreen() {
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           numColumns={desktopColumns}
-          contentContainerStyle={[styles.listContent, styles.listContentDesktop, { paddingBottom: listBottomPadding }]}
+          contentContainerStyle={listContentDesktopStyle}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
@@ -479,7 +488,7 @@ export default function JournalListScreen() {
           renderItem={renderDreamItem}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
-          contentContainerStyle={[styles.listContent, { paddingBottom: listBottomPadding }]}
+          contentContainerStyle={listContentStyle}
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
           viewabilityConfig={viewabilityConfigRef.current}
@@ -657,6 +666,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
     maxWidth: LAYOUT_MAX_WIDTH,
+  },
+  upsellContainer: {
+    paddingHorizontal: ThemeLayout.spacing.md,
+    marginBottom: ThemeLayout.spacing.sm,
   },
   listContent: {
     paddingHorizontal: ThemeLayout.spacing.md,
