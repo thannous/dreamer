@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LanguagePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
   ensureOfflineSttModel,
@@ -74,7 +75,7 @@ export default function LanguageSettingsCard() {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
+    <View style={[styles.card, { backgroundColor: getGlassCardBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.language.title')}
       </Text>

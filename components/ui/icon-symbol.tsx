@@ -46,6 +46,13 @@ const MAPPING = {
   'xmark.circle.fill': 'cancel',
   'questionmark.circle.fill': 'help',
   'arrow.right': 'arrow-forward',
+  // Per-symbol icons
+  'drop.fill': 'water-drop',
+  'arrow.down.to.line': 'downhill-skiing',
+  'bird.fill': 'flight',
+  'eye.fill': 'visibility',
+  'heart.slash.fill': 'heart-broken',
+  'figure.run': 'directions-run',
 } as IconMapping;
 
 /**

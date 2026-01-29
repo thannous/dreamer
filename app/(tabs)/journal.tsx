@@ -1,5 +1,7 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamIcon } from '@/components/icons/DreamIcons';
+import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
+import { GradientText } from '@/components/inspiration/GradientText';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
@@ -9,6 +11,7 @@ import { BottomSheet } from '@/components/ui/BottomSheet';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
+import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -19,6 +22,7 @@ import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } 
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
+import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -56,7 +60,7 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
 
 export default function JournalListScreen() {
   const { dreams } = useDreams();
-  const { colors, shadows } = useTheme();
+  const { colors, shadows, mode } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
@@ -67,6 +71,23 @@ export default function JournalListScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const isNative = Platform.OS !== 'web';
   const desktopColumns = width >= 1440 ? 4 : 3;
+
+  const headerGradientColors = useMemo(
+    () =>
+      mode === 'dark'
+        ? ([colors.accentLight, colors.accent] as const)
+        : ([colors.textPrimary, colors.accentDark] as const),
+    [colors.accent, colors.accentDark, colors.accentLight, colors.textPrimary, mode],
+  );
+
+  const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      setShowHeaderAnimations(true);
+      return () => setShowHeaderAnimations(false);
+    }, []),
+  );
 
   // Native search bar
   const navigation = useNavigation();
@@ -151,8 +172,8 @@ export default function JournalListScreen() {
     [listBottomPadding]
   );
   const filtersContainerStyle = useMemo(
-    () => [styles.filtersContainer, { backgroundColor: colors.backgroundDark }, isDesktopLayout && styles.filtersContainerDesktop],
-    [colors.backgroundDark, isDesktopLayout]
+    () => [styles.filtersContainer, isDesktopLayout && styles.filtersContainerDesktop],
+    [isDesktopLayout]
   );
 
   // Get available themes
@@ -439,6 +460,9 @@ export default function JournalListScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
+      {/* Atmospheric dreamlike background */}
+      <AtmosphericBackground />
+
       {/* Header — only on web (native uses headerSearchBarOptions) */}
       {!isNative && (
         <View
@@ -448,7 +472,24 @@ export default function JournalListScreen() {
             { paddingTop: insets.top + ThemeLayout.spacing.sm },
           ]}
         >
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('journal.title')}</Text>
+          <MotiView
+            key={`header-${showHeaderAnimations}`}
+            from={{ opacity: 0, translateY: 16 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 700 }}
+          >
+            <GradientText colors={headerGradientColors} style={styles.headerTitle}>
+              {t('journal.title')}
+            </GradientText>
+          </MotiView>
+          <MotiView
+            key={`header-rule-${showHeaderAnimations}`}
+            from={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ type: 'timing', duration: 600, delay: 350 }}
+          >
+            <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
+          </MotiView>
         </View>
       )}
 
@@ -694,9 +735,16 @@ const styles = StyleSheet.create({
     maxWidth: LAYOUT_MAX_WIDTH,
   },
   headerTitle: {
-    fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
-    letterSpacing: -0.3,
+    fontSize: 20,
+    fontFamily: Fonts.fraunces.semiBold,
+    letterSpacing: 0.5,
+  },
+  headerRule: {
+    width: 36,
+    height: 2.5,
+    borderRadius: 1.5,
+    marginTop: 10,
+    opacity: 0.7,
   },
   filtersContainer: {
     padding: ThemeLayout.spacing.md,

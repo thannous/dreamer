@@ -1,4 +1,5 @@
 import { ThemeLayout, getTagColor } from '@/constants/journalTheme';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -38,7 +39,8 @@ export const DreamCard = memo(function DreamCard({
   dateLabel,
   variant = 'standard',
 }: DreamCardProps) {
-  const { colors, shadows } = useTheme();
+  const { colors, shadows, mode } = useTheme();
+  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const { t } = useTranslation();
   const handlePress = useCallback(() => {
@@ -134,7 +136,7 @@ export const DreamCard = memo(function DreamCard({
     return (
       <Animated.View>
         <AnimatedPressable
-          style={[styles.cardVertical, shadows.sm, { backgroundColor: colors.backgroundCard }, animatedStyle]}
+          style={[styles.cardVertical, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, animatedStyle]}
           onPress={handlePress}
           onPressIn={onPressIn}
           onPressOut={onPressOut}
@@ -251,7 +253,7 @@ export const DreamCard = memo(function DreamCard({
   return (
     <Animated.View>
       <AnimatedPressable
-        style={[styles.card, shadows.sm, { backgroundColor: colors.backgroundCard }, animatedStyle]}
+        style={[styles.card, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, animatedStyle]}
         onPress={handlePress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}

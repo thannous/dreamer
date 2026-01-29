@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/context/ThemeContext';
 import type { ThemePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const THEME_OPTIONS: {
@@ -48,7 +49,7 @@ export default function ThemeSettingsCard() {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.backgroundCard }]}>
+    <View style={[styles.card, { backgroundColor: getGlassCardBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('settings.theme.title')}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>
         {t('settings.theme.description')}

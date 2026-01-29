@@ -15,6 +15,33 @@ export type RitualConfig = {
 
 export const RITUALS: RitualConfig[] = [
   {
+    id: 'lucid',
+    labelKey: 'inspiration.ritual.variant.lucid',
+    descriptionKey: 'inspiration.ritual.variant.lucid.description',
+    steps: [
+      {
+        id: 'evening',
+        titleKey: 'inspiration.ritual.lucid.step.evening.title',
+        bodyKey: 'inspiration.ritual.lucid.step.evening.body',
+      },
+      {
+        id: 'morning',
+        titleKey: 'inspiration.ritual.lucid.step.morning.title',
+        bodyKey: 'inspiration.ritual.lucid.step.morning.body',
+      },
+      {
+        id: 'day',
+        titleKey: 'inspiration.ritual.lucid.step.day.title',
+        bodyKey: 'inspiration.ritual.lucid.step.day.body',
+      },
+      {
+        id: 'extra',
+        titleKey: 'inspiration.ritual.lucid.step.extra.title',
+        bodyKey: 'inspiration.ritual.lucid.step.extra.body',
+      },
+    ],
+  },
+  {
     id: 'starter',
     labelKey: 'inspiration.ritual.variant.starter',
     descriptionKey: 'inspiration.ritual.variant.starter.description',
@@ -65,33 +92,6 @@ export const RITUALS: RitualConfig[] = [
         id: 'extra',
         titleKey: 'inspiration.ritual.memory.step.extra.title',
         bodyKey: 'inspiration.ritual.memory.step.extra.body',
-      },
-    ],
-  },
-  {
-    id: 'lucid',
-    labelKey: 'inspiration.ritual.variant.lucid',
-    descriptionKey: 'inspiration.ritual.variant.lucid.description',
-    steps: [
-      {
-        id: 'evening',
-        titleKey: 'inspiration.ritual.lucid.step.evening.title',
-        bodyKey: 'inspiration.ritual.lucid.step.evening.body',
-      },
-      {
-        id: 'morning',
-        titleKey: 'inspiration.ritual.lucid.step.morning.title',
-        bodyKey: 'inspiration.ritual.lucid.step.morning.body',
-      },
-      {
-        id: 'day',
-        titleKey: 'inspiration.ritual.lucid.step.day.title',
-        bodyKey: 'inspiration.ritual.lucid.step.day.body',
-      },
-      {
-        id: 'extra',
-        titleKey: 'inspiration.ritual.lucid.step.extra.title',
-        bodyKey: 'inspiration.ritual.lucid.step.extra.body',
       },
     ],
   },

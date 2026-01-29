@@ -661,6 +661,9 @@ const translations: Record<string, string> = {
     'symbols.related': 'Símbolos relacionados',
     'symbols.not_found': 'Símbolo no encontrado',
     'symbols.no_results': 'No se encontraron símbolos',
+    'inspiration.ritual.steps_progress': '{completed}/{total} pasos',
+    'symbols.popular_title': 'Símbolos populares',
+    'symbols.view_all': 'Ver todos',
   };
 
 export default translations;

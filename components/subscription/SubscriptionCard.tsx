@@ -2,6 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 export type SubscriptionCardProps = {
@@ -31,12 +32,13 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   testID,
   ctaTestID,
 }) => {
-  const { colors, shadows } = useTheme();
+  const { colors, shadows, mode } = useTheme();
+  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
 
   const showCta = Boolean(ctaLabel && onPress);
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.backgroundCard }, shadows.md]} testID={testID}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, shadows.md]} testID={testID}>
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>

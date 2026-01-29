@@ -15,6 +15,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
 import { EmailVerificationDialog } from '@/components/auth/EmailVerificationDialog';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
@@ -74,7 +75,8 @@ type Props = {
 };
 
 export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { language } = useLanguage();
@@ -514,7 +516,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
 
   const cardContent = user ? (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: colors.backgroundCard }]}
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}
     >
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.account.title')}
@@ -559,7 +561,7 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     </View>
   ) : (
     <View
-      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: colors.backgroundCard }]}
+      style={[styles.card, isCompact && styles.cardCompact, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}
     >
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.account.title')}
