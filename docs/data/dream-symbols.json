@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-01-29",
-    "totalSymbols": 47,
+    "totalSymbols": 51,
     "languages": ["en", "fr", "es"]
   },
   "categories": {
@@ -1165,6 +1165,131 @@
       },
       "relatedSymbols": ["baby", "birth", "creation"],
       "relatedArticles": { "en": "pregnancy-dreams-meaning", "fr": "reves-de-grossesse", "es": "suenos-de-embarazo" }
+    },
+    {
+      "id": "swimming",
+      "category": "actions",
+      "priority": 2,
+      "en": {
+        "slug": "swimming",
+        "name": "Swimming",
+        "shortDescription": "Swimming in dreams represents navigating through emotions and life's challenges. Ease or difficulty swimming reflects your emotional coping abilities.",
+        "askYourself": ["How am I handling my emotional life?", "Am I staying afloat or struggling with my feelings?"]
+      },
+      "fr": {
+        "slug": "nager",
+        "name": "Nager",
+        "shortDescription": "Nager dans les rêves représente la navigation à travers les émotions et les défis de la vie. La facilité ou difficulté à nager reflète vos capacités d'adaptation émotionnelle.",
+        "askYourself": ["Comment je gère ma vie émotionnelle ?", "Est-ce que je reste à flot ou je lutte avec mes sentiments ?"]
+      },
+      "es": {
+        "slug": "nadar",
+        "name": "Nadar",
+        "shortDescription": "Nadar en sueños representa navegar a través de emociones y desafíos de la vida. La facilidad o dificultad para nadar refleja tus capacidades de afrontamiento emocional.",
+        "askYourself": ["¿Cómo estoy manejando mi vida emocional?", "¿Me mantengo a flote o lucho con mis sentimientos?"]
+      },
+      "relatedSymbols": ["water", "ocean", "drowning"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "crying",
+      "category": "actions",
+      "priority": 2,
+      "en": {
+        "slug": "crying",
+        "name": "Crying",
+        "shortDescription": "Crying in dreams often represents emotional release, healing, or unexpressed feelings seeking acknowledgment. It can be a cathartic experience.",
+        "askYourself": ["What emotions am I holding back?", "What needs to be released or expressed?"]
+      },
+      "fr": {
+        "slug": "pleurer",
+        "name": "Pleurer",
+        "shortDescription": "Pleurer dans les rêves représente souvent une libération émotionnelle, une guérison ou des sentiments non exprimés cherchant à être reconnus. Cela peut être une expérience cathartique.",
+        "askYourself": ["Quelles émotions est-ce que je retiens ?", "Qu'est-ce qui a besoin d'être libéré ou exprimé ?"]
+      },
+      "es": {
+        "slug": "llorar",
+        "name": "Llorar",
+        "shortDescription": "Llorar en sueños representa liberación emocional, sanación o sentimientos no expresados buscando reconocimiento. Puede ser una experiencia catártica.",
+        "askYourself": ["¿Qué emociones estoy reprimiendo?", "¿Qué necesita ser liberado o expresado?"]
+      },
+      "relatedSymbols": ["tears", "sadness", "grief"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "elevator",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "elevator",
+        "name": "Elevator",
+        "shortDescription": "Elevators symbolize transitions, social mobility, and changes in life status. Going up suggests advancement; going down may indicate setbacks or exploring deeper levels.",
+        "askYourself": ["What transition am I experiencing?", "Am I moving up or down in some area of life?"]
+      },
+      "fr": {
+        "slug": "ascenseur",
+        "name": "Ascenseur",
+        "shortDescription": "L'ascenseur symbolise les transitions, la mobilité sociale et les changements de statut dans la vie. Monter suggère une avancée ; descendre peut indiquer des revers ou l'exploration de niveaux plus profonds.",
+        "askYourself": ["Quelle transition est-ce que je vis ?", "Est-ce que je monte ou descends dans un domaine de ma vie ?"]
+      },
+      "es": {
+        "slug": "ascensor",
+        "name": "Ascensor",
+        "shortDescription": "Los ascensores simbolizan transiciones, movilidad social y cambios en el estatus de vida. Subir sugiere avance; bajar puede indicar retrocesos o exploración de niveles más profundos.",
+        "askYourself": ["¿Qué transición estoy experimentando?", "¿Estoy subiendo o bajando en algún área de la vida?"]
+      },
+      "relatedSymbols": ["stairs", "building", "height"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "cliff",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "cliff",
+        "name": "Cliff",
+        "shortDescription": "Cliffs represent major decisions, danger, or standing at the edge of significant change. They symbolize risk-taking and the fear of taking the next step.",
+        "askYourself": ["What decision am I facing?", "What risk am I afraid to take?"]
+      },
+      "fr": {
+        "slug": "falaise",
+        "name": "Falaise",
+        "shortDescription": "Les falaises représentent des décisions majeures, le danger ou se tenir au bord d'un changement significatif. Elles symbolisent la prise de risque et la peur de faire le prochain pas.",
+        "askYourself": ["Quelle décision suis-je en train d'affronter ?", "Quel risque ai-je peur de prendre ?"]
+      },
+      "es": {
+        "slug": "acantilado",
+        "name": "Acantilado",
+        "shortDescription": "Los acantilados representan decisiones importantes, peligro o estar al borde de un cambio significativo. Simbolizan tomar riesgos y el miedo a dar el siguiente paso.",
+        "askYourself": ["¿Qué decisión estoy enfrentando?", "¿Qué riesgo tengo miedo de tomar?"]
+      },
+      "relatedSymbols": ["edge", "falling", "mountain"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "lost",
+      "category": "actions",
+      "priority": 2,
+      "en": {
+        "slug": "lost",
+        "name": "Being Lost",
+        "shortDescription": "Being lost in dreams symbolizes confusion, lack of direction, or uncertainty about life path. It often reflects feelings of being overwhelmed or disconnected from purpose.",
+        "askYourself": ["Where do I feel directionless in my life?", "What guidance or clarity do I need?"]
+      },
+      "fr": {
+        "slug": "perdu",
+        "name": "Être Perdu",
+        "shortDescription": "Être perdu dans les rêves symbolise la confusion, le manque de direction ou l'incertitude sur le chemin de vie. Cela reflète souvent un sentiment d'être dépassé ou déconnecté de son but.",
+        "askYourself": ["Où est-ce que je me sens sans direction dans ma vie ?", "Quel guidage ou clarté ai-je besoin ?"]
+      },
+      "es": {
+        "slug": "perdido",
+        "name": "Estar Perdido",
+        "shortDescription": "Estar perdido en sueños simboliza confusión, falta de dirección o incertidumbre sobre el camino de vida. Refleja sentimientos de estar abrumado o desconectado del propósito.",
+        "askYourself": ["¿Dónde me siento sin dirección en mi vida?", "¿Qué guía o claridad necesito?"]
+      },
+      "relatedSymbols": ["maze", "path", "wandering"],
+      "relatedArticles": {}
     }
   ]
 }
