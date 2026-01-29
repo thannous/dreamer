@@ -9,13 +9,13 @@
  * - Speech-to-text support with mic button
  */
 
+import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
+import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
-import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import {
   registerOfflineModelPromptHandler,
   type OfflineModelPromptHandler,
@@ -25,7 +25,7 @@ import {
   openSpeechRecognitionLanguageSettings,
 } from '@/lib/speechRecognitionSettings';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   NativeModules,
@@ -64,7 +64,36 @@ const KeyboardStickyView: React.ComponentType<{
   }
 })();
 
-interface ComposerProps {
+type ComposerContextValue = {
+  value: string;
+  onChangeText: (text: string) => void;
+  onSend: (text?: string) => void;
+  placeholder?: string;
+  isLoading: boolean;
+  isDisabled: boolean;
+  transcriptionLocale: string;
+  testID?: string;
+  micTestID?: string;
+  sendTestID?: string;
+  isRecording: boolean;
+  canSend: boolean;
+  handleTextInputPress: () => void;
+  handleSend: () => void;
+  toggleRecording: () => void;
+  textInputRef: React.RefObject<TextInput>;
+};
+
+const ComposerContext = createContext<ComposerContextValue | null>(null);
+
+const useComposerContext = () => {
+  const context = useContext(ComposerContext);
+  if (!context) {
+    throw new Error('Composer components must be used within Composer.Root');
+  }
+  return context;
+};
+
+interface ComposerRootProps {
   value: string;
   onChangeText: (text: string) => void;
   onSend: (text?: string) => void;
@@ -73,13 +102,12 @@ interface ComposerProps {
   isDisabled?: boolean;
   transcriptionLocale?: string;
   testID?: string;
-  headerContent?: React.ReactNode;
-  footerContent?: React.ReactNode;
   micTestID?: string;
   sendTestID?: string;
+  children: React.ReactNode;
 }
 
-export function Composer({
+function Root({
   value,
   onChangeText,
   onSend,
@@ -88,13 +116,11 @@ export function Composer({
   isDisabled = false,
   transcriptionLocale = 'en-US',
   testID,
-  headerContent,
-  footerContent,
   micTestID,
   sendTestID,
-}: ComposerProps) {
+  children,
+}: ComposerRootProps) {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
   const insets = useSafeAreaInsets();
   const { composerHeight } = useComposerHeightContext();
   const { keyboardHeight } = useKeyboardStateContext();
@@ -285,6 +311,52 @@ export function Composer({
     }
   }, [isRecording, startRecording, stopRecording]);
 
+  const canSend = value.trim().length > 0 && !isLoading && !isDisabled;
+
+  const handleSend = useCallback(async () => {
+    let textOverride: string | undefined;
+    if (isRecording) {
+      textOverride = await stopRecording();
+    }
+    onSend(textOverride?.trim());
+  }, [isRecording, onSend, stopRecording]);
+
+  const contextValue = useMemo<ComposerContextValue>(() => ({
+    value,
+    onChangeText,
+    onSend,
+    placeholder,
+    isLoading,
+    isDisabled,
+    transcriptionLocale,
+    testID,
+    micTestID,
+    sendTestID,
+    isRecording,
+    canSend,
+    handleTextInputPress,
+    handleSend,
+    toggleRecording,
+    textInputRef,
+  }), [
+    value,
+    onChangeText,
+    onSend,
+    placeholder,
+    isLoading,
+    isDisabled,
+    transcriptionLocale,
+    testID,
+    micTestID,
+    sendTestID,
+    isRecording,
+    canSend,
+    handleTextInputPress,
+    handleSend,
+    toggleRecording,
+    textInputRef,
+  ]);
+
   // Animated style for subtle appearance
   const animatedContainerStyle = useAnimatedStyle(() => {
     return {
@@ -300,16 +372,6 @@ export function Composer({
     };
   }, [keyboardHeight]);
 
-  const canSend = value.trim().length > 0 && !isLoading && !isDisabled;
-
-  const handleSend = useCallback(async () => {
-    let textOverride: string | undefined;
-    if (isRecording) {
-      textOverride = await stopRecording();
-    }
-    onSend(textOverride?.trim());
-  }, [isRecording, onSend, stopRecording]);
-
   const composerContent = (
     <Animated.View
       ref={containerRef}
@@ -320,80 +382,9 @@ export function Composer({
       ]}
       onLayout={handleLayout}
     >
-      {footerContent ? (
-        <View style={styles.footerContainer}>
-          {footerContent}
-        </View>
-      ) : null}
-      {headerContent ? (
-        <View style={styles.headerContainer}>
-          {headerContent}
-        </View>
-      ) : null}
-      <View
-        style={[
-          styles.inputWrapper,
-          {
-            backgroundColor: mode === 'dark' ? colors.backgroundCard : colors.backgroundSecondary,
-            borderColor: mode === 'dark' ? 'rgba(255,255,255,0.14)' : colors.divider,
-            borderWidth: 1,
-          },
-        ]}
-      >
-        <TextInput
-          ref={textInputRef}
-          testID={testID}
-          style={[styles.input, { color: colors.textPrimary }]}
-          placeholder={
-            isRecording
-              ? t('dream_chat.input.recording_placeholder')
-              : placeholder || t('dream_chat.input.placeholder')
-          }
-          placeholderTextColor={mode === 'dark' ? '#e4def7' : colors.textSecondary}
-          value={value}
-          onChangeText={onChangeText}
-          onPressIn={handleTextInputPress}
-          multiline
-          maxLength={500}
-          editable={!isLoading && !isDisabled && !isRecording}
-        />
-
-        {/* Mic button */}
-        <Pressable
-          style={[
-            styles.iconButton,
-            { backgroundColor: isRecording ? colors.accent : colors.backgroundCard },
-            (isLoading || isDisabled) && styles.buttonDisabled,
-          ]}
-          onPress={toggleRecording}
-          disabled={isLoading || isDisabled}
-          accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
-          testID={micTestID}
-        >
-          <Ionicons
-            name={isRecording ? 'stop' : 'mic'}
-            size={20}
-            color={isRecording ? colors.textPrimary : colors.textSecondary}
-          />
-        </Pressable>
-
-        {/* Send button */}
-        <Pressable
-          style={[
-            styles.iconButton,
-            { backgroundColor: colors.accent },
-            !canSend && styles.buttonDisabled,
-          ]}
-          onPress={handleSend}
-          disabled={!canSend}
-          accessibilityRole="button"
-          accessibilityLabel={t('dream_chat.send')}
-          accessibilityState={{ disabled: !canSend }}
-          testID={sendTestID}
-        >
-          <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
-        </Pressable>
-      </View>
+      <ComposerContext.Provider value={contextValue}>
+        {children}
+      </ComposerContext.Provider>
     </Animated.View>
   );
 
@@ -450,6 +441,130 @@ export function Composer({
     </>
   );
 }
+
+function Header({ children }: { children?: React.ReactNode }) {
+  if (!children) return null;
+  return <View style={styles.headerContainer}>{children}</View>;
+}
+
+function Footer({ children }: { children?: React.ReactNode }) {
+  if (!children) return null;
+  return <View style={styles.footerContainer}>{children}</View>;
+}
+
+function Body({ children }: { children: React.ReactNode }) {
+  const { colors, mode } = useTheme();
+  return (
+    <View
+      style={[
+        styles.inputWrapper,
+        {
+          backgroundColor: mode === 'dark' ? colors.backgroundCard : colors.backgroundSecondary,
+          borderColor: mode === 'dark' ? 'rgba(255,255,255,0.14)' : colors.divider,
+          borderWidth: 1,
+        },
+      ]}
+    >
+      {children}
+    </View>
+  );
+}
+
+function Input() {
+  const { t } = useTranslation();
+  const { colors, mode } = useTheme();
+  const {
+    value,
+    onChangeText,
+    placeholder,
+    isLoading,
+    isDisabled,
+    isRecording,
+    testID,
+    textInputRef,
+    handleTextInputPress,
+  } = useComposerContext();
+
+  return (
+    <TextInput
+      ref={textInputRef}
+      testID={testID}
+      style={[styles.input, { color: colors.textPrimary }]}
+      placeholder={
+        isRecording
+          ? t('dream_chat.input.recording_placeholder')
+          : placeholder || t('dream_chat.input.placeholder')
+      }
+      placeholderTextColor={mode === 'dark' ? '#e4def7' : colors.textSecondary}
+      value={value}
+      onChangeText={onChangeText}
+      onPressIn={handleTextInputPress}
+      multiline
+      maxLength={500}
+      editable={!isLoading && !isDisabled && !isRecording}
+    />
+  );
+}
+
+function MicButton() {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { isRecording, isLoading, isDisabled, toggleRecording, micTestID } = useComposerContext();
+
+  return (
+    <Pressable
+      style={[
+        styles.iconButton,
+        { backgroundColor: isRecording ? colors.accent : colors.backgroundCard },
+        (isLoading || isDisabled) && styles.buttonDisabled,
+      ]}
+      onPress={toggleRecording}
+      disabled={isLoading || isDisabled}
+      accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
+      testID={micTestID}
+    >
+      <Ionicons
+        name={isRecording ? 'stop' : 'mic'}
+        size={20}
+        color={isRecording ? colors.textPrimary : colors.textSecondary}
+      />
+    </Pressable>
+  );
+}
+
+function SendButton() {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const { canSend, handleSend, sendTestID } = useComposerContext();
+
+  return (
+    <Pressable
+      style={[
+        styles.iconButton,
+        { backgroundColor: colors.accent },
+        !canSend && styles.buttonDisabled,
+      ]}
+      onPress={handleSend}
+      disabled={!canSend}
+      accessibilityRole="button"
+      accessibilityLabel={t('dream_chat.send')}
+      accessibilityState={{ disabled: !canSend }}
+      testID={sendTestID}
+    >
+      <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
+    </Pressable>
+  );
+}
+
+export const Composer = {
+  Root,
+  Header,
+  Footer,
+  Body,
+  Input,
+  MicButton,
+  SendButton,
+};
 
 const styles = StyleSheet.create({
   stickyWrapper: {

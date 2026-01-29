@@ -912,7 +912,7 @@ export default function DreamChatScreen() {
           />
         </KeyboardAwareChatContent>
 
-        <Composer
+        <Composer.Root
           value={inputText}
           onChangeText={setInputText}
           onSend={(text) => sendMessage(text)}
@@ -923,9 +923,15 @@ export default function DreamChatScreen() {
           testID={TID.Chat.Input}
           micTestID={TID.Chat.Mic}
           sendTestID={TID.Chat.Send}
-          headerContent={composerHeader}
-          footerContent={composerFooter}
-        />
+        >
+          <Composer.Footer>{composerFooter}</Composer.Footer>
+          <Composer.Header>{composerHeader}</Composer.Header>
+          <Composer.Body>
+            <Composer.Input />
+            <Composer.MicButton />
+            <Composer.SendButton />
+          </Composer.Body>
+        </Composer.Root>
       </LinearGradient>
     </ChatProvider>
   );

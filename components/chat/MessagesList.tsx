@@ -399,7 +399,7 @@ function AnimatedDot({ delay, color }: { delay: number; color: string }) {
 
 /**
  * LoadingIndicator - Shows thinking state
- * Exported for use in Composer headerContent
+ * Exported for use in Composer.Header
  *
  * IMPORTANT: Uses visibility control instead of conditional rendering to prevent
  * Android NullPointerException in ViewGroup.dispatchDraw when animated views
