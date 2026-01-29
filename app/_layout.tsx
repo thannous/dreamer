@@ -194,7 +194,9 @@ function RootLayoutNav() {
       const isInJournalDetail =
         currentPath?.startsWith('/journal/') ||
         currentPath?.startsWith('/dream-chat/') ||
-        currentPath?.startsWith('/dream-categories/');
+        currentPath?.startsWith('/dream-categories/') ||
+        currentPath?.startsWith('/symbol-dictionary') ||
+        currentPath?.startsWith('/symbol-detail/');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateToRecording', {
@@ -306,6 +308,8 @@ function RootLayoutNav() {
             <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
+            <Stack.Screen name="symbol-dictionary" options={{ title: 'Symbols' }} />
+            <Stack.Screen name="symbol-detail/[id]" options={{ title: '' }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
           </Stack>

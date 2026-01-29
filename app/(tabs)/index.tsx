@@ -392,6 +392,56 @@ export default function InspirationScreen() {
                 isDesktopLayout && styles.desktopHalfSection,
               ]}
             >
+              <Pressable
+                onPress={() => router.push('/symbol-dictionary' as any)}
+                accessibilityRole="button"
+                accessibilityLabel={t('symbols.dictionary_title')}
+                style={({ pressed }) => [
+                  {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: ThemeLayout.spacing.md,
+                    backgroundColor: colors.backgroundCard,
+                    borderRadius: ThemeLayout.borderRadius.lg,
+                    borderCurve: 'continuous',
+                    padding: ThemeLayout.spacing.md,
+                    opacity: pressed ? 0.85 : 1,
+                  },
+                  shadows.md,
+                ]}
+              >
+                <View
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: ThemeLayout.borderRadius.md,
+                    borderCurve: 'continuous',
+                    backgroundColor: colors.backgroundSecondary,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <IconSymbol name="book.fill" size={22} color={colors.accent} />
+                </View>
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text style={{ fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, color: colors.textPrimary }}>
+                    {t('symbols.dictionary_title')}
+                  </Text>
+                  <Text style={{ fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, color: colors.textSecondary }}>
+                    {t('symbols.dictionary_subtitle')}
+                  </Text>
+                </View>
+                <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} />
+              </Pressable>
+            </View>
+
+            <View
+              style={[
+                styles.sectionSpacing,
+                !isDesktopLayout && styles.mobileSectionPadding,
+                isDesktopLayout && styles.desktopHalfSection,
+              ]}
+            >
               <SectionHeading
                 title={t('inspiration.prompts.title')}
                 subtitle={t('inspiration.prompts.subtitle')}

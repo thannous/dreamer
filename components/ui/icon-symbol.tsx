@@ -35,6 +35,17 @@ const MAPPING = {
   pencil: 'edit',
   'arrow.triangle.2.circlepath': 'autorenew',
   'person.crop.circle.badge.exclamationmark': 'account-circle',
+  // Symbol dictionary category icons
+  'leaf.fill': 'eco',
+  'pawprint.fill': 'pets',
+  'building.2.fill': 'location-city',
+  'cube.fill': 'category',
+  'bolt.fill': 'flash-on',
+  'person.2.fill': 'people',
+  'magnifyingglass': 'search',
+  'xmark.circle.fill': 'cancel',
+  'questionmark.circle.fill': 'help',
+  'arrow.right': 'arrow-forward',
 } as IconMapping;
 
 /**
