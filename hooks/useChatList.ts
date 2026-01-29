@@ -11,7 +11,7 @@ import {
 import { isChatDebugEnabled } from '@/lib/env';
 import type { ChatMessage } from '@/lib/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { NativeModules, Platform } from 'react-native';
+import { Keyboard, NativeModules, Platform } from 'react-native';
 import {
     runOnJS,
     useAnimatedProps,
@@ -105,36 +105,9 @@ export function useKeyboardAwareMessageList() {
   // Try to use keyboard-controller if available
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
 
-    try {
-      // Only attempt to require when the native module is linked (avoids Expo Go crash)
-      if (NativeModules?.KeyboardController) {
-        // Dynamic import to avoid crash if not installed
-        const KeyboardController = require('react-native-keyboard-controller');
-        if (KeyboardController?.KeyboardEvents) {
-          const showSub = KeyboardController.KeyboardEvents.addListener(
-            'keyboardWillShow',
-            (e: { height: number }) => {
-              isKeyboardVisible.set(true);
-              keyboardHeight.set(e.height);
-            }
-          );
-          const hideSub = KeyboardController.KeyboardEvents.addListener(
-            'keyboardWillHide',
-            () => {
-              isKeyboardVisible.set(false);
-              keyboardHeight.set(0);
-            }
-          );
-          unsubscribe = () => {
-            showSub.remove();
-            hideSub.remove();
-          };
-        }
-      }
-    } catch {
-      // Fallback to RN Keyboard API
-      const { Keyboard } = require('react-native');
+    const attachFallback = () => {
       const showSub = Keyboard.addListener(
         Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
         (e: { endCoordinates: { height: number } }) => {
@@ -153,9 +126,48 @@ export function useKeyboardAwareMessageList() {
         showSub.remove();
         hideSub.remove();
       };
-    }
+    };
+
+    const setup = async () => {
+      try {
+        // Only attempt to load when the native module is linked (avoids Expo Go crash)
+        if (NativeModules?.KeyboardController) {
+          const KeyboardController = await import('react-native-keyboard-controller');
+          if (cancelled) return;
+          if (KeyboardController?.KeyboardEvents) {
+            const showSub = KeyboardController.KeyboardEvents.addListener(
+              'keyboardWillShow',
+              (e: { height: number }) => {
+                isKeyboardVisible.set(true);
+                keyboardHeight.set(e.height);
+              }
+            );
+            const hideSub = KeyboardController.KeyboardEvents.addListener(
+              'keyboardWillHide',
+              () => {
+                isKeyboardVisible.set(false);
+                keyboardHeight.set(0);
+              }
+            );
+            unsubscribe = () => {
+              showSub.remove();
+              hideSub.remove();
+            };
+            return;
+          }
+        }
+        attachFallback();
+      } catch {
+        if (!cancelled) {
+          attachFallback();
+        }
+      }
+    };
+
+    void setup();
 
     return () => {
+      cancelled = true;
       unsubscribe?.();
     };
   }, [isKeyboardVisible, keyboardHeight]);
@@ -385,7 +397,7 @@ export function useScrollToBottomButton() {
         scrollToEnd({ animated: true });
       }, 16);
     });
-  }, [scrollToEnd]);
+  }, [debugChat, scrollToEnd]);
 
   return { shouldShowButton: !isNearBottomSnapshot, scrollToBottom };
 }

@@ -163,7 +163,7 @@ export function useSubscriptionExpiryTimer({
     latestUserId = enabled ? userId ?? null : null;
     setLatestStatus(enabled ? status : null);
     scheduleTimer();
-  }, [enabled, status?.tier, status?.expiryDate, userId]);
+  }, [enabled, status, userId]);
 
   useEffect(() => {
     if (!enabled || !onStatusChange) return;

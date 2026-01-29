@@ -50,7 +50,7 @@ export const DreamCard = memo(function DreamCard({
   // Use thumbnail URL for list view, fallback to generating one from full URL
   const imageVersion = useMemo(
     () => getDreamImageVersion(dream),
-    [dream.imageUpdatedAt, dream.analysisRequestId, dream.analyzedAt, dream.id]
+    [dream]
   );
   const thumbnailUri = useMemo(() => (
     getDreamThumbnailUri({
