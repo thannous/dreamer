@@ -68,7 +68,7 @@ export function useFadeInUp(delay = 0) {
       delay,
       withSpring(0, SPRING_CONFIGS.gentle)
     );
-  }, [delay]);
+  }, [delay, opacity, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -93,7 +93,7 @@ export function useModalSlide(visible: boolean) {
       translateY.value = withSpring(300, SPRING_CONFIGS.smooth);
       opacity.value = withTiming(OPACITY.transparent, TIMING_CONFIGS.easeIn);
     }
-  }, [visible]);
+  }, [opacity, translateY, visible]);
 
   const contentStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -135,7 +135,7 @@ export function useStaggeredAnimation(index: number, staggerDelay = 50) {
       delay,
       withSpring(SCALE.default, SPRING_CONFIGS.smooth)
     );
-  }, [index, staggerDelay]);
+  }, [index, opacity, scale, staggerDelay, translateY]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -200,7 +200,7 @@ export function useCrossFade(trigger: any) {
     opacity.value = withTiming(OPACITY.transparent, { duration: 150 }, () => {
       opacity.value = withTiming(OPACITY.full, TIMING_CONFIGS.easeIn);
     });
-  }, [trigger]);
+  }, [opacity, trigger]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,

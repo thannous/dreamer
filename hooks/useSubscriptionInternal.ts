@@ -376,7 +376,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
 
       void run();
     },
-    [getTierFromUser, refreshUser, userId]
+    [getTierFromUser, refreshUser, user, userId]
   );
 
   const syncTier = useCallback(

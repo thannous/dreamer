@@ -258,7 +258,7 @@ export const useDreamJournal = () => {
       persistRemoteDreams,
       queueOfflineOperation,
       resolveRemoteId,
-      user,
+      tier,
     ]
   );
 
@@ -571,7 +571,17 @@ export const useDreamJournal = () => {
         throw error;
       }
     },
-    [dreamsRef, syncPendingMutations, updateDream, user, tier]
+    [
+      canUseRemoteSync,
+      dreamsRef,
+      isMockMode,
+      persistLocalDreams,
+      persistRemoteDreams,
+      syncPendingMutations,
+      updateDream,
+      user,
+      tier,
+    ]
   );
 
   return {

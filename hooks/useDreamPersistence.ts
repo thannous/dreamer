@@ -110,7 +110,7 @@ export function useDreamPersistence({
       }
       return false;
     },
-    [getAccessToken, logger]
+    []
   );
 
   // Keep ref in sync with state
@@ -380,7 +380,7 @@ export function useDreamPersistence({
         setLoaded(true);
       }
     }
-  }, [canUseRemoteSync, authSessionReady, migrateGuestDreamsToSupabase, migrateUnsyncedDreams]);
+  }, [canUseRemoteSync, authSessionReady, ensureAccessToken, migrateGuestDreamsToSupabase, migrateUnsyncedDreams]);
 
   /**
    * Public reload function

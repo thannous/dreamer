@@ -509,15 +509,6 @@ export default function JournalDetailScreen() {
   }, [dream, isAnalysisLocked, updateDream, t]);
 
   // Reference image generation handlers
-  const handleAddSubject = useCallback((type: 'person' | 'animal') => {
-    if (!canUseReference) {
-      return;
-    }
-    setReferenceSubjectType(type);
-    setReferenceImages([]);
-    setShowReferenceSheet(true);
-  }, [canUseReference]);
-
   const handleReferenceImagesSelected = useCallback((images: ReferenceImage[]) => {
     setReferenceImages(images);
   }, []);
@@ -634,7 +625,7 @@ export default function JournalDetailScreen() {
   const imageVersion = useMemo(() => {
     if (!dream?.imageUrl) return undefined;
     return getDreamImageVersion(dream);
-  }, [dream?.analysisRequestId, dream?.analyzedAt, dream?.id, dream?.imageUpdatedAt, dream?.imageUrl]);
+  }, [dream]);
   const imageCacheKey = useMemo(() => {
     if (!dream?.imageUrl || !imageVersion) return undefined;
     return `${dream.imageUrl}|${imageVersion}`;

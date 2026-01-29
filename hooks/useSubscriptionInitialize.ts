@@ -95,7 +95,7 @@ export function useSubscriptionInitialize() {
     return () => {
       mounted = false;
     };
-  }, [user?.id]); // ✅ CRITICAL: Remove refreshUser from dependencies
+  }, [user?.id, isMockMode]); // ✅ CRITICAL: Remove refreshUser from dependencies
 
   return { initialized, error };
 }

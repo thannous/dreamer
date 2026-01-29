@@ -33,7 +33,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const baseTarget = useMemo(() => normalizeTarget(targetInput), [targetInput?.dream, targetInput?.dreamId]);
+  const baseTarget = useMemo(() => normalizeTarget(targetInput), [targetInput]);
   const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
 
   const resolveTarget = useCallback(

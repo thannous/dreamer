@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTranslator, loadTranslations } from '@/lib/i18n';
 import { useLanguage } from '@/context/LanguageContext';
 
 export const useTranslation = () => {
   const { language } = useLanguage();
-  const [revision, setRevision] = useState(0);
+  const [, setRevision] = useState(0);
 
   useEffect(() => {
     if (language === 'en') {
@@ -24,6 +24,6 @@ export const useTranslation = () => {
     };
   }, [language]);
 
-  const t = useMemo(() => getTranslator(language), [language, revision]);
+  const t = getTranslator(language);
   return { t, currentLang: language };
 };
