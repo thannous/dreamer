@@ -1291,6 +1291,31 @@ function loadCurationData() {
   return JSON.parse(fs.readFileSync(curationPath, 'utf8'));
 }
 
+function validateCurationDataOrExit(curationData, allSymbols) {
+  const pages = Array.isArray(curationData?.pages) ? curationData.pages : [];
+  const symbolIds = new Set((allSymbols || []).map(s => s.id));
+
+  const problems = [];
+  for (const page of pages) {
+    const pageId = page?.id || '(unknown-page-id)';
+    const ids = Array.isArray(page?.symbols) ? page.symbols : [];
+    const missing = ids.filter(id => !symbolIds.has(id));
+    if (missing.length > 0) {
+      problems.push({ pageId, missing });
+    }
+  }
+
+  if (problems.length === 0) return;
+
+  // Fail fast: otherwise we silently drop missing symbols and render inconsistent counts.
+  console.error('\n❌ Invalid data/curation-pages.json: unknown symbol ids referenced:\n');
+  for (const p of problems) {
+    console.error(`- ${p.pageId}: ${p.missing.join(', ')}`);
+  }
+  console.error('\nFix by adding the missing symbols to data/dream-symbols.json (and ideally data/dream-symbols-extended.json), or removing them from curation-pages.json.\n');
+  process.exit(1);
+}
+
 // Generate hreflang URLs for a curation page
 function generateCurationHreflangUrls(page) {
   return {
@@ -1312,6 +1337,13 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const resolvedSymbols = page.symbols
     .map(id => allSymbols.find(s => s.id === id))
     .filter(Boolean);
+
+  // Safety net: keep counts and rendered content consistent.
+  if (resolvedSymbols.length !== symbolsCount) {
+    const resolvedIds = new Set(resolvedSymbols.map(s => s.id));
+    const missing = page.symbols.filter(id => !resolvedIds.has(id));
+    throw new Error(`Curation "${page.id}" references unknown symbols: ${missing.join(', ')}`);
+  }
 
   // Language dropdown
   const langItems = {
@@ -1651,6 +1683,7 @@ function generateCurationPages(symbols, i18n, extended, languages) {
   console.log('\n📋 Generating curation pages...\n');
 
   const curationData = loadCurationData();
+  validateCurationDataOrExit(curationData, symbols.symbols);
   let generated = 0;
   let errors = 0;
 
