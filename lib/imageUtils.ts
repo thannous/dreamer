@@ -75,7 +75,7 @@ export function getThumbnailUrl(imageUrl: string, size: number = THUMBNAIL_SIZE)
     // expo-image will handle caching and optimization
     return imageUrl;
 
-  } catch (error) {
+  } catch {
     // If URL parsing fails (e.g., data URL), return original
     return imageUrl;
   }

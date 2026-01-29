@@ -62,7 +62,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
         return fallback;
       }
 
-      const rows = Array.isArray(data) ? (data as Array<{ quota_type?: string; quota_limit?: number | null }>) : [];
+      const rows = Array.isArray(data) ? (data as { quota_type?: string; quota_limit?: number | null }[]) : [];
 
       const limits: TierMonthlyLimits = { ...fallback };
       rows.forEach((row) => {
@@ -284,7 +284,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
           .single();
 
         if (!error && data && Array.isArray(data.chat_history)) {
-          return (data.chat_history as Array<{ role: string }>).filter((msg) => msg.role === 'user').length;
+          return (data.chat_history as { role: string }[]).filter((msg) => msg.role === 'user').length;
         }
       }
 

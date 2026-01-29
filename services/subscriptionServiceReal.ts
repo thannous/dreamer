@@ -2,9 +2,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
 
-import { REVENUECAT_ENTITLEMENT_ID } from '@/constants/subscription';
 import {
-  getActiveEntitlement as getActiveEntitlementPure,
   mapPackage as mapPackagePure,
   mapStatus as mapStatusPure,
   type CustomerInfoLike,
@@ -36,7 +34,6 @@ if (!globalAny[RC_GLOBAL_KEY]) {
 const persistedState = globalAny[RC_GLOBAL_KEY]!;
 
 let ensureConfiguredQueue: Promise<void> = Promise.resolve();
-let cachedStatus: SubscriptionStatus | null = null;
 let cachedPackages: InternalPackage[] = [];
 // Keep a live listener-driven cache up to date with RevenueCat (source of truth)
 let customerInfoListener: ((info: CustomerInfo) => void) | null = null;
@@ -46,7 +43,6 @@ function isAnonymousAppUserId(appUserId: string | null | undefined): boolean {
 }
 
 function resetCachedState(): void {
-  cachedStatus = null;
   cachedPackages = [];
 }
 
@@ -101,7 +97,7 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
     // RevenueCat changes immediately (e.g., purchases on another device).
     if (!customerInfoListener) {
       customerInfoListener = (info: CustomerInfo) => {
-        cachedStatus = mapStatus(info);
+        void mapStatus(info);
       };
       Purchases.addCustomerInfoUpdateListener(customerInfoListener);
     }
@@ -202,7 +198,6 @@ function mapPackage(pkg: PurchasesPackage): InternalPackage {
 async function fetchStatus(): Promise<SubscriptionStatus> {
   const info = await Purchases.getCustomerInfo();
   const status = mapStatus(info);
-  cachedStatus = status;
   return status;
 }
 
@@ -271,7 +266,6 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   }
   const { customerInfo } = await Purchases.purchasePackage(internal.pkg);
   const status = mapStatus(customerInfo);
-  cachedStatus = status;
   return status;
 }
 
@@ -282,7 +276,6 @@ export async function restorePurchases(): Promise<SubscriptionStatus> {
   await assertIdentifiedUser();
   const info = await Purchases.restorePurchases();
   const status = mapStatus(info);
-  cachedStatus = status;
   return status;
 }
 
