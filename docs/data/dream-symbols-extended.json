@@ -3153,16 +3153,406 @@
     },
     "crying": {
       "en": {
-        "fullInterpretation": "<p>Crying in dreams is a powerful experience representing emotional release and healing.</p>",
-        "variations": []
+        "fullInterpretation": "<p>Crying in dreams is a powerful and emotionally significant experience that often represents our need for emotional release, healing, and the acknowledgment of feelings we may be suppressing in waking life. While crying is often associated with sadness, tears in dreams can emerge from a wide range of emotions including grief, relief, joy, frustration, or overwhelming stress. The act of crying in a dream frequently serves as a cathartic experience, allowing emotions that have been bottled up to finally find expression.</p>\n<p>When you dream of crying, consider what you might be holding back emotionally in your waking life. Our dreams often give voice to feelings we've been unable or unwilling to express during our conscious hours. You might be carrying unexpressed grief, accumulated stress, or emotions you've deemed \"inappropriate\" or \"too vulnerable\" to show. The dream crying can be your psyche's way of insisting that these feelings need acknowledgment and release.</p>\n<p>The context of your crying matters significantly. Crying tears of sadness might represent unprocessed grief or disappointment, while crying tears of joy could indicate relief, accomplishment, or emotional breakthrough. Crying without knowing why in a dream often points to emotions so deep or so suppressed that you haven't yet brought them to conscious awareness. Trying to cry but being unable to produce tears might suggest emotional blockage or difficulty accessing and expressing your true feelings.</p>\n<p>Interestingly, crying in dreams can actually be a positive sign of emotional health and processing. It suggests your psyche is working through emotions rather than completely repressing them. Many people report feeling emotionally lighter after dreams involving crying, even if they wake with tears on their face. This cathartic release, even in the dream state, can provide genuine emotional relief and signal a movement toward healing.</p>",
+        "variations": [
+          {
+            "context": "Crying from sadness or grief",
+            "meaning": "Represents processing loss, expressing buried sorrow, acknowledging pain, or releasing accumulated grief. May indicate healing from emotional wounds."
+          },
+          {
+            "context": "Crying tears of joy",
+            "meaning": "Suggests emotional breakthrough, profound relief, achievement, gratitude, or the release of happy emotions you've been unable to fully express."
+          },
+          {
+            "context": "Crying alone",
+            "meaning": "May indicate feeling isolated with your emotions, processing feelings privately, or needing personal space to work through emotions without judgment."
+          },
+          {
+            "context": "Crying in front of others",
+            "meaning": "Could represent vulnerability, fear of judgment, need for support, or finally allowing others to see your true emotional state."
+          },
+          {
+            "context": "Unable to stop crying",
+            "meaning": "Suggests overwhelming emotions, feeling out of control, pent-up feelings demanding release, or reaching an emotional breaking point that needs attention."
+          },
+          {
+            "context": "Trying but unable to cry",
+            "meaning": "Often indicates emotional blockage, difficulty expressing feelings, numbness, or disconnection from your emotional self that may need addressing."
+          },
+          {
+            "context": "Someone else crying",
+            "meaning": "Might reflect your empathy, recognizing emotional pain in others, aspects of yourself you're witnessing, or unexpressed emotions projected onto others."
+          }
+        ]
       },
       "fr": {
-        "fullInterpretation": "<p>Pleurer dans les rêves est une expérience puissante représentant la libération émotionnelle et la guérison.</p>",
-        "variations": []
+        "fullInterpretation": "<p>Pleurer dans les rêves est une expérience puissante et émotionnellement significative qui représente souvent notre besoin de libération émotionnelle, de guérison et de reconnaissance des sentiments que nous pourrions supprimer dans la vie éveillée. Bien que pleurer soit souvent associé à la tristesse, les larmes dans les rêves peuvent émerger d'un large éventail d'émotions, y compris le chagrin, le soulagement, la joie, la frustration ou le stress écrasant. L'acte de pleurer dans un rêve sert fréquemment d'expérience cathartique, permettant aux émotions qui ont été refoulées de finalement trouver expression.</p>\n<p>Lorsque vous rêvez de pleurer, considérez ce que vous pourriez retenir émotionnellement dans votre vie éveillée. Nos rêves donnent souvent voix aux sentiments que nous avons été incapables ou réticents à exprimer pendant nos heures conscientes. Vous pourriez porter un chagrin non exprimé, un stress accumulé ou des émotions que vous avez jugées \"inappropriées\" ou \"trop vulnérables\" à montrer. Le fait de pleurer dans le rêve peut être la façon de votre psyché d'insister sur le fait que ces sentiments ont besoin de reconnaissance et de libération.</p>\n<p>Le contexte de vos pleurs compte beaucoup. Pleurer des larmes de tristesse pourrait représenter un chagrin ou une déception non traités, tandis que pleurer des larmes de joie pourrait indiquer un soulagement, un accomplissement ou une percée émotionnelle. Pleurer sans savoir pourquoi dans un rêve pointe souvent vers des émotions si profondes ou si supprimées que vous ne les avez pas encore amenées à la conscience. Essayer de pleurer mais être incapable de produire des larmes pourrait suggérer un blocage émotionnel ou une difficulté à accéder et à exprimer vos vrais sentiments.</p>\n<p>Curieusement, pleurer dans les rêves peut en fait être un signe positif de santé émotionnelle et de traitement. Cela suggère que votre psyché travaille à travers les émotions plutôt que de les réprimer complètement. De nombreuses personnes rapportent se sentir émotionnellement plus légères après des rêves impliquant des pleurs, même si elles se réveillent avec des larmes sur le visage. Cette libération cathartique, même dans l'état de rêve, peut fournir un véritable soulagement émotionnel et signaler un mouvement vers la guérison.</p>",
+        "variations": [
+          {
+            "context": "Pleurer de tristesse ou de chagrin",
+            "meaning": "Représente le traitement de la perte, l'expression de la tristesse enfouie, la reconnaissance de la douleur, ou la libération du chagrin accumulé. Peut indiquer une guérison de blessures émotionnelles."
+          },
+          {
+            "context": "Pleurer des larmes de joie",
+            "meaning": "Suggère une percée émotionnelle, un soulagement profond, un accomplissement, de la gratitude, ou la libération d'émotions heureuses que vous avez été incapable d'exprimer pleinement."
+          },
+          {
+            "context": "Pleurer seul",
+            "meaning": "Peut indiquer se sentir isolé avec vos émotions, traiter des sentiments en privé, ou avoir besoin d'espace personnel pour travailler à travers les émotions sans jugement."
+          },
+          {
+            "context": "Pleurer devant les autres",
+            "meaning": "Pourrait représenter la vulnérabilité, la peur du jugement, le besoin de soutien, ou finalement permettre aux autres de voir votre véritable état émotionnel."
+          },
+          {
+            "context": "Incapable d'arrêter de pleurer",
+            "meaning": "Suggère des émotions écrasantes, sentiment d'être hors de contrôle, sentiments refoulés exigeant une libération, ou atteindre un point de rupture émotionnel qui nécessite attention."
+          },
+          {
+            "context": "Essayer mais incapable de pleurer",
+            "meaning": "Indique souvent un blocage émotionnel, difficulté à exprimer des sentiments, engourdissement, ou déconnexion de votre moi émotionnel qui peut nécessiter attention."
+          },
+          {
+            "context": "Quelqu'un d'autre qui pleure",
+            "meaning": "Pourrait refléter votre empathie, reconnaître la douleur émotionnelle chez les autres, des aspects de vous-même que vous observez, ou des émotions non exprimées projetées sur les autres."
+          }
+        ]
       },
       "es": {
-        "fullInterpretation": "<p>Llorar en sueños es una experiencia poderosa que representa liberación emocional y sanación.</p>",
-        "variations": []
+        "fullInterpretation": "<p>Llorar en sueños es una experiencia poderosa y emocionalmente significativa que a menudo representa nuestra necesidad de liberación emocional, sanación y el reconocimiento de sentimientos que podemos estar suprimiendo en la vida despierta. Aunque llorar a menudo se asocia con tristeza, las lágrimas en sueños pueden emerger de una amplia gama de emociones incluyendo dolor, alivio, alegría, frustración o estrés abrumador. El acto de llorar en un sueño frecuentemente sirve como una experiencia catártica, permitiendo que emociones que han estado embotelladas finalmente encuentren expresión.</p>\n<p>Cuando sueñas con llorar, considera qué podrías estar reteniendo emocionalmente en tu vida despierta. Nuestros sueños a menudo dan voz a sentimientos que hemos sido incapaces o reacios a expresar durante nuestras horas conscientes. Podrías estar llevando dolor no expresado, estrés acumulado, o emociones que has considerado \"inapropiadas\" o \"demasiado vulnerables\" para mostrar. El llanto en el sueño puede ser la forma de tu psique de insistir que estos sentimientos necesitan reconocimiento y liberación.</p>\n<p>El contexto de tu llanto importa significativamente. Llorar lágrimas de tristeza podría representar dolor o decepción no procesados, mientras que llorar lágrimas de alegría podría indicar alivio, logro o avance emocional. Llorar sin saber por qué en un sueño a menudo apunta a emociones tan profundas o tan suprimidas que aún no las has traído a la conciencia. Intentar llorar pero ser incapaz de producir lágrimas podría sugerir bloqueo emocional o dificultad para acceder y expresar tus verdaderos sentimientos.</p>\n<p>Curiosamente, llorar en sueños puede ser en realidad una señal positiva de salud emocional y procesamiento. Sugiere que tu psique está trabajando a través de emociones en lugar de reprimirlas completamente. Muchas personas reportan sentirse emocionalmente más ligeras después de sueños que involucran llanto, incluso si despiertan con lágrimas en la cara. Esta liberación catártica, incluso en el estado de sueño, puede proporcionar alivio emocional genuino y señalar un movimiento hacia la sanación.</p>",
+        "variations": [
+          {
+            "context": "Llorar por tristeza o dolor",
+            "meaning": "Representa procesar pérdida, expresar tristeza enterrada, reconocer dolor, o liberar dolor acumulado. Puede indicar sanación de heridas emocionales."
+          },
+          {
+            "context": "Llorar lágrimas de alegría",
+            "meaning": "Sugiere avance emocional, alivio profundo, logro, gratitud, o liberación de emociones felices que has sido incapaz de expresar completamente."
+          },
+          {
+            "context": "Llorar solo",
+            "meaning": "Puede indicar sentirse aislado con tus emociones, procesar sentimientos en privado, o necesitar espacio personal para trabajar a través de emociones sin juicio."
+          },
+          {
+            "context": "Llorar frente a otros",
+            "meaning": "Podría representar vulnerabilidad, miedo al juicio, necesidad de apoyo, o finalmente permitir a otros ver tu verdadero estado emocional."
+          },
+          {
+            "context": "Incapaz de dejar de llorar",
+            "meaning": "Sugiere emociones abrumadoras, sentirse fuera de control, sentimientos reprimidos exigiendo liberación, o alcanzar un punto de quiebre emocional que necesita atención."
+          },
+          {
+            "context": "Intentar pero incapaz de llorar",
+            "meaning": "A menudo indica bloqueo emocional, dificultad para expresar sentimientos, entumecimiento, o desconexión de tu yo emocional que puede necesitar atención."
+          },
+          {
+            "context": "Alguien más llorando",
+            "meaning": "Podría reflejar tu empatía, reconocer dolor emocional en otros, aspectos de ti mismo que estás presenciando, o emociones no expresadas proyectadas en otros."
+          }
+        ]
+      }
+    },
+    "elevator": {
+      "en": {
+        "fullInterpretation": "<p>Elevators in dreams represent transitions, changes in status or perspective, and movement between different levels of consciousness. Unlike stairs which involve gradual progression, elevators offer rapid transitions between different states. This makes them potent symbols for modern life where changes in status or understanding can happen quickly.</p>\n<p>Going up typically symbolizes advancement, promotion, or spiritual elevation. You might be experiencing career success or gaining new perspectives. Rising in an elevator reflects progress and moving up in life.</p>\n<p>Descending can represent exploring deeper emotions, confronting buried memories, or grounding yourself. While sometimes anxiety-provoking, going down isn't always negative. However, plummeting rapidly often reflects fears of failure or sudden setbacks.</p>\n<p>A smooth elevator suggests comfortable transitions and confidence. A malfunctioning one represents feeling stuck in transitions or anxiety about situations beyond your control. Being trapped can symbolize feeling caught between life stages.</p>",
+        "variations": [
+          {
+            "context": "Elevator going up",
+            "meaning": "Represents advancement, success, rising status, spiritual elevation, or positive life changes. Suggests moving toward achievement."
+          },
+          {
+            "context": "Elevator going down",
+            "meaning": "May indicate exploring deeper emotions, confronting unconscious material, grounding yourself, or fear of decline."
+          },
+          {
+            "context": "Elevator out of control",
+            "meaning": "Suggests life changes happening too fast, lack of control, or anxiety about rapid transitions."
+          },
+          {
+            "context": "Stuck elevator",
+            "meaning": "Represents feeling caught in transition, unable to progress, or stuck between life stages."
+          },
+          {
+            "context": "Elevator plummeting",
+            "meaning": "Reflects fear of failure, sudden loss, or anxiety about rapid decline."
+          },
+          {
+            "context": "Crowded elevator",
+            "meaning": "May represent social pressures, lack of personal space, or being influenced by others."
+          },
+          {
+            "context": "Wrong floor",
+            "meaning": "Could indicate unexpected outcomes, not arriving where intended, or need to reassess direction."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les ascenseurs dans les rêves représentent les transitions, les changements de statut ou de perspective, et le mouvement entre différents niveaux de conscience. Contrairement aux escaliers qui impliquent une progression graduelle, les ascenseurs offrent des transitions rapides. Cela en fait des symboles puissants pour la vie moderne.</p>\n<p>Monter symbolise généralement l'avancement, la promotion ou l'élévation spirituelle. Vous pourriez connaître un succès professionnel ou acquérir de nouvelles perspectives. Monter reflète le progrès.</p>\n<p>Descendre peut représenter l'exploration d'émotions plus profondes, la confrontation de souvenirs enfouis ou l'ancrage de soi. Bien que parfois source d'anxiété, descendre n'est pas toujours négatif. Cependant, plonger rapidement reflète souvent des peurs d'échec.</p>\n<p>Un ascenseur fluide suggère des transitions confortables. Un ascenseur défectueux représente le sentiment d'être coincé dans des transitions ou l'anxiété face à des situations hors de contrôle. Être piégé peut symboliser se sentir pris entre différentes étapes de vie.</p>",
+        "variations": [
+          {
+            "context": "Ascenseur qui monte",
+            "meaning": "Représente l'avancement, le succès, la montée en statut, ou des changements positifs."
+          },
+          {
+            "context": "Ascenseur qui descend",
+            "meaning": "Peut indiquer l'exploration d'émotions profondes, l'ancrage de soi, ou la peur du déclin."
+          },
+          {
+            "context": "Ascenseur hors de contrôle",
+            "meaning": "Suggère que les changements se produisent trop vite ou manque de contrôle."
+          },
+          {
+            "context": "Ascenseur bloqué",
+            "meaning": "Représente se sentir pris dans la transition ou coincé entre les étapes de vie."
+          },
+          {
+            "context": "Ascenseur qui plonge",
+            "meaning": "Reflète la peur de l'échec, la perte soudaine, ou l'anxiété face au déclin."
+          },
+          {
+            "context": "Ascenseur bondé",
+            "meaning": "Peut représenter les pressions sociales ou le manque d'espace personnel."
+          },
+          {
+            "context": "Mauvais étage",
+            "meaning": "Pourrait indiquer des résultats inattendus ou besoin de réévaluer la direction."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los ascensores en sueños representan transiciones, cambios en estatus o perspectiva, y movimiento entre niveles de conciencia. A diferencia de las escaleras que implican progresión gradual, los ascensores ofrecen transiciones rápidas. Esto los hace símbolos potentes para la vida moderna.</p>\n<p>Subir típicamente simboliza avance, promoción o elevación espiritual. Podrías estar experimentando éxito profesional o ganando nuevas perspectivas. Subir refleja progreso.</p>\n<p>Descender puede representar explorar emociones más profundas, confrontar memorias enterradas o fundamentarse. Aunque a veces provoca ansiedad, bajar no siempre es negativo. Sin embargo, caer rápidamente refleja miedos de fracaso.</p>\n<p>Un ascensor suave sugiere transiciones cómodas. Un ascensor que funciona mal representa sentirse atascado en transiciones o ansiedad sobre situaciones fuera de control. Estar atrapado puede simbolizar sentirse atrapado entre etapas de vida.</p>",
+        "variations": [
+          {
+            "context": "Ascensor subiendo",
+            "meaning": "Representa avance, éxito, aumento de estatus, o cambios positivos."
+          },
+          {
+            "context": "Ascensor bajando",
+            "meaning": "Puede indicar explorar emociones profundas, fundamentarse, o miedo al declive."
+          },
+          {
+            "context": "Ascensor fuera de control",
+            "meaning": "Sugiere cambios sucediendo demasiado rápido o falta de control."
+          },
+          {
+            "context": "Ascensor atascado",
+            "meaning": "Representa sentirse atrapado en transición o entre etapas de vida."
+          },
+          {
+            "context": "Ascensor cayendo",
+            "meaning": "Refleja miedo al fracaso, pérdida repentina, o ansiedad sobre declive."
+          },
+          {
+            "context": "Ascensor lleno",
+            "meaning": "Puede representar presiones sociales o falta de espacio personal."
+          },
+          {
+            "context": "Piso equivocado",
+            "meaning": "Podría indicar resultados inesperados o necesidad de reevaluar dirección."
+          }
+        ]
+      }
+    },
+    "cliff": {
+      "en": {
+        "fullInterpretation": "<p>Cliffs in dreams represent major decisions, significant risks, and standing at the precipice of change. This powerful imagery captures being at a crucial turning point where decisions will have significant consequences.</p>\n<p>When you dream of a cliff, you're confronting questions about risk, safety, and courage. The cliff edge represents a threshold between your current situation and unknown territory. Looking over the edge embodies uncertainty and potential danger.</p>\n<p>Your actions at the cliff reveal how you're approaching important decisions. Standing frozen reflects feeling paralyzed by choices. Backing away suggests choosing safety over risk. Preparing to jump could represent readiness to take a leap of faith.</p>\n<p>The cliff's condition matters significantly. A crumbling edge suggests unstable situations. A cliff with a visible path down indicates navigable challenges. Beautiful scenery might represent rewards awaiting courage, while dark depths symbolize fear of consequences.</p>",
+        "variations": [
+          {
+            "context": "Standing at cliff edge",
+            "meaning": "Represents facing major decisions, weighing risks, or being at a critical turning point."
+          },
+          {
+            "context": "Falling off cliff",
+            "meaning": "Often symbolizes loss of control, fear of failure, or unwanted change."
+          },
+          {
+            "context": "Jumping deliberately",
+            "meaning": "Suggests taking a leap of faith, embracing change, or leaving safety for growth."
+          },
+          {
+            "context": "Climbing up cliff",
+            "meaning": "Indicates working toward goals despite difficulty or overcoming obstacles."
+          },
+          {
+            "context": "Cliff crumbling",
+            "meaning": "Represents deteriorating circumstances or foundations giving way."
+          },
+          {
+            "context": "Beautiful view",
+            "meaning": "Suggests rewards await courageous choices or gaining perspective."
+          },
+          {
+            "context": "Someone pushing you",
+            "meaning": "May indicate feeling pressured into decisions or external forces affecting choices."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Les falaises dans les rêves représentent des décisions majeures, des risques significatifs et se tenir au précipice du changement. Cette imagerie capture être à un moment crucial où les décisions auront des conséquences significatives.</p>\n<p>Lorsque vous rêvez d'une falaise, vous confrontez des questions sur le risque, la sécurité et le courage. Le bord de la falaise représente un seuil entre votre situation actuelle et un territoire inconnu.</p>\n<p>Vos actions à la falaise révèlent comment vous approchez des décisions importantes. Se tenir figé reflète se sentir paralysé. S'éloigner suggère choisir la sécurité. Se préparer à sauter pourrait représenter la disposition à faire un saut de foi.</p>\n<p>La condition de la falaise compte beaucoup. Un bord qui s'effrite suggère des situations instables. Une falaise avec un chemin visible indique des défis navigables. Un beau paysage pourrait représenter des récompenses qui attendent le courage.</p>",
+        "variations": [
+          {
+            "context": "Se tenir au bord",
+            "meaning": "Représente faire face à des décisions majeures ou être à un tournant critique."
+          },
+          {
+            "context": "Tomber d'une falaise",
+            "meaning": "Symbolise souvent la perte de contrôle ou la peur de l'échec."
+          },
+          {
+            "context": "Sauter délibérément",
+            "meaning": "Suggère faire un saut de foi ou embrasser le changement."
+          },
+          {
+            "context": "Grimper une falaise",
+            "meaning": "Indique travailler vers des objectifs malgré la difficulté."
+          },
+          {
+            "context": "Falaise qui s'effrite",
+            "meaning": "Représente des circonstances se détériorant."
+          },
+          {
+            "context": "Belle vue",
+            "meaning": "Suggère que des récompenses attendent les choix courageux."
+          },
+          {
+            "context": "Quelqu'un vous pousse",
+            "meaning": "Peut indiquer se sentir pressé dans les décisions."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Los acantilados en sueños representan decisiones importantes, riesgos significativos y estar al precipicio del cambio. Esta imaginería captura estar en un punto crucial donde las decisiones tendrán consecuencias significativas.</p>\n<p>Cuando sueñas con un acantilado, confrontas preguntas sobre riesgo, seguridad y coraje. El borde del acantilado representa un umbral entre tu situación actual y territorio desconocido.</p>\n<p>Tus acciones en el acantilado revelan cómo abordas decisiones importantes. Estar congelado refleja sentirse paralizado. Alejarse sugiere elegir seguridad. Prepararse para saltar podría representar estar listo para dar un salto de fe.</p>\n<p>La condición del acantilado importa significativamente. Un borde desmoronándose sugiere situaciones inestables. Un acantilado con camino visible indica desafíos navegables. Un hermoso paisaje podría representar recompensas que esperan al coraje.</p>",
+        "variations": [
+          {
+            "context": "Estar al borde",
+            "meaning": "Representa enfrentar decisiones importantes o estar en punto crítico."
+          },
+          {
+            "context": "Caer de acantilado",
+            "meaning": "A menudo simboliza pérdida de control o miedo al fracaso."
+          },
+          {
+            "context": "Saltar deliberadamente",
+            "meaning": "Sugiere dar un salto de fe o abrazar el cambio."
+          },
+          {
+            "context": "Escalar acantilado",
+            "meaning": "Indica trabajar hacia metas a pesar de la dificultad."
+          },
+          {
+            "context": "Acantilado desmoronándose",
+            "meaning": "Representa circunstancias deteriorándose."
+          },
+          {
+            "context": "Vista hermosa",
+            "meaning": "Sugiere que recompensas esperan elecciones valientes."
+          },
+          {
+            "context": "Alguien empujándote",
+            "meaning": "Puede indicar sentirse presionado hacia decisiones."
+          }
+        ]
+      }
+    },
+    "lost": {
+      "en": {
+        "fullInterpretation": "<p>Being lost in dreams taps into fundamental anxieties about direction, purpose, and certainty. Whether lost in an unfamiliar city, wandering through a maze, or unable to find home, these dreams reflect confusion or lack of clarity about your path in life.</p>\n<p>Dreams of being lost often emerge during transitions or when facing significant decisions. You might be uncertain about career direction, questioning relationships, or feeling disconnected from your purpose. The dream captures anxiety about not knowing which way to go.</p>\n<p>The location matters significantly. Lost in a city relates to social confusion or career uncertainty. Lost in nature connects to feeling adrift from your authentic self. Lost in a building might represent identity confusion or difficulty navigating your psychological landscape.</p>\n<p>Your emotional response matters. Panic suggests uncertainty feels threatening. Calm curiosity indicates comfort with not knowing. Desperately seeking help versus wandering alone reflects whether you feel isolated or connected to support.</p>",
+        "variations": [
+          {
+            "context": "Lost in city",
+            "meaning": "Often represents social confusion, career uncertainty, or feeling overwhelmed by modern life."
+          },
+          {
+            "context": "Lost in nature",
+            "meaning": "Suggests disconnection from authentic self, spiritual confusion, or being overwhelmed by emotions."
+          },
+          {
+            "context": "Can't find home",
+            "meaning": "May indicate disconnection from roots, uncertainty about belonging, or difficulty finding security."
+          },
+          {
+            "context": "Lost in maze",
+            "meaning": "Represents feeling trapped in complex situations or circular thinking."
+          },
+          {
+            "context": "No idea where you are",
+            "meaning": "Suggests complete disorientation or profound uncertainty about direction."
+          },
+          {
+            "context": "Eventually finding way",
+            "meaning": "Indicates trust in ability to find direction or optimism about eventual clarity."
+          },
+          {
+            "context": "Others lost but you know way",
+            "meaning": "Could represent feeling more clarity than others or confidence in your direction."
+          }
+        ]
+      },
+      "fr": {
+        "fullInterpretation": "<p>Être perdu dans les rêves puise dans des anxiétés fondamentales concernant la direction, le but et la certitude. Que vous soyez perdu dans une ville inconnue, errant dans un labyrinthe, ou incapable de trouver la maison, ces rêves reflètent la confusion sur votre chemin.</p>\n<p>Les rêves d'être perdu émergent souvent pendant des transitions ou lors de décisions importantes. Vous pourriez être incertain de la direction de carrière, remettre en question des relations, ou vous sentir déconnecté de votre but.</p>\n<p>L'endroit compte beaucoup. Perdu dans une ville se rapporte à la confusion sociale. Perdu dans la nature se connecte au sentiment de dériver de votre moi authentique. Perdu dans un bâtiment pourrait représenter la confusion d'identité.</p>\n<p>Votre réponse émotionnelle compte. La panique suggère que l'incertitude semble menaçante. Une curiosité calme indique être à l'aise avec le fait de ne pas savoir. Chercher désespérément de l'aide versus errer seul reflète si vous vous sentez isolé.</p>",
+        "variations": [
+          {
+            "context": "Perdu dans une ville",
+            "meaning": "Représente souvent confusion sociale ou incertitude de carrière."
+          },
+          {
+            "context": "Perdu dans la nature",
+            "meaning": "Suggère déconnexion du moi authentique ou confusion spirituelle."
+          },
+          {
+            "context": "Incapable de trouver la maison",
+            "meaning": "Peut indiquer déconnexion des racines ou incertitude sur l'appartenance."
+          },
+          {
+            "context": "Perdu dans un labyrinthe",
+            "meaning": "Représente se sentir piégé dans situations complexes."
+          },
+          {
+            "context": "Aucune idée de où vous êtes",
+            "meaning": "Suggère désorientation complète ou incertitude profonde."
+          },
+          {
+            "context": "Finalement trouver le chemin",
+            "meaning": "Indique confiance en capacité de trouver la direction."
+          },
+          {
+            "context": "Les autres sont perdus mais vous connaissez le chemin",
+            "meaning": "Pourrait représenter plus de clarté que les autres."
+          }
+        ]
+      },
+      "es": {
+        "fullInterpretation": "<p>Estar perdido en sueños aprovecha ansiedades fundamentales sobre dirección, propósito y certeza. Ya sea perdido en una ciudad desconocida, vagando por un laberinto, o incapaz de encontrar el hogar, estos sueños reflejan confusión sobre tu camino.</p>\n<p>Los sueños de estar perdido emergen durante transiciones o al enfrentar decisiones significativas. Podrías estar incierto sobre dirección profesional, cuestionando relaciones, o sintiéndote desconectado de tu propósito.</p>\n<p>El lugar importa significativamente. Perdido en ciudad se relaciona con confusión social. Perdido en naturaleza conecta con sentirse a la deriva del yo auténtico. Perdido en edificio podría representar confusión de identidad.</p>\n<p>Tu respuesta emocional importa. Pánico sugiere que incertidumbre se siente amenazante. Curiosidad tranquila indica comodidad con no saber. Buscar ayuda desesperadamente versus vagar solo refleja si te sientes aislado.</p>",
+        "variations": [
+          {
+            "context": "Perdido en ciudad",
+            "meaning": "A menudo representa confusión social o incertidumbre profesional."
+          },
+          {
+            "context": "Perdido en naturaleza",
+            "meaning": "Sugiere desconexión del yo auténtico o confusión espiritual."
+          },
+          {
+            "context": "Incapaz de encontrar hogar",
+            "meaning": "Puede indicar desconexión de raíces o incertidumbre sobre pertenencia."
+          },
+          {
+            "context": "Perdido en laberinto",
+            "meaning": "Representa sentirse atrapado en situaciones complejas."
+          },
+          {
+            "context": "Sin idea de dónde estás",
+            "meaning": "Sugiere desorientación completa o incertidumbre profunda."
+          },
+          {
+            "context": "Eventualmente encontrar camino",
+            "meaning": "Indica confianza en capacidad de encontrar dirección."
+          },
+          {
+            "context": "Otros perdidos pero tú conoces camino",
+            "meaning": "Podría representar más claridad que otros."
+          }
+        ]
       }
     }
   }
