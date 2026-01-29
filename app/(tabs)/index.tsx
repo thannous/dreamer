@@ -333,12 +333,15 @@ export default function InspirationScreen() {
         titleKey="inspiration.title"
         showAnimations={showAnimations}
         topSpacing={ThemeLayout.spacing.md}
-        style={{ paddingBottom: ThemeLayout.spacing.md }}
+        style={styles.pageHeader}
       />
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={{ paddingBottom: scrollContentBottomPadding }}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: scrollContentBottomPadding },
+        ]}
       >
         <ScreenContainer
           style={[
@@ -601,7 +604,7 @@ function PopularSymbolsSection({
                     backgroundColor: `${colors.backgroundCard}B3`,
                     borderColor: colors.divider,
                   },
-                  pressed && { transform: [{ scale: 0.95 }], opacity: 0.85 },
+                  pressed && styles.symbolCardPressed,
                 ]}
                 accessibilityRole="button"
                 accessibilityLabel={content.name}
@@ -676,21 +679,18 @@ function RitualScrollSection({
           const progressRatio =
             totalSteps > 0 ? completedCount / totalSteps : 0;
           const iconName = RITUAL_ICONS[ritual.id] ?? "moon.stars.fill";
+          const ritualCardStyle = StyleSheet.flatten([
+            styles.ritualCard,
+            isActive && styles.ritualCardActive,
+            isActive && { borderColor: colors.accent },
+          ]);
 
           return (
             <GlassCard
               key={ritual.id}
               intensity="subtle"
               disableShadow
-              style={{
-                ...styles.ritualCard,
-                ...(isActive
-                  ? {
-                      borderColor: colors.accent,
-                      borderWidth: 1.5,
-                    }
-                  : undefined),
-              }}
+              style={ritualCardStyle}
               enableAnimation={true}
               animationDelay={120 * index}
               onPress={() => router.push(`/ritual/${ritual.id}` as any)}
@@ -921,12 +921,16 @@ function QuoteCard({
   mode: "light" | "dark";
 }) {
   const { t } = useTranslation();
+  const quoteCardStyle = useMemo(
+    () => StyleSheet.flatten([styles.quoteCard, { borderColor: colors.divider }]),
+    [colors.divider],
+  );
 
   return (
     <GlassCard
       intensity="subtle"
       disableShadow
-      style={{ ...styles.quoteCard, borderColor: colors.divider }}
+      style={quoteCardStyle}
       enableAnimation={true}
       animationDelay={600}
     >
@@ -972,9 +976,15 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    paddingBottom: 0,
+  },
   contentContainer: {
     paddingHorizontal: 20,
     paddingTop: ThemeLayout.spacing.md,
+  },
+  pageHeader: {
+    paddingBottom: ThemeLayout.spacing.md,
   },
   mobileRootContainer: {
     paddingHorizontal: 0,
@@ -1040,6 +1050,10 @@ const styles = StyleSheet.create({
     gap: 8,
     overflow: "hidden",
   },
+  symbolCardPressed: {
+    transform: [{ scale: 0.95 }],
+    opacity: 0.85,
+  },
   symbolBgIcon: {
     position: "absolute",
     top: -10,
@@ -1065,6 +1079,9 @@ const styles = StyleSheet.create({
     padding: 18,
     justifyContent: "flex-start",
     gap: 8,
+  },
+  ritualCardActive: {
+    borderWidth: 1.5,
   },
   ritualIconWrapper: {
     width: 40,

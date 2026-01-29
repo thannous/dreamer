@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -11,17 +11,20 @@ import { getCategoryIcon } from '@/services/symbolDictionaryService';
 interface SymbolCardProps {
   symbol: DreamSymbol;
   language: SymbolLanguage;
-  onPress: () => void;
+  onPress: (id: string) => void;
 }
 
 export function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
   const { colors, shadows } = useTheme();
   const content = symbol[language] ?? symbol.en;
   const icon = getCategoryIcon(symbol.category);
+  const handlePress = useCallback(() => {
+    onPress(symbol.id);
+  }, [onPress, symbol.id]);
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={handlePress}
       accessibilityRole="button"
       accessibilityLabel={content.name}
       style={({ pressed }) => ({

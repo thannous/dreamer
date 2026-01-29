@@ -112,7 +112,12 @@ vi.mock('@shopify/flash-list', () => ({
 
 vi.mock('expo-router', () => ({
   router: { push: vi.fn() },
-  useFocusEffect: vi.fn((cb: () => void | (() => void)) => cb()),
+  useFocusEffect: (cb: () => void | (() => void)) => {
+    React.useEffect(() => {
+      const cleanup = cb();
+      return typeof cleanup === 'function' ? cleanup : undefined;
+    }, [cb]);
+  },
   useNavigation: () => ({ setOptions: vi.fn() }),
 }));
 
@@ -166,6 +171,7 @@ vi.mock('react-native-reanimated', () => {
 
 vi.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ bottom: 0, top: 0, left: 0, right: 0 }),
+  SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock('@expo/vector-icons', () => ({

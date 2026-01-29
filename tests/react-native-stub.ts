@@ -9,6 +9,10 @@ export const Platform = {
 
 export const NativeModules: Record<string, unknown> = {};
 
+export const TurboModuleRegistry = {
+  get: () => null,
+};
+
 export type AppStateStatus = 'active' | 'background' | 'inactive' | 'unknown';
 
 export const AppState = {
@@ -60,11 +64,15 @@ export const Pressable = ({ children, onPress, disabled, testID }: any) =>
 
 export const StyleSheet = {
   create: (styles: any) => styles,
+  flatten: (style: any) => style,
   absoluteFill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
 };
 
 export const Text = ({ children, testID }: any) =>
   React.createElement('span', { 'data-testid': testID }, children);
+
+export const Image = ({ testID, ...props }: any) =>
+  React.createElement('img', { 'data-testid': testID, ...props });
 
 export const TextInput = ({ onChangeText, value, testID }: any) =>
   React.createElement('input', {
@@ -97,10 +105,63 @@ export const KeyboardAvoidingView = ({ children }: any) => React.createElement('
 
 export const ScrollView = ({ children }: any) => React.createElement('div', null, children);
 
+export const FlatList = ({ data = [], renderItem, keyExtractor, ListHeaderComponent, ListEmptyComponent }: any) => {
+  if (!data?.length && ListEmptyComponent) {
+    return React.createElement(
+      'div',
+      null,
+      typeof ListEmptyComponent === 'function' ? React.createElement(ListEmptyComponent) : ListEmptyComponent
+    );
+  }
+  const header = ListHeaderComponent
+    ? typeof ListHeaderComponent === 'function'
+      ? React.createElement(ListHeaderComponent)
+      : ListHeaderComponent
+    : null;
+  return React.createElement(
+    'div',
+    null,
+    header,
+    data.map((item: any, index: number) =>
+      React.createElement(
+        'div',
+        { key: keyExtractor ? keyExtractor(item, index) : index },
+        renderItem ? renderItem({ item, index }) : null
+      )
+    )
+  );
+};
+
+export const SectionList = ({ sections = [], renderItem, renderSectionHeader, keyExtractor, ListEmptyComponent }: any) => {
+  if (!sections?.length && ListEmptyComponent) {
+    return React.createElement(
+      'div',
+      null,
+      typeof ListEmptyComponent === 'function' ? React.createElement(ListEmptyComponent) : ListEmptyComponent
+    );
+  }
+  return React.createElement(
+    'div',
+    null,
+    sections.map((section: any, sectionIndex: number) => {
+      const header = renderSectionHeader ? renderSectionHeader({ section }) : null;
+      const items = (section.data ?? []).map((item: any, index: number) =>
+        React.createElement(
+          'div',
+          { key: keyExtractor ? keyExtractor(item, index) : `${sectionIndex}-${index}` },
+          renderItem ? renderItem({ item, index, section }) : null
+        )
+      );
+      return React.createElement('div', { key: section.id ?? sectionIndex }, header, items);
+    })
+  );
+};
+
 export const TouchableWithoutFeedback = ({ children, onPress }: any) =>
   React.createElement('div', { onClick: onPress }, children);
 
 export default {
   Platform,
   NativeModules,
+  TurboModuleRegistry,
 };
