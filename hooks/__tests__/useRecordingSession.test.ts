@@ -430,13 +430,12 @@ describe('useRecordingSession', () => {
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
       // Start two toggles simultaneously
-      let response1: { success?: boolean; error?: string } | undefined;
       let response2: { success?: boolean; error?: string } | undefined;
 
       await act(async () => {
         const promise1 = result.current.toggleRecording('');
         const promise2 = result.current.toggleRecording('');
-        [response1, response2] = await Promise.all([promise1, promise2]);
+        [, response2] = await Promise.all([promise1, promise2]);
       });
 
       // Second one should fail due to transition in progress

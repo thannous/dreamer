@@ -1,5 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  analyzeDream,
+  analyzeDreamWithImage,
+  analyzeDreamWithImageResilient,
+  categorizeDream,
+  generateImageForDream,
+  generateImageFromTranscript,
+  generateSpeechForText,
+  resetChat,
+  startOrContinueChat,
+} from '../geminiServiceReal';
+
 // Mock config to use our test URL
 vi.mock('../../lib/config', () => ({
   getApiBaseUrl: () => 'https://api.example.com',
@@ -36,17 +48,6 @@ vi.mock('expo-constants', () => ({
   },
 }));
 
-import {
-  analyzeDream,
-  analyzeDreamWithImage,
-  analyzeDreamWithImageResilient,
-  categorizeDream,
-  generateImageForDream,
-  generateImageFromTranscript,
-  generateSpeechForText,
-  resetChat,
-  startOrContinueChat,
-} from '../geminiServiceReal';
 
 const buildAnalysisResult = (overrides = {}) => ({
   title: 'Dream Title',

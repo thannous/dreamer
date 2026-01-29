@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { fetchJSON } from '../http';
+
 // Mock dependencies before importing the module
 const mockGetAccessToken = vi.fn<() => Promise<string | null>>();
 const mockClassifyError = vi.fn();
@@ -31,7 +33,6 @@ vi.mock('expo-constants', () => ({
   },
 }));
 
-import { fetchJSON } from '../http';
 
 describe('http', () => {
   const originalFetch = global.fetch;

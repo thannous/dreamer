@@ -1,5 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  getAccessToken,
+  getCurrentUser,
+  onAuthChange,
+  resendVerificationEmail,
+  signInWithEmailPassword,
+  signInWithGoogle,
+  signInWithGoogleWeb,
+  signInWithProfile,
+  signOut,
+  signUpWithEmailPassword,
+  updateUserTier,
+} from '../mockAuth';
+
 // Use vi.hoisted to ensure mocks are created before module loading
 const { mockResetMockQuotaEvents, mockResetMockStorage, mockSetPreloadDreamsEnabled, mockPreloadDreamsNow } = vi.hoisted(() => ({
   mockResetMockQuotaEvents: vi.fn().mockResolvedValue(undefined),
@@ -18,19 +32,6 @@ vi.mock('../../services/quota/MockQuotaEventStore', () => ({
   resetMockQuotaEvents: mockResetMockQuotaEvents,
 }));
 
-import {
-  getAccessToken,
-  getCurrentUser,
-  onAuthChange,
-  resendVerificationEmail,
-  signInWithEmailPassword,
-  signInWithGoogle,
-  signInWithGoogleWeb,
-  signInWithProfile,
-  signOut,
-  signUpWithEmailPassword,
-  updateUserTier,
-} from '../mockAuth';
 
 describe('mockAuth', () => {
   const email = 'mock.verify@dreamer.test';

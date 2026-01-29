@@ -70,11 +70,6 @@ describe('streakUtils', () => {
   describe('calculateStreaks', () => {
     const dayInMs = 24 * 60 * 60 * 1000;
 
-    // Helper to create items with specific dates
-    const createItem = (daysAgo: number, referenceTime: number) => ({
-      id: referenceTime - (daysAgo * dayInMs) + Math.floor(Math.random() * 1000),
-    });
-
     it('given empty array returns zero streaks', () => {
       const result = calculateStreaks([]);
       expect(result).toEqual({ current: 0, longest: 0 });

@@ -4,6 +4,7 @@
 import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { useTranslation } from '../useTranslation';
 // Mock LanguageContext
 const mockLanguage = vi.hoisted(() => ({ current: 'en' }));
 
@@ -55,7 +56,6 @@ vi.mock('../../lib/i18n', () => ({
   loadTranslations: () => new Promise(() => {}),
 }));
 
-import { useTranslation } from '../useTranslation';
 
 describe('useTranslation', () => {
   describe('translation function', () => {

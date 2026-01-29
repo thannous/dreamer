@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from './speechToText';
+
 type PlatformOS = 'ios' | 'android' | 'macos' | 'windows' | 'web';
 const { Platform } = vi.hoisted(() => {
   const Platform = { OS: 'ios' as PlatformOS };
@@ -46,7 +48,6 @@ vi.mock('../lib/http', () => ({
 }));
 
 const fetchJSON = mockFetchJSON;
-import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from './speechToText';
 
 describe('speechToText Service', () => {
   const mockAudioUri = 'file://test-audio.wav';
