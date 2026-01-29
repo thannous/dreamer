@@ -72,11 +72,14 @@ vi.mock('@/lib/imageUtils', () => ({
 }));
 
 vi.mock('@/components/journal/FilterBar', () => ({
-  FilterBar: ({ onThemePress }: { onThemePress: () => void }) => (
-    <button data-testid="open-theme-modal" onClick={onThemePress}>
-      Open theme modal
-    </button>
-  ),
+  FilterBar: ({ items }: { items: { id: string; onPress: () => void }[] }) => {
+    const themeItem = items.find((item) => item.id === 'theme');
+    return (
+      <button data-testid="open-theme-modal" onClick={themeItem?.onPress}>
+        Open theme modal
+      </button>
+    );
+  },
 }));
 
 vi.mock('@/components/journal/SearchBar', () => ({

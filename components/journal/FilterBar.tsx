@@ -8,32 +8,26 @@ import React, { memo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored';
+
+export type FilterBarItem = {
+  id: FilterItemId;
+  active: boolean;
+  onPress: () => void;
+  label?: string;
+  testID?: string;
+};
+
 interface FilterBarProps {
-  onThemePress: () => void;
-  onDatePress: () => void;
-  onFavoritesPress: () => void;
-  onAnalyzedPress: () => void;
-  onExploredPress: () => void;
-  onClearPress: () => void;
-  activeFilters: {
-    theme: boolean;
-    date: boolean;
-    favorites: boolean;
-    analyzed: boolean;
-    explored: boolean;
-  };
+  items: FilterBarItem[];
+  onClear: () => void;
+  clearTestID?: string;
   dateRange?: {
     start: Date | null;
     end: Date | null;
   };
   selectedTheme?: DreamTheme | null;
   selectedDreamType?: DreamType | null;
-  themeButtonTestID?: string;
-  dateButtonTestID?: string;
-  favoritesButtonTestID?: string;
-  analyzedButtonTestID?: string;
-  exploredButtonTestID?: string;
-  clearButtonTestID?: string;
 }
 
 function CategoryIcon({ size = 16, color = '#FFFFFF' }) {
@@ -115,32 +109,47 @@ function getDateRangeBadge(
   return t('journal.filter.badge.custom');
 }
 
+const renderIcon = (id: FilterItemId, color: string) => {
+  switch (id) {
+    case 'theme':
+      return <CategoryIcon size={16} color={color} />;
+    case 'date':
+      return <CalendarIcon size={16} color={color} />;
+    case 'favorites':
+      return <FavoriteIcon size={16} color={color} />;
+    case 'analyzed':
+      return <AnalyzedIcon size={16} color={color} />;
+    case 'explored':
+      return <ExploredIcon size={16} color={color} />;
+  }
+};
+
+const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => {
+  switch (id) {
+    case 'theme':
+      return t('journal.filter.accessibility.theme');
+    case 'date':
+      return t('journal.filter.accessibility.date');
+    case 'favorites':
+      return t('journal.filter.accessibility.favorites');
+    case 'analyzed':
+      return t('journal.filter.accessibility.analyzed');
+    case 'explored':
+      return t('journal.filter.accessibility.explored');
+  }
+};
+
 export const FilterBar = memo(function FilterBar({
-  onThemePress,
-  onDatePress,
-  onFavoritesPress,
-  onAnalyzedPress,
-  onExploredPress,
-  onClearPress,
-  activeFilters,
+  items,
+  onClear,
+  clearTestID,
   dateRange,
   selectedTheme,
   selectedDreamType,
-  themeButtonTestID,
-  dateButtonTestID,
-  favoritesButtonTestID,
-  analyzedButtonTestID,
-  exploredButtonTestID,
-  clearButtonTestID,
 }: FilterBarProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  const hasActiveFilters =
-    activeFilters.theme ||
-    activeFilters.date ||
-    activeFilters.favorites ||
-    activeFilters.analyzed ||
-    activeFilters.explored;
+  const hasActiveFilters = items.some((item) => item.active);
   const dateRangeBadge = getDateRangeBadge(dateRange, t);
   const iconColor = colors.textPrimary;
   const activeIconColor = colors.backgroundCard;
@@ -156,94 +165,44 @@ export const FilterBar = memo(function FilterBar({
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      <Pressable
-        style={[
-          styles.filterButton,
-          { backgroundColor: activeFilters.theme ? colors.accent : colors.backgroundSecondary },
-        ]}
-        onPress={onThemePress}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.filter.accessibility.theme')}
-        testID={themeButtonTestID}
-      >
-        <CategoryIcon size={16} color={activeFilters.theme ? activeIconColor : iconColor} />
-        <Text style={[styles.filterButtonText, { color: activeFilters.theme ? activeIconColor : iconColor }]}>
-          {t('journal.filter.theme')}
-          {themeFilterSuffix}
-        </Text>
-        <ActiveCheck visible={activeFilters.theme} color={activeIconColor} />
-      </Pressable>
+      {items.map((item) => {
+        const isActive = item.active;
+        const color = isActive ? activeIconColor : iconColor;
+        const baseLabel = item.label ?? '';
+        const label = item.id === 'theme'
+          ? `${baseLabel}${themeFilterSuffix}`
+          : item.id === 'date'
+            ? `${baseLabel}${dateRangeBadge ? ` • ${dateRangeBadge}` : ''}`
+            : baseLabel;
 
-      <Pressable
-        style={[
-          styles.filterButton,
-          { backgroundColor: activeFilters.date ? colors.accent : colors.backgroundSecondary },
-        ]}
-        onPress={onDatePress}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.filter.accessibility.date')}
-        testID={dateButtonTestID}
-      >
-        <CalendarIcon size={16} color={activeFilters.date ? activeIconColor : iconColor} />
-        <Text style={[styles.filterButtonText, { color: activeFilters.date ? activeIconColor : iconColor }]}>
-          {t('journal.filter.date')}
-          {dateRangeBadge && ` • ${dateRangeBadge}`}
-        </Text>
-        <ActiveCheck visible={activeFilters.date} color={activeIconColor} />
-      </Pressable>
-
-      <Pressable
-        style={[
-          styles.filterButton,
-          { backgroundColor: activeFilters.favorites ? colors.accent : colors.backgroundSecondary },
-        ]}
-        onPress={onFavoritesPress}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.filter.accessibility.favorites')}
-        testID={favoritesButtonTestID}
-      >
-        <FavoriteIcon size={16} color={activeFilters.favorites ? activeIconColor : iconColor} />
-        <Text style={[styles.filterButtonText, { color: activeFilters.favorites ? activeIconColor : iconColor }]}>
-          {t('journal.filter.favorites')}
-        </Text>
-        <ActiveCheck visible={activeFilters.favorites} color={activeIconColor} />
-      </Pressable>
-
-      <Pressable
-        style={[
-          styles.filterButton,
-          { backgroundColor: activeFilters.analyzed ? colors.accent : colors.backgroundSecondary },
-        ]}
-        onPress={onAnalyzedPress}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.filter.accessibility.analyzed')}
-        testID={analyzedButtonTestID}
-      >
-        <AnalyzedIcon size={16} color={activeFilters.analyzed ? activeIconColor : iconColor} />
-        <ActiveCheck visible={activeFilters.analyzed} color={activeIconColor} />
-      </Pressable>
-
-      <Pressable
-        style={[
-          styles.filterButton,
-          { backgroundColor: activeFilters.explored ? colors.accent : colors.backgroundSecondary },
-        ]}
-        onPress={onExploredPress}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.filter.accessibility.explored')}
-        testID={exploredButtonTestID}
-      >
-        <ExploredIcon size={16} color={activeFilters.explored ? activeIconColor : iconColor} />
-        <ActiveCheck visible={activeFilters.explored} color={activeIconColor} />
-      </Pressable>
+        return (
+          <Pressable
+            key={item.id}
+            style={[
+              styles.filterButton,
+              { backgroundColor: isActive ? colors.accent : colors.backgroundSecondary },
+            ]}
+            onPress={item.onPress}
+            accessibilityRole="button"
+            accessibilityLabel={getAccessibilityLabel(item.id, t)}
+            testID={item.testID}
+          >
+            {renderIcon(item.id, color)}
+            {item.label ? (
+              <Text style={[styles.filterButtonText, { color }]}>{label}</Text>
+            ) : null}
+            <ActiveCheck visible={isActive} color={activeIconColor} />
+          </Pressable>
+        );
+      })}
 
       {hasActiveFilters && (
         <Pressable
           style={[styles.filterButton, { backgroundColor: colors.backgroundSecondary }]}
-          onPress={onClearPress}
+          onPress={onClear}
           accessibilityRole="button"
           accessibilityLabel={t('journal.filter.accessibility.clear')}
-          testID={clearButtonTestID}
+          testID={clearTestID}
         >
           <CloseIcon size={16} color={iconColor} />
           <Text style={[styles.filterButtonText, { color: iconColor }]}>{t('journal.filter.clear')}</Text>
@@ -266,6 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: ThemeLayout.borderRadius.full,
+    borderCurve: 'continuous',
   },
   filterButtonText: {
     fontSize: 14,

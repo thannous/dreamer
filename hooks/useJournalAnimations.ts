@@ -3,7 +3,9 @@
  */
 
 import { OPACITY, SCALE, SLIDE_DISTANCE, SPRING_CONFIGS, TIMING_CONFIGS } from '@/constants/animations';
+import * as Haptics from 'expo-haptics';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import {
   Extrapolation,
   cancelAnimation,
@@ -26,16 +28,23 @@ export function useScalePress() {
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
+    opacity: interpolate(
+      scale.value,
+      [SCALE.press, SCALE.default],
+      [0.92, 1],
+      Extrapolation.CLAMP,
+    ),
   }));
 
   const onPressIn = () => {
-    'worklet';
     isPressed.value = true;
     scale.value = withSpring(SCALE.press, SPRING_CONFIGS.snappy);
+    if (Platform.OS === 'ios') {
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
   };
 
   const onPressOut = () => {
-    'worklet';
     isPressed.value = false;
     scale.value = withSpring(SCALE.default, SPRING_CONFIGS.bouncy);
   };
