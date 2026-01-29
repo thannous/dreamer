@@ -65,7 +65,12 @@
       "actions": "Action-based dreams like flying or falling reflect our feelings of control, freedom, or vulnerability in waking life. These are among the most common and powerful dream experiences.",
       "people": "People appearing in dreams often represent aspects of ourselves or our relationships. Strangers may embody unknown parts of our psyche, while familiar faces reflect our connections.",
       "celestial": "Celestial symbols like the sun, moon, and stars connect to our spiritual nature and the rhythms of life. They often represent guidance, cycles, and transcendent experiences."
-    }
+    },
+    "curation_label": "CURATED GUIDE",
+    "curation_read_full": "Read full interpretation",
+    "curation_symbols_count": "{count} symbols explored",
+    "curation_related_guides": "Related Guides",
+    "curation_back_to_guides": "Back to Dream Guides"
   },
   "fr": {
     "locale": "fr_FR",
@@ -133,7 +138,12 @@
       "actions": "Les rêves d'action comme voler ou tomber reflètent nos sentiments de contrôle, liberté ou vulnérabilité. Ce sont parmi les expériences oniriques les plus courantes et puissantes.",
       "people": "Les personnes apparaissant dans les rêves représentent souvent des aspects de nous-mêmes ou de nos relations. Les inconnus peuvent incarner des parties inconnues de notre psyché.",
       "celestial": "Les symboles célestes comme le soleil, la lune et les étoiles nous connectent à notre nature spirituelle. Ils représentent souvent la guidance, les cycles et les expériences transcendantes."
-    }
+    },
+    "curation_label": "GUIDE THÉMATIQUE",
+    "curation_read_full": "Lire l'interprétation complète",
+    "curation_symbols_count": "{count} symboles explorés",
+    "curation_related_guides": "Guides associés",
+    "curation_back_to_guides": "Retour aux guides oniriques"
   },
   "es": {
     "locale": "es_ES",
@@ -201,6 +211,11 @@
       "actions": "Los sueños de acción como volar o caer reflejan nuestros sentimientos de control, libertad o vulnerabilidad. Son de las experiencias oníricas más comunes y poderosas.",
       "people": "Las personas que aparecen en los sueños representan aspectos de nosotros mismos o de nuestras relaciones. Los desconocidos pueden encarnar partes desconocidas de nuestra psique.",
       "celestial": "Los símbolos celestiales como el sol, la luna y las estrellas nos conectan con nuestra naturaleza espiritual. Representan guía, ciclos y experiencias trascendentes."
-    }
+    },
+    "curation_label": "GUÍA TEMÁTICA",
+    "curation_read_full": "Leer interpretación completa",
+    "curation_symbols_count": "{count} símbolos explorados",
+    "curation_related_guides": "Guías relacionadas",
+    "curation_back_to_guides": "Volver a las guías de sueños"
   }
 }

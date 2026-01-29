@@ -548,7 +548,7 @@ ${renderJsonLd(faqPageJsonLd)}
                         <i data-lucide="sparkles" class="w-4 h-4"></i>
                         ${t.dream_symbol}
                     </span>
-                    <a href="/${lang}/guides/${t.dictionary_slug}"
+                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${t.category_slugs[symbol.category]}"
                        class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
                         ${categoryName}
                     </a>
@@ -816,7 +816,7 @@ function generateCategoryMetaDescription(categoryId, i18n, lang) {
 }
 
 // Generate category page HTML
-function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang) {
+function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages) {
   const t = i18n[lang];
   const categoryName = getCategoryNameById(categoryId, lang);
   const categorySchemaName = t.category_h1_template.replace(/{category}/g, categoryName);
@@ -862,6 +862,34 @@ function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n
                     <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${i18n[lang].category_slugs[c.id]}" class="category-chip glass-panel rounded-full px-5 py-3 text-sm text-purple-200/80 border border-transparent hover:text-dream-cream">
                         ${getCategoryNameById(c.id, lang)} <span class="text-purple-400/60 ml-1">(${c.count})</span>
                     </a>`).join('\n');
+
+  // Generate related guides HTML (from curation pages)
+  let relatedGuidesHtml = '';
+  if (curationPages && curationPages.length > 0) {
+    const relatedCurationIds = CATEGORY_TO_CURATION[categoryId] || [];
+    const relatedPages = relatedCurationIds
+      .map(id => curationPages.find(p => p.id === id))
+      .filter(Boolean);
+
+    if (relatedPages.length > 0) {
+      const guidesLinksHtml = relatedPages.map(p => `
+                    <a href="/${lang}/guides/${p.slugs[lang]}" class="category-chip glass-panel rounded-xl px-5 py-4 text-sm text-purple-200/80 border border-transparent hover:text-dream-cream hover:border-dream-salmon/30 transition-all flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-4 h-4 text-dream-salmon"></i>
+                        ${escapeHtml(p[lang].title)}
+                    </a>`).join('\n');
+
+      relatedGuidesHtml = `
+            <!-- Related Guides -->
+            <section class="mb-16">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
+                    <i data-lucide="book-marked" class="w-6 h-6 text-dream-salmon"></i>
+                    ${t.curation_related_guides}
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${guidesLinksHtml}
+                </div>
+            </section>`;
+    }
+  }
 
   // Schema.org CollectionPage
   const collectionPageJsonLd = {
@@ -1090,7 +1118,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
                 <div class="flex flex-wrap gap-3">${otherCategoriesHtml}
                 </div>
             </section>
-
+${relatedGuidesHtml}
             <!-- CTA Section -->
             <aside class="glass-panel rounded-3xl p-8 md:p-10 text-center border border-dream-salmon/20">
                 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -1172,6 +1200,15 @@ ${renderJsonLd(breadcrumbListJsonLd)}
 function generateCategoryPages(symbols, i18n, languages) {
   console.log('\n📁 Generating category pages...\n');
 
+  // Load curation pages for cross-linking (graceful if missing)
+  let curationPages = [];
+  try {
+    const curationData = loadCurationData();
+    curationPages = curationData.pages || [];
+  } catch (e) {
+    console.log('ℹ️  No curation-pages.json found, skipping related guides in category pages.');
+  }
+
   // Group symbols by category
   const categoriesMap = {};
   for (const symbol of symbols.symbols) {
@@ -1214,7 +1251,7 @@ function generateCategoryPages(symbols, i18n, languages) {
       const filepath = path.join(langDir, filename);
 
       try {
-        const html = generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang);
+        const html = generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages);
 
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
@@ -1234,8 +1271,447 @@ function generateCategoryPages(symbols, i18n, languages) {
   return { generated, errors };
 }
 
+// =====================================================
+// CURATION PAGES GENERATION
+// =====================================================
+
+function loadCurationData() {
+  const curationPath = path.join(CONFIG.dataDir, 'curation-pages.json');
+  if (!fs.existsSync(curationPath)) {
+    console.error('Missing data/curation-pages.json');
+    process.exit(1);
+  }
+  return JSON.parse(fs.readFileSync(curationPath, 'utf8'));
+}
+
+// Generate hreflang URLs for a curation page
+function generateCurationHreflangUrls(page) {
+  return {
+    en: `https://noctalia.app/en/guides/${page.slugs.en}`,
+    fr: `https://noctalia.app/fr/guides/${page.slugs.fr}`,
+    es: `https://noctalia.app/es/guides/${page.slugs.es}`
+  };
+}
+
+// Generate a single curation page HTML
+function generateCurationPage(page, allSymbols, i18n, extended, lang) {
+  const t = i18n[lang];
+  const pageData = page[lang];
+  const slug = page.slugs[lang];
+  const hreflang = generateCurationHreflangUrls(page);
+  const symbolsCount = page.symbols.length;
+
+  // Resolve symbols
+  const resolvedSymbols = page.symbols
+    .map(id => allSymbols.find(s => s.id === id))
+    .filter(Boolean);
+
+  // Language dropdown
+  const langItems = {
+    en: { flag: '🇺🇸', name: 'English' },
+    fr: { flag: '🇫🇷', name: 'Français' },
+    es: { flag: '🇪🇸', name: 'Español' }
+  };
+
+  const langDropdownHtml = Object.keys(langItems).map(l => {
+    const isActive = l === lang;
+    const targetSlug = page.slugs[l];
+    const activeClass = isActive ? 'text-dream-salmon bg-dream-salmon/10' : 'text-purple-100/80 hover:text-white hover:bg-white/5';
+    return `
+                        <a href="/${l}/guides/${targetSlug}" hreflang="${l}" class="flex items-center gap-3 px-4 py-2 text-sm ${activeClass} transition-colors" role="menuitem">
+                            <span class="w-5 text-center">${langItems[l].flag}</span> ${langItems[l].name}
+                        </a>`;
+  }).join('\n');
+
+  // Generate symbol cards
+  const symbolCardsHtml = resolvedSymbols.map((s, i) => {
+    const symbolData = s[lang];
+    if (!symbolData) return '';
+    const extContent = getExtendedContent(s.id, extended, lang);
+    const firstVariation = extContent.variations.length > 0 ? extContent.variations[0] : null;
+    return `
+                    <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}" class="symbol-card glass-panel rounded-2xl p-6 border border-transparent group">
+                        <div class="flex items-start justify-between mb-3">
+                            <h2 class="font-serif text-xl text-dream-cream group-hover:text-dream-salmon transition-colors">${i + 1}. ${escapeHtml(symbolData.name)}</h2>
+                        </div>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">${escapeHtml(symbolData.shortDescription)}</p>
+                        ${firstVariation ? `<p class="text-xs text-purple-300/60 italic mb-3"><strong>${escapeHtml(firstVariation.context)}:</strong> ${escapeHtml(firstVariation.meaning.substring(0, 120))}${firstVariation.meaning.length > 120 ? '...' : ''}</p>` : ''}
+                        <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
+                            ${t.curation_read_full} <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                        </span>
+                    </a>`;
+  }).join('\n');
+
+  // Schema.org ItemList
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: pageData.title,
+    description: pageData.metaDescription,
+    numberOfItems: symbolsCount,
+    itemListElement: resolvedSymbols.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: s[lang]?.name || s.id,
+      url: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${s[lang]?.slug || s.id}`
+    }))
+  };
+
+  // Schema.org BreadcrumbList
+  const breadcrumbListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.home, item: `https://noctalia.app/${lang}/` },
+      { '@type': 'ListItem', position: 2, name: t.symbols, item: `https://noctalia.app/${lang}/guides/${t.dictionary_slug}` },
+      { '@type': 'ListItem', position: 3, name: pageData.title, item: `https://noctalia.app/${lang}/guides/${slug}` }
+    ]
+  };
+
+  // Schema.org Article
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: pageData.title,
+    description: pageData.metaDescription,
+    image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
+    author: { '@type': 'Organization', name: 'Noctalia' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Noctalia',
+      logo: { '@type': 'ImageObject', url: 'https://noctalia.app/logo/logo_noctalia.png' }
+    },
+    datePublished: CONFIG.datePublished,
+    dateModified: CONFIG.dateModified,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/guides/${slug}` },
+    inLanguage: lang
+  };
+
+  return `<!DOCTYPE html>
+<html lang="${lang}" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0514">
+    <title>${escapeHtml(pageData.title)} | Noctalia</title>
+    <meta name="description" content="${escapeHtml(pageData.metaDescription)}">
+    <link rel="canonical" href="https://noctalia.app/${lang}/guides/${slug}">
+    <link rel="alternate" hreflang="en" href="${hreflang.en}">
+    <link rel="alternate" hreflang="fr" href="${hreflang.fr}">
+    <link rel="alternate" hreflang="es" href="${hreflang.es}">
+    <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="${escapeHtml(pageData.title)}">
+    <meta property="og:description" content="${escapeHtml(pageData.metaDescription)}">
+    <meta property="og:url" content="https://noctalia.app/${lang}/guides/${slug}">
+    <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:locale" content="${t.locale}">
+    <meta property="article:published_time" content="${CONFIG.datePublished}">
+    <meta property="article:modified_time" content="${CONFIG.dateModified}">
+    <meta name="robots" content="index, follow">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${escapeHtml(pageData.title)}">
+    <meta name="twitter:description" content="${escapeHtml(pageData.metaDescription)}">
+    <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+
+    <!-- Fonts -->
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
+    <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0514; }
+        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
+        .aurora-bg {
+            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
+            background-size: 200% 200%; animation: aurora 20s ease infinite;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+        }
+        .orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.5; max-width: 100vw; max-height: 100vw; }
+        .glass-panel {
+            background: rgba(20, 10, 40, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
+        .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
+        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        html, body { overflow-x: hidden; }
+        .symbol-card { transition: all 0.3s ease; }
+        .symbol-card:hover { transform: translateY(-4px); border-color: rgba(253, 164, 129, 0.3); }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+
+    <!-- Schema.org ItemList -->
+${renderJsonLd(itemListJsonLd)}
+
+    <!-- Schema.org Article -->
+${renderJsonLd(articleJsonLd)}
+
+    <!-- Schema.org BreadcrumbList -->
+${renderJsonLd(breadcrumbListJsonLd)}
+</head>
+
+<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+    <div class="aurora-bg"></div>
+    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
+    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
+            <a href="/${lang}/" class="flex items-center gap-2">
+                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+            </a>
+            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
+                <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
+                <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
+                <a href="/${lang}/blog/" class="hidden sm:inline-flex text-dream-salmon">${t.nav_resources}</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+                    <button type="button"
+                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-label="Choose language"
+                            id="languageDropdownButton">
+                        <i data-lucide="languages" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
+                    </button>
+                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
+                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">${langDropdownHtml}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-20 px-4">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- Breadcrumb -->
+            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.home}</span></a>
+                        <meta itemprop="position" content="1">
+                    </li>
+                    <li class="text-purple-400">/</li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a href="/${lang}/guides/${t.dictionary_slug}" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.symbols}</span></a>
+                        <meta itemprop="position" content="2">
+                    </li>
+                    <li class="text-purple-400">/</li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <span itemprop="name" class="text-dream-cream">${escapeHtml(pageData.title)}</span>
+                        <meta itemprop="position" content="3">
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <header class="mb-12 text-center">
+                <div class="flex justify-center gap-3 mb-6">
+                    <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
+                        <i data-lucide="list" class="w-4 h-4"></i>
+                        ${t.curation_label}
+                    </span>
+                    <span class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2">
+                        ${t.curation_symbols_count.replace('{count}', symbolsCount)}
+                    </span>
+                </div>
+
+                <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                    ${escapeHtml(pageData.title)}
+                </h1>
+
+                <p class="text-lg text-purple-200/80 leading-relaxed max-w-3xl mx-auto">
+                    ${escapeHtml(pageData.intro)}
+                </p>
+            </header>
+
+            <!-- Symbol Grid -->
+            <section class="mb-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${symbolCardsHtml}
+                </div>
+            </section>
+
+            <!-- Outro -->
+            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10">
+                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed">
+                    <p>${escapeHtml(pageData.outro)}</p>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <aside class="glass-panel rounded-3xl p-8 md:p-10 text-center border border-dream-salmon/20">
+                <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
+                </div>
+                <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${t.cta_title}</h3>
+                <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+                    ${t.cta_description}
+                </p>
+                <a href="/${lang}/" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
+                    ${t.cta_button} <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+            </aside>
+
+            <!-- Back to Dictionary -->
+            <div class="mt-10 text-center">
+                <a href="/${lang}/guides/${t.dictionary_slug}" class="inline-flex items-center gap-2 text-purple-200/60 hover:text-dream-salmon transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    ${t.back_to_dictionary}
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
+            <div class="col-span-1 md:col-span-2">
+                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
+                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
+                </a>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">${t.nav_resources}</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/${lang}/blog/" class="hover:text-dream-salmon transition-colors">${t.nav_resources}</a></li>
+                    <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">${t.footer_legal}</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${t.about}</a></li>
+                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${t.legal_notice}</a></li>
+                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${t.privacy}</a></li>
+                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${t.terms}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+            <span>&copy; 2025 Noctalia Inc.</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('navbar');
+                if (navbar) {
+                    navbar.classList.toggle('py-2', window.scrollY > 50);
+                    navbar.classList.toggle('py-6', window.scrollY <= 50);
+                }
+            });
+        });
+    </script>
+    <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
+</body>
+</html>`;
+}
+
+// Generate all curation pages
+function generateCurationPages(symbols, i18n, extended, languages) {
+  console.log('\n📋 Generating curation pages...\n');
+
+  const curationData = loadCurationData();
+  let generated = 0;
+  let errors = 0;
+
+  for (const lang of languages) {
+    const langDir = path.join(CONFIG.outputDir, lang, 'guides');
+
+    if (!args['dry-run']) {
+      fs.mkdirSync(langDir, { recursive: true });
+    }
+
+    for (const page of curationData.pages) {
+      const slug = page.slugs[lang];
+      if (!slug) {
+        console.log(`⚠️  Skipping curation ${page.id} for ${lang} (no slug)`);
+        errors++;
+        continue;
+      }
+
+      const filename = `${slug}.html`;
+      const filepath = path.join(langDir, filename);
+
+      try {
+        const html = generateCurationPage(page, symbols.symbols, i18n, extended, lang);
+
+        if (args['dry-run']) {
+          console.log(`  [DRY RUN] Would create: ${filepath}`);
+        } else {
+          fs.writeFileSync(filepath, html, 'utf8');
+          console.log(`  ✅ ${lang}/guides/${filename} (${page.symbols.length} symbols)`);
+        }
+        generated++;
+      } catch (err) {
+        console.error(`  ❌ Error generating curation ${page.id} (${lang}): ${err.message}`);
+        errors++;
+      }
+    }
+  }
+
+  console.log(`\n✨ Curation pages done! Generated ${generated} pages, ${errors} errors.`);
+  return { generated, errors };
+}
+
+// =====================================================
+// CATEGORY PAGES: RELATED GUIDES CROSS-LINKS (Phase 3)
+// =====================================================
+
+// Map categories to relevant curation page IDs
+const CATEGORY_TO_CURATION = {
+  animals: ['animal-dream-symbols', 'scary-dream-symbols', 'most-common-dream-symbols'],
+  nature: ['water-dream-symbols', 'most-common-dream-symbols'],
+  body: ['scary-dream-symbols', 'most-common-dream-symbols', 'death-transformation-dreams'],
+  places: ['dream-locations', 'most-common-dream-symbols'],
+  objects: ['most-common-dream-symbols', 'dream-locations'],
+  actions: ['scary-dream-symbols', 'most-common-dream-symbols', 'positive-dream-symbols'],
+  people: ['people-in-dreams', 'death-transformation-dreams', 'positive-dream-symbols'],
+  celestial: ['positive-dream-symbols', 'death-transformation-dreams']
+};
+
 // Run
-if (args.categories) {
+if (args.curation) {
+  // Generate only curation pages
+  const { symbols, i18n, extended } = loadData();
+  let languages = CONFIG.languages;
+  if (args.lang) {
+    languages = [args.lang];
+  }
+  generateCurationPages(symbols, i18n, extended, languages);
+} else if (args.categories) {
   // Generate only category pages
   const { symbols, i18n } = loadData();
   let languages = CONFIG.languages;
