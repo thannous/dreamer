@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": "1.0.0",
-    "lastUpdated": "2025-01-21",
-    "totalSymbols": 42,
+    "lastUpdated": "2026-01-29",
+    "totalSymbols": 47,
     "languages": ["en", "fr", "es"]
   },
   "categories": {
@@ -1040,6 +1040,131 @@
       },
       "relatedSymbols": ["teeth", "voice", "communication"],
       "relatedArticles": {}
+    },
+    {
+      "id": "wedding",
+      "category": "actions",
+      "priority": 2,
+      "en": {
+        "slug": "wedding",
+        "name": "Wedding",
+        "shortDescription": "Dreams about weddings often symbolize commitment, new beginnings, or significant life transitions beyond marriage.",
+        "askYourself": ["What commitment am I making or considering?", "What new chapter is beginning in my life?"]
+      },
+      "fr": {
+        "slug": "mariage",
+        "name": "Mariage",
+        "shortDescription": "Les rêves de mariage symbolisent souvent l'engagement, les nouveaux départs ou des transitions importantes au-delà du mariage.",
+        "askYourself": ["Quel engagement suis-je en train de prendre ou de considérer ?", "Quel nouveau chapitre commence dans ma vie ?"]
+      },
+      "es": {
+        "slug": "boda",
+        "name": "Boda",
+        "shortDescription": "Los sueños sobre bodas simbolizan compromiso, nuevos comienzos o transiciones importantes más allá del matrimonio.",
+        "askYourself": ["¿Qué compromiso estoy haciendo o considerando?", "¿Qué nuevo capítulo está comenzando en mi vida?"]
+      },
+      "relatedSymbols": ["ring", "dress", "ceremony"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "hospital",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "hospital",
+        "name": "Hospital",
+        "shortDescription": "Hospitals in dreams often represent healing, health concerns, or need for emotional care and attention.",
+        "askYourself": ["What needs healing in my life?", "Am I neglecting my physical or emotional health?"]
+      },
+      "fr": {
+        "slug": "hopital",
+        "name": "Hôpital",
+        "shortDescription": "L'hôpital dans les rêves représente souvent la guérison, les préoccupations de santé ou le besoin de soins émotionnels.",
+        "askYourself": ["Qu'est-ce qui a besoin de guérison dans ma vie ?", "Est-ce que je néglige ma santé physique ou émotionnelle ?"]
+      },
+      "es": {
+        "slug": "hospital",
+        "name": "Hospital",
+        "shortDescription": "Los hospitales en sueños representan sanación, preocupaciones de salud o necesidad de cuidado emocional.",
+        "askYourself": ["¿Qué necesita sanación en mi vida?", "¿Estoy descuidando mi salud física o emocional?"]
+      },
+      "relatedSymbols": ["doctor", "illness", "healing"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "running",
+      "category": "actions",
+      "priority": 2,
+      "en": {
+        "slug": "running",
+        "name": "Running",
+        "shortDescription": "Running in dreams can symbolize escape, pursuit of goals, or urgency in life. Context determines whether it's fleeing or chasing.",
+        "askYourself": ["What am I running from or toward?", "Is there urgency in my waking life?"]
+      },
+      "fr": {
+        "slug": "courir",
+        "name": "Courir",
+        "shortDescription": "Courir dans les rêves peut symboliser la fuite, la poursuite d'objectifs ou l'urgence. Le contexte détermine si c'est fuir ou poursuivre.",
+        "askYourself": ["Qu'est-ce que je fuis ou poursuis ?", "Y a-t-il une urgence dans ma vie éveillée ?"]
+      },
+      "es": {
+        "slug": "correr",
+        "name": "Correr",
+        "shortDescription": "Correr en sueños puede simbolizar escape, búsqueda de metas o urgencia. El contexto determina si es huir o perseguir.",
+        "askYourself": ["¿De qué estoy huyendo o hacia qué corro?", "¿Hay urgencia en mi vida despierta?"]
+      },
+      "relatedSymbols": ["chase", "escape", "marathon"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "school",
+      "category": "places",
+      "priority": 2,
+      "en": {
+        "slug": "school",
+        "name": "School",
+        "shortDescription": "Schools in dreams often represent learning, evaluation, social anxiety, or revisiting past experiences and lessons.",
+        "askYourself": ["What lesson am I learning?", "Am I being tested or evaluated in some way?"]
+      },
+      "fr": {
+        "slug": "ecole",
+        "name": "École",
+        "shortDescription": "L'école dans les rêves représente souvent l'apprentissage, l'évaluation, l'anxiété sociale ou la revisite d'expériences passées.",
+        "askYourself": ["Quelle leçon suis-je en train d'apprendre ?", "Suis-je testé ou évalué d'une manière ou d'une autre ?"]
+      },
+      "es": {
+        "slug": "escuela",
+        "name": "Escuela",
+        "shortDescription": "La escuela en sueños representa aprendizaje, evaluación, ansiedad social o revisitar experiencias pasadas.",
+        "askYourself": ["¿Qué lección estoy aprendiendo?", "¿Estoy siendo probado o evaluado de alguna manera?"]
+      },
+      "relatedSymbols": ["exam", "classroom", "teacher"],
+      "relatedArticles": {}
+    },
+    {
+      "id": "pregnancy",
+      "category": "body",
+      "priority": 2,
+      "en": {
+        "slug": "pregnancy",
+        "name": "Pregnancy",
+        "shortDescription": "Pregnancy dreams symbolize creation, new projects, potential, or major life changes developing within you.",
+        "askYourself": ["What am I creating or developing?", "What new aspect of myself is growing?"]
+      },
+      "fr": {
+        "slug": "grossesse",
+        "name": "Grossesse",
+        "shortDescription": "Les rêves de grossesse symbolisent la création, de nouveaux projets, le potentiel ou des changements majeurs se développant en vous.",
+        "askYourself": ["Qu'est-ce que je crée ou développe ?", "Quel nouvel aspect de moi-même grandit ?"]
+      },
+      "es": {
+        "slug": "embarazo",
+        "name": "Embarazo",
+        "shortDescription": "Los sueños de embarazo simbolizan creación, nuevos proyectos, potencial o cambios importantes desarrollándose.",
+        "askYourself": ["¿Qué estoy creando o desarrollando?", "¿Qué nuevo aspecto de mí está creciendo?"]
+      },
+      "relatedSymbols": ["baby", "birth", "creation"],
+      "relatedArticles": { "en": "pregnancy-dreams-meaning", "fr": "reves-de-grossesse", "es": "suenos-de-embarazo" }
     }
   ]
 }
