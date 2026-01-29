@@ -1,17 +1,19 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
-import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
+import {
+  AnalyzePromptSheet,
+  FirstDreamSheet,
+  GuestLimitSheet,
+  QuotaLimitSheet,
+  ReferenceImageSheet,
+} from '@/components/recording/RecordingSheets';
 import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
-import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { RECORDING, REFERENCE_IMAGES } from '@/constants/appConfig';
+import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
-import { ThemeLayout } from '@/constants/journalTheme';
-import { QUOTAS } from '@/constants/limits';
-import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -46,7 +48,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -1034,153 +1035,46 @@ export default function RecordingScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
-      {/* First Dream Sheet */}
-      <StandardBottomSheet
+      <FirstDreamSheet
         visible={Boolean(firstDreamPrompt)}
-        onClose={handleFirstDreamDismiss}
-        title={t('guest.first_dream.sheet.title')}
-        subtitle={t('guest.first_dream.sheet.subtitle')}
-        titleTestID={TID.Text.FirstDreamSheetTitle}
-        actions={{
-          primaryLabel: t('guest.first_dream.sheet.analyze'),
-          onPrimary: handleFirstDreamAnalyze,
-          primaryDisabled: isPersisting,
-          primaryLoading: isPersisting,
-          primaryTestID: TID.Button.FirstDreamAnalyze,
-          secondaryLabel: t('guest.first_dream.sheet.journal'),
-          onSecondary: handleFirstDreamJournal,
-          secondaryDisabled: isPersisting,
-          secondaryTestID: TID.Button.FirstDreamJournal,
-          linkLabel: t('guest.first_dream.sheet.dismiss'),
-          onLink: handleFirstDreamDismiss,
-          linkTestID: TID.Button.FirstDreamDismiss,
-        }}
+        onDismiss={handleFirstDreamDismiss}
+        onAnalyze={handleFirstDreamAnalyze}
+        onJournal={handleFirstDreamJournal}
+        isPersisting={isPersisting}
       />
 
-      {/* Analyze Prompt Sheet */}
-      <StandardBottomSheet
+      <AnalyzePromptSheet
         visible={Boolean(analyzePromptDream)}
-        onClose={handleAnalyzePromptDismiss}
-        title={t('recording.analyze_prompt.sheet.title')}
-        titleTestID={TID.Text.AnalyzePromptTitle}
-        actions={{
-          primaryLabel: t('recording.analyze_prompt.sheet.analyze'),
-          onPrimary: handleFirstDreamAnalyze,
-          primaryDisabled: isPersisting,
-          primaryLoading: isPersisting,
-          primaryTestID: TID.Button.AnalyzePromptAnalyze,
-          secondaryLabel: t('recording.analyze_prompt.sheet.journal'),
-          onSecondary: handleAnalyzePromptJournal,
-          secondaryDisabled: isPersisting,
-          secondaryTestID: TID.Button.AnalyzePromptJournal,
-          linkLabel: t('recording.analyze_prompt.sheet.dismiss'),
-          onLink: handleAnalyzePromptDismiss,
-        }}
-      >
-        {analyzePromptTranscript ? (
-          <View style={styles.sheetTranscriptContainer}>
-            <ScrollView
-              nestedScrollEnabled
-              showsVerticalScrollIndicator={false}
-              style={styles.sheetTranscriptScroll}
-            >
-              <Text style={[styles.sheetTranscriptText, { color: colors.textPrimary }]}>
-                {analyzePromptTranscript}
-              </Text>
-            </ScrollView>
-          </View>
-        ) : null}
-      </StandardBottomSheet>
+        onDismiss={handleAnalyzePromptDismiss}
+        onAnalyze={handleFirstDreamAnalyze}
+        onJournal={handleAnalyzePromptJournal}
+        transcript={analyzePromptTranscript}
+        isPersisting={isPersisting}
+      />
 
-      {/* Guest Limit Sheet */}
-      <StandardBottomSheet
+      <GuestLimitSheet
         visible={showGuestLimitSheet}
         onClose={() => {
           setShowGuestLimitSheet(false);
           setPendingGuestLimitDream(null);
         }}
-        title={t('recording.guest_limit_sheet.title')}
-        subtitle={t('recording.guest_limit_sheet.message')}
-        actions={{
-          primaryLabel: t('recording.guest_limit_sheet.cta'),
-          onPrimary: () => {
-            setShowGuestLimitSheet(false);
-            router.push('/(tabs)/settings');
-          },
-          primaryTestID: TID.Button.GuestLimitCta,
+        onCta={() => {
+          setShowGuestLimitSheet(false);
+          router.push('/(tabs)/settings');
         }}
       />
 
-      {/* Quota Limit Sheet */}
-      <StandardBottomSheet
+      <QuotaLimitSheet
         visible={showQuotaLimitSheet}
         onClose={handleQuotaLimitDismiss}
-        title={
-          quotaSheetMode === 'login'
-            ? t('recording.analysis_limit.title_login')
-            : quotaSheetMode === 'limit'
-              ? tier === 'guest'
-                ? t('recording.analysis_limit.title_guest')
-                : t('recording.analysis_limit.title_free')
-              : t('common.error_title')
-        }
-        subtitle={
-          quotaSheetMode === 'login'
-            ? t('recording.analysis_limit.message_login')
-            : quotaSheetMode === 'limit'
-              ? tier === 'guest'
-                ? t('recording.analysis_limit.message_guest', {
-                  limit: usage?.analysis.limit ?? QUOTAS.guest.analysis ?? 0,
-                })
-                : t('recording.analysis_limit.message_free', {
-                  limit: usage?.analysis.limit ?? QUOTAS.free.analysis ?? 0,
-                })
-              : quotaSheetMessage
-        }
-        testID={TID.Sheet.QuotaLimit}
-        titleTestID={TID.Text.QuotaLimitTitle}
-        actions={{
-          primaryLabel:
-            quotaSheetMode === 'login'
-              ? t('recording.analysis_limit.cta_login')
-              : quotaSheetMode === 'limit'
-                ? tier === 'guest'
-                  ? t('recording.analysis_limit.cta_guest')
-                  : t('recording.analysis_limit.cta_free')
-                : t('common.ok'),
-          onPrimary:
-            quotaSheetMode === 'error'
-              ? handleQuotaLimitDismiss
-              : handleQuotaLimitPrimary,
-          primaryTestID:
-            quotaSheetMode === 'limit'
-              ? tier === 'guest'
-                ? TID.Button.QuotaLimitCtaGuest
-                : TID.Button.QuotaLimitCtaFree
-              : quotaSheetMode === 'login'
-                ? TID.Button.QuotaLimitCtaGuest
-                : TID.Button.QuotaLimitCtaFree,
-          secondaryLabel: quotaSheetMode === 'limit' ? t('recording.analysis_limit.journal') : undefined,
-          onSecondary: quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined,
-          secondaryTestID: quotaSheetMode === 'limit' ? TID.Button.QuotaLimitJournal : undefined,
-          linkLabel: quotaSheetMode === 'limit' ? t('recording.analysis_limit.dismiss') : undefined,
-          onLink: quotaSheetMode === 'limit' ? handleQuotaLimitDismiss : undefined,
-        }}
-      >
-        {quotaSheetMode === 'limit' && tier === 'free' && (
-          <View style={styles.quotaFeaturesList}>
-            <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
-              ✓ {t('recording.analysis_limit.feature_analyses')}
-            </Text>
-            <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
-              ✓ {t('recording.analysis_limit.feature_explorations')}
-            </Text>
-            <Text style={[styles.quotaFeature, { color: colors.textPrimary }]}>
-              ✓ {t('recording.analysis_limit.feature_priority')}
-            </Text>
-          </View>
-        )}
-      </StandardBottomSheet>
+        onPrimary={quotaSheetMode === 'error' ? handleQuotaLimitDismiss : handleQuotaLimitPrimary}
+        onSecondary={quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined}
+        onLink={quotaSheetMode === 'limit' ? handleQuotaLimitDismiss : undefined}
+        mode={quotaSheetMode}
+        tier={tier}
+        usageLimit={usage?.analysis.limit}
+        message={quotaSheetMessage}
+      />
 
       {/* Subject Proposition */}
       {referenceImagesEnabled && showSubjectProposition && detectedSubjectType && (
@@ -1196,30 +1090,16 @@ export default function RecordingScreen() {
         </View>
       )}
 
-      {/* Reference Image Picker Sheet */}
-      <StandardBottomSheet
+      <ReferenceImageSheet
         visible={referenceImagesEnabled && showReferencePickerSheet}
+        subjectType={detectedSubjectType}
+        referenceImages={referenceImages}
+        isPersisting={isPersisting}
         onClose={handleReferencePickerClose}
-        title={detectedSubjectType === 'person'
-          ? t('reference_image.title_person')
-          : t('reference_image.title_animal')}
-        actions={{
-          primaryLabel: t('subject_proposition.accept'),
-          onPrimary: handleGenerateWithReference,
-          primaryDisabled: referenceImages.length === 0 || isPersisting,
-          primaryLoading: isPersisting,
-          secondaryLabel: t('subject_proposition.skip'),
-          onSecondary: handleReferencePickerClose,
-        }}
-      >
-        {referenceImagesEnabled && detectedSubjectType && (
-          <ReferenceImagePicker
-            subjectType={detectedSubjectType}
-            onImagesSelected={handleReferenceImagesSelected}
-            maxImages={REFERENCE_IMAGES.MAX_UPLOADS}
-          />
-        )}
-      </StandardBottomSheet>
+        onPrimary={handleGenerateWithReference}
+        onSecondary={handleReferencePickerClose}
+        onImagesSelected={handleReferenceImagesSelected}
+      />
 
       {/* Offline Model Download Sheet */}
       <OfflineModelDownloadSheet
@@ -1254,37 +1134,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     gap: 24,
-  },
-  // Sheet custom content styles (used in StandardBottomSheet children)
-  sheetTranscriptContainer: {
-    width: '100%',
-    borderRadius: ThemeLayout.borderRadius.lg,
-    borderWidth: 0,
-    paddingVertical: ThemeLayout.spacing.sm,
-    paddingHorizontal: ThemeLayout.spacing.md,
-    maxHeight: 180,
-    marginTop: ThemeLayout.spacing.sm,
-  },
-  sheetTranscriptScroll: {
-    maxHeight: 164,
-  },
-  sheetTranscriptText: {
-    fontFamily: Fonts.lora.regular,
-    fontSize: 15,
-    lineHeight: 22,
-    textAlign: 'center',
-  },
-  quotaFeaturesList: {
-    marginTop: ThemeLayout.spacing.sm,
-    marginBottom: ThemeLayout.spacing.md,
-    gap: 8,
-    alignItems: 'flex-start',
-    width: '100%',
-    paddingHorizontal: ThemeLayout.spacing.md,
-  },
-  quotaFeature: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
   },
   subjectPropositionOverlay: {
     ...StyleSheet.absoluteFillObject,
