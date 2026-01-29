@@ -1,4 +1,5 @@
 import { ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useFadeInUp } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
     lineHeight: 24,
   },
@@ -80,6 +81,6 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
 });

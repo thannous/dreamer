@@ -1,7 +1,7 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { GradientText } from '@/components/inspiration/GradientText';
+import { PageHeader } from '@/components/inspiration/PageHeader';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
@@ -10,8 +10,8 @@ import { SearchBar } from '@/components/journal/SearchBar';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { Fonts } from '@/constants/theme';
+import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -22,7 +22,6 @@ import { applyFilters, getUniqueDreamTypes, getUniqueThemes, sortDreamsByDate } 
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
-import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,7 +38,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Animated, { FadeInDown, SlideInDown } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
@@ -60,25 +58,16 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
 
 export default function JournalListScreen() {
   const { dreams } = useDreams();
-  const { colors, shadows, mode } = useTheme();
+  const { colors, shadows } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const isNative = Platform.OS !== 'web';
   const desktopColumns = width >= 1440 ? 4 : 3;
-
-  const headerGradientColors = useMemo(
-    () =>
-      mode === 'dark'
-        ? ([colors.accentLight, colors.accent] as const)
-        : ([colors.textPrimary, colors.accentDark] as const),
-    [colors.accent, colors.accentDark, colors.accentLight, colors.textPrimary, mode],
-  );
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
 
@@ -465,32 +454,12 @@ export default function JournalListScreen() {
 
       {/* Header — only on web (native uses headerSearchBarOptions) */}
       {!isNative && (
-        <View
-          style={[
-            styles.header,
-            isDesktopLayout && styles.headerDesktop,
-            { paddingTop: insets.top + ThemeLayout.spacing.sm },
-          ]}
-        >
-          <MotiView
-            key={`header-${showHeaderAnimations}`}
-            from={{ opacity: 0, translateY: 16 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 700 }}
-          >
-            <GradientText colors={headerGradientColors} style={styles.headerTitle}>
-              {t('journal.title')}
-            </GradientText>
-          </MotiView>
-          <MotiView
-            key={`header-rule-${showHeaderAnimations}`}
-            from={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ type: 'timing', duration: 600, delay: 350 }}
-          >
-            <View style={[styles.headerRule, { backgroundColor: colors.accent }]} />
-          </MotiView>
-        </View>
+        <PageHeader
+          titleKey="journal.title"
+          showAnimations={showHeaderAnimations}
+          wrapInContainer={false}
+          style={isDesktopLayout ? styles.headerDesktop : undefined}
+        />
       )}
 
       {/* Search and Filters */}
@@ -723,28 +692,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: Platform.OS === 'ios' ? 60 : 20,
-    paddingBottom: ThemeLayout.spacing.sm,
-    alignItems: 'center',
-  },
   headerDesktop: {
     alignSelf: 'center',
     width: '100%',
     maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.fraunces.semiBold,
-    letterSpacing: 0.5,
-  },
-  headerRule: {
-    width: 36,
-    height: 2.5,
-    borderRadius: 1.5,
-    marginTop: 10,
-    opacity: 0.7,
   },
   filtersContainer: {
     padding: ThemeLayout.spacing.md,
@@ -781,7 +732,7 @@ const styles = StyleSheet.create({
   },
   desktopDate: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   desktopBadgesRow: {
     flexDirection: 'row',
@@ -795,7 +746,7 @@ const styles = StyleSheet.create({
   },
   desktopBadgeText: {
     fontSize: 11,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   desktopRow: {
     flexDirection: 'row',
@@ -852,17 +803,17 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   modalTitle: {
     fontSize: 20,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.md,
     textAlign: 'center',
   },
   modalSubtext: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: ThemeLayout.spacing.md,
     textAlign: 'center',
   },
@@ -874,7 +825,7 @@ const styles = StyleSheet.create({
   },
   modalOptionText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     textAlign: 'center',
     textTransform: 'capitalize',
   },
@@ -902,7 +853,7 @@ const styles = StyleSheet.create({
   },
   modalCancelText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     textAlign: 'center',
   },
 });

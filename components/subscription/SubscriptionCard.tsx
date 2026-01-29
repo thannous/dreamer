@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 export type SubscriptionCardProps = {
@@ -33,12 +33,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   ctaTestID,
 }) => {
   const { colors, shadows, mode } = useTheme();
-  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
+  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
 
   const showCta = Boolean(ctaLabel && onPress);
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }, shadows.md]} testID={testID}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, shadows.md]} testID={testID}>
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
@@ -88,7 +88,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
     gap: ThemeLayout.spacing.sm,
@@ -105,17 +105,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   subtitle: {
     marginTop: 4,
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   expiryLabel: {
     marginTop: 6,
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   badge: {
     borderRadius: ThemeLayout.borderRadius.full,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   featureList: {
     marginTop: ThemeLayout.spacing.sm,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   featureText: {
     flex: 1,
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   ctaButton: {
     alignSelf: 'flex-start',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     fontSize: 15,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     letterSpacing: 0.4,
   },
   ctaDisabled: {

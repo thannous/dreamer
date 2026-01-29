@@ -5,6 +5,7 @@ import { BottomSheet } from '@/components/ui/BottomSheet';
 import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
 import { EmailVerificationIcon } from '@/components/icons/EmailVerificationIcon';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -141,17 +142,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 20,
     textAlign: 'center',
   },
   emailHighlight: {
-    fontFamily: 'SpaceGrotesk_600SemiBold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   badge: {
     flexDirection: 'row',
@@ -164,18 +165,18 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   status: {
     marginTop: ThemeLayout.spacing.sm,
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
   },
   cooldown: {
     marginTop: 4,
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     textAlign: 'center',
   },
 });

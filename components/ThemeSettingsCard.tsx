@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/context/ThemeContext';
 import type { ThemePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const THEME_OPTIONS: {
@@ -49,7 +49,7 @@ export default function ThemeSettingsCard() {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: getGlassCardBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
+    <View style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('settings.theme.title')}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>
         {t('settings.theme.description')}
@@ -129,18 +129,18 @@ export default function ThemeSettingsCard() {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
   cardTitle: {
     fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   description: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 20,
   },
@@ -177,12 +177,12 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: 2,
   },
   optionDescription: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   radio: {
     width: 22,

@@ -249,6 +249,7 @@ export const ThemeLayout = {
     xs: 4,
     sm: 8,
     md: 16,
+    lg20: 20,
     lg: 24,
     xl: 32,
   },
@@ -275,6 +276,26 @@ export const ThemeLayout = {
   timelineIconContainerSize: 32,
   timelineLineWidth: 2,
 };
+
+/**
+ * Decorative line presets used across the app.
+ */
+export const DecoLines = {
+  /** Full-width accent stripe (GlassCard tops) */
+  stripe: {
+    height: 2.5,
+    width: '100%' as const,
+    opacity: 0.8,
+  },
+  /** Short centered rule (headers, section dividers) */
+  rule: {
+    width: 36,
+    height: 2.5,
+    borderRadius: 1.5,
+    opacity: 0.7,
+    alignSelf: 'center' as const,
+  },
+} as const;
 
 /**
  * Legacy export for backward compatibility

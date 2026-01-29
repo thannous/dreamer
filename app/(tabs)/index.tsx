@@ -9,15 +9,14 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { DreamIcon } from "@/components/icons/DreamIcons";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
 import { GlassCard } from "@/components/inspiration/GlassCard";
-import { GradientText } from "@/components/inspiration/GradientText";
+import { PageHeader } from "@/components/inspiration/PageHeader";
+import { SectionHeading } from "@/components/inspiration/SectionHeading";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { ThemeLayout } from "@/constants/journalTheme";
+import { DecoLines, ThemeLayout } from "@/constants/journalTheme";
 import {
   ADD_BUTTON_RESERVED_SPACE,
   DESKTOP_BREAKPOINT,
@@ -136,7 +135,6 @@ export default function InspirationScreen() {
   const { colors, mode } = useTheme();
   const { t, currentLang } = useTranslation();
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [tipIndex, setTipIndex] = useState(0);
@@ -148,19 +146,6 @@ export default function InspirationScreen() {
   const [showAnimations, setShowAnimations] = useState(false);
 
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
-  const headerGradientColors = useMemo(
-    () =>
-      mode === "dark"
-        ? ([colors.accentLight, colors.accent] as const)
-        : ([colors.textPrimary, colors.accentDark] as const),
-    [
-      colors.accent,
-      colors.accentDark,
-      colors.accentLight,
-      colors.textPrimary,
-      mode,
-    ],
-  );
 
   const fallbackTabHeight = TAB_BAR_HEIGHT;
   const floatingOffset = fallbackTabHeight;
@@ -344,38 +329,12 @@ export default function InspirationScreen() {
       {/* Atmospheric dreamlike background */}
       <AtmosphericBackground />
 
-      <ScreenContainer>
-        <View
-          style={[
-            styles.header,
-            { paddingTop: insets.top + ThemeLayout.spacing.md },
-          ]}
-        >
-          <MotiView
-            key={`header-${showAnimations}`}
-            from={{ opacity: 0, translateY: 16 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: "timing", duration: 700 }}
-          >
-            <GradientText
-              colors={headerGradientColors}
-              style={styles.headerTitle}
-            >
-              {t("inspiration.title")}
-            </GradientText>
-          </MotiView>
-          <MotiView
-            key={`header-rule-${showAnimations}`}
-            from={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ type: "timing", duration: 600, delay: 350 }}
-          >
-            <View
-              style={[styles.headerRule, { backgroundColor: colors.accent }]}
-            />
-          </MotiView>
-        </View>
-      </ScreenContainer>
+      <PageHeader
+        titleKey="inspiration.title"
+        showAnimations={showAnimations}
+        topSpacing={ThemeLayout.spacing.md}
+        style={{ paddingBottom: ThemeLayout.spacing.md }}
+      />
 
       <ScrollView
         style={styles.scrollView}
@@ -670,46 +629,7 @@ function PopularSymbolsSection({
   );
 }
 
-// ─── Section Heading ─────────────────────────────────────────────────────────
-
-type SectionHeadingProps = {
-  title: string;
-  subtitle?: string;
-  colors: ReturnType<typeof useTheme>["colors"];
-  icon?: IconName;
-};
-
-function SectionHeading({
-  title,
-  subtitle,
-  colors,
-  icon,
-}: SectionHeadingProps) {
-  return (
-    <View style={styles.sectionHeading}>
-      <View style={styles.sectionHeadingRow}>
-        {icon && (
-          <View
-            style={[
-              styles.sectionHeadingIcon,
-              { backgroundColor: `${colors.accent}30` },
-            ]}
-          >
-            <IconSymbol name={icon} size={14} color={colors.accent} />
-          </View>
-        )}
-        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-          {title}
-        </Text>
-      </View>
-      {subtitle ? (
-        <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>
-          {subtitle}
-        </Text>
-      ) : null}
-    </View>
-  );
-}
+// SectionHeading is now imported from @/components/inspiration/SectionHeading
 
 // ─── Ritual Cards with Progress Ring ─────────────────────────────────────────
 
@@ -1048,26 +968,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // Header
-  header: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingTop: Platform.OS === "ios" ? 60 : 20,
-    paddingBottom: ThemeLayout.spacing.md,
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.fraunces.semiBold,
-    letterSpacing: 0.5,
-  },
-  headerRule: {
-    width: 36,
-    height: 2.5,
-    borderRadius: 1.5,
-    marginTop: 10,
-    opacity: 0.7,
-  },
-
   // Scroll & Content
   scrollView: {
     flex: 1,
@@ -1099,34 +999,6 @@ const styles = StyleSheet.create({
   },
   sectionSpacing: {
     marginBottom: 44,
-  },
-
-  // Section Heading
-  sectionHeading: {
-    marginBottom: 18,
-  },
-  sectionHeadingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  sectionHeadingIcon: {
-    width: 26,
-    height: 26,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  sectionTitle: {
-    fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 22,
-    letterSpacing: 0.5,
-  },
-  sectionSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
-    marginTop: 6,
-    lineHeight: 20,
   },
 
   // Info cards stack
@@ -1237,8 +1109,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   tipAccentStripe: {
+    ...DecoLines.stripe,
     height: 3,
-    width: "100%",
     opacity: 0.85,
   },
   tipInner: {

@@ -5,6 +5,7 @@ import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { GUEST_DREAM_LIMIT } from '@/constants/limits';
+import { Fonts } from '@/constants/theme';
 import { getLocalDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
 import { router } from 'expo-router';
 
@@ -82,15 +83,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   counter: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   subtitle: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   progressBar: {
     height: 8,
@@ -111,6 +112,6 @@ const styles = StyleSheet.create({
   ctaText: {
     color: '#fff',
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
 });

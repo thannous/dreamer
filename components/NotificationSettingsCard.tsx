@@ -3,7 +3,7 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef,
 import { Alert, AppState, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { NotificationSettings } from '@/lib/types';
@@ -40,7 +40,7 @@ function NotificationSettingsCardComponent(
   const [isLoading, setIsLoading] = useState(true);
   const optionsContainerRef = useRef<View>(null);
   const { colors, mode } = useTheme();
-  const cardBg = getGlassCardBackground(colors.backgroundCard, mode);
+  const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
 
   // Expose scrollIntoView method to parent
@@ -351,7 +351,7 @@ function NotificationSettingsCardComponent(
 
   if (isLoading) {
     return (
-      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
+      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.title')}</Text>
         <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.loading')}</Text>
       </View>
@@ -360,7 +360,7 @@ function NotificationSettingsCardComponent(
 
   if (Platform.OS === 'web') {
     return (
-      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
+      <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.title')}</Text>
         <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.unsupported')}</Text>
       </View>
@@ -370,7 +370,7 @@ function NotificationSettingsCardComponent(
   const notificationsEnabled = settings.weekdayEnabled || settings.weekendEnabled;
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>{t('notifications.card.title')}</Text>
       <Text style={[styles.description, { color: colors.textSecondary }]}>{t('notifications.card.description')}</Text>
 
@@ -512,18 +512,18 @@ function NotificationSettingsCardComponent(
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
   cardTitle: {
     fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   description: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 20,
   },
@@ -539,12 +539,12 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: 2,
   },
   settingHint: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   controlGroup: {
     flexDirection: 'row',
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   },
   timeButtonText: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   doneButton: {
     marginTop: 12,
@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   doneButtonText: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     fontSize: 16,
   },
   testButtonContainer: {
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
   },
   testButtonText: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   warningBox: {
     marginTop: 12,
@@ -600,12 +600,12 @@ const styles = StyleSheet.create({
   },
   warningText: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     lineHeight: 18,
   },
   explanatoryText: {
     fontSize: 12,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 18,
   },

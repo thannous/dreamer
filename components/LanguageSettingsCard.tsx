@@ -6,7 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import type { LanguagePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
-import { getGlassCardBackground, GLASS_CARD_BORDER_WIDTH } from '@/constants/theme';
+import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
   ensureOfflineSttModel,
@@ -75,7 +75,7 @@ export default function LanguageSettingsCard() {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: getGlassCardBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GLASS_CARD_BORDER_WIDTH }]}>
+    <View style={[styles.card, { backgroundColor: GlassCardTokens.getBackground(colors.backgroundCard, mode), borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
       <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
         {t('settings.language.title')}
       </Text>
@@ -153,18 +153,18 @@ export default function LanguageSettingsCard() {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: ThemeLayout.borderRadius.md,
+    borderRadius: ThemeLayout.borderRadius.xl,
     padding: ThemeLayout.spacing.md,
     marginBottom: ThemeLayout.spacing.md,
   },
   cardTitle: {
     fontSize: 18,
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: Fonts.spaceGrotesk.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   description: {
     fontSize: 14,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 20,
   },
@@ -201,12 +201,12 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 16,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: Fonts.spaceGrotesk.medium,
     marginBottom: 2,
   },
   optionDescription: {
     fontSize: 13,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   radio: {
     width: 22,
