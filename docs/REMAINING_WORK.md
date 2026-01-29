@@ -148,7 +148,7 @@
 - ✅ Curation pages avec liens vers chaque symbole individuel
 
 **Remaining (optional):**
-- [ ] Blog Content → Symbol Pages: ajouter des liens/CTAs vers des pages symboles dans les articles blog qui n'en ont pas encore (actuellement ~12/25 par langue)
+- [x] Blog Content → Symbol Pages: ajouter des liens/CTAs vers des pages symboles dans les articles blog qui n'en ont pas encore (12/25 par langue, soit 36 pages mises à jour)
 - [ ] GSC submission & monitoring setup
 
 ---
@@ -321,7 +321,7 @@
 - [x] Dictionary hub-and-spoke (already existed)
 - [x] Category badge fix → links to category hub
 - [x] Category hubs → cross-links to curation guides
-- [ ] Blog cross-linking (optional: add CTA links in 7 blog articles)
+- [x] Blog cross-linking (optional: CTAs vers pages symboles ajoutés dans les articles blog qui n'en avaient pas)
 - [ ] GSC submission & monitoring setup
 - [ ] Baseline metrics capture
 
@@ -400,6 +400,9 @@ node scripts/generate-symbol-pages.js --categories
 
 # Generate curation guide pages (24 pages)
 node scripts/generate-symbol-pages.js --curation
+
+# Add "Related Symbols" CTAs inside blog posts that were missing them
+node scripts/add-blog-symbol-ctas.js --apply
 
 # Generate specific priority
 node scripts/generate-symbol-pages.js --priority=1
