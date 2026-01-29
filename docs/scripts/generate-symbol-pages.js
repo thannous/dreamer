@@ -108,14 +108,34 @@ function generateMetaTitle(symbol, i18n, lang) {
   return template.replace(/{symbol}/g, name);
 }
 
+// Truncate a meta description to a maximum length, cutting at the last sentence or word boundary
+function truncateMetaDescription(text, maxLength = 160) {
+  if (text.length <= maxLength) return text;
+  // Try to cut at the last sentence boundary (period followed by space) within the limit
+  const truncated = text.slice(0, maxLength);
+  const lastSentenceEnd = truncated.lastIndexOf('. ');
+  if (lastSentenceEnd > maxLength * 0.5) {
+    return truncated.slice(0, lastSentenceEnd + 1);
+  }
+  // Fall back to last word boundary, reserving space for ellipsis
+  const ellipsis = '\u2026'; // single-char ellipsis (…)
+  const truncatedForEllipsis = text.slice(0, maxLength - 1);
+  const lastSpace = truncatedForEllipsis.lastIndexOf(' ');
+  if (lastSpace > maxLength * 0.5) {
+    return truncatedForEllipsis.slice(0, lastSpace) + ellipsis;
+  }
+  return truncatedForEllipsis + ellipsis;
+}
+
 // Generate meta description
 function generateMetaDescription(symbol, i18n, lang) {
   const template = i18n[lang].meta_description_template;
   const name = symbol[lang].name;
   const shortDesc = symbol[lang].shortDescription;
-  return template
+  const description = template
     .replace(/{symbol}/g, name)
     .replace(/{short_description}/g, shortDesc);
+  return truncateMetaDescription(description);
 }
 
 // Generate hreflang URLs
@@ -835,9 +855,10 @@ function generateCategoryMetaTitle(categoryId, i18n, lang) {
 function generateCategoryMetaDescription(categoryId, i18n, lang) {
   const template = i18n[lang].category_meta_description_template;
   const categoryName = getCategoryNameById(categoryId, lang);
-  return template
+  const description = template
     .replace(/{category}/g, categoryName)
     .replace(/{category_lower}/g, categoryName.toLowerCase());
+  return truncateMetaDescription(description);
 }
 
 // Generate category page HTML
@@ -1346,7 +1367,7 @@ function generateCurationHreflangUrls(page) {
 // Generate a single curation page HTML
 function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
-  const pageData = page[lang];
+  const pageData = { ...page[lang], metaDescription: truncateMetaDescription(page[lang].metaDescription) };
   const slug = page.slugs[lang];
   const hreflang = generateCurationHreflangUrls(page);
   const symbolsCount = page.symbols.length;
