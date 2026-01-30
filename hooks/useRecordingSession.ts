@@ -11,6 +11,7 @@ import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import {
   ensureOfflineSttModel,
   getSpeechLocaleAvailability,
+  isWebSpeechRecognitionAvailable,
   startNativeSpeechSession,
   type NativeSpeechSession,
 } from '@/services/nativeSpeechRecognition';
@@ -277,28 +278,29 @@ export function useRecordingSession({
             );
             return { success: false, error: 'insecure_context' };
           }
-          Alert.alert(
-            t('recording.alert.stt_unavailable.title'),
-            t('recording.alert.stt_unavailable.message')
-          );
-          return { success: false, error: 'stt_unavailable' };
-        }
-
-        const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-        if (!granted) {
-          Alert.alert(
-            t('recording.alert.permission_required.title'),
-            t('recording.alert.permission_required.message')
-          );
-          return { success: false, error: 'permission_denied' };
+          if (!isWebSpeechRecognitionAvailable()) {
+            Alert.alert(
+              t('recording.alert.stt_unavailable.title'),
+              t('recording.alert.stt_unavailable.message')
+            );
+            return { success: false, error: 'stt_unavailable' };
+          }
+        } else {
+          const { granted } = await AudioModule.requestRecordingPermissionsAsync();
+          if (!granted) {
+            Alert.alert(
+              t('recording.alert.permission_required.title'),
+              t('recording.alert.permission_required.message')
+            );
+            return { success: false, error: 'permission_denied' };
+          }
         }
 
         const modelReady = await ensureOfflineSttModel(transcriptionLocale);
         if (Platform.OS === 'android' && Number(Platform.Version) >= 33 && !modelReady) {
           if (__DEV__) {
-            console.log('[Recording] offline model not ready, aborting start');
+            console.log('[Recording] offline model not ready, continuing with online recognition');
           }
-          return { success: false, error: 'offline_model_not_ready' };
         }
 
         const localeAvailability = await getSpeechLocaleAvailability(transcriptionLocale);
@@ -338,8 +340,17 @@ export function useRecordingSession({
           },
         });
 
+        if (Platform.OS === 'web' && !nativeSessionRef.current) {
+          Alert.alert(
+            t('recording.alert.stt_unavailable.title'),
+            t('recording.alert.stt_unavailable.message')
+          );
+          await setAudioModeAsync({ allowsRecording: false });
+          return { success: false, error: 'stt_unavailable' };
+        }
+
         const canPersistAudio = nativeSessionRef.current?.hasRecording === true;
-        skipRecorderRef.current = canPersistAudio;
+        skipRecorderRef.current = Platform.OS === 'web' ? true : canPersistAudio;
 
         if (__DEV__) {
           if (!nativeSessionRef.current) {

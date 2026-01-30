@@ -63,13 +63,17 @@ export function RecordingFooter({
 
       <Pressable
         onPress={onGoToJournal}
-        style={styles.journalLinkButton}
+        style={({ pressed }) => [
+          styles.journalLinkButton,
+          pressed && styles.journalLinkPressed,
+        ]}
         testID={TID.Button.NavigateJournal}
         accessibilityRole="link"
         accessibilityLabel={journalLinkAccessibilityLabel ?? journalLinkLabel}
       >
         <Text style={[styles.journalLinkText, { color: colors.accent }]}>
           {journalLinkLabel}
+          <Text style={styles.journalLinkArrow}>{' '}→</Text>
         </Text>
       </Pressable>
     </View>
@@ -113,6 +117,14 @@ const styles = StyleSheet.create({
   },
   journalLinkText: {
     fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+  },
+  journalLinkArrow: {
+    fontSize: 15,
+  },
+  journalLinkPressed: {
+    opacity: 0.5,
   },
 });

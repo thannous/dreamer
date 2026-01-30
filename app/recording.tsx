@@ -226,6 +226,9 @@ export default function RecordingScreen() {
       show: handleOfflineModelPromptShow,
     };
     registerOfflineModelPromptHandler(handler);
+    return () => {
+      registerOfflineModelPromptHandler(null);
+    };
   }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
 
   useEffect(() => {
@@ -603,7 +606,7 @@ export default function RecordingScreen() {
 
   const handleGoToJournal = useCallback(() => {
     blurActiveElement();
-    router.push('/(tabs)/journal');
+    router.push('/(tabs)');
   }, []);
 
   const handleFirstDreamDismiss = useCallback(() => {

@@ -29,6 +29,8 @@ const hasWebSpeechAPI = (): boolean => {
       typeof (window as typeof globalThis & { SpeechRecognition?: unknown }).SpeechRecognition !== 'undefined');
 };
 
+export const isWebSpeechRecognitionAvailable = (): boolean => hasWebSpeechAPI();
+
 let cachedSpeechModule: ExpoSpeechRecognitionModuleType | null | undefined;
 
 // Session token to prevent events from old sessions being processed
