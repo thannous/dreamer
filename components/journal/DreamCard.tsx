@@ -37,7 +37,7 @@ export const DreamCard = memo(function DreamCard({
   dateLabel,
   variant = 'standard',
 }: DreamCardProps) {
-  const { colors, shadows, mode } = useTheme();
+  const { colors, mode } = useTheme();
   const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const { animatedStyle, onPressIn, onPressOut } = useScalePress();
   const { t } = useTranslation();
@@ -135,7 +135,7 @@ export const DreamCard = memo(function DreamCard({
     return (
       <Animated.View>
         <AnimatedPressable
-          style={[styles.cardVertical, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
+          style={[styles.cardVertical, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
           onPress={handlePress}
           onPressIn={onPressIn}
           onPressOut={onPressOut}
@@ -250,7 +250,7 @@ export const DreamCard = memo(function DreamCard({
   return (
     <Animated.View>
       <AnimatedPressable
-        style={[styles.card, shadows.sm, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
+        style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, animatedStyle]}
         onPress={handlePress}
         onPressIn={onPressIn}
         onPressOut={onPressOut}

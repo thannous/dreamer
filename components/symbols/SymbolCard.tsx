@@ -6,7 +6,6 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
-import { getCategoryIcon } from '@/services/symbolDictionaryService';
 
 interface SymbolCardProps {
   symbol: DreamSymbol;
@@ -17,7 +16,6 @@ interface SymbolCardProps {
 export function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
   const { colors, mode } = useTheme();
   const content = symbol[language] ?? symbol.en;
-  const icon = getCategoryIcon(symbol.category);
   const handlePress = useCallback(() => {
     onPress(symbol.id);
   }, [onPress, symbol.id]);
@@ -47,18 +45,6 @@ export function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
         opacity: pressed ? 0.8 : 1,
         transform: [{ scale: pressed ? 0.98 : 1 }],
       })}>
-      <View
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: ThemeLayout.borderRadius.sm,
-          borderCurve: 'continuous',
-          backgroundColor: colors.backgroundSecondary,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <IconSymbol name={icon} size={20} color={colors.accent} />
-      </View>
       <View style={{ flex: 1, gap: 2 }}>
         <Text
           style={{

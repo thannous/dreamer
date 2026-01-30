@@ -28,7 +28,7 @@ export const Toast: React.FC<ToastProps> = ({
   onHide,
   testID,
 }) => {
-  const { colors, shadows } = useTheme();
+  const { colors } = useTheme();
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(16);
   const handleHide = useCallback(() => onHide?.(), [onHide]);
@@ -86,7 +86,6 @@ export const Toast: React.FC<ToastProps> = ({
         styles.container,
         animatedStyle,
         { backgroundColor },
-        shadows.md,
         pointerEventsStyle,
       ]}
       testID={testID}

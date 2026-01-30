@@ -43,7 +43,7 @@ const getProgress = (usage?: UsageEntry) => {
 export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
-  const { colors, shadows, mode } = useTheme();
+  const { colors, mode } = useTheme();
   const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
@@ -140,7 +140,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, shadows.md]}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]}>
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>
@@ -242,7 +242,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
 
       {showCta && (
         <Pressable
-          style={[styles.ctaButton, { backgroundColor: colors.accent }, shadows.sm]}
+          style={[styles.ctaButton, { backgroundColor: colors.accent }]}
           accessibilityRole="button"
           onPress={handleUpgrade}
         >

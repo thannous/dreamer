@@ -14,7 +14,7 @@ type Props = {
 export const UpsellCard: React.FC<Props> = ({ testID }) => {
   const { user } = useAuth();
   const { dreams } = useDreams();
-  const { colors, shadows, mode } = useTheme();
+  const { colors, mode } = useTheme();
   const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
   const { t } = useTranslation();
 
@@ -23,7 +23,7 @@ export const UpsellCard: React.FC<Props> = ({ testID }) => {
   if (dreams.length < 1) return null;
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, shadows.md]} testID={testID}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]} testID={testID}>
       <Text style={[styles.title, { color: colors.textPrimary }]}>{t('guest.upsell.title')}</Text>
       <View style={styles.benefits}>
         <Text style={[styles.benefit, { color: colors.textPrimary }]}>• {t('guest.upsell.benefit.unlimited')}</Text>
