@@ -54,7 +54,7 @@ export function AtmosphericBackground() {
   const orb3Color = mode === 'dark' ? `${colors.accentDark}30` : `${colors.accentDark}15`;
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={styles.container} pointerEvents="none">
       {/* Aurora Gradient Background - animated cycling of colors */}
       <LinearGradient
         colors={gradientColors}
@@ -151,6 +151,10 @@ export function AtmosphericBackground() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
   orb: {
     position: 'absolute',
     borderRadius: 9999,

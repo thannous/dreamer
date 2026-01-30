@@ -10,6 +10,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { Ionicons } from '@expo/vector-icons';
 import {
   RITUALS,
   type RitualId,
@@ -32,7 +33,7 @@ const RITUAL_ICONS: Record<RitualId, string> = {
 export default function RitualDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const ritualId = id as RitualId;
-  const { colors, mode } = useTheme();
+  const { colors, mode, shadows } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
@@ -125,32 +126,20 @@ export default function RitualDetailScreen() {
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
       <AtmosphericBackground />
 
-      {/* Header with back button */}
-      <View
-        style={[
-          styles.header,
-          { paddingTop: insets.top + ThemeLayout.spacing.sm },
-        ]}
+      {/* Floating Back Button */}
+      <Pressable
+        onPress={() => router.back()}
+        style={[styles.floatingBackButton, shadows.lg, {
+          backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+          borderWidth: 1,
+          borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+        }]}
+        accessibilityRole="button"
+        accessibilityLabel={t('journal.back_button')}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
-        <Pressable
-          onPress={() => router.back()}
-          style={({ pressed }) => [
-            styles.backButton,
-            { opacity: pressed ? 0.6 : 1 },
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel={t('journal.back_button')}
-        >
-          <IconSymbol
-            name="chevron.left"
-            size={20}
-            color={colors.textPrimary}
-          />
-          <Text style={[styles.backLabel, { color: colors.textPrimary }]}>
-            {t('journal.back_button')}
-          </Text>
-        </Pressable>
-      </View>
+        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+      </Pressable>
 
       <ScrollView
         style={styles.scrollView}
@@ -284,19 +273,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    paddingHorizontal: ThemeLayout.spacing.md,
-    paddingBottom: ThemeLayout.spacing.sm,
-  },
-  backButton: {
-    flexDirection: 'row',
+  floatingBackButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    zIndex: 50,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 4,
-    alignSelf: 'flex-start',
-  },
-  backLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 16,
   },
   scrollView: {
     flex: 1,

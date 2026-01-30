@@ -25,6 +25,7 @@ import {
   openSpeechRecognitionLanguageSettings,
 } from '@/lib/speechRecognitionSettings';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
@@ -212,6 +213,9 @@ function Root({
       show: handleOfflineModelPromptShow,
     };
     registerOfflineModelPromptHandler(handler);
+    return () => {
+      registerOfflineModelPromptHandler(null);
+    };
   }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
 
   useEffect(() => {
@@ -454,17 +458,30 @@ function Footer({ children }: { children?: React.ReactNode }) {
 
 function Body({ children }: { children: React.ReactNode }) {
   const { colors, mode } = useTheme();
+  const isWeb = Platform.OS === 'web';
+  const blurIntensity = mode === 'dark' ? 15 : 5;
+  const opacityHex = Math.round((mode === 'dark' ? 0.4 : 0.65) * 255).toString(16).padStart(2, '0');
+  const glassBackground = isWeb ? `${colors.backgroundCard}${opacityHex}` : 'transparent';
+
   return (
     <View
       style={[
         styles.inputWrapper,
         {
-          backgroundColor: mode === 'dark' ? colors.backgroundCard : colors.backgroundSecondary,
+          backgroundColor: glassBackground,
           borderColor: mode === 'dark' ? 'rgba(255,255,255,0.14)' : colors.divider,
           borderWidth: 1,
+          overflow: 'hidden',
         },
       ]}
     >
+      {!isWeb && (
+        <BlurView
+          intensity={blurIntensity}
+          tint={mode === 'dark' ? 'dark' : 'light'}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       {children}
     </View>
   );

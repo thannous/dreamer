@@ -23,6 +23,9 @@ import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCo
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
+import { FlatGlassCard } from '@/components/inspiration/GlassCard';
+import { DecoLines } from '@/constants/journalTheme';
+import { MotiView } from '@/lib/moti';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -51,6 +54,12 @@ const QUICK_CATEGORIES = [
   { id: 'emotions', labelKey: 'dream_chat.quick.emotions', icon: 'heart-pulse' as const },
   { id: 'growth', labelKey: 'dream_chat.quick.growth', icon: 'sprout' as const },
 ];
+
+const CATEGORIES_COLORS: Record<string, string> = {
+  symbols: '#8C9EFF',
+  emotions: '#FF6B9D',
+  growth: '#4CAF50',
+};
 
 const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
 
@@ -722,7 +731,11 @@ export default function DreamChatScreen() {
       <LinearGradient colors={gradientColors} style={styles.container}>
         <Pressable
           onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          style={[styles.floatingBackButton, shadows.lg, {
+            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            borderWidth: 1,
+            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+          }]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -760,7 +773,11 @@ export default function DreamChatScreen() {
       <LinearGradient colors={gradientColors} style={styles.container}>
         <Pressable
           onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          style={[styles.floatingBackButton, shadows.lg, {
+            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            borderWidth: 1,
+            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+          }]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -826,33 +843,48 @@ export default function DreamChatScreen() {
           <Text style={[styles.dreamTitle, { color: colors.textPrimary }]} numberOfLines={2}>
             {dream.title}
           </Text>
+          {dream.shareableQuote ? (
+            <Text style={[styles.dreamQuotePreview, { color: colors.textSecondary }]}>
+              &quot;{dream.shareableQuote}&quot;
+            </Text>
+          ) : null}
         </LinearGradient>
+      </View>
+      {/* Decorative rule between header and content */}
+      <View style={styles.decoRuleContainer}>
+        <View style={[DecoLines.rule, { backgroundColor: colors.accent }]} />
       </View>
       {messages.length <= 2 && (
         <View style={styles.quickCategoriesContainer}>
           <Text style={[styles.quickCategoriesLabel, { color: colors.textSecondary }]}>{t('dream_chat.quick_topics')}</Text>
           <View style={styles.quickCategories}>
-            {QUICK_CATEGORIES.map((cat) => (
-              <Pressable
-                key={cat.id}
-                style={({ pressed }) => [
-                  styles.quickCategoryButton,
-                  {
-                    backgroundColor: mode === 'dark' ? 'rgba(50, 17, 212, 0.2)' : colors.backgroundSecondary,
-                    borderColor: colors.divider,
-                  },
-                  pressed && styles.quickCategoryButtonPressed,
-                  (!hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached) && { opacity: 0.5 },
-                ]}
-                onPress={() => handleQuickCategory(cat.id)}
-                disabled={isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached}
-              >
-                <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
-                <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
-                  {t(cat.labelKey)}
-                </Text>
-              </Pressable>
-            ))}
+            {QUICK_CATEGORIES.map((cat, index) => {
+              const catColor = CATEGORIES_COLORS[cat.id] ?? colors.accent;
+              const isQuickDisabled = isLoading || !hasQuotaCheckClearance || isQuotaGateBlocked || messageLimitReached;
+              return (
+                <MotiView
+                  key={cat.id}
+                  from={{ opacity: 0, translateY: 12 }}
+                  animate={{ opacity: isQuickDisabled ? 0.5 : 1, translateY: 0 }}
+                  transition={{ type: 'timing', duration: 500, delay: 200 + index * 80 }}
+                >
+                  <FlatGlassCard
+                    onPress={() => handleQuickCategory(cat.id)}
+                    style={styles.quickCategoryGlass}
+                    testID={`quick-category-${cat.id}`}
+                    animationDelay={0}
+                  >
+                    <View style={[styles.quickCategoryAccent, { backgroundColor: catColor }]} />
+                    <View style={styles.quickCategoryInner}>
+                      <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
+                      <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
+                        {t(cat.labelKey)}
+                      </Text>
+                    </View>
+                  </FlatGlassCard>
+                </MotiView>
+              );
+            })}
           </View>
         </View>
       )}
@@ -891,7 +923,11 @@ export default function DreamChatScreen() {
       <LinearGradient colors={gradientColors} style={styles.gradient}>
         <Pressable
           onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          style={[styles.floatingBackButton, shadows.lg, {
+            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            borderWidth: 1,
+            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+          }]}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -1113,7 +1149,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 450,
+    height: 320,
     position: 'relative',
   },
   dreamImage: {
@@ -1128,13 +1164,20 @@ const styles = StyleSheet.create({
     height: 120,
     justifyContent: 'flex-end',
     paddingHorizontal: 16,
-    paddingBottom: 12,
+    paddingBottom: 0,
   },
   dreamTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.lora.bold,
+    fontSize: 22,
+    fontFamily: Fonts.fraunces.semiBold,
     // color: set dynamically
-    lineHeight: 28,
+    lineHeight: 30,
+  },
+  dreamQuotePreview: {
+    fontSize: 13,
+    fontFamily: Fonts.lora.regularItalic,
+    opacity: 0.6,
+    marginTop: 4,
+    lineHeight: 18,
   },
   imagePlaceholder: {
     borderBottomLeftRadius: 0,
@@ -1154,32 +1197,41 @@ const styles = StyleSheet.create({
   },
   quickCategoriesLabel: {
     fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.lora.regularItalic,
     // color: set dynamically
-    marginBottom: 8,
+    marginBottom: 10,
   },
   quickCategories: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 10,
   },
-  quickCategoryButton: {
+  quickCategoryGlass: {
+    overflow: 'hidden',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+  },
+  quickCategoryAccent: {
+    width: '100%',
+    height: 3,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+  quickCategoryInner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    // backgroundColor and borderColor: set dynamically
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  quickCategoryButtonPressed: {
-    opacity: 0.6,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
   quickCategoryText: {
     fontSize: 13,
     fontFamily: Fonts.spaceGrotesk.medium,
     // color: set dynamically
+  },
+  decoRuleContainer: {
+    alignItems: 'center',
+    marginVertical: 0,
   },
   missingDreamBackButton: {
     marginTop: 16,
@@ -1200,7 +1252,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   blockedTitle: {
-    fontFamily: Fonts.lora.bold,
+    fontFamily: Fonts.fraunces.semiBold,
     fontSize: 24,
     textAlign: 'center',
     marginTop: 16,
