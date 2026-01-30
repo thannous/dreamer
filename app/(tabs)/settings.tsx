@@ -25,8 +25,10 @@ import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
@@ -44,7 +46,7 @@ function SectionDivider({
 }) {
   return (
     <MotiView
-      from={{ opacity: 0, scaleX: 0 }}
+      from={{ opacity: 1, scaleX: 0 }}
       animate={{ opacity: 1, scaleX: 1 }}
       transition={{ type: 'timing', duration: 500, delay }}
     >
@@ -62,6 +64,7 @@ export default function SettingsScreen() {
   const { width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
   const appVersion = getAppVersionString();
+  const scrollPerf = useScrollIdle();
   useClearWebFocus();
 
   const [showAnimations, setShowAnimations] = useState(false);
@@ -143,12 +146,82 @@ export default function SettingsScreen() {
   // When returning guest is blocked, show only the auth hub
   if (returningGuestBlocked) {
     return (
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <KeyboardAvoidingView
+          behavior={keyboardBehavior}
+          style={[styles.container, { backgroundColor: colors.backgroundDark }]}
+        >
+          <AtmosphericBackground />
+          <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
+
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
+            ]}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+            onScrollEndDrag={scrollPerf.onScrollEndDrag}
+            onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+            onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+          >
+            <ScreenContainer>
+              {/* Welcome back banner */}
+              <FlatGlassCard
+                intensity="moderate"
+                animationDelay={100}
+                style={styles.returningGuestGlassCard}
+              >
+                <View style={[styles.returningGuestAccentStripe, { backgroundColor: colors.accent }]} />
+                <View style={styles.returningGuestInner}>
+                  <IconSymbol name="person.crop.circle.badge.exclamationmark" size={48} color={colors.accent} />
+                  <Text style={[styles.returningGuestTitle, { color: colors.textPrimary }]}>
+                    {t('auth.returning_guest.banner_title')}
+                  </Text>
+                  <Text style={[styles.returningGuestMessage, { color: colors.textSecondary }]}>
+                    {t('auth.returning_guest.message')}
+                  </Text>
+                </View>
+              </FlatGlassCard>
+
+              {/* Auth card */}
+              <MotiView
+                from={{ opacity: 1, translateY: 16 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 500, delay: 200 }}
+              >
+                <View style={styles.settingsSectionCards}>
+                  <EmailAuthCard isCompact={isCompactLayout} />
+                </View>
+              </MotiView>
+
+              {/* Language settings */}
+              <MotiView
+                from={{ opacity: 1, translateY: 16 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ type: 'timing', duration: 500, delay: 300 }}
+              >
+                <View style={styles.settingsSectionCards}>
+                  <LanguageSettingsCard />
+                </View>
+              </MotiView>
+            </ScreenContainer>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </ScrollPerfProvider>
+    );
+  }
+
+  return (
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <KeyboardAvoidingView
         behavior={keyboardBehavior}
         style={[styles.container, { backgroundColor: colors.backgroundDark }]}
       >
         <AtmosphericBackground />
-        <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
+        <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
 
         <ScrollView
           style={styles.scrollView}
@@ -158,77 +231,18 @@ export default function SettingsScreen() {
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <ScreenContainer>
-            {/* Welcome back banner */}
-            <FlatGlassCard
-              intensity="moderate"
-              animationDelay={100}
-              style={styles.returningGuestGlassCard}
-            >
-              <View style={[styles.returningGuestAccentStripe, { backgroundColor: colors.accent }]} />
-              <View style={styles.returningGuestInner}>
-                <IconSymbol name="person.crop.circle.badge.exclamationmark" size={48} color={colors.accent} />
-                <Text style={[styles.returningGuestTitle, { color: colors.textPrimary }]}>
-                  {t('auth.returning_guest.banner_title')}
-                </Text>
-                <Text style={[styles.returningGuestMessage, { color: colors.textSecondary }]}>
-                  {t('auth.returning_guest.message')}
-                </Text>
-              </View>
-            </FlatGlassCard>
-
-            {/* Auth card */}
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 200 }}
-            >
-              <View style={styles.settingsSectionCards}>
-                <EmailAuthCard isCompact={isCompactLayout} />
-              </View>
-            </MotiView>
-
-            {/* Language settings */}
-            <MotiView
-              from={{ opacity: 0, translateY: 16 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ type: 'timing', duration: 500, delay: 300 }}
-            >
-              <View style={styles.settingsSectionCards}>
-                <LanguageSettingsCard />
-              </View>
-            </MotiView>
-          </ScreenContainer>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  }
-
-  return (
-    <KeyboardAvoidingView
-      behavior={keyboardBehavior}
-      style={[styles.container, { backgroundColor: colors.backgroundDark }]}
-    >
-      <AtmosphericBackground />
-      <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <ScreenContainer>
-          <View style={[styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop]}>
+            <View style={[styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop]}>
 
             {/* ─── Account Section ─── */}
             <View style={styles.settingsSection}>
               <MotiView
-                from={{ opacity: 0, translateY: 16 }}
+                from={{ opacity: 1, translateY: 16 }}
                 animate={{ opacity: 1, translateY: 0 }}
                 transition={{ type: 'timing', duration: 500, delay: 100 }}
               >
@@ -239,7 +253,7 @@ export default function SettingsScreen() {
                 />
               </MotiView>
               <MotiView
-                from={{ opacity: 0, translateY: 16 }}
+                from={{ opacity: 1, translateY: 16 }}
                 animate={{ opacity: 1, translateY: 0 }}
                 transition={{ type: 'timing', duration: 500, delay: 200 }}
               >
@@ -254,7 +268,7 @@ export default function SettingsScreen() {
             {/* ─── Subscription Section ─── */}
             <View style={styles.settingsSection}>
               <MotiView
-                from={{ opacity: 0, translateY: 16 }}
+                from={{ opacity: 1, translateY: 16 }}
                 animate={{ opacity: 1, translateY: 0 }}
                 transition={{ type: 'timing', duration: 500, delay: 300 }}
               >
@@ -266,7 +280,7 @@ export default function SettingsScreen() {
               </MotiView>
               <View style={styles.settingsSectionCards}>
                 <MotiView
-                  from={{ opacity: 0, translateY: 16 }}
+                  from={{ opacity: 1, translateY: 16 }}
                   animate={{ opacity: 1, translateY: 0 }}
                   transition={{ type: 'timing', duration: 500, delay: 400 }}
                 >
@@ -286,7 +300,7 @@ export default function SettingsScreen() {
                   </View>
                 </MotiView>
                 <MotiView
-                  from={{ opacity: 0, translateY: 16 }}
+                  from={{ opacity: 1, translateY: 16 }}
                   animate={{ opacity: 1, translateY: 0 }}
                   transition={{ type: 'timing', duration: 500, delay: 500 }}
                 >
@@ -302,7 +316,7 @@ export default function SettingsScreen() {
             {/* ─── Preferences Section ─── */}
             <View style={styles.settingsSection}>
               <MotiView
-                from={{ opacity: 0, translateY: 16 }}
+                from={{ opacity: 1, translateY: 16 }}
                 animate={{ opacity: 1, translateY: 0 }}
                 transition={{ type: 'timing', duration: 500, delay: 600 }}
               >
@@ -314,7 +328,7 @@ export default function SettingsScreen() {
               </MotiView>
               <View style={styles.settingsSectionCards}>
                 <MotiView
-                  from={{ opacity: 0, translateY: 16 }}
+                  from={{ opacity: 1, translateY: 16 }}
                   animate={{ opacity: 1, translateY: 0 }}
                   transition={{ type: 'timing', duration: 500, delay: 700 }}
                 >
@@ -323,7 +337,7 @@ export default function SettingsScreen() {
                   </View>
                 </MotiView>
                 <MotiView
-                  from={{ opacity: 0, translateY: 16 }}
+                  from={{ opacity: 1, translateY: 16 }}
                   animate={{ opacity: 1, translateY: 0 }}
                   transition={{ type: 'timing', duration: 500, delay: 800 }}
                 >
@@ -340,7 +354,7 @@ export default function SettingsScreen() {
                 <SectionDivider color={colors.accent} delay={850} />
                 <View style={styles.settingsSection}>
                   <MotiView
-                    from={{ opacity: 0, translateY: 16 }}
+                    from={{ opacity: 1, translateY: 16 }}
                     animate={{ opacity: 1, translateY: 0 }}
                     transition={{ type: 'timing', duration: 500, delay: 900 }}
                   >
@@ -351,7 +365,7 @@ export default function SettingsScreen() {
                     />
                   </MotiView>
                   <MotiView
-                    from={{ opacity: 0, translateY: 16 }}
+                    from={{ opacity: 1, translateY: 16 }}
                     animate={{ opacity: 1, translateY: 0 }}
                     transition={{ type: 'timing', duration: 500, delay: 1000 }}
                   >
@@ -367,7 +381,7 @@ export default function SettingsScreen() {
           {/* ─── Version Footer ─── */}
           {appVersion ? (
             <MotiView
-              from={{ opacity: 0 }}
+              from={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               transition={{ type: 'timing', duration: 600, delay: 1100 }}
             >
@@ -379,9 +393,10 @@ export default function SettingsScreen() {
               </View>
             </MotiView>
           ) : null}
-        </ScreenContainer>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </ScreenContainer>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ScrollPerfProvider>
   );
 }
 
