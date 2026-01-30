@@ -314,6 +314,28 @@ describe('http', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
 
+    it('given external abort with retries when aborted then stops retrying', async () => {
+      const controller = new AbortController();
+      global.fetch = vi.fn().mockImplementation((_url, options) => {
+        const abortSignal = (options as RequestInit).signal;
+        return new Promise((_, reject) => {
+          abortSignal?.addEventListener('abort', () => {
+            reject(new Error('The operation was aborted'));
+          });
+        });
+      });
+
+      const resultPromise = fetchJSON('https://api.example.com/data', {
+        retries: 2,
+        signal: controller.signal,
+      });
+
+      controller.abort();
+
+      await expect(resultPromise).rejects.toThrow('The operation was aborted');
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+
     it('given custom retry delay when fetching then uses custom delay', async () => {
       mockClassifyError.mockReturnValue({ type: 'network', canRetry: true });
 

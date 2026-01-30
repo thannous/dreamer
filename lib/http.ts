@@ -46,11 +46,38 @@ export type HttpOptions = {
   signal?: AbortSignal;
 };
 
+const ABORT_ERROR_MESSAGE = 'The operation was aborted';
+
+const createAbortError = (): Error => {
+  const error = new Error(ABORT_ERROR_MESSAGE);
+  error.name = 'AbortError';
+  return error;
+};
+
 /**
- * Sleep helper for retry delays
+ * Sleep helper for retry delays (optional abort support)
  */
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  if (!signal) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  const abortSignal = signal;
+  if (abortSignal.aborted) {
+    return Promise.reject(createAbortError());
+  }
+  return new Promise((resolve, reject) => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    function onAbort() {
+      if (timeoutId) clearTimeout(timeoutId);
+      abortSignal.removeEventListener('abort', onAbort);
+      reject(createAbortError());
+    }
+    timeoutId = setTimeout(() => {
+      abortSignal.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    abortSignal.addEventListener('abort', onAbort, { once: true });
+  });
 }
 
 type ExpoExtra = {
@@ -253,14 +280,25 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
 export async function fetchJSON<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
   const retries = options.retries ?? 0;
   const retryDelay = options.retryDelay ?? 2000;
+  const signal = options.signal;
 
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
+    if (signal?.aborted) {
+      throw createAbortError();
+    }
     try {
       return await fetchJSONOnce<T>(url, options);
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
+
+      if (signal?.aborted) {
+        if (lastError.name === 'AbortError') {
+          throw lastError;
+        }
+        throw createAbortError();
+      }
 
       // If we have more retries left, check if we should retry
       if (attempt < retries) {
@@ -278,7 +316,7 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
             retryDelay * Math.pow(2, attempt) * jitter,
             30000 // Cap at 30 seconds max
           );
-          await sleep(delay);
+          await sleep(delay, signal);
           continue;
         } else {
           // For other errors (rate limit, client errors), don't retry automatically
