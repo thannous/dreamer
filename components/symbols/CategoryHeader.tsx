@@ -22,34 +22,46 @@ export function CategoryHeader({ category, count, language }: CategoryHeaderProp
   return (
     <View
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: ThemeLayout.spacing.sm,
         paddingHorizontal: ThemeLayout.spacing.md,
         paddingTop: ThemeLayout.spacing.lg,
         paddingBottom: ThemeLayout.spacing.sm,
+        gap: 6,
       }}>
-      <IconSymbol name={icon} size={18} color={colors.accent} />
-      <Text
+      <View
         style={{
-          flex: 1,
-          fontFamily: Fonts.spaceGrotesk.bold,
-          fontSize: 16,
-          color: colors.textPrimary,
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: ThemeLayout.spacing.sm,
         }}>
-        {name}
-      </Text>
-      <Text
+        <IconSymbol name={icon} size={18} color={colors.accent} />
+        <Text
+          style={{
+            flex: 1,
+            fontFamily: Fonts.fraunces.medium,
+            fontSize: 16,
+            color: colors.textPrimary,
+            textTransform: 'uppercase',
+            letterSpacing: 0.5,
+          }}>
+          {name}
+        </Text>
+        <Text
+          style={{
+            fontFamily: Fonts.spaceGrotesk.regular,
+            fontSize: 13,
+            color: colors.textTertiary,
+            fontVariant: ['tabular-nums'],
+          }}>
+          {count}
+        </Text>
+      </View>
+      <View
         style={{
-          fontFamily: Fonts.spaceGrotesk.regular,
-          fontSize: 13,
-          color: colors.textTertiary,
-          fontVariant: ['tabular-nums'],
-        }}>
-        {count}
-      </Text>
+          height: 1,
+          backgroundColor: colors.accent,
+          opacity: 0.3,
+        }}
+      />
     </View>
   );
 }

@@ -665,6 +665,8 @@ const translations: Record<string, string> = {
     'symbols.dictionary_subtitle': 'Explore dream symbols and their meanings',
     'symbols.search_placeholder': 'Search symbols...',
     'symbols.all_categories': 'All',
+    'symbols.browse_theme': 'By theme',
+    'symbols.browse_alphabetical': 'A-Z',
     'symbols.interpretation': 'Interpretation',
     'symbols.variations': 'Common Variations',
     'symbols.ask_yourself': 'Ask Yourself',

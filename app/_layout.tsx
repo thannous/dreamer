@@ -314,8 +314,8 @@ function RootLayoutNav() {
             <Stack.Screen name="journal/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="dream-categories/[id]" options={{ headerShown: false }} />
-            <Stack.Screen name="symbol-dictionary" options={{ title: 'Symbols' }} />
-            <Stack.Screen name="symbol-detail/[id]" options={{ title: '' }} />
+            <Stack.Screen name="symbol-dictionary" options={{ headerShown: false }} />
+            <Stack.Screen name="symbol-detail/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="ritual/[id]" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal', headerShown: false }} />
