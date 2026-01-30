@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -127,7 +127,7 @@
       }
     },
     "owner": "tanuki75",
-    "runtimeVersion": "1.0.2",
+    "runtimeVersion": "1.1.0",
     "updates": {
       "url": "https://u.expo.dev/cfd1b275-9dad-40d7-9d9a-147c7bb38415"
     }
