@@ -191,11 +191,10 @@ const { default: SymbolDictionaryScreen } = await import('../symbol-dictionary')
 describe('SymbolDictionaryScreen', () => {
   // ── Rendering ───────────────────────────────────────────────────────────
   describe('initial rendering', () => {
-    it('renders the header with icon, title, and subtitle', () => {
+    it('renders the header with icon and title', () => {
       render(<SymbolDictionaryScreen />);
 
       expect(screen.getByText('symbols.dictionary_title')).toBeTruthy();
-      expect(screen.getByText('symbols.dictionary_subtitle')).toBeTruthy();
       expect(screen.getByTestId('icon-book-open-page-variant-outline')).toBeTruthy();
     });
 

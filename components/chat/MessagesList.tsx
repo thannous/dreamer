@@ -66,6 +66,7 @@ interface MessagesListProps {
   contentContainerStyle?: StyleProp<ViewStyle>;
   onRetryMessage?: (message: ChatMessage) => void;
   retryA11yLabel?: string;
+  onScrollStateChange?: (isScrolling: boolean) => void;
 }
 
 /**
@@ -527,6 +528,7 @@ export function MessagesList({
   contentContainerStyle,
   onRetryMessage,
   retryA11yLabel,
+  onScrollStateChange,
 }: MessagesListProps) {
   const handwritingAnimatedMessages = useRef<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(0);
@@ -559,6 +561,7 @@ export function MessagesList({
   const [isStreamingSnapshot, setIsStreamingSnapshot] = useState(false);
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const scrollStateRef = useRef(false);
   const lastErrorMessageId = useMemo(() => {
     for (let index = messages.length - 1; index >= 0; index -= 1) {
       const message = messages[index];
@@ -596,6 +599,13 @@ export function MessagesList({
   useEffect(() => {
     setIsNearBottomSnapshot(isNearBottom.value.value);
   }, [isNearBottom]);
+
+  const setScrolling = useCallback((next: boolean) => {
+    if (scrollStateRef.current === next) return;
+    scrollStateRef.current = next;
+    setIsUserScrolling(next);
+    onScrollStateChange?.(next);
+  }, [onScrollStateChange]);
 
   useAnimatedReaction(
     () => isNearBottom.value.value,
@@ -711,10 +721,10 @@ export function MessagesList({
         keyExtractor={keyExtractor}
         onContentSizeChange={onContentSizeChange}
         onScroll={onScroll}
-        onScrollBeginDrag={() => setIsUserScrolling(true)}
-        onScrollEndDrag={() => setIsUserScrolling(false)}
-        onMomentumScrollBegin={() => setIsUserScrolling(true)}
-        onMomentumScrollEnd={() => setIsUserScrolling(false)}
+        onScrollBeginDrag={() => setScrolling(true)}
+        onScrollEndDrag={() => setScrolling(false)}
+        onMomentumScrollBegin={() => setScrolling(true)}
+        onMomentumScrollEnd={() => setScrolling(false)}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.contentContainer, { paddingTop: insets.top + 8 }, contentContainerStyle]}

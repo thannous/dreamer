@@ -13,7 +13,9 @@ import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissin
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
+import { useScrollPerf } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
@@ -462,10 +464,14 @@ function Footer({ children }: { children?: React.ReactNode }) {
 
 function Body({ children }: { children: React.ReactNode }) {
   const { colors, mode } = useTheme();
+  const isScrolling = useScrollPerf();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const isWeb = Platform.OS === 'web';
-  const blurIntensity = mode === 'dark' ? 15 : 5;
+  const reduceEffects = isScrolling || prefersReducedMotion;
+  const blurIntensity = reduceEffects ? 0 : mode === 'dark' ? 15 : 5;
   const opacityHex = Math.round((mode === 'dark' ? 0.4 : 0.65) * 255).toString(16).padStart(2, '0');
   const glassBackground = isWeb ? `${colors.backgroundCard}${opacityHex}` : 'transparent';
+  const shouldUseBlur = !isWeb && !reduceEffects;
 
   return (
     <View
@@ -479,7 +485,7 @@ function Body({ children }: { children: React.ReactNode }) {
         },
       ]}
     >
-      {!isWeb && (
+      {shouldUseBlur && (
         <BlurView
           intensity={blurIntensity}
           tint={mode === 'dark' ? 'dark' : 'light'}

@@ -26,10 +26,12 @@ import type { ThemeColors } from '@/constants/journalTheme';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useDreamStatistics } from '@/hooks/useDreamStatistics';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
 import { splitLabelText } from '@/lib/pieLabelUtils';
@@ -254,6 +256,7 @@ export default function StatisticsScreen() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const { width } = useWindowDimensions();
+  const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const { formatNumber, formatPercent } = useLocaleFormatting();
   const tabBarHeight = useBottomTabBarHeight();
@@ -332,42 +335,51 @@ export default function StatisticsScreen() {
 
   if (!loaded) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-        <AtmosphericBackground />
-        {header}
-        <View style={styles.loadingContainer}>
-          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('stats.loading')}</Text>
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+          <AtmosphericBackground />
+          {header}
+          <View style={styles.loadingContainer}>
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>{t('stats.loading')}</Text>
+          </View>
         </View>
-      </View>
+      </ScrollPerfProvider>
     );
   }
 
   if (dreams.length === 0) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-        <AtmosphericBackground />
-        {header}
-        <View style={styles.emptyState}>
-          <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>{t('stats.empty')}</Text>
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+          <AtmosphericBackground />
+          {header}
+          <View style={styles.emptyState}>
+            <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>{t('stats.empty')}</Text>
+          </View>
         </View>
-      </View>
+      </ScrollPerfProvider>
     );
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-      <AtmosphericBackground />
-      {header}
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+        <AtmosphericBackground />
+        {header}
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={{
-          paddingBottom: tabBarHeight + ThemeLayout.spacing.xl,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        <ScreenContainer>
-          <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={{
+            paddingBottom: tabBarHeight + ThemeLayout.spacing.xl,
+          }}
+          showsVerticalScrollIndicator={false}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+        >
+          <ScreenContainer>
+            <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
             {/* Overview Cards */}
             <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>
               <SectionGlass colors={colors} animationDelay={150}>
@@ -688,9 +700,10 @@ export default function StatisticsScreen() {
               </SectionGlass>
             </View>
           </View>
-        </ScreenContainer>
-      </ScrollView>
-    </View>
+          </ScreenContainer>
+        </ScrollView>
+      </View>
+    </ScrollPerfProvider>
   );
 }
 

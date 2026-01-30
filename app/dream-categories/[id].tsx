@@ -2,8 +2,10 @@ import { FlatGlassCard, GlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { isDreamExplored } from '@/lib/dreamUsage';
@@ -55,6 +57,7 @@ export default function DreamCategoriesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { dreams } = useDreams();
   const { colors, shadows, mode } = useTheme();
+  const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const dream = dreams.find((d) => d.id === Number(id));
   const hasExistingChat = isDreamExplored(dream);
@@ -65,9 +68,11 @@ export default function DreamCategoriesScreen() {
 
   if (!dream) {
     return (
-      <LinearGradient colors={gradientColors} style={styles.container}>
-        <Text style={[styles.errorText, { color: colors.textPrimary }]}>{t('dream_categories.not_found.title')}</Text>
-      </LinearGradient>
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <LinearGradient colors={gradientColors} style={styles.container}>
+          <Text style={[styles.errorText, { color: colors.textPrimary }]}>{t('dream_categories.not_found.title')}</Text>
+        </LinearGradient>
+      </ScrollPerfProvider>
     );
   }
 
@@ -81,94 +86,103 @@ export default function DreamCategoriesScreen() {
   const availableCategories = CATEGORIES.filter((category) => !isCategoryExplored(dream.chatHistory, category.id));
 
   return (
-    <LinearGradient colors={gradientColors} style={styles.gradient}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* Animated Header with GradientText */}
-        <PageHeaderContent titleKey="dream_categories.explore_title" />
-
-        {/* Dream Title — Glass Card with integrated back button */}
-        <FlatGlassCard style={styles.dreamTitleCard} animationDelay={100}>
-          <View style={styles.dreamTitleRow}>
-            <Pressable
-              onPress={() => router.back()}
-              style={[styles.backButton, {
-                backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
-              }]}
-              accessibilityRole="button"
-              accessibilityLabel={t('journal.back_button')}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <MaterialCommunityIcons name="arrow-left" size={20} color={colors.textPrimary} />
-            </Pressable>
-            <View style={styles.dreamTitleContent}>
-              <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
-              <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
-                {t('dream_categories.subtitle')}
-              </Text>
-            </View>
-          </View>
-        </FlatGlassCard>
-
-        {/* Category Cards — Vertical GlassCards */}
-        <View style={styles.categoriesContainer}>
-          {availableCategories.map((category, index) => (
-            <GlassCard
-              key={category.id}
-              testID={TID.Button.DreamCategory(category.id)}
-              onPress={() => handleCategoryPress(category.id)}
-              animationDelay={200 + index * 120}
-              style={styles.categoryCard}
-            >
-              <MotiView
-                from={{ translateY: 0 }}
-                animate={{ translateY: -1 }}
-                transition={{
-                  type: 'timing',
-                  duration: 3000,
-                  loop: true,
-                  repeatReverse: true,
-                }}
-              >
-                <View style={[styles.iconRing, { borderColor: category.color }]}>
-                  <MaterialCommunityIcons
-                    name={category.icon}
-                    size={24}
-                    color={category.color}
-                  />
-                </View>
-              </MotiView>
-              <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>
-                {t(category.titleKey)}
-              </Text>
-              <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>
-                {t(category.descriptionKey)}
-              </Text>
-            </GlassCard>
-          ))}
-        </View>
-
-        {/* Free Chat — Solid accent button */}
-        <MotiView
-          from={{ opacity: 0, translateY: 16 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 500, delay: 200 + availableCategories.length * 120 + 80 }}
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+      <LinearGradient colors={gradientColors} style={styles.gradient}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <Pressable
-            onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
-            testID={TID.Button.DreamFreeChat}
-            style={[styles.freeChatButton, shadows.md, {
-              backgroundColor: colors.accent,
-              borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
-            }]}
+          {/* Animated Header with GradientText */}
+          <PageHeaderContent titleKey="dream_categories.explore_title" />
+
+          {/* Dream Title — Glass Card with integrated back button */}
+          <FlatGlassCard style={styles.dreamTitleCard} animationDelay={100}>
+            <View style={styles.dreamTitleRow}>
+              <Pressable
+                onPress={() => router.back()}
+                style={[styles.backButton, {
+                  backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                }]}
+                accessibilityRole="button"
+                accessibilityLabel={t('journal.back_button')}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <MaterialCommunityIcons name="arrow-left" size={20} color={colors.textPrimary} />
+              </Pressable>
+              <View style={styles.dreamTitleContent}>
+                <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
+                <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
+                  {t('dream_categories.subtitle')}
+                </Text>
+              </View>
+            </View>
+          </FlatGlassCard>
+
+          {/* Category Cards — Vertical GlassCards */}
+          <View style={styles.categoriesContainer}>
+            {availableCategories.map((category, index) => (
+              <GlassCard
+                key={category.id}
+                testID={TID.Button.DreamCategory(category.id)}
+                onPress={() => handleCategoryPress(category.id)}
+                animationDelay={200 + index * 120}
+                style={styles.categoryCard}
+              >
+                <MotiView
+                  from={{ translateY: 0 }}
+                  animate={{ translateY: -1 }}
+                  transition={{
+                    type: 'timing',
+                    duration: 3000,
+                    loop: true,
+                    repeatReverse: true,
+                  }}
+                >
+                  <View style={[styles.iconRing, { borderColor: category.color }]}>
+                    <MaterialCommunityIcons
+                      name={category.icon}
+                      size={24}
+                      color={category.color}
+                    />
+                  </View>
+                </MotiView>
+                <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>
+                  {t(category.titleKey)}
+                </Text>
+                <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>
+                  {t(category.descriptionKey)}
+                </Text>
+              </GlassCard>
+            ))}
+          </View>
+
+          {/* Free Chat — Solid accent button */}
+          <MotiView
+            from={{ opacity: 0, translateY: 16 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 500, delay: 200 + availableCategories.length * 120 + 80 }}
           >
-            <MaterialCommunityIcons name="chat-processing-outline" size={22} color={colors.textPrimary} />
-            <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
-              {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
-            </Text>
-          </Pressable>
-        </MotiView>
-      </ScrollView>
-    </LinearGradient>
+            <Pressable
+              onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
+              testID={TID.Button.DreamFreeChat}
+              style={[styles.freeChatButton, shadows.md, {
+                backgroundColor: colors.accent,
+                borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+              }]}
+            >
+              <MaterialCommunityIcons name="chat-processing-outline" size={22} color={colors.textPrimary} />
+              <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
+                {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
+              </Text>
+            </Pressable>
+          </MotiView>
+        </ScrollView>
+      </LinearGradient>
+    </ScrollPerfProvider>
   );
 }
 

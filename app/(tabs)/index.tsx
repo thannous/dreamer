@@ -24,8 +24,10 @@ import {
 } from "@/constants/layout";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
+import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
 import { useAppState } from "@/hooks/useAppState";
 import { useClearWebFocus } from "@/hooks/useClearWebFocus";
+import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
 import {
   RITUALS,
@@ -134,6 +136,7 @@ export default function InspirationScreen() {
   const { colors, mode } = useTheme();
   const { t, currentLang } = useTranslation();
   const { width } = useWindowDimensions();
+  const scrollPerf = useScrollIdle();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
   const [tipIndex, setTipIndex] = useState(0);
@@ -322,184 +325,189 @@ export default function InspirationScreen() {
   );
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: colors.backgroundDark }]}
-    >
-      {/* Atmospheric dreamlike background */}
-      <AtmosphericBackground />
-
-      <PageHeader
-        titleKey="inspiration.title"
-        animationSeed={showAnimations ? 1 : 0}
-        topSpacing={ThemeLayout.spacing.md}
-        style={styles.pageHeader}
-      />
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: scrollContentBottomPadding },
-        ]}
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+      <View
+        style={[styles.container, { backgroundColor: colors.backgroundDark }]}
       >
-        <ScreenContainer
-          style={[
-            styles.contentContainer,
-            !isDesktopLayout && styles.mobileRootContainer,
-          ]}
-        >
-          <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
-            {/* Popular Symbols - Constellation style */}
-            <View style={styles.sectionSpacing}>
-              <PopularSymbolsSection
-                colors={colors}
-                mode={mode}
-                language={currentLang as SymbolLanguage}
-                t={t}
-                showAnimations={showAnimations}
-              />
-            </View>
+        {/* Atmospheric dreamlike background */}
+        <AtmosphericBackground />
 
-            {/* Rituals with Progress Rings */}
-            <View style={styles.sectionSpacing}>
-              <RitualScrollSection
-                colors={colors}
-                rituals={RITUALS}
-                selectedRitualId={selectedRitualId}
-                ritualProgress={ritualProgress}
-                t={t}
-                mode={mode}
-              />
-            </View>
-
-            {/* Tip of the Day - Featured card */}
-            <View
-              style={[
-                styles.sectionSpacing,
-                !isDesktopLayout && styles.mobileSectionPadding,
-                isDesktopLayout && styles.desktopSideSection,
-              ]}
-            >
-              <TipCard
-                colors={colors}
-                tip={tips[tipIndex]}
-                onNext={() => setTipIndex((prev) => (prev + 1) % tips.length)}
-                title={t("inspiration.tip.title")}
-                subtitle={t("inspiration.tip.subtitle")}
-                nextLabel={t("inspiration.tip.next")}
-                mode={mode}
-              />
-            </View>
-
-            {/* Prompts */}
-            <View
-              style={[
-                styles.sectionSpacing,
-                !isDesktopLayout && styles.mobileSectionPadding,
-                isDesktopLayout && styles.desktopHalfSection,
-              ]}
-            >
-              <SectionHeading
-                title={t("inspiration.prompts.title")}
-                subtitle={t("inspiration.prompts.subtitle")}
-                colors={colors}
-                icon="lightbulb.fill"
-              />
-              <View style={styles.stack}>
-                {prompts.map((prompt, index) => (
-                  <InfoCard
-                    key={prompt.id}
-                    colors={colors}
-                    icon={prompt.icon}
-                    title={prompt.title}
-                    body={prompt.body}
-                    index={index}
-                  />
-                ))}
-              </View>
-            </View>
-
-            {/* Exercises */}
-            <View
-              style={[
-                styles.sectionSpacing,
-                !isDesktopLayout && styles.mobileSectionPadding,
-                isDesktopLayout && styles.desktopHalfSection,
-              ]}
-            >
-              <SectionHeading
-                title={t("inspiration.exercises.title")}
-                subtitle={t("inspiration.exercises.subtitle")}
-                colors={colors}
-                icon="pencil"
-              />
-              <View style={styles.stack}>
-                {exercises.map((exercise, index) => (
-                  <InfoCard
-                    key={exercise.id}
-                    colors={colors}
-                    icon={exercise.icon}
-                    title={exercise.title}
-                    body={exercise.body}
-                    index={index}
-                  />
-                ))}
-              </View>
-            </View>
-
-            {/* Myths */}
-            <View
-              style={[
-                styles.sectionSpacing,
-                !isDesktopLayout && styles.mobileSectionPadding,
-                isDesktopLayout && styles.desktopHalfSection,
-              ]}
-            >
-              <SectionHeading
-                title={t("inspiration.myths.title")}
-                subtitle={t("inspiration.myths.subtitle")}
-                colors={colors}
-                icon="quote.opening"
-              />
-              <View style={styles.stack}>
-                {myths.map((myth, index) => (
-                  <InfoCard
-                    key={myth.id}
-                    colors={colors}
-                    icon={myth.icon}
-                    title={myth.title}
-                    body={myth.body}
-                    index={index}
-                  />
-                ))}
-              </View>
-            </View>
-
-            {/* Closing Quote */}
-            <View
-              style={[
-                styles.sectionSpacing,
-                !isDesktopLayout && styles.mobileSectionPadding,
-                isDesktopLayout && styles.desktopHalfSection,
-              ]}
-            >
-              <QuoteCard colors={colors} mode={mode} />
-            </View>
-          </View>
-        </ScreenContainer>
-      </ScrollView>
-
-      {showAddButton && (
-        <FloatingAddDreamButton
-          onPress={() => router.push("/recording")}
-          label={t("journal.add_button.label")}
-          accessibilityLabel={t("journal.add_button.accessibility")}
-          bottomOffset={floatingOffset - 60}
-          isDesktopLayout={isDesktopLayout}
-          testID={TID.Button.AddDream}
+        <PageHeader
+          titleKey="inspiration.title"
+          animationSeed={showAnimations ? 1 : 0}
+          topSpacing={ThemeLayout.spacing.md}
+          style={styles.pageHeader}
         />
-      )}
-    </View>
+
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: scrollContentBottomPadding },
+          ]}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+        >
+          <ScreenContainer
+            style={[
+              styles.contentContainer,
+              !isDesktopLayout && styles.mobileRootContainer,
+            ]}
+          >
+            <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
+              {/* Popular Symbols - Constellation style */}
+              <View style={styles.sectionSpacing}>
+                <PopularSymbolsSection
+                  colors={colors}
+                  mode={mode}
+                  language={currentLang as SymbolLanguage}
+                  t={t}
+                />
+              </View>
+
+              {/* Rituals with Progress Rings */}
+              <View style={styles.sectionSpacing}>
+                <RitualScrollSection
+                  colors={colors}
+                  rituals={RITUALS}
+                  selectedRitualId={selectedRitualId}
+                  ritualProgress={ritualProgress}
+                  t={t}
+                  mode={mode}
+                />
+              </View>
+
+              {/* Tip of the Day - Featured card */}
+              <View
+                style={[
+                  styles.sectionSpacing,
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopSideSection,
+                ]}
+              >
+                <TipCard
+                  colors={colors}
+                  tip={tips[tipIndex]}
+                  onNext={() => setTipIndex((prev) => (prev + 1) % tips.length)}
+                  title={t("inspiration.tip.title")}
+                  subtitle={t("inspiration.tip.subtitle")}
+                  nextLabel={t("inspiration.tip.next")}
+                  mode={mode}
+                />
+              </View>
+
+              {/* Prompts */}
+              <View
+                style={[
+                  styles.sectionSpacing,
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopHalfSection,
+                ]}
+              >
+                <SectionHeading
+                  title={t("inspiration.prompts.title")}
+                  subtitle={t("inspiration.prompts.subtitle")}
+                  colors={colors}
+                  icon="lightbulb.fill"
+                />
+                <View style={styles.stack}>
+                  {prompts.map((prompt, index) => (
+                    <InfoCard
+                      key={prompt.id}
+                      colors={colors}
+                      icon={prompt.icon}
+                      title={prompt.title}
+                      body={prompt.body}
+                      index={index}
+                    />
+                  ))}
+                </View>
+              </View>
+
+              {/* Exercises */}
+              <View
+                style={[
+                  styles.sectionSpacing,
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopHalfSection,
+                ]}
+              >
+                <SectionHeading
+                  title={t("inspiration.exercises.title")}
+                  subtitle={t("inspiration.exercises.subtitle")}
+                  colors={colors}
+                  icon="pencil"
+                />
+                <View style={styles.stack}>
+                  {exercises.map((exercise, index) => (
+                    <InfoCard
+                      key={exercise.id}
+                      colors={colors}
+                      icon={exercise.icon}
+                      title={exercise.title}
+                      body={exercise.body}
+                      index={index}
+                    />
+                  ))}
+                </View>
+              </View>
+
+              {/* Myths */}
+              <View
+                style={[
+                  styles.sectionSpacing,
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopHalfSection,
+                ]}
+              >
+                <SectionHeading
+                  title={t("inspiration.myths.title")}
+                  subtitle={t("inspiration.myths.subtitle")}
+                  colors={colors}
+                  icon="quote.opening"
+                />
+                <View style={styles.stack}>
+                  {myths.map((myth, index) => (
+                    <InfoCard
+                      key={myth.id}
+                      colors={colors}
+                      icon={myth.icon}
+                      title={myth.title}
+                      body={myth.body}
+                      index={index}
+                    />
+                  ))}
+                </View>
+              </View>
+
+              {/* Closing Quote */}
+              <View
+                style={[
+                  styles.sectionSpacing,
+                  !isDesktopLayout && styles.mobileSectionPadding,
+                  isDesktopLayout && styles.desktopHalfSection,
+                ]}
+              >
+                <QuoteCard colors={colors} mode={mode} />
+              </View>
+            </View>
+          </ScreenContainer>
+        </ScrollView>
+
+        {showAddButton && (
+          <FloatingAddDreamButton
+            onPress={() => router.push("/recording")}
+            label={t("journal.add_button.label")}
+            accessibilityLabel={t("journal.add_button.accessibility")}
+            bottomOffset={floatingOffset - 60}
+            isDesktopLayout={isDesktopLayout}
+            testID={TID.Button.AddDream}
+          />
+        )}
+      </View>
+    </ScrollPerfProvider>
   );
 }
 
@@ -510,7 +518,6 @@ type PopularSymbolsSectionProps = {
   mode: "light" | "dark";
   language: SymbolLanguage;
   t: (key: string) => string;
-  showAnimations: boolean;
 };
 
 function PopularSymbolsSection({
@@ -518,7 +525,6 @@ function PopularSymbolsSection({
   mode,
   language,
   t,
-  showAnimations,
 }: PopularSymbolsSectionProps) {
   const popularSymbols = useMemo(() => getPopularSymbols(), []);
 
@@ -551,12 +557,9 @@ function PopularSymbolsSection({
           return (
             <MotiView
               key={symbol.id}
-              from={{ opacity: 0, scale: 0.8, translateY: 12 }}
-              animate={
-                showAnimations
-                  ? { opacity: 1, scale: 1, translateY: 0 }
-                  : { opacity: 0, scale: 0.8, translateY: 12 }
-              }
+              // Avoid rendering invisible content if animations are delayed/frozen.
+              from={{ opacity: 1, scale: 0.8, translateY: 12 }}
+              animate={{ opacity: 1, scale: 1, translateY: 0 }}
               transition={{
                 type: "spring",
                 damping: 16,
@@ -571,7 +574,7 @@ function PopularSymbolsSection({
                 style={({ pressed }) => [
                   styles.symbolCard,
                   {
-                    backgroundColor: `${colors.backgroundCard}B3`,
+                    backgroundColor: colors.backgroundCard,
                     borderColor: colors.divider,
                   },
                   pressed && styles.symbolCardPressed,
@@ -669,7 +672,7 @@ function RitualScrollSection({
               <View
                 style={[
                   styles.ritualIconWrapper,
-                  { backgroundColor: `${colors.accent}20` },
+                  { backgroundColor: `${colors.accent}35` },
                 ]}
               >
                 <IconSymbol
@@ -781,7 +784,7 @@ function TipCard({
               styles.tipBadgeCircle,
               {
                 backgroundColor:
-                  mode === "dark" ? `${colors.accent}45` : `${colors.accent}25`,
+                  mode === "dark" ? `${colors.accent}60` : `${colors.accent}30`,
               },
             ]}
           >
@@ -799,7 +802,7 @@ function TipCard({
             styles.tipButton,
             {
               backgroundColor:
-                mode === "dark" ? `${colors.accent}35` : `${colors.accent}18`,
+                mode === "dark" ? `${colors.accent}50` : `${colors.accent}25`,
             },
             pressed && { opacity: 0.6 },
           ]}
@@ -833,16 +836,12 @@ type InfoCardProps = {
 };
 
 function InfoCard({ colors, icon, title, body, index = 0 }: InfoCardProps) {
-  const { mode } = useTheme();
-  const opacity = mode === "dark" ? 0.3 : 0.7;
-  const opacityHex = Math.round(opacity * 255)
-    .toString(16)
-    .padStart(2, "0");
-  const cardBackgroundColor = `${colors.backgroundCard}${opacityHex}`;
+  const cardBackgroundColor = colors.backgroundCard;
 
   return (
     <MotiView
-      from={{ opacity: 0, translateX: -8 }}
+      // Keep content visible even if entrance animations don't run.
+      from={{ opacity: 1, translateX: -8 }}
       animate={{ opacity: 1, translateX: 0 }}
       transition={{ type: "timing", duration: 500, delay: 100 * index }}
     >
@@ -1045,7 +1044,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   ritualCardActive: {
-    borderWidth: 1.5,
+    borderWidth: 2,
   },
   ritualIconWrapper: {
     width: 40,

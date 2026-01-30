@@ -3,7 +3,7 @@ import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
@@ -250,10 +250,7 @@ export default function SymbolDictionaryScreen() {
   );
 
   const keyExtractor = useCallback((item: Row) => item.id, []);
-  const getItemType = useCallback(
-    (item: Row | undefined) => item?.type ?? "item",
-    [],
-  );
+  const getItemType = useCallback((item: Row | undefined) => item?.type ?? "item", []);
 
   const renderEmptyComponent = useCallback(
     () => (
@@ -522,7 +519,8 @@ export default function SymbolDictionaryScreen() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         getItemType={getItemType}
-        removeClippedSubviews={Platform.OS !== "web"}
+        removeClippedSubviews={false}
+        drawDistance={240}
         style={styles.list}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={renderEmptyComponent}
@@ -565,12 +563,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     letterSpacing: 0.3,
     textAlign: "center",
-  },
-  headerSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    textAlign: "center",
-    letterSpacing: 0.2,
   },
   searchContainer: {
     paddingHorizontal: ThemeLayout.spacing.md,

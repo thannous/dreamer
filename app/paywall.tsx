@@ -10,8 +10,10 @@ import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -24,6 +26,7 @@ const log = createScopedLogger('[Paywall]');
 export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const { status: subscriptionStatus, isActive, loading, processing, error, packages, purchase, restore, requiresAuth } =
     useSubscription({ loadPackages: true });
@@ -128,12 +131,84 @@ export default function PaywallScreen() {
   // Show upgrade message if device fingerprint is already upgraded
   if (isDeviceUpgraded) {
     return (
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
+          <ScreenContainer style={[styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }]}>
+            <View style={styles.headerRow}>
+              <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+                {t('subscription.paywall.header.free')}
+              </Text>
+              <Pressable
+                onPress={handleClose}
+                style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
+                accessibilityRole="button"
+                testID={TID.Button.PaywallClose}
+              >
+                <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>
+                  {t('subscription.paywall.button.close')}
+                </Text>
+              </Pressable>
+            </View>
+          </ScreenContainer>
+
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+            onScrollEndDrag={scrollPerf.onScrollEndDrag}
+            onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+            onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+          >
+            <ScreenContainer>
+              <View style={styles.upgradedMessageContainer}>
+                <Text style={[styles.upgradedTitle, { color: colors.textPrimary }]}>
+                  {"Vous avez déjà utilisé l'application !"}
+                </Text>
+                <Text style={[styles.upgradedSubtitle, { color: colors.textSecondary }]}>
+                  Connectez-vous pour retrouver vos rêves et analyses étendues.
+                </Text>
+
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.primaryButton,
+                    { backgroundColor: colors.accent },
+                    pressed && styles.primaryButtonPressed,
+                  ]}
+                  onPress={handleOpenAuth}
+                  testID={TID.Button.PaywallPurchase}
+                >
+                  <Text
+                    style={[
+                      styles.primaryLabel,
+                      { color: colors.textOnAccentSurface },
+                    ]}
+                  >
+                    Se connecter
+                  </Text>
+                </Pressable>
+
+                <Pressable
+                  style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
+                  onPress={handleClose}
+                >
+                  <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                    {t('subscription.paywall.button.close')}
+                  </Text>
+                </Pressable>
+              </View>
+            </ScreenContainer>
+          </ScrollView>
+        </View>
+      </ScrollPerfProvider>
+    );
+  }
+
+  return (
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
         <ScreenContainer style={[styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }]}>
           <View style={styles.headerRow}>
-            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
-              {t('subscription.paywall.header.free')}
-            </Text>
+            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{headerTitle}</Text>
             <Pressable
               onPress={handleClose}
               style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
@@ -145,106 +220,51 @@ export default function PaywallScreen() {
               </Text>
             </Pressable>
           </View>
+          <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
+          {isActive && formattedExpiryDate && (
+            <Text style={[styles.expiryDate, { color: colors.textSecondary }]}>
+              {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
+              {subscriptionStatus?.willRenew !== undefined && (
+                subscriptionStatus.willRenew
+                  ? ` · ${t('subscription.paywall.auto_renew.on')}`
+                  : ` · ${t('subscription.paywall.auto_renew.off')}`
+              )}
+            </Text>
+          )}
+          {(requiresAuth || loading) && (
+            <View style={styles.loadingRow}>
+              {!requiresAuth && <ActivityIndicator color={colors.accent} />}
+              <Text style={[styles.loadingLabel, { color: colors.textSecondary }]}>
+                {requiresAuth
+                  ? t('subscription.paywall.auth_required')
+                  : t('subscription.paywall.loading')}
+              </Text>
+            </View>
+          )}
+          {/* Erreurs affichées dans la bottom sheet */}
         </ScreenContainer>
 
-        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+        >
           <ScreenContainer>
-            <View style={styles.upgradedMessageContainer}>
-              <Text style={[styles.upgradedTitle, { color: colors.textPrimary }]}>
-                {"Vous avez déjà utilisé l'application !"}
-              </Text>
-              <Text style={[styles.upgradedSubtitle, { color: colors.textSecondary }]}>
-                Connectez-vous pour retrouver vos rêves et analyses étendues.
-              </Text>
-
-              <Pressable
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  { backgroundColor: colors.accent },
-                  pressed && styles.primaryButtonPressed,
-                ]}
-                onPress={handleOpenAuth}
-                testID={TID.Button.PaywallPurchase}
-              >
-                <Text
-                  style={[
-                    styles.primaryLabel,
-                    { color: colors.textOnAccentSurface },
-                  ]}
-                >
-                  Se connecter
-                </Text>
-              </Pressable>
-
-              <Pressable
-                style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
-                onPress={handleClose}
-              >
-                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
-                  {t('subscription.paywall.button.close')}
-                </Text>
-              </Pressable>
-            </View>
-          </ScreenContainer>
-        </ScrollView>
-      </View>
-    );
-  }
-
-  return (
-    <View style={[styles.root, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Paywall}>
-      <ScreenContainer style={[styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }]}>
-        <View style={styles.headerRow}>
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{headerTitle}</Text>
-          <Pressable
-            onPress={handleClose}
-            style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
-            accessibilityRole="button"
-            testID={TID.Button.PaywallClose}
-          >
-            <Text style={[styles.closeLabel, { color: colors.textSecondary }]}>
-              {t('subscription.paywall.button.close')}
-            </Text>
-          </Pressable>
-        </View>
-        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
-        {isActive && formattedExpiryDate && (
-          <Text style={[styles.expiryDate, { color: colors.textSecondary }]}>
-            {t('subscription.paywall.expiry_date', { date: formattedExpiryDate })}
-            {subscriptionStatus?.willRenew !== undefined && (
-              subscriptionStatus.willRenew
-                ? ` · ${t('subscription.paywall.auto_renew.on')}`
-                : ` · ${t('subscription.paywall.auto_renew.off')}`
-            )}
-          </Text>
-        )}
-        {(requiresAuth || loading) && (
-          <View style={styles.loadingRow}>
-            {!requiresAuth && <ActivityIndicator color={colors.accent} />}
-            <Text style={[styles.loadingLabel, { color: colors.textSecondary }]}>
-              {requiresAuth
-                ? t('subscription.paywall.auth_required')
-                : t('subscription.paywall.loading')}
-            </Text>
-          </View>
-        )}
-        {/* Erreurs affichées dans la bottom sheet */}
-      </ScreenContainer>
-
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        <ScreenContainer>
-          <SubscriptionCard
-            title={t('subscription.paywall.card.title')}
-            subtitle={t('subscription.paywall.card.subtitle')}
-            badge={isActive ? t(`subscription.paywall.card.badge.${activeTierKey}` as const) : undefined}
-            features={[
-              t('subscription.paywall.card.feature.unlimited_analyses'),
-              t('subscription.paywall.card.feature.unlimited_explorations'),
-              t('subscription.paywall.card.feature.recorded_dreams'),
-              t('subscription.paywall.card.feature.priority'),
-            ]}
-            status={processing ? 'loading' : 'idle'}
-          />
+            <SubscriptionCard
+              title={t('subscription.paywall.card.title')}
+              subtitle={t('subscription.paywall.card.subtitle')}
+              badge={isActive ? t(`subscription.paywall.card.badge.${activeTierKey}` as const) : undefined}
+              features={[
+                t('subscription.paywall.card.feature.unlimited_analyses'),
+                t('subscription.paywall.card.feature.unlimited_explorations'),
+                t('subscription.paywall.card.feature.recorded_dreams'),
+                t('subscription.paywall.card.feature.priority'),
+              ]}
+              status={processing ? 'loading' : 'idle'}
+            />
 
           {sortedPackages.map((pkg) => {
             const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
@@ -352,29 +372,30 @@ export default function PaywallScreen() {
               ? t('subscription.paywall.notice.auth')
               : t('subscription.paywall.notice.store')}
           </Text>
-        </ScreenContainer>
-      </ScrollView>
-      {toastMessage ? (
-        <Toast
-          message={toastMessage}
-          mode="success"
-          onHide={() => setToastMessage(null)}
-          testID={TID.Toast.PaywallSuccess}
-        />
-      ) : null}
+          </ScreenContainer>
+        </ScrollView>
+        {toastMessage ? (
+          <Toast
+            message={toastMessage}
+            mode="success"
+            onHide={() => setToastMessage(null)}
+            testID={TID.Toast.PaywallSuccess}
+          />
+        ) : null}
 
-      <StandardBottomSheet
-        visible={showErrorSheet}
-        onClose={() => setShowErrorSheet(false)}
-        title={t('subscription.paywall.error.title')}
-        subtitle={error ? translateWithFallback(error.message, error.message) : undefined}
-        actions={{
-          primaryLabel: t('subscription.paywall.error.ok'),
-          onPrimary: () => setShowErrorSheet(false),
-        }}
-        testID={TID.BottomSheet.PaywallError}
-      />
-    </View>
+        <StandardBottomSheet
+          visible={showErrorSheet}
+          onClose={() => setShowErrorSheet(false)}
+          title={t('subscription.paywall.error.title')}
+          subtitle={error ? translateWithFallback(error.message, error.message) : undefined}
+          actions={{
+            primaryLabel: t('subscription.paywall.error.ok'),
+            onPrimary: () => setShowErrorSheet(false),
+          }}
+          testID={TID.BottomSheet.PaywallError}
+        />
+      </View>
+    </ScrollPerfProvider>
   );
 }
 
