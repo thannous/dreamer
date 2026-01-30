@@ -48,7 +48,6 @@ export function GradientText({
         colors={colors}
         start={start}
         end={end}
-        style={{ flex: 1 }}
       >
         <Text {...textProps} style={[style, { opacity: 0 }]}>
           {children}
