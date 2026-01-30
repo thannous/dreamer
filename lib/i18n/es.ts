@@ -659,6 +659,8 @@ const translations: Record<string, string> = {
     'symbols.dictionary_subtitle': 'Explora los símbolos oníricos y sus significados',
     'symbols.search_placeholder': 'Buscar símbolos...',
     'symbols.all_categories': 'Todo',
+    'symbols.browse_theme': 'Por tema',
+    'symbols.browse_alphabetical': 'A-Z',
     'symbols.interpretation': 'Interpretación',
     'symbols.variations': 'Variaciones comunes',
     'symbols.ask_yourself': 'Preguntas para reflexionar',

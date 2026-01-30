@@ -15,12 +15,16 @@ interface SymbolCardProps {
 }
 
 export function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
-  const { colors, shadows } = useTheme();
+  const { colors, mode } = useTheme();
   const content = symbol[language] ?? symbol.en;
   const icon = getCategoryIcon(symbol.category);
   const handlePress = useCallback(() => {
     onPress(symbol.id);
   }, [onPress, symbol.id]);
+
+  const glassBackground = mode === 'dark'
+    ? 'rgba(35, 26, 63, 0.4)'
+    : `${colors.backgroundCard}A6`;
 
   return (
     <Pressable
@@ -35,11 +39,13 @@ export function SymbolCard({ symbol, language, onPress }: SymbolCardProps) {
         paddingHorizontal: ThemeLayout.spacing.md,
         marginHorizontal: ThemeLayout.spacing.md,
         marginBottom: ThemeLayout.spacing.sm,
-        backgroundColor: colors.backgroundCard,
+        backgroundColor: glassBackground,
         borderRadius: ThemeLayout.borderRadius.md,
         borderCurve: 'continuous',
+        borderWidth: 1,
+        borderColor: colors.divider,
         opacity: pressed ? 0.8 : 1,
-        ...shadows.sm,
+        transform: [{ scale: pressed ? 0.98 : 1 }],
       })}>
       <View
         style={{
