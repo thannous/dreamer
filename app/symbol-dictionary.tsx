@@ -3,7 +3,7 @@ import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
@@ -250,7 +250,10 @@ export default function SymbolDictionaryScreen() {
   );
 
   const keyExtractor = useCallback((item: Row) => item.id, []);
-  const getItemType = useCallback((item: Row) => item.type, []);
+  const getItemType = useCallback(
+    (item: Row | undefined) => item?.type ?? "item",
+    [],
+  );
 
   const renderEmptyComponent = useCallback(
     () => (
@@ -345,9 +348,6 @@ export default function SymbolDictionaryScreen() {
         </View>
         <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
           {t("symbols.dictionary_title")}
-        </Text>
-        <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
-          {t("symbols.dictionary_subtitle")}
         </Text>
       </MotiView>
 
@@ -522,6 +522,8 @@ export default function SymbolDictionaryScreen() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         getItemType={getItemType}
+        removeClippedSubviews={Platform.OS !== "web"}
+        style={styles.list}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={renderEmptyComponent}
         showsVerticalScrollIndicator={false}
@@ -624,6 +626,9 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.medium,
     fontSize: 12,
     letterSpacing: 0.6,
+  },
+  list: {
+    flex: 1,
   },
   listContent: {
     paddingBottom: ThemeLayout.spacing.xl,

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { useTheme } from '@/context/ThemeContext';
+import { useScrollPerf } from '@/context/ScrollPerfContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from '@/lib/moti';
 
 /**
@@ -15,12 +17,20 @@ export function AtmosphericBackground() {
   const { width, height } = useWindowDimensions();
   const { mode, colors } = useTheme();
   const [showAnimations, setShowAnimations] = useState(false);
+  const isScrolling = useScrollPerf();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const reduceEffects = isScrolling || prefersReducedMotion;
+  const shouldAnimate = showAnimations && !reduceEffects;
 
   // Defer animations to avoid layout jank
   useEffect(() => {
+    if (prefersReducedMotion) {
+      setShowAnimations(false);
+      return undefined;
+    }
     const timer = setTimeout(() => setShowAnimations(true), 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [prefersReducedMotion]);
 
   const isWeb = Platform.OS === 'web';
 
@@ -65,76 +75,103 @@ export function AtmosphericBackground() {
       />
 
       {/* Floating Orb 1 - Top Left */}
-      {showAnimations && (
-        <MotiView
-          from={{ translateY: 0, translateX: 0, opacity: 0 }}
-          animate={{ translateY: [-20, 0, -20], translateX: [-10, 10, -10], opacity: 0.3 }}
-          transition={{
-            type: 'timing',
-            duration: 10000,
-            loop: true,
-            delay: 0,
-          }}
-          style={[
-            styles.orb,
-            {
-              width: Math.min(width * 0.7, 400),
-              height: Math.min(width * 0.7, 400),
-              top: -100,
-              left: -100,
-              backgroundColor: orb1Color,
-            },
-          ]}
-        />
-      )}
+      <MotiView
+        from={{ translateY: 0, translateX: 0, opacity: 0 }}
+        animate={
+          shouldAnimate
+            ? { translateY: [-20, 0, -20], translateX: [-10, 10, -10], opacity: 0.3 }
+            : { translateY: 0, translateX: 0, opacity: showAnimations ? 0.3 : 0 }
+        }
+        transition={
+          shouldAnimate
+            ? {
+                type: 'timing',
+                duration: 10000,
+                loop: true,
+                delay: 0,
+              }
+            : {
+                type: 'timing',
+                duration: 0,
+              }
+        }
+        style={[
+          styles.orb,
+          {
+            width: Math.min(width * 0.7, 400),
+            height: Math.min(width * 0.7, 400),
+            top: -100,
+            left: -100,
+            backgroundColor: orb1Color,
+          },
+        ]}
+      />
 
       {/* Floating Orb 2 - Bottom Right */}
-      {showAnimations && (
-        <MotiView
-          from={{ translateY: 0, translateX: 0, opacity: 0 }}
-          animate={{ translateY: [20, 0, 20], translateX: [10, -10, 10], opacity: 0.25 }}
-          transition={{
-            type: 'timing',
-            duration: 12000,
-            loop: true,
-            delay: 1000,
-          }}
-          style={[
-            styles.orb,
-            {
-              width: Math.min(width * 0.8, 500),
-              height: Math.min(width * 0.8, 500),
-              bottom: -150,
-              right: -150,
-              backgroundColor: orb2Color,
-            },
-          ]}
-        />
-      )}
+      <MotiView
+        from={{ translateY: 0, translateX: 0, opacity: 0 }}
+        animate={
+          shouldAnimate
+            ? { translateY: [20, 0, 20], translateX: [10, -10, 10], opacity: 0.25 }
+            : { translateY: 0, translateX: 0, opacity: showAnimations ? 0.25 : 0 }
+        }
+        transition={
+          shouldAnimate
+            ? {
+                type: 'timing',
+                duration: 12000,
+                loop: true,
+                delay: 1000,
+              }
+            : {
+                type: 'timing',
+                duration: 0,
+              }
+        }
+        style={[
+          styles.orb,
+          {
+            width: Math.min(width * 0.8, 500),
+            height: Math.min(width * 0.8, 500),
+            bottom: -150,
+            right: -150,
+            backgroundColor: orb2Color,
+          },
+        ]}
+      />
 
       {/* Floating Orb 3 - Middle Right (subtle) */}
-      {showAnimations && (
-        <MotiView
-          from={{ translateY: 0, opacity: 0 }}
-          animate={{ translateY: [-15, 15, -15], opacity: 0.2 }}
-          transition={{
-            type: 'timing',
-            duration: 8000,
-            loop: true,
-            delay: 2000,
-          }}
-          style={[
-            styles.orb,
-            {
-              width: Math.min(width * 0.6, 350),
-              height: Math.min(width * 0.6, 350),
-              top: height * 0.4,
-              right: -80,
-              backgroundColor: orb3Color,
-            },
-          ]}
-        />
-      )}
+      <MotiView
+        from={{ translateY: 0, opacity: 0 }}
+        animate={
+          shouldAnimate
+            ? { translateY: [-15, 15, -15], opacity: 0.2 }
+            : { translateY: 0, opacity: showAnimations ? 0.2 : 0 }
+        }
+        transition={
+          shouldAnimate
+            ? {
+                type: 'timing',
+                duration: 8000,
+                loop: true,
+                delay: 2000,
+              }
+            : {
+                type: 'timing',
+                duration: 0,
+              }
+        }
+        style={[
+          styles.orb,
+          {
+            width: Math.min(width * 0.6, 350),
+            height: Math.min(width * 0.6, 350),
+            top: height * 0.4,
+            right: -80,
+            backgroundColor: orb3Color,
+          },
+        ]}
+      />
 
       {/* Bottom fade to navbar background — ensures seamless transition */}
       <LinearGradient
@@ -151,7 +188,7 @@ export function AtmosphericBackground() {
           StyleSheet.absoluteFill,
           {
             backgroundColor: isWeb ? 'transparent' : `${colors.textPrimary}05`,
-            opacity: 0.5,
+            opacity: reduceEffects ? 0.25 : 0.5,
           },
         ]}
       />
