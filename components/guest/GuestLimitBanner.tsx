@@ -12,7 +12,7 @@ import { router } from 'expo-router';
 export const GuestLimitBanner: React.FC = () => {
   const { user } = useAuth();
   const { dreams } = useDreams();
-  const { colors, shadows } = useTheme();
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
 
@@ -44,7 +44,7 @@ export const GuestLimitBanner: React.FC = () => {
   if (!isGuest || used === 0) return null;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundCard }, shadows.md]}>
+    <View style={[styles.container, { backgroundColor: colors.backgroundCard }]}>
       <View style={styles.headerRow}>
         <Text style={[styles.title, { color: colors.textPrimary }]}>
           {t('guest.limit.banner.title', { limit: GUEST_DREAM_LIMIT })}

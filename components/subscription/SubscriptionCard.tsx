@@ -32,7 +32,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   testID,
   ctaTestID,
 }) => {
-  const { colors, shadows, mode } = useTheme();
+  const { colors, mode } = useTheme();
   const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
 
   const showCta = Boolean(ctaLabel && onPress);
@@ -40,7 +40,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   const isCtaDisabled = ctaState === 'disabled' || isLoading;
 
   return (
-    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, shadows.md]} testID={testID}>
+    <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }]} testID={testID}>
       <View style={styles.headerRow}>
         <View style={styles.headerTextContainer}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
@@ -73,7 +73,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           style={({ pressed }) => [
             styles.ctaButton,
             { backgroundColor: colors.accent },
-            shadows.sm,
             isCtaDisabled && styles.ctaDisabled,
             pressed && !isCtaDisabled && styles.ctaPressed,
           ]}

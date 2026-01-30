@@ -47,29 +47,29 @@ export interface ThemeColors {
  */
 export const DarkTheme: ThemeColors = {
   // Background colors
-  backgroundDark: 'rgb(26, 15, 43)', // Main background softened for better readability
-  backgroundCard: '#231a3f', // Card background with higher lift above main background
-  backgroundSecondary: '#5A4B89', // Secondary elements (buttons, inputs)
+  backgroundDark: 'rgb(22, 12, 38)', // Main background darkened for better card separation
+  backgroundCard: '#2d2150', // Card background with clear lift above main background
+  backgroundSecondary: '#6353A0', // Secondary elements (buttons, inputs)
 
   // Text colors
   textPrimary: '#FFFFFF', // Main text
-  textSecondary: '#a097b8', // Secondary/muted text
-  textTertiary: '#6B6B8D', // Even more muted
+  textSecondary: '#b4a8d4', // Secondary/muted text – brighter for readability
+  textTertiary: '#8B8AAA', // Even more muted – still legible
   textOnAccentSurface: '#F2EDFF', // High-contrast lavender for tinted cards
 
   // Accent colors
-  accent: '#6B5A8E', // Surreal purple accent for CTAs
+  accent: '#8B7AB8', // Vibrant purple accent for CTAs
   accentDark: '#4F3D6B', // Deeper purple for pressed states
-  accentLight: '#A097B8', // Muted lilac for subtle highlights
+  accentLight: '#B4A8D4', // Brighter lilac for highlights
 
   // UI elements
   timeline: '#5a4b89', // Timeline line color
-  divider: '#2f2153', // Dividers
+  divider: '#423776', // Dividers – visible contrast
   overlay: 'rgba(27, 21, 51, 0.85)', // Semi-transparent overlay
 
   // Navbar colors
   navbarBg: 'rgb(26, 15, 43)', // Same as backgroundDark
-  navbarBorder: '#2f2153', // Same as divider
+  navbarBorder: '#423776', // Same as divider
   navbarTextActive: '#FFFFFF', // White for active tab
   navbarTextInactive: '#9B8EC7', // Muted purple for inactive tabs
 
@@ -88,7 +88,7 @@ export const DarkTheme: ThemeColors = {
 export const LightTheme: ThemeColors = {
   // Background colors
   backgroundDark: '#F8F6F2', // Main background - soft cream
-  backgroundCard: '#E3DACC', // Card background - beige sable
+  backgroundCard: '#D9CFBF', // Card background - darker beige for contrast
   backgroundSecondary: '#EEEBE6', // Secondary elements - light beige
 
   // Text colors
@@ -104,7 +104,7 @@ export const LightTheme: ThemeColors = {
 
   // UI elements
   timeline: '#D4CFBF', // Timeline - soft beige
-  divider: '#D5CFC4', // Dividers - visible beige with contrast
+  divider: '#C5BDB0', // Dividers - stronger beige for visibility
   overlay: 'rgba(248, 246, 242, 0.9)', // Semi-transparent cream overlay
 
   // Navbar colors
@@ -285,14 +285,14 @@ export const DecoLines = {
   stripe: {
     height: 2.5,
     width: '100%' as const,
-    opacity: 0.8,
+    opacity: 0.95,
   },
   /** Short centered rule (headers, section dividers) */
   rule: {
     width: 36,
     height: 2.5,
     borderRadius: 1.5,
-    opacity: 0.7,
+    opacity: 0.85,
     alignSelf: 'center' as const,
   },
 } as const;

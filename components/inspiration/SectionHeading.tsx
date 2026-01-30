@@ -27,7 +27,7 @@ export function SectionHeading({
           <View
             style={[
               styles.sectionHeadingIcon,
-              { backgroundColor: `${colors.accent}30` },
+              { backgroundColor: `${colors.accent}45` },
             ]}
           >
             <IconSymbol name={icon} size={14} color={colors.accent} />
