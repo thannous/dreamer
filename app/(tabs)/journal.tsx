@@ -1,7 +1,7 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamIcon } from '@/components/icons/DreamIcons';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { PageHeader } from '@/components/inspiration/PageHeader';
+import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
@@ -371,7 +371,7 @@ export default function JournalListScreen() {
       <DreamCard
         dream={item}
         onPress={handleDreamPress}
-        isScrolling={isScrolling}
+        scrollState={isScrolling ? 'scrolling' : 'idle'}
         testID={TID.List.DreamItem(item.id)}
         dateLabel={dateStr}
         variant={isFirstItem ? 'featured' : 'standard'}
@@ -424,7 +424,7 @@ export default function JournalListScreen() {
         <DreamCard
           dream={item}
           onPress={handleDreamPress}
-          isScrolling={isScrolling}
+          scrollState={isScrolling ? 'scrolling' : 'idle'}
           testID={TID.List.DreamItem(item.id)}
         />
       </View>
@@ -454,10 +454,9 @@ export default function JournalListScreen() {
 
       {/* Header — only on web (native uses headerSearchBarOptions) */}
       {!isNative && (
-        <PageHeader
+        <PageHeaderContent
           titleKey="journal.title"
-          showAnimations={showHeaderAnimations}
-          wrapInContainer={false}
+          animationSeed={showHeaderAnimations ? 1 : 0}
           style={isDesktopLayout ? styles.headerDesktop : undefined}
         />
       )}

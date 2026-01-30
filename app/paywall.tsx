@@ -243,7 +243,7 @@ export default function PaywallScreen() {
               t('subscription.paywall.card.feature.recorded_dreams'),
               t('subscription.paywall.card.feature.priority'),
             ]}
-            loading={processing}
+            status={processing ? 'loading' : 'idle'}
           />
 
           {sortedPackages.map((pkg) => {
@@ -271,8 +271,11 @@ export default function PaywallScreen() {
                       : t('subscription.paywall.option.badge.annual')
                     : undefined
                 }
-                selected={effectiveSelectedId === pkg.id}
-                disabled={processing || loading || isActive}
+                state={
+                  (processing || loading || isActive)
+                    ? (effectiveSelectedId === pkg.id ? 'selectedDisabled' : 'disabled')
+                    : (effectiveSelectedId === pkg.id ? 'selected' : 'unselected')
+                }
                 onPress={handleSelect}
                 testID={
                   pkg.interval === 'monthly'

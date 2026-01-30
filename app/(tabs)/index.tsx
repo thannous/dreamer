@@ -12,7 +12,7 @@ import {
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { DreamIcon } from "@/components/icons/DreamIcons";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
-import { GlassCard } from "@/components/inspiration/GlassCard";
+import { FlatGlassCard } from "@/components/inspiration/GlassCard";
 import { PageHeader } from "@/components/inspiration/PageHeader";
 import { SectionHeading } from "@/components/inspiration/SectionHeading";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -331,7 +331,7 @@ export default function InspirationScreen() {
 
       <PageHeader
         titleKey="inspiration.title"
-        showAnimations={showAnimations}
+        animationSeed={showAnimations ? 1 : 0}
         topSpacing={ThemeLayout.spacing.md}
         style={styles.pageHeader}
       />
@@ -686,12 +686,10 @@ function RitualScrollSection({
           ]);
 
           return (
-            <GlassCard
+            <FlatGlassCard
               key={ritual.id}
               intensity="subtle"
-              disableShadow
               style={ritualCardStyle}
-              enableAnimation={true}
               animationDelay={120 * index}
               onPress={() => router.push(`/ritual/${ritual.id}` as any)}
               accessibilityRole="button"
@@ -758,7 +756,7 @@ function RitualScrollSection({
                     .replace("{total}", String(totalSteps))}
                 </Text>
               </View>
-            </GlassCard>
+            </FlatGlassCard>
           );
         })}
       </ScrollView>
@@ -788,11 +786,9 @@ function TipCard({
   mode,
 }: TipCardProps) {
   return (
-    <GlassCard
+    <FlatGlassCard
       intensity="moderate"
-      disableShadow
       style={styles.tipCard}
-      enableAnimation={true}
       animationDelay={300}
       testID={TID.Component.InspirationTip}
     >
@@ -849,7 +845,7 @@ function TipCard({
           </Text>
         </Pressable>
       </View>
-    </GlassCard>
+    </FlatGlassCard>
   );
 }
 
@@ -927,11 +923,9 @@ function QuoteCard({
   );
 
   return (
-    <GlassCard
+    <FlatGlassCard
       intensity="subtle"
-      disableShadow
       style={quoteCardStyle}
-      enableAnimation={true}
       animationDelay={600}
     >
       {/* Top decorative line */}
@@ -961,7 +955,7 @@ function QuoteCard({
           </Text>
         </View>
       </View>
-    </GlassCard>
+    </FlatGlassCard>
   );
 }
 

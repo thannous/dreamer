@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
+import { BottomSheetActions, BottomSheetPrimaryAction, BottomSheetSecondaryAction } from '@/components/ui/BottomSheetActions';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -54,14 +54,20 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           <Text style={[styles.description, { color: colors.textSecondary }]}>{description}</Text>
         ) : null}
 
-        <BottomSheetActions
-          primaryLabel={primaryLabel}
-          onPrimary={handlePrimary}
-          primaryTestID={testIDPrimaryButton}
-          secondaryLabel={secondaryLabel}
-          onSecondary={handleSecondary}
-          secondaryTestID={testIDSecondaryButton}
-        />
+        <BottomSheetActions>
+          <BottomSheetPrimaryAction
+            label={primaryLabel}
+            onPress={handlePrimary}
+            testID={testIDPrimaryButton}
+          />
+          {secondaryLabel ? (
+            <BottomSheetSecondaryAction
+              label={secondaryLabel}
+              onPress={handleSecondary}
+              testID={testIDSecondaryButton}
+            />
+          ) : null}
+        </BottomSheetActions>
       </View>
     </BottomSheet>
   );

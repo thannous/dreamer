@@ -16,7 +16,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts, GlassCardTokens } from '@/constants/theme';
-import { EmailVerificationDialog } from '@/components/auth/EmailVerificationDialog';
+import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '@/components/auth/EmailVerificationDialog';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
@@ -687,18 +687,29 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
   return (
     <>
       {cardContent}
-      <EmailVerificationDialog
-        visible={verificationVisible}
-        email={verificationEmail || ''}
-        onClose={handleCloseVerificationDialog}
-        onResend={handleResendVerification}
-        resendDisabled={resendDisabled}
-        resendLabel={resendButtonLabel}
-        statusMessage={resendStatusMessage}
-        cooldownMessage={resendCooldownMessage}
-        isResending={resendStatus === 'sending'}
-        verified={verificationSuccess}
-      />
+      {verificationSuccess ? (
+        <EmailVerificationSuccessDialog
+          visible={verificationVisible}
+          onClose={handleCloseVerificationDialog}
+        />
+      ) : (
+        <EmailVerificationPendingDialog
+          visible={verificationVisible}
+          email={verificationEmail || ''}
+          onClose={handleCloseVerificationDialog}
+          resend={{
+            label: resendButtonLabel,
+            onPress: handleResendVerification,
+            state: resendStatus === 'sending'
+              ? 'loading'
+              : resendDisabled
+                ? 'disabled'
+                : 'enabled',
+          }}
+          statusMessage={resendStatusMessage}
+          cooldownMessage={resendCooldownMessage}
+        />
+      )}
       <StandardBottomSheet
         visible={authErrorSheet.visible}
         onClose={closeAuthErrorSheet}

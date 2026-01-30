@@ -108,7 +108,8 @@ vi.mock('@/lib/supabase', () => ({
 }));
 
 vi.mock('@/components/auth/EmailVerificationDialog', () => ({
-  EmailVerificationDialog: () => <div data-testid="email-verification-dialog" />,
+  EmailVerificationPendingDialog: () => <div data-testid="email-verification-dialog" />,
+  EmailVerificationSuccessDialog: () => <div data-testid="email-verification-dialog" />,
 }));
 
 vi.mock('@/components/ui/StandardBottomSheet', () => ({

@@ -6,7 +6,7 @@ import { GlassCardTokens } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { MotiView } from '@/lib/moti';
 
-type GlassCardProps = {
+export type GlassCardProps = {
   children: ReactNode;
   style?: ViewStyle;
   intensity?: 'subtle' | 'moderate' | 'strong';
@@ -14,9 +14,7 @@ type GlassCardProps = {
   testID?: string;
   accessibilityRole?: PressableProps['accessibilityRole'];
   accessibilityLabel?: string;
-  enableAnimation?: boolean;
   animationDelay?: number;
-  disableShadow?: boolean;
 };
 
 /**
@@ -24,7 +22,7 @@ type GlassCardProps = {
  * Uses BlurView on iOS/Android for true blur effect.
  * Falls back to semi-transparent background on web or if blur unavailable.
  */
-export function GlassCard({
+function GlassCardBase({
   children,
   style,
   intensity = 'moderate',
@@ -32,10 +30,9 @@ export function GlassCard({
   testID,
   accessibilityRole,
   accessibilityLabel,
-  enableAnimation = true,
   animationDelay = 0,
-  disableShadow = false,
-}: GlassCardProps) {
+  shadow,
+}: GlassCardProps & { shadow: 'on' | 'off' }) {
   const { colors, shadows, mode } = useTheme();
 
   // Blur intensity mapping - very light for light mode to preserve colors
@@ -80,7 +77,7 @@ export function GlassCard({
     borderColor: colors.divider,
     borderRadius: GlassCardTokens.borderRadius,
     overflow: 'hidden',
-    ...(disableShadow ? undefined : shadows.lg),
+    ...(shadow === 'on' ? shadows.lg : undefined),
   };
 
   const content = (
@@ -97,18 +94,13 @@ export function GlassCard({
     </>
   );
 
-  // With animation wrapper
-  const animatedContent = enableAnimation ? (
+  const animatedContent = (
     <MotiView
       from={{ opacity: 0, translateY: 20 }}
       animate={{ opacity: 1, translateY: 0 }}
       transition={{ type: 'timing', duration: 650, delay: animationDelay }}
       style={[glassStyle, style]}
     >
-      {content}
-    </MotiView>
-  ) : (
-    <MotiView style={[glassStyle, style]}>
       {content}
     </MotiView>
   );
@@ -134,4 +126,12 @@ export function GlassCard({
   }
 
   return animatedContent;
+}
+
+export function GlassCard(props: GlassCardProps) {
+  return <GlassCardBase {...props} shadow="on" />;
+}
+
+export function FlatGlassCard(props: GlassCardProps) {
+  return <GlassCardBase {...props} shadow="off" />;
 }

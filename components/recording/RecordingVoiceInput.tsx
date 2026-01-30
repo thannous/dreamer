@@ -10,26 +10,25 @@ import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 
 export interface RecordingVoiceInputProps {
-  isRecording: boolean;
-  isPreparing: boolean;
+  status: 'idle' | 'preparing' | 'recording';
   transcript: string;
   instructionText: string;
-  disabled: boolean;
+  interaction: 'enabled' | 'disabled';
   onToggleRecording: () => void;
   onSwitchToText: () => void;
 }
 
 export function RecordingVoiceInput({
-  isRecording,
-  isPreparing,
+  status,
   transcript,
   instructionText,
-  disabled,
+  interaction,
   onToggleRecording,
   onSwitchToText,
 }: RecordingVoiceInputProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const isPreparing = status === 'preparing';
 
   const switchButtonLabel = transcript
     ? t('recording.mode.switch_to_text_edit') || t('recording.mode.switch_to_text') || 'Modifier mon r\u00eave'
@@ -47,10 +46,9 @@ export function RecordingVoiceInput({
       <View style={styles.micContainer}>
         <View style={styles.micButtonWrapper}>
           <MicButton
-            isRecording={isRecording}
-            isPreparing={isPreparing}
+            status={status}
             onPress={onToggleRecording}
-            disabled={disabled}
+            interaction={interaction}
             testID={TID.Button.RecordToggle}
           />
         </View>

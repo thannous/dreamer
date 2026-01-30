@@ -18,8 +18,7 @@ export type DreamCardVariant = 'standard' | 'featured';
 interface DreamCardProps {
   dream: DreamAnalysis;
   onPress: (dreamId: number) => void;
-  shouldLoadImage?: boolean;
-  isScrolling?: boolean;
+  scrollState?: 'idle' | 'scrolling';
   testID?: string;
   /** Date string to display as an overline above the title */
   dateLabel?: string;
@@ -33,8 +32,7 @@ const failedThumbnailUris = new Set<string>();
 export const DreamCard = memo(function DreamCard({
   dream,
   onPress,
-  shouldLoadImage = true,
-  isScrolling = false,
+  scrollState = 'idle',
   testID,
   dateLabel,
   variant = 'standard',
@@ -47,6 +45,7 @@ export const DreamCard = memo(function DreamCard({
     onPress(dream.id);
   }, [onPress, dream.id]);
 
+  const isScrolling = scrollState === 'scrolling';
   const isFeatured = variant === 'featured';
 
   // Use thumbnail URL for list view, fallback to generating one from full URL
@@ -145,26 +144,24 @@ export const DreamCard = memo(function DreamCard({
           testID={testID}
         >
           <View style={[styles.verticalImageContainer, { height: imageHeight }]}>
-            {shouldLoadImage && (
-              <Image
-                source={{ uri: imageUri }}
-                style={styles.image}
-                contentFit={imageConfig.contentFit}
-                transition={imageTransition}
-                cachePolicy={imageConfig.cachePolicy}
-                priority={imagePriority}
-                recyclingKey={imageRecyclingKey}
-                onError={() => {
-                  if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
-                    failedThumbnailUris.add(trimmedThumbnailUri);
-                  }
-                  if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
-                    setUseFullImage(true);
-                  }
-                }}
-                placeholder={imagePlaceholder}
-              />
-            )}
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.image}
+              contentFit={imageConfig.contentFit}
+              transition={imageTransition}
+              cachePolicy={imageConfig.cachePolicy}
+              priority={imagePriority}
+              recyclingKey={imageRecyclingKey}
+              onError={() => {
+                if (trimmedThumbnailUri && trimmedThumbnailUri !== fullImageUri) {
+                  failedThumbnailUris.add(trimmedThumbnailUri);
+                }
+                if (!preferFullImage && fullImageUri && imageUri !== fullImageUri) {
+                  setUseFullImage(true);
+                }
+              }}
+              placeholder={imagePlaceholder}
+            />
             {/* Heart overlay for favorited dreams */}
             {isFavorite && (
               <View style={styles.favoriteOverlay}>
@@ -327,8 +324,7 @@ export const DreamCard = memo(function DreamCard({
 }, (prev, next) => {
   if (prev === next) return true;
   if (prev.onPress !== next.onPress) return false;
-  if (prev.isScrolling !== next.isScrolling) return false;
-  if (prev.shouldLoadImage !== next.shouldLoadImage) return false;
+  if (prev.scrollState !== next.scrollState) return false;
   if (prev.testID !== next.testID) return false;
   if (prev.dateLabel !== next.dateLabel) return false;
   if (prev.variant !== next.variant) return false;

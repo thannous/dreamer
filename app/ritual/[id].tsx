@@ -208,7 +208,6 @@ export default function RitualDetailScreen() {
           <GlassCard
             intensity="moderate"
             style={styles.stepsCard}
-            enableAnimation={true}
             animationDelay={150}
           >
             <View style={styles.stepsContainer}>

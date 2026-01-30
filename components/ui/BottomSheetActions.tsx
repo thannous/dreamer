@@ -7,104 +7,121 @@ import { useTheme } from '@/context/ThemeContext';
 
 const DANGER_COLOR = '#EF4444';
 
-export type BottomSheetActionsProps = {
-  primaryLabel: string;
-  onPrimary: () => void;
-  primaryDisabled?: boolean;
-  primaryLoading?: boolean;
-  primaryTestID?: string;
-  primaryVariant?: 'accent' | 'danger';
+export type BottomSheetActionState = 'enabled' | 'disabled' | 'loading';
 
-  secondaryLabel?: string;
-  onSecondary?: () => void;
-  secondaryDisabled?: boolean;
-  secondaryTestID?: string;
-
-  linkLabel?: string;
-  onLink?: () => void;
-  linkTestID?: string;
-};
-
-export function BottomSheetActions({
-  primaryLabel,
-  onPrimary,
-  primaryDisabled = false,
-  primaryLoading = false,
-  primaryTestID,
-  primaryVariant = 'accent',
-
-  secondaryLabel,
-  onSecondary,
-  secondaryDisabled = false,
-  secondaryTestID,
-
-  linkLabel,
-  onLink,
-  linkTestID,
-}: BottomSheetActionsProps) {
-  const { colors } = useTheme();
-
-  const primaryBackgroundColor = primaryVariant === 'danger' ? DANGER_COLOR : colors.accent;
-  const primaryTextColor = primaryVariant === 'danger' ? '#FFFFFF' : colors.textOnAccentSurface;
-
+export function BottomSheetActions({ children }: { children: React.ReactNode }) {
   return (
     <View style={styles.container}>
-      <Pressable
-        style={({ pressed }) => [
-          styles.primaryButton,
-          { backgroundColor: primaryBackgroundColor },
-          (primaryDisabled || primaryLoading) && styles.disabledButton,
-          pressed && !primaryDisabled && !primaryLoading && styles.pressedButton,
-        ]}
-        onPress={onPrimary}
-        disabled={primaryDisabled || primaryLoading}
-        testID={primaryTestID}
-      >
-        {primaryLoading ? (
-          <ActivityIndicator color={primaryTextColor} size="small" />
-        ) : (
-          <Text style={[styles.primaryButtonText, { color: primaryTextColor }]}>
-            {primaryLabel}
-          </Text>
-        )}
-      </Pressable>
-
-      {secondaryLabel && onSecondary ? (
-        <Pressable
-          style={({ pressed }) => [
-            styles.secondaryButton,
-            {
-              borderColor: colors.divider,
-              backgroundColor: colors.backgroundSecondary,
-            },
-            secondaryDisabled && styles.disabledButton,
-            pressed && !secondaryDisabled && styles.pressedButton,
-          ]}
-          onPress={onSecondary}
-          disabled={secondaryDisabled}
-          testID={secondaryTestID}
-        >
-          <Text style={[styles.secondaryButtonText, { color: colors.textPrimary }]}>
-            {secondaryLabel}
-          </Text>
-        </Pressable>
-      ) : null}
-
-      {linkLabel && onLink ? (
-        <Pressable
-          style={({ pressed }) => [
-            styles.linkButton,
-            pressed && styles.pressedButton,
-          ]}
-          onPress={onLink}
-          testID={linkTestID}
-        >
-          <Text style={[styles.linkButtonText, { color: colors.textSecondary }]}>
-            {linkLabel}
-          </Text>
-        </Pressable>
-      ) : null}
+      {children}
     </View>
+  );
+}
+
+export type BottomSheetPrimaryActionProps = {
+  label: string;
+  onPress: () => void;
+  state?: BottomSheetActionState;
+  testID?: string;
+  variant?: 'accent' | 'danger';
+};
+
+export function BottomSheetPrimaryAction({
+  label,
+  onPress,
+  state = 'enabled',
+  testID,
+  variant = 'accent',
+}: BottomSheetPrimaryActionProps) {
+  const { colors } = useTheme();
+
+  const isDisabled = state !== 'enabled';
+  const isLoading = state === 'loading';
+  const backgroundColor = variant === 'danger' ? DANGER_COLOR : colors.accent;
+  const textColor = variant === 'danger' ? '#FFFFFF' : colors.textOnAccentSurface;
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.primaryButton,
+        { backgroundColor },
+        isDisabled && styles.disabledButton,
+        pressed && !isDisabled && styles.pressedButton,
+      ]}
+      onPress={onPress}
+      disabled={isDisabled}
+      testID={testID}
+    >
+      {isLoading ? (
+        <ActivityIndicator color={textColor} size="small" />
+      ) : (
+        <Text style={[styles.primaryButtonText, { color: textColor }]}>
+          {label}
+        </Text>
+      )}
+    </Pressable>
+  );
+}
+
+export type BottomSheetSecondaryActionProps = {
+  label: string;
+  onPress: () => void;
+  state?: Exclude<BottomSheetActionState, 'loading'>;
+  testID?: string;
+};
+
+export function BottomSheetSecondaryAction({
+  label,
+  onPress,
+  state = 'enabled',
+  testID,
+}: BottomSheetSecondaryActionProps) {
+  const { colors } = useTheme();
+  const isDisabled = state === 'disabled';
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.secondaryButton,
+        {
+          borderColor: colors.divider,
+          backgroundColor: colors.backgroundSecondary,
+        },
+        isDisabled && styles.disabledButton,
+        pressed && !isDisabled && styles.pressedButton,
+      ]}
+      onPress={onPress}
+      disabled={isDisabled}
+      testID={testID}
+    >
+      <Text style={[styles.secondaryButtonText, { color: colors.textPrimary }]}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
+
+export type BottomSheetLinkActionProps = {
+  label: string;
+  onPress: () => void;
+  testID?: string;
+};
+
+export function BottomSheetLinkAction({ label, onPress, testID }: BottomSheetLinkActionProps) {
+  const { colors } = useTheme();
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.linkButton,
+        pressed && styles.pressedButton,
+      ]}
+      onPress={onPress}
+      testID={testID}
+    >
+      <Text style={[styles.linkButtonText, { color: colors.textSecondary }]}>
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 

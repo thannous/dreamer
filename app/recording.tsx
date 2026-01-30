@@ -982,11 +982,10 @@ export default function RecordingScreen() {
               <View style={styles.bodySection}>
                 {inputMode === 'voice' ? (
                   <RecordingVoiceInput
-                    isRecording={isRecording}
-                    isPreparing={isPreparingRecording}
+                    status={isPreparingRecording ? 'preparing' : isRecording ? 'recording' : 'idle'}
                     transcript={transcript}
                     instructionText={t('recording.instructions')}
-                    disabled={interactionDisabled || isPreparingRecording}
+                    interaction={interactionDisabled || isPreparingRecording ? 'disabled' : 'enabled'}
                     onToggleRecording={toggleRecording}
                     onSwitchToText={switchToTextMode}
                   />

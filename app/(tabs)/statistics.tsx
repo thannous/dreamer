@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { GlassCard } from '@/components/inspiration/GlassCard';
+import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -234,10 +234,8 @@ function SectionGlass({
   animationDelay?: number;
 }) {
   return (
-    <GlassCard
+    <FlatGlassCard
       intensity="subtle"
-      disableShadow
-      enableAnimation
       animationDelay={animationDelay}
       style={styles.sectionGlassCard}
     >
@@ -245,7 +243,7 @@ function SectionGlass({
       <View style={styles.sectionInner}>
         {children}
       </View>
-    </GlassCard>
+    </FlatGlassCard>
   );
 }
 
@@ -329,7 +327,7 @@ export default function StatisticsScreen() {
   );
 
   const header = (
-    <PageHeader titleKey="stats.title" showAnimations={showAnimations} />
+    <PageHeader titleKey="stats.title" animationSeed={showAnimations ? 1 : 0} />
   );
 
   if (!loaded) {

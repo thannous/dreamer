@@ -7,7 +7,31 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 
 import { BottomSheet } from './BottomSheet';
-import { BottomSheetActions, type BottomSheetActionsProps } from './BottomSheetActions';
+import {
+  BottomSheetActions,
+  BottomSheetLinkAction,
+  BottomSheetPrimaryAction,
+  BottomSheetSecondaryAction,
+  type BottomSheetActionState,
+} from './BottomSheetActions';
+
+export type StandardBottomSheetActions = {
+  primaryLabel: string;
+  onPrimary: () => void;
+  primaryDisabled?: boolean;
+  primaryLoading?: boolean;
+  primaryTestID?: string;
+  primaryVariant?: 'accent' | 'danger';
+
+  secondaryLabel?: string;
+  onSecondary?: () => void;
+  secondaryDisabled?: boolean;
+  secondaryTestID?: string;
+
+  linkLabel?: string;
+  onLink?: () => void;
+  linkTestID?: string;
+};
 
 export type StandardBottomSheetProps = {
   /** Whether the sheet is visible */
@@ -21,7 +45,7 @@ export type StandardBottomSheetProps = {
   /** Optional custom body content between subtitle and actions */
   children?: React.ReactNode;
   /** Actions configuration - passed to BottomSheetActions */
-  actions: BottomSheetActionsProps;
+  actions: StandardBottomSheetActions;
   /** Test ID for E2E testing */
   testID?: string;
   /** Test ID for title text */
@@ -75,6 +99,16 @@ export function StandardBottomSheet({
     ? 'rgba(2, 0, 12, 0.75)'
     : 'rgba(0, 0, 0, 0.25)';
 
+  const primaryState: BottomSheetActionState = actions.primaryLoading
+    ? 'loading'
+    : actions.primaryDisabled
+      ? 'disabled'
+      : 'enabled';
+
+  const secondaryState: Exclude<BottomSheetActionState, 'loading'> = actions.secondaryDisabled
+    ? 'disabled'
+    : 'enabled';
+
   return (
     <BottomSheet
       visible={visible}
@@ -113,7 +147,30 @@ export function StandardBottomSheet({
       {children}
 
       {/* Actions */}
-      <BottomSheetActions {...actions} />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={actions.primaryLabel}
+          onPress={actions.onPrimary}
+          state={primaryState}
+          testID={actions.primaryTestID}
+          variant={actions.primaryVariant}
+        />
+        {actions.secondaryLabel && actions.onSecondary ? (
+          <BottomSheetSecondaryAction
+            label={actions.secondaryLabel}
+            onPress={actions.onSecondary}
+            state={secondaryState}
+            testID={actions.secondaryTestID}
+          />
+        ) : null}
+        {actions.linkLabel && actions.onLink ? (
+          <BottomSheetLinkAction
+            label={actions.linkLabel}
+            onPress={actions.onLink}
+            testID={actions.linkTestID}
+          />
+        ) : null}
+      </BottomSheetActions>
     </BottomSheet>
   );
 }

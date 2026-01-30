@@ -12,8 +12,7 @@ export type PricingOptionProps = {
   price: string;
   intervalLabel: string;
   badge?: string;
-  selected?: boolean;
-  disabled?: boolean;
+  state: 'unselected' | 'selected' | 'disabled' | 'selectedDisabled';
   onPress?: (id: string) => void;
   testID?: string;
 };
@@ -25,22 +24,24 @@ export const PricingOption: React.FC<PricingOptionProps> = ({
   price,
   intervalLabel,
   badge,
-  selected,
-  disabled,
+  state,
   onPress,
   testID,
 }) => {
   const { colors } = useTheme();
 
+  const isDisabled = state === 'disabled' || state === 'selectedDisabled';
+  const isSelected = state === 'selected' || state === 'selectedDisabled';
+
   const handlePress = () => {
-    if (disabled) return;
+    if (isDisabled) return;
     if (onPress) {
       onPress(id);
     }
   };
 
-  const borderColor = selected ? colors.accent : colors.divider;
-  const backgroundColor = selected ? colors.backgroundSecondary : colors.backgroundCard;
+  const borderColor = isSelected ? colors.accent : colors.divider;
+  const backgroundColor = isSelected ? colors.backgroundSecondary : colors.backgroundCard;
 
   return (
     <Pressable
@@ -50,11 +51,11 @@ export const PricingOption: React.FC<PricingOptionProps> = ({
           borderColor,
           backgroundColor,
         },
-        pressed && !disabled && styles.pressed,
-        disabled && styles.disabled,
+        pressed && !isDisabled && styles.pressed,
+        isDisabled && styles.disabled,
       ]}
       onPress={handlePress}
-      disabled={disabled}
+      disabled={isDisabled}
       testID={testID}
     >
       <View style={styles.headerRow}>
