@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
+import { BottomSheetActions, BottomSheetPrimaryAction, BottomSheetSecondaryAction } from '@/components/ui/BottomSheetActions';
 import { EmailVerificationIcon } from '@/components/icons/EmailVerificationIcon';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
@@ -10,41 +10,32 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
-type EmailVerificationDialogProps = {
+export type EmailVerificationPendingDialogProps = {
   visible: boolean;
   email: string;
   onClose: () => void;
-  onResend: () => void;
-  resendDisabled: boolean;
-  resendLabel: string;
+  resend: {
+    label: string;
+    onPress: () => void;
+    state?: 'enabled' | 'disabled' | 'loading';
+    testID?: string;
+  };
   statusMessage?: string | null;
   cooldownMessage?: string | null;
-  isResending?: boolean;
-  verified?: boolean;
 };
 
-export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = ({
+export const EmailVerificationPendingDialog: React.FC<EmailVerificationPendingDialogProps> = ({
   visible,
   email,
   onClose,
-  onResend,
-  resendDisabled,
-  resendLabel,
+  resend,
   statusMessage,
   cooldownMessage,
-  isResending = false,
-  verified = false,
 }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  const title = verified
-    ? t('settings.account.verification.success_title')
-    : t('settings.account.verification.title');
-
-  const subtitle = verified
-    ? t('settings.account.verification.success_subtitle')
-    : t('settings.account.verification.subtitle', { email });
+  const title = t('settings.account.verification.title');
 
   return (
     <BottomSheet
@@ -59,7 +50,7 @@ export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = (
           <EmailVerificationIcon
             size={64}
             color={colors.accent}
-            verified={verified}
+            verified={false}
             successColor="#16A34A"
           />
         </View>
@@ -71,58 +62,93 @@ export const EmailVerificationDialog: React.FC<EmailVerificationDialogProps> = (
 
         {/* Subtitle with email highlighted */}
         <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-          {verified ? (
-            subtitle
-          ) : (
-            <>
-              {t('settings.account.verification.subtitle_prefix')}{' '}
-              <Text style={[styles.emailHighlight, { color: colors.textPrimary }]}>
-                {email}
-              </Text>
-            </>
-          )}
+          <>
+            {t('settings.account.verification.subtitle_prefix')}{' '}
+            <Text style={[styles.emailHighlight, { color: colors.textPrimary }]}>
+              {email}
+            </Text>
+          </>
         </Text>
 
         {/* Status badge - only show when not verified */}
-        {!verified && (
-          <View style={[styles.badge, { backgroundColor: colors.backgroundSecondary }]}>
-            <ActivityIndicator color={colors.accent} size="small" />
-            <Text style={[styles.badgeText, { color: colors.textSecondary }]}>
-              {t('settings.account.verification.waiting_short')}
-            </Text>
-          </View>
-        )}
+        <View style={[styles.badge, { backgroundColor: colors.backgroundSecondary }]}>
+          <ActivityIndicator color={colors.accent} size="small" />
+          <Text style={[styles.badgeText, { color: colors.textSecondary }]}>
+            {t('settings.account.verification.waiting_short')}
+          </Text>
+        </View>
       </View>
 
       {/* Actions */}
-      {verified ? (
-        <BottomSheetActions
-          primaryLabel={t('common.continue')}
-          onPrimary={onClose}
-          primaryTestID={TID.Button.AuthCloseVerification}
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={resend.label}
+          onPress={resend.onPress}
+          state={resend.state}
+          testID={resend.testID ?? TID.Button.AuthResendVerification}
         />
-      ) : (
-        <BottomSheetActions
-          primaryLabel={resendLabel}
-          onPrimary={onResend}
-          primaryDisabled={resendDisabled}
-          primaryLoading={isResending}
-          primaryTestID={TID.Button.AuthResendVerification}
-          secondaryLabel={t('common.done')}
-          onSecondary={onClose}
-          secondaryTestID={TID.Button.AuthCloseVerification}
+        <BottomSheetSecondaryAction
+          label={t('common.done')}
+          onPress={onClose}
+          testID={TID.Button.AuthCloseVerification}
         />
-      )}
+      </BottomSheetActions>
 
       {/* Status messages */}
-      {statusMessage && !verified ? (
+      {statusMessage ? (
         <Text style={[styles.status, { color: colors.textSecondary }]} testID={TID.Text.AuthEmailVerificationStatus}>
           {statusMessage}
         </Text>
       ) : null}
-      {cooldownMessage && !verified ? (
+      {cooldownMessage ? (
         <Text style={[styles.cooldown, { color: colors.textSecondary }]}>{cooldownMessage}</Text>
       ) : null}
+    </BottomSheet>
+  );
+};
+
+export type EmailVerificationSuccessDialogProps = {
+  visible: boolean;
+  onClose: () => void;
+};
+
+export const EmailVerificationSuccessDialog: React.FC<EmailVerificationSuccessDialogProps> = ({
+  visible,
+  onClose,
+}) => {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
+
+  return (
+    <BottomSheet
+      visible={visible}
+      onClose={onClose}
+      style={[styles.sheet, { backgroundColor: colors.backgroundCard }]}
+      backdropColor="rgba(0,0,0,0.6)"
+    >
+      <View style={styles.header}>
+        <View style={styles.iconContainer}>
+          <EmailVerificationIcon
+            size={64}
+            color={colors.accent}
+            verified
+            successColor="#16A34A"
+          />
+        </View>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>
+          {t('settings.account.verification.success_title')}
+        </Text>
+        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+          {t('settings.account.verification.success_subtitle')}
+        </Text>
+      </View>
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={t('common.continue')}
+          onPress={onClose}
+          testID={TID.Button.AuthCloseVerification}
+        />
+      </BottomSheetActions>
     </BottomSheet>
   );
 };
@@ -180,5 +206,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default EmailVerificationDialog;

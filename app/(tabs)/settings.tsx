@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { GlassCard } from '@/components/inspiration/GlassCard';
+import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -148,7 +148,7 @@ export default function SettingsScreen() {
         style={[styles.container, { backgroundColor: colors.backgroundDark }]}
       >
         <AtmosphericBackground />
-        <PageHeader titleKey="auth.returning_guest.title" showAnimations={showAnimations} />
+        <PageHeader titleKey="auth.returning_guest.title" animationSeed={showAnimations ? 1 : 0} />
 
         <ScrollView
           style={styles.scrollView}
@@ -161,10 +161,8 @@ export default function SettingsScreen() {
         >
           <ScreenContainer>
             {/* Welcome back banner */}
-            <GlassCard
+            <FlatGlassCard
               intensity="moderate"
-              disableShadow
-              enableAnimation
               animationDelay={100}
               style={styles.returningGuestGlassCard}
             >
@@ -178,7 +176,7 @@ export default function SettingsScreen() {
                   {t('auth.returning_guest.message')}
                 </Text>
               </View>
-            </GlassCard>
+            </FlatGlassCard>
 
             {/* Auth card */}
             <MotiView
@@ -213,7 +211,7 @@ export default function SettingsScreen() {
       style={[styles.container, { backgroundColor: colors.backgroundDark }]}
     >
       <AtmosphericBackground />
-      <PageHeader titleKey="settings.title" showAnimations={showAnimations} />
+      <PageHeader titleKey="settings.title" animationSeed={showAnimations ? 1 : 0} />
 
       <ScrollView
         style={styles.scrollView}
@@ -279,10 +277,10 @@ export default function SettingsScreen() {
                       expiryLabel={subscriptionExpiryLabel}
                       badge={subscriptionCopy.badge}
                       features={subscriptionFeatures}
-                      loading={subscriptionLoading}
+                      status={subscriptionLoading ? 'loading' : 'idle'}
                       ctaLabel={subscriptionCopy.cta}
                       onPress={handleOpenPaywall}
-                      disabled={subscriptionLoading}
+                      ctaState={subscriptionLoading ? 'disabled' : 'enabled'}
                       ctaTestID={TID.Button.SubscriptionSettingsCta}
                     />
                   </View>

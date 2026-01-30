@@ -8,16 +8,24 @@ import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Platform, Pressable, StyleSheet, type AccessibilityState } from 'react-native';
 
+export type MicButtonStatus = 'idle' | 'preparing' | 'recording';
+export type MicButtonInteraction = 'enabled' | 'disabled';
+
 interface MicButtonProps {
-  isRecording: boolean;
-  isPreparing?: boolean;
+  status: MicButtonStatus;
   onPress: () => void;
   testID?: string;
   accessibilityLabel?: string;
-  disabled?: boolean;
+  interaction?: MicButtonInteraction;
 }
 
-export function MicButton({ isRecording, isPreparing, onPress, testID, accessibilityLabel, disabled }: MicButtonProps) {
+export function MicButton({
+  status,
+  onPress,
+  testID,
+  accessibilityLabel,
+  interaction = 'enabled',
+}: MicButtonProps) {
   const { t } = useTranslation();
   const { colors, shadows, mode } = useTheme();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -35,6 +43,9 @@ export function MicButton({ isRecording, isPreparing, onPress, testID, accessibi
   const buttonRecordingBackground = mode === 'dark' ? '#5a3d7b' : colors.accentDark;
   const glowColor = mode === 'dark' ? colors.accent : colors.accentDark;
   const shouldAnimate = isFocused && !prefersReducedMotion;
+  const isRecording = status === 'recording';
+  const isPreparing = status === 'preparing';
+  const disabled = interaction === 'disabled';
   const showPulses = isRecording && shouldAnimate;
 
   return (

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -12,25 +12,43 @@ import { MotiView } from '@/lib/moti';
 
 type PageHeaderProps = {
   titleKey: string;
-  showAnimations: boolean;
   /** Extra style on the header View (e.g. headerDesktop) */
-  style?: ViewStyle;
-  /** Wraps in ScreenContainer (default true). Journal passes false. */
-  wrapInContainer?: boolean;
+  style?: StyleProp<ViewStyle>;
   /** Top spacing added to insets.top. Default: ThemeLayout.spacing.sm */
   topSpacing?: number;
+  /** Changes the animation key to replay the entrance animation. */
+  animationSeed?: string | number;
 };
 
 export function PageHeader({
   titleKey,
-  showAnimations,
   style,
-  wrapInContainer = true,
   topSpacing = ThemeLayout.spacing.sm,
+  animationSeed,
+}: PageHeaderProps) {
+  const content = (
+    <PageHeaderContent
+      titleKey={titleKey}
+      style={style}
+      topSpacing={topSpacing}
+      animationSeed={animationSeed}
+    />
+  );
+
+  return <ScreenContainer>{content}</ScreenContainer>;
+}
+
+export function PageHeaderContent({
+  titleKey,
+  style,
+  topSpacing = ThemeLayout.spacing.sm,
+  animationSeed,
 }: PageHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+
+  const seed = animationSeed ?? 'default';
 
   const headerGradientColors = useMemo(
     () =>
@@ -40,7 +58,7 @@ export function PageHeader({
     [colors.accent, colors.accentDark, colors.accentLight, colors.textPrimary, mode],
   );
 
-  const content = (
+  return (
     <View
       style={[
         styles.header,
@@ -49,7 +67,7 @@ export function PageHeader({
       ]}
     >
       <MotiView
-        key={`header-${showAnimations}`}
+        key={`header-${seed}`}
         from={{ opacity: 0, translateY: 16 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: 'timing', duration: 700 }}
@@ -59,7 +77,7 @@ export function PageHeader({
         </GradientText>
       </MotiView>
       <MotiView
-        key={`header-rule-${showAnimations}`}
+        key={`header-rule-${seed}`}
         from={{ opacity: 0, scaleX: 0 }}
         animate={{ opacity: 1, scaleX: 1 }}
         transition={{ type: 'timing', duration: 600, delay: 350 }}
@@ -68,12 +86,6 @@ export function PageHeader({
       </MotiView>
     </View>
   );
-
-  if (wrapInContainer) {
-    return <ScreenContainer>{content}</ScreenContainer>;
-  }
-
-  return content;
 }
 
 const styles = StyleSheet.create({

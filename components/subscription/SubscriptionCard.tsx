@@ -11,10 +11,10 @@ export type SubscriptionCardProps = {
   expiryLabel?: string;
   badge?: string;
   features: string[];
-  loading?: boolean;
+  status?: 'idle' | 'loading';
   ctaLabel?: string;
   onPress?: () => void;
-  disabled?: boolean;
+  ctaState?: 'enabled' | 'disabled';
   testID?: string;
   ctaTestID?: string;
 };
@@ -25,10 +25,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   expiryLabel,
   badge,
   features,
-  loading,
+  status = 'idle',
   ctaLabel,
   onPress,
-  disabled,
+  ctaState = 'enabled',
   testID,
   ctaTestID,
 }) => {
@@ -36,6 +36,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
 
   const showCta = Boolean(ctaLabel && onPress);
+  const isLoading = status === 'loading';
+  const isCtaDisabled = ctaState === 'disabled' || isLoading;
 
   return (
     <View style={[styles.card, { backgroundColor: cardBg, borderColor: colors.divider, borderWidth: GlassCardTokens.borderWidth }, shadows.md]} testID={testID}>
@@ -54,7 +56,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             <Text style={[styles.badgeText, { color: colors.textOnAccentSurface }]}>{badge}</Text>
           </View>
         ) : null}
-        {loading ? <ActivityIndicator color={colors.accent} /> : null}
+        {isLoading ? <ActivityIndicator color={colors.accent} /> : null}
       </View>
 
       <View style={styles.featureList}>
@@ -72,10 +74,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             styles.ctaButton,
             { backgroundColor: colors.accent },
             shadows.sm,
-            disabled && styles.ctaDisabled,
-            pressed && !disabled && styles.ctaPressed,
+            isCtaDisabled && styles.ctaDisabled,
+            pressed && !isCtaDisabled && styles.ctaPressed,
           ]}
-          disabled={disabled}
+          disabled={isCtaDisabled}
           onPress={onPress}
           testID={ctaTestID}
         >

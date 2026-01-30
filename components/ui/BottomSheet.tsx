@@ -37,9 +37,9 @@ type BottomSheetProps = {
    */
   testID?: string;
   /**
-   * Whether users can swipe down to dismiss the sheet (default: true).
+   * How users can dismiss the sheet by gesture (default: 'pan').
    */
-  enablePanDownToClose?: boolean;
+  dismissBehavior?: 'pan' | 'none';
 };
 
 /**
@@ -53,7 +53,7 @@ export function BottomSheet({
   style,
   backdropColor = 'rgba(0,0,0,0.45)',
   testID,
-  enablePanDownToClose = true,
+  dismissBehavior = 'pan',
 }: BottomSheetProps) {
   const [isMounted, setIsMounted] = useState(visible);
   const { height: windowHeight } = useWindowDimensions();
@@ -130,7 +130,7 @@ export function BottomSheet({
     const closeVelocity = 1200;
 
     return Gesture.Pan()
-      .enabled(enablePanDownToClose)
+      .enabled(dismissBehavior === 'pan')
       .activeOffsetY([-10, 10])
       .failOffsetY([0, 999999])
       .failOffsetX([-15, 15])
@@ -159,7 +159,7 @@ export function BottomSheet({
           easing: Easing.out(Easing.cubic),
         });
       });
-  }, [backdropOpacity, enablePanDownToClose, hiddenTranslateY, onClose, translateY]);
+  }, [backdropOpacity, dismissBehavior, hiddenTranslateY, onClose, translateY]);
 
   if (!isMounted) {
     return null;

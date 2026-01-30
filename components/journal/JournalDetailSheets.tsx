@@ -3,7 +3,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
-import { BottomSheetActions } from '@/components/ui/BottomSheetActions';
+import {
+  BottomSheetActions,
+  BottomSheetLinkAction,
+  BottomSheetPrimaryAction,
+  BottomSheetSecondaryAction,
+} from '@/components/ui/BottomSheetActions';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { QUOTAS } from '@/constants/limits';
@@ -79,10 +84,9 @@ export function AnalysisNoticeSheet({
       <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
         {notice?.message}
       </Text>
-      <BottomSheetActions
-        primaryLabel={t('common.ok')}
-        onPrimary={onClose}
-      />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction label={t('common.ok')} onPress={onClose} />
+      </BottomSheetActions>
     </BottomSheet>
   );
 }
@@ -121,16 +125,19 @@ export function ReplaceImageSheet({
       <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
         {t('journal.detail.image_replace.subtitle')}
       </Text>
-      <BottomSheetActions
-        primaryLabel={t('journal.detail.image_replace.replace')}
-        onPrimary={onReplace}
-        primaryDisabled={isLocked}
-        secondaryLabel={t('journal.detail.image_replace.keep')}
-        onSecondary={onKeep}
-        secondaryDisabled={isLocked}
-        linkLabel={t('common.cancel')}
-        onLink={onClose}
-      />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={t('journal.detail.image_replace.replace')}
+          onPress={onReplace}
+          state={isLocked ? 'disabled' : 'enabled'}
+        />
+        <BottomSheetSecondaryAction
+          label={t('journal.detail.image_replace.keep')}
+          onPress={onKeep}
+          state={isLocked ? 'disabled' : 'enabled'}
+        />
+        <BottomSheetLinkAction label={t('common.cancel')} onPress={onClose} />
+      </BottomSheetActions>
     </BottomSheet>
   );
 }
@@ -140,18 +147,19 @@ export function ReanalyzeSheet({
   onClose,
   onConfirm,
   isLocked,
-  regenerateImage,
-  onToggleRegenerate,
+  imagePolicy,
+  onImagePolicyChange,
 }: {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
   isLocked: boolean;
-  regenerateImage: boolean;
-  onToggleRegenerate: () => void;
+  imagePolicy: 'keep' | 'regenerate';
+  onImagePolicyChange: (next: 'keep' | 'regenerate') => void;
 }) {
   const { colors, mode, shadows } = useTheme();
   const { t } = useTranslation();
+  const isRegenerate = imagePolicy === 'regenerate';
 
   return (
     <BottomSheet
@@ -172,9 +180,11 @@ export function ReanalyzeSheet({
         {t('journal.detail.reanalyze_prompt.message')}
       </Text>
       <Pressable
-        onPress={onToggleRegenerate}
+        onPress={() => {
+          onImagePolicyChange(isRegenerate ? 'keep' : 'regenerate');
+        }}
         accessibilityRole="checkbox"
-        accessibilityState={{ checked: regenerateImage }}
+        accessibilityState={{ checked: isRegenerate }}
         accessibilityLabel={t('journal.detail.reanalyze_prompt.regenerate_label')}
         accessibilityHint={t('journal.detail.reanalyze_prompt.regenerate_note')}
         disabled={isLocked}
@@ -189,11 +199,11 @@ export function ReanalyzeSheet({
             styles.sheetCheckboxBox,
             {
               borderColor: colors.divider,
-              backgroundColor: regenerateImage ? colors.accent : 'transparent',
+              backgroundColor: isRegenerate ? colors.accent : 'transparent',
             },
           ]}
         >
-          {regenerateImage ? (
+          {isRegenerate ? (
             <Ionicons name="checkmark" size={16} color={colors.textOnAccentSurface} />
           ) : null}
         </View>
@@ -206,14 +216,18 @@ export function ReanalyzeSheet({
           </Text>
         </View>
       </Pressable>
-      <BottomSheetActions
-        primaryLabel={t('journal.detail.reanalyze_prompt.reanalyze')}
-        onPrimary={onConfirm}
-        primaryDisabled={isLocked}
-        secondaryLabel={t('journal.detail.reanalyze_prompt.later')}
-        onSecondary={onClose}
-        secondaryDisabled={isLocked}
-      />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={t('journal.detail.reanalyze_prompt.reanalyze')}
+          onPress={onConfirm}
+          state={isLocked ? 'disabled' : 'enabled'}
+        />
+        <BottomSheetSecondaryAction
+          label={t('journal.detail.reanalyze_prompt.later')}
+          onPress={onClose}
+          state={isLocked ? 'disabled' : 'enabled'}
+        />
+      </BottomSheetActions>
     </BottomSheet>
   );
 }
@@ -250,16 +264,19 @@ export function DeleteConfirmSheet({
       <Text style={[styles.deleteSheetMessage, { color: colors.textSecondary }]}>
         {t('journal.detail.delete_confirm.message')}
       </Text>
-      <BottomSheetActions
-        primaryLabel={t('journal.detail.delete_confirm.confirm')}
-        onPrimary={onConfirm}
-        primaryDisabled={isDeleting}
-        primaryLoading={isDeleting}
-        primaryVariant="danger"
-        secondaryLabel={t('common.cancel')}
-        onSecondary={onClose}
-        secondaryDisabled={isDeleting}
-      />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={t('journal.detail.delete_confirm.confirm')}
+          onPress={onConfirm}
+          state={isDeleting ? 'loading' : 'enabled'}
+          variant="danger"
+        />
+        <BottomSheetSecondaryAction
+          label={t('common.cancel')}
+          onPress={onClose}
+          state={isDeleting ? 'disabled' : 'enabled'}
+        />
+      </BottomSheetActions>
     </BottomSheet>
   );
 }
@@ -332,16 +349,22 @@ export function QuotaLimitSheet({
       <Text style={[styles.sheetSubtitle, { color: colors.textSecondary }]}>
         {subtitle}
       </Text>
-      <BottomSheetActions
-        primaryLabel={primaryLabel}
-        onPrimary={onPrimary}
-        primaryTestID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
-        secondaryLabel={t('journal.detail.quota_limit.journal')}
-        onSecondary={onSecondary}
-        secondaryTestID={TID.Button.QuotaLimitJournal}
-        linkLabel={t('journal.detail.quota_limit.dismiss')}
-        onLink={onLink}
-      />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={primaryLabel}
+          onPress={onPrimary}
+          testID={tier === 'guest' ? TID.Button.QuotaLimitCtaGuest : TID.Button.QuotaLimitCtaFree}
+        />
+        <BottomSheetSecondaryAction
+          label={t('journal.detail.quota_limit.journal')}
+          onPress={onSecondary}
+          testID={TID.Button.QuotaLimitJournal}
+        />
+        <BottomSheetLinkAction
+          label={t('journal.detail.quota_limit.dismiss')}
+          onPress={onLink}
+        />
+      </BottomSheetActions>
     </BottomSheet>
   );
 }
@@ -390,14 +413,14 @@ export function ImageErrorSheet({
       <Text style={[styles.noticeMessage, { color: colors.textSecondary }]}>
         {message ?? t('common.unknown_error')}
       </Text>
-      <BottomSheetActions
-        primaryLabel={t('analysis.retry')}
-        onPrimary={onRetry}
-        secondaryLabel={t('common.cancel')}
-        onSecondary={onClose}
-        primaryDisabled={isRetrying}
-        primaryLoading={isRetrying}
-      />
+      <BottomSheetActions>
+        <BottomSheetPrimaryAction
+          label={t('analysis.retry')}
+          onPress={onRetry}
+          state={isRetrying ? 'loading' : 'enabled'}
+        />
+        <BottomSheetSecondaryAction label={t('common.cancel')} onPress={onClose} />
+      </BottomSheetActions>
     </BottomSheet>
   );
 }

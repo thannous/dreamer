@@ -212,7 +212,7 @@ export default function JournalDetailScreen() {
   const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
   const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
   const [showDeleteSheet, setShowDeleteSheet] = useState(false);
-  const [regenerateImageOnReanalyze, setRegenerateImageOnReanalyze] = useState(false);
+  const [reanalyzeImagePolicy, setReanalyzeImagePolicy] = useState<'keep' | 'regenerate'>('keep');
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
   const [shareCopyStatus, setShareCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -911,17 +911,17 @@ export default function JournalDetailScreen() {
 
   const handleDismissReanalyzeSheet = useCallback(() => {
     setShowReanalyzeSheet(false);
-    setRegenerateImageOnReanalyze(false);
+    setReanalyzeImagePolicy('keep');
   }, []);
 
-  const toggleRegenerateImageOnReanalyze = useCallback(() => {
-    setRegenerateImageOnReanalyze((prev) => !prev);
+  const handleReanalyzeImagePolicyChange = useCallback((next: 'keep' | 'regenerate') => {
+    setReanalyzeImagePolicy(next);
   }, []);
 
   const handleConfirmReanalyze = useCallback(() => {
     setShowReanalyzeSheet(false);
-    void runAnalyze(regenerateImageOnReanalyze);
-  }, [regenerateImageOnReanalyze, runAnalyze]);
+    void runAnalyze(reanalyzeImagePolicy === 'regenerate');
+  }, [reanalyzeImagePolicy, runAnalyze]);
 
   const handleTranscriptSave = useCallback(async () => {
     if (!dream) return;
@@ -938,7 +938,7 @@ export default function JournalDetailScreen() {
     setIsEditingTranscript(false);
 
     if (transcriptChanged) {
-      setRegenerateImageOnReanalyze(!hasExistingImage);
+      setReanalyzeImagePolicy(hasExistingImage ? 'keep' : 'regenerate');
       setShowReanalyzeSheet(true);
     }
   }, [dream, editableTranscript, hasExistingImage, updateDream]);
@@ -1708,8 +1708,8 @@ export default function JournalDetailScreen() {
           onClose={handleDismissReanalyzeSheet}
           onConfirm={handleConfirmReanalyze}
           isLocked={isAnalysisLocked}
-          regenerateImage={regenerateImageOnReanalyze}
-          onToggleRegenerate={toggleRegenerateImageOnReanalyze}
+          imagePolicy={reanalyzeImagePolicy}
+          onImagePolicyChange={handleReanalyzeImagePolicyChange}
         />
         <DeleteConfirmSheet
           visible={showDeleteSheet}
