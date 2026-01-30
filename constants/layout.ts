@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 
 export const LAYOUT_MAX_WIDTH = 1200;
 export const TAB_BAR_MAX_WIDTH = 960;
+export const TABLET_BREAKPOINT = 600;
 export const DESKTOP_BREAKPOINT = 1024;
 export const ADD_BUTTON_RESERVED_SPACE = 72; // height + breathing room for floating action
 export const TAB_BAR_HEIGHT = 58;

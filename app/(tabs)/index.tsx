@@ -10,17 +10,16 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { DreamIcon } from "@/components/icons/DreamIcons";
 import { AtmosphericBackground } from "@/components/inspiration/AtmosphericBackground";
 import { FlatGlassCard } from "@/components/inspiration/GlassCard";
 import { PageHeader } from "@/components/inspiration/PageHeader";
 import { SectionHeading } from "@/components/inspiration/SectionHeading";
+import { FloatingAddDreamButton } from "@/components/ui/FloatingAddDreamButton";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { DecoLines, ThemeLayout } from "@/constants/journalTheme";
 import {
   ADD_BUTTON_RESERVED_SPACE,
   DESKTOP_BREAKPOINT,
-  LAYOUT_MAX_WIDTH,
   TAB_BAR_HEIGHT,
 } from "@/constants/layout";
 import { Fonts } from "@/constants/theme";
@@ -491,43 +490,14 @@ export default function InspirationScreen() {
       </ScrollView>
 
       {showAddButton && (
-        <View
-          style={[
-            styles.floatingButtonContainer,
-            isDesktopLayout && styles.floatingButtonDesktop,
-            { bottom: floatingOffset - 60 },
-          ]}
-        >
-          <MotiView
-            from={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              type: "spring",
-              damping: 14,
-              stiffness: 120,
-              delay: 400,
-            }}
-          >
-            <Pressable
-              style={({ pressed }) => [
-                styles.addButton,
-                { backgroundColor: colors.accent },
-                pressed && styles.addButtonPressed,
-              ]}
-              onPress={() => router.push("/recording")}
-              accessibilityRole="button"
-              testID={TID.Button.AddDream}
-              accessibilityLabel={t("journal.add_button.accessibility")}
-            >
-              <DreamIcon size={22} color={colors.backgroundCard} />
-              <Text
-                style={[styles.addButtonText, { color: colors.backgroundCard }]}
-              >
-                {t("journal.add_button.label")}
-              </Text>
-            </Pressable>
-          </MotiView>
-        </View>
+        <FloatingAddDreamButton
+          onPress={() => router.push("/recording")}
+          label={t("journal.add_button.label")}
+          accessibilityLabel={t("journal.add_button.accessibility")}
+          bottomOffset={floatingOffset - 60}
+          isDesktopLayout={isDesktopLayout}
+          testID={TID.Button.AddDream}
+        />
       )}
     </View>
   );
@@ -1242,34 +1212,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // Floating Action Button
-  floatingButtonContainer: {
-    position: "absolute",
-    width: "100%",
-    padding: ThemeLayout.spacing.md,
-    backgroundColor: "transparent",
-    alignItems: "center",
-  },
-  floatingButtonDesktop: {
-    alignSelf: "center",
-    maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  addButton: {
-    borderRadius: ThemeLayout.borderRadius.full,
-    paddingVertical: 14,
-    paddingHorizontal: 28,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-  },
-  addButtonPressed: {
-    transform: [{ scale: 0.96 }],
-    opacity: 0.9,
-  },
-  addButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    letterSpacing: 0.2,
-  },
 });

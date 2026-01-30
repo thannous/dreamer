@@ -1,17 +1,17 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
-import { DreamIcon } from '@/components/icons/DreamIcons';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { FilterBar } from '@/components/journal/FilterBar';
-import { SearchBar } from '@/components/journal/SearchBar';
+import { SearchBar } from '@/components/ui/SearchBar';
 import { BottomSheet } from '@/components/ui/BottomSheet';
+import { FloatingAddDreamButton } from '@/components/ui/FloatingAddDreamButton';
 import { JOURNAL_LIST } from '@/constants/appConfig';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
-import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT } from '@/constants/layout';
+import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT, TABLET_BREAKPOINT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -37,7 +37,7 @@ import {
   type ViewToken,
   useWindowDimensions,
 } from 'react-native';
-import Animated, { FadeInDown, SlideInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
@@ -58,7 +58,7 @@ const isLikelyOptimizedThumbnailUri = (uri: string): boolean => {
 
 export default function JournalListScreen() {
   const { dreams } = useDreams();
-  const { colors, shadows } = useTheme();
+  const { colors } = useTheme();
   const { t } = useTranslation();
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
@@ -67,6 +67,7 @@ export default function JournalListScreen() {
 
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const isNative = Platform.OS !== 'web';
+  const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
@@ -396,6 +397,44 @@ export default function JournalListScreen() {
     );
   }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
 
+  const renderDreamItemTablet = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
+    const dreamTypeLabel = item.dreamType ? getDreamTypeLabel(item.dreamType, t) ?? item.dreamType : null;
+    const dateStr = formatDreamListDate(item.id) + (dreamTypeLabel ? ` • ${dreamTypeLabel}` : '');
+
+    const shouldAnimate = index < MAX_ANIMATED_ITEMS && !animatedIdsRef.current.has(item.id);
+    if (shouldAnimate) {
+      animatedIdsRef.current.add(item.id);
+    }
+
+    const card = (
+      <DreamCard
+        dream={item}
+        onPress={handleDreamPress}
+        scrollState={isScrolling ? 'scrolling' : 'idle'}
+        testID={TID.List.DreamItem(item.id)}
+        dateLabel={dateStr}
+        variant="standard"
+      />
+    );
+
+    if (shouldAnimate) {
+      return (
+        <Animated.View
+          style={styles.tabletCardWrapper}
+          entering={FadeInDown.delay(index * 30).duration(300).springify()}
+        >
+          {card}
+        </Animated.View>
+      );
+    }
+
+    return (
+      <View style={styles.tabletCardWrapper}>
+        {card}
+      </View>
+    );
+  }, [formatDreamListDate, t, handleDreamPress, isScrolling]);
+
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     const hasImage = !item.imageGenerationFailed && Boolean(item.thumbnailUrl || item.imageUrl);
     const isRecent = index < 3;
@@ -437,15 +476,18 @@ export default function JournalListScreen() {
   ), [hasActiveFilter]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
-  const getDreamItemType = useCallback(
-    (item: DreamAnalysis, index: number) =>
-      index === 0
-        ? 'featured'
-        : !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
-          ? 'with-image'
-          : 'text-only',
-    []
-  );
+  const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
+    if (!item) {
+      // FlashList can query item types during layout passes where data isn't resolved yet.
+      return 'text-only';
+    }
+    if (index === 0) {
+      return 'featured';
+    }
+    return !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
+      ? 'with-image'
+      : 'text-only';
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
@@ -556,10 +598,12 @@ export default function JournalListScreen() {
         <FlashList
           testID={TID.List.Dreams}
           ref={flatListRef}
+          key={isTabletLayout ? 'tablet-2col' : 'mobile-1col'}
           data={filteredDreams}
           extraData={isScrolling}
           keyExtractor={keyExtractor}
-          renderItem={renderDreamItem}
+          renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
+          numColumns={isTabletLayout ? 2 : 1}
           // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
           getItemType={getDreamItemType}
           contentContainerStyle={listContentStyle}
@@ -577,27 +621,14 @@ export default function JournalListScreen() {
 
       {/* Add Dream Button */}
       {showAddButton && (
-        <Animated.View
-          entering={SlideInDown.springify().damping(20)}
-          style={[
-            styles.floatingButtonContainer,
-            isDesktopLayout && styles.floatingButtonDesktop,
-            { bottom: floatingOffset - 60 },
-          ]}
-        >
-          <Pressable
-            style={[styles.addButton, shadows.xl, { backgroundColor: colors.accent }]}
-            onPress={() => router.push('/recording')}
-            accessibilityRole="button"
-            testID={TID.Button.AddDream}
-            accessibilityLabel={t('journal.add_button.accessibility')}
-          >
-            <DreamIcon size={24} color={colors.backgroundCard} />
-            <Text style={[styles.addButtonText, { color: colors.backgroundCard }]}>
-              {t('journal.add_button.label')}
-            </Text>
-          </Pressable>
-        </Animated.View>
+        <FloatingAddDreamButton
+          onPress={() => router.push('/recording')}
+          label={t('journal.add_button.label')}
+          accessibilityLabel={t('journal.add_button.accessibility')}
+          bottomOffset={floatingOffset - 60}
+          isDesktopLayout={isDesktopLayout}
+          testID={TID.Button.AddDream}
+        />
       )}
 
       {/* Theme Selection BottomSheet */}
@@ -777,33 +808,13 @@ const styles = StyleSheet.create({
   listItem: {
     marginBottom: ThemeLayout.spacing.lg,
   },
+  tabletCardWrapper: {
+    flex: 1,
+    paddingHorizontal: ThemeLayout.spacing.xs,
+    marginBottom: ThemeLayout.spacing.md,
+  },
   // date style removed — date is now inside DreamCard as an overline
   // empty state styles moved to EmptyState component
-  floatingButtonContainer: {
-    position: 'absolute',
-    width: '100%',
-    padding: ThemeLayout.spacing.md,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-  },
-  floatingButtonDesktop: {
-    alignSelf: 'center',
-    maxWidth: LAYOUT_MAX_WIDTH,
-  },
-  addButton: {
-    borderRadius: ThemeLayout.borderRadius.full,
-    paddingVertical: ThemeLayout.spacing.md,
-    paddingHorizontal: ThemeLayout.spacing.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    // shadow: applied via theme shadows.xl
-  },
-  addButtonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
   modalTitle: {
     fontSize: 20,
     fontFamily: Fonts.spaceGrotesk.bold,
