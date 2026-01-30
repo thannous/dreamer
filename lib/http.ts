@@ -43,6 +43,7 @@ export type HttpOptions = {
   timeoutMs?: number;
   retries?: number; // Number of automatic retries (default: 0)
   retryDelay?: number; // Delay between retries in ms (default: 2000)
+  signal?: AbortSignal;
 };
 
 /**
@@ -160,8 +161,18 @@ function isSupabaseFunctionsUrl(targetUrl: string): boolean {
 async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? 30000);
+  const externalSignal = options.signal;
+  const handleExternalAbort = () => controller.abort();
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort();
+    } else {
+      externalSignal.addEventListener('abort', handleExternalAbort, { once: true });
+    }
+  }
   try {
     const headers: Record<string, string> = {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       ...(options.headers || {}),
     };
@@ -230,6 +241,9 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
     return json;
   } finally {
     clearTimeout(timeout);
+    if (externalSignal) {
+      externalSignal.removeEventListener('abort', handleExternalAbort);
+    }
   }
 }
 

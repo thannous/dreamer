@@ -240,7 +240,6 @@ describe('SymbolDictionaryScreen', () => {
 
       // Letters with symbols: B (Bird), C (Cat), H (Hand), M (Moon), W (Water)
       // Letter A has no symbols, so its Pressable should be disabled
-      const letterA = screen.getByText('A').closest('[disabled]') ?? screen.getByText('A').parentElement;
       // The 'A' letter element should exist but its parent pressable should have opacity 0.3
       expect(screen.getByText('A')).toBeTruthy();
 

@@ -366,6 +366,27 @@ describe('http', () => {
 
       expect(result.status).toBe('rejected');
     });
+
+    it('given external abort signal when aborted then rejects', async () => {
+      let abortSignal: AbortSignal | null | undefined;
+      global.fetch = vi.fn().mockImplementation((_url, options) => {
+        abortSignal = (options as RequestInit).signal;
+        return new Promise((_, reject) => {
+          abortSignal?.addEventListener('abort', () => {
+            reject(new Error('The operation was aborted'));
+          });
+        });
+      });
+
+      const controller = new AbortController();
+      const resultPromise = fetchJSON('https://api.example.com/slow', {
+        signal: controller.signal,
+      });
+
+      controller.abort();
+
+      await expect(resultPromise).rejects.toThrow('The operation was aborted');
+    });
   });
 
   describe('HTTP methods', () => {

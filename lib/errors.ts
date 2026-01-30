@@ -61,6 +61,19 @@ const getHttpErrorDetails = (error: unknown): HttpErrorDetails | null => {
   return { status, body, url };
 };
 
+export const isGuestSessionError = (error: Error): boolean => {
+  const details = getHttpErrorDetails(error);
+  if (!details || details.status !== 401) return false;
+  const body = details.body ?? {};
+  const bodyError = typeof body.error === 'string' ? body.error.toLowerCase() : '';
+  return (
+    bodyError.includes('integrity') ||
+    bodyError.includes('guest session') ||
+    bodyError.includes('missing integrity token') ||
+    bodyError.includes('guest sessions')
+  );
+};
+
 /**
  * Classifies an error and returns metadata about it.
  * Optionally accepts a translation function for i18n support.
@@ -112,6 +125,46 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
           canRetry: true,
         };
       }
+    }
+
+    if (status === 408) {
+      return {
+        type: ErrorType.TIMEOUT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.timeout'),
+        canRetry: true,
+      };
+    }
+
+    if (status === 429) {
+      return {
+        type: ErrorType.RATE_LIMIT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.rate_limit'),
+        canRetry: true,
+      };
+    }
+
+    if (status >= 500) {
+      return {
+        type: ErrorType.SERVER,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.server'),
+        canRetry: true,
+      };
+    }
+
+    if (status >= 400) {
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.client'),
+        canRetry: false,
+      };
     }
   }
 

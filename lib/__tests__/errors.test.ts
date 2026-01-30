@@ -4,6 +4,7 @@ import {
     classifyError,
     ErrorType,
     getUserErrorMessage,
+    isGuestSessionError,
     QuotaError,
     QuotaErrorCode,
     SubscriptionError,
@@ -65,6 +66,30 @@ describe('classifyError', () => {
     expect(result.canRetry).toBe(false);
   });
 
+  it('should classify HTTP 408 status as timeout', () => {
+    const error = Object.assign(new Error('HTTP 408 Request Timeout'), { status: 408 });
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.TIMEOUT);
+    expect(result.canRetry).toBe(true);
+  });
+
+  it('should classify HTTP 429 status as rate limit', () => {
+    const error = Object.assign(new Error('HTTP 429 Too Many Requests'), { status: 429 });
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.RATE_LIMIT);
+    expect(result.canRetry).toBe(true);
+  });
+
+  it('should classify HTTP 503 status as server error', () => {
+    const error = Object.assign(new Error('HTTP 503 Service Unavailable'), { status: 503 });
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.SERVER);
+    expect(result.canRetry).toBe(true);
+  });
+
   it('should classify unknown errors correctly', () => {
     const error = new Error('Something unexpected happened');
     const result = classifyError(error);
@@ -120,6 +145,26 @@ describe('classifyError with i18n', () => {
     
     expect(mockTranslate).toHaveBeenCalledWith('error.rate_limit');
     expect(result.userMessage).toBe('Trop de requêtes');
+  });
+});
+
+describe('isGuestSessionError', () => {
+  it('should return true for guest session error response', () => {
+    const error = Object.assign(new Error('Unauthorized'), {
+      status: 401,
+      body: { error: 'guest session missing' },
+    });
+
+    expect(isGuestSessionError(error)).toBe(true);
+  });
+
+  it('should return false for non-guest errors', () => {
+    const error = Object.assign(new Error('Unauthorized'), {
+      status: 401,
+      body: { error: 'invalid token' },
+    });
+
+    expect(isGuestSessionError(error)).toBe(false);
   });
 });
 
