@@ -1,3 +1,5 @@
+import { FlatGlassCard, GlassCard } from '@/components/inspiration/GlassCard';
+import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { Fonts } from '@/constants/theme';
 import { useDreams } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -5,6 +7,7 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { isDreamExplored } from '@/lib/dreamUsage';
+import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamChatCategory } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -80,77 +83,90 @@ export default function DreamCategoriesScreen() {
   return (
     <LinearGradient colors={gradientColors} style={styles.gradient}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Pressable
-            onPress={() => router.back()}
-            style={styles.backButton}
-            accessibilityRole="button"
-            accessibilityLabel={t('journal.back_button')}
-          >
-            <MaterialCommunityIcons name="arrow-left" size={24} color={colors.textPrimary} />
-          </Pressable>
-          <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>{t('dream_categories.explore_title')}</Text>
-          <View style={styles.headerSpacer} />
-        </View>
+        {/* Animated Header with GradientText */}
+        <PageHeaderContent titleKey="dream_categories.explore_title" />
 
-        {/* Dream Title */}
-        <View style={[styles.dreamTitleContainer, {
-          backgroundColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.15)' : 'rgba(212, 165, 116, 0.15)',
-          borderColor: colors.divider
-        }]}>
-          <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
-          <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
-            {t('dream_categories.subtitle')}
-          </Text>
-        </View>
-
-        {/* Category Cards */}
-        <View style={styles.categoriesContainer}>
-          {availableCategories.map((category) => (
+        {/* Dream Title — Glass Card with integrated back button */}
+        <FlatGlassCard style={styles.dreamTitleCard} animationDelay={100}>
+          <View style={styles.dreamTitleRow}>
             <Pressable
-              testID={TID.Button.DreamCategory(category.id)}
-              key={category.id}
-              style={({ pressed }) => [
-                styles.categoryCard,
-                shadows.lg,
-                { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
-                pressed && styles.categoryCardPressed,
-              ]}
-              onPress={() => handleCategoryPress(category.id)}
+              onPress={() => router.back()}
+              style={[styles.backButton, {
+                backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+              }]}
+              accessibilityRole="button"
+              accessibilityLabel={t('journal.back_button')}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <View style={[styles.iconContainer, { backgroundColor: `${category.color}20` }]}>
-                <MaterialCommunityIcons
-                  name={category.icon}
-                  size={40}
-                  color={category.color}
-                />
-              </View>
-              <View style={styles.categoryContent}>
-                <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>{t(category.titleKey)}</Text>
-                <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>{t(category.descriptionKey)}</Text>
-              </View>
-              <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textSecondary} />
+              <MaterialCommunityIcons name="arrow-left" size={20} color={colors.textPrimary} />
             </Pressable>
+            <View style={styles.dreamTitleContent}>
+              <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
+              <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
+                {t('dream_categories.subtitle')}
+              </Text>
+            </View>
+          </View>
+        </FlatGlassCard>
+
+        {/* Category Cards — Vertical GlassCards */}
+        <View style={styles.categoriesContainer}>
+          {availableCategories.map((category, index) => (
+            <GlassCard
+              key={category.id}
+              testID={TID.Button.DreamCategory(category.id)}
+              onPress={() => handleCategoryPress(category.id)}
+              animationDelay={200 + index * 120}
+              style={styles.categoryCard}
+            >
+              <MotiView
+                from={{ translateY: 0 }}
+                animate={{ translateY: -1 }}
+                transition={{
+                  type: 'timing',
+                  duration: 3000,
+                  loop: true,
+                  repeatReverse: true,
+                }}
+              >
+                <View style={[styles.iconRing, { borderColor: category.color }]}>
+                  <MaterialCommunityIcons
+                    name={category.icon}
+                    size={24}
+                    color={category.color}
+                  />
+                </View>
+              </MotiView>
+              <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>
+                {t(category.titleKey)}
+              </Text>
+              <Text style={[styles.categoryDescription, { color: colors.textSecondary }]}>
+                {t(category.descriptionKey)}
+              </Text>
+            </GlassCard>
           ))}
         </View>
 
-        {/* Free Chat Option */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.freeChatButton,
-            shadows.xl,
-            { backgroundColor: colors.accent },
-            pressed && styles.freeChatButtonPressed,
-          ]}
-          testID={TID.Button.DreamFreeChat}
-          onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
+        {/* Free Chat — Solid accent button */}
+        <MotiView
+          from={{ opacity: 0, translateY: 16 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 500, delay: 200 + availableCategories.length * 120 + 80 }}
         >
-          <MaterialCommunityIcons name="chat-processing-outline" size={24} color={colors.textPrimary} />
-          <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
-            {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
-          </Text>
-        </Pressable>
+          <Pressable
+            onPress={() => (hasExistingChat ? router.push(`/dream-chat/${id}`) : handleCategoryPress('general'))}
+            testID={TID.Button.DreamFreeChat}
+            style={[styles.freeChatButton, shadows.md, {
+              backgroundColor: colors.accent,
+              borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
+            }]}
+          >
+            <MaterialCommunityIcons name="chat-processing-outline" size={22} color={colors.textPrimary} />
+            <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
+              {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
+            </Text>
+          </Pressable>
+        </MotiView>
       </ScrollView>
     </LinearGradient>
   );
@@ -166,7 +182,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    // color: set dynamically
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.medium,
   },
@@ -176,111 +191,85 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 32,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  dreamTitleCard: {
     paddingHorizontal: 16,
-    paddingTop: 50,
-    paddingBottom: 16,
+    paddingVertical: 14,
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
+  dreamTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
   },
   backButton: {
-    width: 48,
-    height: 48,
-    alignItems: 'center',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
   },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically
+  dreamTitleContent: {
     flex: 1,
-    textAlign: 'center',
-  },
-  headerSpacer: {
-    width: 48,
-  },
-  dreamTitleContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    marginHorizontal: 16,
-    marginBottom: 24,
-    // backgroundColor and borderColor: set dynamically
-    borderRadius: 16,
-    borderWidth: 1,
   },
   dreamTitle: {
-    fontSize: 24,
-    fontFamily: Fonts.lora.bold,
-    // color: set dynamically
-    marginBottom: 8,
-    lineHeight: 32,
+    fontSize: 22,
+    fontFamily: Fonts.fraunces.semiBold,
+    marginBottom: 6,
+    lineHeight: 30,
   },
   dreamSubtitle: {
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically
     lineHeight: 20,
   },
   categoriesContainer: {
     paddingHorizontal: 16,
-    gap: 16,
+    gap: 10,
   },
   categoryCard: {
-    flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor and borderColor: set dynamically
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    // shadow: applied via theme shadows.lg
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
-  categoryCardPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
-  },
-  iconContainer: {
-    width: 72,
-    height: 72,
-    borderRadius: 16,
+  iconRing: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
-  },
-  categoryContent: {
-    flex: 1,
-    marginRight: 8,
+    marginBottom: 8,
   },
   categoryTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically
-    marginBottom: 6,
+    fontSize: 16,
+    fontFamily: Fonts.fraunces.medium,
+    textAlign: 'center',
+    marginBottom: 4,
   },
   categoryDescription: {
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.regular,
-    // color: set dynamically
-    lineHeight: 18,
+    lineHeight: 16,
+    textAlign: 'center',
+    paddingHorizontal: 8,
   },
   freeChatButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
-    // backgroundColor: set dynamically
-    marginHorizontal: 16,
-    marginTop: 24,
+    gap: 8,
     paddingVertical: 18,
+    paddingHorizontal: 24,
     borderRadius: 14,
-    // shadow: applied via theme shadows.xl
-  },
-  freeChatButtonPressed: {
-    opacity: 0.8,
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderWidth: 1,
   },
   freeChatText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
-    // color: set dynamically
+    fontSize: 17,
+    fontFamily: Fonts.fraunces.medium,
+    letterSpacing: 0.5,
   },
 });

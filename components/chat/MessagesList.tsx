@@ -22,9 +22,11 @@ import {
   useMessageListProps,
   useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
+import { MotiView } from '@/lib/moti';
 import type { ChatMessage } from '@/lib/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   InteractionManager,
@@ -74,16 +76,23 @@ const UserMessage = memo(function UserMessage({ message }: { message: ChatMessag
   const { colors } = useTheme();
 
   return (
-    <View style={[styles.messageRow, styles.messageRowUser]}>
-      <View style={[styles.messageBubble, styles.messageBubbleUser, { backgroundColor: colors.accent }]}>
-        <Text style={[styles.messageText, { color: colors.textPrimary }]}>
-          {message.text}
-        </Text>
+    <FadeInStaggered>
+      <View style={[styles.messageRow, styles.messageRowUser]}>
+        <LinearGradient
+          colors={[colors.accent, colors.accentDark]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[styles.messageBubble, styles.messageBubbleUser]}
+        >
+          <Text style={[styles.messageText, { color: colors.textPrimary }]}>
+            {message.text}
+          </Text>
+        </LinearGradient>
+        <View style={[styles.avatar, { backgroundColor: colors.backgroundSecondary }]}>
+          <MaterialCommunityIcons name="account" size={20} color={colors.textPrimary} />
+        </View>
       </View>
-      <View style={[styles.avatar, { backgroundColor: colors.backgroundSecondary }]}>
-        <MaterialCommunityIcons name="account" size={20} color={colors.textPrimary} />
-      </View>
-    </View>
+    </FadeInStaggered>
   );
 });
 
@@ -342,8 +351,16 @@ const AssistantMessage = memo(function AssistantMessage({
   return (
     <FadeInStaggered>
       <View style={[styles.messageRow, styles.messageRowAI]}>
-        <View style={[styles.avatar, { backgroundColor: colors.accent }]}>
-          <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
+        <View style={styles.avatarContainer}>
+          <MotiView
+            from={{ opacity: 0.15, scale: 1 }}
+            animate={{ opacity: shouldHandwrite ? 0.5 : 0.15, scale: shouldHandwrite ? 1.25 : 1 }}
+            transition={{ type: 'timing', duration: 600 }}
+            style={[styles.avatarGlow, { backgroundColor: colors.accent }]}
+          />
+          <View style={[styles.avatar, { backgroundColor: colors.accent }]}>
+            <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
+          </View>
         </View>
         <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
           {messageContent}
@@ -479,7 +496,7 @@ const loadingStyles = StyleSheet.create({
   },
   text: {
     fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.lora.regularItalic,
   },
 });
 
@@ -733,6 +750,19 @@ const styles = StyleSheet.create({
   },
   messageRowUser: {
     justifyContent: 'flex-end',
+  },
+  avatarContainer: {
+    position: 'relative',
+    width: 32,
+    height: 32,
+  },
+  avatarGlow: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    top: -4,
+    left: -4,
   },
   avatar: {
     width: 32,

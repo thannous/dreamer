@@ -235,6 +235,7 @@ const translations: Record<string, string> = {
     'journal.detail.delete_confirm.title': 'Delete dream',
     'journal.detail.delete_confirm.message': 'Are you sure you want to delete this dream?',
     'journal.detail.delete_confirm.confirm': 'Delete',
+    'journal.detail.interpretation_header': 'Interpretation',
     'recording.nav_button': 'See dream journal',
     'recording.nav_button.accessibility': 'Go to dream journal',
     'recording.title': 'New Dream',

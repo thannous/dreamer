@@ -236,6 +236,7 @@ const translations: Record<string, string> = {
     'journal.detail.delete_confirm.title': 'Supprimer le rêve',
     'journal.detail.delete_confirm.message': 'Es-tu sûr·e de vouloir supprimer ce rêve ? Cette action est définitive.',
     'journal.detail.delete_confirm.confirm': 'Supprimer',
+    'journal.detail.interpretation_header': 'Interprétation',
     'recording.nav_button': 'Voir journal des rêves',
     'recording.nav_button.accessibility': 'Aller au journal de rêves',
     'recording.title': 'Nouveau rêve',

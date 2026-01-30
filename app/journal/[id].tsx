@@ -11,7 +11,9 @@ import {
   ReplaceImageSheet,
   type AnalysisNotice,
 } from '@/components/journal/JournalDetailSheets';
+import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { GradientColors } from '@/constants/gradients';
+import { DecoLines } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
@@ -1271,7 +1273,11 @@ export default function JournalDetailScreen() {
       <LinearGradient colors={gradientColors} style={styles.gradient}>
         <Pressable
           onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, { backgroundColor: colors.backgroundCard }]}
+          style={[styles.floatingBackButton, shadows.lg, {
+            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            borderWidth: 1,
+            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+          }]}
           testID={TID.Button.NavigateJournal}
           accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')}
@@ -1296,8 +1302,8 @@ export default function JournalDetailScreen() {
           {/* Dream Image */}
           {!shouldHideHeroMedia && (
             <View style={styles.imageContainer}>
-            <View style={[styles.imageFrame, { aspectRatio: imageAspectRatio ?? IMAGE_FALLBACK_RATIO }]}>
-              {dream.imageUrl ? (
+              <View style={[styles.imageFrame, { aspectRatio: imageAspectRatio ?? IMAGE_FALLBACK_RATIO }]}>
+                {dream.imageUrl ? (
                   <>
                     <Image
                       key={displayImageUrl ?? dream.imageUrl}
@@ -1415,11 +1421,24 @@ export default function JournalDetailScreen() {
                 )}
               </View>
             </View>
+          )}
 
+          {/* Image Top Vignette */}
+          {!shouldHideHeroMedia && (
+            <LinearGradient
+              colors={['rgba(19, 16, 34, 0.3)', 'transparent']}
+              style={styles.imageTopVignette}
+              pointerEvents="none"
+            />
           )}
 
           {/* Content Card - Overlaps image */}
-          <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
+          <MotiView
+            from={{ opacity: 0, translateY: 40 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 700, delay: 200 }}
+          >
+            <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
 
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
@@ -1430,11 +1449,17 @@ export default function JournalDetailScreen() {
                 {isAnalysisPending ? (
                   <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
                 ) : dream.shareableQuote ? (
-                  <View style={[styles.quoteBox, { borderLeftColor: colors.accent }]}>
+                  <FlatGlassCard style={styles.quoteBoxGlass} animationDelay={450}>
+                    <Ionicons
+                      name="chatbox-ellipses"
+                      size={28}
+                      color={colors.accent}
+                      style={styles.quoteIcon}
+                    />
                     <Text style={[styles.quote, { color: colors.textPrimary }]}>
                       &quot;{dream.shareableQuote}&quot;
                     </Text>
-                  </View>
+                  </FlatGlassCard>
                 ) : null}
 
                 {isAnalysisPending ? (
@@ -1444,11 +1469,19 @@ export default function JournalDetailScreen() {
                     <Skeleton style={{ height: 16, width: '95%', borderRadius: 4 }} />
                   </View>
                 ) : dream.interpretation ? (
-                  <TypewriterText
-                    text={dream.interpretation}
-                    style={[styles.interpretation, { color: colors.textSecondary }]}
-                    shouldAnimate={false}
-                  />
+                  <>
+                    <View style={styles.sectionHeader}>
+                      <Text style={[styles.sectionHeaderText, { color: colors.accent }]}>
+                        {t('journal.detail.interpretation_header')}
+                      </Text>
+                      <View style={[DecoLines.rule, { backgroundColor: colors.accent, marginTop: 8 }]} />
+                    </View>
+                    <TypewriterText
+                      text={dream.interpretation}
+                      style={[styles.interpretation, { color: colors.textSecondary }]}
+                      shouldAnimate={false}
+                    />
+                  </>
                 ) : null}
               </>
             )}
@@ -1483,15 +1516,21 @@ export default function JournalDetailScreen() {
               (dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
               <Pressable
                 testID={TID.Button.ExploreDream}
+                onPress={handleExplorePress}
+                disabled={isAnalysisLocked}
                 style={[styles.exploreButton, shadows.md, {
                   backgroundColor: colors.accent,
                   borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
                   opacity: isAnalysisLocked ? 0.8 : 1,
                 }]}
-                onPress={handleExplorePress}
-                disabled={isAnalysisLocked}
               >
-                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                <MotiView
+                  from={{ rotate: '-10deg' }}
+                  animate={{ rotate: '10deg' }}
+                  transition={{ type: 'timing', duration: 2000, loop: true, repeatReverse: true }}
+                >
+                  <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                </MotiView>
                 <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
               </Pressable>
             )}
@@ -1579,7 +1618,8 @@ export default function JournalDetailScreen() {
               <Ionicons name="trash-outline" size={18} color="#EF4444" />
               <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
             </Pressable>
-          </View>
+            </View>
+          </MotiView>
         </ScrollView>
 
         {/* Floating Explore/Analyze Button */}
@@ -1596,20 +1636,26 @@ export default function JournalDetailScreen() {
           >
             <Pressable
               testID={`${TID.Button.ExploreDream}-floating`}
+              onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
+              disabled={isPrimaryActionBusy || isAnalysisLocked}
               style={[styles.exploreButton, {
                 backgroundColor: colors.accent,
                 borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
-                opacity: isPrimaryActionBusy || isAnalysisLocked ? 0.8 : 1,
                 marginTop: 0,
                 marginBottom: 0,
+                opacity: isPrimaryActionBusy || isAnalysisLocked ? 0.8 : 1,
               }]}
-              onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
-              disabled={isPrimaryActionBusy || isAnalysisLocked}
             >
               {isPrimaryActionBusy ? (
                 <ActivityIndicator color={colors.textPrimary} />
               ) : (
-                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                <MotiView
+                  from={{ rotate: '-10deg' }}
+                  animate={{ rotate: '10deg' }}
+                  transition={{ type: 'timing', duration: 2000, loop: true, repeatReverse: true }}
+                >
+                  <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                </MotiView>
               )}
               <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
             </Pressable>
@@ -2018,13 +2064,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     // backgroundColor: set dynamically
     paddingHorizontal: 16,
-    paddingVertical: 24,
+    paddingTop: 0,
+    paddingBottom: 24,
     // shadow: applied via theme shadows.xl
   },
   // Premium Metadata Card with Glassmorphism
   metadataCard: {
     // backgroundColor and borderColor: set dynamically
-    borderRadius: 16,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
     padding: 20,
     marginBottom: 24,
     borderWidth: 1,
@@ -2065,11 +2115,11 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   metadataTitle: {
-    fontSize: 24,
-    fontFamily: Fonts.lora.bold,
+    fontSize: 26,
+    fontFamily: Fonts.fraunces.semiBold,
     // color: set dynamically
     marginBottom: 12,
-    lineHeight: 32,
+    lineHeight: 34,
   },
   metadataRow: {
     flexDirection: 'row',
@@ -2123,11 +2173,42 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginVertical: 16,
   },
+  quoteBoxGlass: {
+    padding: 20,
+    marginVertical: 16,
+    position: 'relative',
+  },
+  quoteIcon: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    opacity: 0.25,
+  },
   quote: {
-    fontSize: 18,
-    fontFamily: Fonts.lora.regularItalic,
+    fontSize: 20,
+    fontFamily: Fonts.lora.boldItalic,
     // color: set dynamically
-    lineHeight: 28,
+    lineHeight: 30,
+    paddingLeft: 8,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 12,
+  },
+  sectionHeaderText: {
+    fontSize: 13,
+    fontFamily: Fonts.fraunces.medium,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+  },
+  imageTopVignette: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    zIndex: 1,
   },
   exploreButton: {
     flexDirection: 'row',
@@ -2152,7 +2233,7 @@ const styles = StyleSheet.create({
   },
   exploreButtonText: {
     fontSize: 17,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.fraunces.medium,
     // color: set dynamically
     letterSpacing: 0.5,
   },
