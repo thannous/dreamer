@@ -14,20 +14,26 @@ type QuotaTargetInput = {
   dream?: DreamAnalysis;
 };
 
-function normalizeTarget(input?: QuotaTargetInput) {
+type NormalizedQuotaTarget = {
+  dreamId: number;
+  dream?: DreamAnalysis;
+};
+
+function normalizeTarget(input?: QuotaTargetInput): NormalizedQuotaTarget | undefined {
   if (!input) return undefined;
-  const dreamId = input.dream?.id ?? input.dreamId;
-  const resolvedId = Number.isFinite(dreamId) ? Number(dreamId) : undefined;
-  if (resolvedId !== undefined) {
-    return { dreamId: resolvedId };
+  const resolvedId = Number.isFinite(input.dream?.id)
+    ? Number(input.dream?.id)
+    : Number.isFinite(input.dreamId)
+      ? Number(input.dreamId)
+      : undefined;
+
+  if (resolvedId === undefined) return undefined;
+
+  if (input.dream && input.dream.id === resolvedId) {
+    return { dreamId: resolvedId, dream: input.dream };
   }
-  if (!input.dream) {
-    return undefined;
-  }
-  return {
-    dreamId: input.dream.id,
-    dream: input.dream,
-  };
+
+  return { dreamId: resolvedId };
 }
 
 export function useQuota(targetInput?: QuotaTargetInput) {
@@ -39,10 +45,13 @@ export function useQuota(targetInput?: QuotaTargetInput) {
 
   const targetDreamId = targetInput?.dream?.id ?? targetInput?.dreamId;
   const normalizedDreamId = Number.isFinite(targetDreamId) ? Number(targetDreamId) : undefined;
-  const fallbackDream = normalizedDreamId === undefined ? targetInput?.dream : undefined;
+  const fallbackDream = targetInput?.dream;
 
   const baseTarget = useMemo(() => {
     if (normalizedDreamId !== undefined) {
+      if (fallbackDream && fallbackDream.id === normalizedDreamId) {
+        return { dreamId: normalizedDreamId, dream: fallbackDream };
+      }
       return { dreamId: normalizedDreamId };
     }
     if (fallbackDream) {
