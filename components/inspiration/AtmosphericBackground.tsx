@@ -136,6 +136,15 @@ export function AtmosphericBackground() {
         />
       )}
 
+      {/* Bottom fade to navbar background — ensures seamless transition */}
+      <LinearGradient
+        colors={['transparent', colors.backgroundDark]}
+        locations={[0, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.bottomFade}
+      />
+
       {/* Noise Overlay for texture depth */}
       <View
         style={[
@@ -158,9 +167,12 @@ const styles = StyleSheet.create({
   orb: {
     position: 'absolute',
     borderRadius: 9999,
-    // Note: React Native doesn't support CSS blur() filter
-    // The blur effect is simulated through opacity and soft edges
-    // For true blur, would need to use expo-blur's BlurView over the orbs
-    // No shadow needed for orbs as they're purely decorative background elements
+  },
+  bottomFade: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 120,
   },
 });
