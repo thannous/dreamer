@@ -10,8 +10,15 @@ export function usePrefersReducedMotion(): boolean {
 
   useEffect(() => {
     let mounted = true;
+    const isReduceMotionEnabled = AccessibilityInfo?.isReduceMotionEnabled;
 
-    AccessibilityInfo.isReduceMotionEnabled()
+    if (!isReduceMotionEnabled) {
+      return () => {
+        mounted = false;
+      };
+    }
+
+    isReduceMotionEnabled()
       .then((enabled) => {
         if (mounted) {
           setPrefersReducedMotion(enabled);
