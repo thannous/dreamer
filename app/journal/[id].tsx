@@ -948,7 +948,7 @@ export default function JournalDetailScreen() {
   const gradientColors = mode === 'dark'
     ? ([GradientColors.dreamJournal[0], GradientColors.dreamJournal[1], colors.backgroundDark] as const)
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
-  const gradientLocations = mode === 'dark' ? [0, 0.7, 1] : undefined;
+  const gradientLocations = mode === 'dark' ? ([0, 0.7, 1] as const) : undefined;
   const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNoticeRef.current;
   const screenBackgroundColor = gradientColors[gradientColors.length - 1] ?? colors.backgroundDark;
 
