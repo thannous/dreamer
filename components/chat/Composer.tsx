@@ -470,8 +470,9 @@ function Body({ children }: { children: React.ReactNode }) {
   const reduceEffects = isScrolling || prefersReducedMotion;
   const blurIntensity = reduceEffects ? 0 : mode === 'dark' ? 15 : 5;
   const opacityHex = Math.round((mode === 'dark' ? 0.4 : 0.65) * 255).toString(16).padStart(2, '0');
-  const glassBackground = isWeb ? `${colors.backgroundCard}${opacityHex}` : 'transparent';
   const shouldUseBlur = !isWeb && !reduceEffects;
+  const fallbackBackground = `${colors.backgroundCard}${opacityHex}`;
+  const glassBackground = shouldUseBlur ? 'transparent' : fallbackBackground;
 
   return (
     <View
