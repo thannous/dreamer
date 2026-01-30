@@ -17,11 +17,15 @@ type QuotaTargetInput = {
 function normalizeTarget(input?: QuotaTargetInput) {
   if (!input) return undefined;
   const dreamId = input.dream?.id ?? input.dreamId;
-  if (!dreamId && !input.dream) {
+  const resolvedId = Number.isFinite(dreamId) ? Number(dreamId) : undefined;
+  if (resolvedId !== undefined) {
+    return { dreamId: resolvedId };
+  }
+  if (!input.dream) {
     return undefined;
   }
   return {
-    dreamId,
+    dreamId: input.dream.id,
     dream: input.dream,
   };
 }
@@ -33,7 +37,19 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const baseTarget = useMemo(() => normalizeTarget(targetInput), [targetInput]);
+  const targetDreamId = targetInput?.dream?.id ?? targetInput?.dreamId;
+  const normalizedDreamId = Number.isFinite(targetDreamId) ? Number(targetDreamId) : undefined;
+  const fallbackDream = normalizedDreamId === undefined ? targetInput?.dream : undefined;
+
+  const baseTarget = useMemo(() => {
+    if (normalizedDreamId !== undefined) {
+      return { dreamId: normalizedDreamId };
+    }
+    if (fallbackDream) {
+      return { dreamId: fallbackDream.id, dream: fallbackDream };
+    }
+    return undefined;
+  }, [normalizedDreamId, fallbackDream]);
   const supabaseTier = useMemo(() => deriveUserTier(user), [user]);
 
   const resolveTarget = useCallback(
