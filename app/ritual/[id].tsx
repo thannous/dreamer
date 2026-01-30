@@ -117,6 +117,9 @@ export default function RitualDetailScreen() {
   const totalSteps = ritual.steps.length;
   const progressPercent = totalSteps > 0 ? completedCount / totalSteps : 0;
 
+  const backButtonTop = insets.top + ThemeLayout.spacing.sm;
+  const contentPaddingTop = backButtonTop + 44 + ThemeLayout.spacing.md;
+
   const checkboxBorderColor =
     mode === 'dark' ? colors.divider : colors.textSecondary;
 
@@ -129,7 +132,7 @@ export default function RitualDetailScreen() {
       {/* Floating Back Button */}
       <Pressable
         onPress={() => router.back()}
-        style={[styles.floatingBackButton, shadows.lg, {
+        style={[styles.floatingBackButton, { top: backButtonTop }, shadows.lg, {
           backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
           borderWidth: 1,
           borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
@@ -145,7 +148,7 @@ export default function RitualDetailScreen() {
         style={styles.scrollView}
         contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
       >
-        <View style={styles.content}>
+        <View style={[styles.content, { paddingTop: contentPaddingTop }]}>
           {/* Ritual icon and name */}
           <View style={styles.titleSection}>
             <View
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
   },
   floatingBackButton: {
     position: 'absolute',
-    top: 50,
+    top: 0,
     left: 20,
     zIndex: 50,
     width: 44,
@@ -289,7 +292,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: ThemeLayout.spacing.md,
+    paddingTop: 0,
     gap: 24,
   },
   titleSection: {

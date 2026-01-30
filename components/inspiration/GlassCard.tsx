@@ -19,8 +19,8 @@ export type GlassCardProps = {
 
 /**
  * GlassCard component provides a glassmorphism effect card wrapper.
- * Uses BlurView on iOS/Android for true blur effect.
- * Falls back to semi-transparent background on web or if blur unavailable.
+ * Uses BlurView on iOS for true blur effect.
+ * Falls back to a semi-transparent background on Android/web.
  */
 function GlassCardBase({
   children,
@@ -61,7 +61,8 @@ function GlassCardBase({
         strong: 0.75,
       }[intensity];
 
-  const isWeb = Platform.OS === 'web';
+  const isIos = Platform.OS === 'ios';
+  const shouldUseBlur = isIos;
 
   // Theme-aware glass background color using system colors
   // Convert hex opacity to hex alpha for consistency
@@ -70,9 +71,9 @@ function GlassCardBase({
 
   // Glass styling
   const glassStyle: ViewStyle = {
-    backgroundColor: isWeb
-      ? glassBackgroundColor
-      : 'transparent',
+    backgroundColor: shouldUseBlur
+      ? 'transparent'
+      : glassBackgroundColor,
     borderWidth: GlassCardTokens.borderWidth,
     borderColor: colors.divider,
     borderRadius: GlassCardTokens.borderRadius,
@@ -82,11 +83,12 @@ function GlassCardBase({
 
   const content = (
     <>
-      {/* BlurView for iOS/Android only */}
-      {!isWeb && (
+      {/* BlurView for iOS only */}
+      {shouldUseBlur && (
         <BlurView
           intensity={blurIntensity}
           tint={mode === 'dark' ? 'dark' : 'light'}
+          pointerEvents="none"
           style={StyleSheet.absoluteFill}
         />
       )}
