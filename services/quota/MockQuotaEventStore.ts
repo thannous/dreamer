@@ -81,7 +81,14 @@ async function loadState(): Promise<MockQuotaState> {
     return cache.state;
   }
 
-  const raw = await AsyncStorage.getItem(STORAGE_KEY);
+  let raw: string | null = null;
+  try {
+    raw = await AsyncStorage.getItem(STORAGE_KEY);
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[MockQuota] Failed to read quota state, using defaults', error);
+    }
+  }
   const state = await syncWithDreams(safeParseState(raw));
   cache = { state, expiresAt: Date.now() + CACHE_TTL };
   return state;
@@ -89,17 +96,35 @@ async function loadState(): Promise<MockQuotaState> {
 
 async function saveState(state: MockQuotaState): Promise<void> {
   cache = { state, expiresAt: Date.now() + CACHE_TTL };
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[MockQuota] Failed to persist quota state', error);
+    }
+  }
 }
 
 export async function resetMockQuotaEvents(): Promise<void> {
   cache = null;
-  await AsyncStorage.multiRemove([STORAGE_KEY, MIGRATION_KEY]);
+  try {
+    await AsyncStorage.multiRemove([STORAGE_KEY, MIGRATION_KEY]);
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[MockQuota] Failed to clear quota state', error);
+    }
+  }
 }
 
 async function migrateFromDreamsIfNeeded(): Promise<void> {
-  const migrated = await AsyncStorage.getItem(MIGRATION_KEY);
-  if (migrated) return;
+  try {
+    const migrated = await AsyncStorage.getItem(MIGRATION_KEY);
+    if (migrated) return;
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[MockQuota] Failed to read migration key, continuing without persistence', error);
+    }
+  }
 
   const dreams = (await getSavedDreams()) ?? [];
   const analysisCount = getAnalyzedDreamCount(dreams);
@@ -120,7 +145,13 @@ async function migrateFromDreamsIfNeeded(): Promise<void> {
   };
 
   await saveState(next);
-  await AsyncStorage.setItem(MIGRATION_KEY, 'true');
+  try {
+    await AsyncStorage.setItem(MIGRATION_KEY, 'true');
+  } catch (error) {
+    if (__DEV__) {
+      console.warn('[MockQuota] Failed to persist migration key', error);
+    }
+  }
 }
 
 export async function getMockAnalysisCount(): Promise<number> {
