@@ -26,6 +26,8 @@ const EXPIRY_SAFETY_MS = 30_000;
 
 let cached: GuestSessionRecord | null = null;
 let preparePromise: Promise<boolean> | null = null;
+let sessionPromise: Promise<GuestSessionRecord | null> | null = null;
+let sessionEpoch = 0;
 
 const decodeStored = (raw: string | null): GuestSessionRecord | null => {
   if (!raw) return null;
@@ -156,33 +158,52 @@ const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
     return null;
   }
 
-  let stored: GuestSessionRecord | null = null;
-  try {
-    stored = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY));
-  } catch {
-    stored = null;
-  }
-  if (stored && isSessionValid(stored)) {
-    cached = stored;
-    return stored;
+  if (sessionPromise) {
+    return sessionPromise;
   }
 
-  const fingerprint = await getDeviceFingerprint();
-  const fresh = await fetchGuestSession(fingerprint);
-  if (!fresh) {
-    return null;
-  }
+  const startEpoch = sessionEpoch;
+  const inFlight = (async () => {
+    let stored: GuestSessionRecord | null = null;
+    try {
+      stored = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY));
+    } catch {
+      stored = null;
+    }
+    if (stored && isSessionValid(stored)) {
+      if (sessionEpoch !== startEpoch) return null;
+      cached = stored;
+      return stored;
+    }
 
-  cached = fresh;
+    const fingerprint = await getDeviceFingerprint();
+    const fresh = await fetchGuestSession(fingerprint);
+    if (!fresh) {
+      return null;
+    }
+    if (sessionEpoch !== startEpoch) return null;
+
+    cached = fresh;
+    try {
+      await SecureStore.setItemAsync(
+        STORAGE_KEY,
+        JSON.stringify({ token: fresh.token, expiresAt: new Date(fresh.expiresAt).toISOString(), fingerprint })
+      );
+    } catch {
+      // Ignore storage failures; session will remain in memory.
+    }
+    return fresh;
+  })();
+  sessionPromise = inFlight;
+
   try {
-    await SecureStore.setItemAsync(
-      STORAGE_KEY,
-      JSON.stringify({ token: fresh.token, expiresAt: new Date(fresh.expiresAt).toISOString(), fingerprint })
-    );
-  } catch {
-    // Ignore storage failures; session will remain in memory.
+    return await inFlight;
+  } finally {
+    if (sessionPromise === inFlight) {
+      // Ensure stale inflight sessions don't get reused after invalidation.
+      sessionPromise = null;
+    }
   }
-  return fresh;
 };
 
 export async function getGuestHeaders(): Promise<Record<string, string>> {
@@ -197,5 +218,17 @@ export async function getGuestHeaders(): Promise<Record<string, string>> {
   } catch (error) {
     logger.warn('[guestSession] Failed to resolve guest session', error);
     return {};
+  }
+}
+
+export async function invalidateGuestSession(): Promise<void> {
+  sessionEpoch += 1;
+  cached = null;
+  preparePromise = null;
+  sessionPromise = null;
+  try {
+    await SecureStore.deleteItemAsync(STORAGE_KEY);
+  } catch {
+    // Ignore storage failures; session will remain cleared in memory.
   }
 }

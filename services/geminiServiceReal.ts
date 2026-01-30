@@ -7,10 +7,10 @@
 // - POST /tts { text } -> { audioBase64: string }
 
 import { getApiBaseUrl } from '@/lib/config';
-import { fetchJSON, HttpError } from '@/lib/http';
-import { classifyImageError, type ImageGenerationErrorResponse } from '@/lib/errors';
+import { fetchJSON, HttpError, type HttpOptions } from '@/lib/http';
+import { classifyImageError, isGuestSessionError, type ImageGenerationErrorResponse } from '@/lib/errors';
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
-import { getGuestHeaders } from '@/lib/guestSession';
+import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
 
 export type AnalysisResult = {
   title: string;
@@ -22,17 +22,33 @@ export type AnalysisResult = {
   quotaUsed?: { analysis: number };
 };
 
+async function fetchWithGuestHeaders<T>(
+  path: string,
+  options: HttpOptions & { signal?: AbortSignal },
+  retryGuestSession = true
+): Promise<T> {
+  const base = getApiBaseUrl();
+  const headers = await getGuestHeaders();
+  try {
+    return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...headers, ...options.headers } });
+  } catch (error) {
+    if (retryGuestSession && error instanceof Error && isGuestSessionError(error)) {
+      await invalidateGuestSession();
+      const freshHeaders = await getGuestHeaders();
+      return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...freshHeaders, ...options.headers } });
+    }
+    throw error;
+  }
+}
+
 export async function analyzeDream(
   transcript: string,
   lang: string = 'en',
   fingerprint?: string
 ): Promise<AnalysisResult> {
-  const base = getApiBaseUrl();
-  const headers = await getGuestHeaders();
-  return fetchJSON<AnalysisResult>(`${base}/analyzeDream`, {
+  return fetchWithGuestHeaders<AnalysisResult>('/analyzeDream', {
     method: 'POST',
     body: { transcript, lang, ...(fingerprint && { fingerprint }) },
-    headers,
     retries: 1, // One automatic retry
   });
 }
@@ -43,12 +59,9 @@ export type CategorizeDreamResult = Pick<AnalysisResult, 'title' | 'theme' | 'dr
 };
 
 export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<CategorizeDreamResult> {
-  const base = getApiBaseUrl();
-  const headers = await getGuestHeaders();
-  return fetchJSON<CategorizeDreamResult>(`${base}/categorizeDream`, {
+  return fetchWithGuestHeaders<CategorizeDreamResult>('/categorizeDream', {
     method: 'POST',
     body: { transcript, lang },
-    headers,
     retries: 1,
   });
 }
@@ -58,13 +71,15 @@ export async function analyzeDreamWithImage(
   lang: string = 'en',
   fingerprint?: string
 ): Promise<AnalysisResult & { imageUrl: string }> {
-  const base = getApiBaseUrl();
-  const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
-    method: 'POST',
-    body: { transcript, lang, ...(fingerprint && { fingerprint }) },
-    retries: 1, // One automatic retry
-    timeoutMs: 60000, // Increased timeout for combined operation
-  });
+  const res = await fetchWithGuestHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
+    '/analyzeDreamFull',
+    {
+      method: 'POST',
+      body: { transcript, lang, ...(fingerprint && { fingerprint }) },
+      retries: 1, // One automatic retry
+      timeoutMs: 60000, // Increased timeout for combined operation
+    }
+  );
   const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
   if (!imageUrl) throw new Error('Invalid combined response from backend');
   // Return merged object with a guaranteed imageUrl
@@ -81,16 +96,17 @@ export async function analyzeDreamWithImageResilient(
   lang: string = 'en',
   fingerprint?: string
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
-  const base = getApiBaseUrl();
-
   try {
     // Try combined analysis + image generation first
-    const res = await fetchJSON<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(`${base}/analyzeDreamFull`, {
-      method: 'POST',
-      body: { transcript, lang, ...(fingerprint && { fingerprint }) },
-      retries: 1,
-      timeoutMs: 60000,
-    });
+    const res = await fetchWithGuestHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
+      '/analyzeDreamFull',
+      {
+        method: 'POST',
+        body: { transcript, lang, ...(fingerprint && { fingerprint }) },
+        retries: 1,
+        timeoutMs: 60000,
+      }
+    );
     const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
 
     if (imageUrl) {
@@ -128,13 +144,10 @@ export async function analyzeDreamWithImageResilient(
 }
 
 export async function generateImageForDream(prompt: string, previousImageUrl?: string): Promise<string> {
-  const base = getApiBaseUrl();
   try {
-    const headers = await getGuestHeaders();
-    const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImage`, {
+    const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImage', {
       method: 'POST',
       body: { prompt, previousImageUrl },
-      headers,
       timeoutMs: 60000,
       retries: 2,
       retryDelay: 1200,
@@ -164,18 +177,18 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
 }
 
 export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
-  const base = getApiBaseUrl();
   try {
-    const headers = await getGuestHeaders();
-    const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(`${base}/generateImage`, {
-      method: 'POST',
-      // Let the backend generate a short image prompt from the transcript.
-      body: { transcript, previousImageUrl },
-      headers,
-      timeoutMs: 60000, // Image generation can take time
-      retries: 2,
-      retryDelay: 1200,
-    });
+    const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(
+      '/generateImage',
+      {
+        method: 'POST',
+        // Let the backend generate a short image prompt from the transcript.
+        body: { transcript, previousImageUrl },
+        timeoutMs: 60000, // Image generation can take time
+        retries: 2,
+        retryDelay: 1200,
+      }
+    );
     if (res.imageUrl) return res.imageUrl;
     if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
     throw new Error('Invalid image response from backend');
@@ -227,11 +240,10 @@ export async function startOrContinueChat(
     theme?: DreamTheme;
     chatHistory?: ChatMessage[];
   },
-  fingerprint?: string
+  fingerprint?: string,
+  options?: { signal?: AbortSignal }
 ): Promise<string> {
-  const base = getApiBaseUrl();
-  const headers = await getGuestHeaders();
-  const res = await fetchJSON<{ text: string }>(`${base}/chat`, {
+  const res = await fetchWithGuestHeaders<{ text: string }>('/chat', {
     method: 'POST',
     body: {
       dreamId,
@@ -240,7 +252,7 @@ export async function startOrContinueChat(
       ...(dreamContext && { dreamContext }),
       ...(fingerprint && { fingerprint }),
     },
-    headers,
+    signal: options?.signal,
   });
   return res.text;
 }
@@ -250,8 +262,7 @@ export function resetChat() {
 }
 
 export async function generateSpeechForText(text: string): Promise<string> {
-  const base = getApiBaseUrl();
-  const res = await fetchJSON<{ audioBase64: string }>(`${base}/tts`, {
+  const res = await fetchWithGuestHeaders<{ audioBase64: string }>('/tts', {
     method: 'POST',
     body: { text },
     timeoutMs: 60000,

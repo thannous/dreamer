@@ -13,7 +13,7 @@ import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
-import { QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { getUserErrorMessage, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
@@ -95,7 +95,16 @@ export default function DreamChatScreen() {
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
-  const { isConnected: hasNetwork } = useNetworkState();
+  const networkState = useNetworkState();
+  const hasNetwork = useMemo(() => {
+    if (networkState.isInternetReachable != null) {
+      return networkState.isInternetReachable;
+    }
+    if (networkState.isConnected != null) {
+      return networkState.isConnected;
+    }
+    return true;
+  }, [networkState.isConnected, networkState.isInternetReachable]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -106,6 +115,8 @@ export default function DreamChatScreen() {
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
   const lastCategorySentKeyRef = useRef<string | null>(null);
+  const requestAbortRef = useRef<AbortController | null>(null);
+  const sendInFlightRef = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -113,6 +124,8 @@ export default function DreamChatScreen() {
       if (quotaCheckTimeoutRef.current) {
         clearTimeout(quotaCheckTimeoutRef.current);
       }
+      requestAbortRef.current?.abort();
+      requestAbortRef.current = null;
     };
   }, []);
 
@@ -378,6 +391,13 @@ export default function DreamChatScreen() {
       if (!textToSend || !dream) return;
       const resolvedDisplayText = displayText ?? textToSend;
 
+      // Guard against concurrent sends (double taps, quick topics during streaming, etc.)
+      if (isLoading || sendInFlightRef.current) {
+        return;
+      }
+      sendInFlightRef.current = true;
+
+      try {
       if (debugChat) {
         const baseMessages = options?.baseMessages ?? messages;
         console.debug('[DreamChat] sendMessage start', {
@@ -393,6 +413,15 @@ export default function DreamChatScreen() {
         if (!isExistingExploration) {
           showMessageLimitAlert();
         }
+        return;
+      }
+
+      if (!hasNetwork && !isMockMode) {
+        Alert.alert(
+          t('common.error_title'),
+          t('error.network'),
+          [{ text: t('common.ok') }]
+        );
         return;
       }
 
@@ -455,6 +484,8 @@ export default function DreamChatScreen() {
           setIsLoading(true);
           setInputText((current) => computeNextInputAfterSend(current, textToSend));
           try {
+            const controller = new AbortController();
+            requestAbortRef.current = controller;
             // Ensure clientRequestId for idempotence (prevent duplicates)
             const dreamToSync = dream.clientRequestId
               ? dream
@@ -468,7 +499,9 @@ export default function DreamChatScreen() {
 
             // Now proceed with chat using synced.remoteId
             const dreamIdString = String(synced.remoteId);
-            const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
+            const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
+              signal: controller.signal,
+            });
 
             // Add user message
             const userMessage = createChatMessage('user', resolvedDisplayText, {
@@ -514,6 +547,9 @@ export default function DreamChatScreen() {
             return;
           } finally {
             setIsLoading(false);
+            if (requestAbortRef.current) {
+              requestAbortRef.current = null;
+            }
           }
           return;
         } else {
@@ -537,6 +573,8 @@ export default function DreamChatScreen() {
       setIsLoading(true);
 
       try {
+        const controller = new AbortController();
+        requestAbortRef.current = controller;
         // ✅ PHASE 2: Get AI response with server-side quota enforcement
         // Note: No longer send history - server reads from dreams.chat_history
         // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
@@ -570,12 +608,15 @@ export default function DreamChatScreen() {
             textToSend,
             language,
             dreamContext,
-            guestFingerprint
+            guestFingerprint,
+            { signal: controller.signal }
           );
         } else {
           // Authenticated mode: send dreamId (current flow)
           const dreamIdString = String(dream.remoteId ?? dream.id);
-          aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language);
+          aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
+            signal: controller.signal,
+          });
         }
 
         const aiMessage = createChatMessage('model', aiResponseText);
@@ -626,6 +667,7 @@ export default function DreamChatScreen() {
         if (__DEV__) {
           console.error('Chat error:', error);
         }
+        const userMessage = error instanceof Error ? getUserErrorMessage(error, t) : t('dream_chat.error_message');
         const errorMessage = createChatMessage('model', t('dream_chat.error_message'), {
           meta: {
             isError: true,
@@ -635,9 +677,19 @@ export default function DreamChatScreen() {
             },
           },
         });
-        setMessages([...updatedMessages, errorMessage]);
+        const enrichedErrorMessage =
+          userMessage === t('dream_chat.error_message')
+            ? errorMessage
+            : createChatMessage('model', userMessage, { meta: errorMessage.meta });
+        setMessages([...updatedMessages, enrichedErrorMessage]);
       } finally {
         setIsLoading(false);
+        if (requestAbortRef.current) {
+          requestAbortRef.current = null;
+        }
+      }
+      } finally {
+        sendInFlightRef.current = false;
       }
     },
     [
@@ -650,6 +702,7 @@ export default function DreamChatScreen() {
       hasNetwork,
       hasQuotaCheckClearance,
       inputText,
+      isLoading,
       isExistingExploration,
       isMockMode,
       language,
@@ -677,6 +730,7 @@ export default function DreamChatScreen() {
   );
 
   const handleQuickCategory = (categoryId: string) => {
+    if (isLoading) return;
     // Block if quota check not complete or exploration blocked
     if (!hasQuotaCheckClearance || isQuotaGateBlocked) return;
     if (messageLimitReached) {
@@ -869,7 +923,7 @@ export default function DreamChatScreen() {
                   transition={{ type: 'timing', duration: 500, delay: 200 + index * 80 }}
                 >
                   <FlatGlassCard
-                    onPress={() => handleQuickCategory(cat.id)}
+                    onPress={isQuickDisabled ? undefined : () => handleQuickCategory(cat.id)}
                     style={styles.quickCategoryGlass}
                     testID={`quick-category-${cat.id}`}
                     animationDelay={0}

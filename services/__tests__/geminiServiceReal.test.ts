@@ -24,6 +24,7 @@ vi.mock('../../lib/auth', () => ({
 
 vi.mock('../../lib/guestSession', () => ({
   getGuestHeaders: () => Promise.resolve({}),
+  invalidateGuestSession: () => Promise.resolve(),
 }));
 
 // Mock errors module
