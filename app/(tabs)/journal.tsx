@@ -13,6 +13,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { ADD_BUTTON_RESERVED_SPACE, DESKTOP_BREAKPOINT, LAYOUT_MAX_WIDTH, TAB_BAR_HEIGHT, TABLET_BREAKPOINT } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
@@ -26,8 +27,8 @@ import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
-import { router, useFocusEffect, useNavigation } from 'expo-router';
-import React, { useCallback, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -65,8 +66,8 @@ export default function JournalListScreen() {
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
   const { width } = useWindowDimensions();
 
-  const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
-  const isNative = Platform.OS !== 'web';
+  const isWeb = Platform.OS === 'web';
+  const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
   const desktopColumns = width >= 1440 ? 4 : 3;
 
@@ -78,31 +79,6 @@ export default function JournalListScreen() {
       return () => setShowHeaderAnimations(false);
     }, []),
   );
-
-  // Native search bar
-  const navigation = useNavigation();
-  useLayoutEffect(() => {
-    if (isNative) {
-      navigation.setOptions({
-        headerShown: true,
-        headerTitle: t('journal.title'),
-        headerLargeTitle: true,
-        headerStyle: { backgroundColor: colors.backgroundDark },
-        headerTintColor: colors.textPrimary,
-        headerShadowVisible: false,
-        headerSearchBarOptions: {
-          placeholder: t('journal.search_placeholder'),
-          onChangeText: (event: { nativeEvent: { text: string } }) => {
-            setSearchQuery(event.nativeEvent.text);
-          },
-          hideWhenScrolling: true,
-          tintColor: colors.accent,
-          textColor: colors.textPrimary,
-          headerIconColor: colors.textSecondary,
-        },
-      });
-    }
-  }, [isNative, navigation, t, colors]);
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -490,25 +466,23 @@ export default function JournalListScreen() {
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
-      {/* Atmospheric dreamlike background */}
-      <AtmosphericBackground />
+    <ScrollPerfProvider isScrolling={isScrolling}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]} testID={TID.Screen.Journal}>
+        {/* Atmospheric dreamlike background */}
+        <AtmosphericBackground />
 
-      {/* Header — only on web (native uses headerSearchBarOptions) */}
-      {!isNative && (
+        {/* Header */}
         <PageHeaderContent
           titleKey="journal.title"
           animationSeed={showHeaderAnimations ? 1 : 0}
           style={isDesktopLayout ? styles.headerDesktop : undefined}
         />
-      )}
 
-      {/* Search and Filters */}
-      <View
-        style={filtersContainerStyle}
-      >
-        {/* Custom SearchBar on web only — native uses header search bar */}
-        {!isNative && (
+        {/* Search and Filters */}
+        <View
+          style={filtersContainerStyle}
+        >
+          {/* SearchBar */}
           <SearchBar
             testID={TID.Component.SearchBar}
             inputTestID={TID.Input.SearchDreams}
@@ -516,50 +490,49 @@ export default function JournalListScreen() {
             onChangeText={setSearchQuery}
             placeholder={t('journal.search_placeholder')}
           />
-        )}
-        <FilterBar
-          items={[
-            {
-              id: 'theme',
-              label: t('journal.filter.theme'),
-              active: selectedTheme !== null || selectedDreamType !== null,
-              onPress: () => setShowThemeModal(true),
-              testID: TID.Button.FilterTheme,
-            },
-            {
-              id: 'date',
-              label: t('journal.filter.date'),
-              active: dateRange.start !== null || dateRange.end !== null,
-              onPress: () => setShowDateModal(true),
-              testID: TID.Button.FilterDate,
-            },
-            {
-              id: 'favorites',
-              label: t('journal.filter.favorites'),
-              active: showFavoritesOnly,
-              onPress: handleFavoritesToggle,
-              testID: TID.Button.FilterFavorites,
-            },
-            {
-              id: 'analyzed',
-              active: showAnalyzedOnly,
-              onPress: handleAnalyzedToggle,
-              testID: TID.Button.FilterAnalyzed,
-            },
-            {
-              id: 'explored',
-              active: showExploredOnly,
-              onPress: handleExploredToggle,
-              testID: TID.Button.FilterExplored,
-            },
-          ]}
-          onClear={handleClearFilters}
-          dateRange={dateRange}
-          selectedTheme={selectedTheme}
-          selectedDreamType={selectedDreamType}
-          clearTestID={TID.Button.ClearFilters}
-        />
-      </View>
+          <FilterBar
+            items={[
+              {
+                id: 'theme',
+                label: t('journal.filter.theme'),
+                active: selectedTheme !== null || selectedDreamType !== null,
+                onPress: () => setShowThemeModal(true),
+                testID: TID.Button.FilterTheme,
+              },
+              {
+                id: 'date',
+                label: t('journal.filter.date'),
+                active: dateRange.start !== null || dateRange.end !== null,
+                onPress: () => setShowDateModal(true),
+                testID: TID.Button.FilterDate,
+              },
+              {
+                id: 'favorites',
+                label: t('journal.filter.favorites'),
+                active: showFavoritesOnly,
+                onPress: handleFavoritesToggle,
+                testID: TID.Button.FilterFavorites,
+              },
+              {
+                id: 'analyzed',
+                active: showAnalyzedOnly,
+                onPress: handleAnalyzedToggle,
+                testID: TID.Button.FilterAnalyzed,
+              },
+              {
+                id: 'explored',
+                active: showExploredOnly,
+                onPress: handleExploredToggle,
+                testID: TID.Button.FilterExplored,
+              },
+            ]}
+            onClear={handleClearFilters}
+            dateRange={dateRange}
+            selectedTheme={selectedTheme}
+            selectedDreamType={selectedDreamType}
+            clearTestID={TID.Button.ClearFilters}
+          />
+        </View>
 
       {/* Guest Upsell */}
       <View
@@ -714,7 +687,8 @@ export default function JournalListScreen() {
           onClose={() => setShowDateModal(false)}
         />
       </BottomSheet>
-    </View>
+      </View>
+    </ScrollPerfProvider>
   );
 }
 
