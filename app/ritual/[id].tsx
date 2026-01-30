@@ -8,7 +8,9 @@ import { GlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -36,6 +38,7 @@ export default function RitualDetailScreen() {
   const { colors, mode, shadows } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const scrollPerf = useScrollIdle();
 
   const ritual = useMemo(
     () => RITUALS.find((r) => r.id === ritualId) ?? RITUALS[0],
@@ -126,29 +129,34 @@ export default function RitualDetailScreen() {
   const iconName = RITUAL_ICONS[ritual.id] ?? 'moon.stars.fill';
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
-      <AtmosphericBackground />
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+      <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
+        <AtmosphericBackground />
 
-      {/* Floating Back Button */}
-      <Pressable
-        onPress={() => router.back()}
-        style={[styles.floatingBackButton, { top: backButtonTop }, shadows.lg, {
-          backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
-          borderWidth: 1,
-          borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
-        }]}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.back_button')}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
-      </Pressable>
+        {/* Floating Back Button */}
+        <Pressable
+          onPress={() => router.back()}
+          style={[styles.floatingBackButton, { top: backButtonTop }, shadows.lg, {
+            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            borderWidth: 1,
+            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+          }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+        </Pressable>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
-      >
-        <View style={[styles.content, { paddingTop: contentPaddingTop }]}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+        >
+          <View style={[styles.content, { paddingTop: contentPaddingTop }]}>
           {/* Ritual icon and name */}
           <View style={styles.titleSection}>
             <View
@@ -266,9 +274,10 @@ export default function RitualDetailScreen() {
               })}
             </View>
           </GlassCard>
-        </View>
-      </ScrollView>
-    </View>
+          </View>
+        </ScrollView>
+      </View>
+    </ScrollPerfProvider>
   );
 }
 

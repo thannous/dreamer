@@ -17,10 +17,12 @@ import { GradientColors } from '@/constants/gradients';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
@@ -62,6 +64,7 @@ export default function RecordingScreen() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const scrollPerf = useScrollIdle();
   const referenceImagesEnabled = isReferenceImagesEnabled();
 
   const [transcript, setTranscript] = useState('');
@@ -958,7 +961,7 @@ export default function RecordingScreen() {
   // ... (existing code)
 
   return (
-    <>
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <LinearGradient
         colors={gradientColors}
         start={{ x: 0, y: 0 }}
@@ -975,6 +978,10 @@ export default function RecordingScreen() {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
+            onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+            onScrollEndDrag={scrollPerf.onScrollEndDrag}
+            onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+            onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
           >
             {/* Main Content */}
             <View
@@ -1114,7 +1121,7 @@ export default function RecordingScreen() {
         locale={offlineModelLocale}
         onDownloadComplete={handleOfflineModelDownloadComplete}
       />
-    </>
+    </ScrollPerfProvider>
   );
 }
 

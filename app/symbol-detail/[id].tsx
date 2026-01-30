@@ -2,7 +2,9 @@ import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MotiView } from '@/lib/moti';
 import type { SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
@@ -24,6 +26,7 @@ export default function SymbolDetailScreen() {
   const { colors, shadows, mode } = useTheme();
   const { t, currentLang } = useTranslation();
   const lang = (currentLang ?? 'en') as SymbolLanguage;
+  const scrollPerf = useScrollIdle();
 
   const symbol = useMemo(() => getSymbolById(id!), [id]);
   const extended = useMemo(() => (id ? getExtendedContent(id, lang) : undefined), [id, lang]);
@@ -38,13 +41,15 @@ export default function SymbolDetailScreen() {
 
   if (!symbol) {
     return (
-      <LinearGradient colors={gradientColors} style={styles.emptyState}>
-        <Text
-          style={[styles.emptyText, { color: colors.textSecondary }]}
-        >
-          {t('symbols.not_found')}
-        </Text>
-      </LinearGradient>
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <LinearGradient colors={gradientColors} style={styles.emptyState}>
+          <Text
+            style={[styles.emptyText, { color: colors.textSecondary }]}
+          >
+            {t('symbols.not_found')}
+          </Text>
+        </LinearGradient>
+      </ScrollPerfProvider>
     );
   }
 
@@ -56,27 +61,32 @@ export default function SymbolDetailScreen() {
     : [];
 
   return (
-    <LinearGradient colors={gradientColors} style={styles.gradient}>
-      {/* Floating Back Button */}
-      <Pressable
-        onPress={() => router.back()}
-        style={[styles.floatingBackButton, shadows.lg, {
-          backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
-          borderWidth: 1,
-          borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
-        }]}
-        accessibilityRole="button"
-        accessibilityLabel={t('journal.back_button')}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <MaterialCommunityIcons name="arrow-left" size={22} color={colors.textPrimary} />
-      </Pressable>
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+      <LinearGradient colors={gradientColors} style={styles.gradient}>
+        {/* Floating Back Button */}
+        <Pressable
+          onPress={() => router.back()}
+          style={[styles.floatingBackButton, shadows.lg, {
+            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+            borderWidth: 1,
+            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+          }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('journal.back_button')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <MaterialCommunityIcons name="arrow-left" size={22} color={colors.textPrimary} />
+        </Pressable>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
+        >
         {/* Header card: badge + title + description */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
@@ -232,8 +242,9 @@ export default function SymbolDetailScreen() {
             </View>
           </MotiView>
         )}
-      </ScrollView>
-    </LinearGradient>
+        </ScrollView>
+      </LinearGradient>
+    </ScrollPerfProvider>
   );
 }
 

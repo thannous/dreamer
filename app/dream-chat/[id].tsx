@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -109,6 +110,7 @@ export default function DreamChatScreen() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
@@ -974,55 +976,58 @@ export default function DreamChatScreen() {
 
   return (
     <ChatProvider isStreaming={isLoading}>
-      <LinearGradient colors={gradientColors} style={styles.gradient}>
-        <Pressable
-          onPress={handleBackPress}
-          style={[styles.floatingBackButton, shadows.lg, {
-            backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
-            borderWidth: 1,
-            borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
-          }]}
-          accessibilityRole="button"
-          accessibilityLabel={t('journal.back_button')}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
-        </Pressable>
+      <ScrollPerfProvider isScrolling={isScrolling}>
+        <LinearGradient colors={gradientColors} style={styles.gradient}>
+          <Pressable
+            onPress={handleBackPress}
+            style={[styles.floatingBackButton, shadows.lg, {
+              backgroundColor: mode === 'dark' ? 'rgba(35, 26, 63, 0.85)' : colors.backgroundCard,
+              borderWidth: 1,
+              borderColor: mode === 'dark' ? 'rgba(160, 151, 184, 0.25)' : colors.divider,
+            }]}
+            accessibilityRole="button"
+            accessibilityLabel={t('journal.back_button')}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          </Pressable>
 
-        <KeyboardAwareChatContent>
-          <MessagesList
-            messages={messages}
+          <KeyboardAwareChatContent>
+            <MessagesList
+              messages={messages}
+              isLoading={isLoading}
+              loadingText={t('dream_chat.thinking')}
+              ListHeaderComponent={headerComponent}
+              style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
+              contentContainerStyle={styles.messagesContent}
+              onRetryMessage={handleRetryMessage}
+              retryA11yLabel={t('analysis.retry')}
+              onScrollStateChange={setIsScrolling}
+            />
+          </KeyboardAwareChatContent>
+
+          <Composer.Root
+            value={inputText}
+            onChangeText={setInputText}
+            onSend={(text) => sendMessage(text)}
+            placeholder={composerPlaceholder}
             isLoading={isLoading}
-            loadingText={t('dream_chat.thinking')}
-            ListHeaderComponent={headerComponent}
-            style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
-            contentContainerStyle={styles.messagesContent}
-            onRetryMessage={handleRetryMessage}
-            retryA11yLabel={t('analysis.retry')}
-          />
-        </KeyboardAwareChatContent>
-
-        <Composer.Root
-          value={inputText}
-          onChangeText={setInputText}
-          onSend={(text) => sendMessage(text)}
-          placeholder={composerPlaceholder}
-          isLoading={isLoading}
-          isDisabled={messageLimitReached}
-          transcriptionLocale={transcriptionLocale}
-          testID={TID.Chat.Input}
-          micTestID={TID.Chat.Mic}
-          sendTestID={TID.Chat.Send}
-        >
-          <Composer.Footer>{composerFooter}</Composer.Footer>
-          <Composer.Header>{composerHeader}</Composer.Header>
-          <Composer.Body>
-            <Composer.Input />
-            <Composer.MicButton />
-            <Composer.SendButton />
-          </Composer.Body>
-        </Composer.Root>
-      </LinearGradient>
+            isDisabled={messageLimitReached}
+            transcriptionLocale={transcriptionLocale}
+            testID={TID.Chat.Input}
+            micTestID={TID.Chat.Mic}
+            sendTestID={TID.Chat.Send}
+          >
+            <Composer.Footer>{composerFooter}</Composer.Footer>
+            <Composer.Header>{composerHeader}</Composer.Header>
+            <Composer.Body>
+              <Composer.Input />
+              <Composer.MicButton />
+              <Composer.SendButton />
+            </Composer.Body>
+          </Composer.Root>
+        </LinearGradient>
+      </ScrollPerfProvider>
     </ChatProvider>
   );
 }

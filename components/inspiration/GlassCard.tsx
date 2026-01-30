@@ -1,9 +1,11 @@
 import { BlurView } from 'expo-blur';
 import React, { type ReactNode } from 'react';
-import { Platform, Pressable, type PressableProps, StyleSheet, type ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, type PressableProps, type ViewStyle } from 'react-native';
 
 import { GlassCardTokens } from '@/constants/theme';
+import { useScrollPerf } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { MotiView } from '@/lib/moti';
 
 export type GlassCardProps = {
@@ -15,6 +17,11 @@ export type GlassCardProps = {
   accessibilityRole?: PressableProps['accessibilityRole'];
   accessibilityLabel?: string;
   animationDelay?: number;
+};
+
+type GlassCardBaseProps = GlassCardProps & {
+  shadow: 'on' | 'off';
+  useBlur?: boolean;
 };
 
 /**
@@ -32,8 +39,12 @@ function GlassCardBase({
   accessibilityLabel,
   animationDelay = 0,
   shadow,
-}: GlassCardProps & { shadow: 'on' | 'off' }) {
-  const { colors, shadows, mode } = useTheme();
+  useBlur = true,
+}: GlassCardBaseProps) {
+  const { colors, mode, shadows } = useTheme();
+  const isScrolling = useScrollPerf();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const reduceEffects = isScrolling || prefersReducedMotion;
 
   // Blur intensity mapping - very light for light mode to preserve colors
   const blurIntensity = mode === 'dark'
@@ -62,7 +73,7 @@ function GlassCardBase({
       }[intensity];
 
   const isIos = Platform.OS === 'ios';
-  const shouldUseBlur = isIos;
+  const shouldUseBlur = isIos && useBlur && !reduceEffects;
 
   // Theme-aware glass background color using system colors
   // Convert hex opacity to hex alpha for consistency
@@ -78,7 +89,7 @@ function GlassCardBase({
     borderColor: colors.divider,
     borderRadius: GlassCardTokens.borderRadius,
     overflow: 'hidden',
-    ...(shadow === 'on' ? shadows.lg : undefined),
+    ...(shadow === 'on' && !reduceEffects ? shadows.lg : undefined),
   };
 
   const content = (
@@ -96,11 +107,17 @@ function GlassCardBase({
     </>
   );
 
+  const motionFrom = reduceEffects ? { opacity: 1, translateY: 0 } : { opacity: 0, translateY: 20 };
+  const motionTransition = reduceEffects
+    ? { type: 'timing' as const, duration: 0 }
+    : { type: 'timing' as const, duration: 650, delay: animationDelay };
+
   const animatedContent = (
     <MotiView
-      from={{ opacity: 0, translateY: 20 }}
+      // Keep cards visible even if animations fail to start (e.g. during screen freezes).
+      from={motionFrom}
       animate={{ opacity: 1, translateY: 0 }}
-      transition={{ type: 'timing', duration: 650, delay: animationDelay }}
+      transition={motionTransition}
       style={[glassStyle, style]}
     >
       {content}
@@ -131,9 +148,9 @@ function GlassCardBase({
 }
 
 export function GlassCard(props: GlassCardProps) {
-  return <GlassCardBase {...props} shadow="on" />;
+  return <GlassCardBase {...props} shadow="on" useBlur />;
 }
 
 export function FlatGlassCard(props: GlassCardProps) {
-  return <GlassCardBase {...props} shadow="off" />;
+  return <GlassCardBase {...props} shadow="off" useBlur={false} />;
 }
