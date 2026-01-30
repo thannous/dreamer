@@ -13,8 +13,19 @@ vi.mock('react-native', async () => {
       select: (obj: Record<string, any>) => obj.web ?? obj.default,
     },
     NativeModules: {},
+    InteractionManager: {
+      runAfterInteractions: (cb: () => void) => {
+        cb();
+        return { cancel: () => {} };
+      },
+    },
     View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
     Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+    ScrollView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    Image: (props: { alt?: string }) => <img alt={props.alt ?? ''} />,
+    Pressable: ({ children, onPress }: { children?: React.ReactNode; onPress?: () => void }) => (
+      <button onClick={onPress}>{children}</button>
+    ),
     StyleSheet: { create: (styles: any) => styles, absoluteFillObject: {} },
   };
 });
@@ -25,6 +36,7 @@ vi.mock('@expo/vector-icons', () => ({
 
 vi.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+  SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock('react-native-reanimated', async () => {
@@ -32,11 +44,13 @@ vi.mock('react-native-reanimated', async () => {
   const Animated = {
     View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
     ScrollView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    createAnimatedComponent: (Component: any) => Component,
   };
 
   return {
     __esModule: true,
     default: Animated,
+    ReduceMotion: { System: 'system', Always: 'always', Never: 'never' },
     Easing: { out: (fn: any) => fn, quad: () => 0 },
     runOnJS: (fn: any) => fn,
     useAnimatedReaction: () => {},

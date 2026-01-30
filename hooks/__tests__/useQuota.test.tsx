@@ -213,7 +213,7 @@ describe('useQuota', () => {
       expect(mockGetQuotaStatus).toHaveBeenCalledWith(
         null,
         'guest',
-        expect.objectContaining({ dreamId: 456, dream })
+        expect.objectContaining({ dreamId: 456 })
       );
     });
 

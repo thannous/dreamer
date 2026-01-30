@@ -48,6 +48,11 @@ vi.mock('@/context/DreamsContext', () => ({
   useDreams: () => mockUseDreams(),
 }));
 
+vi.mock('react-native-safe-area-context', () => ({
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+  SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+}));
+
 vi.mock('@expo/vector-icons', () => ({
   MaterialCommunityIcons: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
