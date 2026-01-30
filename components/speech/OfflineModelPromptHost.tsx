@@ -67,10 +67,7 @@ export function OfflineModelPromptHost() {
       show,
     };
 
-    registerOfflineModelPromptHandler(handler);
-    return () => {
-      registerOfflineModelPromptHandler(null);
-    };
+    return registerOfflineModelPromptHandler(handler);
   }, [show]);
 
   useEffect(() => {

@@ -35,7 +35,7 @@ import type { DreamAnalysis, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import {
   registerOfflineModelPromptHandler,
-  type OfflineModelPromptHandler
+  type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import { getGuestRecordedDreamCount } from '@/services/quota/GuestDreamCounter';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -86,6 +86,7 @@ export default function RecordingScreen() {
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
+  const offlineModelSheetVisibleRef = useRef(false);
 
   // Subject detection for reference image generation
   const [showSubjectProposition, setShowSubjectProposition] = useState(false);
@@ -219,17 +220,20 @@ export default function RecordingScreen() {
     forceStopRecording,
   } = recordingSession;
 
+  useEffect(() => {
+    offlineModelSheetVisibleRef.current = showOfflineModelSheet;
+  }, [showOfflineModelSheet]);
+
   // Register offline model prompt handler
   useEffect(() => {
     const handler: OfflineModelPromptHandler = {
-      isVisible: showOfflineModelSheet,
+      get isVisible() {
+        return offlineModelSheetVisibleRef.current;
+      },
       show: handleOfflineModelPromptShow,
     };
-    registerOfflineModelPromptHandler(handler);
-    return () => {
-      registerOfflineModelPromptHandler(null);
-    };
-  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
+    return registerOfflineModelPromptHandler(handler);
+  }, [handleOfflineModelPromptShow]);
 
   useEffect(() => {
     return () => {
