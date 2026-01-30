@@ -324,9 +324,23 @@ let offlineModelPromptHandler: OfflineModelPromptHandler | null = null;
 /**
  * Register the offline model prompt handler (wired once from a persistent UI host)
  * This allows services to trigger the UI without circular dependencies
+ *
+ * Returns a cleanup that restores the previous handler (to avoid unmounting screens
+ * clearing a global handler registered elsewhere).
  */
-export function registerOfflineModelPromptHandler(handler: OfflineModelPromptHandler | null) {
+export function registerOfflineModelPromptHandler(handler: OfflineModelPromptHandler | null): () => void {
+  const previousHandler = offlineModelPromptHandler;
   offlineModelPromptHandler = handler;
+
+  let cleanedUp = false;
+  return () => {
+    if (cleanedUp) return;
+    cleanedUp = true;
+
+    if (offlineModelPromptHandler === handler) {
+      offlineModelPromptHandler = previousHandler;
+    }
+  };
 }
 
 /**

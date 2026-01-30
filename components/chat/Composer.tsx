@@ -134,6 +134,7 @@ function Root({
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
+  const offlineModelSheetVisibleRef = useRef(false);
   const containerRef = useRef<View>(null);
   const textInputRef = useRef<TextInput>(null);
   const localHeight = useSharedValue(0);
@@ -206,17 +207,20 @@ function Root({
     [handleOfflineModelSheetClose]
   );
 
+  useEffect(() => {
+    offlineModelSheetVisibleRef.current = showOfflineModelSheet;
+  }, [showOfflineModelSheet]);
+
   // Register offline model prompt handler
   useEffect(() => {
     const handler: OfflineModelPromptHandler = {
-      isVisible: showOfflineModelSheet,
+      get isVisible() {
+        return offlineModelSheetVisibleRef.current;
+      },
       show: handleOfflineModelPromptShow,
     };
-    registerOfflineModelPromptHandler(handler);
-    return () => {
-      registerOfflineModelPromptHandler(null);
-    };
-  }, [handleOfflineModelPromptShow, showOfflineModelSheet]);
+    return registerOfflineModelPromptHandler(handler);
+  }, [handleOfflineModelPromptShow]);
 
   useEffect(() => {
     return () => {
