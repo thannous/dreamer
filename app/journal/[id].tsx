@@ -16,6 +16,7 @@ import { GradientColors } from '@/constants/gradients';
 import { DecoLines } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -23,6 +24,7 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useQuota } from '@/hooks/useQuota';
+import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
@@ -32,7 +34,6 @@ import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, getThumbnailUrl, withCacheBuster } from '@/lib/imageUtils';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
-import { MotiView } from '@/lib/moti';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
@@ -158,19 +159,7 @@ const cropDreamImageToAspect = async (
 };
 
 const Skeleton = ({ style }: { style: StyleProp<ViewStyle> }) => {
-  return (
-    <MotiView
-      from={{ opacity: 0.3 }}
-      animate={{ opacity: 0.7 }}
-      transition={{
-        type: 'timing',
-        duration: 800,
-        loop: true,
-        repeatReverse: true,
-      }}
-      style={[style, { backgroundColor: 'rgba(150,150,150,0.2)' }]}
-    />
-  );
+  return <View style={[style, { backgroundColor: 'rgba(150,150,150,0.2)' }]} />;
 };
 
 const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: StyleProp<TextStyle>; shouldAnimate: boolean }) => {
@@ -208,6 +197,7 @@ export default function JournalDetailScreen() {
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const { language } = useLanguage();
+  const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -227,6 +217,7 @@ export default function JournalDetailScreen() {
   const [imageAspectRatio, setImageAspectRatio] = useState<number | null>(null);
   const [showFloatingExploreButton, setShowFloatingExploreButton] = useState(false);
   const [isScrollViewScrollable, setIsScrollViewScrollable] = useState<boolean | null>(null);
+  const floatingExploreVisibleRef = useRef(false);
 
   // Reference image generation state
   const [showReferenceSheet, setShowReferenceSheet] = useState(false);
@@ -619,7 +610,12 @@ export default function JournalDetailScreen() {
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollY = event.nativeEvent.contentOffset.y;
     const threshold = 200;
-    setShowFloatingExploreButton(scrollY > threshold);
+    const nextVisible = scrollY > threshold;
+    if (floatingExploreVisibleRef.current === nextVisible) {
+      return;
+    }
+    floatingExploreVisibleRef.current = nextVisible;
+    setShowFloatingExploreButton(nextVisible);
   }, []);
 
   // Use full-resolution image config for detail view
@@ -953,6 +949,7 @@ export default function JournalDetailScreen() {
     ? GradientColors.dreamJournal
     : ([colors.backgroundSecondary, colors.backgroundDark] as const);
   const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNoticeRef.current;
+  const screenBackgroundColor = gradientColors[gradientColors.length - 1] ?? colors.backgroundDark;
 
   const keyboardBehavior: 'padding' | 'height' | undefined = Platform.select({
     ios: 'padding',
@@ -977,42 +974,42 @@ export default function JournalDetailScreen() {
 
   if (!dream) {
     return (
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoiding}
-        behavior={keyboardBehavior}
-        keyboardVerticalOffset={keyboardVerticalOffset}
-      >
-        <LinearGradient colors={gradientColors} style={styles.container}>
-          <Text style={{ color: colors.textPrimary, fontSize: 18 }}>
-            {t('journal.detail.not_found.title')}
-          </Text>
-          <Pressable onPress={handleBackPress} style={[styles.backButton, { backgroundColor: colors.accent }]}>
-            <Text style={[styles.backButtonText, { color: colors.textPrimary }]}>
-              {t('journal.detail.not_found.back')}
-            </Text>
-          </Pressable>
-        </LinearGradient>
-      </KeyboardAvoidingView>
+      <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+        <View style={[styles.screen, { backgroundColor: screenBackgroundColor }]}>
+          <LinearGradient
+            colors={gradientColors}
+            style={StyleSheet.absoluteFillObject}
+            pointerEvents="none"
+          />
+          <KeyboardAvoidingView
+            style={styles.keyboardAvoiding}
+            behavior={keyboardBehavior}
+            keyboardVerticalOffset={keyboardVerticalOffset}
+          >
+            <View style={styles.container}>
+              <Text style={{ color: colors.textPrimary, fontSize: 18 }}>
+                {t('journal.detail.not_found.title')}
+              </Text>
+              <Pressable onPress={handleBackPress} style={[styles.backButton, { backgroundColor: colors.accent }]}>
+                <Text style={[styles.backButtonText, { color: colors.textPrimary }]}>
+                  {t('journal.detail.not_found.back')}
+                </Text>
+              </Pressable>
+            </View>
+          </KeyboardAvoidingView>
+        </View>
+      </ScrollPerfProvider>
     );
   }
 
   const renderTranscriptBody = () => (
-    <MotiView
+    <View
       testID={TID.Component.TranscriptCard}
-      animate={{
-        borderColor: isEditingTranscript ? colors.accent : 'transparent',
-        borderWidth: isEditingTranscript ? 2 : 0,
-        opacity: isEditingTranscript ? [0.8, 1, 0.8] : 1,
-      }}
-      transition={{
-        type: 'timing',
-        duration: 1800,
-        loop: true,
-      }}
       style={[
         styles.transcript,
         {
-          borderColor: 'transparent',
+          borderColor: isEditingTranscript ? colors.accent : 'transparent',
+          borderWidth: isEditingTranscript ? 2 : 0,
         }
       ]}
     >
@@ -1038,22 +1035,11 @@ export default function JournalDetailScreen() {
           ]}
           hitSlop={8}
         >
-          <MotiView
-            animate={{
-              scale: isEditingTranscript ? [1, 1.15, 1] : 1,
-            }}
-            transition={{
-              type: 'timing',
-              duration: 1800,
-              loop: true,
-            }}
-          >
-            <Ionicons
-              name={isEditingTranscript ? 'checkmark' : 'pencil'}
-              size={18}
-              color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
-            />
-          </MotiView>
+          <Ionicons
+            name={isEditingTranscript ? 'checkmark' : 'pencil'}
+            size={18}
+            color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
+          />
         </Pressable>
       </View>
       {isEditingTranscript ? (
@@ -1076,34 +1062,31 @@ export default function JournalDetailScreen() {
       ) : (
         <Text style={[styles.transcript, { color: colors.textSecondary }]}>{dream.transcript}</Text>
       )}
-    </MotiView>
+    </View>
   );
 
-  const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => (
-    <MotiView
-      testID={TID.Component.MetadataCard}
-      animate={{
-        borderColor: isEditing ? colors.accent : (variant === 'floating' ? colors.divider : accentSurfaceBorderColor),
-        borderWidth: isEditing ? 2 : (variant === 'floating' ? 1 : 0),
-        opacity: isEditing ? [0.8, 1, 0.8] : 1,
-      }}
-      transition={{
-        type: 'timing',
-        duration: 1800,
-        loop: true,
-      }}
-      style={[
-        styles.metadataCard,
-        variant === 'floating' && styles.metadataFloatingCard,
-        variant === 'floating' ? shadows.xl : shadows.md,
-        {
-          backgroundColor: colors.backgroundCard,
-          borderColor: variant === 'floating' ? colors.divider : accentSurfaceBorderColor,
-          // Keep room for the floating edit/check button so it doesn't overlap chips
-          paddingBottom: isEditing ? 64 : 20,
-        },
-      ]}
-    >
+  const renderMetadataCard = (variant: 'inline' | 'floating' = 'inline') => {
+    const borderColor = isEditing
+      ? colors.accent
+      : (variant === 'floating' ? colors.divider : accentSurfaceBorderColor);
+    const borderWidth = isEditing ? 2 : (variant === 'floating' ? 1 : 0);
+
+    return (
+      <View
+        testID={TID.Component.MetadataCard}
+        style={[
+          styles.metadataCard,
+          variant === 'floating' && styles.metadataFloatingCard,
+          variant === 'floating' ? shadows.xl : shadows.md,
+          {
+            backgroundColor: colors.backgroundCard,
+            borderColor,
+            borderWidth,
+            // Keep room for the floating edit/check button so it doesn't overlap chips
+            paddingBottom: isEditing ? 64 : 20,
+          },
+        ]}
+      >
       <View style={styles.metadataHeader}>
         <View style={styles.dateContainer}>
           <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
@@ -1244,33 +1227,29 @@ export default function JournalDetailScreen() {
         ]}
         hitSlop={8}
       >
-        <MotiView
-          animate={{
-            scale: isEditing ? [1, 1.15, 1] : 1,
-          }}
-          transition={{
-            type: 'timing',
-            duration: 1800,
-            loop: true,
-          }}
-        >
-          <Ionicons
-            name={isEditing ? 'checkmark' : 'pencil'}
-            size={16}
-            color={isEditing ? colors.textPrimary : colors.textSecondary}
-          />
-        </MotiView>
+        <Ionicons
+          name={isEditing ? 'checkmark' : 'pencil'}
+          size={16}
+          color={isEditing ? colors.textPrimary : colors.textSecondary}
+        />
       </Pressable>
-    </MotiView>
+    </View>
   );
+  };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardAvoiding}
-      behavior={keyboardBehavior}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-    >
-      <LinearGradient colors={gradientColors} style={styles.gradient}>
+    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+      <View style={[styles.screen, { backgroundColor: screenBackgroundColor }]}>
+        <LinearGradient
+          colors={gradientColors}
+          style={StyleSheet.absoluteFillObject}
+          pointerEvents="none"
+        />
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoiding}
+          behavior={keyboardBehavior}
+          keyboardVerticalOffset={keyboardVerticalOffset}
+        >
         <Pressable
           onPress={handleBackPress}
           style={[styles.floatingBackButton, shadows.lg, {
@@ -1297,6 +1276,10 @@ export default function JournalDetailScreen() {
           onContentSizeChange={handleScrollContentSizeChange}
           onScroll={handleScroll}
           scrollEventThrottle={16}
+          onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
+          onScrollEndDrag={scrollPerf.onScrollEndDrag}
+          onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
+          onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
 
           {/* Dream Image */}
@@ -1433,12 +1416,7 @@ export default function JournalDetailScreen() {
           )}
 
           {/* Content Card - Overlaps image */}
-          <MotiView
-            from={{ opacity: 0, translateY: 40 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 700, delay: 200 }}
-          >
-            <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
+          <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
 
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
@@ -1524,13 +1502,7 @@ export default function JournalDetailScreen() {
                   opacity: isAnalysisLocked ? 0.8 : 1,
                 }]}
               >
-                <MotiView
-                  from={{ rotate: '-10deg' }}
-                  animate={{ rotate: '10deg' }}
-                  transition={{ type: 'timing', duration: 2000, loop: true, repeatReverse: true }}
-                >
-                  <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
-                </MotiView>
+                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
                 <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
               </Pressable>
             )}
@@ -1619,7 +1591,6 @@ export default function JournalDetailScreen() {
               <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
             </Pressable>
             </View>
-          </MotiView>
         </ScrollView>
 
         {/* Floating Explore/Analyze Button */}
@@ -1627,13 +1598,7 @@ export default function JournalDetailScreen() {
           !isEditing &&
           !isEditingTranscript &&
           (dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
-          <MotiView
-            from={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            exit={{ opacity: 0, translateY: 20 }}
-            transition={{ type: 'timing', duration: 250 }}
-            style={[styles.floatingExploreButton, shadows.xl]}
-          >
+          <View style={[styles.floatingExploreButton, shadows.xl]}>
             <Pressable
               testID={`${TID.Button.ExploreDream}-floating`}
               onPress={primaryAction === 'analyze' ? handleAnalyze : handleExplorePress}
@@ -1649,17 +1614,11 @@ export default function JournalDetailScreen() {
               {isPrimaryActionBusy ? (
                 <ActivityIndicator color={colors.textPrimary} />
               ) : (
-                <MotiView
-                  from={{ rotate: '-10deg' }}
-                  animate={{ rotate: '10deg' }}
-                  transition={{ type: 'timing', duration: 2000, loop: true, repeatReverse: true }}
-                >
-                  <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
-                </MotiView>
+                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
               )}
               <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
             </Pressable>
-          </MotiView>
+          </View>
         )}
 
         {isEditing && (
@@ -1876,16 +1835,17 @@ export default function JournalDetailScreen() {
             <DreamShareImage ref={shareImageRef} dream={dream} isPremium={isPremium} t={t} />
           </View>
         )}
-      </LinearGradient>
-    </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </View>
+    </ScrollPerfProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  keyboardAvoiding: {
+  screen: {
     flex: 1,
   },
-  gradient: {
+  keyboardAvoiding: {
     flex: 1,
   },
   floatingBackButton: {
