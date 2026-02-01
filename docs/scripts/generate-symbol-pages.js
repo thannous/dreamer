@@ -49,11 +49,13 @@ const CONFIG = {
   symbolsFile: 'dream-symbols.json',
   i18nFile: 'symbol-i18n.json',
   extendedFile: 'dream-symbols-extended.json',
-  languages: ['en', 'fr', 'es'],
+  languages: ['en', 'fr', 'es', 'de', 'it'],
   symbolsPath: {
     en: 'symbols',
     fr: 'symboles',
-    es: 'simbolos'
+    es: 'simbolos',
+    de: 'traumsymbole',
+    it: 'simboli'
   },
   datePublished: '2025-01-21',
   // Keep the historical publish date but refresh `dateModified` on each docs build.
@@ -89,14 +91,14 @@ function loadData() {
 // Get category name for a symbol
 function getCategoryName(symbol, i18n, lang) {
   const categories = {
-    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza' },
-    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales' },
-    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo' },
-    places: { en: 'Places', fr: 'Lieux', es: 'Lugares' },
-    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos' },
-    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones' },
-    people: { en: 'People', fr: 'Personnes', es: 'Personas' },
-    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial' }
+    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura' },
+    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali' },
+    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo' },
+    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi' },
+    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti' },
+    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni' },
+    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone' },
+    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste' }
   };
   return categories[symbol.category]?.[lang] || symbol.category;
 }
@@ -140,11 +142,13 @@ function generateMetaDescription(symbol, i18n, lang) {
 
 // Generate hreflang URLs
 function generateHreflangUrls(symbol) {
-  return {
-    en: `https://noctalia.app/en/${CONFIG.symbolsPath.en}/${symbol.en.slug}`,
-    fr: `https://noctalia.app/fr/${CONFIG.symbolsPath.fr}/${symbol.fr.slug}`,
-    es: `https://noctalia.app/es/${CONFIG.symbolsPath.es}/${symbol.es.slug}`
-  };
+  const urls = {};
+  for (const l of CONFIG.languages) {
+    if (symbol[l]) {
+      urls[l] = `https://noctalia.app/${l}/${CONFIG.symbolsPath[l]}/${symbol[l].slug}`;
+    }
+  }
+  return urls;
 }
 
 // Get related symbols data
@@ -198,7 +202,9 @@ function generateDefaultInterpretation({ shortDescription, symbolName, lang, cat
   const questionLead = {
     en: 'A helpful question to reflect on:',
     fr: 'Une question utile à se poser :',
-    es: 'Una pregunta útil para reflexionar:'
+    es: 'Una pregunta útil para reflexionar:',
+    de: 'Eine hilfreiche Frage zur Reflexion:',
+    it: 'Una domanda utile su cui riflettere:'
   };
 
   const templates = {
@@ -216,7 +222,17 @@ ${firstQuestion ? `<p>${questionLead.fr} ${firstQuestion}</p>` : ''}
 ${categorySentence ? `<p>${categorySentence}</p>` : ''}
 <p>Cuando ${lower} aparece en tus sueños, a menudo refleja aspectos importantes de tu vida interior y circunstancias actuales. El contexto específico y las emociones que experimentas en el sueño proporcionan pistas valiosas sobre su significado personal para ti.</p>
 ${firstQuestion ? `<p>${questionLead.es} ${firstQuestion}</p>` : ''}
-<p>Considera qué significa ${lower} para ti personalmente. Tus asociaciones individuales y experiencias de vida dan forma al significado del símbolo en tus sueños.</p>`
+<p>Considera qué significa ${lower} para ti personalmente. Tus asociaciones individuales y experiencias de vida dan forma al significado del símbolo en tus sueños.</p>`,
+    de: `<p>${shortDescription}</p>
+${categorySentence ? `<p>${categorySentence}</p>` : ''}
+<p>Wenn ${lower} in deinen Träumen erscheint, spiegelt es oft wichtige Aspekte deines Innenlebens und deiner aktuellen Lebensumstände wider. Der spezifische Kontext und die Emotionen, die du im Traum erlebst, liefern wertvolle Hinweise auf seine persönliche Bedeutung für dich.</p>
+${firstQuestion ? `<p>${questionLead.de} ${firstQuestion}</p>` : ''}
+<p>Überlege, was ${lower} für dich persönlich bedeutet. Deine individuellen Assoziationen und Lebenserfahrungen prägen die Bedeutung des Symbols in deinen Träumen.</p>`,
+    it: `<p>${shortDescription}</p>
+${categorySentence ? `<p>${categorySentence}</p>` : ''}
+<p>Quando ${lower} appare nei tuoi sogni, riflette spesso aspetti importanti della tua vita interiore e delle circostanze attuali. Il contesto specifico e le emozioni che provi nel sogno forniscono indizi preziosi sul suo significato personale per te.</p>
+${firstQuestion ? `<p>${questionLead.it} ${firstQuestion}</p>` : ''}
+<p>Considera cosa significa ${lower} per te personalmente. Le tue associazioni individuali e le esperienze di vita plasmano il significato del simbolo nei tuoi sogni.</p>`
   };
 
   return templates[lang];
@@ -239,6 +255,16 @@ function generateDefaultVariations(symbolName, lang) {
       { context: `${symbolName} positivo`, meaning: `A menudo representa resultados favorables, crecimiento o aspectos positivos de tu situación actual.` },
       { context: `${symbolName} negativo o amenazante`, meaning: `Puede indicar miedos, desafíos o problemas no resueltos que necesitan tu atención.` },
       { context: `${symbolName} recurrente`, meaning: `Sugiere un tema persistente o mensaje de tu subconsciente que merece una exploración más profunda.` }
+    ],
+    de: [
+      { context: `Positives ${symbolName}`, meaning: `Steht oft für günstige Ergebnisse, Wachstum oder positive Aspekte deiner aktuellen Situation.` },
+      { context: `Negatives oder bedrohliches ${symbolName}`, meaning: `Kann auf Ängste, Herausforderungen oder ungelöste Probleme hinweisen, die deine Aufmerksamkeit brauchen.` },
+      { context: `Wiederkehrendes ${symbolName}`, meaning: `Deutet auf ein beständiges Thema oder eine Botschaft deines Unterbewusstseins hin, die eine tiefere Erforschung verdient.` }
+    ],
+    it: [
+      { context: `${symbolName} positivo`, meaning: `Rappresenta spesso risultati favorevoli, crescita o aspetti positivi della tua situazione attuale.` },
+      { context: `${symbolName} negativo o minaccioso`, meaning: `Può indicare paure, sfide o problemi irrisolti che richiedono la tua attenzione.` },
+      { context: `${symbolName} ricorrente`, meaning: `Suggerisce un tema persistente o un messaggio dal tuo subconscio che merita un'esplorazione più profonda.` }
     ]
   };
   return templates[lang];
@@ -401,7 +427,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const langItems = {
     en: { flag: '🇺🇸', name: 'English' },
     fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' }
+    es: { flag: '🇪🇸', name: 'Español' },
+    de: { flag: '🇩🇪', name: 'Deutsch' },
+    it: { flag: '🇮🇹', name: 'Italiano' }
   };
 
   const langDropdownHtml = Object.keys(langItems).map(l => {
@@ -414,6 +442,12 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         </a>`;
   }).join('\n');
 
+  // Generate hreflang links
+  const hreflangLinks = CONFIG.languages
+    .filter(l => hreflang[l])
+    .map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`)
+    .join('\n');
+
   // Generate the full HTML
   return `<!DOCTYPE html>
 <html lang="${lang}" class="scroll-smooth">
@@ -425,9 +459,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     <title>${escapeHtml(metaTitle)} | Noctalia</title>
     <meta name="description" content="${escapeHtml(metaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}">
-    <link rel="alternate" hreflang="en" href="${hreflang.en}">
-    <link rel="alternate" hreflang="fr" href="${hreflang.fr}">
-    <link rel="alternate" hreflang="es" href="${hreflang.es}">
+${hreflangLinks}
     <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
@@ -823,25 +855,27 @@ const CATEGORY_ICONS = {
 // Get category name for a given category ID
 function getCategoryNameById(categoryId, lang) {
   const categories = {
-    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza' },
-    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales' },
-    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo' },
-    places: { en: 'Places', fr: 'Lieux', es: 'Lugares' },
-    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos' },
-    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones' },
-    people: { en: 'People', fr: 'Personnes', es: 'Personas' },
-    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial' }
+    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura' },
+    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali' },
+    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo' },
+    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi' },
+    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti' },
+    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni' },
+    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone' },
+    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste' }
   };
   return categories[categoryId]?.[lang] || categoryId;
 }
 
 // Generate category hreflang URLs
 function generateCategoryHreflangUrls(categoryId, i18n) {
-  return {
-    en: `https://noctalia.app/en/${CONFIG.symbolsPath.en}/${i18n.en.category_slugs[categoryId]}`,
-    fr: `https://noctalia.app/fr/${CONFIG.symbolsPath.fr}/${i18n.fr.category_slugs[categoryId]}`,
-    es: `https://noctalia.app/es/${CONFIG.symbolsPath.es}/${i18n.es.category_slugs[categoryId]}`
-  };
+  const urls = {};
+  for (const l of CONFIG.languages) {
+    if (i18n[l]?.category_slugs?.[categoryId]) {
+      urls[l] = `https://noctalia.app/${l}/${CONFIG.symbolsPath[l]}/${i18n[l].category_slugs[categoryId]}`;
+    }
+  }
+  return urls;
 }
 
 // Generate category meta title
@@ -878,7 +912,9 @@ function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n
   const langItems = {
     en: { flag: '🇺🇸', name: 'English' },
     fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' }
+    es: { flag: '🇪🇸', name: 'Español' },
+    de: { flag: '🇩🇪', name: 'Deutsch' },
+    it: { flag: '🇮🇹', name: 'Italiano' }
   };
 
   const langDropdownHtml = Object.keys(langItems).map(l => {
@@ -1000,9 +1036,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n
     <title>${escapeHtml(metaTitle)} | Noctalia</title>
     <meta name="description" content="${escapeHtml(metaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}">
-    <link rel="alternate" hreflang="en" href="${hreflang.en}">
-    <link rel="alternate" hreflang="fr" href="${hreflang.fr}">
-    <link rel="alternate" hreflang="es" href="${hreflang.es}">
+${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
@@ -1357,11 +1391,13 @@ function validateCurationDataOrExit(curationData, allSymbols) {
 
 // Generate hreflang URLs for a curation page
 function generateCurationHreflangUrls(page) {
-  return {
-    en: `https://noctalia.app/en/guides/${page.slugs.en}`,
-    fr: `https://noctalia.app/fr/guides/${page.slugs.fr}`,
-    es: `https://noctalia.app/es/guides/${page.slugs.es}`
-  };
+  const urls = {};
+  for (const l of CONFIG.languages) {
+    if (page.slugs[l]) {
+      urls[l] = `https://noctalia.app/${l}/guides/${page.slugs[l]}`;
+    }
+  }
+  return urls;
 }
 
 // Generate a single curation page HTML
@@ -1388,7 +1424,9 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const langItems = {
     en: { flag: '🇺🇸', name: 'English' },
     fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' }
+    es: { flag: '🇪🇸', name: 'Español' },
+    de: { flag: '🇩🇪', name: 'Deutsch' },
+    it: { flag: '🇮🇹', name: 'Italiano' }
   };
 
   const langDropdownHtml = Object.keys(langItems).map(l => {
@@ -1475,9 +1513,7 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     <title>${escapeHtml(pageData.title)} | Noctalia</title>
     <meta name="description" content="${escapeHtml(pageData.metaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/guides/${slug}">
-    <link rel="alternate" hreflang="en" href="${hreflang.en}">
-    <link rel="alternate" hreflang="fr" href="${hreflang.fr}">
-    <link rel="alternate" hreflang="es" href="${hreflang.es}">
+${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">

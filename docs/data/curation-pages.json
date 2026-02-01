@@ -9,7 +9,9 @@
       "slugs": {
         "en": "most-common-dream-symbols",
         "fr": "symboles-reves-les-plus-courants",
-        "es": "simbolos-suenos-mas-comunes"
+        "es": "simbolos-suenos-mas-comunes",
+        "de": "haeufigste-traumsymbole",
+        "it": "simboli-sogni-comuni"
       },
       "symbols": ["water", "teeth", "falling", "flying", "snake", "death", "chase", "house", "car", "baby", "dog", "fire", "spider", "exam", "nudity", "door", "ocean", "stairs", "cat", "phone"],
       "en": {
@@ -29,6 +31,18 @@
         "metaDescription": "Descubre los 20 símbolos de sueños más frecuentes y qué significan. Desde caer y volar hasta dientes y agua — comprende tus sueños más comunes.",
         "intro": "Ciertos símbolos oníricos aparecen con notable consistencia a través de culturas, edades y orígenes. Ya sea que sueñes con perder tus dientes, volar por el cielo o ser perseguido por una fuerza desconocida, estás compartiendo una experiencia con millones de soñadores en todo el mundo. Estos 20 símbolos representan las imágenes oníricas más frecuentemente reportadas, cada una con un profundo significado psicológico que puede iluminar tu vida despierta.",
         "outro": "Estos símbolos comunes recurren porque tocan experiencias humanas universales — miedo, deseo, pérdida, crecimiento y transformación. La próxima vez que uno aparezca en tu sueño, recuerda que su significado está moldeado por tu contexto de vida único. Usa estas interpretaciones como punto de partida, luego reflexiona sobre lo que cada símbolo significa para ti personalmente."
+      },
+      "de": {
+        "title": "Die 20 häufigsten Traumsymbole und ihre Bedeutungen",
+        "metaDescription": "Entdecken Sie die 20 am häufigsten berichteten Traumsymbole und ihre Bedeutung. Von Fallen und Fliegen bis hin zu Zähnen und Wasser — verstehen Sie Ihre häufigsten Träume.",
+        "intro": "Bestimmte Traumsymbole tauchen mit bemerkenswerter Regelmäßigkeit über Kulturen, Altersgruppen und Hintergründe hinweg auf. Ob Sie davon träumen, Ihre Zähne zu verlieren, durch den Himmel zu fliegen oder von einer unbekannten Kraft verfolgt zu werden — Sie teilen diese Erfahrung mit Millionen von Träumenden weltweit. Diese 20 Symbole stellen die am häufigsten berichteten Traumbilder dar, von denen jedes eine tiefe psychologische Bedeutung trägt, die Ihr Wachleben erhellen kann.",
+        "outro": "Diese häufigen Symbole kehren wieder, weil sie universelle menschliche Erfahrungen berühren — Angst, Verlangen, Verlust, Wachstum und Verwandlung. Wenn eines das nächste Mal in Ihrem Traum erscheint, denken Sie daran, dass seine Bedeutung von Ihrem einzigartigen Lebenskontext geprägt wird. Nutzen Sie diese Deutungen als Ausgangspunkt und überlegen Sie dann, was jedes Symbol für Sie persönlich bedeutet."
+      },
+      "it": {
+        "title": "I 20 simboli dei sogni più comuni e i loro significati",
+        "metaDescription": "Scopri i 20 simboli dei sogni più frequenti e cosa significano. Dalla caduta al volo, dai denti all'acqua — comprendi i tuoi sogni più comuni.",
+        "intro": "Alcuni simboli onirici compaiono con notevole costanza attraverso culture, età e contesti diversi. Che tu sogni di perdere i denti, di volare nel cielo o di essere inseguito da una forza sconosciuta, stai condividendo un'esperienza con milioni di sognatori in tutto il mondo. Questi 20 simboli rappresentano le immagini oniriche più frequentemente riportate, ciascuna portatrice di un profondo significato psicologico capace di illuminare la tua vita da sveglio.",
+        "outro": "Questi simboli comuni si ripresentano perché toccano esperienze umane universali — paura, desiderio, perdita, crescita e trasformazione. La prossima volta che uno di essi appare nel tuo sogno, ricorda che il suo significato è plasmato dal tuo contesto di vita unico. Usa queste interpretazioni come punto di partenza, poi rifletti su cosa ogni simbolo significa per te personalmente."
       }
     },
     {
@@ -36,7 +50,9 @@
       "slugs": {
         "en": "scary-dream-symbols",
         "fr": "symboles-reves-effrayants",
-        "es": "simbolos-suenos-aterradoras"
+        "es": "simbolos-suenos-aterradoras",
+        "de": "angsteinflossende-traumsymbole",
+        "it": "simboli-sogni-spaventosi"
       },
       "symbols": ["snake", "death", "chase", "spider", "falling", "blood", "wolf", "night", "cliff", "lost"],
       "en": {
@@ -56,6 +72,18 @@
         "metaDescription": "Comprende tus símbolos de sueños más aterradores — desde la muerte y ser perseguido hasta serpientes y caer. Descubre por qué ocurren las pesadillas.",
         "intro": "Las pesadillas pueden dejarte perturbado mucho después de despertar, pero estas imágenes oníricas aterradoras portan mensajes importantes de tu subconsciente. En lugar de ser tormentos aleatorios, los símbolos de sueños aterradores a menudo destacan miedos no resueltos, emociones suprimidas y situaciones de tu vida despierta que necesitan atención. Comprenderlos puede transformar una fuente de temor en una herramienta de autoconocimiento y crecimiento emocional.",
         "outro": "Los sueños aterradores no son tu enemigo — son el sistema de alarma de tu psique. Cada símbolo aterrador apunta a algo que tu mente consciente puede estar evitando. En lugar de temer estos sueños, acércate a ellos con curiosidad. ¿Qué miedo reflejan? ¿Qué acción podría aliviar la ansiedad? Las pesadillas más poderosas a menudo preceden los avances personales más significativos."
+      },
+      "de": {
+        "title": "Angsteinflößende Traumsymbole erklärt: Was Albträume wirklich bedeuten",
+        "metaDescription": "Verstehen Sie Ihre beängstigendsten Traumsymbole — von Tod und Verfolgung bis hin zu Schlangen und Fallen. Erfahren Sie, warum Albträume auftreten und was sie über Ihre Psyche verraten.",
+        "intro": "Albträume können Sie noch lange nach dem Aufwachen erschüttern, doch diese beängstigenden Traumbilder tragen wichtige Botschaften Ihres Unterbewusstseins. Statt zufällige Qualen zu sein, beleuchten angsteinflößende Traumsymbole oft ungelöste Ängste, unterdrückte Emotionen und Situationen in Ihrem Wachleben, die Aufmerksamkeit erfordern. Sie zu verstehen kann eine Quelle der Furcht in ein Werkzeug für Selbsterkenntnis und emotionales Wachstum verwandeln.",
+        "outro": "Angstträume sind nicht Ihr Feind — sie sind das Alarmsystem Ihrer Psyche. Jedes beängstigende Symbol weist auf etwas hin, das Ihr bewusster Verstand möglicherweise vermeidet. Statt diese Träume zu fürchten, begegnen Sie ihnen mit Neugier. Welche Angst spiegeln sie wider? Welche Handlung könnte die Unruhe lindern? Die intensivsten Albträume gehen oft den bedeutsamsten persönlichen Durchbrüchen voraus."
+      },
+      "it": {
+        "title": "Simboli dei sogni spaventosi: cosa significano davvero gli incubi",
+        "metaDescription": "Comprendi i tuoi simboli onirici più spaventosi — dalla morte all'essere inseguito, dai serpenti alla caduta. Scopri perché gli incubi accadono e cosa rivelano della tua psiche.",
+        "intro": "Gli incubi possono lasciarti scosso a lungo dopo il risveglio, ma queste immagini oniriche spaventose portano messaggi importanti dal tuo subconscio. Piuttosto che tormenti casuali, i simboli onirici spaventosi spesso evidenziano paure irrisolte, emozioni represse e situazioni della tua vita da sveglio che richiedono attenzione. Comprenderli può trasformare una fonte di terrore in uno strumento di autoconsapevolezza e crescita emotiva.",
+        "outro": "I sogni spaventosi non sono il tuo nemico — sono il sistema d'allarme della tua psiche. Ogni simbolo spaventoso indica qualcosa che la tua mente cosciente potrebbe star evitando. Invece di temere questi sogni, avvicinati ad essi con curiosità. Quale paura riflettono? Quale azione potrebbe alleviare l'ansia? Gli incubi più intensi spesso precedono le conquiste personali più significative."
       }
     },
     {
@@ -63,7 +91,9 @@
       "slugs": {
         "en": "positive-dream-symbols",
         "fr": "symboles-reves-positifs",
-        "es": "simbolos-suenos-positivos"
+        "es": "simbolos-suenos-positivos",
+        "de": "positive-traumsymbole",
+        "it": "simboli-sogni-positivi"
       },
       "symbols": ["flying", "baby", "rainbow", "wedding", "sun", "horse", "key", "bird", "tree", "moon"],
       "en": {
@@ -83,6 +113,18 @@
         "metaDescription": "Explora símbolos de sueños con significados positivos — desde volar y arcoíris hasta bebés y bodas. Comprende lo que tus sueños inspiradores te están diciendo.",
         "intro": "No todos los sueños traen advertencias o revelan ansiedades. Muchos símbolos oníricos traen mensajes de esperanza, crecimiento y transformación positiva. Cuando estas imágenes inspiradoras aparecen en tus sueños, a menudo reflejan recursos internos, oportunidades emergentes y los procesos naturales de sanación en tu psique. Reconocer estos símbolos positivos puede fortalecer tu confianza y ayudarte a alinearte con las mejores posibilidades de tu vida despierta.",
         "outro": "Los sueños positivos merecen tanta atención como los inquietantes. Reflejan tus fortalezas internas, esperanzas y el progreso que estás haciendo — incluso cuando tu mente despierta no puede verlo. Lleva un diario de sueños para rastrear estos símbolos inspiradores y observa cómo corresponden con cambios positivos en tu vida."
+      },
+      "de": {
+        "title": "Positive Traumsymbole: Erhebende Träume und ihre Bedeutungen",
+        "metaDescription": "Entdecken Sie Traumsymbole mit positiver Bedeutung — vom Fliegen und Regenbögen bis hin zu Babys und Hochzeiten. Verstehen Sie, was Ihre erhebenden Träume Ihnen sagen.",
+        "intro": "Nicht alle Träume tragen Warnungen oder offenbaren Ängste. Viele Traumsymbole bringen Botschaften der Hoffnung, des Wachstums und der positiven Verwandlung. Wenn diese erhebenden Bilder in Ihren Träumen erscheinen, spiegeln sie oft innere Ressourcen, aufkommende Möglichkeiten und die natürlichen Heilungsprozesse in Ihrer Psyche wider. Das Erkennen dieser positiven Symbole kann Ihr Selbstvertrauen stärken und Ihnen helfen, sich auf die besten Möglichkeiten in Ihrem Wachleben auszurichten.",
+        "outro": "Positive Träume verdienen ebenso viel Aufmerksamkeit wie beunruhigende. Sie spiegeln Ihre inneren Stärken, Hoffnungen und die Fortschritte wider, die Sie machen — selbst wenn Ihr wacher Verstand es nicht sehen kann. Führen Sie ein Traumtagebuch, um diese erhebenden Symbole zu verfolgen, und beachten Sie, wie sie mit positiven Veränderungen in Ihrem Leben zusammenhängen. Ihre Träume feiern Ihr Wachstum ebenso wie sie Ihre Herausforderungen beleuchten."
+      },
+      "it": {
+        "title": "Simboli dei sogni positivi: sogni edificanti e i loro significati",
+        "metaDescription": "Esplora i simboli onirici dal significato positivo — dal volo agli arcobaleni, dai bambini ai matrimoni. Comprendi cosa ti stanno dicendo i tuoi sogni edificanti.",
+        "intro": "Non tutti i sogni portano avvertimenti o rivelano ansie. Molti simboli onirici portano messaggi di speranza, crescita e trasformazione positiva. Quando queste immagini edificanti appaiono nei tuoi sogni, spesso riflettono risorse interiori, opportunità emergenti e i processi naturali di guarigione all'opera nella tua psiche. Riconoscere questi simboli positivi può rafforzare la tua fiducia e aiutarti ad allinearti con le migliori possibilità della tua vita da sveglio.",
+        "outro": "I sogni positivi meritano tanta attenzione quanto quelli inquietanti. Riflettono le tue forze interiori, le tue speranze e i progressi che stai compiendo — anche quando la tua mente vigile non riesce a vederlo. Tieni un diario dei sogni per tracciare questi simboli edificanti e nota come corrispondono ai cambiamenti positivi nella tua vita. I tuoi sogni celebrano la tua crescita tanto quanto evidenziano le tue sfide."
       }
     },
     {
@@ -90,7 +132,9 @@
       "slugs": {
         "en": "animal-dream-symbols",
         "fr": "symboles-reves-animaux",
-        "es": "simbolos-suenos-animales"
+        "es": "simbolos-suenos-animales",
+        "de": "tier-traumsymbole",
+        "it": "simboli-sogni-animali"
       },
       "symbols": ["dog", "cat", "snake", "spider", "bird", "wolf", "horse", "lion"],
       "en": {
@@ -110,6 +154,18 @@
         "metaDescription": "Descubre qué representan los animales en los sueños — desde perros y gatos hasta lobos y leones. Comprende el significado simbólico de los sueños con animales.",
         "intro": "Los animales han aparecido en los sueños humanos desde el amanecer de la consciencia, sirviendo como poderosos mensajeros de nuestro subconsciente. Cada animal porta cualidades simbólicas distintas arraigadas en tradiciones culturales y nuestras experiencias personales. Ya sea que un perro leal, un gato misterioso o un león feroz visite tus sueños, a menudo refleja aspectos instintivos de tu personalidad, relaciones o estados emocionales que merecen atención consciente.",
         "outro": "Los sueños con animales conectan con nuestro ser más primario — los instintos, emociones y energías arquetípicas que operan bajo nuestra mente racional. Presta atención al comportamiento del animal, cómo te sientes respecto a él y qué papel juega en la narrativa del sueño. Tu relación personal con cada animal agrega una capa única de significado más allá de cualquier interpretación universal."
+      },
+      "de": {
+        "title": "Tier-Traumsymbole: Was Tiere in Ihren Träumen bedeuten",
+        "metaDescription": "Entdecken Sie, was Tiere in Träumen darstellen — von Hunden und Katzen bis hin zu Wölfen und Löwen. Verstehen Sie die symbolische Bedeutung von Tierträumen.",
+        "intro": "Tiere erscheinen in menschlichen Träumen seit Anbeginn des Bewusstseins und dienen als mächtige Botschafter unseres Unterbewusstseins. Jedes Tier trägt ausgeprägte symbolische Eigenschaften, die sowohl in kulturellen Traditionen als auch in unseren persönlichen Erfahrungen verwurzelt sind. Ob ein treuer Hund, eine geheimnisvolle Katze oder ein wilder Löwe Ihre Träume besucht — es spiegelt oft instinktive Aspekte Ihrer Persönlichkeit, Beziehungen oder emotionalen Zustände wider, die bewusste Aufmerksamkeit verdienen.",
+        "outro": "Tierträume greifen auf unser ureigenstes Selbst zurück — die Instinkte, Emotionen und archetypischen Energien, die unterhalb unseres rationalen Verstandes wirken. Achten Sie darauf, wie sich das Tier verhält, was Sie dabei empfinden und welche Rolle es in der Traumerzählung spielt. Ihre persönliche Beziehung zu jedem Tier fügt eine einzigartige Bedeutungsebene hinzu, die über jede universelle Deutung hinausgeht."
+      },
+      "it": {
+        "title": "Simboli dei sogni con animali: cosa significano gli animali nei tuoi sogni",
+        "metaDescription": "Scopri cosa rappresentano gli animali nei sogni — dai cani e gatti ai lupi e leoni. Comprendi il significato simbolico dei sogni con animali.",
+        "intro": "Gli animali appaiono nei sogni umani dall'alba della coscienza, fungendo da potenti messaggeri del nostro subconscio. Ogni animale porta qualità simboliche distinte radicate sia nelle tradizioni culturali che nelle nostre esperienze personali. Che un cane fedele, un gatto misterioso o un leone feroce visiti i tuoi sogni, spesso riflette aspetti istintivi della tua personalità, delle tue relazioni o dei tuoi stati emotivi che meritano attenzione consapevole.",
+        "outro": "I sogni con animali attingono al nostro sé più primordiale — gli istinti, le emozioni e le energie archetipiche che operano al di sotto della nostra mente razionale. Presta attenzione al comportamento dell'animale, a come ti senti nei suoi confronti e al ruolo che gioca nella narrazione del sogno. La tua relazione personale con ogni animale aggiunge uno strato unico di significato che va oltre qualsiasi interpretazione universale."
       }
     },
     {
@@ -117,7 +173,9 @@
       "slugs": {
         "en": "water-dream-symbols",
         "fr": "symboles-reves-eau",
-        "es": "simbolos-suenos-agua"
+        "es": "simbolos-suenos-agua",
+        "de": "wasser-traumsymbole",
+        "it": "simboli-sogni-acqua"
       },
       "symbols": ["water", "ocean", "rain", "swimming", "storm", "flood"],
       "en": {
@@ -137,6 +195,18 @@
         "metaDescription": "Explora todos los símbolos de sueños relacionados con el agua — océano, lluvia, nadar, tormentas e inundaciones. Comprende qué representa el agua en tu paisaje emocional.",
         "intro": "El agua es el símbolo más universal de las emociones en el mundo onírico. En cada forma que toma — océanos calmados, tormentas violentas, lluvia suave o inundaciones abrumadoras — el agua refleja el estado de tu vida emocional. Porque nuestros cuerpos están compuestos en gran parte de agua y porque el agua sostiene toda la vida, estos sueños nos conectan con nuestros sentimientos más fundamentales y el flujo de nuestra experiencia interior.",
         "outro": "Los sueños con agua están entre los más reveladores porque las emociones son centrales para nuestro bienestar. Observa el estado del agua, tu relación con ella y cómo te hace sentir. El agua calmada te invita a apreciar la estabilidad emocional; el agua turbulenta te pide abordar lo que se agita bajo la superficie. Cada sueño con agua es una invitación a conectar con tu yo emocional."
+      },
+      "de": {
+        "title": "Wasser-Traumsymbole: Was Wasser in Ihren Träumen bedeutet",
+        "metaDescription": "Entdecken Sie alle wasserbezogenen Traumsymbole — Ozean, Regen, Schwimmen, Stürme und Überschwemmungen. Verstehen Sie, was Wasser in Ihren Träumen und Ihrer Gefühlswelt darstellt.",
+        "intro": "Wasser ist das universellste Symbol für Emotionen in der Traumwelt. In jeder Form, die es annimmt — ruhige Ozeane, heftige Stürme, sanfter Regen oder überwältigende Fluten — spiegelt Wasser den Zustand Ihres Gefühlslebens wider. Da unser Körper zu großen Teilen aus Wasser besteht und Wasser alles Leben erhält, verbinden uns diese Träume mit unseren grundlegendsten Gefühlen und dem Fluss unserer inneren Erfahrung.",
+        "outro": "Wasserträume gehören zu den aufschlussreichsten, weil Emotionen zentral für unser Wohlbefinden sind. Achten Sie auf den Zustand des Wassers, Ihre Beziehung dazu und wie es Sie fühlen lässt. Ruhiges Wasser lädt Sie ein, emotionale Stabilität zu würdigen; aufgewühltes Wasser fordert Sie auf, sich mit dem zu befassen, was unter der Oberfläche brodelt. Jeder Wassertraum ist eine Einladung, bei Ihrem emotionalen Selbst nachzuschauen."
+      },
+      "it": {
+        "title": "Simboli dei sogni con acqua: cosa significa l'acqua nei tuoi sogni",
+        "metaDescription": "Esplora tutti i simboli onirici legati all'acqua — oceano, pioggia, nuoto, tempeste e alluvioni. Comprendi cosa rappresenta l'acqua nei tuoi sogni e nel tuo paesaggio emotivo.",
+        "intro": "L'acqua è il simbolo più universale delle emozioni nel mondo onirico. In ogni forma che assume — oceani calmi, tempeste violente, pioggia delicata o inondazioni travolgenti — l'acqua riflette lo stato della tua vita emotiva. Poiché il nostro corpo è in gran parte composto d'acqua e poiché l'acqua sostiene ogni forma di vita, questi sogni ci collegano ai nostri sentimenti più fondamentali e al flusso della nostra esperienza interiore.",
+        "outro": "I sogni d'acqua sono tra i più rivelatori perché le emozioni sono centrali per il nostro benessere. Nota lo stato dell'acqua, la tua relazione con essa e come ti fa sentire. L'acqua calma ti invita ad apprezzare la stabilità emotiva; l'acqua turbolenta ti chiede di affrontare ciò che si agita sotto la superficie. Ogni sogno d'acqua è un invito a fare il punto con il tuo sé emotivo."
       }
     },
     {
@@ -144,7 +214,9 @@
       "slugs": {
         "en": "death-transformation-dreams",
         "fr": "reves-mort-transformation",
-        "es": "suenos-muerte-transformacion"
+        "es": "suenos-muerte-transformacion",
+        "de": "traeume-tod-verwandlung",
+        "it": "sogni-morte-trasformazione"
       },
       "symbols": ["death", "deceased-person", "snake", "blood", "night", "bridge"],
       "en": {
@@ -164,6 +236,18 @@
         "metaDescription": "Comprende los símbolos de sueños relacionados con la muerte — muerte, seres queridos fallecidos, serpientes y más. Descubre por qué los sueños de muerte simbolizan transformación.",
         "intro": "Los sueños que involucran la muerte están entre los más perturbadores, pero rara vez tratan sobre muerte física. En psicología de los sueños, la muerte es uno de los símbolos más potentes de transformación, transición y renacimiento. Cuando la muerte aparece en tus sueños — ya sea la tuya, la de un ser querido, o como una presencia abstracta — típicamente señala que algo en tu vida está terminando para dar paso a algo nuevo. Comprender estos símbolos puede reemplazar el miedo con perspicacia.",
         "outro": "Los sueños de muerte son fundamentalmente sobre el cambio. Marcan el fin de un capítulo y el comienzo de otro. En lugar de temer estos sueños, considera qué en tu vida está listo para ser liberado. Lo viejo debe caer para que lo nuevo emerja. Estos son algunos de los sueños más transformadores que puedes tener — presta atención a lo que resurge de las cenizas."
+      },
+      "de": {
+        "title": "Tod und Verwandlung in Träumen: Enden, die Neuanfänge bedeuten",
+        "metaDescription": "Verstehen Sie Traumsymbole rund um den Tod — Tod, verstorbene Angehörige, Schlangen und mehr. Erfahren Sie, warum Todesträume meist Verwandlung symbolisieren, nicht wörtliche Enden.",
+        "intro": "Träume, die den Tod beinhalten, gehören zu den beunruhigendsten, doch sie handeln selten vom physischen Tod. In der Traumpsychologie ist der Tod eines der stärksten Symbole für Verwandlung, Übergang und Wiedergeburt. Wenn der Tod in Ihren Träumen erscheint — ob Ihr eigener, der eines geliebten Menschen oder als abstrakte Präsenz — signalisiert er typischerweise, dass etwas in Ihrem Leben endet, um Platz für Neues zu schaffen. Diese Symbole zu verstehen kann Angst durch Erkenntnis ersetzen.",
+        "outro": "Todesträume handeln grundlegend von Veränderung. Sie markieren das Ende eines Kapitels und den Beginn eines neuen. Statt diese Träume zu fürchten, überlegen Sie, was in Ihrem Leben bereit ist, losgelassen zu werden. Das Alte muss weichen, damit das Neue entstehen kann. Dies sind einige der transformativsten Träume, die Sie haben können — achten Sie darauf, was aus der Asche emporsteigt."
+      },
+      "it": {
+        "title": "Morte e trasformazione nei sogni: finali che significano nuovi inizi",
+        "metaDescription": "Comprendi i simboli onirici legati alla morte — morte, defunti, serpenti e altro. Scopri perché i sogni di morte di solito simboleggiano trasformazione, non fini letterali.",
+        "intro": "I sogni che coinvolgono la morte sono tra i più inquietanti, eppure raramente riguardano la morte fisica. Nella psicologia dei sogni, la morte è uno dei simboli più potenti di trasformazione, transizione e rinascita. Quando la morte appare nei tuoi sogni — che sia la tua, quella di una persona cara o come una presenza astratta — segnala tipicamente che qualcosa nella tua vita sta finendo per fare spazio a qualcosa di nuovo. Comprendere questi simboli può sostituire la paura con la consapevolezza.",
+        "outro": "I sogni di morte riguardano fondamentalmente il cambiamento. Segnano la fine di un capitolo e l'inizio di un altro. Piuttosto che temere questi sogni, considera cosa nella tua vita è pronto per essere lasciato andare. Il vecchio deve cadere affinché il nuovo possa emergere. Questi sono tra i sogni più trasformativi che puoi avere — presta attenzione a ciò che risorge dalle ceneri."
       }
     },
     {
@@ -171,7 +255,9 @@
       "slugs": {
         "en": "people-in-dreams",
         "fr": "personnes-dans-les-reves",
-        "es": "personas-en-suenos"
+        "es": "personas-en-suenos",
+        "de": "menschen-in-traeumen",
+        "it": "persone-nei-sogni"
       },
       "symbols": ["baby", "child", "ex-partner", "deceased-person"],
       "en": {
@@ -191,6 +277,18 @@
         "metaDescription": "Comprende qué significan las personas en tus sueños — bebés, niños, ex-parejas y seres queridos fallecidos. Descubre a quién representan realmente estas figuras.",
         "intro": "Las personas que aparecen en nuestros sueños rara vez son simplemente ellas mismas. La psicología de los sueños sugiere que cada persona en un sueño puede representar un aspecto de la personalidad del soñador, relaciones no resueltas o estados emocionales que buscan atención. Ya sea que sueñes con un bebé, una ex-pareja, un niño o alguien que ha fallecido, estas figuras llevan un peso simbólico que va mucho más allá de su identidad literal.",
         "outro": "Las personas en los sueños sirven como espejos de nuestro mundo interior. Cada figura refleja una relación, cualidad o estado emocional que tu subconsciente quiere que examines. Pregúntate: ¿qué representa esta persona para mí? ¿Qué cualidad encarna? La respuesta a menudo revela más sobre ti mismo que sobre la otra persona."
+      },
+      "de": {
+        "title": "Menschen in Träumen: Was sie darstellen und ihre Bedeutungen",
+        "metaDescription": "Verstehen Sie, was Menschen in Ihren Träumen bedeuten — Babys, Kinder, Ex-Partner und verstorbene Angehörige. Erfahren Sie, wen diese Traumfiguren wirklich darstellen.",
+        "intro": "Die Menschen, die in unseren Träumen erscheinen, sind selten einfach nur sie selbst. Die Traumpsychologie legt nahe, dass jede Person in einem Traum einen Aspekt der eigenen Persönlichkeit des Träumenden, ungelöste Beziehungen oder emotionale Zustände darstellen kann, die Aufmerksamkeit suchen. Ob Sie von einem Baby, einem ehemaligen Partner, einem Kind oder jemandem träumen, der verstorben ist — diese Figuren tragen symbolisches Gewicht, das weit über ihre wörtliche Identität hinausgeht.",
+        "outro": "Menschen in Träumen dienen als Spiegel unserer inneren Welt. Jede Figur spiegelt eine Beziehung, eine Eigenschaft oder einen emotionalen Zustand wider, den Ihr Unterbewusstsein von Ihnen untersucht haben möchte. Fragen Sie sich: Was stellt diese Person für mich dar? Welche Eigenschaft verkörpert sie? Die Antwort offenbart oft mehr über Sie selbst als über die andere Person."
+      },
+      "it": {
+        "title": "Persone nei sogni: cosa rappresentano e i loro significati",
+        "metaDescription": "Comprendi cosa significano le persone nei tuoi sogni — bambini, ex-partner e defunti. Scopri chi rappresentano davvero queste figure oniriche.",
+        "intro": "Le persone che appaiono nei nostri sogni raramente sono semplicemente se stesse. La psicologia dei sogni suggerisce che ogni persona in un sogno può rappresentare un aspetto della personalità del sognatore, relazioni irrisolte o stati emotivi che cercano attenzione. Che tu sogni un bambino, un ex-partner, un ragazzino o qualcuno che è venuto a mancare, queste figure portano un peso simbolico che va ben oltre la loro identità letterale.",
+        "outro": "Le persone nei sogni fungono da specchio del nostro mondo interiore. Ogni figura riflette una relazione, una qualità o uno stato emotivo che il tuo subconscio vuole che tu esamini. Chiediti: cosa rappresenta questa persona per me? Quale qualità incarna? La risposta spesso rivela più su te stesso che sull'altra persona."
       }
     },
     {
@@ -198,7 +296,9 @@
       "slugs": {
         "en": "dream-locations",
         "fr": "lieux-dans-les-reves",
-        "es": "lugares-en-suenos"
+        "es": "lugares-en-suenos",
+        "de": "orte-in-traeumen",
+        "it": "luoghi-nei-sogni"
       },
       "symbols": ["house", "hospital", "school", "bridge", "elevator", "stairs", "forest", "mountain", "path"],
       "en": {
@@ -218,6 +318,18 @@
         "metaDescription": "Explora qué significan los lugares en los sueños — casas, hospitales, escuelas, bosques y más. Comprende cómo los escenarios oníricos reflejan tu mundo interior.",
         "intro": "Los escenarios de nuestros sueños nunca son aleatorios. Cada ubicación — una casa familiar, un sendero sinuoso en el bosque, un corredor de hospital o una montaña imponente — representa un aspecto diferente de nuestra psique, situación de vida o estado emocional. Las ubicaciones oníricas establecen el escenario para el drama simbólico que se desarrolla, y comprenderlos proporciona contexto esencial para interpretar toda la narrativa del sueño.",
         "outro": "Las ubicaciones oníricas crean la atmósfera emocional en la que tu subconsciente cuenta sus historias. Una casa refleja tu yo interior, una escuela representa aprendizaje, un hospital apunta a necesidades de sanación, y una montaña simboliza ambiciones y desafíos. Presta atención a dónde se desarrollan tus sueños — el escenario a menudo es tan significativo como los eventos que ocurren en él."
+      },
+      "de": {
+        "title": "Orte in Träumen: Was Traumschauplätze über Sie verraten",
+        "metaDescription": "Entdecken Sie, was Orte in Träumen bedeuten — Häuser, Krankenhäuser, Schulen, Wälder und mehr. Verstehen Sie, wie Traumschauplätze Ihre innere Welt widerspiegeln.",
+        "intro": "Die Schauplätze unserer Träume sind niemals zufällig. Jeder Ort — ein vertrautes Haus, ein gewundener Waldpfad, ein Krankenhausflur oder ein aufragender Berg — stellt einen anderen Aspekt unserer Psyche, Lebenssituation oder emotionalen Verfassung dar. Traumschauplätze bilden die Bühne für das symbolische Drama, das sich darin entfaltet, und sie zu verstehen liefert wesentlichen Kontext für die Deutung der gesamten Traumerzählung.",
+        "outro": "Traumschauplätze erzeugen die emotionale Atmosphäre, in der Ihr Unterbewusstsein seine Geschichten erzählt. Ein Haus spiegelt Ihr inneres Selbst wider, eine Schule steht für Lernen und Wachstum, ein Krankenhaus weist auf Heilungsbedarf hin und ein Berg symbolisiert Ambitionen und Herausforderungen. Achten Sie darauf, wo Ihre Träume stattfinden — der Schauplatz ist oft ebenso bedeutsam wie die Ereignisse, die sich darin abspielen."
+      },
+      "it": {
+        "title": "Luoghi nei sogni: cosa rivelano le ambientazioni oniriche su di te",
+        "metaDescription": "Esplora cosa significano i luoghi nei sogni — case, ospedali, scuole, foreste e altro. Comprendi come le ambientazioni oniriche riflettono il tuo mondo interiore.",
+        "intro": "Le ambientazioni dei nostri sogni non sono mai casuali. Ogni luogo — una casa familiare, un sentiero tortuoso nel bosco, un corridoio d'ospedale o una montagna imponente — rappresenta un aspetto diverso della nostra psiche, situazione di vita o stato emotivo. Le ambientazioni oniriche preparano la scena per il dramma simbolico che si svolge al loro interno, e comprenderle fornisce un contesto essenziale per interpretare l'intera narrazione del sogno.",
+        "outro": "Le ambientazioni oniriche creano l'atmosfera emotiva in cui il tuo subconscio racconta le sue storie. Una casa riflette il tuo sé interiore, una scuola rappresenta apprendimento e crescita, un ospedale indica esigenze di guarigione e una montagna simboleggia ambizioni e sfide. Presta attenzione a dove si svolgono i tuoi sogni — l'ambientazione è spesso tanto significativa quanto gli eventi che vi accadono."
       }
     }
   ]

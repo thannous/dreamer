@@ -112,7 +112,7 @@
       const langAttr = (document.documentElement.getAttribute('lang') || '').toLowerCase();
       if (langAttr) return langAttr.split('-')[0];
 
-      const match = window.location.pathname.match(/^\/(en|fr|es)(\/|$)/i);
+      const match = window.location.pathname.match(/^\/(en|fr|es|de|it)(\/|$)/i);
       return match ? match[1].toLowerCase() : '';
     }
 
