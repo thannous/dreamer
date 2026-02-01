@@ -3,17 +3,71 @@
     "version": "1.0.0",
     "lastUpdated": "2026-01-29",
     "totalSymbols": 56,
-    "languages": ["en", "fr", "es"]
+    "languages": [
+      "en",
+      "fr",
+      "es",
+      "de",
+      "it"
+    ]
   },
   "categories": {
-    "nature": { "en": "Nature", "fr": "Nature", "es": "Naturaleza" },
-    "animals": { "en": "Animals", "fr": "Animaux", "es": "Animales" },
-    "body": { "en": "Body", "fr": "Corps", "es": "Cuerpo" },
-    "places": { "en": "Places", "fr": "Lieux", "es": "Lugares" },
-    "objects": { "en": "Objects", "fr": "Objets", "es": "Objetos" },
-    "actions": { "en": "Actions", "fr": "Actions", "es": "Acciones" },
-    "people": { "en": "People", "fr": "Personnes", "es": "Personas" },
-    "celestial": { "en": "Celestial", "fr": "Céleste", "es": "Celestial" }
+    "nature": {
+      "en": "Nature",
+      "fr": "Nature",
+      "es": "Naturaleza",
+      "de": "Natur",
+      "it": "Natura"
+    },
+    "animals": {
+      "en": "Animals",
+      "fr": "Animaux",
+      "es": "Animales",
+      "de": "Tiere",
+      "it": "Animali"
+    },
+    "body": {
+      "en": "Body",
+      "fr": "Corps",
+      "es": "Cuerpo",
+      "de": "Körper",
+      "it": "Corpo"
+    },
+    "places": {
+      "en": "Places",
+      "fr": "Lieux",
+      "es": "Lugares",
+      "de": "Orte",
+      "it": "Luoghi"
+    },
+    "objects": {
+      "en": "Objects",
+      "fr": "Objets",
+      "es": "Objetos",
+      "de": "Objekte",
+      "it": "Oggetti"
+    },
+    "actions": {
+      "en": "Actions",
+      "fr": "Actions",
+      "es": "Acciones",
+      "de": "Handlungen",
+      "it": "Azioni"
+    },
+    "people": {
+      "en": "People",
+      "fr": "Personnes",
+      "es": "Personas",
+      "de": "Menschen",
+      "it": "Persone"
+    },
+    "celestial": {
+      "en": "Celestial",
+      "fr": "Céleste",
+      "es": "Celestial",
+      "de": "Himmlisch",
+      "it": "Celeste"
+    }
   },
   "symbols": [
     {
@@ -24,22 +78,59 @@
         "slug": "water",
         "name": "Water",
         "shortDescription": "Water represents emotions and the subconscious. Calm water suggests inner peace, while turbulent water indicates emotional turmoil.",
-        "askYourself": ["What is my current emotional state?", "Are there emotions I'm suppressing?"]
+        "askYourself": [
+          "What is my current emotional state?",
+          "Are there emotions I'm suppressing?"
+        ]
       },
       "fr": {
         "slug": "eau",
         "name": "Eau",
         "shortDescription": "L'eau représente les émotions et l'inconscient. Une eau calme suggère la paix intérieure, tandis qu'une eau agitée indique des turbulences émotionnelles.",
-        "askYourself": ["Quel est mon état émotionnel actuel ?", "Y a-t-il des émotions que je réprime ?"]
+        "askYourself": [
+          "Quel est mon état émotionnel actuel ?",
+          "Y a-t-il des émotions que je réprime ?"
+        ]
       },
       "es": {
         "slug": "agua",
         "name": "Agua",
         "shortDescription": "El agua representa las emociones y el subconsciente. El agua tranquila sugiere paz interior, mientras que el agua turbulenta indica agitación emocional.",
-        "askYourself": ["¿Cuál es mi estado emocional actual?", "¿Hay emociones que estoy reprimiendo?"]
+        "askYourself": [
+          "¿Cuál es mi estado emocional actual?",
+          "¿Hay emociones que estoy reprimiendo?"
+        ]
       },
-      "relatedSymbols": ["ocean", "rain", "flood"],
-      "relatedArticles": { "en": "water-dreams-meaning", "fr": "reves-eau", "es": "suenos-de-agua" }
+      "de": {
+        "slug": "wasser",
+        "name": "Wasser",
+        "shortDescription": "Wasser repräsentiert Emotionen und das Unterbewusstsein. Ruhiges Wasser deutet auf inneren Frieden hin, während aufgewühltes Wasser auf emotionale Turbulenzen hinweist.",
+        "askYourself": [
+          "Wie ist mein aktueller emotionaler Zustand?",
+          "Gibt es Emotionen, die ich unterdrücke?"
+        ]
+      },
+      "it": {
+        "slug": "acqua",
+        "name": "Acqua",
+        "shortDescription": "L'acqua rappresenta le emozioni e il subconscio. L'acqua calma suggerisce pace interiore, mentre l'acqua turbolenta indica agitazione emotiva.",
+        "askYourself": [
+          "Qual è il mio stato emotivo attuale?",
+          "Ci sono emozioni che sto reprimendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "ocean",
+        "rain",
+        "flood"
+      ],
+      "relatedArticles": {
+        "en": "water-dreams-meaning",
+        "fr": "reves-eau",
+        "es": "suenos-de-agua",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "teeth",
@@ -49,22 +140,59 @@
         "slug": "teeth",
         "name": "Teeth (losing teeth)",
         "shortDescription": "Losing teeth is a very common dream. It symbolizes anxiety, fear of aging, loss of power, or concerns about appearance and self-image.",
-        "askYourself": ["Am I anxious about my appearance?", "Am I afraid of losing something important?"]
+        "askYourself": [
+          "Am I anxious about my appearance?",
+          "Am I afraid of losing something important?"
+        ]
       },
       "fr": {
         "slug": "dents",
         "name": "Dents (perdre ses dents)",
         "shortDescription": "Perdre ses dents est un rêve très courant. Il symbolise l'anxiété, la peur de vieillir, la perte de pouvoir ou des préoccupations sur l'apparence et l'image de soi.",
-        "askYourself": ["Suis-je anxieux à propos de mon apparence ?", "Ai-je peur de perdre quelque chose d'important ?"]
+        "askYourself": [
+          "Suis-je anxieux à propos de mon apparence ?",
+          "Ai-je peur de perdre quelque chose d'important ?"
+        ]
       },
       "es": {
         "slug": "dientes",
         "name": "Dientes (perder dientes)",
         "shortDescription": "Perder dientes es un sueño muy común. Simboliza ansiedad, miedo al envejecimiento, pérdida de poder o preocupaciones sobre la apariencia y la autoimagen.",
-        "askYourself": ["¿Estoy ansioso por mi apariencia?", "¿Tengo miedo de perder algo importante?"]
+        "askYourself": [
+          "¿Estoy ansioso por mi apariencia?",
+          "¿Tengo miedo de perder algo importante?"
+        ]
       },
-      "relatedSymbols": ["mouth", "body", "mirror"],
-      "relatedArticles": { "en": "teeth-falling-out-dreams", "fr": "reves-dents-qui-tombent", "es": "suenos-dientes-caen" }
+      "de": {
+        "slug": "zaehne",
+        "name": "Zähne (Zahnverlust)",
+        "shortDescription": "Zähne zu verlieren ist ein sehr häufiger Traum. Er symbolisiert Angst, Furcht vor dem Altern, Machtverlust oder Sorgen um Aussehen und Selbstbild.",
+        "askYourself": [
+          "Mache ich mir Sorgen um mein Aussehen?",
+          "Habe ich Angst, etwas Wichtiges zu verlieren?"
+        ]
+      },
+      "it": {
+        "slug": "denti",
+        "name": "Denti (perdere i denti)",
+        "shortDescription": "Perdere i denti è un sogno molto comune. Simboleggia ansia, paura dell'invecchiamento, perdita di potere o preoccupazioni riguardo all'aspetto e all'autoimmagine.",
+        "askYourself": [
+          "Sono ansioso riguardo al mio aspetto?",
+          "Ho paura di perdere qualcosa di importante?"
+        ]
+      },
+      "relatedSymbols": [
+        "mouth",
+        "body",
+        "mirror"
+      ],
+      "relatedArticles": {
+        "en": "teeth-falling-out-dreams",
+        "fr": "reves-dents-qui-tombent",
+        "es": "suenos-dientes-caen",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "falling",
@@ -74,22 +202,59 @@
         "slug": "falling",
         "name": "Falling",
         "shortDescription": "Falling is one of the most common dreams. It symbolizes loss of control, insecurity, or fear of failure. It can also indicate a need to let go.",
-        "askYourself": ["In which area of my life do I feel out of control?", "What do I need to release?"]
+        "askYourself": [
+          "In which area of my life do I feel out of control?",
+          "What do I need to release?"
+        ]
       },
       "fr": {
         "slug": "chute",
         "name": "Chute",
         "shortDescription": "La chute est l'un des rêves les plus courants. Elle symbolise la perte de contrôle, l'insécurité ou la peur de l'échec. Elle peut aussi indiquer un besoin de lâcher prise.",
-        "askYourself": ["Dans quel domaine de ma vie je me sens en perte de contrôle ?", "Qu'est-ce que je dois lâcher ?"]
+        "askYourself": [
+          "Dans quel domaine de ma vie je me sens en perte de contrôle ?",
+          "Qu'est-ce que je dois lâcher ?"
+        ]
       },
       "es": {
         "slug": "caida",
         "name": "Caída",
         "shortDescription": "Caer es uno de los sueños más comunes. Simboliza pérdida de control, inseguridad o miedo al fracaso. También puede indicar necesidad de soltar.",
-        "askYourself": ["¿En qué área de mi vida me siento fuera de control?", "¿Qué necesito soltar?"]
+        "askYourself": [
+          "¿En qué área de mi vida me siento fuera de control?",
+          "¿Qué necesito soltar?"
+        ]
       },
-      "relatedSymbols": ["flying", "cliff", "stairs"],
-      "relatedArticles": { "en": "falling-dreams-meaning", "fr": "reves-de-chute", "es": "suenos-de-caer" }
+      "de": {
+        "slug": "fallen",
+        "name": "Fallen",
+        "shortDescription": "Fallen ist einer der häufigsten Träume. Er symbolisiert Kontrollverlust, Unsicherheit oder Versagensangst. Er kann auch auf die Notwendigkeit hinweisen, loszulassen.",
+        "askYourself": [
+          "In welchem Lebensbereich fühle ich mich außer Kontrolle?",
+          "Was muss ich loslassen?"
+        ]
+      },
+      "it": {
+        "slug": "cadere",
+        "name": "Cadere",
+        "shortDescription": "Cadere è uno dei sogni più comuni. Simboleggia perdita di controllo, insicurezza o paura del fallimento. Può anche indicare il bisogno di lasciar andare.",
+        "askYourself": [
+          "In quale area della mia vita mi sento fuori controllo?",
+          "Cosa ho bisogno di lasciar andare?"
+        ]
+      },
+      "relatedSymbols": [
+        "flying",
+        "cliff",
+        "stairs"
+      ],
+      "relatedArticles": {
+        "en": "falling-dreams-meaning",
+        "fr": "reves-de-chute",
+        "es": "suenos-de-caer",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "flying",
@@ -99,22 +264,59 @@
         "slug": "flying",
         "name": "Flying",
         "shortDescription": "Flying through the air is an euphoric dream symbolizing freedom, transcendence, and overcoming limits. Difficulty flying can indicate perceived obstacles.",
-        "askYourself": ["What do I need to free myself from?", "What limits am I ready to transcend?"]
+        "askYourself": [
+          "What do I need to free myself from?",
+          "What limits am I ready to transcend?"
+        ]
       },
       "fr": {
         "slug": "voler",
         "name": "Voler",
         "shortDescription": "Voler dans les airs est un rêve euphorique symbolisant la liberté, la transcendance et le dépassement des limites. Difficulté à voler peut indiquer des obstacles perçus.",
-        "askYourself": ["De quoi ai-je besoin de me libérer ?", "Quelles limites suis-je prêt à dépasser ?"]
+        "askYourself": [
+          "De quoi ai-je besoin de me libérer ?",
+          "Quelles limites suis-je prêt à dépasser ?"
+        ]
       },
       "es": {
         "slug": "volar",
         "name": "Volar",
         "shortDescription": "Volar por el aire es un sueño eufórico que simboliza libertad, trascendencia y superación de límites. La dificultad para volar puede indicar obstáculos percibidos.",
-        "askYourself": ["¿De qué necesito liberarme?", "¿Qué límites estoy listo para trascender?"]
+        "askYourself": [
+          "¿De qué necesito liberarme?",
+          "¿Qué límites estoy listo para trascender?"
+        ]
       },
-      "relatedSymbols": ["bird", "plane", "falling"],
-      "relatedArticles": { "en": "flying-dreams-meaning", "fr": "reves-de-voler", "es": "suenos-de-volar" }
+      "de": {
+        "slug": "fliegen",
+        "name": "Fliegen",
+        "shortDescription": "Fliegen symbolisiert Freiheit, das Überwinden von Grenzen und die Fähigkeit, sich über Probleme zu erheben. Es kann auch den Wunsch nach Flucht oder Befreiung darstellen.",
+        "askYourself": [
+          "Von welcher Situation möchte ich mich befreien?",
+          "Wo fühle ich mich eingeschränkt?"
+        ]
+      },
+      "it": {
+        "slug": "volare",
+        "name": "Volare",
+        "shortDescription": "Volare simboleggia libertà, superamento dei limiti e la capacità di elevarsi al di sopra dei problemi. Può anche rappresentare il desiderio di fuga o liberazione.",
+        "askYourself": [
+          "Da quale situazione vorrei liberarmi?",
+          "Dove mi sento limitato?"
+        ]
+      },
+      "relatedSymbols": [
+        "bird",
+        "plane",
+        "falling"
+      ],
+      "relatedArticles": {
+        "en": "flying-dreams-meaning",
+        "fr": "reves-de-voler",
+        "es": "suenos-de-volar",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "snake",
@@ -124,22 +326,59 @@
         "slug": "snake",
         "name": "Snake",
         "shortDescription": "The snake is a complex symbol: transformation, wisdom, sexuality, or danger. Its meaning depends greatly on your personal relationship with snakes.",
-        "askYourself": ["Is there a transformation underway?", "What does the snake personally represent to me?"]
+        "askYourself": [
+          "Is there a transformation underway?",
+          "What does the snake personally represent to me?"
+        ]
       },
       "fr": {
         "slug": "serpent",
         "name": "Serpent",
         "shortDescription": "Le serpent est un symbole complexe : transformation, sagesse, sexualité ou danger. Sa signification dépend beaucoup de votre relation personnelle avec les serpents.",
-        "askYourself": ["Y a-t-il une transformation en cours ?", "Qu'est-ce que le serpent représente pour moi personnellement ?"]
+        "askYourself": [
+          "Y a-t-il une transformation en cours ?",
+          "Qu'est-ce que le serpent représente pour moi personnellement ?"
+        ]
       },
       "es": {
         "slug": "serpiente",
         "name": "Serpiente",
         "shortDescription": "La serpiente es un símbolo complejo: transformación, sabiduría, sexualidad o peligro. Su significado depende mucho de tu relación personal con las serpientes.",
-        "askYourself": ["¿Hay una transformación en curso?", "¿Qué representa personalmente la serpiente para mí?"]
+        "askYourself": [
+          "¿Hay una transformación en curso?",
+          "¿Qué representa personalmente la serpiente para mí?"
+        ]
       },
-      "relatedSymbols": ["spider", "death", "transformation"],
-      "relatedArticles": { "en": "snake-dreams-meaning", "fr": "reves-de-serpents", "es": "suenos-con-serpientes" }
+      "de": {
+        "slug": "schlange",
+        "name": "Schlange",
+        "shortDescription": "Schlangen symbolisieren Transformation, verborgene Ängste und Heilung. Sie können sowohl Gift als auch Heilmittel darstellen, je nach Traumkontext.",
+        "askYourself": [
+          "Welche verborgenen Ängste trage ich in mir?",
+          "Welche Transformation durchlebe ich?"
+        ]
+      },
+      "it": {
+        "slug": "serpente",
+        "name": "Serpente",
+        "shortDescription": "I serpenti simboleggiano trasformazione, paure nascoste e guarigione. Possono rappresentare sia veleno che rimedio, a seconda del contesto del sogno.",
+        "askYourself": [
+          "Quali paure nascoste porto dentro di me?",
+          "Quale trasformazione sto attraversando?"
+        ]
+      },
+      "relatedSymbols": [
+        "spider",
+        "death",
+        "transformation"
+      ],
+      "relatedArticles": {
+        "en": "snake-dreams-meaning",
+        "fr": "reves-de-serpents",
+        "es": "suenos-con-serpientes",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "death",
@@ -149,22 +388,56 @@
         "slug": "death",
         "name": "Death",
         "shortDescription": "Death in dreams rarely symbolizes literal death. It represents the end of a phase, major transformation, or the need to let go of something.",
-        "askYourself": ["What needs to \"die\" in my life so I can evolve?"]
+        "askYourself": [
+          "What needs to \"die\" in my life so I can evolve?"
+        ]
       },
       "fr": {
         "slug": "mort",
         "name": "Mort",
         "shortDescription": "La mort dans les rêves symbolise rarement une mort littérale. Elle représente la fin d'une phase, une transformation majeure ou le besoin de laisser partir quelque chose.",
-        "askYourself": ["Qu'est-ce qui doit \"mourir\" dans ma vie pour que je puisse évoluer ?"]
+        "askYourself": [
+          "Qu'est-ce qui doit \"mourir\" dans ma vie pour que je puisse évoluer ?"
+        ]
       },
       "es": {
         "slug": "muerte",
         "name": "Muerte",
         "shortDescription": "La muerte en sueños raramente simboliza muerte literal. Representa el fin de una fase, transformación importante o necesidad de dejar ir algo.",
-        "askYourself": ["¿Qué necesita \"morir\" en mi vida para poder evolucionar?"]
+        "askYourself": [
+          "¿Qué necesita \"morir\" en mi vida para poder evolucionar?"
+        ]
       },
-      "relatedSymbols": ["deceased-person", "snake", "transformation"],
-      "relatedArticles": { "en": "death-dreams-meaning", "fr": "reves-de-mort", "es": "suenos-de-muerte" }
+      "de": {
+        "slug": "tod",
+        "name": "Tod",
+        "shortDescription": "Tod in Träumen symbolisiert selten den tatsächlichen Tod. Er steht für Enden, große Veränderungen, Transformation und den Abschluss eines Lebenskapitels.",
+        "askYourself": [
+          "Was geht in meinem Leben zu Ende?",
+          "Welche Veränderung vermeide ich?"
+        ]
+      },
+      "it": {
+        "slug": "morte",
+        "name": "Morte",
+        "shortDescription": "La morte nei sogni raramente simboleggia la morte reale. Rappresenta finali, grandi cambiamenti, trasformazione e la chiusura di un capitolo della vita.",
+        "askYourself": [
+          "Cosa sta finendo nella mia vita?",
+          "Quale cambiamento sto evitando?"
+        ]
+      },
+      "relatedSymbols": [
+        "deceased-person",
+        "snake",
+        "transformation"
+      ],
+      "relatedArticles": {
+        "en": "death-dreams-meaning",
+        "fr": "reves-de-mort",
+        "es": "suenos-de-muerte",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "chase",
@@ -174,22 +447,59 @@
         "slug": "being-chased",
         "name": "Chase / Being Chased",
         "shortDescription": "Being chased often symbolizes avoiding a problem or emotion. What's chasing you usually represents what you're fleeing in waking life.",
-        "askYourself": ["What am I avoiding?", "What fear am I running from?"]
+        "askYourself": [
+          "What am I avoiding?",
+          "What fear am I running from?"
+        ]
       },
       "fr": {
         "slug": "poursuite",
         "name": "Poursuite / Être poursuivi",
         "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
-        "askYourself": ["Qu'est-ce que j'évite d'affronter ?", "Quelle peur est-ce que je fuis ?"]
+        "askYourself": [
+          "Qu'est-ce que j'évite d'affronter ?",
+          "Quelle peur est-ce que je fuis ?"
+        ]
       },
       "es": {
         "slug": "persecucion",
         "name": "Persecución / Ser Perseguido",
         "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
-        "askYourself": ["¿Qué estoy evitando?", "¿De qué miedo estoy huyendo?"]
+        "askYourself": [
+          "¿Qué estoy evitando?",
+          "¿De qué miedo estoy huyendo?"
+        ]
       },
-      "relatedSymbols": ["running", "fear", "monster"],
-      "relatedArticles": { "en": "being-chased-dreams", "fr": "reves-etre-poursuivi", "es": "suenos-ser-perseguido" }
+      "de": {
+        "slug": "verfolgung",
+        "name": "Verfolgung / Verfolgt werden",
+        "shortDescription": "Verfolgt zu werden deutet auf Vermeidung hin. Etwas in Ihrem Leben – ein Problem, eine Emotion, eine Situation – verlangt nach Aufmerksamkeit, die Sie verweigern.",
+        "askYourself": [
+          "Wem oder was weiche ich aus?",
+          "Welches Problem vermeide ich?"
+        ]
+      },
+      "it": {
+        "slug": "inseguimento",
+        "name": "Inseguimento / Essere inseguiti",
+        "shortDescription": "Essere inseguiti indica evitamento. Qualcosa nella tua vita – un problema, un'emozione, una situazione – richiede attenzione che stai rifiutando.",
+        "askYourself": [
+          "Da cosa o da chi sto fuggendo?",
+          "Quale problema sto evitando?"
+        ]
+      },
+      "relatedSymbols": [
+        "running",
+        "fear",
+        "monster"
+      ],
+      "relatedArticles": {
+        "en": "being-chased-dreams",
+        "fr": "reves-etre-poursuivi",
+        "es": "suenos-ser-perseguido",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "house",
@@ -199,22 +509,56 @@
         "slug": "house",
         "name": "House",
         "shortDescription": "A house represents the self and psychological state. Each room can symbolize a different aspect of your personality. A ruined house can indicate a need for inner reconstruction.",
-        "askYourself": ["How is my inner space?", "Are there \"rooms\" of myself that I'm neglecting?"]
+        "askYourself": [
+          "How is my inner space?",
+          "Are there \"rooms\" of myself that I'm neglecting?"
+        ]
       },
       "fr": {
         "slug": "maison",
         "name": "Maison",
         "shortDescription": "La maison représente le soi et l'état psychologique. Chaque pièce peut symboliser un aspect différent de votre personnalité. Une maison en ruine peut indiquer un besoin de reconstruction intérieure.",
-        "askYourself": ["Comment va mon espace intérieur ?", "Y a-t-il des \"pièces\" de moi que je néglige ?"]
+        "askYourself": [
+          "Comment va mon espace intérieur ?",
+          "Y a-t-il des \"pièces\" de moi que je néglige ?"
+        ]
       },
       "es": {
         "slug": "casa",
         "name": "Casa",
         "shortDescription": "Una casa representa el yo y el estado psicológico. Cada habitación puede simbolizar un aspecto diferente de tu personalidad. Una casa en ruinas puede indicar necesidad de reconstrucción interior.",
-        "askYourself": ["¿Cómo está mi espacio interior?", "¿Hay \"habitaciones\" de mí mismo que estoy descuidando?"]
+        "askYourself": [
+          "¿Cómo está mi espacio interior?",
+          "¿Hay \"habitaciones\" de mí mismo que estoy descuidando?"
+        ]
       },
-      "relatedSymbols": ["door", "room", "stairs"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "haus",
+        "name": "Haus",
+        "shortDescription": "Ein Haus repräsentiert das Selbst und die Psyche. Verschiedene Räume stehen für verschiedene Aspekte Ihrer Persönlichkeit, Erinnerungen und Ihres emotionalen Zustands.",
+        "askYourself": [
+          "Wie fühle ich mich in Bezug auf mich selbst?",
+          "Welche Teile meiner Persönlichkeit erkunde ich?"
+        ]
+      },
+      "it": {
+        "slug": "casa",
+        "name": "Casa",
+        "shortDescription": "Una casa rappresenta il sé e la psiche. Diverse stanze simboleggiano diversi aspetti della personalità, dei ricordi e dello stato emotivo.",
+        "askYourself": [
+          "Come mi sento riguardo a me stesso?",
+          "Quali parti della mia personalità sto esplorando?"
+        ]
+      },
+      "relatedSymbols": [
+        "door",
+        "room",
+        "stairs"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "ocean",
@@ -224,22 +568,56 @@
         "slug": "ocean",
         "name": "Ocean / Sea",
         "shortDescription": "The ocean represents the collective unconscious and deep emotions. Swimming in the ocean can indicate self-exploration, while drowning suggests being overwhelmed by emotions.",
-        "askYourself": ["Am I letting myself be carried or overwhelmed by my emotions?"]
+        "askYourself": [
+          "Am I letting myself be carried or overwhelmed by my emotions?"
+        ]
       },
       "fr": {
         "slug": "mer",
         "name": "Mer / Océan",
         "shortDescription": "La mer représente l'inconscient collectif et les émotions profondes. Nager dans la mer peut indiquer l'exploration de soi, tandis que se noyer suggère d'être submergé par les émotions.",
-        "askYourself": ["Est-ce que je me laisse porter ou submerger par mes émotions ?"]
+        "askYourself": [
+          "Est-ce que je me laisse porter ou submerger par mes émotions ?"
+        ]
       },
       "es": {
         "slug": "oceano",
         "name": "Océano / Mar",
         "shortDescription": "El océano representa el inconsciente colectivo y emociones profundas. Nadar en el océano puede indicar autoexploración, mientras que ahogarse sugiere estar abrumado por emociones.",
-        "askYourself": ["¿Me estoy dejando llevar o abrumar por mis emociones?"]
+        "askYourself": [
+          "¿Me estoy dejando llevar o abrumar por mis emociones?"
+        ]
       },
-      "relatedSymbols": ["water", "drowning", "waves"],
-      "relatedArticles": { "en": "water-dreams-meaning", "fr": "reves-eau", "es": "suenos-de-agua" }
+      "de": {
+        "slug": "meer",
+        "name": "Meer / Ozean",
+        "shortDescription": "Der Ozean repräsentiert das weite Unterbewusstsein und tiefe Emotionen. Seine Tiefe spiegelt unerforschte Gefühle wider, während seine Oberfläche Ihr Bewusstsein darstellt.",
+        "askYourself": [
+          "Welche tiefen Emotionen habe ich nicht erforscht?",
+          "Wie gehe ich mit überwältigenden Gefühlen um?"
+        ]
+      },
+      "it": {
+        "slug": "oceano",
+        "name": "Oceano / Mare",
+        "shortDescription": "L'oceano rappresenta il vasto subconscio e le emozioni profonde. La sua profondità riflette sentimenti inesplorati, mentre la sua superficie rappresenta la coscienza.",
+        "askYourself": [
+          "Quali emozioni profonde non ho esplorato?",
+          "Come gestisco i sentimenti travolgenti?"
+        ]
+      },
+      "relatedSymbols": [
+        "water",
+        "drowning",
+        "waves"
+      ],
+      "relatedArticles": {
+        "en": "water-dreams-meaning",
+        "fr": "reves-eau",
+        "es": "suenos-de-agua",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "baby",
@@ -249,22 +627,59 @@
         "slug": "baby",
         "name": "Baby",
         "shortDescription": "A baby symbolizes new beginnings, innocence, or a budding project. It can represent a vulnerable part of yourself that needs attention.",
-        "askYourself": ["What new project or idea am I developing?", "Is there a part of me that needs care?"]
+        "askYourself": [
+          "What new project or idea am I developing?",
+          "Is there a part of me that needs care?"
+        ]
       },
       "fr": {
         "slug": "bebe",
         "name": "Bébé",
         "shortDescription": "Le bébé symbolise un nouveau départ, l'innocence ou un projet naissant. Il peut représenter une partie vulnérable de vous-même qui a besoin d'attention.",
-        "askYourself": ["Quel nouveau projet ou idée suis-je en train de développer ?", "Y a-t-il une partie de moi qui a besoin de soins ?"]
+        "askYourself": [
+          "Quel nouveau projet ou idée suis-je en train de développer ?",
+          "Y a-t-il une partie de moi qui a besoin de soins ?"
+        ]
       },
       "es": {
         "slug": "bebe",
         "name": "Bebé",
         "shortDescription": "Un bebé simboliza nuevos comienzos, inocencia o un proyecto naciente. Puede representar una parte vulnerable de ti mismo que necesita atención.",
-        "askYourself": ["¿Qué nuevo proyecto o idea estoy desarrollando?", "¿Hay una parte de mí que necesita cuidado?"]
+        "askYourself": [
+          "¿Qué nuevo proyecto o idea estoy desarrollando?",
+          "¿Hay una parte de mí que necesita cuidado?"
+        ]
       },
-      "relatedSymbols": ["child", "pregnancy", "birth"],
-      "relatedArticles": { "en": "pregnancy-dreams-meaning", "fr": "reves-de-grossesse", "es": "suenos-de-embarazo" }
+      "de": {
+        "slug": "baby",
+        "name": "Baby",
+        "shortDescription": "Babys symbolisieren Neuanfänge, Unschuld, Verletzlichkeit und neues Potenzial. Sie können neue Projekte, Ideen oder einen frischen Start im Leben darstellen.",
+        "askYourself": [
+          "Was beginnt Neues in meinem Leben?",
+          "Was braucht meine Fürsorge und Aufmerksamkeit?"
+        ]
+      },
+      "it": {
+        "slug": "bambino-neonato",
+        "name": "Bambino (neonato)",
+        "shortDescription": "I neonati simboleggiano nuovi inizi, innocenza, vulnerabilità e nuovo potenziale. Possono rappresentare nuovi progetti, idee o un nuovo inizio nella vita.",
+        "askYourself": [
+          "Cosa sta iniziando di nuovo nella mia vita?",
+          "Cosa ha bisogno delle mie cure e attenzioni?"
+        ]
+      },
+      "relatedSymbols": [
+        "child",
+        "pregnancy",
+        "birth"
+      ],
+      "relatedArticles": {
+        "en": "pregnancy-dreams-meaning",
+        "fr": "reves-de-grossesse",
+        "es": "suenos-de-embarazo",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "dog",
@@ -274,22 +689,56 @@
         "slug": "dog",
         "name": "Dog",
         "shortDescription": "Dogs represent loyalty, friendship, and protection. An aggressive dog can symbolize internal conflict or a perceived threat in your environment.",
-        "askYourself": ["Who are my loyal allies?", "Do I feel protected?"]
+        "askYourself": [
+          "Who are my loyal allies?",
+          "Do I feel protected?"
+        ]
       },
       "fr": {
         "slug": "chien",
         "name": "Chien",
         "shortDescription": "Le chien représente la loyauté, l'amitié et la protection. Un chien agressif peut symboliser un conflit interne ou une menace perçue dans votre environnement.",
-        "askYourself": ["Qui sont mes alliés fidèles ?", "Est-ce que je me sens protégé ?"]
+        "askYourself": [
+          "Qui sont mes alliés fidèles ?",
+          "Est-ce que je me sens protégé ?"
+        ]
       },
       "es": {
         "slug": "perro",
         "name": "Perro",
         "shortDescription": "Los perros representan lealtad, amistad y protección. Un perro agresivo puede simbolizar conflicto interno o una amenaza percibida en tu entorno.",
-        "askYourself": ["¿Quiénes son mis aliados leales?", "¿Me siento protegido?"]
+        "askYourself": [
+          "¿Quiénes son mis aliados leales?",
+          "¿Me siento protegido?"
+        ]
       },
-      "relatedSymbols": ["cat", "wolf", "animal"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "hund",
+        "name": "Hund",
+        "shortDescription": "Hunde repräsentieren Loyalität, Freundschaft und bedingungslose Liebe. Ihr Verhalten im Traum spiegelt wider, wie Sie Beziehungen und Vertrauen in Ihrem Leben erleben.",
+        "askYourself": [
+          "Wem vertraue ich bedingungslos?",
+          "Wie drücke ich Loyalität in meinen Beziehungen aus?"
+        ]
+      },
+      "it": {
+        "slug": "cane",
+        "name": "Cane",
+        "shortDescription": "I cani rappresentano lealtà, amicizia e amore incondizionato. Il loro comportamento nel sogno riflette come vivi le relazioni e la fiducia nella tua vita.",
+        "askYourself": [
+          "Di chi mi fido incondizionatamente?",
+          "Come esprimo lealtà nelle mie relazioni?"
+        ]
+      },
+      "relatedSymbols": [
+        "cat",
+        "wolf",
+        "animal"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "cat",
@@ -299,22 +748,56 @@
         "slug": "cat",
         "name": "Cat",
         "shortDescription": "Cats symbolize independence, feminine intuition, and mystery. They can represent your wild side or a situation escaping your control.",
-        "askYourself": ["Am I listening to my intuition enough?", "Do I need more independence?"]
+        "askYourself": [
+          "Am I listening to my intuition enough?",
+          "Do I need more independence?"
+        ]
       },
       "fr": {
         "slug": "chat",
         "name": "Chat",
         "shortDescription": "Le chat symbolise l'indépendance, l'intuition féminine et les mystères. Il peut représenter votre côté sauvage ou une situation qui échappe à votre contrôle.",
-        "askYourself": ["Suis-je assez à l'écoute de mon intuition ?", "Ai-je besoin de plus d'indépendance ?"]
+        "askYourself": [
+          "Suis-je assez à l'écoute de mon intuition ?",
+          "Ai-je besoin de plus d'indépendance ?"
+        ]
       },
       "es": {
         "slug": "gato",
         "name": "Gato",
         "shortDescription": "Los gatos simbolizan independencia, intuición femenina y misterio. Pueden representar tu lado salvaje o una situación que escapa a tu control.",
-        "askYourself": ["¿Estoy escuchando suficiente mi intuición?", "¿Necesito más independencia?"]
+        "askYourself": [
+          "¿Estoy escuchando suficiente mi intuición?",
+          "¿Necesito más independencia?"
+        ]
       },
-      "relatedSymbols": ["dog", "lion", "animal"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "katze",
+        "name": "Katze",
+        "shortDescription": "Katzen symbolisieren Unabhängigkeit, Intuition und weibliche Energie. Sie können auch Geheimnis, Sinnlichkeit und die Notwendigkeit darstellen, Ihren Instinkten zu vertrauen.",
+        "askYourself": [
+          "Wie verbunden bin ich mit meiner Intuition?",
+          "Brauche ich mehr Unabhängigkeit?"
+        ]
+      },
+      "it": {
+        "slug": "gatto",
+        "name": "Gatto",
+        "shortDescription": "I gatti simboleggiano indipendenza, intuizione ed energia femminile. Possono anche rappresentare mistero, sensualità e il bisogno di fidarsi dei propri istinti.",
+        "askYourself": [
+          "Quanto sono connesso con la mia intuizione?",
+          "Ho bisogno di più indipendenza?"
+        ]
+      },
+      "relatedSymbols": [
+        "dog",
+        "lion",
+        "animal"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "spider",
@@ -324,22 +807,56 @@
         "slug": "spider",
         "name": "Spider",
         "shortDescription": "Spiders often symbolize creativity, patience, and weaving one's destiny. They can also represent fears or feeling trapped.",
-        "askYourself": ["Do I feel trapped in a situation?", "Am I weaving something new?"]
+        "askYourself": [
+          "Do I feel trapped in a situation?",
+          "Am I weaving something new?"
+        ]
       },
       "fr": {
         "slug": "araignee",
         "name": "Araignée",
         "shortDescription": "L'araignée symbolise souvent la créativité, la patience et le tissage de son destin. Elle peut aussi représenter des peurs ou un sentiment d'être pris au piège.",
-        "askYourself": ["Est-ce que je me sens pris au piège dans une situation ?", "Suis-je en train de tisser quelque chose de nouveau ?"]
+        "askYourself": [
+          "Est-ce que je me sens pris au piège dans une situation ?",
+          "Suis-je en train de tisser quelque chose de nouveau ?"
+        ]
       },
       "es": {
         "slug": "arana",
         "name": "Araña",
         "shortDescription": "Las arañas suelen simbolizar creatividad, paciencia y tejer el propio destino. También pueden representar miedos o sentirse atrapado.",
-        "askYourself": ["¿Me siento atrapado en una situación?", "¿Estoy tejiendo algo nuevo?"]
+        "askYourself": [
+          "¿Me siento atrapado en una situación?",
+          "¿Estoy tejiendo algo nuevo?"
+        ]
       },
-      "relatedSymbols": ["snake", "web", "insect"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "spinne",
+        "name": "Spinne",
+        "shortDescription": "Spinnen symbolisieren Kreativität, Geduld und das Weben des Schicksals. Sie können auch Angst, sich gefangen zu fühlen, oder weibliche Schöpferkraft darstellen.",
+        "askYourself": [
+          "Fühle ich mich in einer Situation gefangen?",
+          "Welches Netz webe ich in meinem Leben?"
+        ]
+      },
+      "it": {
+        "slug": "ragno",
+        "name": "Ragno",
+        "shortDescription": "I ragni simboleggiano creatività, pazienza e il tessere del destino. Possono anche rappresentare paura, sentirsi intrappolati o il potere creativo femminile.",
+        "askYourself": [
+          "Mi sento intrappolato in qualche situazione?",
+          "Quale rete sto tessendo nella mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "snake",
+        "web",
+        "insect"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "fire",
@@ -349,22 +866,56 @@
         "slug": "fire",
         "name": "Fire",
         "shortDescription": "Fire symbolizes passion, transformation, and purification. Controlled fire represents positive energy, while a wildfire can indicate anger or destruction.",
-        "askYourself": ["What ignites my passion?", "Is there a situation consuming me?"]
+        "askYourself": [
+          "What ignites my passion?",
+          "Is there a situation consuming me?"
+        ]
       },
       "fr": {
         "slug": "feu",
         "name": "Feu",
         "shortDescription": "Le feu symbolise la passion, la transformation et la purification. Un feu contrôlé représente l'énergie positive, tandis qu'un incendie peut indiquer la colère ou la destruction.",
-        "askYourself": ["Qu'est-ce qui m'enflamme de passion ?", "Y a-t-il une situation qui me consume ?"]
+        "askYourself": [
+          "Qu'est-ce qui m'enflamme de passion ?",
+          "Y a-t-il une situation qui me consume ?"
+        ]
       },
       "es": {
         "slug": "fuego",
         "name": "Fuego",
         "shortDescription": "El fuego simboliza pasión, transformación y purificación. Un fuego controlado representa energía positiva, mientras que un incendio puede indicar ira o destrucción.",
-        "askYourself": ["¿Qué enciende mi pasión?", "¿Hay una situación que me está consumiendo?"]
+        "askYourself": [
+          "¿Qué enciende mi pasión?",
+          "¿Hay una situación que me está consumiendo?"
+        ]
       },
-      "relatedSymbols": ["smoke", "burning", "destruction"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "feuer",
+        "name": "Feuer",
+        "shortDescription": "Feuer repräsentiert Leidenschaft, Transformation, Zerstörung und Erneuerung. Es kann innere Wut, kreative Energie oder den Wunsch nach tiefgreifender Veränderung symbolisieren.",
+        "askYourself": [
+          "Was brennt leidenschaftlich in mir?",
+          "Welcher Aspekt meines Lebens muss transformiert werden?"
+        ]
+      },
+      "it": {
+        "slug": "fuoco",
+        "name": "Fuoco",
+        "shortDescription": "Il fuoco rappresenta passione, trasformazione, distruzione e rinnovamento. Può simboleggiare rabbia interiore, energia creativa o il desiderio di un cambiamento profondo.",
+        "askYourself": [
+          "Cosa brucia appassionatamente dentro di me?",
+          "Quale aspetto della mia vita ha bisogno di trasformazione?"
+        ]
+      },
+      "relatedSymbols": [
+        "smoke",
+        "burning",
+        "destruction"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "flood",
@@ -374,22 +925,57 @@
         "slug": "flood",
         "name": "Flood",
         "shortDescription": "A flood often symbolizes overwhelming emotions, sudden change, or feeling that problems are \"spilling over.\" It can also represent cleansing and a chance to rebuild after disruption.",
-        "askYourself": ["What feels overwhelming right now?", "Where in my life do I need to set stronger boundaries?"]
+        "askYourself": [
+          "What feels overwhelming right now?",
+          "Where in my life do I need to set stronger boundaries?"
+        ]
       },
       "fr": {
         "slug": "inondation",
         "name": "Inondation",
         "shortDescription": "Une inondation symbolise souvent des émotions débordantes, un changement soudain ou la sensation que les problèmes vous submergent. Elle peut aussi représenter une purification et une opportunité de repartir sur de nouvelles bases.",
-        "askYourself": ["Qu'est-ce qui me submerge en ce moment ?", "Où ai-je besoin de poser des limites plus claires ?"]
+        "askYourself": [
+          "Qu'est-ce qui me submerge en ce moment ?",
+          "Où ai-je besoin de poser des limites plus claires ?"
+        ]
       },
       "es": {
         "slug": "inundacion",
         "name": "Inundación",
         "shortDescription": "Una inundación suele simbolizar emociones abrumadoras, cambios repentinos o sentir que los problemas se desbordan. También puede representar limpieza y la oportunidad de reconstruir tras una sacudida.",
-        "askYourself": ["¿Qué se siente abrumador ahora mismo?", "¿Dónde necesito poner límites más firmes en mi vida?"]
+        "askYourself": [
+          "¿Qué se siente abrumador ahora mismo?",
+          "¿Dónde necesito poner límites más firmes en mi vida?"
+        ]
       },
-      "relatedSymbols": ["water", "ocean", "rain", "storm"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "ueberschwemmung",
+        "name": "Überschwemmung",
+        "shortDescription": "Überschwemmungen symbolisieren überwältigende Emotionen, Kontrollverlust und das Gefühl, von Umständen mitgerissen zu werden. Sie können auch emotionale Reinigung und Erneuerung darstellen.",
+        "askYourself": [
+          "Welche Emotionen überwältigen mich?",
+          "Wo fühle ich mich vom Leben mitgerissen?"
+        ]
+      },
+      "it": {
+        "slug": "alluvione",
+        "name": "Alluvione",
+        "shortDescription": "Le alluvioni simboleggiano emozioni travolgenti, perdita di controllo e la sensazione di essere trascinati dalle circostanze. Possono anche rappresentare purificazione emotiva e rinnovamento.",
+        "askYourself": [
+          "Quali emozioni mi stanno travolgendo?",
+          "Dove mi sento trascinato dalla vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "water",
+        "ocean",
+        "rain",
+        "storm"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "car",
@@ -399,22 +985,56 @@
         "slug": "car",
         "name": "Car",
         "shortDescription": "A car represents control over your life. Being in the driver's seat indicates control; being a passenger can suggest someone else is directing your life.",
-        "askYourself": ["Am I in control of my life?", "Who is directing my trajectory?"]
+        "askYourself": [
+          "Am I in control of my life?",
+          "Who is directing my trajectory?"
+        ]
       },
       "fr": {
         "slug": "voiture",
         "name": "Voiture",
         "shortDescription": "La voiture représente le contrôle sur votre vie. Être au volant indique le contrôle, être passager peut suggérer que quelqu'un d'autre dirige votre vie.",
-        "askYourself": ["Est-ce que je suis aux commandes de ma vie ?", "Qui dirige ma trajectoire ?"]
+        "askYourself": [
+          "Est-ce que je suis aux commandes de ma vie ?",
+          "Qui dirige ma trajectoire ?"
+        ]
       },
       "es": {
         "slug": "coche",
         "name": "Coche",
         "shortDescription": "Un coche representa el control sobre tu vida. Estar al volante indica control; ser pasajero puede sugerir que alguien más dirige tu vida.",
-        "askYourself": ["¿Tengo control de mi vida?", "¿Quién está dirigiendo mi trayectoria?"]
+        "askYourself": [
+          "¿Tengo control de mi vida?",
+          "¿Quién está dirigiendo mi trayectoria?"
+        ]
       },
-      "relatedSymbols": ["driving", "road", "crash"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "auto",
+        "name": "Auto",
+        "shortDescription": "Autos repräsentieren Ihre Lebensrichtung und die Kontrolle über Ihren Lebensweg. Der Zustand des Autos und Ihre Rolle (Fahrer oder Beifahrer) sind wichtige Hinweise.",
+        "askYourself": [
+          "Habe ich die Kontrolle über meine Lebensrichtung?",
+          "Wohin führt mich mein aktueller Weg?"
+        ]
+      },
+      "it": {
+        "slug": "automobile",
+        "name": "Automobile",
+        "shortDescription": "Le automobili rappresentano la direzione della tua vita e il controllo sul tuo percorso. Le condizioni dell'auto e il tuo ruolo (conducente o passeggero) sono indizi importanti.",
+        "askYourself": [
+          "Ho il controllo della direzione della mia vita?",
+          "Dove mi sta portando il mio percorso attuale?"
+        ]
+      },
+      "relatedSymbols": [
+        "driving",
+        "road",
+        "crash"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "door",
@@ -424,22 +1044,56 @@
         "slug": "door",
         "name": "Door",
         "shortDescription": "A door symbolizes opportunities, transitions, and new beginnings. A closed door can indicate obstacles, while an open door suggests possibilities.",
-        "askYourself": ["What new opportunities are available to me?", "What's blocking me?"]
+        "askYourself": [
+          "What new opportunities are available to me?",
+          "What's blocking me?"
+        ]
       },
       "fr": {
         "slug": "porte",
         "name": "Porte",
         "shortDescription": "La porte symbolise les opportunités, les transitions et les nouveaux départs. Une porte fermée peut indiquer des obstacles, tandis qu'une porte ouverte suggère des possibilités.",
-        "askYourself": ["Quelles nouvelles opportunités s'offrent à moi ?", "Qu'est-ce qui me bloque ?"]
+        "askYourself": [
+          "Quelles nouvelles opportunités s'offrent à moi ?",
+          "Qu'est-ce qui me bloque ?"
+        ]
       },
       "es": {
         "slug": "puerta",
         "name": "Puerta",
         "shortDescription": "Una puerta simboliza oportunidades, transiciones y nuevos comienzos. Una puerta cerrada puede indicar obstáculos, mientras que una abierta sugiere posibilidades.",
-        "askYourself": ["¿Qué nuevas oportunidades están disponibles para mí?", "¿Qué me está bloqueando?"]
+        "askYourself": [
+          "¿Qué nuevas oportunidades están disponibles para mí?",
+          "¿Qué me está bloqueando?"
+        ]
       },
-      "relatedSymbols": ["house", "key", "window"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "tuer",
+        "name": "Tür",
+        "shortDescription": "Türen symbolisieren Übergänge, Möglichkeiten und neue Kapitel. Eine offene Tür lädt ein, eine geschlossene kann auf Hindernisse oder noch nicht bereitstehende Wege hinweisen.",
+        "askYourself": [
+          "Welche neuen Möglichkeiten stehen mir offen?",
+          "Welche Türen habe ich geschlossen, die ich wieder öffnen sollte?"
+        ]
+      },
+      "it": {
+        "slug": "porta",
+        "name": "Porta",
+        "shortDescription": "Le porte simboleggiano transizioni, opportunità e nuovi capitoli. Una porta aperta invita, una chiusa può indicare ostacoli o percorsi non ancora pronti.",
+        "askYourself": [
+          "Quali nuove opportunità si stanno aprendo per me?",
+          "Quali porte ho chiuso che dovrei riaprire?"
+        ]
+      },
+      "relatedSymbols": [
+        "house",
+        "key",
+        "window"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "exam",
@@ -449,22 +1103,56 @@
         "slug": "exam",
         "name": "Exam / Test",
         "shortDescription": "Dreaming of an exam, especially failing one, symbolizes anxiety about evaluation, perfectionism, or impostor syndrome. This is a very common dream among adults.",
-        "askYourself": ["Am I afraid of not measuring up?", "In what area do I feel judged?"]
+        "askYourself": [
+          "Am I afraid of not measuring up?",
+          "In what area do I feel judged?"
+        ]
       },
       "fr": {
         "slug": "examen",
         "name": "Examen / Test",
         "shortDescription": "Rêver d'un examen, surtout raté, symbolise l'anxiété face à l'évaluation, le perfectionnisme ou le syndrome de l'imposteur. C'est un rêve très courant chez les adultes.",
-        "askYourself": ["Ai-je peur de ne pas être à la hauteur ?", "Dans quel domaine je me sens jugé ?"]
+        "askYourself": [
+          "Ai-je peur de ne pas être à la hauteur ?",
+          "Dans quel domaine je me sens jugé ?"
+        ]
       },
       "es": {
         "slug": "examen",
         "name": "Examen / Prueba",
         "shortDescription": "Soñar con un examen, especialmente suspenderlo, simboliza ansiedad sobre la evaluación, perfeccionismo o síndrome del impostor. Este es un sueño muy común entre adultos.",
-        "askYourself": ["¿Tengo miedo de no estar a la altura?", "¿En qué área me siento juzgado?"]
+        "askYourself": [
+          "¿Tengo miedo de no estar a la altura?",
+          "¿En qué área me siento juzgado?"
+        ]
       },
-      "relatedSymbols": ["school", "failure", "stress"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "pruefung",
+        "name": "Prüfung / Test",
+        "shortDescription": "Prüfungsträume spiegeln Leistungsangst, Angst vor Bewertung und den Druck wider, Erwartungen zu erfüllen. Sie treten häufig in Stressphasen auf.",
+        "askYourself": [
+          "In welchem Bereich fühle ich mich beurteilt?",
+          "Habe ich Angst zu versagen?"
+        ]
+      },
+      "it": {
+        "slug": "esame",
+        "name": "Esame / Test",
+        "shortDescription": "I sogni d'esame riflettono ansia da prestazione, paura del giudizio e la pressione di soddisfare le aspettative. Sono comuni durante periodi di stress.",
+        "askYourself": [
+          "In quale ambito mi sento giudicato?",
+          "Ho paura di fallire?"
+        ]
+      },
+      "relatedSymbols": [
+        "school",
+        "failure",
+        "stress"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "nudity",
@@ -474,22 +1162,56 @@
         "slug": "nudity",
         "name": "Nudity",
         "shortDescription": "Being naked in public symbolizes vulnerability, fear of judgment, or feeling exposed. This is a very common dream related to social anxiety.",
-        "askYourself": ["Am I afraid of being judged?", "Is there something I'm hiding from others?"]
+        "askYourself": [
+          "Am I afraid of being judged?",
+          "Is there something I'm hiding from others?"
+        ]
       },
       "fr": {
         "slug": "nudite",
         "name": "Nudité",
         "shortDescription": "Être nu en public symbolise la vulnérabilité, la peur du jugement ou le sentiment d'être exposé. C'est un rêve très courant lié à l'anxiété sociale.",
-        "askYourself": ["Ai-je peur d'être jugé ?", "Y a-t-il quelque chose que je cache aux autres ?"]
+        "askYourself": [
+          "Ai-je peur d'être jugé ?",
+          "Y a-t-il quelque chose que je cache aux autres ?"
+        ]
       },
       "es": {
         "slug": "desnudez",
         "name": "Desnudez",
         "shortDescription": "Estar desnudo en público simboliza vulnerabilidad, miedo al juicio o sentirse expuesto. Este es un sueño muy común relacionado con la ansiedad social.",
-        "askYourself": ["¿Tengo miedo de ser juzgado?", "¿Hay algo que estoy ocultando a los demás?"]
+        "askYourself": [
+          "¿Tengo miedo de ser juzgado?",
+          "¿Hay algo que estoy ocultando a los demás?"
+        ]
       },
-      "relatedSymbols": ["clothes", "shame", "exposure"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "nacktheit",
+        "name": "Nacktheit",
+        "shortDescription": "Nacktheit in Träumen symbolisiert Verletzlichkeit, Authentizität und die Angst, entblößt oder beurteilt zu werden. Sie kann auch Befreiung und Selbstakzeptanz darstellen.",
+        "askYourself": [
+          "Wo fühle ich mich verletzlich oder entblößt?",
+          "Was verberge ich vor anderen?"
+        ]
+      },
+      "it": {
+        "slug": "nudita",
+        "name": "Nudità",
+        "shortDescription": "La nudità nei sogni simboleggia vulnerabilità, autenticità e la paura di essere esposti o giudicati. Può anche rappresentare liberazione e accettazione di sé.",
+        "askYourself": [
+          "Dove mi sento vulnerabile o esposto?",
+          "Cosa nascondo agli altri?"
+        ]
+      },
+      "relatedSymbols": [
+        "clothes",
+        "shame",
+        "exposure"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "deceased-person",
@@ -499,22 +1221,56 @@
         "slug": "deceased-person",
         "name": "Deceased Person",
         "shortDescription": "Dreaming of a deceased loved one can represent grief, memories, or a message from your subconscious. It can also symbolize a part of you associated with that person.",
-        "askYourself": ["What message could this person bring me?", "What did they represent to me?"]
+        "askYourself": [
+          "What message could this person bring me?",
+          "What did they represent to me?"
+        ]
       },
       "fr": {
         "slug": "defunt",
         "name": "Défunt / Personne décédée",
         "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
-        "askYourself": ["Quel message cette personne pourrait-elle m'apporter ?", "Qu'est-ce qu'elle représentait pour moi ?"]
+        "askYourself": [
+          "Quel message cette personne pourrait-elle m'apporter ?",
+          "Qu'est-ce qu'elle représentait pour moi ?"
+        ]
       },
       "es": {
         "slug": "persona-fallecida",
         "name": "Persona Fallecida",
         "shortDescription": "Soñar con un ser querido fallecido puede representar duelo, recuerdos o un mensaje de tu subconsciente. También puede simbolizar una parte de ti asociada con esa persona.",
-        "askYourself": ["¿Qué mensaje podría traerme esta persona?", "¿Qué representaba para mí?"]
+        "askYourself": [
+          "¿Qué mensaje podría traerme esta persona?",
+          "¿Qué representaba para mí?"
+        ]
       },
-      "relatedSymbols": ["death", "ghost", "memory"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "verstorbene-person",
+        "name": "Verstorbene Person",
+        "shortDescription": "Von Verstorbenen zu träumen spiegelt oft Trauer, ungelöste Gefühle oder den Wunsch nach Verbindung wider. Diese Träume können tröstend sein oder auf die Notwendigkeit hinweisen, loszulassen.",
+        "askYourself": [
+          "Welche ungelösten Gefühle habe ich gegenüber dieser Person?",
+          "Was muss ich loslassen oder akzeptieren?"
+        ]
+      },
+      "it": {
+        "slug": "persona-defunta",
+        "name": "Persona defunta",
+        "shortDescription": "Sognare persone defunte riflette spesso il lutto, sentimenti irrisolti o il desiderio di connessione. Questi sogni possono essere confortanti o indicare il bisogno di lasciar andare.",
+        "askYourself": [
+          "Quali sentimenti irrisolti ho verso questa persona?",
+          "Cosa ho bisogno di lasciar andare o accettare?"
+        ]
+      },
+      "relatedSymbols": [
+        "death",
+        "ghost",
+        "memory"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "bird",
@@ -524,22 +1280,56 @@
         "slug": "bird",
         "name": "Bird",
         "shortDescription": "Birds symbolize freedom, spiritual aspiration, and higher perspectives. A caged bird can represent feeling trapped.",
-        "askYourself": ["Do I feel free?", "What are my highest aspirations?"]
+        "askYourself": [
+          "Do I feel free?",
+          "What are my highest aspirations?"
+        ]
       },
       "fr": {
         "slug": "oiseau",
         "name": "Oiseau",
         "shortDescription": "L'oiseau symbolise la liberté, l'aspiration spirituelle et les perspectives élevées. Un oiseau en cage peut représenter un sentiment d'être prisonnier.",
-        "askYourself": ["Est-ce que je me sens libre ?", "Quelles sont mes aspirations les plus élevées ?"]
+        "askYourself": [
+          "Est-ce que je me sens libre ?",
+          "Quelles sont mes aspirations les plus élevées ?"
+        ]
       },
       "es": {
         "slug": "pajaro",
         "name": "Pájaro",
         "shortDescription": "Los pájaros simbolizan libertad, aspiración espiritual y perspectivas elevadas. Un pájaro enjaulado puede representar sentirse atrapado.",
-        "askYourself": ["¿Me siento libre?", "¿Cuáles son mis aspiraciones más elevadas?"]
+        "askYourself": [
+          "¿Me siento libre?",
+          "¿Cuáles son mis aspiraciones más elevadas?"
+        ]
       },
-      "relatedSymbols": ["flying", "cage", "freedom"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "vogel",
+        "name": "Vogel",
+        "shortDescription": "Vögel symbolisieren Freiheit, Perspektive und spirituelle Verbindung. Die Vogelart und ihr Verhalten geben Hinweise auf die spezifische Botschaft.",
+        "askYourself": [
+          "Welche höhere Perspektive brauche ich?",
+          "Wo sehne ich mich nach mehr Freiheit?"
+        ]
+      },
+      "it": {
+        "slug": "uccello",
+        "name": "Uccello",
+        "shortDescription": "Gli uccelli simboleggiano libertà, prospettiva e connessione spirituale. Il tipo di uccello e il suo comportamento forniscono indizi sul messaggio specifico.",
+        "askYourself": [
+          "Di quale prospettiva più elevata ho bisogno?",
+          "Dove desidero più libertà?"
+        ]
+      },
+      "relatedSymbols": [
+        "flying",
+        "cage",
+        "freedom"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "bridge",
@@ -549,22 +1339,56 @@
         "slug": "bridge",
         "name": "Bridge",
         "shortDescription": "A bridge symbolizes transition, passage from one state to another. Crossing a bridge suggests change, while a collapsed bridge indicates obstacles.",
-        "askYourself": ["What transition am I going through?", "Am I ready to move on?"]
+        "askYourself": [
+          "What transition am I going through?",
+          "Am I ready to move on?"
+        ]
       },
       "fr": {
         "slug": "pont",
         "name": "Pont",
         "shortDescription": "Le pont symbolise une transition, un passage d'un état à un autre. Traverser un pont suggère un changement, tandis qu'un pont effondré indique des obstacles.",
-        "askYourself": ["Quelle transition suis-je en train de vivre ?", "Suis-je prêt à passer à autre chose ?"]
+        "askYourself": [
+          "Quelle transition suis-je en train de vivre ?",
+          "Suis-je prêt à passer à autre chose ?"
+        ]
       },
       "es": {
         "slug": "puente",
         "name": "Puente",
         "shortDescription": "Un puente simboliza transición, paso de un estado a otro. Cruzar un puente sugiere cambio, mientras que un puente colapsado indica obstáculos.",
-        "askYourself": ["¿Qué transición estoy atravesando?", "¿Estoy preparado para seguir adelante?"]
+        "askYourself": [
+          "¿Qué transición estoy atravesando?",
+          "¿Estoy preparado para seguir adelante?"
+        ]
       },
-      "relatedSymbols": ["road", "water", "crossing"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "bruecke",
+        "name": "Brücke",
+        "shortDescription": "Brücken symbolisieren Übergänge, das Verbinden zweier Lebensphasen und das Überwinden von Hindernissen. Der Zustand der Brücke spiegelt Ihr Vertrauen in den Übergang wider.",
+        "askYourself": [
+          "Welchen Übergang durchlebe ich gerade?",
+          "Was verbinde ich in meinem Leben?"
+        ]
+      },
+      "it": {
+        "slug": "ponte",
+        "name": "Ponte",
+        "shortDescription": "I ponti simboleggiano transizioni, il collegamento tra due fasi della vita e il superamento di ostacoli. Lo stato del ponte riflette la tua fiducia nella transizione.",
+        "askYourself": [
+          "Quale transizione sto attraversando?",
+          "Cosa sto collegando nella mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "road",
+        "water",
+        "crossing"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "stairs",
@@ -574,22 +1398,56 @@
         "slug": "stairs",
         "name": "Stairs",
         "shortDescription": "Stairs symbolize progression, social or spiritual ascension. Going up indicates growth; going down can suggest exploration of the subconscious.",
-        "askYourself": ["Am I progressing in my life?", "What direction am I taking?"]
+        "askYourself": [
+          "Am I progressing in my life?",
+          "What direction am I taking?"
+        ]
       },
       "fr": {
         "slug": "escalier",
         "name": "Escalier",
         "shortDescription": "L'escalier symbolise la progression, l'ascension sociale ou spirituelle. Monter indique la croissance, descendre peut suggérer l'exploration de l'inconscient.",
-        "askYourself": ["Est-ce que je progresse dans ma vie ?", "Quelle direction est-ce que je prends ?"]
+        "askYourself": [
+          "Est-ce que je progresse dans ma vie ?",
+          "Quelle direction est-ce que je prends ?"
+        ]
       },
       "es": {
         "slug": "escaleras",
         "name": "Escaleras",
         "shortDescription": "Las escaleras simbolizan progresión, ascenso social o espiritual. Subir indica crecimiento; bajar puede sugerir exploración del subconsciente.",
-        "askYourself": ["¿Estoy progresando en mi vida?", "¿Qué dirección estoy tomando?"]
+        "askYourself": [
+          "¿Estoy progresando en mi vida?",
+          "¿Qué dirección estoy tomando?"
+        ]
       },
-      "relatedSymbols": ["house", "climbing", "elevator"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "treppe",
+        "name": "Treppe",
+        "shortDescription": "Treppen stehen für Aufstieg, Abstieg und persönliche Entwicklung. Hinaufsteigen deutet auf Fortschritt hin, hinuntergehen kann auf Selbsterforschung oder Rückschritte hinweisen.",
+        "askYourself": [
+          "Mache ich Fortschritte in meinem Leben?",
+          "In welche Richtung bewege ich mich?"
+        ]
+      },
+      "it": {
+        "slug": "scale",
+        "name": "Scale",
+        "shortDescription": "Le scale rappresentano ascesa, discesa e sviluppo personale. Salire indica progresso, scendere può indicare autoesplorazione o passi indietro.",
+        "askYourself": [
+          "Sto facendo progressi nella mia vita?",
+          "In quale direzione mi sto muovendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "house",
+        "climbing",
+        "elevator"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "moon",
@@ -599,22 +1457,56 @@
         "slug": "moon",
         "name": "Moon",
         "shortDescription": "The moon symbolizes femininity, intuition, and natural cycles. It also represents hidden aspects of the self and deep emotions.",
-        "askYourself": ["Am I listening to my intuition?", "What cycles are passing through my life?"]
+        "askYourself": [
+          "Am I listening to my intuition?",
+          "What cycles are passing through my life?"
+        ]
       },
       "fr": {
         "slug": "lune",
         "name": "Lune",
         "shortDescription": "La lune symbolise la féminité, l'intuition et les cycles naturels. Elle représente aussi les aspects cachés de soi et les émotions profondes.",
-        "askYourself": ["Suis-je à l'écoute de mon intuition ?", "Quels cycles traversent ma vie ?"]
+        "askYourself": [
+          "Suis-je à l'écoute de mon intuition ?",
+          "Quels cycles traversent ma vie ?"
+        ]
       },
       "es": {
         "slug": "luna",
         "name": "Luna",
         "shortDescription": "La luna simboliza feminidad, intuición y ciclos naturales. También representa aspectos ocultos del yo y emociones profundas.",
-        "askYourself": ["¿Estoy escuchando mi intuición?", "¿Qué ciclos están pasando por mi vida?"]
+        "askYourself": [
+          "¿Estoy escuchando mi intuición?",
+          "¿Qué ciclos están pasando por mi vida?"
+        ]
       },
-      "relatedSymbols": ["sun", "night", "stars"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "mond",
+        "name": "Mond",
+        "shortDescription": "Der Mond repräsentiert Intuition, das Unbewusste und emotionale Zyklen. Seine Phasen spiegeln die natürlichen Rhythmen des Lebens und der inneren Entwicklung wider.",
+        "askYourself": [
+          "Welchem emotionalen Zyklus befinde ich mich?",
+          "Höre ich auf meine Intuition?"
+        ]
+      },
+      "it": {
+        "slug": "luna",
+        "name": "Luna",
+        "shortDescription": "La luna rappresenta l'intuizione, l'inconscio e i cicli emotivi. Le sue fasi riflettono i ritmi naturali della vita e dello sviluppo interiore.",
+        "askYourself": [
+          "In quale ciclo emotivo mi trovo?",
+          "Sto ascoltando la mia intuizione?"
+        ]
+      },
+      "relatedSymbols": [
+        "sun",
+        "night",
+        "stars"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "sun",
@@ -624,22 +1516,56 @@
         "slug": "sun",
         "name": "Sun",
         "shortDescription": "The sun symbolizes consciousness, vital energy, and optimism. It represents clarity, truth, and spiritual illumination.",
-        "askYourself": ["What gives me energy?", "What truth do I need to see?"]
+        "askYourself": [
+          "What gives me energy?",
+          "What truth do I need to see?"
+        ]
       },
       "fr": {
         "slug": "soleil",
         "name": "Soleil",
         "shortDescription": "Le soleil symbolise la conscience, l'énergie vitale et l'optimisme. Il représente la clarté, la vérité et l'illumination spirituelle.",
-        "askYourself": ["Qu'est-ce qui m'apporte de l'énergie ?", "Quelle vérité ai-je besoin de voir ?"]
+        "askYourself": [
+          "Qu'est-ce qui m'apporte de l'énergie ?",
+          "Quelle vérité ai-je besoin de voir ?"
+        ]
       },
       "es": {
         "slug": "sol",
         "name": "Sol",
         "shortDescription": "El sol simboliza consciencia, energía vital y optimismo. Representa claridad, verdad e iluminación espiritual.",
-        "askYourself": ["¿Qué me da energía?", "¿Qué verdad necesito ver?"]
+        "askYourself": [
+          "¿Qué me da energía?",
+          "¿Qué verdad necesito ver?"
+        ]
       },
-      "relatedSymbols": ["moon", "light", "day"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "sonne",
+        "name": "Sonne",
+        "shortDescription": "Die Sonne symbolisiert Vitalität, Klarheit, Bewusstsein und Lebensenergie. Sie steht für Erleuchtung, Wahrheit und die Kraft, die alle Dinge nährt.",
+        "askYourself": [
+          "Was bringt Licht und Klarheit in mein Leben?",
+          "Wo finde ich Energie und Vitalität?"
+        ]
+      },
+      "it": {
+        "slug": "sole",
+        "name": "Sole",
+        "shortDescription": "Il sole simboleggia vitalità, chiarezza, coscienza ed energia vitale. Rappresenta illuminazione, verità e il potere che nutre tutte le cose.",
+        "askYourself": [
+          "Cosa porta luce e chiarezza nella mia vita?",
+          "Dove trovo energia e vitalità?"
+        ]
+      },
+      "relatedSymbols": [
+        "moon",
+        "light",
+        "day"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "rain",
@@ -649,22 +1575,56 @@
         "slug": "rain",
         "name": "Rain",
         "shortDescription": "Rain can symbolize purification, renewal, or sadness. A gentle rain suggests healing, while a storm indicates intense emotions.",
-        "askYourself": ["Do I need to let my emotions flow?", "What renewal is possible?"]
+        "askYourself": [
+          "Do I need to let my emotions flow?",
+          "What renewal is possible?"
+        ]
       },
       "fr": {
         "slug": "pluie",
         "name": "Pluie",
         "shortDescription": "La pluie peut symboliser la purification, le renouveau ou la tristesse. Une pluie douce suggère la guérison, tandis qu'un orage indique des émotions intenses.",
-        "askYourself": ["Ai-je besoin de laisser couler mes émotions ?", "Quel renouveau est possible ?"]
+        "askYourself": [
+          "Ai-je besoin de laisser couler mes émotions ?",
+          "Quel renouveau est possible ?"
+        ]
       },
       "es": {
         "slug": "lluvia",
         "name": "Lluvia",
         "shortDescription": "La lluvia puede simbolizar purificación, renovación o tristeza. Una lluvia suave sugiere sanación, mientras que una tormenta indica emociones intensas.",
-        "askYourself": ["¿Necesito dejar fluir mis emociones?", "¿Qué renovación es posible?"]
+        "askYourself": [
+          "¿Necesito dejar fluir mis emociones?",
+          "¿Qué renovación es posible?"
+        ]
       },
-      "relatedSymbols": ["water", "storm", "clouds"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "regen",
+        "name": "Regen",
+        "shortDescription": "Regen symbolisiert emotionale Befreiung, Reinigung und Erneuerung. Sanfter Regen kann beruhigend sein, während Starkregen auf emotionale Überwältigung hinweisen kann.",
+        "askYourself": [
+          "Welche Emotionen brauchen Ausdruck?",
+          "Was muss in meinem Leben gereinigt oder erneuert werden?"
+        ]
+      },
+      "it": {
+        "slug": "pioggia",
+        "name": "Pioggia",
+        "shortDescription": "La pioggia simboleggia rilascio emotivo, purificazione e rinnovamento. Una pioggia leggera può essere calmante, mentre un acquazzone può indicare sopraffazione emotiva.",
+        "askYourself": [
+          "Quali emozioni hanno bisogno di espressione?",
+          "Cosa ha bisogno di essere purificato o rinnovato nella mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "water",
+        "storm",
+        "clouds"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "forest",
@@ -674,22 +1634,56 @@
         "slug": "forest",
         "name": "Forest",
         "shortDescription": "The forest represents the subconscious, mystery, and self-exploration. Getting lost in a forest can symbolize confusion or searching for direction in life.",
-        "askYourself": ["Am I ready to explore my subconscious?", "What's hidden within me?"]
+        "askYourself": [
+          "Am I ready to explore my subconscious?",
+          "What's hidden within me?"
+        ]
       },
       "fr": {
         "slug": "foret",
         "name": "Forêt",
         "shortDescription": "La forêt représente l'inconscient, le mystère et l'exploration de soi. Se perdre en forêt peut symboliser la confusion ou la recherche de direction dans la vie.",
-        "askYourself": ["Suis-je prêt à explorer mon inconscient ?", "Qu'est-ce qui est caché en moi ?"]
+        "askYourself": [
+          "Suis-je prêt à explorer mon inconscient ?",
+          "Qu'est-ce qui est caché en moi ?"
+        ]
       },
       "es": {
         "slug": "bosque",
         "name": "Bosque",
         "shortDescription": "El bosque representa el subconsciente, el misterio y la autoexploración. Perderse en un bosque puede simbolizar confusión o búsqueda de dirección en la vida.",
-        "askYourself": ["¿Estoy preparado para explorar mi subconsciente?", "¿Qué está oculto dentro de mí?"]
+        "askYourself": [
+          "¿Estoy preparado para explorar mi subconsciente?",
+          "¿Qué está oculto dentro de mí?"
+        ]
       },
-      "relatedSymbols": ["tree", "darkness", "path"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "wald",
+        "name": "Wald",
+        "shortDescription": "Wälder repräsentieren das Unbewusste, Geheimnis und die Reise der Selbsterforschung. Sie können sowohl Verwirrung als auch Wachstum und Entdeckung symbolisieren.",
+        "askYourself": [
+          "Welche unbekannten Teile meiner Psyche erkunde ich?",
+          "Fühle ich mich in einer Situation verloren?"
+        ]
+      },
+      "it": {
+        "slug": "foresta",
+        "name": "Foresta",
+        "shortDescription": "Le foreste rappresentano l'inconscio, il mistero e il viaggio di autoesplorazione. Possono simboleggiare sia confusione che crescita e scoperta.",
+        "askYourself": [
+          "Quali parti sconosciute della mia psiche sto esplorando?",
+          "Mi sento perso in qualche situazione?"
+        ]
+      },
+      "relatedSymbols": [
+        "tree",
+        "darkness",
+        "path"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "tree",
@@ -699,22 +1693,56 @@
         "slug": "tree",
         "name": "Tree",
         "shortDescription": "A tree symbolizes personal growth, family roots, and the cycle of life. A dead tree can represent the end of a phase or a need for renewal.",
-        "askYourself": ["Am I well grounded in my life?", "What part of me needs to grow?"]
+        "askYourself": [
+          "Am I well grounded in my life?",
+          "What part of me needs to grow?"
+        ]
       },
       "fr": {
         "slug": "arbre",
         "name": "Arbre",
         "shortDescription": "L'arbre symbolise la croissance personnelle, les racines familiales et le cycle de la vie. Un arbre mort peut représenter la fin d'une phase ou un besoin de renouveau.",
-        "askYourself": ["Suis-je bien ancré dans ma vie ?", "Quelle partie de moi a besoin de croître ?"]
+        "askYourself": [
+          "Suis-je bien ancré dans ma vie ?",
+          "Quelle partie de moi a besoin de croître ?"
+        ]
       },
       "es": {
         "slug": "arbol",
         "name": "Árbol",
         "shortDescription": "Un árbol simboliza el crecimiento personal, las raíces familiares y el ciclo de la vida. Un árbol muerto puede representar el fin de una fase o necesidad de renovación.",
-        "askYourself": ["¿Estoy bien enraizado en mi vida?", "¿Qué parte de mí necesita crecer?"]
+        "askYourself": [
+          "¿Estoy bien enraizado en mi vida?",
+          "¿Qué parte de mí necesita crecer?"
+        ]
       },
-      "relatedSymbols": ["forest", "roots", "leaves"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "baum",
+        "name": "Baum",
+        "shortDescription": "Bäume symbolisieren Wachstum, Stärke und Verbindung. Ihre Wurzeln stehen für Ihre Grundlagen, der Stamm für Ihre Stärke und die Äste für Ihre Ambitionen.",
+        "askYourself": [
+          "Wie stark sind meine Wurzeln und Grundlagen?",
+          "Wachse ich in die richtige Richtung?"
+        ]
+      },
+      "it": {
+        "slug": "albero",
+        "name": "Albero",
+        "shortDescription": "Gli alberi simboleggiano crescita, forza e connessione. Le radici rappresentano le tue fondamenta, il tronco la tua forza e i rami le tue ambizioni.",
+        "askYourself": [
+          "Quanto sono forti le mie radici e fondamenta?",
+          "Sto crescendo nella direzione giusta?"
+        ]
+      },
+      "relatedSymbols": [
+        "forest",
+        "roots",
+        "leaves"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "mountain",
@@ -724,22 +1752,56 @@
         "slug": "mountain",
         "name": "Mountain",
         "shortDescription": "A mountain represents challenges, ambitious goals, and spiritual quest. Climbing a mountain symbolizes efforts to reach your goals.",
-        "askYourself": ["What challenge am I facing?", "Is the effort worth it?"]
+        "askYourself": [
+          "What challenge am I facing?",
+          "Is the effort worth it?"
+        ]
       },
       "fr": {
         "slug": "montagne",
         "name": "Montagne",
         "shortDescription": "La montagne représente les défis, les objectifs ambitieux et la quête spirituelle. Gravir une montagne symbolise les efforts pour atteindre vos buts.",
-        "askYourself": ["Quel défi suis-je en train de relever ?", "Est-ce que l'effort en vaut la peine ?"]
+        "askYourself": [
+          "Quel défi suis-je en train de relever ?",
+          "Est-ce que l'effort en vaut la peine ?"
+        ]
       },
       "es": {
         "slug": "montana",
         "name": "Montaña",
         "shortDescription": "Una montaña representa desafíos, metas ambiciosas y búsqueda espiritual. Escalar una montaña simboliza esfuerzos para alcanzar tus objetivos.",
-        "askYourself": ["¿Qué desafío estoy enfrentando?", "¿Vale la pena el esfuerzo?"]
+        "askYourself": [
+          "¿Qué desafío estoy enfrentando?",
+          "¿Vale la pena el esfuerzo?"
+        ]
       },
-      "relatedSymbols": ["climbing", "peak", "valley"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "berg",
+        "name": "Berg",
+        "shortDescription": "Berge symbolisieren Herausforderungen, Ambitionen und spirituelle Erhebung. Einen Berg zu besteigen deutet auf Anstrengung und Entschlossenheit hin, den Gipfel zu erreichen auf Erfolg.",
+        "askYourself": [
+          "Welche große Herausforderung steht vor mir?",
+          "Welche Ambitionen verfolge ich?"
+        ]
+      },
+      "it": {
+        "slug": "montagna",
+        "name": "Montagna",
+        "shortDescription": "Le montagne simboleggiano sfide, ambizioni ed elevazione spirituale. Scalare una montagna indica sforzo e determinazione, raggiungere la cima rappresenta il successo.",
+        "askYourself": [
+          "Quale grande sfida ho davanti a me?",
+          "Quali ambizioni sto perseguendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "climbing",
+        "peak",
+        "valley"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "lion",
@@ -749,22 +1811,56 @@
         "slug": "lion",
         "name": "Lion",
         "shortDescription": "The lion represents strength, courage, and leadership. It can symbolize your own power or an authority figure in your life.",
-        "askYourself": ["Am I in touch with my inner strength?", "How do I express my power?"]
+        "askYourself": [
+          "Am I in touch with my inner strength?",
+          "How do I express my power?"
+        ]
       },
       "fr": {
         "slug": "lion",
         "name": "Lion",
         "shortDescription": "Le lion représente la force, le courage et le leadership. Il peut symboliser votre propre puissance ou une figure d'autorité dans votre vie.",
-        "askYourself": ["Suis-je en contact avec ma force intérieure ?", "Comment j'exprime mon pouvoir ?"]
+        "askYourself": [
+          "Suis-je en contact avec ma force intérieure ?",
+          "Comment j'exprime mon pouvoir ?"
+        ]
       },
       "es": {
         "slug": "leon",
         "name": "León",
         "shortDescription": "El león representa fuerza, coraje y liderazgo. Puede simbolizar tu propio poder o una figura de autoridad en tu vida.",
-        "askYourself": ["¿Estoy en contacto con mi fuerza interior?", "¿Cómo expreso mi poder?"]
+        "askYourself": [
+          "¿Estoy en contacto con mi fuerza interior?",
+          "¿Cómo expreso mi poder?"
+        ]
       },
-      "relatedSymbols": ["cat", "power", "king"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "loewe",
+        "name": "Löwe",
+        "shortDescription": "Löwen symbolisieren Stärke, Mut und Autorität. Sie können persönliche Macht, Führung oder die Notwendigkeit darstellen, sich einer Herausforderung mutig zu stellen.",
+        "askYourself": [
+          "Wo muss ich mutiger sein?",
+          "Wie gehe ich mit meiner persönlichen Macht um?"
+        ]
+      },
+      "it": {
+        "slug": "leone",
+        "name": "Leone",
+        "shortDescription": "I leoni simboleggiano forza, coraggio e autorità. Possono rappresentare potere personale, leadership o la necessità di affrontare una sfida con coraggio.",
+        "askYourself": [
+          "Dove devo essere più coraggioso?",
+          "Come gestisco il mio potere personale?"
+        ]
+      },
+      "relatedSymbols": [
+        "cat",
+        "power",
+        "king"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "mirror",
@@ -774,22 +1870,56 @@
         "slug": "mirror",
         "name": "Mirror",
         "shortDescription": "A mirror symbolizes introspection and self-image. A distorted reflection can indicate an altered perception of yourself or a need to see yourself more clearly.",
-        "askYourself": ["How do I perceive myself?", "Is my self-image realistic?"]
+        "askYourself": [
+          "How do I perceive myself?",
+          "Is my self-image realistic?"
+        ]
       },
       "fr": {
         "slug": "miroir",
         "name": "Miroir",
         "shortDescription": "Le miroir symbolise l'introspection et l'image de soi. Un reflet déformé peut indiquer une perception altérée de soi-même ou un besoin de vous voir plus clairement.",
-        "askYourself": ["Comment je me perçois ?", "Est-ce que mon image de moi est réaliste ?"]
+        "askYourself": [
+          "Comment je me perçois ?",
+          "Est-ce que mon image de moi est réaliste ?"
+        ]
       },
       "es": {
         "slug": "espejo",
         "name": "Espejo",
         "shortDescription": "Un espejo simboliza introspección y autoimagen. Un reflejo distorsionado puede indicar una percepción alterada de ti mismo o necesidad de verte con más claridad.",
-        "askYourself": ["¿Cómo me percibo a mí mismo?", "¿Es realista mi autoimagen?"]
+        "askYourself": [
+          "¿Cómo me percibo a mí mismo?",
+          "¿Es realista mi autoimagen?"
+        ]
       },
-      "relatedSymbols": ["reflection", "glass", "self"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "spiegel",
+        "name": "Spiegel",
+        "shortDescription": "Spiegel repräsentieren Selbstreflexion, Identität und wie Sie sich selbst sehen. Ein verzerrtes Spiegelbild kann auf innere Konflikte oder Selbsttäuschung hinweisen.",
+        "askYourself": [
+          "Wie sehe ich mich wirklich?",
+          "Bin ich mir selbst gegenüber ehrlich?"
+        ]
+      },
+      "it": {
+        "slug": "specchio",
+        "name": "Specchio",
+        "shortDescription": "Gli specchi rappresentano autoriflessione, identità e come ti vedi. Un riflesso distorto può indicare conflitti interiori o autoinganno.",
+        "askYourself": [
+          "Come mi vedo veramente?",
+          "Sono onesto con me stesso?"
+        ]
+      },
+      "relatedSymbols": [
+        "reflection",
+        "glass",
+        "self"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "money",
@@ -799,22 +1929,56 @@
         "slug": "money",
         "name": "Money",
         "shortDescription": "Money in dreams often represents self-worth, power, or vital energy. Losing money can symbolize a sense of loss or insecurity.",
-        "askYourself": ["How do I feel about my self-worth?", "What has value to me?"]
+        "askYourself": [
+          "How do I feel about my self-worth?",
+          "What has value to me?"
+        ]
       },
       "fr": {
         "slug": "argent",
         "name": "Argent",
         "shortDescription": "L'argent dans les rêves représente souvent la valeur personnelle, le pouvoir ou l'énergie vitale. Perdre de l'argent peut symboliser un sentiment de perte ou d'insécurité.",
-        "askYourself": ["Comment je me sens par rapport à ma valeur personnelle ?", "Qu'est-ce qui a de la valeur pour moi ?"]
+        "askYourself": [
+          "Comment je me sens par rapport à ma valeur personnelle ?",
+          "Qu'est-ce qui a de la valeur pour moi ?"
+        ]
       },
       "es": {
         "slug": "dinero",
         "name": "Dinero",
         "shortDescription": "El dinero en sueños a menudo representa autoestima, poder o energía vital. Perder dinero puede simbolizar una sensación de pérdida o inseguridad.",
-        "askYourself": ["¿Cómo me siento sobre mi autoestima?", "¿Qué tiene valor para mí?"]
+        "askYourself": [
+          "¿Cómo me siento sobre mi autoestima?",
+          "¿Qué tiene valor para mí?"
+        ]
       },
-      "relatedSymbols": ["wealth", "loss", "power"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "geld",
+        "name": "Geld",
+        "shortDescription": "Geld in Träumen symbolisiert Selbstwert, Macht, Sicherheit und den Austausch von Energie. Geld zu finden oder zu verlieren spiegelt Ihr Gefühl von persönlichem Wert wider.",
+        "askYourself": [
+          "Wie bewerte ich meinen eigenen Wert?",
+          "Fühle ich mich sicher in meiner aktuellen Situation?"
+        ]
+      },
+      "it": {
+        "slug": "denaro",
+        "name": "Denaro",
+        "shortDescription": "Il denaro nei sogni simboleggia autostima, potere, sicurezza e lo scambio di energia. Trovare o perdere denaro riflette il tuo senso di valore personale.",
+        "askYourself": [
+          "Come valuto il mio valore?",
+          "Mi sento sicuro nella mia situazione attuale?"
+        ]
+      },
+      "relatedSymbols": [
+        "wealth",
+        "loss",
+        "power"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "blood",
@@ -824,22 +1988,56 @@
         "slug": "blood",
         "name": "Blood",
         "shortDescription": "Blood represents life force, family bonds, or energy loss. Losing blood can symbolize exhaustion or sacrifice.",
-        "askYourself": ["Is something draining my energy?", "What bonds connect me to my family?"]
+        "askYourself": [
+          "Is something draining my energy?",
+          "What bonds connect me to my family?"
+        ]
       },
       "fr": {
         "slug": "sang",
         "name": "Sang",
         "shortDescription": "Le sang représente la force vitale, les liens familiaux ou une perte d'énergie. Perdre du sang peut symboliser l'épuisement ou un sacrifice.",
-        "askYourself": ["Est-ce que quelque chose draine mon énergie ?", "Quels liens me connectent à ma famille ?"]
+        "askYourself": [
+          "Est-ce que quelque chose draine mon énergie ?",
+          "Quels liens me connectent à ma famille ?"
+        ]
       },
       "es": {
         "slug": "sangre",
         "name": "Sangre",
         "shortDescription": "La sangre representa fuerza vital, lazos familiares o pérdida de energía. Perder sangre puede simbolizar agotamiento o sacrificio.",
-        "askYourself": ["¿Algo está drenando mi energía?", "¿Qué lazos me conectan a mi familia?"]
+        "askYourself": [
+          "¿Algo está drenando mi energía?",
+          "¿Qué lazos me conectan a mi familia?"
+        ]
       },
-      "relatedSymbols": ["wound", "injury", "family"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "blut",
+        "name": "Blut",
+        "shortDescription": "Blut symbolisiert Lebensenergie, Leidenschaft und tiefe emotionale Verbindungen. Es kann auch auf Verlust, Opfer oder die Notwendigkeit emotionaler Heilung hinweisen.",
+        "askYourself": [
+          "Wo verliere ich Energie in meinem Leben?",
+          "Welche tiefen Emotionen brauchen Aufmerksamkeit?"
+        ]
+      },
+      "it": {
+        "slug": "sangue",
+        "name": "Sangue",
+        "shortDescription": "Il sangue simboleggia energia vitale, passione e connessioni emotive profonde. Può anche indicare perdita, sacrificio o il bisogno di guarigione emotiva.",
+        "askYourself": [
+          "Dove sto perdendo energia nella mia vita?",
+          "Quali emozioni profonde hanno bisogno di attenzione?"
+        ]
+      },
+      "relatedSymbols": [
+        "wound",
+        "injury",
+        "family"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "child",
@@ -849,22 +2047,56 @@
         "slug": "child",
         "name": "Child",
         "shortDescription": "A child often represents your inner child, innocence, or aspects of your past. It can also symbolize a new project or a developing part of yourself.",
-        "askYourself": ["How is my inner child?", "Are there past wounds to heal?"]
+        "askYourself": [
+          "How is my inner child?",
+          "Are there past wounds to heal?"
+        ]
       },
       "fr": {
         "slug": "enfant",
         "name": "Enfant",
         "shortDescription": "L'enfant représente souvent votre enfant intérieur, l'innocence ou des aspects de votre passé. Il peut aussi symboliser un nouveau projet ou une partie de vous en développement.",
-        "askYourself": ["Comment va mon enfant intérieur ?", "Y a-t-il des blessures du passé à guérir ?"]
+        "askYourself": [
+          "Comment va mon enfant intérieur ?",
+          "Y a-t-il des blessures du passé à guérir ?"
+        ]
       },
       "es": {
         "slug": "nino",
         "name": "Niño",
         "shortDescription": "Un niño a menudo representa tu niño interior, inocencia o aspectos de tu pasado. También puede simbolizar un nuevo proyecto o una parte de ti en desarrollo.",
-        "askYourself": ["¿Cómo está mi niño interior?", "¿Hay heridas del pasado que sanar?"]
+        "askYourself": [
+          "¿Cómo está mi niño interior?",
+          "¿Hay heridas del pasado que sanar?"
+        ]
       },
-      "relatedSymbols": ["baby", "innocence", "play"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "kind",
+        "name": "Kind",
+        "shortDescription": "Kinder in Träumen repräsentieren Ihr inneres Kind, Unschuld, Verspieltheit und ungenutztes Potenzial. Sie können auf die Notwendigkeit von mehr Freude und Spontaneität hinweisen.",
+        "askYourself": [
+          "Wie verbunden bin ich mit meinem inneren Kind?",
+          "Was brauche ich, um mehr Freude zu empfinden?"
+        ]
+      },
+      "it": {
+        "slug": "bambino",
+        "name": "Bambino",
+        "shortDescription": "I bambini nei sogni rappresentano il tuo bambino interiore, innocenza, giocosità e potenziale non sfruttato. Possono indicare il bisogno di più gioia e spontaneità.",
+        "askYourself": [
+          "Quanto sono connesso con il mio bambino interiore?",
+          "Di cosa ho bisogno per provare più gioia?"
+        ]
+      },
+      "relatedSymbols": [
+        "baby",
+        "innocence",
+        "play"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "clothes",
@@ -874,22 +2106,53 @@
         "slug": "clothes",
         "name": "Clothes",
         "shortDescription": "Clothes represent the image you project to the world. Inappropriate clothing can indicate feeling out of place.",
-        "askYourself": ["Does my public image reflect who I really am?"]
+        "askYourself": [
+          "Does my public image reflect who I really am?"
+        ]
       },
       "fr": {
         "slug": "vetements",
         "name": "Vêtements",
         "shortDescription": "Les vêtements représentent l'image que vous projetez au monde. Des vêtements inappropriés peuvent indiquer un sentiment de ne pas être à sa place.",
-        "askYourself": ["Est-ce que mon image publique reflète qui je suis vraiment ?"]
+        "askYourself": [
+          "Est-ce que mon image publique reflète qui je suis vraiment ?"
+        ]
       },
       "es": {
         "slug": "ropa",
         "name": "Ropa",
         "shortDescription": "La ropa representa la imagen que proyectas al mundo. Ropa inapropiada puede indicar sentirse fuera de lugar.",
-        "askYourself": ["¿Mi imagen pública refleja quién soy realmente?"]
+        "askYourself": [
+          "¿Mi imagen pública refleja quién soy realmente?"
+        ]
       },
-      "relatedSymbols": ["nudity", "identity", "appearance"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "kleidung",
+        "name": "Kleidung",
+        "shortDescription": "Kleidung symbolisiert Identität, soziale Rollen und wie Sie sich der Welt präsentieren. Kleidungswechsel im Traum können auf Identitätstransformationen hinweisen.",
+        "askYourself": [
+          "Welches Image zeige ich der Welt?",
+          "Fühle ich mich wohl in meiner sozialen Rolle?"
+        ]
+      },
+      "it": {
+        "slug": "vestiti",
+        "name": "Vestiti",
+        "shortDescription": "I vestiti simboleggiano identità, ruoli sociali e come ti presenti al mondo. Cambiare vestiti nel sogno può indicare trasformazioni dell'identità.",
+        "askYourself": [
+          "Quale immagine mostro al mondo?",
+          "Mi sento a mio agio nel mio ruolo sociale?"
+        ]
+      },
+      "relatedSymbols": [
+        "nudity",
+        "identity",
+        "appearance"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "path",
@@ -899,22 +2162,56 @@
         "slug": "path",
         "name": "Path / Road",
         "shortDescription": "A path represents your life journey and future choices. A blocked path suggests obstacles, while a crossroads symbolizes an important decision.",
-        "askYourself": ["Am I on the right path?", "Is there a decision I'm avoiding?"]
+        "askYourself": [
+          "Am I on the right path?",
+          "Is there a decision I'm avoiding?"
+        ]
       },
       "fr": {
         "slug": "chemin",
         "name": "Chemin / Route",
         "shortDescription": "Le chemin représente votre parcours de vie et les choix à venir. Un chemin bloqué suggère des obstacles, tandis qu'un carrefour symbolise une décision importante.",
-        "askYourself": ["Suis-je sur le bon chemin ?", "Y a-t-il une décision que j'évite ?"]
+        "askYourself": [
+          "Suis-je sur le bon chemin ?",
+          "Y a-t-il une décision que j'évite ?"
+        ]
       },
       "es": {
         "slug": "camino",
         "name": "Camino",
         "shortDescription": "Un camino representa tu viaje de vida y las elecciones futuras. Un camino bloqueado sugiere obstáculos, mientras que una encrucijada simboliza una decisión importante.",
-        "askYourself": ["¿Estoy en el camino correcto?", "¿Hay una decisión que estoy evitando?"]
+        "askYourself": [
+          "¿Estoy en el camino correcto?",
+          "¿Hay una decisión que estoy evitando?"
+        ]
       },
-      "relatedSymbols": ["road", "crossroads", "journey"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "weg",
+        "name": "Weg / Straße",
+        "shortDescription": "Wege symbolisieren Ihre Lebensreise, Entscheidungen und die Richtung, die Sie einschlagen. Gabelungen stehen für Entscheidungspunkte, blockierte Wege für Hindernisse.",
+        "askYourself": [
+          "Bin ich auf dem richtigen Weg?",
+          "Welche Entscheidung steht vor mir?"
+        ]
+      },
+      "it": {
+        "slug": "sentiero",
+        "name": "Sentiero / Strada",
+        "shortDescription": "I sentieri simboleggiano il viaggio della vita, le scelte e la direzione che stai prendendo. I bivi rappresentano punti di decisione, i percorsi bloccati ostacoli.",
+        "askYourself": [
+          "Sono sulla strada giusta?",
+          "Quale decisione devo affrontare?"
+        ]
+      },
+      "relatedSymbols": [
+        "road",
+        "crossroads",
+        "journey"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "phone",
@@ -924,22 +2221,56 @@
         "slug": "phone",
         "name": "Phone",
         "shortDescription": "A phone represents communication. A phone that doesn't work can indicate difficulties connecting with others or a message you can't convey.",
-        "askYourself": ["Is there someone I need to talk to?", "Am I communicating effectively?"]
+        "askYourself": [
+          "Is there someone I need to talk to?",
+          "Am I communicating effectively?"
+        ]
       },
       "fr": {
         "slug": "telephone",
         "name": "Téléphone",
         "shortDescription": "Le téléphone représente la communication. Un téléphone qui ne fonctionne pas peut indiquer des difficultés à se connecter avec les autres ou un message que vous n'arrivez pas à transmettre.",
-        "askYourself": ["Y a-t-il quelqu'un à qui je dois parler ?", "Est-ce que je communique efficacement ?"]
+        "askYourself": [
+          "Y a-t-il quelqu'un à qui je dois parler ?",
+          "Est-ce que je communique efficacement ?"
+        ]
       },
       "es": {
         "slug": "telefono",
         "name": "Teléfono",
         "shortDescription": "Un teléfono representa comunicación. Un teléfono que no funciona puede indicar dificultades para conectar con otros o un mensaje que no puedes transmitir.",
-        "askYourself": ["¿Hay alguien con quien necesito hablar?", "¿Estoy comunicándome eficazmente?"]
+        "askYourself": [
+          "¿Hay alguien con quien necesito hablar?",
+          "¿Estoy comunicándome eficazmente?"
+        ]
       },
-      "relatedSymbols": ["communication", "connection", "message"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "telefon",
+        "name": "Telefon",
+        "shortDescription": "Telefone repräsentieren Kommunikation und Verbindung. Ein klingelndes Telefon kann eine wichtige Botschaft andeuten, während ein nicht funktionierendes Telefon auf Kommunikationsprobleme hinweist.",
+        "askYourself": [
+          "Welche Botschaft versuche ich zu empfangen oder zu senden?",
+          "Gibt es Kommunikationsprobleme in meinem Leben?"
+        ]
+      },
+      "it": {
+        "slug": "telefono",
+        "name": "Telefono",
+        "shortDescription": "I telefoni rappresentano comunicazione e connessione. Un telefono che squilla può suggerire un messaggio importante, mentre uno che non funziona indica problemi di comunicazione.",
+        "askYourself": [
+          "Quale messaggio sto cercando di ricevere o inviare?",
+          "Ci sono problemi di comunicazione nella mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "communication",
+        "connection",
+        "message"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "plane",
@@ -949,22 +2280,56 @@
         "slug": "plane",
         "name": "Plane",
         "shortDescription": "A plane represents high ambitions, desire to escape, or a journey of transformation. A crashing plane can indicate fear of failure.",
-        "askYourself": ["What are my long-term goals?", "Do I need to gain perspective?"]
+        "askYourself": [
+          "What are my long-term goals?",
+          "Do I need to gain perspective?"
+        ]
       },
       "fr": {
         "slug": "avion",
         "name": "Avion",
         "shortDescription": "L'avion représente les ambitions élevées, le désir de s'échapper ou un voyage de transformation. Un avion qui s'écrase peut indiquer une peur de l'échec.",
-        "askYourself": ["Quels sont mes objectifs à long terme ?", "Est-ce que j'ai besoin de prendre de la hauteur ?"]
+        "askYourself": [
+          "Quels sont mes objectifs à long terme ?",
+          "Est-ce que j'ai besoin de prendre de la hauteur ?"
+        ]
       },
       "es": {
         "slug": "avion",
         "name": "Avión",
         "shortDescription": "Un avión representa ambiciones elevadas, deseo de escapar o un viaje de transformación. Un avión que se estrella puede indicar miedo al fracaso.",
-        "askYourself": ["¿Cuáles son mis metas a largo plazo?", "¿Necesito ganar perspectiva?"]
+        "askYourself": [
+          "¿Cuáles son mis metas a largo plazo?",
+          "¿Necesito ganar perspectiva?"
+        ]
       },
-      "relatedSymbols": ["flying", "travel", "crash"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "flugzeug",
+        "name": "Flugzeug",
+        "shortDescription": "Flugzeuge symbolisieren Ambitionen, Lebensziele und den Wunsch, sich über aktuelle Umstände zu erheben. Abstürze können Angst vor Misserfolg bei wichtigen Unternehmungen darstellen.",
+        "askYourself": [
+          "Welche großen Ambitionen verfolge ich?",
+          "Habe ich Angst, bei einem wichtigen Projekt zu scheitern?"
+        ]
+      },
+      "it": {
+        "slug": "aereo",
+        "name": "Aereo",
+        "shortDescription": "Gli aerei simboleggiano ambizioni, obiettivi di vita e il desiderio di elevarsi al di sopra delle circostanze attuali. Gli incidenti possono rappresentare la paura di fallire in imprese importanti.",
+        "askYourself": [
+          "Quali grandi ambizioni sto perseguendo?",
+          "Ho paura di fallire in un progetto importante?"
+        ]
+      },
+      "relatedSymbols": [
+        "flying",
+        "travel",
+        "crash"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "train",
@@ -974,22 +2339,56 @@
         "slug": "train",
         "name": "Train",
         "shortDescription": "A train symbolizes life's journey and its trajectory. Missing a train can indicate a missed opportunity or fear of not meeting your goals on time.",
-        "askYourself": ["Am I on the right track?", "Am I afraid of missing something?"]
+        "askYourself": [
+          "Am I on the right track?",
+          "Am I afraid of missing something?"
+        ]
       },
       "fr": {
         "slug": "train",
         "name": "Train",
         "shortDescription": "Le train symbolise le voyage de la vie et sa trajectoire. Rater un train peut indiquer une opportunité manquée ou la peur de ne pas être à l'heure dans vos objectifs.",
-        "askYourself": ["Suis-je sur la bonne trajectoire ?", "Ai-je peur de rater quelque chose ?"]
+        "askYourself": [
+          "Suis-je sur la bonne trajectoire ?",
+          "Ai-je peur de rater quelque chose ?"
+        ]
       },
       "es": {
         "slug": "tren",
         "name": "Tren",
         "shortDescription": "Un tren simboliza el viaje de la vida y su trayectoria. Perder un tren puede indicar una oportunidad perdida o miedo a no cumplir tus objetivos a tiempo.",
-        "askYourself": ["¿Estoy en el camino correcto?", "¿Tengo miedo de perderme algo?"]
+        "askYourself": [
+          "¿Estoy en el camino correcto?",
+          "¿Tengo miedo de perderme algo?"
+        ]
       },
-      "relatedSymbols": ["travel", "journey", "station"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "zug",
+        "name": "Zug",
+        "shortDescription": "Züge repräsentieren den Lebensweg, Schicksal und vorbestimmte Richtungen. Einen Zug zu verpassen kann verpasste Gelegenheiten symbolisieren, während Zugfahrten den Fortschritt auf Ihrem Lebensweg darstellen.",
+        "askYourself": [
+          "Folge ich meinem vorbestimmten Weg?",
+          "Habe ich Angst, eine wichtige Gelegenheit zu verpassen?"
+        ]
+      },
+      "it": {
+        "slug": "treno",
+        "name": "Treno",
+        "shortDescription": "I treni rappresentano il percorso di vita, il destino e le direzioni predeterminate. Perdere un treno può simboleggiare opportunità mancate, mentre viaggiare in treno rappresenta il progresso nel percorso di vita.",
+        "askYourself": [
+          "Sto seguendo il mio percorso predestinato?",
+          "Ho paura di perdere un'opportunità importante?"
+        ]
+      },
+      "relatedSymbols": [
+        "travel",
+        "journey",
+        "station"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "night",
@@ -999,22 +2398,56 @@
         "slug": "night",
         "name": "Night / Darkness",
         "shortDescription": "Night represents the unknown, hidden fears, or the subconscious. It can also symbolize a period of uncertainty or introspection.",
-        "askYourself": ["What am I not seeing clearly?", "What fears are hidden within me?"]
+        "askYourself": [
+          "What am I not seeing clearly?",
+          "What fears are hidden within me?"
+        ]
       },
       "fr": {
         "slug": "nuit",
         "name": "Nuit / Obscurité",
         "shortDescription": "La nuit représente l'inconnu, les peurs cachées ou l'inconscient. Elle peut aussi symboliser une période d'incertitude ou d'introspection.",
-        "askYourself": ["Qu'est-ce que je ne vois pas clairement ?", "Quelles peurs sont cachées en moi ?"]
+        "askYourself": [
+          "Qu'est-ce que je ne vois pas clairement ?",
+          "Quelles peurs sont cachées en moi ?"
+        ]
       },
       "es": {
         "slug": "noche",
         "name": "Noche / Oscuridad",
         "shortDescription": "La noche representa lo desconocido, miedos ocultos o el subconsciente. También puede simbolizar un período de incertidumbre o introspección.",
-        "askYourself": ["¿Qué no estoy viendo con claridad?", "¿Qué miedos están ocultos dentro de mí?"]
+        "askYourself": [
+          "¿Qué no estoy viendo con claridad?",
+          "¿Qué miedos están ocultos dentro de mí?"
+        ]
       },
-      "relatedSymbols": ["moon", "darkness", "fear"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "nacht",
+        "name": "Nacht / Dunkelheit",
+        "shortDescription": "Nacht und Dunkelheit symbolisieren das Unbekannte, verborgene Wahrheiten und das Unterbewusstsein. Sie können sowohl Angst als auch Ruhe, Geheimnis und innere Erforschung darstellen.",
+        "askYourself": [
+          "Was liegt im Verborgenen, das ich nicht sehen kann?",
+          "Welche Ängste habe ich vor dem Unbekannten?"
+        ]
+      },
+      "it": {
+        "slug": "notte",
+        "name": "Notte / Oscurità",
+        "shortDescription": "La notte e l'oscurità simboleggiano l'ignoto, verità nascoste e il subconscio. Possono rappresentare sia paura che quiete, mistero ed esplorazione interiore.",
+        "askYourself": [
+          "Cosa si nasconde nel buio che non riesco a vedere?",
+          "Quali paure ho dell'ignoto?"
+        ]
+      },
+      "relatedSymbols": [
+        "moon",
+        "darkness",
+        "fear"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "key",
@@ -1024,22 +2457,56 @@
         "slug": "key",
         "name": "Key",
         "shortDescription": "A key symbolizes access, solutions, and new opportunities. Losing a key can indicate feeling blocked or having lost an opportunity.",
-        "askYourself": ["What door am I ready to open?", "What solution am I missing?"]
+        "askYourself": [
+          "What door am I ready to open?",
+          "What solution am I missing?"
+        ]
       },
       "fr": {
         "slug": "cle",
         "name": "Clé",
         "shortDescription": "La clé symbolise l'accès, les solutions et les nouvelles opportunités. Perdre une clé peut indiquer un sentiment d'être bloqué ou d'avoir perdu une opportunité.",
-        "askYourself": ["Quelle porte suis-je prêt à ouvrir ?", "Quelle solution me manque ?"]
+        "askYourself": [
+          "Quelle porte suis-je prêt à ouvrir ?",
+          "Quelle solution me manque ?"
+        ]
       },
       "es": {
         "slug": "llave",
         "name": "Llave",
         "shortDescription": "Una llave simboliza acceso, soluciones y nuevas oportunidades. Perder una llave puede indicar sentirse bloqueado o haber perdido una oportunidad.",
-        "askYourself": ["¿Qué puerta estoy listo para abrir?", "¿Qué solución me falta?"]
+        "askYourself": [
+          "¿Qué puerta estoy listo para abrir?",
+          "¿Qué solución me falta?"
+        ]
       },
-      "relatedSymbols": ["door", "lock", "secret"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "schluessel",
+        "name": "Schlüssel",
+        "shortDescription": "Schlüssel symbolisieren Lösungen, Zugang und das Erschließen neuer Möglichkeiten. Einen Schlüssel zu finden deutet auf eine bevorstehende Entdeckung hin, ihn zu verlieren auf verpasste Chancen.",
+        "askYourself": [
+          "Welche Lösung suche ich?",
+          "Was versuche ich zu erschließen oder zu entdecken?"
+        ]
+      },
+      "it": {
+        "slug": "chiave",
+        "name": "Chiave",
+        "shortDescription": "Le chiavi simboleggiano soluzioni, accesso e l'apertura di nuove possibilità. Trovare una chiave suggerisce una scoperta imminente, perderla indica opportunità mancate.",
+        "askYourself": [
+          "Quale soluzione sto cercando?",
+          "Cosa sto cercando di aprire o scoprire?"
+        ]
+      },
+      "relatedSymbols": [
+        "door",
+        "lock",
+        "secret"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "mouth",
@@ -1049,22 +2516,56 @@
         "slug": "mouth",
         "name": "Mouth",
         "shortDescription": "The mouth represents communication, self-expression, and needs. A closed mouth can indicate difficulty expressing yourself or keeping secrets.",
-        "askYourself": ["Is there something I need to say?", "Am I holding back from expressing myself?"]
+        "askYourself": [
+          "Is there something I need to say?",
+          "Am I holding back from expressing myself?"
+        ]
       },
       "fr": {
         "slug": "bouche",
         "name": "Bouche",
         "shortDescription": "La bouche représente la communication, l'expression de soi et les besoins. Une bouche fermée peut indiquer une difficulté à s'exprimer ou des secrets gardés.",
-        "askYourself": ["Y a-t-il quelque chose que j'ai besoin de dire ?", "Est-ce que je me retiens de m'exprimer ?"]
+        "askYourself": [
+          "Y a-t-il quelque chose que j'ai besoin de dire ?",
+          "Est-ce que je me retiens de m'exprimer ?"
+        ]
       },
       "es": {
         "slug": "boca",
         "name": "Boca",
         "shortDescription": "La boca representa comunicación, expresión personal y necesidades. Una boca cerrada puede indicar dificultad para expresarse o secretos guardados.",
-        "askYourself": ["¿Hay algo que necesito decir?", "¿Me estoy conteniendo de expresarme?"]
+        "askYourself": [
+          "¿Hay algo que necesito decir?",
+          "¿Me estoy conteniendo de expresarme?"
+        ]
       },
-      "relatedSymbols": ["teeth", "voice", "communication"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "mund",
+        "name": "Mund",
+        "shortDescription": "Der Mund symbolisiert Kommunikation, Ausdruck und Aufnahme. Er kann den Wunsch darstellen, gehört zu werden, oder die Schwierigkeit, sich auszudrücken.",
+        "askYourself": [
+          "Was möchte ich sagen, aber kann es nicht?",
+          "Höre ich anderen wirklich zu?"
+        ]
+      },
+      "it": {
+        "slug": "bocca",
+        "name": "Bocca",
+        "shortDescription": "La bocca simboleggia comunicazione, espressione e nutrimento. Può rappresentare il desiderio di essere ascoltati o la difficoltà di esprimersi.",
+        "askYourself": [
+          "Cosa vorrei dire ma non riesco?",
+          "Sto davvero ascoltando gli altri?"
+        ]
+      },
+      "relatedSymbols": [
+        "teeth",
+        "voice",
+        "communication"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "wedding",
@@ -1074,22 +2575,56 @@
         "slug": "wedding",
         "name": "Wedding",
         "shortDescription": "Dreams about weddings often symbolize commitment, new beginnings, or significant life transitions beyond marriage.",
-        "askYourself": ["What commitment am I making or considering?", "What new chapter is beginning in my life?"]
+        "askYourself": [
+          "What commitment am I making or considering?",
+          "What new chapter is beginning in my life?"
+        ]
       },
       "fr": {
         "slug": "mariage",
         "name": "Mariage",
         "shortDescription": "Les rêves de mariage symbolisent souvent l'engagement, les nouveaux départs ou des transitions importantes au-delà du mariage.",
-        "askYourself": ["Quel engagement suis-je en train de prendre ou de considérer ?", "Quel nouveau chapitre commence dans ma vie ?"]
+        "askYourself": [
+          "Quel engagement suis-je en train de prendre ou de considérer ?",
+          "Quel nouveau chapitre commence dans ma vie ?"
+        ]
       },
       "es": {
         "slug": "boda",
         "name": "Boda",
         "shortDescription": "Los sueños sobre bodas simbolizan compromiso, nuevos comienzos o transiciones importantes más allá del matrimonio.",
-        "askYourself": ["¿Qué compromiso estoy haciendo o considerando?", "¿Qué nuevo capítulo está comenzando en mi vida?"]
+        "askYourself": [
+          "¿Qué compromiso estoy haciendo o considerando?",
+          "¿Qué nuevo capítulo está comenzando en mi vida?"
+        ]
       },
-      "relatedSymbols": ["ring", "dress", "ceremony"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "hochzeit",
+        "name": "Hochzeit",
+        "shortDescription": "Hochzeiten symbolisieren Vereinigung, Bindung und das Zusammenbringen verschiedener Aspekte des Selbst. Sie können neue Partnerschaften, Verpflichtungen oder innere Integration darstellen.",
+        "askYourself": [
+          "Welche Aspekte meines Lebens integriere ich?",
+          "Bin ich bereit für eine tiefere Bindung?"
+        ]
+      },
+      "it": {
+        "slug": "matrimonio",
+        "name": "Matrimonio",
+        "shortDescription": "I matrimoni simboleggiano unione, impegno e l'unione di diversi aspetti del sé. Possono rappresentare nuove partnership, impegni o integrazione interiore.",
+        "askYourself": [
+          "Quali aspetti della mia vita sto integrando?",
+          "Sono pronto per un impegno più profondo?"
+        ]
+      },
+      "relatedSymbols": [
+        "ring",
+        "dress",
+        "ceremony"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "hospital",
@@ -1099,22 +2634,56 @@
         "slug": "hospital",
         "name": "Hospital",
         "shortDescription": "Hospitals in dreams often represent healing, health concerns, or need for emotional care and attention.",
-        "askYourself": ["What needs healing in my life?", "Am I neglecting my physical or emotional health?"]
+        "askYourself": [
+          "What needs healing in my life?",
+          "Am I neglecting my physical or emotional health?"
+        ]
       },
       "fr": {
         "slug": "hopital",
         "name": "Hôpital",
         "shortDescription": "L'hôpital dans les rêves représente souvent la guérison, les préoccupations de santé ou le besoin de soins émotionnels.",
-        "askYourself": ["Qu'est-ce qui a besoin de guérison dans ma vie ?", "Est-ce que je néglige ma santé physique ou émotionnelle ?"]
+        "askYourself": [
+          "Qu'est-ce qui a besoin de guérison dans ma vie ?",
+          "Est-ce que je néglige ma santé physique ou émotionnelle ?"
+        ]
       },
       "es": {
         "slug": "hospital",
         "name": "Hospital",
         "shortDescription": "Los hospitales en sueños representan sanación, preocupaciones de salud o necesidad de cuidado emocional.",
-        "askYourself": ["¿Qué necesita sanación en mi vida?", "¿Estoy descuidando mi salud física o emocional?"]
+        "askYourself": [
+          "¿Qué necesita sanación en mi vida?",
+          "¿Estoy descuidando mi salud física o emocional?"
+        ]
       },
-      "relatedSymbols": ["doctor", "illness", "healing"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "krankenhaus",
+        "name": "Krankenhaus",
+        "shortDescription": "Krankenhäuser symbolisieren Heilung, Genesung und die Notwendigkeit, sich um Ihre körperliche oder emotionale Gesundheit zu kümmern. Sie können auch Angst vor Krankheit oder Verletzlichkeit darstellen.",
+        "askYourself": [
+          "Welcher Aspekt meines Lebens braucht Heilung?",
+          "Kümmere ich mich ausreichend um meine Gesundheit?"
+        ]
+      },
+      "it": {
+        "slug": "ospedale",
+        "name": "Ospedale",
+        "shortDescription": "Gli ospedali simboleggiano guarigione, recupero e il bisogno di prendersi cura della salute fisica o emotiva. Possono anche rappresentare paura della malattia o vulnerabilità.",
+        "askYourself": [
+          "Quale aspetto della mia vita ha bisogno di guarigione?",
+          "Mi sto prendendo abbastanza cura della mia salute?"
+        ]
+      },
+      "relatedSymbols": [
+        "doctor",
+        "illness",
+        "healing"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "running",
@@ -1124,22 +2693,56 @@
         "slug": "running",
         "name": "Running",
         "shortDescription": "Running in dreams can symbolize escape, pursuit of goals, or urgency in life. Context determines whether it's fleeing or chasing.",
-        "askYourself": ["What am I running from or toward?", "Is there urgency in my waking life?"]
+        "askYourself": [
+          "What am I running from or toward?",
+          "Is there urgency in my waking life?"
+        ]
       },
       "fr": {
         "slug": "courir",
         "name": "Courir",
         "shortDescription": "Courir dans les rêves peut symboliser la fuite, la poursuite d'objectifs ou l'urgence. Le contexte détermine si c'est fuir ou poursuivre.",
-        "askYourself": ["Qu'est-ce que je fuis ou poursuis ?", "Y a-t-il une urgence dans ma vie éveillée ?"]
+        "askYourself": [
+          "Qu'est-ce que je fuis ou poursuis ?",
+          "Y a-t-il une urgence dans ma vie éveillée ?"
+        ]
       },
       "es": {
         "slug": "correr",
         "name": "Correr",
         "shortDescription": "Correr en sueños puede simbolizar escape, búsqueda de metas o urgencia. El contexto determina si es huir o perseguir.",
-        "askYourself": ["¿De qué estoy huyendo o hacia qué corro?", "¿Hay urgencia en mi vida despierta?"]
+        "askYourself": [
+          "¿De qué estoy huyendo o hacia qué corro?",
+          "¿Hay urgencia en mi vida despierta?"
+        ]
       },
-      "relatedSymbols": ["chase", "escape", "marathon"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "rennen",
+        "name": "Rennen",
+        "shortDescription": "Rennen in Träumen symbolisiert Dringlichkeit, Flucht oder das Streben nach einem Ziel. Die Fähigkeit oder Unfähigkeit zu rennen spiegelt Ihr Gefühl von Kontrolle und Fortschritt wider.",
+        "askYourself": [
+          "Vor was renne ich weg?",
+          "Auf welches Ziel bewege ich mich zu?"
+        ]
+      },
+      "it": {
+        "slug": "correre",
+        "name": "Correre",
+        "shortDescription": "Correre nei sogni simboleggia urgenza, fuga o il perseguimento di un obiettivo. La capacità o incapacità di correre riflette il tuo senso di controllo e progresso.",
+        "askYourself": [
+          "Da cosa sto scappando?",
+          "Verso quale obiettivo mi sto muovendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "chase",
+        "escape",
+        "marathon"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "school",
@@ -1149,22 +2752,56 @@
         "slug": "school",
         "name": "School",
         "shortDescription": "Schools in dreams often represent learning, evaluation, social anxiety, or revisiting past experiences and lessons.",
-        "askYourself": ["What lesson am I learning?", "Am I being tested or evaluated in some way?"]
+        "askYourself": [
+          "What lesson am I learning?",
+          "Am I being tested or evaluated in some way?"
+        ]
       },
       "fr": {
         "slug": "ecole",
         "name": "École",
         "shortDescription": "L'école dans les rêves représente souvent l'apprentissage, l'évaluation, l'anxiété sociale ou la revisite d'expériences passées.",
-        "askYourself": ["Quelle leçon suis-je en train d'apprendre ?", "Suis-je testé ou évalué d'une manière ou d'une autre ?"]
+        "askYourself": [
+          "Quelle leçon suis-je en train d'apprendre ?",
+          "Suis-je testé ou évalué d'une manière ou d'une autre ?"
+        ]
       },
       "es": {
         "slug": "escuela",
         "name": "Escuela",
         "shortDescription": "La escuela en sueños representa aprendizaje, evaluación, ansiedad social o revisitar experiencias pasadas.",
-        "askYourself": ["¿Qué lección estoy aprendiendo?", "¿Estoy siendo probado o evaluado de alguna manera?"]
+        "askYourself": [
+          "¿Qué lección estoy aprendiendo?",
+          "¿Estoy siendo probado o evaluado de alguna manera?"
+        ]
       },
-      "relatedSymbols": ["exam", "classroom", "teacher"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "schule",
+        "name": "Schule",
+        "shortDescription": "Schulen repräsentieren Lernen, persönliches Wachstum und Lebenslektionen. In die Schule zurückzukehren deutet auf unabgeschlossene Lektionen oder den Wunsch nach Selbstverbesserung hin.",
+        "askYourself": [
+          "Welche Lektion versuche ich zu lernen?",
+          "Welche Fähigkeiten muss ich entwickeln?"
+        ]
+      },
+      "it": {
+        "slug": "scuola",
+        "name": "Scuola",
+        "shortDescription": "Le scuole rappresentano apprendimento, crescita personale e lezioni di vita. Tornare a scuola suggerisce lezioni incompiute o il desiderio di miglioramento personale.",
+        "askYourself": [
+          "Quale lezione sto cercando di imparare?",
+          "Quali competenze devo sviluppare?"
+        ]
+      },
+      "relatedSymbols": [
+        "exam",
+        "classroom",
+        "teacher"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "pregnancy",
@@ -1174,22 +2811,59 @@
         "slug": "pregnancy",
         "name": "Pregnancy",
         "shortDescription": "Pregnancy dreams symbolize creation, new projects, potential, or major life changes developing within you.",
-        "askYourself": ["What am I creating or developing?", "What new aspect of myself is growing?"]
+        "askYourself": [
+          "What am I creating or developing?",
+          "What new aspect of myself is growing?"
+        ]
       },
       "fr": {
         "slug": "grossesse",
         "name": "Grossesse",
         "shortDescription": "Les rêves de grossesse symbolisent la création, de nouveaux projets, le potentiel ou des changements majeurs se développant en vous.",
-        "askYourself": ["Qu'est-ce que je crée ou développe ?", "Quel nouvel aspect de moi-même grandit ?"]
+        "askYourself": [
+          "Qu'est-ce que je crée ou développe ?",
+          "Quel nouvel aspect de moi-même grandit ?"
+        ]
       },
       "es": {
         "slug": "embarazo",
         "name": "Embarazo",
         "shortDescription": "Los sueños de embarazo simbolizan creación, nuevos proyectos, potencial o cambios importantes desarrollándose.",
-        "askYourself": ["¿Qué estoy creando o desarrollando?", "¿Qué nuevo aspecto de mí está creciendo?"]
+        "askYourself": [
+          "¿Qué estoy creando o desarrollando?",
+          "¿Qué nuevo aspecto de mí está creciendo?"
+        ]
       },
-      "relatedSymbols": ["baby", "birth", "creation"],
-      "relatedArticles": { "en": "pregnancy-dreams-meaning", "fr": "reves-de-grossesse", "es": "suenos-de-embarazo" }
+      "de": {
+        "slug": "schwangerschaft",
+        "name": "Schwangerschaft",
+        "shortDescription": "Schwangerschaft symbolisiert Kreativität, neue Ideen und die Entwicklung von etwas Neuem in Ihrem Leben. Sie kann Projekte, Beziehungen oder persönliches Wachstum darstellen.",
+        "askYourself": [
+          "Was entwickelt sich Neues in meinem Leben?",
+          "Welches kreative Projekt nähre ich?"
+        ]
+      },
+      "it": {
+        "slug": "gravidanza",
+        "name": "Gravidanza",
+        "shortDescription": "La gravidanza simboleggia creatività, nuove idee e lo sviluppo di qualcosa di nuovo nella vita. Può rappresentare progetti, relazioni o crescita personale.",
+        "askYourself": [
+          "Cosa si sta sviluppando di nuovo nella mia vita?",
+          "Quale progetto creativo sto nutrendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "baby",
+        "birth",
+        "creation"
+      ],
+      "relatedArticles": {
+        "en": "pregnancy-dreams-meaning",
+        "fr": "reves-de-grossesse",
+        "es": "suenos-de-embarazo",
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "swimming",
@@ -1199,22 +2873,56 @@
         "slug": "swimming",
         "name": "Swimming",
         "shortDescription": "Swimming in dreams represents navigating through emotions and life's challenges. Ease or difficulty swimming reflects your emotional coping abilities.",
-        "askYourself": ["How am I handling my emotional life?", "Am I staying afloat or struggling with my feelings?"]
+        "askYourself": [
+          "How am I handling my emotional life?",
+          "Am I staying afloat or struggling with my feelings?"
+        ]
       },
       "fr": {
         "slug": "nager",
         "name": "Nager",
         "shortDescription": "Nager dans les rêves représente la navigation à travers les émotions et les défis de la vie. La facilité ou difficulté à nager reflète vos capacités d'adaptation émotionnelle.",
-        "askYourself": ["Comment je gère ma vie émotionnelle ?", "Est-ce que je reste à flot ou je lutte avec mes sentiments ?"]
+        "askYourself": [
+          "Comment je gère ma vie émotionnelle ?",
+          "Est-ce que je reste à flot ou je lutte avec mes sentiments ?"
+        ]
       },
       "es": {
         "slug": "nadar",
         "name": "Nadar",
         "shortDescription": "Nadar en sueños representa navegar a través de emociones y desafíos de la vida. La facilidad o dificultad para nadar refleja tus capacidades de afrontamiento emocional.",
-        "askYourself": ["¿Cómo estoy manejando mi vida emocional?", "¿Me mantengo a flote o lucho con mis sentimientos?"]
+        "askYourself": [
+          "¿Cómo estoy manejando mi vida emocional?",
+          "¿Me mantengo a flote o lucho con mis sentimientos?"
+        ]
       },
-      "relatedSymbols": ["water", "ocean", "drowning"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "schwimmen",
+        "name": "Schwimmen",
+        "shortDescription": "Schwimmen repräsentiert das Navigieren durch Emotionen und das Eintauchen in das Unterbewusstsein. Leichtes Schwimmen deutet auf emotionale Kompetenz hin, Schwierigkeiten auf emotionale Herausforderungen.",
+        "askYourself": [
+          "Wie gut navigiere ich durch meine Emotionen?",
+          "Fühle ich mich wohl in meiner emotionalen Tiefe?"
+        ]
+      },
+      "it": {
+        "slug": "nuotare",
+        "name": "Nuotare",
+        "shortDescription": "Nuotare rappresenta il navigare attraverso le emozioni e l'immersione nel subconscio. Nuotare con facilità indica competenza emotiva, difficoltà indicano sfide emotive.",
+        "askYourself": [
+          "Quanto bene navigo attraverso le mie emozioni?",
+          "Mi sento a mio agio nella mia profondità emotiva?"
+        ]
+      },
+      "relatedSymbols": [
+        "water",
+        "ocean",
+        "drowning"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "crying",
@@ -1224,22 +2932,56 @@
         "slug": "crying",
         "name": "Crying",
         "shortDescription": "Crying in dreams often represents emotional release, healing, or unexpressed feelings seeking acknowledgment. It can be a cathartic experience.",
-        "askYourself": ["What emotions am I holding back?", "What needs to be released or expressed?"]
+        "askYourself": [
+          "What emotions am I holding back?",
+          "What needs to be released or expressed?"
+        ]
       },
       "fr": {
         "slug": "pleurer",
         "name": "Pleurer",
         "shortDescription": "Pleurer dans les rêves représente souvent une libération émotionnelle, une guérison ou des sentiments non exprimés cherchant à être reconnus. Cela peut être une expérience cathartique.",
-        "askYourself": ["Quelles émotions est-ce que je retiens ?", "Qu'est-ce qui a besoin d'être libéré ou exprimé ?"]
+        "askYourself": [
+          "Quelles émotions est-ce que je retiens ?",
+          "Qu'est-ce qui a besoin d'être libéré ou exprimé ?"
+        ]
       },
       "es": {
         "slug": "llorar",
         "name": "Llorar",
         "shortDescription": "Llorar en sueños representa liberación emocional, sanación o sentimientos no expresados buscando reconocimiento. Puede ser una experiencia catártica.",
-        "askYourself": ["¿Qué emociones estoy reprimiendo?", "¿Qué necesita ser liberado o expresado?"]
+        "askYourself": [
+          "¿Qué emociones estoy reprimiendo?",
+          "¿Qué necesita ser liberado o expresado?"
+        ]
       },
-      "relatedSymbols": ["tears", "sadness", "grief"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "weinen",
+        "name": "Weinen",
+        "shortDescription": "Weinen in Träumen deutet auf emotionale Befreiung, unterdrückte Gefühle und die Notwendigkeit hin, Emotionen Ausdruck zu verleihen. Es kann sowohl Trauer als auch Erleichterung darstellen.",
+        "askYourself": [
+          "Welche Emotionen unterdrücke ich?",
+          "Was braucht emotionalen Ausdruck in meinem Leben?"
+        ]
+      },
+      "it": {
+        "slug": "piangere",
+        "name": "Piangere",
+        "shortDescription": "Piangere nei sogni indica rilascio emotivo, sentimenti repressi e il bisogno di esprimere le emozioni. Può rappresentare sia dolore che sollievo.",
+        "askYourself": [
+          "Quali emozioni sto reprimendo?",
+          "Cosa ha bisogno di espressione emotiva nella mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "tears",
+        "sadness",
+        "grief"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "elevator",
@@ -1249,22 +2991,56 @@
         "slug": "elevator",
         "name": "Elevator",
         "shortDescription": "Elevators symbolize transitions, social mobility, and changes in life status. Going up suggests advancement; going down may indicate setbacks or exploring deeper levels.",
-        "askYourself": ["What transition am I experiencing?", "Am I moving up or down in some area of life?"]
+        "askYourself": [
+          "What transition am I experiencing?",
+          "Am I moving up or down in some area of life?"
+        ]
       },
       "fr": {
         "slug": "ascenseur",
         "name": "Ascenseur",
         "shortDescription": "L'ascenseur symbolise les transitions, la mobilité sociale et les changements de statut dans la vie. Monter suggère une avancée ; descendre peut indiquer des revers ou l'exploration de niveaux plus profonds.",
-        "askYourself": ["Quelle transition est-ce que je vis ?", "Est-ce que je monte ou descends dans un domaine de ma vie ?"]
+        "askYourself": [
+          "Quelle transition est-ce que je vis ?",
+          "Est-ce que je monte ou descends dans un domaine de ma vie ?"
+        ]
       },
       "es": {
         "slug": "ascensor",
         "name": "Ascensor",
         "shortDescription": "Los ascensores simbolizan transiciones, movilidad social y cambios en el estatus de vida. Subir sugiere avance; bajar puede indicar retrocesos o exploración de niveles más profundos.",
-        "askYourself": ["¿Qué transición estoy experimentando?", "¿Estoy subiendo o bajando en algún área de la vida?"]
+        "askYourself": [
+          "¿Qué transición estoy experimentando?",
+          "¿Estoy subiendo o bajando en algún área de la vida?"
+        ]
       },
-      "relatedSymbols": ["stairs", "building", "height"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "aufzug",
+        "name": "Aufzug",
+        "shortDescription": "Aufzüge symbolisieren schnelle Veränderungen im Status, Bewusstseinsebenen oder Lebenssituationen. Aufwärtsfahrten deuten auf Aufstieg hin, Abwärtsfahrten auf Abstieg oder Selbsterforschung.",
+        "askYourself": [
+          "Erlebe ich schnelle Veränderungen?",
+          "In welche Richtung bewegt sich mein Leben?"
+        ]
+      },
+      "it": {
+        "slug": "ascensore",
+        "name": "Ascensore",
+        "shortDescription": "Gli ascensori simboleggiano cambiamenti rapidi di status, livelli di coscienza o situazioni di vita. Salire indica ascesa, scendere può indicare declino o autoesplorazione.",
+        "askYourself": [
+          "Sto vivendo cambiamenti rapidi?",
+          "In quale direzione si sta muovendo la mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "stairs",
+        "building",
+        "height"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "cliff",
@@ -1274,22 +3050,56 @@
         "slug": "cliff",
         "name": "Cliff",
         "shortDescription": "Cliffs represent major decisions, danger, or standing at the edge of significant change. They symbolize risk-taking and the fear of taking the next step.",
-        "askYourself": ["What decision am I facing?", "What risk am I afraid to take?"]
+        "askYourself": [
+          "What decision am I facing?",
+          "What risk am I afraid to take?"
+        ]
       },
       "fr": {
         "slug": "falaise",
         "name": "Falaise",
         "shortDescription": "Les falaises représentent des décisions majeures, le danger ou se tenir au bord d'un changement significatif. Elles symbolisent la prise de risque et la peur de faire le prochain pas.",
-        "askYourself": ["Quelle décision suis-je en train d'affronter ?", "Quel risque ai-je peur de prendre ?"]
+        "askYourself": [
+          "Quelle décision suis-je en train d'affronter ?",
+          "Quel risque ai-je peur de prendre ?"
+        ]
       },
       "es": {
         "slug": "acantilado",
         "name": "Acantilado",
         "shortDescription": "Los acantilados representan decisiones importantes, peligro o estar al borde de un cambio significativo. Simbolizan tomar riesgos y el miedo a dar el siguiente paso.",
-        "askYourself": ["¿Qué decisión estoy enfrentando?", "¿Qué riesgo tengo miedo de tomar?"]
+        "askYourself": [
+          "¿Qué decisión estoy enfrentando?",
+          "¿Qué riesgo tengo miedo de tomar?"
+        ]
       },
-      "relatedSymbols": ["edge", "falling", "mountain"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "klippe",
+        "name": "Klippe",
+        "shortDescription": "Klippen symbolisieren Grenzpunkte, schwierige Entscheidungen und die Angst vor dem Unbekannten. Am Rand einer Klippe zu stehen deutet auf einen kritischen Wendepunkt hin.",
+        "askYourself": [
+          "Stehe ich vor einer wichtigen Entscheidung?",
+          "Was ist der nächste Schritt, den ich wagen muss?"
+        ]
+      },
+      "it": {
+        "slug": "scogliera",
+        "name": "Scogliera",
+        "shortDescription": "Le scogliere simboleggiano punti limite, decisioni difficili e la paura dell'ignoto. Stare sul bordo di una scogliera indica un punto di svolta critico.",
+        "askYourself": [
+          "Mi trovo di fronte a una decisione importante?",
+          "Qual è il prossimo passo che devo osare?"
+        ]
+      },
+      "relatedSymbols": [
+        "edge",
+        "falling",
+        "mountain"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "lost",
@@ -1299,22 +3109,56 @@
         "slug": "lost",
         "name": "Being Lost",
         "shortDescription": "Being lost in dreams symbolizes confusion, lack of direction, or uncertainty about life path. It often reflects feelings of being overwhelmed or disconnected from purpose.",
-        "askYourself": ["Where do I feel directionless in my life?", "What guidance or clarity do I need?"]
+        "askYourself": [
+          "Where do I feel directionless in my life?",
+          "What guidance or clarity do I need?"
+        ]
       },
       "fr": {
         "slug": "perdu",
         "name": "Être Perdu",
         "shortDescription": "Être perdu dans les rêves symbolise la confusion, le manque de direction ou l'incertitude sur le chemin de vie. Cela reflète souvent un sentiment d'être dépassé ou déconnecté de son but.",
-        "askYourself": ["Où est-ce que je me sens sans direction dans ma vie ?", "Quel guidage ou clarté ai-je besoin ?"]
+        "askYourself": [
+          "Où est-ce que je me sens sans direction dans ma vie ?",
+          "Quel guidage ou clarté ai-je besoin ?"
+        ]
       },
       "es": {
         "slug": "perdido",
         "name": "Estar Perdido",
         "shortDescription": "Estar perdido en sueños simboliza confusión, falta de dirección o incertidumbre sobre el camino de vida. Refleja sentimientos de estar abrumado o desconectado del propósito.",
-        "askYourself": ["¿Dónde me siento sin dirección en mi vida?", "¿Qué guía o claridad necesito?"]
+        "askYourself": [
+          "¿Dónde me siento sin dirección en mi vida?",
+          "¿Qué guía o claridad necesito?"
+        ]
       },
-      "relatedSymbols": ["maze", "path", "wandering"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "verirrt",
+        "name": "Sich verirren",
+        "shortDescription": "Sich zu verirren repräsentiert Verwirrung, fehlende Richtung und die Suche nach Sinn. Es kann darauf hinweisen, dass Sie sich von Ihren Zielen oder Ihrem wahren Selbst entfernt haben.",
+        "askYourself": [
+          "Wo fühle ich mich orientierungslos?",
+          "Was habe ich aus den Augen verloren?"
+        ]
+      },
+      "it": {
+        "slug": "perdersi",
+        "name": "Perdersi",
+        "shortDescription": "Perdersi rappresenta confusione, mancanza di direzione e la ricerca di significato. Può indicare che ti sei allontanato dai tuoi obiettivi o dal tuo vero sé.",
+        "askYourself": [
+          "Dove mi sento disorientato?",
+          "Cosa ho perso di vista?"
+        ]
+      },
+      "relatedSymbols": [
+        "maze",
+        "path",
+        "wandering"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "wolf",
@@ -1324,22 +3168,56 @@
         "slug": "wolf",
         "name": "Wolf",
         "shortDescription": "Wolves in dreams symbolize instinct, pack mentality, and untamed aspects of the self. They can represent both danger and loyalty depending on the dream context.",
-        "askYourself": ["What instincts am I suppressing?", "How do I relate to my community or pack?"]
+        "askYourself": [
+          "What instincts am I suppressing?",
+          "How do I relate to my community or pack?"
+        ]
       },
       "fr": {
         "slug": "loup",
         "name": "Loup",
         "shortDescription": "Les loups dans les rêves symbolisent l'instinct, la mentalité de meute et les aspects sauvages du soi. Ils peuvent représenter à la fois le danger et la loyauté selon le contexte du rêve.",
-        "askYourself": ["Quels instincts est-ce que je réprime ?", "Comment je me rapporte à ma communauté ou ma meute ?"]
+        "askYourself": [
+          "Quels instincts est-ce que je réprime ?",
+          "Comment je me rapporte à ma communauté ou ma meute ?"
+        ]
       },
       "es": {
         "slug": "lobo",
         "name": "Lobo",
         "shortDescription": "Los lobos en sueños simbolizan el instinto, la mentalidad de manada y aspectos salvajes del yo. Pueden representar tanto peligro como lealtad según el contexto del sueño.",
-        "askYourself": ["¿Qué instintos estoy suprimiendo?", "¿Cómo me relaciono con mi comunidad o manada?"]
+        "askYourself": [
+          "¿Qué instintos estoy suprimiendo?",
+          "¿Cómo me relaciono con mi comunidad o manada?"
+        ]
       },
-      "relatedSymbols": ["dog", "animal", "pack"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "wolf",
+        "name": "Wolf",
+        "shortDescription": "Wölfe in Träumen symbolisieren Instinkt, Rudelmentalität und ungezähmte Aspekte des Selbst. Sie können je nach Traumkontext sowohl Gefahr als auch Loyalität darstellen.",
+        "askYourself": [
+          "Welche Instinkte unterdrücke ich?",
+          "Wie stehe ich zu meiner Gemeinschaft oder meinem Rudel?"
+        ]
+      },
+      "it": {
+        "slug": "lupo",
+        "name": "Lupo",
+        "shortDescription": "I lupi nei sogni simboleggiano istinto, mentalità di branco e aspetti selvaggi del sé. Possono rappresentare sia pericolo che lealtà a seconda del contesto del sogno.",
+        "askYourself": [
+          "Quali istinti sto sopprimendo?",
+          "Come mi relaziono con la mia comunità o il mio branco?"
+        ]
+      },
+      "relatedSymbols": [
+        "dog",
+        "animal",
+        "pack"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "horse",
@@ -1349,22 +3227,56 @@
         "slug": "horse",
         "name": "Horse",
         "shortDescription": "Horses represent freedom, power, and life's journey. They symbolize personal strength, sexual energy, and the desire to move forward in life.",
-        "askYourself": ["Where do I need more freedom in my life?", "What journey am I on?"]
+        "askYourself": [
+          "Where do I need more freedom in my life?",
+          "What journey am I on?"
+        ]
       },
       "fr": {
         "slug": "cheval",
         "name": "Cheval",
         "shortDescription": "Les chevaux représentent la liberté, la puissance et le voyage de la vie. Ils symbolisent la force personnelle, l'énergie sexuelle et le désir d'avancer dans la vie.",
-        "askYourself": ["Où ai-je besoin de plus de liberté dans ma vie ?", "Quel voyage suis-je en train de faire ?"]
+        "askYourself": [
+          "Où ai-je besoin de plus de liberté dans ma vie ?",
+          "Quel voyage suis-je en train de faire ?"
+        ]
       },
       "es": {
         "slug": "caballo",
         "name": "Caballo",
         "shortDescription": "Los caballos representan libertad, poder y el viaje de la vida. Simbolizan fuerza personal, energía sexual y el deseo de avanzar en la vida.",
-        "askYourself": ["¿Dónde necesito más libertad en mi vida?", "¿Qué viaje estoy haciendo?"]
+        "askYourself": [
+          "¿Dónde necesito más libertad en mi vida?",
+          "¿Qué viaje estoy haciendo?"
+        ]
       },
-      "relatedSymbols": ["animal", "running", "freedom"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "pferd",
+        "name": "Pferd",
+        "shortDescription": "Pferde repräsentieren Freiheit, Kraft und die Lebensreise. Sie symbolisieren persönliche Stärke, sexuelle Energie und den Wunsch, im Leben voranzukommen.",
+        "askYourself": [
+          "Wo brauche ich mehr Freiheit in meinem Leben?",
+          "Auf welcher Reise befinde ich mich?"
+        ]
+      },
+      "it": {
+        "slug": "cavallo",
+        "name": "Cavallo",
+        "shortDescription": "I cavalli rappresentano libertà, potenza e il viaggio della vita. Simboleggiano forza personale, energia sessuale e il desiderio di andare avanti nella vita.",
+        "askYourself": [
+          "Dove ho bisogno di più libertà nella mia vita?",
+          "Quale viaggio sto facendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "animal",
+        "running",
+        "freedom"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "ex-partner",
@@ -1374,22 +3286,56 @@
         "slug": "ex-partner",
         "name": "Ex-Partner",
         "shortDescription": "Dreaming of an ex-partner often represents unresolved feelings, lessons from past relationships, or aspects of yourself you associate with that person rather than literal desire to reconnect.",
-        "askYourself": ["What unresolved feelings do I still have?", "What did this relationship teach me?"]
+        "askYourself": [
+          "What unresolved feelings do I still have?",
+          "What did this relationship teach me?"
+        ]
       },
       "fr": {
         "slug": "ex-partenaire",
         "name": "Ex-Partenaire",
         "shortDescription": "Rêver d'un ex-partenaire représente souvent des sentiments non résolus, des leçons de relations passées ou des aspects de vous-même que vous associez à cette personne plutôt qu'un désir littéral de se reconnecter.",
-        "askYourself": ["Quels sentiments non résolus ai-je encore ?", "Qu'est-ce que cette relation m'a appris ?"]
+        "askYourself": [
+          "Quels sentiments non résolus ai-je encore ?",
+          "Qu'est-ce que cette relation m'a appris ?"
+        ]
       },
       "es": {
         "slug": "ex-pareja",
         "name": "Ex-Pareja",
         "shortDescription": "Soñar con una ex-pareja a menudo representa sentimientos no resueltos, lecciones de relaciones pasadas o aspectos de ti mismo que asocias con esa persona en lugar de un deseo literal de reconectar.",
-        "askYourself": ["¿Qué sentimientos no resueltos todavía tengo?", "¿Qué me enseñó esta relación?"]
+        "askYourself": [
+          "¿Qué sentimientos no resueltos todavía tengo?",
+          "¿Qué me enseñó esta relación?"
+        ]
       },
-      "relatedSymbols": ["relationship", "love", "past"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "ex-partner",
+        "name": "Ex-Partner/in",
+        "shortDescription": "Von einem Ex-Partner zu träumen steht oft für ungelöste Gefühle, Lektionen aus vergangenen Beziehungen oder Aspekte Ihrer selbst, die Sie mit dieser Person verbinden.",
+        "askYourself": [
+          "Welche ungelösten Gefühle habe ich noch?",
+          "Was hat mich diese Beziehung gelehrt?"
+        ]
+      },
+      "it": {
+        "slug": "ex-partner",
+        "name": "Ex partner",
+        "shortDescription": "Sognare un ex partner spesso rappresenta sentimenti irrisolti, lezioni da relazioni passate o aspetti di te stesso che associ a quella persona.",
+        "askYourself": [
+          "Quali sentimenti irrisolti ho ancora?",
+          "Cosa mi ha insegnato questa relazione?"
+        ]
+      },
+      "relatedSymbols": [
+        "relationship",
+        "love",
+        "past"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "rainbow",
@@ -1399,22 +3345,56 @@
         "slug": "rainbow",
         "name": "Rainbow",
         "shortDescription": "Rainbows symbolize hope, transformation, and promise after difficult times. They represent the beauty that emerges after storms and the connection between heaven and earth.",
-        "askYourself": ["What hope is emerging after a difficult period?", "What transformation am I experiencing?"]
+        "askYourself": [
+          "What hope is emerging after a difficult period?",
+          "What transformation am I experiencing?"
+        ]
       },
       "fr": {
         "slug": "arc-en-ciel",
         "name": "Arc-en-ciel",
         "shortDescription": "Les arcs-en-ciel symbolisent l'espoir, la transformation et la promesse après des moments difficiles. Ils représentent la beauté qui émerge après les tempêtes et le lien entre le ciel et la terre.",
-        "askYourself": ["Quel espoir émerge après une période difficile ?", "Quelle transformation suis-je en train de vivre ?"]
+        "askYourself": [
+          "Quel espoir émerge après une période difficile ?",
+          "Quelle transformation suis-je en train de vivre ?"
+        ]
       },
       "es": {
         "slug": "arcoiris",
         "name": "Arcoíris",
         "shortDescription": "Los arcoíris simbolizan esperanza, transformación y promesa después de tiempos difíciles. Representan la belleza que emerge después de las tormentas y la conexión entre cielo y tierra.",
-        "askYourself": ["¿Qué esperanza está emergiendo después de un período difícil?", "¿Qué transformación estoy experimentando?"]
+        "askYourself": [
+          "¿Qué esperanza está emergiendo después de un período difícil?",
+          "¿Qué transformación estoy experimentando?"
+        ]
       },
-      "relatedSymbols": ["rain", "storm", "sky"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "regenbogen",
+        "name": "Regenbogen",
+        "shortDescription": "Regenbögen symbolisieren Hoffnung, Transformation und Versprechen nach schwierigen Zeiten. Sie stehen für die Schönheit, die nach Stürmen entsteht.",
+        "askYourself": [
+          "Welche Hoffnung entsteht nach einer schwierigen Zeit?",
+          "Welche Transformation erlebe ich gerade?"
+        ]
+      },
+      "it": {
+        "slug": "arcobaleno",
+        "name": "Arcobaleno",
+        "shortDescription": "Gli arcobaleni simboleggiano speranza, trasformazione e promessa dopo tempi difficili. Rappresentano la bellezza che emerge dopo le tempeste.",
+        "askYourself": [
+          "Quale speranza sta emergendo dopo un periodo difficile?",
+          "Quale trasformazione sto vivendo?"
+        ]
+      },
+      "relatedSymbols": [
+        "rain",
+        "storm",
+        "sky"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     },
     {
       "id": "storm",
@@ -1424,22 +3404,56 @@
         "slug": "storm",
         "name": "Storm",
         "shortDescription": "Storms symbolize emotional turbulence, dramatic change, and powerful forces beyond your control. They can represent both destruction and necessary cleansing.",
-        "askYourself": ["What emotional turbulence am I experiencing?", "What needs to be cleared away in my life?"]
+        "askYourself": [
+          "What emotional turbulence am I experiencing?",
+          "What needs to be cleared away in my life?"
+        ]
       },
       "fr": {
         "slug": "orage",
         "name": "Orage",
         "shortDescription": "Les orages symbolisent la turbulence émotionnelle, le changement dramatique et les forces puissantes hors de votre contrôle. Ils peuvent représenter à la fois la destruction et la purification nécessaire.",
-        "askYourself": ["Quelle turbulence émotionnelle suis-je en train de vivre ?", "Qu'est-ce qui doit être éliminé dans ma vie ?"]
+        "askYourself": [
+          "Quelle turbulence émotionnelle suis-je en train de vivre ?",
+          "Qu'est-ce qui doit être éliminé dans ma vie ?"
+        ]
       },
       "es": {
         "slug": "tormenta",
         "name": "Tormenta",
         "shortDescription": "Las tormentas simbolizan turbulencia emocional, cambio dramático y fuerzas poderosas fuera de tu control. Pueden representar tanto destrucción como limpieza necesaria.",
-        "askYourself": ["¿Qué turbulencia emocional estoy experimentando?", "¿Qué necesita ser eliminado en mi vida?"]
+        "askYourself": [
+          "¿Qué turbulencia emocional estoy experimentando?",
+          "¿Qué necesita ser eliminado en mi vida?"
+        ]
       },
-      "relatedSymbols": ["rain", "thunder", "lightning"],
-      "relatedArticles": {}
+      "de": {
+        "slug": "sturm",
+        "name": "Sturm",
+        "shortDescription": "Stürme symbolisieren emotionale Turbulenzen, dramatische Veränderungen und mächtige Kräfte außerhalb Ihrer Kontrolle. Sie können sowohl Zerstörung als auch notwendige Reinigung darstellen.",
+        "askYourself": [
+          "Welche emotionalen Turbulenzen erlebe ich?",
+          "Was muss in meinem Leben beseitigt werden?"
+        ]
+      },
+      "it": {
+        "slug": "tempesta",
+        "name": "Tempesta",
+        "shortDescription": "Le tempeste simboleggiano turbolenza emotiva, cambiamenti drastici e forze potenti al di fuori del tuo controllo. Possono rappresentare sia distruzione che purificazione necessaria.",
+        "askYourself": [
+          "Quale turbolenza emotiva sto vivendo?",
+          "Cosa ha bisogno di essere eliminato nella mia vita?"
+        ]
+      },
+      "relatedSymbols": [
+        "rain",
+        "thunder",
+        "lightning"
+      ],
+      "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
     }
   ]
 }
