@@ -71,7 +71,17 @@ function walkFiles(dirAbs, predicate) {
   const stack = [dirAbs];
   const ignoreDirNames = new Set([
     // Not part of the published "output" site; contains placeholder tokens.
-    'templates'
+    'templates',
+    // Local tooling outputs/backups (not meant to be checked or deployed as site pages).
+    'reports',
+    // Agent/tooling folders that may exist under docs/ in local environments.
+    '.agent',
+    '.agents',
+    '.claude',
+    '.codex',
+    '.gemini',
+    '.github',
+    '.windsurf'
   ]);
   while (stack.length) {
     const current = stack.pop();

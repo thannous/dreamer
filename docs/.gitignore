@@ -1,0 +1,7 @@
+# Local analysis outputs (not part of the shipped site)
+/reports/ai-writing-audit-*.md
+/reports/ai-writing-audit-*.json
+/reports/ai-writing-fix-backups/
+/reports/*.before-*.md
+/reports/*.before-*.json
+
