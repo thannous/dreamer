@@ -1,38 +1,32 @@
 #!/usr/bin/env python3
-"""Add new dream symbols to sitemap.xml"""
+"""Add new dream symbols to sitemap.xml.
+
+Note: this is a one-off helper. Source of truth for slugs is `data/dream-symbols.json`.
+"""
 
 from datetime import date
 from pathlib import Path
+import json
 
 SITEMAP_PATH = Path(__file__).resolve().parent.parent / "sitemap.xml"
+SYMBOLS_PATH = Path(__file__).resolve().parent.parent / "data" / "dream-symbols.json"
 
-# New symbols with their slugs (Tier 3)
-new_symbols = [
-    {
-        'en': 'wolf',
-        'fr': 'loup',
-        'es': 'lobo'
-    },
-    {
-        'en': 'horse',
-        'fr': 'cheval',
-        'es': 'caballo'
-    },
-    {
-        'en': 'ex-partner',
-        'fr': 'ex-partenaire',
-        'es': 'ex-pareja'
-    },
-    {
-        'en': 'rainbow',
-        'fr': 'arc-en-ciel',
-        'es': 'arcoiris'
-    },
-    {
-        'en': 'storm',
-        'fr': 'orage',
-        'es': 'tormenta'
-    }
+LANGS = ["en", "fr", "es", "de", "it"]
+PATH_SEGMENT = {
+    "en": "symbols",
+    "fr": "symboles",
+    "es": "simbolos",
+    "de": "traumsymbole",
+    "it": "simboli",
+}
+
+# New symbols by id (must exist in data/dream-symbols.json)
+new_symbol_ids = [
+    "wolf",
+    "horse",
+    "ex-partner",
+    "rainbow",
+    "storm",
 ]
 
 today = date.today().isoformat()
@@ -46,6 +40,8 @@ def build_url_block(*, loc: str, lastmod: str, priority: str, alternates: dict[s
         f'    <xhtml:link rel="alternate" hreflang="en" href="{alternates["en"]}" />',
         f'    <xhtml:link rel="alternate" hreflang="fr" href="{alternates["fr"]}" />',
         f'    <xhtml:link rel="alternate" hreflang="es" href="{alternates["es"]}" />',
+        f'    <xhtml:link rel="alternate" hreflang="de" href="{alternates["de"]}" />',
+        f'    <xhtml:link rel="alternate" hreflang="it" href="{alternates["it"]}" />',
         f'    <xhtml:link rel="alternate" hreflang="x-default" href="{alternates["x-default"]}" />',
         "  </url>",
     ]
@@ -58,19 +54,32 @@ def main() -> None:
     if insert_at == -1:
         raise RuntimeError(f"Could not find </urlset> in {SITEMAP_PATH}")
 
+    symbols_data = json.loads(SYMBOLS_PATH.read_text(encoding="utf-8"))
+    by_id = {s["id"]: s for s in symbols_data.get("symbols", [])}
+
     blocks: list[str] = []
     skipped = 0
 
-    for symbol in new_symbols:
-        alternates = {
-            "en": f'https://noctalia.app/en/symbols/{symbol["en"]}',
-            "fr": f'https://noctalia.app/fr/symboles/{symbol["fr"]}',
-            "es": f'https://noctalia.app/es/simbolos/{symbol["es"]}',
-            "x-default": f'https://noctalia.app/en/symbols/{symbol["en"]}',
-        }
+    for symbol_id in new_symbol_ids:
+        symbol = by_id.get(symbol_id)
+        if not symbol:
+            raise RuntimeError(f'Symbol id "{symbol_id}" not found in {SYMBOLS_PATH}')
 
-        for lang, path_segment in [("en", "symbols"), ("fr", "symboles"), ("es", "simbolos")]:
-            loc = f'https://noctalia.app/{lang}/{path_segment}/{symbol[lang]}'
+        slugs = {}
+        for lang in LANGS:
+            slug = symbol.get(lang, {}).get("slug")
+            if not slug:
+                raise RuntimeError(f'Symbol id "{symbol_id}" missing {lang}.slug in {SYMBOLS_PATH}')
+            slugs[lang] = slug
+
+        alternates = {
+            lang: f'https://noctalia.app/{lang}/{PATH_SEGMENT[lang]}/{slugs[lang]}' for lang in LANGS
+        }
+        alternates["x-default"] = alternates["en"]
+
+        for lang in LANGS:
+            path_segment = PATH_SEGMENT[lang]
+            loc = f'https://noctalia.app/{lang}/{path_segment}/{slugs[lang]}'
             if f"<loc>{loc}</loc>" in sitemap:
                 skipped += 1
                 continue

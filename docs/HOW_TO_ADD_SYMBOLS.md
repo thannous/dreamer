@@ -36,12 +36,24 @@ Add new symbol to the `symbols` array:
     "shortDescription": "Descripción corta...",
     "askYourself": ["¿Pregunta 1?", "¿Pregunta 2?"]
   },
+  "de": {
+    "slug": "german-slug",
+    "name": "Deutscher Name",
+    "shortDescription": "Kurze Beschreibung...",
+    "askYourself": ["Frage 1?", "Frage 2?"]
+  },
+  "it": {
+    "slug": "italian-slug",
+    "name": "Nome Italiano",
+    "shortDescription": "Descrizione breve...",
+    "askYourself": ["Domanda 1?", "Domanda 2?"]
+  },
   "relatedSymbols": ["symbol1", "symbol2", "symbol3"],
   "relatedArticles": {}
 }
 ```
 
-**Don't forget:** Update `meta.totalSymbols` and `meta.lastUpdated`
+**Don't forget:** Update `meta.totalSymbols` (must match `symbols.length`) and `meta.lastUpdated`
 
 #### 2. Add Extended Content
 **File:** `docs/data/dream-symbols-extended.json`
@@ -60,7 +72,9 @@ Add comprehensive interpretation:
     ]
   },
   "fr": { /* Same structure in French */ },
-  "es": { /* Same structure in Spanish */ }
+  "es": { /* Same structure in Spanish */ },
+  "de": { /* Same structure in German */ },
+  "it": { /* Same structure in Italian */ }
 }
 ```
 
@@ -81,10 +95,12 @@ cd docs
 node scripts/generate-symbol-pages.js
 ```
 
-This creates 3 pages per symbol (EN, FR, ES):
+This creates 5 pages per symbol (EN, FR, ES, DE, IT):
 - `en/symbols/{slug}.html`
 - `fr/symboles/{slug}.html`
 - `es/simbolos/{slug}.html`
+- `de/traumsymbole/{slug}.html`
+- `it/simboli/{slug}.html`
 
 #### 4. Update Sitemap
 Create a Python script or manually add entries to `sitemap.xml`:
@@ -97,11 +113,13 @@ Create a Python script or manually add entries to `sitemap.xml`:
   <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/symbols/{en-slug}"/>
   <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/symboles/{fr-slug}"/>
   <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/simbolos/{es-slug}"/>
+  <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/traumsymbole/{de-slug}"/>
+  <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/simboli/{it-slug}"/>
   <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/symbols/{en-slug}"/>
 </url>
 ```
 
-Repeat for FR and ES URLs.
+Repeat for FR, ES, DE and IT `<loc>` URLs (one `<url>` block per language).
 
 #### 5. Validation
 ```bash
@@ -120,6 +138,11 @@ python3 -c "import xml.etree.ElementTree as ET; tree = ET.parse('sitemap.xml'); 
 ls -la en/symbols/{slug}.html
 ls -la fr/symboles/{fr-slug}.html
 ls -la es/simbolos/{es-slug}.html
+ls -la de/traumsymbole/{de-slug}.html
+ls -la it/simboli/{it-slug}.html
+
+# Full site validation (recommended)
+node scripts/check-site.js
 ```
 
 ### Batch Addition Script Template
@@ -182,8 +205,8 @@ For each symbol addition:
 - [ ] Updated `meta.totalSymbols` in base file
 - [ ] Added extended content to `dream-symbols-extended.json`
 - [ ] Ran `generate-symbol-pages.js`
-- [ ] Verified 3 HTML pages created
-- [ ] Updated `sitemap.xml` (3 URLs per symbol)
+- [ ] Verified 5 HTML pages created
+- [ ] Updated `sitemap.xml` (5 URLs per symbol)
 - [ ] Validated JSON structure
 - [ ] Checked hreflang tags
 - [ ] Verified content quality
