@@ -280,6 +280,14 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+function sanitizeEmDashes(text) {
+  if (!text) return text;
+  return String(text)
+    .replace(/\s*—\s*/g, ', ')
+    .replace(/,\s*,/g, ', ')
+    .replace(/\s{2,}/g, ' ');
+}
+
 function safeJsonStringifyForHtml(data, space = 4) {
   return JSON.stringify(data, null, space).replace(/</g, '\\u003c');
 }
@@ -309,7 +317,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const extendedContent = getExtendedContent(symbol.id, extended, lang);
 
   // Use extended content or generate defaults
-  const fullInterpretation = extendedContent.fullInterpretation ||
+  const fullInterpretation = sanitizeEmDashes(extendedContent.fullInterpretation) ||
     generateDefaultInterpretation({
       shortDescription: symbolData.shortDescription,
       symbolName: symbolData.name,
@@ -324,8 +332,8 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
                     <div class="variation-card glass-panel rounded-xl p-5 border border-transparent">
-                        <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(v.context)}</h3>
-                        <p class="text-sm text-gray-300">${escapeHtml(v.meaning)}</p>
+                        <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(sanitizeEmDashes(v.context))}</h3>
+                        <p class="text-sm text-gray-300">${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
                     </div>`).join('\n');
 
   // Generate ask yourself HTML
@@ -363,7 +371,83 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
             </section>` : '';
 
   // Generate FAQ answer for variations
-  const faqVariationsAnswer = variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' ');
+  const faqVariationsAnswer = sanitizeEmDashes(variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' '));
+
+  const reflectionTitles = {
+    en: 'Make it personal',
+    fr: 'Pour vous',
+    es: 'Para ti',
+    de: 'Für dich',
+    it: 'Per te'
+  };
+
+  const reflectionLead1 = {
+    en: `Dream symbols are personal. Two people can dream about ${symbolData.name} and wake up with different feelings. Use this page as a guide, then compare it with your current life.`,
+    fr: `Les symboles de rêve sont personnels. Deux personnes peuvent rêver de ${symbolData.name} et se réveiller avec des sensations différentes. Utilisez cette page comme repère, puis reliez-la à votre vie actuelle.`,
+    es: `Los símbolos de los sueños son personales. Dos personas pueden soñar con ${symbolData.name} y despertar con sensaciones distintas. Usa esta página como guía y compárala con tu vida actual.`,
+    de: `Traumsymbole sind persönlich. Zwei Menschen können von ${symbolData.name} träumen und mit unterschiedlichen Gefühlen aufwachen. Nutze diese Seite als Orientierung und verknüpfe sie mit deinem aktuellen Leben.`,
+    it: `I simboli nei sogni sono personali. Due persone possono sognare ${symbolData.name} e svegliarsi con sensazioni diverse. Usa questa pagina come guida e collegala alla tua vita di adesso.`
+  };
+
+  const reflectionLead2 = {
+    en: `A practical way to interpret this dream is to pick one recent moment that felt similar. It could be pressure, curiosity, conflict, or relief. Details from the dream usually point to the right theme.`,
+    fr: `Une manière simple d'interpréter ce rêve est de choisir un moment récent qui vous a fait ressentir quelque chose de similaire. Cela peut être de la pression, de la curiosité, un conflit ou un soulagement. Les détails du rêve indiquent souvent le bon thème.`,
+    es: `Una forma práctica de interpretar este sueño es pensar en un momento reciente que se sintiera parecido. Puede ser presión, curiosidad, conflicto o alivio. Los detalles del sueño suelen señalar el tema correcto.`,
+    de: `Eine praktische Methode ist, an einen aktuellen Moment zu denken, der sich ähnlich angefühlt hat. Das kann Druck, Neugier, Konflikt oder Erleichterung sein. Die Details aus dem Traum weisen oft auf das passende Thema hin.`,
+    it: `Un modo pratico per interpretare questo sogno è pensare a un momento recente che ti ha dato sensazioni simili. Può essere pressione, curiosità, conflitto o sollievo. I dettagli del sogno di solito indicano il tema giusto.`
+  };
+
+  const promptLead = {
+    en: 'Try writing down answers to:',
+    fr: 'Essayez d’écrire vos réponses à :',
+    es: 'Prueba a escribir tus respuestas a:',
+    de: 'Notiere dir Antworten auf:',
+    it: 'Prova a scrivere le risposte a:'
+  };
+
+  const extraPrompts = {
+    en: [
+      'What was happening right before the symbol appeared?',
+      'What emotion stayed with you after waking?'
+    ],
+    fr: [
+      'Que se passait-il juste avant que le symbole apparaisse ?',
+      "Quelle émotion est restée après le réveil ?"
+    ],
+    es: [
+      '¿Qué pasó justo antes de que apareciera el símbolo?',
+      '¿Qué emoción quedó al despertar?'
+    ],
+    de: [
+      'Was geschah kurz bevor das Symbol auftauchte?',
+      'Welche Emotion blieb nach dem Aufwachen?'
+    ],
+    it: [
+      'Cosa è successo subito prima che apparisse il simbolo?',
+      "Quale emozione è rimasta al risveglio?"
+    ]
+  };
+
+  const reflectionPrompts = [
+    ...(Array.isArray(symbolData.askYourself) ? symbolData.askYourself.slice(0, 2) : []),
+    ...(extraPrompts[lang] || extraPrompts.en)
+  ].slice(0, 4);
+
+  const reflectionPromptsHtml = reflectionPrompts.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+  const reflectionSectionHtml = `
+            <!-- Reflection -->
+            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
+                    <i data-lucide="pen-line" class="w-6 h-6 text-dream-salmon"></i>
+                    ${escapeHtml(reflectionTitles[lang] || reflectionTitles.en)}
+                </h2>
+                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+                    <p>${escapeHtml(reflectionLead1[lang] || reflectionLead1.en)}</p>
+                    <p>${escapeHtml(reflectionLead2[lang] || reflectionLead2.en)}</p>
+                    <p><strong>${escapeHtml(promptLead[lang] || promptLead.en)}</strong></p>
+                    <ul>${reflectionPromptsHtml}</ul>
+                </div>
+            </section>`;
 
   const definedTermJsonLd = {
     '@context': 'https://schema.org',
@@ -646,6 +730,7 @@ ${renderJsonLd(faqPageJsonLd)}
                 </ul>
             </section>
 
+${reflectionSectionHtml}
             <!-- FAQ -->
             <section class="mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
@@ -907,6 +992,59 @@ function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n
   const categoryIntro = t.category_intros?.[categoryId] || t.category_intro_template.replace(/{category_lower}/g, categoryName.toLowerCase());
   const categoryIcon = CATEGORY_ICONS[categoryId] || 'sparkles';
   const symbolsCount = symbolsInCategory.length;
+
+  const howToTitles = {
+    en: 'How to use this category',
+    fr: 'Comment utiliser cette catégorie',
+    es: 'Cómo usar esta categoría',
+    de: 'So nutzt du diese Kategorie',
+    it: 'Come usare questa categoria'
+  };
+
+  const howToParagraphs = {
+    en: [
+      `This category groups symbols that often share related themes. Start with how the dream felt, then look at the symbol details.`,
+      `If you notice several ${categoryName.toLowerCase()} symbols in a short period, it can help to look for one common situation in your waking life.`
+    ],
+    fr: [
+      `Cette catégorie regroupe des symboles qui partagent souvent des thèmes proches. Commencez par l'émotion du rêve, puis regardez les détails du symbole.`,
+      `Si vous remarquez plusieurs symboles de type ${categoryName.toLowerCase()} sur une courte période, cherchez un point commun dans votre vie éveillée.`
+    ],
+    es: [
+      `Esta categoría agrupa símbolos que suelen compartir temas relacionados. Empieza por cómo se sintió el sueño y luego mira los detalles del símbolo.`,
+      `Si ves varios símbolos de ${categoryName.toLowerCase()} en poco tiempo, puede ayudar buscar una situación común en tu vida despierta.`
+    ],
+    de: [
+      `Diese Kategorie bündelt Symbole, die oft ähnliche Themen teilen. Starte mit dem Gefühl im Traum und achte dann auf die Details des Symbols.`,
+      `Wenn dir mehrere ${categoryName.toLowerCase()}-Symbole in kurzer Zeit auffallen, kann es helfen, nach einer gemeinsamen Situation im Wachleben zu suchen.`
+    ],
+    it: [
+      `Questa categoria raccoglie simboli che spesso condividono temi collegati. Parti da come ti sei sentito nel sogno e poi guarda i dettagli del simbolo.`,
+      `Se noti più simboli di tipo ${categoryName.toLowerCase()} in poco tempo, può aiutare cercare una situazione comune nella tua vita da sveglio.`
+    ]
+  };
+
+  const howToBullets = {
+    en: ['Write down the main emotion.', 'Note what changed during the dream.', 'Pick one symbol and connect it to a recent moment.'],
+    fr: ["Notez l'émotion principale.", 'Repérez ce qui change dans le rêve.', 'Choisissez un symbole et reliez-le à un moment récent.'],
+    es: ['Anota la emoción principal.', 'Fíjate en qué cambia durante el sueño.', 'Elige un símbolo y conéctalo con un momento reciente.'],
+    de: ['Notiere die wichtigste Emotion.', 'Achte darauf, was sich im Traum verändert.', 'Wähle ein Symbol und verbinde es mit einem aktuellen Moment.'],
+    it: ["Scrivi l'emozione principale.", 'Nota cosa cambia durante il sogno.', 'Scegli un simbolo e collegalo a un momento recente.']
+  };
+
+  const categoryHowToHtml = `
+            <!-- How to use -->
+            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-dream-salmon"></i>
+                    ${escapeHtml(howToTitles[lang] || howToTitles.en)}
+                </h2>
+                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+                    <p>${escapeHtml(howToParagraphs[lang]?.[0] || howToParagraphs.en[0])}</p>
+                    <p>${escapeHtml(howToParagraphs[lang]?.[1] || howToParagraphs.en[1])}</p>
+                    <ul>${(howToBullets[lang] || howToBullets.en).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+                </div>
+            </section>`;
 
   // Language dropdown items
   const langItems = {
@@ -1179,10 +1317,11 @@ ${renderJsonLd(breadcrumbListJsonLd)}
                 </h1>
 
                 <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto">
-                    ${escapeHtml(categoryIntro)}
+                    ${escapeHtml(sanitizeEmDashes(categoryIntro))}
                 </p>
             </header>
 
+${categoryHowToHtml}
             <!-- Symbol Grid -->
             <section class="mb-16">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${symbolsHtml}
@@ -1473,6 +1612,59 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     }))
   };
 
+  const guideHowToTitles = {
+    en: 'How to use this guide',
+    fr: 'Comment utiliser ce guide',
+    es: 'Cómo usar esta guía',
+    de: 'So nutzt du diese Anleitung',
+    it: 'Come usare questa guida'
+  };
+
+  const guideHowToParagraphs = {
+    en: [
+      'Use this list as a starting point. The symbol meaning depends on your context, your emotions, and what is happening in your life right now.',
+      'A simple approach is to pick one symbol that stood out, then compare it to a recent situation. Write one or two sentences about what feels similar.'
+    ],
+    fr: [
+      "Utilisez cette liste comme point de départ. La signification d'un symbole dépend de votre contexte, de vos émotions et de ce qui se passe dans votre vie en ce moment.",
+      "Une approche simple consiste à choisir un symbole marquant, puis à le relier à une situation récente. Écrivez une ou deux phrases sur ce qui vous semble similaire."
+    ],
+    es: [
+      'Usa esta lista como punto de partida. El significado de un símbolo depende de tu contexto, tus emociones y lo que ocurre en tu vida ahora.',
+      'Una forma sencilla es elegir un símbolo que destaque y compararlo con una situación reciente. Escribe una o dos frases sobre lo que se siente parecido.'
+    ],
+    de: [
+      'Nutze diese Liste als Ausgangspunkt. Die Bedeutung eines Symbols hängt von deinem Kontext, deinen Emotionen und dem ab, was gerade in deinem Leben passiert.',
+      'Eine einfache Methode ist, ein Symbol auszuwählen, das heraussticht, und es mit einer aktuellen Situation zu verbinden. Schreibe ein oder zwei Sätze dazu.'
+    ],
+    it: [
+      'Usa questa lista come punto di partenza. Il significato di un simbolo dipende dal tuo contesto, dalle tue emozioni e da ciò che sta succedendo nella tua vita in questo periodo.',
+      'Un modo semplice è scegliere un simbolo che ti è rimasto impresso e confrontarlo con una situazione recente. Scrivi una o due frasi su cosa ti sembra simile.'
+    ]
+  };
+
+  const guideHowToBullets = {
+    en: ['Note the strongest emotion in the dream.', 'Look for one real-life trigger from the last few days.', 'Use the questions on each symbol page to go deeper.'],
+    fr: ["Notez l'émotion la plus forte du rêve.", 'Cherchez un déclencheur récent dans les derniers jours.', 'Utilisez les questions sur chaque page de symbole pour aller plus loin.'],
+    es: ['Anota la emoción más fuerte del sueño.', 'Busca un desencadenante reciente de los últimos días.', 'Usa las preguntas de cada símbolo para profundizar.'],
+    de: ['Notiere die stärkste Emotion im Traum.', 'Suche nach einem Auslöser aus den letzten Tagen.', 'Nutze die Fragen auf jeder Symbolseite, um tiefer zu gehen.'],
+    it: ["Annota l'emozione più forte del sogno.", 'Cerca un possibile trigger degli ultimi giorni.', 'Usa le domande nelle pagine dei simboli per andare più a fondo.']
+  };
+
+  const guideHowToHtml = `
+            <!-- How to use -->
+            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
+                    <i data-lucide="map" class="w-6 h-6 text-dream-salmon"></i>
+                    ${escapeHtml(guideHowToTitles[lang] || guideHowToTitles.en)}
+                </h2>
+                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+                    <p>${escapeHtml(guideHowToParagraphs[lang]?.[0] || guideHowToParagraphs.en[0])}</p>
+                    <p>${escapeHtml(guideHowToParagraphs[lang]?.[1] || guideHowToParagraphs.en[1])}</p>
+                    <ul>${(guideHowToBullets[lang] || guideHowToBullets.en).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+                </div>
+            </section>`;
+
   // Schema.org BreadcrumbList
   const breadcrumbListJsonLd = {
     '@context': 'https://schema.org',
@@ -1659,10 +1851,11 @@ ${renderJsonLd(breadcrumbListJsonLd)}
                 </h1>
 
                 <p class="text-lg text-purple-200/80 leading-relaxed max-w-3xl mx-auto">
-                    ${escapeHtml(pageData.intro)}
+                    ${escapeHtml(sanitizeEmDashes(pageData.intro))}
                 </p>
             </header>
 
+${guideHowToHtml}
             <!-- Symbol Grid -->
             <section class="mb-16">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${symbolCardsHtml}
@@ -1672,7 +1865,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
             <!-- Outro -->
             <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10">
                 <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed">
-                    <p>${escapeHtml(pageData.outro)}</p>
+                    <p>${escapeHtml(sanitizeEmDashes(pageData.outro))}</p>
                 </div>
             </section>
 
