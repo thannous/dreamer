@@ -22,6 +22,8 @@
   <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
   <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
   <link rel="alternate" hreflang="es" href="https://noctalia.app/es/">
+  <link rel="alternate" hreflang="de" href="https://noctalia.app/de/">
+  <link rel="alternate" hreflang="it" href="https://noctalia.app/it/">
   <link rel="alternate" hreflang="x-default" href="https://noctalia.app/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
@@ -105,6 +107,10 @@
     <a href="/fr/">Continuer en français</a>
     <span class="separator">·</span>
     <a href="/es/">Continuar en español</a>
+    <span class="separator">·</span>
+    <a href="/de/">Weiter auf Deutsch</a>
+    <span class="separator">·</span>
+    <a href="/it/">Continua in italiano</a>
   </p>
 
   <script>
@@ -120,6 +126,10 @@
           target = '/fr/';
         } else if (primary.startsWith('es')) {
           target = '/es/';
+        } else if (primary.startsWith('de')) {
+          target = '/de/';
+        } else if (primary.startsWith('it')) {
+          target = '/it/';
         }
 
         window.location.replace(target);
