@@ -14,6 +14,8 @@
   <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/cgu">
   <link rel="alternate" hreflang="en" href="https://noctalia.app/en/terms">
   <link rel="alternate" hreflang="es" href="https://noctalia.app/es/terminos">
+  <link rel="alternate" hreflang="de" href="https://noctalia.app/de/agb">
+  <link rel="alternate" hreflang="it" href="https://noctalia.app/it/termini">
   <link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/terms">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Conditions générales d'utilisation | Noctalia">
@@ -23,6 +25,8 @@
     <meta property="og:locale" content="fr_FR">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="es_ES">
+    <meta property="og:locale:alternate" content="de_DE">
+    <meta property="og:locale:alternate" content="it_IT">
   <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -32,6 +36,18 @@
     <link rel="stylesheet" href="/css/language-dropdown.css?v=20260122-0819">
   <!-- Lucide Icons (deferred) -->
     <script src="/js/lucide.min.js?v=20260122-0819" defer></script>
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Conditions générales d'utilisation",
+    "url": "https://noctalia.app/fr/cgu",
+    "inLanguage": "fr",
+    "publisher": {
+        "@id": "https://noctalia.app/#organization"
+    }
+}
+    </script>
 </head>
 <body class="bg-dream-dark text-white font-sans antialiased selection:bg-dream-salmon selection:text-dream-dark">
   <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-dream-dark/80 backdrop-blur-md border-b border-white/5">
@@ -70,6 +86,18 @@
                        class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
                        role="menuitem">
                         <span>Español</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="../de/agb" hreflang="de"
+                       class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                       role="menuitem">
+                        <span>Deutsch</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="../it/termini" hreflang="it"
+                       class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                       role="menuitem">
+                        <span>Italiano</span>
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                 </div>
