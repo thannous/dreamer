@@ -33,6 +33,38 @@
 /404*
   X-Robots-Tag: noindex, nofollow, nosnippet
 
+# Non-indexable internal/report pages
+/reports/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/scripts/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.agent/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.agents/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.claude/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.codex/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.gemini/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.github/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+/.windsurf/*
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
+# Repo/internal markdown files accidentally shipped in docs/
+/*.md
+  X-Robots-Tag: noindex, nofollow, nosnippet
+
 # Static assets (safe with cache-busting/versioning)
 /css/*
   Cache-Control: public, max-age=31556952, immutable

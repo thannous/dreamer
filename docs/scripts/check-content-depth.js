@@ -52,7 +52,19 @@ function toPosix(p) {
 function walkFiles(dirAbs, predicate) {
   const out = [];
   const stack = [dirAbs];
-  const ignoreDirNames = new Set(['templates']);
+  const ignoreDirNames = new Set([
+    'templates',
+    // Local tooling outputs/backups (not meant to be checked or deployed as site pages).
+    'reports',
+    // Agent/tooling folders that may exist under docs/ in local environments.
+    '.agent',
+    '.agents',
+    '.claude',
+    '.codex',
+    '.gemini',
+    '.github',
+    '.windsurf'
+  ]);
   while (stack.length) {
     const current = stack.pop();
     const entries = fs.readdirSync(current, { withFileTypes: true });
@@ -172,6 +184,7 @@ function main() {
     if (relHtml === '404.html') continue;
     if (toPosix(relHtml).startsWith('auth/')) continue;
     if (toPosix(relHtml).startsWith('templates/')) continue;
+    if (toPosix(relHtml).startsWith('reports/')) continue;
 
     const abs = path.join(DOCS_ROOT, relHtml);
     const html = fs.readFileSync(abs, 'utf8');
