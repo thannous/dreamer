@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "defaultLang": "en",
+  "articles": {
+    "being-chased-dreams": {
+      "slugs": {
+        "en": "being-chased-dreams",
+        "fr": "reves-etre-poursuivi",
+        "es": "suenos-ser-perseguido",
+        "de": "traeume-verfolgt-werden-bedeutung-und-interpretation",
+        "it": "sogni-inseguiti-significato-e-interpretazione"
+      }
+    },
+    "death-dreams-meaning": {
+      "slugs": {
+        "en": "death-dreams-meaning",
+        "fr": "reves-de-mort",
+        "es": "suenos-de-muerte",
+        "de": "traeume-vom-tod-bedeutung-und-interpretation",
+        "it": "sogni-sulla-morte-significato-e-interpretazione"
+      }
+    },
+    "dream-incubation-guide": {
+      "slugs": {
+        "en": "dream-incubation-guide",
+        "fr": "guide-incubation-reves",
+        "es": "guia-incubacion-suenos",
+        "de": "trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen",
+        "it": "incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera"
+      }
+    },
+    "dream-interpretation-history": {
+      "slugs": {
+        "en": "dream-interpretation-history",
+        "fr": "histoire-interpretation-reves",
+        "es": "historia-interpretacion-suenos",
+        "de": "die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft",
+        "it": "la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna"
+      }
+    },
+    "dream-journal": {
+      "slugs": {
+        "en": "dream-journal",
+        "fr": "journal-de-reves",
+        "es": "diario-de-suenos",
+        "de": "traumtagebuch-erinnerung-methoden-und-routinen",
+        "it": "dream-journal-richiamo-metodi-e-routine"
+      }
+    },
+    "dream-journal-guide": {
+      "slugs": {
+        "en": "dream-journal-guide",
+        "fr": "guide-journal-reves",
+        "es": "guia-diario-suenos",
+        "de": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
+        "it": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
+      }
+    },
+    "dream-meanings": {
+      "slugs": {
+        "en": "dream-meanings",
+        "fr": "signification-des-reves",
+        "es": "significado-de-suenos",
+        "de": "traumbedeutungen-interpretation-symbole",
+        "it": "significati-dei-sogni-interpretazione-e-simboli"
+      }
+    },
+    "dreams-about-ex": {
+      "slugs": {
+        "en": "dreams-about-ex",
+        "fr": "reves-ex-partenaire",
+        "es": "suenos-con-ex",
+        "de": "traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten",
+        "it": "sogni-sul-tuo-ex-cosa-significano-veramente"
+      }
+    },
+    "dreams-mental-health": {
+      "slugs": {
+        "en": "dreams-mental-health",
+        "fr": "reves-sante-mentale",
+        "es": "suenos-salud-mental",
+        "de": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
+        "it": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
+      }
+    },
+    "falling-dreams-meaning": {
+      "slugs": {
+        "en": "falling-dreams-meaning",
+        "fr": "reves-de-chute",
+        "es": "suenos-de-caer",
+        "de": "bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen",
+        "it": "significato-dei-sogni-che-cadono-perche-sogni-di-cadere"
+      }
+    },
+    "flying-dreams-meaning": {
+      "slugs": {
+        "en": "flying-dreams-meaning",
+        "fr": "reves-de-voler",
+        "es": "suenos-de-volar",
+        "de": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen",
+        "it": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"
+      }
+    },
+    "how-to-remember-dreams": {
+      "slugs": {
+        "en": "how-to-remember-dreams",
+        "fr": "comment-se-souvenir-de-ses-reves",
+        "es": "como-recordar-suenos",
+        "de": "so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken",
+        "it": "come-ricordare-i-tuoi-sogni-10-tecniche-efficaci"
+      }
+    },
+    "index": {
+      "slugs": {
+        "en": "",
+        "fr": "",
+        "es": "",
+        "de": "",
+        "it": ""
+      }
+    },
+    "lucid-dreaming": {
+      "slugs": {
+        "en": "lucid-dreaming",
+        "fr": "reve-lucide",
+        "es": "suenos-lucidos",
+        "de": "klares-traeumen-anleitungen-und-techniken",
+        "it": "sogni-lucidi-guide-e-tecniche"
+      }
+    },
+    "lucid-dreaming-beginners-guide": {
+      "slugs": {
+        "en": "lucid-dreaming-beginners-guide",
+        "fr": "guide-reve-lucide-debutant",
+        "es": "guia-suenos-lucidos-principiantes",
+        "de": "leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte",
+        "it": "guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti"
+      }
+    },
+    "precognitive-dreams-science": {
+      "slugs": {
+        "en": "precognitive-dreams-science",
+        "fr": "reves-premonitoires-science",
+        "es": "suenos-premonitorios-ciencia",
+        "de": "koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume",
+        "it": "i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi"
+      }
+    },
+    "pregnancy-dreams-meaning": {
+      "slugs": {
+        "en": "pregnancy-dreams-meaning",
+        "fr": "reves-de-grossesse",
+        "es": "suenos-de-embarazo",
+        "de": "schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind",
+        "it": "sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta"
+      }
+    },
+    "recurring-dreams-meaning": {
+      "slugs": {
+        "en": "recurring-dreams-meaning",
+        "fr": "signification-reves-recurrents",
+        "es": "significado-suenos-recurrentes",
+        "de": "wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen",
+        "it": "significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti"
+      }
+    },
+    "rem-sleep-dreams": {
+      "slugs": {
+        "en": "rem-sleep-dreams",
+        "fr": "sommeil-paradoxal-reves",
+        "es": "sueno-rem-suenos",
+        "de": "rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen",
+        "it": "sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"
+      }
+    },
+    "sleep-paralysis-guide": {
+      "slugs": {
+        "en": "sleep-paralysis-guide",
+        "fr": "guide-paralysie-sommeil",
+        "es": "guia-paralisis-sueno",
+        "de": "schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen",
+        "it": "la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla"
+      }
+    },
+    "snake-dreams-meaning": {
+      "slugs": {
+        "en": "snake-dreams-meaning",
+        "fr": "reves-de-serpents",
+        "es": "suenos-con-serpientes",
+        "de": "traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt",
+        "it": "sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo"
+      }
+    },
+    "stop-nightmares-guide": {
+      "slugs": {
+        "en": "stop-nightmares-guide",
+        "fr": "guide-cauchemars",
+        "es": "guia-pesadillas",
+        "de": "albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann",
+        "it": "incubi-cause-significato-e-come-fermarli"
+      }
+    },
+    "teeth-falling-out-dreams": {
+      "slugs": {
+        "en": "teeth-falling-out-dreams",
+        "fr": "reves-dents-qui-tombent",
+        "es": "suenos-dientes-caen",
+        "de": "traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation",
+        "it": "sogni-di-denti-che-cadono-significato-e-interpretazione"
+      }
+    },
+    "water-dreams-meaning": {
+      "slugs": {
+        "en": "water-dreams-meaning",
+        "fr": "reves-eau",
+        "es": "suenos-de-agua",
+        "de": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
+        "it": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
+      }
+    },
+    "why-we-dream-science": {
+      "slugs": {
+        "en": "why-we-dream-science",
+        "fr": "pourquoi-nous-revons-science",
+        "es": "por-que-sonamos-ciencia",
+        "de": "warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern",
+        "it": "perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne"
+      }
+    },
+    "why-we-forget-dreams": {
+      "slugs": {
+        "en": "why-we-forget-dreams",
+        "fr": "pourquoi-oublie-reves-reveil",
+        "es": "por-que-olvidamos-suenos",
+        "de": "warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie",
+        "it": "perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica"
+      }
+    }
+  }
+}

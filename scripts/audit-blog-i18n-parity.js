@@ -18,7 +18,7 @@ const path = require('path');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DOMAIN = 'https://noctalia.app';
-const LANGS = ['en', 'fr', 'es'];
+const LANGS = ['en', 'fr', 'es', 'de', 'it'];
 
 function listBlogHtmlFiles(lang) {
   const dir = path.join(DOCS_DIR, lang, 'blog');
@@ -40,12 +40,16 @@ function isBlogPosting(html) {
 
 function extractAlternateLinks(html) {
   const out = {};
-  const re = /<link\s+rel=(["'])alternate\1\s+hreflang=(["'])([^"']+)\2\s+href=(["'])([^"']+)\4/gi;
+  const linkRe = /<link\s+[^>]*rel=(["'])alternate\1[^>]*>/gi;
   let m;
-  while ((m = re.exec(html))) {
-    const hreflang = (m[3] || '').trim();
-    const href = (m[5] || '').trim();
-    out[hreflang] = href;
+  while ((m = linkRe.exec(html))) {
+    const tag = m[0];
+    const hreflangMatch = tag.match(/hreflang=(["'])([^"']+)\1/i);
+    const hrefMatch = tag.match(/href=(["'])([^"']+)\1/i);
+    if (!hreflangMatch || !hrefMatch) continue;
+    const hreflang = (hreflangMatch[2] || '').trim();
+    const href = (hrefMatch[2] || '').trim();
+    if (hreflang) out[hreflang] = href;
   }
   return out;
 }
@@ -56,7 +60,7 @@ function urlToDocsFile(url) {
   if (!href.startsWith(DOMAIN)) return null;
   const pathPart = href.slice(DOMAIN.length);
 
-  const match = pathPart.match(/^\/(en|fr|es)\/blog\/?([^?#]*)/i);
+  const match = pathPart.match(/^\/(en|fr|es|de|it)\/blog\/?([^?#]*)/i);
   if (!match) return null;
 
   const lang = match[1];
@@ -131,4 +135,3 @@ function main() {
 }
 
 main();
-
