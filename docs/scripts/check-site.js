@@ -16,9 +16,54 @@ const path = require('path');
 
 const DOCS_ROOT = path.resolve(__dirname, '..');
 const SITE_ORIGIN = 'https://noctalia.app';
+const LANGS = ['en', 'fr', 'es', 'de', 'it'];
+const LANG_DIRS = new Set(LANGS);
+const SYMBOLS_PATH_SEGMENT = {
+  en: 'symbols',
+  fr: 'symboles',
+  es: 'simbolos',
+  de: 'traumsymbole',
+  it: 'simboli'
+};
 
 function toPosix(p) {
   return p.split(path.sep).join('/');
+}
+
+function decodeEntities(str) {
+  if (!str) return '';
+  const named = {
+    '&nbsp;': ' ',
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#039;': "'",
+    '&apos;': "'"
+  };
+  let out = String(str);
+  for (const [k, v] of Object.entries(named)) out = out.split(k).join(v);
+  out = out.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)));
+  out = out.replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCodePoint(parseInt(n, 16)));
+  return out;
+}
+
+function visibleTextFromHtml(html) {
+  let out = String(html || '');
+  out = out.replace(/<script\b[\s\S]*?<\/script>/gi, ' ');
+  out = out.replace(/<style\b[\s\S]*?<\/style>/gi, ' ');
+  out = out.replace(/<!--[\s\S]*?-->/g, ' ');
+  out = out.replace(/<[^>]+>/g, ' ');
+  out = decodeEntities(out);
+  out = out.replace(/\s+/g, ' ').trim();
+  return out;
+}
+
+function normalizeForSearch(str) {
+  return decodeEntities(String(str || ''))
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
 }
 
 function walkFiles(dirAbs, predicate) {
@@ -168,9 +213,49 @@ function extractAttrUrls(html) {
   return urls;
 }
 
+function extractLinkTags(html) {
+  const tags = [];
+  const re = /<link\b[^>]*>/gi;
+  let m;
+  while ((m = re.exec(html))) {
+    const raw = m[0];
+    const attrs = {};
+    const attrRe = /([a-zA-Z_:][a-zA-Z0-9_:\-]*)\s*=\s*(["'])(.*?)\2/g;
+    let a;
+    while ((a = attrRe.exec(raw))) {
+      attrs[a[1].toLowerCase()] = a[3];
+    }
+    tags.push(attrs);
+  }
+  return tags;
+}
+
 function extractCanonicalUrl(html) {
-  const m = html.match(/<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i);
-  return m ? m[1] : null;
+  for (const attrs of extractLinkTags(html)) {
+    const rel = String(attrs.rel || '').toLowerCase();
+    if (rel !== 'canonical') continue;
+    if (attrs.href) return attrs.href;
+  }
+  return null;
+}
+
+function extractTitle(html) {
+  const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  return m ? m[1].trim() : null;
+}
+
+function extractMetaDescription(html) {
+  const m1 = html.match(/<meta\s+[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i);
+  if (m1) return m1[1].trim();
+  const m2 = html.match(/<meta\s+[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/i);
+  return m2 ? m2[1].trim() : null;
+}
+
+function extractMetaRobotsContent(html) {
+  const m1 = html.match(/<meta\s+[^>]*name=["']robots["'][^>]*content=["']([^"']*)["'][^>]*>/i);
+  if (m1) return m1[1].trim();
+  const m2 = html.match(/<meta\s+[^>]*content=["']([^"']*)["'][^>]*name=["']robots["'][^>]*>/i);
+  return m2 ? m2[1].trim() : null;
 }
 
 function extractHtmlLang(html) {
@@ -180,14 +265,50 @@ function extractHtmlLang(html) {
 
 function isNoindex(html) {
   // Best-effort: treat any robots meta containing "noindex" as noindex.
-  return /<meta\s+[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex[^"']*["'][^>]*>/i.test(html);
+  const robots = extractMetaRobotsContent(html);
+  return !!robots && robots.toLowerCase().includes('noindex');
+}
+
+function extractJsonLdObjects(html) {
+  const out = [];
+  const re = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = re.exec(html))) {
+    const raw = (m[1] || '').trim();
+    if (!raw) continue;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed) out.push(parsed);
+    } catch {
+      // Ignore invalid JSON-LD blocks.
+    }
+  }
+  return out;
+}
+
+function flattenJsonLd(obj) {
+  if (!obj) return [];
+  if (Array.isArray(obj)) return obj.flatMap(flattenJsonLd);
+  if (typeof obj !== 'object') return [];
+  if (Array.isArray(obj['@graph'])) return obj['@graph'].flatMap(flattenJsonLd);
+  return [obj];
+}
+
+function isFaqPageObject(o) {
+  const t = o?.['@type'];
+  if (!t) return false;
+  if (Array.isArray(t)) return t.map((x) => String(x)).includes('FAQPage');
+  return String(t) === 'FAQPage';
 }
 
 function extractHreflangAlternates(html) {
   const out = [];
-  const re = /<link\s+[^>]*rel=["']alternate["'][^>]*hreflang=["']([^"']+)["'][^>]*href=["']([^"']+)["'][^>]*>/gi;
-  let m;
-  while ((m = re.exec(html))) out.push({ hreflang: m[1], href: m[2] });
+  for (const attrs of extractLinkTags(html)) {
+    const rel = String(attrs.rel || '').toLowerCase();
+    if (!rel.split(/\s+/).includes('alternate')) continue;
+    if (!attrs.hreflang || !attrs.href) continue;
+    out.push({ hreflang: attrs.hreflang, href: attrs.href });
+  }
   return out;
 }
 
@@ -219,6 +340,11 @@ function normalizeUrlToPathMaybe(url) {
   return null;
 }
 
+function isKnownUtilityPage(relHtml) {
+  // Pages intentionally non-indexable or operational pages that shouldn't be held to full SEO standards.
+  return relHtml === '404.html' || relHtml.startsWith('auth/');
+}
+
 function main() {
   const htmlFilesAbs = walkFiles(DOCS_ROOT, (p) => p.endsWith('.html'));
   const htmlFilesRel = htmlFilesAbs.map((p) => path.relative(DOCS_ROOT, p)).sort();
@@ -228,12 +354,21 @@ function main() {
 
   const contentCache = new Map(); // fileRel -> string
   const anchorsCache = new Map(); // fileRel -> Set(ids/names)
+  const visibleTextCache = new Map(); // fileRel -> string (normalized)
 
   function getHtml(relFile) {
     if (!contentCache.has(relFile)) {
       contentCache.set(relFile, fs.readFileSync(path.join(DOCS_ROOT, relFile), 'utf8'));
     }
     return contentCache.get(relFile);
+  }
+
+  function getVisibleTextNormalized(relFile) {
+    if (visibleTextCache.has(relFile)) return visibleTextCache.get(relFile);
+    const html = getHtml(relFile);
+    const txt = normalizeForSearch(visibleTextFromHtml(html));
+    visibleTextCache.set(relFile, txt);
+    return txt;
   }
 
   function getAnchors(relFile) {
@@ -252,20 +387,21 @@ function main() {
   // 1) Per-page consistency + internal link checks
   let totalInternalLinks = 0;
   let totalExternalLinks = 0;
+  const seenTitles = new Map(); // title -> first fileRel
+  const seenDescriptions = new Map(); // description -> first fileRel
 
   for (const relHtml of htmlFilesRel) {
     const html = getHtml(relHtml);
+    const noindex = isNoindex(html);
 
     const declaredLang = extractHtmlLang(html);
     const topDir = toPosix(relHtml).split('/')[0];
-    if (topDir === 'en' || topDir === 'fr' || topDir === 'es') {
-      if (declaredLang && declaredLang !== topDir) {
-        errors.push({
-          type: 'lang-mismatch',
-          file: relHtml,
-          detail: `<html lang="${declaredLang}"> but file is under /${topDir}/`
-        });
-      }
+    if (LANG_DIRS.has(topDir) && declaredLang && declaredLang !== topDir) {
+      errors.push({
+        type: 'lang-mismatch',
+        file: relHtml,
+        detail: `<html lang="${declaredLang}"> but file is under /${topDir}/`
+      });
     }
 
     const canonical = extractCanonicalUrl(html);
@@ -276,6 +412,80 @@ function main() {
         file: relHtml,
         detail: `canonical="${canonical}" expected="${expectedCanonical}"`
       });
+    }
+    if (!noindex && !isKnownUtilityPage(relHtml) && expectedCanonical && !canonical) {
+      warnings.push({
+        type: 'missing-canonical',
+        file: relHtml,
+        detail: `expected="${expectedCanonical}"`
+      });
+    }
+
+    if (!noindex && !isKnownUtilityPage(relHtml)) {
+      const title = extractTitle(html);
+      if (!title) {
+        errors.push({
+          type: 'missing-title',
+          file: relHtml,
+          detail: '<title> is missing'
+        });
+      } else {
+        const existing = seenTitles.get(title);
+        if (existing) {
+          warnings.push({
+            type: 'duplicate-title',
+            file: relHtml,
+            detail: `same as "${existing}"`
+          });
+        } else {
+          seenTitles.set(title, relHtml);
+        }
+      }
+
+      const description = extractMetaDescription(html);
+      if (!description) {
+        warnings.push({
+          type: 'missing-meta-description',
+          file: relHtml,
+          detail: '<meta name="description"> is missing'
+        });
+      } else {
+        const existing = seenDescriptions.get(description);
+        if (existing) {
+          warnings.push({
+            type: 'duplicate-meta-description',
+            file: relHtml,
+            detail: `same as "${existing}"`
+          });
+        } else {
+          seenDescriptions.set(description, relHtml);
+        }
+      }
+    }
+
+    // Validate FAQ JSON-LD corresponds to visible content (best-effort).
+    // Warning-only: schema mismatches shouldn't block builds, but we want visibility.
+    if (!noindex && !isKnownUtilityPage(relHtml)) {
+      const jsonLdBlocks = extractJsonLdObjects(html).flatMap(flattenJsonLd);
+      const faqPages = jsonLdBlocks.filter(isFaqPageObject);
+      if (faqPages.length) {
+        const visibleNorm = getVisibleTextNormalized(relHtml);
+        for (const faq of faqPages) {
+          const entities = Array.isArray(faq.mainEntity) ? faq.mainEntity : [];
+          for (const q of entities) {
+            const qName = q?.name ? String(q.name).trim() : null;
+            if (!qName) continue;
+            const qNorm = normalizeForSearch(qName);
+            if (qNorm && !visibleNorm.includes(qNorm)) {
+              warnings.push({
+                type: 'faq-schema-question-not-visible',
+                file: relHtml,
+                detail: `"${qName}" not found in visible content`
+              });
+            }
+          }
+        }
+      }
     }
 
     // Hreflang alternates should resolve to existing files (clean URL mapping).
@@ -354,11 +564,19 @@ function main() {
   const curation = readJson('data/curation-pages.json');
 
   const symbolList = symbols.symbols || [];
+  if (typeof symbols?.meta?.totalSymbols === 'number' && symbols.meta.totalSymbols !== symbolList.length) {
+    errors.push({
+      type: 'meta-totalSymbols-mismatch',
+      file: 'data/dream-symbols.json',
+      detail: `meta.totalSymbols=${symbols.meta.totalSymbols} but symbols.length=${symbolList.length}`
+    });
+  }
+
   const expectedSymbolFiles = [];
-  const slugSets = { en: new Set(), fr: new Set(), es: new Set() };
+  const slugSets = Object.fromEntries(LANGS.map((l) => [l, new Set()]));
 
   for (const s of symbolList) {
-    for (const lang of ['en', 'fr', 'es']) {
+    for (const lang of LANGS) {
       const slug = s?.[lang]?.slug;
       if (!slug) {
         errors.push({
@@ -380,9 +598,9 @@ function main() {
   }
 
   for (const s of symbolList) {
-    expectedSymbolFiles.push(`en/symbols/${s.en.slug}.html`);
-    expectedSymbolFiles.push(`fr/symboles/${s.fr.slug}.html`);
-    expectedSymbolFiles.push(`es/simbolos/${s.es.slug}.html`);
+    for (const lang of LANGS) {
+      expectedSymbolFiles.push(`${lang}/${SYMBOLS_PATH_SEGMENT[lang]}/${s[lang].slug}.html`);
+    }
   }
 
   for (const rel of expectedSymbolFiles) {
@@ -392,10 +610,10 @@ function main() {
   }
 
   // Category pages (8 categories per lang)
-  for (const lang of ['en', 'fr', 'es']) {
+  for (const lang of LANGS) {
     const slugs = i18n?.[lang]?.category_slugs;
     if (!slugs || typeof slugs !== 'object') continue;
-    const outDir = lang === 'en' ? 'en/symbols' : lang === 'fr' ? 'fr/symboles' : 'es/simbolos';
+    const outDir = `${lang}/${SYMBOLS_PATH_SEGMENT[lang]}`;
     for (const catId of Object.keys(slugs)) {
       const slug = slugs[catId];
       const rel = `${outDir}/${slug}.html`;
@@ -422,10 +640,17 @@ function main() {
         });
       }
     }
-    const relEn = `en/guides/${page.slugs.en}.html`;
-    const relFr = `fr/guides/${page.slugs.fr}.html`;
-    const relEs = `es/guides/${page.slugs.es}.html`;
-    for (const rel of [relEn, relFr, relEs]) {
+    for (const lang of LANGS) {
+      const slug = page?.slugs?.[lang];
+      if (!slug) {
+        errors.push({
+          type: 'missing-curation-slug',
+          file: 'data/curation-pages.json',
+          detail: `curation id="${page.id}" missing slugs.${lang}`
+        });
+        continue;
+      }
+      const rel = `${lang}/guides/${slug}.html`;
       if (!existsRel(rel)) {
         errors.push({ type: 'missing-curation-page', file: rel, detail: `missing curation page for "${page.id}"` });
       }

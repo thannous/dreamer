@@ -1,6 +1,6 @@
 # Travail Restant - Stratégie pSEO Dream Symbols
 
-## 📊 État Actuel (2026-01-29)
+## 📊 État Actuel (2026-02-02)
 
 ### ✅ Playbook pSEO Implémenté: Glossary Pattern
 
@@ -9,12 +9,12 @@
 **Couverture actuelle:**
 - **57 symboles** dans la base de données (playbook glossary)
 - **57 symboles** avec contenu enrichi détaillé (**100%** ✅)
-- **171 pages symboles** générées (57 × 3 langues)
-- **24 pages catégorie** générées (8 × 3 langues) avec cross-links vers guides
-- **24 pages curation** générées (8 × 3 langues)
-- **3 pages dictionnaire** (1 × 3 langues)
-- **78 pages blog** (25 articles + index, × 3 langues)
-- **318 URLs** dans `sitemap.xml` (symboles + catégories + guides + blog + pages)
+- **285 pages symboles** générées (57 × 5 langues)
+- **40 pages catégorie** générées (8 × 5 langues) avec cross-links vers guides
+- **40 pages curation** générées (8 × 5 langues)
+- **5 pages dictionnaire** (1 × 5 langues)
+- **130 pages blog** (25 articles + index, × 5 langues)
+- **530 URLs** dans `sitemap.xml` (site complet, 5 langues)
 
 ### 🎯 Phases Complétées
 
@@ -149,6 +149,7 @@
 
 **Remaining (optional):**
 - [x] Blog Content → Symbol Pages: ajouter des liens/CTAs vers des pages symboles dans les articles blog qui n'en ont pas encore (12/25 par langue, soit 36 pages mises à jour)
+- [x] Gate SEO local: `node scripts/check-site.js` (liens internes + canonical/hreflang + sitemap + pages attendues)
 - [ ] GSC submission & monitoring setup
 
 ---
