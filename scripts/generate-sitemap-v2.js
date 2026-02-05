@@ -227,7 +227,7 @@ function groupUrlsByContent(files) {
  */
 function getPriority(url) {
   // Homepage gets highest priority
-  if (url.match(/^https:\/\/noctalia\.app\/(en|fr|es)\/?$/)) {
+  if (url.match(/^https:\/\/noctalia\.app\/(en|fr|es|de|it)\/?$/)) {
     return '1.0';
   }
 
@@ -237,7 +237,8 @@ function getPriority(url) {
   }
 
   // About pages get medium-high priority
-  if (url.includes('/about') || url.includes('/a-propos') || url.includes('/sobre')) {
+  if (url.includes('/about') || url.includes('/a-propos') || url.includes('/sobre') ||
+      url.includes('/ueber-uns') || url.includes('/chi-siamo') || url.includes('/acerca-de')) {
     return '0.7';
   }
 
@@ -247,13 +248,19 @@ function getPriority(url) {
   }
 
   // Symbol pages get medium priority
-  if (url.includes('/symbols/') || url.includes('/symboles/') || url.includes('/simbolos/')) {
+  if (url.includes('/symbols/') || url.includes('/symboles/') || url.includes('/simbolos/') ||
+      url.includes('/traumsymbole/') || url.includes('/simboli/')) {
     return '0.6';
   }
 
   // Legal pages get lower priority
   if (url.includes('privacy') || url.includes('terms') || url.includes('legal') ||
-      url.includes('politique') || url.includes('cgu') || url.includes('politica')) {
+      url.includes('politique') || url.includes('cgu') || url.includes('politica') ||
+      url.includes('datenschutz') || url.includes('/agb') || url.includes('impressum') ||
+      url.includes('note-legali') || url.includes('/termini') ||
+      url.includes('account-deletion') || url.includes('suppression-compte') ||
+      url.includes('eliminacion-cuenta') || url.includes('eliminazione-account') ||
+      url.includes('konto')) {
     return '0.3';
   }
 
