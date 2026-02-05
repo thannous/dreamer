@@ -556,17 +556,23 @@ ${hreflangLinks}
     <meta property="og:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}">
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
+${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
     <meta property="article:modified_time" content="${CONFIG.dateModified}">
     <meta property="article:author" content="Noctalia">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta name="twitter:site" content="@NoctaliaDreams">
+    <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -1187,14 +1193,20 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
     <meta property="og:description" content="${escapeHtml(metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}">
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
-    <meta name="robots" content="index, follow">
+${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(metaDescription)}">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta name="twitter:site" content="@NoctaliaDreams">
+    <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -1718,16 +1730,22 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
     <meta property="og:description" content="${escapeHtml(pageData.metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/guides/${slug}">
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="${escapeHtml(pageData.title)}">
     <meta property="og:locale" content="${t.locale}">
+${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
     <meta property="article:modified_time" content="${CONFIG.dateModified}">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(pageData.title)}">
     <meta name="twitter:description" content="${escapeHtml(pageData.metaDescription)}">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta name="twitter:site" content="@NoctaliaDreams">
+    <meta name="twitter:image:alt" content="${escapeHtml(pageData.title)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
