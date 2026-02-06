@@ -665,20 +665,17 @@ ${renderJsonLd(faqPageJsonLd)}
 
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.home}</span></a>
-                        <meta itemprop="position" content="1">
+                <ol class="flex items-center gap-2 flex-wrap">
+                    <li>
+                        <a href="/${lang}/" class="hover:text-dream-salmon transition-colors">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/${lang}/guides/${t.dictionary_slug}" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.symbols}</span></a>
-                        <meta itemprop="position" content="2">
+                    <li>
+                        <a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a>
                     </li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-dream-cream">${escapeHtml(symbolData.name)}</span>
-                        <meta itemprop="position" content="3">
+                    <li>
+                        <span class="text-dream-cream">${escapeHtml(symbolData.name)}</span>
                     </li>
                 </ol>
             </nav>
@@ -1297,20 +1294,17 @@ ${renderJsonLd(breadcrumbListJsonLd)}
 
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.home}</span></a>
-                        <meta itemprop="position" content="1">
+                <ol class="flex items-center gap-2 flex-wrap">
+                    <li>
+                        <a href="/${lang}/" class="hover:text-dream-salmon transition-colors">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/${lang}/guides/${t.dictionary_slug}" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.symbols}</span></a>
-                        <meta itemprop="position" content="2">
+                    <li>
+                        <a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a>
                     </li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-dream-cream">${escapeHtml(categoryName)}</span>
-                        <meta itemprop="position" content="3">
+                    <li>
+                        <span class="text-dream-cream">${escapeHtml(categoryName)}</span>
                     </li>
                 </ol>
             </nav>
@@ -1834,20 +1828,17 @@ ${renderJsonLd(breadcrumbListJsonLd)}
 
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
-                <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.home}</span></a>
-                        <meta itemprop="position" content="1">
+                <ol class="flex items-center gap-2 flex-wrap">
+                    <li>
+                        <a href="/${lang}/" class="hover:text-dream-salmon transition-colors">${t.home}</a>
                     </li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/${lang}/guides/${t.dictionary_slug}" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${t.symbols}</span></a>
-                        <meta itemprop="position" content="2">
+                    <li>
+                        <a href="/${lang}/guides/${t.dictionary_slug}" class="hover:text-dream-salmon transition-colors">${t.symbols}</a>
                     </li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-dream-cream">${escapeHtml(pageData.title)}</span>
-                        <meta itemprop="position" content="3">
+                    <li>
+                        <span class="text-dream-cream">${escapeHtml(pageData.title)}</span>
                     </li>
                 </ol>
             </nav>

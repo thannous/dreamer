@@ -52,103 +52,108 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            "@graph": [
                 {
-                    "@type": "Question",
-                    "name": "Comment fonctionne l'analyse des rêves ?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Noctalia utilise des modèles de langage avancés inspirés de la psychologie analytique et de la symbolique des rêves pour identifier motifs et archétypes et vous proposer des pistes de réflexion."
-                    }
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {
+                            "@type": "Question",
+                            "name": "Comment fonctionne l'analyse des rêves ?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Noctalia utilise des modèles de langage avancés inspirés de la psychologie analytique et de la symbolique des rêves pour identifier motifs et archétypes et vous proposer des pistes de réflexion."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Mes rêves sont-ils privés ?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous seul(e) y avez accès, et vos données ne sont pas revendues."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Puis-je écrire mes rêves au lieu de parler ?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Oui, un éditeur de texte complet est disponible si vous préférez écrire vos rêves plutôt que les enregistrer à la voix."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "L'application fonctionne-t-elle hors ligne ?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se font automatiquement lorsque vous retrouvez une connexion."
+                            }
+                        }
+                    ]
                 },
                 {
-                    "@type": "Question",
-                    "name": "Mes rêves sont-ils privés ?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous seul(e) y avez accès, et vos données ne sont pas revendues."
-                    }
+                    "@type": "Organization",
+                    "@id": "https://noctalia.app/#organization",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://noctalia.app/logo/logo_noctalia.png",
+                        "width": 512,
+                        "height": 512
+                    },
+                    "description": "Application de journal de rêves intelligent pour capturer et explorer vos rêves.",
+                    "sameAs": [
+                        "https://www.instagram.com/noctaliadreams/",
+                        "https://x.com/NoctaliaDreams",
+                        "https://www.tiktok.com/@noctaliadreams"
+                    ]
                 },
                 {
-                    "@type": "Question",
-                    "name": "Puis-je écrire mes rêves au lieu de parler ?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Oui, un éditeur de texte complet est disponible si vous préférez écrire vos rêves plutôt que les enregistrer à la voix."
-                    }
+                    "@type": "WebSite",
+                    "@id": "https://noctalia.app/#website",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
+                    },
+                    "inLanguage": [
+                        "fr",
+                        "en",
+                        "es",
+                        "de",
+                        "it"
+                    ]
                 },
                 {
-                    "@type": "Question",
-                    "name": "L'application fonctionne-t-elle hors ligne ?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se font automatiquement lorsque vous retrouvez une connexion."
+                    "@type": "MobileApplication",
+                    "name": "Noctalia",
+                    "description": "Application de journal de rêves Noctalia. Capturez vos rêves à la voix, explorez-les avec une analyse personnalisée et comprenez mieux vos nuits.",
+                    "operatingSystem": "Android",
+                    "applicationCategory": "LifestyleApplication",
+                    "inLanguage": "fr",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
+                    },
+                    "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+                    "screenshot": [
+                        "https://noctalia.app/img/en/recording-800w.jpg",
+                        "https://noctalia.app/img/en/analizing-800w.jpg",
+                        "https://noctalia.app/img/en/exploring-800w.jpg"
+                    ],
+                    "featureList": [
+                        "Enregistrement vocal des rêves",
+                        "Analyse des rêves Noctalia",
+                        "Génération d'images de rêves",
+                        "Journal de rêves",
+                        "Suivi émotionnel"
+                    ],
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "EUR"
                     }
                 }
             ]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "@id": "https://noctalia.app/#organization",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://noctalia.app/logo/logo_noctalia.png",
-                "width": 512,
-                "height": 512
-            },
-            "description": "Application de journal de rêves intelligent pour capturer et explorer vos rêves.",
-            "sameAs": [
-                "https://www.instagram.com/noctaliadreams/",
-                "https://x.com/NoctaliaDreams",
-                "https://www.tiktok.com/@noctaliadreams"
-            ]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "@id": "https://noctalia.app/#website",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "inLanguage": ["fr", "en", "es", "de", "it"]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "MobileApplication",
-            "name": "Noctalia",
-            "description": "Application de journal de rêves Noctalia. Capturez vos rêves à la voix, explorez-les avec une analyse personnalisée et comprenez mieux vos nuits.",
-            "operatingSystem": "Android",
-            "applicationCategory": "LifestyleApplication",
-            "inLanguage": "fr",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
-            "screenshot": [
-                "https://noctalia.app/img/en/recording-800w.jpg",
-                "https://noctalia.app/img/en/analizing-800w.jpg",
-                "https://noctalia.app/img/en/exploring-800w.jpg"
-            ],
-            "featureList": [
-                "Enregistrement vocal des rêves",
-                "Analyse des rêves Noctalia",
-                "Génération d'images de rêves",
-                "Journal de rêves",
-                "Suivi émotionnel"
-            ],
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "EUR"
-            }
         }
     </script>
 </head>

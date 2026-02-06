@@ -51,103 +51,108 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            "@graph": [
                 {
-                    "@type": "Question",
-                    "name": "How does dream analysis work?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Noctalia uses advanced language models inspired by analytical psychology and dream symbolism to spot recurring motifs and archetypes and give you lines of inquiry without claiming a single absolute truth."
-                    }
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {
+                            "@type": "Question",
+                            "name": "How does dream analysis work?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Noctalia uses advanced language models inspired by analytical psychology and dream symbolism to spot recurring motifs and archetypes and give you lines of inquiry without claiming a single absolute truth."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Are my dreams private?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Your recordings and notes are encrypted and stored securely. Only you can access them and your personal data is never sold."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Can I type my dreams instead of speaking?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Yes, a full text editor is available if you prefer writing your dreams instead of recording them by voice."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Does the app work offline?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "You can record dreams offline, and analysis and sync will run automatically when you are back online."
+                            }
+                        }
+                    ]
                 },
                 {
-                    "@type": "Question",
-                    "name": "Are my dreams private?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Your recordings and notes are encrypted and stored securely. Only you can access them and your personal data is never sold."
-                    }
+                    "@type": "Organization",
+                    "@id": "https://noctalia.app/#organization",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://noctalia.app/logo/logo_noctalia.png",
+                        "width": 512,
+                        "height": 512
+                    },
+                    "description": "Dream journal app for capturing and exploring your dreams.",
+                    "sameAs": [
+                        "https://www.instagram.com/noctaliadreams/",
+                        "https://x.com/NoctaliaDreams",
+                        "https://www.tiktok.com/@noctaliadreams"
+                    ]
                 },
                 {
-                    "@type": "Question",
-                    "name": "Can I type my dreams instead of speaking?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Yes, a full text editor is available if you prefer writing your dreams instead of recording them by voice."
-                    }
+                    "@type": "WebSite",
+                    "@id": "https://noctalia.app/#website",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
+                    },
+                    "inLanguage": [
+                        "en",
+                        "fr",
+                        "es",
+                        "de",
+                        "it"
+                    ]
                 },
                 {
-                    "@type": "Question",
-                    "name": "Does the app work offline?",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "You can record dreams offline, and analysis and sync will run automatically when you are back online."
+                    "@type": "MobileApplication",
+                    "name": "Noctalia",
+                    "description": "Dream journal app. Capture dreams by voice, explore them with Noctalia insights, and understand your nights better.",
+                    "operatingSystem": "Android",
+                    "applicationCategory": "LifestyleApplication",
+                    "inLanguage": "en",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
+                    },
+                    "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+                    "screenshot": [
+                        "https://noctalia.app/img/en/recording-800w.jpg",
+                        "https://noctalia.app/img/en/analizing-800w.jpg",
+                        "https://noctalia.app/img/en/exploring-800w.jpg"
+                    ],
+                    "featureList": [
+                        "Voice dream recording",
+                        "Dream insights",
+                        "Dream image generation",
+                        "Dream journal",
+                        "Emotional tracking"
+                    ],
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "EUR"
                     }
                 }
             ]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "@id": "https://noctalia.app/#organization",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://noctalia.app/logo/logo_noctalia.png",
-                "width": 512,
-                "height": 512
-            },
-            "description": "Dream journal app for capturing and exploring your dreams.",
-            "sameAs": [
-                "https://www.instagram.com/noctaliadreams/",
-                "https://x.com/NoctaliaDreams",
-                "https://www.tiktok.com/@noctaliadreams"
-            ]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "@id": "https://noctalia.app/#website",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "inLanguage": ["en", "fr", "es", "de", "it"]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "MobileApplication",
-            "name": "Noctalia",
-            "description": "Dream journal app. Capture dreams by voice, explore them with Noctalia insights, and understand your nights better.",
-            "operatingSystem": "Android",
-            "applicationCategory": "LifestyleApplication",
-            "inLanguage": "en",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
-            "screenshot": [
-                "https://noctalia.app/img/en/recording-800w.jpg",
-                "https://noctalia.app/img/en/analizing-800w.jpg",
-                "https://noctalia.app/img/en/exploring-800w.jpg"
-            ],
-            "featureList": [
-                "Voice dream recording",
-                "Dream insights",
-                "Dream image generation",
-                "Dream journal",
-                "Emotional tracking"
-            ],
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "EUR"
-            }
         }
     </script>
 </head>

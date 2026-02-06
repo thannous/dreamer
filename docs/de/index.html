@@ -49,98 +49,109 @@
     <script src="/js/ScrollTrigger.min.js?v=20260122-0819" defer></script>
     <script type="application/ld+json">
         {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-                    {
-                              "@type": "Question",
-                              "name": "Wie funktioniert die Traumanalyse?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Noctalia nutzt fortschrittliche Sprachmodelle, inspiriert von der analytischen Psychologie und Traumsymbolik, um wiederkehrende Motive und Archetypen zu erkennen und dir Denkanstöße zu geben, ohne eine einzige absolute Wahrheit zu behaupten."
-                              }
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {
+                            "@type": "Question",
+                            "name": "Wie funktioniert die Traumanalyse?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Noctalia nutzt fortschrittliche Sprachmodelle, inspiriert von der analytischen Psychologie und Traumsymbolik, um wiederkehrende Motive und Archetypen zu erkennen und dir Denkanstöße zu geben, ohne eine einzige absolute Wahrheit zu behaupten."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Sind meine Träume privat?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Deine Aufnahmen und Notizen werden verschlüsselt und sicher gespeichert. Nur du hast Zugriff darauf und deine persönlichen Daten werden niemals verkauft."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Kann ich meine Träume auch tippen statt zu sprechen?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Ja, ein vollständiger Texteditor steht zur Verfügung, wenn du deine Träume lieber schreibst statt sie per Sprache aufzunehmen."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Funktioniert die App offline?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Du kannst Träume offline aufnehmen. Analyse und Synchronisierung laufen automatisch, sobald du wieder online bist."
+                            }
+                        }
+                    ]
+                },
+                {
+                    "@type": "Organization",
+                    "@id": "https://noctalia.app/#organization",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://noctalia.app/logo/logo_noctalia.png",
+                        "width": 512,
+                        "height": 512
                     },
-                    {
-                              "@type": "Question",
-                              "name": "Sind meine Träume privat?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Deine Aufnahmen und Notizen werden verschlüsselt und sicher gespeichert. Nur du hast Zugriff darauf und deine persönlichen Daten werden niemals verkauft."
-                              }
+                    "description": "Traumtagebuch-App zum Erfassen und Erkunden deiner Träume.",
+                    "sameAs": [
+                        "https://www.instagram.com/noctaliadreams/",
+                        "https://x.com/NoctaliaDreams",
+                        "https://www.tiktok.com/@noctaliadreams"
+                    ]
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": "https://noctalia.app/#website",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
                     },
-                    {
-                              "@type": "Question",
-                              "name": "Kann ich meine Träume auch tippen statt zu sprechen?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Ja, ein vollständiger Texteditor steht zur Verfügung, wenn du deine Träume lieber schreibst statt sie per Sprache aufzunehmen."
-                              }
+                    "inLanguage": [
+                        "de",
+                        "en",
+                        "fr",
+                        "es",
+                        "it"
+                    ]
+                },
+                {
+                    "@type": "MobileApplication",
+                    "name": "Noctalia",
+                    "description": "Traumtagebuch-App. Erfasse Träume per Sprache, erkunde sie mit Noctalia-Insights und verstehe deine Nächte besser.",
+                    "operatingSystem": "Android",
+                    "applicationCategory": "LifestyleApplication",
+                    "inLanguage": "de",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
                     },
-                    {
-                              "@type": "Question",
-                              "name": "Funktioniert die App offline?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Du kannst Träume offline aufnehmen. Analyse und Synchronisierung laufen automatisch, sobald du wieder online bist."
-                              }
+                    "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+                    "screenshot": [
+                        "https://noctalia.app/img/en/recording-800w.jpg",
+                        "https://noctalia.app/img/en/analizing-800w.jpg",
+                        "https://noctalia.app/img/en/exploring-800w.jpg"
+                    ],
+                    "featureList": [
+                        "Sprachaufnahme von Träumen",
+                        "Traum-Insights",
+                        "Traumbild-Generierung",
+                        "Traumtagebuch",
+                        "Emotionales Tracking"
+                    ],
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "EUR"
                     }
-          ]
-}
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "@id": "https://noctalia.app/#organization",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://noctalia.app/logo/logo_noctalia.png",
-                "width": 512,
-                "height": 512
-            },
-            "description": "Traumtagebuch-App zum Erfassen und Erkunden deiner Träume.",
-            "sameAs": [
-                "https://www.instagram.com/noctaliadreams/",
-                "https://x.com/NoctaliaDreams",
-                "https://www.tiktok.com/@noctaliadreams"
+                }
             ]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "@id": "https://noctalia.app/#website",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "inLanguage": ["de", "en", "fr", "es", "it"]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "MobileApplication",
-            "name": "Noctalia",
-            "description": "Traumtagebuch-App. Erfasse Träume per Sprache, erkunde sie mit Noctalia-Insights und verstehe deine Nächte besser.",
-            "operatingSystem": "Android",
-            "applicationCategory": "LifestyleApplication",
-            "inLanguage": "de",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
-            "screenshot": [
-                "https://noctalia.app/img/en/recording-800w.jpg",
-                "https://noctalia.app/img/en/analizing-800w.jpg",
-                "https://noctalia.app/img/en/exploring-800w.jpg"
-            ],
-            "featureList": ["Sprachaufnahme von Träumen", "Traum-Insights", "Traumbild-Generierung", "Traumtagebuch", "Emotionales Tracking"],
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "EUR"
-            }
         }
     </script>
 </head>
