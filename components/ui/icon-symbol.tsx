@@ -3,29 +3,70 @@
 import React, { ComponentProps } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
+import { type ColorValue, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
+type MaterialIconName = ComponentProps<typeof MaterialIcons>['name'];
+type SFSymbolName = SymbolViewProps['name'];
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
  * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
+ *
+ * Note: This mapping is intentionally partial. If we don't have a mapping for a symbol,
+ * we fall back to a generic icon so Android/web never render `undefined`.
  */
-const MAPPING = {
+const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   // Filled icons
   'house.fill': 'home',
   'book.fill': 'menu-book',
   'chart.bar.fill': 'insert-chart',
+  'chart.pie.fill': 'pie-chart',
+  'checkmark.circle.fill': 'check-circle',
+  'flame.fill': 'local-fire-department',
+  'heart.fill': 'favorite',
+  'lock.fill': 'lock',
+  'paperplane.fill': 'send',
+  'star.fill': 'star',
   gear: 'settings',
   // Outline icons for navbar
   house: 'home',
   book: 'menu-book',
   'chart.bar': 'bar-chart',
-  'paperplane.fill': 'send',
+  'arrow.clockwise': 'refresh',
+  'arrow.down': 'arrow-downward',
+  'arrow.up.circle': 'arrow-circle-up',
+  'bubble.left.and.bubble.right': 'chat-bubble-outline',
+  'bubble.left.and.bubble.right.fill': 'chat-bubble',
+  camera: 'camera-alt',
   'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.left': 'chevron-left',
   'chevron.right': 'chevron-right',
+  checkmark: 'check',
+  'doc.on.doc': 'content-copy',
+  'exclamationmark.circle.fill': 'error',
+  'exclamationmark.triangle': 'warning',
+  'exclamationmark.triangle.fill': 'warning',
+  'g.circle.fill': 'g-translate',
+  globe: 'language',
+  heart: 'favorite-border',
+  hourglass: 'hourglass-empty',
+  clock: 'schedule',
+  'info.circle': 'info',
+  iphone: 'phone-iphone',
+  mic: 'mic',
+  'mic.fill': 'mic',
+  paintpalette: 'palette',
+  'paintpalette.fill': 'palette',
+  photo: 'photo',
+  'photo.on.rectangle': 'photo-library',
+  'person.fill': 'person',
+  'square.and.arrow.up': 'share',
+  stop: 'stop',
+  'stop.fill': 'stop',
+  'sun.max.fill': 'sunny',
+  trash: 'delete',
+  xmark: 'close',
   'sparkles': 'auto-awesome',
   'lightbulb.fill': 'lightbulb',
   'moon.stars.fill': 'nights-stay',
@@ -53,7 +94,8 @@ const MAPPING = {
   'eye.fill': 'visibility',
   'heart.slash.fill': 'heart-broken',
   'figure.run': 'directions-run',
-} as IconMapping;
+  brain: 'psychology',
+};
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
@@ -66,11 +108,19 @@ export function IconSymbol({
   color,
   style,
 }: {
-  name: IconSymbolName;
+  name: SFSymbolName;
   size?: number;
-  color: string | OpaqueColorValue;
-  style?: StyleProp<TextStyle>;
+  color: ColorValue;
+  style?: StyleProp<TextStyle | ViewStyle>;
   weight?: SymbolWeight;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  const mappedName = MAPPING[name] ?? 'help';
+  return (
+    <MaterialIcons
+      color={color}
+      size={size}
+      name={mappedName}
+      style={style as StyleProp<TextStyle>}
+    />
+  );
 }

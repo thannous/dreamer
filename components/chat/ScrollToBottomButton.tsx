@@ -7,7 +7,6 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useScrollToBottomButton } from '@/hooks/useChatList';
 import { isChatDebugEnabled } from '@/lib/env';
-import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
@@ -16,6 +15,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -70,7 +70,7 @@ export function ScrollToBottomButton() {
       importantForAccessibility={shouldShowButton ? 'auto' : 'no-hide-descendants'}
     >
       <View style={styles.content}>
-        <Ionicons name="arrow-down" size={16} color="#FFFFFF" />
+        <IconSymbol name="arrow.down" size={16} color="#FFFFFF" />
         <Text style={styles.text}>Jump to latest</Text>
       </View>
     </AnimatedPressable>

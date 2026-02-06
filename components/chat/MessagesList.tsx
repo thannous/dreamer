@@ -24,7 +24,6 @@ import {
 } from '@/hooks/useChatList';
 import { MotiView } from '@/lib/moti';
 import type { ChatMessage } from '@/lib/types';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -53,6 +52,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered } from './FadeInStaggered';
 import { MarkdownText } from './MarkdownText';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type LegendListComponent = React.ComponentType<any> | React.ReactElement | null;
 
@@ -90,7 +90,7 @@ const UserMessage = memo(function UserMessage({ message }: { message: ChatMessag
           </Text>
         </LinearGradient>
         <View style={[styles.avatar, { backgroundColor: colors.backgroundSecondary }]}>
-          <MaterialCommunityIcons name="account" size={20} color={colors.textPrimary} />
+          <IconSymbol name="person.fill" size={20} color={colors.textPrimary} />
         </View>
       </View>
     </FadeInStaggered>
@@ -360,7 +360,7 @@ const AssistantMessage = memo(function AssistantMessage({
             style={[styles.avatarGlow, { backgroundColor: colors.accent }]}
           />
           <View style={[styles.avatar, { backgroundColor: colors.accent }]}>
-            <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
+            <IconSymbol name="brain" size={20} color={colors.textPrimary} />
           </View>
         </View>
         <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
@@ -380,7 +380,7 @@ const AssistantMessage = memo(function AssistantMessage({
               pressed && styles.retryButtonPressed,
             ]}
           >
-            <MaterialCommunityIcons name="refresh" size={18} color={colors.textSecondary} />
+            <IconSymbol name="arrow.clockwise" size={18} color={colors.textSecondary} />
           </Pressable>
         )}
       </View>
@@ -442,7 +442,7 @@ export function LoadingIndicator({ text, visible = true }: { text?: string; visi
     >
       <View style={loadingStyles.container}>
         <View style={[loadingStyles.avatar, { backgroundColor: colors.accent }]}>
-          <MaterialCommunityIcons name="brain" size={20} color={colors.textPrimary} />
+          <IconSymbol name="brain" size={20} color={colors.textPrimary} />
         </View>
         <View style={[loadingStyles.bubble, { backgroundColor: colors.backgroundSecondary }]}>
           <View style={loadingStyles.dots}>

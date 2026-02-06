@@ -7,11 +7,11 @@ import { getDreamThemeLabel } from '@/lib/dreamLabels';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
-import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type DreamCardVariant = 'standard' | 'featured';
 
@@ -102,11 +102,11 @@ export const DreamCard = memo(function DreamCard({
   const isFavorite = !!dream.isFavorite;
 
   const badges = useMemo(() => {
-    const list: { label?: string; icon?: string; variant: 'accent' | 'secondary' }[] = [];
+    const list: { label?: string; icon?: Parameters<typeof IconSymbol>[0]['name']; variant: 'accent' | 'secondary' }[] = [];
     if (isExplored) {
       list.push({
         label: t('journal.badge.explored'),
-        icon: 'chatbubble-ellipses-outline',
+        icon: 'bubble.left.and.bubble.right.fill',
         variant: 'accent',
       });
     }
@@ -121,7 +121,7 @@ export const DreamCard = memo(function DreamCard({
     if (isFavorite && !hasImage) {
       list.push({
         label: t('journal.badge.favorite'),
-        icon: 'heart',
+        icon: 'heart.fill',
         variant: 'secondary',
       });
     }
@@ -165,7 +165,7 @@ export const DreamCard = memo(function DreamCard({
             {/* Heart overlay for favorited dreams */}
             {isFavorite && (
               <View style={styles.favoriteOverlay}>
-                <Ionicons name="heart" size={18} color="#fff" />
+                <IconSymbol name="heart.fill" size={18} color="#fff" />
               </View>
             )}
           </View>
@@ -217,8 +217,8 @@ export const DreamCard = memo(function DreamCard({
                       accessible={!!badge.label}
                     >
                       {badge.icon && (
-                        <Ionicons
-                          name={badge.icon as any}
+                        <IconSymbol
+                          name={badge.icon}
                           size={14}
                           color={isAccent ? colors.textOnAccentSurface : colors.textPrimary}
                         />
@@ -294,8 +294,8 @@ export const DreamCard = memo(function DreamCard({
                     accessible={!!badge.label}
                   >
                     {badge.icon && (
-                      <Ionicons
-                        name={badge.icon as any}
+                      <IconSymbol
+                        name={badge.icon}
                         size={14}
                         color={isAccent ? colors.textOnAccentSurface : colors.textPrimary}
                       />

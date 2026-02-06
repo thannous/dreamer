@@ -2,9 +2,9 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { ErrorType } from '@/lib/errors';
-import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 interface ImageRetryProps {
   onRetry: () => void;
@@ -40,11 +40,11 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
   return (
     <View style={[styles.container, { backgroundColor: colors.backgroundSecondary, borderColor: colors.divider }]}>
       <View style={styles.iconContainer}>
-        <Ionicons name="image-outline" size={64} color={colors.textSecondary} />
+        <IconSymbol name="photo" size={64} color={colors.textSecondary} />
         {!isRetrying && (
           <View style={[styles.errorBadge, { backgroundColor: colors.backgroundSecondary }]}>
-            <Ionicons
-              name={isBlocked ? 'close-circle' : 'alert-circle'}
+            <IconSymbol
+              name={isBlocked ? 'xmark.circle.fill' : 'exclamationmark.circle.fill'}
               size={24}
               color={isBlocked ? '#9CA3AF' : '#EF4444'}
             />
@@ -68,7 +68,7 @@ export function ImageRetry({ onRetry, isRetrying = false, errorType }: ImageRetr
             </View>
           ) : (
             <View style={styles.buttonContent}>
-              <Ionicons name="refresh" size={20} color={colors.textPrimary} />
+              <IconSymbol name="arrow.clockwise" size={20} color={colors.textPrimary} />
               <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('image_retry.retry_generation')}</Text>
             </View>
           )}

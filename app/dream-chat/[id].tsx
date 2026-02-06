@@ -25,9 +25,9 @@ import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
 import { createDreamInSupabase } from '@/services/supabaseDreamService';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DecoLines } from '@/constants/journalTheme';
 import { MotiView } from '@/lib/moti';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
@@ -51,9 +51,9 @@ const getCategoryQuestion = (category: CategoryType, t: (key: string) => string)
 };
 
 const QUICK_CATEGORIES = [
-  { id: 'symbols', labelKey: 'dream_chat.quick.symbols', icon: 'creation' as const },
-  { id: 'emotions', labelKey: 'dream_chat.quick.emotions', icon: 'heart-pulse' as const },
-  { id: 'growth', labelKey: 'dream_chat.quick.growth', icon: 'sprout' as const },
+  { id: 'symbols', labelKey: 'dream_chat.quick.symbols', icon: 'sparkles' as const },
+  { id: 'emotions', labelKey: 'dream_chat.quick.emotions', icon: 'heart.fill' as const },
+  { id: 'growth', labelKey: 'dream_chat.quick.growth', icon: 'leaf.fill' as const },
 ];
 
 const CATEGORIES_COLORS: Record<string, string> = {
@@ -796,11 +796,11 @@ export default function DreamChatScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
         </Pressable>
 
         <View style={[styles.blockedContainer]} testID={TID.Chat.ScreenBlocked}>
-          <Ionicons name="lock-closed" size={64} color={colors.accent} />
+          <IconSymbol name="lock.fill" size={64} color={colors.accent} />
           <Text style={[styles.blockedTitle, { color: colors.textPrimary }]}>
             {t('dream_chat.exploration_limit.title')}
           </Text>
@@ -813,7 +813,7 @@ export default function DreamChatScreen() {
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: colors.accent }]}
             onPress={() => router.push('/paywall')}
           >
-            <Ionicons name="arrow-up-circle-outline" size={24} color={colors.textPrimary} />
+            <IconSymbol name="arrow.up.circle" size={24} color={colors.textPrimary} />
             <Text style={[styles.upgradeButtonText, { color: colors.textPrimary }]}>
               {tier === 'guest' ? t('dream_chat.exploration_limit.cta_guest') : t('dream_chat.exploration_limit.cta_free')}
             </Text>
@@ -838,13 +838,13 @@ export default function DreamChatScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
         </Pressable>
 
         <View style={styles.quotaCheckContainer}>
           {quotaCheckError ? (
             <>
-              <Ionicons name="warning-outline" size={48} color="#FF5252" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={48} color="#FF5252" />
               <Text style={[styles.errorText, { color: colors.textPrimary, marginTop: 16 }]}>
                 {quotaCheckError}
               </Text>
@@ -932,7 +932,7 @@ export default function DreamChatScreen() {
                   >
                     <View style={[styles.quickCategoryAccent, { backgroundColor: catColor }]} />
                     <View style={styles.quickCategoryInner}>
-                      <MaterialCommunityIcons name={cat.icon} size={16} color={colors.textPrimary} />
+                      <IconSymbol name={cat.icon} size={16} color={colors.textPrimary} />
                       <Text style={[styles.quickCategoryText, { color: colors.textPrimary }]}>
                         {t(cat.labelKey)}
                       </Text>
@@ -989,7 +989,7 @@ export default function DreamChatScreen() {
             accessibilityLabel={t('journal.back_button')}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+            <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
           </Pressable>
 
           <KeyboardAwareChatContent>
@@ -1091,11 +1091,7 @@ function ComposerFooter({
             { backgroundColor: pillBackground, borderColor: pillBorder },
           ]}
         >
-          <Ionicons
-            name="chatbubble-outline"
-            size={14}
-            color={counterColor}
-          />
+          <IconSymbol name="bubble.left.and.bubble.right" size={14} color={counterColor} />
           <Text
             style={[
               styles.messageCounter,
@@ -1113,7 +1109,7 @@ function ComposerFooter({
           style={[styles.limitWarningBanner, { backgroundColor: limitBannerBackground }]}
         >
           <View style={styles.limitWarningContent}>
-            <Ionicons name="alert-circle-outline" size={16} color="#EF4444" />
+            <IconSymbol name="exclamationmark.circle.fill" size={16} color="#EF4444" />
             <Text style={[styles.limitWarningText, { color: '#EF4444' }]}>
               {t('dream_chat.limit_warning')}
             </Text>

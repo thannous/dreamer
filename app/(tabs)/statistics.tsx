@@ -1,8 +1,6 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  Dimensions,
   Platform,
   ScrollView,
   StyleSheet,
@@ -38,9 +36,7 @@ import { splitLabelText } from '@/lib/pieLabelUtils';
 import type { DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
 const CHART_HORIZONTAL_INSET = ThemeLayout.spacing.lg * 3;
-const CHART_WIDTH = SCREEN_WIDTH - CHART_HORIZONTAL_INSET;
 const PIE_LABEL_MARGIN = ThemeLayout.spacing.sm;
 const PIE_LABEL_VERTICAL_MARGIN = ThemeLayout.spacing.md;
 const LABEL_TEXT_MARGIN = ThemeLayout.spacing.sm;
@@ -49,7 +45,6 @@ const LABEL_TEXT_LINE_HEIGHT = 14;
 const LABEL_DETAIL_LINE_HEIGHT = 13;
 const MAX_LABEL_LINES = 3;
 const MAX_LABEL_CHARS_PER_LINE = 10;
-const PIE_LABEL_HEIGHT = getLabelHeight(MAX_LABEL_LINES);
 const MIN_PIE_RADIUS = 62;
 const MAX_PIE_RADIUS = 90;
 const MIN_LABEL_WIDTH = 84;
@@ -64,39 +59,66 @@ function getLabelHeight(lineCount: number) {
   return LABEL_VERTICAL_PADDING * 2 + safeCount * LABEL_TEXT_LINE_HEIGHT + LABEL_DETAIL_LINE_HEIGHT;
 }
 
-// Balance the donut radius and external label width so callouts stay visible on all breakpoints.
-const baseLabelWidth = clamp(CHART_WIDTH * 0.38, MIN_LABEL_WIDTH, MAX_LABEL_WIDTH);
-const baseLabelLineLength = clamp(CHART_WIDTH * 0.05, MIN_LABEL_LINE, MAX_LABEL_LINE);
-const maxPaddingPerSide = Math.max(
-  (CHART_WIDTH - MIN_PIE_RADIUS * 2) / 2,
-  PIE_LABEL_MARGIN + MIN_LABEL_LINE + 24,
-);
+const PIE_LABEL_HEIGHT = getLabelHeight(MAX_LABEL_LINES);
 
-let pieLabelWidth = baseLabelWidth;
-let pieLabelLineLength = baseLabelLineLength;
-let piePaddingPerSide = pieLabelWidth + pieLabelLineLength + PIE_LABEL_MARGIN;
+type PieMetrics = {
+  chartWidth: number;
+  pieLabelWidth: number;
+  pieLabelLineLength: number;
+  pieExtraRadius: number;
+  pieRadius: number;
+  pieInnerRadius: number;
+  pieLabelTailLength: number;
+  pieChartDimension: number;
+  pieChartCenter: number;
+};
 
-if (piePaddingPerSide > maxPaddingPerSide) {
-  const availableForElements = Math.max(maxPaddingPerSide - PIE_LABEL_MARGIN, MIN_LABEL_LINE);
-  const totalDesired = (pieLabelWidth + pieLabelLineLength) || 1;
-  const lineWeight = pieLabelLineLength / totalDesired;
-  pieLabelLineLength = clamp(availableForElements * lineWeight, MIN_LABEL_LINE, MAX_LABEL_LINE);
-  pieLabelWidth = clamp(availableForElements - pieLabelLineLength, 48, MAX_LABEL_WIDTH);
-  const overflow = pieLabelWidth + pieLabelLineLength - availableForElements;
-  if (overflow > 0) {
-    pieLabelWidth = Math.max(40, pieLabelWidth - overflow);
+function getPieMetrics(screenWidth: number): PieMetrics {
+  const chartWidth = screenWidth - CHART_HORIZONTAL_INSET;
+
+  // Balance the donut radius and external label width so callouts stay visible on all breakpoints.
+  const baseLabelWidth = clamp(chartWidth * 0.38, MIN_LABEL_WIDTH, MAX_LABEL_WIDTH);
+  const baseLabelLineLength = clamp(chartWidth * 0.05, MIN_LABEL_LINE, MAX_LABEL_LINE);
+  const maxPaddingPerSide = Math.max(
+    (chartWidth - MIN_PIE_RADIUS * 2) / 2,
+    PIE_LABEL_MARGIN + MIN_LABEL_LINE + 24,
+  );
+
+  let pieLabelWidth = baseLabelWidth;
+  let pieLabelLineLength = baseLabelLineLength;
+  let piePaddingPerSide = pieLabelWidth + pieLabelLineLength + PIE_LABEL_MARGIN;
+
+  if (piePaddingPerSide > maxPaddingPerSide) {
+    const availableForElements = Math.max(maxPaddingPerSide - PIE_LABEL_MARGIN, MIN_LABEL_LINE);
+    const totalDesired = (pieLabelWidth + pieLabelLineLength) || 1;
+    const lineWeight = pieLabelLineLength / totalDesired;
+    pieLabelLineLength = clamp(availableForElements * lineWeight, MIN_LABEL_LINE, MAX_LABEL_LINE);
+    pieLabelWidth = clamp(availableForElements - pieLabelLineLength, 48, MAX_LABEL_WIDTH);
+    const overflow = pieLabelWidth + pieLabelLineLength - availableForElements;
+    if (overflow > 0) {
+      pieLabelWidth = Math.max(40, pieLabelWidth - overflow);
+    }
+    piePaddingPerSide = pieLabelWidth + pieLabelLineLength + PIE_LABEL_MARGIN;
   }
-  piePaddingPerSide = pieLabelWidth + pieLabelLineLength + PIE_LABEL_MARGIN;
-}
 
-const PIE_LABEL_WIDTH = pieLabelWidth;
-const PIE_LABEL_LINE_LENGTH = pieLabelLineLength;
-const PIE_EXTRA_RADIUS = piePaddingPerSide;
-const PIE_RADIUS = clamp(CHART_WIDTH / 2 - PIE_EXTRA_RADIUS, MIN_PIE_RADIUS, MAX_PIE_RADIUS);
-const PIE_INNER_RADIUS = PIE_RADIUS * 0.62;
-const PIE_LABEL_TAIL_LENGTH = Math.max(10, Math.min(PIE_LABEL_LINE_LENGTH * 0.45, PIE_LABEL_LINE_LENGTH - 4));
-const PIE_CHART_DIMENSION = PIE_RADIUS * 2 + PIE_EXTRA_RADIUS * 2;
-const PIE_CHART_CENTER = PIE_RADIUS + PIE_EXTRA_RADIUS;
+  const pieExtraRadius = piePaddingPerSide;
+  const pieRadius = clamp(chartWidth / 2 - pieExtraRadius, MIN_PIE_RADIUS, MAX_PIE_RADIUS);
+
+  return {
+    chartWidth,
+    pieLabelWidth,
+    pieLabelLineLength,
+    pieExtraRadius,
+    pieRadius,
+    pieInnerRadius: pieRadius * 0.62,
+    pieLabelTailLength: Math.max(
+      10,
+      Math.min(pieLabelLineLength * 0.45, pieLabelLineLength - 4)
+    ),
+    pieChartDimension: pieRadius * 2 + pieExtraRadius * 2,
+    pieChartCenter: pieRadius + pieExtraRadius,
+  };
+}
 
 type DreamPieDataItem = pieDataItem & {
   typeLabel: string;
@@ -158,7 +180,7 @@ const distributeLabelsOnSide = (labels: PieLabelLayout[], chartHeight: number) =
   return sorted;
 };
 
-const buildPieLabelLayouts = (data: DreamPieDataItem[]): PieLabelLayout[] => {
+const buildPieLabelLayouts = (data: DreamPieDataItem[], metrics: PieMetrics): PieLabelLayout[] => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   if (!total) return [];
 
@@ -168,9 +190,9 @@ const buildPieLabelLayouts = (data: DreamPieDataItem[]): PieLabelLayout[] => {
     const midAngle = accumulated + sliceAngle / 2;
     accumulated += sliceAngle;
 
-    const anchorX = PIE_CHART_CENTER + PIE_RADIUS * Math.sin(midAngle);
-    const anchorY = PIE_CHART_CENTER - PIE_RADIUS * Math.cos(midAngle);
-    const isRightHalf = anchorX >= PIE_CHART_CENTER;
+    const anchorX = metrics.pieChartCenter + metrics.pieRadius * Math.sin(midAngle);
+    const anchorY = metrics.pieChartCenter - metrics.pieRadius * Math.cos(midAngle);
+    const isRightHalf = anchorX >= metrics.pieChartCenter;
 
     return {
       anchorX,
@@ -184,11 +206,11 @@ const buildPieLabelLayouts = (data: DreamPieDataItem[]): PieLabelLayout[] => {
 
   const left = distributeLabelsOnSide(
     rawLayouts.filter((layout) => !layout.isRightHalf),
-    PIE_CHART_DIMENSION,
+    metrics.pieChartDimension,
   );
   const right = distributeLabelsOnSide(
     rawLayouts.filter((layout) => layout.isRightHalf),
-    PIE_CHART_DIMENSION,
+    metrics.pieChartDimension,
   );
 
   return [...left, ...right];
@@ -259,9 +281,9 @@ export default function StatisticsScreen() {
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
   const { formatNumber, formatPercent } = useLocaleFormatting();
-  const tabBarHeight = useBottomTabBarHeight();
   const stats = useDreamStatistics(dreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
+  const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
 
   const [showAnimations, setShowAnimations] = useState(false);
 
@@ -280,17 +302,22 @@ export default function StatisticsScreen() {
     [mode]
   );
 
-  // Memoize label config - only depends on colors.textSecondary
+  // Memoize label config - depends on chart sizing + colors.textSecondary
   const pieLabelLineConfig: LabelLineConfig = useMemo(() => ({
-    length: PIE_LABEL_LINE_LENGTH,
-    tailLength: PIE_LABEL_TAIL_LENGTH,
+    length: pieMetrics.pieLabelLineLength,
+    tailLength: pieMetrics.pieLabelTailLength,
     color: colors.textSecondary,
     thickness: 1,
-    labelComponentWidth: PIE_LABEL_WIDTH,
+    labelComponentWidth: pieMetrics.pieLabelWidth,
     labelComponentHeight: PIE_LABEL_HEIGHT,
     labelComponentMargin: PIE_LABEL_VERTICAL_MARGIN,
     avoidOverlappingOfLabels: true,
-  }), [colors.textSecondary]);
+  }), [
+    colors.textSecondary,
+    pieMetrics.pieLabelLineLength,
+    pieMetrics.pieLabelTailLength,
+    pieMetrics.pieLabelWidth,
+  ]);
 
   const topDreamTypes = useMemo(() => stats.dreamTypeDistribution.slice(0, 5), [stats.dreamTypeDistribution]);
 
@@ -321,7 +348,10 @@ export default function StatisticsScreen() {
     [topDreamTypes, dreamTypeColors, pieLabelLineConfig, t]
   );
 
-  const pieLabelLayouts = useMemo(() => buildPieLabelLayouts(pieChartData), [pieChartData]);
+  const pieLabelLayouts = useMemo(
+    () => buildPieLabelLayouts(pieChartData, pieMetrics),
+    [pieChartData, pieMetrics],
+  );
 
   // Compute max theme count for proportional bars
   const maxThemeCount = useMemo(
@@ -369,8 +399,9 @@ export default function StatisticsScreen() {
 
         <ScrollView
           style={styles.scrollView}
+          contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{
-            paddingBottom: tabBarHeight + ThemeLayout.spacing.xl,
+            paddingBottom: ThemeLayout.spacing.xl,
           }}
           showsVerticalScrollIndicator={false}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
@@ -452,20 +483,20 @@ export default function StatisticsScreen() {
             {stats.dreamTypeDistribution.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionChartDesktop]}>
                 <SectionGlass colors={colors} animationDelay={450}>
-                  <SectionHeading
-                    title={t('stats.section.dream_types')}
-                    icon="chart.pie.fill"
-                    colors={colors}
-                  />
+                    <SectionHeading
+                      title={t('stats.section.dream_types')}
+                      icon="chart.pie.fill"
+                      colors={colors}
+                    />
                   <View style={styles.chartContainer}>
                     <View style={styles.pieChartWrapper}>
-                      <View style={{ width: PIE_CHART_DIMENSION, height: PIE_CHART_DIMENSION }}>
+                      <View style={{ width: pieMetrics.pieChartDimension, height: pieMetrics.pieChartDimension }}>
                         <PieChart
                           data={pieChartData}
                           donut
-                          radius={PIE_RADIUS}
-                          innerRadius={PIE_INNER_RADIUS}
-                          extraRadius={PIE_EXTRA_RADIUS}
+                          radius={pieMetrics.pieRadius}
+                          innerRadius={pieMetrics.pieInnerRadius}
+                          extraRadius={pieMetrics.pieExtraRadius}
                           strokeWidth={1.5}
                           strokeColor={colors.backgroundDark}
                           showExternalLabels={false}
@@ -481,16 +512,16 @@ export default function StatisticsScreen() {
                           )}
                         />
                         <Svg
-                          width={PIE_CHART_DIMENSION}
-                          height={PIE_CHART_DIMENSION}
+                          width={pieMetrics.pieChartDimension}
+                          height={pieMetrics.pieChartDimension}
                           style={StyleSheet.absoluteFill}
                         >
                           {pieLabelLayouts.map((layout) => {
-                            const labelWidth = PIE_LABEL_WIDTH;
+                            const labelWidth = pieMetrics.pieLabelWidth;
                             const labelHeight = layout.item.labelHeight || PIE_LABEL_HEIGHT;
                             const labelX = layout.isRightHalf
-                              ? PIE_CHART_CENTER + PIE_RADIUS + PIE_LABEL_MARGIN
-                              : PIE_CHART_CENTER - PIE_RADIUS - PIE_LABEL_MARGIN - labelWidth;
+                              ? pieMetrics.pieChartCenter + pieMetrics.pieRadius + PIE_LABEL_MARGIN
+                              : pieMetrics.pieChartCenter - pieMetrics.pieRadius - PIE_LABEL_MARGIN - labelWidth;
                             const labelY = layout.labelCenterY - labelHeight / 2;
                             const textX = labelX + LABEL_TEXT_MARGIN;
                             const typeLines = layout.item.typeLines?.length
@@ -505,8 +536,8 @@ export default function StatisticsScreen() {
                               LABEL_DETAIL_LINE_HEIGHT -
                               2;
                             const connectorBendX =
-                              PIE_CHART_CENTER +
-                              (layout.isRightHalf ? 1 : -1) * (PIE_RADIUS + PIE_LABEL_TAIL_LENGTH);
+                              pieMetrics.pieChartCenter +
+                              (layout.isRightHalf ? 1 : -1) * (pieMetrics.pieRadius + pieMetrics.pieLabelTailLength);
                             const connectorEndX = layout.isRightHalf ? labelX : labelX + labelWidth;
 
                             return (

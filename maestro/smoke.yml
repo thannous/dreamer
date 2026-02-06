@@ -4,11 +4,9 @@ appId: com.tanuki75.noctalia
 - launchApp
 - runFlow:
       when:
-          visible:
-              id: tab.journal
+          visible: "(Journal|Diario)"
       commands:
-          - tapOn:
-                id: tab.journal
+          - tapOn: "(Journal|Diario)"
           - waitForAnimationToEnd
 - runFlow:
       when:

@@ -10,8 +10,7 @@ appId: com.tanuki75.noctalia
           - tapOn:
                 id: btn.navigateJournal
           - waitForAnimationToEnd
-- tapOn:
-      id: tab.home
+- tapOn: "(Home|Accueil|Inicio)"
 - assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
 
 # Switch to the memory / recall ritual and verify one of its steps

@@ -11,11 +11,11 @@ import {
   Linking,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
 import type { CameraType, CameraView as ExpoCameraView } from 'expo-camera';
 
 import { REFERENCE_IMAGES } from '@/constants/appConfig';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { useTheme } from '@/context/ThemeContext';
@@ -441,7 +441,7 @@ export function ReferenceImagePicker({
                 accessibilityLabel={t('common.cancel')}
                 style={styles.cameraCloseButton}
               >
-                <Ionicons name="close" size={20} color="#fff" />
+                <IconSymbol name="xmark" size={20} color="#fff" />
               </Pressable>
             </View>
             <View style={styles.cameraControls}>
@@ -485,7 +485,7 @@ export function ReferenceImagePicker({
               accessibilityLabel={t('reference_image.remove_photo', { index: index + 1 })}
               accessibilityHint={t('reference_image.remove_photo_hint')}
             >
-              <Ionicons name="close" size={16} color={colors.textPrimary} />
+              <IconSymbol name="xmark" size={16} color={colors.textPrimary} />
             </Pressable>
           </View>
         ))}
@@ -507,7 +507,7 @@ export function ReferenceImagePicker({
                 {isLoading ? (
                   <ActivityIndicator color={colors.textSecondary} />
                 ) : (
-                  <Ionicons name="camera-outline" size={28} color={colors.textSecondary} />
+                  <IconSymbol name="camera" size={28} color={colors.textSecondary} />
                 )}
               </Pressable>
             )}
@@ -525,7 +525,7 @@ export function ReferenceImagePicker({
               {isLoading ? (
                 <ActivityIndicator color={colors.textSecondary} />
               ) : (
-                <Ionicons name="images-outline" size={28} color={colors.textSecondary} />
+                <IconSymbol name="photo.on.rectangle" size={28} color={colors.textSecondary} />
               )}
             </Pressable>
           </>

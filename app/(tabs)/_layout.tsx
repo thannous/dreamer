@@ -1,7 +1,9 @@
 import { Tabs } from 'expo-router';
+import { Icon, Label, NativeTabs, VectorIcon } from 'expo-router/unstable-native-tabs';
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
@@ -54,6 +56,44 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+
+  if (Platform.OS !== 'web') {
+    return (
+      <NativeTabs tintColor={colors.accent}>
+        <NativeTabs.Trigger name="index" hidden={returningGuestBlocked}>
+          <Label>{t('nav.home')}</Label>
+          <Icon
+            sf={{ default: 'house', selected: 'house.fill' }}
+            androidSrc={{
+              default: <VectorIcon family={MaterialIcons} name="home" />,
+              selected: <VectorIcon family={MaterialIcons} name="home-filled" />,
+            }}
+          />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="journal" hidden={returningGuestBlocked}>
+          <Label>{t('nav.journal')}</Label>
+          <Icon
+            sf={{ default: 'book', selected: 'book.fill' }}
+            androidSrc={<VectorIcon family={MaterialIcons} name="menu-book" />}
+          />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="statistics" hidden={returningGuestBlocked}>
+          <Label>{t('nav.stats')}</Label>
+          <Icon
+            sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }}
+            androidSrc={<VectorIcon family={MaterialIcons} name="bar-chart" />}
+          />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="settings">
+          <Label>{t('nav.settings')}</Label>
+          <Icon
+            sf="gear"
+            androidSrc={<VectorIcon family={MaterialIcons} name="settings" />}
+          />
+        </NativeTabs.Trigger>
+      </NativeTabs>
+    );
+  }
 
   const sceneBottomPadding = TAB_BAR_HEIGHT + insets.bottom + TAB_BAR_CONTENT_BOTTOM_PADDING;
   const isDesktopWeb = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;

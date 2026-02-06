@@ -6,13 +6,11 @@ appId: com.tanuki75.noctalia
       id: btn.navigateJournal
 - waitForAnimationToEnd
 # Switch to existing user profile to load predefined dreams
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - tapOn:
       id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn:
-      id: tab.journal
+- tapOn: "(Journal|Diario)"
 - waitForAnimationToEnd
 # Apply explored-only filter (chat bubble icon)
 - tapOn:

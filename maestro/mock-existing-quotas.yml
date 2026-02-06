@@ -13,7 +13,7 @@ appId: com.tanuki75.noctalia
           id: btn.navigateJournal
       - waitForAnimationToEnd
 - tapOn:
-    id: tab.settings
+    text: "(Settings|Param.tres|Ajustes)"
 - waitForAnimationToEnd
 - tapOn:
     id: btn.mockProfile.existing
@@ -29,7 +29,7 @@ appId: com.tanuki75.noctalia
 
 # Navigate to the statistics tab and verify the engagement cards match
 - tapOn:
-    id: tab.stats
+    text: "(Stats|Estad.sticas)"
 - waitForAnimationToEnd
 - scrollUntilVisible:
     element:

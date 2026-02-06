@@ -6,13 +6,11 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 
 # Switch to existing user profile to load predefined dreams
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - tapOn:
       id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn:
-      id: tab.journal
+- tapOn: "(Journal|Diario)"
 - waitForAnimationToEnd
 
 # Open a specific dream (assuming mock data "The Infinite Library")

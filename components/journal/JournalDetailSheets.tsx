@@ -17,7 +17,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import type { ReferenceImage, SubscriptionTier } from '@/lib/types';
-import { Ionicons } from '@expo/vector-icons';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type ReferenceSubjectType = 'person' | 'animal' | null;
 
@@ -53,12 +53,12 @@ export function AnalysisNoticeSheet({
         : colors.accent;
   const toneBackground = mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
   const iconName = tone === 'success'
-    ? 'checkmark-circle'
+    ? 'checkmark.circle.fill'
     : tone === 'warning'
-      ? 'alert-circle'
+      ? 'exclamationmark.triangle.fill'
       : tone === 'error'
-        ? 'close-circle'
-        : 'information-circle';
+        ? 'xmark.circle.fill'
+        : 'info.circle';
 
   return (
     <BottomSheet
@@ -75,7 +75,7 @@ export function AnalysisNoticeSheet({
       <View style={[styles.sheetHandle, { backgroundColor: colors.divider }]} />
       <View style={styles.noticeHeader}>
         <View style={[styles.noticeIcon, { backgroundColor: toneBackground }]}>
-          <Ionicons name={iconName} size={24} color={toneColor} />
+          <IconSymbol name={iconName} size={24} color={toneColor} />
         </View>
         <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
           {notice?.title}
@@ -199,12 +199,12 @@ export function ReanalyzeSheet({
             styles.sheetCheckboxBox,
             {
               borderColor: colors.divider,
-              backgroundColor: isRegenerate ? colors.accent : 'transparent',
+          backgroundColor: isRegenerate ? colors.accent : 'transparent',
             },
           ]}
         >
           {isRegenerate ? (
-            <Ionicons name="checkmark" size={16} color={colors.textOnAccentSurface} />
+            <IconSymbol name="checkmark" size={16} color={colors.textOnAccentSurface} />
           ) : null}
         </View>
         <View style={styles.sheetCheckboxContent}>
@@ -404,7 +404,7 @@ export function ImageErrorSheet({
             { backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)' },
           ]}
         >
-          <Ionicons name="alert-circle" size={24} color="#EF4444" />
+          <IconSymbol name="exclamationmark.circle.fill" size={24} color="#EF4444" />
         </View>
         <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
           {t('image_retry.generation_failed')}

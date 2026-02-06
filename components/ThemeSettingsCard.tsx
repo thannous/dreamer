@@ -1,34 +1,34 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme } from '@/context/ThemeContext';
 import type { ThemePreference } from '@/lib/types';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts, GlassCardTokens } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const THEME_OPTIONS: {
   value: ThemePreference;
-  icon: string;
+  icon: Parameters<typeof IconSymbol>[0]['name'];
   labelKey: string;
   descriptionKey: string;
 }[] = [
   {
     value: 'auto',
-    icon: 'phone-portrait-outline',
+    icon: 'iphone',
     labelKey: 'settings.theme.option.auto.label',
     descriptionKey: 'settings.theme.option.auto.description',
   },
   {
     value: 'light',
-    icon: 'sunny-outline',
+    icon: 'sun.max.fill',
     labelKey: 'settings.theme.option.light.label',
     descriptionKey: 'settings.theme.option.light.description',
   },
   {
     value: 'dark',
-    icon: 'moon-outline',
+    icon: 'moon.stars.fill',
     labelKey: 'settings.theme.option.dark.label',
     descriptionKey: 'settings.theme.option.dark.description',
   },
@@ -84,7 +84,7 @@ export default function ThemeSettingsCard() {
                     },
                   ]}
                 >
-                  <Ionicons name={option.icon as any} size={20} color={iconColor} />
+                  <IconSymbol name={option.icon} size={20} color={iconColor} />
                 </View>
                 <View style={styles.optionInfo}>
                   <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>

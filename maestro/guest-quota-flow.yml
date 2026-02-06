@@ -40,10 +40,8 @@ appId: com.tanuki75.noctalia
       id: text.chat.limit
 - assertVisible: "20/20 messages"
 - assertVisible: "You've reached the message limit for this dream. Upgrade to continue the conversation."
-- tapOn:
-      id: tab.journal
-- tapOn:
-      id: tab.home
+- tapOn: "(Journal|Diario)"
+- tapOn: "(Home|Accueil|Inicio)"
 
 # Guest dream 2 - second analysis and exploration via analyze prompt
 - tapOn:
@@ -65,8 +63,7 @@ appId: com.tanuki75.noctalia
       id: btn.dreamCategory.emotions
 - assertVisible:
       id: chat.input.message
-- tapOn:
-      id: tab.journal
+- tapOn: "(Journal|Diario)"
 - tapOn:
       id: btn.addDream
 
@@ -100,12 +97,10 @@ appId: com.tanuki75.noctalia
       id: btn.dreamCategory.symbols
 - assertVisible:
       id: chat.screen.blocked
-- tapOn:
-      id: tab.journal
+- tapOn: "(Journal|Diario)"
 
 # Create account to migrate guest quotas
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - tapOn:
       id: input.auth.email
 - inputText: "mock.guest@dreamer.test"
@@ -128,8 +123,7 @@ appId: com.tanuki75.noctalia
 - assertVisible: "2 / 2"
 
 # Authenticated analyses (three more to reach five total)
-- tapOn:
-      id: tab.home
+- tapOn: "(Home|Accueil|Inicio)"
 - tapOn:
       id: input.dreamTranscript
 - inputText: "Auth Dream 1"
@@ -143,8 +137,7 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 - assertVisible:
       id: btn.exploreDream
-- tapOn:
-      id: tab.home
+- tapOn: "(Home|Accueil|Inicio)"
 
 - tapOn:
       id: input.dreamTranscript
@@ -159,8 +152,7 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 - assertVisible:
       id: btn.exploreDream
-- tapOn:
-      id: tab.home
+- tapOn: "(Home|Accueil|Inicio)"
 
 - tapOn:
       id: input.dreamTranscript
@@ -175,8 +167,7 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 - assertVisible:
       id: btn.exploreDream
-- tapOn:
-      id: tab.home
+- tapOn: "(Home|Accueil|Inicio)"
 
 # Auth Dream 4 - analysis quota exhausted (5/5), should show QuotaLimitSheet
 - tapOn:
@@ -200,6 +191,5 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 
 # Verify quotas show 5/5 analyses
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - assertVisible: "5 / 5"

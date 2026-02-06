@@ -1,4 +1,3 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -62,7 +61,6 @@ export default function SettingsScreen() {
   const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const { width } = useWindowDimensions();
-  const tabBarHeight = useBottomTabBarHeight();
   const appVersion = getAppVersionString();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
@@ -156,9 +154,10 @@ export default function SettingsScreen() {
 
           <ScrollView
             style={styles.scrollView}
+            contentInsetAdjustmentBehavior="automatic"
             contentContainerStyle={[
               styles.scrollContent,
-              { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
+              { paddingBottom: ThemeLayout.spacing.xl },
             ]}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
@@ -225,9 +224,10 @@ export default function SettingsScreen() {
 
         <ScrollView
           style={styles.scrollView}
+          contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingBottom: tabBarHeight + ThemeLayout.spacing.lg },
+            { paddingBottom: ThemeLayout.spacing.xl },
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}

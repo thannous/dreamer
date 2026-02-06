@@ -174,8 +174,8 @@ vi.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@expo/vector-icons', () => ({
-  Ionicons: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
+vi.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
 const { default: JournalListScreen } = await import('../journal');

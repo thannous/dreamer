@@ -1,9 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import { Fonts } from '@/constants/theme';
 import { ThemeLayout } from '@/constants/journalTheme';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 
@@ -25,14 +25,14 @@ export function SubjectProposition({
   const { t } = useTranslation();
   const { colors, shadows } = useTheme();
 
-  const iconName = subjectType === 'person' ? 'person' : 'paw';
+  const iconName = subjectType === 'person' ? 'person.fill' : 'pawprint.fill';
   const title = t(`subject_proposition.title_${subjectType}`);
   const message = t(`subject_proposition.message_${subjectType}`);
 
   return (
     <View style={[styles.container, shadows.md, { backgroundColor: colors.backgroundCard, borderColor: colors.divider }]}>
       <View style={[styles.iconBadge, { backgroundColor: colors.accent }]}>
-        <Ionicons name={iconName} size={20} color={colors.textPrimary} />
+        <IconSymbol name={iconName} size={20} color={colors.textPrimary} />
       </View>
 
       <View style={styles.content}>

@@ -5,11 +5,9 @@ clearState: true
 - launchApp
 - runFlow:
       when:
-          visible:
-              id: tab.journal
+          visible: "(Journal|Diario)"
       commands:
-          - tapOn:
-                id: tab.journal
+          - tapOn: "(Journal|Diario)"
           - waitForAnimationToEnd
 - runFlow:
       when:

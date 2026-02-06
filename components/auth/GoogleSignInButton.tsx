@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
@@ -8,6 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { createScopedLogger } from '@/lib/logger';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const log = createScopedLogger('[GoogleSignInButton]');
 
@@ -77,7 +77,7 @@ export default function GoogleSignInButton() {
           <ActivityIndicator color={colors.textPrimary} size="small" />
         ) : (
           <>
-            <Ionicons name="logo-google" size={20} color={colors.textPrimary} />
+            <IconSymbol name="g.circle.fill" size={20} color={colors.textPrimary} />
             <Text style={[styles.buttonText, { color: colors.textPrimary }]}>{t('auth.google.cta')}</Text>
           </>
         )}
