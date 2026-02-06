@@ -49,98 +49,109 @@
     <script src="/js/ScrollTrigger.min.js?v=20260122-0819" defer></script>
     <script type="application/ld+json">
         {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-                    {
-                              "@type": "Question",
-                              "name": "Come funziona l'analisi dei sogni?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Noctalia utilizza modelli linguistici avanzati ispirati alla psicologia analitica e al simbolismo onirico per individuare motivi ricorrenti e archetipi, offrendoti spunti di riflessione senza pretendere una verità assoluta."
-                              }
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "FAQPage",
+                    "mainEntity": [
+                        {
+                            "@type": "Question",
+                            "name": "Come funziona l'analisi dei sogni?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Noctalia utilizza modelli linguistici avanzati ispirati alla psicologia analitica e al simbolismo onirico per individuare motivi ricorrenti e archetipi, offrendoti spunti di riflessione senza pretendere una verità assoluta."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "I miei sogni sono privati?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Le tue registrazioni e note sono crittografate e archiviate in modo sicuro. Solo tu puoi accedervi e i tuoi dati personali non vengono mai venduti."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "Posso scrivere i miei sogni invece di parlare?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Sì, è disponibile un editor di testo completo se preferisci scrivere i tuoi sogni piuttosto che registrarli con la voce."
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": "L'app funziona offline?",
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": "Puoi registrare i sogni offline. L'analisi e la sincronizzazione avvengono automaticamente quando torni online."
+                            }
+                        }
+                    ]
+                },
+                {
+                    "@type": "Organization",
+                    "@id": "https://noctalia.app/#organization",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://noctalia.app/logo/logo_noctalia.png",
+                        "width": 512,
+                        "height": 512
                     },
-                    {
-                              "@type": "Question",
-                              "name": "I miei sogni sono privati?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Le tue registrazioni e note sono crittografate e archiviate in modo sicuro. Solo tu puoi accedervi e i tuoi dati personali non vengono mai venduti."
-                              }
+                    "description": "App diario dei sogni per catturare e esplorare i tuoi sogni.",
+                    "sameAs": [
+                        "https://www.instagram.com/noctaliadreams/",
+                        "https://x.com/NoctaliaDreams",
+                        "https://www.tiktok.com/@noctaliadreams"
+                    ]
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": "https://noctalia.app/#website",
+                    "name": "Noctalia",
+                    "url": "https://noctalia.app",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
                     },
-                    {
-                              "@type": "Question",
-                              "name": "Posso scrivere i miei sogni invece di parlare?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Sì, è disponibile un editor di testo completo se preferisci scrivere i tuoi sogni piuttosto che registrarli con la voce."
-                              }
+                    "inLanguage": [
+                        "it",
+                        "en",
+                        "fr",
+                        "es",
+                        "de"
+                    ]
+                },
+                {
+                    "@type": "MobileApplication",
+                    "name": "Noctalia",
+                    "description": "App diario dei sogni. Cattura i sogni con la voce, esplorali con gli insight di Noctalia e comprendi meglio le tue notti.",
+                    "operatingSystem": "Android",
+                    "applicationCategory": "LifestyleApplication",
+                    "inLanguage": "it",
+                    "publisher": {
+                        "@id": "https://noctalia.app/#organization"
                     },
-                    {
-                              "@type": "Question",
-                              "name": "L'app funziona offline?",
-                              "acceptedAnswer": {
-                                        "@type": "Answer",
-                                        "text": "Puoi registrare i sogni offline. L'analisi e la sincronizzazione avvengono automaticamente quando torni online."
-                              }
+                    "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
+                    "screenshot": [
+                        "https://noctalia.app/img/en/recording-800w.jpg",
+                        "https://noctalia.app/img/en/analizing-800w.jpg",
+                        "https://noctalia.app/img/en/exploring-800w.jpg"
+                    ],
+                    "featureList": [
+                        "Registrazione vocale dei sogni",
+                        "Insight sui sogni",
+                        "Generazione di immagini dei sogni",
+                        "Diario dei sogni",
+                        "Tracciamento emotivo"
+                    ],
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "EUR"
                     }
-          ]
-}
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "@id": "https://noctalia.app/#organization",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://noctalia.app/logo/logo_noctalia.png",
-                "width": 512,
-                "height": 512
-            },
-            "description": "App diario dei sogni per catturare e esplorare i tuoi sogni.",
-            "sameAs": [
-                "https://www.instagram.com/noctaliadreams/",
-                "https://x.com/NoctaliaDreams",
-                "https://www.tiktok.com/@noctaliadreams"
+                }
             ]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "@id": "https://noctalia.app/#website",
-            "name": "Noctalia",
-            "url": "https://noctalia.app",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "inLanguage": ["it", "en", "fr", "es", "de"]
-        }
-    </script>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "MobileApplication",
-            "name": "Noctalia",
-            "description": "App diario dei sogni. Cattura i sogni con la voce, esplorali con gli insight di Noctalia e comprendi meglio le tue notti.",
-            "operatingSystem": "Android",
-            "applicationCategory": "LifestyleApplication",
-            "inLanguage": "it",
-            "publisher": { "@id": "https://noctalia.app/#organization" },
-            "downloadUrl": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia",
-            "screenshot": [
-                "https://noctalia.app/img/en/recording-800w.jpg",
-                "https://noctalia.app/img/en/analizing-800w.jpg",
-                "https://noctalia.app/img/en/exploring-800w.jpg"
-            ],
-            "featureList": ["Registrazione vocale dei sogni", "Insight sui sogni", "Generazione di immagini dei sogni", "Diario dei sogni", "Tracciamento emotivo"],
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "EUR"
-            }
         }
     </script>
 </head>
