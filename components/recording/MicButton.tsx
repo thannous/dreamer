@@ -2,11 +2,11 @@ import { useTheme } from '@/context/ThemeContext';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { MotiView } from '@/lib/moti';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Platform, Pressable, StyleSheet, type AccessibilityState } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export type MicButtonStatus = 'idle' | 'preparing' | 'recording';
 export type MicButtonInteraction = 'enabled' | 'disabled';
@@ -147,8 +147,8 @@ export function MicButton({
           importantForAccessibility="no-hide-descendants"
           accessibilityElementsHidden={true}
         >
-          <Ionicons
-            name={isRecording ? 'stop' : 'mic'}
+          <IconSymbol
+            name={isRecording ? 'stop.fill' : 'mic.fill'}
             size={104}
             color={colors.textPrimary}
           />

@@ -1,4 +1,3 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -317,11 +316,7 @@ export default function SymbolDictionaryScreen() {
         accessibilityLabel={t("journal.back_button")}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
-        <MaterialCommunityIcons
-          name="arrow-left"
-          size={22}
-          color={colors.textPrimary}
-        />
+        <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
       </Pressable>
 
       {/* Page header with icon */}
@@ -337,11 +332,7 @@ export default function SymbolDictionaryScreen() {
             { backgroundColor: colors.backgroundSecondary },
           ]}
         >
-          <MaterialCommunityIcons
-            name="book-open-page-variant-outline"
-            size={28}
-            color={colors.accent}
-          />
+          <IconSymbol name="book.fill" size={28} color={colors.accent} />
         </View>
         <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
           {t("symbols.dictionary_title")}

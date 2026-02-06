@@ -25,7 +25,6 @@ import { isDreamAnalyzed } from '@/lib/dreamUsage';
 import { getDreamThumbnailUri, preloadImage } from '@/lib/imageUtils';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { Ionicons } from '@expo/vector-icons';
 import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
@@ -39,6 +38,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
@@ -632,7 +632,7 @@ export default function JournalListScreen() {
             {selectedTheme === theme && (
               <View style={styles.modalOptionCheckWrapper}>
                 <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
-                  <Ionicons name="checkmark" size={14} color={colors.accent} />
+                  <IconSymbol name="checkmark" size={14} color={colors.accent} />
                 </View>
               </View>
             )}
@@ -657,7 +657,7 @@ export default function JournalListScreen() {
             {selectedDreamType === dreamType && (
               <View style={styles.modalOptionCheckWrapper}>
                 <View style={[styles.modalOptionCheckBadge, { backgroundColor: colors.backgroundCard }]}>
-                  <Ionicons name="checkmark" size={14} color={colors.accent} />
+                  <IconSymbol name="checkmark" size={14} color={colors.accent} />
                 </View>
               </View>
             )}

@@ -38,7 +38,6 @@ import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
 import { categorizeDream, generateImageFromTranscript, generateImageWithReference } from '@/services/geminiService';
-import { Ionicons } from '@expo/vector-icons';
 import { Image, type ImageLoadEventData } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -64,6 +63,7 @@ import {
   type TextStyle,
   type ViewStyle
 } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type ShareNavigator = Navigator & {
   share?: (data: { title?: string; text?: string; url?: string }) => Promise<void>;
@@ -1037,7 +1037,7 @@ export default function JournalDetailScreen() {
           ]}
           hitSlop={8}
         >
-          <Ionicons
+          <IconSymbol
             name={isEditingTranscript ? 'checkmark' : 'pencil'}
             size={18}
             color={isEditingTranscript ? colors.textPrimary : colors.textSecondary}
@@ -1091,11 +1091,11 @@ export default function JournalDetailScreen() {
       >
       <View style={styles.metadataHeader}>
         <View style={styles.dateContainer}>
-          <Ionicons name="calendar-outline" size={16} color={colors.textOnAccentSurface} />
+          <IconSymbol name="calendar" size={16} color={colors.textOnAccentSurface} />
           <Text style={[styles.dateText, { color: colors.textOnAccentSurface }]}>{formatDreamDate(dream.id)}</Text>
         </View>
         <View style={styles.timeContainer}>
-          <Ionicons name="time-outline" size={16} color={colors.textOnAccentSurface} />
+          <IconSymbol name="clock" size={16} color={colors.textOnAccentSurface} />
           <Text style={[styles.timeText, { color: colors.textOnAccentSurface }]}>{formatDreamTime(dream.id)}</Text>
         </View>
       </View>
@@ -1122,7 +1122,7 @@ export default function JournalDetailScreen() {
       {(isEditing || dream.dreamType) && (
         <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}
         >
-          <Ionicons name="moon-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
+          <IconSymbol name="moon.stars.fill" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
           <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>{t('journal.detail.dream_type_label')}</Text>
           {isEditing ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
@@ -1162,7 +1162,7 @@ export default function JournalDetailScreen() {
       )}
 
       <View style={[styles.metadataRow, isEditing && { alignItems: 'flex-start' }]}>
-        <Ionicons name="color-palette-outline" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
+        <IconSymbol name="paintpalette" size={18} color={colors.textPrimary} style={{ marginTop: isEditing ? 4 : 0 }} />
         <Text style={[styles.metadataLabel, { color: colors.textPrimary, marginTop: isEditing ? 4 : 0 }]}>{t('journal.detail.theme_label')}</Text>
         {isEditing ? (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll}>
@@ -1229,7 +1229,7 @@ export default function JournalDetailScreen() {
         ]}
         hitSlop={8}
       >
-        <Ionicons
+        <IconSymbol
           name={isEditing ? 'checkmark' : 'pencil'}
           size={16}
           color={isEditing ? colors.textPrimary : colors.textSecondary}
@@ -1265,7 +1265,7 @@ export default function JournalDetailScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
         </Pressable>
         <ScrollView
           ref={scrollViewRef}
@@ -1318,7 +1318,7 @@ export default function JournalDetailScreen() {
                         },
                       ]}
                     >
-                      <Ionicons name="image-outline" size={64} color={colors.textSecondary} />
+                      <IconSymbol name="photo" size={64} color={colors.textSecondary} />
                       <Text style={[styles.imagePlaceholderTitle, { color: colors.textPrimary }]}>
                         {t('journal.detail.image.generation_failed')}
                       </Text>
@@ -1340,7 +1340,7 @@ export default function JournalDetailScreen() {
                       },
                     ]}
                   >
-                    <Ionicons name="image-outline" size={32} color={colors.textSecondary} />
+                    <IconSymbol name="photo" size={32} color={colors.textSecondary} />
                     <Text style={[styles.imagePlaceholderTitle, { color: colors.textPrimary }]}>
                       {t('journal.detail.image.no_image_title')}
                     </Text>
@@ -1361,7 +1361,7 @@ export default function JournalDetailScreen() {
                                 (isRetryingImage || isAnalysisLocked) && styles.imageActionButtonDisabled,
                               ]}
                             >
-                              <Ionicons name="refresh" size={18} color={colors.textPrimary} />
+                              <IconSymbol name="arrow.clockwise" size={18} color={colors.textPrimary} />
                               <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
                                 {t('journal.detail.image.generate_action')}
                               </Text>
@@ -1388,7 +1388,7 @@ export default function JournalDetailScreen() {
                           {isPickingImage ? (
                             <ActivityIndicator color={colors.textPrimary} />
                           ) : (
-                            <Ionicons name="image-outline" size={18} color={colors.textPrimary} />
+                            <IconSymbol name="photo" size={18} color={colors.textPrimary} />
                           )}
                           <Text style={[styles.imageActionText, { color: colors.textPrimary }]}>
                             {isPickingImage
@@ -1429,14 +1429,9 @@ export default function JournalDetailScreen() {
                 {/* Quote */}
                 {isAnalysisPending ? (
                   <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
-                ) : dream.shareableQuote ? (
+                  ) : dream.shareableQuote ? (
                   <FlatGlassCard style={styles.quoteBoxGlass} animationDelay={450}>
-                    <Ionicons
-                      name="chatbox-ellipses"
-                      size={28}
-                      color={colors.accent}
-                      style={styles.quoteIcon}
-                    />
+                    <IconSymbol name="quote.opening" size={28} color={colors.accent} style={styles.quoteIcon} />
                     <Text style={[styles.quote, { color: colors.textPrimary }]}>
                       &quot;{dream.shareableQuote}&quot;
                     </Text>
@@ -1478,7 +1473,7 @@ export default function JournalDetailScreen() {
                   <ActivityIndicator color={colors.textPrimary} />
                 ) : (
                   <>
-                    <Ionicons name="sparkles-outline" size={20} color={colors.textPrimary} />
+                    <IconSymbol name="sparkles" size={20} color={colors.textPrimary} />
                     <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
                     >
                       {dream.analysisStatus === 'failed'
@@ -1505,7 +1500,7 @@ export default function JournalDetailScreen() {
                   opacity: isAnalysisLocked ? 0.8 : 1,
                 }]}
               >
-                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                <IconSymbol name="sparkles" size={24} color={colors.textPrimary} />
                 <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
               </Pressable>
             )}
@@ -1528,8 +1523,8 @@ export default function JournalDetailScreen() {
                   },
                 ]}
               >
-                <Ionicons
-                  name={dream.isFavorite ? 'heart' : 'heart-outline'}
+                <IconSymbol
+                  name={dream.isFavorite ? 'heart.fill' : 'heart'}
                   size={24}
                   color={dream.isFavorite ? '#F59E0B' : colors.textPrimary}
                 />
@@ -1558,7 +1553,7 @@ export default function JournalDetailScreen() {
                 {isSharing ? (
                   <ActivityIndicator size="small" color={colors.textOnAccentSurface} />
                 ) : (
-                  <Ionicons name="share-outline" size={24} color={colors.textOnAccentSurface} />
+                  <IconSymbol name="square.and.arrow.up" size={24} color={colors.textOnAccentSurface} />
                 )}
                 <Text style={[styles.actionButtonText, { color: colors.textOnAccentSurface }]}
                 >
@@ -1590,7 +1585,7 @@ export default function JournalDetailScreen() {
               testID={TID.Button.DreamDelete}
               accessibilityLabel="Delete dream"
             >
-              <Ionicons name="trash-outline" size={18} color="#EF4444" />
+              <IconSymbol name="trash" size={18} color="#EF4444" />
               <Text style={styles.deleteLinkText}>{t('journal.menu.delete')}</Text>
             </Pressable>
             </View>
@@ -1617,7 +1612,7 @@ export default function JournalDetailScreen() {
               {isPrimaryActionBusy ? (
                 <ActivityIndicator color={colors.textPrimary} />
               ) : (
-                <Ionicons name="sparkles" size={24} color={colors.textPrimary} />
+                <IconSymbol name="sparkles" size={24} color={colors.textPrimary} />
               )}
               <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
             </Pressable>
@@ -1655,7 +1650,7 @@ export default function JournalDetailScreen() {
                     {isPickingImage ? (
                       <ActivityIndicator color={colors.textPrimary} />
                     ) : (
-                      <Ionicons name="image-outline" size={18} color={colors.textPrimary} />
+                      <IconSymbol name="photo" size={18} color={colors.textPrimary} />
                     )}
                     <Text style={[styles.imageEditButtonText, { color: colors.textPrimary }]}>
                       {isPickingImage
@@ -1779,8 +1774,8 @@ export default function JournalDetailScreen() {
                   testID={TID.Button.ShareCopy}
                   accessibilityLabel="Copy share text"
                 >
-                  <Ionicons
-                    name={shareCopyStatus === 'success' ? 'checkmark' : 'copy-outline'}
+                  <IconSymbol
+                    name={shareCopyStatus === 'success' ? 'checkmark' : 'doc.on.doc'}
                     size={18}
                     color={colors.textPrimary}
                   />

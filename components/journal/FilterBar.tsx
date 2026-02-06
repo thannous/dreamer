@@ -4,12 +4,12 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import type { DreamTheme, DreamType } from '@/lib/types';
-import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { memo, useCallback, useEffect } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored';
 
@@ -45,11 +45,11 @@ function CategoryIcon({ size = 16, color = '#FFFFFF' }) {
 }
 
 function AnalyzedIcon({ size = 16, color = '#FFFFFF' }) {
-  return <Ionicons name="sparkles" size={size} color={color} />;
+  return <IconSymbol name="sparkles" size={size} color={color} />;
 }
 
 function ExploredIcon({ size = 16, color = '#FFFFFF' }) {
-  return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />;
+  return <IconSymbol name="bubble.left.and.bubble.right" size={size} color={color} />;
 }
 
 function FavoriteIcon({ size = 16, color = '#FFFFFF' }) {
@@ -87,7 +87,7 @@ function CloseIcon({ size = 16, color = '#FFFFFF' }) {
 
 function ActiveCheck({ visible, color }: { visible: boolean; color: string }) {
   if (!visible) return null;
-  return <Ionicons name="checkmark" size={12} color={color} />;
+  return <IconSymbol name="checkmark" size={12} color={color} />;
 }
 
 function getDateRangeBadge(

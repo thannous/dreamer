@@ -53,8 +53,8 @@ vi.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@expo/vector-icons', () => ({
-  MaterialCommunityIcons: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
+vi.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
 const { default: DreamCategoriesScreen } = await import('../[id]');

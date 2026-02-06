@@ -5,7 +5,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Ionicons } from '@expo/vector-icons';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 interface SearchBarProps {
   value: string;
@@ -66,7 +66,7 @@ export const SearchBar = memo(function SearchBar({
           hitSlop={8}
           style={({ pressed }) => [styles.clearButton, pressed && styles.clearButtonPressed]}
         >
-          <Ionicons name="close-circle" size={18} color={colors.textSecondary} />
+          <IconSymbol name="xmark.circle.fill" size={18} color={colors.textSecondary} />
         </Pressable>
       )}
     </View>

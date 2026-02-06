@@ -13,17 +13,13 @@ appId: com.tanuki75.noctalia
           - waitForAnimationToEnd
 - runFlow:
       when:
-          visible:
-              id: tab.journal
+          visible: "(Journal|Diario)"
       commands:
-          - tapOn:
-                id: tab.journal
+          - tapOn: "(Journal|Diario)"
           - waitForAnimationToEnd
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - tapOn:
       id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn:
-      id: tab.journal
+- tapOn: "(Journal|Diario)"
 - assertVisible: "The Infinite Library"

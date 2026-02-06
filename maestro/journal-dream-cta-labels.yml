@@ -2,13 +2,11 @@
 appId: com.tanuki75.noctalia
 ---
 - launchApp
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - tapOn:
       id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn:
-      id: tab.journal
+- tapOn: "(Journal|Diario)"
 - waitForAnimationToEnd
 
 # Un-tagged as analyzed -> primary CTA shows Analyze dream

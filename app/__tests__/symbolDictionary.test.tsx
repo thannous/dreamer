@@ -44,12 +44,6 @@ vi.mock('@/hooks/useTranslation', () => ({
 }));
 
 // ── Expo / RN externals ─────────────────────────────────────────────────────
-vi.mock('@expo/vector-icons', () => ({
-  MaterialCommunityIcons: ({ name, testID }: { name: string; testID?: string }) => (
-    <span data-testid={testID ?? `icon-${name}`} />
-  ),
-}));
-
 vi.mock('expo-linear-gradient', () => ({
   LinearGradient: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
@@ -90,9 +84,11 @@ vi.mock('@shopify/flash-list', () => ({
     }
     return (
       <div data-testid="flash-list">
-        {data.map((item: any, index: number) =>
-          renderItem({ item, index }),
-        )}
+        {data.map((item: any, index: number) => (
+          <React.Fragment key={item?.id ?? index}>
+            {renderItem({ item, index })}
+          </React.Fragment>
+        ))}
       </div>
     );
   },
@@ -195,7 +191,7 @@ describe('SymbolDictionaryScreen', () => {
       render(<SymbolDictionaryScreen />);
 
       expect(screen.getByText('symbols.dictionary_title')).toBeTruthy();
-      expect(screen.getByTestId('icon-book-open-page-variant-outline')).toBeTruthy();
+      expect(screen.getByTestId('icon-book.fill')).toBeTruthy();
     });
 
     it('renders the search bar', () => {
@@ -385,7 +381,7 @@ describe('SymbolDictionaryScreen', () => {
     it('navigates back when pressing the back button', () => {
       render(<SymbolDictionaryScreen />);
 
-      fireEvent.click(screen.getByTestId('icon-arrow-left'));
+      fireEvent.click(screen.getByTestId('icon-chevron.left'));
 
       expect(mockBack).toHaveBeenCalled();
     });

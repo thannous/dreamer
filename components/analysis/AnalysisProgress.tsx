@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Fonts } from '@/constants/theme';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
 import type { ClassifiedError } from '@/lib/errors';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useTheme } from '@/context/ThemeContext';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 interface AnalysisProgressProps {
   step: AnalysisStep;
@@ -51,13 +51,13 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
       <View style={styles.messageContainer}>
         {showError ? (
           <View style={styles.errorContent}>
-            <Ionicons name="alert-circle" size={24} color="#EF4444" />
+            <IconSymbol name="exclamationmark.circle.fill" size={24} color="#EF4444" />
             <Text style={[styles.errorMessage, { color: colors.textPrimary }]}>{message}</Text>
           </View>
         ) : (
           <View style={styles.statusContent}>
             <View style={styles.spinner}>
-              <Ionicons name="hourglass-outline" size={20} color={colors.accent} />
+              <IconSymbol name="hourglass" size={20} color={colors.accent} />
             </View>
             <Text style={[styles.statusMessage, { color: colors.textSecondary }]}>{message}</Text>
           </View>
@@ -67,7 +67,7 @@ export function AnalysisProgress({ step, progress, message, error, onRetry }: An
       {/* Retry Button */}
       {showError && onRetry && error?.canRetry && (
         <Pressable style={[styles.retryButton, shadows.md, { backgroundColor: colors.accent }]} onPress={onRetry}>
-          <Ionicons name="refresh" size={20} color={colors.textPrimary} />
+          <IconSymbol name="arrow.clockwise" size={20} color={colors.textPrimary} />
           <Text style={[styles.retryButtonText, { color: colors.textPrimary }]}>{t('analysis.retry')}</Text>
         </Pressable>
       )}

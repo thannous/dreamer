@@ -26,7 +26,6 @@ import {
   openGoogleVoiceSettingsBestEffort,
   openSpeechRecognitionLanguageSettings,
 } from '@/lib/speechRecognitionSettings';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -40,6 +39,7 @@ import {
   type LayoutChangeEvent,
   type ViewStyle,
 } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 import Animated, {
   runOnUI,
@@ -551,8 +551,8 @@ function MicButton() {
       accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
       testID={micTestID}
     >
-      <Ionicons
-        name={isRecording ? 'stop' : 'mic'}
+      <IconSymbol
+        name={isRecording ? 'stop.fill' : 'mic.fill'}
         size={20}
         color={isRecording ? colors.textPrimary : colors.textSecondary}
       />
@@ -579,7 +579,7 @@ function SendButton() {
       accessibilityState={{ disabled: !canSend }}
       testID={sendTestID}
     >
-      <MaterialCommunityIcons name="send" size={20} color={colors.textPrimary} />
+      <IconSymbol name="paperplane.fill" size={20} color={colors.textPrimary} />
     </Pressable>
   );
 }

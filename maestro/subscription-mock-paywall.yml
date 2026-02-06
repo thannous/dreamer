@@ -23,8 +23,7 @@ appId: com.tanuki75.noctalia
           - waitForAnimationToEnd
 
 # Go to Settings tab
-- tapOn:
-      id: tab.settings
+- tapOn: "(Settings|Param.tres|Ajustes)"
 - waitForAnimationToEnd
 
 # If already signed in, sign out to reset to free state

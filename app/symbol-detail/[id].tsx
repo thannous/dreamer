@@ -15,7 +15,6 @@ import {
   getSymbolById,
   parseHtmlParagraphs,
 } from '@/services/symbolDictionaryService';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useMemo } from 'react';
@@ -75,7 +74,7 @@ export default function SymbolDetailScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <MaterialCommunityIcons name="arrow-left" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
         </Pressable>
 
         <ScrollView

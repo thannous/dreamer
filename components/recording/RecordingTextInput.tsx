@@ -1,11 +1,11 @@
 import React, { forwardRef } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export interface RecordingTextInputProps {
   value: string;
@@ -65,8 +65,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
             style={[styles.modeSwitchButton, styles.modeSwitchVoiceButton]}
             testID={TID.Button.SwitchToVoice}
           >
-            <Ionicons
-              name="mic-outline"
+            <IconSymbol
+              name="mic"
               size={16}
               color={colors.textSecondary}
               style={styles.modeSwitchIcon}
@@ -89,8 +89,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               accessibilityElementsHidden={!value.trim()}
               importantForAccessibility={value.trim() ? 'yes' : 'no-hide-descendants'}
             >
-              <Ionicons
-                name="trash-outline"
+              <IconSymbol
+                name="trash"
                 size={16}
                 color={colors.textSecondary}
                 style={styles.modeSwitchIcon}

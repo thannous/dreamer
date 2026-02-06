@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -12,6 +11,7 @@ import {
   ensureOfflineSttModel,
 } from '@/services/nativeSpeechRecognition';
 import { updateLanguagePreference } from '@/lib/languagePreference';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const LANGUAGE_LABEL_KEYS: Record<Exclude<LanguagePreference, 'auto'>, string> = {
   en: 'settings.language.option.en.label',
@@ -34,25 +34,25 @@ export default function LanguageSettingsCard() {
         {
           value: 'auto',
           label: t('settings.language.option.auto.label'),
-          icon: 'phone-portrait-outline',
+          icon: 'iphone',
           description: `${t('settings.language.option.auto.description')}\n${autoLanguageHint}`,
         },
         {
           value: 'en' as LanguagePreference,
           label: t('settings.language.option.en.label'),
-          icon: 'language-outline',
+          icon: 'globe',
           description: t('settings.language.option.en.description'),
         },
         {
           value: 'fr' as LanguagePreference,
           label: t('settings.language.option.fr.label'),
-          icon: 'language-outline',
+          icon: 'globe',
           description: t('settings.language.option.fr.description'),
         },
         {
           value: 'es' as LanguagePreference,
           label: t('settings.language.option.es.label'),
-          icon: 'language-outline',
+          icon: 'globe',
           description: t('settings.language.option.es.description'),
         },
       ] as const,
@@ -112,7 +112,7 @@ export default function LanguageSettingsCard() {
                     },
                   ]}
                 >
-                  <Ionicons name={option.icon as any} size={20} color={iconColor} />
+                  <IconSymbol name={option.icon} size={20} color={iconColor} />
                 </View>
                 <View style={styles.optionInfo}>
                   <Text style={[styles.optionLabel, { color: colors.textPrimary }]}>

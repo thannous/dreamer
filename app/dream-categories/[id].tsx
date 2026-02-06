@@ -12,11 +12,11 @@ import { isDreamExplored } from '@/lib/dreamUsage';
 import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 import type { DreamChatCategory } from '@/lib/types';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
 type CategoryId = Exclude<DreamChatCategory, 'general'>;
 
@@ -24,7 +24,7 @@ type Category = {
   id: CategoryId;
   titleKey: string;
   descriptionKey: string;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon: Parameters<typeof IconSymbol>[0]['name'];
   color: string;
 };
 
@@ -33,21 +33,21 @@ const CATEGORIES: Category[] = [
     id: 'symbols',
     titleKey: 'dream_categories.symbols.title',
     descriptionKey: 'dream_categories.symbols.description',
-    icon: 'creation',
+    icon: 'sparkles',
     color: '#8C9EFF',
   },
   {
     id: 'emotions',
     titleKey: 'dream_categories.emotions.title',
     descriptionKey: 'dream_categories.emotions.description',
-    icon: 'heart-pulse',
+    icon: 'heart.fill',
     color: '#FF6B9D',
   },
   {
     id: 'growth',
     titleKey: 'dream_categories.growth.title',
     descriptionKey: 'dream_categories.growth.description',
-    icon: 'sprout',
+    icon: 'leaf.fill',
     color: '#4CAF50',
   },
 ];
@@ -107,15 +107,15 @@ export default function DreamCategoriesScreen() {
                 style={[styles.backButton, {
                   backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
                 }]}
-                accessibilityRole="button"
-                accessibilityLabel={t('journal.back_button')}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              >
-                <MaterialCommunityIcons name="arrow-left" size={20} color={colors.textPrimary} />
-              </Pressable>
-              <View style={styles.dreamTitleContent}>
-                <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
-                <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
+              accessibilityRole="button"
+              accessibilityLabel={t('journal.back_button')}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <IconSymbol name="chevron.left" size={20} color={colors.textPrimary} />
+            </Pressable>
+            <View style={styles.dreamTitleContent}>
+              <Text style={[styles.dreamTitle, { color: colors.textPrimary }]}>{dream.title}</Text>
+              <Text style={[styles.dreamSubtitle, { color: colors.textSecondary }]}>
                   {t('dream_categories.subtitle')}
                 </Text>
               </View>
@@ -143,11 +143,7 @@ export default function DreamCategoriesScreen() {
                   }}
                 >
                   <View style={[styles.iconRing, { borderColor: category.color }]}>
-                    <MaterialCommunityIcons
-                      name={category.icon}
-                      size={24}
-                      color={category.color}
-                    />
+                    <IconSymbol name={category.icon} size={24} color={category.color} />
                   </View>
                 </MotiView>
                 <Text style={[styles.categoryTitle, { color: colors.textPrimary }]}>
@@ -174,7 +170,7 @@ export default function DreamCategoriesScreen() {
                 borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
               }]}
             >
-              <MaterialCommunityIcons name="chat-processing-outline" size={22} color={colors.textPrimary} />
+              <IconSymbol name="bubble.left.and.bubble.right.fill" size={22} color={colors.textPrimary} />
               <Text style={[styles.freeChatText, { color: colors.textPrimary }]}>
                 {hasExistingChat ? t('dream_categories.view_chat') : t('dream_categories.free_chat_prompt')}
               </Text>

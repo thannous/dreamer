@@ -12,7 +12,6 @@ import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Ionicons } from '@expo/vector-icons';
 import {
   RITUALS,
   type RitualId,
@@ -26,7 +25,9 @@ import {
   saveRitualStepProgress,
 } from '@/services/storageService';
 
-const RITUAL_ICONS: Record<RitualId, string> = {
+type IconName = Parameters<typeof IconSymbol>[0]['name'];
+
+const RITUAL_ICONS: Record<RitualId, IconName> = {
   starter: 'moon.stars.fill',
   memory: 'lightbulb.fill',
   lucid: 'eye.fill',
@@ -145,7 +146,7 @@ export default function RitualDetailScreen() {
           accessibilityLabel={t('journal.back_button')}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="arrow-back" size={22} color={colors.textPrimary} />
+          <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
         </Pressable>
 
         <ScrollView
@@ -166,7 +167,7 @@ export default function RitualDetailScreen() {
               ]}
             >
               <IconSymbol
-                name={iconName as any}
+                name={iconName}
                 size={28}
                 color={colors.accent}
               />

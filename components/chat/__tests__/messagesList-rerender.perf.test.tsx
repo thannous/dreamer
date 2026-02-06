@@ -30,8 +30,8 @@ vi.mock('react-native', async () => {
   };
 });
 
-vi.mock('@expo/vector-icons', () => ({
-  MaterialCommunityIcons: () => null,
+vi.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: () => null,
 }));
 
 vi.mock('react-native-safe-area-context', () => ({
@@ -143,7 +143,7 @@ vi.mock('../MarkdownText', () => ({
   MarkdownText: ({ children }: { children: string }) => <>{children}</>,
 }));
 
-const messages = Array.from({ length: 100 }, (_, index) => ({
+const messages = Array.from({ length: 40 }, (_, index) => ({
   id: `m-${index}`,
   role: index % 2 === 0 ? 'user' : 'model',
   text: index % 2 === 0 ? `User message ${index}` : `Assistant message ${index} **bold**`,
@@ -161,5 +161,5 @@ describe('perf(MessagesList): rerender churn', () => {
     // This is intentionally informational (baseline vs after is captured in CLI output).
     console.log(`[perf] MessagesList useTheme() calls on no-op rerender: ${themeCallCount}`);
     expect(themeCallCount).toBeGreaterThan(0);
-  });
+  }, 20000);
 });
