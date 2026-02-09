@@ -13,8 +13,8 @@
 | Blog featured image format | WebP (e.g. `/img/blog/snake-dreams-meaning.webp`) |
 | OG image format | JPG (`/img/og/noctalia-en-1200x630.jpg`) |
 | OG image dimensions | 1200x630 consistently |
-| Pages with og:image:width/height | 96/106 per language (91%) |
-| Pages missing og:image:width/height | ~10 per language (homepage, about, legal, privacy, terms, etc.) |
+| Pages with og:image:width/height | **106/106 per language (100%)** -- Fixed 2026-02-09 |
+| Pages missing og:image:width/height | **0** (was ~10 per language) |
 | Blog images with srcset | 23 blog articles (all articles) |
 | Images with loading="lazy" | 27 per language (blog index thumbnails + homepage) |
 | Images with loading="eager" | 23 per language (blog featured images, above the fold) |
@@ -73,16 +73,7 @@ None identified.
 
 ### P1 --- High Priority
 
-1. **~10 pages per language missing og:image:width/height**: The homepage (`en/index.html`), about page (`en/about.html`), legal notice, privacy policy, terms of use, account deletion, and several other utility pages do not include `og:image:width` and `og:image:height` meta tags. While the og:image URL is present, missing dimensions can cause social platforms to fetch the image to determine size, potentially leading to slower or incorrect social card rendering.
-
-   Pages confirmed missing:
-   - `en/index.html`
-   - `en/about.html`
-   - `en/legal-notice.html`
-   - `en/privacy-policy.html`
-   - `en/terms.html`
-   - `en/account-deletion.html`
-   - Plus blog articles: `dream-journal.html`, `lucid-dreaming.html`, `dream-meanings.html`
+~~1. **~10 pages per language missing og:image:width/height**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `og:image:width="1200"` and `og:image:height="630"` to all 50 pages (10 per language) via `scripts/fix-p1-seo.js`. Coverage now 100%.
 
 ### P2 --- Optimization
 
@@ -90,7 +81,7 @@ None identified.
 
 2. **No explicit width/height on all img tags**: While blog featured images include `width="1200" height="630"` attributes (preventing CLS), verify that all homepage screenshot images and blog index thumbnails also include explicit dimensions to prevent Cumulative Layout Shift.
 
-3. **Consider adding og:image:alt to pages that have it missing**: While most pages have this, verify consistency across all 530 pages.
+~~3. **Consider adding og:image:alt to pages that have it missing**~~ -- twitter:image:alt now at 100% coverage (fixed 2026-02-09).
 
 ## Recommendations
 

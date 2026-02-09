@@ -126,13 +126,7 @@ None identified.
 
 ### P2 --- Optimization
 
-1. **Incomplete og:locale:alternate on some blog articles**: The snake dreams blog article (`en/blog/snake-dreams-meaning.html`) only lists `fr_FR` and `es_ES` as og:locale:alternate, missing `de_DE` and `it_IT`:
-   ```html
-   <meta content="fr_FR" property="og:locale:alternate"/>
-   <meta content="es_ES" property="og:locale:alternate"/>
-   <!-- Missing: de_DE, it_IT -->
-   ```
-   This contrasts with utility pages (about, legal, terms) which correctly include all 4 alternates. This likely affects all 23 blog articles in each language.
+~~1. **Incomplete og:locale:alternate on some blog articles**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added 374 missing `og:locale:alternate` tags across all 530 pages via `scripts/fix-p1-seo.js`. All pages now have all 4 alternates.
 
 2. **No hreflang in HTTP headers**: Hreflang annotations are present in HTML `<link>` elements and in the sitemap, but not in HTTP response headers (`Link:` header). While HTML + sitemap is adequate for most search engines, HTTP headers provide an additional signal and defense in depth.
 

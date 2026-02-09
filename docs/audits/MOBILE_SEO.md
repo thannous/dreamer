@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-**Health Score:** Yellow --- Responsive design is solid with correct viewport configuration and Tailwind-based breakpoints. However, heavy CSS animations (aurora background, blur orbs) and glass-panel effects may impact performance on low-end mobile devices. Touch target sizes need verification.
+**Health Score:** Green --- Responsive design is solid with correct viewport configuration and Tailwind-based breakpoints. `prefers-reduced-motion` now properly handled in CSS (fixed 2026-02-09). Touch target sizes remain a minor optimization area.
 
 | Metric | Value |
 |--------|-------|
@@ -17,7 +17,7 @@
 | Aurora background animation | `aurora 20s ease infinite` on homepage |
 | Blur orbs | `filter: blur(100px)` on 375+ files (symbols, guides) |
 | MobileApplication schema | Present on homepage (Android/Google Play) |
-| prefers-reduced-motion | Found in 2 files only (`js/landing-animations.js`, `auth/callback/index.html`) |
+| prefers-reduced-motion | **4 CSS files** (`styles.min.css`, `blog.min.css`, 2 templates) + JS (`landing-animations.js`) |
 | Blog content max-width | `max-w-5xl` with `px-4`/`px-6` padding |
 | Font preloading | 3 fonts preloaded (Outfit Regular, Outfit Bold, Fraunces Variable) |
 
@@ -95,12 +95,7 @@ None identified.
 
 ### P1 --- High Priority
 
-1. **Aurora-bg animation and blur(100px) orbs run continuously on all pages**: The `aurora-bg` CSS animation runs a 20-second infinite loop with `background-size: 200% 200%`. The orb elements apply `filter: blur(100px)` which is computationally expensive. On the homepage, both effects combine. On symbol/guide pages (375+ files), the blur effect is present. These continuous GPU animations can:
-   - Drain battery on mobile devices
-   - Cause jank/stuttering on low-end Android devices
-   - Increase time-to-interactive
-
-   **Mitigation**: `prefers-reduced-motion` is only respected in 2 files (`js/landing-animations.js` for GSAP animations and `auth/callback/index.html`). The CSS animations (aurora, float, blur) do NOT check this media query.
+~~1. **Aurora-bg animation and blur(100px) orbs run continuously without reduced-motion fallback**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `@media (prefers-reduced-motion: reduce)` to `css/styles.min.css`, `css/blog.min.css`, `templates/symbol-page.html`, and `templates/category-page.html`. Disables aurora, orb, float, marquee, and transition animations when user prefers reduced motion. Orb blur reduced from 100px to 40px.
 
 ### P2 --- Optimization
 
@@ -108,7 +103,7 @@ None identified.
 
 2. **No explicit font-size minimum enforced**: The site relies on Tailwind defaults (which are generally 16px+ for body text), but some UI elements use `text-xs` (12px) and `text-[10px]` (e.g., the copyright footer). While not a direct SEO issue, very small text may trigger mobile usability warnings.
 
-3. **Consider prefers-reduced-motion for all CSS animations**: Currently only GSAP/JS animations respect `prefers-reduced-motion`. The CSS-based aurora animation, floating orbs, and hover transforms should also be disabled or simplified for users who prefer reduced motion.
+3. ~~**Consider prefers-reduced-motion for all CSS animations**~~ -- **RESOLVED** (2026-02-09).
 
 4. **Symbol card hover effects are desktop-optimized**: The `hover:-translate-y-1` transform works on desktop but provides no visual feedback for touch interactions. Consider adding `active:` states for mobile tap feedback.
 

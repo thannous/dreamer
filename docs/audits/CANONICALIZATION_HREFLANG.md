@@ -17,7 +17,7 @@
 | Hreflang reciprocity | Verified — full bidirectional linking |
 | Sitemap hreflang parity | Mirrors in-page annotations |
 | og:url alignment | Matches canonical on all sampled pages |
-| Sitemap URL count | 400 |
+| Sitemap URL count | **530** (fixed 2026-02-09, was 400) |
 | Total HTML files | 530 |
 
 ## Current State
@@ -70,18 +70,11 @@ None identified.
 
 ### P1 — High Priority
 
-1. **Sitemap contains 400 URLs but 530 HTML files exist (130 difference).**
-   The gap appears to be accounted for by:
-   - Root `index.html` (noindex, correctly excluded).
-   - Template files in `/templates/` (noindex, correctly excluded).
-   - Blog and guide index pages (e.g., `/en/blog/index.html`) may be included or excluded depending on generation logic.
-   - Auth callback pages (noindex, correctly excluded).
-
-   **Action required:** Manually verify that no indexable content page is missing from the sitemap. A missing indexable page means search engines may discover it late or not at all. Run the validation command below to identify any HTML files that are (a) not noindexed and (b) not present in the sitemap.
+~~1. **Sitemap contained 400 URLs but 530 indexable HTML files existed (130 missing).**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). All 130 blog URLs (25 articles × 5 languages + 5 blog index pages) were added to `sitemap.xml` via `scripts/add-blogs-to-sitemap.js`. Sitemap now has 530 URLs matching all indexable pages. `check-site.js` validates with 0 errors, 0 warnings.
 
 ### P2 — Optimization
 
-None identified beyond the P1 above.
+None identified.
 
 ## Recommendations
 
