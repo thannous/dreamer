@@ -93,6 +93,11 @@
         .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
         @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         html, body { overflow-x: hidden; }
+        @media (prefers-reduced-motion: reduce) {
+            .aurora-bg { animation: none !important; }
+            .orb { animation: none !important; filter: blur(40px) !important; }
+            .animate-float, .animate-float-delayed { animation: none !important; }
+        }
         .symbol-card { transition: all 0.3s ease; }
         .symbol-card:hover { transform: translateY(-4px); border-color: rgba(253, 164, 129, 0.3); }
         .category-chip { transition: all 0.3s ease; }
