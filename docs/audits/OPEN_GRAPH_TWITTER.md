@@ -6,17 +6,18 @@
 
 ## Executive Summary
 
-**Health Score:** Green (borderline Yellow) -- Strong OG/Twitter coverage with minor locale:alternate gaps on some blog articles.
+**Health Score:** Green -- Full OG/Twitter coverage across all 530 pages. All P1 issues resolved (2026-02-09).
 
 | Metric | Value |
 |--------|-------|
 | og:image coverage | 100% (all 530 pages) |
-| og:image:width/height coverage | 91% (96/106 per language; ~480/530 total) |
-| og:locale correctness | 100% on pages that include it |
-| og:locale:alternate completeness | ~95% (some blog articles list only 2 of 4 alternates) |
+| og:image:width/height coverage | **100%** (530/530) -- Fixed 2026-02-09 |
+| og:locale correctness | 100% on all pages |
+| og:locale:alternate completeness | **100%** (4 alternates per page) -- Fixed 2026-02-09 |
 | twitter:card coverage | 100% (summary_large_image on all pages) |
 | twitter:site coverage | 100% (@NoctaliaDreams) |
-| og:site_name coverage | ~1% (only landing pages) |
+| og:site_name coverage | **100%** (530/530) -- Fixed 2026-02-09 |
+| twitter:image:alt coverage | **100%** (530/530) -- Fixed 2026-02-09 |
 
 ## Current State
 
@@ -90,19 +91,15 @@ None identified.
 
 ### P1 -- High Priority
 
-1. **~50 pages missing og:image:width/height** (10 per language). Pages affected per language: landing page, about, privacy policy, terms, legal notice, account deletion, and 3 blog hub pages (dream-journal, dream-meanings, lucid-dreaming). Social platforms may render thumbnails incorrectly without explicit dimensions.
-   - Example: `en/index.html` has `og:image` but no `og:image:width` or `og:image:height`.
-   - Example: `en/privacy-policy.html` -- same issue.
+~~1. **~50 pages missing og:image:width/height**~~ -- **RESOLVED** (2026-02-09, commit `bd2acb0`). Added `og:image:width="1200"` and `og:image:height="630"` to all 50 pages via `scripts/fix-p1-seo.js`.
 
-2. **Blog articles missing de_DE and it_IT from og:locale:alternate** (~22 blog articles x 5 languages = ~110 pages affected). Only `fr_FR` and `es_ES` are listed. This means social platforms in Germany and Italy may not surface the localized version.
-   - Verified on: `en/blog/snake-dreams-meaning.html` (lines 26-27: only fr_FR, es_ES).
-   - Blog index page (`en/blog/index.html`) has **zero** og:locale:alternate tags.
+~~2. **Blog articles missing de_DE and it_IT from og:locale:alternate**~~ -- **RESOLVED** (2026-02-09). Added 374 missing `og:locale:alternate` tags across all 530 pages.
 
 ### P2 -- Optimization
 
-1. **og:site_name not consistently present.** Only the landing page has it. Adding `og:site_name="Noctalia"` to all pages would improve brand attribution in social cards.
+~~1. **og:site_name not consistently present.**~~ -- **RESOLVED** (2026-02-09). Added `og:site_name="Noctalia"` to 525 pages.
 
-2. **og:image:alt and twitter:image:alt missing on ~30 pages** (landing, about, legal pages across 5 languages). Not critical since these pages use a generic OG image, but adding alt text improves accessibility of social shares.
+~~2. **twitter:image:alt missing on ~55 pages**~~ -- **RESOLVED** (2026-02-09). Added `twitter:image:alt` using page title.
 
 3. **Blog articles use relative image paths in srcset** (e.g., `../../img/blog/snake-dreams-meaning.webp`) while og:image uses absolute URLs. Functional but inconsistent.
 

@@ -1,6 +1,6 @@
 # SEO Audits — Noctalia Docs Site
 
-**Date:** 2026-02-09 | **Domain:** noctalia.app | **Pages:** 530 (5 languages × 106 pages)
+**Date:** 2026-02-09 (updated 2026-02-09) | **Domain:** noctalia.app | **Pages:** 530 (5 languages × 106 pages)
 
 This directory contains 12 per-topic SEO audit files for the Noctalia static documentation site. Each audit examines specific HTML pages, configuration files, and structured data to identify issues and recommend improvements.
 
@@ -12,18 +12,18 @@ This directory contains 12 per-topic SEO audit files for the Noctalia static doc
 |---|-------|--------|----|----|-----|
 | 1 | [Technical Infrastructure](TECHNICAL_INFRASTRUCTURE.md) | Green | 0 | 0 | 3 |
 | 2 | [URL Architecture](URL_ARCHITECTURE.md) | Green | 0 | 0 | 2 |
-| 3 | [Canonicalization & Hreflang](CANONICALIZATION_HREFLANG.md) | Green | 0 | 1 | 0 |
+| 3 | [Canonicalization & Hreflang](CANONICALIZATION_HREFLANG.md) | Green | 0 | 0 | 0 |
 | 4 | [Meta Tags & Titles](META_TAGS_TITLES.md) | Green | 0 | 0 | 3 |
-| 5 | [Open Graph & Twitter](OPEN_GRAPH_TWITTER.md) | Green | 0 | 1 | 2 |
+| 5 | [Open Graph & Twitter](OPEN_GRAPH_TWITTER.md) | Green | 0 | 0 | 1 |
 | 6 | [Structured Data](STRUCTURED_DATA.md) | Green | 0 | 1 | 2 |
 | 7 | [Internal Linking](INTERNAL_LINKING.md) | Green | 0 | 1 | 3 |
 | 8 | [Heading Structure & Content](HEADING_STRUCTURE_CONTENT.md) | Green | 0 | 0 | 4 |
-| 9 | [Image SEO](IMAGE_SEO.md) | Green | 0 | 1 | 3 |
-| 10 | [International SEO](INTERNATIONAL_SEO.md) | Green | 0 | 1 | 2 |
-| 11 | [Mobile SEO](MOBILE_SEO.md) | Yellow | 0 | 1 | 5 |
+| 9 | [Image SEO](IMAGE_SEO.md) | Green | 0 | 0 | 2 |
+| 10 | [International SEO](INTERNATIONAL_SEO.md) | Green | 0 | 1 | 1 |
+| 11 | [Mobile SEO](MOBILE_SEO.md) | Green | 0 | 0 | 4 |
 | 12 | [E-E-A-T & Trust Signals](EEAT_TRUST_SIGNALS.md) | Yellow | 0 | 3 | 6 |
 
-**Overall: 10 Green, 2 Yellow, 0 Red** — Total: 0 P0, 10 P1, 35 P2
+**Overall: 11 Green, 1 Yellow, 0 Red** — Total: 0 P0, 5 P1, 31 P2
 
 ---
 
@@ -77,15 +77,19 @@ node scripts/check-content-depth.js
 
 ## Top Priority Actions
 
-### P1 — Should Fix
+### Resolved P1 (Fixed 2026-02-09, commit `bd2acb0`)
 
-1. **Sitemap completeness**: Verify no indexable page is missing from the 400-URL sitemap (vs 530 HTML files) — [Canonicalization](CANONICALIZATION_HREFLANG.md)
-2. **OG image dimensions**: Add `og:image:width`/`og:image:height` to ~50 pages missing them — [Open Graph](OPEN_GRAPH_TWITTER.md)
-3. **FAQ schema visibility**: Ensure all FAQPage JSON-LD questions have corresponding visible content — [Structured Data](STRUCTURED_DATA.md)
-4. **Blog pagination**: Add missing `rel="prev"`/`"next"` on 5 blog articles per language — [Internal Linking](INTERNAL_LINKING.md)
-5. **Image dimensions**: Add `og:image:width`/`og:image:height` to remaining 10 pages per language — [Image SEO](IMAGE_SEO.md)
-6. **og:locale:alternate completeness**: Add missing DE/IT locales to some blog articles — [International SEO](INTERNATIONAL_SEO.md)
-7. **Mobile performance**: Add `prefers-reduced-motion` for aurora/blur animations — [Mobile SEO](MOBILE_SEO.md)
-8. **Author bios**: Add individual author attribution with credentials — [E-E-A-T](EEAT_TRUST_SIGNALS.md)
-9. **Editorial process**: Document content methodology and review process — [E-E-A-T](EEAT_TRUST_SIGNALS.md)
-10. **Expert review claims**: Add "Reviewed by" attributions on health-adjacent articles — [E-E-A-T](EEAT_TRUST_SIGNALS.md)
+- ~~**Sitemap completeness**: 130 blog URLs were missing~~ — Added via `scripts/add-blogs-to-sitemap.js` (400→530 URLs)
+- ~~**OG image dimensions**: 50 pages missing `og:image:width`/`og:image:height`~~ — Added via `scripts/fix-p1-seo.js`
+- ~~**og:site_name**: 525 pages missing~~ — Added "Noctalia" to all pages
+- ~~**og:locale:alternate**: DE/IT missing on blog articles~~ — 374 tags added
+- ~~**twitter:image:alt**: 55 pages missing~~ — Added using og:title as value
+- ~~**prefers-reduced-motion**: No CSS media query~~ — Added to `styles.min.css`, `blog.min.css`, templates
+
+### Remaining P1 — Should Fix
+
+1. **FAQ schema visibility**: Ensure all FAQPage JSON-LD questions have corresponding visible content — [Structured Data](STRUCTURED_DATA.md)
+2. **Blog pagination**: Add missing `rel="prev"`/`"next"` on 5 blog articles per language — [Internal Linking](INTERNAL_LINKING.md)
+3. **Guides path localization**: `guides/` not localized in FR/ES/DE/IT — [International SEO](INTERNATIONAL_SEO.md)
+4. **Author bios**: Add individual author attribution with credentials — [E-E-A-T](EEAT_TRUST_SIGNALS.md)
+5. **Editorial process**: Document content methodology and review process — [E-E-A-T](EEAT_TRUST_SIGNALS.md)
