@@ -24,6 +24,8 @@ export interface DreamSymbol {
   en: LocalizedSymbolContent;
   fr: LocalizedSymbolContent;
   es: LocalizedSymbolContent;
+  de: LocalizedSymbolContent;
+  it: LocalizedSymbolContent;
   relatedSymbols: string[];
   relatedArticles: Record<string, string>;
 }
@@ -42,12 +44,16 @@ export interface ExtendedSymbolData {
   en?: ExtendedSymbolContent;
   fr?: ExtendedSymbolContent;
   es?: ExtendedSymbolContent;
+  de?: ExtendedSymbolContent;
+  it?: ExtendedSymbolContent;
 }
 
 export interface SymbolCategoryInfo {
   en: string;
   fr: string;
   es: string;
+  de: string;
+  it: string;
 }
 
 export interface SymbolsDataFile {
@@ -61,4 +67,4 @@ export interface ExtendedSymbolsDataFile {
   symbols: Record<string, ExtendedSymbolData>;
 }
 
-export type SymbolLanguage = 'en' | 'fr' | 'es';
+export type SymbolLanguage = 'en' | 'fr' | 'es' | 'de' | 'it';

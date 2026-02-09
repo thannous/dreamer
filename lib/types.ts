@@ -81,9 +81,9 @@ export type ThemePreference = 'light' | 'dark' | 'auto';
 
 export type ThemeMode = 'light' | 'dark';
 
-export type AppLanguage = 'en' | 'fr' | 'es';
+export type AppLanguage = 'en' | 'fr' | 'es' | 'de' | 'it';
 
-export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es';
+export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es' | 'de' | 'it';
 
 export type DreamMutation =
   | {
