@@ -17,6 +17,8 @@ const LANGUAGE_LABEL_KEYS: Record<Exclude<LanguagePreference, 'auto'>, string> =
   en: 'settings.language.option.en.label',
   fr: 'settings.language.option.fr.label',
   es: 'settings.language.option.es.label',
+  de: 'settings.language.option.de.label',
+  it: 'settings.language.option.it.label',
 };
 
 export default function LanguageSettingsCard() {
@@ -54,6 +56,18 @@ export default function LanguageSettingsCard() {
           label: t('settings.language.option.es.label'),
           icon: 'globe',
           description: t('settings.language.option.es.description'),
+        },
+        {
+          value: 'de' as LanguagePreference,
+          label: t('settings.language.option.de.label'),
+          icon: 'globe',
+          description: t('settings.language.option.de.description'),
+        },
+        {
+          value: 'it' as LanguagePreference,
+          label: t('settings.language.option.it.label'),
+          icon: 'globe',
+          description: t('settings.language.option.it.description'),
         },
       ] as const,
     [t, autoLanguageHint]

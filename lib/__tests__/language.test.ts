@@ -10,7 +10,7 @@ describe('language helpers', () => {
   });
 
   it('falls back to English for unsupported values', () => {
-    expect(normalizeAppLanguage('de')).toBe('en');
+    expect(normalizeAppLanguage('ja')).toBe('en');
     expect(normalizeAppLanguage(undefined)).toBe('en');
   });
 

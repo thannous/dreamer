@@ -5,7 +5,7 @@ import en from './i18n/en';
 export type Translations = Record<string, string>;
 
 const DEFAULT_LANGUAGE: AppLanguage = 'en';
-const SUPPORTED_LANGUAGES: readonly AppLanguage[] = ['en', 'fr', 'es'] as const;
+const SUPPORTED_LANGUAGES: readonly AppLanguage[] = ['en', 'fr', 'es', 'de', 'it'] as const;
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -63,6 +63,10 @@ async function importLanguagePack(language: AppLanguage): Promise<Translations> 
       return (await import('./i18n/fr')).default;
     case 'es':
       return (await import('./i18n/es')).default;
+    case 'de':
+      return (await import('./i18n/de')).default;
+    case 'it':
+      return (await import('./i18n/it')).default;
     default:
       return en;
   }

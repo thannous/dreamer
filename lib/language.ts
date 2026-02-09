@@ -1,6 +1,6 @@
 import type { AppLanguage, LanguagePreference } from './types';
 
-export const SUPPORTED_APP_LANGUAGES: readonly AppLanguage[] = ['en', 'fr', 'es'] as const;
+export const SUPPORTED_APP_LANGUAGES: readonly AppLanguage[] = ['en', 'fr', 'es', 'de', 'it'] as const;
 
 export function normalizeAppLanguage(code?: string | null): AppLanguage {
   if (code && SUPPORTED_APP_LANGUAGES.includes(code as AppLanguage)) {
