@@ -125,14 +125,22 @@ function normalizeUrl(url) {
  * Extract hreflang links from HTML content
  */
 function extractHreflangsFromContent(content) {
-  // Match hreflang link tags (support single or double quotes)
-  const hreflangRegex = /<link\s+rel=(["'])alternate\1\s+hreflang=(["'])([^"']+)\2\s+href=(["'])([^"']+)\4/gi;
+  // Match <link> tags that contain both hreflang and rel="alternate" in any attribute order
+  const linkTagRegex = /<link\s[^>]*hreflang[^>]*>/gi;
   const hreflangs = {};
   let match;
 
-  while ((match = hreflangRegex.exec(content)) !== null) {
-    const [, , , hreflang, , href] = match;
-    hreflangs[hreflang] = normalizeUrl(href);
+  while ((match = linkTagRegex.exec(content)) !== null) {
+    const tag = match[0];
+    // Verify it's an alternate link
+    if (!/rel=(["'])alternate\1/i.test(tag)) continue;
+    // Extract hreflang value
+    const hreflangMatch = tag.match(/hreflang=(["'])([^"']+)\1/i);
+    // Extract href value
+    const hrefMatch = tag.match(/href=(["'])([^"']+)\1/i);
+    if (hreflangMatch && hrefMatch) {
+      hreflangs[hreflangMatch[2]] = normalizeUrl(hrefMatch[2]);
+    }
   }
 
   return hreflangs;
@@ -142,9 +150,12 @@ function extractHreflangsFromContent(content) {
  * Extract canonical URL from HTML content
  */
 function extractCanonicalFromContent(content) {
-  const canonicalRegex = /<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2/i;
-  const match = content.match(canonicalRegex);
-  return match ? normalizeUrl(match[3]) : null;
+  // Match <link> tags with rel="canonical" in any attribute order
+  const linkTagRegex = /<link\s[^>]*rel=(["'])canonical\1[^>]*>/i;
+  const match = content.match(linkTagRegex);
+  if (!match) return null;
+  const hrefMatch = match[0].match(/href=(["'])([^"']+)\1/i);
+  return hrefMatch ? normalizeUrl(hrefMatch[2]) : null;
 }
 
 /**
