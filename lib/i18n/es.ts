@@ -15,6 +15,7 @@ const translations: Record<string, string> = {
     'error.rate_limit': 'Demasiadas solicitudes. Espera un momento e inténtalo de nuevo.',
     'error.server': 'Error del servidor. El servicio no está disponible temporalmente. Inténtalo de nuevo en unos momentos.',
     'error.client': 'Solicitud inválida. Revisa lo que ingresaste e inténtalo de nuevo.',
+    'error.owner_agent_limit_reached': 'Ya tienes {limit} claves guardadas. Elimina una antes de agregar una nueva.',
     'error.login_required': 'Este dispositivo ya está vinculado a una cuenta. Inicia sesión para continuar.',
     'error.guest_session': 'La verificación de la app falló. Inténtalo de nuevo en un momento.',
     'error.image_transient': 'El servicio de imágenes está temporalmente ocupado. Inténtalo de nuevo en un momento.',

@@ -15,6 +15,7 @@ const translations: Record<string, string> = {
     'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
     'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
     'error.client': 'Invalid request. Please check your input and try again.',
+    'error.owner_agent_limit_reached': 'You already have {limit} saved keys. Delete one before adding a new key.',
     'error.login_required': 'This device is already linked to an account. Sign in to continue.',
     'error.guest_session': 'App verification failed. Please try again in a moment.',
     'error.image_transient': 'The image service is temporarily busy. Please try again in a moment.',

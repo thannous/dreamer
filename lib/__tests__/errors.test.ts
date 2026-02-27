@@ -90,6 +90,28 @@ describe('classifyError', () => {
     expect(result.canRetry).toBe(true);
   });
 
+  it('should classify nested owner agent limit errors with a user-facing message', () => {
+    const error = Object.assign(new Error('HTTP 400 Bad Request'), {
+      status: 400,
+      body: {
+        error: {
+          code: 'OWNER_AGENT_LIMIT_REACHED',
+          message: 'Owner agent limit reached',
+          details: {
+            owner_agent_limit: 3,
+          },
+        },
+      },
+    });
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.CLIENT);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toBe(
+      'You have reached the maximum number of saved keys (3). Delete one before adding another.'
+    );
+  });
+
   it('should classify unknown errors correctly', () => {
     const error = new Error('Something unexpected happened');
     const result = classifyError(error);
@@ -146,6 +168,28 @@ describe('classifyError with i18n', () => {
     expect(mockTranslate).toHaveBeenCalledWith('error.rate_limit');
     expect(result.userMessage).toBe('Trop de requêtes');
   });
+
+  it('should pass owner-agent limit placeholders to translation', () => {
+    const mockTranslate = vi.fn().mockImplementation((key) => key);
+    const error = Object.assign(new Error('HTTP 400 Bad Request'), {
+      status: 400,
+      body: {
+        error: {
+          code: 'OWNER_AGENT_LIMIT_REACHED',
+          details: {
+            owner_agent_limit: 3,
+          },
+        },
+      },
+    });
+
+    const result = classifyError(error, mockTranslate);
+
+    expect(mockTranslate).toHaveBeenCalledWith('error.owner_agent_limit_reached', { limit: 3 });
+    expect(result.userMessage).toBe(
+      'You have reached the maximum number of saved keys (3). Delete one before adding another.'
+    );
+  });
 });
 
 describe('isGuestSessionError', () => {
@@ -153,6 +197,19 @@ describe('isGuestSessionError', () => {
     const error = Object.assign(new Error('Unauthorized'), {
       status: 401,
       body: { error: 'guest session missing' },
+    });
+
+    expect(isGuestSessionError(error)).toBe(true);
+  });
+
+  it('should return true for nested guest session error response', () => {
+    const error = Object.assign(new Error('Unauthorized'), {
+      status: 401,
+      body: {
+        error: {
+          message: 'Guest session missing integrity token',
+        },
+      },
     });
 
     expect(isGuestSessionError(error)).toBe(true);

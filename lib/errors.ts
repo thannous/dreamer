@@ -17,6 +17,7 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
   'error.client': 'Invalid request. Please check your input and try again.',
+  'error.owner_agent_limit_reached': 'You have reached the maximum number of saved keys ({limit}). Delete one before adding another.',
   'error.login_required': 'This device is already linked to an account. Please sign in to continue.',
   'error.guest_session': 'App verification failed. Please try again in a moment.',
   'error.image_transient': 'The image service is temporarily busy. Your dream has been saved and you can retry later.',
@@ -49,6 +50,55 @@ type HttpErrorDetails = {
   url?: string;
 };
 
+type ApiErrorInfo = {
+  code?: string;
+  message?: string;
+  details?: Record<string, unknown> | null;
+};
+
+const formatMessageTemplate = (
+  template: string,
+  replacements?: Record<string, string | number>
+): string => {
+  if (!replacements) return template;
+
+  let message = template;
+  for (const [key, value] of Object.entries(replacements)) {
+    const replacement = String(value);
+    message = message
+      .replace(new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g'), replacement)
+      .replace(new RegExp(`\\{${key}\\}`, 'g'), replacement);
+  }
+  return message;
+};
+
+const extractApiErrorInfo = (body: Record<string, unknown>): ApiErrorInfo => {
+  const topLevelCode = typeof body.code === 'string' ? body.code : undefined;
+  const topLevelError = typeof body.error === 'string' ? body.error : undefined;
+  const topLevelMessage = typeof body.message === 'string' ? body.message : undefined;
+  const topLevelDetails = body.details && typeof body.details === 'object'
+    ? (body.details as Record<string, unknown>)
+    : null;
+
+  const nested = body.error && typeof body.error === 'object'
+    ? (body.error as Record<string, unknown>)
+    : null;
+
+  const nestedCode = typeof nested?.code === 'string' ? nested.code : undefined;
+  const nestedMessage = typeof nested?.message === 'string'
+    ? nested.message
+    : (typeof nested?.error === 'string' ? nested.error : undefined);
+  const nestedDetails = nested?.details && typeof nested.details === 'object'
+    ? (nested.details as Record<string, unknown>)
+    : null;
+
+  return {
+    code: nestedCode ?? topLevelCode,
+    message: nestedMessage ?? topLevelError ?? topLevelMessage,
+    details: nestedDetails ?? topLevelDetails,
+  };
+};
+
 const getHttpErrorDetails = (error: unknown): HttpErrorDetails | null => {
   if (!error || typeof error !== 'object') return null;
   const candidate = error as Record<string, unknown>;
@@ -65,7 +115,8 @@ export const isGuestSessionError = (error: Error): boolean => {
   const details = getHttpErrorDetails(error);
   if (!details || details.status !== 401) return false;
   const body = details.body ?? {};
-  const bodyError = typeof body.error === 'string' ? body.error.toLowerCase() : '';
+  const { message } = extractApiErrorInfo(body);
+  const bodyError = (message ?? '').toLowerCase();
   return (
     bodyError.includes('integrity') ||
     bodyError.includes('guest session') ||
@@ -80,22 +131,44 @@ export const isGuestSessionError = (error: Error): boolean => {
  */
 export function classifyError(error: Error, t?: TranslateFunction): ClassifiedError {
   const message = error.message.toLowerCase();
-  const translate = (key: string, fallbackKey?: string): string => {
+  const translate = (
+    key: string,
+    fallbackKey?: string,
+    replacements?: Record<string, string | number>
+  ): string => {
     if (t) {
-      const translated = t(key);
+      const translated = replacements ? t(key, replacements) : t(key);
       // If translation returns the key itself, use fallback
       if (translated !== key) return translated;
     }
-    return DEFAULT_ERROR_MESSAGES[fallbackKey ?? key] ?? error.message;
+    const fallback = DEFAULT_ERROR_MESSAGES[fallbackKey ?? key];
+    if (fallback) {
+      return formatMessageTemplate(fallback, replacements);
+    }
+    return error.message;
   };
 
   const httpDetails = getHttpErrorDetails(error);
   if (httpDetails) {
     const status = httpDetails.status;
     const body = httpDetails.body ?? {};
-    const code = typeof body.code === 'string' ? body.code : '';
-    const bodyError = typeof body.error === 'string' ? body.error : '';
+    const { code = '', message: bodyError = '', details } = extractApiErrorInfo(body);
     const isUpgraded = body.isUpgraded === true;
+
+    if (code === 'OWNER_AGENT_LIMIT_REACHED') {
+      const limit = typeof details?.owner_agent_limit === 'number' ? details.owner_agent_limit : null;
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate(
+          'error.owner_agent_limit_reached',
+          'error.owner_agent_limit_reached',
+          limit != null ? { limit } : undefined
+        ),
+        canRetry: false,
+      };
+    }
 
     if ((status === 401 || status === 403) &&
       (code === 'GUEST_DEVICE_UPGRADED' || isUpgraded || /login required/i.test(bodyError))
