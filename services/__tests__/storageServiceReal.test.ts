@@ -1,7 +1,7 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
@@ -14,6 +14,17 @@ const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
+
+const mockAsyncStorage = {
+  getItem: jest.fn<(key: string) => Promise<string | null>>(),
+  setItem: jest.fn<(key: string, value: string) => Promise<void>>(),
+  removeItem: jest.fn<(key: string) => Promise<void>>(),
+};
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: mockAsyncStorage,
+}));
 
 const createFakeIndexedDB = () => {
   const stores = new Map<string, Map<string, string>>();
@@ -78,10 +89,13 @@ const createFakeIndexedDB = () => {
 
 describe('storageServiceReal', () => {
   beforeEach(async () => {
-    vi.resetModules();
-    vi.clearAllMocks();
+    jest.resetModules();
+    jest.clearAllMocks();
     localStorage.clear();
-    const { Platform } = await import('react-native');
+    mockAsyncStorage.getItem.mockReset().mockResolvedValue(null);
+    mockAsyncStorage.setItem.mockReset().mockResolvedValue(undefined);
+    mockAsyncStorage.removeItem.mockReset().mockResolvedValue(undefined);
+    const { Platform } = require('react-native');
     Platform.OS = 'web';
   });
 
@@ -91,7 +105,7 @@ describe('storageServiceReal', () => {
       // Force IndexedDB branch to be unavailable so we fall back to localStorage.
       delete (globalThis as any).indexedDB;
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       await storage.saveNotificationSettings({
         weekdayEnabled: true,
         weekdayTime: '06:30',
@@ -122,7 +136,7 @@ describe('storageServiceReal', () => {
         JSON.stringify({ isEnabled: true, weekdayTime: '08:15' }),
       );
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       const settings = await storage.getNotificationSettings();
 
       expect(settings).toEqual({
@@ -141,30 +155,28 @@ describe('storageServiceReal', () => {
   });
 
   it('stores dreams on filesystem for native platforms and bypasses AsyncStorage reads', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const kvStoreData: Record<string, string> = {};
     const kvStore = {
-      getItem: vi.fn(async (key: string) => kvStoreData[key] ?? null),
-      setItem: vi.fn(async (key: string, value: string) => {
+      getItem: jest.fn(async (key: string) => kvStoreData[key] ?? null),
+      setItem: jest.fn(async (key: string, value: string) => {
         kvStoreData[key] = value;
       }),
-      removeItem: vi.fn(async (key: string) => {
+      removeItem: jest.fn(async (key: string) => {
         delete kvStoreData[key];
       }),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const asyncStorageModule = await import('@react-native-async-storage/async-storage');
-    const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
-    const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
-    const getItemSpy = vi.spyOn(AsyncStorage, 'getItem').mockResolvedValue(null);
+    mockAsyncStorage.removeItem.mockResolvedValue(undefined);
+    mockAsyncStorage.getItem.mockResolvedValue(null);
 
-    const { getInfoAsync } = await import('expo-file-system/legacy');
-    const getInfoSpy = vi.mocked(getInfoAsync);
+    const { getInfoAsync } = require('expo-file-system/legacy');
+    const getInfoSpy = jest.mocked(getInfoAsync);
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
 
     const dreams = [
       {
@@ -182,51 +194,49 @@ describe('storageServiceReal', () => {
 
     await storage.saveDreams(dreams);
 
-    expect(removeItemSpy).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
     expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, expect.stringContaining('"title":"A dream"'));
     expect(getInfoSpy).not.toHaveBeenCalled();
 
-    getItemSpy.mockClear();
+    mockAsyncStorage.getItem.mockClear();
     const loaded = await storage.getSavedDreams();
     expect(loaded).toHaveLength(1);
     expect(loaded[0]?.title).toBe('A dream');
-    expect(getItemSpy).not.toHaveBeenCalled();
+    expect(mockAsyncStorage.getItem).not.toHaveBeenCalled();
     expect(kvStore.getItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
   });
 
   it('cleans up native AsyncStorage keys that fail with "Row too big"', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
-    const { getInfoAsync } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
+    const { getInfoAsync } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
-    vi.doMock('expo-sqlite/kv-store', () => {
+    jest.doMock('expo-sqlite/kv-store', () => {
       throw new Error('kv-store unavailable');
     });
 
-    const asyncStorageModule = await import('@react-native-async-storage/async-storage');
-    const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
-    vi.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(new Error('Row too big'));
-    const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
+    mockAsyncStorage.getItem.mockRejectedValueOnce(new Error('Row too big'));
+    mockAsyncStorage.removeItem.mockResolvedValue(undefined);
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const loaded = await storage.getSavedDreams();
 
     expect(loaded).toEqual([]);
-    expect(removeItemSpy).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
   });
 
   it('migrates file-backed dreams into kv-store when available', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     // First run: kv-store unavailable -> saveDreams writes to file.
-    vi.doMock('expo-sqlite/kv-store', () => {
+    jest.doMock('expo-sqlite/kv-store', () => {
       throw new Error('kv-store unavailable');
     });
 
-    const storageLegacy = await import('../storageServiceReal');
+    const storageLegacy = require('../storageServiceReal');
 
     const dreams = [
       {
@@ -244,32 +254,36 @@ describe('storageServiceReal', () => {
 
     await storageLegacy.saveDreams(dreams);
 
-    const { File } = await import('expo-file-system');
+    const { File } = require('expo-file-system');
     const file = new File('/tmp/storage/gemini_dream_journal_dreams.json');
-    expect(await file.text()).toContain('"title":"A dream"');
+    const persistedDreamsPayload = await file.text();
+    expect(persistedDreamsPayload).toContain('"title":"A dream"');
 
     // Second run: kv-store available -> getSavedDreams migrates file -> kv-store.
-    vi.resetModules();
+    jest.resetModules();
     const kvStoreData: Record<string, string> = {};
     const kvStore = {
-      getItem: vi.fn(async (key: string) => kvStoreData[key] ?? null),
-      setItem: vi.fn(async (key: string, value: string) => {
+      getItem: jest.fn(async (key: string) => kvStoreData[key] ?? null),
+      setItem: jest.fn(async (key: string, value: string) => {
         kvStoreData[key] = value;
       }),
-      removeItem: vi.fn(async (key: string) => {
+      removeItem: jest.fn(async (key: string) => {
         delete kvStoreData[key];
       }),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const { Platform: Platform2 } = await import('react-native');
+    const { Platform: Platform2 } = require('react-native');
     Platform2.OS = 'ios';
+    const { File: FileAfterReset } = require('expo-file-system');
+    const fileAfterReset = new FileAfterReset('/tmp/storage/gemini_dream_journal_dreams.json');
+    fileAfterReset.write(persistedDreamsPayload);
 
-    const { getInfoAsync, deleteAsync } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockResolvedValue({ exists: true, isDirectory: false } as any);
-    const deleteSpy = vi.mocked(deleteAsync);
+    const { getInfoAsync, deleteAsync } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockResolvedValue({ exists: true, isDirectory: false } as any);
+    const deleteSpy = jest.mocked(deleteAsync);
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const loaded = await storage.getSavedDreams();
 
     expect(loaded).toHaveLength(1);
@@ -283,7 +297,7 @@ describe('storageServiceReal', () => {
     try {
       delete (globalThis as any).indexedDB;
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       await storage.saveTranscript('draft transcript');
 
       expect(localStorage.getItem(RECORDING_TRANSCRIPT_KEY)).toBe('draft transcript');
@@ -302,7 +316,7 @@ describe('storageServiceReal', () => {
     try {
       delete (globalThis as any).indexedDB;
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
 
       await storage.saveThemePreference('dark');
       await storage.saveLanguagePreference('fr');
@@ -334,7 +348,7 @@ describe('storageServiceReal', () => {
     try {
       delete (globalThis as any).indexedDB;
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
 
       const chatHistory = Array.from({ length: 60 }, (_, index) => ({
         role: 'user',
@@ -381,7 +395,7 @@ describe('storageServiceReal', () => {
       (globalThis as any).indexedDB = createFakeIndexedDB();
       localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'legacy transcript');
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       const migrated = await storage.getSavedTranscript();
 
       expect(migrated).toBe('legacy transcript');
@@ -407,7 +421,7 @@ describe('storageServiceReal', () => {
         JSON.stringify([{ id: 2 }, { id: 5 }, { id: 3 }]),
       );
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       const sorted = await storage.getSavedDreams();
 
       expect(sorted.map((dream) => dream.id)).toEqual([5, 3, 2]);
@@ -428,7 +442,7 @@ describe('storageServiceReal', () => {
       localStorage.setItem(REMOTE_DREAMS_CACHE_KEY, 'not-json');
       localStorage.setItem(DREAM_MUTATIONS_KEY, 'not-json');
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       expect(await storage.getCachedRemoteDreams()).toEqual([]);
       expect(await storage.getPendingDreamMutations()).toEqual([]);
     } finally {
@@ -439,18 +453,18 @@ describe('storageServiceReal', () => {
   it('logs and falls back when file-backed reads fail in dev', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
-    vi.doMock('expo-sqlite/kv-store', () => {
+    jest.doMock('expo-sqlite/kv-store', () => {
       throw new Error('kv-store unavailable');
     });
 
-    const { getInfoAsync } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockRejectedValueOnce(new Error('read failure'));
+    const { getInfoAsync } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockRejectedValueOnce(new Error('read failure'));
 
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const storage = await import('../storageServiceReal');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const storage = require('../storageServiceReal');
     await storage.getSavedDreams();
     expect(warnSpy).toHaveBeenCalled();
     (globalThis as any).__DEV__ = originalDev;
@@ -459,17 +473,17 @@ describe('storageServiceReal', () => {
   it('throws when file-backed writes fail', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
-    vi.doMock('expo-sqlite/kv-store', () => {
+    jest.doMock('expo-sqlite/kv-store', () => {
       throw new Error('kv-store unavailable');
     });
 
-    const { makeDirectoryAsync } = await import('expo-file-system/legacy');
-    vi.mocked(makeDirectoryAsync).mockRejectedValueOnce(new Error('mkdir failed'));
+    const { makeDirectoryAsync } = require('expo-file-system/legacy');
+    jest.mocked(makeDirectoryAsync).mockRejectedValueOnce(new Error('mkdir failed'));
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const dreams = [
       {
         id: 1,
@@ -491,26 +505,26 @@ describe('storageServiceReal', () => {
   it('logs when file-backed delete fails during kv writes', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const kvStoreData: Record<string, string> = {};
     const kvStore = {
-      getItem: vi.fn(async (key: string) => kvStoreData[key] ?? null),
-      setItem: vi.fn(async (key: string, value: string) => {
+      getItem: jest.fn(async (key: string) => kvStoreData[key] ?? null),
+      setItem: jest.fn(async (key: string, value: string) => {
         kvStoreData[key] = value;
       }),
-      removeItem: vi.fn(async (key: string) => {
+      removeItem: jest.fn(async (key: string) => {
         delete kvStoreData[key];
       }),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const { deleteAsync } = await import('expo-file-system/legacy');
-    vi.mocked(deleteAsync).mockRejectedValueOnce(new Error('delete failed'));
+    const { deleteAsync } = require('expo-file-system/legacy');
+    jest.mocked(deleteAsync).mockRejectedValueOnce(new Error('delete failed'));
 
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const storage = await import('../storageServiceReal');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const storage = require('../storageServiceReal');
     const dreams = [
       {
         id: 2,
@@ -535,24 +549,22 @@ describe('storageServiceReal', () => {
   it('migrates legacy AsyncStorage values into kv-store for file-backed keys', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { Platform } = await import('react-native');
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const kvStoreData: Record<string, string> = {};
     const kvStore = {
-      getItem: vi.fn(async () => null),
-      setItem: vi.fn(async (key: string, value: string) => {
+      getItem: jest.fn(async () => null),
+      setItem: jest.fn(async (key: string, value: string) => {
         kvStoreData[key] = value;
       }),
-      removeItem: vi.fn(async (key: string) => {
+      removeItem: jest.fn(async (key: string) => {
         delete kvStoreData[key];
       }),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const asyncStorageModule = await import('@react-native-async-storage/async-storage');
-    const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
     const legacyValue = JSON.stringify([
       {
         id: 11,
@@ -566,63 +578,59 @@ describe('storageServiceReal', () => {
         isFavorite: false,
       },
     ]);
-    vi.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(legacyValue);
-    const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
+    mockAsyncStorage.getItem.mockResolvedValueOnce(legacyValue);
+    mockAsyncStorage.removeItem.mockResolvedValue(undefined);
 
-    const { getInfoAsync } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
+    const { getInfoAsync } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const loaded = await storage.getSavedDreams();
 
     expect(loaded[0]?.title).toBe('Legacy dream');
     expect(kvStore.setItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY, legacyValue);
-    expect(removeItemSpy).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
 
     (globalThis as any).__DEV__ = originalDev;
     logSpy.mockRestore();
   });
 
   it('migrates legacy AsyncStorage values into kv-store for non-file-backed keys', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const kvStoreData: Record<string, string> = {};
     const kvStore = {
-      getItem: vi.fn(async () => null),
-      setItem: vi.fn(async (key: string, value: string) => {
+      getItem: jest.fn(async () => null),
+      setItem: jest.fn(async (key: string, value: string) => {
         kvStoreData[key] = value;
       }),
-      removeItem: vi.fn(async (key: string) => {
+      removeItem: jest.fn(async (key: string) => {
         delete kvStoreData[key];
       }),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const asyncStorageModule = await import('@react-native-async-storage/async-storage');
-    const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
-    vi.spyOn(AsyncStorage, 'getItem').mockImplementation((async (key: string) =>
+    mockAsyncStorage.getItem.mockImplementation((async (key: string) =>
       key === RECORDING_TRANSCRIPT_KEY ? 'legacy transcript' : null) as any);
-    const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
+    mockAsyncStorage.removeItem.mockResolvedValue(undefined);
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const transcript = await storage.getSavedTranscript();
 
     expect(transcript).toBe('legacy transcript');
     expect(kvStore.setItem).toHaveBeenCalledWith(RECORDING_TRANSCRIPT_KEY, 'legacy transcript');
-    expect(removeItemSpy).toHaveBeenCalledWith(RECORDING_TRANSCRIPT_KEY);
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(RECORDING_TRANSCRIPT_KEY);
   });
 
   it('moves legacy AsyncStorage data to file storage when kv-store is unavailable', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
-    vi.doMock('expo-sqlite/kv-store', () => {
+    jest.doMock('expo-sqlite/kv-store', () => {
       throw new Error('kv-store unavailable');
     });
 
-    const asyncStorageModule = await import('@react-native-async-storage/async-storage');
-    const AsyncStorage = ('default' in asyncStorageModule ? asyncStorageModule.default : asyncStorageModule) as any;
     const legacyValue = JSON.stringify([
       {
         id: 9,
@@ -636,48 +644,45 @@ describe('storageServiceReal', () => {
         isFavorite: false,
       },
     ]);
-    vi.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(legacyValue);
-    const removeItemSpy = vi.spyOn(AsyncStorage, 'removeItem').mockResolvedValue(undefined);
+    mockAsyncStorage.getItem.mockResolvedValueOnce(legacyValue);
+    mockAsyncStorage.removeItem.mockResolvedValue(undefined);
 
-    const { getInfoAsync, deleteAsync, documentDirectory, cacheDirectory } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
+    const { getInfoAsync, deleteAsync, documentDirectory, cacheDirectory } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
     const dir = documentDirectory ?? cacheDirectory ?? '/tmp/';
     const filePath = `${dir}storage/${DREAMS_STORAGE_KEY}.json`;
     await deleteAsync(filePath, { idempotent: true });
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const loaded = await storage.getSavedDreams();
 
     expect(loaded[0]?.title).toBe('Legacy file dream');
-    expect(removeItemSpy).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
+    expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith(DREAMS_STORAGE_KEY);
 
-    const { File } = await import('expo-file-system');
+    const { File } = require('expo-file-system');
     const file = new File(filePath);
     expect(await file.text()).toContain('Legacy file dream');
   });
 
   it('uses memory storage when native stores are unavailable', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
-    vi.doMock('expo-sqlite/kv-store', () => {
+    jest.doMock('expo-sqlite/kv-store', () => {
       throw new Error('kv-store unavailable');
     });
-    vi.doMock('@react-native-async-storage/async-storage', () => {
+    jest.doMock('@react-native-async-storage/async-storage', () => {
       throw new Error('async-storage unavailable');
     });
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     await storage.saveTranscript('draft transcript');
 
     expect(await storage.getSavedTranscript()).toBe('draft transcript');
 
     await storage.clearSavedTranscript();
     expect(await storage.getSavedTranscript()).toBe('');
-
-    vi.unmock('expo-sqlite/kv-store');
-    vi.unmock('@react-native-async-storage/async-storage');
   });
 
   it('falls back to localStorage when IndexedDB is blocked', async () => {
@@ -696,8 +701,8 @@ describe('storageServiceReal', () => {
     (globalThis as any).indexedDB = createBlockedIndexedDB();
     localStorage.setItem(RECORDING_TRANSCRIPT_KEY, 'blocked transcript');
 
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const storage = await import('../storageServiceReal');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const storage = require('../storageServiceReal');
 
     expect(await storage.getSavedTranscript()).toBe('blocked transcript');
     expect(warnSpy).toHaveBeenCalled();
@@ -710,13 +715,13 @@ describe('storageServiceReal', () => {
   it('logs kv-store hits in dev mode for file-backed keys', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const kvStore = {
-      getItem: vi.fn(async () =>
+      getItem: jest.fn(async () =>
         JSON.stringify([
           {
             id: 31,
@@ -731,12 +736,12 @@ describe('storageServiceReal', () => {
           },
         ]),
       ),
-      setItem: vi.fn(async () => {}),
-      removeItem: vi.fn(async () => {}),
+      setItem: jest.fn(async () => {}),
+      removeItem: jest.fn(async () => {}),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
 
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     const loaded = await storage.getSavedDreams();
 
     expect(loaded[0]?.title).toBe('KV dream');
@@ -749,31 +754,24 @@ describe('storageServiceReal', () => {
   it('warns and returns empty when kv-store read fails in dev', async () => {
     const originalDev = (globalThis as any).__DEV__;
     (globalThis as any).__DEV__ = true;
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const { Platform } = await import('react-native');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const kvStore = {
-      getItem: vi.fn(async () => {
+      getItem: jest.fn(async () => {
         throw new Error('kv read failed');
       }),
-      setItem: vi.fn(async () => {}),
-      removeItem: vi.fn(async () => {}),
+      setItem: jest.fn(async () => {}),
+      removeItem: jest.fn(async () => {}),
     };
-    vi.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    jest.doMock('expo-sqlite/kv-store', () => ({ default: kvStore }));
+    mockAsyncStorage.getItem.mockResolvedValue(null);
 
-    vi.unmock('@react-native-async-storage/async-storage');
-    const legacyStore = {
-      getItem: vi.fn(async () => null),
-      setItem: vi.fn(async () => {}),
-      removeItem: vi.fn(async () => {}),
-    };
-    vi.doMock('@react-native-async-storage/async-storage', () => ({ default: legacyStore }));
+    const { getInfoAsync } = require('expo-file-system/legacy');
+    jest.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
 
-    const { getInfoAsync } = await import('expo-file-system/legacy');
-    vi.mocked(getInfoAsync).mockResolvedValue({ exists: false, isDirectory: false } as any);
-
-    const storage = await import('../storageServiceReal');
+    const storage = require('../storageServiceReal');
     expect(await storage.getSavedDreams()).toEqual([]);
     expect(warnSpy).toHaveBeenCalled();
 
@@ -786,7 +784,7 @@ describe('storageServiceReal', () => {
     try {
       delete (globalThis as any).indexedDB;
 
-      const storage = await import('../storageServiceReal');
+      const storage = require('../storageServiceReal');
       await storage.savePendingDreamMutations([
         { id: 'mutation-1', type: 'delete', createdAt: 123, dreamId: 9 },
       ] as any);

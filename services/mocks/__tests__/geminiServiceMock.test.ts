@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
+import { beforeEach, describe, expect, it, jest, afterEach } from '@jest/globals';
 
 import {
   analyzeDream,
@@ -14,13 +14,13 @@ import {
 
 describe('geminiServiceMock', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-    vi.spyOn(console, 'log').mockImplementation(() => {});
+    jest.useFakeTimers();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   afterEach(() => {
-    vi.useRealTimers();
-    vi.restoreAllMocks();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   describe('analyzeDream', () => {
@@ -28,7 +28,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'I was flying over mountains';
       const resultPromise = analyzeDream(transcript, 'en');
 
-      await vi.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(3000);
 
       const result = await resultPromise;
 
@@ -44,7 +44,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'A dream about water';
       const resultPromise = analyzeDream(transcript, 'en');
 
-      await vi.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(3000);
       await resultPromise;
 
       expect(console.log).toHaveBeenCalledWith(
@@ -61,7 +61,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'Dreaming of flying';
       const resultPromise = categorizeDream(transcript, 'en');
 
-      await vi.advanceTimersByTimeAsync(1000);
+      await jest.advanceTimersByTimeAsync(1000);
 
       const result = await resultPromise;
 
@@ -78,7 +78,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'A mystical forest dream';
       const resultPromise = analyzeDreamWithImage(transcript, 'en');
 
-      await vi.advanceTimersByTimeAsync(5000);
+      await jest.advanceTimersByTimeAsync(5000);
 
       const result = await resultPromise;
 
@@ -92,7 +92,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'A calm ocean dream';
       const resultPromise = analyzeDreamWithImageResilient(transcript, 'en');
 
-      await vi.advanceTimersByTimeAsync(5000);
+      await jest.advanceTimersByTimeAsync(5000);
 
       const result = await resultPromise;
 
@@ -105,7 +105,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'Dream that could fail';
       const resultPromise = analyzeDreamWithImageResilient(transcript);
 
-      await vi.advanceTimersByTimeAsync(5000);
+      await jest.advanceTimersByTimeAsync(5000);
 
       const result = await resultPromise;
 
@@ -119,7 +119,7 @@ describe('geminiServiceMock', () => {
       const prompt = 'A surreal landscape';
       const resultPromise = generateImageForDream(prompt);
 
-      await vi.advanceTimersByTimeAsync(4000);
+      await jest.advanceTimersByTimeAsync(4000);
 
       const result = await resultPromise;
 
@@ -130,7 +130,7 @@ describe('geminiServiceMock', () => {
       const prompt = 'A mystical forest with glowing lights';
       const resultPromise = generateImageForDream(prompt);
 
-      await vi.advanceTimersByTimeAsync(4000);
+      await jest.advanceTimersByTimeAsync(4000);
 
       const result = await resultPromise;
 
@@ -142,7 +142,7 @@ describe('geminiServiceMock', () => {
       const prompt = 'Just a regular dream scene';
       const resultPromise = generateImageForDream(prompt);
 
-      await vi.advanceTimersByTimeAsync(4000);
+      await jest.advanceTimersByTimeAsync(4000);
 
       const result = await resultPromise;
 
@@ -156,7 +156,7 @@ describe('geminiServiceMock', () => {
       const transcript = 'Flying through clouds';
       const resultPromise = generateImageFromTranscript(transcript);
 
-      await vi.advanceTimersByTimeAsync(4000);
+      await jest.advanceTimersByTimeAsync(4000);
 
       const result = await resultPromise;
 
@@ -171,7 +171,7 @@ describe('geminiServiceMock', () => {
       const message = 'What does flying mean?';
       const resultPromise = startOrContinueChat(dreamId, message, 'en');
 
-      await vi.advanceTimersByTimeAsync(2000);
+      await jest.advanceTimersByTimeAsync(2000);
 
       const result = await resultPromise;
 
@@ -185,7 +185,7 @@ describe('geminiServiceMock', () => {
       const message = 'Tell me about my dream';
       const resultPromise = startOrContinueChat(dreamId, message);
 
-      await vi.advanceTimersByTimeAsync(2000);
+      await jest.advanceTimersByTimeAsync(2000);
 
       const result = await resultPromise;
 
@@ -207,7 +207,7 @@ describe('geminiServiceMock', () => {
       const text = 'This is text to speak';
       const resultPromise = generateSpeechForText(text);
 
-      await vi.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(3000);
 
       const result = await resultPromise;
 
@@ -219,7 +219,7 @@ describe('geminiServiceMock', () => {
       const text = 'Test speech';
       const resultPromise = generateSpeechForText(text);
 
-      await vi.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(3000);
 
       const result = await resultPromise;
 

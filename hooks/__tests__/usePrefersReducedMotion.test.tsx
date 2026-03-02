@@ -1,35 +1,35 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { usePrefersReducedMotion } from '../usePrefersReducedMotion';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 // Hoist mocks
-const { mockIsReduceMotionEnabled, mockAddEventListener, mockRemove } = vi.hoisted(() => ({
-  mockIsReduceMotionEnabled: vi.fn(),
-  mockAddEventListener: vi.fn(),
-  mockRemove: vi.fn(),
+const { mockIsReduceMotionEnabled, mockAddEventListener, mockRemove } = ((factory: any) => factory())(() => ({
+  mockIsReduceMotionEnabled: jest.fn(),
+  mockAddEventListener: jest.fn(),
+  mockRemove: jest.fn(),
 }));
 
 // Mock AccessibilityInfo
-vi.mock('react-native', () => ({
+jest.mock('react-native', () => ({
   AccessibilityInfo: {
     isReduceMotionEnabled: mockIsReduceMotionEnabled,
     addEventListener: mockAddEventListener,
   },
 }));
 
+const { usePrefersReducedMotion } = require('../usePrefersReducedMotion');
+
 
 describe('usePrefersReducedMotion', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockIsReduceMotionEnabled.mockResolvedValue(false);
     mockAddEventListener.mockReturnValue({ remove: mockRemove });
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('returns false initially', () => {

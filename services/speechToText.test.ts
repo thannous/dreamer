@@ -1,16 +1,14 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from './speechToText';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 type PlatformOS = 'ios' | 'android' | 'macos' | 'windows' | 'web';
-const { Platform } = vi.hoisted(() => {
-  const Platform = { OS: 'ios' as PlatformOS };
-  return { Platform };
+const { mockPlatform } = ((factory: any) => factory())(() => {
+  const mockPlatform = { OS: 'ios' as PlatformOS };
+  return { mockPlatform };
 });
 
-const { mockReadAsStringAsync, mockFileBase64, MockFile } = vi.hoisted(() => {
-  const mockReadAsStringAsync = vi.fn(async () => '');
-  const mockFileBase64 = vi.fn(() => 'native-base64');
+const { mockReadAsStringAsync, mockFileBase64, MockFile } = ((factory: any) => factory())(() => {
+  const mockReadAsStringAsync = jest.fn(async () => '');
+  const mockFileBase64 = jest.fn(() => 'native-base64');
 
   class MockFile {
     uri: string;
@@ -25,28 +23,29 @@ const { mockReadAsStringAsync, mockFileBase64, MockFile } = vi.hoisted(() => {
 });
 
 // Mock native modules before importing the service
-vi.mock('expo-file-system', () => ({
+jest.mock('expo-file-system', () => ({
   File: MockFile,
   readAsStringAsync: mockReadAsStringAsync,
 }));
 
-vi.mock('react-native', () => ({
-  Platform,
+jest.mock('react-native', () => ({
+  Platform: mockPlatform,
 }));
 
 // Mock using relative paths from this test file
-vi.mock('../lib/config', () => ({
+jest.mock('../lib/config', () => ({
   getApiBaseUrl: () => 'https://api.dreamer.test',
 }));
 
-const { mockFetchJSON } = vi.hoisted(() => ({
-  mockFetchJSON: vi.fn(),
+const { mockFetchJSON } = ((factory: any) => factory())(() => ({
+  mockFetchJSON: jest.fn(),
 }));
 
-vi.mock('../lib/http', () => ({
+jest.mock('../lib/http', () => ({
   fetchJSON: mockFetchJSON,
 }));
 
+const { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } = require('./speechToText');
 const fetchJSON = mockFetchJSON;
 
 describe('speechToText Service', () => {
@@ -55,22 +54,22 @@ describe('speechToText Service', () => {
   const mockTranscript = 'This is a test transcription';
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     (globalThis as any).__DEV__ = false;
-    (Platform as any).OS = 'ios';
+    (mockPlatform as any).OS = 'ios';
     (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
     mockFileBase64.mockReturnValue('native-base64');
     mockReadAsStringAsync.mockResolvedValue(mockBase64Content);
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-    vi.spyOn(console, 'warn').mockImplementation(() => {});
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   describe('transcribeAudio', () => {
     it('given audio file and language when transcribing then calls API with correct parameters', async () => {
       // Given
       (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
-      (Platform as any).OS = 'ios';
+      (mockPlatform as any).OS = 'ios';
 
       // When
       const result = await transcribeAudio({ uri: mockAudioUri, languageCode: 'fr-FR' });
@@ -95,7 +94,7 @@ describe('speechToText Service', () => {
     it('given API returns no transcript when transcribing then returns empty string', async () => {
       // Given
       (fetchJSON as any).mockResolvedValue({});
-      (Platform as any).OS = 'ios';
+      (mockPlatform as any).OS = 'ios';
 
       // When
       const result = await transcribeAudio({ uri: mockAudioUri });
@@ -107,7 +106,7 @@ describe('speechToText Service', () => {
     it('given API request fails when transcribing then throws user-friendly error', async () => {
       // Given
       (fetchJSON as any).mockRejectedValue(new Error('Network error'));
-      (Platform as any).OS = 'ios';
+      (mockPlatform as any).OS = 'ios';
 
       // When & Then
       await expect(transcribeAudio({ uri: mockAudioUri })).rejects.toThrow(
@@ -118,7 +117,7 @@ describe('speechToText Service', () => {
     it('given custom language code when transcribing then passes it to API', async () => {
       // Given
       (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
-      (Platform as any).OS = 'ios';
+      (mockPlatform as any).OS = 'ios';
 
       // When
       await transcribeAudio({ uri: mockAudioUri, languageCode: 'de-DE' });
@@ -139,7 +138,7 @@ describe('speechToText Service', () => {
     it('given no language code when transcribing then defaults to fr-FR', async () => {
       // Given
       (fetchJSON as any).mockResolvedValue({ transcript: mockTranscript });
-      (Platform as any).OS = 'ios';
+      (mockPlatform as any).OS = 'ios';
 
       // When
       await transcribeAudio({ uri: mockAudioUri });

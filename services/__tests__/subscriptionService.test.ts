@@ -1,130 +1,130 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const {
-  getMockMode,
-  setMockMode,
-  getPlatformOS,
-  setPlatformOS,
+  mockGetMockMode,
+  mockSetMockMode,
+  mockGetPlatformOS,
+  mockSetPlatformOS,
   mockService,
-  realService,
-} = vi.hoisted(() => {
+  mockRealService,
+} = ((factory: any) => factory())(() => {
   let mockMode = false;
   let platformOS = 'ios';
 
   const buildService = () => ({
-    initialize: vi.fn(),
-    isInitialized: vi.fn(),
-    getStatus: vi.fn(),
-    refreshStatus: vi.fn(),
-    loadOfferings: vi.fn(),
-    purchasePackage: vi.fn(),
-    restorePurchases: vi.fn(),
-    logOutUser: vi.fn(),
+    initialize: jest.fn(),
+    isInitialized: jest.fn(),
+    getStatus: jest.fn(),
+    refreshStatus: jest.fn(),
+    loadOfferings: jest.fn(),
+    purchasePackage: jest.fn(),
+    restorePurchases: jest.fn(),
+    logOutUser: jest.fn(),
   });
 
   return {
-    getMockMode: () => mockMode,
-    setMockMode: (value: boolean) => {
+    mockGetMockMode: () => mockMode,
+    mockSetMockMode: (value: boolean) => {
       mockMode = value;
     },
-    getPlatformOS: () => platformOS,
-    setPlatformOS: (value: string) => {
+    mockGetPlatformOS: () => platformOS,
+    mockSetPlatformOS: (value: string) => {
       platformOS = value;
     },
     mockService: buildService(),
-    realService: buildService(),
+    mockRealService: buildService(),
   };
 });
 
-vi.mock('@/lib/env', () => ({
-  isMockModeEnabled: () => getMockMode(),
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockGetMockMode(),
 }));
 
-vi.mock('react-native', () => ({
+jest.mock('react-native', () => ({
   Platform: {
     get OS() {
-      return getPlatformOS();
+      return mockGetPlatformOS();
     },
-    select: (spec: Record<string, unknown>) => (spec as any)[getPlatformOS()] ?? spec.default,
+    select: (spec: Record<string, unknown>) => (spec as any)[mockGetPlatformOS()] ?? spec.default,
   },
 }));
 
-vi.mock('../mocks/subscriptionServiceMock', () => mockService);
-vi.mock('../subscriptionServiceReal', () => realService);
+jest.mock('../mocks/subscriptionServiceMock', () => mockService);
+jest.mock('../subscriptionServiceReal', () => mockRealService);
 
 describe('subscriptionService', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    setMockMode(false);
-    setPlatformOS('ios');
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockSetMockMode(false);
+    mockSetPlatformOS('ios');
     delete (process.env as Record<string, string | undefined>).EXPO_PUBLIC_REVENUECAT_WEB_KEY;
-    mockService.refreshStatus = vi.fn();
-    realService.refreshStatus = vi.fn();
+    mockService.refreshStatus = jest.fn();
+    mockRealService.refreshStatus = jest.fn();
   });
 
   it('given mock mode__when initializing subscription__then uses mock implementation', async () => {
-    setMockMode(true);
+    mockSetMockMode(true);
 
-    const service = await import('../subscriptionService');
+    const service = require('../subscriptionService');
     await service.initializeSubscription();
 
     expect(mockService.initialize).toHaveBeenCalled();
-    expect(realService.initialize).not.toHaveBeenCalled();
+    expect(mockRealService.initialize).not.toHaveBeenCalled();
   });
 
   it('given web without key__when loading service__then uses mock implementation', async () => {
-    setMockMode(false);
-    setPlatformOS('web');
+    mockSetMockMode(false);
+    mockSetPlatformOS('web');
 
-    const service = await import('../subscriptionService');
+    const service = require('../subscriptionService');
     await service.getSubscriptionStatus();
 
     expect(mockService.getStatus).toHaveBeenCalled();
-    expect(realService.getStatus).not.toHaveBeenCalled();
+    expect(mockRealService.getStatus).not.toHaveBeenCalled();
   });
 
   it('given web with key__when loading service__then uses real implementation', async () => {
-    setMockMode(false);
-    setPlatformOS('web');
+    mockSetMockMode(false);
+    mockSetPlatformOS('web');
     process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY = 'rc-web-key';
 
-    const service = await import('../subscriptionService');
+    const service = require('../subscriptionService');
     await service.getSubscriptionStatus();
 
-    expect(realService.getStatus).toHaveBeenCalled();
+    expect(mockRealService.getStatus).toHaveBeenCalled();
     expect(mockService.getStatus).not.toHaveBeenCalled();
   });
 
   it('given native without mock__when loading service__then uses real implementation', async () => {
-    setMockMode(false);
-    setPlatformOS('ios');
+    mockSetMockMode(false);
+    mockSetPlatformOS('ios');
 
-    const service = await import('../subscriptionService');
+    const service = require('../subscriptionService');
     await service.getSubscriptionStatus();
 
-    expect(realService.getStatus).toHaveBeenCalled();
+    expect(mockRealService.getStatus).toHaveBeenCalled();
     expect(mockService.getStatus).not.toHaveBeenCalled();
   });
 
   it('given missing refreshStatus__when refreshing__then falls back to getStatus', async () => {
-    setMockMode(false);
-    setPlatformOS('ios');
-    realService.refreshStatus = undefined as unknown as typeof realService.refreshStatus;
+    mockSetMockMode(false);
+    mockSetPlatformOS('ios');
+    mockRealService.refreshStatus = undefined as unknown as typeof mockRealService.refreshStatus;
 
-    const service = await import('../subscriptionService');
+    const service = require('../subscriptionService');
     await service.refreshSubscriptionStatus();
 
-    expect(realService.getStatus).toHaveBeenCalled();
+    expect(mockRealService.getStatus).toHaveBeenCalled();
   });
 
   it('given mock mode__when logging out subscription user__then uses mock implementation', async () => {
-    setMockMode(true);
+    mockSetMockMode(true);
 
-    const service = await import('../subscriptionService');
+    const service = require('../subscriptionService');
     await service.logOutSubscriptionUser();
 
     expect(mockService.logOutUser).toHaveBeenCalled();
-    expect(realService.logOutUser).not.toHaveBeenCalled();
+    expect(mockRealService.logOutUser).not.toHaveBeenCalled();
   });
 });

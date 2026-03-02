@@ -1,9 +1,9 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { RECORDING } from '../../constants/appConfig';
 import { handleRecorderReleaseError, isRecorderReleasedError, RECORDING_OPTIONS } from '../recording';
 
-vi.mock('expo-audio', () => ({
+jest.mock('expo-audio', () => ({
   RecordingPresets: {
     HIGH_QUALITY: {
       android: {},
@@ -19,7 +19,7 @@ describe('recording utilities', () => {
 
   afterEach(() => {
     (globalThis as any).__DEV__ = originalDev;
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('detects recorder release errors', () => {
@@ -32,7 +32,7 @@ describe('recording utilities', () => {
 
   it('handles recorder release errors and warns in dev', () => {
     (globalThis as any).__DEV__ = true;
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const error = new Error(`Audio error: ${RECORDING.RELEASE_ERROR_SNIPPET}`);
 
     const handled = handleRecorderReleaseError('stop', error);
@@ -43,7 +43,7 @@ describe('recording utilities', () => {
 
   it('returns false when error is unrelated to release', () => {
     (globalThis as any).__DEV__ = true;
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
     const handled = handleRecorderReleaseError('pause', new Error('random'));
 

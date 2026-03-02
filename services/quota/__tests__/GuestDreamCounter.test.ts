@@ -2,39 +2,41 @@
  * Unit tests for GuestDreamCounter
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import {
-  getGuestRecordedDreamCount,
-  getLocalDreamRecordingCount,
-  incrementLocalDreamRecordingCount,
-  migrateExistingGuestDreamRecording,
-} from '../GuestDreamCounter';
+let getGuestRecordedDreamCount: typeof import('../GuestDreamCounter').getGuestRecordedDreamCount;
+let getLocalDreamRecordingCount: typeof import('../GuestDreamCounter').getLocalDreamRecordingCount;
+let incrementLocalDreamRecordingCount: typeof import('../GuestDreamCounter').incrementLocalDreamRecordingCount;
+let migrateExistingGuestDreamRecording: typeof import('../GuestDreamCounter').migrateExistingGuestDreamRecording;
 
-const { mockStorage, mockGetSavedDreams } = vi.hoisted(() => {
+const { mockStorage, mockGetSavedDreams } = ((factory: any) => factory())(() => {
   const storage = new Map<string, string>();
   return {
     mockStorage: storage,
-    mockGetSavedDreams: vi.fn(),
+    mockGetSavedDreams: jest.fn(),
   };
 });
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    getItem: vi.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
-    setItem: vi.fn((key: string, value: string) => {
-      mockStorage.set(key, value);
-      return Promise.resolve();
-    }),
-    removeItem: vi.fn((key: string) => {
-      mockStorage.delete(key);
-      return Promise.resolve();
-    }),
-  },
+const mockAsyncStorage = {
+  getItem: jest.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
+  setItem: jest.fn((key: string, value: string) => {
+    mockStorage.set(key, value);
+    return Promise.resolve();
+  }),
+  removeItem: jest.fn((key: string) => {
+    mockStorage.delete(key);
+    return Promise.resolve();
+  }),
+};
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: mockAsyncStorage,
+  ...mockAsyncStorage,
 }));
 
-vi.mock('../../storageServiceReal', () => ({
-  getSavedDreams: () => mockGetSavedDreams(),
+jest.mock('@/services/storageServiceReal', () => ({
+  getSavedDreams: mockGetSavedDreams,
 }));
 
 
@@ -43,13 +45,20 @@ const MIGRATION_KEY = 'guest_dream_recording_migrated_v1';
 
 describe('GuestDreamCounter', () => {
   beforeEach(() => {
+    jest.resetModules();
     mockStorage.clear();
     mockGetSavedDreams.mockReset();
-    vi.clearAllMocks();
+    jest.clearAllMocks();
+    ({
+      getGuestRecordedDreamCount,
+      getLocalDreamRecordingCount,
+      incrementLocalDreamRecordingCount,
+      migrateExistingGuestDreamRecording,
+    } = require('../GuestDreamCounter'));
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('getLocalDreamRecordingCount returns 0 for empty storage', async () => {

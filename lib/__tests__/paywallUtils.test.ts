@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@jest/globals';
 
 import { calculateAnnualDiscount, sortPackages } from '@/lib/paywallUtils';
 import type { PurchasePackage } from '@/lib/types';

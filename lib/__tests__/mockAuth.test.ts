@@ -1,6 +1,24 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import {
+// Use jest.hoisted to ensure mocks are created before module loading
+const { mockResetMockQuotaEvents, mockResetMockStorage, mockSetPreloadDreamsEnabled, mockPreloadDreamsNow } = ((factory: any) => factory())(() => ({
+  mockResetMockQuotaEvents: jest.fn().mockResolvedValue(undefined),
+  mockResetMockStorage: jest.fn(),
+  mockSetPreloadDreamsEnabled: jest.fn(),
+  mockPreloadDreamsNow: jest.fn(),
+}));
+
+// Mock storage service and quota store BEFORE importing mockAuth
+jest.mock('../../services/mocks/storageServiceMock', () => ({
+  resetMockStorage: mockResetMockStorage,
+  setPreloadDreamsEnabled: mockSetPreloadDreamsEnabled,
+  preloadDreamsNow: mockPreloadDreamsNow,
+}));
+jest.mock('../../services/quota/MockQuotaEventStore', () => ({
+  resetMockQuotaEvents: mockResetMockQuotaEvents,
+}));
+
+const {
   getAccessToken,
   getCurrentUser,
   onAuthChange,
@@ -12,25 +30,7 @@ import {
   signOut,
   signUpWithEmailPassword,
   updateUserTier,
-} from '../mockAuth';
-
-// Use vi.hoisted to ensure mocks are created before module loading
-const { mockResetMockQuotaEvents, mockResetMockStorage, mockSetPreloadDreamsEnabled, mockPreloadDreamsNow } = vi.hoisted(() => ({
-  mockResetMockQuotaEvents: vi.fn().mockResolvedValue(undefined),
-  mockResetMockStorage: vi.fn(),
-  mockSetPreloadDreamsEnabled: vi.fn(),
-  mockPreloadDreamsNow: vi.fn(),
-}));
-
-// Mock storage service and quota store BEFORE importing mockAuth
-vi.mock('../../services/mocks/storageServiceMock', () => ({
-  resetMockStorage: mockResetMockStorage,
-  setPreloadDreamsEnabled: mockSetPreloadDreamsEnabled,
-  preloadDreamsNow: mockPreloadDreamsNow,
-}));
-vi.mock('../../services/quota/MockQuotaEventStore', () => ({
-  resetMockQuotaEvents: mockResetMockQuotaEvents,
-}));
+} = require('../mockAuth');
 
 
 describe('mockAuth', () => {
@@ -157,7 +157,7 @@ describe('mockAuth', () => {
   describe('onAuthChange', () => {
     it('given callback when registering auth change then returns unsubscribe function', () => {
       // Given
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       // When
       const unsubscribe = onAuthChange(callback);
@@ -169,7 +169,7 @@ describe('mockAuth', () => {
 
     it('given registered callback when unsubscribing then stops receiving auth changes', async () => {
       // Given
-      const callback = vi.fn();
+      const callback = jest.fn();
       const unsubscribe = onAuthChange(callback);
 
       // When
@@ -182,8 +182,8 @@ describe('mockAuth', () => {
 
     it('given multiple callbacks when auth changes then all callbacks are notified', async () => {
       // Given
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
       onAuthChange(callback1);
       onAuthChange(callback2);
 

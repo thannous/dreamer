@@ -1,10 +1,59 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Alert } from 'react-native';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { TID } from '@/lib/testIDs';
+
+jest.mock('react-native', () => {
+  const React = require('react');
+  return {
+    Alert: { alert: () => {} },
+    Platform: {
+      OS: 'web',
+      select: (options: Record<string, unknown>) => options.web ?? options.default,
+    },
+    ActivityIndicator: ({ testID }: { testID?: string }) => <div data-testid={testID} />,
+    Pressable: ({
+      children,
+      onPress,
+      disabled,
+      testID,
+    }: {
+      children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
+      onPress?: () => void;
+      disabled?: boolean;
+      testID?: string;
+    }) => (
+      <button data-testid={testID} disabled={disabled} onClick={onPress}>
+        {typeof children === 'function' ? children({ pressed: false }) : children}
+      </button>
+    ),
+    StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <span data-testid={testID}>{children}</span>
+    ),
+    TextInput: ({
+      value,
+      onChangeText,
+      testID,
+    }: {
+      value?: string;
+      onChangeText?: (value: string) => void;
+      testID?: string;
+    }) => (
+      <input
+        data-testid={testID}
+        value={value ?? ''}
+        onChange={(event) => onChangeText?.((event.target as HTMLInputElement).value)}
+      />
+    ),
+    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <div data-testid={testID}>{children}</div>
+    ),
+  };
+});
 
 const {
   mockAlert,
@@ -13,22 +62,22 @@ const {
   mockSignUpWithEmailPassword,
   mockSignOut,
   mockResendVerificationEmail,
-} = vi.hoisted(() => ({
-  mockAlert: vi.fn(),
-  mockRequestStayOnSettingsIntent: vi.fn(),
-  mockSignInWithEmailPassword: vi.fn(),
-  mockSignUpWithEmailPassword: vi.fn(),
-  mockSignOut: vi.fn(),
-  mockResendVerificationEmail: vi.fn(),
+} = ((factory: any) => factory())(() => ({
+  mockAlert: jest.fn(),
+  mockRequestStayOnSettingsIntent: jest.fn(),
+  mockSignInWithEmailPassword: jest.fn(),
+  mockSignUpWithEmailPassword: jest.fn(),
+  mockSignOut: jest.fn(),
+  mockResendVerificationEmail: jest.fn(),
 }));
 
-vi.stubGlobal('__DEV__', false);
+((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('__DEV__', false);
 
-let currentUser: any = null;
-let authLoading = false;
-let supabaseConfigured = true;
+let mockCurrentUser: any = null;
+let mockAuthLoading = false;
+let mockSupabaseConfigured = true;
 
-vi.mock('@supabase/auth-js', () => {
+jest.mock('@supabase/auth-js', () => {
   class AuthApiError extends Error {
     status: number;
     code: string;
@@ -45,11 +94,11 @@ vi.mock('@supabase/auth-js', () => {
   return { AuthApiError, isAuthApiError };
 });
 
-vi.mock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: currentUser, loading: authLoading }),
+jest.mock('@/context/AuthContext', () => ({
+  useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
 }));
 
-vi.mock('@/context/ThemeContext', () => ({
+jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {
       accent: '#f58c8c',
@@ -62,69 +111,84 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-vi.mock('@/context/LanguageContext', () => ({
+jest.mock('@/context/LanguageContext', () => ({
   useLanguage: () => ({
     language: 'en',
     locale: { languageTag: 'en-US' },
-    setLanguage: vi.fn(),
+    setLanguage: jest.fn(),
   }),
 }));
 
-vi.mock('@/components/auth/GoogleSignInButton', () => ({
+jest.mock('@/components/auth/GoogleSignInButton', () => ({
+  __esModule: true,
   default: () => <div data-testid="google-sign-in" />,
 }));
 
-vi.mock('@/components/auth/EmailVerificationBanner', () => ({
+jest.mock('@/components/auth/EmailVerificationBanner', () => ({
+  __esModule: true,
   default: () => <div data-testid="banner" />,
 }));
 
-vi.mock('@/components/icons/DreamIcons', () => ({
+jest.mock('@/components/icons/DreamIcons', () => ({
   EyeIcon: () => <div data-testid="eye-icon" />,
   EyeOffIcon: () => <div data-testid="eye-off-icon" />,
 }));
 
-vi.mock('@/lib/auth', () => ({
-  signInMock: vi.fn(),
+jest.mock('@/lib/auth', () => ({
+  signInMock: jest.fn(),
   signInWithEmailPassword: mockSignInWithEmailPassword,
   signOut: mockSignOut,
   signUpWithEmailPassword: mockSignUpWithEmailPassword,
   resendVerificationEmail: mockResendVerificationEmail,
 }));
 
-vi.mock('@/lib/navigationIntents', () => ({
+jest.mock('@/lib/navigationIntents', () => ({
   requestStayOnSettingsIntent: mockRequestStayOnSettingsIntent,
 }));
 
-vi.mock('@/lib/supabase', () => ({
+jest.mock('@/lib/supabase', () => ({
   get isSupabaseConfigured() {
-    return supabaseConfigured;
+    return mockSupabaseConfigured;
   },
 }));
 
-vi.mock('@/components/auth/EmailVerificationDialog', () => ({
+jest.mock('@/components/auth/EmailVerificationDialog', () => ({
   EmailVerificationPendingDialog: () => <div data-testid="email-verification-dialog" />,
   EmailVerificationSuccessDialog: () => <div data-testid="email-verification-dialog" />,
 }));
 
-vi.mock('@/components/ui/StandardBottomSheet', () => ({
+jest.mock('@/components/ui/StandardBottomSheet', () => ({
   StandardBottomSheet: () => <div data-testid="standard-bottom-sheet" />,
 }));
 
-vi.mock('@/constants/journalTheme', () => ({
+jest.mock('@/constants/journalTheme', () => ({
   ThemeLayout: {
     borderRadius: { sm: 4, md: 8, lg: 12 },
     spacing: { xs: 4, sm: 8, md: 16, lg: 24 },
   },
 }));
 
-const { AuthApiError } = await import('@supabase/auth-js');
-const { EmailAuthCard } = await import('../EmailAuthCard');
+jest.mock('@/constants/theme', () => ({
+  Fonts: {
+    spaceGrotesk: {
+      regular: 'SpaceGrotesk-Regular',
+      medium: 'SpaceGrotesk-Medium',
+    },
+  },
+  GlassCardTokens: {
+    borderWidth: 1,
+    getBackground: (backgroundCard: string) => backgroundCard,
+  },
+}));
+
+const { AuthApiError } = require('@supabase/auth-js');
+const { EmailAuthCard } = require('../EmailAuthCard');
 
 describe('EmailAuthCard', () => {
   afterEach(() => {
@@ -132,10 +196,10 @@ describe('EmailAuthCard', () => {
   });
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    currentUser = null;
-    authLoading = false;
-    supabaseConfigured = true;
+    jest.clearAllMocks();
+    mockCurrentUser = null;
+    mockAuthLoading = false;
+    mockSupabaseConfigured = true;
     Alert.alert = mockAlert;
     mockSignInWithEmailPassword.mockResolvedValue(undefined);
     mockSignUpWithEmailPassword.mockResolvedValue({ email_confirmed_at: null });
@@ -144,7 +208,7 @@ describe('EmailAuthCard', () => {
 
   it('shows unverified prompt and allows resending verification email when sign-in fails for confirmation', async () => {
     // Use fake timers to control time-based cooldowns
-    vi.useFakeTimers({ shouldAdvanceTime: true });
+    jest.useFakeTimers({ advanceTimers: true });
 
     mockSignInWithEmailPassword.mockRejectedValue(
       new AuthApiError('Email not confirmed', 400, 'email_not_confirmed')
@@ -166,7 +230,7 @@ describe('EmailAuthCard', () => {
     });
 
     // Advance past the 60-second cooldown period (60000ms)
-    await vi.advanceTimersByTimeAsync(61000);
+    await jest.advanceTimersByTimeAsync(61000);
 
     fireEvent.click(screen.getByTestId(TID.Button.AuthResendVerification));
 
@@ -177,7 +241,7 @@ describe('EmailAuthCard', () => {
     expect(mockAlert).not.toHaveBeenCalled();
     expect(mockRequestStayOnSettingsIntent).toHaveBeenCalled();
 
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   it('signs in with valid credentials and clears the password', async () => {
@@ -261,7 +325,7 @@ describe('EmailAuthCard', () => {
   });
 
   it('shows configuration hint when supabase is not configured', () => {
-    supabaseConfigured = false;
+    mockSupabaseConfigured = false;
 
     render(<EmailAuthCard />);
 
@@ -269,7 +333,7 @@ describe('EmailAuthCard', () => {
   });
 
   it('renders signed-in state and allows sign-out', async () => {
-    currentUser = { email: 'user@example.com' };
+    mockCurrentUser = { email: 'user@example.com' };
 
     render(<EmailAuthCard />);
 

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@jest/globals';
 
 import { formatDreamDate, formatDreamTime, formatShortDate, getCurrentMoonCycleTimestamp } from '../dateUtils';
 

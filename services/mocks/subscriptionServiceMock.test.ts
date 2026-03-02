@@ -1,17 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 describe('subscriptionServiceMock', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.doMock('@/lib/auth', () => ({
-      getCurrentUser: vi.fn().mockResolvedValue(null),
+    jest.resetModules();
+    jest.doMock('@/lib/auth', () => ({
+      getCurrentUser: jest.fn().mockResolvedValue(null),
     }));
   });
 
   describe('initialization behavior', () => {
     it('given uninitialized service when initializing then sets initialized flag and returns free status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When
       const status = await service.initialize();
@@ -26,7 +26,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given already initialized service when initializing again then returns existing status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -39,7 +39,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given uninitialized service when checking initialization then returns false', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When
       const initialized = service.isInitialized();
@@ -52,7 +52,7 @@ describe('subscriptionServiceMock', () => {
   describe('status management', () => {
     it('given uninitialized service when getting status then returns null', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When
       const status = await service.getStatus();
@@ -63,7 +63,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service with no current status when getting status then returns default free status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -78,7 +78,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service with existing status when getting status then returns current status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
       await service.purchasePackage('mock_monthly');
 
@@ -95,7 +95,7 @@ describe('subscriptionServiceMock', () => {
   describe('offerings loading', () => {
     it('given uninitialized service when loading offerings then returns empty array', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When
       const offerings = await service.loadOfferings();
@@ -106,7 +106,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service when loading offerings then returns mock packages', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -135,7 +135,7 @@ describe('subscriptionServiceMock', () => {
   describe('package purchasing', () => {
     it('given uninitialized service when purchasing package then throws error', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When/Then
       await expect(service.purchasePackage('mock_monthly')).rejects.toThrow('Purchases not initialized');
@@ -143,7 +143,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service when purchasing valid package then upgrades to plus', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -158,7 +158,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service when purchasing invalid package then uses first mock package', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -172,7 +172,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service when purchasing monthly package then sets correct product ID', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -187,7 +187,7 @@ describe('subscriptionServiceMock', () => {
   describe('purchase restoration', () => {
     it('given uninitialized service when restoring purchases then throws error', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When/Then
       await expect(service.restorePurchases()).rejects.toThrow('Purchases not initialized');
@@ -195,7 +195,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service with no current status when restoring purchases then returns default free status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -210,7 +210,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service with plus status when restoring purchases then returns current plus status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
       await service.purchasePackage('mock_annual');
 
@@ -227,7 +227,7 @@ describe('subscriptionServiceMock', () => {
   describe('status refresh', () => {
     it('given uninitialized service when refreshing status then throws error', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When/Then
       await expect(service.refreshStatus()).rejects.toThrow('Purchases not initialized');
@@ -235,7 +235,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service with no current status when refreshing status then returns default free status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
 
       // When
@@ -250,7 +250,7 @@ describe('subscriptionServiceMock', () => {
 
     it('given initialized service with plus status when refreshing status then returns current plus status', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
       await service.purchasePackage('mock_monthly');
 
@@ -266,7 +266,7 @@ describe('subscriptionServiceMock', () => {
 
   describe('logout behavior', () => {
     it('given initialized service when logging out then clears initialization state', async () => {
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
       await service.initialize();
       await service.purchasePackage('mock_monthly');
 
@@ -280,7 +280,7 @@ describe('subscriptionServiceMock', () => {
   describe('integration scenarios', () => {
     it('given full user flow when initializing then purchasing then restoring then refreshing then maintains correct state', async () => {
       // Given
-      const service = await import('./subscriptionServiceMock');
+      const service = require('./subscriptionServiceMock');
 
       // When - Initialize
       const initialStatus = await service.initialize();

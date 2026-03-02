@@ -1,8 +1,8 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 
 import { useLocaleFormatting } from '../useLocaleFormatting';
 // Mock useLanguage
@@ -13,20 +13,20 @@ const mockLocale = {
   textDirection: 'ltr',
 };
 
-vi.mock('../../context/LanguageContext', () => ({
+jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
     locale: mockLocale,
     language: 'en',
-    setLanguage: vi.fn(),
+    setLanguage: jest.fn(),
   }),
 }));
 
 // Mock dateUtils
-vi.mock('../../lib/dateUtils', () => ({
-  formatDreamDate: vi.fn((timestamp: number, locale: string) => `formatted-date-${timestamp}-${locale}`),
-  formatDreamTime: vi.fn((timestamp: number, locale: string) => `formatted-time-${timestamp}-${locale}`),
-  formatShortDate: vi.fn((timestamp: number, locale: string) => `short-date-${timestamp}-${locale}`),
-  getCurrentMoonCycleTimestamp: vi.fn((locale: string) => `moon-cycle-${locale}`),
+jest.mock('../../lib/dateUtils', () => ({
+  formatDreamDate: jest.fn((timestamp: number, locale: string) => `formatted-date-${timestamp}-${locale}`),
+  formatDreamTime: jest.fn((timestamp: number, locale: string) => `formatted-time-${timestamp}-${locale}`),
+  formatShortDate: jest.fn((timestamp: number, locale: string) => `short-date-${timestamp}-${locale}`),
+  getCurrentMoonCycleTimestamp: jest.fn((locale: string) => `moon-cycle-${locale}`),
 }));
 
 

@@ -1,27 +1,27 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const {
-  getMockMode,
-  setMockMode,
+  mockGetMockMode,
+  mockSetMockMode,
   providers,
-  getLastRemoteGuestProviderArg,
-  GuestQuotaProvider,
-  RemoteGuestQuotaProvider,
-  SupabaseQuotaProvider,
-  MockQuotaProvider,
-} = vi.hoisted(() => {
+  mockGetLastRemoteGuestProviderArg,
+  mockGuestQuotaProviderClass,
+  mockRemoteGuestQuotaProviderClass,
+  mockSupabaseQuotaProviderClass,
+  mockQuotaProviderClass,
+} = ((factory: any) => factory())(() => {
   let mockMode = false;
   let lastRemoteGuestProviderArg: unknown = null;
 
   const buildProvider = () => ({
-    getUsedAnalysisCount: vi.fn().mockResolvedValue(0),
-    getUsedExplorationCount: vi.fn().mockResolvedValue(0),
-    getUsedMessagesCount: vi.fn().mockResolvedValue(0),
-    canAnalyzeDream: vi.fn().mockResolvedValue(true),
-    canExploreDream: vi.fn().mockResolvedValue(true),
-    canSendChatMessage: vi.fn().mockResolvedValue(true),
-    getQuotaStatus: vi.fn().mockResolvedValue({ tier: 'free', isActive: false }),
-    invalidate: vi.fn(),
+    getUsedAnalysisCount: jest.fn().mockResolvedValue(0),
+    getUsedExplorationCount: jest.fn().mockResolvedValue(0),
+    getUsedMessagesCount: jest.fn().mockResolvedValue(0),
+    canAnalyzeDream: jest.fn().mockResolvedValue(true),
+    canExploreDream: jest.fn().mockResolvedValue(true),
+    canSendChatMessage: jest.fn().mockResolvedValue(true),
+    getQuotaStatus: jest.fn().mockResolvedValue({ tier: 'free', isActive: false }),
+    invalidate: jest.fn(),
   });
 
   const providers = {
@@ -31,7 +31,7 @@ const {
     mock: buildProvider(),
   };
 
-  class GuestQuotaProvider {
+  class mockGuestQuotaProviderClass {
     getUsedAnalysisCount = providers.guest.getUsedAnalysisCount;
     getUsedExplorationCount = providers.guest.getUsedExplorationCount;
     getUsedMessagesCount = providers.guest.getUsedMessagesCount;
@@ -42,7 +42,7 @@ const {
     invalidate = providers.guest.invalidate;
   }
 
-  class RemoteGuestQuotaProvider {
+  class mockRemoteGuestQuotaProviderClass {
     constructor(guestProvider: unknown) {
       lastRemoteGuestProviderArg = guestProvider;
     }
@@ -56,7 +56,7 @@ const {
     invalidate = providers.remote.invalidate;
   }
 
-  class SupabaseQuotaProvider {
+  class mockSupabaseQuotaProviderClass {
     getUsedAnalysisCount = providers.supabase.getUsedAnalysisCount;
     getUsedExplorationCount = providers.supabase.getUsedExplorationCount;
     getUsedMessagesCount = providers.supabase.getUsedMessagesCount;
@@ -67,7 +67,7 @@ const {
     invalidate = providers.supabase.invalidate;
   }
 
-  class MockQuotaProvider {
+  class mockQuotaProviderClass {
     getUsedAnalysisCount = providers.mock.getUsedAnalysisCount;
     getUsedExplorationCount = providers.mock.getUsedExplorationCount;
     getUsedMessagesCount = providers.mock.getUsedMessagesCount;
@@ -79,39 +79,39 @@ const {
   }
 
   return {
-    getMockMode: () => mockMode,
-    setMockMode: (value: boolean) => {
+    mockGetMockMode: () => mockMode,
+    mockSetMockMode: (value: boolean) => {
       mockMode = value;
     },
     providers,
-    getLastRemoteGuestProviderArg: () => lastRemoteGuestProviderArg,
-    GuestQuotaProvider,
-    RemoteGuestQuotaProvider,
-    SupabaseQuotaProvider,
-    MockQuotaProvider,
+    mockGetLastRemoteGuestProviderArg: () => lastRemoteGuestProviderArg,
+    mockGuestQuotaProviderClass,
+    mockRemoteGuestQuotaProviderClass,
+    mockSupabaseQuotaProviderClass,
+    mockQuotaProviderClass,
   };
 });
 
-vi.mock('@/lib/env', () => ({
-  isMockModeEnabled: () => getMockMode(),
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockGetMockMode(),
 }));
 
-vi.mock('../quota/GuestQuotaProvider', () => ({ GuestQuotaProvider }));
-vi.mock('../quota/RemoteGuestQuotaProvider', () => ({ RemoteGuestQuotaProvider }));
-vi.mock('../quota/SupabaseQuotaProvider', () => ({ SupabaseQuotaProvider }));
-vi.mock('../quota/MockQuotaProvider', () => ({ MockQuotaProvider }));
+jest.mock('../quota/GuestQuotaProvider', () => ({ GuestQuotaProvider: mockGuestQuotaProviderClass }));
+jest.mock('../quota/RemoteGuestQuotaProvider', () => ({ RemoteGuestQuotaProvider: mockRemoteGuestQuotaProviderClass }));
+jest.mock('../quota/SupabaseQuotaProvider', () => ({ SupabaseQuotaProvider: mockSupabaseQuotaProviderClass }));
+jest.mock('../quota/MockQuotaProvider', () => ({ MockQuotaProvider: mockQuotaProviderClass }));
 
 describe('quotaService', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    setMockMode(false);
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockSetMockMode(false);
   });
 
   it('given mock mode__when reading analysis count__then uses mock provider', async () => {
-    setMockMode(true);
+    mockSetMockMode(true);
 
-    const { quotaService } = await import('../quotaService');
+    const { quotaService } = require('../quotaService');
     await quotaService.getUsedAnalysisCount(null);
 
     expect(providers.mock.getUsedAnalysisCount).toHaveBeenCalled();
@@ -120,20 +120,20 @@ describe('quotaService', () => {
   });
 
   it('given guest user__when reading exploration count__then uses remote guest provider', async () => {
-    setMockMode(false);
+    mockSetMockMode(false);
 
-    const { quotaService } = await import('../quotaService');
+    const { quotaService } = require('../quotaService');
     await quotaService.getUsedExplorationCount(null);
 
     expect(providers.remote.getUsedExplorationCount).toHaveBeenCalled();
     expect(providers.guest.getUsedExplorationCount).not.toHaveBeenCalled();
-    expect(getLastRemoteGuestProviderArg()).toBeInstanceOf(GuestQuotaProvider);
+    expect(mockGetLastRemoteGuestProviderArg()).toBeInstanceOf(mockGuestQuotaProviderClass);
   });
 
   it('given authenticated user__when reading messages count__then uses supabase provider', async () => {
-    setMockMode(false);
+    mockSetMockMode(false);
 
-    const { quotaService } = await import('../quotaService');
+    const { quotaService } = require('../quotaService');
     await quotaService.getUsedMessagesCount({ dreamId: 'dream-1' } as any, { id: 'user-1' } as any);
 
     expect(providers.supabase.getUsedMessagesCount).toHaveBeenCalled();
@@ -141,10 +141,10 @@ describe('quotaService', () => {
   });
 
   it('given a subscriber__when invalidating__then notifies and invalidates provider', async () => {
-    setMockMode(true);
+    mockSetMockMode(true);
 
-    const { quotaService } = await import('../quotaService');
-    const listener = vi.fn();
+    const { quotaService } = require('../quotaService');
+    const listener = jest.fn();
     quotaService.subscribe(listener);
 
     quotaService.invalidate(null);
@@ -154,9 +154,9 @@ describe('quotaService', () => {
   });
 
   it('given mixed providers__when invalidating all__then clears every cache', async () => {
-    setMockMode(false);
+    mockSetMockMode(false);
 
-    const { quotaService } = await import('../quotaService');
+    const { quotaService } = require('../quotaService');
     quotaService.invalidateAll();
 
     expect(providers.guest.invalidate).toHaveBeenCalled();

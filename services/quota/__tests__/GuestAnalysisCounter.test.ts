@@ -5,55 +5,57 @@
  * quota bypass by storing cumulative counts instead of counting current dreams.
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import {
-  getLocalAnalysisCount,
-  getLocalExplorationCount,
-  incrementLocalAnalysisCount,
-  incrementLocalExplorationCount,
-  syncWithServerCount,
-  migrateExistingGuestQuota,
-} from '../GuestAnalysisCounter';
+let getLocalAnalysisCount: typeof import('../GuestAnalysisCounter').getLocalAnalysisCount;
+let getLocalExplorationCount: typeof import('../GuestAnalysisCounter').getLocalExplorationCount;
+let incrementLocalAnalysisCount: typeof import('../GuestAnalysisCounter').incrementLocalAnalysisCount;
+let incrementLocalExplorationCount: typeof import('../GuestAnalysisCounter').incrementLocalExplorationCount;
+let syncWithServerCount: typeof import('../GuestAnalysisCounter').syncWithServerCount;
+let migrateExistingGuestQuota: typeof import('../GuestAnalysisCounter').migrateExistingGuestQuota;
 
-// Use vi.hoisted to ensure mocks are available during module loading
-const { mockStorage, mockGetSavedDreams, dreamUsageConfig } = vi.hoisted(() => {
+// Use jest.hoisted to ensure mocks are available during module loading
+const { mockStorage, mockGetSavedDreams, mockDreamUsageConfig } = ((factory: any) => factory())(() => {
   const storage = new Map<string, string>();
   return {
     mockStorage: storage,
-    mockGetSavedDreams: vi.fn(),
+    mockGetSavedDreams: jest.fn(),
     // Config for dreamUsage mock return values (set per test)
-    dreamUsageConfig: {
+    mockDreamUsageConfig: {
       analysisCount: 0,
       explorationCount: 0,
     },
   };
 });
 
+const mockAsyncStorage = {
+  getItem: jest.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
+  setItem: jest.fn((key: string, value: string) => {
+    mockStorage.set(key, value);
+    return Promise.resolve();
+  }),
+  removeItem: jest.fn((key: string) => {
+    mockStorage.delete(key);
+    return Promise.resolve();
+  }),
+};
+
 // Mock AsyncStorage
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    getItem: vi.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
-    setItem: vi.fn((key: string, value: string) => {
-      mockStorage.set(key, value);
-      return Promise.resolve();
-    }),
-    removeItem: vi.fn((key: string) => {
-      mockStorage.delete(key);
-      return Promise.resolve();
-    }),
-  },
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: mockAsyncStorage,
+  ...mockAsyncStorage,
 }));
 
 // Mock storageServiceReal
-vi.mock('../../storageServiceReal', () => ({
-  getSavedDreams: () => mockGetSavedDreams(),
+jest.mock('@/services/storageServiceReal', () => ({
+  getSavedDreams: mockGetSavedDreams,
 }));
 
 // Mock dreamUsage - use config object for return values
-vi.mock('@/lib/dreamUsage', () => ({
-  getAnalyzedDreamCount: () => dreamUsageConfig.analysisCount,
-  getExploredDreamCount: () => dreamUsageConfig.explorationCount,
+jest.mock('@/lib/dreamUsage', () => ({
+  getAnalyzedDreamCount: () => mockDreamUsageConfig.analysisCount,
+  getExploredDreamCount: () => mockDreamUsageConfig.explorationCount,
 }));
 
 // Import after mocks are set up
@@ -64,16 +66,25 @@ const MIGRATION_KEY = 'guest_quota_migrated_v1';
 
 describe('GuestAnalysisCounter', () => {
   beforeEach(() => {
+    jest.resetModules();
     mockStorage.clear();
     mockGetSavedDreams.mockReset();
     // Reset dreamUsage config
-    dreamUsageConfig.analysisCount = 0;
-    dreamUsageConfig.explorationCount = 0;
-    vi.clearAllMocks();
+    mockDreamUsageConfig.analysisCount = 0;
+    mockDreamUsageConfig.explorationCount = 0;
+    jest.clearAllMocks();
+    ({
+      getLocalAnalysisCount,
+      getLocalExplorationCount,
+      incrementLocalAnalysisCount,
+      incrementLocalExplorationCount,
+      syncWithServerCount,
+      migrateExistingGuestQuota,
+    } = require('../GuestAnalysisCounter'));
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('getLocalAnalysisCount', () => {

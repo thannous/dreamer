@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const {
-  getMockMode,
-  setMockMode,
+  mockGetMockMode,
+  mockSetMockMode,
   mockService,
-  realService,
-} = vi.hoisted(() => {
+  mockRealService,
+} = ((factory: any) => factory())(() => {
   let mockMode = false;
   const serviceMethodNames = [
     'getSavedDreams',
@@ -36,51 +36,51 @@ const {
 
   const buildService = () =>
     serviceMethodNames.reduce((acc, name) => {
-      acc[name] = vi.fn();
+      acc[name] = jest.fn();
       return acc;
-    }, {} as Record<string, ReturnType<typeof vi.fn>>);
+    }, {} as Record<string, ReturnType<typeof jest.fn>>);
 
   return {
-    getMockMode: () => mockMode,
-    setMockMode: (value: boolean) => {
+    mockGetMockMode: () => mockMode,
+    mockSetMockMode: (value: boolean) => {
       mockMode = value;
     },
     mockService: buildService(),
-    realService: buildService(),
+    mockRealService: buildService(),
   };
 });
 
-vi.mock('@/lib/env', () => ({
-  isMockModeEnabled: () => getMockMode(),
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockGetMockMode(),
 }));
 
-vi.mock('../mocks/storageServiceMock', () => mockService);
-vi.mock('../storageServiceReal', () => realService);
+jest.mock('../mocks/storageServiceMock', () => mockService);
+jest.mock('../storageServiceReal', () => mockRealService);
 
 describe('storageService', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    setMockMode(false);
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockSetMockMode(false);
   });
 
   it('given mock mode__when saving dreams__then uses mock implementation', async () => {
-    setMockMode(true);
+    mockSetMockMode(true);
 
-    const service = await import('../storageService');
+    const service = require('../storageService');
     await service.saveDreams([]);
 
     expect(mockService.saveDreams).toHaveBeenCalled();
-    expect(realService.saveDreams).not.toHaveBeenCalled();
+    expect(mockRealService.saveDreams).not.toHaveBeenCalled();
   });
 
   it('given real mode__when reading dreams__then uses real implementation', async () => {
-    setMockMode(false);
+    mockSetMockMode(false);
 
-    const service = await import('../storageService');
+    const service = require('../storageService');
     await service.getSavedDreams();
 
-    expect(realService.getSavedDreams).toHaveBeenCalled();
+    expect(mockRealService.getSavedDreams).toHaveBeenCalled();
     expect(mockService.getSavedDreams).not.toHaveBeenCalled();
   });
 });

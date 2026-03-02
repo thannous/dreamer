@@ -1,32 +1,32 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { act, renderHook } from '@testing-library/react';
 import { Alert } from 'react-native';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
-// Use vi.hoisted to ensure mock functions are available during module loading
-const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = vi.hoisted(() => ({
-  mockCategorizeDream: vi.fn().mockResolvedValue({
+// Use jest.hoisted to ensure mock functions are available during module loading
+const { mockCategorizeDream, mockAnalyzeDream, mockAddDream } = ((factory: any) => factory())(() => ({
+  mockCategorizeDream: jest.fn().mockResolvedValue({
     title: 'Test Dream',
     theme: 'surreal',
     dreamType: 'Lucid Dream',
   }),
-  mockAnalyzeDream: vi.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
-  mockAddDream: vi.fn().mockImplementation((dream: unknown) => Promise.resolve({ ...dream as object, id: Date.now() })),
+  mockAnalyzeDream: jest.fn().mockResolvedValue({ id: 1, isAnalyzed: true }),
+  mockAddDream: jest.fn().mockImplementation((dream: unknown) => Promise.resolve({ ...dream as object, id: Date.now() })),
 }));
 
-let currentUser: any = { id: 'test-user' };
-let canAnalyzeNow = true;
-let tier = 'free';
-const mockGetGuestRecordedDreamCount = vi.fn();
-const mockIsGuestDreamLimitReached = vi.fn();
+let mockCurrentUser: any = { id: 'test-user' };
+let mockCanAnalyzeNow = true;
+let mockTier = 'free';
+const mockGetGuestRecordedDreamCount = jest.fn();
+const mockIsGuestDreamLimitReached = jest.fn();
 
 // Mock all dependencies
-vi.mock('react-native', () => ({
+jest.mock('react-native', () => ({
   Alert: {
-    alert: vi.fn(),
+    alert: jest.fn(),
   },
   Platform: {
     OS: 'web',
@@ -34,63 +34,63 @@ vi.mock('react-native', () => ({
   },
 }));
 
-vi.mock('expo-router', () => ({
+jest.mock('expo-router', () => ({
   router: {
-    push: vi.fn(),
-    replace: vi.fn(),
+    push: jest.fn(),
+    replace: jest.fn(),
   },
 }));
 
 // Use relative paths for mocks
-vi.mock('../../context/AuthContext', () => ({
-  useAuth: vi.fn(() => ({
-    user: currentUser,
+jest.mock('../../context/AuthContext', () => ({
+  useAuth: jest.fn(() => ({
+    user: mockCurrentUser,
   })),
 }));
 
-vi.mock('../../context/DreamsContext', () => ({
-  useDreams: vi.fn().mockReturnValue({
+jest.mock('../../context/DreamsContext', () => ({
+  useDreams: jest.fn().mockReturnValue({
     addDream: mockAddDream,
     dreams: [],
     analyzeDream: mockAnalyzeDream,
   }),
 }));
 
-vi.mock('../useQuota', () => ({
-  useQuota: vi.fn(() => ({
-    canAnalyzeNow,
-    tier,
+jest.mock('../useQuota', () => ({
+  useQuota: jest.fn(() => ({
+    canAnalyzeNow: mockCanAnalyzeNow,
+    tier: mockTier,
   })),
 }));
 
-vi.mock('../useTranslation', () => ({
-  useTranslation: vi.fn().mockReturnValue({
+jest.mock('../useTranslation', () => ({
+  useTranslation: jest.fn().mockReturnValue({
     t: (key: string) => key,
     currentLang: 'fr',
   }),
 }));
 
-vi.mock('../../services/geminiService', () => ({
+jest.mock('../../services/geminiService', () => ({
   categorizeDream: mockCategorizeDream,
 }));
 
-vi.mock('../../services/quota/GuestDreamCounter', () => ({
+jest.mock('../../services/quota/GuestDreamCounter', () => ({
   getGuestRecordedDreamCount: mockGetGuestRecordedDreamCount,
 }));
 
-vi.mock('../../lib/guestLimits', () => ({
+jest.mock('../../lib/guestLimits', () => ({
   isGuestDreamLimitReached: mockIsGuestDreamLimitReached,
 }));
 
 // Import after mocks are set up
-const { useDreamSaving } = await import('../useDreamSaving');
+const { useDreamSaving } = require('../useDreamSaving');
 
 describe('useDreamSaving', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    currentUser = { id: 'test-user' };
-    canAnalyzeNow = true;
-    tier = 'free';
+    jest.clearAllMocks();
+    mockCurrentUser = { id: 'test-user' };
+    mockCanAnalyzeNow = true;
+    mockTier = 'free';
     mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     mockIsGuestDreamLimitReached.mockReturnValue(false);
   });
@@ -196,7 +196,7 @@ describe('useDreamSaving', () => {
   });
 
   it('should call onSaveComplete callback after successful save', async () => {
-    const onSaveComplete = vi.fn();
+    const onSaveComplete = jest.fn();
     const { result } = renderHook(() => useDreamSaving({ onSaveComplete }));
     
     await act(async () => {
@@ -241,10 +241,10 @@ describe('useDreamSaving', () => {
   });
 
   it('halts save and notifies when guest limit is reached', async () => {
-    currentUser = null;
+    mockCurrentUser = null;
     mockGetGuestRecordedDreamCount.mockResolvedValueOnce(10);
     mockIsGuestDreamLimitReached.mockReturnValueOnce(true);
-    const onGuestLimitReached = vi.fn();
+    const onGuestLimitReached = jest.fn();
 
     const { result } = renderHook(() => useDreamSaving({ onGuestLimitReached }));
 
@@ -260,7 +260,7 @@ describe('useDreamSaving', () => {
 
   it('handles guest quota errors from storage', async () => {
     mockAddDream.mockRejectedValueOnce(new QuotaError(QuotaErrorCode.GUEST_LIMIT_REACHED, 'guest'));
-    const onGuestLimitReached = vi.fn();
+    const onGuestLimitReached = jest.fn();
     const { result } = renderHook(() => useDreamSaving({ onGuestLimitReached }));
 
     let saved;
@@ -273,8 +273,8 @@ describe('useDreamSaving', () => {
   });
 
   it('shows analysis limit alert when quota prevents analysis', async () => {
-    canAnalyzeNow = false;
-    tier = 'guest';
+    mockCanAnalyzeNow = false;
+    mockTier = 'guest';
     const { result } = renderHook(() => useDreamSaving());
     const draft = result.current.buildDraftDream('Limit dream');
 
@@ -287,3 +287,4 @@ describe('useDreamSaving', () => {
     expect(Alert.alert).toHaveBeenCalled();
   });
 });
+

@@ -2,7 +2,7 @@
  * BDD-style tests for quotaReset utility functions
  * Tests monthly quota period calculation and reset logic
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@jest/globals';
 import { getMonthlyQuotaPeriod, shouldResetQuota } from '../quotaReset';
 
 describe('quotaReset', () => {

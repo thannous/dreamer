@@ -1,14 +1,14 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { act, renderHook } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ErrorType, type ClassifiedError } from '../../lib/errors';
 import { useAnalysisProgress, AnalysisStep } from '../useAnalysisProgress';
 
 // Mock useTranslation
-vi.mock('../useTranslation', () => ({
+jest.mock('../useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
@@ -17,11 +17,11 @@ vi.mock('../useTranslation', () => ({
 
 describe('useAnalysisProgress', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    jest.useRealTimers();
   });
 
   describe('initial state', () => {
@@ -53,7 +53,7 @@ describe('useAnalysisProgress', () => {
 
       // Progress animates to 25
       await act(async () => {
-        await vi.runAllTimersAsync();
+        await jest.runAllTimersAsync();
       });
 
       expect(result.current.progress).toBe(25);
@@ -70,7 +70,7 @@ describe('useAnalysisProgress', () => {
       expect(result.current.message).toBe('analysis.step.generating_image');
 
       await act(async () => {
-        await vi.runAllTimersAsync();
+        await jest.runAllTimersAsync();
       });
 
       expect(result.current.progress).toBe(65);
@@ -87,7 +87,7 @@ describe('useAnalysisProgress', () => {
       expect(result.current.message).toBe('analysis.step.finalizing');
 
       await act(async () => {
-        await vi.runAllTimersAsync();
+        await jest.runAllTimersAsync();
       });
 
       expect(result.current.progress).toBe(90);
@@ -104,7 +104,7 @@ describe('useAnalysisProgress', () => {
       expect(result.current.message).toBe('analysis.step.complete');
 
       await act(async () => {
-        await vi.runAllTimersAsync();
+        await jest.runAllTimersAsync();
       });
 
       expect(result.current.progress).toBe(100);
@@ -237,7 +237,7 @@ describe('useAnalysisProgress', () => {
 
       // Advance some time
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(250);
+        await jest.advanceTimersByTimeAsync(250);
       });
 
       // Progress should be partially advanced
@@ -246,7 +246,7 @@ describe('useAnalysisProgress', () => {
 
       // Complete animation
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(300);
+        await jest.advanceTimersByTimeAsync(300);
       });
 
       expect(result.current.progress).toBe(25);

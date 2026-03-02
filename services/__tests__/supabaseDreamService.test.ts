@@ -1,37 +1,37 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const mocks = vi.hoisted(() => {
-  const storageUpload = vi.fn();
-  const storageRemove = vi.fn().mockResolvedValue({});
-  const storageGetPublicUrl = vi.fn((path: string) => ({
+const mocks = ((factory: any) => factory())(() => {
+  const storageUpload = jest.fn();
+  const storageRemove = jest.fn().mockResolvedValue({});
+  const storageGetPublicUrl = jest.fn((path: string) => ({
     data: { publicUrl: `https://cdn.example.com/${path}` },
   }));
 
   return {
-    from: vi.fn(),
+    from: jest.fn(),
     storageUpload,
     storageRemove,
     storageGetPublicUrl,
-    storageFrom: vi.fn(() => ({
+    storageFrom: jest.fn(() => ({
       upload: storageUpload,
       remove: storageRemove,
       getPublicUrl: storageGetPublicUrl,
     })),
-    authGetUser: vi.fn(async () => ({ data: { user: { id: 'user-1' } } })),
+    authGetUser: jest.fn(async () => ({ data: { user: { id: 'user-1' } } })),
   };
 });
 
-vi.mock('@supabase/supabase-js', () => ({
-  createClient: vi.fn(() => ({
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
     from: mocks.from,
     storage: { from: mocks.storageFrom },
     auth: { getUser: mocks.authGetUser },
   })),
 }));
 
-vi.mock('expo-image-manipulator', () => ({
+jest.mock('expo-image-manipulator', () => ({
   SaveFormat: { WEBP: 'webp' },
-  manipulateAsync: vi.fn(async () => ({
+  manipulateAsync: jest.fn(async () => ({
     base64: 'dGVzdA==',
     width: 100,
     height: 100,
@@ -40,14 +40,14 @@ vi.mock('expo-image-manipulator', () => ({
 
 describe('supabaseDreamService', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
+    jest.resetModules();
+    jest.clearAllMocks();
     process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://example.com';
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
   });
 
   it('updateDreamInSupabase throws when remoteId is missing', async () => {
-    const { updateDreamInSupabase } = await import('../supabaseDreamService');
+    const { updateDreamInSupabase } = require('../supabaseDreamService');
 
     await expect(
       updateDreamInSupabase({
@@ -64,7 +64,7 @@ describe('supabaseDreamService', () => {
   });
 
   it('createDreamInSupabase retries without image_generation_failed on PGRST204', async () => {
-    const singleMock = vi.fn()
+    const singleMock = jest.fn()
       .mockResolvedValueOnce({
         data: null,
         error: { code: 'PGRST204', message: 'column dreams.image_generation_failed does not exist' },
@@ -94,8 +94,8 @@ describe('supabaseDreamService', () => {
         error: null,
       });
 
-    const upsertMock = vi.fn((_row: any) => ({
-      select: vi.fn(() => ({
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
         single: singleMock,
       })),
     }));
@@ -104,7 +104,7 @@ describe('supabaseDreamService', () => {
       upsert: upsertMock,
     });
 
-    const { createDreamInSupabase } = await import('../supabaseDreamService');
+    const { createDreamInSupabase } = require('../supabaseDreamService');
 
     const dream = await createDreamInSupabase(
       {
@@ -137,7 +137,7 @@ describe('supabaseDreamService', () => {
   });
 
   it('mapRowToDream forces imageGenerationFailed=false when image_url is present', async () => {
-    const singleMock = vi.fn().mockResolvedValueOnce({
+    const singleMock = jest.fn().mockResolvedValueOnce({
       data: {
         id: 7,
         created_at: '2020-01-01T00:00:00.000Z',
@@ -162,8 +162,8 @@ describe('supabaseDreamService', () => {
       error: null,
     });
 
-    const upsertMock = vi.fn((_row: any) => ({
-      select: vi.fn(() => ({
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
         single: singleMock,
       })),
     }));
@@ -172,7 +172,7 @@ describe('supabaseDreamService', () => {
       upsert: upsertMock,
     });
 
-    const { createDreamInSupabase } = await import('../supabaseDreamService');
+    const { createDreamInSupabase } = require('../supabaseDreamService');
 
     const dream = await createDreamInSupabase(
       {
@@ -195,7 +195,7 @@ describe('supabaseDreamService', () => {
   });
 
   it('fetchDreamsFromSupabase maps rows correctly', async () => {
-    const orderMock = vi.fn().mockResolvedValue({
+    const orderMock = jest.fn().mockResolvedValue({
       data: [
         {
           id: 9,
@@ -224,10 +224,10 @@ describe('supabaseDreamService', () => {
     });
 
     mocks.from.mockReturnValue({
-      select: vi.fn(() => ({ order: orderMock })),
+      select: jest.fn(() => ({ order: orderMock })),
     });
 
-    const { fetchDreamsFromSupabase } = await import('../supabaseDreamService');
+    const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
     const dreams = await fetchDreamsFromSupabase();
 
     expect(dreams).toHaveLength(1);
@@ -237,16 +237,16 @@ describe('supabaseDreamService', () => {
   });
 
   it('fetchDreamsFromSupabase throws when supabase returns error', async () => {
-    const orderMock = vi.fn().mockResolvedValue({
+    const orderMock = jest.fn().mockResolvedValue({
       data: null,
       error: { code: 'PGRST001', message: 'query failed' },
     });
 
     mocks.from.mockReturnValue({
-      select: vi.fn(() => ({ order: orderMock })),
+      select: jest.fn(() => ({ order: orderMock })),
     });
 
-    const { fetchDreamsFromSupabase } = await import('../supabaseDreamService');
+    const { fetchDreamsFromSupabase } = require('../supabaseDreamService');
 
     await expect(fetchDreamsFromSupabase()).rejects.toThrow('query failed');
   });
@@ -257,7 +257,7 @@ describe('supabaseDreamService', () => {
       error: null,
     }));
 
-    const singleMock = vi.fn(async () => ({
+    const singleMock = jest.fn(async () => ({
       data: {
         id: 11,
         created_at: '2020-01-01T00:00:00.000Z',
@@ -283,8 +283,8 @@ describe('supabaseDreamService', () => {
       error: null,
     }));
 
-    const upsertMock = vi.fn((_row: any) => ({
-      select: vi.fn(() => ({
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
         single: singleMock,
       })),
     }));
@@ -293,7 +293,7 @@ describe('supabaseDreamService', () => {
       upsert: upsertMock,
     });
 
-    const { createDreamInSupabase } = await import('../supabaseDreamService');
+    const { createDreamInSupabase } = require('../supabaseDreamService');
 
     const dream = await createDreamInSupabase(
       {
@@ -323,14 +323,14 @@ describe('supabaseDreamService', () => {
   });
 
   it('updateDreamInSupabase throws NOT_FOUND when no rows are returned', async () => {
-    const singleMock = vi.fn().mockResolvedValueOnce({
+    const singleMock = jest.fn().mockResolvedValueOnce({
       data: null,
       error: { code: 'PGRST116', message: 'no rows' },
     });
 
-    const updateMock = vi.fn(() => ({
-      eq: vi.fn(() => ({
-        select: vi.fn(() => ({
+    const updateMock = jest.fn(() => ({
+      eq: jest.fn(() => ({
+        select: jest.fn(() => ({
           single: singleMock,
         })),
       })),
@@ -340,7 +340,7 @@ describe('supabaseDreamService', () => {
       update: updateMock,
     });
 
-    const { updateDreamInSupabase } = await import('../supabaseDreamService');
+    const { updateDreamInSupabase } = require('../supabaseDreamService');
 
     await expect(
       updateDreamInSupabase({
@@ -358,8 +358,8 @@ describe('supabaseDreamService', () => {
   });
 
   it('deleteDreamFromSupabase throws on error', async () => {
-    const deleteMock = vi.fn(() => ({
-      eq: vi.fn(() => ({
+    const deleteMock = jest.fn(() => ({
+      eq: jest.fn(() => ({
         error: { message: 'delete failed' },
       })),
     }));
@@ -368,18 +368,18 @@ describe('supabaseDreamService', () => {
       delete: deleteMock,
     });
 
-    const { deleteDreamFromSupabase } = await import('../supabaseDreamService');
+    const { deleteDreamFromSupabase } = require('../supabaseDreamService');
 
     await expect(deleteDreamFromSupabase(99)).rejects.toThrow('delete failed');
   });
 
-  it('removes old thumbnail when uploading a new inline image', async () => {
+  it('does not remove old thumbnail outside the current user namespace', async () => {
     mocks.storageUpload.mockImplementation(async (path: string) => ({
       data: { path },
       error: null,
     }));
 
-    const singleMock = vi.fn(async () => ({
+    const singleMock = jest.fn(async () => ({
       data: {
         id: 12,
         created_at: '2020-01-01T00:00:00.000Z',
@@ -405,8 +405,8 @@ describe('supabaseDreamService', () => {
       error: null,
     }));
 
-    const upsertMock = vi.fn((_row: any) => ({
-      select: vi.fn(() => ({
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
         single: singleMock,
       })),
     }));
@@ -415,7 +415,7 @@ describe('supabaseDreamService', () => {
       upsert: upsertMock,
     });
 
-    const { createDreamInSupabase } = await import('../supabaseDreamService');
+    const { createDreamInSupabase } = require('../supabaseDreamService');
 
     await createDreamInSupabase(
       {
@@ -426,7 +426,7 @@ describe('supabaseDreamService', () => {
         shareableQuote: '',
         imageUrl: 'data:image/png;base64,dGVzdA==',
         thumbnailUrl:
-          'https://example.supabase.co/storage/v1/object/public/dream-images/other/old.webp',
+          'https://example.com/storage/v1/object/public/dream-images/other/old.webp',
         dreamType: 'Symbolic Dream',
         chatHistory: [],
         isFavorite: false,
@@ -434,7 +434,7 @@ describe('supabaseDreamService', () => {
       'user-1',
     );
 
-    expect(mocks.storageRemove).toHaveBeenCalledWith(['other/old.webp']);
+    expect(mocks.storageRemove).not.toHaveBeenCalled();
   });
 
   it('marks generation failure when upload fails', async () => {
@@ -443,7 +443,7 @@ describe('supabaseDreamService', () => {
       error: { message: 'upload failed' },
     });
 
-    const singleMock = vi.fn(async () => ({
+    const singleMock = jest.fn(async () => ({
       data: {
         id: 13,
         created_at: '2020-01-01T00:00:00.000Z',
@@ -469,8 +469,8 @@ describe('supabaseDreamService', () => {
       error: null,
     }));
 
-    const upsertMock = vi.fn((_row: any) => ({
-      select: vi.fn(() => ({
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
         single: singleMock,
       })),
     }));
@@ -479,7 +479,7 @@ describe('supabaseDreamService', () => {
       upsert: upsertMock,
     });
 
-    const { createDreamInSupabase } = await import('../supabaseDreamService');
+    const { createDreamInSupabase } = require('../supabaseDreamService');
 
     const dream = await createDreamInSupabase(
       {

@@ -1,17 +1,17 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
 });
 
-vi.mock('@/context/DreamsContext', () => ({
+jest.doMock('@/context/DreamsContext', () => ({
   useDreams: () => ({ dreams: [] }),
 }));
 
-vi.mock('@/context/ThemeContext', () => ({
+jest.doMock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {
       accent: '#6f62b5',
@@ -26,52 +26,68 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-vi.mock('@/hooks/useClearWebFocus', () => ({
+jest.doMock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => {},
 }));
 
-vi.mock('@/hooks/useJournalAnimations', () => ({
+jest.doMock('@/hooks/useJournalAnimations', () => ({
   useModalSlide: () => ({ backdropStyle: {}, contentStyle: {} }),
 }));
 
-vi.mock('@/hooks/useLocaleFormatting', () => ({
+jest.doMock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
     formatShortDate: () => '2024-01-01',
   }),
 }));
 
-vi.mock('@/lib/accessibility', () => ({
+jest.doMock('@/constants/theme', () => ({
+  Fonts: {
+    fraunces: { semiBold: 'Fraunces-SemiBold', medium: 'Fraunces-Medium' },
+    spaceGrotesk: {
+      regular: 'SpaceGrotesk-Regular',
+      medium: 'SpaceGrotesk-Medium',
+      bold: 'SpaceGrotesk-Bold',
+    },
+  },
+}));
+
+jest.doMock('@/lib/moti', () => ({
+  MotiView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  MotiText: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+}));
+
+jest.doMock('@/lib/accessibility', () => ({
   blurActiveElement: () => {},
 }));
 
-vi.mock('@/lib/dreamFilters', () => ({
+jest.doMock('@/lib/dreamFilters', () => ({
   applyFilters: (dreams: any[]) => dreams,
   getUniqueThemes: () => ['mystical'],
   getUniqueDreamTypes: () => [],
   sortDreamsByDate: (dreams: any[]) => dreams,
 }));
 
-vi.mock('@/lib/dreamLabels', () => ({
+jest.doMock('@/lib/dreamLabels', () => ({
   getDreamThemeLabel: () => 'Mystique',
   getDreamTypeLabel: (dreamType: string) => dreamType,
 }));
 
-vi.mock('@/lib/dreamUsage', () => ({
+jest.doMock('@/lib/dreamUsage', () => ({
   isDreamAnalyzed: () => false,
 }));
 
-vi.mock('@/lib/imageUtils', () => ({
+jest.doMock('@/lib/imageUtils', () => ({
   getDreamThumbnailUri: () => null,
   preloadImage: () => Promise.resolve(),
 }));
 
-vi.mock('@/components/journal/FilterBar', () => ({
+jest.doMock('@/components/journal/FilterBar', () => ({
   FilterBar: ({ items }: { items: { id: string; onPress: () => void }[] }) => {
     const themeItem = items.find((item) => item.id === 'theme');
     return (
@@ -82,61 +98,116 @@ vi.mock('@/components/journal/FilterBar', () => ({
   },
 }));
 
-vi.mock('@/components/journal/SearchBar', () => ({
+jest.doMock('@/components/ui/SearchBar', () => ({
   SearchBar: () => <div data-testid="search-bar" />,
 }));
 
-vi.mock('@/components/journal/DateRangePicker', () => ({
+jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
+  AtmosphericBackground: () => <div data-testid="atmospheric-background" />,
+}));
+
+jest.doMock('@/components/inspiration/PageHeader', () => ({
+  PageHeaderContent: () => <div data-testid="page-header-content" />,
+}));
+
+jest.doMock('@/components/journal/DateRangePicker', () => ({
   DateRangePicker: () => <div />,
 }));
 
-vi.mock('@/components/journal/DreamCard', () => ({
+jest.doMock('@/components/journal/DreamCard', () => ({
   DreamCard: () => <div />,
 }));
 
-vi.mock('@/components/journal/TimelineIndicator', () => ({
+jest.doMock('@/components/journal/TimelineIndicator', () => ({
   TimelineIndicator: () => <div />,
 }));
 
-vi.mock('@/components/guest/UpsellCard', () => ({
+jest.doMock('@/components/guest/UpsellCard', () => ({
   UpsellCard: () => <div />,
 }));
 
-vi.mock('@/components/icons/DreamIcons', () => ({
+jest.doMock('@/components/ui/FloatingAddDreamButton', () => ({
+  FloatingAddDreamButton: () => <div data-testid="add-dream-button" />,
+}));
+
+jest.doMock('@/components/icons/DreamIcons', () => ({
   DreamIcon: () => <div />,
 }));
 
-vi.mock('@shopify/flash-list', () => ({
+jest.doMock('@shopify/flash-list', () => ({
   FlashList: () => null,
 }));
 
-vi.mock('expo-router', () => ({
-  router: { push: vi.fn() },
-  useFocusEffect: (cb: () => void | (() => void)) => {
-    React.useEffect(() => {
-      const cleanup = cb();
-      return typeof cleanup === 'function' ? cleanup : undefined;
-    }, [cb]);
-  },
-  useNavigation: () => ({ setOptions: vi.fn() }),
+jest.doMock('expo-router', () => ({
+  router: { push: jest.fn() },
+  useFocusEffect: () => {},
+  useNavigation: () => ({ setOptions: jest.fn() }),
 }));
 
-vi.mock('expo-haptics', () => ({
-  impactAsync: vi.fn(),
+jest.doMock('react-native', () => {
+  const React = require('react');
+  const toDomProps = (props: Record<string, any>) => {
+    const {
+      testID,
+      onPress,
+      accessibilityRole,
+      accessibilityLabel,
+      onScrollBeginDrag,
+      onScrollEndDrag,
+      onMomentumScrollBegin,
+      onMomentumScrollEnd,
+      contentContainerStyle,
+      contentInsetAdjustmentBehavior,
+      ...rest
+    } = props;
+    return {
+      ...rest,
+      ...(testID ? { 'data-testid': testID } : {}),
+      ...(onPress ? { onClick: onPress } : {}),
+      ...(accessibilityRole ? { role: accessibilityRole } : {}),
+      ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
+    };
+  };
+  const createElement = (tag: string) => (
+    { children, ...props }: { children?: React.ReactNode; [key: string]: any },
+  ) => React.createElement(tag, toDomProps(props), children);
+
+  return {
+    __esModule: true,
+    ScrollView: createElement('div'),
+    Pressable: createElement('button'),
+    Text: createElement('span'),
+    View: createElement('div'),
+    Platform: {
+      OS: 'web',
+      select: (values: Record<string, any>) => values?.web ?? values?.default,
+    },
+    StyleSheet: {
+      create: <T extends Record<string, any>>(styles: T) => styles,
+      absoluteFill: {},
+      absoluteFillObject: {},
+      hairlineWidth: 1,
+    },
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+  };
+});
+
+jest.doMock('expo-haptics', () => ({
+  impactAsync: jest.fn(),
   ImpactFeedbackStyle: { Light: 'light', Medium: 'medium', Heavy: 'heavy' },
 }));
 
-vi.mock('@/components/ui/BottomSheet', () => ({
+jest.doMock('@/components/ui/BottomSheet', () => ({
   BottomSheet: ({ children, visible, testID }: { children: React.ReactNode; visible: boolean; testID?: string }) => (
     visible ? <div data-testid={testID}>{children}</div> : null
   ),
 }));
 
-vi.mock('@/components/journal/EmptyState', () => ({
+jest.doMock('@/components/journal/EmptyState', () => ({
   EmptyState: () => <div data-testid="empty-state" />,
 }));
 
-vi.mock('react-native-reanimated', () => {
+jest.doMock('react-native-reanimated', () => {
   const View = ({ children, style, entering, ...props }: { children?: React.ReactNode; style?: any; entering?: any; [key: string]: any }) => <div {...props}>{children}</div>;
   const createAnimatedComponent = (Component: any) => {
     const AnimatedComponent = ({ style, entering, ...props }: any) => <Component {...props} />;
@@ -169,16 +240,16 @@ vi.mock('react-native-reanimated', () => {
   };
 });
 
-vi.mock('react-native-safe-area-context', () => ({
+jest.doMock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ bottom: 0, top: 0, left: 0, right: 0 }),
   SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@/components/ui/icon-symbol', () => ({
+jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
-const { default: JournalListScreen } = await import('../journal');
+const { default: JournalListScreen } = require('../journal');
 
 describe('Journal theme modal', () => {
   it('shows a checkmark for the selected theme', () => {
@@ -208,3 +279,4 @@ describe('Journal theme modal', () => {
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
   });
 });
+

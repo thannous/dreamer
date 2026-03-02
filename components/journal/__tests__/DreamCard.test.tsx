@@ -1,13 +1,42 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import type { DreamAnalysis } from '@/lib/types';
 
-vi.mock('react-native-reanimated', async () => {
-  const React = await import('react');
+jest.mock('react-native', () => {
+  const React = require('react');
+  return {
+    Platform: {
+      OS: 'web',
+      select: (options: Record<string, unknown>) => options.web ?? options.default,
+    },
+    Pressable: ({
+      children,
+      onPress,
+      testID,
+    }: {
+      children?: React.ReactNode | ((state: { pressed: boolean }) => React.ReactNode);
+      onPress?: () => void;
+      testID?: string;
+    }) => (
+      <button data-testid={testID} onClick={onPress}>
+        {typeof children === 'function' ? children({ pressed: false }) : children}
+      </button>
+    ),
+    StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    Text: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <span data-testid={testID}>{children}</span>
+    ),
+    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
+      <div data-testid={testID}>{children}</div>
+    ),
+  };
+});
+
+jest.mock('react-native-reanimated', () => {
   const Animated = {
     View: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
     createAnimatedComponent: (Component: any) => Component,
@@ -19,14 +48,14 @@ vi.mock('react-native-reanimated', async () => {
   };
 });
 
-vi.mock('expo-image', () => ({
+jest.mock('expo-image', () => ({
   Image: ({ source, onError }: { source?: { uri?: string } | string; onError?: () => void }) => {
     const uri = typeof source === 'string' ? source : source?.uri;
     return <img data-testid="dream-image" data-src={uri} onError={onError} />;
   },
 }));
 
-vi.mock('@/context/ThemeContext', () => ({
+jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {
       backgroundCard: '#111',
@@ -47,7 +76,7 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useJournalAnimations', () => ({
+jest.mock('@/hooks/useJournalAnimations', () => ({
   useScalePress: () => ({
     animatedStyle: {},
     onPressIn: () => {},
@@ -55,23 +84,39 @@ vi.mock('@/hooks/useJournalAnimations', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
-describe('DreamCard image fallback', () => {
-  beforeEach(() => {
-    vi.resetModules();
-  });
+jest.mock('@/constants/theme', () => ({
+  Fonts: {
+    spaceGrotesk: {
+      regular: 'SpaceGrotesk-Regular',
+      medium: 'SpaceGrotesk-Medium',
+    },
+    lora: {
+      bold: 'Lora-Bold',
+    },
+  },
+  GlassCardTokens: {
+    borderWidth: 1,
+    getBackground: (backgroundCard: string) => backgroundCard,
+  },
+}));
 
+jest.mock('@/components/ui/icon-symbol', () => ({
+  IconSymbol: () => <div data-testid="icon-symbol" />,
+}));
+
+describe('DreamCard image fallback', () => {
   afterEach(() => {
     cleanup();
   });
 
   it('keeps using the full image after a thumbnail error and remount', async () => {
-    const { DreamCard } = await import('../DreamCard');
+    const { DreamCard } = require('../DreamCard');
     const dream: DreamAnalysis = {
       id: 1456,
       transcript: 'dream transcript',
@@ -87,7 +132,7 @@ describe('DreamCard image fallback', () => {
     const expectedThumbnail = withCacheBuster(dream.thumbnailUrl!, version);
     const expectedFull = withCacheBuster(dream.imageUrl, version);
 
-    const { unmount } = render(<DreamCard dream={dream} onPress={vi.fn()} />);
+    const { unmount } = render(<DreamCard dream={dream} onPress={jest.fn()} />);
 
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedThumbnail);
 
@@ -96,7 +141,7 @@ describe('DreamCard image fallback', () => {
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
 
     unmount();
-    render(<DreamCard dream={dream} onPress={vi.fn()} />);
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
 
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
   });

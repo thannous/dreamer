@@ -1,46 +1,46 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const { getMockMode, setMockMode, mockService, realService } = vi.hoisted(() => {
+const { mockGetMockMode, mockSetMockMode, mockService, mockRealService } = ((factory: any) => factory())(() => {
   let mockMode = false;
   const buildService = () => ({
-    configureNotificationHandler: vi.fn(),
-    requestNotificationPermissions: vi.fn(),
-    scheduleDailyNotification: vi.fn(),
-    scheduleRitualReminder: vi.fn(),
-    cancelAllNotifications: vi.fn(),
-    getScheduledNotifications: vi.fn(),
-    hasNotificationPermissions: vi.fn(),
-    sendTestNotification: vi.fn(),
+    configureNotificationHandler: jest.fn(),
+    requestNotificationPermissions: jest.fn(),
+    scheduleDailyNotification: jest.fn(),
+    scheduleRitualReminder: jest.fn(),
+    cancelAllNotifications: jest.fn(),
+    getScheduledNotifications: jest.fn(),
+    hasNotificationPermissions: jest.fn(),
+    sendTestNotification: jest.fn(),
   });
 
   return {
-    getMockMode: () => mockMode,
-    setMockMode: (value: boolean) => {
+    mockGetMockMode: () => mockMode,
+    mockSetMockMode: (value: boolean) => {
       mockMode = value;
     },
     mockService: buildService(),
-    realService: buildService(),
+    mockRealService: buildService(),
   };
 });
 
-vi.mock('@/lib/env', () => ({
-  isMockModeEnabled: () => getMockMode(),
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockGetMockMode(),
 }));
 
-vi.mock('../mocks/notificationServiceMock', () => mockService);
-vi.mock('../notificationServiceReal', () => realService);
+jest.mock('../mocks/notificationServiceMock', () => mockService);
+jest.mock('../notificationServiceReal', () => mockRealService);
 
 describe('notificationService', () => {
   beforeEach(() => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    setMockMode(false);
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockSetMockMode(false);
   });
 
   it('given mock mode__when scheduling notification__then uses mock implementation', async () => {
-    setMockMode(true);
+    mockSetMockMode(true);
 
-    const service = await import('../notificationService');
+    const service = require('../notificationService');
     await service.scheduleDailyNotification({
       weekdayEnabled: true,
       weekendEnabled: false,
@@ -49,16 +49,16 @@ describe('notificationService', () => {
     });
 
     expect(mockService.scheduleDailyNotification).toHaveBeenCalled();
-    expect(realService.scheduleDailyNotification).not.toHaveBeenCalled();
+    expect(mockRealService.scheduleDailyNotification).not.toHaveBeenCalled();
   });
 
   it('given real mode__when checking permissions__then uses real implementation', async () => {
-    setMockMode(false);
+    mockSetMockMode(false);
 
-    const service = await import('../notificationService');
+    const service = require('../notificationService');
     await service.hasNotificationPermissions();
 
-    expect(realService.hasNotificationPermissions).toHaveBeenCalled();
+    expect(mockRealService.hasNotificationPermissions).toHaveBeenCalled();
     expect(mockService.hasNotificationPermissions).not.toHaveBeenCalled();
   });
 });

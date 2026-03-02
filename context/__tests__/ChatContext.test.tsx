@@ -1,9 +1,9 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { act, renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 
-vi.mock('react-native-reanimated', () => ({
+jest.mock('react-native-reanimated', () => ({
   useSharedValue: (value: any) => ({ value }),
 }));
 
@@ -13,7 +13,7 @@ const {
   useMessageListContext,
   useNewMessageAnimationContext,
   useMessageContext,
-} = await import('../ChatContext');
+} = require('../ChatContext');
 
 describe('ChatContext', () => {
   it('given ChatProvider__when scrolling to end__then delegates to listRef', () => {
@@ -22,7 +22,7 @@ describe('ChatContext', () => {
     );
 
     const { result } = renderHook(() => useMessageListContext(), { wrapper });
-    const scrollSpy = vi.fn();
+    const scrollSpy = jest.fn();
 
     act(() => {
       result.current.listRef.current = { scrollToEnd: scrollSpy } as any;

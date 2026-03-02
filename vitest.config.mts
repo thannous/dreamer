@@ -23,10 +23,8 @@ export default defineConfig({
     ],
   },
   test: {
-    environment: 'node',
-    environmentMatchGlobs: [
-      ['**/hooks/**/*.test.ts?(x)', 'happy-dom'],
-    ],
+    environment: 'happy-dom',
+    include: ['**/*.perf.test.ts', '**/*.perf.test.tsx'],
     setupFiles: ['vitest.setup.ts'],
     exclude: ['node_modules', '.expo', 'expo', 'dist', '.eas-local-work'],
     server: {

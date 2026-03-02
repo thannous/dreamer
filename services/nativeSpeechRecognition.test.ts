@@ -1,6 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 
-vi.mock('react-native', () => ({
+jest.mock('react-native', () => ({
   Platform: {
     OS: 'android',
     Version: 33,
@@ -11,17 +11,17 @@ const locale = 'fr-FR';
 
 describe('ensureOfflineSttModel', () => {
   it('awaits the registered prompt handler before checking installation again', async () => {
-    vi.resetModules();
-    const getSupportedLocales = vi
+    jest.resetModules();
+    const getSupportedLocales = jest
       .fn()
       .mockResolvedValueOnce({ installedLocales: [] })
       .mockResolvedValueOnce({ installedLocales: [locale] });
 
-    const show = vi.fn();
+    const show = jest.fn();
     let resolveShow: (() => void) | undefined;
     show.mockImplementation(() => new Promise<void>((resolve) => (resolveShow = resolve)));
 
-    const mod = await import('./nativeSpeechRecognition');
+    const mod = require('./nativeSpeechRecognition');
     mod.__setCachedSpeechModuleForTests({ getSupportedLocales } as any);
     mod.registerOfflineModelPromptHandler({ isVisible: false, show });
 
@@ -42,10 +42,10 @@ describe('ensureOfflineSttModel', () => {
   });
 
   it('returns false when no prompt handler is registered and the model is missing', async () => {
-    vi.resetModules();
-    const getSupportedLocales = vi.fn().mockResolvedValue({ installedLocales: [] });
+    jest.resetModules();
+    const getSupportedLocales = jest.fn().mockResolvedValue({ installedLocales: [] });
 
-    const mod = await import('./nativeSpeechRecognition');
+    const mod = require('./nativeSpeechRecognition');
     mod.__setCachedSpeechModuleForTests({ getSupportedLocales } as any);
     mod.registerOfflineModelPromptHandler(null);
 

@@ -1,26 +1,26 @@
-// @vitest-environment happy-dom
+// @jest-environment jsdom
 
 import { act, renderHook } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { Alert, AppState } from 'react-native';
 
 import { ensureOfflineSttModel, startNativeSpeechSession } from '../../services/nativeSpeechRecognition';
 import { useRecordingSession } from '../useRecordingSession';
 
-function createMockRecorder(overrides?: Record<string, unknown>) {
+function mockCreateMockRecorder(overrides?: Record<string, unknown>) {
   let isRecording = false;
 
   const recorder: Record<string, unknown> = {
     uri: null,
-    prepareToRecordAsync: vi.fn().mockResolvedValue(undefined),
-    record: vi.fn(() => {
+    prepareToRecordAsync: jest.fn().mockResolvedValue(undefined),
+    record: jest.fn(() => {
       isRecording = true;
     }),
-    stop: vi.fn().mockImplementation(async () => {
+    stop: jest.fn().mockImplementation(async () => {
       isRecording = false;
     }),
-    getStatus: vi.fn(() => ({
+    getStatus: jest.fn(() => ({
       canRecord: isRecording,
       isRecording,
       durationMillis: 0,
@@ -34,9 +34,9 @@ function createMockRecorder(overrides?: Record<string, unknown>) {
 }
 
 // Mock dependencies
-vi.mock('expo-audio', () => ({
+jest.mock('expo-audio', () => ({
   AudioModule: {
-    requestRecordingPermissionsAsync: vi.fn().mockResolvedValue({ granted: true }),
+    requestRecordingPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
   },
   AudioQuality: { MEDIUM: 'medium' },
   IOSOutputFormat: { LINEARPCM: 'linearpcm' },
@@ -46,35 +46,35 @@ vi.mock('expo-audio', () => ({
       ios: {},
     },
   },
-  setAudioModeAsync: vi.fn().mockResolvedValue(undefined),
-  useAudioRecorder: vi.fn().mockReturnValue(createMockRecorder()),
+  setAudioModeAsync: jest.fn().mockResolvedValue(undefined),
+  useAudioRecorder: jest.fn().mockReturnValue(mockCreateMockRecorder()),
 }));
 
-vi.mock('expo-router', () => ({
-  useFocusEffect: vi.fn((cb) => cb()),
+jest.mock('expo-router', () => ({
+  useFocusEffect: jest.fn((cb) => cb()),
 }));
 
-vi.mock('../../services/nativeSpeechRecognition', () => ({
-  getSpeechLocaleAvailability: vi.fn().mockResolvedValue({
+jest.mock('../../services/nativeSpeechRecognition', () => ({
+  getSpeechLocaleAvailability: jest.fn().mockResolvedValue({
     isInstalled: true,
     installedLocales: [],
   }),
-  ensureOfflineSttModel: vi.fn().mockResolvedValue(false),
-  startNativeSpeechSession: vi.fn().mockResolvedValue(null),
+  ensureOfflineSttModel: jest.fn().mockResolvedValue(false),
+  startNativeSpeechSession: jest.fn().mockResolvedValue(null),
 }));
 
-vi.mock('react-native', () => ({
+jest.mock('react-native', () => ({
   Alert: {
-    alert: vi.fn(),
+    alert: jest.fn(),
   },
   AppState: {
-    addEventListener: vi.fn().mockReturnValue({ remove: vi.fn() }),
+    addEventListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
   },
   Platform: {
     OS: 'ios',
   },
   TurboModuleRegistry: {
-    get: vi.fn(),
+    get: jest.fn(),
   },
   NativeModules: {
     ExponentConstants: {},
@@ -85,22 +85,22 @@ describe('useRecordingSession', () => {
   const defaultOptions = {
     transcriptionLocale: 'en-US',
     t: (key: string) => key,
-    onPartialTranscript: vi.fn(),
-    onLimitReached: vi.fn(),
+    onPartialTranscript: jest.fn(),
+    onLimitReached: jest.fn(),
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     // Reset default mock implementations
-    vi.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
-    vi.mocked(useAudioRecorder).mockReturnValue(createMockRecorder() as never);
-    vi.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
-    vi.mocked(startNativeSpeechSession).mockResolvedValue(null);
-    vi.mocked(setAudioModeAsync).mockResolvedValue(undefined);
+    jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
+    jest.mocked(useAudioRecorder).mockReturnValue(mockCreateMockRecorder() as never);
+    jest.mocked(ensureOfflineSttModel).mockResolvedValue(false as never);
+    jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+    jest.mocked(setAudioModeAsync).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('should initialize with isRecording false', () => {
@@ -179,7 +179,7 @@ describe('useRecordingSession', () => {
   });
 
   it('should handle permission denied', async () => {
-    vi.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
+    jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
       granted: false,
       canAskAgain: true,
       expires: 'never',
@@ -210,8 +210,8 @@ describe('useRecordingSession', () => {
     });
 
     it('should be safe to call stopRecording twice concurrently', async () => {
-      const recorder = createMockRecorder({ uri: '/path/to/recorded.caf' });
-      vi.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/recorded.caf' });
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -227,8 +227,8 @@ describe('useRecordingSession', () => {
     });
 
     it('should be safe to call stopRecording twice sequentially', async () => {
-      const recorder = createMockRecorder({ uri: '/path/to/recorded.caf' });
-      vi.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/recorded.caf' });
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -248,9 +248,9 @@ describe('useRecordingSession', () => {
     });
 
     it('should handle native session transcript', async () => {
-      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
-        stop: vi.fn().mockResolvedValue({ transcript: 'native transcript', recordedUri: '/path/to/audio.caf' }),
-        abort: vi.fn(),
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: 'native transcript', recordedUri: '/path/to/audio.caf' }),
+        abort: jest.fn(),
         hasRecording: true,
       });
 
@@ -271,9 +271,9 @@ describe('useRecordingSession', () => {
     });
 
     it('should return no_speech when native session exists but transcript is empty', async () => {
-      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
-        stop: vi.fn().mockResolvedValue({ transcript: '', recordedUri: '/path/to/audio.caf' }),
-        abort: vi.fn(),
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '', recordedUri: '/path/to/audio.caf' }),
+        abort: jest.fn(),
         hasRecording: true,
       });
 
@@ -293,9 +293,9 @@ describe('useRecordingSession', () => {
     });
 
     it('should return stt_unavailable when native session is unavailable', async () => {
-      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
-      vi.mocked(useAudioRecorder).mockReturnValue(
-        createMockRecorder({ uri: '/path/to/recorded.caf' }) as never
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(
+        mockCreateMockRecorder({ uri: '/path/to/recorded.caf' }) as never
       );
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
@@ -315,9 +315,9 @@ describe('useRecordingSession', () => {
     });
 
     it('should return no_speech when native error is "no speech"', async () => {
-      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
-        stop: vi.fn().mockResolvedValue({ transcript: '', error: 'no speech detected', recordedUri: '/path/audio.caf' }),
-        abort: vi.fn(),
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '', error: 'no speech detected', recordedUri: '/path/audio.caf' }),
+        abort: jest.fn(),
         hasRecording: true,
       });
 
@@ -337,7 +337,7 @@ describe('useRecordingSession', () => {
     });
 
     it('should return stt_unavailable when no native session and no transcript', async () => {
-      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce(null);
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -357,10 +357,10 @@ describe('useRecordingSession', () => {
 
   describe('forceStopRecording', () => {
     it('should stop recording on blur', async () => {
-      const mockAbort = vi.fn();
+      const mockAbort = jest.fn();
 
-      vi.mocked(startNativeSpeechSession).mockResolvedValueOnce({
-        stop: vi.fn().mockResolvedValue({ transcript: '' }),
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '' }),
         abort: mockAbort,
         hasRecording: true,
       });
@@ -455,9 +455,9 @@ describe('useRecordingSession', () => {
     it('should stop recording when app goes to background', async () => {
       let appStateCallback: ((state: string) => void) | undefined;
 
-      vi.mocked(AppState.addEventListener).mockImplementation((_, callback) => {
+      jest.mocked(AppState.addEventListener).mockImplementation((_, callback) => {
         appStateCallback = callback as (state: string) => void;
-        return { remove: vi.fn() };
+        return { remove: jest.fn() };
       });
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
@@ -484,9 +484,9 @@ describe('useRecordingSession', () => {
     it('should stop recording when app becomes inactive', async () => {
       let appStateCallback: ((state: string) => void) | undefined;
 
-      vi.mocked(AppState.addEventListener).mockImplementation((_, callback) => {
+      jest.mocked(AppState.addEventListener).mockImplementation((_, callback) => {
         appStateCallback = callback as (state: string) => void;
-        return { remove: vi.fn() };
+        return { remove: jest.fn() };
       });
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
@@ -509,7 +509,7 @@ describe('useRecordingSession', () => {
 
   describe('requestPermissions', () => {
     it('should show alert when permissions denied', async () => {
-      vi.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
+      jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
         granted: false,
         canAskAgain: true,
         expires: 'never',
@@ -529,7 +529,7 @@ describe('useRecordingSession', () => {
     });
 
     it('should not show alert when permissions granted', async () => {
-      vi.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
+      jest.mocked(AudioModule.requestRecordingPermissionsAsync).mockResolvedValueOnce({
         granted: true,
       } as never);
 
@@ -545,9 +545,9 @@ describe('useRecordingSession', () => {
 
   describe('error handling', () => {
     it('should handle audio recorder error during start', async () => {
-      vi.mocked(useAudioRecorder).mockReturnValue(
-        createMockRecorder({
-          prepareToRecordAsync: vi.fn().mockRejectedValue(new Error('Recorder init failed')),
+      jest.mocked(useAudioRecorder).mockReturnValue(
+        mockCreateMockRecorder({
+          prepareToRecordAsync: jest.fn().mockRejectedValue(new Error('Recorder init failed')),
         }) as never
       );
 
@@ -563,10 +563,10 @@ describe('useRecordingSession', () => {
     });
 
     it('should handle recorder already released error gracefully', async () => {
-      vi.mocked(useAudioRecorder).mockReturnValue(
-        createMockRecorder({
+      jest.mocked(useAudioRecorder).mockReturnValue(
+        mockCreateMockRecorder({
           uri: '/path/audio.caf',
-          stop: vi.fn().mockRejectedValue(new Error('Recorder was already released')),
+          stop: jest.fn().mockRejectedValue(new Error('Recorder was already released')),
         }) as never
       );
 
@@ -589,7 +589,7 @@ describe('useRecordingSession', () => {
     });
 
     it('should handle setAudioModeAsync error during start', async () => {
-      vi.mocked(setAudioModeAsync).mockRejectedValueOnce(new Error('Audio mode failed'));
+      jest.mocked(setAudioModeAsync).mockRejectedValueOnce(new Error('Audio mode failed'));
 
       const { result } = renderHook(() => useRecordingSession(defaultOptions));
 
@@ -617,14 +617,14 @@ describe('useRecordingSession', () => {
 
   describe('onPartialTranscript callback', () => {
     it('should call onPartialTranscript when native session provides partial', async () => {
-      const onPartialMock = vi.fn();
+      const onPartialMock = jest.fn();
       let capturedOnPartial: ((text: string) => void) | undefined;
 
-      vi.mocked(startNativeSpeechSession).mockImplementation(async (_locale, options) => {
+      jest.mocked(startNativeSpeechSession).mockImplementation(async (_locale, options) => {
         capturedOnPartial = options?.onPartial;
         return {
-          stop: vi.fn().mockResolvedValue({ transcript: 'final' }),
-          abort: vi.fn(),
+          stop: jest.fn().mockResolvedValue({ transcript: 'final' }),
+          abort: jest.fn(),
           hasRecording: true,
         };
       });
@@ -646,3 +646,4 @@ describe('useRecordingSession', () => {
     });
   });
 });
+

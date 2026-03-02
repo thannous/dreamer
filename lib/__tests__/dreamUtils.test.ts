@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation } from '../types';
 import {
@@ -16,8 +16,8 @@ import {
 } from '../dreamUtils';
 
 // Mock imageUtils
-vi.mock('../imageUtils', () => ({
-  getThumbnailUrl: vi.fn((url: string) => url ? `${url}?thumb` : undefined),
+jest.mock('../imageUtils', () => ({
+  getThumbnailUrl: jest.fn((url: string) => url ? `${url}?thumb` : undefined),
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({

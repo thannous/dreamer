@@ -1,23 +1,23 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { syncSubscriptionFromServer } from './subscriptionSyncService';
-
-const { mockFetchJSON } = vi.hoisted(() => ({
-  mockFetchJSON: vi.fn(),
+const { mockFetchJSON } = ((factory: any) => factory())(() => ({
+  mockFetchJSON: jest.fn(),
 }));
 
-vi.mock('../lib/config', () => ({
+jest.mock('../lib/config', () => ({
   getApiBaseUrl: () => 'https://api.dreamer.test',
 }));
 
-vi.mock('../lib/http', () => ({
+jest.mock('../lib/http', () => ({
   fetchJSON: mockFetchJSON,
 }));
+
+const { syncSubscriptionFromServer } = require('./subscriptionSyncService');
 
 
 describe('subscriptionSyncService', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('calls the subscription sync endpoint with POST', async () => {

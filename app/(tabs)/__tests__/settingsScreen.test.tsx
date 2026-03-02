@@ -1,49 +1,131 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { TID } from '@/lib/testIDs';
 
 afterEach(() => {
   cleanup();
-  vi.clearAllMocks();
+  jest.clearAllMocks();
 });
 
-const mockPush = vi.fn();
-const mockUseAuth = vi.fn();
-const mockUseSubscription = vi.fn();
+const mockPush = jest.fn();
+const mockUseAuth = jest.fn();
+const mockUseSubscription = jest.fn();
 
 let capturedSubscriptionProps: any = null;
 
-vi.mock('expo-router', () => ({
+jest.doMock('expo-router', () => ({
   router: { push: mockPush },
-  useFocusEffect: (cb: () => void | (() => void)) => {
-    React.useEffect(() => {
-      const cleanup = cb();
-      return typeof cleanup === 'function' ? cleanup : undefined;
-    }, [cb]);
-  },
+  useFocusEffect: () => {},
 }));
 
-vi.mock('@react-navigation/bottom-tabs', () => ({
+jest.doMock('react-native', () => {
+  const React = require('react');
+  const toDomProps = (props: Record<string, any>) => {
+    const {
+      testID,
+      onPress,
+      accessibilityRole,
+      accessibilityLabel,
+      onScrollBeginDrag,
+      onScrollEndDrag,
+      onMomentumScrollBegin,
+      onMomentumScrollEnd,
+      contentContainerStyle,
+      keyboardShouldPersistTaps,
+      showsVerticalScrollIndicator,
+      contentInsetAdjustmentBehavior,
+      ...rest
+    } = props;
+    return {
+      ...rest,
+      ...(testID ? { 'data-testid': testID } : {}),
+      ...(onPress ? { onClick: onPress } : {}),
+      ...(accessibilityRole ? { role: accessibilityRole } : {}),
+      ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
+    };
+  };
+  const createElement = (tag: string) => (
+    { children, ...props }: { children?: React.ReactNode; [key: string]: any },
+  ) => React.createElement(tag, toDomProps(props), children);
+
+  return {
+    __esModule: true,
+    KeyboardAvoidingView: createElement('div'),
+    ScrollView: createElement('div'),
+    Pressable: createElement('button'),
+    Text: createElement('span'),
+    View: createElement('div'),
+    Platform: {
+      OS: 'web',
+      select: (values: Record<string, any>) => values?.web ?? values?.default,
+    },
+    StyleSheet: {
+      create: <T extends Record<string, any>>(styles: T) => styles,
+      absoluteFill: {},
+      absoluteFillObject: {},
+      hairlineWidth: 1,
+    },
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+  };
+});
+
+jest.doMock('@react-navigation/bottom-tabs', () => ({
   useBottomTabBarHeight: () => 0,
 }));
 
-vi.mock('react-native-safe-area-context', () => ({
+jest.doMock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
   SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@/hooks/useClearWebFocus', () => ({
+jest.doMock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => {},
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+jest.doMock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({ t: (key: string, _repl?: any) => key }),
 }));
 
-vi.mock('@/context/ThemeContext', () => ({
+jest.doMock('@/constants/theme', () => ({
+  Fonts: {
+    fraunces: { semiBold: 'Fraunces-SemiBold', medium: 'Fraunces-Medium' },
+    spaceGrotesk: {
+      regular: 'SpaceGrotesk-Regular',
+      medium: 'SpaceGrotesk-Medium',
+      bold: 'SpaceGrotesk-Bold',
+    },
+  },
+}));
+
+jest.doMock('@/lib/appVersion', () => ({
+  getAppVersionString: () => null,
+}));
+
+jest.doMock('@/lib/moti', () => ({
+  MotiView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  MotiText: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+}));
+
+jest.doMock('@/components/inspiration/AtmosphericBackground', () => ({
+  AtmosphericBackground: () => <div data-testid="atmospheric-background" />,
+}));
+
+jest.doMock('@/components/inspiration/PageHeader', () => ({
+  PageHeader: ({ titleKey }: { titleKey: string }) => <div>{titleKey}</div>,
+}));
+
+jest.doMock('@/components/inspiration/SectionHeading', () => ({
+  SectionHeading: () => <div data-testid="section-heading" />,
+}));
+
+jest.doMock('@/components/inspiration/GlassCard', () => ({
+  FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+}));
+
+jest.doMock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {
       accent: '#6f62b5',
@@ -59,53 +141,53 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-vi.mock('@/context/AuthContext', () => ({
+jest.doMock('@/context/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
 }));
 
-vi.mock('@/hooks/useSubscription', () => ({
+jest.doMock('@/hooks/useSubscription', () => ({
   useSubscription: () => mockUseSubscription(),
 }));
 
-vi.mock('@/components/ScreenContainer', () => ({
+jest.doMock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@/components/auth/EmailAuthCard', () => ({
+jest.doMock('@/components/auth/EmailAuthCard', () => ({
   EmailAuthCard: () => <div data-testid="email-auth-card" />,
 }));
 
-vi.mock('@/components/subscription/SubscriptionCard', () => ({
+jest.doMock('@/components/subscription/SubscriptionCard', () => ({
   SubscriptionCard: (props: any) => {
     capturedSubscriptionProps = props;
     return <div data-testid="subscription-card" />;
   },
 }));
 
-vi.mock('@/components/quota/QuotaStatusCard', () => ({
+jest.doMock('@/components/quota/QuotaStatusCard', () => ({
   QuotaStatusCard: () => <div data-testid="quota-status-card" />,
 }));
 
-vi.mock('@/components/ThemeSettingsCard', () => ({
+jest.doMock('@/components/ThemeSettingsCard', () => ({
   __esModule: true,
   default: () => <div data-testid="theme-settings-card" />,
 }));
 
-vi.mock('@/components/LanguageSettingsCard', () => ({
+jest.doMock('@/components/LanguageSettingsCard', () => ({
   __esModule: true,
   default: () => <div data-testid="language-settings-card" />,
 }));
 
-vi.mock('@/components/NotificationSettingsCard', () => ({
+jest.doMock('@/components/NotificationSettingsCard', () => ({
   __esModule: true,
   default: () => <div data-testid="notification-settings-card" />,
 }));
 
-vi.mock('@/components/ui/icon-symbol', () => ({
+jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="icon-symbol" />,
 }));
 
-vi.mock('react-native-reanimated', () => {
+jest.doMock('react-native-reanimated', () => {
   const View = ({ children, ...props }: { children?: React.ReactNode; [key: string]: any }) => (
     <div {...props}>{children}</div>
   );
@@ -134,7 +216,7 @@ vi.mock('react-native-reanimated', () => {
   };
 });
 
-const { default: SettingsScreen } = await import('../settings');
+const { default: SettingsScreen } = require('../settings');
 
 describe('Settings screen', () => {
   it('[B] Given a returning guest is blocked When rendering Then it hides subscription features', () => {
@@ -177,3 +259,4 @@ describe('Settings screen', () => {
     expect(capturedSubscriptionProps?.expiryLabel).toBeUndefined();
   });
 });
+

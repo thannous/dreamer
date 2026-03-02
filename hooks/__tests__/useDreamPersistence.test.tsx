@@ -1,17 +1,17 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 import { useDreamPersistence } from '../useDreamPersistence';
 
 // Mock user state
-const mockUser = vi.hoisted(() => ({ current: { id: 'user-123' } as { id: string } | null }));
-const mockSessionReady = vi.hoisted(() => ({ current: true }));
+const mockUser = ((factory: any) => factory())(() => ({ current: { id: 'user-123' } as { id: string } | null }));
+const mockSessionReady = ((factory: any) => factory())(() => ({ current: true }));
 
-vi.mock('../../context/AuthContext', () => ({
+jest.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockUser.current,
     sessionReady: mockSessionReady.current,
@@ -19,15 +19,15 @@ vi.mock('../../context/AuthContext', () => ({
 }));
 
 // Mock storage service
-const mockGetSavedDreams = vi.fn<() => Promise<DreamAnalysis[]>>();
-const mockSaveDreams = vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
-const mockGetCachedRemoteDreams = vi.fn<() => Promise<DreamAnalysis[]>>();
-const mockSaveCachedRemoteDreams = vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
-const mockGetPendingMutations = vi.fn<() => Promise<DreamMutation[]>>();
-const mockGetDreamsMigrationSynced = vi.fn<() => Promise<boolean>>();
-const mockSetDreamsMigrationSynced = vi.fn<(userId: string, synced: boolean) => Promise<void>>();
+const mockGetSavedDreams = jest.fn<() => Promise<DreamAnalysis[]>>();
+const mockSaveDreams = jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
+const mockGetCachedRemoteDreams = jest.fn<() => Promise<DreamAnalysis[]>>();
+const mockSaveCachedRemoteDreams = jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>();
+const mockGetPendingMutations = jest.fn<() => Promise<DreamMutation[]>>();
+const mockGetDreamsMigrationSynced = jest.fn<() => Promise<boolean>>();
+const mockSetDreamsMigrationSynced = jest.fn<(userId: string, synced: boolean) => Promise<void>>();
 
-vi.mock('../../services/storageService', () => ({
+jest.mock('../../services/storageService', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
   saveDreams: (dreams: DreamAnalysis[]) => mockSaveDreams(dreams),
   getCachedRemoteDreams: () => mockGetCachedRemoteDreams(),
@@ -38,28 +38,28 @@ vi.mock('../../services/storageService', () => ({
     mockSetDreamsMigrationSynced(userId, synced),
 }));
 
-const mockGetAccessToken = vi.fn<() => Promise<string | null>>();
+const mockGetAccessToken = jest.fn<() => Promise<string | null>>();
 
-vi.mock('../../lib/auth', () => ({
+jest.mock('../../lib/auth', () => ({
   getAccessToken: () => mockGetAccessToken(),
 }));
 
 // Mock supabase service
-const mockFetchFromSupabase = vi.fn<() => Promise<DreamAnalysis[]>>();
-const mockCreateInSupabase = vi.fn();
+const mockFetchFromSupabase = jest.fn<() => Promise<DreamAnalysis[]>>();
+const mockCreateInSupabase = jest.fn();
 
-vi.mock('../../services/supabaseDreamService', () => ({
+jest.mock('../../services/supabaseDreamService', () => ({
   fetchDreamsFromSupabase: () => mockFetchFromSupabase(),
   createDreamInSupabase: (...args: unknown[]) => mockCreateInSupabase(...args),
 }));
 
 // Mock logger
-vi.mock('../../lib/logger', () => ({
+jest.mock('../../lib/logger', () => ({
   logger: {
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
   },
 }));
 
@@ -78,7 +78,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 
 describe('useDreamPersistence', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUser.current = { id: 'user-123' };
     mockSessionReady.current = true;
     mockGetSavedDreams.mockResolvedValue([]);
@@ -94,7 +94,7 @@ describe('useDreamPersistence', () => {
   });
 
   afterEach(() => {
-    vi.resetAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('guest mode (no remote sync)', () => {

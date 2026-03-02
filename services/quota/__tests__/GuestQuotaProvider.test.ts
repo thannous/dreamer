@@ -1,25 +1,25 @@
 import type { DreamAnalysis } from '@/lib/types';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { GuestQuotaProvider } from '../GuestQuotaProvider';
 
-// Use vi.hoisted to ensure mock is available during module loading
-const { mockGetDreams, localCounterConfig } = vi.hoisted(() => ({
-  mockGetDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
-  localCounterConfig: {
+// Use jest.hoisted to ensure mock is available during module loading
+const { mockGetDreams, mockLocalCounterConfig } = ((factory: any) => factory())(() => ({
+  mockGetDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockLocalCounterConfig: {
     analysisCount: 0,
     explorationCount: 0,
   },
 }));
 
 // Mock using the relative path from this test file to storageServiceReal
-vi.mock('../../storageServiceReal', () => ({
+jest.mock('../../storageServiceReal', () => ({
   getSavedDreams: () => mockGetDreams(),
 }));
 
 // Mock GuestAnalysisCounter for persistent counts
-vi.mock('../GuestAnalysisCounter', () => ({
-  getLocalAnalysisCount: () => Promise.resolve(localCounterConfig.analysisCount),
-  getLocalExplorationCount: () => Promise.resolve(localCounterConfig.explorationCount),
+jest.mock('../GuestAnalysisCounter', () => ({
+  getLocalAnalysisCount: () => Promise.resolve(mockLocalCounterConfig.analysisCount),
+  getLocalExplorationCount: () => Promise.resolve(mockLocalCounterConfig.explorationCount),
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis>): DreamAnalysis => ({
@@ -43,18 +43,18 @@ describe('GuestQuotaProvider', () => {
     // Default to empty array to avoid undefined issues
     mockGetDreams.mockResolvedValue([]);
     // Reset local counter config
-    localCounterConfig.analysisCount = 0;
-    localCounterConfig.explorationCount = 0;
+    mockLocalCounterConfig.analysisCount = 0;
+    mockLocalCounterConfig.explorationCount = 0;
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('analysis validation', () => {
     it('given guest limit reached when checking analysis then blocks', async () => {
       // Given - persistent counter at limit (2)
-      localCounterConfig.analysisCount = 2;
+      mockLocalCounterConfig.analysisCount = 2;
 
       const provider = new GuestQuotaProvider();
 
@@ -67,7 +67,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given guest within limit when checking analysis then allows', async () => {
       // Given - persistent counter below limit
-      localCounterConfig.analysisCount = 1;
+      mockLocalCounterConfig.analysisCount = 1;
 
       const provider = new GuestQuotaProvider();
 
@@ -107,7 +107,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given guest within exploration limit when checking new dream then allows', async () => {
       // Given - persistent counter below limit
-      localCounterConfig.explorationCount = 1;
+      mockLocalCounterConfig.explorationCount = 1;
       mockGetDreams.mockResolvedValueOnce([]);
       const provider = new GuestQuotaProvider();
 
@@ -120,7 +120,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given guest beyond exploration limit when checking new dream then denies', async () => {
       // Given - persistent counter at limit (2)
-      localCounterConfig.explorationCount = 2;
+      mockLocalCounterConfig.explorationCount = 2;
       mockGetDreams.mockResolvedValueOnce([]);
       const provider = new GuestQuotaProvider();
 
@@ -193,7 +193,7 @@ describe('GuestQuotaProvider', () => {
   describe('usage counting', () => {
     it('given persistent counter when counting analysis then returns counter value', async () => {
       // Given - persistent counter has value
-      localCounterConfig.analysisCount = 2;
+      mockLocalCounterConfig.analysisCount = 2;
       const provider = new GuestQuotaProvider();
 
       // When
@@ -205,7 +205,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given persistent counter when counting exploration then returns counter value', async () => {
       // Given - persistent counter has value
-      localCounterConfig.explorationCount = 2;
+      mockLocalCounterConfig.explorationCount = 2;
       const provider = new GuestQuotaProvider();
 
       // When
@@ -233,7 +233,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given analyzed dreams exceed counter when counting analysis then uses dream count', async () => {
       // Given - counter is outdated but two dreams are analyzed
-      localCounterConfig.analysisCount = 0;
+      mockLocalCounterConfig.analysisCount = 0;
       mockGetDreams.mockResolvedValueOnce([
         buildDream({ id: 1, isAnalyzed: true, analyzedAt: Date.now() }),
         buildDream({ id: 2, isAnalyzed: true, analyzedAt: Date.now() }),
@@ -249,7 +249,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given explored dreams exceed counter when counting exploration then uses dream count', async () => {
       // Given - counter is outdated but dreams are explored
-      localCounterConfig.explorationCount = 0;
+      mockLocalCounterConfig.explorationCount = 0;
       mockGetDreams.mockResolvedValueOnce([
         buildDream({ id: 3, explorationStartedAt: Date.now() }),
         buildDream({ id: 4, explorationStartedAt: Date.now() }),
@@ -283,7 +283,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given guest user with limits exceeded when getting status then includes reasons', async () => {
       // Given - persistent counter at limit
-      localCounterConfig.analysisCount = 2;
+      mockLocalCounterConfig.analysisCount = 2;
       const dreamB = buildDream({
         id: 11,
         chatHistory: [
@@ -308,8 +308,8 @@ describe('GuestQuotaProvider', () => {
 
     it('given guest user within limits when getting status then shows all permissions', async () => {
       // Given - persistent counter below limit
-      localCounterConfig.analysisCount = 1;
-      localCounterConfig.explorationCount = 0;
+      mockLocalCounterConfig.analysisCount = 1;
+      mockLocalCounterConfig.explorationCount = 0;
 
       const provider = new GuestQuotaProvider();
 
@@ -325,7 +325,7 @@ describe('GuestQuotaProvider', () => {
 
     it('given guest beyond exploration limit when getting status then includes exploration reason', async () => {
       // Given - persistent counter at limit
-      localCounterConfig.explorationCount = 2;
+      mockLocalCounterConfig.explorationCount = 2;
       mockGetDreams.mockResolvedValueOnce([]);
 
       const provider = new GuestQuotaProvider();

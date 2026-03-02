@@ -1,30 +1,32 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const storage = new Map<string, string>();
 
-const asyncStorageMock = {
-  getItem: vi.fn(async (key: string) => storage.get(key) ?? null),
-  setItem: vi.fn(async (key: string, value: string) => {
+const mockAsyncStorage = {
+  getItem: jest.fn(async (key: string) => storage.get(key) ?? null),
+  setItem: jest.fn(async (key: string, value: string) => {
     storage.set(key, value);
   }),
-  removeItem: vi.fn(async (key: string) => {
+  removeItem: jest.fn(async (key: string) => {
     storage.delete(key);
   }),
-  multiRemove: vi.fn(async (keys: string[]) => {
+  multiRemove: jest.fn(async (keys: string[]) => {
     keys.forEach((key) => storage.delete(key));
   }),
 };
 
-const mockGetSavedDreams = vi.fn();
+const mockGetSavedDreams = jest.fn();
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: asyncStorageMock,
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: mockAsyncStorage,
+  ...mockAsyncStorage,
 }));
 
-vi.mock('../../storageService', () => ({
+jest.mock('../../storageService', () => ({
   getSavedDreams: mockGetSavedDreams,
 }));
 
@@ -42,8 +44,8 @@ const buildDream = (overrides: Record<string, unknown>) => ({
 
 describe('MockQuotaEventStore', () => {
   beforeEach(async () => {
-    vi.resetModules();
-    vi.clearAllMocks();
+    jest.resetModules();
+    jest.clearAllMocks();
     storage.clear();
     mockGetSavedDreams.mockResolvedValue([]);
   });
@@ -55,21 +57,21 @@ describe('MockQuotaEventStore', () => {
       buildDream({ id: 3, isAnalyzed: false }),
     ]);
 
-    const store = await import('../MockQuotaEventStore');
+    const store = require('../MockQuotaEventStore');
 
     const analysisCount = await store.getMockAnalysisCount();
     const explorationCount = await store.getMockExplorationCount();
 
     expect(analysisCount).toBe(2);
     expect(explorationCount).toBe(2);
-    expect(asyncStorageMock.setItem).toHaveBeenCalledWith(MIGRATION_KEY, 'true');
+    expect(mockAsyncStorage.setItem).toHaveBeenCalledWith(MIGRATION_KEY, 'true');
     expect(storage.get(STORAGE_KEY)).toContain('analysisCount');
   });
 
   it('uses cached migration state on subsequent calls', async () => {
     mockGetSavedDreams.mockResolvedValue([buildDream({ id: 10, isAnalyzed: true, analyzedAt: 1 })]);
 
-    const store = await import('../MockQuotaEventStore');
+    const store = require('../MockQuotaEventStore');
 
     await store.getMockAnalysisCount();
     await store.getMockAnalysisCount();
@@ -78,7 +80,7 @@ describe('MockQuotaEventStore', () => {
   });
 
   it('tracks analysis and exploration events with deduplication', async () => {
-    const store = await import('../MockQuotaEventStore');
+    const store = require('../MockQuotaEventStore');
 
     const first = await store.markMockAnalysis({ id: 42 } as any);
     const second = await store.markMockAnalysis({ id: 42 } as any);
@@ -94,7 +96,7 @@ describe('MockQuotaEventStore', () => {
   });
 
   it('returns false for undefined dream ids', async () => {
-    const store = await import('../MockQuotaEventStore');
+    const store = require('../MockQuotaEventStore');
 
     expect(await store.isDreamAnalyzedMock(undefined)).toBe(false);
     expect(await store.isDreamExploredMock(undefined)).toBe(false);
@@ -104,12 +106,12 @@ describe('MockQuotaEventStore', () => {
     storage.set(STORAGE_KEY, JSON.stringify({ analysisCount: 1 }));
     storage.set(MIGRATION_KEY, 'true');
 
-    const store = await import('../MockQuotaEventStore');
+    const store = require('../MockQuotaEventStore');
     await store.resetMockQuotaEvents();
 
     expect(storage.has(STORAGE_KEY)).toBe(false);
     expect(storage.has(MIGRATION_KEY)).toBe(false);
-    expect(asyncStorageMock.multiRemove).toHaveBeenCalledWith([STORAGE_KEY, MIGRATION_KEY]);
+    expect(mockAsyncStorage.multiRemove).toHaveBeenCalledWith([STORAGE_KEY, MIGRATION_KEY]);
   });
 
   it('invalidates cache to rehydrate from storage', async () => {
@@ -121,7 +123,7 @@ describe('MockQuotaEventStore', () => {
     }));
     storage.set(MIGRATION_KEY, 'true');
 
-    const store = await import('../MockQuotaEventStore');
+    const store = require('../MockQuotaEventStore');
 
     const initial = await store.getMockAnalysisCount();
     expect(initial).toBe(3);

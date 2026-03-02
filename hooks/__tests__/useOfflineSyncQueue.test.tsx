@@ -1,46 +1,46 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 import { useOfflineSyncQueue } from '../useOfflineSyncQueue';
 
 // Mock AuthContext
-const mockUser = vi.hoisted(() => ({ current: { id: 'user-123' } as { id: string } | null }));
+const mockUser = ((factory: any) => factory())(() => ({ current: { id: 'user-123' } as { id: string } | null }));
 
-vi.mock('../../context/AuthContext', () => ({
+jest.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockUser.current,
   }),
 }));
 
 // Mock storageService
-const mockSavePendingMutations = vi.fn().mockResolvedValue(undefined);
+const mockSavePendingMutations = jest.fn().mockResolvedValue(undefined);
 
-vi.mock('../../services/storageService', () => ({
+jest.mock('../../services/storageService', () => ({
   savePendingDreamMutations: (mutations: DreamMutation[]) => mockSavePendingMutations(mutations),
 }));
 
 // Mock supabaseDreamService
-const mockCreateDream = vi.fn();
-const mockUpdateDream = vi.fn();
-const mockDeleteDream = vi.fn();
+const mockCreateDream = jest.fn();
+const mockUpdateDream = jest.fn();
+const mockDeleteDream = jest.fn();
 
-vi.mock('../../services/supabaseDreamService', () => ({
+jest.mock('../../services/supabaseDreamService', () => ({
   createDreamInSupabase: (...args: unknown[]) => mockCreateDream(...args),
   updateDreamInSupabase: (...args: unknown[]) => mockUpdateDream(...args),
   deleteDreamFromSupabase: (...args: unknown[]) => mockDeleteDream(...args),
 }));
 
 // Mock logger
-vi.mock('../../lib/logger', () => ({
+jest.mock('../../lib/logger', () => ({
   logger: {
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
   },
 }));
 
@@ -61,17 +61,17 @@ describe('useOfflineSyncQueue', () => {
   const defaultOptions = {
     canUseRemoteSync: true,
     hasNetwork: true,
-    persistRemoteDreams: vi.fn().mockResolvedValue(undefined),
-    resolveRemoteId: vi.fn((id: number) => id + 1000),
+    persistRemoteDreams: jest.fn().mockResolvedValue(undefined),
+    resolveRemoteId: jest.fn((id: number) => id + 1000),
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUser.current = { id: 'user-123' };
   });
 
   afterEach(() => {
-    vi.resetAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('initialization', () => {

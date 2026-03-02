@@ -1,33 +1,78 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { TID } from '@/lib/testIDs';
 
 afterEach(() => {
   cleanup();
-  vi.clearAllMocks();
+  jest.clearAllMocks();
 });
 
-const mockPush = vi.fn();
-const mockBack = vi.fn();
-const mockUseLocalSearchParams = vi.fn();
+const mockPush = jest.fn();
+const mockBack = jest.fn();
+const mockUseLocalSearchParams = jest.fn();
 
-vi.mock('expo-router', () => ({
+jest.mock('expo-router', () => ({
   router: { push: mockPush, back: mockBack },
   useLocalSearchParams: mockUseLocalSearchParams,
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+jest.mock('react-native', () => {
+  const React = require('react');
+  const toDomProps = (props: Record<string, any>) => {
+    const {
+      testID,
+      onPress,
+      accessibilityRole,
+      accessibilityLabel,
+      hitSlop,
+      contentContainerStyle,
+      onScrollBeginDrag,
+      onScrollEndDrag,
+      onMomentumScrollBegin,
+      onMomentumScrollEnd,
+      ...rest
+    } = props;
+    return {
+      ...rest,
+      ...(testID ? { 'data-testid': testID } : {}),
+      ...(onPress ? { onClick: onPress } : {}),
+      ...(accessibilityRole ? { role: accessibilityRole } : {}),
+      ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
+    };
+  };
+  const createElement = (tag: string) => (
+    { children, ...props }: { children?: React.ReactNode; [key: string]: any },
+  ) => React.createElement(tag, toDomProps(props), children);
+
+  return {
+    __esModule: true,
+    Pressable: createElement('button'),
+    ScrollView: createElement('div'),
+    Text: createElement('span'),
+    View: createElement('div'),
+    Platform: {
+      OS: 'web',
+      select: (values: Record<string, any>) => values?.web ?? values?.default,
+    },
+    StyleSheet: {
+      create: <T extends Record<string, any>>(styles: T) => styles,
+      hairlineWidth: 1,
+    },
+  };
+});
+
+jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-vi.mock('@/hooks/useClearWebFocus', () => ({
+jest.mock('@/hooks/useClearWebFocus', () => ({
   useClearWebFocus: () => {},
 }));
 
-vi.mock('@/context/ThemeContext', () => ({
+jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     mode: 'dark',
     colors: {
@@ -43,21 +88,55 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-const mockUseDreams = vi.fn();
-vi.mock('@/context/DreamsContext', () => ({
+const mockUseDreams = jest.fn();
+jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => mockUseDreams(),
 }));
 
-vi.mock('react-native-safe-area-context', () => ({
+jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
   SafeAreaView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@/components/ui/icon-symbol', () => ({
+jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
-const { default: DreamCategoriesScreen } = await import('../[id]');
+jest.mock('@/components/inspiration/GlassCard', () => ({
+  FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  GlassCard: ({ children, onPress, testID }: { children?: React.ReactNode; onPress?: () => void; testID?: string }) => (
+    <button data-testid={testID} onClick={onPress}>
+      {children}
+    </button>
+  ),
+}));
+
+jest.mock('@/components/inspiration/PageHeader', () => ({
+  PageHeaderContent: () => <div data-testid="page-header" />,
+}));
+
+jest.mock('@/constants/theme', () => ({
+  Fonts: {
+    fraunces: {
+      medium: 'Fraunces-Medium',
+      semiBold: 'Fraunces-SemiBold',
+    },
+    spaceGrotesk: {
+      regular: 'SpaceGrotesk-Regular',
+      medium: 'SpaceGrotesk-Medium',
+    },
+    lora: {
+      bold: 'Lora-Bold',
+    },
+  },
+}));
+
+jest.mock('@/lib/moti', () => ({
+  MotiView: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  MotiText: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+}));
+
+const { default: DreamCategoriesScreen } = require('../[id]');
 
 describe('Dream categories screen', () => {
   it('[B] Given a dream When pressing a category Then it navigates to the chat route', () => {

@@ -1,31 +1,39 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis } from '@/lib/types';
-import { MockQuotaProvider } from '../MockQuotaProvider';
 
-// Use vi.hoisted to ensure mock is available during module loading
-const { mockGetSavedDreams, mockStorage } = vi.hoisted(() => ({
-  mockGetSavedDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
+let MockQuotaProvider: typeof import('../MockQuotaProvider').MockQuotaProvider;
+
+// Use jest.hoisted to ensure mock is available during module loading
+const { mockGetSavedDreams, mockStorage } = ((factory: any) => factory())(() => ({
+  mockGetSavedDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
   mockStorage: new Map<string, string>(),
 }));
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    getItem: vi.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
-    setItem: vi.fn((key: string, value: string) => {
-      mockStorage.set(key, value);
-      return Promise.resolve();
-    }),
-    removeItem: vi.fn((key: string) => {
-      mockStorage.delete(key);
-      return Promise.resolve();
-    }),
-  },
+const mockAsyncStorage = {
+  getItem: jest.fn((key: string) => Promise.resolve(mockStorage.get(key) ?? null)),
+  setItem: jest.fn((key: string, value: string) => {
+    mockStorage.set(key, value);
+    return Promise.resolve();
+  }),
+  removeItem: jest.fn((key: string) => {
+    mockStorage.delete(key);
+    return Promise.resolve();
+  }),
+  multiRemove: jest.fn((keys: string[]) => {
+    keys.forEach((key) => mockStorage.delete(key));
+    return Promise.resolve();
+  }),
+};
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  __esModule: true,
+  default: mockAsyncStorage,
+  ...mockAsyncStorage,
 }));
 
-// Mock using the relative path from this test file to storageService
-vi.mock('../../storageService', () => ({
-  getSavedDreams: () => mockGetSavedDreams(),
+jest.mock('@/services/storageService', () => ({
+  getSavedDreams: mockGetSavedDreams,
 }));
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -44,8 +52,11 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 
 describe('MockQuotaProvider', () => {
   beforeEach(() => {
+    jest.resetModules();
     mockGetSavedDreams.mockReset();
     mockStorage.clear();
+    jest.clearAllMocks();
+    MockQuotaProvider = require('../MockQuotaProvider').MockQuotaProvider;
   });
 
   describe('analysis counting', () => {

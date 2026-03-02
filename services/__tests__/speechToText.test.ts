@@ -1,16 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } from '../speechToText';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 type PlatformOSType = 'ios' | 'android' | 'macos' | 'windows' | 'web';
-const { Platform } = vi.hoisted(() => {
-  const Platform = { OS: 'ios' as PlatformOSType };
-  return { Platform };
+const { mockPlatform } = ((factory: any) => factory())(() => {
+  const mockPlatform = { OS: 'ios' as PlatformOSType };
+  return { mockPlatform };
 });
 
-const { readAsStringAsync, fileBase64, MockFile } = vi.hoisted(() => {
-  const readAsStringAsync = vi.fn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
-  const fileBase64 = vi.fn<() => string | Promise<string>>();
+const { mockReadAsStringAsyncInner, mockFileBase64Inner, MockFile } = ((factory: any) => factory())(() => {
+  const mockReadAsStringAsyncInner = jest.fn<(uri: string, options?: { encoding: 'base64' }) => Promise<string>>();
+  const mockFileBase64Inner = jest.fn<() => string | Promise<string>>();
 
   class MockFile {
     uri: string;
@@ -19,46 +17,46 @@ const { readAsStringAsync, fileBase64, MockFile } = vi.hoisted(() => {
       this.uri = uri;
     }
 
-    base64 = fileBase64;
+    base64 = mockFileBase64Inner;
   }
 
-  return { readAsStringAsync, fileBase64, MockFile };
+  return { mockReadAsStringAsyncInner, mockFileBase64Inner, MockFile };
 });
 
-vi.mock('react-native', () => ({
-  Platform,
+jest.mock('react-native', () => ({
+  Platform: mockPlatform,
 }));
 
-vi.mock('expo-file-system', () => ({
+jest.mock('expo-file-system', () => ({
   File: MockFile,
-  readAsStringAsync,
+  readAsStringAsync: mockReadAsStringAsyncInner,
 }));
 
-const { mockFetchJSON, mockGetApiBaseUrl } = vi.hoisted(() => ({
-  mockFetchJSON: vi.fn(),
-  mockGetApiBaseUrl: vi.fn(),
+const { mockFetchJSON, mockGetApiBaseUrl } = ((factory: any) => factory())(() => ({
+  mockFetchJSON: jest.fn(),
+  mockGetApiBaseUrl: jest.fn(),
 }));
 
 // Mock using relative paths from this test file
-vi.mock('../../lib/config', () => ({
+jest.mock('../../lib/config', () => ({
   getApiBaseUrl: mockGetApiBaseUrl,
 }));
 
-vi.mock('../../lib/http', () => ({
+jest.mock('../../lib/http', () => ({
   fetchJSON: mockFetchJSON,
 }));
 
-const mockReadAsStringAsync = readAsStringAsync;
-const mockFileBase64 = fileBase64;
+const mockReadAsStringAsync = mockReadAsStringAsyncInner;
+const mockFileBase64 = mockFileBase64Inner;
+const { transcribeAudio, TRANSCRIPTION_TIMEOUT_MS } = require('../speechToText');
 
-const setPlatform = (os: PlatformOSType) =>
-  vi.spyOn(Platform, 'OS', 'get').mockReturnValue(os);
-
-let platformSpy: ReturnType<typeof setPlatform> | undefined;
+const setPlatform = (os: PlatformOSType) => {
+  mockPlatform.OS = os;
+};
 
 describe('transcribeAudio', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     (globalThis as typeof globalThis & { __DEV__: boolean }).__DEV__ = false;
     mockGetApiBaseUrl.mockReturnValue('https://api.example');
     mockFetchJSON.mockResolvedValue({ transcript: 'mock transcript' });
@@ -67,13 +65,12 @@ describe('transcribeAudio', () => {
   });
 
   afterEach(() => {
-    platformSpy?.mockRestore();
-    platformSpy = undefined;
-    vi.unstubAllGlobals();
+    delete (globalThis as any).FileReader;
+    delete (globalThis as any).fetch;
   });
 
   it('posts native recordings with LINEAR16 defaults on iOS', async () => {
-    platformSpy = setPlatform('ios');
+    setPlatform('ios');
 
     const transcript = await transcribeAudio({
       uri: 'file:///tmp/audio.wav',
@@ -97,7 +94,7 @@ describe('transcribeAudio', () => {
   });
 
   it('uses AMR_WB encoding hints on Android', async () => {
-    platformSpy = setPlatform('android');
+    setPlatform('android');
 
     await transcribeAudio({ uri: 'file:///tmp/audio.3gp' });
 
@@ -115,7 +112,7 @@ describe('transcribeAudio', () => {
   });
 
   it('uses LINEAR16 for native speech fallbacks that persist WAV on Android', async () => {
-    platformSpy = setPlatform('android');
+    setPlatform('android');
 
     await transcribeAudio({ uri: 'file:///tmp/native-recording.wav' });
 
@@ -131,7 +128,7 @@ describe('transcribeAudio', () => {
   });
 
   it('falls back to readAsStringAsync when File.base64 throws', async () => {
-    platformSpy = setPlatform('ios');
+    setPlatform('ios');
     mockFileBase64.mockImplementationOnce(() => {
       throw new Error('base64 failed');
     });
@@ -151,7 +148,7 @@ describe('transcribeAudio', () => {
   });
 
   it('reads web recordings with FileReader and WEBM_OPUS encoding', async () => {
-    platformSpy = setPlatform('web');
+    setPlatform('web');
     const webBase64 = 'web-base64';
 
     class MockFileReader {
@@ -165,13 +162,13 @@ describe('transcribeAudio', () => {
       }
     }
 
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
+    const fetchMock = jest.fn<typeof fetch>().mockResolvedValue({
       ok: true,
       blob: async () => ({} as Blob),
     } as Response);
 
-    vi.stubGlobal('FileReader', MockFileReader as unknown as typeof FileReader);
-    vi.stubGlobal('fetch', fetchMock);
+    ((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('FileReader', MockFileReader as unknown as typeof FileReader);
+    ((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('fetch', fetchMock);
 
     await transcribeAudio({ uri: 'https://example.com/audio.webm' });
 
