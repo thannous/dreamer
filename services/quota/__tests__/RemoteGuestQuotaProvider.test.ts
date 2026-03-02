@@ -1,29 +1,29 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { QuotaStatus } from '@/lib/types';
 
-vi.mock('../../../lib/http', () => ({
-  fetchJSON: vi.fn(),
+jest.mock('../../../lib/http', () => ({
+  fetchJSON: jest.fn(),
 }));
 
-vi.mock('../../../lib/deviceFingerprint', () => ({
-  getDeviceFingerprint: vi.fn().mockResolvedValue('fingerprint'),
+jest.mock('../../../lib/deviceFingerprint', () => ({
+  getDeviceFingerprint: jest.fn().mockResolvedValue('fingerprint'),
 }));
 
-vi.mock('../../../lib/guestSession', () => ({
-  getGuestHeaders: vi.fn().mockResolvedValue({}),
+jest.mock('../../../lib/guestSession', () => ({
+  getGuestHeaders: jest.fn().mockResolvedValue({}),
 }));
 
-vi.mock('../../../lib/config', () => ({
+jest.mock('../../../lib/config', () => ({
   getApiBaseUrl: () => 'https://example.com',
 }));
 
-vi.mock('../GuestAnalysisCounter', () => ({
-  syncWithServerCount: vi.fn(),
+jest.mock('../GuestAnalysisCounter', () => ({
+  syncWithServerCount: jest.fn(),
 }));
 
-let mockFetchJSON: ReturnType<typeof vi.fn>;
-let mockSyncWithServerCount: ReturnType<typeof vi.fn>;
+let mockFetchJSON: ReturnType<typeof jest.fn>;
+let mockSyncWithServerCount: ReturnType<typeof jest.fn>;
 
 const buildUsage = (analysisUsed: number) => ({
   analysis: { used: analysisUsed, limit: 2, remaining: Math.max(2 - analysisUsed, 0) },
@@ -34,7 +34,7 @@ const buildUsage = (analysisUsed: number) => ({
 const createFallback = (initialAnalysisUsed: number) => {
   let analysisUsed = initialAnalysisUsed;
 
-  const getQuotaStatus = vi.fn<() => Promise<QuotaStatus>>(() =>
+  const getQuotaStatus = jest.fn<() => Promise<QuotaStatus>>(() =>
     Promise.resolve({
       tier: 'guest',
       usage: buildUsage(analysisUsed),
@@ -48,18 +48,18 @@ const createFallback = (initialAnalysisUsed: number) => {
       analysisUsed = next;
     },
     getQuotaStatus,
-    invalidate: vi.fn(),
+    invalidate: jest.fn(),
   };
 };
 
 describe('RemoteGuestQuotaProvider', () => {
   beforeEach(async () => {
-    vi.resetModules();
-    vi.clearAllMocks();
-    const { fetchJSON } = await import('../../../lib/http');
-    mockFetchJSON = vi.mocked(fetchJSON);
-    const { syncWithServerCount } = await import('../GuestAnalysisCounter');
-    mockSyncWithServerCount = vi.mocked(syncWithServerCount);
+    jest.resetModules();
+    jest.clearAllMocks();
+    const { fetchJSON } = require('../../../lib/http');
+    mockFetchJSON = jest.mocked(fetchJSON);
+    const { syncWithServerCount } = require('../GuestAnalysisCounter');
+    mockSyncWithServerCount = jest.mocked(syncWithServerCount);
     mockFetchJSON.mockReset();
     mockSyncWithServerCount.mockResolvedValue(undefined);
   });
@@ -78,7 +78,7 @@ describe('RemoteGuestQuotaProvider', () => {
       canExplore: true,
     });
 
-    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
 
     // When
@@ -102,7 +102,7 @@ describe('RemoteGuestQuotaProvider', () => {
       },
     });
 
-    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const initial = await provider.getQuotaStatus(null, 'guest');
     expect(initial.usage.analysis.used).toBe(1);
@@ -129,7 +129,7 @@ describe('RemoteGuestQuotaProvider', () => {
       },
     });
 
-    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const status = await provider.getQuotaStatus(null, 'guest');
 
@@ -152,7 +152,7 @@ describe('RemoteGuestQuotaProvider', () => {
       },
     });
 
-    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const status = await provider.getQuotaStatus(null, 'guest');
 
@@ -165,7 +165,7 @@ describe('RemoteGuestQuotaProvider', () => {
     const fallback = createFallback(0);
     mockFetchJSON.mockRejectedValueOnce(new Error('HTTP 401'));
 
-    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const first = await provider.getQuotaStatus(null, 'guest');
     const second = await provider.getQuotaStatus(null, 'guest');
@@ -186,7 +186,7 @@ describe('RemoteGuestQuotaProvider', () => {
       },
     });
 
-    const { RemoteGuestQuotaProvider } = await import('../RemoteGuestQuotaProvider');
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const canSend = await provider.canSendChatMessage(undefined, null, 'guest');
 

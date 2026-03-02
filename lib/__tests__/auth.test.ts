@@ -1,53 +1,53 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockLogger = {
-  debug: vi.fn(),
-  warn: vi.fn(),
-  error: vi.fn(),
+  debug: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
 };
 
 const mockSupabaseAuth = {
-  getSession: vi.fn(),
-  getUser: vi.fn(),
-  signInWithPassword: vi.fn(),
-  signUp: vi.fn(),
-  setSession: vi.fn(),
-  resend: vi.fn(),
-  signInWithIdToken: vi.fn(),
-  signInWithOAuth: vi.fn(),
-  signOut: vi.fn(),
-  onAuthStateChange: vi.fn(),
+  getSession: jest.fn(),
+  getUser: jest.fn(),
+  signInWithPassword: jest.fn(),
+  signUp: jest.fn(),
+  setSession: jest.fn(),
+  resend: jest.fn(),
+  signInWithIdToken: jest.fn(),
+  signInWithOAuth: jest.fn(),
+  signOut: jest.fn(),
+  onAuthStateChange: jest.fn(),
 };
 
 const mockSupabase = { auth: mockSupabaseAuth };
 
 const mockMockAuth = {
-  getAccessToken: vi.fn(),
-  onAuthChange: vi.fn(),
-  getCurrentUser: vi.fn(),
-  signInWithEmailPassword: vi.fn(),
-  signUpWithEmailPassword: vi.fn(),
-  resendVerificationEmail: vi.fn(),
-  signInWithGoogle: vi.fn(),
-  signInWithGoogleWeb: vi.fn(),
-  signOut: vi.fn(),
-  signInWithProfile: vi.fn(),
-  updateUserTier: vi.fn(),
+  getAccessToken: jest.fn(),
+  onAuthChange: jest.fn(),
+  getCurrentUser: jest.fn(),
+  signInWithEmailPassword: jest.fn(),
+  signUpWithEmailPassword: jest.fn(),
+  resendVerificationEmail: jest.fn(),
+  signInWithGoogle: jest.fn(),
+  signInWithGoogleWeb: jest.fn(),
+  signOut: jest.fn(),
+  signInWithProfile: jest.fn(),
+  updateUserTier: jest.fn(),
 };
 
 const mockSubscriptionService = {
-  logOutSubscriptionUser: vi.fn(),
+  logOutSubscriptionUser: jest.fn(),
 };
 
-const mockFetchJSON = vi.fn();
-const mockGetDeviceFingerprint = vi.fn(async () => 'device-1');
+const mockFetchJSON = jest.fn();
+const mockGetDeviceFingerprint = jest.fn(async () => 'device-1');
 
 const defaultGoogleModule = {
   GoogleSignin: {
-    configure: vi.fn(),
-    hasPlayServices: vi.fn(),
-    signIn: vi.fn(),
-    signOut: vi.fn(),
+    configure: jest.fn(),
+    hasPlayServices: jest.fn(),
+    signIn: jest.fn(),
+    signOut: jest.fn(),
   },
   statusCodes: {
     SIGN_IN_CANCELLED: 'SIGN_IN_CANCELLED',
@@ -82,13 +82,13 @@ const loadAuth = async (options?: {
 }) => {
   const { mockMode = false, platformOS = 'ios', googleModule = defaultGoogleModule } = options ?? {};
 
-  vi.resetModules();
+  jest.resetModules();
 
-  vi.doMock('react-native', () => ({
+  jest.doMock('react-native', () => ({
     Platform: { OS: platformOS },
   }));
 
-  vi.doMock('../env', () => ({
+  jest.doMock('../env', () => ({
     isMockModeEnabled: () => mockMode,
     getExpoPublicEnvValue: (key: string) => {
       const value = process.env[key];
@@ -96,43 +96,43 @@ const loadAuth = async (options?: {
     },
   }));
 
-  vi.doMock('../logger', () => ({
+  jest.doMock('../logger', () => ({
     createScopedLogger: () => mockLogger,
   }));
 
-  vi.doMock('../supabase', () => ({
+  jest.doMock('../supabase', () => ({
     supabase: mockSupabase,
   }));
 
-  vi.doMock('../mockAuth', () => mockMockAuth);
+  jest.doMock('../mockAuth', () => mockMockAuth);
 
-  vi.doMock('../deviceFingerprint', () => ({
+  jest.doMock('../deviceFingerprint', () => ({
     getDeviceFingerprint: mockGetDeviceFingerprint,
   }));
 
-  vi.doMock('../config', () => ({
+  jest.doMock('../config', () => ({
     getApiBaseUrl: () => 'https://api.example.com',
   }));
 
-  vi.doMock('../http', () => ({
+  jest.doMock('../http', () => ({
     fetchJSON: mockFetchJSON,
   }));
 
-  vi.doMock('@/services/subscriptionService', () => mockSubscriptionService);
+  jest.doMock('@/services/subscriptionService', () => mockSubscriptionService);
 
   if (googleModule) {
-    vi.doMock('@react-native-google-signin/google-signin', () => googleModule);
+    jest.doMock('@react-native-google-signin/google-signin', () => googleModule);
   }
 
-  return import('../auth');
+  return require('../auth');
 };
 
 describe('auth helpers', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = '';
 
-    const unsubscribe = vi.fn();
+    const unsubscribe = jest.fn();
     mockSupabaseAuth.onAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe } },
     });
@@ -176,7 +176,7 @@ describe('auth helpers', () => {
   it('initializes Google Sign-In when configured', async () => {
     process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID = 'client-id';
     const auth = await loadAuth();
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     expect(Platform.OS).toBe('ios');
 
     auth.initializeGoogleSignIn();
@@ -313,7 +313,7 @@ describe('auth helpers', () => {
   });
 
   it('waits briefly for access token before marking fingerprint', async () => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
     try {
       mockSupabaseAuth.getSession
         .mockResolvedValueOnce({ data: { session: null } })
@@ -325,7 +325,7 @@ describe('auth helpers', () => {
       const auth = await loadAuth();
       const signUpPromise = auth.signUpWithEmailPassword('user@example.com', 'pass', 'en');
 
-      await vi.runAllTimersAsync();
+      await jest.runAllTimersAsync();
       await signUpPromise;
 
       expect(mockFetchJSON).toHaveBeenCalledWith(
@@ -337,7 +337,7 @@ describe('auth helpers', () => {
         })
       );
     } finally {
-      vi.useRealTimers();
+      jest.useRealTimers();
     }
   });
 
@@ -405,7 +405,7 @@ describe('auth helpers', () => {
       provider: 'google',
       options: {
         scopes: 'openid email profile',
-        redirectTo: 'https://dream.noctalia.app',
+        redirectTo: globalThis.location?.origin ?? 'https://dream.noctalia.app',
       },
     });
   });
@@ -435,14 +435,14 @@ describe('auth helpers', () => {
   });
 
   it('delegates to mock auth helpers in mock mode', async () => {
-    const unsubscribe = vi.fn();
+    const unsubscribe = jest.fn();
     mockMockAuth.onAuthChange.mockReturnValueOnce(unsubscribe);
     mockMockAuth.signInWithProfile.mockResolvedValueOnce({ id: 'mock-user' });
     mockMockAuth.updateUserTier.mockResolvedValueOnce({ id: 'mock-user' });
 
     const auth = await loadAuth({ mockMode: true });
 
-    const unsubscriber = auth.onAuthChange(vi.fn());
+    const unsubscriber = auth.onAuthChange(jest.fn());
     const mockUser = await auth.signInMock({ id: 'mock-user' } as any);
     const tierUser = await auth.updateUserTier('pro' as any);
 
@@ -453,7 +453,7 @@ describe('auth helpers', () => {
 
   it('exposes auth change subscription in real mode', async () => {
     const auth = await loadAuth();
-    const callback = vi.fn();
+    const callback = jest.fn();
 
     const unsubscribe = auth.onAuthChange(callback);
 

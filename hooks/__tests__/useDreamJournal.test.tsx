@@ -1,8 +1,8 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation, QuotaStatus } from '../../lib/types';
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
@@ -29,43 +29,64 @@ const {
   mockGuestDreamCounterState,
   mockUseAuth,
   mockGetAccessToken,
-} = vi.hoisted(() => ({
-  mockGetSavedDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
-  mockSaveDreams: vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
-  mockGetCachedRemoteDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
-  mockSaveCachedRemoteDreams: vi.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
-  mockGetPendingDreamMutations: vi.fn<() => Promise<DreamMutation[]>>(),
-  mockSavePendingDreamMutations: vi.fn<(mutations: DreamMutation[]) => Promise<void>>(),
-  mockCreateDreamInSupabase: vi.fn<(dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>>(),
-  mockUpdateDreamInSupabase: vi.fn<(dream: DreamAnalysis) => Promise<DreamAnalysis>>(),
-  mockDeleteDreamFromSupabase: vi.fn<(remoteId: number) => Promise<void>>(),
-  mockFetchDreamsFromSupabase: vi.fn<() => Promise<DreamAnalysis[]>>(),
-  mockAnalyzeDreamText: vi.fn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
-  mockGenerateImageFromTranscript: vi.fn<(transcript: string, previousImageUrl?: string) => Promise<string>>(),
-  mockGetQuotaStatus: vi.fn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
-  mockInvalidateQuota: vi.fn<(user: unknown) => void>(),
-  mockGetThumbnailUrl: vi.fn<(url: string | undefined) => string | undefined>(),
-  mockIncrementLocalAnalysisCount: vi.fn<() => Promise<number>>(),
-  mockSyncWithServerCount: vi.fn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
+  mockMarkMockAnalysis,
+} = ((factory: any) => factory())(() => ({
+  mockGetSavedDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockSaveDreams: jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
+  mockGetCachedRemoteDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockSaveCachedRemoteDreams: jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
+  mockGetPendingDreamMutations: jest.fn<() => Promise<DreamMutation[]>>(),
+  mockSavePendingDreamMutations: jest.fn<(mutations: DreamMutation[]) => Promise<void>>(),
+  mockCreateDreamInSupabase: jest.fn<(dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>>(),
+  mockUpdateDreamInSupabase: jest.fn<(dream: DreamAnalysis) => Promise<DreamAnalysis>>(),
+  mockDeleteDreamFromSupabase: jest.fn<(remoteId: number) => Promise<void>>(),
+  mockFetchDreamsFromSupabase: jest.fn<() => Promise<DreamAnalysis[]>>(),
+  mockAnalyzeDreamText: jest.fn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
+  mockGenerateImageFromTranscript: jest.fn<(transcript: string, previousImageUrl?: string) => Promise<string>>(),
+  mockGetQuotaStatus: jest.fn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
+  mockInvalidateQuota: jest.fn<(user: unknown) => void>(),
+  mockGetThumbnailUrl: jest.fn<(url: string | undefined) => string | undefined>(),
+  mockIncrementLocalAnalysisCount: jest.fn<() => Promise<number>>(),
+  mockSyncWithServerCount: jest.fn<(count: number, quotaType: 'analysis' | 'exploration') => Promise<number>>(),
   mockGuestDreamCounterState: { count: 0 },
-  mockUseAuth: vi.fn<
+  mockUseAuth: jest.fn<
     () => { user: { id: string; app_metadata?: Record<string, unknown> } | null; sessionReady: boolean }
   >(),
-  mockGetAccessToken: vi.fn<() => Promise<string | null>>(),
+  mockGetAccessToken: jest.fn<() => Promise<string | null>>(),
+  mockMarkMockAnalysis: jest.fn<() => Promise<number>>(),
 }));
 
 let mockSubscriptionStatus: any = { tier: 'free' };
 
 // Mock dependencies
-vi.mock('expo-network', () => ({
+jest.mock('expo-network', () => ({
   useNetworkState: () => ({
     isInternetReachable: true,
     isConnected: true,
   }),
 }));
 
+jest.mock('expo-localization', () => ({
+  useLocales: () => [
+    {
+      languageTag: 'en-US',
+      languageCode: 'en',
+      regionCode: 'US',
+      textDirection: 'ltr',
+    },
+  ],
+  getLocales: () => [
+    {
+      languageTag: 'en-US',
+      languageCode: 'en',
+      regionCode: 'US',
+      textDirection: 'ltr',
+    },
+  ],
+}));
+
 // Ensure EXPO_PUBLIC_MOCK_MODE is not set (to avoid mock mode being enabled)
-vi.stubGlobal('process', {
+((key: string, value: unknown) => { Object.defineProperty(globalThis, key, { configurable: true, writable: true, value }); })('process', {
   ...process,
   env: {
     ...process.env,
@@ -74,12 +95,12 @@ vi.stubGlobal('process', {
 });
 
 // Mock AuthContext with hoisted mock function
-vi.mock('../../context/AuthContext', () => ({
+jest.mock('../../context/AuthContext', () => ({
   useAuth: mockUseAuth,
 }));
 
 // Mock useSubscription
-vi.mock('../useSubscription', () => ({
+jest.mock('../useSubscription', () => ({
   useSubscription: () => {
     return {
       status: mockSubscriptionStatus,
@@ -89,7 +110,7 @@ vi.mock('../useSubscription', () => ({
 }));
 
 // Mock storageService
-vi.mock('../../services/storageService', () => ({
+jest.mock('../../services/storageService', () => ({
   getSavedDreams: mockGetSavedDreams,
   saveDreams: mockSaveDreams,
   getCachedRemoteDreams: mockGetCachedRemoteDreams,
@@ -99,7 +120,7 @@ vi.mock('../../services/storageService', () => ({
 }));
 
 // Mock supabaseDreamService
-vi.mock('../../services/supabaseDreamService', () => ({
+jest.mock('../../services/supabaseDreamService', () => ({
   createDreamInSupabase: mockCreateDreamInSupabase,
   updateDreamInSupabase: mockUpdateDreamInSupabase,
   deleteDreamFromSupabase: mockDeleteDreamFromSupabase,
@@ -107,13 +128,13 @@ vi.mock('../../services/supabaseDreamService', () => ({
 }));
 
 // Mock geminiService
-vi.mock('../../services/geminiService', () => ({
+jest.mock('../../services/geminiService', () => ({
   analyzeDream: mockAnalyzeDreamText,
   generateImageFromTranscript: mockGenerateImageFromTranscript,
 }));
 
 // Mock quotaService
-vi.mock('../../services/quotaService', () => ({
+jest.mock('../../services/quotaService', () => ({
   quotaService: {
     getQuotaStatus: mockGetQuotaStatus,
     invalidate: mockInvalidateQuota,
@@ -121,26 +142,26 @@ vi.mock('../../services/quotaService', () => ({
 }));
 
 // Mock imageUtils
-vi.mock('../../lib/imageUtils', () => ({
+jest.mock('../../lib/imageUtils', () => ({
   getThumbnailUrl: mockGetThumbnailUrl,
 }));
 
-vi.mock('../../lib/auth', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../lib/auth')>();
-  return {
-    ...actual,
-    getAccessToken: mockGetAccessToken,
-  };
-});
+jest.mock('../../lib/auth', () => ({
+  getAccessToken: mockGetAccessToken,
+}));
 
 // Mock GuestAnalysisCounter
-vi.mock('../../services/quota/GuestAnalysisCounter', () => ({
+jest.mock('../../services/quota/GuestAnalysisCounter', () => ({
   incrementLocalAnalysisCount: mockIncrementLocalAnalysisCount,
   syncWithServerCount: mockSyncWithServerCount,
 }));
 
+jest.mock('../../services/quota/MockQuotaEventStore', () => ({
+  markMockAnalysis: mockMarkMockAnalysis,
+}));
+
 // Mock GuestDreamCounter (avoid persisting between tests)
-vi.mock('../../services/quota/GuestDreamCounter', () => ({
+jest.mock('../../services/quota/GuestDreamCounter', () => ({
   getGuestRecordedDreamCount: async (currentDreamCount: number) => Math.max(mockGuestDreamCounterState.count, currentDreamCount),
   incrementLocalDreamRecordingCount: async () => {
     mockGuestDreamCounterState.count += 1;
@@ -150,21 +171,21 @@ vi.mock('../../services/quota/GuestDreamCounter', () => ({
 }));
 
 // Mock logger
-vi.mock('../../lib/logger', () => {
+jest.mock('../../lib/logger', () => {
   const scopedLogger = {
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    log: vi.fn(),
+    debug: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    log: jest.fn(),
   };
   return {
     logger: scopedLogger,
-    createScopedLogger: vi.fn(() => scopedLogger),
+    createScopedLogger: jest.fn(() => scopedLogger),
   };
 });
 
 // Import after mocks
-const { useDreamJournal } = await import('../useDreamJournal');
+const { useDreamJournal } = require('../useDreamJournal');
 
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now(),
@@ -203,7 +224,7 @@ const setMockUser = (user: { id: string; app_metadata?: Record<string, unknown> 
 
 describe('useDreamJournal', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockSubscriptionStatus = { tier: 'free' };
     setMockUser(null);
     mockGuestDreamCounterState.count = 0;
@@ -218,6 +239,7 @@ describe('useDreamJournal', () => {
     mockIncrementLocalAnalysisCount.mockResolvedValue(1);
     mockSyncWithServerCount.mockResolvedValue(1);
     mockGetAccessToken.mockResolvedValue('test-token');
+    mockMarkMockAnalysis.mockResolvedValue(1);
     mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus());
   });
 

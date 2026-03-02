@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Hoist mocks
 const {
@@ -8,36 +8,36 @@ const {
   mockGetIosIdForVendorAsync,
   mockDigestStringAsync,
   mockRandomUUID,
-} = vi.hoisted(() => ({
-  mockGetItemAsync: vi.fn(),
-  mockSetItemAsync: vi.fn(),
-  mockGetAndroidId: vi.fn(),
-  mockGetIosIdForVendorAsync: vi.fn(),
-  mockDigestStringAsync: vi.fn(),
-  mockRandomUUID: vi.fn(),
+} = ((factory: any) => factory())(() => ({
+  mockGetItemAsync: jest.fn(),
+  mockSetItemAsync: jest.fn(),
+  mockGetAndroidId: jest.fn(),
+  mockGetIosIdForVendorAsync: jest.fn(),
+  mockDigestStringAsync: jest.fn(),
+  mockRandomUUID: jest.fn(),
 }));
 
 // Mock Platform
-vi.mock('react-native', () => ({
+jest.mock('react-native', () => ({
   Platform: {
     OS: 'android',
   },
 }));
 
 // Mock SecureStore
-vi.mock('expo-secure-store', () => ({
+jest.mock('expo-secure-store', () => ({
   getItemAsync: mockGetItemAsync,
   setItemAsync: mockSetItemAsync,
 }));
 
 // Mock Application
-vi.mock('expo-application', () => ({
+jest.mock('expo-application', () => ({
   getAndroidId: mockGetAndroidId,
   getIosIdForVendorAsync: mockGetIosIdForVendorAsync,
 }));
 
 // Mock Crypto
-vi.mock('expo-crypto', () => ({
+jest.mock('expo-crypto', () => ({
   digestStringAsync: mockDigestStringAsync,
   randomUUID: mockRandomUUID,
   CryptoDigestAlgorithm: {
@@ -47,16 +47,16 @@ vi.mock('expo-crypto', () => ({
 
 describe('deviceFingerprint', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     // Reset memoized value by resetting module
-    vi.resetModules();
+    jest.resetModules();
   });
 
   describe('getDeviceFingerprint', () => {
     it('given stored fingerprint when getting then returns stored value', async () => {
       mockGetItemAsync.mockResolvedValue('stored-fingerprint-hash');
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
       const result = await getDeviceFingerprint();
 
       expect(result).toBe('stored-fingerprint-hash');
@@ -69,7 +69,7 @@ describe('deviceFingerprint', () => {
       mockGetAndroidId.mockReturnValue('android-device-id');
       mockDigestStringAsync.mockResolvedValue('hashed-fingerprint');
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
       const result = await getDeviceFingerprint();
 
       expect(result).toBe('hashed-fingerprint');
@@ -83,7 +83,7 @@ describe('deviceFingerprint', () => {
       mockRandomUUID.mockReturnValue('random-uuid');
       mockDigestStringAsync.mockResolvedValue('hashed-uuid');
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
       const result = await getDeviceFingerprint();
 
       expect(result).toBe('hashed-uuid');
@@ -94,7 +94,7 @@ describe('deviceFingerprint', () => {
     it('given memoized fingerprint when calling again then returns cached value', async () => {
       mockGetItemAsync.mockResolvedValue('stored-fingerprint');
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
 
       // First call
       const result1 = await getDeviceFingerprint();
@@ -113,7 +113,7 @@ describe('deviceFingerprint', () => {
       mockDigestStringAsync.mockResolvedValue('new-hash');
       mockSetItemAsync.mockResolvedValue(undefined);
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
       const result = await getDeviceFingerprint();
 
       expect(result).toBe('new-hash');
@@ -125,7 +125,7 @@ describe('deviceFingerprint', () => {
       mockDigestStringAsync.mockResolvedValue('new-hash');
       mockSetItemAsync.mockRejectedValue(new Error('Write failed'));
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
       const result = await getDeviceFingerprint();
 
       expect(result).toBe('new-hash');
@@ -139,7 +139,7 @@ describe('deviceFingerprint', () => {
       mockRandomUUID.mockReturnValue('fallback-uuid');
       mockDigestStringAsync.mockResolvedValue('uuid-hash');
 
-      const { getDeviceFingerprint } = await import('../deviceFingerprint');
+      const { getDeviceFingerprint } = require('../deviceFingerprint');
       const result = await getDeviceFingerprint();
 
       expect(result).toBe('uuid-hash');

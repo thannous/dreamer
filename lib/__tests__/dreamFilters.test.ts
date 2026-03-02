@@ -2,7 +2,7 @@
  * BDD-style tests for dreamFilters utility functions
  * Tests dream filtering, sorting, and data extraction functionality
  */
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 import {
     applyFilters,
     filterByDateRange,
@@ -18,9 +18,9 @@ import {
 import type { DreamAnalysis, DreamTheme, DreamType } from '../types';
 
 // Mock the dreamUsage functions
-vi.mock('../dreamUsage', () => ({
-  isDreamAnalyzed: vi.fn((dream: DreamAnalysis) => Boolean(dream.isAnalyzed && typeof dream.analyzedAt === 'number')),
-  isDreamExplored: vi.fn((dream: DreamAnalysis) => Boolean(dream.explorationStartedAt)),
+jest.mock('../dreamUsage', () => ({
+  isDreamAnalyzed: jest.fn((dream: DreamAnalysis) => Boolean(dream.isAnalyzed && typeof dream.analyzedAt === 'number')),
+  isDreamExplored: jest.fn((dream: DreamAnalysis) => Boolean(dream.explorationStartedAt)),
 }));
 
 describe('dreamFilters', () => {
@@ -191,7 +191,7 @@ describe('dreamFilters', () => {
 
     it('given a resolver when title already matches then does not resolve localized labels', () => {
       // Given
-      const resolver = vi.fn(() => 'Should not be called');
+      const resolver = jest.fn(() => 'Should not be called');
       const dreams: DreamAnalysis[] = [
         buildDream({ title: 'Needle A', dreamType: 'Nightmare' }),
         buildDream({ title: 'Needle B', dreamType: 'Nightmare' }),

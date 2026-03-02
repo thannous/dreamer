@@ -43,6 +43,36 @@ export const withCacheBuster = (url: string, version?: string | number): string 
  */
 export function getThumbnailUrl(imageUrl: string, size: number = THUMBNAIL_SIZE): string {
   if (!imageUrl) return imageUrl;
+  if (imageUrl.startsWith('data:') || imageUrl.startsWith('file:')) return imageUrl;
+
+  // Handle known providers with regex/string fallbacks first so this still works when URL parsing is unavailable.
+  const imgurMatch = /^(https?:\/\/[^/?#]*imgur\.com\/[^?#]+?)(\.[a-zA-Z0-9]+)(\?.*)?$/i.exec(imageUrl);
+  if (imgurMatch) {
+    const [, basePath, ext, query = ''] = imgurMatch;
+    return `${basePath}s${ext}${query}`; // 's' suffix = small square (90x90)
+  }
+
+  if (/cloudinary\.com/i.test(imageUrl) && imageUrl.includes('/upload/')) {
+    return imageUrl.replace('/upload/', `/upload/w_${size},h_${size},c_fill/`);
+  }
+
+  const isGoogleOrFirebase =
+    /storage\.googleapis\.com/i.test(imageUrl) || /firebasestorage\.app/i.test(imageUrl);
+  if (isGoogleOrFirebase) {
+    try {
+      const parsed = new URL(imageUrl);
+      parsed.searchParams.set('size', `${size}x${size}`);
+      return parsed.toString();
+    } catch {
+      const [base, query = ''] = imageUrl.split('?');
+      const queryParts = query
+        .split('&')
+        .map((part) => part.trim())
+        .filter((part) => part.length > 0 && !part.startsWith('size='));
+      queryParts.push(`size=${size}x${size}`);
+      return `${base}?${queryParts.join('&')}`;
+    }
+  }
 
   try {
     const url = new URL(imageUrl);

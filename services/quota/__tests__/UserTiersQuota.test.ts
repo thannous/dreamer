@@ -1,12 +1,12 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { MockQuotaProvider } from '../MockQuotaProvider';
 
-// Use vi.hoisted to ensure mock is available during module loading
-const { mockGetSavedDreams, mockQuotaEventStore } = vi.hoisted(() => ({
-  mockGetSavedDreams: vi.fn<() => Promise<DreamAnalysis[]>>(),
+// Use jest.hoisted to ensure mock is available during module loading
+const { mockGetSavedDreams, mockQuotaEventStore } = ((factory: any) => factory())(() => ({
+  mockGetSavedDreams: jest.fn<() => Promise<DreamAnalysis[]>>(),
   mockQuotaEventStore: {
     analysisCount: 0,
     explorationCount: 0,
@@ -16,33 +16,33 @@ const { mockGetSavedDreams, mockQuotaEventStore } = vi.hoisted(() => ({
 }));
 
 // Mock using the relative path from this test file to storageService
-vi.mock('../../storageService', () => ({
+jest.mock('../../storageService', () => ({
   getSavedDreams: () => mockGetSavedDreams(),
 }));
 
 // Mock MockQuotaEventStore to avoid AsyncStorage access
-vi.mock('../MockQuotaEventStore', () => ({
-  getMockAnalysisCount: vi.fn().mockImplementation(async () => mockQuotaEventStore.analysisCount),
-  getMockExplorationCount: vi.fn().mockImplementation(async () => mockQuotaEventStore.explorationCount),
-  isDreamAnalyzedMock: vi.fn().mockImplementation(async (dreamId?: number) => {
+jest.mock('../MockQuotaEventStore', () => ({
+  getMockAnalysisCount: jest.fn().mockImplementation(async () => mockQuotaEventStore.analysisCount),
+  getMockExplorationCount: jest.fn().mockImplementation(async () => mockQuotaEventStore.explorationCount),
+  isDreamAnalyzedMock: jest.fn().mockImplementation(async (dreamId?: number) => {
     return dreamId ? mockQuotaEventStore.analyzedDreamIds.includes(dreamId) : false;
   }),
-  isDreamExploredMock: vi.fn().mockImplementation(async (dreamId?: number) => {
+  isDreamExploredMock: jest.fn().mockImplementation(async (dreamId?: number) => {
     return dreamId ? mockQuotaEventStore.exploredDreamIds.includes(dreamId) : false;
   }),
-  recordMockAnalysis: vi.fn().mockImplementation(async (dreamId: number) => {
+  recordMockAnalysis: jest.fn().mockImplementation(async (dreamId: number) => {
     mockQuotaEventStore.analysisCount++;
     if (dreamId && !mockQuotaEventStore.analyzedDreamIds.includes(dreamId)) {
       mockQuotaEventStore.analyzedDreamIds.push(dreamId);
     }
   }),
-  recordMockExploration: vi.fn().mockImplementation(async (dreamId: number) => {
+  recordMockExploration: jest.fn().mockImplementation(async (dreamId: number) => {
     mockQuotaEventStore.explorationCount++;
     if (dreamId && !mockQuotaEventStore.exploredDreamIds.includes(dreamId)) {
       mockQuotaEventStore.exploredDreamIds.push(dreamId);
     }
   }),
-  invalidateMockQuotaCache: vi.fn(),
+  invalidateMockQuotaCache: jest.fn(),
 }));
 const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
   id: Date.now() + Math.floor(Math.random() * 1000),

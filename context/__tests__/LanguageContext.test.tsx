@@ -1,22 +1,22 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const mockGetLanguagePreference = vi.fn();
-const mockSaveLanguagePreference = vi.fn();
-const mockUseLocales = vi.fn();
+const mockGetLanguagePreference = jest.fn();
+const mockSaveLanguagePreference = jest.fn();
+const mockUseLocales = jest.fn();
 
-vi.mock('expo-localization', () => ({
+jest.mock('expo-localization', () => ({
   useLocales: () => mockUseLocales(),
 }));
 
-vi.mock('../../services/storageService', () => ({
+jest.mock('../../services/storageService', () => ({
   getLanguagePreference: mockGetLanguagePreference,
   saveLanguagePreference: mockSaveLanguagePreference,
 }));
 
-const { LanguageProvider, useLanguage } = await import('../LanguageContext');
+const { LanguageProvider, useLanguage } = require('../LanguageContext');
 
 type MockLocale = {
   languageCode: string;
@@ -37,7 +37,7 @@ const buildLocales = (overrides?: Partial<MockLocale>) => ([
 
 describe('LanguageContext', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUseLocales.mockReturnValue(buildLocales());
     mockGetLanguagePreference.mockResolvedValue('auto');
   });

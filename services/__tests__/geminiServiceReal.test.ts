@@ -1,44 +1,22 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import {
-  analyzeDream,
-  analyzeDreamWithImage,
-  analyzeDreamWithImageResilient,
-  categorizeDream,
-  generateImageForDream,
-  generateImageFromTranscript,
-  generateSpeechForText,
-  resetChat,
-  startOrContinueChat,
-} from '../geminiServiceReal';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock config to use our test URL
-vi.mock('../../lib/config', () => ({
+jest.mock('../../lib/config', () => ({
   getApiBaseUrl: () => 'https://api.example.com',
 }));
 
 // Mock auth to avoid supabase dependency
-vi.mock('../../lib/auth', () => ({
+jest.mock('../../lib/auth', () => ({
   getAccessToken: () => Promise.resolve(null),
 }));
 
-vi.mock('../../lib/guestSession', () => ({
+jest.mock('../../lib/guestSession', () => ({
   getGuestHeaders: () => Promise.resolve({}),
   invalidateGuestSession: () => Promise.resolve(),
 }));
 
-// Mock errors module
-vi.mock('../../lib/errors', async () => {
-  const actual = await vi.importActual<typeof import('../../lib/errors')>('../../lib/errors');
-  return {
-    ...actual,
-    // Keep retries deterministic in these unit tests.
-    classifyError: () => ({ type: 'unknown', canRetry: false }),
-  };
-});
-
 // Mock expo-constants
-vi.mock('expo-constants', () => ({
+jest.mock('expo-constants', () => ({
   default: {
     expoConfig: {
       extra: {
@@ -48,6 +26,18 @@ vi.mock('expo-constants', () => ({
     },
   },
 }));
+
+const {
+  analyzeDream,
+  analyzeDreamWithImage,
+  analyzeDreamWithImageResilient,
+  categorizeDream,
+  generateImageForDream,
+  generateImageFromTranscript,
+  generateSpeechForText,
+  resetChat,
+  startOrContinueChat,
+} = require('../geminiServiceReal');
 
 
 const buildAnalysisResult = (overrides = {}) => ({
@@ -75,8 +65,8 @@ describe('geminiServiceReal', () => {
   const originalFetch = global.fetch;
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    global.fetch = vi.fn();
+    jest.clearAllMocks();
+    global.fetch = jest.fn();
   });
 
   afterEach(() => {
@@ -86,7 +76,7 @@ describe('geminiServiceReal', () => {
   describe('analyzeDream', () => {
     it('sends POST request to /analyzeDream with transcript and lang', async () => {
       const mockResult = buildAnalysisResult();
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse(mockResult));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse(mockResult));
 
       const result = await analyzeDream('I was flying', 'en');
 
@@ -101,7 +91,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('uses default language when not provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse(buildAnalysisResult())
       );
 
@@ -116,7 +106,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('includes fingerprint when provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse(buildAnalysisResult())
       );
 
@@ -131,7 +121,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('does not include fingerprint when undefined', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse(buildAnalysisResult())
       );
 
@@ -149,7 +139,7 @@ describe('geminiServiceReal', () => {
   describe('categorizeDream', () => {
     it('sends POST request to /categorizeDream', async () => {
       const mockResult = { title: 'Dream', theme: 'adventure' as const, dreamType: 'Nightmare' as const };
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse(mockResult));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse(mockResult));
 
       const result = await categorizeDream('Flying dream', 'es');
 
@@ -164,7 +154,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('uses default language when not provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ title: 'T', theme: 'mystical', dreamType: 'Lucid Dream' })
       );
 
@@ -182,7 +172,7 @@ describe('geminiServiceReal', () => {
   describe('analyzeDreamWithImage', () => {
     it('sends POST to /analyzeDreamFull', async () => {
       const mockResult = { ...buildAnalysisResult(), imageUrl: 'https://img.example.com/dream.jpg' };
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse(mockResult));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse(mockResult));
 
       const result = await analyzeDreamWithImage('Dream transcript', 'en');
 
@@ -198,7 +188,7 @@ describe('geminiServiceReal', () => {
 
     it('converts imageBytes to data URL when imageUrl not provided', async () => {
       const mockResult = { ...buildAnalysisResult(), imageBytes: 'base64encodeddata' };
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse(mockResult));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse(mockResult));
 
       const result = await analyzeDreamWithImage('Dream', 'en');
 
@@ -206,7 +196,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('throws error when neither imageUrl nor imageBytes provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse(buildAnalysisResult())
       );
 
@@ -216,7 +206,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('includes fingerprint when provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ ...buildAnalysisResult(), imageUrl: 'https://img.test.com' })
       );
 
@@ -234,7 +224,7 @@ describe('geminiServiceReal', () => {
   describe('analyzeDreamWithImageResilient', () => {
     it('returns result with imageUrl when combined call succeeds', async () => {
       const mockResult = { ...buildAnalysisResult(), imageUrl: 'https://img.example.com/dream.jpg' };
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse(mockResult));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse(mockResult));
 
       const result = await analyzeDreamWithImageResilient('Dream', 'en');
 
@@ -243,7 +233,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('converts imageBytes to data URL in combined response', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ ...buildAnalysisResult(), imageBytes: 'abc123' })
       );
 
@@ -255,7 +245,7 @@ describe('geminiServiceReal', () => {
 
     it('tries separate image generation when combined returns no image', async () => {
       // First call: combined returns analysis without image
-      (global.fetch as ReturnType<typeof vi.fn>)
+      (global.fetch as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce(mockFetchResponse(buildAnalysisResult()))
         // Second call: separate image generation succeeds
         .mockReturnValueOnce(mockFetchResponse({ imageUrl: 'https://separate.img.com/dream.jpg' }));
@@ -269,7 +259,7 @@ describe('geminiServiceReal', () => {
 
     it('returns null imageUrl when separate image generation fails', async () => {
       // First call: combined returns analysis without image
-      (global.fetch as ReturnType<typeof vi.fn>)
+      (global.fetch as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce(mockFetchResponse(buildAnalysisResult()))
         // Second call: separate image generation fails (no imageUrl/imageBytes)
         .mockReturnValueOnce(mockFetchResponse({}));
@@ -282,7 +272,7 @@ describe('geminiServiceReal', () => {
 
     it('falls back to analysis-only when combined call fails', async () => {
       // First call: combined fails
-      (global.fetch as ReturnType<typeof vi.fn>)
+      (global.fetch as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce(mockFetchResponse({ error: 'Combined failed' }, false, 500))
         // Second call: analysis-only succeeds
         .mockReturnValueOnce(mockFetchResponse(buildAnalysisResult()))
@@ -298,7 +288,7 @@ describe('geminiServiceReal', () => {
 
     it('returns analysis without image when fallback image generation fails', async () => {
       // First call: combined fails
-      (global.fetch as ReturnType<typeof vi.fn>)
+      (global.fetch as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce(mockFetchResponse({ error: 'Combined failed' }, false, 500))
         // Second call: analysis-only succeeds
         .mockReturnValueOnce(mockFetchResponse(buildAnalysisResult()))
@@ -314,7 +304,7 @@ describe('geminiServiceReal', () => {
 
     it('throws when both combined and analysis-only fail', async () => {
       // First call: combined fails
-      (global.fetch as ReturnType<typeof vi.fn>)
+      (global.fetch as ReturnType<typeof jest.fn>)
         .mockReturnValueOnce(mockFetchResponse({ error: 'Combined failed' }, false, 500))
         // Second call: analysis-only fails too
         .mockReturnValueOnce(mockFetchResponse({ error: 'Analysis failed' }, false, 500));
@@ -323,7 +313,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('includes fingerprint when provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ ...buildAnalysisResult(), imageUrl: 'https://img.test.com' })
       );
 
@@ -340,7 +330,7 @@ describe('geminiServiceReal', () => {
 
   describe('generateImageForDream', () => {
     it('sends POST to /generateImage with prompt', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ imageUrl: 'https://gen.img.com/dream.jpg' })
       );
 
@@ -357,7 +347,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('includes previousImageUrl when provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ imageUrl: 'https://gen.img.com/new.jpg' })
       );
 
@@ -372,7 +362,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('converts imageBytes to data URL', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ imageBytes: 'imgdatabase64' })
       );
 
@@ -382,7 +372,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('throws error when no image returned', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse({}));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse({}));
 
       await expect(generateImageForDream('prompt')).rejects.toThrow(
         'Invalid image response from backend'
@@ -390,7 +380,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('throws a classified message when content is blocked', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse(
           { error: 'Blocked by policy', blockReason: 'safety' },
           false,
@@ -407,7 +397,7 @@ describe('geminiServiceReal', () => {
 
   describe('generateImageFromTranscript', () => {
     it('sends POST to /generateImage with transcript', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ imageUrl: 'https://gen.img.com/transcript.jpg' })
       );
 
@@ -424,7 +414,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('includes previousImageUrl when provided', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ imageUrl: 'https://gen.img.com/new.jpg' })
       );
 
@@ -439,7 +429,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('converts imageBytes to data URL', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ imageBytes: 'transcriptimgdata' })
       );
 
@@ -449,7 +439,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('throws error when no image returned', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ prompt: 'only prompt returned' })
       );
 
@@ -459,7 +449,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('throws a classified message when image generation is blocked', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse(
           { error: 'No inlineData', finishReason: 'IMAGE_OTHER' },
           false,
@@ -476,7 +466,7 @@ describe('geminiServiceReal', () => {
 
   describe('startOrContinueChat', () => {
     it('sends POST to /chat with dreamId and message', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ text: 'AI response' })
       );
 
@@ -495,7 +485,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('handles default language', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ text: 'First response' })
       );
 
@@ -522,7 +512,7 @@ describe('geminiServiceReal', () => {
 
   describe('generateSpeechForText', () => {
     it('sends POST to /tts with text', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
         mockFetchResponse({ audioBase64: 'base64audiodata' })
       );
 
@@ -539,7 +529,7 @@ describe('geminiServiceReal', () => {
     });
 
     it('throws error when no audio returned', async () => {
-      (global.fetch as ReturnType<typeof vi.fn>).mockReturnValue(mockFetchResponse({}));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse({}));
 
       await expect(generateSpeechForText('text')).rejects.toThrow('No audio returned');
     });

@@ -1,15 +1,15 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const {
-  getMockMode,
-  setMockMode,
-  setCurrentUser,
-  setAccountCreated,
-  setStayOnSettings,
-  getAuthChangeHandler,
+  mockGetMockMode,
+  mockSetMockMode,
+  mockSetCurrentUser,
+  mockSetAccountCreated,
+  mockSetStayOnSettings,
+  mockGetAuthChangeHandler,
   mockGetCurrentUser,
   mockWasAccountCreatedOnDevice,
   mockOnAuthChange,
@@ -19,7 +19,7 @@ const {
   mockCreateCircuitBreaker,
   mockGetSession,
   mockRefreshSession,
-} = vi.hoisted(() => {
+} = ((factory: any) => factory())(() => {
   let mockMode = true;
   let currentUser: any = null;
   let accountCreated = false;
@@ -28,40 +28,40 @@ const {
     | ((nextUser: any, session?: { access_token?: string | null }) => Promise<void> | void)
     | null = null;
 
-  const mockGetCurrentUser = vi.fn(() => Promise.resolve(currentUser));
-  const mockWasAccountCreatedOnDevice = vi.fn(() => Promise.resolve(accountCreated));
-  const mockOnAuthChange = vi.fn((handler) => {
+  const mockGetCurrentUser = jest.fn(() => Promise.resolve(currentUser));
+  const mockWasAccountCreatedOnDevice = jest.fn(() => Promise.resolve(accountCreated));
+  const mockOnAuthChange = jest.fn((handler) => {
     authChangeHandler = handler;
     return () => {};
   });
 
-  const mockClearRemoteDreamStorage = vi.fn();
-  const mockConsumeStayOnSettingsIntent = vi.fn(() => stayOnSettings);
-  const mockRouterReplace = vi.fn();
+  const mockClearRemoteDreamStorage = jest.fn();
+  const mockConsumeStayOnSettingsIntent = jest.fn(() => stayOnSettings);
+  const mockRouterReplace = jest.fn();
 
-  const mockCreateCircuitBreaker = vi.fn(() => ({
+  const mockCreateCircuitBreaker = jest.fn(() => ({
     shouldBlock: () => false,
-    record: vi.fn(),
+    record: jest.fn(),
   }));
 
-  const mockGetSession = vi.fn().mockResolvedValue({ data: { session: null } });
-  const mockRefreshSession = vi.fn().mockResolvedValue(undefined);
+  const mockGetSession = jest.fn().mockResolvedValue({ data: { session: null } });
+  const mockRefreshSession = jest.fn().mockResolvedValue(undefined);
 
   return {
-    getMockMode: () => mockMode,
-    setMockMode: (value: boolean) => {
+    mockGetMockMode: () => mockMode,
+    mockSetMockMode: (value: boolean) => {
       mockMode = value;
     },
-    setCurrentUser: (user: any) => {
+    mockSetCurrentUser: (user: any) => {
       currentUser = user;
     },
-    setAccountCreated: (value: boolean) => {
+    mockSetAccountCreated: (value: boolean) => {
       accountCreated = value;
     },
-    setStayOnSettings: (value: boolean) => {
+    mockSetStayOnSettings: (value: boolean) => {
       stayOnSettings = value;
     },
-    getAuthChangeHandler: () => authChangeHandler,
+    mockGetAuthChangeHandler: () => authChangeHandler,
     mockGetCurrentUser,
     mockWasAccountCreatedOnDevice,
     mockOnAuthChange,
@@ -74,29 +74,29 @@ const {
   };
 });
 
-vi.mock('@/lib/env', () => ({
-  isMockModeEnabled: () => getMockMode(),
+jest.mock('@/lib/env', () => ({
+  isMockModeEnabled: () => mockGetMockMode(),
 }));
 
-vi.mock('@/lib/auth', () => ({
+jest.mock('@/lib/auth', () => ({
   getCurrentUser: mockGetCurrentUser,
   onAuthChange: mockOnAuthChange,
   wasAccountCreatedOnDevice: mockWasAccountCreatedOnDevice,
 }));
 
-vi.mock('@/lib/circuitBreaker', () => ({
+jest.mock('@/lib/circuitBreaker', () => ({
   createCircuitBreaker: mockCreateCircuitBreaker,
 }));
 
-vi.mock('@/lib/navigationIntents', () => ({
+jest.mock('@/lib/navigationIntents', () => ({
   consumeStayOnSettingsIntent: mockConsumeStayOnSettingsIntent,
 }));
 
-vi.mock('@/services/storageService', () => ({
+jest.mock('@/services/storageService', () => ({
   clearRemoteDreamStorage: mockClearRemoteDreamStorage,
 }));
 
-vi.mock('@/lib/supabase', () => ({
+jest.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
       getSession: mockGetSession,
@@ -105,26 +105,26 @@ vi.mock('@/lib/supabase', () => ({
   },
 }));
 
-vi.mock('expo-router', () => ({
+jest.mock('expo-router', () => ({
   router: {
     replace: mockRouterReplace,
   },
 }));
 
-const { AuthProvider, useAuth } = await import('../AuthContext');
+const { AuthProvider, useAuth } = require('../AuthContext');
 
 describe('AuthContext', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    setMockMode(true);
-    setCurrentUser(null);
-    setAccountCreated(false);
-    setStayOnSettings(false);
+    jest.clearAllMocks();
+    mockSetMockMode(true);
+    mockSetCurrentUser(null);
+    mockSetAccountCreated(false);
+    mockSetStayOnSettings(false);
   });
 
   it('given mock mode with user__when provider mounts__then exposes user and session ready', async () => {
-    setMockMode(true);
-    setCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+    mockSetMockMode(true);
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <AuthProvider>{children}</AuthProvider>
@@ -143,9 +143,9 @@ describe('AuthContext', () => {
   });
 
   it('given mock mode without user and returning guest__when provider mounts__then blocks guest', async () => {
-    setMockMode(true);
-    setCurrentUser(null);
-    setAccountCreated(true);
+    mockSetMockMode(true);
+    mockSetCurrentUser(null);
+    mockSetAccountCreated(true);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <AuthProvider>{children}</AuthProvider>
@@ -163,8 +163,8 @@ describe('AuthContext', () => {
   });
 
   it('given stay-on-settings intent__when user loads__then navigates to settings', async () => {
-    setCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
-    setStayOnSettings(true);
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+    mockSetStayOnSettings(true);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <AuthProvider>{children}</AuthProvider>
@@ -180,7 +180,7 @@ describe('AuthContext', () => {
   });
 
   it('given user tier update__when setUserTierLocally called__then updates metadata', async () => {
-    setCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <AuthProvider>{children}</AuthProvider>
@@ -201,7 +201,7 @@ describe('AuthContext', () => {
   });
 
   it('given auth change to new user__when onAuthChange fires__then clears remote storage and updates state', async () => {
-    setCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <AuthProvider>{children}</AuthProvider>
@@ -217,8 +217,8 @@ describe('AuthContext', () => {
       expect(mockOnAuthChange).toHaveBeenCalled();
     });
 
-    const handler = getAuthChangeHandler();
-    expect(handler).toBeTypeOf('function');
+    const handler = mockGetAuthChangeHandler();
+    expect(typeof handler).toBe('function');
 
     await act(async () => {
       await handler?.({ id: 'user-2', email: 'next@example.com', app_metadata: {}, user_metadata: {} }, { access_token: 'token' });

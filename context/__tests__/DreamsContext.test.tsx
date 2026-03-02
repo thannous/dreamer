@@ -1,31 +1,31 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const { journal } = vi.hoisted(() => {
-  const journal = {
+const { mockJournal } = ((factory: any) => factory())(() => {
+  const mockJournal = {
     dreams: [{ id: 1, title: 'Dream', transcript: 'text', isAnalyzed: false }],
     loaded: true,
-    addDream: vi.fn(async (dream) => dream),
-    updateDream: vi.fn(async () => undefined),
-    deleteDream: vi.fn(async () => undefined),
-    toggleFavorite: vi.fn(async () => undefined),
-    analyzeDream: vi.fn(async () => ({ id: 1 })),
+    addDream: jest.fn(async (dream) => dream),
+    updateDream: jest.fn(async () => undefined),
+    deleteDream: jest.fn(async () => undefined),
+    toggleFavorite: jest.fn(async () => undefined),
+    analyzeDream: jest.fn(async () => ({ id: 1 })),
   };
 
-  return { journal };
+  return { mockJournal };
 });
 
-vi.mock('../../hooks/useDreamJournal', () => ({
-  useDreamJournal: () => journal,
+jest.mock('../../hooks/useDreamJournal', () => ({
+  useDreamJournal: () => mockJournal,
 }));
 
-const { DreamsProvider, useDreams, useDreamsActions, useDreamsData } = await import('../DreamsContext');
+const { DreamsProvider, useDreams, useDreamsActions, useDreamsData } = require('../DreamsContext');
 
 describe('DreamsContext', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   it('given provider__when reading data__then exposes dreams and loaded', () => {
@@ -35,7 +35,7 @@ describe('DreamsContext', () => {
 
     const { result } = renderHook(() => useDreamsData(), { wrapper });
 
-    expect(result.current.dreams).toEqual(journal.dreams);
+    expect(result.current.dreams).toEqual(mockJournal.dreams);
     expect(result.current.loaded).toBe(true);
   });
 
@@ -47,7 +47,7 @@ describe('DreamsContext', () => {
     const { result } = renderHook(() => useDreamsActions(), { wrapper });
 
     await result.current.addDream({ id: 2 } as any);
-    expect(journal.addDream).toHaveBeenCalledWith({ id: 2 });
+    expect(mockJournal.addDream).toHaveBeenCalledWith({ id: 2 });
   });
 
   it('given provider__when using combined hook__then returns data and actions', () => {
@@ -57,8 +57,8 @@ describe('DreamsContext', () => {
 
     const { result } = renderHook(() => useDreams(), { wrapper });
 
-    expect(result.current.dreams).toEqual(journal.dreams);
-    expect(result.current.addDream).toBe(journal.addDream);
+    expect(result.current.dreams).toEqual(mockJournal.dreams);
+    expect(result.current.addDream).toBe(mockJournal.addDream);
   });
 
   it('given missing provider__when using data hook__then throws', () => {

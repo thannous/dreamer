@@ -1,24 +1,24 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
-  vi.clearAllMocks();
+  jest.clearAllMocks();
 });
 
 // ── Router ──────────────────────────────────────────────────────────────────
-const mockPush = vi.fn();
-const mockBack = vi.fn();
+const mockPush = jest.fn();
+const mockBack = jest.fn();
 
-vi.mock('expo-router', () => ({
-  router: { push: mockPush, back: mockBack, replace: vi.fn() },
+jest.mock('expo-router', () => ({
+  router: { push: mockPush, back: mockBack, replace: jest.fn() },
   useLocalSearchParams: () => ({}),
 }));
 
 // ── Theme / Translation ─────────────────────────────────────────────────────
-vi.mock('@/context/ThemeContext', () => ({
+jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     mode: 'dark',
     colors: {
@@ -36,24 +36,36 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useTranslation', () => ({
+jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
     currentLang: 'en',
   }),
 }));
 
+jest.mock('react-native', () => {
+  const mockReactNative = jest.requireActual('react-native');
+  return {
+    ...mockReactNative,
+    Platform: {
+      ...mockReactNative.Platform,
+      OS: 'web',
+      select: (spec: Record<string, unknown>) => (spec as any).web ?? spec.default,
+    },
+  };
+});
+
 // ── Expo / RN externals ─────────────────────────────────────────────────────
-vi.mock('expo-linear-gradient', () => ({
+jest.mock('expo-linear-gradient', () => ({
   LinearGradient: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-vi.mock('@/lib/moti', () => ({
+jest.mock('@/lib/moti', () => ({
   MotiView: ({ children, ...rest }: any) => <div {...rest}>{children}</div>,
 }));
 
 // ── SearchBar stub ──────────────────────────────────────────────────────────
-vi.mock('@/components/ui/SearchBar', () => ({
+jest.mock('@/components/ui/SearchBar', () => ({
   SearchBar: ({
     value,
     onChangeText,
@@ -73,7 +85,7 @@ vi.mock('@/components/ui/SearchBar', () => ({
 }));
 
 // ── FlashList stub ──────────────────────────────────────────────────────────
-vi.mock('@shopify/flash-list', () => ({
+jest.mock('@shopify/flash-list', () => ({
   FlashList: ({ data, renderItem, ListEmptyComponent }: any) => {
     if (!data || data.length === 0) {
       return typeof ListEmptyComponent === 'function' ? (
@@ -85,9 +97,9 @@ vi.mock('@shopify/flash-list', () => ({
     return (
       <div data-testid="flash-list">
         {data.map((item: any, index: number) => (
-          <React.Fragment key={item?.id ?? index}>
+          <div key={item?.id ?? index}>
             {renderItem({ item, index })}
-          </React.Fragment>
+          </div>
         ))}
       </div>
     );
@@ -95,19 +107,19 @@ vi.mock('@shopify/flash-list', () => ({
 }));
 
 // ── Child components stubs ──────────────────────────────────────────────────
-vi.mock('@/components/symbols/CategoryHeader', () => ({
+jest.mock('@/components/symbols/CategoryHeader', () => ({
   CategoryHeader: ({ category, count }: { category: string; count: number }) => (
     <div data-testid={`category-header-${category}`}>{category} ({count})</div>
   ),
 }));
 
-vi.mock('@/components/symbols/LetterHeader', () => ({
+jest.mock('@/components/symbols/LetterHeader', () => ({
   LetterHeader: ({ letter, count }: { letter: string; count: number }) => (
     <div data-testid={`letter-header-${letter}`}>{letter} ({count})</div>
   ),
 }));
 
-vi.mock('@/components/symbols/SymbolCard', () => ({
+jest.mock('@/components/symbols/SymbolCard', () => ({
   SymbolCard: ({
     symbol,
     onPress,
@@ -122,7 +134,7 @@ vi.mock('@/components/symbols/SymbolCard', () => ({
   ),
 }));
 
-vi.mock('@/components/ui/icon-symbol', () => ({
+jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
@@ -165,7 +177,7 @@ const MOCK_SYMBOLS = [
   },
 ];
 
-vi.mock('@/services/symbolDictionaryService', () => ({
+jest.mock('@/services/symbolDictionaryService', () => ({
   getAllSymbols: () => MOCK_SYMBOLS,
   getCategoryList: () => ['nature', 'animals', 'body'],
   getSymbolsByCategory: (cat: string) => MOCK_SYMBOLS.filter((s) => s.category === cat),
@@ -178,7 +190,7 @@ vi.mock('@/services/symbolDictionaryService', () => ({
 }));
 
 // ── Import screen after all mocks ───────────────────────────────────────────
-const { default: SymbolDictionaryScreen } = await import('../symbol-dictionary');
+const { default: SymbolDictionaryScreen } = require('../symbol-dictionary');
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Tests

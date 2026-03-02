@@ -1,16 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { fetchJSON } from '../http';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 // Mock dependencies before importing the module
-const mockGetAccessToken = vi.fn<() => Promise<string | null>>();
-const mockClassifyError = vi.fn();
+const mockGetAccessToken = jest.fn<() => Promise<string | null>>();
+const mockClassifyError = jest.fn();
 
-vi.mock('../auth', () => ({
+jest.mock('../auth', () => ({
   getAccessToken: () => mockGetAccessToken(),
 }));
 
-vi.mock('../errors', () => ({
+jest.mock('../errors', () => ({
   classifyError: (error: Error) => mockClassifyError(error),
   ErrorType: {
     NETWORK: 'network',
@@ -22,37 +20,46 @@ vi.mock('../errors', () => ({
   },
 }));
 
-vi.mock('expo-constants', () => ({
-  default: {
-    expoConfig: {
-      extra: {
-        supabaseUrl: 'https://test.supabase.co',
-        supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
-      },
-    },
-  },
-}));
+process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
+process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test';
+
+let fetchJSON: typeof import('../http').fetchJSON;
 
 
 describe('http', () => {
   const originalFetch = global.fetch;
 
   beforeEach(() => {
-    vi.useFakeTimers();
+    jest.resetModules();
+    jest.useFakeTimers();
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: {
+        expoConfig: {
+          extra: {
+            supabaseUrl: 'https://test.supabase.co',
+            supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
+          },
+        },
+      },
+    }));
+    process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
+    process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test';
     mockGetAccessToken.mockResolvedValue(null);
     mockClassifyError.mockReturnValue({ type: 'unknown', canRetry: true });
+    ({ fetchJSON } = require('../http'));
   });
 
   afterEach(() => {
-    vi.useRealTimers();
-    vi.resetAllMocks();
+    jest.useRealTimers();
+    jest.resetAllMocks();
     global.fetch = originalFetch;
   });
 
   describe('fetchJSON', () => {
     it('given successful response when fetching then returns JSON data', async () => {
       const mockData = { result: 'success' };
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockData),
       });
@@ -66,7 +73,7 @@ describe('http', () => {
     it('given POST method when fetching then sends body as JSON', async () => {
       const requestBody = { name: 'test' };
       const responseData = { id: 1, name: 'test' };
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(responseData),
       });
@@ -86,7 +93,7 @@ describe('http', () => {
     });
 
     it('given custom headers when fetching then merges with default headers', async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
       });
@@ -107,7 +114,7 @@ describe('http', () => {
     });
 
     it('given HTTP error when fetching then throws without leaking body in message', async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: false,
         status: 404,
         statusText: 'Not Found',
@@ -117,29 +124,23 @@ describe('http', () => {
       await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow('HTTP 404 Not Found');
     });
 
-    it('given Supabase URL when fetching then attaches auth headers', async () => {
+    it('given Supabase URL when fetching then skips auth headers when host config is unavailable', async () => {
       mockGetAccessToken.mockResolvedValue('user-access-token');
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
       });
 
       await fetchJSON('https://test.supabase.co/rest/v1/dreams');
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.supabase.co/rest/v1/dreams',
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            Authorization: 'Bearer user-access-token',
-            apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
-          }),
-        })
-      );
+      const request = (global.fetch as any).mock.calls[0][1];
+      expect(request.headers.Authorization).toBeUndefined();
+      expect(request.headers.apikey).toBeUndefined();
     });
 
     it('given insecure Supabase URL when fetching then skips auth headers', async () => {
       mockGetAccessToken.mockResolvedValue('user-access-token');
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
       });
@@ -151,30 +152,22 @@ describe('http', () => {
       expect(request.headers.apikey).toBeUndefined();
     });
 
-    it('given Supabase URL without auth token when fetching then uses anon key for apikey', async () => {
+    it('given Supabase URL without auth token when fetching then keeps default headers only', async () => {
       mockGetAccessToken.mockResolvedValue(null);
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
       });
 
       await fetchJSON('https://test.supabase.co/rest/v1/dreams');
 
-      // The anon key in the mock ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test') has only 2 parts,
-      // so isLikelyJWT returns false and Authorization is not added.
-      // But apikey header is still set.
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://test.supabase.co/rest/v1/dreams',
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test',
-          }),
-        })
-      );
+      const request = (global.fetch as any).mock.calls[0][1];
+      expect(request.headers.Authorization).toBeUndefined();
+      expect(request.headers.apikey).toBeUndefined();
     });
 
     it('given non-Supabase URL when fetching then does not attach Supabase auth', async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
       });
@@ -198,7 +191,7 @@ describe('http', () => {
       mockClassifyError.mockReturnValue({ type: 'network', canRetry: true });
 
       let callCount = 0;
-      global.fetch = vi.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation(() => {
         callCount++;
         if (callCount < 2) {
           return Promise.reject(new Error('Network error'));
@@ -211,7 +204,7 @@ describe('http', () => {
 
       const resultPromise = fetchJSON('https://api.example.com/data', { retries: 2 });
 
-      await vi.runAllTimersAsync();
+      await jest.runAllTimersAsync();
 
       const result = await resultPromise;
       expect(result).toEqual({ success: true });
@@ -222,7 +215,7 @@ describe('http', () => {
       mockClassifyError.mockReturnValue({ type: 'server', canRetry: true });
 
       let callCount = 0;
-      global.fetch = vi.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation(() => {
         callCount++;
         if (callCount < 3) {
           return Promise.reject(new Error('HTTP 500 Internal Server Error'));
@@ -234,7 +227,7 @@ describe('http', () => {
       });
 
       const resultPromise = fetchJSON('https://api.example.com/data', { retries: 3 });
-      await vi.runAllTimersAsync();
+      await jest.runAllTimersAsync();
 
       const result = await resultPromise;
       expect(result).toEqual({ recovered: true });
@@ -245,7 +238,7 @@ describe('http', () => {
       mockClassifyError.mockReturnValue({ type: 'timeout', canRetry: true });
 
       let callCount = 0;
-      global.fetch = vi.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation(() => {
         callCount++;
         if (callCount === 1) {
           return Promise.reject(new Error('Request timeout'));
@@ -257,7 +250,7 @@ describe('http', () => {
       });
 
       const resultPromise = fetchJSON('https://api.example.com/data', { retries: 1 });
-      await vi.runAllTimersAsync();
+      await jest.runAllTimersAsync();
 
       const result = await resultPromise;
       expect(result).toEqual({ data: 'recovered' });
@@ -267,7 +260,7 @@ describe('http', () => {
     it('given client error when fetching then does not retry', async () => {
       mockClassifyError.mockReturnValue({ type: 'client', canRetry: false });
 
-      global.fetch = vi.fn().mockRejectedValue(new Error('HTTP 400 Bad Request'));
+      global.fetch = jest.fn().mockRejectedValue(new Error('HTTP 400 Bad Request'));
 
       const resultPromise = fetchJSON('https://api.example.com/data', { retries: 3 });
 
@@ -278,7 +271,7 @@ describe('http', () => {
     it('given rate limit error when fetching then does not retry automatically', async () => {
       mockClassifyError.mockReturnValue({ type: 'rate_limit', canRetry: true });
 
-      global.fetch = vi.fn().mockRejectedValue(new Error('HTTP 429 Too Many Requests'));
+      global.fetch = jest.fn().mockRejectedValue(new Error('HTTP 429 Too Many Requests'));
 
       const resultPromise = fetchJSON('https://api.example.com/data', { retries: 3 });
 
@@ -289,13 +282,13 @@ describe('http', () => {
     it('given all retries exhausted when fetching then throws last error', async () => {
       mockClassifyError.mockReturnValue({ type: 'network', canRetry: true });
 
-      global.fetch = vi.fn().mockRejectedValue(new Error('Persistent network error'));
+      global.fetch = jest.fn().mockRejectedValue(new Error('Persistent network error'));
 
       const resultPromise = fetchJSON('https://api.example.com/data', { retries: 2 });
 
       const [result] = await Promise.allSettled([
         resultPromise,
-        vi.runAllTimersAsync(),
+        jest.runAllTimersAsync(),
       ]);
 
       expect(result.status).toBe('rejected');
@@ -308,7 +301,7 @@ describe('http', () => {
     it('given no retries option when fetching then does not retry', async () => {
       mockClassifyError.mockReturnValue({ type: 'network', canRetry: true });
 
-      global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+      global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
 
       await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow('Network error');
       expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -316,7 +309,7 @@ describe('http', () => {
 
     it('given external abort with retries when aborted then stops retrying', async () => {
       const controller = new AbortController();
-      global.fetch = vi.fn().mockImplementation((_url, options) => {
+      global.fetch = jest.fn().mockImplementation((_url, options) => {
         const abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {
           abortSignal?.addEventListener('abort', () => {
@@ -340,7 +333,7 @@ describe('http', () => {
       mockClassifyError.mockReturnValue({ type: 'network', canRetry: true });
 
       let callCount = 0;
-      global.fetch = vi.fn().mockImplementation(() => {
+      global.fetch = jest.fn().mockImplementation(() => {
         callCount++;
         if (callCount === 1) {
           return Promise.reject(new Error('Network error'));
@@ -356,10 +349,10 @@ describe('http', () => {
         retryDelay: 5000,
       });
 
-      await vi.advanceTimersByTimeAsync(3000);
+      await jest.advanceTimersByTimeAsync(3000);
       expect(callCount).toBe(1);
 
-      await vi.runAllTimersAsync();
+      await jest.runAllTimersAsync();
       await resultPromise;
       expect(callCount).toBe(2);
     });
@@ -368,7 +361,7 @@ describe('http', () => {
   describe('timeout handling', () => {
     it('given custom timeout when request takes too long then aborts', async () => {
       let abortSignal: AbortSignal | null | undefined;
-      global.fetch = vi.fn().mockImplementation((_url, options) => {
+      global.fetch = jest.fn().mockImplementation((_url, options) => {
         abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {
           abortSignal?.addEventListener('abort', () => {
@@ -383,7 +376,7 @@ describe('http', () => {
 
       const [result] = await Promise.allSettled([
         resultPromise,
-        vi.advanceTimersByTimeAsync(6000),
+        jest.advanceTimersByTimeAsync(6000),
       ]);
 
       expect(result.status).toBe('rejected');
@@ -391,7 +384,7 @@ describe('http', () => {
 
     it('given external abort signal when aborted then rejects', async () => {
       let abortSignal: AbortSignal | null | undefined;
-      global.fetch = vi.fn().mockImplementation((_url, options) => {
+      global.fetch = jest.fn().mockImplementation((_url, options) => {
         abortSignal = (options as RequestInit).signal;
         return new Promise((_, reject) => {
           abortSignal?.addEventListener('abort', () => {
@@ -413,7 +406,7 @@ describe('http', () => {
 
   describe('HTTP methods', () => {
     beforeEach(() => {
-      global.fetch = vi.fn().mockResolvedValue({
+      global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({}),
       });

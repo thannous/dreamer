@@ -1,8 +1,8 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { DreamAnalysis } from '../../lib/types';
 import { useDreamStatistics } from '../useDreamStatistics';
@@ -25,7 +25,7 @@ const buildDream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
 
 describe('useDreamStatistics', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('basic counts', () => {

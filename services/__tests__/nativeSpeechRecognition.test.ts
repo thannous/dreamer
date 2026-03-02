@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import {
   __setCachedSpeechModuleForTests,
@@ -112,7 +112,7 @@ describe('buildPreview', () => {
 
 describe('native speech module integration', () => {
   afterEach(async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'web';
     delete (Platform as any).Version;
     __setCachedSpeechModuleForTests(undefined);
@@ -128,14 +128,14 @@ describe('native speech module integration', () => {
   });
 
   it('detects installed locales and Android override', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 34;
 
     const speechModule = {
       getDefaultRecognitionService: () => ({ packageName: 'com.openai.chatgpt' }),
       getSpeechRecognitionServices: () => ['com.google.android.as', 'com.other'],
-      getSupportedLocales: vi.fn().mockResolvedValue({ installedLocales: ['en-US', 'fr-FR'] }),
+      getSupportedLocales: jest.fn().mockResolvedValue({ installedLocales: ['en-US', 'fr-FR'] }),
     } as any;
 
     __setCachedSpeechModuleForTests(speechModule);
@@ -147,14 +147,14 @@ describe('native speech module integration', () => {
   });
 
   it('returns default locale availability when lookup fails', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 34;
 
     const speechModule = {
       getDefaultRecognitionService: () => ({ packageName: 'com.openai.chatgpt' }),
       getSpeechRecognitionServices: () => ['com.google.android.as'],
-      getSupportedLocales: vi.fn().mockRejectedValue(new Error('nope')),
+      getSupportedLocales: jest.fn().mockRejectedValue(new Error('nope')),
     } as any;
 
     __setCachedSpeechModuleForTests(speechModule);
@@ -166,7 +166,7 @@ describe('native speech module integration', () => {
   });
 
   it('ensures offline model only on supported Android versions', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
     (Platform as any).Version = 16;
 
@@ -181,12 +181,12 @@ describe('native speech module integration', () => {
   });
 
   it('returns false when offline model is missing and no handler exists', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 34;
 
     const speechModule = {
-      getSupportedLocales: vi.fn().mockResolvedValue({ installedLocales: [] }),
+      getSupportedLocales: jest.fn().mockResolvedValue({ installedLocales: [] }),
     } as any;
 
     __setCachedSpeechModuleForTests(speechModule);
@@ -197,11 +197,11 @@ describe('native speech module integration', () => {
   });
 
   it('uses the offline model prompt handler when available', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 34;
 
-    const getSupportedLocales = vi.fn()
+    const getSupportedLocales = jest.fn()
       .mockResolvedValueOnce({ installedLocales: [] })
       .mockResolvedValueOnce({ installedLocales: ['en-US'] });
 
@@ -212,7 +212,7 @@ describe('native speech module integration', () => {
     __setCachedSpeechModuleForTests(speechModule);
 
     const promptHandler = {
-      show: vi.fn().mockResolvedValue(undefined),
+      show: jest.fn().mockResolvedValue(undefined),
       isVisible: false,
     };
     registerOfflineModelPromptHandler(promptHandler);
@@ -224,13 +224,13 @@ describe('native speech module integration', () => {
   });
 
   it('returns null when recognition is unavailable', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const speechModule = {
       isRecognitionAvailable: () => false,
       requestPermissionsAsync: async () => ({ granted: true }),
-      addListener: vi.fn(),
+      addListener: jest.fn(),
     } as any;
 
     __setCachedSpeechModuleForTests(speechModule);
@@ -241,13 +241,13 @@ describe('native speech module integration', () => {
   });
 
   it('returns null when permissions are denied', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
 
     const speechModule = {
       isRecognitionAvailable: () => true,
       requestPermissionsAsync: async () => ({ granted: false }),
-      addListener: vi.fn(),
+      addListener: jest.fn(),
     } as any;
 
     __setCachedSpeechModuleForTests(speechModule);
@@ -258,7 +258,7 @@ describe('native speech module integration', () => {
   });
 
   it('starts a speech session and captures results', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
     (Platform as any).Version = 17;
 
@@ -272,20 +272,20 @@ describe('native speech module integration', () => {
       getSpeechRecognitionServices: () => [],
       getSupportedLocales: async () => ({ installedLocales: ['en-US'] }),
       getStateAsync: async () => 'inactive',
-      start: vi.fn(),
-      stop: vi.fn(() => {
+      start: jest.fn(),
+      stop: jest.fn(() => {
         listeners.get('end')?.();
       }),
-      abort: vi.fn(),
-      addListener: vi.fn((event: string, cb: (payload?: any) => void) => {
+      abort: jest.fn(),
+      addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
         listeners.set(event, cb);
-        return { remove: vi.fn() };
+        return { remove: jest.fn() };
       }),
     } as any;
 
     __setCachedSpeechModuleForTests(speechModule);
 
-    const onPartial = vi.fn();
+    const onPartial = jest.fn();
     const session = await startNativeSpeechSession('en-US', { onPartial });
 
     expect(session).not.toBeNull();
@@ -303,7 +303,7 @@ describe('native speech module integration', () => {
   });
 
   it('captures error events during a session', async () => {
-    const { Platform } = await import('react-native');
+    const { Platform } = require('react-native');
     Platform.OS = 'ios';
     (Platform as any).Version = 17;
 
@@ -314,14 +314,14 @@ describe('native speech module integration', () => {
       supportsOnDeviceRecognition: () => false,
       supportsRecording: () => false,
       getStateAsync: async () => 'inactive',
-      start: vi.fn(),
-      stop: vi.fn(() => {
+      start: jest.fn(),
+      stop: jest.fn(() => {
         listeners.get('end')?.();
       }),
-      abort: vi.fn(),
-      addListener: vi.fn((event: string, cb: (payload?: any) => void) => {
+      abort: jest.fn(),
+      addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
         listeners.set(event, cb);
-        return { remove: vi.fn() };
+        return { remove: jest.fn() };
       }),
     } as any;
 

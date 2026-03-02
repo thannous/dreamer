@@ -52,6 +52,8 @@ type IndexedDBStorage = {
   removeItem(key: string): Promise<void>;
 };
 
+type ModuleWithDefault<T> = T | { default: T };
+
 // In-memory fallback if AsyncStorage is not installed yet
 const memoryStore: Record<string, string> = {};
 let AsyncStorageRef: AsyncStorageModule | null | undefined;
@@ -245,6 +247,20 @@ const webStorage: StorageLike | null =
     ? ((globalThis as unknown as { localStorage?: StorageLike }).localStorage ?? null)
     : null;
 
+const loadModule = async <T>(specifier: string): Promise<T> => {
+  try {
+    return (await import(specifier)) as T;
+  } catch (dynamicImportError) {
+    try {
+      // Jest can fail to resolve dynamic imports for mocked native modules; require keeps tests deterministic.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      return require(specifier) as T;
+    } catch {
+      throw dynamicImportError;
+    }
+  }
+};
+
 async function getLegacyAsyncStorage(): Promise<AsyncStorageModule | null> {
   // The web implementation of AsyncStorage is a thin wrapper around localStorage,
   // which does not have enough quota for storing dream images. Force the web
@@ -256,9 +272,7 @@ async function getLegacyAsyncStorage(): Promise<AsyncStorageModule | null> {
 
   if (AsyncStorageRef !== undefined) return AsyncStorageRef;
   try {
-    const mod = (await import('@react-native-async-storage/async-storage')) as
-      | AsyncStorageModule
-      | { default: AsyncStorageModule };
+    const mod = await loadModule<ModuleWithDefault<AsyncStorageModule>>('@react-native-async-storage/async-storage');
     AsyncStorageRef = 'default' in mod ? mod.default : mod;
   } catch {
     AsyncStorageRef = null;
@@ -276,7 +290,7 @@ async function getSQLiteKvStore(): Promise<AsyncStorageModule | null> {
 
   if (SQLiteKvStoreRef !== undefined) return SQLiteKvStoreRef;
   try {
-    const mod = (await import('expo-sqlite/kv-store')) as AsyncStorageModule | { default: AsyncStorageModule };
+    const mod = await loadModule<ModuleWithDefault<AsyncStorageModule>>('expo-sqlite/kv-store');
     SQLiteKvStoreRef = 'default' in mod ? mod.default : mod;
   } catch {
     SQLiteKvStoreRef = null;

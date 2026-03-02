@@ -1,16 +1,16 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 
 import { updateLanguagePreference } from '../languagePreference';
 import { getTranscriptionLocale } from '../locale';
 
-vi.mock('../locale', () => ({
-  getTranscriptionLocale: vi.fn((language: string) => `locale-${language}`),
+jest.mock('../locale', () => ({
+  getTranscriptionLocale: jest.fn((language: string) => `locale-${language}`),
 }));
 
 describe('updateLanguagePreference', () => {
   it('uses system language for auto preference and requests offline model for that locale', async () => {
-    const ensureOfflineModel = vi.fn().mockResolvedValue(undefined);
-    const setPreference = vi.fn().mockResolvedValue(undefined);
+    const ensureOfflineModel = jest.fn().mockResolvedValue(undefined);
+    const setPreference = jest.fn().mockResolvedValue(undefined);
 
     const result = await updateLanguagePreference({
       preference: 'auto',
@@ -26,8 +26,8 @@ describe('updateLanguagePreference', () => {
   });
 
   it('swallows offline model errors while still saving preference', async () => {
-    const ensureOfflineModel = vi.fn().mockRejectedValue(new Error('offline error'));
-    const setPreference = vi.fn().mockResolvedValue(undefined);
+    const ensureOfflineModel = jest.fn().mockRejectedValue(new Error('offline error'));
+    const setPreference = jest.fn().mockResolvedValue(undefined);
 
     await updateLanguagePreference({
       preference: 'fr',

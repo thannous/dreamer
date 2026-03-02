@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { createScopedLogger, logger } from '../logger';
 
@@ -7,14 +7,14 @@ describe('logger', () => {
 
   afterEach(() => {
     (globalThis as any).__DEV__ = originalDev;
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('logs debug and warn when __DEV__ is true', () => {
     (globalThis as any).__DEV__ = true;
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     logger.debug('debug');
     logger.warn('warn');
@@ -33,9 +33,9 @@ describe('logger', () => {
 
   it('suppresses debug and warn when __DEV__ is false', () => {
     (globalThis as any).__DEV__ = false;
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     logger.debug('debug');
     logger.warn('warn');
@@ -48,9 +48,9 @@ describe('logger', () => {
 
   it('creates a scoped logger that prefixes messages', () => {
     (globalThis as any).__DEV__ = true;
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const scoped = createScopedLogger('[Test]');
     scoped.debug('hello');

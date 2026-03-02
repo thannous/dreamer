@@ -1,23 +1,23 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 
 import { useTranslation } from '../useTranslation';
 // Mock LanguageContext
-const mockLanguage = vi.hoisted(() => ({ current: 'en' }));
+const mockLanguage = ((factory: any) => factory())(() => ({ current: 'en' }));
 
-vi.mock('../../context/LanguageContext', () => ({
+jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
     language: mockLanguage.current,
-    setLanguage: vi.fn(),
+    setLanguage: jest.fn(),
     locale: { languageTag: `${mockLanguage.current}-US` },
   }),
 }));
 
 // Mock i18n getTranslator
-vi.mock('../../lib/i18n', () => ({
+jest.mock('../../lib/i18n', () => ({
   getTranslator: (lang: string) => {
     const translations: Record<string, Record<string, string>> = {
       en: {

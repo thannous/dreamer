@@ -18,6 +18,21 @@ const WEB_REDIRECT_FALLBACK = 'https://dream.noctalia.app';
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+async function loadModule<T>(
+  importer: () => Promise<T>,
+  requirePath: string
+): Promise<T> {
+  try {
+    return await importer();
+  } catch (dynamicImportError) {
+    try {
+      return require(requirePath) as T;
+    } catch {
+      throw dynamicImportError;
+    }
+  }
+}
+
 let googleSignInModule: Promise<GoogleSignInModule> | null = null;
 let googleSignInConfigurePromise: Promise<void> | null = null;
 let googleSignInConfigured = false;
@@ -52,7 +67,10 @@ async function getGoogleSignInModule(): Promise<GoogleSignInModule> {
   }
 
   if (!googleSignInModule) {
-    googleSignInModule = import('@react-native-google-signin/google-signin');
+    googleSignInModule = loadModule(
+      () => import('@react-native-google-signin/google-signin'),
+      '@react-native-google-signin/google-signin'
+    );
   }
 
   return googleSignInModule;
@@ -152,7 +170,10 @@ async function markAccountCreated(): Promise<void> {
   }
 
   try {
-    const { markAccountCreatedOnDevice } = await import('./deviceFingerprint');
+    const { markAccountCreatedOnDevice } = await loadModule<typeof import('./deviceFingerprint')>(
+      () => import('./deviceFingerprint'),
+      './deviceFingerprint'
+    );
     await markAccountCreatedOnDevice();
     log.debug('Successfully marked account as created on device');
   } catch (error) {
@@ -170,7 +191,10 @@ export async function wasAccountCreatedOnDevice(): Promise<boolean> {
   }
 
   try {
-    const deviceFingerprint = await import('./deviceFingerprint');
+    const deviceFingerprint = await loadModule<typeof import('./deviceFingerprint')>(
+      () => import('./deviceFingerprint'),
+      './deviceFingerprint'
+    );
     return deviceFingerprint.wasAccountCreatedOnDevice();
   } catch (error) {
     log.warn('Failed to check if account was created on device', error);
@@ -189,9 +213,18 @@ async function markFingerprintUpgraded(): Promise<void> {
   }
 
   try {
-    const { getDeviceFingerprint } = await import('./deviceFingerprint');
-    const { getApiBaseUrl } = await import('./config');
-    const { fetchJSON } = await import('./http');
+    const { getDeviceFingerprint } = await loadModule<typeof import('./deviceFingerprint')>(
+      () => import('./deviceFingerprint'),
+      './deviceFingerprint'
+    );
+    const { getApiBaseUrl } = await loadModule<typeof import('./config')>(
+      () => import('./config'),
+      './config'
+    );
+    const { fetchJSON } = await loadModule<typeof import('./http')>(
+      () => import('./http'),
+      './http'
+    );
 
     const fingerprint = await getDeviceFingerprint();
     const token = await waitForAccessToken();
@@ -453,7 +486,10 @@ export async function signOut() {
 
   try {
     try {
-      const subscriptionService = await import('@/services/subscriptionService');
+      const subscriptionService = await loadModule<typeof import('../services/subscriptionService')>(
+        () => import('@/services/subscriptionService'),
+        '../services/subscriptionService'
+      );
       const logOut =
         subscriptionService.logOutSubscriptionUser ??
         (subscriptionService as { default?: { logOutSubscriptionUser?: () => Promise<void> } }).default

@@ -1,8 +1,8 @@
 /**
- * @vitest-environment happy-dom
+ * @jest-environment jsdom
  */
 import { renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { QuotaStatus } from '../../lib/types';
 
@@ -18,30 +18,30 @@ const {
   mockGetUsedExplorationCount,
   mockGetUsedMessagesCount,
   mockSubscribe,
-} = vi.hoisted(() => ({
-  mockGetQuotaStatus: vi.fn(),
-  mockInvalidate: vi.fn(),
-  mockInvalidateAll: vi.fn(),
-  mockCanAnalyzeDream: vi.fn(),
-  mockCanExploreDream: vi.fn(),
-  mockCanSendChatMessage: vi.fn(),
-  mockGetUsedAnalysisCount: vi.fn(),
-  mockGetUsedExplorationCount: vi.fn(),
-  mockGetUsedMessagesCount: vi.fn(),
-  mockSubscribe: vi.fn(),
+} = ((factory: any) => factory())(() => ({
+  mockGetQuotaStatus: jest.fn(),
+  mockInvalidate: jest.fn(),
+  mockInvalidateAll: jest.fn(),
+  mockCanAnalyzeDream: jest.fn(),
+  mockCanExploreDream: jest.fn(),
+  mockCanSendChatMessage: jest.fn(),
+  mockGetUsedAnalysisCount: jest.fn(),
+  mockGetUsedExplorationCount: jest.fn(),
+  mockGetUsedMessagesCount: jest.fn(),
+  mockSubscribe: jest.fn(),
 }));
 
 let mockUser: any = null;
 let mockSubscriptionStatus: any = null;
 let mockSubscriptionLoading = false;
 
-vi.mock('../../context/AuthContext', () => ({
+jest.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockUser,
   }),
 }));
 
-vi.mock('../useSubscription', () => {
+jest.mock('../useSubscription', () => {
   return {
     useSubscription: () => {
       // Return values dynamically so they can be changed in tests
@@ -53,7 +53,7 @@ vi.mock('../useSubscription', () => {
   };
 });
 
-vi.mock('../../services/quotaService', () => ({
+jest.mock('../../services/quotaService', () => ({
   quotaService: {
     getQuotaStatus: mockGetQuotaStatus,
     invalidate: mockInvalidate,
@@ -69,7 +69,7 @@ vi.mock('../../services/quotaService', () => ({
 }));
 
 // Import after mocks
-const { useQuota } = await import('../useQuota');
+const { useQuota } = require('../useQuota');
 
 const buildQuotaStatus = (overrides: Partial<QuotaStatus> = {}): QuotaStatus => ({
   tier: 'guest',
@@ -86,7 +86,7 @@ const buildQuotaStatus = (overrides: Partial<QuotaStatus> = {}): QuotaStatus => 
 
 describe('useQuota', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUser = null;
     mockSubscriptionStatus = { tier: 'free' };
     mockSubscriptionLoading = false;

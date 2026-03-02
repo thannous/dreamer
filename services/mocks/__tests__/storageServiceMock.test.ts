@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import type { DreamAnalysis, DreamMutation, RitualStepProgress } from '../../../lib/types';
 import { PREDEFINED_DREAMS } from '../../../mock-data/predefinedDreams';

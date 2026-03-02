@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, jest } from '@jest/globals';
 import {
     canRetryError,
     classifyError,
@@ -131,7 +131,7 @@ describe('classifyError', () => {
 
 describe('classifyError with i18n', () => {
   it('should use translation function when provided', () => {
-    const mockTranslate = vi.fn().mockReturnValue('Translated network error');
+    const mockTranslate = jest.fn().mockReturnValue('Translated network error');
     const error = new Error('Network request failed');
     
     const result = classifyError(error, mockTranslate);
@@ -141,7 +141,7 @@ describe('classifyError with i18n', () => {
   });
 
   it('should fall back to default message when translation returns key', () => {
-    const mockTranslate = vi.fn().mockImplementation((key) => key);
+    const mockTranslate = jest.fn().mockImplementation((key) => key);
     const error = new Error('Network request failed');
     
     const result = classifyError(error, mockTranslate);
@@ -150,7 +150,7 @@ describe('classifyError with i18n', () => {
   });
 
   it('should translate timeout errors', () => {
-    const mockTranslate = vi.fn().mockReturnValue('Délai dépassé');
+    const mockTranslate = jest.fn().mockReturnValue('Délai dépassé');
     const error = new Error('Request timeout');
     
     const result = classifyError(error, mockTranslate);
@@ -160,7 +160,7 @@ describe('classifyError with i18n', () => {
   });
 
   it('should translate rate limit errors', () => {
-    const mockTranslate = vi.fn().mockReturnValue('Trop de requêtes');
+    const mockTranslate = jest.fn().mockReturnValue('Trop de requêtes');
     const error = new Error('HTTP 429');
     
     const result = classifyError(error, mockTranslate);
@@ -170,7 +170,7 @@ describe('classifyError with i18n', () => {
   });
 
   it('should pass owner-agent limit placeholders to translation', () => {
-    const mockTranslate = vi.fn().mockImplementation((key) => key);
+    const mockTranslate = jest.fn().mockImplementation((key) => key);
     const error = Object.assign(new Error('HTTP 400 Bad Request'), {
       status: 400,
       body: {
@@ -241,7 +241,7 @@ describe('getUserErrorMessage', () => {
   });
 
   it('should use translation function when provided', () => {
-    const mockTranslate = vi.fn().mockReturnValue('Pas de connexion');
+    const mockTranslate = jest.fn().mockReturnValue('Pas de connexion');
     const error = new Error('Network failed');
     
     const message = getUserErrorMessage(error, mockTranslate);

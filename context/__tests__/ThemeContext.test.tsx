@@ -1,27 +1,27 @@
-/* @vitest-environment happy-dom */
+/* @jest-environment jsdom */
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const mockUseColorScheme = vi.fn();
-const mockGetThemePreference = vi.fn();
-const mockSaveThemePreference = vi.fn();
+const mockUseColorScheme = jest.fn();
+const mockGetThemePreference = jest.fn();
+const mockSaveThemePreference = jest.fn();
 
-vi.mock('../../hooks/use-color-scheme', () => ({
+jest.mock('../../hooks/use-color-scheme', () => ({
   useColorScheme: () => mockUseColorScheme(),
 }));
 
-vi.mock('../../services/storageService', () => ({
+jest.mock('../../services/storageService', () => ({
   getThemePreference: mockGetThemePreference,
   saveThemePreference: mockSaveThemePreference,
 }));
 
-const { DarkTheme, LightTheme, Shadows } = await import('../../constants/journalTheme');
-const { ThemeProvider, useTheme } = await import('../ThemeContext');
+const { DarkTheme, LightTheme, Shadows } = require('../../constants/journalTheme');
+const { ThemeProvider, useTheme } = require('../ThemeContext');
 
 describe('ThemeContext', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     mockUseColorScheme.mockReturnValue('light');
     mockGetThemePreference.mockResolvedValue('auto');
   });
