@@ -6,7 +6,7 @@ import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
 import { type ColorValue, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 
 type MaterialIconName = ComponentProps<typeof MaterialIcons>['name'];
-type SFSymbolName = SymbolViewProps['name'];
+type SFSymbolName = Extract<SymbolViewProps['name'], string>;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
