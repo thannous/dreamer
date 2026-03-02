@@ -2,7 +2,9 @@
 
 /**
  * Sitemap Generator v2
- * Reads hreflang links from HTML files to map multilingual content
+ * Reads hreflang links from HTML files to map multilingual content.
+ * For blog URLs, applies canonical hreflang relationships from
+ * `data/content-manifest.json` when available.
  * Generates accurate sitemap.xml with proper hreflang relationships
  */
 
@@ -13,6 +15,7 @@ const { execFileSync } = require('child_process');
 const REPO_ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(__dirname, '../docs');
 const SITEMAP_PATH = path.join(DOCS_DIR, 'sitemap.xml');
+const CONTENT_MANIFEST_PATH = path.join(REPO_ROOT, 'data', 'content-manifest.json');
 const DOMAIN = 'https://noctalia.app';
 
 // Directories to exclude from sitemap
@@ -119,6 +122,69 @@ function normalizeUrl(url) {
     .replace(/\/index\.html$/, '/')
     // Convert trailing .html to clean URL
     .replace(/\.html$/, '');
+}
+
+function normalizeManifestPathToUrl(manifestPath) {
+  if (typeof manifestPath !== 'string' || manifestPath.trim() === '') return null;
+  const normalizedPath = manifestPath.startsWith('/') ? manifestPath : `/${manifestPath}`;
+  return normalizeUrl(`${DOMAIN}${normalizedPath}`);
+}
+
+function loadBlogManifestHreflangs() {
+  const result = {
+    loaded: false,
+    map: new Map(),
+    entryCount: 0,
+    localizedUrlCount: 0,
+    error: null,
+  };
+
+  if (!fs.existsSync(CONTENT_MANIFEST_PATH)) {
+    return result;
+  }
+
+  try {
+    const manifest = JSON.parse(fs.readFileSync(CONTENT_MANIFEST_PATH, 'utf8'));
+    const entries = manifest?.collections?.blog?.entries;
+    const languages = Array.isArray(manifest?.languages) ? manifest.languages : [];
+    if (!entries || typeof entries !== 'object' || languages.length === 0) {
+      throw new Error('invalid collections.blog.entries or languages');
+    }
+
+    for (const entry of Object.values(entries)) {
+      if (!entry || typeof entry !== 'object') continue;
+      if (entry.type !== 'blogArticle' && entry.type !== 'blogIndex') continue;
+
+      const hreflangs = {};
+      for (const lang of languages) {
+        const href = normalizeManifestPathToUrl(entry?.locales?.[lang]?.path);
+        if (href) {
+          hreflangs[lang] = href;
+        }
+      }
+
+      const xDefault = hreflangs.en || Object.values(hreflangs)[0];
+      if (xDefault) {
+        hreflangs['x-default'] = xDefault;
+      }
+
+      if (Object.keys(hreflangs).length === 0) continue;
+      result.entryCount += 1;
+
+      for (const lang of languages) {
+        const pageUrl = hreflangs[lang];
+        if (!pageUrl) continue;
+        result.map.set(pageUrl, hreflangs);
+        result.localizedUrlCount += 1;
+      }
+    }
+
+    result.loaded = true;
+    return result;
+  } catch (error) {
+    result.error = error instanceof Error ? error.message : String(error);
+    return result;
+  }
 }
 
 /**
@@ -352,6 +418,34 @@ function main() {
   // Group URLs by their hreflang relationships
   const urlToMeta = groupUrlsByContent(files);
   console.log(`✅ Extracted hreflang data from ${urlToMeta.size} URLs`);
+
+  // Prefer canonical blog hreflangs from content-manifest when available
+  const manifestBlog = loadBlogManifestHreflangs();
+  if (manifestBlog.error) {
+    console.warn(`⚠️  Could not load content manifest: ${manifestBlog.error}`);
+  } else if (manifestBlog.loaded) {
+    let appliedCount = 0;
+    let missingInDocsCount = 0;
+
+    for (const [blogUrl, hreflangs] of manifestBlog.map.entries()) {
+      const meta = urlToMeta.get(blogUrl);
+      if (!meta) {
+        missingInDocsCount += 1;
+        continue;
+      }
+      meta.hreflangs = hreflangs;
+      appliedCount += 1;
+    }
+
+    console.log(
+      `✅ Loaded blog hreflangs from content-manifest.json (${manifestBlog.entryCount} entries, ${manifestBlog.localizedUrlCount} localized URLs)`,
+    );
+    console.log(
+      `✅ Applied canonical blog hreflangs to ${appliedCount} URLs (${missingInDocsCount} manifest URLs missing in docs scan)`,
+    );
+  } else {
+    console.log('ℹ️  content-manifest.json not found, keeping HTML-derived hreflangs only');
+  }
 
   // Generate sitemap
   const sitemap = generateSitemap(urlToMeta);

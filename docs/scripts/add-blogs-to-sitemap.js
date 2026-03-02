@@ -2,8 +2,9 @@
 /**
  * add-blogs-to-sitemap.js — Add missing blog URLs to sitemap.xml
  *
- * Reads blog-slugs.json and adds all blog articles + blog index pages
- * to the existing sitemap with proper hreflang annotations.
+ * Reads unified content-manifest.json (fallback: blog-slugs.json) and
+ * adds all blog articles + blog index pages to the existing sitemap
+ * with proper hreflang annotations.
  *
  * Run: node scripts/add-blogs-to-sitemap.js
  */
@@ -13,12 +14,64 @@ const path = require('path');
 
 const DOCS_ROOT = path.resolve(__dirname, '..');
 const SITEMAP_PATH = path.join(DOCS_ROOT, 'sitemap.xml');
+const CONTENT_MANIFEST_PATH = path.join(DOCS_ROOT, '..', 'data', 'content-manifest.json');
 const BLOG_SLUGS_PATH = path.join(DOCS_ROOT, '..', 'data', 'blog-slugs.json');
 const BASE_URL = 'https://noctalia.app';
 const LANGS = ['en', 'fr', 'es', 'de', 'it'];
 const TODAY = '2026-02-09';
 
-const blogData = JSON.parse(fs.readFileSync(BLOG_SLUGS_PATH, 'utf-8'));
+function normalizeSlug(value) {
+  if (typeof value !== 'string') return '';
+  return value.trim();
+}
+
+function loadArticlesFromContentManifest() {
+  if (!fs.existsSync(CONTENT_MANIFEST_PATH)) return null;
+
+  const manifest = JSON.parse(fs.readFileSync(CONTENT_MANIFEST_PATH, 'utf-8'));
+  const entries = manifest?.collections?.blog?.entries;
+  if (!entries || typeof entries !== 'object') {
+    throw new Error(`Invalid content manifest structure: ${CONTENT_MANIFEST_PATH}`);
+  }
+
+  const articles = {};
+  for (const [entryId, entry] of Object.entries(entries)) {
+    const type = entry?.type;
+    if (type !== 'blogArticle' && type !== 'blogIndex') continue;
+
+    const slugs = {};
+    for (const lang of LANGS) {
+      const slug = normalizeSlug(entry?.locales?.[lang]?.slug);
+      slugs[lang] = slug;
+    }
+
+    const key = type === 'blogIndex' ? 'index' : normalizeSlug(entry?.canonicalSlug || entryId);
+    if (!key) {
+      throw new Error(`Invalid blog entry key for ${entryId} in ${CONTENT_MANIFEST_PATH}`);
+    }
+
+    articles[key] = { slugs };
+  }
+
+  return { articles };
+}
+
+function loadArticlesFromLegacyMap() {
+  if (!fs.existsSync(BLOG_SLUGS_PATH)) {
+    throw new Error(`Missing legacy blog map: ${BLOG_SLUGS_PATH}`);
+  }
+  return JSON.parse(fs.readFileSync(BLOG_SLUGS_PATH, 'utf-8'));
+}
+
+function loadBlogData() {
+  const fromManifest = loadArticlesFromContentManifest();
+  if (fromManifest) {
+    return { source: 'content-manifest.json', data: fromManifest };
+  }
+  return { source: 'blog-slugs.json (fallback)', data: loadArticlesFromLegacyMap() };
+}
+
+const { source: blogSource, data: blogData } = loadBlogData();
 let sitemap = fs.readFileSync(SITEMAP_PATH, 'utf-8');
 
 // Check which blog URLs already exist
@@ -29,7 +82,7 @@ const existingUrls = new Set(
 let newEntries = '';
 let addedCount = 0;
 
-for (const [articleKey, article] of Object.entries(blogData.articles)) {
+for (const [, article] of Object.entries(blogData.articles)) {
   const slugs = article.slugs;
 
   // For each language, generate a <url> entry
@@ -80,5 +133,6 @@ fs.writeFileSync(SITEMAP_PATH, sitemap, 'utf-8');
 // Count total URLs
 const totalUrls = [...sitemap.matchAll(/<loc>/g)].length;
 
+console.log(`Source: ${blogSource}`);
 console.log(`Added ${addedCount} blog URLs to sitemap.xml`);
 console.log(`Total sitemap URLs: ${totalUrls}`);
