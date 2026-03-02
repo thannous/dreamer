@@ -88,14 +88,22 @@
       "Bash(git -C /home/tchau@france.groupe.intra/WebstormProjects/dreamer diff docs/)",
       "mcp__claude_ai_Linear__get_issue",
       "mcp__claude_ai_Linear__create_comment",
-      "mcp__plugin_context7_context7__resolve-library-id"
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "Bash(echo:*)",
+      "Bash(git stash:*)",
+      "Bash(git stash pop:*)",
+      "Bash(xargs:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "supabase"
+    "supabase",
+    "maestro",
+    "context7",
+    "chrome-devtools"
   ],
   "enabledPlugins": {
     "expo-app-design@expo-plugins": true,
