@@ -49,6 +49,7 @@ const CONFIG = {
   symbolsFile: 'dream-symbols.json',
   i18nFile: 'symbol-i18n.json',
   extendedFile: 'dream-symbols-extended.json',
+  extendedTier3File: 'dream-symbols-extended-tier3.json',
   languages: ['en', 'fr', 'es', 'de', 'it'],
   symbolsPath: {
     en: 'symbols',
@@ -75,17 +76,31 @@ function loadData() {
   const symbolsPath = path.join(CONFIG.dataDir, CONFIG.symbolsFile);
   const i18nPath = path.join(CONFIG.dataDir, CONFIG.i18nFile);
   const extendedPath = path.join(CONFIG.dataDir, CONFIG.extendedFile);
+  const extendedTier3Path = path.join(CONFIG.dataDir, CONFIG.extendedTier3File);
 
   const symbols = JSON.parse(fs.readFileSync(symbolsPath, 'utf8'));
   const i18n = JSON.parse(fs.readFileSync(i18nPath, 'utf8'));
 
   // Load extended data if available
-  let extended = { symbols: {} };
+  let extendedPrimary = { symbols: {} };
   if (fs.existsSync(extendedPath)) {
-    extended = JSON.parse(fs.readFileSync(extendedPath, 'utf8'));
+    extendedPrimary = JSON.parse(fs.readFileSync(extendedPath, 'utf8'));
   }
 
-  return { symbols, i18n, extended };
+  // Tier3 fallback mirrors Expo app behavior.
+  let extendedTier3 = {};
+  if (fs.existsSync(extendedTier3Path)) {
+    extendedTier3 = JSON.parse(fs.readFileSync(extendedTier3Path, 'utf8'));
+  }
+
+  return {
+    symbols,
+    i18n,
+    extended: {
+      primary: extendedPrimary,
+      tier3: extendedTier3
+    }
+  };
 }
 
 // Get category name for a symbol
@@ -172,102 +187,26 @@ function getRelatedSymbols(symbol, allSymbols, lang) {
 
 // Get extended content for a symbol
 function getExtendedContent(symbolId, extended, lang) {
-  const extSymbol = extended.symbols?.[symbolId]?.[lang];
-  if (!extSymbol) {
+  const extSymbol = extended?.primary?.symbols?.[symbolId]?.[lang];
+  if (extSymbol) {
     return {
-      fullInterpretation: null,
-      variations: []
+      fullInterpretation: extSymbol.fullInterpretation || null,
+      variations: extSymbol.variations || []
     };
   }
+
+  const tier3Symbol = extended?.tier3?.[symbolId]?.[lang];
+  if (tier3Symbol) {
+    return {
+      fullInterpretation: tier3Symbol.fullInterpretation || null,
+      variations: tier3Symbol.variations || []
+    };
+  }
+
   return {
-    fullInterpretation: extSymbol.fullInterpretation || null,
-    variations: extSymbol.variations || []
+    fullInterpretation: null,
+    variations: []
   };
-}
-
-function firstSentence(text) {
-  if (!text) return null;
-  const trimmed = String(text).trim();
-  if (!trimmed) return null;
-  const match = trimmed.match(/^(.+?[.!?])(\s|$)/);
-  return (match ? match[1] : trimmed).trim();
-}
-
-// Generate default interpretation from short description
-function generateDefaultInterpretation({ shortDescription, symbolName, lang, categoryIntro, askYourself }) {
-  const lower = symbolName.toLowerCase();
-  const categorySentence = firstSentence(categoryIntro);
-  const firstQuestion = Array.isArray(askYourself) ? askYourself[0] : null;
-
-  const questionLead = {
-    en: 'A helpful question to reflect on:',
-    fr: 'Une question utile à se poser :',
-    es: 'Una pregunta útil para reflexionar:',
-    de: 'Eine hilfreiche Frage zur Reflexion:',
-    it: 'Una domanda utile su cui riflettere:'
-  };
-
-  const templates = {
-    en: `<p>${shortDescription}</p>
-${categorySentence ? `<p>${categorySentence}</p>` : ''}
-<p>When ${lower} appears in your dreams, it often reflects important aspects of your inner life and current circumstances. The specific context and emotions you experience in the dream provide valuable clues to its personal meaning for you.</p>
-${firstQuestion ? `<p>${questionLead.en} ${firstQuestion}</p>` : ''}
-<p>Consider what ${lower} means to you personally. Your individual associations and life experiences shape the symbol's significance in your dreams.</p>`,
-    fr: `<p>${shortDescription}</p>
-${categorySentence ? `<p>${categorySentence}</p>` : ''}
-<p>Lorsque ${lower} apparaît dans vos rêves, cela reflète souvent des aspects importants de votre vie intérieure et de vos circonstances actuelles. Le contexte spécifique et les émotions que vous ressentez dans le rêve fournissent des indices précieux sur sa signification personnelle.</p>
-${firstQuestion ? `<p>${questionLead.fr} ${firstQuestion}</p>` : ''}
-<p>Réfléchissez à ce que ${lower} signifie pour vous personnellement. Vos associations individuelles et vos expériences de vie façonnent la signification du symbole dans vos rêves.</p>`,
-    es: `<p>${shortDescription}</p>
-${categorySentence ? `<p>${categorySentence}</p>` : ''}
-<p>Cuando ${lower} aparece en tus sueños, a menudo refleja aspectos importantes de tu vida interior y circunstancias actuales. El contexto específico y las emociones que experimentas en el sueño proporcionan pistas valiosas sobre su significado personal para ti.</p>
-${firstQuestion ? `<p>${questionLead.es} ${firstQuestion}</p>` : ''}
-<p>Considera qué significa ${lower} para ti personalmente. Tus asociaciones individuales y experiencias de vida dan forma al significado del símbolo en tus sueños.</p>`,
-    de: `<p>${shortDescription}</p>
-${categorySentence ? `<p>${categorySentence}</p>` : ''}
-<p>Wenn ${lower} in deinen Träumen erscheint, spiegelt es oft wichtige Aspekte deines Innenlebens und deiner aktuellen Lebensumstände wider. Der spezifische Kontext und die Emotionen, die du im Traum erlebst, liefern wertvolle Hinweise auf seine persönliche Bedeutung für dich.</p>
-${firstQuestion ? `<p>${questionLead.de} ${firstQuestion}</p>` : ''}
-<p>Überlege, was ${lower} für dich persönlich bedeutet. Deine individuellen Assoziationen und Lebenserfahrungen prägen die Bedeutung des Symbols in deinen Träumen.</p>`,
-    it: `<p>${shortDescription}</p>
-${categorySentence ? `<p>${categorySentence}</p>` : ''}
-<p>Quando ${lower} appare nei tuoi sogni, riflette spesso aspetti importanti della tua vita interiore e delle circostanze attuali. Il contesto specifico e le emozioni che provi nel sogno forniscono indizi preziosi sul suo significato personale per te.</p>
-${firstQuestion ? `<p>${questionLead.it} ${firstQuestion}</p>` : ''}
-<p>Considera cosa significa ${lower} per te personalmente. Le tue associazioni individuali e le esperienze di vita plasmano il significato del simbolo nei tuoi sogni.</p>`
-  };
-
-  return templates[lang];
-}
-
-// Generate default variations
-function generateDefaultVariations(symbolName, lang) {
-  const templates = {
-    en: [
-      { context: `Positive ${symbolName}`, meaning: `Often represents favorable outcomes, growth, or positive aspects of your current situation.` },
-      { context: `Negative or threatening ${symbolName}`, meaning: `May indicate fears, challenges, or unresolved issues that need your attention.` },
-      { context: `Recurring ${symbolName}`, meaning: `Suggests a persistent theme or message from your subconscious that deserves deeper exploration.` }
-    ],
-    fr: [
-      { context: `${symbolName} positif`, meaning: `Représente souvent des résultats favorables, la croissance ou des aspects positifs de votre situation actuelle.` },
-      { context: `${symbolName} négatif ou menaçant`, meaning: `Peut indiquer des peurs, des défis ou des problèmes non résolus qui nécessitent votre attention.` },
-      { context: `${symbolName} récurrent`, meaning: `Suggère un thème persistant ou un message de votre subconscient qui mérite une exploration plus profonde.` }
-    ],
-    es: [
-      { context: `${symbolName} positivo`, meaning: `A menudo representa resultados favorables, crecimiento o aspectos positivos de tu situación actual.` },
-      { context: `${symbolName} negativo o amenazante`, meaning: `Puede indicar miedos, desafíos o problemas no resueltos que necesitan tu atención.` },
-      { context: `${symbolName} recurrente`, meaning: `Sugiere un tema persistente o mensaje de tu subconsciente que merece una exploración más profunda.` }
-    ],
-    de: [
-      { context: `Positives ${symbolName}`, meaning: `Steht oft für günstige Ergebnisse, Wachstum oder positive Aspekte deiner aktuellen Situation.` },
-      { context: `Negatives oder bedrohliches ${symbolName}`, meaning: `Kann auf Ängste, Herausforderungen oder ungelöste Probleme hinweisen, die deine Aufmerksamkeit brauchen.` },
-      { context: `Wiederkehrendes ${symbolName}`, meaning: `Deutet auf ein beständiges Thema oder eine Botschaft deines Unterbewusstseins hin, die eine tiefere Erforschung verdient.` }
-    ],
-    it: [
-      { context: `${symbolName} positivo`, meaning: `Rappresenta spesso risultati favorevoli, crescita o aspetti positivi della tua situazione attuale.` },
-      { context: `${symbolName} negativo o minaccioso`, meaning: `Può indicare paure, sfide o problemi irrisolti che richiedono la tua attenzione.` },
-      { context: `${symbolName} ricorrente`, meaning: `Suggerisce un tema persistente o un messaggio dal tuo subconscio che merita un'esplorazione più profonda.` }
-    ]
-  };
-  return templates[lang];
 }
 
 // Escape HTML entities
@@ -312,22 +251,15 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const metaTitle = generateMetaTitle(symbol, i18n, lang);
   const metaDescription = generateMetaDescription(symbol, i18n, lang);
   const categoryName = getCategoryName(symbol, i18n, lang);
-  const categoryIntroForDefaults = i18n[lang].category_intros?.[symbol.category] || null;
   const relatedSymbols = getRelatedSymbols(symbol, allSymbols, lang);
   const extendedContent = getExtendedContent(symbol.id, extended, lang);
 
-  // Use extended content or generate defaults
-  const fullInterpretation = sanitizeEmDashes(extendedContent.fullInterpretation) ||
-    generateDefaultInterpretation({
-      shortDescription: symbolData.shortDescription,
-      symbolName: symbolData.name,
-      lang,
-      categoryIntro: categoryIntroForDefaults,
-      askYourself: symbolData.askYourself
-    });
-  const variations = extendedContent.variations.length > 0 ?
-    extendedContent.variations :
-    generateDefaultVariations(symbolData.name, lang);
+  // Keep web detail behavior aligned with Expo app:
+  // only render interpretation/variations when present in shared extended datasets.
+  const fullInterpretation = sanitizeEmDashes(extendedContent.fullInterpretation);
+  const variations = Array.isArray(extendedContent.variations) ? extendedContent.variations : [];
+  const hasInterpretation = Boolean(fullInterpretation && String(fullInterpretation).trim());
+  const hasVariations = variations.length > 0;
 
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
@@ -335,6 +267,27 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(sanitizeEmDashes(v.context))}</h3>
                         <p class="text-sm text-gray-300">${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
                     </div>`).join('\n');
+
+  const interpretationSectionHtml = hasInterpretation ? `            <!-- Main Interpretation -->
+            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
+                    <i data-lucide="eye" class="w-6 h-6 text-dream-salmon"></i>
+                    ${t.section_interpretation}
+                </h2>
+                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
+                    ${fullInterpretation}
+                </div>
+            </section>` : '';
+
+  const variationsSectionHtml = hasVariations ? `            <!-- Variations -->
+            <section class="mb-10">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
+                    <i data-lucide="layers" class="w-6 h-6 text-dream-salmon"></i>
+                    ${t.section_variations}
+                </h2>
+                <div class="grid gap-4">${variationsHtml}
+                </div>
+            </section>` : '';
 
   // Generate ask yourself HTML
   const askYourselfHtml = symbolData.askYourself.map(q => `
@@ -371,7 +324,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
             </section>` : '';
 
   // Generate FAQ answer for variations
-  const faqVariationsAnswer = sanitizeEmDashes(variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' '));
+  const faqVariationsAnswer = hasVariations
+    ? sanitizeEmDashes(variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' '))
+    : symbolData.shortDescription;
 
   const reflectionTitles = {
     en: 'Make it personal',
@@ -556,6 +511,7 @@ ${hreflangLinks}
     <meta property="og:description" content="${escapeHtml(symbolData.shortDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}">
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
+    <meta property="og:site_name" content="Noctalia">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
@@ -702,26 +658,9 @@ ${renderJsonLd(faqPageJsonLd)}
                 </p>
             </header>
 
-            <!-- Main Interpretation -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="eye" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_interpretation}
-                </h2>
-                <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
-                    ${fullInterpretation}
-                </div>
-            </section>
+${interpretationSectionHtml}
 
-            <!-- Variations -->
-            <section class="mb-10">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="layers" class="w-6 h-6 text-dream-salmon"></i>
-                    ${t.section_variations}
-                </h2>
-                <div class="grid gap-4">${variationsHtml}
-                </div>
-            </section>
+${variationsSectionHtml}
 
             <!-- Ask Yourself -->
             <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/20">

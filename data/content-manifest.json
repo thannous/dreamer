@@ -1,0 +1,746 @@
+{
+  "schemaVersion": 1,
+  "defaultLanguage": "en",
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it"
+  ],
+  "collections": {
+    "blog": {
+      "description": "Unified blog content map for web and mobile.",
+      "entries": {
+        "blog.index": {
+          "id": "blog.index",
+          "type": "blogIndex",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "",
+          "locales": {
+            "en": {
+              "slug": "",
+              "path": "/en/blog/"
+            },
+            "fr": {
+              "slug": "",
+              "path": "/fr/blog/"
+            },
+            "es": {
+              "slug": "",
+              "path": "/es/blog/"
+            },
+            "de": {
+              "slug": "",
+              "path": "/de/blog/"
+            },
+            "it": {
+              "slug": "",
+              "path": "/it/blog/"
+            }
+          }
+        },
+        "blog.being-chased-dreams": {
+          "id": "blog.being-chased-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "being-chased-dreams",
+          "locales": {
+            "en": {
+              "slug": "being-chased-dreams",
+              "path": "/en/blog/being-chased-dreams"
+            },
+            "fr": {
+              "slug": "reves-etre-poursuivi",
+              "path": "/fr/blog/reves-etre-poursuivi"
+            },
+            "es": {
+              "slug": "suenos-ser-perseguido",
+              "path": "/es/blog/suenos-ser-perseguido"
+            },
+            "de": {
+              "slug": "traeume-verfolgt-werden-bedeutung-und-interpretation",
+              "path": "/de/blog/traeume-verfolgt-werden-bedeutung-und-interpretation"
+            },
+            "it": {
+              "slug": "sogni-inseguiti-significato-e-interpretazione",
+              "path": "/it/blog/sogni-inseguiti-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.death-dreams-meaning": {
+          "id": "blog.death-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "death-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "death-dreams-meaning",
+              "path": "/en/blog/death-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-mort",
+              "path": "/fr/blog/reves-de-mort"
+            },
+            "es": {
+              "slug": "suenos-de-muerte",
+              "path": "/es/blog/suenos-de-muerte"
+            },
+            "de": {
+              "slug": "traeume-vom-tod-bedeutung-und-interpretation",
+              "path": "/de/blog/traeume-vom-tod-bedeutung-und-interpretation"
+            },
+            "it": {
+              "slug": "sogni-sulla-morte-significato-e-interpretazione",
+              "path": "/it/blog/sogni-sulla-morte-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.dream-incubation-guide": {
+          "id": "blog.dream-incubation-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-incubation-guide",
+          "locales": {
+            "en": {
+              "slug": "dream-incubation-guide",
+              "path": "/en/blog/dream-incubation-guide"
+            },
+            "fr": {
+              "slug": "guide-incubation-reves",
+              "path": "/fr/blog/guide-incubation-reves"
+            },
+            "es": {
+              "slug": "guia-incubacion-suenos",
+              "path": "/es/blog/guia-incubacion-suenos"
+            },
+            "de": {
+              "slug": "trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen",
+              "path": "/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen"
+            },
+            "it": {
+              "slug": "incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera",
+              "path": "/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera"
+            }
+          }
+        },
+        "blog.dream-interpretation-history": {
+          "id": "blog.dream-interpretation-history",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-interpretation-history",
+          "locales": {
+            "en": {
+              "slug": "dream-interpretation-history",
+              "path": "/en/blog/dream-interpretation-history"
+            },
+            "fr": {
+              "slug": "histoire-interpretation-reves",
+              "path": "/fr/blog/histoire-interpretation-reves"
+            },
+            "es": {
+              "slug": "historia-interpretacion-suenos",
+              "path": "/es/blog/historia-interpretacion-suenos"
+            },
+            "de": {
+              "slug": "die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft",
+              "path": "/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft"
+            },
+            "it": {
+              "slug": "la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna",
+              "path": "/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna"
+            }
+          }
+        },
+        "blog.dream-journal": {
+          "id": "blog.dream-journal",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-journal",
+          "locales": {
+            "en": {
+              "slug": "dream-journal",
+              "path": "/en/blog/dream-journal"
+            },
+            "fr": {
+              "slug": "journal-de-reves",
+              "path": "/fr/blog/journal-de-reves"
+            },
+            "es": {
+              "slug": "diario-de-suenos",
+              "path": "/es/blog/diario-de-suenos"
+            },
+            "de": {
+              "slug": "traumtagebuch-erinnerung-methoden-und-routinen",
+              "path": "/de/blog/traumtagebuch-erinnerung-methoden-und-routinen"
+            },
+            "it": {
+              "slug": "dream-journal-richiamo-metodi-e-routine",
+              "path": "/it/blog/dream-journal-richiamo-metodi-e-routine"
+            }
+          }
+        },
+        "blog.dream-journal-guide": {
+          "id": "blog.dream-journal-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-journal-guide",
+          "locales": {
+            "en": {
+              "slug": "dream-journal-guide",
+              "path": "/en/blog/dream-journal-guide"
+            },
+            "fr": {
+              "slug": "guide-journal-reves",
+              "path": "/fr/blog/guide-journal-reves"
+            },
+            "es": {
+              "slug": "guia-diario-suenos",
+              "path": "/es/blog/guia-diario-suenos"
+            },
+            "de": {
+              "slug": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
+              "path": "/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer"
+            },
+            "it": {
+              "slug": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne",
+              "path": "/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
+            }
+          }
+        },
+        "blog.dream-meanings": {
+          "id": "blog.dream-meanings",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-meanings",
+          "locales": {
+            "en": {
+              "slug": "dream-meanings",
+              "path": "/en/blog/dream-meanings"
+            },
+            "fr": {
+              "slug": "signification-des-reves",
+              "path": "/fr/blog/signification-des-reves"
+            },
+            "es": {
+              "slug": "significado-de-suenos",
+              "path": "/es/blog/significado-de-suenos"
+            },
+            "de": {
+              "slug": "traumbedeutungen-interpretation-symbole",
+              "path": "/de/blog/traumbedeutungen-interpretation-symbole"
+            },
+            "it": {
+              "slug": "significati-dei-sogni-interpretazione-e-simboli",
+              "path": "/it/blog/significati-dei-sogni-interpretazione-e-simboli"
+            }
+          }
+        },
+        "blog.dreams-about-ex": {
+          "id": "blog.dreams-about-ex",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-about-ex",
+          "locales": {
+            "en": {
+              "slug": "dreams-about-ex",
+              "path": "/en/blog/dreams-about-ex"
+            },
+            "fr": {
+              "slug": "reves-ex-partenaire",
+              "path": "/fr/blog/reves-ex-partenaire"
+            },
+            "es": {
+              "slug": "suenos-con-ex",
+              "path": "/es/blog/suenos-con-ex"
+            },
+            "de": {
+              "slug": "traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten",
+              "path": "/de/blog/traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten"
+            },
+            "it": {
+              "slug": "sogni-sul-tuo-ex-cosa-significano-veramente",
+              "path": "/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente"
+            }
+          }
+        },
+        "blog.dreams-mental-health": {
+          "id": "blog.dreams-mental-health",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-mental-health",
+          "locales": {
+            "en": {
+              "slug": "dreams-mental-health",
+              "path": "/en/blog/dreams-mental-health"
+            },
+            "fr": {
+              "slug": "reves-sante-mentale",
+              "path": "/fr/blog/reves-sante-mentale"
+            },
+            "es": {
+              "slug": "suenos-salud-mental",
+              "path": "/es/blog/suenos-salud-mental"
+            },
+            "de": {
+              "slug": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
+              "path": "/de/blog/traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart"
+            },
+            "it": {
+              "slug": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente",
+              "path": "/it/blog/sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
+            }
+          }
+        },
+        "blog.falling-dreams-meaning": {
+          "id": "blog.falling-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "falling-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "falling-dreams-meaning",
+              "path": "/en/blog/falling-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-chute",
+              "path": "/fr/blog/reves-de-chute"
+            },
+            "es": {
+              "slug": "suenos-de-caer",
+              "path": "/es/blog/suenos-de-caer"
+            },
+            "de": {
+              "slug": "bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen",
+              "path": "/de/blog/bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen"
+            },
+            "it": {
+              "slug": "significato-dei-sogni-che-cadono-perche-sogni-di-cadere",
+              "path": "/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere"
+            }
+          }
+        },
+        "blog.flying-dreams-meaning": {
+          "id": "blog.flying-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "flying-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "flying-dreams-meaning",
+              "path": "/en/blog/flying-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-voler",
+              "path": "/fr/blog/reves-de-voler"
+            },
+            "es": {
+              "slug": "suenos-de-volar",
+              "path": "/es/blog/suenos-de-volar"
+            },
+            "de": {
+              "slug": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen",
+              "path": "/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen"
+            },
+            "it": {
+              "slug": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni",
+              "path": "/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"
+            }
+          }
+        },
+        "blog.how-to-remember-dreams": {
+          "id": "blog.how-to-remember-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "how-to-remember-dreams",
+          "locales": {
+            "en": {
+              "slug": "how-to-remember-dreams",
+              "path": "/en/blog/how-to-remember-dreams"
+            },
+            "fr": {
+              "slug": "comment-se-souvenir-de-ses-reves",
+              "path": "/fr/blog/comment-se-souvenir-de-ses-reves"
+            },
+            "es": {
+              "slug": "como-recordar-suenos",
+              "path": "/es/blog/como-recordar-suenos"
+            },
+            "de": {
+              "slug": "so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken",
+              "path": "/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken"
+            },
+            "it": {
+              "slug": "come-ricordare-i-tuoi-sogni-10-tecniche-efficaci",
+              "path": "/it/blog/come-ricordare-i-tuoi-sogni-10-tecniche-efficaci"
+            }
+          }
+        },
+        "blog.lucid-dreaming": {
+          "id": "blog.lucid-dreaming",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lucid-dreaming",
+          "locales": {
+            "en": {
+              "slug": "lucid-dreaming",
+              "path": "/en/blog/lucid-dreaming"
+            },
+            "fr": {
+              "slug": "reve-lucide",
+              "path": "/fr/blog/reve-lucide"
+            },
+            "es": {
+              "slug": "suenos-lucidos",
+              "path": "/es/blog/suenos-lucidos"
+            },
+            "de": {
+              "slug": "klares-traeumen-anleitungen-und-techniken",
+              "path": "/de/blog/klares-traeumen-anleitungen-und-techniken"
+            },
+            "it": {
+              "slug": "sogni-lucidi-guide-e-tecniche",
+              "path": "/it/blog/sogni-lucidi-guide-e-tecniche"
+            }
+          }
+        },
+        "blog.lucid-dreaming-beginners-guide": {
+          "id": "blog.lucid-dreaming-beginners-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lucid-dreaming-beginners-guide",
+          "locales": {
+            "en": {
+              "slug": "lucid-dreaming-beginners-guide",
+              "path": "/en/blog/lucid-dreaming-beginners-guide"
+            },
+            "fr": {
+              "slug": "guide-reve-lucide-debutant",
+              "path": "/fr/blog/guide-reve-lucide-debutant"
+            },
+            "es": {
+              "slug": "guia-suenos-lucidos-principiantes",
+              "path": "/es/blog/guia-suenos-lucidos-principiantes"
+            },
+            "de": {
+              "slug": "leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte",
+              "path": "/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte"
+            },
+            "it": {
+              "slug": "guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti",
+              "path": "/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti"
+            }
+          }
+        },
+        "blog.precognitive-dreams-science": {
+          "id": "blog.precognitive-dreams-science",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "precognitive-dreams-science",
+          "locales": {
+            "en": {
+              "slug": "precognitive-dreams-science",
+              "path": "/en/blog/precognitive-dreams-science"
+            },
+            "fr": {
+              "slug": "reves-premonitoires-science",
+              "path": "/fr/blog/reves-premonitoires-science"
+            },
+            "es": {
+              "slug": "suenos-premonitorios-ciencia",
+              "path": "/es/blog/suenos-premonitorios-ciencia"
+            },
+            "de": {
+              "slug": "koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume",
+              "path": "/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume"
+            },
+            "it": {
+              "slug": "i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi",
+              "path": "/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi"
+            }
+          }
+        },
+        "blog.pregnancy-dreams-meaning": {
+          "id": "blog.pregnancy-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "pregnancy-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "pregnancy-dreams-meaning",
+              "path": "/en/blog/pregnancy-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-grossesse",
+              "path": "/fr/blog/reves-de-grossesse"
+            },
+            "es": {
+              "slug": "suenos-de-embarazo",
+              "path": "/es/blog/suenos-de-embarazo"
+            },
+            "de": {
+              "slug": "schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind",
+              "path": "/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind"
+            },
+            "it": {
+              "slug": "sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta",
+              "path": "/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta"
+            }
+          }
+        },
+        "blog.recurring-dreams-meaning": {
+          "id": "blog.recurring-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "recurring-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "recurring-dreams-meaning",
+              "path": "/en/blog/recurring-dreams-meaning"
+            },
+            "fr": {
+              "slug": "signification-reves-recurrents",
+              "path": "/fr/blog/signification-reves-recurrents"
+            },
+            "es": {
+              "slug": "significado-suenos-recurrentes",
+              "path": "/es/blog/significado-suenos-recurrentes"
+            },
+            "de": {
+              "slug": "wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen",
+              "path": "/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen"
+            },
+            "it": {
+              "slug": "significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti",
+              "path": "/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti"
+            }
+          }
+        },
+        "blog.rem-sleep-dreams": {
+          "id": "blog.rem-sleep-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rem-sleep-dreams",
+          "locales": {
+            "en": {
+              "slug": "rem-sleep-dreams",
+              "path": "/en/blog/rem-sleep-dreams"
+            },
+            "fr": {
+              "slug": "sommeil-paradoxal-reves",
+              "path": "/fr/blog/sommeil-paradoxal-reves"
+            },
+            "es": {
+              "slug": "sueno-rem-suenos",
+              "path": "/es/blog/sueno-rem-suenos"
+            },
+            "de": {
+              "slug": "rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen",
+              "path": "/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"
+            },
+            "it": {
+              "slug": "sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello",
+              "path": "/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"
+            }
+          }
+        },
+        "blog.sleep-paralysis-guide": {
+          "id": "blog.sleep-paralysis-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sleep-paralysis-guide",
+          "locales": {
+            "en": {
+              "slug": "sleep-paralysis-guide",
+              "path": "/en/blog/sleep-paralysis-guide"
+            },
+            "fr": {
+              "slug": "guide-paralysie-sommeil",
+              "path": "/fr/blog/guide-paralysie-sommeil"
+            },
+            "es": {
+              "slug": "guia-paralisis-sueno",
+              "path": "/es/blog/guia-paralisis-sueno"
+            },
+            "de": {
+              "slug": "schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen",
+              "path": "/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen"
+            },
+            "it": {
+              "slug": "la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla",
+              "path": "/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla"
+            }
+          }
+        },
+        "blog.snake-dreams-meaning": {
+          "id": "blog.snake-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "snake-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "snake-dreams-meaning",
+              "path": "/en/blog/snake-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-serpents",
+              "path": "/fr/blog/reves-de-serpents"
+            },
+            "es": {
+              "slug": "suenos-con-serpientes",
+              "path": "/es/blog/suenos-con-serpientes"
+            },
+            "de": {
+              "slug": "traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt",
+              "path": "/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt"
+            },
+            "it": {
+              "slug": "sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo",
+              "path": "/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo"
+            }
+          }
+        },
+        "blog.stop-nightmares-guide": {
+          "id": "blog.stop-nightmares-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "stop-nightmares-guide",
+          "locales": {
+            "en": {
+              "slug": "stop-nightmares-guide",
+              "path": "/en/blog/stop-nightmares-guide"
+            },
+            "fr": {
+              "slug": "guide-cauchemars",
+              "path": "/fr/blog/guide-cauchemars"
+            },
+            "es": {
+              "slug": "guia-pesadillas",
+              "path": "/es/blog/guia-pesadillas"
+            },
+            "de": {
+              "slug": "albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann",
+              "path": "/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann"
+            },
+            "it": {
+              "slug": "incubi-cause-significato-e-come-fermarli",
+              "path": "/it/blog/incubi-cause-significato-e-come-fermarli"
+            }
+          }
+        },
+        "blog.teeth-falling-out-dreams": {
+          "id": "blog.teeth-falling-out-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "teeth-falling-out-dreams",
+          "locales": {
+            "en": {
+              "slug": "teeth-falling-out-dreams",
+              "path": "/en/blog/teeth-falling-out-dreams"
+            },
+            "fr": {
+              "slug": "reves-dents-qui-tombent",
+              "path": "/fr/blog/reves-dents-qui-tombent"
+            },
+            "es": {
+              "slug": "suenos-dientes-caen",
+              "path": "/es/blog/suenos-dientes-caen"
+            },
+            "de": {
+              "slug": "traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation",
+              "path": "/de/blog/traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation"
+            },
+            "it": {
+              "slug": "sogni-di-denti-che-cadono-significato-e-interpretazione",
+              "path": "/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.water-dreams-meaning": {
+          "id": "blog.water-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "water-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "water-dreams-meaning",
+              "path": "/en/blog/water-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-eau",
+              "path": "/fr/blog/reves-eau"
+            },
+            "es": {
+              "slug": "suenos-de-agua",
+              "path": "/es/blog/suenos-de-agua"
+            },
+            "de": {
+              "slug": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
+              "path": "/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen"
+            },
+            "it": {
+              "slug": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione",
+              "path": "/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
+            }
+          }
+        },
+        "blog.why-we-dream-science": {
+          "id": "blog.why-we-dream-science",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "why-we-dream-science",
+          "locales": {
+            "en": {
+              "slug": "why-we-dream-science",
+              "path": "/en/blog/why-we-dream-science"
+            },
+            "fr": {
+              "slug": "pourquoi-nous-revons-science",
+              "path": "/fr/blog/pourquoi-nous-revons-science"
+            },
+            "es": {
+              "slug": "por-que-sonamos-ciencia",
+              "path": "/es/blog/por-que-sonamos-ciencia"
+            },
+            "de": {
+              "slug": "warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern",
+              "path": "/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern"
+            },
+            "it": {
+              "slug": "perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne",
+              "path": "/it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne"
+            }
+          }
+        },
+        "blog.why-we-forget-dreams": {
+          "id": "blog.why-we-forget-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "why-we-forget-dreams",
+          "locales": {
+            "en": {
+              "slug": "why-we-forget-dreams",
+              "path": "/en/blog/why-we-forget-dreams"
+            },
+            "fr": {
+              "slug": "pourquoi-oublie-reves-reveil",
+              "path": "/fr/blog/pourquoi-oublie-reves-reveil"
+            },
+            "es": {
+              "slug": "por-que-olvidamos-suenos",
+              "path": "/es/blog/por-que-olvidamos-suenos"
+            },
+            "de": {
+              "slug": "warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie",
+              "path": "/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie"
+            },
+            "it": {
+              "slug": "perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica",
+              "path": "/it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica"
+            }
+          }
+        }
+      }
+    }
+  }
+}
