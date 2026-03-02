@@ -4,6 +4,7 @@ import {
   Pressable,
   Text,
   StyleSheet,
+  View,
   type StyleProp,
   type ViewStyle,
   useWindowDimensions,
@@ -43,8 +44,8 @@ type BottomSheetProps = {
 };
 
 /**
- * Light-weight bottom sheet with fade + slide animation.
- * Designed for simple confirmations without pulling in a heavy dependency.
+ * On iOS, uses native `pageSheet` presentation.
+ * On Android/Web, keeps the custom fade + slide fallback.
  */
 export function BottomSheet({
   visible,
@@ -55,6 +56,7 @@ export function BottomSheet({
   testID,
   dismissBehavior = 'pan',
 }: BottomSheetProps) {
+  const useNativeIOSSheet = process.env.EXPO_OS === 'ios' && dismissBehavior === 'pan';
   const [isMounted, setIsMounted] = useState(visible);
   const { height: windowHeight } = useWindowDimensions();
   const hiddenTranslateY = Math.max(400, windowHeight);
@@ -83,6 +85,13 @@ export function BottomSheet({
   useEffect(() => {
     const wasVisible = prevVisibleRef.current;
     prevVisibleRef.current = visible;
+
+    if (useNativeIOSSheet) {
+      if (visible && !wasVisible) {
+        blurActiveElement();
+      }
+      return;
+    }
 
     if (visible && !wasVisible) {
       blurActiveElement();
@@ -115,7 +124,7 @@ export function BottomSheet({
         }
       );
     }
-  }, [backdropOpacity, handleUnmount, isMounted, translateY, visible]);
+  }, [backdropOpacity, handleUnmount, isMounted, translateY, useNativeIOSSheet, visible]);
 
   const sheetAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
@@ -161,6 +170,27 @@ export function BottomSheet({
       });
   }, [backdropOpacity, dismissBehavior, hiddenTranslateY, onClose, translateY]);
 
+  if (useNativeIOSSheet) {
+    if (!visible) {
+      return null;
+    }
+
+    return (
+      <Modal
+        animationType="slide"
+        visible={visible}
+        onRequestClose={onClose}
+        presentationStyle="pageSheet"
+      >
+        <View style={styles.nativeSheetWrapper}>
+          <View style={[styles.nativeSheet, style]} testID={testID}>
+            {normalizedChildren}
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+
   if (!isMounted) {
     return null;
   }
@@ -200,6 +230,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 28,
     paddingHorizontal: 24,
     paddingVertical: 28,
+    backgroundColor: '#fff',
+  },
+  nativeSheetWrapper: {
+    flex: 1,
+  },
+  nativeSheet: {
+    flex: 1,
     backgroundColor: '#fff',
   },
 });
