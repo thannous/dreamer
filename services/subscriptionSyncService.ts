@@ -1,5 +1,6 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
+import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 
 export type SubscriptionSyncResponse = {
   ok: boolean;
@@ -14,7 +15,6 @@ export async function syncSubscriptionFromServer(source: string = 'app_launch'):
   return fetchJSON<SubscriptionSyncResponse>(`${base}/subscription/sync`, {
     method: 'POST',
     body: { source },
-    timeoutMs: 10000,
-    retries: 1,
+    ...NETWORK_REQUEST_POLICIES.subscriptionSync,
   });
 }

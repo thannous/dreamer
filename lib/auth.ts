@@ -5,6 +5,7 @@ import { supabase } from './supabase';
 import * as mockAuth from './mockAuth';
 import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
+import { NETWORK_REQUEST_POLICIES } from './networkPolicy';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
@@ -240,8 +241,7 @@ async function markFingerprintUpgraded(): Promise<void> {
         'Authorization': `Bearer ${token}`,
       },
       body: { fingerprint },
-      retries: 2,
-      timeoutMs: 10000,
+      ...NETWORK_REQUEST_POLICIES.authMarkUpgrade,
     });
 
     log.debug('Successfully marked fingerprint as upgraded');

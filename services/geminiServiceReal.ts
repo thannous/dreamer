@@ -9,6 +9,7 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON, HttpError, type HttpOptions } from '@/lib/http';
 import { classifyImageError, isGuestSessionError, type ImageGenerationErrorResponse } from '@/lib/errors';
+import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
 import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
 
@@ -49,7 +50,7 @@ export async function analyzeDream(
   return fetchWithGuestHeaders<AnalysisResult>('/analyzeDream', {
     method: 'POST',
     body: { transcript, lang, ...(fingerprint && { fingerprint }) },
-    retries: 1, // One automatic retry
+    ...NETWORK_REQUEST_POLICIES.analyzeDream,
   });
 }
 
@@ -62,7 +63,7 @@ export async function categorizeDream(transcript: string, lang: string = 'en'): 
   return fetchWithGuestHeaders<CategorizeDreamResult>('/categorizeDream', {
     method: 'POST',
     body: { transcript, lang },
-    retries: 1,
+    ...NETWORK_REQUEST_POLICIES.categorizeDream,
   });
 }
 
@@ -76,8 +77,7 @@ export async function analyzeDreamWithImage(
     {
       method: 'POST',
       body: { transcript, lang, ...(fingerprint && { fingerprint }) },
-      retries: 1, // One automatic retry
-      timeoutMs: 60000, // Increased timeout for combined operation
+      ...NETWORK_REQUEST_POLICIES.analyzeDreamFull,
     }
   );
   const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
@@ -103,8 +103,7 @@ export async function analyzeDreamWithImageResilient(
       {
         method: 'POST',
         body: { transcript, lang, ...(fingerprint && { fingerprint }) },
-        retries: 1,
-        timeoutMs: 60000,
+        ...NETWORK_REQUEST_POLICIES.analyzeDreamFull,
       }
     );
     const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
@@ -148,9 +147,7 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
     const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImage', {
       method: 'POST',
       body: { prompt, previousImageUrl },
-      timeoutMs: 60000,
-      retries: 2,
-      retryDelay: 1200,
+      ...NETWORK_REQUEST_POLICIES.generateImage,
     });
     if (res.imageUrl) return res.imageUrl;
     if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
@@ -184,9 +181,7 @@ export async function generateImageFromTranscript(transcript: string, previousIm
         method: 'POST',
         // Let the backend generate a short image prompt from the transcript.
         body: { transcript, previousImageUrl },
-        timeoutMs: 60000, // Image generation can take time
-        retries: 2,
-        retryDelay: 1200,
+        ...NETWORK_REQUEST_POLICIES.generateImage,
       }
     );
     if (res.imageUrl) return res.imageUrl;
@@ -252,6 +247,7 @@ export async function startOrContinueChat(
       ...(dreamContext && { dreamContext }),
       ...(fingerprint && { fingerprint }),
     },
+    ...NETWORK_REQUEST_POLICIES.chat,
     signal: options?.signal,
   });
   return res.text;
@@ -265,7 +261,7 @@ export async function generateSpeechForText(text: string): Promise<string> {
   const res = await fetchWithGuestHeaders<{ audioBase64: string }>('/tts', {
     method: 'POST',
     body: { text },
-    timeoutMs: 60000,
+    ...NETWORK_REQUEST_POLICIES.textToSpeech,
   });
   if (!res.audioBase64) throw new Error('No audio returned');
   return res.audioBase64;
@@ -282,8 +278,6 @@ export async function generateSpeechForText(text: string): Promise<string> {
 export async function generateImageWithReference(
   request: ReferenceImageGenerationRequest
 ): Promise<string> {
-  const base = getApiBaseUrl();
-
   // Import FileSystem for reading file URIs on native
   const FileSystem = await import('expo-file-system');
   const FileSystemLegacy = await import('expo-file-system/legacy');
@@ -319,7 +313,7 @@ export async function generateImageWithReference(
   try {
     const prompt = request.prompt?.trim();
     const previousImageUrl = request.previousImageUrl?.trim();
-    const res = await fetchJSON<{ imageUrl?: string; imageBytes?: string }>(`${base}/generateImageWithReference`, {
+    const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImageWithReference', {
       method: 'POST',
       body: {
         transcript: request.transcript,
@@ -328,8 +322,7 @@ export async function generateImageWithReference(
         ...(previousImageUrl ? { previousImageUrl } : {}),
         lang: request.lang ?? 'en',
       },
-      timeoutMs: 90000, // Longer timeout for reference image processing
-      retries: 1,
+      ...NETWORK_REQUEST_POLICIES.generateImageWithReference,
     });
 
     if (res.imageUrl) return res.imageUrl;
