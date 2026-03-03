@@ -1,6 +1,6 @@
 import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -82,6 +82,8 @@ export default function SymbolDictionaryScreen() {
   const { colors, shadows, mode } = useTheme();
   const { t, currentLang } = useTranslation();
   const lang = (currentLang ?? "en") as SymbolLanguage;
+  const useNativeHeaderSearch =
+    process.env.EXPO_OS === "ios" && typeof document === "undefined";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] =
@@ -296,61 +298,92 @@ export default function SymbolDictionaryScreen() {
 
   return (
     <LinearGradient colors={gradientColors} style={styles.container}>
-      {/* Floating Back Button */}
-      <Pressable
-        onPress={() => router.back()}
-        style={[
-          styles.floatingBackButton,
-          shadows.lg,
-          {
-            backgroundColor:
-              mode === "dark"
-                ? "rgba(35, 26, 63, 0.85)"
-                : colors.backgroundCard,
-            borderWidth: 1,
-            borderColor:
-              mode === "dark" ? "rgba(160, 151, 184, 0.25)" : colors.divider,
-          },
-        ]}
-        accessibilityRole="button"
-        accessibilityLabel={t("journal.back_button")}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
-      </Pressable>
+      <Stack.Screen
+        options={{
+          headerShown: useNativeHeaderSearch,
+          title: t("symbols.dictionary_title"),
+          headerBackButtonDisplayMode: "minimal",
+          headerSearchBarOptions: useNativeHeaderSearch
+            ? {
+                placeholder: t("symbols.search_placeholder"),
+                autoCapitalize: "none",
+                hideNavigationBar: true,
+                onChangeText: (event) =>
+                  setSearchQuery(event.nativeEvent.text),
+                onCancelButtonPress: () => setSearchQuery(""),
+              }
+            : undefined,
+        }}
+      />
 
-      {/* Page header with icon */}
-      <MotiView
-        from={{ opacity: 0, translateY: -8 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: "timing", duration: 500 }}
-        style={styles.headerSection}
-      >
-        <View
-          style={[
-            styles.headerIconContainer,
-            { backgroundColor: colors.backgroundSecondary },
-          ]}
-        >
-          <IconSymbol name="book.fill" size={28} color={colors.accent} />
-        </View>
-        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
-          {t("symbols.dictionary_title")}
-        </Text>
-      </MotiView>
+      {!useNativeHeaderSearch ? (
+        <>
+          {/* Floating Back Button */}
+          <Pressable
+            onPress={() => router.back()}
+            style={[
+              styles.floatingBackButton,
+              shadows.lg,
+              {
+                backgroundColor:
+                  mode === "dark"
+                    ? "rgba(35, 26, 63, 0.85)"
+                    : colors.backgroundCard,
+                borderWidth: 1,
+                borderColor:
+                  mode === "dark" ? "rgba(160, 151, 184, 0.25)" : colors.divider,
+              },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel={t("journal.back_button")}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <IconSymbol
+              name="chevron.left"
+              size={22}
+              color={colors.textPrimary}
+            />
+          </Pressable>
+
+          {/* Page header with icon */}
+          <MotiView
+            from={{ opacity: 0, translateY: -8 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: "timing", duration: 500 }}
+            style={styles.headerSection}
+          >
+            <View
+              style={[
+                styles.headerIconContainer,
+                { backgroundColor: colors.backgroundSecondary },
+              ]}
+            >
+              <IconSymbol name="book.fill" size={28} color={colors.accent} />
+            </View>
+            <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
+              {t("symbols.dictionary_title")}
+            </Text>
+          </MotiView>
+        </>
+      ) : null}
 
       {/* Search bar + chips */}
       <MotiView
         from={{ opacity: 0, translateY: -12 }}
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: "timing", duration: 500, delay: 100 }}
-        style={styles.searchContainer}
+        style={[
+          styles.searchContainer,
+          useNativeHeaderSearch && styles.searchContainerWithNativeHeader,
+        ]}
       >
-        <SearchBar
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          placeholder={t("symbols.search_placeholder")}
-        />
+        {!useNativeHeaderSearch ? (
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t("symbols.search_placeholder")}
+          />
+        ) : null}
 
         <View
           style={[
@@ -560,6 +593,9 @@ const styles = StyleSheet.create({
     paddingTop: ThemeLayout.spacing.lg20,
     paddingBottom: ThemeLayout.spacing.sm,
     gap: 12,
+  },
+  searchContainerWithNativeHeader: {
+    paddingTop: ThemeLayout.spacing.sm,
   },
   modeSwitch: {
     flexDirection: "row",
