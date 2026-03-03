@@ -9,6 +9,7 @@ import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { getAccessToken } from '@/lib/auth';
 import { getExpoPublicEnvValue } from '@/lib/env';
 import { logger } from '@/lib/logger';
+import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 
 type GuestSessionResponse = {
   token: string;
@@ -129,7 +130,7 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
       integrityToken,
       platform: Platform.OS,
     },
-    timeoutMs: 10000,
+    ...NETWORK_REQUEST_POLICIES.guestSessionCreate,
   });
 
   const expiresAt = Date.parse(response.expiresAt);

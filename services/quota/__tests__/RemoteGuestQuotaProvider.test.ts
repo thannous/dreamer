@@ -12,6 +12,11 @@ jest.mock('../../../lib/deviceFingerprint', () => ({
 
 jest.mock('../../../lib/guestSession', () => ({
   getGuestHeaders: jest.fn().mockResolvedValue({}),
+  invalidateGuestSession: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../../../lib/errors', () => ({
+  isGuestSessionError: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('../../../lib/config', () => ({
@@ -24,6 +29,9 @@ jest.mock('../GuestAnalysisCounter', () => ({
 
 let mockFetchJSON: ReturnType<typeof jest.fn>;
 let mockSyncWithServerCount: ReturnType<typeof jest.fn>;
+let mockGetGuestHeaders: ReturnType<typeof jest.fn>;
+let mockInvalidateGuestSession: ReturnType<typeof jest.fn>;
+let mockIsGuestSessionError: ReturnType<typeof jest.fn>;
 
 const buildUsage = (analysisUsed: number) => ({
   analysis: { used: analysisUsed, limit: 2, remaining: Math.max(2 - analysisUsed, 0) },
@@ -60,8 +68,19 @@ describe('RemoteGuestQuotaProvider', () => {
     mockFetchJSON = jest.mocked(fetchJSON);
     const { syncWithServerCount } = require('../GuestAnalysisCounter');
     mockSyncWithServerCount = jest.mocked(syncWithServerCount);
+    const { getGuestHeaders, invalidateGuestSession } = require('../../../lib/guestSession');
+    mockGetGuestHeaders = jest.mocked(getGuestHeaders);
+    mockInvalidateGuestSession = jest.mocked(invalidateGuestSession);
+    const { isGuestSessionError } = require('../../../lib/errors');
+    mockIsGuestSessionError = jest.mocked(isGuestSessionError);
     mockFetchJSON.mockReset();
     mockSyncWithServerCount.mockResolvedValue(undefined);
+    mockGetGuestHeaders.mockReset();
+    mockGetGuestHeaders.mockResolvedValue({});
+    mockInvalidateGuestSession.mockReset();
+    mockInvalidateGuestSession.mockResolvedValue(undefined);
+    mockIsGuestSessionError.mockReset();
+    mockIsGuestSessionError.mockReturnValue(false);
   });
 
   it('merges local guest usage when remote response does not track counts', async () => {
@@ -193,5 +212,48 @@ describe('RemoteGuestQuotaProvider', () => {
     expect(canSend).toBe(true);
     expect(mockSyncWithServerCount).toHaveBeenCalledWith(2, 'analysis');
     expect(mockSyncWithServerCount).toHaveBeenCalledWith(1, 'exploration');
+  });
+
+  it('retries once with fresh guest session when guest token is expired', async () => {
+    const fallback = createFallback(0);
+    const guestSessionError = Object.assign(new Error('HTTP 401 Unauthorized'), {
+      status: 401,
+      body: {
+        error: {
+          message: 'missing integrity token',
+        },
+      },
+    });
+
+    mockIsGuestSessionError.mockReturnValue(true);
+    mockGetGuestHeaders
+      .mockResolvedValueOnce({ 'x-guest-token': 'stale-token' })
+      .mockResolvedValueOnce({ 'x-guest-token': 'fresh-token' });
+    mockFetchJSON
+      .mockRejectedValueOnce(guestSessionError)
+      .mockResolvedValueOnce({
+        tier: 'guest',
+        usage: {
+          analysis: { used: 1, limit: 2 },
+          exploration: { used: 0, limit: 2 },
+          messages: { used: 0, limit: 20 },
+        },
+        canAnalyze: true,
+        canExplore: true,
+      });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.usage.analysis.used).toBe(1);
+    expect(mockFetchJSON).toHaveBeenCalledTimes(2);
+    expect(mockInvalidateGuestSession).toHaveBeenCalledTimes(1);
+    expect(mockFetchJSON).toHaveBeenLastCalledWith(
+      'https://example.com/quota/status',
+      expect.objectContaining({
+        headers: { 'x-guest-token': 'fresh-token' },
+      })
+    );
   });
 });

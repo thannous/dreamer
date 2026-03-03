@@ -10,9 +10,12 @@ jest.mock('../../lib/auth', () => ({
   getAccessToken: () => Promise.resolve(null),
 }));
 
+const mockGetGuestHeaders = jest.fn();
+const mockInvalidateGuestSession = jest.fn();
+
 jest.mock('../../lib/guestSession', () => ({
-  getGuestHeaders: () => Promise.resolve({}),
-  invalidateGuestSession: () => Promise.resolve(),
+  getGuestHeaders: () => mockGetGuestHeaders(),
+  invalidateGuestSession: () => mockInvalidateGuestSession(),
 }));
 
 // Mock expo-constants
@@ -66,6 +69,8 @@ describe('geminiServiceReal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetGuestHeaders.mockResolvedValue({});
+    mockInvalidateGuestSession.mockResolvedValue(undefined);
     global.fetch = jest.fn();
   });
 

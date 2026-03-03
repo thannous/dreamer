@@ -54,6 +54,60 @@ const createAbortError = (): Error => {
   return error;
 };
 
+const createTimeoutError = (timeoutMs: number): Error => {
+  const error = new Error(`Request timeout after ${timeoutMs}ms`);
+  error.name = 'TimeoutError';
+  return error;
+};
+
+type HeaderReader = {
+  get?: (name: string) => string | null;
+};
+
+function getHeaderValue(response: Response, headerName: string): string | null {
+  const headers = (response as unknown as { headers?: HeaderReader }).headers;
+  if (!headers || typeof headers.get !== 'function') {
+    return null;
+  }
+  try {
+    const value = headers.get(headerName);
+    return typeof value === 'string' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+async function readResponseText(response: Response): Promise<string> {
+  const candidate = response as unknown as {
+    text?: () => Promise<string>;
+    json?: () => Promise<unknown>;
+  };
+
+  if (typeof candidate.text === 'function') {
+    return candidate.text();
+  }
+
+  if (typeof candidate.json === 'function') {
+    const fallback = await candidate.json();
+    return JSON.stringify(fallback);
+  }
+
+  return '';
+}
+
+function parseJsonSafely(bodyText: string): unknown | undefined {
+  const trimmed = bodyText.trim();
+  if (!trimmed) return undefined;
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Sleep helper for retry delays (optional abort support)
  */
@@ -187,7 +241,12 @@ function isSupabaseFunctionsUrl(targetUrl: string): boolean {
  */
 async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), options.timeoutMs ?? 30000);
+  const timeoutMs = options.timeoutMs ?? 30000;
+  let didTimeout = false;
+  const timeout = setTimeout(() => {
+    didTimeout = true;
+    controller.abort();
+  }, timeoutMs);
   const externalSignal = options.signal;
   const handleExternalAbort = () => controller.abort();
   if (externalSignal) {
@@ -239,33 +298,53 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
       // ignore token retrieval errors; proceed without auth
     }
 
-    const res = await fetch(url, {
-      method: options.method ?? 'GET',
-      headers,
-      body: options.body ? JSON.stringify(options.body) : undefined,
-      signal: controller.signal,
-    } as RequestInit);
-    if (!res.ok) {
-      const bodyText = await res.text().catch(() => '');
-      let body: unknown = undefined;
-      const trimmed = bodyText.trim();
-      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-        try {
-          body = JSON.parse(trimmed);
-        } catch {
-          body = undefined;
-        }
+    try {
+      const res = await fetch(url, {
+        method: options.method ?? 'GET',
+        headers,
+        body: options.body === undefined ? undefined : JSON.stringify(options.body),
+        signal: controller.signal,
+      } as RequestInit);
+
+      if (!res.ok) {
+        const bodyText = await readResponseText(res).catch(() => '');
+        const body = parseJsonSafely(bodyText);
+        throw new HttpError({
+          status: res.status,
+          statusText: res.statusText,
+          url,
+          bodyText,
+          body,
+        });
       }
-      throw new HttpError({
-        status: res.status,
-        statusText: res.statusText,
-        url,
-        bodyText,
-        body,
-      });
+
+      if (res.status === 204 || res.status === 205) {
+        return undefined as T;
+      }
+
+      const contentLength = getHeaderValue(res, 'content-length');
+      if (contentLength === '0') {
+        return undefined as T;
+      }
+
+      const bodyText = await readResponseText(res).catch(() => '');
+      if (!bodyText.trim()) {
+        return undefined as T;
+      }
+
+      const body = parseJsonSafely(bodyText);
+      if (body !== undefined) {
+        return body as T;
+      }
+
+      const contentType = getHeaderValue(res, 'content-type') ?? 'unknown';
+      throw new Error(`Invalid JSON response from ${url} (content-type: ${contentType})`);
+    } catch (error) {
+      if (didTimeout) {
+        throw createTimeoutError(timeoutMs);
+      }
+      throw error;
     }
-    const json = (await res.json()) as T;
-    return json;
   } finally {
     clearTimeout(timeout);
     if (externalSignal) {

@@ -3,8 +3,10 @@ import type { User } from '@supabase/supabase-js';
 import { QUOTAS, type UserTier } from '@/constants/limits';
 import { getApiBaseUrl } from '@/lib/config';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
-import { getGuestHeaders } from '@/lib/guestSession';
+import { isGuestSessionError } from '@/lib/errors';
+import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
 import { fetchJSON } from '@/lib/http';
+import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type { QuotaStatus } from '@/lib/types';
 import type { CacheEntry, QuotaDreamTarget, QuotaProvider } from './types';
 import { GuestQuotaProvider } from './GuestQuotaProvider';
@@ -127,6 +129,32 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     };
   }
 
+  private async fetchRemoteQuota(dreamId: number | undefined): Promise<RemoteQuotaResponse> {
+    const fingerprint = await getDeviceFingerprint();
+    const requestWithHeaders = async (headers: Record<string, string>) =>
+      fetchJSON<RemoteQuotaResponse>(`${getApiBaseUrl()}/quota/status`, {
+        method: 'POST',
+        body: {
+          fingerprint,
+          targetDreamId: dreamId ?? null,
+        },
+        headers,
+        ...NETWORK_REQUEST_POLICIES.quotaStatus,
+      });
+
+    const initialHeaders = await getGuestHeaders();
+    try {
+      return await requestWithHeaders(initialHeaders);
+    } catch (error) {
+      if (error instanceof Error && isGuestSessionError(error)) {
+        await invalidateGuestSession();
+        const freshHeaders = await getGuestHeaders();
+        return await requestWithHeaders(freshHeaders);
+      }
+      throw error;
+    }
+  }
+
   private async fetchQuota(target?: QuotaDreamTarget, tier: UserTier = 'guest'): Promise<QuotaStatus> {
     const dreamId = this.resolveDreamId(target);
     const cacheKey = dreamId ? `dream-${dreamId}` : 'global';
@@ -146,18 +174,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     }
 
     try {
-      const fingerprint = await getDeviceFingerprint();
-      const headers = await getGuestHeaders();
-      const response = await fetchJSON<RemoteQuotaResponse>(`${getApiBaseUrl()}/quota/status`, {
-        method: 'POST',
-        body: {
-          fingerprint,
-          targetDreamId: dreamId ?? null,
-        },
-        headers,
-        retries: 1,
-        timeoutMs: 10000,
-      });
+      const response = await this.fetchRemoteQuota(dreamId);
 
       // Sync local counter with server (take max to prevent discrepancies)
       if (typeof response.usage?.analysis?.used === 'number') {

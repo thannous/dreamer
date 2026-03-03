@@ -124,6 +124,52 @@ describe('http', () => {
       await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow('HTTP 404 Not Found');
     });
 
+    it('given 204 response when fetching then returns undefined', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 204,
+        statusText: 'No Content',
+        headers: {
+          get: () => null,
+        },
+        text: () => Promise.resolve(''),
+      });
+
+      const result = await fetchJSON('https://api.example.com/data');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('given successful empty body when fetching then returns undefined', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: {
+          get: (name: string) => (name.toLowerCase() === 'content-length' ? '0' : null),
+        },
+        text: () => Promise.resolve(''),
+      });
+
+      const result = await fetchJSON('https://api.example.com/data');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('given non-json success body when fetching then throws invalid json error', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        headers: {
+          get: (name: string) => (name.toLowerCase() === 'content-type' ? 'text/plain' : null),
+        },
+        text: () => Promise.resolve('plain text body'),
+      });
+
+      await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow('Invalid JSON response');
+    });
+
     it('given Supabase URL when fetching then skips auth headers when host config is unavailable', async () => {
       mockGetAccessToken.mockResolvedValue('user-access-token');
       global.fetch = jest.fn().mockResolvedValue({

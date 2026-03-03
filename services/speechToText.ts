@@ -1,11 +1,12 @@
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
 import { logger } from '@/lib/logger';
+import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import * as FileSystem from 'expo-file-system';
 import { File } from 'expo-file-system';
 import { Platform } from 'react-native';
 
-export const TRANSCRIPTION_TIMEOUT_MS = 60000;
+export const TRANSCRIPTION_TIMEOUT_MS = NETWORK_REQUEST_POLICIES.transcribeAudio.timeoutMs;
 
 type TranscribeParams = {
   uri: string;
@@ -109,8 +110,7 @@ export async function transcribeAudio({
         languageCode,
         sampleRateHertz,
       },
-      // Transcription can take a bit longer
-      timeoutMs: TRANSCRIPTION_TIMEOUT_MS,
+      ...NETWORK_REQUEST_POLICIES.transcribeAudio,
     });
 
     logger.debug('[speechToText] response', res);
