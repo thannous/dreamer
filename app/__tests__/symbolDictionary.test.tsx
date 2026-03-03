@@ -1,11 +1,21 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterAll, afterEach, beforeAll, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
   jest.clearAllMocks();
+});
+
+const previousExpoOs = process.env.EXPO_OS;
+
+beforeAll(() => {
+  process.env.EXPO_OS = 'web';
+});
+
+afterAll(() => {
+  process.env.EXPO_OS = previousExpoOs;
 });
 
 // ── Router ──────────────────────────────────────────────────────────────────
@@ -15,6 +25,9 @@ const mockBack = jest.fn();
 jest.mock('expo-router', () => ({
   router: { push: mockPush, back: mockBack, replace: jest.fn() },
   useLocalSearchParams: () => ({}),
+  Stack: {
+    Screen: () => null,
+  },
 }));
 
 // ── Theme / Translation ─────────────────────────────────────────────────────
