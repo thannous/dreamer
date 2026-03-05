@@ -53,6 +53,10 @@ type IndexedDBStorage = {
 };
 
 type ModuleWithDefault<T> = T | { default: T };
+type ModuleLoader<T> = {
+  importModule: () => Promise<T>;
+  requireModule: () => T;
+};
 
 // In-memory fallback if AsyncStorage is not installed yet
 const memoryStore: Record<string, string> = {};
@@ -247,14 +251,13 @@ const webStorage: StorageLike | null =
     ? ((globalThis as unknown as { localStorage?: StorageLike }).localStorage ?? null)
     : null;
 
-const loadModule = async <T>(specifier: string): Promise<T> => {
+const loadModule = async <T>(loader: ModuleLoader<T>): Promise<T> => {
   try {
-    return (await import(specifier)) as T;
+    return await loader.importModule();
   } catch (dynamicImportError) {
     try {
       // Jest can fail to resolve dynamic imports for mocked native modules; require keeps tests deterministic.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      return require(specifier) as T;
+      return loader.requireModule();
     } catch {
       throw dynamicImportError;
     }
@@ -272,7 +275,12 @@ async function getLegacyAsyncStorage(): Promise<AsyncStorageModule | null> {
 
   if (AsyncStorageRef !== undefined) return AsyncStorageRef;
   try {
-    const mod = await loadModule<ModuleWithDefault<AsyncStorageModule>>('@react-native-async-storage/async-storage');
+    const mod = await loadModule<ModuleWithDefault<AsyncStorageModule>>({
+      importModule: () => import('@react-native-async-storage/async-storage'),
+      requireModule: () =>
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require('@react-native-async-storage/async-storage') as ModuleWithDefault<AsyncStorageModule>,
+    });
     AsyncStorageRef = 'default' in mod ? mod.default : mod;
   } catch {
     AsyncStorageRef = null;
@@ -290,7 +298,12 @@ async function getSQLiteKvStore(): Promise<AsyncStorageModule | null> {
 
   if (SQLiteKvStoreRef !== undefined) return SQLiteKvStoreRef;
   try {
-    const mod = await loadModule<ModuleWithDefault<AsyncStorageModule>>('expo-sqlite/kv-store');
+    const mod = await loadModule<ModuleWithDefault<AsyncStorageModule>>({
+      importModule: () => import('expo-sqlite/kv-store'),
+      requireModule: () =>
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require('expo-sqlite/kv-store') as ModuleWithDefault<AsyncStorageModule>,
+    });
     SQLiteKvStoreRef = 'default' in mod ? mod.default : mod;
   } catch {
     SQLiteKvStoreRef = null;
