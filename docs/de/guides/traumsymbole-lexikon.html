@@ -83,15 +83,18 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "Article",
+            "@type": "CollectionPage",
+            "name": "Traumsymbole-Lexikon: Deutung von A bis Z",
             "headline": "Traumsymbole-Lexikon: Deutung von A bis Z",
             "description": "Komplettes Lexikon der Traumsymbole. Entdecke die Bedeutung von über 50 häufigen Traumsymbolen: Wasser, Fallen, Fliegen, Zähne, Tiere und mehr.",
+            "url": "https://noctalia.app/de/guides/traumsymbole-lexikon",
             "image": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
-            "author": { "@type": "Organization", "name": "Noctalia" },
-            "publisher": { "@type": "Organization", "name": "Noctalia", "logo": { "@type": "ImageObject", "url": "https://noctalia.app/logo/logo_noctalia.png" } },
-            "datePublished": "2025-01-06", "dateModified": "2026-02-06",
-            "mainEntityOfPage": { "@type": "WebPage", "@id": "https://noctalia.app/de/guides/traumsymbole-lexikon" },
-            "inLanguage": "de"
+            "inLanguage": "de",
+            "isPartOf": {
+                "@type": "CollectionPage",
+                "name": "Traumratgeber",
+                "url": "https://noctalia.app/de/guides/"
+            }
         }
     </script>
 
@@ -109,27 +112,28 @@
 
     <script type="application/ld+json">
         {
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                        {
-                                "@type": "ListItem",
-                                "position": 1,
-                                "name": "Startseite",
-                                "item": "https://noctalia.app/de/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 2,
-                                "name": "Ressourcen",
-                                "item": "https://noctalia.app/de/blog/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 3,
-                                "name": "Traumsymbole-Lexikon: Deutung von A bis Z"
-                        }
-                ]
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Startseite",
+                    "item": "https://noctalia.app/de/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Traumratgeber",
+                    "item": "https://noctalia.app/de/guides/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Traumsymbole-Lexikon: Deutung von A bis Z",
+                    "item": "https://noctalia.app/de/guides/traumsymbole-lexikon"
+                }
+            ]
         }
     </script>
 </head>
@@ -150,7 +154,7 @@
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
                 <a href="/de/#so-funktioniert-es" class="hidden sm:inline-flex hover:text-white transition-colors">So funktioniert&#x27;s</a>
                 <a href="/de/#funktionen" class="hidden sm:inline-flex hover:text-white transition-colors">Funktionen</a>
-                <a href="/de/blog/" class="hidden sm:inline-flex hover:text-white transition-colors">Ressourcen</a>
+                <a href="/de/guides/" class="hidden sm:inline-flex text-dream-salmon">Traumratgeber</a>
             </div>
             <div class="flex items-center gap-3">
 </div>
@@ -163,20 +167,11 @@
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/de/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Startseite</span></a>
-                        <meta itemprop="position" content="1">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/de/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Startseite</span></a><meta itemprop="position" content="1"></li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/de/blog/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Ressourcen</span></a>
-                        <meta itemprop="position" content="2">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/de/guides/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Traumratgeber</span></a><meta itemprop="position" content="2"></li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-dream-cream">Symbole</span>
-                        <meta itemprop="position" content="3">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/de/guides/traumsymbole-lexikon" itemprop="item" class="text-dream-cream"><span itemprop="name">Traumsymbole-Lexikon: Deutung von A bis Z</span></a><meta itemprop="position" content="3"></li>
                 </ol>
             </nav>
 
@@ -187,10 +182,8 @@
                         <i data-lucide="book-open" class="w-4 h-4"></i>
                         NACHSCHLAGEWERK
                     </div>
-                    <a href="../blog/traumbedeutungen-interpretation-symbole"
-                        class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
-                        Entdecke: Traumbedeutungen
-                    </a>
+                    <a href="/de/guides/"
+                        class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">Alle Traumratgeber ansehen</a>
                 </div>
 
                 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
@@ -979,11 +972,7 @@
             <section class="mt-16 max-w-3xl mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">Verwandte Artikel</h2>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <a href="../blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Bedeutung wiederkehrender Träume</h3>
-                        <p class="text-sm text-gray-400">Verstehe, warum bestimmte Träume immer wiederkehren.</p>
-                    </a>
+                    <a href="/de/guides/" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">Alle Traumratgeber ansehen</a>
                     <a href="../blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Wie du dich an deine Träume erinnerst</h3>
@@ -1008,7 +997,7 @@
             <div>
                 <h5 class="font-bold mb-4 text-white">Ressourcen</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/de/blog/" class="hidden sm:inline-flex hover:text-dream-salmon transition-colors">Ressourcen</a></li>
+                    <li><a href="/de/guides/" class="hover:text-dream-salmon transition-colors">Traumratgeber</a></li>
                     <li><a href="traumsymbole-lexikon" class="text-dream-salmon">Traumsymbole</a></li>
                 </ul>
             </div>

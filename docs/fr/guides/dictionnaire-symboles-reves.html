@@ -83,15 +83,18 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": "Dictionnaire des symboles de rêves : interprétation de A à Z",
-            "description": "Dictionnaire complet des symboles de rêves avec plus de 50 symboles oniriques.",
+            "@type": "CollectionPage",
+            "name": "Dictionnaire des symboles de rêves",
+            "headline": "Dictionnaire des symboles de rêves",
+            "description": "Dictionnaire complet des symboles de rêves. Découvrez la signification de plus de 50 symboles oniriques courants : eau, chute, vol, dents, animaux et plus.",
+            "url": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves",
             "image": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
-            "author": { "@type": "Organization", "name": "Noctalia" },
-            "publisher": { "@type": "Organization", "name": "Noctalia", "logo": { "@type": "ImageObject", "url": "https://noctalia.app/logo/logo_noctalia.png" } },
-            "datePublished": "2025-01-06", "dateModified": "2026-02-06",
-            "mainEntityOfPage": { "@type": "WebPage", "@id": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves" },
-            "inLanguage": "fr"
+            "inLanguage": "fr",
+            "isPartOf": {
+                "@type": "CollectionPage",
+                "name": "Guides des reves",
+                "url": "https://noctalia.app/fr/guides/"
+            }
         }
     </script>
 
@@ -109,27 +112,28 @@
 
     <script type="application/ld+json">
         {
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                        {
-                                "@type": "ListItem",
-                                "position": 1,
-                                "name": "Accueil",
-                                "item": "https://noctalia.app/fr/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 2,
-                                "name": "Ressources",
-                                "item": "https://noctalia.app/fr/blog/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 3,
-                                "name": "Dictionnaire des symboles de rêves"
-                        }
-                ]
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Accueil",
+                    "item": "https://noctalia.app/fr/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Guides des reves",
+                    "item": "https://noctalia.app/fr/guides/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Dictionnaire des symboles de rêves",
+                    "item": "https://noctalia.app/fr/guides/dictionnaire-symboles-reves"
+                }
+            ]
         }
     </script>
 </head>
@@ -150,7 +154,7 @@
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
                 <a href="/fr/#comment-ca-marche" class="hidden sm:inline-flex hover:text-white transition-colors">Comment ça marche</a>
                 <a href="/fr/#fonctionnalites" class="hidden sm:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
-                <a href="/fr/blog/" class="hidden sm:inline-flex hover:text-white transition-colors">Ressources</a>
+                <a href="/fr/guides/" class="hidden sm:inline-flex text-dream-salmon">Guides des reves</a>
             </div>
         </div>
     </nav>
@@ -159,22 +163,13 @@
         <div class="max-w-5xl mx-auto">
 
             <!-- Breadcrumb -->
-            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Fil d'Ariane">
+            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/fr/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Accueil</span></a>
-                        <meta itemprop="position" content="1">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/fr/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Accueil</span></a><meta itemprop="position" content="1"></li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/fr/blog/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Ressources</span></a>
-                        <meta itemprop="position" content="2">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/fr/guides/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Guides des reves</span></a><meta itemprop="position" content="2"></li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-dream-cream">Symboles</span>
-                        <meta itemprop="position" content="3">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/fr/guides/dictionnaire-symboles-reves" itemprop="item" class="text-dream-cream"><span itemprop="name">Dictionnaire des symboles de rêves</span></a><meta itemprop="position" content="3"></li>
                 </ol>
             </nav>
 
@@ -184,10 +179,8 @@
 	                    <i data-lucide="book-open" class="w-4 h-4"></i>
 	                    GUIDE DE RÉFÉRENCE
 	                </div>
-	                <a href="../blog/signification-des-reves"
-	                    class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 mb-6 hover:text-white hover:border-dream-salmon/30 transition-colors">
-	                    Explorer : Signification des rêves
-	                </a>
+	                <a href="/fr/guides/"
+	                    class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 mb-6 hover:text-white hover:border-dream-salmon/30 transition-colors">Parcourir tous les guides des reves</a>
 	
 	                <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
 	                    Dictionnaire des symboles de rêves
@@ -981,11 +974,7 @@
             <section class="mt-16 max-w-3xl mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articles connexes</h2>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <a href="../blog/signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents</h3>
-                        <p class="text-sm text-gray-400">Comprenez pourquoi certains rêves reviennent.</p>
-                    </a>
+                    <a href="/fr/guides/" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">Parcourir tous les guides des reves</a>
                     <a href="../blog/comment-se-souvenir-de-ses-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves</h3>
@@ -1010,7 +999,7 @@
             <div>
                 <h5 class="font-bold mb-4 text-white">Ressources</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/fr/blog/" class="hidden sm:inline-flex hover:text-dream-salmon transition-colors">Ressources</a></li>
+                    <li><a href="/fr/guides/" class="hover:text-dream-salmon transition-colors">Guides des reves</a></li>
                     <li><a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon">Symboles de rêves</a></li>
                 </ul>
             </div>

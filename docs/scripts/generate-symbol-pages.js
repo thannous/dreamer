@@ -64,6 +64,14 @@ const CONFIG = {
   cssVersion: DOCS_ASSET_VERSION
 };
 
+const GUIDES_HUB_LABELS = {
+  en: 'Dream Guides',
+  fr: 'Guides des reves',
+  es: 'Guias de suenos',
+  de: 'Traumratgeber',
+  it: 'Guide ai sogni'
+};
+
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
   const [key, value] = arg.replace('--', '').split('=');
@@ -389,6 +397,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   ].slice(0, 4);
 
   const reflectionPromptsHtml = reflectionPrompts.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+  const visibleHeadline = `${t.h1_prefix} ${symbolData.name}`.trim();
   const reflectionSectionHtml = `
             <!-- Reflection -->
             <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/10">
@@ -420,7 +429,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: metaTitle,
+    headline: visibleHeadline,
     description: metaDescription,
     image: `https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg`,
     author: { '@type': 'Organization', name: 'Noctalia' },
@@ -594,7 +603,7 @@ ${renderJsonLd(faqPageJsonLd)}
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
                 <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
                 <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/blog/" class="hidden sm:inline-flex text-dream-salmon">${t.nav_resources}</a>
+                <a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${GUIDES_HUB_LABELS[lang]}</a>
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
@@ -650,7 +659,7 @@ ${renderJsonLd(faqPageJsonLd)}
                 </div>
 
                 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    ${t.h1_prefix} ${escapeHtml(symbolData.name)}
+                    ${escapeHtml(visibleHeadline)}
                 </h1>
 
                 <p class="text-lg text-purple-200/80 leading-relaxed">
@@ -737,9 +746,9 @@ ${relatedArticleHtml}
                 <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
             </div>
             <div>
-                <h5 class="font-bold mb-4 text-white">${t.nav_resources}</h5>
+                <h5 class="font-bold mb-4 text-white">${GUIDES_HUB_LABELS[lang]}</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/blog/" class="hover:text-dream-salmon transition-colors">${t.nav_resources}</a></li>
+                    <li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${GUIDES_HUB_LABELS[lang]}</a></li>
                     <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
                 </ul>
             </div>
@@ -1206,7 +1215,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
                 <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
                 <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/blog/" class="hidden sm:inline-flex text-dream-salmon">${t.nav_resources}</a>
+                <a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${GUIDES_HUB_LABELS[lang]}</a>
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
@@ -1319,9 +1328,9 @@ ${relatedGuidesHtml}
                 <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
             </div>
             <div>
-                <h5 class="font-bold mb-4 text-white">${t.nav_resources}</h5>
+                <h5 class="font-bold mb-4 text-white">${GUIDES_HUB_LABELS[lang]}</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/blog/" class="hover:text-dream-salmon transition-colors">${t.nav_resources}</a></li>
+                    <li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${GUIDES_HUB_LABELS[lang]}</a></li>
                     <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
                 </ul>
             </div>
@@ -1740,7 +1749,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
                 <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
                 <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/blog/" class="hidden sm:inline-flex text-dream-salmon">${t.nav_resources}</a>
+                <a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${GUIDES_HUB_LABELS[lang]}</a>
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
@@ -1853,9 +1862,9 @@ ${guideHowToHtml}
                 <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
             </div>
             <div>
-                <h5 class="font-bold mb-4 text-white">${t.nav_resources}</h5>
+                <h5 class="font-bold mb-4 text-white">${GUIDES_HUB_LABELS[lang]}</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/blog/" class="hover:text-dream-salmon transition-colors">${t.nav_resources}</a></li>
+                    <li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${GUIDES_HUB_LABELS[lang]}</a></li>
                     <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
                 </ul>
             </div>
