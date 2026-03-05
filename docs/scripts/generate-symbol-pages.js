@@ -235,6 +235,19 @@ function sanitizeEmDashes(text) {
     .replace(/\s{2,}/g, ' ');
 }
 
+function injectEditorialLinks(symbolId, lang, html) {
+  if (typeof html !== 'string' || !html) return html;
+
+  if (symbolId === 'plane' && lang === 'es') {
+    return html.replace(
+      'Soñar con volar en avión',
+      '<a class="text-dream-salmon hover:underline" href="/es/blog/suenos-de-volar">Soñar con volar en avión</a>'
+    );
+  }
+
+  return html;
+}
+
 function safeJsonStringifyForHtml(data, space = 4) {
   return JSON.stringify(data, null, space).replace(/</g, '\\u003c');
 }
@@ -264,7 +277,11 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
 
   // Keep web detail behavior aligned with Expo app:
   // only render interpretation/variations when present in shared extended datasets.
-  const fullInterpretation = sanitizeEmDashes(extendedContent.fullInterpretation);
+  const fullInterpretation = injectEditorialLinks(
+    symbol.id,
+    lang,
+    sanitizeEmDashes(extendedContent.fullInterpretation)
+  );
   const variations = Array.isArray(extendedContent.variations) ? extendedContent.variations : [];
   const hasInterpretation = Boolean(fullInterpretation && String(fullInterpretation).trim());
   const hasVariations = variations.length > 0;

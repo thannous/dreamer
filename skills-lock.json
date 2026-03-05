@@ -1,20 +1,90 @@
 {
   "version": 1,
   "skills": {
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "computedHash": "b107e5c471729cce17c0463c21415393054782d60b349d2f0eb64cbbdeabff15"
+    },
+    "ai-seo": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "0dfe8e2dedc037971bc817fb169c2c1175776b51fd1403f5cd43a8662806ae50"
+    },
+    "analytics-tracking": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "6ea7d8bb78cacaec93f61c953807e35446304f5c6374fda4b190c76c4281fd4d"
+    },
     "building-native-ui": {
       "source": "expo/skills",
       "sourceType": "github",
       "computedHash": "a0316d2ce842d2dd8067a144e339cf502329dc7701f9f5122268fdb3d4c980f7"
+    },
+    "copy-editing": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "f8bb575dff23a5cf1f105b4e94ef32038a8b45984a96cfe1f3c4a5b38996ce4d"
+    },
+    "copywriting": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "c008c80aff1eec1aba190edf421772a3f350e91405d4207575092b663c3702a7"
     },
     "native-data-fetching": {
       "source": "expo/skills",
       "sourceType": "github",
       "computedHash": "523901a0f2dfddc91f6c3b09320e240abfe7c81b6f7277e14774ec39ac0c544b"
     },
+    "programmatic-seo": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "c6384f24bb0203f8aa98b23b55d35b9e6721b94532a0e7965215c340ae96f1e0"
+    },
+    "schema-markup": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "7e94629c1bafd6459b4f113237655a98761438eb1b26aa15c440351f79a86d2e"
+    },
+    "seo-audit": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "941f6f4db0f79248f6480256cf1838ed19bc1a0d70f499bb756f491142625cb4"
+    },
+    "site-architecture": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "040cf6fcceb0d57322c97aff2e75e1f8d2bf49df7a4e1faccd6f34ebf7f3fab1"
+    },
+    "social-content": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "89c1726323ac944b02fb8f27c1d86e84c6310ebacb6b0f62dae74e0351873c08"
+    },
     "upgrading-expo": {
       "source": "expo/skills",
       "sourceType": "github",
       "computedHash": "7d1b7787b515b4fd6f089311e084b946f9c0a5fa70d24cf35c1fb82403e3afb8"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "10eb4ec94577b79ae98c63ce3e7f35f8a6a06436a4011bff083b397de6960eeb"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "3ff06f0712886f7c2660d6746856c22d3127bd6568ddde29ddad8b72dbaaa226"
+    },
+    "vercel-react-native-skills": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "a804b4e848059822638c390359976f7021380bcefb1469d473aa4e9202c15ecb"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "d8e7d3afe37dcc8a97b99ffb5afdb4d0919ae0092ea8b68f44eb201f035e33ac"
     }
   }
 }

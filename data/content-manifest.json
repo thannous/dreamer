@@ -339,8 +339,8 @@
               "path": "/es/blog/suenos-de-volar"
             },
             "de": {
-              "slug": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen",
-              "path": "/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen"
+              "slug": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen",
+              "path": "/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen"
             },
             "it": {
               "slug": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni",
@@ -625,6 +625,34 @@
             "it": {
               "slug": "incubi-cause-significato-e-come-fermarli",
               "path": "/it/blog/incubi-cause-significato-e-come-fermarli"
+            }
+          }
+        },
+        "blog.stress-dreams-work": {
+          "id": "blog.stress-dreams-work",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "stress-dreams-work",
+          "locales": {
+            "en": {
+              "slug": "stress-dreams-work",
+              "path": "/en/blog/stress-dreams-work"
+            },
+            "fr": {
+              "slug": "reves-stress-travail",
+              "path": "/fr/blog/reves-stress-travail"
+            },
+            "es": {
+              "slug": "suenos-estres-trabajo",
+              "path": "/es/blog/suenos-estres-trabajo"
+            },
+            "de": {
+              "slug": "stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet",
+              "path": "/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet"
+            },
+            "it": {
+              "slug": "sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno",
+              "path": "/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno"
             }
           }
         },
