@@ -66,8 +66,8 @@ const CONFIG = {
 
 const GUIDES_HUB_LABELS = {
   en: 'Dream Guides',
-  fr: 'Guides des reves',
-  es: 'Guias de suenos',
+  fr: 'Guides des rêves',
+  es: 'Guías de sueños',
   de: 'Traumratgeber',
   it: 'Guide ai sogni'
 };
