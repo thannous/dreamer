@@ -638,6 +638,13 @@ function main() {
   }
 
   // Curation guide pages
+  for (const lang of LANGS) {
+    const rel = `${lang}/guides/index.html`;
+    if (!existsRel(rel)) {
+      errors.push({ type: 'missing-guides-hub', file: rel, detail: 'missing guides hub page' });
+    }
+  }
+
   const symbolIds = new Set(symbolList.map((s) => s.id));
   for (const page of curation.pages || []) {
     // Ensure referenced symbols exist
@@ -664,6 +671,15 @@ function main() {
       if (!existsRel(rel)) {
         errors.push({ type: 'missing-curation-page', file: rel, detail: `missing curation page for "${page.id}"` });
       }
+    }
+  }
+
+  for (const lang of LANGS) {
+    const slug = i18n?.[lang]?.dictionary_slug;
+    if (!slug) continue;
+    const rel = `${lang}/guides/${slug}.html`;
+    if (!existsRel(rel)) {
+      errors.push({ type: 'missing-dictionary-page', file: rel, detail: 'missing dictionary guide page' });
     }
   }
 

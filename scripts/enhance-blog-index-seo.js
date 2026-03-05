@@ -13,10 +13,15 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const {
+  SUPPORTED_LANGS,
+  extractCanonicalUrl,
+  extractTitleTag,
+  matchLineEndings,
+} = require('./lib/docs-seo-utils');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DOMAIN = 'https://noctalia.app';
-const SUPPORTED_LANGS = ['en', 'fr', 'es'];
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
@@ -33,9 +38,9 @@ function splitHead(html) {
 
 function detectHeadIndent(head) {
   const match =
-    head.match(/(^\s*)<meta\s+property=(["'])og:type\2/m) ||
-    head.match(/(^\s*)<meta\s+name=(["'])twitter:card\2/m) ||
-    head.match(/(^\s*)<link\s+rel=(["'])canonical\2/m);
+    head.match(/(^[ \t]*)<meta\b(?=[^>]*\bproperty=(["'])og:type\2)[^>]*>/m) ||
+    head.match(/(^[ \t]*)<meta\b(?=[^>]*\bname=(["'])twitter:card\2)[^>]*>/m) ||
+    head.match(/(^[ \t]*)<link\b(?=[^>]*\brel=(["'])canonical\2)[^>]*>/m);
   return match ? match[1] : '    ';
 }
 
@@ -86,20 +91,10 @@ function ensureRobotsMeta(head) {
   return { head: next, changed: true };
 }
 
-function extractCanonical(html) {
-  const match = html.match(/<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2/i);
-  return match ? match[3] : null;
-}
-
 function extractOgTitle(html) {
-  const match = html.match(/<meta\s+property=(["'])og:title\1\s+content=(["'])([^"']+)\2/i);
-  return match ? match[3].trim() : null;
-}
-
-function extractTitleTag(html) {
-  const match = html.match(/<title>([\s\S]*?)<\/title>/i);
-  if (!match) return null;
-  return match[1].replace(/\s+/g, ' ').trim();
+  const dom = new JSDOM(html);
+  const ogTitle = dom.window.document.querySelector('meta[property="og:title"]');
+  return ogTitle?.getAttribute('content')?.trim() || null;
 }
 
 function normalizeTitleForName(title) {
@@ -112,10 +107,12 @@ function getArticleInfo({ lang, slug }) {
   if (!fs.existsSync(absPath)) return null;
 
   const html = fs.readFileSync(absPath, 'utf8');
-  const canonical = extractCanonical(html) || `${DOMAIN}/${lang}/blog/${slug}`;
+  const dom = new JSDOM(html);
+  const canonical = extractCanonicalUrl(html) || `${DOMAIN}/${lang}/blog/${slug}`;
   const ogTitle = extractOgTitle(html);
   const titleTag = normalizeTitleForName(extractTitleTag(html));
-  const name = ogTitle || titleTag || slug;
+  const h1 = dom.window.document.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim();
+  const name = h1 || titleTag || ogTitle || slug;
 
   return { url: canonical, name };
 }
@@ -199,7 +196,8 @@ function processBlogIndex(lang) {
   const absPath = path.join(DOCS_DIR, lang, 'blog', 'index.html');
   if (!fs.existsSync(absPath)) return { changed: false, reason: 'missing-index' };
 
-  const raw = fs.readFileSync(absPath, 'utf8');
+  const originalRaw = fs.readFileSync(absPath, 'utf8');
+  const raw = originalRaw.replace(/\r\n/g, '\n');
   const headParts = splitHead(raw);
   if (!headParts) return { changed: false, reason: 'no-head' };
 
@@ -226,10 +224,10 @@ function processBlogIndex(lang) {
 
   if (!changed) return { changed: false, reason: 'no-op' };
 
-  const rebuilt = `${headParts.beforeHead}${nextHead}${headParts.afterHead}`;
+  const rebuilt = matchLineEndings(`${headParts.beforeHead}${nextHead}${headParts.afterHead}`, originalRaw);
   if (!DRY_RUN) fs.writeFileSync(absPath, rebuilt, 'utf8');
 
-  const canonical = extractCanonical(raw) || `${DOMAIN}/${lang}/blog/`;
+  const canonical = extractCanonicalUrl(raw) || `${DOMAIN}/${lang}/blog/`;
   return { changed: true, reason: 'updated', canonical };
 }
 

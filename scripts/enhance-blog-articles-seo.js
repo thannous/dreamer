@@ -15,12 +15,11 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { SUPPORTED_LANGS, extractCanonicalUrl, extractTitleTag, matchLineEndings } = require('./lib/docs-seo-utils');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const BLOG_IMG_DIR = path.join(DOCS_DIR, 'img', 'blog');
 const DOMAIN = 'https://noctalia.app';
-
-const SUPPORTED_LANGS = ['en', 'fr', 'es'];
 const WPM = 300;
 
 const args = process.argv.slice(2);
@@ -66,12 +65,6 @@ function minutesToIsoDuration(minutes) {
   return `PT${hours}H${remainingMinutes}M`;
 }
 
-function extractCanonicalUrl(html) {
-  const canonicalRegex = /<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2/i;
-  const match = html.match(canonicalRegex);
-  return match ? match[3] : null;
-}
-
 function splitHead(html) {
   const match = html.match(/^([\s\S]*?<head\b[^>]*>)([\s\S]*?)(<\/head>[\s\S]*)$/i);
   if (!match) return null;
@@ -80,9 +73,9 @@ function splitHead(html) {
 
 function detectHeadIndent(head) {
   const match =
-    head.match(/(^\s*)<meta\s+property=(["'])og:type\2/m) ||
-    head.match(/(^\s*)<meta\s+name=(["'])twitter:card\2/m) ||
-    head.match(/(^\s*)<link\s+rel=(["'])canonical\2/m);
+    head.match(/(^[ \t]*)<meta\b(?=[^>]*\bproperty=(["'])og:type\2)[^>]*>/m) ||
+    head.match(/(^[ \t]*)<meta\b(?=[^>]*\bname=(["'])twitter:card\2)[^>]*>/m) ||
+    head.match(/(^[ \t]*)<link\b(?=[^>]*\brel=(["'])canonical\2)[^>]*>/m);
   return match ? match[1] : '    ';
 }
 
@@ -103,25 +96,19 @@ function collapseBlankLinesInMetaRegion(head) {
 }
 
 function removeMetaPropertyFromHead(head, property) {
-  const re = new RegExp(
-    `^\\s*<meta\\s+property=(["'])${escapeRegExp(property)}\\1\\s+content=(["'])([^\\n]*?)\\2\\s*>[\\t ]*\\n?`,
-    'gim',
-  );
+  const re = new RegExp(`^\\s*<meta\\b(?=[^>]*\\bproperty=(["'])${escapeRegExp(property)}\\1)[^>]*>\\s*\\n?`, 'gim');
   return head.replace(re, '');
 }
 
 function removeMetaNameFromHead(head, name) {
-  const re = new RegExp(
-    `^\\s*<meta\\s+name=(["'])${escapeRegExp(name)}\\1\\s+content=(["'])([^\\n]*?)\\2\\s*>[\\t ]*\\n?`,
-    'gim',
-  );
+  const re = new RegExp(`^\\s*<meta\\b(?=[^>]*\\bname=(["'])${escapeRegExp(name)}\\1)[^>]*>\\s*\\n?`, 'gim');
   return head.replace(re, '');
 }
 
 function removeFeaturedImagePreloadFromHead(head) {
   const markerRegex = /^\s*<!--\s*Preload featured image\s*-->\s*\n?/gim;
   const preloadRegex =
-    /^\s*<link\s+rel=(["'])preload\1[^>]*\bhref=(["'])\/img\/blog\/[^"']+\2[^>]*\bas=(["'])image\3[^>]*>\s*\n?/gim;
+    /^\s*<link\b(?=[^>]*\brel=(["'])preload\1)(?=[^>]*\bhref=(["'])\/img\/blog\/[^"']+\2)(?=[^>]*\bas=(["'])image\3)[^>]*>\s*\n?/gim;
   return head.replace(markerRegex, '').replace(preloadRegex, '');
 }
 
@@ -130,58 +117,63 @@ function insertAfterLine(head, anchorRegex, insertion) {
   return head.replace(anchorRegex, (line) => `${line}\n${insertion}`);
 }
 
-function enhanceArticleHead(head, { imageUrl, featuredAlt, preloadHref }) {
+function enhanceArticleHead(head, { imageUrl, featuredAlt, preloadHref, pageTitle }) {
   const indent = detectHeadIndent(head);
   let next = normalizeHeadIndentation(head);
 
+  next = removeMetaPropertyFromHead(next, 'og:title');
   next = removeMetaPropertyFromHead(next, 'og:image');
   next = removeMetaPropertyFromHead(next, 'og:image:width');
   next = removeMetaPropertyFromHead(next, 'og:image:height');
   next = removeMetaPropertyFromHead(next, 'og:image:alt');
 
+  next = removeMetaNameFromHead(next, 'twitter:title');
   next = removeMetaNameFromHead(next, 'twitter:image');
   next = removeMetaNameFromHead(next, 'twitter:image:alt');
 
   next = removeFeaturedImagePreloadFromHead(next);
 
-  const ogLines = [
-    `${indent}<meta property="og:image" content="${escapeHtmlAttr(imageUrl)}">`,
-    `${indent}<meta property="og:image:width" content="1200">`,
-    `${indent}<meta property="og:image:height" content="630">`,
-  ];
+  const ogLines = [];
+  if (pageTitle) {
+    ogLines.push(`${indent}<meta property="og:title" content="${escapeHtmlAttr(pageTitle)}">`);
+  }
+  ogLines.push(`${indent}<meta property="og:image" content="${escapeHtmlAttr(imageUrl)}">`);
+  ogLines.push(`${indent}<meta property="og:image:width" content="1200">`);
+  ogLines.push(`${indent}<meta property="og:image:height" content="630">`);
   if (featuredAlt) {
     ogLines.push(`${indent}<meta property="og:image:alt" content="${escapeHtmlAttr(featuredAlt)}">`);
   }
   const ogBlock = `${ogLines.join('\n')}\n`;
 
-  const ogUrlLine = /^\s*<meta\s+property=(["'])og:url\1[^>]*>[ \t]*$/im;
-  const ogDescLine = /^\s*<meta\s+property=(["'])og:description\1[^>]*>[ \t]*$/im;
-  const ogTitleLine = /^\s*<meta\s+property=(["'])og:title\1[^>]*>[ \t]*$/im;
+  const ogTypeLine = /^\s*<meta\b(?=[^>]*\bproperty=(["'])og:type\1)[^>]*>[ \t]*$/im;
+  const ogUrlLine = /^\s*<meta\b(?=[^>]*\bproperty=(["'])og:url\1)[^>]*>[ \t]*$/im;
+  const ogDescLine = /^\s*<meta\b(?=[^>]*\bproperty=(["'])og:description\1)[^>]*>[ \t]*$/im;
 
-  if (ogUrlLine.test(next)) {
+  if (ogTypeLine.test(next)) {
+    next = insertAfterLine(next, ogTypeLine, ogBlock);
+  } else if (ogUrlLine.test(next)) {
     next = insertAfterLine(next, ogUrlLine, ogBlock);
   } else if (ogDescLine.test(next)) {
     next = insertAfterLine(next, ogDescLine, ogBlock);
-  } else if (ogTitleLine.test(next)) {
-    next = insertAfterLine(next, ogTitleLine, ogBlock);
   } else {
     next = `${ogBlock}${next}`;
   }
 
-  const twitterLines = [`${indent}<meta name="twitter:image" content="${escapeHtmlAttr(imageUrl)}">`];
+  const twitterLines = [];
+  if (pageTitle) {
+    twitterLines.push(`${indent}<meta name="twitter:title" content="${escapeHtmlAttr(pageTitle)}">`);
+  }
+  twitterLines.push(`${indent}<meta name="twitter:image" content="${escapeHtmlAttr(imageUrl)}">`);
   if (featuredAlt) {
     twitterLines.push(`${indent}<meta name="twitter:image:alt" content="${escapeHtmlAttr(featuredAlt)}">`);
   }
   const twitterBlock = `${twitterLines.join('\n')}\n`;
 
-  const twitterDescLine = /^\s*<meta\s+name=(["'])twitter:description\1[^>]*>[ \t]*$/im;
-  const twitterTitleLine = /^\s*<meta\s+name=(["'])twitter:title\1[^>]*>[ \t]*$/im;
-  const twitterCardLine = /^\s*<meta\s+name=(["'])twitter:card\1[^>]*>[ \t]*$/im;
+  const twitterDescLine = /^\s*<meta\b(?=[^>]*\bname=(["'])twitter:description\1)[^>]*>[ \t]*$/im;
+  const twitterCardLine = /^\s*<meta\b(?=[^>]*\bname=(["'])twitter:card\1)[^>]*>[ \t]*$/im;
 
   if (twitterDescLine.test(next)) {
     next = insertAfterLine(next, twitterDescLine, twitterBlock);
-  } else if (twitterTitleLine.test(next)) {
-    next = insertAfterLine(next, twitterTitleLine, twitterBlock);
   } else if (twitterCardLine.test(next)) {
     next = insertAfterLine(next, twitterCardLine, twitterBlock);
   } else {
@@ -197,7 +189,7 @@ function enhanceArticleHead(head, { imageUrl, featuredAlt, preloadHref }) {
   // Add robots meta (don't override existing robots directives like noindex).
   if (!/<meta\s+name=(["'])robots\1/i.test(next)) {
     const robotsLine = `${indent}<meta name="robots" content="max-image-preview:large">`;
-    const articleAuthorLine = /^\s*<meta\s+property=(["'])article:author\1[^>]*>[ \t]*$/im;
+    const articleAuthorLine = /^\s*<meta\b(?=[^>]*\bproperty=(["'])article:author\1)[^>]*>[ \t]*$/im;
     if (articleAuthorLine.test(next)) {
       next = insertAfterLine(next, articleAuthorLine, `${robotsLine}\n`);
     } else if (twitterDescLine.test(next)) {
@@ -226,8 +218,8 @@ function enhanceArticleHead(head, { imageUrl, featuredAlt, preloadHref }) {
     : null;
 
   const frauncesPreloadLine =
-    /^\s*<link\s+rel=(["'])preload\1\s+href=(["'])\/fonts\/Fraunces-Variable\.woff2\2[^>]*>[ \t]*$/im;
-  const lastFontPreloadLine = /^\s*<link\s+rel=(["'])preload\1[^>]*\/fonts\/[^>]*>[ \t]*$/gim;
+    /^\s*<link\b(?=[^>]*\brel=(["'])preload\1)(?=[^>]*\bhref=(["'])\/fonts\/Fraunces-Variable\.woff2\2)[^>]*>[ \t]*$/im;
+  const lastFontPreloadLine = /^\s*<link\b(?=[^>]*\brel=(["'])preload\1)(?=[^>]*\/fonts\/)[^>]*>[ \t]*$/gim;
   if (preloadBlock) {
     if (frauncesPreloadLine.test(next)) {
       next = insertAfterLine(next, frauncesPreloadLine, preloadBlock);
@@ -337,7 +329,7 @@ function findFeaturedImageFromDocument(document) {
   return imgInFigure || null;
 }
 
-function updateBlogPostingJsonLd(html, { lang, slug, imageUrl, minutes, words }) {
+function updateBlogPostingJsonLd(html, { lang, imageUrl, minutes, words, headline }) {
   const scriptRegex = /<script\s+type=(["'])application\/ld\+json\1>\s*([\s\S]*?)\s*<\/script>/gi;
   const canonical = extractCanonicalUrl(html);
   if (!canonical) return { html, changed: false };
@@ -367,6 +359,9 @@ function updateBlogPostingJsonLd(html, { lang, slug, imageUrl, minutes, words })
     nextData.wordCount = words;
     nextData.timeRequired = minutesToIsoDuration(minutes);
     nextData.url = canonical;
+    if (headline) {
+      nextData.headline = headline;
+    }
 
     if (imageUrl) {
       nextData.image = {
@@ -391,7 +386,8 @@ function updateBlogPostingJsonLd(html, { lang, slug, imageUrl, minutes, words })
 }
 
 function processArticle({ lang, slug, absPath }) {
-  const raw = fs.readFileSync(absPath, 'utf8');
+  const originalRaw = fs.readFileSync(absPath, 'utf8');
+  const raw = originalRaw.replace(/\r\n/g, '\n');
 
   // Only treat pages with a BlogPosting JSON-LD as an article page.
   if (!/["@']@type["@']\s*:\s*["']BlogPosting["']/.test(raw)) {
@@ -404,6 +400,8 @@ function processArticle({ lang, slug, absPath }) {
   }
 
   const dom = new JSDOM(raw);
+  const pageTitle = extractTitleTag(raw);
+  const headline = dom.window.document.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() || null;
   const featuredImg = findFeaturedImageFromDocument(dom.window.document);
   const featuredSrc = featuredImg ? featuredImg.getAttribute('src') : null;
   const featuredAlt = featuredImg ? featuredImg.getAttribute('alt') : null;
@@ -418,7 +416,7 @@ function processArticle({ lang, slug, absPath }) {
   if (imageUrl) {
     const headParts = splitHead(next);
     if (headParts) {
-      const enhancedHead = enhanceArticleHead(headParts.head, { imageUrl, featuredAlt, preloadHref });
+      const enhancedHead = enhanceArticleHead(headParts.head, { imageUrl, featuredAlt, preloadHref, pageTitle });
       const normalizedHead = enhancedHead.startsWith('\n') ? enhancedHead : `\n${enhancedHead}`;
       next = `${headParts.beforeHead}${normalizedHead}${headParts.afterHead}`;
     }
@@ -428,16 +426,17 @@ function processArticle({ lang, slug, absPath }) {
 
   const jsonRes = updateBlogPostingJsonLd(next, {
     lang,
-    slug,
     imageUrl,
     minutes: readingInfo.minutes,
     words: readingInfo.words,
+    headline,
   });
   next = jsonRes.html;
 
-  const changed = next !== raw;
+  const output = matchLineEndings(next, originalRaw);
+  const changed = output !== originalRaw;
   if (changed && !DRY_RUN) {
-    fs.writeFileSync(absPath, next, 'utf8');
+    fs.writeFileSync(absPath, output, 'utf8');
   }
 
   return { changed, reason: changed ? 'updated' : 'no-op' };
