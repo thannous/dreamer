@@ -13,9 +13,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
-const SUPPORTED_LANGS = ['en', 'fr', 'es'];
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');

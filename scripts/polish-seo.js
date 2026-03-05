@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 
@@ -152,7 +153,7 @@ function polishFile(absPath, lang, slug) {
 }
 
 function main() {
-  const langs = ['fr', 'en', 'es'];
+  const langs = SUPPORTED_LANGS;
   let count = 0;
 
   for (const lang of langs) {

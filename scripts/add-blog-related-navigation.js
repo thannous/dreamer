@@ -16,10 +16,10 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { SUPPORTED_LANGS, findCanonicalLinkTag, matchLineEndings } = require('./lib/docs-seo-utils');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DOMAIN = 'https://noctalia.app';
-const SUPPORTED_LANGS = ['en', 'fr', 'es'];
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
@@ -42,6 +42,7 @@ const UI = {
       science: 'Science',
       interpretation: 'Interprétation',
       reference: 'Référence',
+      'lucid-dreams': 'Rêve lucide',
       'reve-lucide': 'Rêve lucide',
     },
   },
@@ -70,11 +71,48 @@ const UI = {
     relatedTitle: 'Para seguir leyendo',
     relatedDesc: 'Recursos relacionados sobre el mismo tema',
     categories: {
+      guide: 'Guía',
       guia: 'Guía',
+      science: 'Ciencia',
       ciencia: 'Ciencia',
+      interpretation: 'Interpretación',
       interpretacion: 'Interpretación',
+      reference: 'Referencia',
       referencia: 'Referencia',
+      'lucid-dreams': 'Sueños lúcidos',
       'suenos-lucidos': 'Sueños lúcidos',
+    },
+  },
+  de: {
+    prev: 'Vorheriger Artikel',
+    next: 'Nächster Artikel',
+    all: 'Alle Ressourcen',
+    allDesc: 'Alle Ressourcen ansehen',
+    navLabel: 'Artikelnavigation',
+    relatedTitle: 'Weiterlesen',
+    relatedDesc: 'Weitere Ressourcen zum gleichen Thema',
+    categories: {
+      guide: 'Ratgeber',
+      science: 'Wissenschaft',
+      interpretation: 'Deutung',
+      reference: 'Referenz',
+      'lucid-dreams': 'Klarträume',
+    },
+  },
+  it: {
+    prev: 'Articolo precedente',
+    next: 'Articolo successivo',
+    all: 'Tutte le risorse',
+    allDesc: 'Sfoglia tutte le risorse',
+    navLabel: 'Navigazione tra articoli',
+    relatedTitle: 'Continua a leggere',
+    relatedDesc: 'Altre risorse sullo stesso tema',
+    categories: {
+      guide: 'Guida',
+      science: 'Scienza',
+      interpretation: 'Interpretazione',
+      reference: 'Riferimento',
+      'lucid-dreams': 'Sogni lucidi',
     },
   },
 };
@@ -95,14 +133,9 @@ function findBlogArticleFiles(lang) {
     .sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
-function getCanonicalUrl(html) {
-  const match = html.match(/<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2/i);
-  return match ? match[3] : null;
-}
-
 function removePrevNextLinksFromHead(head) {
   let next = head;
-  next = next.replace(/^\s*<link\s+rel=(["'])(?:prev|next)\1[^>]*>\s*\n?/gim, '');
+  next = next.replace(/^\s*<link\b(?=[^>]*\brel=(["'])(?:prev|next)\1)[^>]*>\s*\n?/gim, '');
   next = next.replace(/\n[ \t]*\n(?:[ \t]*\n)+/g, '\n\n');
   return next;
 }
@@ -117,14 +150,13 @@ function insertPrevNextLinks(html, { prevSlug, nextSlug, lang }) {
   const parts = splitHead(html);
   if (!parts) return html;
 
-  const canonicalLine = /^\s*<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2\s*>\s*$/im;
-  if (!canonicalLine.test(parts.head)) return html;
-
+  const canonicalTag = findCanonicalLinkTag(parts.head);
+  if (!canonicalTag) return html;
   let head = removePrevNextLinksFromHead(parts.head);
   const prevHref = prevSlug ? `${DOMAIN}/${lang}/blog/${prevSlug}` : null;
   const nextHref = nextSlug ? `${DOMAIN}/${lang}/blog/${nextSlug}` : null;
 
-  const indentMatch = head.match(/(^\s*)<link\s+rel=(["'])canonical\2/m);
+  const indentMatch = canonicalTag.match(/^(\s*)/);
   const indent = indentMatch ? indentMatch[1] : '    ';
 
   const lines = [];
@@ -132,7 +164,7 @@ function insertPrevNextLinks(html, { prevSlug, nextSlug, lang }) {
   if (nextHref) lines.push(`${indent}<link rel="next" href="${nextHref}">`);
   if (lines.length === 0) return html;
 
-  head = head.replace(canonicalLine, (line) => `${line}\n${lines.join('\n')}`);
+  head = head.replace(canonicalTag, `${canonicalTag}\n${lines.join('\n')}`);
   return `${parts.beforeHead}${head}${parts.afterHead}`;
 }
 
@@ -350,17 +382,19 @@ function getIndentBefore(html, needle) {
 }
 
 function replaceOrInsertBlock(html, { markerStart, markerEnd, blockHtml, insertBefore }) {
-  const indent = getIndentBefore(html, insertBefore);
-  const indentedBlock = indentBlock(blockHtml, indent);
-
   const startIdx = html.indexOf(markerStart);
   const endIdx = html.indexOf(markerEnd);
   if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-    const before = html.slice(0, startIdx);
+    const lineStart = html.lastIndexOf('\n', startIdx) + 1;
+    const indent = html.slice(lineStart, startIdx);
+    const indentedBlock = indentBlock(blockHtml, indent);
+    const before = html.slice(0, lineStart);
     const after = html.slice(endIdx + markerEnd.length);
     return `${before}${indentedBlock}${after}`;
   }
 
+  const indent = getIndentBefore(html, insertBefore);
+  const indentedBlock = indentBlock(blockHtml, indent);
   const insertIdx = html.lastIndexOf(insertBefore);
   if (insertIdx === -1) return html;
   const before = html.slice(0, insertIdx).replace(/[ \t]*$/, '');
@@ -369,7 +403,8 @@ function replaceOrInsertBlock(html, { markerStart, markerEnd, blockHtml, insertB
 }
 
 function processArticle({ file, indexData }) {
-  const raw = fs.readFileSync(file.absPath, 'utf8');
+  const originalRaw = fs.readFileSync(file.absPath, 'utf8');
+  const raw = originalRaw.replace(/\r\n/g, '\n');
 
   // Only process pages that look like blog articles.
   if (!/["@']@type["@']\s*:\s*["']BlogPosting["']/.test(raw)) return { changed: false, reason: 'not-article' };
@@ -418,8 +453,9 @@ function processArticle({ file, indexData }) {
 
   // Keep diffs tidy.
   nextHtml = nextHtml.replace(/\n[ \t]*\n(?:[ \t]*\n)+/g, '\n\n');
+  nextHtml = matchLineEndings(nextHtml, originalRaw);
 
-  const changed = nextHtml !== raw;
+  const changed = nextHtml !== originalRaw;
   if (changed && !DRY_RUN) fs.writeFileSync(file.absPath, nextHtml, 'utf8');
   return { changed, reason: changed ? 'updated' : 'no-op' };
 }

@@ -9,17 +9,16 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  SUPPORTED_LANGS,
+  normalizeUrl,
+  extractCanonicalUrl,
+  extractHreflangs,
+  extractTagAttributes,
+} = require('./lib/docs-seo-utils');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DOMAIN = 'https://noctalia.app';
-
-const SUPPORTED_LANGS = ['fr', 'en', 'es'];
-
-function normalizeUrl(url) {
-  return url
-    .replace(/\/index\.html$/, '/')
-    .replace(/\.html$/, '');
-}
 
 function pathToUrl(filePath) {
   let urlPath = filePath.replace(/\\/g, '/');
@@ -55,32 +54,23 @@ function findHtmlFiles(dir, baseDir = '') {
 }
 
 function extractCanonicalFromContent(content) {
-  const canonicalRegex = /<link\s+rel=(["'])canonical\1\s+href=(["'])([^"']+)\2/i;
-  const match = content.match(canonicalRegex);
-  return match ? normalizeUrl(match[3]) : null;
+  return extractCanonicalUrl(content);
 }
 
 function extractHreflangsFromContent(content) {
-  const hreflangRegex = /<link\s+rel=(["'])alternate\1\s+hreflang=(["'])([^"']+)\2\s+href=(["'])([^"']+)\4/gi;
-  const hreflangs = {};
-  let match;
-
-  while ((match = hreflangRegex.exec(content)) !== null) {
-    const [, , , hreflang, , href] = match;
-    hreflangs[hreflang] = normalizeUrl(href);
-  }
-
-  return hreflangs;
+  return extractHreflangs(content);
 }
 
 function isIndexable(content) {
-  if (/<meta\s+http-equiv=(["'])refresh\1/i.test(content)) {
+  if (/<meta\b(?=[^>]*\bhttp-equiv=(["'])refresh\1)[^>]*>/i.test(content)) {
     return false;
   }
 
-  const robotsMatch = content.match(/<meta\s+name=(["'])robots\1\s+content=(["'])([^"']+)\2/i);
-  if (!robotsMatch) return true;
-  return !robotsMatch[3].toLowerCase().includes('noindex');
+  const robotsTag = content.match(/<meta\b(?=[^>]*\bname=(["'])robots\1)[^>]*>/i);
+  if (!robotsTag) return true;
+  const contentMatch = robotsTag[0].match(/\bcontent=(["'])([^"']+)\1/i);
+  if (!contentMatch) return true;
+  return !contentMatch[2].toLowerCase().includes('noindex');
 }
 
 function getLangFromRelativePath(relativePath) {
@@ -100,12 +90,13 @@ function parseSitemap(sitemapXml) {
     const loc = normalizeUrl(locMatch[1].trim());
 
     const links = {};
-    const linkRegex = /<xhtml:link\s+rel=(["'])alternate\1\s+hreflang=(["'])([^"']+)\2\s+href=(["'])([^"']+)\4\s*\/?>/gi;
-    let linkMatch;
-    while ((linkMatch = linkRegex.exec(block)) !== null) {
-      const hreflang = linkMatch[3];
-      const href = normalizeUrl(linkMatch[5]);
-      links[hreflang] = href;
+    const linkTags = Array.from(block.matchAll(/<xhtml:link\b[^>]*\/?>/gi), (tagMatch) => tagMatch[0]);
+    for (const tag of linkTags) {
+      const attrs = extractTagAttributes(tag);
+      const rel = String(attrs.rel || '').toLowerCase().split(/\s+/).filter(Boolean);
+      if (!rel.includes('alternate')) continue;
+      if (!attrs.hreflang || !attrs.href) continue;
+      links[attrs.hreflang] = normalizeUrl(attrs.href);
     }
 
     urls.push({ loc, links });
