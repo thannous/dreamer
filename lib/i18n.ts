@@ -14,6 +14,13 @@ type PlaceholderPatterns = {
   singleBracePattern: RegExp;
 };
 
+type TranslationModule = { default?: Translations } | Translations;
+
+type LanguageModuleLoader = {
+  importModule: () => Promise<TranslationModule>;
+  requireModule: () => TranslationModule;
+};
+
 const placeholderPatternCache = new Map<string, PlaceholderPatterns>();
 
 function getPlaceholderPatterns(key: string): PlaceholderPatterns {
@@ -56,36 +63,54 @@ const resolveLanguage = (lang?: string): AppLanguage => {
 };
 
 async function importLanguagePack(language: AppLanguage): Promise<Translations> {
-  const resolveModule = async (
-    importer: () => Promise<{ default?: Translations } | Translations>,
-    fallbackPath: string
-  ): Promise<Translations> => {
+  const getTranslations = (module: TranslationModule): Translations =>
+    (module as { default?: Translations }).default ?? (module as Translations);
+
+  const resolveModule = async (loader: LanguageModuleLoader): Promise<Translations> => {
     try {
-      const imported = await importer();
-      return (imported as { default?: Translations }).default ?? (imported as Translations);
+      return getTranslations(await loader.importModule());
     } catch (dynamicImportError) {
       try {
         // Jest in CJS mode cannot evaluate dynamic import without vm modules.
         // Fallback to require keeps unit tests deterministic while preserving runtime behavior.
-        const required = require(fallbackPath) as { default?: Translations } | Translations;
-        return (required as { default?: Translations }).default ?? (required as Translations);
+        return getTranslations(loader.requireModule());
       } catch {
         throw dynamicImportError;
       }
     }
   };
 
+  const loaders: Partial<Record<AppLanguage, LanguageModuleLoader>> = {
+    fr: {
+      importModule: () => import('./i18n/fr'),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      requireModule: () => require('./i18n/fr') as TranslationModule,
+    },
+    es: {
+      importModule: () => import('./i18n/es'),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      requireModule: () => require('./i18n/es') as TranslationModule,
+    },
+    de: {
+      importModule: () => import('./i18n/de'),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      requireModule: () => require('./i18n/de') as TranslationModule,
+    },
+    it: {
+      importModule: () => import('./i18n/it'),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      requireModule: () => require('./i18n/it') as TranslationModule,
+    },
+  };
+
   switch (language) {
     case 'en':
       return en;
     case 'fr':
-      return resolveModule(() => import('./i18n/fr'), './i18n/fr');
     case 'es':
-      return resolveModule(() => import('./i18n/es'), './i18n/es');
     case 'de':
-      return resolveModule(() => import('./i18n/de'), './i18n/de');
     case 'it':
-      return resolveModule(() => import('./i18n/it'), './i18n/it');
+      return resolveModule(loaders[language]!);
     default:
       return en;
   }
