@@ -97,7 +97,7 @@
         "en": "flying-dreams-meaning",
         "fr": "reves-de-voler",
         "es": "suenos-de-volar",
-        "de": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-ihren-traeumen-zu-fliegen",
+        "de": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen",
         "it": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"
       }
     },
@@ -198,6 +198,15 @@
         "es": "guia-pesadillas",
         "de": "albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann",
         "it": "incubi-cause-significato-e-come-fermarli"
+      }
+    },
+    "stress-dreams-work": {
+      "slugs": {
+        "en": "stress-dreams-work",
+        "fr": "reves-stress-travail",
+        "es": "suenos-estres-trabajo",
+        "de": "stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet",
+        "it": "sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno"
       }
     },
     "teeth-falling-out-dreams": {
