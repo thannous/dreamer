@@ -141,7 +141,7 @@ function renderModuleHtml({ lang, dictionarySlug, categories, topSymbols }) {
     `                        <p class="text-sm md:text-base text-purple-200/70 max-w-3xl mx-auto text-center">${escapeHtml(t.p)}</p>`,
     '',
     '                        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">',
-    `                            <a href="/${lang}/guides/${dictionarySlug}" class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-dream-salmon text-dream-dark hover:bg-dream-salmon/90 transition-colors">`,
+    `                            <a href="/${lang}/guides/${dictionarySlug}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold bg-dream-salmon text-dream-dark hover:bg-dream-salmon/90 transition-colors">`,
     `                                ${escapeHtml(t.cta)} <i data-lucide="arrow-right" class="w-4 h-4"></i>`,
     '                            </a>',
     '                        </div>',
