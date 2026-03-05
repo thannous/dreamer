@@ -83,15 +83,18 @@
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "Article",
+            "@type": "CollectionPage",
+            "name": "Dizionario dei simboli dei sogni (A–Z)",
             "headline": "Dizionario dei simboli dei sogni (A–Z)",
             "description": "Dizionario completo dei simboli dei sogni. Scopri il significato di oltre 50 simboli onirici comuni: acqua, cadere, volare, denti, animali e altro.",
+            "url": "https://noctalia.app/it/guides/dizionario-simboli-sogni",
             "image": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
-            "author": { "@type": "Organization", "name": "Noctalia" },
-            "publisher": { "@type": "Organization", "name": "Noctalia", "logo": { "@type": "ImageObject", "url": "https://noctalia.app/logo/logo_noctalia.png" } },
-            "datePublished": "2025-01-06", "dateModified": "2026-02-06",
-            "mainEntityOfPage": { "@type": "WebPage", "@id": "https://noctalia.app/it/guides/dizionario-simboli-sogni" },
-            "inLanguage": "it"
+            "inLanguage": "it",
+            "isPartOf": {
+                "@type": "CollectionPage",
+                "name": "Guide ai sogni",
+                "url": "https://noctalia.app/it/guides/"
+            }
         }
     </script>
 
@@ -109,27 +112,28 @@
 
     <script type="application/ld+json">
         {
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                        {
-                                "@type": "ListItem",
-                                "position": 1,
-                                "name": "Home",
-                                "item": "https://noctalia.app/it/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 2,
-                                "name": "Risorse",
-                                "item": "https://noctalia.app/it/blog/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 3,
-                                "name": "Dizionario dei simboli dei sogni (A–Z)"
-                        }
-                ]
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://noctalia.app/it/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Guide ai sogni",
+                    "item": "https://noctalia.app/it/guides/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Dizionario dei simboli dei sogni (A–Z)",
+                    "item": "https://noctalia.app/it/guides/dizionario-simboli-sogni"
+                }
+            ]
         }
     </script>
 </head>
@@ -150,7 +154,7 @@
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
                 <a href="/it/#come-funziona" class="hidden sm:inline-flex hover:text-white transition-colors">Come funziona</a>
                 <a href="/it/#funzionalita" class="hidden sm:inline-flex hover:text-white transition-colors">Funzionalità</a>
-                <a href="/it/blog/" class="hidden sm:inline-flex hover:text-white transition-colors">Risorse</a>
+                <a href="/it/guides/" class="hidden sm:inline-flex text-dream-salmon">Guide ai sogni</a>
             </div>
             <div class="flex items-center gap-3">
 </div>
@@ -163,20 +167,11 @@
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/it/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Home</span></a>
-                        <meta itemprop="position" content="1">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/it/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Home</span></a><meta itemprop="position" content="1"></li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <a href="/it/blog/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Risorse</span></a>
-                        <meta itemprop="position" content="2">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/it/guides/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">Guide ai sogni</span></a><meta itemprop="position" content="2"></li>
                     <li class="text-purple-400">/</li>
-                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                        <span itemprop="name" class="text-dream-cream">Simboli</span>
-                        <meta itemprop="position" content="3">
-                    </li>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/it/guides/dizionario-simboli-sogni" itemprop="item" class="text-dream-cream"><span itemprop="name">Dizionario dei simboli dei sogni (A–Z)</span></a><meta itemprop="position" content="3"></li>
                 </ol>
             </nav>
 
@@ -187,10 +182,8 @@
                         <i data-lucide="book-open" class="w-4 h-4"></i>
                         GUIDA DI RIFERIMENTO
                     </div>
-                    <a href="../blog/significati-dei-sogni-interpretazione-e-simboli"
-                        class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
-                        Esplora: Significato dei sogni
-                    </a>
+                    <a href="/it/guides/"
+                        class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">Sfoglia tutte le guide ai sogni</a>
                 </div>
 
                 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
@@ -979,11 +972,7 @@
             <section class="mt-16 max-w-3xl mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articoli correlati</h2>
                 <div class="grid md:grid-cols-2 gap-6">
-                    <a href="../blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
-                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti</h3>
-                        <p class="text-sm text-gray-400">Scopri perché certi sogni continuano a tornare.</p>
-                    </a>
+                    <a href="/it/guides/" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">Sfoglia tutte le guide ai sogni</a>
                     <a href="../blog/come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i sogni</h3>
@@ -1008,7 +997,7 @@
             <div>
                 <h5 class="font-bold mb-4 text-white">Risorse</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/it/blog/" class="hidden sm:inline-flex hover:text-dream-salmon transition-colors">Risorse</a></li>
+                    <li><a href="/it/guides/" class="hover:text-dream-salmon transition-colors">Guide ai sogni</a></li>
                     <li><a href="dizionario-simboli-sogni" class="text-dream-salmon">Simboli dei sogni</a></li>
                 </ul>
             </div>
