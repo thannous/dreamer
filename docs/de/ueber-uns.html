@@ -48,36 +48,62 @@
     <script src="/js/lucide.min.js?v=20260122-0819" defer></script>
     <script type="application/ld+json">
         {
-            "@context": "https://schema.org",
-            "@type": "AboutPage",
-            "name": "Über Noctalia",
-            "url": "https://noctalia.app/de/ueber-uns",
-            "inLanguage": "de",
-            "about": {
-                "@type": "Organization",
-                "name": "Noctalia",
-                "url": "https://noctalia.app"
-            }
-        }
+          "@context": "https://schema.org",
+          "@graph": [
+                    {
+                              "@type": "AboutPage",
+                              "name": "Über Noctalia",
+                              "url": "https://noctalia.app/de/ueber-uns",
+                              "inLanguage": "de",
+                              "about": {
+                                        "@id": "https://noctalia.app/#organization"
+                              },
+                              "mainEntity": {
+                                        "@id": "https://noctalia.app/de/ueber-uns#person"
+                              }
+                    },
+                    {
+                              "@type": "Organization",
+                              "@id": "https://noctalia.app/#organization",
+                              "name": "Noctalia",
+                              "url": "https://noctalia.app",
+                              "founder": {
+                                        "@id": "https://noctalia.app/de/ueber-uns#person"
+                              }
+                    },
+                    {
+                              "@type": "Person",
+                              "@id": "https://noctalia.app/de/ueber-uns#person",
+                              "name": "Thanh Chau",
+                              "jobTitle": "Founder & Publication Director",
+                              "url": "https://noctalia.app/de/ueber-uns",
+                              "worksFor": {
+                                        "@id": "https://noctalia.app/#organization"
+                              },
+                              "description": "Softwareentwickler und begeisterter Traumtagebuch-Nutzer, der Noctalia ins Leben gerufen hat, um Menschen zu helfen, ihre Träume festzuhalten und zu verstehen. Thanh leitet die redaktionelle Ausrichtung und stellt sicher, dass alle Inhalte Qualitätsstandards aus der Schlafforschung erfüllen."
+                    }
+          ]
+}
     </script>
 
     <script type="application/ld+json">
         {
-                "@context": "https://schema.org",
-                "@type": "BreadcrumbList",
-                "itemListElement": [
-                        {
-                                "@type": "ListItem",
-                                "position": 1,
-                                "name": "Startseite",
-                                "item": "https://noctalia.app/de/"
-                        },
-                        {
-                                "@type": "ListItem",
-                                "position": 2,
-                                "name": "Über Noctalia"
-                        }
-                ]
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Startseite",
+                    "item": "https://noctalia.app/de/"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Über Noctalia",
+                    "item": "https://noctalia.app/de/ueber-uns"
+                }
+            ]
         }
     </script>
 </head>
@@ -157,9 +183,53 @@
             </section>
 
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+                <h2 class="text-2xl font-serif text-white mb-4">Unser Gründer</h2>
+                <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 rounded-full bg-dream-salmon/10 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-7 h-7 text-dream-salmon"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-medium">Thanh Chau</h3>
+                        <p class="text-sm text-dream-salmon mb-2">Gründer & Verantwortlicher</p>
+                        <p class="text-sm">Softwareentwickler und begeisterter Traumtagebuch-Nutzer, der Noctalia ins Leben gerufen hat, um Menschen zu helfen, ihre Träume festzuhalten und zu verstehen. Thanh leitet die redaktionelle Ausrichtung und stellt sicher, dass alle Inhalte Qualitätsstandards aus der Schlafforschung erfüllen.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
                 <h2 class="text-2xl font-serif text-white mb-4">Wie wir unsere Inhalte erstellen</h2>
-                <p>Unsere Artikel und Guides sollen klar, praktisch und an etablierten Konzepten aus Schlafforschung und Psychologie orientiert sein. Wenn wir Studien oder Institutionen zitieren, verlinken wir auf die Originalquellen.</p>
-                <p class="mt-4 text-sm text-purple-200/70"><strong>Wichtig:</strong> Unsere Inhalte dienen nur der Information und ersetzen keine medizinische Beratung.</p>
+                <p>Unsere Artikel und Guides sollen klar, praktisch und an etablierten Konzepten aus Schlafforschung und Psychologie orientiert sein.</p>
+                <div class="mt-6 space-y-4">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="search" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="text-white font-medium mb-1">Forschungsbasiertes Schreiben</h3>
+                            <p class="text-sm">Wir konsultieren begutachtete Studien, klinische Leitlinien und anerkannte Werke der Traumpsychologie. Bei Verweisen auf Forschung verlinken wir zur Originalquelle (PubMed, APA, universitäre Publikationen).</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="user-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="text-white font-medium mb-1">Expertenzitate</h3>
+                            <p class="text-sm">Unsere Artikel zitieren namentlich genannte Forscher und deren institutionelle Zugehörigkeit — darunter Schlafwissenschaftler, Psychologen und Traumforscher von Harvard, APA und anderen Institutionen.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="refresh-cw" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="text-white font-medium mb-1">Regelmäßige Aktualisierungen</h3>
+                            <p class="text-sm">Artikel werden überprüft und aktualisiert, um neue Erkenntnisse widerzuspiegeln. Jeder Artikel zeigt sein Veröffentlichungs- und Änderungsdatum.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-dream-salmon mt-0.5 flex-shrink-0"></i>
+                        <div>
+                            <h3 class="text-white font-medium mb-1">Klare Grenzen</h3>
+                            <p class="text-sm">Wir unterscheiden informativen Inhalt von medizinischer Beratung. Jeder Artikel enthält einen Hinweis, und gesundheitsbezogene Themen empfehlen stets die Konsultation eines qualifizierten Fachmanns.</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-purple-200/70"><strong>Wichtig:</strong> Unsere Inhalte dienen nur der Information und ersetzen keine medizinische Beratung.</p>
             </section>
 
             <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">

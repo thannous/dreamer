@@ -4,11 +4,13 @@
  *
  * Fixes:
  * 1. Add author byline to all blog articles (130 files)
- * 2. Update JSON-LD author from Organization to Person + Organization (130 files)
- * 3. Update article:author meta tag from "Noctalia" to "Thanh Chau" (130 files)
- * 4. Expand editorial process section on about pages (5 files)
- * 5. Add founder bio section to about pages (5 files)
- * 6. Update AboutPage JSON-LD schema with founder Person (5 files)
+ * 2. Add a short "Quick answer" block to all blog articles
+ * 3. Add editorial review callouts to health-adjacent articles
+ * 4. Update JSON-LD author from Organization to Person + Organization (130 files)
+ * 5. Update article:author meta tag from "Noctalia" to "Thanh Chau" (130 files)
+ * 6. Expand editorial process section on about pages (5 files)
+ * 7. Add founder bio section to about pages (5 files)
+ * 8. Update AboutPage JSON-LD schema with founder Person (5 files)
  *
  * Run: node scripts/fix-eeat-signals.js [--dry-run]
  */
@@ -41,9 +43,13 @@ const ABOUT_URLS = {
 // ─── Translations ───
 const T = {
   en: {
-    bylineAuthor: 'Written by the Noctalia Team',
-    bylineCredentials: 'Content grounded in sleep research and psychology',
+    bylineName: 'Thanh Chau',
+    bylineRole: 'Founder & Publication Director',
     bylineLink: 'About our editorial process',
+    quickAnswerTitle: 'Quick answer',
+    reviewTitle: 'Editorial review',
+    reviewBody: 'This health-related page was reviewed for clarity and source accuracy against the references cited on the page. It is informational and does not replace medical advice.',
+    reviewLink: 'Learn how we review sensitive topics',
     founderTitle: 'Our founder',
     founderName: 'Thanh Chau',
     founderRole: 'Founder & Publication Director',
@@ -61,9 +67,13 @@ const T = {
     editorialDisclaimer: '<strong>Important:</strong> Our content is for informational purposes only and does not replace medical advice.',
   },
   fr: {
-    bylineAuthor: "R\u00e9dig\u00e9 par l'\u00e9quipe Noctalia",
-    bylineCredentials: 'Contenu fond\u00e9 sur la recherche sur le sommeil et la psychologie',
+    bylineName: 'Thanh Chau',
+    bylineRole: 'Fondateur & Directeur de la publication',
     bylineLink: 'Notre processus \u00e9ditorial',
+    quickAnswerTitle: 'R\u00e9ponse rapide',
+    reviewTitle: 'Relecture \u00e9ditoriale',
+    reviewBody: 'Cette page li\u00e9e \u00e0 la sant\u00e9 a \u00e9t\u00e9 relue pour la clart\u00e9 et la fiabilit\u00e9 des sources \u00e0 partir des r\u00e9f\u00e9rences cit\u00e9es sur la page. Elle est informative et ne remplace pas un avis m\u00e9dical.',
+    reviewLink: 'Voir notre m\u00e9thode de relecture',
     founderTitle: 'Notre fondateur',
     founderName: 'Thanh Chau',
     founderRole: 'Fondateur & Directeur de la publication',
@@ -81,9 +91,13 @@ const T = {
     editorialDisclaimer: '<strong>Important\u00a0:</strong> nos contenus sont fournis \u00e0 titre informatif et ne remplacent pas un avis m\u00e9dical.',
   },
   es: {
-    bylineAuthor: 'Escrito por el equipo Noctalia',
-    bylineCredentials: 'Contenido basado en la investigaci\u00f3n del sue\u00f1o y la psicolog\u00eda',
+    bylineName: 'Thanh Chau',
+    bylineRole: 'Fundador y Director de publicaci\u00f3n',
     bylineLink: 'Nuestro proceso editorial',
+    quickAnswerTitle: 'Respuesta r\u00e1pida',
+    reviewTitle: 'Revisi\u00f3n editorial',
+    reviewBody: 'Esta p\u00e1gina relacionada con la salud fue revisada para verificar claridad y fiabilidad de las fuentes a partir de las referencias citadas en la propia p\u00e1gina. Tiene fines informativos y no sustituye el asesoramiento m\u00e9dico.',
+    reviewLink: 'C\u00f3mo revisamos los temas sensibles',
     founderTitle: 'Nuestro fundador',
     founderName: 'Thanh Chau',
     founderRole: 'Fundador y Director de publicaci\u00f3n',
@@ -101,9 +115,13 @@ const T = {
     editorialDisclaimer: '<strong>Importante:</strong> el contenido es informativo y no sustituye asesoramiento m\u00e9dico.',
   },
   de: {
-    bylineAuthor: 'Verfasst vom Noctalia-Team',
-    bylineCredentials: 'Inhalte basierend auf Schlafforschung und Psychologie',
+    bylineName: 'Thanh Chau',
+    bylineRole: 'Gr\u00fcnder & Verantwortlicher',
     bylineLink: 'Unser redaktioneller Prozess',
+    quickAnswerTitle: 'Kurzantwort',
+    reviewTitle: 'Redaktionelle Pr\u00fcfung',
+    reviewBody: 'Diese gesundheitsbezogene Seite wurde anhand der auf der Seite zitierten Quellen auf Klarheit und Quellenzuverl\u00e4ssigkeit gepr\u00fcft. Sie dient nur der Information und ersetzt keine medizinische Beratung.',
+    reviewLink: 'Wie wir sensible Themen pr\u00fcfen',
     founderTitle: 'Unser Gr\u00fcnder',
     founderName: 'Thanh Chau',
     founderRole: 'Gr\u00fcnder & Verantwortlicher',
@@ -121,9 +139,13 @@ const T = {
     editorialDisclaimer: '<strong>Wichtig:</strong> Unsere Inhalte dienen nur der Information und ersetzen keine medizinische Beratung.',
   },
   it: {
-    bylineAuthor: 'Scritto dal team Noctalia',
-    bylineCredentials: 'Contenuti basati sulla ricerca del sonno e sulla psicologia',
+    bylineName: 'Thanh Chau',
+    bylineRole: 'Fondatore e Direttore della pubblicazione',
     bylineLink: 'Il nostro processo editoriale',
+    quickAnswerTitle: 'Risposta rapida',
+    reviewTitle: 'Revisione editoriale',
+    reviewBody: 'Questa pagina legata alla salute \u00e8 stata rivista per chiarezza e affidabilit\u00e0 delle fonti sulla base dei riferimenti citati nella pagina. Ha finalit\u00e0 informative e non sostituisce il parere medico.',
+    reviewLink: 'Come revisioniamo i temi sensibili',
     founderTitle: 'Il nostro fondatore',
     founderName: 'Thanh Chau',
     founderRole: 'Fondatore e Direttore della pubblicazione',
@@ -142,11 +164,22 @@ const T = {
   },
 };
 
+const SENSITIVE_SLUG_PATTERNS = {
+  en: /(dreams-mental-health|sleep-paralysis-guide|stop-nightmares-guide|rem-sleep-dreams)$/i,
+  fr: /(reves-sante-mentale|guide-paralysie-sommeil|guide-cauchemars|sommeil-paradoxal-reves)$/i,
+  es: /(suenos-salud-mental|guia-paralisis-sueno|guia-pesadillas|sueno-rem-suenos)$/i,
+  de: /(psychische-gesundheit|schlaflaehmung|albtraeume|rem-schlaf)$/i,
+  it: /(salute-mentale|paralisi-del-sonno|incubi|sonno-rem)$/i,
+};
+
 // ─── Stats ───
 const stats = {
   blogBylineAdded: 0,
+  blogQuickAnswerAdded: 0,
+  blogEditorialReviewAdded: 0,
   blogAuthorSchemaUpdated: 0,
   blogArticleAuthorUpdated: 0,
+  blogReviewSchemaAdded: 0,
   aboutEditorialExpanded: 0,
   aboutFounderAdded: 0,
   aboutSchemaUpdated: 0,
@@ -173,39 +206,147 @@ function detectLang(filePath) {
   return rel.split(path.sep)[0];
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function extractMetaDescription(html) {
+  const nameFirst = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+  if (nameFirst) return nameFirst[1];
+  const contentFirst = html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["'][^>]*>/i);
+  return contentFirst ? contentFirst[1] : null;
+}
+
+function extractCanonicalUrl(html) {
+  const relFirst = html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i);
+  if (relFirst) return relFirst[1];
+  const hrefFirst = html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i);
+  return hrefFirst ? hrefFirst[1] : null;
+}
+
+function extractPageTitle(html) {
+  const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
+  return titleMatch ? titleMatch[1].trim() : null;
+}
+
+function isSensitiveArticle(filePath, lang) {
+  const slug = path.basename(filePath, '.html');
+  const pattern = SENSITIVE_SLUG_PATTERNS[lang] || SENSITIVE_SLUG_PATTERNS.en;
+  return pattern.test(slug);
+}
+
+function insertBeforeFirstMarker(html, block, markers) {
+  for (const marker of markers) {
+    if (html.includes(marker)) {
+      return {
+        html: html.replace(marker, `${block}\n${marker}`),
+        inserted: true,
+      };
+    }
+  }
+
+  return { html, inserted: false };
+}
+
 // ─── Blog: Author Byline ───
 
 function buildBylineHtml(lang) {
   const t = T[lang];
   const aboutUrl = ABOUT_URLS[lang];
-  return `\n<!-- Author Byline (E-E-A-T) -->\n<div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">\n    <div class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center flex-shrink-0">\n        <i data-lucide="pen-tool" class="w-5 h-5 text-dream-salmon"></i>\n    </div>\n    <div>\n        <span class="text-dream-cream font-medium">${t.bylineAuthor}</span>\n        <span class="block text-xs text-purple-300/60">${t.bylineCredentials} &middot; <a href="${aboutUrl}" class="text-dream-salmon hover:underline">${t.bylineLink}</a></span>\n    </div>\n</div>`;
+  return `\n<!-- Author Byline (E-E-A-T) -->\n<div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">\n    <div class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center flex-shrink-0">\n        <i data-lucide="pen-tool" class="w-5 h-5 text-dream-salmon"></i>\n    </div>\n    <div>\n        <span class="text-dream-cream font-medium">${t.bylineName}</span>\n        <span class="block text-xs text-purple-300/60">${t.bylineRole} &middot; <a href="${aboutUrl}" class="text-dream-salmon hover:underline">${t.bylineLink}</a></span>\n    </div>\n</div>`;
+}
+
+function buildQuickAnswerHtml(lang, description) {
+  const t = T[lang];
+  return `\n<!-- Quick Answer (AI SEO) -->\n<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">\n    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">${t.quickAnswerTitle}</h2>\n    <p class="text-purple-100/80 leading-relaxed">${escapeHtml(description)}</p>\n</section>`;
+}
+
+function buildEditorialReviewHtml(lang) {
+  const t = T[lang];
+  const aboutUrl = ABOUT_URLS[lang];
+  return `\n<!-- Editorial Review (E-E-A-T) -->\n<aside class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note" aria-label="${t.reviewTitle}">\n    <p class="text-sm text-purple-100/80 leading-relaxed">\n        <strong class="text-dream-cream">${t.reviewTitle}:</strong>\n        ${t.reviewBody}\n        <a href="${aboutUrl}" class="text-dream-salmon hover:underline">${t.reviewLink}</a>.\n    </p>\n</aside>`;
 }
 
 // ─── Blog: JSON-LD Author ───
 
 function buildAuthorJsonLd(lang) {
+  const t = T[lang];
   const aboutUrl = `https://noctalia.app${ABOUT_URLS[lang]}`;
-  return `"author": [\n    {\n        "@type": "Person",\n        "name": "Thanh Chau",\n        "jobTitle": "Founder & Publication Director",\n        "url": "${aboutUrl}",\n        "worksFor": {\n            "@type": "Organization",\n            "name": "Noctalia",\n            "url": "https://noctalia.app"\n        }\n    },\n    {\n        "@type": "Organization",\n        "name": "Noctalia",\n        "url": "https://noctalia.app",\n        "logo": {\n            "@type": "ImageObject",\n            "url": "https://noctalia.app/logo/logo_noctalia.png"\n        }\n    }\n]`;
+  return `"author": [\n    {\n        "@type": "Person",\n        "@id": "${aboutUrl}#person",\n        "name": "Thanh Chau",\n        "jobTitle": "${t.bylineRole}",\n        "url": "${aboutUrl}",\n        "worksFor": {\n            "@type": "Organization",\n            "@id": "https://noctalia.app/#organization",\n            "name": "Noctalia",\n            "url": "https://noctalia.app"\n        }\n    },\n    {\n        "@type": "Organization",\n        "@id": "https://noctalia.app/#organization",\n        "name": "Noctalia",\n        "url": "https://noctalia.app",\n        "logo": {\n            "@type": "ImageObject",\n            "url": "https://noctalia.app/logo/logo_noctalia.png"\n        }\n    }\n]`;
+}
+
+function buildReviewSchemaScript(lang, canonicalUrl, title) {
+  const reviewedPage = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': canonicalUrl,
+    url: canonicalUrl,
+    name: title,
+    inLanguage: lang,
+    reviewedBy: {
+      '@type': 'Organization',
+      '@id': 'https://noctalia.app/#organization',
+      name: 'Noctalia',
+      url: 'https://noctalia.app',
+    },
+  };
+
+  return `<script type="application/ld+json">\n${JSON.stringify(reviewedPage, null, 4)}\n</script>`;
 }
 
 // ─── Blog: Fix a single blog article ───
 
 function fixBlogArticle(filePath, lang) {
   let html = fs.readFileSync(filePath, 'utf-8');
-  let modified = false;
+  if (!html.includes('"@type": "BlogPosting"')) {
+    return false;
+  }
 
-  // 1. Add author byline after </header> before <!-- Featured Image -->
+  let modified = false;
+  const description = extractMetaDescription(html);
+  const canonicalUrl = extractCanonicalUrl(html);
+  const pageTitle = extractPageTitle(html);
+  const sensitiveArticle = isSensitiveArticle(filePath, lang);
+  const articleContentMarkers = ['<!-- Featured Image -->', '<!-- Table of Contents -->', '<!-- Article Content -->'];
+
+  // 1. Add author byline after the article header.
   if (!html.includes('Author Byline (E-E-A-T)')) {
     const byline = buildBylineHtml(lang);
-    // Blog articles have </header> followed by <!-- Featured Image -->
-    if (html.includes('</header>\n<!-- Featured Image -->')) {
-      html = html.replace('</header>\n<!-- Featured Image -->', `</header>${byline}\n<!-- Featured Image -->`);
+    if (html.includes('</header>')) {
+      html = html.replace('</header>', `</header>${byline}`);
       modified = true;
       stats.blogBylineAdded++;
     }
   }
 
-  // 2. Update JSON-LD author from Organization to Person + Organization
+  // 2. Add a short answer-first block using the page description.
+  if (description && !html.includes('Quick Answer (AI SEO)')) {
+    const quickAnswer = buildQuickAnswerHtml(lang, description);
+    const result = insertBeforeFirstMarker(html, quickAnswer, articleContentMarkers);
+    html = result.html;
+    if (result.inserted) {
+      modified = true;
+      stats.blogQuickAnswerAdded++;
+    }
+  }
+
+  // 3. Add an editorial review callout on health-adjacent pages.
+  if (sensitiveArticle && !html.includes('Editorial Review (E-E-A-T)')) {
+    const editorialReview = buildEditorialReviewHtml(lang);
+    const result = insertBeforeFirstMarker(html, editorialReview, articleContentMarkers);
+    html = result.html;
+    if (result.inserted) {
+      modified = true;
+      stats.blogEditorialReviewAdded++;
+    }
+  }
+
+  // 4. Update JSON-LD author from Organization to Person + Organization.
   // Match the existing author block in BlogPosting schema
   const authorOrgPattern = /"author":\s*\{\s*\n\s*"@type":\s*"Organization",\s*\n\s*"name":\s*"Noctalia",\s*\n\s*"url":\s*"https:\/\/noctalia\.app",\s*\n\s*"logo":\s*\{\s*\n\s*"@type":\s*"ImageObject",\s*\n\s*"url":\s*"https:\/\/noctalia\.app\/logo\/logo_noctalia\.png"\s*\n\s*\}\s*\n\s*\}/;
 
@@ -213,10 +354,10 @@ function fixBlogArticle(filePath, lang) {
     const newAuthor = buildAuthorJsonLd(lang);
     html = html.replace(authorOrgPattern, newAuthor);
     modified = true;
-    stats.blogAuthorSchemaUpdated++;
+      stats.blogAuthorSchemaUpdated++;
   }
 
-  // 3. Update article:author meta tag
+  // 5. Update article:author meta tag.
   if (html.includes('<meta content="Noctalia" property="article:author"/>')) {
     html = html.replace(
       '<meta content="Noctalia" property="article:author"/>',
@@ -224,6 +365,17 @@ function fixBlogArticle(filePath, lang) {
     );
     modified = true;
     stats.blogArticleAuthorUpdated++;
+  }
+
+  // 6. Add WebPage.reviewedBy markup for health-adjacent pages.
+  if (sensitiveArticle && html.includes('Editorial Review (E-E-A-T)') && canonicalUrl && pageTitle && !html.includes('"reviewedBy"')) {
+    const blogSchemaPattern = /(<script type="application\/ld\+json">\s*\{[\s\S]*?"@type": "BlogPosting"[\s\S]*?<\/script>)/;
+    if (blogSchemaPattern.test(html)) {
+      const reviewSchema = buildReviewSchemaScript(lang, canonicalUrl, pageTitle);
+      html = html.replace(blogSchemaPattern, `$1\n${reviewSchema}`);
+      modified = true;
+      stats.blogReviewSchemaAdded++;
+    }
   }
 
   if (modified && !DRY_RUN) {
@@ -298,8 +450,9 @@ function buildFounderSection(lang) {
 function buildAboutSchema(lang) {
   const t = T[lang];
   const aboutUrl = `https://noctalia.app${ABOUT_URLS[lang]}`;
+  const personId = `${aboutUrl}#person`;
+  const organizationId = 'https://noctalia.app/#organization';
 
-  // Read the existing page title from the current AboutPage schema
   const titles = {
     en: 'About Noctalia',
     fr: '\u00c0 propos de Noctalia',
@@ -308,24 +461,37 @@ function buildAboutSchema(lang) {
     it: 'Chi siamo',
   };
 
-  return `{
-            "@context": "https://schema.org",
-            "@type": "AboutPage",
-            "name": "${titles[lang]}",
-            "url": "${aboutUrl}",
-            "inLanguage": "${lang}",
-            "about": {
-                "@type": "Organization",
-                "name": "Noctalia",
-                "url": "https://noctalia.app",
-                "founder": {
-                    "@type": "Person",
-                    "name": "Thanh Chau",
-                    "jobTitle": "Founder & Publication Director",
-                    "url": "${aboutUrl}"
-                }
-            }
-        }`;
+  const aboutSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'AboutPage',
+        name: titles[lang],
+        url: aboutUrl,
+        inLanguage: lang,
+        about: { '@id': organizationId },
+        mainEntity: { '@id': personId },
+      },
+      {
+        '@type': 'Organization',
+        '@id': organizationId,
+        name: 'Noctalia',
+        url: 'https://noctalia.app',
+        founder: { '@id': personId },
+      },
+      {
+        '@type': 'Person',
+        '@id': personId,
+        name: 'Thanh Chau',
+        jobTitle: t.founderRole,
+        url: aboutUrl,
+        worksFor: { '@id': organizationId },
+        description: t.founderBio,
+      },
+    ],
+  };
+
+  return JSON.stringify(aboutSchema, null, 12);
 }
 
 // ─── About Page: Fix a single about page ───
@@ -438,8 +604,11 @@ for (const lang of LANGS) {
 console.log(`\n--- Results ---`);
 console.log(`Blog articles modified:       ${blogModified}`);
 console.log(`  Bylines added:              ${stats.blogBylineAdded}`);
-console.log(`  JSON-LD author updated:      ${stats.blogAuthorSchemaUpdated}`);
-console.log(`  article:author updated:      ${stats.blogArticleAuthorUpdated}`);
+console.log(`  Quick answers added:        ${stats.blogQuickAnswerAdded}`);
+console.log(`  Editorial reviews added:    ${stats.blogEditorialReviewAdded}`);
+console.log(`  JSON-LD author updated:     ${stats.blogAuthorSchemaUpdated}`);
+console.log(`  article:author updated:     ${stats.blogArticleAuthorUpdated}`);
+console.log(`  review schema added:        ${stats.blogReviewSchemaAdded}`);
 console.log(`About pages modified:          ${aboutModified}`);
 console.log(`  Editorial section expanded:  ${stats.aboutEditorialExpanded}`);
 console.log(`  Founder bio added:           ${stats.aboutFounderAdded}`);
