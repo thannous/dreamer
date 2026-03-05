@@ -13,10 +13,10 @@ const DRY_RUN = process.argv.includes('--dry-run');
 
 const COPY = {
   en: { label: 'Dream Guides', title: 'Dream Guides & Symbol Meanings | Noctalia', desc: "Browse Noctalia's dream guides: the dictionary plus themed pages for common, scary, positive, water, people, places, and transformation dreams.", intro: 'Start with the full dream symbols dictionary, then explore themed guides that group related dream patterns and meanings.', dictionary: 'Dream Symbols Dictionary', openDictionary: 'Open dictionary', openGuide: 'Open guide', browseAll: 'Browse all dream guides' },
-  fr: { label: 'Guides des reves', title: 'Guides des reves et symboles oniriques | Noctalia', desc: 'Parcourez les guides des reves de Noctalia : le dictionnaire des symboles et des pages thematiques sur les reves courants, effrayants, positifs, lies a l eau, aux personnes, aux lieux et a la transformation.', intro: 'Commencez par le dictionnaire complet des symboles, puis explorez des guides thematiques qui regroupent des motifs oniriques proches.', dictionary: 'Dictionnaire des symboles de reves', openDictionary: 'Ouvrir le dictionnaire', openGuide: 'Ouvrir le guide', browseAll: 'Parcourir tous les guides des reves' },
-  es: { label: 'Guias de suenos', title: 'Guias de suenos y significados de simbolos | Noctalia', desc: 'Explora las guias de suenos de Noctalia: el diccionario de simbolos y paginas tematicas sobre suenos comunes, aterradores, positivos, de agua, de personas, de lugares y de transformacion.', intro: 'Empieza por el diccionario completo de simbolos y luego entra en guias tematicas que agrupan patrones y significados relacionados.', dictionary: 'Diccionario de simbolos de suenos', openDictionary: 'Abrir diccionario', openGuide: 'Abrir guia', browseAll: 'Ver todas las guias de suenos' },
-  de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecken Sie Noctalias Traumratgeber: das Lexikon der Traumsymbole plus thematische Seiten zu haufigen, beangstigenden, positiven, wasserbezogenen, personenzentrierten, ortsbezogenen und transformierenden Traumen.', intro: 'Starten Sie mit dem vollstandigen Traumsymbole-Lexikon und vertiefen Sie sich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon offnen', openGuide: 'Ratgeber offnen', browseAll: 'Alle Traumratgeber ansehen' },
-  it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: il dizionario dei simboli e pagine tematiche su sogni comuni, spaventosi, positivi, d acqua, di persone, di luoghi e di trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
+  fr: { label: 'Guides des rêves', title: 'Guides des rêves et symboles oniriques | Noctalia', desc: 'Parcourez les guides des rêves de Noctalia : le dictionnaire des symboles et des pages thématiques sur les rêves courants, effrayants, positifs, liés à l’eau, aux personnes, aux lieux et à la transformation.', intro: 'Commencez par le dictionnaire complet des symboles, puis explorez des guides thématiques qui regroupent des motifs oniriques proches.', dictionary: 'Dictionnaire des symboles de rêves', openDictionary: 'Ouvrir le dictionnaire', openGuide: 'Ouvrir le guide', browseAll: 'Parcourir tous les guides des rêves' },
+  es: { label: 'Guías de sueños', title: 'Guías de sueños y significados de símbolos | Noctalia', desc: 'Explora las guías de sueños de Noctalia: el diccionario de símbolos y páginas temáticas sobre sueños comunes, aterradores, positivos, de agua, de personas, de lugares y de transformación.', intro: 'Empieza por el diccionario completo de símbolos y luego entra en guías temáticas que agrupan patrones y significados relacionados.', dictionary: 'Diccionario de símbolos de sueños', openDictionary: 'Abrir diccionario', openGuide: 'Abrir guía', browseAll: 'Ver todas las guías de sueños' },
+  de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecken Sie Noctalias Traumratgeber: das Lexikon der Traumsymbole plus thematische Seiten zu häufigen, beängstigenden, positiven, wasserbezogenen, personenzentrierten, ortsbezogenen und transformierenden Träumen.', intro: 'Starten Sie mit dem vollständigen Traumsymbole-Lexikon und vertiefen Sie sich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon öffnen', openGuide: 'Ratgeber öffnen', browseAll: 'Alle Traumratgeber ansehen' },
+  it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: il dizionario dei simboli e pagine tematiche su sogni comuni, spaventosi, positivi, d’acqua, di persone, di luoghi e di trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
 };
 
 function readJson(fileName) {
@@ -184,24 +184,28 @@ function patchDictionaryPage(lang, t) {
             </nav>`, 'breadcrumb');
   next = replaceFirstOrKeep(
     next,
-    new RegExp(`<a href="/${lang}/blog/" class="hidden sm:inline-flex [^"]*">[^<]+</a>`),
+    new RegExp(`<a href="/${lang}/(?:blog|guides)/" class="hidden sm:inline-flex [^"]*">[^<]+</a>`),
     `<a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${escapeHtml(copy.label)}</a>`,
     new RegExp(`<a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${escapeHtml(copy.label)}</a>`),
     'navbar link',
   );
   next = replaceFirstOrKeep(
     next,
-    new RegExp(`<li><a href="/${lang}/blog/" class="[^"]*">[^<]+</a></li>`),
+    new RegExp(`<li><a href="/${lang}/(?:blog|guides)/" class="[^"]*">[^<]+</a></li>`),
     `<li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${escapeHtml(copy.label)}</a></li>`,
     new RegExp(`<li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${escapeHtml(copy.label)}</a></li>`),
     'footer link',
   );
   next = replaceFirstOrKeep(
     next,
-    /<a\b(?=[^>]*href="\.\.\/blog\/[^"]+")(?=[^>]*class="[^"]*text-xs font-mono[^"]*")[^>]*>[\s\S]*?<\/a>/,
+    new RegExp(`<a\\b(?=[^>]*href="(?:\\.\\./blog/[^"]+|/${lang}/guides/)")(?=[^>]*class="[^"]*text-xs font-mono[^"]*")[^>]*>[\\s\\S]*?<\\/a>`),
     `<a href="/${lang}/guides/" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">${escapeHtml(copy.browseAll)}</a>`,
     new RegExp(`<a\\b(?=[^>]*href="/${lang}/guides/")(?=[^>]*class="[^"]*text-xs font-mono[^"]*")[^>]*>\\s*${escapeRegExp(copy.browseAll)}\\s*<\\/a>`),
     'hero link',
+  );
+  next = next.replace(
+    new RegExp(`<a href="/${lang}/guides/" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">[^<]+</a>`),
+    `<a href="/${lang}/guides/" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">${escapeHtml(copy.browseAll)}</a>`,
   );
   const output = matchLineEndings(next, originalRaw);
   if (output !== originalRaw && !DRY_RUN) fs.writeFileSync(absPath, output, 'utf8');
