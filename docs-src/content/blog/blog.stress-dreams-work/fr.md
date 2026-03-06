@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-05",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/histoire-interpretation-reves",
-  "nextPath": "",
+  "nextPath": "/fr/blog/reves-et-creativite",
   "preloadImage": "/img/blog/stress-dreams-work.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil\",\n            \"description\": \"Comprenez pourquoi vous rêvez du travail, la science derrière les rêves de stress professionnel, et des stratégies éprouvées pour que votre carrière cesse d'envahir votre sommeil.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-05\",\n            \"dateModified\": \"2026-03-05\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-stress-travail\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2100,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-stress-travail\"\n        }",
@@ -386,12 +386,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">L'histoire de l'interprétation des rêves : des temples antiques à la science moderne</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/fr/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Toutes les ressources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Parcourir toutes les ressources</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-et-creativite">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Rêves et créativité : comment votre cerveau endormi résout des problèmes</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

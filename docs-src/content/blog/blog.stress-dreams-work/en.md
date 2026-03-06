@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-05",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/dream-interpretation-history",
-  "nextPath": "",
+  "nextPath": "/en/blog/dreams-and-creativity",
   "preloadImage": "/img/blog/stress-dreams-work.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Stress Dreams About Work: Why Your Job Follows You to Sleep\",\n            \"description\": \"Understand why you dream about work, the science behind job-related stress dreams, and proven strategies to stop your career from invading your sleep.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/en/about#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/en/about\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-05\",\n            \"dateModified\": \"2026-03-05\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/en/blog/stress-dreams-work\"\n            },\n            \"inLanguage\": \"en\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/en/blog/stress-dreams-work\"\n        }",
@@ -386,12 +386,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">The History of Dream Interpretation: From Ancient Temples to Modern Science</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/en/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">All resources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Browse all resources</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-and-creativity">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Dreams and Creativity: How Your Sleeping Brain Solves Problems</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

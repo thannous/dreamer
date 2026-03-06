@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-05",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft",
-  "nextPath": "",
+  "nextPath": "/de/blog/traeume-und-kreativitaet",
   "preloadImage": "/img/blog/stress-dreams-work.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Stressträume über die Arbeit: Warum Ihr Job Sie in den Schlaf verfolgt\",\n            \"description\": \"Verstehen Sie, warum Ihr Job Sie bis in den Schlaf verfolgt, die Wissenschaft hinter Arbeitsstressträumen und bewährte Strategien für ruhigere Nächte.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Gründer & Publikationsleiter\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-05\",\n            \"dateModified\": \"2026-03-05\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\"\n        }",
@@ -386,12 +386,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Die Geschichte der Traumdeutung: Von antiken Tempeln bis zur modernen Wissenschaft</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Alle Ressourcen</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Alle Ressourcen ansehen</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-kreativitaet">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Träume und Kreativität: Wie Ihr schlafendes Gehirn Probleme löst</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

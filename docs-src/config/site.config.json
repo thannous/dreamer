@@ -46,6 +46,28 @@
     "logoUrl": "https://noctalia.app/logo/logo_noctalia.png",
     "twitterHandle": "@NoctaliaDreams"
   },
+  "seoLinking": {
+    "featuredBlogEntries": [
+      "blog.how-to-remember-dreams",
+      "blog.dream-journal-guide",
+      "blog.lucid-dreaming-beginners-guide",
+      "blog.recurring-dreams-meaning"
+    ],
+    "featuredGuideEntries": [
+      "guide.most-common-dream-symbols",
+      "guide.scary-dream-symbols",
+      "guide.animal-dream-symbols",
+      "guide.water-dream-symbols"
+    ],
+    "featuredSymbols": [
+      "water",
+      "falling",
+      "flying",
+      "teeth",
+      "snake",
+      "being-chased"
+    ]
+  },
   "assetPaths": {
     "stylesCss": "/css/styles.min.css",
     "languageDropdownCss": "/css/language-dropdown.css",

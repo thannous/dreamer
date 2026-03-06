@@ -126,8 +126,10 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-ex-partenaire">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Relations</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver d’un ex</h3>
-</a><p class="text-sm text-gray-400"><a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-ex-partenaire">Ce que l’esprit est en </a><a class="text-dream-salmon hover:underline" href="../symboles/train">train</a> d’intégrer.</p>
-
+</a>
+<p class="text-sm text-gray-400">
+Ce que l’esprit est en train d’intégrer.
+</p>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="reves-de-grossesse">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Vie</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de grossesse</h3>

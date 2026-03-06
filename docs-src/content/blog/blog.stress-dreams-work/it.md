@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-05",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna",
-  "nextPath": "",
+  "nextPath": "/it/blog/sogni-e-creativita",
   "preloadImage": "/img/blog/stress-dreams-work.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sogni stressanti sul lavoro: perch\\u00e9 il tuo lavoro ti segue nel sonno\",\n            \"description\": \"Scopri perch\\u00e9 il tuo lavoro ti segue nel sonno, la scienza dietro i sogni di stress lavorativo e strategie comprovate per ritrovare notti serene.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-05\",\n            \"dateModified\": \"2026-03-05\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno\"\n        }",
@@ -394,12 +394,12 @@
         <div class="font-serif text-lg text-dream-cream mt-1">La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna</div>
       </div>
     </a>
-    <a href="/it/blog/" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
-      <div>
-        <span class="text-xs text-purple-300/60 uppercase tracking-wide">Tutte le risorse</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sfoglia tutte le risorse</div>
+    <a href="sogni-e-creativita" class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+      <div class="text-right">
+        <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sogni e creatività: come il cervello addormentato risolve i problemi</div>
       </div>
-      <i data-lucide="home" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
+      <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
   </div>
 </section>

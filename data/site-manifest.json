@@ -213,6 +213,34 @@
             }
           }
         },
+        "blog.anxiety-dreams-meaning": {
+          "id": "blog.anxiety-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "anxiety-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "anxiety-dreams-meaning",
+              "path": "/en/blog/anxiety-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-anxiete-signification",
+              "path": "/fr/blog/reves-anxiete-signification"
+            },
+            "es": {
+              "slug": "suenos-de-ansiedad-significado",
+              "path": "/es/blog/suenos-de-ansiedad-significado"
+            },
+            "de": {
+              "slug": "angsttraeume-bedeutung",
+              "path": "/de/blog/angsttraeume-bedeutung"
+            },
+            "it": {
+              "slug": "sogni-ansia-significato",
+              "path": "/it/blog/sogni-ansia-significato"
+            }
+          }
+        },
         "blog.being-chased-dreams": {
           "id": "blog.being-chased-dreams",
           "type": "blogArticle",
@@ -238,6 +266,34 @@
             "it": {
               "slug": "sogni-inseguiti-significato-e-interpretazione",
               "path": "/it/blog/sogni-inseguiti-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.children-dreams-guide": {
+          "id": "blog.children-dreams-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "children-dreams-guide",
+          "locales": {
+            "en": {
+              "slug": "children-dreams-guide",
+              "path": "/en/blog/children-dreams-guide"
+            },
+            "fr": {
+              "slug": "guide-reves-enfants",
+              "path": "/fr/blog/guide-reves-enfants"
+            },
+            "es": {
+              "slug": "guia-suenos-ninos",
+              "path": "/es/blog/guia-suenos-ninos"
+            },
+            "de": {
+              "slug": "kindertraeume-ratgeber",
+              "path": "/de/blog/kindertraeume-ratgeber"
+            },
+            "it": {
+              "slug": "guida-sogni-bambini",
+              "path": "/it/blog/guida-sogni-bambini"
             }
           }
         },
@@ -434,6 +490,34 @@
             "it": {
               "slug": "sogni-sul-tuo-ex-cosa-significano-veramente",
               "path": "/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente"
+            }
+          }
+        },
+        "blog.dreams-and-creativity": {
+          "id": "blog.dreams-and-creativity",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-and-creativity",
+          "locales": {
+            "en": {
+              "slug": "dreams-and-creativity",
+              "path": "/en/blog/dreams-and-creativity"
+            },
+            "fr": {
+              "slug": "reves-et-creativite",
+              "path": "/fr/blog/reves-et-creativite"
+            },
+            "es": {
+              "slug": "suenos-y-creatividad",
+              "path": "/es/blog/suenos-y-creatividad"
+            },
+            "de": {
+              "slug": "traeume-und-kreativitaet",
+              "path": "/de/blog/traeume-und-kreativitaet"
+            },
+            "it": {
+              "slug": "sogni-e-creativita",
+              "path": "/it/blog/sogni-e-creativita"
             }
           }
         },
