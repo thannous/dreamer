@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0514">
     <title>Journal de rêves illustré et interprété | Noctalia</title>
-    <meta name="description"
-        content="Enregistrez vos rêves à la voix, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !">
+    <meta name="description" content="Enregistrez vos rêves à la voix, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://noctalia.app/fr/">
-    <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
+    <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="es" href="https://noctalia.app/es/">
     <link rel="alternate" hreflang="de" href="https://noctalia.app/de/">
     <link rel="alternate" hreflang="it" href="https://noctalia.app/it/">
@@ -19,7 +17,6 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
-
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Journal de rêves illustré et interprété | Noctalia">
@@ -28,6 +25,7 @@
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Journal de rêves illustré et interprété | Noctalia">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="es_ES">
@@ -35,25 +33,21 @@
     <meta property="og:locale:alternate" content="it_IT">
     <meta property="og:site_name" content="Noctalia">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Journal de rêves illustré et interprété | Noctalia">
     <meta name="twitter:description" content="Enregistrez vos rêves à la voix, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-fr-1200x630.jpg">
     <meta name="twitter:image:alt" content="Journal de rêves illustré et interprété">
-    <meta name="twitter:site" content="@NoctaliaDreams">
-    <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
-    <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260122-0819">
-    <!-- Lucide Icons (deferred) -->
-    <script src="/js/lucide.min.js?v=20260122-0819" defer></script>
-    <!-- GSAP (local, deferred) -->
-    <script src="/js/gsap.min.js?v=20260122-0819" defer></script>
-    <script src="/js/ScrollTrigger.min.js?v=20260122-0819" defer></script>
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260306-072447">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-072447">
+    <script src="/js/lucide.min.js?v=20260306-072447" defer></script>
+    <script src="/js/gsap.min.js?v=20260306-072447" defer></script>
+    <script src="/js/ScrollTrigger.min.js?v=20260306-072447" defer></script>
     <script type="application/ld+json">
-        {
+{
             "@context": "https://schema.org",
             "@graph": [
                 {
@@ -160,87 +154,65 @@
         }
     </script>
 </head>
-
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden"
-    style="background-color: #0a0514;">
-
-    <!-- Ambient Background -->
+<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
     <div class="aurora-bg"></div>
     <div class="noise-overlay"></div>
-
-    <!-- Floating Orbs -->
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
-
-        <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
+    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-6" data-compact-class="py-2">
         <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
-            <div class="flex items-center gap-2">
+            <a href="/fr/" class="flex items-center gap-2">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
-            </div>
+            </a>
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="#comment-ca-marche" class="hidden md:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="#fonctionnalites" class="hidden md:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
-                <a href="blog/" class="inline-flex hover:text-white transition-colors">Ressources</a>
-                <div class="flex items-center gap-3">
-                <!-- Language Dropdown -->
+                <a href="/fr/#comment-ca-marche" class="hidden sm:inline-flex hover:text-white transition-colors">Comment ça marche</a>
+                <a href="/fr/#fonctionnalites" class="hidden sm:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+                <a href="/fr/blog/" class="hidden sm:inline-flex text-dream-salmon transition-colors">Ressources</a>
+            </div>
+            <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Choisir la langue"
-                            id="languageDropdownButton">
+                    <button type="button" class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">FR</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu"
-                         aria-labelledby="languageDropdownButton"
-                         id="languageDropdownMenu">
-                        <a href="../en/"
-                           hreflang="en"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>English</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
-                        <a href="../fr/"
-                           hreflang="fr"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Français</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
-                        </a>
-                        <a href="../es/"
-                           hreflang="es"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Español</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
-                        <a href="../de/"
-                           hreflang="de"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Deutsch</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
-                        <a href="../it/"
-                           hreflang="it"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Italiano</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
+                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
+                    <a href="/en/" hreflang="en" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>English</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/fr/" hreflang="fr" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Français</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
+                    </a>
+                    <a href="/es/" hreflang="es" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Español</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/de/" hreflang="de" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Deutsch</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/it/" hreflang="it" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Italiano</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
     </nav>
+<!-- Ambient Background -->
+    
+    
+
+    <!-- Floating Orbs -->
+    
+    
+
+        <!-- Navbar -->
+    
 
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
@@ -260,17 +232,13 @@
             <!-- CTA & Reassurance -->
             <div class="flex flex-col items-center gap-6 opacity-0 hero-anim hero-cta">
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr"
-                        class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
                             Téléchargez l'application <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
-                    <a href="#etapes-reves"
-                        class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors"
-                        aria-label="Voir comment Noctalia fonctionne">
-                        <i data-lucide="play-circle"
-                            class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
+                    <a href="#etapes-reves" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors" aria-label="Voir comment Noctalia fonctionne">
+                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
@@ -300,17 +268,13 @@
 
             <div id="etapes-reves" class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
                 <!-- Connecting line (desktop only) -->
-                <div
-                    class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0 step-line">
+                <div class="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-dream-salmon/30 to-transparent z-0 step-line">
                 </div>
 
                 <!-- Step 1 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="record"
-                    style="transition-delay: 100ms;">
-                    <span
-                        class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">1</span>
-                    <div
-                        class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="record" style="transition-delay: 100ms;">
+                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">1</span>
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="mic" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
                     <h3 class="text-xl font-serif mb-3">Enregistrez</h3>
@@ -328,12 +292,9 @@
                 </div>
 
                 <!-- Step 2 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="analyze"
-                    style="transition-delay: 200ms;">
-                    <span
-                        class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">2</span>
-                    <div
-                        class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="analyze" style="transition-delay: 200ms;">
+                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">2</span>
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="sparkles" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
                     <h3 class="text-xl font-serif mb-3">Analysez</h3>
@@ -351,12 +312,9 @@
                 </div>
 
                 <!-- Step 3 -->
-                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="explore"
-                    style="transition-delay: 300ms;">
-                    <span
-                        class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">3</span>
-                    <div
-                        class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
+                <div class="relative z-10 flex flex-col items-center text-center reveal overflow-visible" data-step="explore" style="transition-delay: 300ms;">
+                    <span class="absolute inset-0 flex items-start justify-center pt-2 text-6xl md:text-7xl font-serif text-white/10 pointer-events-none select-none">3</span>
+                    <div class="w-24 h-24 glass-panel rounded-full flex items-center justify-center mb-6 border border-dream-salmon/20 bg-[#0a0514] shadow-[0_0_20px_rgba(253,164,129,0.1)] z-10">
                         <i data-lucide="compass" class="w-10 h-10 text-dream-salmon"></i>
                     </div>
                     <h3 class="text-xl font-serif mb-3">Explorez</h3>
@@ -399,10 +357,8 @@
             <div class="grid grid-cols-1 md:grid-cols-6 md:grid-rows-4 gap-6 h-auto md:h-[900px]">
 
                 <!-- Feature 1: Voice & Insights (Large) -->
-                <div
-                    class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
-                    <div
-                        class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0">
+                <div class="col-span-1 md:col-span-4 md:row-span-2 glass-panel rounded-3xl p-0 flex flex-col md:flex-row justify-between group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-dream-salmon/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0">
                     </div>
 
                     <!-- Text Content -->
@@ -412,30 +368,24 @@
                                 <div class="p-3 bg-white/5 rounded-xl border border-white/10">
                                     <i data-lucide="mic" class="text-dream-salmon w-6 h-6"></i>
                                 </div>
-                                <span
-                                    class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Technologie
+                                <span class="text-[10px] font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Technologie
                                     STT</span>
                             </div>
-                            <h3 class="font-serif text-3xl mb-3">Capture vocale & Transcription</h3>
+                            <h3 class="font-serif text-3xl mb-3">Capture vocale &amp; Transcription</h3>
                             <p class="text-gray-400 text-sm max-w-md">Ne perdez plus une seconde à écrire dans le noir.
                                 Noctalia transcrit vos murmures matinaux en texte clair.</p>
                         </div>
                         <div class="mt-6 flex gap-2 items-center opacity-60">
                             <div class="w-1 h-8 bg-dream-salmon rounded-full animate-pulse"></div>
-                            <div class="w-1 h-12 bg-dream-salmonLight rounded-full animate-pulse"
-                                style="animation-delay: 0.1s"></div>
-                            <div class="w-1 h-6 bg-dream-salmon rounded-full animate-pulse"
-                                style="animation-delay: 0.2s"></div>
-                            <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse"
-                                style="animation-delay: 0.3s"></div>
+                            <div class="w-1 h-12 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.1s"></div>
+                            <div class="w-1 h-6 bg-dream-salmon rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                            <div class="w-1 h-10 bg-dream-salmonLight rounded-full animate-pulse" style="animation-delay: 0.3s"></div>
                         </div>
                     </div>
 
                     <!-- Screenshot Integration (Phone crop) -->
-                    <div
-                        class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
-                        <div
-                            class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
+                    <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
+                        <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
                             <picture>
                                 <source type="image/webp" srcset="../img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
                                 <source type="image/jpeg" srcset="../img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
@@ -446,15 +396,12 @@
                 </div>
 
                 <!-- Feature 2: Visuals (Medium) -->
-                <div
-                    class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
+                <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
                     <!-- Screenshot Integration (Full Background) -->
                     <picture>
                         <source type="image/webp" srcset="../img/dream_detail-700w.webp 700w, ../img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
                         <source type="image/jpeg" srcset="../img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                        <img src="../img/dream_detail-1000w.jpg" alt="Liste des rêves"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60"
-                            width="1000" height="2078" loading="lazy" decoding="async">
+                        <img src="../img/dream_detail-1000w.jpg" alt="Liste des rêves" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60" width="1000" height="2078" loading="lazy" decoding="async">
                     </picture>
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
 
@@ -493,8 +440,7 @@
                 </div>
 
                 <!-- Feature 4: Longitudinal Stats (Medium) -->
-                <div
-                    class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal flex flex-col justify-between">
+                <div class="col-span-1 md:col-span-3 md:row-span-2 glass-panel rounded-3xl p-8 relative reveal flex flex-col justify-between">
                     <div>
                         <div class="flex items-center gap-3 mb-2">
                             <div class="p-2 bg-blue-500/20 rounded-lg">
@@ -510,8 +456,7 @@
                     <div class="h-32 flex items-end gap-2 mt-6">
                         <div class="w-full bg-dream-salmon/10 h-[40%] rounded-t"></div>
                         <div class="w-full bg-dream-salmon/30 h-[60%] rounded-t relative group">
-                            <div
-                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                                 Lucide</div>
                         </div>
                         <div class="w-full bg-dream-salmon/50 h-[80%] rounded-t"></div>
@@ -544,8 +489,7 @@
                 </div>
 
                 <!-- Profile 2 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-pink-400"
-                    style="transition-delay: 100ms;">
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-pink-400" style="transition-delay: 100ms;">
                     <div class="mx-auto w-16 h-16 bg-pink-900/30 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="feather" class="text-pink-300 w-8 h-8"></i>
                     </div>
@@ -555,8 +499,7 @@
                 </div>
 
                 <!-- Profile 3 -->
-                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-indigo-400"
-                    style="transition-delay: 200ms;">
+                <div class="glass-panel p-8 rounded-2xl text-center reveal border-t-4 border-t-indigo-400" style="transition-delay: 200ms;">
                     <div class="mx-auto w-16 h-16 bg-indigo-900/50 rounded-full flex items-center justify-center mb-6">
                         <i data-lucide="moon" class="text-indigo-300 w-8 h-8"></i>
                     </div>
@@ -650,21 +593,16 @@
                     <p class="text-gray-400 text-sm mb-8">Pour découvrir la magie de vos nuits sans engagement.</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-white"></i> 2 analyses complètes avec votre compagnon de rêves</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-gray-400"></i> Journal de base</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Enregistrements illimités</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-white"></i> 2 analyses complètes avec votre compagnon de rêves</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Journal de base</li>
                     </ul>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr"
-                        class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
                 </div>
 
                 <!-- Premium Plan (live only) -->
-                <div data-subscription="prelaunch"
-                    class="glass-panel p-8 rounded-3xl border border-white/10 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.05)]">
+                <div data-subscription="prelaunch" class="glass-panel p-8 rounded-3xl border border-white/10 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.05)]">
                     <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
                     <h3 class="text-2xl font-serif mb-3 text-dream-cream">Premium arrive bientôt</h3>
                     <p class="text-purple-200/70 text-sm mb-6">Soyez parmi les premiers à profiter des analyses illimitées, images HD et stats avancées dès le lancement.</p>
@@ -673,37 +611,28 @@
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuels HD de vos rêves</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Statistiques et insights avancés</li>
                     </ul>
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr"
-                        class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Téléchargez l'application</a>
                     <p class="text-[10px] text-gray-500 mt-3">Disponible sur Google Play.</p>
                 </div>
 
-                <div data-subscription="live"
-                    class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
-                    <div
-                        class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                <div data-subscription="live" class="glass-panel p-8 rounded-3xl border-dream-salmon/50 relative reveal overflow-hidden shadow-[0_0_30px_rgba(253,164,129,0.1)]">
+                    <div class="absolute top-0 right-0 bg-dream-salmon text-dream-dark text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                         Recommandé</div>
                     <div class="absolute inset-0 bg-purple-900/10 pointer-events-none"></div>
 
                     <h3 class="text-2xl font-serif mb-2 text-dream-salmon">Onironaute</h3>
-                    <div class="text-4xl font-bold mb-2">2,99 €<span
-                            class="text-sm font-normal text-gray-400">/mois</span></div>
+                    <div class="text-4xl font-bold mb-2">2,99 €<span class="text-sm font-normal text-gray-400">/mois</span></div>
                     <p class="text-purple-200/60 text-xs mb-6">Ou 19 €/an (2 mois offerts)</p>
 
                     <ul class="space-y-4 text-left mb-8 px-4">
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-dream-salmon"></i> Analyses illimitées avec votre compagnon de rêves
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Analyses illimitées avec votre compagnon de rêves
                         </li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
-                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check"
-                                class="w-4 h-4 text-dream-salmon"></i> Chat avec le rêve</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Génération d'images HD</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Statistiques avancées</li>
+                        <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chat avec le rêve</li>
                     </ul>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr"
-                        class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Essayer
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Essayer
                         Gratuitement</a>
                     <p class="text-[10px] text-gray-500 mt-3">7 jours d'essai offerts, annulation facile.</p>
                 </div>
@@ -719,8 +648,7 @@
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     Comment fonctionne l'analyse des rêves ?
-                    <i data-lucide="chevron-down"
-                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
                     Noctalia utilise des modèles de langage avancés entraînés sur la psychologie analytique (Jung) et la
@@ -732,8 +660,7 @@
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     Mes rêves sont-ils privés ?
-                    <i data-lucide="chevron-down"
-                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
                     Absolument. Vos enregistrements et textes sont chiffrés et stockés de manière sécurisée. Vous
@@ -744,8 +671,7 @@
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     Puis-je écrire mes rêves au lieu de parler ?
-                    <i data-lucide="chevron-down"
-                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
                     Oui, tout à fait. Si vous préférez ne pas réveiller votre partenaire ou si vous êtes plus à l'aise à
@@ -756,8 +682,7 @@
             <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                 <summary class="font-medium flex justify-between items-center">
                     L'application fonctionne-t-elle hors ligne ?
-                    <i data-lucide="chevron-down"
-                        class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
                 </summary>
                 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
                     Vous pouvez enregistrer vos rêves hors ligne. L'analyse et la synchronisation se feront
@@ -785,7 +710,7 @@
                 <a href="symboles/eau" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💧</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Eau</h3>
-                    <p class="text-xs text-gray-400 mt-1">Émotions & subconscient</p>
+                    <p class="text-xs text-gray-400 mt-1">Émotions &amp; subconscient</p>
                 </a>
                 <a href="symboles/chute" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌀</div>
@@ -795,12 +720,12 @@
                 <a href="symboles/voler" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕊️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Voler</h3>
-                    <p class="text-xs text-gray-400 mt-1">Liberté & transcendance</p>
+                    <p class="text-xs text-gray-400 mt-1">Liberté &amp; transcendance</p>
                 </a>
                 <a href="symboles/dents" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🦷</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Dents</h3>
-                    <p class="text-xs text-gray-400 mt-1">Anxiété & image de soi</p>
+                    <p class="text-xs text-gray-400 mt-1">Anxiété &amp; image de soi</p>
                 </a>
                 <!-- Animaux & Nature -->
                 <a href="symboles/serpent" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
@@ -811,23 +736,23 @@
                 <a href="symboles/araignee" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕷️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Araignée</h3>
-                    <p class="text-xs text-gray-400 mt-1">Créativité & peur</p>
+                    <p class="text-xs text-gray-400 mt-1">Créativité &amp; peur</p>
                 </a>
                 <a href="symboles/chien" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐕</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Chien</h3>
-                    <p class="text-xs text-gray-400 mt-1">Loyauté & protection</p>
+                    <p class="text-xs text-gray-400 mt-1">Loyauté &amp; protection</p>
                 </a>
                 <a href="symboles/chat" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐈</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Chat</h3>
-                    <p class="text-xs text-gray-400 mt-1">Indépendance & intuition</p>
+                    <p class="text-xs text-gray-400 mt-1">Indépendance &amp; intuition</p>
                 </a>
                 <!-- Lieux & Objets -->
                 <a href="symboles/maison" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏠</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Maison</h3>
-                    <p class="text-xs text-gray-400 mt-1">Le soi & la psyché</p>
+                    <p class="text-xs text-gray-400 mt-1">Le soi &amp; la psyché</p>
                 </a>
                 <a href="symboles/voiture" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🚗</div>
@@ -842,18 +767,18 @@
                 <a href="symboles/feu" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🔥</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Feu</h3>
-                    <p class="text-xs text-gray-400 mt-1">Passion & destruction</p>
+                    <p class="text-xs text-gray-400 mt-1">Passion &amp; destruction</p>
                 </a>
                 <!-- Thèmes de vie -->
                 <a href="symboles/mort" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💀</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Mort</h3>
-                    <p class="text-xs text-gray-400 mt-1">Fin & renaissance</p>
+                    <p class="text-xs text-gray-400 mt-1">Fin &amp; renaissance</p>
                 </a>
                 <a href="symboles/poursuite" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏃</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Poursuite</h3>
-                    <p class="text-xs text-gray-400 mt-1">Évitement & peur</p>
+                    <p class="text-xs text-gray-400 mt-1">Évitement &amp; peur</p>
                 </a>
                 <a href="symboles/mer" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌊</div>
@@ -879,80 +804,49 @@
     </section>
 
     <!-- 10. Footer -->
+
     <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
             <div class="col-span-1 md:col-span-2">
-                <div class="flex items-center gap-2 mb-4">
+                <a href="/fr/" class="flex items-center gap-2 mb-4">
                     <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </div>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">
-                    Le compagnon de vos nuits. Transformez l'invisible en visible, un rêve à la fois.
-                </p>
+                </a>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Votre compagnon pour de meilleures nuits.</p>
                 <div class="flex gap-4">
-                    <a href="https://www.instagram.com/noctaliadreams/"
-                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
-                        aria-label="Instagram Noctalia">
+                    <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
                         <i data-lucide="instagram" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://x.com/NoctaliaDreams"
-                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
-                        aria-label="X (Twitter) Noctalia">
+                    <a href="https://x.com/NoctaliaDreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="X (Twitter) Noctalia">
                         <i data-lucide="twitter" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://www.tiktok.com/@noctaliadreams"
-                        class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
-                        aria-label="TikTok Noctalia">
+                    <a href="https://www.tiktok.com/@noctaliadreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="TikTok Noctalia">
                         <i data-lucide="music-2" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
-
             <div>
                 <h5 class="font-bold mb-4 text-white">Ressources</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="blog/" class="hover:text-dream-salmon transition-colors">Ressources</a></li>
-                    <li><a href="blog/comment-se-souvenir-de-ses-reves" class="hover:text-dream-salmon transition-colors">Mémoire des rêves</a></li>
-                    <li><a href="blog/guide-reve-lucide-debutant" class="hover:text-dream-salmon transition-colors">Rêve lucide</a></li>
-                    <li><a href="blog/guide-journal-reves" class="hover:text-dream-salmon transition-colors">Journal de rêves</a></li>
-                    <li><a href="blog/reves-sante-mentale" class="hover:text-dream-salmon transition-colors">Santé mentale</a></li>
-                    <li><a href="blog/histoire-interpretation-reves" class="hover:text-dream-salmon transition-colors">Interprétation</a></li>
-                    <li><a href="guides/dictionnaire-symboles-reves" class="hover:text-dream-salmon transition-colors">Dictionnaire de symboles</a></li>
+                    <li><a href="/fr/blog/" class="hover:text-dream-salmon transition-colors">Ressources</a></li>
+                    <li><a href="/fr/guides/" class="hover:text-dream-salmon transition-colors">Guides des rêves</a></li>
+                    <li><a href="/fr/guides/dictionnaire-symboles-reves" class="hover:text-dream-salmon transition-colors">Symboles de rêves</a></li>
                 </ul>
             </div>
-
-            <div>
-                <h5 class="font-bold mb-4 text-white">Symboles de rêves</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="symboles/eau" class="hover:text-dream-salmon transition-colors">Rêver d'eau</a></li>
-                    <li><a href="symboles/chute" class="hover:text-dream-salmon transition-colors">Rêver de chute</a></li>
-                    <li><a href="symboles/voler" class="hover:text-dream-salmon transition-colors">Rêver de voler</a></li>
-                    <li><a href="symboles/dents" class="hover:text-dream-salmon transition-colors">Rêver de dents</a></li>
-                    <li><a href="symboles/serpent" class="hover:text-dream-salmon transition-colors">Rêver de serpent</a></li>
-                    <li><a href="symboles/poursuite" class="hover:text-dream-salmon transition-colors">Être poursuivi</a></li>
-                    <li><a href="guides/dictionnaire-symboles-reves" class="hover:text-dream-salmon transition-colors text-dream-salmon">Tous les symboles →</a></li>
-                </ul>
-            </div>
-
             <div>
                 <h5 class="font-bold mb-4 text-white">Légal</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
                     <li><a href="/fr/a-propos" class="hover:text-dream-salmon transition-colors">À propos</a></li>
-                    <li><a href="mentions-legales" class="hover:text-dream-salmon transition-colors">Mentions
-                            légales</a></li>
-                    <li><a href="politique-confidentialite"
-                            class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
-                    <li><a href="cgu" class="hover:text-dream-salmon transition-colors">CGU</a></li>
-                    <li><a href="suppression-compte" class="hover:text-dream-salmon transition-colors">Suppression
-                            de compte</a></li>
+                    <li><a href="/fr/mentions-legales" class="hover:text-dream-salmon transition-colors">Mentions légales</a></li>
+                    <li><a href="/fr/politique-confidentialite" class="hover:text-dream-salmon transition-colors">Politique de confidentialité</a></li>
+                    <li><a href="/fr/cgu" class="hover:text-dream-salmon transition-colors">CGU</a></li>
+                    <li><a href="/fr/suppression-compte" class="hover:text-dream-salmon transition-colors">Suppression de compte</a></li>
                 </ul>
             </div>
-
             <div>
-                <h5 class="font-bold mb-4 text-white">Télécharger</h5>
+                <h5 class="font-bold mb-4 text-white">Téléchargement</h5>
                 <div class="flex flex-col gap-3">
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr"
-                        class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
                         <i data-lucide="play" class="w-5 h-5 fill-current"></i>
                         <div class="leading-none">
                             <div class="text-[9px] uppercase">Disponible sur</div>
@@ -961,99 +855,15 @@
                     </a>
                 </div>
             </div>
-                </div>
-            </div>
         </div>
-
-        <div
-            class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>© 2025 Noctalia Inc. Tous droits réservés.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart"
-                    class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
+        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+            <span>© 2025 Noctalia Inc.</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
-
-    <script type="module" src="../js/landing-animations.js"></script>
-    <script>
-        const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr';
-
-// Safe Script Execution
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // Harmonise liens Play Store
-            document.querySelectorAll('a[href*=\"play.google.com/store/apps/details?id=com.tanuki75.noctalia\"]').forEach(el => {
-                el.setAttribute('href', ANDROID_URL);
-            });
-
-            const hasGSAP = typeof window !== 'undefined' && window.gsap && window.ScrollTrigger;
-
-            // 1. Initialize Icons (Safe Check)
-            if (typeof lucide !== 'undefined' && lucide.createIcons) {
-                try {
-                    lucide.createIcons();
-                } catch (e) {
-                    console.error("Lucide icons failed to load", e);
-                }
-            }
-
-            // 2. Scroll Reveal Animation fallback (used uniquement si GSAP indisponible)
-            if (!hasGSAP) {
-                const observerOptions = {
-                    root: null,
-                    rootMargin: '0px',
-                    threshold: 0.1
-                };
-
-                const observer = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('active');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, observerOptions);
-
-                const revealElements = document.querySelectorAll('.reveal');
-                if (revealElements.length > 0) {
-                    revealElements.forEach(el => {
-                        observer.observe(el);
-                    });
-                } else {
-                    // Fallback if something is weird with selectors
-                    console.log("No reveal elements found");
-                }
-            }
-
-            // 3. Mouse Parallax Effect
-            document.addEventListener('mousemove', (e) => {
-                const orbs = document.querySelectorAll('.orb');
-                if (orbs.length > 0) {
-                    const x = e.clientX / window.innerWidth;
-                    const y = e.clientY / window.innerHeight;
-
-                    orbs.forEach((orb, index) => {
-                        const speed = (index + 1) * 15;
-                        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
-                    });
-                }
-            });
-
-            // 4. Navbar blurred on scroll
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if (navbar) {
-                    if (window.scrollY > 50) {
-                        navbar.classList.add('py-2');
-                        navbar.classList.remove('py-6');
-                    } else {
-                        navbar.classList.add('py-6');
-                        navbar.classList.remove('py-2');
-                    }
-                }
-            });
-        });
-    </script>
-        <script src="/js/language-dropdown.js?v=20260122-0819" defer></script>
+    <script src="/js/site-shell.js?v=20260306-072447" defer></script>
+    <script src="/js/language-dropdown.js?v=20260306-072447" defer></script>
+    <script src="/js/landing-page.js?v=20260306-072447" defer></script>
+    <script type="module" src="/js/landing-animations.js"></script>
 </body>
-
 </html>

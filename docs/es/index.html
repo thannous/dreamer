@@ -8,8 +8,8 @@
     <meta name="description" content="Graba tus sueños con la voz, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://noctalia.app/es/">
-    <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
+    <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
     <link rel="alternate" hreflang="es" href="https://noctalia.app/es/">
     <link rel="alternate" hreflang="de" href="https://noctalia.app/de/">
     <link rel="alternate" hreflang="it" href="https://noctalia.app/it/">
@@ -17,7 +17,6 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
-
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Diario de sueños con ilustraciones e interpretación | Noctalia">
@@ -26,6 +25,7 @@
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Diario de sueños con ilustraciones e interpretación | Noctalia">
     <meta property="og:locale" content="es_ES">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="fr_FR">
@@ -33,25 +33,21 @@
     <meta property="og:locale:alternate" content="it_IT">
     <meta property="og:site_name" content="Noctalia">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Diario de sueños con ilustraciones e interpretación | Noctalia">
     <meta name="twitter:description" content="Graba tus sueños con la voz, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-es-1200x630.jpg">
     <meta name="twitter:image:alt" content="Diario de sueños con ilustraciones e interpretación">
-    <meta name="twitter:site" content="@NoctaliaDreams">
-    <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
-    <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260122-0819">
-    <!-- Lucide Icons (deferred) -->
-    <script src="/js/lucide.min.js?v=20260122-0819" defer></script>
-    <!-- GSAP (local, deferred) -->
-    <script src="/js/gsap.min.js?v=20260122-0819" defer></script>
-    <script src="/js/ScrollTrigger.min.js?v=20260122-0819" defer></script>
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260306-072447">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-072447">
+    <script src="/js/lucide.min.js?v=20260306-072447" defer></script>
+    <script src="/js/gsap.min.js?v=20260306-072447" defer></script>
+    <script src="/js/ScrollTrigger.min.js?v=20260306-072447" defer></script>
     <script type="application/ld+json">
-        {
+{
             "@context": "https://schema.org",
             "@graph": [
                 {
@@ -159,84 +155,64 @@
     </script>
 </head>
 <body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
-
-    <!-- Ambient Background -->
     <div class="aurora-bg"></div>
     <div class="noise-overlay"></div>
-
-    <!-- Floating Orbs -->
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0 animate-float"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0 animate-float-delayed"></div>
-
-        <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
+    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-6" data-compact-class="py-2">
         <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
-            <div class="flex items-center gap-2">
+            <a href="/es/" class="flex items-center gap-2">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
-            </div>
+            </a>
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="#como-funciona" class="hidden md:inline-flex hover:text-white transition-colors">Cómo funciona</a>
-                <a href="#caracteristicas" class="hidden md:inline-flex hover:text-white transition-colors">Características</a>
-                <a href="blog/" class="inline-flex hover:text-white transition-colors">Recursos</a>
-                <div class="flex items-center gap-3">
-                <!-- Language Dropdown -->
+                <a href="/es/#como-funciona" class="hidden sm:inline-flex hover:text-white transition-colors">Cómo funciona</a>
+                <a href="/es/#caracteristicas" class="hidden sm:inline-flex hover:text-white transition-colors">Características</a>
+                <a href="/es/blog/" class="hidden sm:inline-flex text-dream-salmon transition-colors">Recursos</a>
+            </div>
+            <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Elegir idioma"
-                            id="languageDropdownButton">
+                    <button type="button" class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">ES</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu"
-                         aria-labelledby="languageDropdownButton"
-                         id="languageDropdownMenu">
-                        <a href="../en/"
-                           hreflang="en"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>English</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
-                        <a href="../fr/"
-                           hreflang="fr"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Français</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
-                        <a href="../es/"
-                           hreflang="es"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Español</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
-                        </a>
-                        <a href="../de/"
-                           hreflang="de"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Deutsch</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
-                        <a href="../it/"
-                           hreflang="it"
-                           class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors"
-                           role="menuitem">
-                            <span>Italiano</span>
-                            <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
-                        </a>
+                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
+                    <a href="/en/" hreflang="en" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>English</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/fr/" hreflang="fr" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Français</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/es/" hreflang="es" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Español</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
+                    </a>
+                    <a href="/de/" hreflang="de" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Deutsch</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/it/" hreflang="it" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Italiano</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
     </nav>
+<!-- Ambient Background -->
+    
+    
+
+    <!-- Floating Orbs -->
+    
+    
+
+        <!-- Navbar -->
+    
 
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
@@ -254,15 +230,12 @@
             <!-- CTA & Reassurance -->
             <div class="flex flex-col items-center gap-6 opacity-0 hero-anim hero-cta">
                 <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es"
-                        class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="group relative px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-sans font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(253,164,129,0.4)] text-center">
                         <span class="relative z-10 flex items-center justify-center gap-2">
                             Descargar la aplicación <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
-                    <a href="#como-funciona-pasos"
-                        class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors"
-                        aria-label="Ver cómo funciona Noctalia">
+                    <a href="#como-funciona-pasos" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors" aria-label="Ver cómo funciona Noctalia">
                         <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Ver cómo funciona
                     </a>
                 </div>
@@ -612,7 +585,7 @@
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-gray-400"></i> Diario básico</li>
                     </ul>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Descargar la aplicación</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Descargar la aplicación</a>
                 </div>
 
                 <!-- Premium Plan (live only) -->
@@ -625,7 +598,7 @@
                         <li class="flex items-center gap-3"><i data-lucide="image" class="w-4 h-4 text-dream-salmon"></i> Visuales de sueños en HD</li>
                         <li class="flex items-center gap-3"><i data-lucide="bar-chart-3" class="w-4 h-4 text-dream-salmon"></i> Estadísticas e insights profundos</li>
                     </ul>
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Descargar la aplicación</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="block w-full py-3 rounded-xl bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors text-center">Descargar la aplicación</a>
                     <p class="text-[10px] text-gray-500 mt-3">Disponible en Google Play.</p>
                 </div>
 
@@ -644,7 +617,7 @@
                         <li class="flex items-center gap-3 text-sm"><i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i> Chatea con el sueño</li>
                     </ul>
 
-                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Pruébalo gratis</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es" class="block w-full py-3 rounded-xl bg-white text-black hover:bg-dream-cream transition-colors font-bold shadow-lg shadow-purple-900/50 text-center">Pruébalo gratis</a>
                     <p class="text-[10px] text-gray-500 mt-3">Prueba de 7 días incluida, cancelación fácil.</p>
                 </div>
             </div>
@@ -716,7 +689,7 @@
                 <a href="simbolos/agua" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💧</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Agua</h3>
-                    <p class="text-xs text-gray-400 mt-1">Emociones & subconsciente</p>
+                    <p class="text-xs text-gray-400 mt-1">Emociones &amp; subconsciente</p>
                 </a>
                 <a href="simbolos/caida" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌀</div>
@@ -726,12 +699,12 @@
                 <a href="simbolos/volar" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕊️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Volar</h3>
-                    <p class="text-xs text-gray-400 mt-1">Libertad & trascendencia</p>
+                    <p class="text-xs text-gray-400 mt-1">Libertad &amp; trascendencia</p>
                 </a>
                 <a href="simbolos/dientes" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🦷</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Dientes</h3>
-                    <p class="text-xs text-gray-400 mt-1">Ansiedad & autoimagen</p>
+                    <p class="text-xs text-gray-400 mt-1">Ansiedad &amp; autoimagen</p>
                 </a>
                 <!-- Animales & Naturaleza -->
                 <a href="simbolos/serpiente" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
@@ -742,23 +715,23 @@
                 <a href="simbolos/arana" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕷️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Araña</h3>
-                    <p class="text-xs text-gray-400 mt-1">Creatividad & miedo</p>
+                    <p class="text-xs text-gray-400 mt-1">Creatividad &amp; miedo</p>
                 </a>
                 <a href="simbolos/perro" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐕</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Perro</h3>
-                    <p class="text-xs text-gray-400 mt-1">Lealtad & protección</p>
+                    <p class="text-xs text-gray-400 mt-1">Lealtad &amp; protección</p>
                 </a>
                 <a href="simbolos/gato" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐈</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Gato</h3>
-                    <p class="text-xs text-gray-400 mt-1">Independencia & intuición</p>
+                    <p class="text-xs text-gray-400 mt-1">Independencia &amp; intuición</p>
                 </a>
                 <!-- Lugares & Objetos -->
                 <a href="simbolos/casa" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏠</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Casa</h3>
-                    <p class="text-xs text-gray-400 mt-1">El yo & la psique</p>
+                    <p class="text-xs text-gray-400 mt-1">El yo &amp; la psique</p>
                 </a>
                 <a href="simbolos/coche" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🚗</div>
@@ -773,18 +746,18 @@
                 <a href="simbolos/fuego" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🔥</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Fuego</h3>
-                    <p class="text-xs text-gray-400 mt-1">Pasión & destrucción</p>
+                    <p class="text-xs text-gray-400 mt-1">Pasión &amp; destrucción</p>
                 </a>
                 <!-- Temas de vida -->
                 <a href="simbolos/muerte" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💀</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Muerte</h3>
-                    <p class="text-xs text-gray-400 mt-1">Final & renacimiento</p>
+                    <p class="text-xs text-gray-400 mt-1">Final &amp; renacimiento</p>
                 </a>
                 <a href="simbolos/persecucion" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏃</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Persecución</h3>
-                    <p class="text-xs text-gray-400 mt-1">Evitación & miedo</p>
+                    <p class="text-xs text-gray-400 mt-1">Evitación &amp; miedo</p>
                 </a>
                 <a href="simbolos/oceano" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌊</div>
@@ -810,74 +783,47 @@
     </section>
 
     <!-- 10. Footer -->
+
     <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
             <div class="col-span-1 md:col-span-2">
-                <div class="flex items-center gap-2 mb-4">
+                <a href="/es/" class="flex items-center gap-2 mb-4">
                     <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </div>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">
-                    Tu compañero nocturno. Convierte lo invisible en visible, un sueño a la vez.
-                </p>
+                </a>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Tu compañero para mejores noches.</p>
                 <div class="flex gap-4">
-                    <a href="https://www.instagram.com/noctaliadreams/"
-                       class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
-                       aria-label="Instagram Noctalia">
+                    <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
                         <i data-lucide="instagram" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://x.com/NoctaliaDreams"
-                       class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
-                       aria-label="X (Twitter) Noctalia">
+                    <a href="https://x.com/NoctaliaDreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="X (Twitter) Noctalia">
                         <i data-lucide="twitter" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://www.tiktok.com/@noctaliadreams"
-                       class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon"
-                       aria-label="TikTok Noctalia">
+                    <a href="https://www.tiktok.com/@noctaliadreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="TikTok Noctalia">
                         <i data-lucide="music-2" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
-
             <div>
                 <h5 class="font-bold mb-4 text-white">Recursos</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="blog/" class="hover:text-dream-salmon transition-colors">Recursos</a></li>
-                    <li><a href="blog/como-recordar-suenos" class="hover:text-dream-salmon transition-colors">Recordar sueños</a></li>
-                    <li><a href="blog/guia-suenos-lucidos-principiantes" class="hover:text-dream-salmon transition-colors">Sueños lúcidos</a></li>
-                    <li><a href="blog/guia-diario-suenos" class="hover:text-dream-salmon transition-colors">Diario de sueños</a></li>
-                    <li><a href="blog/suenos-salud-mental" class="hover:text-dream-salmon transition-colors">Salud mental</a></li>
-                    <li><a href="blog/historia-interpretacion-suenos" class="hover:text-dream-salmon transition-colors">Interpretación</a></li>
-                    <li><a href="guides/diccionario-simbolos-suenos" class="hover:text-dream-salmon transition-colors">Diccionario de símbolos</a></li>
+                    <li><a href="/es/blog/" class="hover:text-dream-salmon transition-colors">Recursos</a></li>
+                    <li><a href="/es/guides/" class="hover:text-dream-salmon transition-colors">Guías de sueños</a></li>
+                    <li><a href="/es/guides/diccionario-simbolos-suenos" class="hover:text-dream-salmon transition-colors">Símbolos de sueños</a></li>
                 </ul>
             </div>
-
-            <div>
-                <h5 class="font-bold mb-4 text-white">Símbolos de sueños</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="simbolos/agua" class="hover:text-dream-salmon transition-colors">Soñar con agua</a></li>
-                    <li><a href="simbolos/caida" class="hover:text-dream-salmon transition-colors">Soñar con caer</a></li>
-                    <li><a href="simbolos/volar" class="hover:text-dream-salmon transition-colors">Soñar con volar</a></li>
-                    <li><a href="simbolos/dientes" class="hover:text-dream-salmon transition-colors">Soñar con dientes</a></li>
-                    <li><a href="simbolos/serpiente" class="hover:text-dream-salmon transition-colors">Soñar con serpiente</a></li>
-                    <li><a href="simbolos/persecucion" class="hover:text-dream-salmon transition-colors">Ser perseguido</a></li>
-                    <li><a href="guides/diccionario-simbolos-suenos" class="hover:text-dream-salmon transition-colors text-dream-salmon">Todos los símbolos →</a></li>
-                </ul>
-            </div>
-
             <div>
                 <h5 class="font-bold mb-4 text-white">Legal</h5>
                 <ul class="space-y-2 text-sm text-gray-500">
                     <li><a href="/es/sobre" class="hover:text-dream-salmon transition-colors">Sobre</a></li>
-                    <li><a href="aviso-legal" class="hover:text-dream-salmon transition-colors">Aviso legal</a></li>
-                    <li><a href="politica-privacidad" class="hover:text-dream-salmon transition-colors">Política de privacidad</a></li>
-                    <li><a href="terminos" class="hover:text-dream-salmon transition-colors">Términos de uso</a></li>
-                    <li><a href="eliminacion-cuenta" class="hover:text-dream-salmon transition-colors">Eliminación de cuenta</a></li>
+                    <li><a href="/es/aviso-legal" class="hover:text-dream-salmon transition-colors">Aviso legal</a></li>
+                    <li><a href="/es/politica-privacidad" class="hover:text-dream-salmon transition-colors">Política de privacidad</a></li>
+                    <li><a href="/es/terminos" class="hover:text-dream-salmon transition-colors">Términos</a></li>
+                    <li><a href="/es/eliminacion-cuenta" class="hover:text-dream-salmon transition-colors">Eliminación de cuenta</a></li>
                 </ul>
             </div>
-
             <div>
-                <h5 class="font-bold mb-4 text-white">Descargar</h5>
+                <h5 class="font-bold mb-4 text-white">Descarga</h5>
                 <div class="flex flex-col gap-3">
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
                         <i data-lucide="play" class="w-5 h-5 fill-current"></i>
@@ -889,92 +835,14 @@
                 </div>
             </div>
         </div>
-
         <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>(c) 2025 Noctalia Inc. Todos los derechos reservados.</span>
+            <span>© 2025 Noctalia Inc.</span>
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Hecho con <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> para soñadores</span>
         </div>
     </footer>
-
-    <script type="module" src="../js/landing-animations.js"></script>
-    <script>
-        const ANDROID_URL = 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es';
-
-// Safe Script Execution
-        document.addEventListener('DOMContentLoaded', () => {
-
-            document.querySelectorAll('a[href*="play.google.com/store/apps/details?id=com.tanuki75.noctalia"]').forEach(el => {
-                el.setAttribute('href', ANDROID_URL);
-            });
-
-            const hasGSAP = typeof window !== 'undefined' && window.gsap && window.ScrollTrigger;
-
-            // 1. Initialize Icons (Safe Check)
-            if (typeof lucide !== 'undefined' && lucide.createIcons) {
-                try {
-                    lucide.createIcons();
-                } catch (e) {
-                    console.error("Lucide icons failed to load", e);
-                }
-            }
-
-            // 2. Scroll Reveal fallback (only if GSAP unavailable)
-            if (!hasGSAP) {
-                const observerOptions = {
-                    root: null,
-                    rootMargin: '0px',
-                    threshold: 0.1
-                };
-
-                const observer = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('active');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, observerOptions);
-
-                const revealElements = document.querySelectorAll('.reveal');
-                if(revealElements.length > 0){
-                    revealElements.forEach(el => {
-                        observer.observe(el);
-                    });
-                } else {
-                    // Fallback if something is weird with selectors
-                    console.log("No reveal elements found");
-                }
-            }
-
-            // 3. Mouse Parallax Effect
-            document.addEventListener('mousemove', (e) => {
-                const orbs = document.querySelectorAll('.orb');
-                if(orbs.length > 0) {
-                    const x = e.clientX / window.innerWidth;
-                    const y = e.clientY / window.innerHeight;
-
-                    orbs.forEach((orb, index) => {
-                        const speed = (index + 1) * 15;
-                        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
-                    });
-                }
-            });
-
-            // 4. Navbar blurred on scroll
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if(navbar) {
-                    if (window.scrollY > 50) {
-                        navbar.classList.add('py-2');
-                        navbar.classList.remove('py-6');
-                    } else {
-                        navbar.classList.add('py-6');
-                        navbar.classList.remove('py-2');
-                    }
-                }
-            });
-        });
-    </script>
-        <script src="/js/language-dropdown.js?v=20260122-0819" defer></script>
+    <script src="/js/site-shell.js?v=20260306-072447" defer></script>
+    <script src="/js/language-dropdown.js?v=20260306-072447" defer></script>
+    <script src="/js/landing-page.js?v=20260306-072447" defer></script>
+    <script type="module" src="/js/landing-animations.js"></script>
 </body>
 </html>
