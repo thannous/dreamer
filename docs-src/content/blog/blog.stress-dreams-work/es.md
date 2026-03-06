@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-05",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/historia-interpretacion-suenos",
-  "nextPath": "",
+  "nextPath": "/es/blog/suenos-y-creatividad",
   "preloadImage": "/img/blog/stress-dreams-work.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueños de estrés laboral: por qué tu trabajo te sigue al dormir\",\n            \"description\": \"Comprende por qué sueñas con el trabajo, la ciencia detrás de los sueños de estrés laboral y estrategias probadas para recuperar tus noches.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-05\",\n            \"dateModified\": \"2026-03-05\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"url\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\"\n        }",
@@ -386,12 +386,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">La Historia de la Interpretación de Sueños: De los Templos Antiguos a la Ciencia Moderna</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Todos los recursos</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Ver todos los recursos</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-y-creatividad">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Sueños y creatividad: cómo tu cerebro dormido resuelve problemas</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

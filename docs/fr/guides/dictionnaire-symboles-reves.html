@@ -48,7 +48,9 @@
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-    <!-- Lucide Icons (deferred) -->
+            <link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-081658">
+<link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-081127">
+<!-- Lucide Icons (deferred) -->
     <script src="/js/lucide.min.js?v=20260122-0819" defer></script>
 
     <style>
@@ -152,9 +154,42 @@
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
             <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/fr/#comment-ca-marche" class="hidden sm:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="/fr/#fonctionnalites" class="hidden sm:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+                <a href="/fr/#comment-ca-marche" class="hidden lg:inline-flex hover:text-white transition-colors">Comment ça marche</a>
+                <a href="/fr/#fonctionnalites" class="hidden lg:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
                 <a href="/fr/guides/" class="hidden sm:inline-flex text-dream-salmon">Guides des rêves</a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="hidden sm:inline-flex text-dream-salmon transition-colors">Dictionnaire des rêves</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+                    <button type="button"
+                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-label="Choose language"
+                            id="languageDropdownButton">
+                        <i data-lucide="languages" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">FR</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
+                    </button>
+                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
+                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
+                        <a href="/en/guides/dream-symbols-dictionary" hreflang="en" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
+                            <span class="w-5 text-center">🇺🇸</span> English
+                        </a>
+                        <a href="/fr/guides/dictionnaire-symboles-reves" hreflang="fr" class="flex items-center gap-3 px-4 py-2 text-sm text-dream-salmon bg-dream-salmon/10 transition-colors" role="menuitem">
+                            <span class="w-5 text-center">🇫🇷</span> Français
+                        </a>
+                        <a href="/es/guides/diccionario-simbolos-suenos" hreflang="es" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
+                            <span class="w-5 text-center">🇪🇸</span> Español
+                        </a>
+                        <a href="/de/guides/traumsymbole-lexikon" hreflang="de" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
+                            <span class="w-5 text-center">🇩🇪</span> Deutsch
+                        </a>
+                        <a href="/it/guides/dizionario-simboli-sogni" hreflang="it" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
+                            <span class="w-5 text-center">🇮🇹</span> Italiano
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -987,33 +1022,51 @@
 
     <!-- Footer -->
     <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
-            <div class="col-span-1 md:col-span-2">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
+            <div class="xl:col-span-2">
                 <a href="/fr/" class="flex items-center gap-2 mb-4">
                     <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">Le compagnon de vos nuits.</p>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">Votre compagnon pour de meilleures nuits.</p>
             </div>
             <div>
                 <h5 class="font-bold mb-4 text-white">Ressources</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/fr/guides/" class="hover:text-dream-salmon transition-colors">Guides des rêves</a></li>
-                    <li><a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon">Symboles de rêves</a></li>
+                <ul class="space-y-2 text-sm text-gray-500"><li><a href="/fr/blog/" class="text-dream-salmon">Ressources</a></li><li><a href="/fr/blog/comment-se-souvenir-de-ses-reves" class="hover:text-dream-salmon transition-colors">Se souvenir de ses rêves au réveil : 10 techniques</a></li><li><a href="/fr/blog/guide-journal-reves" class="hover:text-dream-salmon transition-colors">Tenir un journal de rêves : guide complet débutant</a></li><li><a href="/fr/blog/guide-reve-lucide-debutant" class="hover:text-dream-salmon transition-colors">Rêve lucide débutant : contrôlez vos nuits facilement - Noctalia</a></li><li><a href="/fr/blog/signification-reves-recurrents" class="hover:text-dream-salmon transition-colors">Rêves récurrents : pourquoi et comment les arrêter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Dictionnaire des rêves</h5>
+                <ul class="space-y-2 text-sm text-gray-500"><li><a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon">Dictionnaire des rêves</a></li><li><a href="/fr/guides/" class="hover:text-dream-salmon transition-colors">Guides des rêves</a></li><li><a href="/fr/guides/symboles-reves-les-plus-courants" class="hover:text-dream-salmon transition-colors">20 symboles de rêves courants</a></li><li><a href="/fr/guides/symboles-reves-effrayants" class="hover:text-dream-salmon transition-colors">Rêves effrayants : symboles et sens</a></li><li><a href="/fr/guides/symboles-reves-animaux" class="hover:text-dream-salmon transition-colors">Animaux en rêve : symboles et sens</a></li><li><a href="/fr/guides/symboles-reves-eau" class="hover:text-dream-salmon transition-colors">Eau en rêve : signification</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">Symboles populaires</h5>
+                <ul class="space-y-2 text-sm text-gray-500"><li><a href="/fr/symboles/eau" class="hover:text-dream-salmon transition-colors">Eau</a></li><li><a href="/fr/symboles/chute" class="hover:text-dream-salmon transition-colors">Chute</a></li><li><a href="/fr/symboles/voler" class="hover:text-dream-salmon transition-colors">Voler</a></li><li><a href="/fr/symboles/dents" class="hover:text-dream-salmon transition-colors">Dents (perdre ses dents)</a></li><li><a href="/fr/symboles/serpent" class="hover:text-dream-salmon transition-colors">Serpent</a></li>
                 </ul>
             </div>
             <div>
                 <h5 class="font-bold mb-4 text-white">Légal</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
+                <ul class="space-y-2 text-sm text-gray-500 mb-4">
                     <li><a href="/fr/a-propos" class="hover:text-dream-salmon transition-colors">À propos</a></li>
-                    <li><a href="../mentions-legales" class="hover:text-dream-salmon transition-colors">Mentions légales</a></li>
-                    <li><a href="../politique-confidentialite" class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
-                    <li><a href="../cgu" class="hover:text-dream-salmon transition-colors">CGU</a></li>
+                    <li><a href="/fr/mentions-legales" class="hover:text-dream-salmon transition-colors">Mentions légales</a></li>
+                    <li><a href="/fr/politique-confidentialite" class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
+                    <li><a href="/fr/cgu" class="hover:text-dream-salmon transition-colors">CGU</a></li>
                 </ul>
+                <h5 class="font-bold mb-4 text-white">Téléchargement</h5>
+                <div class="flex flex-col gap-3">
+                    <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
+                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                        <div class="leading-none">
+                            <div class="text-[9px] uppercase">Disponible sur</div>
+                            <div class="text-sm font-bold">Google Play</div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
         <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>&copy; 2025 Noctalia Inc.</span>
+            <span>© 2025 Noctalia Inc.</span>
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
@@ -1122,6 +1175,6 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=20260122-0819" defer></script>
+    <script src="/js/language-dropdown.js?v=20260306-081658" defer></script>
 </body>
 </html>

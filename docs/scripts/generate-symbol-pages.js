@@ -41,6 +41,9 @@ function isoDateFromDocsVersion(version) {
 }
 
 const DOCS_ASSET_VERSION = readDocsAssetVersionOrExit();
+const ROOT_DIR = path.join(__dirname, '..', '..');
+const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
+const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
 
 // Configuration
 const CONFIG = {
@@ -63,6 +66,30 @@ const CONFIG = {
   dateModified: isoDateFromDocsVersion(DOCS_ASSET_VERSION),
   cssVersion: DOCS_ASSET_VERSION
 };
+
+function loadSharedSiteConfig() {
+  const configPath = path.join(DOCS_SRC_DIR, 'config', 'site.config.json');
+  if (!fs.existsSync(configPath)) {
+    return { seoLinking: { featuredBlogEntries: [], featuredGuideEntries: [], featuredSymbols: [] } };
+  }
+
+  return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+}
+
+function stripSiteSuffix(title) {
+  return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
+}
+
+function parseSourceDocument(raw) {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+  if (!match) return { meta: {}, body: raw };
+  return {
+    meta: JSON.parse(match[1]),
+    body: match[2]
+  };
+}
+
+const SHARED_SITE_CONFIG = loadSharedSiteConfig();
 
 const GUIDES_HUB_LABELS = {
   en: 'Dream Guides',
@@ -115,6 +142,31 @@ const CURATION_META_TITLE_OVERRIDES = {
     it: 'Luoghi nei sogni: significato'
   }
 };
+
+const DICTIONARY_NAV_LABELS = {
+  en: 'Dream Dictionary',
+  fr: 'Dictionnaire des rêves',
+  es: 'Diccionario de sueños',
+  de: 'Traumlexikon',
+  it: 'Dizionario dei sogni'
+};
+
+const POPULAR_SYMBOLS_LABELS = {
+  en: 'Popular Symbols',
+  fr: 'Symboles populaires',
+  es: 'Símbolos populares',
+  de: 'Beliebte Symbole',
+  it: 'Simboli popolari'
+};
+
+function loadOptionalCurationPages() {
+  const curationPath = path.join(CONFIG.dataDir, 'curation-pages.json');
+  if (!fs.existsSync(curationPath)) return [];
+  const data = JSON.parse(fs.readFileSync(curationPath, 'utf8'));
+  return Array.isArray(data?.pages) ? data.pages : [];
+}
+
+const OPTIONAL_CURATION_PAGES = loadOptionalCurationPages();
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
@@ -306,6 +358,132 @@ function renderJsonLd(data, indent = 4) {
     `<script type="application/ld+json">\n${safeJsonStringifyForHtml(data)}\n</script>`,
     indent
   );
+}
+
+function loadFeaturedBlogLinks() {
+  const manifestPath = path.join(ROOT_DATA_DIR, 'content-manifest.json');
+  if (!fs.existsSync(manifestPath)) return {};
+
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const entries = manifest?.collections?.blog?.entries || {};
+  const linksByLang = {};
+
+  for (const lang of CONFIG.languages) {
+    linksByLang[lang] = [];
+
+    for (const entryId of SHARED_SITE_CONFIG.seoLinking?.featuredBlogEntries || []) {
+      const entry = entries[entryId];
+      if (!entry?.locales?.[lang]) continue;
+
+      const sourcePath = path.join(DOCS_SRC_DIR, 'content', 'blog', entryId, `${lang}.md`);
+      if (!fs.existsSync(sourcePath)) continue;
+
+      const { meta } = parseSourceDocument(fs.readFileSync(sourcePath, 'utf8'));
+      if (!meta?.title) continue;
+
+      linksByLang[lang].push({
+        href: entry.locales[lang].path,
+        label: stripSiteSuffix(meta.title)
+      });
+    }
+  }
+
+  return linksByLang;
+}
+
+const FEATURED_BLOG_LINKS = loadFeaturedBlogLinks();
+
+function getFeaturedGuideLinks(lang, curationPages) {
+  return (SHARED_SITE_CONFIG.seoLinking?.featuredGuideEntries || [])
+    .map((entryId) => entryId.replace(/^guide\./, ''))
+    .map((pageId) => curationPages.find((page) => page.id === pageId))
+    .filter(Boolean)
+    .map((page) => ({
+      href: `/${lang}/guides/${page.slugs[lang]}`,
+      label: page[lang].title
+    }));
+}
+
+function getPopularSymbolLinks(lang, allSymbols) {
+  return (SHARED_SITE_CONFIG.seoLinking?.featuredSymbols || [])
+    .map((symbolId) => allSymbols.find((symbol) => symbol.id === symbolId))
+    .filter(Boolean)
+    .map((symbol) => ({
+      href: `/${lang}/${CONFIG.symbolsPath[lang]}/${symbol[lang].slug}`,
+      label: symbol[lang].name
+    }));
+}
+
+function renderFooterLinkList(links, { highlightFirst = false } = {}) {
+  return links
+    .map((link, index) => {
+      const className = highlightFirst && index === 0
+        ? 'text-dream-salmon'
+        : 'hover:text-dream-salmon transition-colors';
+      return `<li><a href="${link.href}" class="${className}">${escapeHtml(link.label)}</a></li>`;
+    })
+    .join('');
+}
+
+function renderPseoNavLinks(lang, t) {
+  return `
+                <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
+                <a href="/${lang}/#${t.nav_features_anchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
+                <a href="/${lang}/blog/" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_resources}</a>
+                <a href="/${lang}/guides/${t.dictionary_slug}" class="hidden sm:inline-flex text-dream-salmon transition-colors">${DICTIONARY_NAV_LABELS[lang]}</a>`;
+}
+
+function renderPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CURATION_PAGES) {
+  const resourcesLinks = [
+    { href: `/${lang}/blog/`, label: t.nav_resources },
+    ...(FEATURED_BLOG_LINKS[lang] || [])
+  ];
+  const guideLinks = [
+    { href: `/${lang}/guides/${t.dictionary_slug}`, label: DICTIONARY_NAV_LABELS[lang] },
+    { href: `/${lang}/guides/`, label: GUIDES_HUB_LABELS[lang] },
+    ...getFeaturedGuideLinks(lang, curationPages)
+  ];
+  const symbolLinks = getPopularSymbolLinks(lang, allSymbols);
+
+  return `    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
+            <div class="xl:col-span-2">
+                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
+                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
+                </a>
+                <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">${t.nav_resources}</h5>
+                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(resourcesLinks, { highlightFirst: true })}
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">${DICTIONARY_NAV_LABELS[lang]}</h5>
+                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(guideLinks, { highlightFirst: true })}
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">${POPULAR_SYMBOLS_LABELS[lang]}</h5>
+                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(symbolLinks)}
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold mb-4 text-white">${t.footer_legal}</h5>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${t.about}</a></li>
+                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${t.legal_notice}</a></li>
+                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${t.privacy}</a></li>
+                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${t.terms}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
+            <span>&copy; 2025 Noctalia Inc.</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
+        </div>
+    </footer>`;
 }
 
 // Generate HTML page for a symbol
@@ -661,10 +839,7 @@ ${renderJsonLd(faqPageJsonLd)}
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
-                <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${GUIDES_HUB_LABELS[lang]}</a>
+            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">${renderPseoNavLinks(lang, t)}
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
@@ -796,38 +971,7 @@ ${relatedArticleHtml}
         </article>
     </main>
 
-    <!-- Footer -->
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
-            <div class="col-span-1 md:col-span-2">
-                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${GUIDES_HUB_LABELS[lang]}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${GUIDES_HUB_LABELS[lang]}</a></li>
-                    <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${t.footer_legal}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${t.about}</a></li>
-                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${t.legal_notice}</a></li>
-                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${t.privacy}</a></li>
-                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${t.terms}</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>&copy; 2025 Noctalia Inc.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
-        </div>
-    </footer>
+${renderPseoFooter(lang, t, allSymbols)}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -997,7 +1141,7 @@ function getCurationMetaTitle(page, lang) {
 }
 
 // Generate category page HTML
-function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages) {
+function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCategories, i18n, lang, curationPages) {
   const t = i18n[lang];
   const categoryName = getCategoryNameById(categoryId, lang);
   const categorySchemaName = t.category_h1_template.replace(/{category}/g, categoryName);
@@ -1277,10 +1421,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
-                <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${GUIDES_HUB_LABELS[lang]}</a>
+            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">${renderPseoNavLinks(lang, t)}
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
@@ -1382,38 +1523,7 @@ ${relatedGuidesHtml}
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
-            <div class="col-span-1 md:col-span-2">
-                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${GUIDES_HUB_LABELS[lang]}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${GUIDES_HUB_LABELS[lang]}</a></li>
-                    <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${t.footer_legal}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${t.about}</a></li>
-                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${t.legal_notice}</a></li>
-                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${t.privacy}</a></li>
-                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${t.terms}</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>&copy; 2025 Noctalia Inc.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
-        </div>
-    </footer>
+${renderPseoFooter(lang, t, allSymbols, curationPages)}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1489,7 +1599,7 @@ function generateCategoryPages(symbols, i18n, languages) {
       const filepath = path.join(langDir, filename);
 
       try {
-        const html = generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages);
+        const html = generateCategoryPage(categoryId, symbolsInCategory, symbols.symbols, allCategories, i18n, lang, curationPages);
 
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
@@ -1812,10 +1922,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
-                <a href="/${lang}/#${t.nav_features_anchor}" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${GUIDES_HUB_LABELS[lang]}</a>
+            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">${renderPseoNavLinks(lang, t)}
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
@@ -1917,38 +2024,7 @@ ${guideHowToHtml}
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-16">
-            <div class="col-span-1 md:col-span-2">
-                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${GUIDES_HUB_LABELS[lang]}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${GUIDES_HUB_LABELS[lang]}</a></li>
-                    <li><a href="/${lang}/guides/${t.dictionary_slug}" class="text-dream-salmon">${t.symbols}</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${t.footer_legal}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${t.about}</a></li>
-                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${t.legal_notice}</a></li>
-                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${t.privacy}</a></li>
-                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${t.terms}</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>&copy; 2025 Noctalia Inc.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
-        </div>
-    </footer>
+${renderPseoFooter(lang, t, allSymbols, curationData.pages)}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
