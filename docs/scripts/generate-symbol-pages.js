@@ -178,12 +178,12 @@ function generateMetaTitle(symbol, i18n, lang) {
 }
 
 // Truncate a meta description to a maximum length, cutting at the last sentence or word boundary
-function truncateMetaDescription(text, maxLength = 160) {
+function truncateMetaDescription(text, maxLength = 160, minLength = 110) {
   if (text.length <= maxLength) return text;
   // Try to cut at the last sentence boundary (period followed by space) within the limit
   const truncated = text.slice(0, maxLength);
   const lastSentenceEnd = truncated.lastIndexOf('. ');
-  if (lastSentenceEnd > maxLength * 0.5) {
+  if (lastSentenceEnd >= minLength) {
     return truncated.slice(0, lastSentenceEnd + 1);
   }
   // Fall back to last word boundary, reserving space for ellipsis
