@@ -29,6 +29,7 @@
     "docs:fix-eeat-signals": "node ./docs/scripts/fix-eeat-signals.js",
     "docs:fix-breadcrumb-jsonld": "node ./scripts/fix-breadcrumb-jsonld.js",
     "docs:fix-guides-architecture": "node ./scripts/fix-guides-architecture.js",
+    "docs:fix-title-lengths": "node ./docs/scripts/fix-title-lengths.js",
     "docs:cache-bust-assets": "node ./scripts/cache-bust-docs-assets.js",
     "docs:extract-blog-css": "node ./scripts/extract-blog-inline-css.js",
     "docs:generate-blog-image-variants": "node ./scripts/generate-blog-image-variants.js",
