@@ -38,12 +38,12 @@
 <link as="font" crossorigin="" href="/fonts/Outfit-Bold.woff2" rel="preload" type="font/woff2"/>
 <link as="font" crossorigin="" href="/fonts/Fraunces-Variable.woff2" rel="preload" type="font/woff2"/>
 <!-- Compiled Tailwind CSS -->
-<link href="/css/styles.min.css?v=20260306-0013" rel="stylesheet"/>
-<link href="/css/language-dropdown.css?v=20260306-0013" rel="stylesheet"/>
+<link href="/css/styles.min.css?v=20260122-0819" rel="stylesheet"/>
+<link href="/css/language-dropdown.css?v=20260122-0819" rel="stylesheet"/>
 <!-- Blog CSS -->
-<link href="/css/blog.min.css?v=20260306-0013" rel="stylesheet"/>
+<link href="/css/blog.min.css?v=20260122-0819" rel="stylesheet"/>
 <!-- Lucide Icons (deferred) -->
-<script defer="" src="/js/lucide.min.js?v=20260306-0013"></script>
+<script defer="" src="/js/lucide.min.js?v=20260122-0819"></script>
 <script type="application/ld+json">{
         "@context": "https://schema.org",
         "@type": "Blog",
@@ -60,6 +60,7 @@
                 }
         }
 }</script>
+
 <!-- Blog index ItemList -->
 <script type="application/ld+json">
     {
@@ -228,7 +229,9 @@
     ]
 }
     </script>
-<meta content="index, follow, max-image-preview:large" name="robots"/>
+
+
+<meta name="robots" content="index, follow, max-image-preview:large">
 </head>
 <body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
 <!-- Ambient Background -->
@@ -270,8 +273,8 @@
 <a class="hover:text-dream-salmon transition-colors" href="/it/" itemprop="item">
 <span itemprop="name">Home</span>
 </a>
-<meta content="1" itemprop="position">
-</meta></li>
+<meta content="1" itemprop="position"/>
+</li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
 <span class="hidden sm:inline-flex text-dream-cream" itemprop="name">Risorse</span>
@@ -328,44 +331,48 @@
 </a>
 </div>
 </section>
-<!-- Dream Symbols Module Start -->
-<section aria-label="Dream symbols" class="mb-16">
-<div class="glass-panel rounded-3xl p-8 md:p-10 border border-dream-salmon/20">
-<div class="flex items-center justify-center gap-3 mb-4">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-<h2 class="font-serif text-2xl md:text-3xl text-dream-cream">Esplora i simboli</h2>
-</div>
-<p class="text-sm md:text-base text-purple-200/70 max-w-3xl mx-auto text-center">Dagli articoli al dizionario: esplora le categorie o apri un simbolo per scoprirne il significato.</p>
-<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold bg-dream-salmon text-dream-dark hover:bg-dream-salmon/90 transition-colors" href="/it/guides/dizionario-simboli-sogni">
-                                Apri il dizionario <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-<h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Per categoria</h3>
-<div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/azioni">Azioni</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/animali">Animali</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/corpo">Corpo</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/celeste">Celeste</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/natura">Natura</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/oggetti">Oggetti</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/persone">Persone</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/luoghi">Luoghi</a>
-</div>
-<h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Simboli popolari</h3>
-<div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/inseguimento">Inseguimento / Essere inseguiti</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/morte">Morte</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/cadere">Cadere</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/volare">Volare</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/luna">Luna</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/serpente">Serpente</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/acqua">Acqua</a>
-<a class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors" href="/it/simboli/bambino-neonato">Bambino (neonato)</a>
-</div>
-</div>
-</section>
-<!-- Dream Symbols Module End -->
+
+                <!-- Dream Symbols Module Start -->
+                <section class="mb-16" aria-label="Dream symbols">
+                    <div class="glass-panel rounded-3xl p-8 md:p-10 border border-dream-salmon/20">
+                        <div class="flex items-center justify-center gap-3 mb-4">
+                            <i data-lucide="sparkles" class="w-6 h-6 text-dream-salmon"></i>
+                            <h2 class="font-serif text-2xl md:text-3xl text-dream-cream">Esplora i simboli</h2>
+                        </div>
+                        <p class="text-sm md:text-base text-purple-200/70 max-w-3xl mx-auto text-center">Dagli articoli al dizionario: esplora le categorie o apri un simbolo per scoprirne il significato.</p>
+
+                        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+                            <a href="/it/guides/dizionario-simboli-sogni" class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-dream-salmon text-dream-dark hover:bg-dream-salmon/90 transition-colors">
+                                Apri il dizionario <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+
+                        <h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Per categoria</h3>
+                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <a href="/it/simboli/azioni" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Azioni</a>
+                    <a href="/it/simboli/animali" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Animali</a>
+                    <a href="/it/simboli/corpo" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Corpo</a>
+                    <a href="/it/simboli/celeste" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Celeste</a>
+                    <a href="/it/simboli/natura" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Natura</a>
+                    <a href="/it/simboli/oggetti" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Oggetti</a>
+                    <a href="/it/simboli/persone" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Persone</a>
+                    <a href="/it/simboli/luoghi" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Luoghi</a>
+                        </div>
+
+                        <h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Simboli popolari</h3>
+                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <a href="/it/simboli/inseguimento" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Inseguimento / Essere inseguiti</a>
+                    <a href="/it/simboli/morte" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Morte</a>
+                    <a href="/it/simboli/cadere" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Cadere</a>
+                    <a href="/it/simboli/volare" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Volare</a>
+                    <a href="/it/simboli/luna" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Luna</a>
+                    <a href="/it/simboli/serpente" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Serpente</a>
+                    <a href="/it/simboli/acqua" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Acqua</a>
+                    <a href="/it/simboli/bambino-neonato" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Bambino (neonato)</a>
+                        </div>
+                    </div>
+                </section>
+                <!-- Dream Symbols Module End -->
 <!-- Search and Filters -->
 <div class="mb-10 space-y-6">
 <!-- Search Bar -->
@@ -889,11 +896,11 @@
 </div>
 </a>
 </article>
-<!-- Article 23 - Sogni stressanti sul lavoro (NEW) -->
+<!-- Article 23 - Stress Dreams About Work -->
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Sogni stressanti sul lavoro: perché il tuo lavoro ti segue nel sonno">
 <a class="block" href="sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Ufficio che si dissolve in un paesaggio onirico con toni viola e salmone" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800"/>
+<img alt="Stress dreams about work" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800"/>
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -905,7 +912,7 @@
                                 Sogni stressanti sul lavoro: perché il tuo lavoro ti segue nel sonno
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
-                                Scopri perché sogni il lavoro, la scienza dietro i sogni da stress lavorativo e strategie comprovate per recuperare il tuo sonno.
+                                Scopri perché il tuo lavoro ti segue nel sonno, la scienza dietro i sogni di stress lavorativo e strategie comprovate per ritrovare notti serene.
                             </p>
 </div>
 </a>
@@ -1000,7 +1007,7 @@
             });
         });
     </script>
-<script defer="" src="/js/language-dropdown.js?v=20260306-0013"></script>
+<script defer="" src="/js/language-dropdown.js?v=20260122-0819"></script>
 <!-- Blog Filter, Search & Sort Script -->
 <script>
         document.addEventListener('DOMContentLoaded', () => {
