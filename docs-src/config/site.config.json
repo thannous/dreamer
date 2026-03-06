@@ -1,0 +1,61 @@
+{
+  "name": "Noctalia",
+  "domain": "https://noctalia.app",
+  "defaultLanguage": "en",
+  "languages": ["en", "fr", "es", "de", "it"],
+  "localeCodes": {
+    "en": "en_US",
+    "fr": "fr_FR",
+    "es": "es_ES",
+    "de": "de_DE",
+    "it": "it_IT"
+  },
+  "symbolsPath": {
+    "en": "symbols",
+    "fr": "symboles",
+    "es": "simbolos",
+    "de": "traumsymbole",
+    "it": "simboli"
+  },
+  "storeLinks": {
+    "androidBase": "https://play.google.com/store/apps/details?id=com.tanuki75.noctalia"
+  },
+  "socialLinks": [
+    {
+      "id": "instagram",
+      "label": "Instagram Noctalia",
+      "url": "https://www.instagram.com/noctaliadreams/",
+      "icon": "instagram"
+    },
+    {
+      "id": "x",
+      "label": "X (Twitter) Noctalia",
+      "url": "https://x.com/NoctaliaDreams",
+      "icon": "twitter"
+    },
+    {
+      "id": "tiktok",
+      "label": "TikTok Noctalia",
+      "url": "https://www.tiktok.com/@noctaliadreams",
+      "icon": "music-2"
+    }
+  ],
+  "organization": {
+    "name": "Noctalia",
+    "url": "https://noctalia.app",
+    "logoUrl": "https://noctalia.app/logo/logo_noctalia.png",
+    "twitterHandle": "@NoctaliaDreams"
+  },
+  "assetPaths": {
+    "stylesCss": "/css/styles.min.css",
+    "languageDropdownCss": "/css/language-dropdown.css",
+    "blogCss": "/css/blog.min.css",
+    "lucideJs": "/js/lucide.min.js",
+    "gsapJs": "/js/gsap.min.js",
+    "scrollTriggerJs": "/js/ScrollTrigger.min.js",
+    "languageDropdownJs": "/js/language-dropdown.js",
+    "siteShellJs": "/js/site-shell.js",
+    "landingPageJs": "/js/landing-page.js",
+    "blogArticleJs": "/js/blog-article.js"
+  }
+}

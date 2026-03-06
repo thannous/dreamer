@@ -1,0 +1,70 @@
+{
+  "pages": [
+    {
+      "pageId": "page.home",
+      "layout": "landing",
+      "slugs": {
+        "en": "",
+        "fr": "",
+        "es": "",
+        "de": "",
+        "it": ""
+      }
+    },
+    {
+      "pageId": "page.about",
+      "layout": "content",
+      "slugs": {
+        "en": "about",
+        "fr": "a-propos",
+        "es": "sobre",
+        "de": "ueber-uns",
+        "it": "chi-siamo"
+      }
+    },
+    {
+      "pageId": "legal.notice",
+      "layout": "content",
+      "slugs": {
+        "en": "legal-notice",
+        "fr": "mentions-legales",
+        "es": "aviso-legal",
+        "de": "impressum",
+        "it": "note-legali"
+      }
+    },
+    {
+      "pageId": "legal.privacy",
+      "layout": "content",
+      "slugs": {
+        "en": "privacy-policy",
+        "fr": "politique-confidentialite",
+        "es": "politica-privacidad",
+        "de": "datenschutz",
+        "it": "privacy-policy"
+      }
+    },
+    {
+      "pageId": "legal.terms",
+      "layout": "content",
+      "slugs": {
+        "en": "terms",
+        "fr": "cgu",
+        "es": "terminos",
+        "de": "agb",
+        "it": "termini"
+      }
+    },
+    {
+      "pageId": "legal.account-deletion",
+      "layout": "content",
+      "slugs": {
+        "en": "account-deletion",
+        "fr": "suppression-compte",
+        "es": "eliminacion-cuenta",
+        "de": "konto-loeschen",
+        "it": "eliminazione-account"
+      }
+    }
+  ]
+}

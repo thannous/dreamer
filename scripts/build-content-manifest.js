@@ -4,119 +4,163 @@
 /**
  * Builds a unified content manifest for blog resources.
  *
- * Transitional source:
- * - Reads `data/blog-slugs.json` (legacy map).
- * Canonical output:
- * - Writes `data/content-manifest.json`.
+ * Canonical source:
+ * - `docs-src/content/blog/<entryId>/<lang>.md`
  *
- * Usage:
- *   node scripts/build-content-manifest.js
- *   node scripts/build-content-manifest.js --check
+ * Legacy fallback:
+ * - `data/blog-slugs.json`
  */
 
 const fs = require('fs');
 const path = require('path');
+const {
+  DOCS_SRC_DIR,
+  DATA_DIR,
+  siteConfig,
+} = require('./lib/docs-site-config');
+const {
+  readJson,
+  readSourceDocument,
+  toPosix,
+  walkFiles,
+} = require('./lib/docs-source-utils');
 
-const ROOT_DIR = path.resolve(__dirname, '..');
-const LEGACY_BLOG_SLUGS_PATH = path.join(ROOT_DIR, 'data', 'blog-slugs.json');
-const CONTENT_MANIFEST_PATH = path.join(ROOT_DIR, 'data', 'content-manifest.json');
-
-const DEFAULT_LANGUAGE = 'en';
-const LANGUAGES = ['en', 'fr', 'es', 'de', 'it'];
-
+const CONTENT_MANIFEST_PATH = path.join(DATA_DIR, 'content-manifest.json');
+const LEGACY_BLOG_SLUGS_PATH = path.join(DATA_DIR, 'blog-slugs.json');
+const BLOG_SOURCE_DIR = path.join(DOCS_SRC_DIR, 'content', 'blog');
 const CHECK_ONLY = process.argv.includes('--check');
 
-function readJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-}
-
-function normalizeSlug(value) {
-  if (typeof value !== 'string') return '';
-  return value.trim();
-}
-
-function sortArticleKeys(keys) {
-  return [...keys].sort((a, b) => {
-    if (a === 'index') return -1;
-    if (b === 'index') return 1;
+function sortEntryIds(ids) {
+  return [...ids].sort((a, b) => {
+    if (a === 'blog.index') return -1;
+    if (b === 'blog.index') return 1;
     return a.localeCompare(b);
   });
 }
 
-function createManifestEntry(articleKey, slugs) {
-  const isIndex = articleKey === 'index';
-  const id = isIndex ? 'blog.index' : `blog.${articleKey}`;
-  const type = isIndex ? 'blogIndex' : 'blogArticle';
-
+function manifestEntryFromSource(entryId, localizedMeta) {
   const locales = {};
-  for (const language of LANGUAGES) {
-    const slug = normalizeSlug(slugs[language]);
-    locales[language] = {
+  for (const lang of siteConfig.languages) {
+    const slug = localizedMeta[lang]?.slug ?? '';
+    locales[lang] = {
       slug,
-      path: slug ? `/${language}/blog/${slug}` : `/${language}/blog/`,
+      path: slug ? `/${lang}/blog/${slug}` : `/${lang}/blog/`,
     };
   }
 
   return {
-    id,
-    type,
-    canonicalLanguage: DEFAULT_LANGUAGE,
-    canonicalSlug: normalizeSlug(slugs[DEFAULT_LANGUAGE]),
+    id: entryId,
+    type: entryId === 'blog.index' ? 'blogIndex' : 'blogArticle',
+    canonicalLanguage: siteConfig.defaultLanguage,
+    canonicalSlug: localizedMeta[siteConfig.defaultLanguage]?.slug ?? '',
     locales,
   };
 }
 
-function buildManifest() {
+function buildFromSource() {
+  if (!fs.existsSync(BLOG_SOURCE_DIR)) {
+    return null;
+  }
+
+  const sourceFiles = walkFiles(BLOG_SOURCE_DIR, (filePath) => filePath.endsWith('.md'));
+  if (sourceFiles.length === 0) return null;
+
+  const grouped = new Map();
+  const validationErrors = [];
+
+  for (const filePath of sourceFiles) {
+    const relativePath = toPosix(path.relative(BLOG_SOURCE_DIR, filePath));
+    const [entryDir, fileName] = relativePath.split('/');
+    const lang = path.basename(fileName, '.md');
+    const { meta } = readSourceDocument(filePath);
+
+    if (!siteConfig.languages.includes(lang)) {
+      validationErrors.push(`Unsupported language "${lang}" in ${relativePath}`);
+      continue;
+    }
+
+    if (meta.pageId && meta.pageId !== entryDir) {
+      validationErrors.push(
+        `Page id mismatch in ${relativePath}: expected "${entryDir}", got "${meta.pageId}"`
+      );
+    }
+
+    if (!grouped.has(entryDir)) {
+      grouped.set(entryDir, {});
+    }
+
+    grouped.get(entryDir)[lang] = {
+      slug: typeof meta.slug === 'string' ? meta.slug.trim() : '',
+    };
+  }
+
+  const entries = {};
+
+  for (const entryId of sortEntryIds(grouped.keys())) {
+    const localizedMeta = grouped.get(entryId);
+
+    for (const lang of siteConfig.languages) {
+      if (!localizedMeta[lang]) {
+        validationErrors.push(`Missing ${lang} source for blog entry "${entryId}"`);
+        continue;
+      }
+
+      if (entryId !== 'blog.index' && !localizedMeta[lang].slug) {
+        validationErrors.push(`Empty slug for blog entry "${entryId}" language "${lang}"`);
+      }
+    }
+
+    entries[entryId] = manifestEntryFromSource(entryId, localizedMeta);
+  }
+
+  return { entries, validationErrors };
+}
+
+function buildFromLegacy() {
   if (!fs.existsSync(LEGACY_BLOG_SLUGS_PATH)) {
     throw new Error(`Missing legacy slug map: ${LEGACY_BLOG_SLUGS_PATH}`);
   }
 
   const legacy = readJson(LEGACY_BLOG_SLUGS_PATH);
   const articles = legacy?.articles ?? {};
-  const articleKeys = sortArticleKeys(Object.keys(articles));
-
-  const entries = {};
   const validationErrors = [];
+  const entries = {};
 
-  for (const articleKey of articleKeys) {
+  for (const articleKey of Object.keys(articles).sort()) {
     const article = articles[articleKey];
-    const slugs = article?.slugs ?? {};
+    const entryId = articleKey === 'index' ? 'blog.index' : `blog.${articleKey}`;
+    const localizedMeta = {};
 
-    if (!article || typeof article !== 'object') {
-      validationErrors.push(`Invalid article payload for key "${articleKey}"`);
-      continue;
-    }
-
-    for (const language of LANGUAGES) {
-      const rawSlug = slugs[language];
-      if (typeof rawSlug !== 'string') {
-        validationErrors.push(
-          `Missing or invalid slug for article "${articleKey}" language "${language}"`,
-        );
-      } else if (articleKey !== 'index' && rawSlug.trim() === '') {
-        validationErrors.push(
-          `Empty slug for article "${articleKey}" language "${language}"`,
-        );
+    for (const lang of siteConfig.languages) {
+      const slug = typeof article?.slugs?.[lang] === 'string' ? article.slugs[lang].trim() : '';
+      if (entryId !== 'blog.index' && !slug) {
+        validationErrors.push(`Empty slug for legacy blog entry "${entryId}" language "${lang}"`);
       }
+      localizedMeta[lang] = { slug };
     }
 
-    const entry = createManifestEntry(articleKey, slugs);
-    entries[entry.id] = entry;
+    entries[entryId] = manifestEntryFromSource(entryId, localizedMeta);
   }
 
-  const manifest = {
-    schemaVersion: 1,
-    defaultLanguage: DEFAULT_LANGUAGE,
-    languages: LANGUAGES,
-    collections: {
-      blog: {
-        description: 'Unified blog content map for web and mobile.',
-        entries,
+  return { entries, validationErrors };
+}
+
+function buildManifest() {
+  const built = buildFromSource() || buildFromLegacy();
+  return {
+    manifest: {
+      schemaVersion: 1,
+      defaultLanguage: siteConfig.defaultLanguage,
+      languages: siteConfig.languages,
+      collections: {
+        blog: {
+          description: 'Unified blog content map for web and mobile.',
+          entries: built.entries,
+        },
       },
     },
+    validationErrors: built.validationErrors,
   };
-
-  return { manifest, validationErrors };
 }
 
 function main() {
@@ -148,10 +192,7 @@ function main() {
   }
 
   fs.writeFileSync(CONTENT_MANIFEST_PATH, serialized, 'utf8');
-  const count = Object.keys(manifest.collections.blog.entries).length;
-  console.log(
-    `[build-content-manifest] Wrote ${CONTENT_MANIFEST_PATH} (${count} entries).`,
-  );
+  console.log(`[build-content-manifest] Wrote ${CONTENT_MANIFEST_PATH}`);
 }
 
 main();

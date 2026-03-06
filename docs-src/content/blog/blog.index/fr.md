@@ -1,0 +1,722 @@
+---
+{
+  "pageId": "blog.index",
+  "layout": "blogIndex",
+  "lang": "fr",
+  "slug": "",
+  "title": "Ressources | Noctalia - Conseils et guides sur les rêves",
+  "description": "Explorez les ressources Noctalia sur les rêves : techniques pour retenir vos rêves, signification des symboles, rêve lucide, science du sommeil et plus.",
+  "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  "themeColor": "#0a0514",
+  "htmlClass": "scroll-smooth blog-index",
+  "bodyClass": "bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden",
+  "bodyStyle": "background-color: #0a0514;",
+  "mainClass": "pt-32 pb-20 px-4",
+  "ogType": "website",
+  "ogTitle": "Ressources Noctalia - Tout savoir sur les rêves",
+  "ogDescription": "Guides, science et interprétation des rêves : des ressources claires pour comprendre vos nuits et mieux vous souvenir de vos rêves.",
+  "ogImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
+  "ogImageAlt": "Ressources Noctalia - Tout savoir sur les rêves",
+  "twitterCard": "summary_large_image",
+  "twitterTitle": "Ressources Noctalia - Tout savoir sur les rêves",
+  "twitterDescription": "Guides, science et interprétation des rêves : des ressources claires pour comprendre vos nuits et mieux vous souvenir de vos rêves.",
+  "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
+  "twitterImageAlt": "Ressources | Noctalia - Conseils et guides sur les rêves",
+  "publishedTime": "",
+  "modifiedTime": "",
+  "author": "",
+  "prevPath": "",
+  "nextPath": "",
+  "preloadImage": "",
+  "jsonLd": [
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"Blog\",\n            \"name\": \"Ressources Noctalia\",\n            \"description\": \"Articles et guides sur les rêves, leur interprétation et le rêve lucide\",\n            \"url\": \"https://noctalia.app/fr/blog/\",\n            \"inLanguage\": \"fr\",\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            }\n        }",
+    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"ItemList\",\n        \"numberOfItems\": 23,\n        \"itemListElement\": [\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 1,\n                \"url\": \"https://noctalia.app/fr/blog/comment-se-souvenir-de-ses-reves\",\n                \"name\": \"Comment se souvenir de ses rêves : 10 techniques efficaces\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 2,\n                \"url\": \"https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil\",\n                \"name\": \"Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 3,\n                \"url\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\",\n                \"name\": \"Signification des rêves récurrents : comprendre leurs messages caches\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 4,\n                \"url\": \"https://noctalia.app/fr/blog/guide-reve-lucide-debutant\",\n                \"name\": \"Guide du rêve lucide pour débutants : prenez le contrôle de vos nuits\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 5,\n                \"url\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\",\n                \"name\": \"Rêves de Dents Qui Tombent : Signification et Interprétation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 6,\n                \"url\": \"https://noctalia.app/fr/blog/reves-de-chute\",\n                \"name\": \"Signification des Rêves de Chute : Pourquoi Rêvez-Vous de Tomber\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 7,\n                \"url\": \"https://noctalia.app/fr/blog/reves-de-voler\",\n                \"name\": \"Signification des Rêves de Voler : Que Signifie Voler dans Vos Rêves\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 8,\n                \"url\": \"https://noctalia.app/fr/blog/reves-de-serpents\",\n                \"name\": \"Rêver de Serpents : Ce Que Votre Subconscient Essaie Vraiment de Vous Dire\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 9,\n                \"url\": \"https://noctalia.app/fr/blog/guide-incubation-reves\",\n                \"name\": \"Incubation de Rêves : Comment Rêver Exactement de Ce Que Vous Voulez Ce Soir\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 10,\n                \"url\": \"https://noctalia.app/fr/blog/reves-premonitoires-science\",\n                \"name\": \"Les Rêves Peuvent-ils Prédire l'Avenir ? La Science Surprenante des Rêves Prémonitoires\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 11,\n                \"url\": \"https://noctalia.app/fr/blog/reves-etre-poursuivi\",\n                \"name\": \"Rêves d'Être Poursuivi : Signification et Interprétation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 12,\n                \"url\": \"https://noctalia.app/fr/blog/reves-de-mort\",\n                \"name\": \"Rêves de Mort : Signification et Interprétation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 13,\n                \"url\": \"https://noctalia.app/fr/blog/reves-eau\",\n                \"name\": \"Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 14,\n                \"url\": \"https://noctalia.app/fr/blog/reves-ex-partenaire\",\n                \"name\": \"Rêves de Votre Ex : Ce Qu'ils Signifient Vraiment\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 15,\n                \"url\": \"https://noctalia.app/fr/blog/reves-de-grossesse\",\n                \"name\": \"Rêves de Grossesse : Ce Qu'ils Signifient (Meme Si Vous N'Êtes Pas Enceinte)\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 16,\n                \"url\": \"https://noctalia.app/fr/blog/guide-cauchemars\",\n                \"name\": \"Cauchemars : Causes, Signification et Comment les Arrêter\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 17,\n                \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n                \"name\": \"Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 18,\n                \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\",\n                \"name\": \"Journal de rêves : le guide complet pour enregistrer vos aventures nocturnes\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 19,\n                \"url\": \"https://noctalia.app/fr/blog/reves-sante-mentale\",\n                \"name\": \"Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 20,\n                \"url\": \"https://noctalia.app/fr/blog/pourquoi-nous-revons-science\",\n                \"name\": \"Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 21,\n                \"url\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\",\n                \"name\": \"Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 22,\n                \"url\": \"https://noctalia.app/fr/blog/histoire-interpretation-reves\",\n                \"name\": \"L'Histoire de l'Interprétation des Rêves : Des Temples Antiques à la Science Moderne\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 23,\n                \"url\": \"https://noctalia.app/fr/blog/reves-stress-travail\",\n                \"name\": \"Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil\"\n            }\n        ]\n    }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        }\n    ]\n}"
+  ],
+  "activeNav": "resources"
+}
+---
+<div class="max-w-6xl mx-auto">
+<!-- Breadcrumb -->
+<nav aria-label="Fil d'Ariane" class="text-sm text-purple-200/60 mb-8">
+<ol class="flex items-center gap-2" itemscope="" itemtype="https://schema.org/BreadcrumbList">
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+<a class="hover:text-dream-salmon transition-colors" href="/fr/" itemprop="item">
+<span itemprop="name">Accueil</span>
+</a>
+<meta content="1" itemprop="position">
+</li>
+<li class="text-purple-400">/</li>
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+<span class="hidden sm:inline-flex text-dream-cream" itemprop="name">Ressources</span>
+<meta content="2" itemprop="position">
+</li>
+</ol>
+</nav>
+<!-- Header -->
+<header class="text-center mb-12">
+<h1 class="font-serif text-4xl md:text-6xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-normal md:leading-normal pb-2">
+	                    Ressources Noctalia
+	                </h1>
+<p class="text-lg text-purple-200/70 max-w-2xl mx-auto">
+	                    Guides, science du sommeil, interprétation et références : des ressources Noctalia pour comprendre
+	                    vos rêves et mieux vous en souvenir.
+	                </p>
+</header>
+<!-- Topic Hubs -->
+<section class="mb-16">
+<h2 class="font-serif text-2xl text-dream-cream mb-8 text-center">Explorer par thématique</h2>
+<div class="grid md:grid-cols-3 gap-6">
+<!-- Card 1 - Rêve lucide -->
+<a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-purple-900/40 via-dream-dark/60 to-dream-dark hover:border-purple-400/30 transition-all duration-500" href="reve-lucide">
+<div class="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
+<div class="absolute top-4 right-4 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-purple-500/20 transition-all">
+<i class="w-6 h-6 text-purple-400/60 group-hover:text-purple-300 transition-colors" data-lucide="eye"></i>
+</div>
+<div class="relative">
+<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Rêve lucide</h3>
+<p class="text-sm text-gray-400 leading-relaxed">Guides et techniques pour débuter et progresser.</p>
+</div>
+</a>
+<!-- Card 2 - Journal de rêves -->
+<a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-blue-900/40 via-dream-dark/60 to-dream-dark hover:border-blue-400/30 transition-all duration-500" href="journal-de-reves">
+<div class="absolute -top-8 -right-8 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
+<div class="absolute top-4 right-4 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
+<i class="w-6 h-6 text-blue-400/60 group-hover:text-blue-300 transition-colors" data-lucide="book-open"></i>
+</div>
+<div class="relative">
+<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Journal de rêves</h3>
+<p class="text-sm text-gray-400 leading-relaxed">Rappel, routines, REM et meilleures pratiques.</p>
+</div>
+</a>
+<!-- Card 3 - Signification des rêves -->
+<a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-pink-900/40 via-dream-dark/60 to-dream-dark hover:border-pink-400/30 transition-all duration-500" href="signification-des-reves">
+<div class="absolute -top-8 -right-8 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-colors"></div>
+<div class="absolute top-4 right-4 w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-pink-500/20 transition-all">
+<i class="w-6 h-6 text-pink-400/60 group-hover:text-pink-300 transition-colors" data-lucide="sparkles"></i>
+</div>
+<div class="relative">
+<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Signification des rêves</h3>
+<p class="text-sm text-gray-400 leading-relaxed">Interprétation, symboles et rêves récurrents.</p>
+</div>
+</a>
+</div>
+</section>
+
+                <!-- Dream Symbols Module Start -->
+                <section class="mb-16" aria-label="Dream symbols">
+                    <div class="glass-panel rounded-3xl p-8 md:p-10 border border-dream-salmon/20">
+                        <div class="flex items-center justify-center gap-3 mb-4">
+                            <i data-lucide="sparkles" class="w-6 h-6 text-dream-salmon"></i>
+                            <h2 class="font-serif text-2xl md:text-3xl text-dream-cream">Explorer les symboles</h2>
+                        </div>
+                        <p class="text-sm md:text-base text-purple-200/70 max-w-3xl mx-auto text-center">Passez des articles au dictionnaire : explorez les catégories ou ouvrez un symbole pour sa signification.</p>
+
+                        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+                            <a href="/fr/guides/dictionnaire-symboles-reves" class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold bg-dream-salmon text-dream-dark hover:bg-dream-salmon/90 transition-colors">
+                                Ouvrir le dictionnaire <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+
+                        <h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Par catégorie</h3>
+                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <a href="/fr/symboles/actions" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Actions</a>
+                    <a href="/fr/symboles/animaux" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Animaux</a>
+                    <a href="/fr/symboles/corps" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Corps</a>
+                    <a href="/fr/symboles/celeste" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Céleste</a>
+                    <a href="/fr/symboles/nature" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Nature</a>
+                    <a href="/fr/symboles/objets" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Objets</a>
+                    <a href="/fr/symboles/personnes" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Personnes</a>
+                    <a href="/fr/symboles/lieux" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Lieux</a>
+                        </div>
+
+                        <h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Symboles populaires</h3>
+                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <a href="/fr/symboles/poursuite" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Poursuite / Être poursuivi</a>
+                    <a href="/fr/symboles/mort" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Mort</a>
+                    <a href="/fr/symboles/chute" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Chute</a>
+                    <a href="/fr/symboles/voler" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Voler</a>
+                    <a href="/fr/symboles/lune" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Lune</a>
+                    <a href="/fr/symboles/serpent" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Serpent</a>
+                    <a href="/fr/symboles/eau" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Eau</a>
+                    <a href="/fr/symboles/bebe" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Bébé</a>
+                        </div>
+                    </div>
+                </section>
+                <!-- Dream Symbols Module End -->
+<!-- Search and Filters -->
+<div class="mb-10 space-y-6">
+<!-- Search Bar -->
+<div class="relative max-w-md mx-auto">
+<i class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50" data-lucide="search"></i>
+<input class="w-full pl-12 pr-4 py-3 glass-panel rounded-full text-sm text-white placeholder-purple-300/50 focus:outline-none focus:border-dream-salmon/50 transition-colors" data-testid="blog-search-input" id="blogSearch" placeholder="Rechercher une ressource..." type="text">
+</div>
+<!-- Filters and Sort Row -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+<!-- Category Filters -->
+<div class="flex flex-wrap justify-center gap-2" data-testid="blog-category-filters" id="categoryFilters">
+<button class="filter-chip active px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-dream-salmon border-dream-salmon/50" data-category="all" data-testid="filter-all">
+                            Tous
+                        </button>
+<button class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white" data-category="guide" data-testid="filter-guide">
+                            Guides
+                        </button>
+<button class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white" data-category="interpretation" data-testid="filter-interpretation">Interprétation</button>
+<button class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white" data-category="reve-lucide" data-testid="filter-lucid">
+	                            Rêve lucide
+	                        </button>
+<button class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white" data-category="science" data-testid="filter-science">
+                            Science
+                        </button>
+<button class="filter-chip px-4 py-2 text-sm rounded-full transition-all duration-300 glass-button text-purple-200/70 hover:text-white" data-category="reference" data-testid="filter-reference">Référence</button>
+</div>
+<!-- Sort Dropdown -->
+<div class="relative" id="sortDropdown">
+<button class="glass-button px-4 py-2 rounded-full text-sm text-purple-200/70 flex items-center gap-2 hover:text-white transition-colors" data-testid="blog-sort-button" id="sortButton" type="button">
+<i class="w-4 h-4" data-lucide="arrow-up-down"></i>
+<span id="sortLabel">Plus récents</span>
+<i class="w-3 h-3" data-lucide="chevron-down"></i>
+</button>
+<div class="absolute right-0 top-full mt-2 glass-panel rounded-xl py-2 min-w-[160px] hidden z-50" id="sortMenu">
+<button class="sort-option w-full text-left px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" data-sort="recent" data-testid="sort-recent">
+                                Plus récents
+                            </button>
+<button class="sort-option w-full text-left px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" data-sort="reading-time-asc" data-testid="sort-time-asc">
+                                Lecture rapide
+                            </button>
+<button class="sort-option w-full text-left px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" data-sort="reading-time-desc" data-testid="sort-time-desc">
+                                Lecture longue
+                            </button>
+</div>
+</div>
+</div>
+<!-- Results count -->
+<p class="text-sm text-purple-300/60 text-center hidden" id="resultsCount">
+<span id="resultsNumber">10</span> ressource(s) trouvée(s)
+                </p>
+</div>
+<!-- Featured Article -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group mb-8" data-category="guide" data-reading-time="4" data-testid="featured-article">
+<a class="block md:flex" href="comment-se-souvenir-de-ses-reves">
+<div class="md:w-1/2 aspect-video md:aspect-auto overflow-hidden bg-dream-purple/30">
+<img alt="Journal de rêves sur le lit" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, 50vw" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="800">
+</div>
+<div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+<div class="flex items-center gap-3 mb-4">
+<span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">À la une</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream group-hover:text-white transition-colors">
+                            Comment se souvenir de ses rêves : 10 techniques efficaces
+                        </h2>
+<p class="text-sm text-gray-400 mb-4 line-clamp-3">
+                            Découvrez des méthodes scientifiquement prouvées pour améliorer votre mémoire onirique
+                            et ne plus jamais oublier vos rêves au réveil. Des techniques simples à appliquer des ce soir.
+                        </p>
+<span class="inline-flex items-center gap-2 text-dream-salmon text-sm font-medium group-hover:gap-3 transition-all">
+                            Lire la ressource <i class="w-4 h-4" data-lucide="arrow-right"></i>
+</span>
+</div>
+</a>
+</article>
+<!-- Articles Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="articles-grid" id="articlesGrid">
+<!-- Article - Pourquoi oublie-t-on ses rêves (NEW) -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques">
+<a class="block" href="pourquoi-oublie-reves-reveil">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Pourquoi on oublie ses rêves au réveil" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Nouveau</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
+<span class="text-xs text-purple-300/60">7 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Pourquoi oublie-t-on ses rêves au réveil ?
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions 95% de nos rêves.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 2 - Reves recurrents -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Signification des rêves récurrents : comprendre leurs messages">
+<a class="block" href="signification-reves-recurrents">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Symboles oniriques" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/recurring-dreams-meaning.webp" srcset="../../img/blog/recurring-dreams-meaning-480w.webp 480w, ../../img/blog/recurring-dreams-meaning-800w.webp 800w, ../../img/blog/recurring-dreams-meaning-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">3 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Signification des rêves récurrents : comprendre leurs messages
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi refaites-vous toujours le meme rêve ? Découvrez ce que votre inconscient essaie
+                                de vous dire.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 3 - Reve lucide -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="reve-lucide" data-reading-time="4" data-title="Guide du rêve lucide pour débutants : prenez le contrôle de vos nuits">
+<a class="block" href="guide-reve-lucide-debutant">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Rêve lucide" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/lucid-dreaming-beginners-guide.webp" srcset="../../img/blog/lucid-dreaming-beginners-guide-480w.webp 480w, ../../img/blog/lucid-dreaming-beginners-guide-800w.webp 800w, ../../img/blog/lucid-dreaming-beginners-guide-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Rêve
+                                    lucide</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Guide du rêve lucide pour débutants : prenez le contrôle de vos nuits
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Apprenez les techniques de base pour devenir conscient dans vos rêves et explorer des
+                                mondes infinis.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 4 - Reves de dents qui tombent -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Rêver de perdre ses dents : signification et interprétation">
+<a class="block" href="reves-dents-qui-tombent">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Rêves de dents qui tombent" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/teeth-falling-out-dreams.webp" srcset="../../img/blog/teeth-falling-out-dreams-480w.webp 480w, ../../img/blog/teeth-falling-out-dreams-800w.webp 800w, ../../img/blog/teeth-falling-out-dreams-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêver de perdre ses dents : signification et interprétation
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus
+                                courantes.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 5 - Reves de chute -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Rêves de chute : pourquoi rêvez-vous de tomber ?">
+<a class="block" href="reves-de-chute">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Rêves de chute" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/falling-dreams-meaning.webp" srcset="../../img/blog/falling-dreams-meaning-480w.webp 480w, ../../img/blog/falling-dreams-meaning-800w.webp 800w, ../../img/blog/falling-dreams-meaning-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves de chute : pourquoi rêvez-vous de tomber ?
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 6 - Reves de voler -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Rêves de voler : ce que ça signifie">
+<a class="block" href="reves-de-voler">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Rêves de voler" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/flying-dreams-meaning.webp" srcset="../../img/blog/flying-dreams-meaning-480w.webp 480w, ../../img/blog/flying-dreams-meaning-800w.webp 800w, ../../img/blog/flying-dreams-meaning-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves de voler : ce que ça signifie
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi rêvez-vous de voler ? Découvrez ce que les rêves de vol révèlent sur la liberté
+                                et l'ambition.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 7 - Dictionnaire des symboles -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="reference" data-reading-time="50" data-title="Dictionnaire des symboles de rêves : interprétation de A a Z">
+<a class="block" href="../guides/dictionnaire-symboles-reves">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Symboles de rêves" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-symbols-dictionary.webp" srcset="../../img/blog/dream-symbols-dictionary-480w.webp 480w, ../../img/blog/dream-symbols-dictionary-800w.webp 800w, ../../img/blog/dream-symbols-dictionary-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Référence</span>
+<span class="text-xs text-purple-300/60">50+ symboles</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Dictionnaire des symboles de rêves : interprétation de A a Z
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Explorez la signification de plus de 50 symboles oniriques courants pour mieux
+                                comprendre vos rêves.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 8 - Reves de serpents -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Rêver de serpents : ce que votre inconscient essaie de vous dire">
+<a class="block" href="reves-de-serpents">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Signification des rêves de serpents" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/snake-dreams-meaning.webp" srcset="../../img/blog/snake-dreams-meaning-480w.webp 480w, ../../img/blog/snake-dreams-meaning-800w.webp 800w, ../../img/blog/snake-dreams-meaning-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêver de serpents : ce que votre inconscient essaie de vous dire
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Découvrez le symbolisme puissant des rêves de serpents et ce qu'ils révèlent sur la
+                                transformation, la peur et la sagesse cachée.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 9 - Incubation des reves -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Incubation des rêves : comment rêver exactement de ce que vous voulez">
+<a class="block" href="guide-incubation-reves">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Technique d'incubation des rêves" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Incubation des rêves : comment rêver exactement de ce que vous voulez
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Apprenez l'art ancien de l'incubation onirique pour résoudre des problèmes et stimuler
+                                votre créativité.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 10 - Reves premonitoires -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires">
+<a class="block" href="reves-premonitoires-science">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Science des rêves prémonitoires" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/precognitive-dreams-science.webp" srcset="../../img/blog/precognitive-dreams-science-480w.webp 480w, ../../img/blog/precognitive-dreams-science-800w.webp 800w, ../../img/blog/precognitive-dreams-science-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Explorez la science fascinante des rêves prémonitoires et s'ils peuvent vraiment prédire
+                                l'avenir.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 11 - Reves d'Etre Poursuivi : Signification et Interpretation -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Rêves d'Être Poursuivi : Signification et Interprétation">
+<a class="block" href="reves-etre-poursuivi">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Couloir sombre illustrant la sensation d'être poursuivi en rêve" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-etre-poursuivi.webp" srcset="../../img/blog/reves-etre-poursuivi-480w.webp 480w, ../../img/blog/reves-etre-poursuivi-800w.webp 800w, ../../img/blog/reves-etre-poursuivi-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves d'Être Poursuivi : Signification et Interprétation
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi rêvez-vous d'être poursuivi ? Découvrez les significations psychologiques des rêves de poursuite et ce que votre subconscient essaie de vous dire sur la peur et l'évitement.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 12 - Reves de Mort : Signification et Interpretation -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Rêves de Mort : Signification et Interprétation">
+<a class="block" href="reves-de-mort">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Forêt brumeuse illustrant le concept de transformation symbolique de la mort" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-de-mort.webp" srcset="../../img/blog/reves-de-mort-480w.webp 480w, ../../img/blog/reves-de-mort-800w.webp 800w, ../../img/blog/reves-de-mort-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves de Mort : Signification et Interprétation
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Que signifie rêver de la mort ? Découvrez les significations symboliques des rêves de mort - ils prédisent rarement la mort réelle et représentent souvent la transformation et le changement.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 13 - Reves d'Eau : Signification des Reves de Noyade, Ocean et Inondation -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation">
+<a class="block" href="reves-eau">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Surface d'eau calme reflétant les émotions du subconscient" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-eau.webp" srcset="../../img/blog/reves-eau-480w.webp 480w, ../../img/blog/reves-eau-800w.webp 800w, ../../img/blog/reves-eau-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Que signifient les rêves d'eau ? Découvrez les interprétations symboliques des rêves de noyade, océan et inondation. L'eau représente les émotions - apprenez ce que votre subconscient vous dit.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 14 - Reves de Votre Ex : Ce Qu'ils Signifient Vraiment -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Rêves de Votre Ex : Ce Qu'ils Signifient Vraiment">
+<a class="block" href="reves-ex-partenaire">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Silhouette contemplative évoquant les souvenirs et les relations passées" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-ex-partenaire.webp" srcset="../../img/blog/reves-ex-partenaire-480w.webp 480w, ../../img/blog/reves-ex-partenaire-800w.webp 800w, ../../img/blog/reves-ex-partenaire-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves de Votre Ex : Ce Qu'ils Signifient Vraiment
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi rêvez-vous de votre ex ? Découvrez les significations psychologiques des rêves d'anciens partenaires et ce que votre subconscient essaie de traiter.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 15 - Reves de Grossesse : Ce Qu'ils Signifient (Meme Si Vous N'Etes Pas Enceinte) -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Rêves de Grossesse : Ce Qu'ils Signifient (Meme Si Vous N'Êtes Pas Enceinte)">
+<a class="block" href="reves-de-grossesse">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Symbolisme de la renaissance et des nouveaux départs dans les rêves" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-de-grossesse.webp" srcset="../../img/blog/reves-de-grossesse-480w.webp 480w, ../../img/blog/reves-de-grossesse-800w.webp 800w, ../../img/blog/reves-de-grossesse-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interprétation</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves de Grossesse : Ce Qu'ils Signifient (Meme Si Vous N'Êtes Pas Enceinte)
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Que signifient les rêves de grossesse ? Découvrez pourquoi vous rêvez d'être enceinte, d'accoucher ou de bébés - meme si vous n'attendez pas d'enfant. Significations symboliques expliquées.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 16 - Cauchemars : Causes, Signification et Comment les Arrêter -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Cauchemars : Causes, Signification et Comment les Arrêter">
+<a class="block" href="guide-cauchemars">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guide-cauchemars.webp" srcset="../../img/blog/guide-cauchemars-480w.webp 480w, ../../img/blog/guide-cauchemars-800w.webp 800w, ../../img/blog/guide-cauchemars-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
+<span class="text-xs text-purple-300/60">4 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Cauchemars : Causes, Signification et Comment les Arrêter
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour réduire leur fréquence et mieux dormir.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 17 - Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir">
+<a class="block" href="guide-paralysie-sommeil">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guide-paralysie-sommeil.webp" srcset="../../img/blog/guide-paralysie-sommeil-480w.webp 480w, ../../img/blog/guide-paralysie-sommeil-800w.webp 800w, ../../img/blog/guide-paralysie-sommeil-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Guide complet pour comprendre la paralysie du sommeil. Découvrez ses causes, pourquoi les hallucinations surviennent, et les techniques prouvées pour prévenir et arrêter les épisodes.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 18 - Journal de reves : le guide complet pour enregistrer vos aventures nocturnes -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Journal de rêves : le guide complet pour enregistrer vos aventures nocturnes">
+<a class="block" href="guide-journal-reves">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Journal de rêves ouvert sur une table de chevet avec un stylo" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guide-journal-reves.webp" srcset="../../img/blog/guide-journal-reves-480w.webp 480w, ../../img/blog/guide-journal-reves-800w.webp 800w, ../../img/blog/guide-journal-reves-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Journal de rêves : le guide complet pour enregistrer vos aventures nocturnes
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Apprenez à tenir un journal de rêves efficace. Découvrez des techniques prouvées pour améliorer votre mémoire onirique, quoi écrire, et comment le journaling transforme votre sommeil.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 19 - Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit">
+<a class="block" href="reves-sante-mentale">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Visage serein en harmonie avec son univers onirique" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-sante-mentale.webp" srcset="../../img/blog/reves-sante-mentale-480w.webp 480w, ../../img/blog/reves-sante-mentale-800w.webp 800w, ../../img/blog/reves-sante-mentale-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
+<span class="text-xs text-purple-300/60">7 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Découvrez le lien profond entre les rêves et la santé mentale. Apprenez comment l'anxiété, la dépression et les traumatismes affectent vos rêves, et comment le travail onirique peut soutenir la guérison.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 20 - Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="8" data-title="Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes">
+<a class="block" href="pourquoi-nous-revons-science">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Représentation schématique du cerveau en activité pendant le sommeil" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pourquoi-nous-revons-science.webp" srcset="../../img/blog/pourquoi-nous-revons-science-480w.webp 480w, ../../img/blog/pourquoi-nous-revons-science-800w.webp 800w, ../../img/blog/pourquoi-nous-revons-science-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
+<span class="text-xs text-purple-300/60">8 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Explorez la science fascinante des rêves. Découvrez les théories majeures, l'activité cérébrale pendant les rêves et ce qu'ils révèlent sur la conscience.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 21 - Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="8" data-title="Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau">
+<a class="block" href="sommeil-paradoxal-reves">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Graphique d'ondes cérébrales typiques du sommeil paradoxal" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sommeil-paradoxal-reves.webp" srcset="../../img/blog/sommeil-paradoxal-reves-480w.webp 480w, ../../img/blog/sommeil-paradoxal-reves-800w.webp 800w, ../../img/blog/sommeil-paradoxal-reves-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
+<span class="text-xs text-purple-300/60">8 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Découvrez la science du sommeil paradoxal et son rôle crucial dans les rêves. Apprenez les cycles de sommeil, différences REM vs non-REM, et comment optimiser votre sommeil paradoxal.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 22 - L'Histoire de l'Interprétation des Rêves : Des Temples Antiques à la Science Moderne -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="8" data-title="L'Histoire de l'Interprétation des Rêves : Des Temples Antiques à la Science Moderne">
+<a class="block" href="histoire-interpretation-reves">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Temple antique sous un ciel étoilé symbolisant l'histoire de l'interprétation des rêves" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/histoire-interpretation-reves.webp" srcset="../../img/blog/histoire-interpretation-reves-480w.webp 480w, ../../img/blog/histoire-interpretation-reves-800w.webp 800w, ../../img/blog/histoire-interpretation-reves-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
+<span class="text-xs text-purple-300/60">8 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                L'Histoire de l'Interprétation des Rêves : Des Temples Antiques à la Science Moderne
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Explorez l'évolution fascinante de l'interprétation des rêves depuis les civilisations antiques jusqu'aux neurosciences modernes. Découvrez comment les cultures du monde entier ont décodé le langage des songes.
+                            </p>
+</div>
+</a>
+</article>
+<!-- Article 23 - Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil -->
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil">
+<a class="block" href="reves-stress-travail">
+<div class="aspect-video overflow-hidden bg-dream-purple/30">
+<img alt="Rêves de stress au travail" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800">
+</div>
+<div class="p-6">
+<div class="flex items-center gap-3 mb-3">
+<span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Nouveau</span>
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
+<span class="text-xs text-purple-300/60">5 min de lecture</span>
+</div>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rêves de stress au travail : pourquoi votre emploi vous suit dans le sommeil
+                            </h2>
+<p class="text-sm text-gray-400 line-clamp-2">
+                                Comprenez pourquoi vous rêvez du travail, la science derrière les rêves de stress professionnel, et des stratégies éprouvées pour retrouver un sommeil paisible.
+                            </p>
+</div>
+</a>
+</article>
+<!-- CTA Card -->
+<article class="glass-panel rounded-2xl p-8 flex flex-col justify-center items-center text-center border border-dream-salmon/20 md:col-span-2">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="sparkles"></i>
+</div>
+<h2 class="font-serif text-2xl mb-4 text-dream-cream">Analysez vos rêves avec Noctalia</h2>
+<p class="text-sm text-gray-400 mb-6 max-w-lg">
+                        Noctalia transforme vos récits oniriques en insights personnalises. Capturez vos rêves à la voix
+                        et découvrez leur signification.
+                    </p>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full font-semibold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
+                        Découvrir Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+</a>
+</article>
+</section>
+<!-- Newsletter / CTA Section -->
+<section class="mt-20 glass-panel rounded-3xl p-8 md:p-12 text-center">
+<h2 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Restez informe</h2>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+                    Nouveaux articles, guides exclusifs et conseils pour mieux comprendre vos nuits. Rejoignez notre
+                    communauté de rêveurs.
+                </p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr" rel="nofollow noopener noreferrer" target="_blank">
+	                    Téléchargez l'application <i class="w-5 h-5" data-lucide="play"></i>
+</a>
+</section>
+</div>
