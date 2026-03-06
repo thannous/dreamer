@@ -452,19 +452,21 @@
           "What fear am I running from?"
         ]
       },
-      "fr": {
-        "slug": "poursuite",
-        "name": "Poursuite / Être poursuivi",
-        "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
+  "fr": {
+    "slug": "poursuite",
+    "name": "Poursuite / Être poursuivi",
+    "seoTitle": "Poursuite",
+    "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
         "askYourself": [
           "Qu'est-ce que j'évite d'affronter ?",
           "Quelle peur est-ce que je fuis ?"
         ]
       },
-      "es": {
-        "slug": "persecucion",
-        "name": "Persecución / Ser Perseguido",
-        "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
+  "es": {
+    "slug": "persecucion",
+    "name": "Persecución / Ser Perseguido",
+    "seoTitle": "Persecución",
+    "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
         "askYourself": [
           "¿Qué estoy evitando?",
           "¿De qué miedo estoy huyendo?"
@@ -479,10 +481,11 @@
           "Welches Problem vermeide ich?"
         ]
       },
-      "it": {
-        "slug": "inseguimento",
-        "name": "Inseguimento / Essere inseguiti",
-        "shortDescription": "Essere inseguiti indica evitamento. Qualcosa nella tua vita – un problema, un'emozione, una situazione – richiede attenzione che stai rifiutando.",
+  "it": {
+    "slug": "inseguimento",
+    "name": "Inseguimento / Essere inseguiti",
+    "seoTitle": "Inseguimento",
+    "shortDescription": "Essere inseguiti indica evitamento. Qualcosa nella tua vita – un problema, un'emozione, una situazione – richiede attenzione che stai rifiutando.",
         "askYourself": [
           "Da cosa o da chi sto fuggendo?",
           "Quale problema sto evitando?"
@@ -1226,10 +1229,11 @@
           "What did they represent to me?"
         ]
       },
-      "fr": {
-        "slug": "defunt",
-        "name": "Défunt / Personne décédée",
-        "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
+  "fr": {
+    "slug": "defunt",
+    "name": "Défunt / Personne décédée",
+    "seoTitle": "Défunt",
+    "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
         "askYourself": [
           "Quel message cette personne pourrait-elle m'apporter ?",
           "Qu'est-ce qu'elle représentait pour moi ?"

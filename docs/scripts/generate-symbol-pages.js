@@ -72,6 +72,50 @@ const GUIDES_HUB_LABELS = {
   it: 'Guide ai sogni'
 };
 
+const CURATION_META_TITLE_OVERRIDES = {
+  'most-common-dream-symbols': {
+    fr: '20 symboles de rêves courants'
+  },
+  'scary-dream-symbols': {
+    fr: 'Symboles de rêves effrayants',
+    es: 'Símbolos de sueños aterradores',
+    de: 'Angsteinflößende Traumsymbole',
+    it: 'Simboli dei sogni spaventosi'
+  },
+  'positive-dream-symbols': {
+    fr: 'Symboles de rêves positifs',
+    es: 'Símbolos de sueños positivos',
+    de: 'Positive Traumsymbole',
+    it: 'Simboli dei sogni positivi'
+  },
+  'animal-dream-symbols': {
+    fr: "Symboles de rêves d'animaux",
+    es: 'Símbolos de sueños con animales',
+    it: 'Simboli dei sogni con animali'
+  },
+  'water-dream-symbols': {
+    fr: "Symboles de rêves d'eau",
+    es: 'Símbolos de sueños con agua',
+    it: 'Simboli dei sogni con acqua'
+  },
+  'death-transformation-dreams': {
+    en: 'Death & Transformation in Dreams',
+    fr: 'Mort et transformation dans les rêves',
+    es: 'Muerte y transformación en los sueños',
+    de: 'Tod und Verwandlung in Träumen',
+    it: 'Morte e trasformazione nei sogni'
+  },
+  'people-in-dreams': {
+    fr: 'Les personnes dans les rêves',
+    de: 'Menschen in Träumen'
+  },
+  'dream-locations': {
+    fr: 'Les lieux dans les rêves',
+    es: 'Lugares en los sueños: significado',
+    it: 'Luoghi nei sogni: significato'
+  }
+};
+
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
   const [key, value] = arg.replace('--', '').split('=');
@@ -129,7 +173,7 @@ function getCategoryName(symbol, i18n, lang) {
 // Generate meta title
 function generateMetaTitle(symbol, i18n, lang) {
   const template = i18n[lang].meta_title_template;
-  const name = symbol[lang].name;
+  const name = symbol[lang].seoTitle || symbol[lang].name;
   return template.replace(/{symbol}/g, name);
 }
 
@@ -948,6 +992,10 @@ function generateCategoryMetaDescription(categoryId, i18n, lang) {
   return truncateMetaDescription(description);
 }
 
+function getCurationMetaTitle(page, lang) {
+  return CURATION_META_TITLE_OVERRIDES[page.id]?.[lang] || page[lang].metaTitle || page[lang].title;
+}
+
 // Generate category page HTML
 function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages) {
   const t = i18n[lang];
@@ -1514,6 +1562,7 @@ function generateCurationHreflangUrls(page) {
 function generateCurationPage(page, allSymbols, i18n, extended, lang) {
   const t = i18n[lang];
   const pageData = { ...page[lang], metaDescription: truncateMetaDescription(page[lang].metaDescription) };
+  const metaTitle = getCurationMetaTitle(page, lang);
   const slug = page.slugs[lang];
   const hreflang = generateCurationHreflangUrls(page);
   const symbolsCount = page.symbols.length;
@@ -1673,7 +1722,7 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0a0514">
-    <title>${escapeHtml(pageData.title)} | Noctalia</title>
+    <title>${escapeHtml(metaTitle)} | Noctalia</title>
     <meta name="description" content="${escapeHtml(pageData.metaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/guides/${slug}">
 ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`).join('\n')}
@@ -1685,13 +1734,13 @@ ${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" 
 
     <!-- Open Graph -->
     <meta property="og:type" content="article">
-    <meta property="og:title" content="${escapeHtml(pageData.title)}">
+    <meta property="og:title" content="${escapeHtml(metaTitle)}">
     <meta property="og:description" content="${escapeHtml(pageData.metaDescription)}">
     <meta property="og:url" content="https://noctalia.app/${lang}/guides/${slug}">
     <meta property="og:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="${escapeHtml(pageData.title)}">
+    <meta property="og:image:alt" content="${escapeHtml(metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
 ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
@@ -1700,11 +1749,11 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="${escapeHtml(pageData.title)}">
+    <meta name="twitter:title" content="${escapeHtml(metaTitle)}">
     <meta name="twitter:description" content="${escapeHtml(pageData.metaDescription)}">
     <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-${lang}-1200x630.jpg">
     <meta name="twitter:site" content="@NoctaliaDreams">
-    <meta name="twitter:image:alt" content="${escapeHtml(pageData.title)}">
+    <meta name="twitter:image:alt" content="${escapeHtml(metaTitle)}">
 
     <!-- Fonts -->
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
