@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0514">
+
+  <meta name="description" content="Noctalia - Your intelligent dream companion. Capture dreams by voice, explore them with Noctalia insights.">
+  <meta name="robots" content="noindex, follow">
+  <meta property="og:site_name" content="Noctalia">
+  <meta property="og:title" content="Noctalia">
+  <meta property="og:description" content="Noctalia - Your intelligent dream companion. Capture dreams by voice, explore them with Noctalia insights.">
+  <meta property="og:url" content="https://noctalia.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Noctalia">
+  <meta name="twitter:description" content="Noctalia - Your intelligent dream companion. Capture dreams by voice, explore them with Noctalia insights.">
+  <meta name="twitter:image" content="https://noctalia.app/img/og/noctalia-en-1200x630.jpg">
+  <link rel="canonical" href="https://noctalia.app/">
+  <link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/">
+  <link rel="alternate" hreflang="en" href="https://noctalia.app/en/">
+  <link rel="alternate" hreflang="es" href="https://noctalia.app/es/">
+  <link rel="alternate" hreflang="de" href="https://noctalia.app/de/">
+  <link rel="alternate" hreflang="it" href="https://noctalia.app/it/">
+  <link rel="alternate" hreflang="x-default" href="https://noctalia.app/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+  <title>Noctalia</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #0a0514;
+      color: #FFF7ED;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .title {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+    .subtitle {
+      color: rgba(253, 164, 129, 0.6);
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .loader-container {
+      display: flex;
+      justify-content: center;
+    }
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(253, 164, 129, 0.3);
+      border-radius: 50%;
+      border-top-color: #FDA481;
+      animation: spin 1s ease-in-out infinite;
+      margin-top: 2rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .fallback {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.2);
+      margin-top: 2rem;
+      position: absolute;
+      bottom: 2.5rem;
+      text-align: center;
+    }
+    .fallback a {
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .fallback a:hover {
+      color: #FDA481;
+    }
+    .separator {
+      margin: 0 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center;">
+    <h1 class="title">Noctalia</h1>
+    <p class="subtitle">Redirection...</p>
+    <div class="loader-container">
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <p class="fallback">
+    <a href="/en/">Continue in English</a>
+    <span class="separator">·</span>
+    <a href="/fr/">Continuer en français</a>
+    <span class="separator">·</span>
+    <a href="/es/">Continuar en español</a>
+    <span class="separator">·</span>
+    <a href="/de/">Weiter auf Deutsch</a>
+    <span class="separator">·</span>
+    <a href="/it/">Continua in italiano</a>
+  </p>
+
+  <script>
+    (function () {
+      try {
+        var langs = navigator.languages && navigator.languages.length
+          ? navigator.languages
+          : [navigator.language || navigator.userLanguage || ''];
+        var primary = (langs[0] || '').toLowerCase();
+        var target = '/en/';
+
+        if (primary.startsWith('fr')) {
+          target = '/fr/';
+        } else if (primary.startsWith('es')) {
+          target = '/es/';
+        } else if (primary.startsWith('de')) {
+          target = '/de/';
+        } else if (primary.startsWith('it')) {
+          target = '/it/';
+        }
+
+        window.location.replace(target);
+      } catch (e) {
+        // Fallback: default to English landing
+        window.location.replace('/en/');
+      }
+    })();
+  </script>
+</body>
+</html>

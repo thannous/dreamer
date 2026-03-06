@@ -1,0 +1,3057 @@
+{
+  "schemaVersion": 1,
+  "defaultLanguage": "en",
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it"
+  ],
+  "collections": {
+    "pages": {
+      "description": "Localized landing and legal pages for the docs site.",
+      "entries": {
+        "page.home": {
+          "id": "page.home",
+          "type": "landing",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "",
+          "locales": {
+            "en": {
+              "slug": "",
+              "path": "/en/"
+            },
+            "fr": {
+              "slug": "",
+              "path": "/fr/"
+            },
+            "es": {
+              "slug": "",
+              "path": "/es/"
+            },
+            "de": {
+              "slug": "",
+              "path": "/de/"
+            },
+            "it": {
+              "slug": "",
+              "path": "/it/"
+            }
+          }
+        },
+        "page.about": {
+          "id": "page.about",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "about",
+          "locales": {
+            "en": {
+              "slug": "about",
+              "path": "/en/about"
+            },
+            "fr": {
+              "slug": "a-propos",
+              "path": "/fr/a-propos"
+            },
+            "es": {
+              "slug": "sobre",
+              "path": "/es/sobre"
+            },
+            "de": {
+              "slug": "ueber-uns",
+              "path": "/de/ueber-uns"
+            },
+            "it": {
+              "slug": "chi-siamo",
+              "path": "/it/chi-siamo"
+            }
+          }
+        },
+        "legal.notice": {
+          "id": "legal.notice",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "legal-notice",
+          "locales": {
+            "en": {
+              "slug": "legal-notice",
+              "path": "/en/legal-notice"
+            },
+            "fr": {
+              "slug": "mentions-legales",
+              "path": "/fr/mentions-legales"
+            },
+            "es": {
+              "slug": "aviso-legal",
+              "path": "/es/aviso-legal"
+            },
+            "de": {
+              "slug": "impressum",
+              "path": "/de/impressum"
+            },
+            "it": {
+              "slug": "note-legali",
+              "path": "/it/note-legali"
+            }
+          }
+        },
+        "legal.privacy": {
+          "id": "legal.privacy",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "privacy-policy",
+          "locales": {
+            "en": {
+              "slug": "privacy-policy",
+              "path": "/en/privacy-policy"
+            },
+            "fr": {
+              "slug": "politique-confidentialite",
+              "path": "/fr/politique-confidentialite"
+            },
+            "es": {
+              "slug": "politica-privacidad",
+              "path": "/es/politica-privacidad"
+            },
+            "de": {
+              "slug": "datenschutz",
+              "path": "/de/datenschutz"
+            },
+            "it": {
+              "slug": "privacy-policy",
+              "path": "/it/privacy-policy"
+            }
+          }
+        },
+        "legal.terms": {
+          "id": "legal.terms",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "terms",
+          "locales": {
+            "en": {
+              "slug": "terms",
+              "path": "/en/terms"
+            },
+            "fr": {
+              "slug": "cgu",
+              "path": "/fr/cgu"
+            },
+            "es": {
+              "slug": "terminos",
+              "path": "/es/terminos"
+            },
+            "de": {
+              "slug": "agb",
+              "path": "/de/agb"
+            },
+            "it": {
+              "slug": "termini",
+              "path": "/it/termini"
+            }
+          }
+        },
+        "legal.account-deletion": {
+          "id": "legal.account-deletion",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "account-deletion",
+          "locales": {
+            "en": {
+              "slug": "account-deletion",
+              "path": "/en/account-deletion"
+            },
+            "fr": {
+              "slug": "suppression-compte",
+              "path": "/fr/suppression-compte"
+            },
+            "es": {
+              "slug": "eliminacion-cuenta",
+              "path": "/es/eliminacion-cuenta"
+            },
+            "de": {
+              "slug": "konto-loeschen",
+              "path": "/de/konto-loeschen"
+            },
+            "it": {
+              "slug": "eliminazione-account",
+              "path": "/it/eliminazione-account"
+            }
+          }
+        }
+      }
+    },
+    "blog": {
+      "description": "Unified blog content map for web and mobile.",
+      "entries": {
+        "blog.index": {
+          "id": "blog.index",
+          "type": "blogIndex",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "",
+          "locales": {
+            "en": {
+              "slug": "",
+              "path": "/en/blog/"
+            },
+            "fr": {
+              "slug": "",
+              "path": "/fr/blog/"
+            },
+            "es": {
+              "slug": "",
+              "path": "/es/blog/"
+            },
+            "de": {
+              "slug": "",
+              "path": "/de/blog/"
+            },
+            "it": {
+              "slug": "",
+              "path": "/it/blog/"
+            }
+          }
+        },
+        "blog.being-chased-dreams": {
+          "id": "blog.being-chased-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "being-chased-dreams",
+          "locales": {
+            "en": {
+              "slug": "being-chased-dreams",
+              "path": "/en/blog/being-chased-dreams"
+            },
+            "fr": {
+              "slug": "reves-etre-poursuivi",
+              "path": "/fr/blog/reves-etre-poursuivi"
+            },
+            "es": {
+              "slug": "suenos-ser-perseguido",
+              "path": "/es/blog/suenos-ser-perseguido"
+            },
+            "de": {
+              "slug": "traeume-verfolgt-werden-bedeutung-und-interpretation",
+              "path": "/de/blog/traeume-verfolgt-werden-bedeutung-und-interpretation"
+            },
+            "it": {
+              "slug": "sogni-inseguiti-significato-e-interpretazione",
+              "path": "/it/blog/sogni-inseguiti-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.death-dreams-meaning": {
+          "id": "blog.death-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "death-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "death-dreams-meaning",
+              "path": "/en/blog/death-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-mort",
+              "path": "/fr/blog/reves-de-mort"
+            },
+            "es": {
+              "slug": "suenos-de-muerte",
+              "path": "/es/blog/suenos-de-muerte"
+            },
+            "de": {
+              "slug": "traeume-vom-tod-bedeutung-und-interpretation",
+              "path": "/de/blog/traeume-vom-tod-bedeutung-und-interpretation"
+            },
+            "it": {
+              "slug": "sogni-sulla-morte-significato-e-interpretazione",
+              "path": "/it/blog/sogni-sulla-morte-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.dream-incubation-guide": {
+          "id": "blog.dream-incubation-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-incubation-guide",
+          "locales": {
+            "en": {
+              "slug": "dream-incubation-guide",
+              "path": "/en/blog/dream-incubation-guide"
+            },
+            "fr": {
+              "slug": "guide-incubation-reves",
+              "path": "/fr/blog/guide-incubation-reves"
+            },
+            "es": {
+              "slug": "guia-incubacion-suenos",
+              "path": "/es/blog/guia-incubacion-suenos"
+            },
+            "de": {
+              "slug": "trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen",
+              "path": "/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen"
+            },
+            "it": {
+              "slug": "incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera",
+              "path": "/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera"
+            }
+          }
+        },
+        "blog.dream-interpretation-history": {
+          "id": "blog.dream-interpretation-history",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-interpretation-history",
+          "locales": {
+            "en": {
+              "slug": "dream-interpretation-history",
+              "path": "/en/blog/dream-interpretation-history"
+            },
+            "fr": {
+              "slug": "histoire-interpretation-reves",
+              "path": "/fr/blog/histoire-interpretation-reves"
+            },
+            "es": {
+              "slug": "historia-interpretacion-suenos",
+              "path": "/es/blog/historia-interpretacion-suenos"
+            },
+            "de": {
+              "slug": "die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft",
+              "path": "/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft"
+            },
+            "it": {
+              "slug": "la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna",
+              "path": "/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna"
+            }
+          }
+        },
+        "blog.dream-journal": {
+          "id": "blog.dream-journal",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-journal",
+          "locales": {
+            "en": {
+              "slug": "dream-journal",
+              "path": "/en/blog/dream-journal"
+            },
+            "fr": {
+              "slug": "journal-de-reves",
+              "path": "/fr/blog/journal-de-reves"
+            },
+            "es": {
+              "slug": "diario-de-suenos",
+              "path": "/es/blog/diario-de-suenos"
+            },
+            "de": {
+              "slug": "traumtagebuch-erinnerung-methoden-und-routinen",
+              "path": "/de/blog/traumtagebuch-erinnerung-methoden-und-routinen"
+            },
+            "it": {
+              "slug": "dream-journal-richiamo-metodi-e-routine",
+              "path": "/it/blog/dream-journal-richiamo-metodi-e-routine"
+            }
+          }
+        },
+        "blog.dream-journal-guide": {
+          "id": "blog.dream-journal-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-journal-guide",
+          "locales": {
+            "en": {
+              "slug": "dream-journal-guide",
+              "path": "/en/blog/dream-journal-guide"
+            },
+            "fr": {
+              "slug": "guide-journal-reves",
+              "path": "/fr/blog/guide-journal-reves"
+            },
+            "es": {
+              "slug": "guia-diario-suenos",
+              "path": "/es/blog/guia-diario-suenos"
+            },
+            "de": {
+              "slug": "dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer",
+              "path": "/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer"
+            },
+            "it": {
+              "slug": "dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne",
+              "path": "/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"
+            }
+          }
+        },
+        "blog.dream-meanings": {
+          "id": "blog.dream-meanings",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-meanings",
+          "locales": {
+            "en": {
+              "slug": "dream-meanings",
+              "path": "/en/blog/dream-meanings"
+            },
+            "fr": {
+              "slug": "signification-des-reves",
+              "path": "/fr/blog/signification-des-reves"
+            },
+            "es": {
+              "slug": "significado-de-suenos",
+              "path": "/es/blog/significado-de-suenos"
+            },
+            "de": {
+              "slug": "traumbedeutungen-interpretation-symbole",
+              "path": "/de/blog/traumbedeutungen-interpretation-symbole"
+            },
+            "it": {
+              "slug": "significati-dei-sogni-interpretazione-e-simboli",
+              "path": "/it/blog/significati-dei-sogni-interpretazione-e-simboli"
+            }
+          }
+        },
+        "blog.dreams-about-ex": {
+          "id": "blog.dreams-about-ex",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-about-ex",
+          "locales": {
+            "en": {
+              "slug": "dreams-about-ex",
+              "path": "/en/blog/dreams-about-ex"
+            },
+            "fr": {
+              "slug": "reves-ex-partenaire",
+              "path": "/fr/blog/reves-ex-partenaire"
+            },
+            "es": {
+              "slug": "suenos-con-ex",
+              "path": "/es/blog/suenos-con-ex"
+            },
+            "de": {
+              "slug": "traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten",
+              "path": "/de/blog/traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten"
+            },
+            "it": {
+              "slug": "sogni-sul-tuo-ex-cosa-significano-veramente",
+              "path": "/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente"
+            }
+          }
+        },
+        "blog.dreams-mental-health": {
+          "id": "blog.dreams-mental-health",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-mental-health",
+          "locales": {
+            "en": {
+              "slug": "dreams-mental-health",
+              "path": "/en/blog/dreams-mental-health"
+            },
+            "fr": {
+              "slug": "reves-sante-mentale",
+              "path": "/fr/blog/reves-sante-mentale"
+            },
+            "es": {
+              "slug": "suenos-salud-mental",
+              "path": "/es/blog/suenos-salud-mental"
+            },
+            "de": {
+              "slug": "traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart",
+              "path": "/de/blog/traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart"
+            },
+            "it": {
+              "slug": "sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente",
+              "path": "/it/blog/sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente"
+            }
+          }
+        },
+        "blog.falling-dreams-meaning": {
+          "id": "blog.falling-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "falling-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "falling-dreams-meaning",
+              "path": "/en/blog/falling-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-chute",
+              "path": "/fr/blog/reves-de-chute"
+            },
+            "es": {
+              "slug": "suenos-de-caer",
+              "path": "/es/blog/suenos-de-caer"
+            },
+            "de": {
+              "slug": "bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen",
+              "path": "/de/blog/bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen"
+            },
+            "it": {
+              "slug": "significato-dei-sogni-che-cadono-perche-sogni-di-cadere",
+              "path": "/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere"
+            }
+          }
+        },
+        "blog.flying-dreams-meaning": {
+          "id": "blog.flying-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "flying-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "flying-dreams-meaning",
+              "path": "/en/blog/flying-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-voler",
+              "path": "/fr/blog/reves-de-voler"
+            },
+            "es": {
+              "slug": "suenos-de-volar",
+              "path": "/es/blog/suenos-de-volar"
+            },
+            "de": {
+              "slug": "bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen",
+              "path": "/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen"
+            },
+            "it": {
+              "slug": "significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni",
+              "path": "/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni"
+            }
+          }
+        },
+        "blog.how-to-remember-dreams": {
+          "id": "blog.how-to-remember-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "how-to-remember-dreams",
+          "locales": {
+            "en": {
+              "slug": "how-to-remember-dreams",
+              "path": "/en/blog/how-to-remember-dreams"
+            },
+            "fr": {
+              "slug": "comment-se-souvenir-de-ses-reves",
+              "path": "/fr/blog/comment-se-souvenir-de-ses-reves"
+            },
+            "es": {
+              "slug": "como-recordar-suenos",
+              "path": "/es/blog/como-recordar-suenos"
+            },
+            "de": {
+              "slug": "so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken",
+              "path": "/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken"
+            },
+            "it": {
+              "slug": "come-ricordare-i-tuoi-sogni-10-tecniche-efficaci",
+              "path": "/it/blog/come-ricordare-i-tuoi-sogni-10-tecniche-efficaci"
+            }
+          }
+        },
+        "blog.lucid-dreaming": {
+          "id": "blog.lucid-dreaming",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lucid-dreaming",
+          "locales": {
+            "en": {
+              "slug": "lucid-dreaming",
+              "path": "/en/blog/lucid-dreaming"
+            },
+            "fr": {
+              "slug": "reve-lucide",
+              "path": "/fr/blog/reve-lucide"
+            },
+            "es": {
+              "slug": "suenos-lucidos",
+              "path": "/es/blog/suenos-lucidos"
+            },
+            "de": {
+              "slug": "klares-traeumen-anleitungen-und-techniken",
+              "path": "/de/blog/klares-traeumen-anleitungen-und-techniken"
+            },
+            "it": {
+              "slug": "sogni-lucidi-guide-e-tecniche",
+              "path": "/it/blog/sogni-lucidi-guide-e-tecniche"
+            }
+          }
+        },
+        "blog.lucid-dreaming-beginners-guide": {
+          "id": "blog.lucid-dreaming-beginners-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lucid-dreaming-beginners-guide",
+          "locales": {
+            "en": {
+              "slug": "lucid-dreaming-beginners-guide",
+              "path": "/en/blog/lucid-dreaming-beginners-guide"
+            },
+            "fr": {
+              "slug": "guide-reve-lucide-debutant",
+              "path": "/fr/blog/guide-reve-lucide-debutant"
+            },
+            "es": {
+              "slug": "guia-suenos-lucidos-principiantes",
+              "path": "/es/blog/guia-suenos-lucidos-principiantes"
+            },
+            "de": {
+              "slug": "leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte",
+              "path": "/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte"
+            },
+            "it": {
+              "slug": "guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti",
+              "path": "/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti"
+            }
+          }
+        },
+        "blog.precognitive-dreams-science": {
+          "id": "blog.precognitive-dreams-science",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "precognitive-dreams-science",
+          "locales": {
+            "en": {
+              "slug": "precognitive-dreams-science",
+              "path": "/en/blog/precognitive-dreams-science"
+            },
+            "fr": {
+              "slug": "reves-premonitoires-science",
+              "path": "/fr/blog/reves-premonitoires-science"
+            },
+            "es": {
+              "slug": "suenos-premonitorios-ciencia",
+              "path": "/es/blog/suenos-premonitorios-ciencia"
+            },
+            "de": {
+              "slug": "koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume",
+              "path": "/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume"
+            },
+            "it": {
+              "slug": "i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi",
+              "path": "/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi"
+            }
+          }
+        },
+        "blog.pregnancy-dreams-meaning": {
+          "id": "blog.pregnancy-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "pregnancy-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "pregnancy-dreams-meaning",
+              "path": "/en/blog/pregnancy-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-grossesse",
+              "path": "/fr/blog/reves-de-grossesse"
+            },
+            "es": {
+              "slug": "suenos-de-embarazo",
+              "path": "/es/blog/suenos-de-embarazo"
+            },
+            "de": {
+              "slug": "schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind",
+              "path": "/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind"
+            },
+            "it": {
+              "slug": "sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta",
+              "path": "/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta"
+            }
+          }
+        },
+        "blog.recurring-dreams-meaning": {
+          "id": "blog.recurring-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "recurring-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "recurring-dreams-meaning",
+              "path": "/en/blog/recurring-dreams-meaning"
+            },
+            "fr": {
+              "slug": "signification-reves-recurrents",
+              "path": "/fr/blog/signification-reves-recurrents"
+            },
+            "es": {
+              "slug": "significado-suenos-recurrentes",
+              "path": "/es/blog/significado-suenos-recurrentes"
+            },
+            "de": {
+              "slug": "wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen",
+              "path": "/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen"
+            },
+            "it": {
+              "slug": "significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti",
+              "path": "/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti"
+            }
+          }
+        },
+        "blog.rem-sleep-dreams": {
+          "id": "blog.rem-sleep-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rem-sleep-dreams",
+          "locales": {
+            "en": {
+              "slug": "rem-sleep-dreams",
+              "path": "/en/blog/rem-sleep-dreams"
+            },
+            "fr": {
+              "slug": "sommeil-paradoxal-reves",
+              "path": "/fr/blog/sommeil-paradoxal-reves"
+            },
+            "es": {
+              "slug": "sueno-rem-suenos",
+              "path": "/es/blog/sueno-rem-suenos"
+            },
+            "de": {
+              "slug": "rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen",
+              "path": "/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"
+            },
+            "it": {
+              "slug": "sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello",
+              "path": "/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"
+            }
+          }
+        },
+        "blog.sleep-paralysis-guide": {
+          "id": "blog.sleep-paralysis-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sleep-paralysis-guide",
+          "locales": {
+            "en": {
+              "slug": "sleep-paralysis-guide",
+              "path": "/en/blog/sleep-paralysis-guide"
+            },
+            "fr": {
+              "slug": "guide-paralysie-sommeil",
+              "path": "/fr/blog/guide-paralysie-sommeil"
+            },
+            "es": {
+              "slug": "guia-paralisis-sueno",
+              "path": "/es/blog/guia-paralisis-sueno"
+            },
+            "de": {
+              "slug": "schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen",
+              "path": "/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen"
+            },
+            "it": {
+              "slug": "la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla",
+              "path": "/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla"
+            }
+          }
+        },
+        "blog.snake-dreams-meaning": {
+          "id": "blog.snake-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "snake-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "snake-dreams-meaning",
+              "path": "/en/blog/snake-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-de-serpents",
+              "path": "/fr/blog/reves-de-serpents"
+            },
+            "es": {
+              "slug": "suenos-con-serpientes",
+              "path": "/es/blog/suenos-con-serpientes"
+            },
+            "de": {
+              "slug": "traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt",
+              "path": "/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt"
+            },
+            "it": {
+              "slug": "sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo",
+              "path": "/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo"
+            }
+          }
+        },
+        "blog.stop-nightmares-guide": {
+          "id": "blog.stop-nightmares-guide",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "stop-nightmares-guide",
+          "locales": {
+            "en": {
+              "slug": "stop-nightmares-guide",
+              "path": "/en/blog/stop-nightmares-guide"
+            },
+            "fr": {
+              "slug": "guide-cauchemars",
+              "path": "/fr/blog/guide-cauchemars"
+            },
+            "es": {
+              "slug": "guia-pesadillas",
+              "path": "/es/blog/guia-pesadillas"
+            },
+            "de": {
+              "slug": "albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann",
+              "path": "/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann"
+            },
+            "it": {
+              "slug": "incubi-cause-significato-e-come-fermarli",
+              "path": "/it/blog/incubi-cause-significato-e-come-fermarli"
+            }
+          }
+        },
+        "blog.stress-dreams-work": {
+          "id": "blog.stress-dreams-work",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "stress-dreams-work",
+          "locales": {
+            "en": {
+              "slug": "stress-dreams-work",
+              "path": "/en/blog/stress-dreams-work"
+            },
+            "fr": {
+              "slug": "reves-stress-travail",
+              "path": "/fr/blog/reves-stress-travail"
+            },
+            "es": {
+              "slug": "suenos-estres-trabajo",
+              "path": "/es/blog/suenos-estres-trabajo"
+            },
+            "de": {
+              "slug": "stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet",
+              "path": "/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet"
+            },
+            "it": {
+              "slug": "sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno",
+              "path": "/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno"
+            }
+          }
+        },
+        "blog.teeth-falling-out-dreams": {
+          "id": "blog.teeth-falling-out-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "teeth-falling-out-dreams",
+          "locales": {
+            "en": {
+              "slug": "teeth-falling-out-dreams",
+              "path": "/en/blog/teeth-falling-out-dreams"
+            },
+            "fr": {
+              "slug": "reves-dents-qui-tombent",
+              "path": "/fr/blog/reves-dents-qui-tombent"
+            },
+            "es": {
+              "slug": "suenos-dientes-caen",
+              "path": "/es/blog/suenos-dientes-caen"
+            },
+            "de": {
+              "slug": "traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation",
+              "path": "/de/blog/traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation"
+            },
+            "it": {
+              "slug": "sogni-di-denti-che-cadono-significato-e-interpretazione",
+              "path": "/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.water-dreams-meaning": {
+          "id": "blog.water-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "water-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "water-dreams-meaning",
+              "path": "/en/blog/water-dreams-meaning"
+            },
+            "fr": {
+              "slug": "reves-eau",
+              "path": "/fr/blog/reves-eau"
+            },
+            "es": {
+              "slug": "suenos-de-agua",
+              "path": "/es/blog/suenos-de-agua"
+            },
+            "de": {
+              "slug": "wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen",
+              "path": "/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen"
+            },
+            "it": {
+              "slug": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione",
+              "path": "/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
+            }
+          }
+        },
+        "blog.why-we-dream-science": {
+          "id": "blog.why-we-dream-science",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "why-we-dream-science",
+          "locales": {
+            "en": {
+              "slug": "why-we-dream-science",
+              "path": "/en/blog/why-we-dream-science"
+            },
+            "fr": {
+              "slug": "pourquoi-nous-revons-science",
+              "path": "/fr/blog/pourquoi-nous-revons-science"
+            },
+            "es": {
+              "slug": "por-que-sonamos-ciencia",
+              "path": "/es/blog/por-que-sonamos-ciencia"
+            },
+            "de": {
+              "slug": "warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern",
+              "path": "/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern"
+            },
+            "it": {
+              "slug": "perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne",
+              "path": "/it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne"
+            }
+          }
+        },
+        "blog.why-we-forget-dreams": {
+          "id": "blog.why-we-forget-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "why-we-forget-dreams",
+          "locales": {
+            "en": {
+              "slug": "why-we-forget-dreams",
+              "path": "/en/blog/why-we-forget-dreams"
+            },
+            "fr": {
+              "slug": "pourquoi-oublie-reves-reveil",
+              "path": "/fr/blog/pourquoi-oublie-reves-reveil"
+            },
+            "es": {
+              "slug": "por-que-olvidamos-suenos",
+              "path": "/es/blog/por-que-olvidamos-suenos"
+            },
+            "de": {
+              "slug": "warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie",
+              "path": "/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie"
+            },
+            "it": {
+              "slug": "perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica",
+              "path": "/it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica"
+            }
+          }
+        }
+      }
+    },
+    "guides": {
+      "description": "Guide hubs and curated dream guide pages.",
+      "entries": {
+        "guide.index": {
+          "id": "guide.index",
+          "type": "guideIndex",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "",
+          "locales": {
+            "en": {
+              "slug": "",
+              "path": "/en/guides/"
+            },
+            "fr": {
+              "slug": "",
+              "path": "/fr/guides/"
+            },
+            "es": {
+              "slug": "",
+              "path": "/es/guides/"
+            },
+            "de": {
+              "slug": "",
+              "path": "/de/guides/"
+            },
+            "it": {
+              "slug": "",
+              "path": "/it/guides/"
+            }
+          }
+        },
+        "guide.dictionary": {
+          "id": "guide.dictionary",
+          "type": "guideDictionary",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-symbols-dictionary",
+          "locales": {
+            "en": {
+              "slug": "dream-symbols-dictionary",
+              "path": "/en/guides/dream-symbols-dictionary"
+            },
+            "fr": {
+              "slug": "dictionnaire-symboles-reves",
+              "path": "/fr/guides/dictionnaire-symboles-reves"
+            },
+            "es": {
+              "slug": "diccionario-simbolos-suenos",
+              "path": "/es/guides/diccionario-simbolos-suenos"
+            },
+            "de": {
+              "slug": "traumsymbole-lexikon",
+              "path": "/de/guides/traumsymbole-lexikon"
+            },
+            "it": {
+              "slug": "dizionario-simboli-sogni",
+              "path": "/it/guides/dizionario-simboli-sogni"
+            }
+          }
+        },
+        "guide.most-common-dream-symbols": {
+          "id": "guide.most-common-dream-symbols",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "most-common-dream-symbols",
+          "locales": {
+            "en": {
+              "slug": "most-common-dream-symbols",
+              "path": "/en/guides/most-common-dream-symbols"
+            },
+            "fr": {
+              "slug": "symboles-reves-les-plus-courants",
+              "path": "/fr/guides/symboles-reves-les-plus-courants"
+            },
+            "es": {
+              "slug": "simbolos-suenos-mas-comunes",
+              "path": "/es/guides/simbolos-suenos-mas-comunes"
+            },
+            "de": {
+              "slug": "haeufigste-traumsymbole",
+              "path": "/de/guides/haeufigste-traumsymbole"
+            },
+            "it": {
+              "slug": "simboli-sogni-comuni",
+              "path": "/it/guides/simboli-sogni-comuni"
+            }
+          }
+        },
+        "guide.scary-dream-symbols": {
+          "id": "guide.scary-dream-symbols",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "scary-dream-symbols",
+          "locales": {
+            "en": {
+              "slug": "scary-dream-symbols",
+              "path": "/en/guides/scary-dream-symbols"
+            },
+            "fr": {
+              "slug": "symboles-reves-effrayants",
+              "path": "/fr/guides/symboles-reves-effrayants"
+            },
+            "es": {
+              "slug": "simbolos-suenos-aterradoras",
+              "path": "/es/guides/simbolos-suenos-aterradoras"
+            },
+            "de": {
+              "slug": "angsteinflossende-traumsymbole",
+              "path": "/de/guides/angsteinflossende-traumsymbole"
+            },
+            "it": {
+              "slug": "simboli-sogni-spaventosi",
+              "path": "/it/guides/simboli-sogni-spaventosi"
+            }
+          }
+        },
+        "guide.positive-dream-symbols": {
+          "id": "guide.positive-dream-symbols",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "positive-dream-symbols",
+          "locales": {
+            "en": {
+              "slug": "positive-dream-symbols",
+              "path": "/en/guides/positive-dream-symbols"
+            },
+            "fr": {
+              "slug": "symboles-reves-positifs",
+              "path": "/fr/guides/symboles-reves-positifs"
+            },
+            "es": {
+              "slug": "simbolos-suenos-positivos",
+              "path": "/es/guides/simbolos-suenos-positivos"
+            },
+            "de": {
+              "slug": "positive-traumsymbole",
+              "path": "/de/guides/positive-traumsymbole"
+            },
+            "it": {
+              "slug": "simboli-sogni-positivi",
+              "path": "/it/guides/simboli-sogni-positivi"
+            }
+          }
+        },
+        "guide.animal-dream-symbols": {
+          "id": "guide.animal-dream-symbols",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "animal-dream-symbols",
+          "locales": {
+            "en": {
+              "slug": "animal-dream-symbols",
+              "path": "/en/guides/animal-dream-symbols"
+            },
+            "fr": {
+              "slug": "symboles-reves-animaux",
+              "path": "/fr/guides/symboles-reves-animaux"
+            },
+            "es": {
+              "slug": "simbolos-suenos-animales",
+              "path": "/es/guides/simbolos-suenos-animales"
+            },
+            "de": {
+              "slug": "tier-traumsymbole",
+              "path": "/de/guides/tier-traumsymbole"
+            },
+            "it": {
+              "slug": "simboli-sogni-animali",
+              "path": "/it/guides/simboli-sogni-animali"
+            }
+          }
+        },
+        "guide.water-dream-symbols": {
+          "id": "guide.water-dream-symbols",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "water-dream-symbols",
+          "locales": {
+            "en": {
+              "slug": "water-dream-symbols",
+              "path": "/en/guides/water-dream-symbols"
+            },
+            "fr": {
+              "slug": "symboles-reves-eau",
+              "path": "/fr/guides/symboles-reves-eau"
+            },
+            "es": {
+              "slug": "simbolos-suenos-agua",
+              "path": "/es/guides/simbolos-suenos-agua"
+            },
+            "de": {
+              "slug": "wasser-traumsymbole",
+              "path": "/de/guides/wasser-traumsymbole"
+            },
+            "it": {
+              "slug": "simboli-sogni-acqua",
+              "path": "/it/guides/simboli-sogni-acqua"
+            }
+          }
+        },
+        "guide.death-transformation-dreams": {
+          "id": "guide.death-transformation-dreams",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "death-transformation-dreams",
+          "locales": {
+            "en": {
+              "slug": "death-transformation-dreams",
+              "path": "/en/guides/death-transformation-dreams"
+            },
+            "fr": {
+              "slug": "reves-mort-transformation",
+              "path": "/fr/guides/reves-mort-transformation"
+            },
+            "es": {
+              "slug": "suenos-muerte-transformacion",
+              "path": "/es/guides/suenos-muerte-transformacion"
+            },
+            "de": {
+              "slug": "traeume-tod-verwandlung",
+              "path": "/de/guides/traeume-tod-verwandlung"
+            },
+            "it": {
+              "slug": "sogni-morte-trasformazione",
+              "path": "/it/guides/sogni-morte-trasformazione"
+            }
+          }
+        },
+        "guide.people-in-dreams": {
+          "id": "guide.people-in-dreams",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "people-in-dreams",
+          "locales": {
+            "en": {
+              "slug": "people-in-dreams",
+              "path": "/en/guides/people-in-dreams"
+            },
+            "fr": {
+              "slug": "personnes-dans-les-reves",
+              "path": "/fr/guides/personnes-dans-les-reves"
+            },
+            "es": {
+              "slug": "personas-en-suenos",
+              "path": "/es/guides/personas-en-suenos"
+            },
+            "de": {
+              "slug": "menschen-in-traeumen",
+              "path": "/de/guides/menschen-in-traeumen"
+            },
+            "it": {
+              "slug": "persone-nei-sogni",
+              "path": "/it/guides/persone-nei-sogni"
+            }
+          }
+        },
+        "guide.dream-locations": {
+          "id": "guide.dream-locations",
+          "type": "guideCuration",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-locations",
+          "locales": {
+            "en": {
+              "slug": "dream-locations",
+              "path": "/en/guides/dream-locations"
+            },
+            "fr": {
+              "slug": "lieux-dans-les-reves",
+              "path": "/fr/guides/lieux-dans-les-reves"
+            },
+            "es": {
+              "slug": "lugares-en-suenos",
+              "path": "/es/guides/lugares-en-suenos"
+            },
+            "de": {
+              "slug": "orte-in-traeumen",
+              "path": "/de/guides/orte-in-traeumen"
+            },
+            "it": {
+              "slug": "luoghi-nei-sogni",
+              "path": "/it/guides/luoghi-nei-sogni"
+            }
+          }
+        }
+      }
+    },
+    "symbols": {
+      "description": "Dream symbols and symbol category pages.",
+      "entries": {
+        "symbol.water": {
+          "id": "symbol.water",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "water",
+          "locales": {
+            "en": {
+              "slug": "water",
+              "path": "/en/symbols/water"
+            },
+            "fr": {
+              "slug": "eau",
+              "path": "/fr/symboles/eau"
+            },
+            "es": {
+              "slug": "agua",
+              "path": "/es/simbolos/agua"
+            },
+            "de": {
+              "slug": "wasser",
+              "path": "/de/traumsymbole/wasser"
+            },
+            "it": {
+              "slug": "acqua",
+              "path": "/it/simboli/acqua"
+            }
+          }
+        },
+        "symbol.teeth": {
+          "id": "symbol.teeth",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "teeth",
+          "locales": {
+            "en": {
+              "slug": "teeth",
+              "path": "/en/symbols/teeth"
+            },
+            "fr": {
+              "slug": "dents",
+              "path": "/fr/symboles/dents"
+            },
+            "es": {
+              "slug": "dientes",
+              "path": "/es/simbolos/dientes"
+            },
+            "de": {
+              "slug": "zaehne",
+              "path": "/de/traumsymbole/zaehne"
+            },
+            "it": {
+              "slug": "denti",
+              "path": "/it/simboli/denti"
+            }
+          }
+        },
+        "symbol.falling": {
+          "id": "symbol.falling",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "falling",
+          "locales": {
+            "en": {
+              "slug": "falling",
+              "path": "/en/symbols/falling"
+            },
+            "fr": {
+              "slug": "chute",
+              "path": "/fr/symboles/chute"
+            },
+            "es": {
+              "slug": "caida",
+              "path": "/es/simbolos/caida"
+            },
+            "de": {
+              "slug": "fallen",
+              "path": "/de/traumsymbole/fallen"
+            },
+            "it": {
+              "slug": "cadere",
+              "path": "/it/simboli/cadere"
+            }
+          }
+        },
+        "symbol.flying": {
+          "id": "symbol.flying",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "flying",
+          "locales": {
+            "en": {
+              "slug": "flying",
+              "path": "/en/symbols/flying"
+            },
+            "fr": {
+              "slug": "voler",
+              "path": "/fr/symboles/voler"
+            },
+            "es": {
+              "slug": "volar",
+              "path": "/es/simbolos/volar"
+            },
+            "de": {
+              "slug": "fliegen",
+              "path": "/de/traumsymbole/fliegen"
+            },
+            "it": {
+              "slug": "volare",
+              "path": "/it/simboli/volare"
+            }
+          }
+        },
+        "symbol.snake": {
+          "id": "symbol.snake",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "snake",
+          "locales": {
+            "en": {
+              "slug": "snake",
+              "path": "/en/symbols/snake"
+            },
+            "fr": {
+              "slug": "serpent",
+              "path": "/fr/symboles/serpent"
+            },
+            "es": {
+              "slug": "serpiente",
+              "path": "/es/simbolos/serpiente"
+            },
+            "de": {
+              "slug": "schlange",
+              "path": "/de/traumsymbole/schlange"
+            },
+            "it": {
+              "slug": "serpente",
+              "path": "/it/simboli/serpente"
+            }
+          }
+        },
+        "symbol.death": {
+          "id": "symbol.death",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "death",
+          "locales": {
+            "en": {
+              "slug": "death",
+              "path": "/en/symbols/death"
+            },
+            "fr": {
+              "slug": "mort",
+              "path": "/fr/symboles/mort"
+            },
+            "es": {
+              "slug": "muerte",
+              "path": "/es/simbolos/muerte"
+            },
+            "de": {
+              "slug": "tod",
+              "path": "/de/traumsymbole/tod"
+            },
+            "it": {
+              "slug": "morte",
+              "path": "/it/simboli/morte"
+            }
+          }
+        },
+        "symbol.chase": {
+          "id": "symbol.chase",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "being-chased",
+          "locales": {
+            "en": {
+              "slug": "being-chased",
+              "path": "/en/symbols/being-chased"
+            },
+            "fr": {
+              "slug": "poursuite",
+              "path": "/fr/symboles/poursuite"
+            },
+            "es": {
+              "slug": "persecucion",
+              "path": "/es/simbolos/persecucion"
+            },
+            "de": {
+              "slug": "verfolgung",
+              "path": "/de/traumsymbole/verfolgung"
+            },
+            "it": {
+              "slug": "inseguimento",
+              "path": "/it/simboli/inseguimento"
+            }
+          }
+        },
+        "symbol.house": {
+          "id": "symbol.house",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "house",
+          "locales": {
+            "en": {
+              "slug": "house",
+              "path": "/en/symbols/house"
+            },
+            "fr": {
+              "slug": "maison",
+              "path": "/fr/symboles/maison"
+            },
+            "es": {
+              "slug": "casa",
+              "path": "/es/simbolos/casa"
+            },
+            "de": {
+              "slug": "haus",
+              "path": "/de/traumsymbole/haus"
+            },
+            "it": {
+              "slug": "casa",
+              "path": "/it/simboli/casa"
+            }
+          }
+        },
+        "symbol.ocean": {
+          "id": "symbol.ocean",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ocean",
+          "locales": {
+            "en": {
+              "slug": "ocean",
+              "path": "/en/symbols/ocean"
+            },
+            "fr": {
+              "slug": "mer",
+              "path": "/fr/symboles/mer"
+            },
+            "es": {
+              "slug": "oceano",
+              "path": "/es/simbolos/oceano"
+            },
+            "de": {
+              "slug": "meer",
+              "path": "/de/traumsymbole/meer"
+            },
+            "it": {
+              "slug": "oceano",
+              "path": "/it/simboli/oceano"
+            }
+          }
+        },
+        "symbol.baby": {
+          "id": "symbol.baby",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "baby",
+          "locales": {
+            "en": {
+              "slug": "baby",
+              "path": "/en/symbols/baby"
+            },
+            "fr": {
+              "slug": "bebe",
+              "path": "/fr/symboles/bebe"
+            },
+            "es": {
+              "slug": "bebe",
+              "path": "/es/simbolos/bebe"
+            },
+            "de": {
+              "slug": "baby",
+              "path": "/de/traumsymbole/baby"
+            },
+            "it": {
+              "slug": "bambino-neonato",
+              "path": "/it/simboli/bambino-neonato"
+            }
+          }
+        },
+        "symbol.dog": {
+          "id": "symbol.dog",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dog",
+          "locales": {
+            "en": {
+              "slug": "dog",
+              "path": "/en/symbols/dog"
+            },
+            "fr": {
+              "slug": "chien",
+              "path": "/fr/symboles/chien"
+            },
+            "es": {
+              "slug": "perro",
+              "path": "/es/simbolos/perro"
+            },
+            "de": {
+              "slug": "hund",
+              "path": "/de/traumsymbole/hund"
+            },
+            "it": {
+              "slug": "cane",
+              "path": "/it/simboli/cane"
+            }
+          }
+        },
+        "symbol.cat": {
+          "id": "symbol.cat",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "cat",
+          "locales": {
+            "en": {
+              "slug": "cat",
+              "path": "/en/symbols/cat"
+            },
+            "fr": {
+              "slug": "chat",
+              "path": "/fr/symboles/chat"
+            },
+            "es": {
+              "slug": "gato",
+              "path": "/es/simbolos/gato"
+            },
+            "de": {
+              "slug": "katze",
+              "path": "/de/traumsymbole/katze"
+            },
+            "it": {
+              "slug": "gatto",
+              "path": "/it/simboli/gatto"
+            }
+          }
+        },
+        "symbol.spider": {
+          "id": "symbol.spider",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "spider",
+          "locales": {
+            "en": {
+              "slug": "spider",
+              "path": "/en/symbols/spider"
+            },
+            "fr": {
+              "slug": "araignee",
+              "path": "/fr/symboles/araignee"
+            },
+            "es": {
+              "slug": "arana",
+              "path": "/es/simbolos/arana"
+            },
+            "de": {
+              "slug": "spinne",
+              "path": "/de/traumsymbole/spinne"
+            },
+            "it": {
+              "slug": "ragno",
+              "path": "/it/simboli/ragno"
+            }
+          }
+        },
+        "symbol.fire": {
+          "id": "symbol.fire",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "fire",
+          "locales": {
+            "en": {
+              "slug": "fire",
+              "path": "/en/symbols/fire"
+            },
+            "fr": {
+              "slug": "feu",
+              "path": "/fr/symboles/feu"
+            },
+            "es": {
+              "slug": "fuego",
+              "path": "/es/simbolos/fuego"
+            },
+            "de": {
+              "slug": "feuer",
+              "path": "/de/traumsymbole/feuer"
+            },
+            "it": {
+              "slug": "fuoco",
+              "path": "/it/simboli/fuoco"
+            }
+          }
+        },
+        "symbol.flood": {
+          "id": "symbol.flood",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "flood",
+          "locales": {
+            "en": {
+              "slug": "flood",
+              "path": "/en/symbols/flood"
+            },
+            "fr": {
+              "slug": "inondation",
+              "path": "/fr/symboles/inondation"
+            },
+            "es": {
+              "slug": "inundacion",
+              "path": "/es/simbolos/inundacion"
+            },
+            "de": {
+              "slug": "ueberschwemmung",
+              "path": "/de/traumsymbole/ueberschwemmung"
+            },
+            "it": {
+              "slug": "alluvione",
+              "path": "/it/simboli/alluvione"
+            }
+          }
+        },
+        "symbol.car": {
+          "id": "symbol.car",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "car",
+          "locales": {
+            "en": {
+              "slug": "car",
+              "path": "/en/symbols/car"
+            },
+            "fr": {
+              "slug": "voiture",
+              "path": "/fr/symboles/voiture"
+            },
+            "es": {
+              "slug": "coche",
+              "path": "/es/simbolos/coche"
+            },
+            "de": {
+              "slug": "auto",
+              "path": "/de/traumsymbole/auto"
+            },
+            "it": {
+              "slug": "automobile",
+              "path": "/it/simboli/automobile"
+            }
+          }
+        },
+        "symbol.door": {
+          "id": "symbol.door",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "door",
+          "locales": {
+            "en": {
+              "slug": "door",
+              "path": "/en/symbols/door"
+            },
+            "fr": {
+              "slug": "porte",
+              "path": "/fr/symboles/porte"
+            },
+            "es": {
+              "slug": "puerta",
+              "path": "/es/simbolos/puerta"
+            },
+            "de": {
+              "slug": "tuer",
+              "path": "/de/traumsymbole/tuer"
+            },
+            "it": {
+              "slug": "porta",
+              "path": "/it/simboli/porta"
+            }
+          }
+        },
+        "symbol.exam": {
+          "id": "symbol.exam",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "exam",
+          "locales": {
+            "en": {
+              "slug": "exam",
+              "path": "/en/symbols/exam"
+            },
+            "fr": {
+              "slug": "examen",
+              "path": "/fr/symboles/examen"
+            },
+            "es": {
+              "slug": "examen",
+              "path": "/es/simbolos/examen"
+            },
+            "de": {
+              "slug": "pruefung",
+              "path": "/de/traumsymbole/pruefung"
+            },
+            "it": {
+              "slug": "esame",
+              "path": "/it/simboli/esame"
+            }
+          }
+        },
+        "symbol.nudity": {
+          "id": "symbol.nudity",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "nudity",
+          "locales": {
+            "en": {
+              "slug": "nudity",
+              "path": "/en/symbols/nudity"
+            },
+            "fr": {
+              "slug": "nudite",
+              "path": "/fr/symboles/nudite"
+            },
+            "es": {
+              "slug": "desnudez",
+              "path": "/es/simbolos/desnudez"
+            },
+            "de": {
+              "slug": "nacktheit",
+              "path": "/de/traumsymbole/nacktheit"
+            },
+            "it": {
+              "slug": "nudita",
+              "path": "/it/simboli/nudita"
+            }
+          }
+        },
+        "symbol.deceased-person": {
+          "id": "symbol.deceased-person",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "deceased-person",
+          "locales": {
+            "en": {
+              "slug": "deceased-person",
+              "path": "/en/symbols/deceased-person"
+            },
+            "fr": {
+              "slug": "defunt",
+              "path": "/fr/symboles/defunt"
+            },
+            "es": {
+              "slug": "persona-fallecida",
+              "path": "/es/simbolos/persona-fallecida"
+            },
+            "de": {
+              "slug": "verstorbene-person",
+              "path": "/de/traumsymbole/verstorbene-person"
+            },
+            "it": {
+              "slug": "persona-defunta",
+              "path": "/it/simboli/persona-defunta"
+            }
+          }
+        },
+        "symbol.bird": {
+          "id": "symbol.bird",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bird",
+          "locales": {
+            "en": {
+              "slug": "bird",
+              "path": "/en/symbols/bird"
+            },
+            "fr": {
+              "slug": "oiseau",
+              "path": "/fr/symboles/oiseau"
+            },
+            "es": {
+              "slug": "pajaro",
+              "path": "/es/simbolos/pajaro"
+            },
+            "de": {
+              "slug": "vogel",
+              "path": "/de/traumsymbole/vogel"
+            },
+            "it": {
+              "slug": "uccello",
+              "path": "/it/simboli/uccello"
+            }
+          }
+        },
+        "symbol.bridge": {
+          "id": "symbol.bridge",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "bridge",
+          "locales": {
+            "en": {
+              "slug": "bridge",
+              "path": "/en/symbols/bridge"
+            },
+            "fr": {
+              "slug": "pont",
+              "path": "/fr/symboles/pont"
+            },
+            "es": {
+              "slug": "puente",
+              "path": "/es/simbolos/puente"
+            },
+            "de": {
+              "slug": "bruecke",
+              "path": "/de/traumsymbole/bruecke"
+            },
+            "it": {
+              "slug": "ponte",
+              "path": "/it/simboli/ponte"
+            }
+          }
+        },
+        "symbol.stairs": {
+          "id": "symbol.stairs",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "stairs",
+          "locales": {
+            "en": {
+              "slug": "stairs",
+              "path": "/en/symbols/stairs"
+            },
+            "fr": {
+              "slug": "escalier",
+              "path": "/fr/symboles/escalier"
+            },
+            "es": {
+              "slug": "escaleras",
+              "path": "/es/simbolos/escaleras"
+            },
+            "de": {
+              "slug": "treppe",
+              "path": "/de/traumsymbole/treppe"
+            },
+            "it": {
+              "slug": "scale",
+              "path": "/it/simboli/scale"
+            }
+          }
+        },
+        "symbol.moon": {
+          "id": "symbol.moon",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "moon",
+          "locales": {
+            "en": {
+              "slug": "moon",
+              "path": "/en/symbols/moon"
+            },
+            "fr": {
+              "slug": "lune",
+              "path": "/fr/symboles/lune"
+            },
+            "es": {
+              "slug": "luna",
+              "path": "/es/simbolos/luna"
+            },
+            "de": {
+              "slug": "mond",
+              "path": "/de/traumsymbole/mond"
+            },
+            "it": {
+              "slug": "luna",
+              "path": "/it/simboli/luna"
+            }
+          }
+        },
+        "symbol.sun": {
+          "id": "symbol.sun",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sun",
+          "locales": {
+            "en": {
+              "slug": "sun",
+              "path": "/en/symbols/sun"
+            },
+            "fr": {
+              "slug": "soleil",
+              "path": "/fr/symboles/soleil"
+            },
+            "es": {
+              "slug": "sol",
+              "path": "/es/simbolos/sol"
+            },
+            "de": {
+              "slug": "sonne",
+              "path": "/de/traumsymbole/sonne"
+            },
+            "it": {
+              "slug": "sole",
+              "path": "/it/simboli/sole"
+            }
+          }
+        },
+        "symbol.rain": {
+          "id": "symbol.rain",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rain",
+          "locales": {
+            "en": {
+              "slug": "rain",
+              "path": "/en/symbols/rain"
+            },
+            "fr": {
+              "slug": "pluie",
+              "path": "/fr/symboles/pluie"
+            },
+            "es": {
+              "slug": "lluvia",
+              "path": "/es/simbolos/lluvia"
+            },
+            "de": {
+              "slug": "regen",
+              "path": "/de/traumsymbole/regen"
+            },
+            "it": {
+              "slug": "pioggia",
+              "path": "/it/simboli/pioggia"
+            }
+          }
+        },
+        "symbol.forest": {
+          "id": "symbol.forest",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "forest",
+          "locales": {
+            "en": {
+              "slug": "forest",
+              "path": "/en/symbols/forest"
+            },
+            "fr": {
+              "slug": "foret",
+              "path": "/fr/symboles/foret"
+            },
+            "es": {
+              "slug": "bosque",
+              "path": "/es/simbolos/bosque"
+            },
+            "de": {
+              "slug": "wald",
+              "path": "/de/traumsymbole/wald"
+            },
+            "it": {
+              "slug": "foresta",
+              "path": "/it/simboli/foresta"
+            }
+          }
+        },
+        "symbol.tree": {
+          "id": "symbol.tree",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "tree",
+          "locales": {
+            "en": {
+              "slug": "tree",
+              "path": "/en/symbols/tree"
+            },
+            "fr": {
+              "slug": "arbre",
+              "path": "/fr/symboles/arbre"
+            },
+            "es": {
+              "slug": "arbol",
+              "path": "/es/simbolos/arbol"
+            },
+            "de": {
+              "slug": "baum",
+              "path": "/de/traumsymbole/baum"
+            },
+            "it": {
+              "slug": "albero",
+              "path": "/it/simboli/albero"
+            }
+          }
+        },
+        "symbol.mountain": {
+          "id": "symbol.mountain",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mountain",
+          "locales": {
+            "en": {
+              "slug": "mountain",
+              "path": "/en/symbols/mountain"
+            },
+            "fr": {
+              "slug": "montagne",
+              "path": "/fr/symboles/montagne"
+            },
+            "es": {
+              "slug": "montana",
+              "path": "/es/simbolos/montana"
+            },
+            "de": {
+              "slug": "berg",
+              "path": "/de/traumsymbole/berg"
+            },
+            "it": {
+              "slug": "montagna",
+              "path": "/it/simboli/montagna"
+            }
+          }
+        },
+        "symbol.lion": {
+          "id": "symbol.lion",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lion",
+          "locales": {
+            "en": {
+              "slug": "lion",
+              "path": "/en/symbols/lion"
+            },
+            "fr": {
+              "slug": "lion",
+              "path": "/fr/symboles/lion"
+            },
+            "es": {
+              "slug": "leon",
+              "path": "/es/simbolos/leon"
+            },
+            "de": {
+              "slug": "loewe",
+              "path": "/de/traumsymbole/loewe"
+            },
+            "it": {
+              "slug": "leone",
+              "path": "/it/simboli/leone"
+            }
+          }
+        },
+        "symbol.mirror": {
+          "id": "symbol.mirror",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mirror",
+          "locales": {
+            "en": {
+              "slug": "mirror",
+              "path": "/en/symbols/mirror"
+            },
+            "fr": {
+              "slug": "miroir",
+              "path": "/fr/symboles/miroir"
+            },
+            "es": {
+              "slug": "espejo",
+              "path": "/es/simbolos/espejo"
+            },
+            "de": {
+              "slug": "spiegel",
+              "path": "/de/traumsymbole/spiegel"
+            },
+            "it": {
+              "slug": "specchio",
+              "path": "/it/simboli/specchio"
+            }
+          }
+        },
+        "symbol.money": {
+          "id": "symbol.money",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "money",
+          "locales": {
+            "en": {
+              "slug": "money",
+              "path": "/en/symbols/money"
+            },
+            "fr": {
+              "slug": "argent",
+              "path": "/fr/symboles/argent"
+            },
+            "es": {
+              "slug": "dinero",
+              "path": "/es/simbolos/dinero"
+            },
+            "de": {
+              "slug": "geld",
+              "path": "/de/traumsymbole/geld"
+            },
+            "it": {
+              "slug": "denaro",
+              "path": "/it/simboli/denaro"
+            }
+          }
+        },
+        "symbol.blood": {
+          "id": "symbol.blood",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "blood",
+          "locales": {
+            "en": {
+              "slug": "blood",
+              "path": "/en/symbols/blood"
+            },
+            "fr": {
+              "slug": "sang",
+              "path": "/fr/symboles/sang"
+            },
+            "es": {
+              "slug": "sangre",
+              "path": "/es/simbolos/sangre"
+            },
+            "de": {
+              "slug": "blut",
+              "path": "/de/traumsymbole/blut"
+            },
+            "it": {
+              "slug": "sangue",
+              "path": "/it/simboli/sangue"
+            }
+          }
+        },
+        "symbol.child": {
+          "id": "symbol.child",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "child",
+          "locales": {
+            "en": {
+              "slug": "child",
+              "path": "/en/symbols/child"
+            },
+            "fr": {
+              "slug": "enfant",
+              "path": "/fr/symboles/enfant"
+            },
+            "es": {
+              "slug": "nino",
+              "path": "/es/simbolos/nino"
+            },
+            "de": {
+              "slug": "kind",
+              "path": "/de/traumsymbole/kind"
+            },
+            "it": {
+              "slug": "bambino",
+              "path": "/it/simboli/bambino"
+            }
+          }
+        },
+        "symbol.clothes": {
+          "id": "symbol.clothes",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "clothes",
+          "locales": {
+            "en": {
+              "slug": "clothes",
+              "path": "/en/symbols/clothes"
+            },
+            "fr": {
+              "slug": "vetements",
+              "path": "/fr/symboles/vetements"
+            },
+            "es": {
+              "slug": "ropa",
+              "path": "/es/simbolos/ropa"
+            },
+            "de": {
+              "slug": "kleidung",
+              "path": "/de/traumsymbole/kleidung"
+            },
+            "it": {
+              "slug": "vestiti",
+              "path": "/it/simboli/vestiti"
+            }
+          }
+        },
+        "symbol.path": {
+          "id": "symbol.path",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "path",
+          "locales": {
+            "en": {
+              "slug": "path",
+              "path": "/en/symbols/path"
+            },
+            "fr": {
+              "slug": "chemin",
+              "path": "/fr/symboles/chemin"
+            },
+            "es": {
+              "slug": "camino",
+              "path": "/es/simbolos/camino"
+            },
+            "de": {
+              "slug": "weg",
+              "path": "/de/traumsymbole/weg"
+            },
+            "it": {
+              "slug": "sentiero",
+              "path": "/it/simboli/sentiero"
+            }
+          }
+        },
+        "symbol.phone": {
+          "id": "symbol.phone",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "phone",
+          "locales": {
+            "en": {
+              "slug": "phone",
+              "path": "/en/symbols/phone"
+            },
+            "fr": {
+              "slug": "telephone",
+              "path": "/fr/symboles/telephone"
+            },
+            "es": {
+              "slug": "telefono",
+              "path": "/es/simbolos/telefono"
+            },
+            "de": {
+              "slug": "telefon",
+              "path": "/de/traumsymbole/telefon"
+            },
+            "it": {
+              "slug": "telefono",
+              "path": "/it/simboli/telefono"
+            }
+          }
+        },
+        "symbol.plane": {
+          "id": "symbol.plane",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "plane",
+          "locales": {
+            "en": {
+              "slug": "plane",
+              "path": "/en/symbols/plane"
+            },
+            "fr": {
+              "slug": "avion",
+              "path": "/fr/symboles/avion"
+            },
+            "es": {
+              "slug": "avion",
+              "path": "/es/simbolos/avion"
+            },
+            "de": {
+              "slug": "flugzeug",
+              "path": "/de/traumsymbole/flugzeug"
+            },
+            "it": {
+              "slug": "aereo",
+              "path": "/it/simboli/aereo"
+            }
+          }
+        },
+        "symbol.train": {
+          "id": "symbol.train",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "train",
+          "locales": {
+            "en": {
+              "slug": "train",
+              "path": "/en/symbols/train"
+            },
+            "fr": {
+              "slug": "train",
+              "path": "/fr/symboles/train"
+            },
+            "es": {
+              "slug": "tren",
+              "path": "/es/simbolos/tren"
+            },
+            "de": {
+              "slug": "zug",
+              "path": "/de/traumsymbole/zug"
+            },
+            "it": {
+              "slug": "treno",
+              "path": "/it/simboli/treno"
+            }
+          }
+        },
+        "symbol.night": {
+          "id": "symbol.night",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "night",
+          "locales": {
+            "en": {
+              "slug": "night",
+              "path": "/en/symbols/night"
+            },
+            "fr": {
+              "slug": "nuit",
+              "path": "/fr/symboles/nuit"
+            },
+            "es": {
+              "slug": "noche",
+              "path": "/es/simbolos/noche"
+            },
+            "de": {
+              "slug": "nacht",
+              "path": "/de/traumsymbole/nacht"
+            },
+            "it": {
+              "slug": "notte",
+              "path": "/it/simboli/notte"
+            }
+          }
+        },
+        "symbol.key": {
+          "id": "symbol.key",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "key",
+          "locales": {
+            "en": {
+              "slug": "key",
+              "path": "/en/symbols/key"
+            },
+            "fr": {
+              "slug": "cle",
+              "path": "/fr/symboles/cle"
+            },
+            "es": {
+              "slug": "llave",
+              "path": "/es/simbolos/llave"
+            },
+            "de": {
+              "slug": "schluessel",
+              "path": "/de/traumsymbole/schluessel"
+            },
+            "it": {
+              "slug": "chiave",
+              "path": "/it/simboli/chiave"
+            }
+          }
+        },
+        "symbol.mouth": {
+          "id": "symbol.mouth",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "mouth",
+          "locales": {
+            "en": {
+              "slug": "mouth",
+              "path": "/en/symbols/mouth"
+            },
+            "fr": {
+              "slug": "bouche",
+              "path": "/fr/symboles/bouche"
+            },
+            "es": {
+              "slug": "boca",
+              "path": "/es/simbolos/boca"
+            },
+            "de": {
+              "slug": "mund",
+              "path": "/de/traumsymbole/mund"
+            },
+            "it": {
+              "slug": "bocca",
+              "path": "/it/simboli/bocca"
+            }
+          }
+        },
+        "symbol.wedding": {
+          "id": "symbol.wedding",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "wedding",
+          "locales": {
+            "en": {
+              "slug": "wedding",
+              "path": "/en/symbols/wedding"
+            },
+            "fr": {
+              "slug": "mariage",
+              "path": "/fr/symboles/mariage"
+            },
+            "es": {
+              "slug": "boda",
+              "path": "/es/simbolos/boda"
+            },
+            "de": {
+              "slug": "hochzeit",
+              "path": "/de/traumsymbole/hochzeit"
+            },
+            "it": {
+              "slug": "matrimonio",
+              "path": "/it/simboli/matrimonio"
+            }
+          }
+        },
+        "symbol.hospital": {
+          "id": "symbol.hospital",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "hospital",
+          "locales": {
+            "en": {
+              "slug": "hospital",
+              "path": "/en/symbols/hospital"
+            },
+            "fr": {
+              "slug": "hopital",
+              "path": "/fr/symboles/hopital"
+            },
+            "es": {
+              "slug": "hospital",
+              "path": "/es/simbolos/hospital"
+            },
+            "de": {
+              "slug": "krankenhaus",
+              "path": "/de/traumsymbole/krankenhaus"
+            },
+            "it": {
+              "slug": "ospedale",
+              "path": "/it/simboli/ospedale"
+            }
+          }
+        },
+        "symbol.running": {
+          "id": "symbol.running",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "running",
+          "locales": {
+            "en": {
+              "slug": "running",
+              "path": "/en/symbols/running"
+            },
+            "fr": {
+              "slug": "courir",
+              "path": "/fr/symboles/courir"
+            },
+            "es": {
+              "slug": "correr",
+              "path": "/es/simbolos/correr"
+            },
+            "de": {
+              "slug": "rennen",
+              "path": "/de/traumsymbole/rennen"
+            },
+            "it": {
+              "slug": "correre",
+              "path": "/it/simboli/correre"
+            }
+          }
+        },
+        "symbol.school": {
+          "id": "symbol.school",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "school",
+          "locales": {
+            "en": {
+              "slug": "school",
+              "path": "/en/symbols/school"
+            },
+            "fr": {
+              "slug": "ecole",
+              "path": "/fr/symboles/ecole"
+            },
+            "es": {
+              "slug": "escuela",
+              "path": "/es/simbolos/escuela"
+            },
+            "de": {
+              "slug": "schule",
+              "path": "/de/traumsymbole/schule"
+            },
+            "it": {
+              "slug": "scuola",
+              "path": "/it/simboli/scuola"
+            }
+          }
+        },
+        "symbol.pregnancy": {
+          "id": "symbol.pregnancy",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "pregnancy",
+          "locales": {
+            "en": {
+              "slug": "pregnancy",
+              "path": "/en/symbols/pregnancy"
+            },
+            "fr": {
+              "slug": "grossesse",
+              "path": "/fr/symboles/grossesse"
+            },
+            "es": {
+              "slug": "embarazo",
+              "path": "/es/simbolos/embarazo"
+            },
+            "de": {
+              "slug": "schwangerschaft",
+              "path": "/de/traumsymbole/schwangerschaft"
+            },
+            "it": {
+              "slug": "gravidanza",
+              "path": "/it/simboli/gravidanza"
+            }
+          }
+        },
+        "symbol.swimming": {
+          "id": "symbol.swimming",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "swimming",
+          "locales": {
+            "en": {
+              "slug": "swimming",
+              "path": "/en/symbols/swimming"
+            },
+            "fr": {
+              "slug": "nager",
+              "path": "/fr/symboles/nager"
+            },
+            "es": {
+              "slug": "nadar",
+              "path": "/es/simbolos/nadar"
+            },
+            "de": {
+              "slug": "schwimmen",
+              "path": "/de/traumsymbole/schwimmen"
+            },
+            "it": {
+              "slug": "nuotare",
+              "path": "/it/simboli/nuotare"
+            }
+          }
+        },
+        "symbol.crying": {
+          "id": "symbol.crying",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "crying",
+          "locales": {
+            "en": {
+              "slug": "crying",
+              "path": "/en/symbols/crying"
+            },
+            "fr": {
+              "slug": "pleurer",
+              "path": "/fr/symboles/pleurer"
+            },
+            "es": {
+              "slug": "llorar",
+              "path": "/es/simbolos/llorar"
+            },
+            "de": {
+              "slug": "weinen",
+              "path": "/de/traumsymbole/weinen"
+            },
+            "it": {
+              "slug": "piangere",
+              "path": "/it/simboli/piangere"
+            }
+          }
+        },
+        "symbol.elevator": {
+          "id": "symbol.elevator",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "elevator",
+          "locales": {
+            "en": {
+              "slug": "elevator",
+              "path": "/en/symbols/elevator"
+            },
+            "fr": {
+              "slug": "ascenseur",
+              "path": "/fr/symboles/ascenseur"
+            },
+            "es": {
+              "slug": "ascensor",
+              "path": "/es/simbolos/ascensor"
+            },
+            "de": {
+              "slug": "aufzug",
+              "path": "/de/traumsymbole/aufzug"
+            },
+            "it": {
+              "slug": "ascensore",
+              "path": "/it/simboli/ascensore"
+            }
+          }
+        },
+        "symbol.cliff": {
+          "id": "symbol.cliff",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "cliff",
+          "locales": {
+            "en": {
+              "slug": "cliff",
+              "path": "/en/symbols/cliff"
+            },
+            "fr": {
+              "slug": "falaise",
+              "path": "/fr/symboles/falaise"
+            },
+            "es": {
+              "slug": "acantilado",
+              "path": "/es/simbolos/acantilado"
+            },
+            "de": {
+              "slug": "klippe",
+              "path": "/de/traumsymbole/klippe"
+            },
+            "it": {
+              "slug": "scogliera",
+              "path": "/it/simboli/scogliera"
+            }
+          }
+        },
+        "symbol.lost": {
+          "id": "symbol.lost",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "lost",
+          "locales": {
+            "en": {
+              "slug": "lost",
+              "path": "/en/symbols/lost"
+            },
+            "fr": {
+              "slug": "perdu",
+              "path": "/fr/symboles/perdu"
+            },
+            "es": {
+              "slug": "perdido",
+              "path": "/es/simbolos/perdido"
+            },
+            "de": {
+              "slug": "verirrt",
+              "path": "/de/traumsymbole/verirrt"
+            },
+            "it": {
+              "slug": "perdersi",
+              "path": "/it/simboli/perdersi"
+            }
+          }
+        },
+        "symbol.wolf": {
+          "id": "symbol.wolf",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "wolf",
+          "locales": {
+            "en": {
+              "slug": "wolf",
+              "path": "/en/symbols/wolf"
+            },
+            "fr": {
+              "slug": "loup",
+              "path": "/fr/symboles/loup"
+            },
+            "es": {
+              "slug": "lobo",
+              "path": "/es/simbolos/lobo"
+            },
+            "de": {
+              "slug": "wolf",
+              "path": "/de/traumsymbole/wolf"
+            },
+            "it": {
+              "slug": "lupo",
+              "path": "/it/simboli/lupo"
+            }
+          }
+        },
+        "symbol.horse": {
+          "id": "symbol.horse",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "horse",
+          "locales": {
+            "en": {
+              "slug": "horse",
+              "path": "/en/symbols/horse"
+            },
+            "fr": {
+              "slug": "cheval",
+              "path": "/fr/symboles/cheval"
+            },
+            "es": {
+              "slug": "caballo",
+              "path": "/es/simbolos/caballo"
+            },
+            "de": {
+              "slug": "pferd",
+              "path": "/de/traumsymbole/pferd"
+            },
+            "it": {
+              "slug": "cavallo",
+              "path": "/it/simboli/cavallo"
+            }
+          }
+        },
+        "symbol.ex-partner": {
+          "id": "symbol.ex-partner",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ex-partner",
+          "locales": {
+            "en": {
+              "slug": "ex-partner",
+              "path": "/en/symbols/ex-partner"
+            },
+            "fr": {
+              "slug": "ex-partenaire",
+              "path": "/fr/symboles/ex-partenaire"
+            },
+            "es": {
+              "slug": "ex-pareja",
+              "path": "/es/simbolos/ex-pareja"
+            },
+            "de": {
+              "slug": "ex-partner",
+              "path": "/de/traumsymbole/ex-partner"
+            },
+            "it": {
+              "slug": "ex-partner",
+              "path": "/it/simboli/ex-partner"
+            }
+          }
+        },
+        "symbol.rainbow": {
+          "id": "symbol.rainbow",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "rainbow",
+          "locales": {
+            "en": {
+              "slug": "rainbow",
+              "path": "/en/symbols/rainbow"
+            },
+            "fr": {
+              "slug": "arc-en-ciel",
+              "path": "/fr/symboles/arc-en-ciel"
+            },
+            "es": {
+              "slug": "arcoiris",
+              "path": "/es/simbolos/arcoiris"
+            },
+            "de": {
+              "slug": "regenbogen",
+              "path": "/de/traumsymbole/regenbogen"
+            },
+            "it": {
+              "slug": "arcobaleno",
+              "path": "/it/simboli/arcobaleno"
+            }
+          }
+        },
+        "symbol.storm": {
+          "id": "symbol.storm",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "storm",
+          "locales": {
+            "en": {
+              "slug": "storm",
+              "path": "/en/symbols/storm"
+            },
+            "fr": {
+              "slug": "orage",
+              "path": "/fr/symboles/orage"
+            },
+            "es": {
+              "slug": "tormenta",
+              "path": "/es/simbolos/tormenta"
+            },
+            "de": {
+              "slug": "sturm",
+              "path": "/de/traumsymbole/sturm"
+            },
+            "it": {
+              "slug": "tempesta",
+              "path": "/it/simboli/tempesta"
+            }
+          }
+        },
+        "symbolCategory.nature": {
+          "id": "symbolCategory.nature",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "nature",
+          "locales": {
+            "en": {
+              "slug": "nature",
+              "path": "/en/symbols/nature"
+            },
+            "fr": {
+              "slug": "nature",
+              "path": "/fr/symboles/nature"
+            },
+            "es": {
+              "slug": "naturaleza",
+              "path": "/es/simbolos/naturaleza"
+            },
+            "de": {
+              "slug": "natur",
+              "path": "/de/traumsymbole/natur"
+            },
+            "it": {
+              "slug": "natura",
+              "path": "/it/simboli/natura"
+            }
+          }
+        },
+        "symbolCategory.animals": {
+          "id": "symbolCategory.animals",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "animals",
+          "locales": {
+            "en": {
+              "slug": "animals",
+              "path": "/en/symbols/animals"
+            },
+            "fr": {
+              "slug": "animaux",
+              "path": "/fr/symboles/animaux"
+            },
+            "es": {
+              "slug": "animales",
+              "path": "/es/simbolos/animales"
+            },
+            "de": {
+              "slug": "tiere",
+              "path": "/de/traumsymbole/tiere"
+            },
+            "it": {
+              "slug": "animali",
+              "path": "/it/simboli/animali"
+            }
+          }
+        },
+        "symbolCategory.body": {
+          "id": "symbolCategory.body",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "body",
+          "locales": {
+            "en": {
+              "slug": "body",
+              "path": "/en/symbols/body"
+            },
+            "fr": {
+              "slug": "corps",
+              "path": "/fr/symboles/corps"
+            },
+            "es": {
+              "slug": "cuerpo",
+              "path": "/es/simbolos/cuerpo"
+            },
+            "de": {
+              "slug": "koerper",
+              "path": "/de/traumsymbole/koerper"
+            },
+            "it": {
+              "slug": "corpo",
+              "path": "/it/simboli/corpo"
+            }
+          }
+        },
+        "symbolCategory.places": {
+          "id": "symbolCategory.places",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "places",
+          "locales": {
+            "en": {
+              "slug": "places",
+              "path": "/en/symbols/places"
+            },
+            "fr": {
+              "slug": "lieux",
+              "path": "/fr/symboles/lieux"
+            },
+            "es": {
+              "slug": "lugares",
+              "path": "/es/simbolos/lugares"
+            },
+            "de": {
+              "slug": "orte",
+              "path": "/de/traumsymbole/orte"
+            },
+            "it": {
+              "slug": "luoghi",
+              "path": "/it/simboli/luoghi"
+            }
+          }
+        },
+        "symbolCategory.objects": {
+          "id": "symbolCategory.objects",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "objects",
+          "locales": {
+            "en": {
+              "slug": "objects",
+              "path": "/en/symbols/objects"
+            },
+            "fr": {
+              "slug": "objets",
+              "path": "/fr/symboles/objets"
+            },
+            "es": {
+              "slug": "objetos",
+              "path": "/es/simbolos/objetos"
+            },
+            "de": {
+              "slug": "objekte",
+              "path": "/de/traumsymbole/objekte"
+            },
+            "it": {
+              "slug": "oggetti",
+              "path": "/it/simboli/oggetti"
+            }
+          }
+        },
+        "symbolCategory.actions": {
+          "id": "symbolCategory.actions",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "actions",
+          "locales": {
+            "en": {
+              "slug": "actions",
+              "path": "/en/symbols/actions"
+            },
+            "fr": {
+              "slug": "actions",
+              "path": "/fr/symboles/actions"
+            },
+            "es": {
+              "slug": "acciones",
+              "path": "/es/simbolos/acciones"
+            },
+            "de": {
+              "slug": "handlungen",
+              "path": "/de/traumsymbole/handlungen"
+            },
+            "it": {
+              "slug": "azioni",
+              "path": "/it/simboli/azioni"
+            }
+          }
+        },
+        "symbolCategory.people": {
+          "id": "symbolCategory.people",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "people",
+          "locales": {
+            "en": {
+              "slug": "people",
+              "path": "/en/symbols/people"
+            },
+            "fr": {
+              "slug": "personnes",
+              "path": "/fr/symboles/personnes"
+            },
+            "es": {
+              "slug": "personas",
+              "path": "/es/simbolos/personas"
+            },
+            "de": {
+              "slug": "menschen",
+              "path": "/de/traumsymbole/menschen"
+            },
+            "it": {
+              "slug": "persone",
+              "path": "/it/simboli/persone"
+            }
+          }
+        },
+        "symbolCategory.celestial": {
+          "id": "symbolCategory.celestial",
+          "type": "symbolCategory",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "celestial",
+          "locales": {
+            "en": {
+              "slug": "celestial",
+              "path": "/en/symbols/celestial"
+            },
+            "fr": {
+              "slug": "celeste",
+              "path": "/fr/symboles/celeste"
+            },
+            "es": {
+              "slug": "celestial",
+              "path": "/es/simbolos/celestial"
+            },
+            "de": {
+              "slug": "himmlisch",
+              "path": "/de/traumsymbole/himmlisch"
+            },
+            "it": {
+              "slug": "celeste",
+              "path": "/it/simboli/celeste"
+            }
+          }
+        }
+      }
+    }
+  }
+}
