@@ -100,6 +100,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
   </url>
   <url>
+    <loc>https://noctalia.app/de/blog/ki-schlafanalyse-traeume</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/ia-analisis-sueno-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/ki-schlafanalyse-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/ia-analisi-sonno-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/de/blog/kindertraeume-ratgeber</loc>
     <lastmod>2026-03-06</lastmod>
     <priority>0.6</priority>
@@ -164,6 +175,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-paralysis-guide"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/de/blog/schlaftag-umgebung-traeume</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaftag-umgebung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind</loc>
@@ -296,6 +318,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-incubation-guide"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/de/blog/traumkontrolle-problemloesung</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumkontrolle-problemloesung"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/traumtagebuch-erinnerung-methoden-und-routinen</loc>
@@ -1266,6 +1299,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/blog/ai-sleep-analysis-dreams</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/ia-analisis-sueno-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/ki-schlafanalyse-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/ia-analisi-sonno-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/blog/anxiety-dreams-meaning</loc>
     <lastmod>2026-03-06</lastmod>
     <priority>0.6</priority>
@@ -1308,6 +1352,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-sulla-morte-significato-e-interpretazione"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/death-dreams-meaning"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/blog/dream-control-problem-solving</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumkontrolle-problemloesung"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/dream-incubation-guide</loc>
@@ -1495,6 +1550,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/blog/sleep-day-environment-dreams</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaftag-umgebung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/sleep-paralysis-guide</loc>
@@ -2487,6 +2553,28 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
   </url>
   <url>
+    <loc>https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumkontrolle-problemloesung"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaftag-umgebung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/es/blog/diario-de-suenos</loc>
     <lastmod>2026-03-06</lastmod>
     <priority>0.6</priority>
@@ -2573,6 +2661,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/ia-analisis-sueno-suenos</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/ia-analisis-sueno-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/ki-schlafanalyse-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/ia-analisi-sonno-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/por-que-olvidamos-suenos</loc>
@@ -3708,6 +3807,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
   </url>
   <url>
+    <loc>https://noctalia.app/fr/blog/controler-reves-resolution-problemes</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumkontrolle-problemloesung"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/fr/blog/guide-cauchemars</loc>
     <lastmod>2026-03-06</lastmod>
     <priority>0.6</priority>
@@ -3785,6 +3895,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-interpretation-history"/>
   </url>
   <url>
+    <loc>https://noctalia.app/fr/blog/ia-analyse-sommeil-reves</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/ia-analisis-sueno-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/ki-schlafanalyse-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/ia-analisi-sonno-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/fr/blog/journal-de-reves</loc>
     <lastmod>2026-03-06</lastmod>
     <priority>0.6</priority>
@@ -3794,6 +3915,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumtagebuch-erinnerung-methoden-und-routinen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/journee-sommeil-environnement-reves</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaftag-umgebung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/blog/pourquoi-nous-revons-science</loc>
@@ -4918,6 +5050,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/how-to-remember-dreams"/>
   </url>
   <url>
+    <loc>https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/controler-reves-resolution-problemes"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traumkontrolle-problemloesung"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-control-problem-solving"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine</loc>
     <lastmod>2026-03-06</lastmod>
     <priority>0.6</priority>
@@ -4938,6 +5081,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/journee-sommeil-environnement-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/dia-sueno-medio-ambiente-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaftag-umgebung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti</loc>
@@ -4971,6 +5125,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/precognitive-dreams-science"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/it/blog/ia-analisi-sonno-sogni</loc>
+    <lastmod>2026-03-06</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/ia-analyse-sommeil-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/ia-analisis-sueno-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/ki-schlafanalyse-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/ia-analisi-sonno-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/ai-sleep-analysis-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera</loc>

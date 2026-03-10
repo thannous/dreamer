@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-06",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/anxiety-dreams-meaning",
-  "nextPath": "",
+  "nextPath": "/en/blog/sleep-day-environment-dreams",
   "preloadImage": "/img/blog/children-dreams-guide.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Children's Dreams: What Kids Dream About and How to Help\",\n            \"description\": \"Understand what children dream about at every age, why kids have nightmares, and how parents can help children develop a healthy relationship with dreaming.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/en/about#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/en/about\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-06\",\n            \"dateModified\": \"2026-03-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n            },\n            \"inLanguage\": \"en\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/en/blog/children-dreams-guide\"\n        }",
@@ -379,12 +379,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Anxiety Dreams: What They Mean and How to Stop Them</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/en/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">All resources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Browse all resources</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sleep-day-environment-dreams">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Sleep Day 2026: How Your Environment Transforms Your Dreams</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

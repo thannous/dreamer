@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-06",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/angsttraeume-bedeutung",
-  "nextPath": "",
+  "nextPath": "/de/blog/schlaftag-umgebung-traeume",
   "preloadImage": "/img/blog/children-dreams-guide.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Kinderträume: Wovon Kinder träumen und wie man ihnen hilft\",\n            \"description\": \"Verstehen Sie, wovon Kinder in jedem Alter träumen, warum sie Albträume haben und wie Eltern ihnen helfen können, eine gesunde Beziehung zum Träumen zu entwickeln.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Gründer & Publikationsleiter\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-06\",\n            \"dateModified\": \"2026-03-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\"\n        }",
@@ -379,12 +379,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Angstträume: Was sie bedeuten und wie man sie stoppt</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Alle Ressourcen</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Alle Ressourcen ansehen</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaftag-umgebung-traeume">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlaftag 2026: Wie Ihre Umgebung Ihre Träume verändert</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>
