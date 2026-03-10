@@ -24,6 +24,7 @@
     "validate-seo": "node ./scripts/validate-i18n-seo.js",
     "docs:build": "node ./scripts/docs-build.js",
     "docs:check": "node ./scripts/docs-check.js",
+    "docs:release-check": "node ./scripts/docs-release-check.js",
     "docs:check-links": "node ./scripts/check-docs-links.js",
     "docs:check-crosslinks": "node ./scripts/check-blog-crosslinking-plan.js",
     "serve:docs": "node ./scripts/serve-docs.js",

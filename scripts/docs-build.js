@@ -40,6 +40,14 @@ function generateBuildVersion(date = new Date()) {
   ].join('');
 }
 
+function resolveBuildVersion() {
+  const fromEnv = process.env.DOCS_BUILD_VERSION;
+  if (typeof fromEnv === 'string' && fromEnv.trim() !== '') {
+    return fromEnv.trim();
+  }
+  return generateBuildVersion();
+}
+
 function runNodeScript(relativeScriptPath, args = []) {
   const scriptPath = path.join(ROOT_DIR, relativeScriptPath);
   const result = spawnSync(process.execPath, [scriptPath, ...args], {
@@ -53,7 +61,7 @@ function runNodeScript(relativeScriptPath, args = []) {
 }
 
 function bumpAssetVersion() {
-  const version = generateBuildVersion();
+  const version = resolveBuildVersion();
   const versionPath = path.join(DOCS_SRC_DIR, 'static', 'version.txt');
   fs.writeFileSync(versionPath, `${version}\n`, 'utf8');
   console.log(`[docs-build] version.txt -> ${version}`);
