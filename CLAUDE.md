@@ -38,7 +38,7 @@ expo start
 npm run start:supabase
 
 # Run on specific platforms
-npm run android    # Android emulator
+npm run android    # Android emulator/device (standard Expo flow, no Windows-specific wrapper)
 npm run ios        # iOS simulator
 npm run web        # Web browser
 ```

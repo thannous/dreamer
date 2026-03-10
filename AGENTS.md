@@ -15,7 +15,7 @@
 - Install deps: `npm install`
 - Start (QR/dev menu): `npm run start`
 - Web: `npm run web`
-- Android emulator/device: `npm run android`
+- Android emulator/device: `npm run android` (standard `expo run:android`, cross-platform, no Windows-specific wrapper)
 - iOS simulator: `npm run ios`
 - Lint: `npm run lint` (ESLint via `eslint-config-expo`)
 - Reset starter code: `npm run reset-project`
