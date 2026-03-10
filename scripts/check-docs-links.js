@@ -20,6 +20,7 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_CONCURRENCY = 8;
@@ -261,6 +262,7 @@ async function mapLimit(items, limit, mapper) {
 }
 
 async function main() {
+  assertDocsBuildReady(path.resolve(__dirname, '..'));
   const docsDirArg = parseArg('--docs-dir=');
   const docsDirAbs = path.resolve(docsDirArg || path.join(__dirname, '../docs'));
   const checkExternal = process.argv.includes('--external');

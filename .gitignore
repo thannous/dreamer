@@ -46,6 +46,7 @@ yarn-error.*
 docs/docs-server.*.log
 docs/*.bak
 docs/**/*.bak
+.docs-build-state.json
 
 # macOS
 .DS_Store

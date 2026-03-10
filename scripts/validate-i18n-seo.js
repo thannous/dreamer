@@ -9,6 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 const {
   SUPPORTED_LANGS,
   normalizeUrl,
@@ -19,6 +20,7 @@ const {
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DOMAIN = 'https://noctalia.app';
+const ROOT_DIR = path.join(__dirname, '..');
 
 function pathToUrl(filePath) {
   let urlPath = filePath.replace(/\\/g, '/');
@@ -106,6 +108,7 @@ function parseSitemap(sitemapXml) {
 }
 
 function main() {
+  assertDocsBuildReady(ROOT_DIR);
   const errors = [];
 
   const files = findHtmlFiles(DOCS_DIR);

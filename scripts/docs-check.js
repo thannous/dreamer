@@ -6,6 +6,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 const { JSDOM } = require('jsdom');
 const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
+const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 const { normalizePrettyPath, readJson, walkFiles } = require('./lib/docs-source-utils');
 
 const SITE_MANIFEST_PATH = path.join(ROOT_DIR, 'data', 'site-manifest.json');
@@ -185,10 +186,12 @@ function assertSitemapCoverage(manifest) {
 }
 
 function main() {
+  assertDocsBuildReady(ROOT_DIR);
   runNodeScript(path.join('scripts', 'build-content-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'build-site-manifest.js'), ['--check']);
   runNodeScript(path.join('scripts', 'validate-i18n-seo.js'));
   runNodeScript(path.join('scripts', 'check-docs-links.js'));
+  runNodeScript(path.join('docs', 'scripts', 'check-site.js'));
 
   const manifest = readJson(SITE_MANIFEST_PATH);
   assertNoDuplicateCriticalMeta();

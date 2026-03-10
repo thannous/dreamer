@@ -13,8 +13,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  assertDocsBuildReady,
+  normalizeForSearch,
+} = require('../../scripts/lib/docs-check-helpers');
 
 const DOCS_ROOT = path.resolve(__dirname, '..');
+const ROOT_DIR = path.resolve(__dirname, '../..');
 const SITE_ORIGIN = 'https://noctalia.app';
 const LANGS = ['en', 'fr', 'es', 'de', 'it'];
 const LANG_DIRS = new Set(LANGS);
@@ -57,13 +62,6 @@ function visibleTextFromHtml(html) {
   out = decodeEntities(out);
   out = out.replace(/\s+/g, ' ').trim();
   return out;
-}
-
-function normalizeForSearch(str) {
-  return decodeEntities(String(str || ''))
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
 }
 
 function walkFiles(dirAbs, predicate) {
@@ -356,6 +354,7 @@ function isKnownUtilityPage(relHtml) {
 }
 
 function main() {
+  assertDocsBuildReady(ROOT_DIR);
   const htmlFilesAbs = walkFiles(DOCS_ROOT, (p) => p.endsWith('.html'));
   const htmlFilesRel = htmlFilesAbs.map((p) => path.relative(DOCS_ROOT, p)).sort();
 
