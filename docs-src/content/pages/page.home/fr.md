@@ -68,8 +68,8 @@
                             Téléchargez l'application <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
-                    <a href="#etapes-reves" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors" aria-label="Voir comment Noctalia fonctionne">
-                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Voir comment ça marche
+                    <a href="/fr/guides/dictionnaire-symboles-reves" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Explorer le dictionnaire des symboles de rêves">
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Dictionnaire des rêves
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">

@@ -66,8 +66,8 @@
                             App herunterladen <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
-                    <a href="#schritte-traeume" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors" aria-label="Erfahre, wie Noctalia funktioniert">
-                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> So funktioniert's
+                    <a href="/de/guides/traumsymbole-lexikon" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Das Traumsymbole-Lexikon entdecken">
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Traumlexikon
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">

@@ -66,8 +66,8 @@
                             Download the app <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
-                    <a href="#how-it-works-steps" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors" aria-label="See how Noctalia works">
-                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> See how it works
+                    <a href="/en/guides/dream-symbols-dictionary" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Explore the dream symbols dictionary">
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Dream Dictionary
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
