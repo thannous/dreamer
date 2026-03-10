@@ -327,7 +327,6 @@ function renderGlassNav(entryIndex, entry, lang, activeNav) {
   const locale = locales[lang];
   const dropdown = renderLanguageDropdown(entry, lang);
   const resourcesHref = routePath(entryIndex, 'blog.index', lang);
-  const dictionaryHref = routePath(entryIndex, 'guide.dictionary', lang);
 
   return [
     '    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-6" data-compact-class="py-2">',
@@ -340,7 +339,6 @@ function renderGlassNav(entryIndex, entry, lang, activeNav) {
     `                <a href="/${lang}/#${locale.navHowItWorksAnchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${escapeHtml(locale.navHowItWorks)}</a>`,
     `                <a href="/${lang}/#${locale.navFeaturesAnchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${escapeHtml(locale.navFeatures)}</a>`,
     `                <a href="${resourcesHref}" class="${navLinkClass(activeNav === 'resources', true)}">${escapeHtml(locale.resources)}</a>`,
-    `                <a href="${dictionaryHref}" class="${navLinkClass(activeNav === 'dictionary', true)}">${escapeHtml(locale.dreamDictionary)}</a>`,
     '            </div>',
     '            <div class="flex items-center gap-3">',
     '                <div class="language-dropdown-wrapper relative" id="languageDropdown">',
@@ -363,7 +361,6 @@ function renderCompactNav(entryIndex, entry, lang) {
   const locale = locales[lang];
   const dropdown = renderLanguageDropdown(entry, lang);
   const resourcesHref = routePath(entryIndex, 'blog.index', lang);
-  const dictionaryHref = routePath(entryIndex, 'guide.dictionary', lang);
 
   return [
     '    <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-dream-dark/80 backdrop-blur-md border-b border-white/5">',
@@ -384,7 +381,6 @@ function renderCompactNav(entryIndex, entry, lang) {
     '                    </div>',
     '                </div>',
     `                <a href="${resourcesHref}" class="hidden md:inline-flex text-sm text-gray-400 hover:text-white transition-colors">${escapeHtml(locale.resources)}</a>`,
-    `                <a href="${dictionaryHref}" class="hidden md:inline-flex text-sm text-gray-400 hover:text-white transition-colors">${escapeHtml(locale.dreamDictionary)}</a>`,
     `                <a href="/${lang}/" class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">`,
     '                    <i data-lucide="arrow-left" class="w-4 h-4"></i>',
     `                    ${escapeHtml(locale.back)}`,

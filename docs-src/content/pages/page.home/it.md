@@ -66,8 +66,8 @@
                             Scarica l'app <i data-lucide="play" class="w-4 h-4"></i>
                         </span>
                     </a>
-                    <a href="#passi-sogni" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group hover:text-dream-salmonLight transition-colors" aria-label="Scopri come funziona Noctalia">
-                        <i data-lucide="play-circle" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Come funziona
+                    <a href="/it/guides/dizionario-simboli-sogni" class="px-8 py-4 glass-button rounded-full font-sans text-white flex items-center justify-center gap-2 group border border-dream-salmon/30 hover:border-dream-salmon hover:text-dream-salmonLight transition-colors" aria-label="Esplora il dizionario dei simboli dei sogni">
+                        <i data-lucide="book-open" class="w-5 h-5 group-hover:text-dream-salmon transition-colors"></i> Dizionario dei sogni
                     </a>
                 </div>
                 <p class="text-xs text-purple-300/60 font-sans flex items-center gap-2">
