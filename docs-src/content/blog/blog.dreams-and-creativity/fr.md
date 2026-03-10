@@ -285,7 +285,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/14737168/" rel="nofollow noopener noreferrer" target="_blank">Wagner et al. (2004), Nature : Sleep inspires insight</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/19506253/" rel="nofollow noopener noreferrer" target="_blank">Cai et al. (2009), PNAS : REM sleep and creative problem solving</a></li>
 <li><a href="https://www.apa.org/topics/sleep/creativity" rel="nofollow noopener noreferrer" target="_blank">APA : Le rôle du sommeil dans la créativité</a></li>
-<li><a href="https://www.sleepfoundation.org/how-sleep-works/how-sleep-affects-creativity" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation : Comment le sommeil affecte la créativité</a></li>
+<li><a href="https://www.sleepfoundation.org/sleep-deprivation/lack-of-sleep-and-cognitive-impairment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation : Manque de sommeil et altération cognitive</a></li>
 <li><a href="https://www.hup.harvard.edu/books/9780674013902" rel="nofollow noopener noreferrer" target="_blank">Barrett, D. (2001), The Committee of Sleep — Harvard University Press</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Mis à jour le 6 mars 2026</p>
