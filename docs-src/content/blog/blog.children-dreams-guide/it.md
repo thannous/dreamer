@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-06",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/sogni-ansia-significato",
-  "nextPath": "",
+  "nextPath": "/it/blog/giornata-sonno-ambiente-sogni",
   "preloadImage": "/img/blog/children-dreams-guide.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sogni dei bambini: di cosa sognano e come aiutarli\",\n            \"description\": \"Scopri di cosa sognano i bambini a ogni età, perché hanno incubi e come i genitori possono aiutarli a sviluppare un rapporto sano con il mondo dei sogni.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-06\",\n            \"dateModified\": \"2026-03-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/guida-sogni-bambini\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1800,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/it/blog/guida-sogni-bambini\"\n        }",
@@ -379,12 +379,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Sogni d'ansia: cosa significano e come fermarli</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Tutte le risorse</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Vedi tutte le risorse</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="giornata-sonno-ambiente-sogni">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Giornata del Sonno 2026: come il tuo ambiente trasforma i tuoi sogni</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

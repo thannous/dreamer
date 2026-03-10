@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-anxiete-signification",
-  "nextPath": "",
+  "nextPath": "/fr/blog/journee-sommeil-environnement-reves",
   "preloadImage": "/img/blog/children-dreams-guide.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Les rêves des enfants : de quoi rêvent les enfants et comment les aider\",\n            \"description\": \"Comprenez de quoi rêvent les enfants à chaque âge, pourquoi ils font des cauchemars et comment les parents peuvent les aider à développer une relation saine avec le sommeil.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/children-dreams-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-06\",\n            \"dateModified\": \"2026-03-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-reves-enfants\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2100,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-reves-enfants\"\n        }",
@@ -379,12 +379,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Rêves d'anxiété : ce qu'ils signifient et comment les arrêter</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/fr/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Toutes les ressources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Parcourir toutes les ressources</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="journee-sommeil-environnement-reves">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Journée du sommeil 2026 : environnement et rêves</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

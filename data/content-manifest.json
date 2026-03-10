@@ -40,6 +40,34 @@
             }
           }
         },
+        "blog.ai-sleep-analysis": {
+          "id": "blog.ai-sleep-analysis",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "ai-sleep-analysis-dreams",
+          "locales": {
+            "en": {
+              "slug": "ai-sleep-analysis-dreams",
+              "path": "/en/blog/ai-sleep-analysis-dreams"
+            },
+            "fr": {
+              "slug": "ia-analyse-sommeil-reves",
+              "path": "/fr/blog/ia-analyse-sommeil-reves"
+            },
+            "es": {
+              "slug": "ia-analisis-sueno-suenos",
+              "path": "/es/blog/ia-analisis-sueno-suenos"
+            },
+            "de": {
+              "slug": "ki-schlafanalyse-traeume",
+              "path": "/de/blog/ki-schlafanalyse-traeume"
+            },
+            "it": {
+              "slug": "ia-analisi-sonno-sogni",
+              "path": "/it/blog/ia-analisi-sonno-sogni"
+            }
+          }
+        },
         "blog.anxiety-dreams-meaning": {
           "id": "blog.anxiety-dreams-meaning",
           "type": "blogArticle",
@@ -149,6 +177,34 @@
             "it": {
               "slug": "sogni-sulla-morte-significato-e-interpretazione",
               "path": "/it/blog/sogni-sulla-morte-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.dream-control-problem-solving": {
+          "id": "blog.dream-control-problem-solving",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-control-problem-solving",
+          "locales": {
+            "en": {
+              "slug": "dream-control-problem-solving",
+              "path": "/en/blog/dream-control-problem-solving"
+            },
+            "fr": {
+              "slug": "controler-reves-resolution-problemes",
+              "path": "/fr/blog/controler-reves-resolution-problemes"
+            },
+            "es": {
+              "slug": "controlar-suenos-resolucion-problemas",
+              "path": "/es/blog/controlar-suenos-resolucion-problemas"
+            },
+            "de": {
+              "slug": "traumkontrolle-problemloesung",
+              "path": "/de/blog/traumkontrolle-problemloesung"
+            },
+            "it": {
+              "slug": "controllare-sogni-risoluzione-problemi",
+              "path": "/it/blog/controllare-sogni-risoluzione-problemi"
             }
           }
         },
@@ -625,6 +681,34 @@
             "it": {
               "slug": "sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello",
               "path": "/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"
+            }
+          }
+        },
+        "blog.sleep-day-environment-dreams": {
+          "id": "blog.sleep-day-environment-dreams",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sleep-day-environment-dreams",
+          "locales": {
+            "en": {
+              "slug": "sleep-day-environment-dreams",
+              "path": "/en/blog/sleep-day-environment-dreams"
+            },
+            "fr": {
+              "slug": "journee-sommeil-environnement-reves",
+              "path": "/fr/blog/journee-sommeil-environnement-reves"
+            },
+            "es": {
+              "slug": "dia-sueno-medio-ambiente-suenos",
+              "path": "/es/blog/dia-sueno-medio-ambiente-suenos"
+            },
+            "de": {
+              "slug": "schlaftag-umgebung-traeume",
+              "path": "/de/blog/schlaftag-umgebung-traeume"
+            },
+            "it": {
+              "slug": "giornata-sonno-ambiente-sogni",
+              "path": "/it/blog/giornata-sonno-ambiente-sogni"
             }
           }
         },

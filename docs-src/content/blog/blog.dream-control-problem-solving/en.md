@@ -1,0 +1,332 @@
+---
+{
+  "pageId": "blog.dream-control-problem-solving",
+  "layout": "blogArticle",
+  "lang": "en",
+  "slug": "dream-control-problem-solving",
+  "title": "Controlling Your Dreams to Solve Problems: The Study That Changes Everything | Noctalia",
+  "description": "Northwestern's 2026 study shows TMR can direct dreams toward specific problems, doubling the resolution rate. Discover this scientific breakthrough.",
+  "robots": "max-image-preview:large",
+  "themeColor": "#0a0514",
+  "htmlClass": "scroll-smooth blog-article",
+  "bodyClass": "bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden",
+  "bodyStyle": "background-color: #0a0514;",
+  "mainClass": "pt-32 pb-20 px-4",
+  "ogType": "article",
+  "ogTitle": "Controlling Your Dreams to Solve Problems: The Study That Changes Everything | Noctalia",
+  "ogDescription": "Northwestern's 2026 study shows TMR can direct dreams toward specific problems, doubling the resolution rate. Discover this scientific breakthrough.",
+  "ogImage": "https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp",
+  "ogImageAlt": "Luminous brain solving puzzles during sleep in dreamy purple and golden tones",
+  "twitterCard": "summary_large_image",
+  "twitterTitle": "Controlling Your Dreams to Solve Problems: The Study That Changes Everything | Noctalia",
+  "twitterDescription": "Northwestern's 2026 study shows TMR can direct dreams toward specific problems, doubling the resolution rate. Discover this scientific breakthrough.",
+  "twitterImage": "https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp",
+  "twitterImageAlt": "Luminous brain solving puzzles during sleep in dreamy purple and golden tones",
+  "publishedTime": "2026-03-14",
+  "modifiedTime": "2026-03-14",
+  "author": "Thanh Chau",
+  "prevPath": "/en/blog/ai-sleep-analysis-dreams",
+  "nextPath": "",
+  "preloadImage": "/img/blog/controler-reves-resolution-problemes.webp",
+  "jsonLd": [
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Controlling Your Dreams to Solve Problems: The Study That Changes Everything\",\n            \"description\": \"Northwestern's 2026 study shows TMR can direct dreams toward specific problems, doubling the resolution rate. Discover this scientific breakthrough.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/en/about#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/en/about\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-14\",\n            \"dateModified\": \"2026-03-14\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/en/blog/dream-control-problem-solving\"\n            },\n            \"inLanguage\": \"en\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/en/blog/dream-control-problem-solving\"\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/en/blog/dream-control-problem-solving\",\n    \"url\": \"https://noctalia.app/en/blog/dream-control-problem-solving\",\n    \"name\": \"Controlling Your Dreams to Solve Problems: The Study That Changes Everything | Noctalia\",\n    \"inLanguage\": \"en\",\n    \"reviewedBy\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n    }\n}",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Can you really control the content of your dreams?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Yes, TMR (Targeted Memory Reactivation) studies show that external sound cues during sleep can influence dream content. The Northwestern study doubled problem-solving rates by directing dreams toward specific puzzles through associated sounds replayed during sleep.\" } },\n                { \"@type\": \"Question\", \"name\": \"What is the difference between TMR and lucid dreaming?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"TMR uses external cues during sleep to reactivate memories without requiring awareness of dreaming. Lucid dreaming involves conscious awareness within the dream state. Both approaches can aid problem-solving, but through fundamentally different mechanisms.\" } },\n                { \"@type\": \"Question\", \"name\": \"Can I use this technique at home?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"A simplified version is possible: associate a distinctive sound with a problem you're working on, then play it softly during sleep. Results won't match lab conditions, but the principle of memory reactivation applies. Combine with dream journaling to track results.\" } }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://noctalia.app/en/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Resources\", \"item\": \"https://noctalia.app/en/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Dream Control\", \"item\": \"https://noctalia.app/en/blog/dream-control-problem-solving\" }\n            ]\n        }"
+  ],
+  "activeNav": "resources"
+}
+---
+<article class="max-w-5xl mx-auto">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
+<ol class="flex items-center gap-2 flex-wrap" itemscope="" itemtype="https://schema.org/BreadcrumbList">
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+<a class="hover:text-dream-salmon transition-colors" href="/en/" itemprop="item"><span itemprop="name">Home</span></a>
+<meta content="1" itemprop="position">
+</li>
+<li class="text-purple-400">/</li>
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+<a class="hover:text-dream-salmon transition-colors" href="/en/blog/" itemprop="item"><span itemprop="name">Resources</span></a>
+<meta content="2" itemprop="position">
+</li>
+<li class="text-purple-400">/</li>
+<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+<span class="text-dream-cream" itemprop="name">Dream Control</span>
+<meta content="3" itemprop="position">
+</li>
+</ol>
+</nav>
+<!-- Article Header -->
+<header class="mb-12">
+<div class="flex flex-wrap items-center gap-3 mb-6">
+<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Science</span>
+<span aria-hidden="true" class="w-full sm:hidden"></span>
+<span class="text-sm text-purple-300/60">Published March 14, 2026</span>
+<span class="text-sm text-purple-300/60">5 min read</span>
+</div>
+<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                    Controlling Your Dreams to Solve Problems: The Study That Changes Everything
+                </h1>
+<p class="text-lg text-purple-200/80 leading-relaxed">
+                    What if your dreams could help you crack a problem you've been mulling over for days? In February 2026, a team from Northwestern published a study that shakes our understanding of creative sleep: by replaying a simple sound during the night, researchers steered dream content toward a specific puzzle and doubled the resolution rate. Here's what this breakthrough means for dream science and how you might put it to use.
+                </p>
+</header>
+<!-- Author Byline (E-E-A-T) -->
+<div class="flex items-center gap-3 mb-8 text-sm text-purple-200/70">
+<div class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center flex-shrink-0">
+<i class="w-5 h-5 text-dream-salmon" data-lucide="pen-tool"></i>
+</div>
+<div>
+<span class="text-dream-cream font-medium">Thanh Chau</span>
+<span class="block text-xs text-purple-300/60">Founder &amp; Publication Director · <a class="text-dream-salmon hover:underline" href="/en/about">About our editorial process</a></span>
+</div>
+</div>
+<!-- Quick Answer (AI SEO) -->
+<section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
+<h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Quick answer</h2>
+<p class="text-purple-100/80 leading-relaxed">Researchers at Northwestern demonstrated in 2026 that Targeted Memory Reactivation (TMR) -- replaying a sound associated with a problem during sleep -- can steer dream content toward that specific problem and double the resolution rate (from 20% to 40%). Combined with breakthroughs in two-way communication with lucid dreamers, this research opens concrete possibilities for using dreams as a problem-solving tool.</p>
+</section>
+<!-- Featured Image -->
+<figure class="mb-12 rounded-2xl overflow-hidden">
+<img alt="Luminous brain solving puzzles during sleep in dreamy purple and golden tones" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/controler-reves-resolution-problemes.webp" srcset="../../img/blog/controler-reves-resolution-problemes-480w.webp 480w, ../../img/blog/controler-reves-resolution-problemes-800w.webp 800w, ../../img/blog/controler-reves-resolution-problemes-1200w.webp 1200w" width="1200">
+</figure>
+<!-- Table of Contents -->
+<nav class="glass-panel rounded-2xl p-6 mb-12">
+<h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
+<i class="w-5 h-5 text-dream-salmon" data-lucide="list"></i> Table of Contents
+                </h2>
+<ol class="space-y-2 text-sm text-purple-200/70">
+<li><a class="toc-link block" href="#northwestern">1. The Northwestern experiment: directing dreams toward a problem</a></li>
+<li><a class="toc-link block" href="#tmr">2. Targeted Memory Reactivation (TMR): how it works</a></li>
+<li><a class="toc-link block" href="#two-way">3. Communicating with a dreamer: the breakthrough</a></li>
+<li><a class="toc-link block" href="#history">4. Famous precedents</a></li>
+<li><a class="toc-link block" href="#practice">5. Practical techniques inspired by research</a></li>
+<li><a class="toc-link block" href="#limits">6. Scientific limitations and next steps</a></li>
+</ol>
+</nav>
+<!-- Article Content -->
+<div class="prose max-w-none text-gray-300">
+<h2 id="northwestern">The Northwestern Experiment: Directing Dreams Toward a Problem</h2>
+<p>
+                    In February 2026, Karen Konkoly's team at Northwestern University published a study in <em>Neuroscience of Consciousness</em> that immediately rippled through the scientific community. The protocol was elegant in its simplicity: participants worked on a logic puzzle in the evening, then fell asleep in a sleep laboratory. During the night, researchers replayed a specific sound -- one previously associated with the puzzle -- during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> phases.
+                </p>
+<p>
+                    The results exceeded expectations. Participants exposed to the puzzle-linked sound not only dreamed more about the problem in question but <strong>doubled their resolution rate upon waking</strong>, jumping from 20% (control group) to 40%. Better yet, dream reports revealed that dream content directly incorporated puzzle elements -- symbols of <a class="text-dream-salmon hover:underline" href="../symbols/key">keys</a>, <a class="text-dream-salmon hover:underline" href="../symbols/door">doors</a> opening, pieces fitting together -- as though the sleeping brain was actively working on the problem.
+                </p>
+<p>
+                    This is not the first time science has explored the link between sleep and problem-solving. But it is the first rigorous demonstration that you can <strong>deliberately steer</strong> dream content toward a specific problem and derive a measurable cognitive benefit. The difference from previous work lies in the method employed: Targeted Memory Reactivation.
+                </p>
+
+<h2 id="tmr">Targeted Memory Reactivation (TMR): How It Works</h2>
+<h3>A sound associated with a task, replayed during sleep</h3>
+<p>
+                    TMR rests on a straightforward neuroscientific principle: the brain consolidates memories during sleep by spontaneously "replaying" them. Researchers discovered that by replaying a sensory cue -- typically a sound or an odor -- associated with recent learning, you can <strong>selectively amplify the consolidation of that memory</strong> over others.
+                </p>
+<p>
+                    In the Northwestern study, each puzzle was paired with a distinctive sound during the learning phase. When that same sound was replayed during REM sleep, the brain preferentially reactivated neural networks related to the puzzle. The result: the problem infiltrated the dreams and received additional cognitive processing.
+                </p>
+<h3>What happens in the brain during TMR</h3>
+<p>
+                    Brain imaging shows that during TMR, the hippocampus (memory center) and the prefrontal cortex (reasoning) synchronize in an unusual way. This synchronization, normally rare during REM sleep (when the prefrontal cortex is largely deactivated), creates a window where the brain can simultaneously <strong>access memories and reason creatively</strong>. Paradoxically, waking consciousness makes this combination harder, because our conscious thoughts follow rigidly logical paths.
+                </p>
+<h3>Difference from traditional dream incubation</h3>
+<p>
+                    <a class="text-dream-salmon hover:underline" href="dream-incubation-guide">Dream incubation</a> -- thinking intensely about a problem before falling asleep -- is an ancient technique documented since Greek antiquity. It works, but unpredictably. TMR adds a physiological lever: by replaying a cue during sleep, you don't merely hope the brain will process the right subject -- you <strong>actively guide it</strong>. The Northwestern study shows this guidance raises the success rate from roughly 20% to 40%, a statistically significant difference.
+                </p>
+
+<h2 id="two-way">Communicating With a Dreamer: The Breakthrough</h2>
+<h3>Multi-laboratory experiments (Northwestern, France, Germany, Netherlands)</h3>
+<p>
+                    The 2026 study builds on a broader research current launched by a stunning 2021 discovery. That year, four independent laboratories -- Northwestern (US), CNRS Paris (France), Osnabruck University (Germany), and Radboud University (Netherlands) -- simultaneously published in <em>Current Biology</em> the results of a coordinated experiment: for the first time, researchers had <strong>successfully communicated in real time with lucid dreamers</strong>.
+                </p>
+<h3>How researchers "talk" to lucid dreamers</h3>
+<p>
+                    Participants trained in <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">lucid dreaming</a> received stimuli during REM sleep -- verbal questions, light signals, or tactile sequences. The lucid dreamers could respond from within the dream using predefined eye movements or facial muscle contractions, detected by electro-oculography and electromyography. The results were remarkable: dreamers correctly answered simple arithmetic questions (such as "8 minus 6?") and yes/no questions, with a <strong>correct response rate of 18% and a partially correct rate of 17%</strong> -- well above chance.
+                </p>
+<p>
+                    What makes these results revolutionary is that they prove the dreaming brain is not a closed system. It can receive information from the outside, process it, and send back coherent responses -- all without interrupting the dream. Combined with TMR, this capability opens the path to truly guided problem-solving sessions during sleep.
+                </p>
+
+<h2 id="history">Famous Precedents</h2>
+<p>
+                    The idea that dreams solve problems is not new. Kekule reportedly glimpsed the ring structure of benzene in a dream of a snake biting its own tail. Paul McCartney claims he heard the melody of <em>Yesterday</em> while dreaming. Elias Howe credits a nightmare for inspiring the sewing machine needle design. These anecdotes, though famous, remained just that -- impossible to verify or replicate. For a thorough exploration of these precedents, see our article on <a class="text-dream-salmon hover:underline" href="dreams-and-creativity">dreams and creativity</a>.
+                </p>
+<p>
+                    What recent research brings that is radically new is <strong>reproducibility</strong>. TMR does not depend on individual genius or a stroke of luck: it is a standardized protocol that produces measurable and replicable results. And it is precisely this shift from anecdote to science that makes the Northwestern study so important.
+                </p>
+</div>
+
+<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-dream-salmon/10 rounded-xl">
+<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
+</div>
+<div>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Harness your dreams with guided incubation</h4>
+<p class="text-sm text-gray-400 mb-4">Noctalia helps you practice dream incubation: set your intention before bed, record dreams by voice upon waking, and let AI identify connections between your problems and your dream content.</p>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/">
+                                Start incubating with Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
+</a>
+</div>
+</div>
+</aside>
+
+<div class="prose max-w-none text-gray-300">
+<h2 id="practice">Practical Techniques Inspired by Research</h2>
+<h3>Adapting TMR at home (simplified version)</h3>
+<p>
+                    If you don't have access to a sleep laboratory, a simplified version of TMR remains within reach. The principle: create a <strong>strong association between a sound and a problem</strong>, then leverage that association during sleep. Here is a practical four-step adaptation:
+                </p>
+<ul>
+<li><strong>Choose a distinctive sound:</strong> a short melody, a chime, or a nature sound you don't normally use. Avoid alarms or phone ringtones that would trigger waking.</li>
+<li><strong>Work on your problem with the sound:</strong> for 20 to 30 minutes before bed, actively think about the problem while playing the sound on a loop at low volume. Your brain will build the neural association.</li>
+<li><strong>Replay the sound during sleep:</strong> set the sound at a very low volume (barely audible) to play during the second half of the night, when REM sleep phases are longest and most conducive to dreaming.</li>
+<li><strong>Record your dreams upon waking:</strong> use a dream journal -- ideally voice-based, to capture details before they fade. Look for connections between dream content and your problem.</li>
+</ul>
+<p>
+                    Results won't be as striking as in the lab, where researchers can precisely target REM sleep phases using EEG. But the fundamental principle -- <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">remembering your dreams</a> and using them as a space for reflection -- remains valid and accessible to everyone.
+                </p>
+<h3>Combining incubation and sound cues</h3>
+<p>
+                    To maximize your chances, combine simplified TMR with classic dream incubation. Before falling asleep, clearly state your problem as a question: "How can I solve X?" Visualize yourself finding the solution. Then let the associated sound work through the night. This dual approach -- intentional and sensory -- engages both conscious and unconscious brain processes.
+                </p>
+<p>
+                    Dreams featuring symbols of <a class="text-dream-salmon hover:underline" href="../symbols/mirror">mirrors</a> (reflection, introspection), <a class="text-dream-salmon hover:underline" href="../symbols/stairs">stairs</a> (progression, stages), or keys (solutions, access) can be indicators that your brain is actively processing the problem. Note them carefully.
+                </p>
+
+<h2 id="limits">Scientific Limitations and Next Steps</h2>
+<p>
+                    Despite justified excitement, several limitations deserve attention. First, the Northwestern study used <strong>lab-based logic puzzles</strong>, not complex real-life problems. It remains unknown whether TMR would be equally effective for resolving a relationship conflict, devising a business strategy, or unblocking a creative writing project.
+                </p>
+<p>
+                    Second, TMR requires <strong>precise timing</strong>. In the lab, sounds are triggered only during REM sleep, identified by EEG. At home, this targeting is approximate at best. Consumer sleep-tracking devices are improving, but their accuracy remains limited compared to clinical polysomnography.
+                </p>
+<p>
+                    Third, individual effects vary considerably. Some participants showed no improvement, while others solved puzzles the control group never cracked. The factors that determine this variability -- sleep quality, dream recall ability, personality traits -- are the subject of active research.
+                </p>
+<p>
+                    Finally, two-way communication with dreamers remains limited to <strong>trained lucid dreamers</strong>, who represent only a fraction of the population. Future research will need to determine whether similar techniques can work with non-lucid dreamers, which would make them accessible to a much broader audience.
+                </p>
+<p>
+                    Despite these limitations, the trajectory is clear. Dream science is shifting from a descriptive discipline -- "what do we dream?" -- to an interventional one -- "how can we use dreams?" And the early results are promising.
+                </p>
+</div>
+<!-- CTA Section -->
+<aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="lightbulb"></i>
+</div>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Turn your nights into creativity sessions</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+                    Noctalia helps you capture dreams by voice, identify creative patterns, and practice dream incubation. Your next eureka moment might be hiding in your dreams.
+                </p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/en/">
+                    Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
+</a>
+</aside>
+<!-- FAQ Section -->
+<section class="mt-16">
+<h2 class="font-serif text-2xl text-dream-cream mb-8">Frequently Asked Questions</h2>
+<div class="space-y-4">
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Can you really control the content of your dreams?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            Yes, TMR (Targeted Memory Reactivation) studies show that external sound cues during sleep can influence dream content. The Northwestern study doubled problem-solving rates by directing dreams toward specific puzzles through associated sounds replayed during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            What is the difference between TMR and lucid dreaming?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            TMR uses external cues during sleep to reactivate memories without requiring awareness of dreaming. <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">Lucid dreaming</a>, by contrast, involves conscious awareness within the dream state. Both approaches can aid problem-solving, but through fundamentally different mechanisms.
+                        </p>
+</details>
+<details class="glass-panel rounded-xl p-4 group cursor-pointer">
+<summary class="font-medium flex justify-between items-center text-dream-cream">
+                            Can I use this technique at home?
+                            <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+</summary>
+<p class="mt-4 text-sm text-gray-400 leading-relaxed">
+                            A simplified version is possible: associate a distinctive sound with a problem you're working on, then play it softly during sleep. Results won't match lab conditions, but the principle of memory reactivation applies. Combine with <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">dream journaling</a> to track results.
+                        </p>
+</details>
+</div>
+</section>
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://doi.org/10.1093/nc/niae042" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2026): Targeted memory reactivation directs dream content toward waking concerns and enhances problem solving (Neuroscience of Consciousness)</a></li>
+<li><a href="https://doi.org/10.1016/j.cub.2021.01.026" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2021): Real-time dialogue between experimenters and dreamers during REM sleep (Current Biology)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/37648418/" rel="nofollow noopener noreferrer" target="_blank">Oudiette et al. (2023): Dream incubation and problem solving (Neuroscience Research)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11583730/" rel="nofollow noopener noreferrer" target="_blank">Barrett (2001): The "Committee of Sleep": A study of dream incubation for problem solving (Dreaming)</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: March 14, 2026</p>
+</section>
+<!-- Related Symbols Start -->
+<section aria-label="Related dream symbols" class="mt-12 mb-8">
+<h2 class="font-serif text-xl mb-4 text-dream-cream flex items-center gap-2">
+<i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
+                    Explore Related Symbols
+                </h2>
+<p class="text-sm text-purple-300/60 mb-4">Dive deeper into the symbols from this article:</p>
+<div class="flex flex-wrap gap-3">
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/key">Key Dream Meaning</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/door">Door Dream Meaning</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/mirror">Mirror Dream Meaning</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../symbols/stairs">Stairs Dream Meaning</a>
+</div>
+</section>
+<!-- Related Symbols End -->
+<!-- Blog Nav Start -->
+<section aria-label="Article navigation" class="mt-12" data-blog-nav="">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<a class="glass-panel rounded-xl p-5 flex items-start gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="ai-sleep-analysis-dreams">
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
+<div>
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
+<div class="font-serif text-lg text-dream-cream mt-1">AI and Sleep Analysis: How Artificial Intelligence Decodes Your Dreams</div>
+</div>
+</a>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/en/blog/">
+<div>
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">All resources</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Browse all resources</div>
+</div>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+</a>
+</div>
+</section>
+<!-- Blog Nav End -->
+<!-- Blog Related Start -->
+<section aria-label="Read next" class="mt-12" data-blog-related="">
+<header class="mb-6">
+<h2 class="font-serif text-2xl text-dream-cream mb-2">Read next</h2>
+<p class="text-sm text-purple-300/60">More resources on the same topic</p>
+</header>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="lucid-dreaming-beginners-guide">
+<span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Lucid Dreaming for Beginners: A Complete Guide</h3>
+<p class="text-sm text-gray-400">Learn how to become aware within your dreams and direct them with proven techniques.</p>
+</a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-and-creativity">
+<span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Creativity: How Your Sleeping Brain Solves Problems</h3>
+<p class="text-sm text-gray-400">Discover how dreams fuel creativity and innovation, from Kekule to modern research.</p>
+</a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-incubation-guide">
+<span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dream Incubation Guide: Programming Your Dreams</h3>
+<p class="text-sm text-gray-400">Practical techniques to steer your dream content toward a specific topic or problem.</p>
+</a>
+</div>
+</section>
+<!-- Blog Related End -->
+</article>
