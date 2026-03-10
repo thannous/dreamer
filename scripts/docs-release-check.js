@@ -99,9 +99,20 @@ function ensureLocalDependencies() {
 function createTempWorkspace() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-release-'));
   const worktreeDir = path.join(tempRoot, 'repo');
-  run('git', ['worktree', 'add', '--detach', worktreeDir, 'HEAD'], {
-    cwd: ROOT_DIR,
-  });
+
+  let mode = 'worktree';
+  try {
+    console.log(`[docs-release-check] Preparing worktree (detached HEAD ${readHeadShortSha(ROOT_DIR)})`);
+    run('git', ['worktree', 'add', '--detach', worktreeDir, 'HEAD'], {
+      cwd: ROOT_DIR,
+      stdio: 'pipe',
+    });
+  } catch (error) {
+    mode = 'archive';
+    console.log('[docs-release-check] git worktree unavailable, falling back to git archive export.');
+    fs.mkdirSync(worktreeDir, { recursive: true });
+    exportHeadToDirectory(worktreeDir);
+  }
 
   const sourceNodeModules = path.join(ROOT_DIR, 'node_modules');
   const targetNodeModules = path.join(worktreeDir, 'node_modules');
@@ -111,7 +122,7 @@ function createTempWorkspace() {
     process.platform === 'win32' ? 'junction' : 'dir'
   );
 
-  return { tempRoot, worktreeDir };
+  return { tempRoot, worktreeDir, mode };
 }
 
 function cleanupTempWorkspace(tempWorkspace, options) {
@@ -121,11 +132,13 @@ function cleanupTempWorkspace(tempWorkspace, options) {
     return;
   }
 
-  run('git', ['worktree', 'remove', '--force', tempWorkspace.worktreeDir], {
-    cwd: ROOT_DIR,
-    allowFailure: true,
-    stdio: 'pipe',
-  });
+  if (tempWorkspace.mode === 'worktree') {
+    run('git', ['worktree', 'remove', '--force', tempWorkspace.worktreeDir], {
+      cwd: ROOT_DIR,
+      allowFailure: true,
+      stdio: 'pipe',
+    });
+  }
   fs.rmSync(tempWorkspace.tempRoot, { recursive: true, force: true });
 }
 
@@ -183,6 +196,29 @@ function main() {
     }
   } finally {
     cleanupTempWorkspace(tempWorkspace, options);
+  }
+}
+
+function readHeadShortSha(cwd) {
+  const result = run('git', ['rev-parse', '--short', 'HEAD'], {
+    cwd,
+    stdio: 'pipe',
+  });
+  return String(result.stdout || '').trim();
+}
+
+function exportHeadToDirectory(targetDir) {
+  const escapedTargetDir = targetDir.replace(/'/g, `'\\''`);
+  const result = spawnSync(
+    'bash',
+    ['-lc', `git archive --format=tar HEAD | tar -xf - -C '${escapedTargetDir}'`],
+    {
+      cwd: ROOT_DIR,
+      stdio: ['ignore', 'inherit', 'pipe'],
+    }
+  );
+  if (result.status !== 0) {
+    throw new Error(`git archive fallback failed: ${String(result.stderr || '').trim()}`);
   }
 }
 
