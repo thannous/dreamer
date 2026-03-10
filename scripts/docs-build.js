@@ -18,6 +18,11 @@ const {
   readJson,
   readSourceDocument,
 } = require('./lib/docs-source-utils');
+const {
+  markDocsBuildFailed,
+  markDocsBuildStarted,
+  markDocsBuildSucceeded,
+} = require('./lib/docs-check-helpers');
 
 function pad(number) {
   return String(number).padStart(2, '0');
@@ -52,6 +57,7 @@ function bumpAssetVersion() {
   const versionPath = path.join(DOCS_SRC_DIR, 'static', 'version.txt');
   fs.writeFileSync(versionPath, `${version}\n`, 'utf8');
   console.log(`[docs-build] version.txt -> ${version}`);
+  return version;
 }
 
 function sourcePath(kind, entryId, lang) {
@@ -140,10 +146,12 @@ function copyStaticFiles() {
 }
 
 function main() {
+  markDocsBuildStarted(ROOT_DIR);
+
   runNodeScript(path.join('scripts', 'build-content-manifest.js'));
   runNodeScript(path.join('scripts', 'build-site-manifest.js'));
 
-  bumpAssetVersion();
+  const version = bumpAssetVersion();
   cleanManagedOutputs();
   copyStaticFiles();
 
@@ -154,7 +162,13 @@ function main() {
   runNodeScript(path.join('scripts', 'fix-guides-architecture.js'));
   runNodeScript(path.join('scripts', 'generate-sitemap-v2.js'));
 
+  markDocsBuildSucceeded(ROOT_DIR, { version });
   console.log('[docs-build] Docs build complete.');
 }
 
-main();
+try {
+  main();
+} catch (error) {
+  markDocsBuildFailed(ROOT_DIR, error);
+  throw error;
+}

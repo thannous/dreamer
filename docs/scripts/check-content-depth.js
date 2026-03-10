@@ -15,6 +15,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { assertDocsBuildReady } = require('../../scripts/lib/docs-check-helpers');
 
 const args = process.argv.slice(2).reduce((acc, arg) => {
   const [key, value] = arg.replace(/^--/, '').split('=');
@@ -161,6 +162,7 @@ function classify(relHtml, i18nCategorySlugSets) {
 }
 
 function main() {
+  assertDocsBuildReady(path.resolve(__dirname, '../..'));
   const i18n = loadJson('data/symbol-i18n.json');
   const i18nCategorySlugSets = Object.fromEntries(
     LANGS.map((l) => {
