@@ -262,7 +262,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1093/nc/niae042" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2026) : Targeted memory reactivation directs dream content toward waking concerns and enhances problem solving (Neuroscience of Consciousness)</a></li>
+<li><a href="https://doi.org/10.1093/nc/niaf067" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2026) : Creative problem-solving after experimentally provoking dreams of unsolved puzzles during REM sleep (Neuroscience of Consciousness)</a></li>
 <li><a href="https://doi.org/10.1016/j.cub.2021.01.026" rel="nofollow noopener noreferrer" target="_blank">Konkoly et al. (2021) : Real-time dialogue between experimenters and dreamers during REM sleep (Current Biology)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/37648418/" rel="nofollow noopener noreferrer" target="_blank">Oudiette et al. (2023) : Dream incubation and problem solving (Neuroscience Research)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11583730/" rel="nofollow noopener noreferrer" target="_blank">Barrett (2001) : The "Committee of Sleep": A study of dream incubation for problem solving (Dreaming)</a></li>

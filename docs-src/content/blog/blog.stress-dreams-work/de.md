@@ -356,7 +356,7 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://www.apa.org/news/press/releases/stress" rel="nofollow noopener noreferrer" target="_blank">APA: Stress in America Survey</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Revonsuo (2000): The reinterpretation of Dreams – Threat Simulation Theory (PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/mental-health/stress-and-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stress and Sleep</a></li>
+<li><a href="https://www.sleepfoundation.org/insomnia/stress-and-insomnia" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stress und Schlaflosigkeit</a></li>
 <li><a href="https://www.nimh.nih.gov/health/publications/stress" rel="nofollow noopener noreferrer" target="_blank">NIMH: 5 Dinge, die Sie über Stress wissen sollten</a></li>
 <li><a href="https://www.who.int/news/item/28-05-2019-burn-out-an-occupational-phenomenon-international-classification-of-diseases" rel="nofollow noopener noreferrer" target="_blank">WHO: Burn-out an Occupational Phenomenon (ICD-11)</a></li>
 </ul>

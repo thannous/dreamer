@@ -449,7 +449,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (review, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Stages of sleep</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6082015/" rel="nofollow noopener noreferrer" target="_blank">Scarpelli et al. (2018) - The Functional Role of Dreaming in Emotional Processes (Frontiers in Psychology)</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6082015/" rel="nofollow noopener noreferrer" target="_blank">Scarpelli et al. (2018) - The Functional Role of Dreaming in Emotional Processes (Frontiers in Psychology)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Updated January 8, 2026</p>
 </section>

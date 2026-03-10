@@ -440,7 +440,7 @@
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Meccanismi cerebrali del ricordo dei sogni (recensione, PubMed)</a></li>
 <li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Fondamenti sul sonno: fasi del sonno</a></li>
 <li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net - G. William Domhoff (panoramica sulla ricerca sui sogni)</a></li>
-<li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6082015/" rel="nofollow noopener noreferrer" target="_blank">Scarpelli et al. (2018) - Il ruolo funzionale del sogno nei processi emotivi (Frontiers in Psychology)</a></li>
+<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6082015/" rel="nofollow noopener noreferrer" target="_blank">Scarpelli et al. (2018) - Il ruolo funzionale del sogno nei processi emotivi (Frontiers in Psychology)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Aggiornato l'8 gennaio 2026</p>
 </section>
