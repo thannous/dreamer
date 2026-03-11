@@ -7,6 +7,8 @@
 http://noctalia.app/* https://noctalia.app/:splat 301
 http://www.noctalia.app/* https://noctalia.app/:splat 301
 https://www.noctalia.app/* https://noctalia.app/:splat 301
+/en / 301
+/en/ / 301
 
 # Redirect index.html files to directory root
 /index.html / 301

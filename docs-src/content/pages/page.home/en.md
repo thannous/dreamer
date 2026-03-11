@@ -111,9 +111,9 @@
                               <!-- 1. Recording screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="record">
                         <picture>
-                            <source type="image/webp" srcset="../img/en/recording-480w.webp 480w, ../img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <source type="image/jpeg" srcset="../img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <img src="../img/en/recording-800w.jpg" alt="Recording your dream with your voice" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
+                            <source type="image/webp" srcset="/img/en/recording-480w.webp 480w, /img/en/recording-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="/img/en/recording-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="/img/en/recording-800w.jpg" alt="Recording your dream with your voice" class="w-full h-full object-cover" width="800" height="1609" loading="lazy" decoding="async">
                         </picture>
                     </div>
                   
@@ -133,9 +133,9 @@
                              <!-- 2. Analyzing screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="analyze">
                         <picture>
-                            <source type="image/webp" srcset="../img/en/analizing-480w.webp 480w, ../img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <source type="image/jpeg" srcset="../img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <img src="../img/en/analizing-800w.jpg" alt="Dream analysis and summary in Noctalia" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
+                            <source type="image/webp" srcset="/img/en/analizing-480w.webp 480w, /img/en/analizing-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="/img/en/analizing-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="/img/en/analizing-800w.jpg" alt="Dream analysis and summary in Noctalia" class="w-full h-full object-cover" width="800" height="1615" loading="lazy" decoding="async">
                         </picture>
                     </div>
                 </div>
@@ -153,9 +153,9 @@
                     <!-- 3. Exploring screen -->
                     <div class="mt-10 phone-frame w-[260px] md:w-[320px]" data-phone="explore">
                         <picture>
-                            <source type="image/webp" srcset="../img/en/exploring-480w.webp 480w, ../img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <source type="image/jpeg" srcset="../img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
-                            <img src="../img/en/exploring-800w.jpg" alt="Exploring insights and symbolism of your dream" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
+                            <source type="image/webp" srcset="/img/en/exploring-480w.webp 480w, /img/en/exploring-800w.webp 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <source type="image/jpeg" srcset="/img/en/exploring-800w.jpg 800w" sizes="(min-width: 768px) 320px, 80vw">
+                            <img src="/img/en/exploring-800w.jpg" alt="Exploring insights and symbolism of your dream" class="w-full h-full object-cover" width="800" height="1659" loading="lazy" decoding="async">
                         </picture>
                     </div>
                 </div>
@@ -214,9 +214,9 @@
                     <div class="relative w-full md:w-1/2 h-64 md:h-auto overflow-hidden flex items-end justify-center md:justify-end bg-black/20">
                         <div class="phone-frame w-48 transform translate-y-10 md:translate-y-16 md:translate-x-8 rotate-[-5deg] shadow-2xl border-gray-800">
                              <picture>
-                                <source type="image/webp" srcset="../img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
-                                <source type="image/jpeg" srcset="../img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
-                                <img src="../img/settings_menu-720w.jpg" alt="Recording screen" class="w-full h-full object-cover" width="720" height="1487" loading="lazy" decoding="async">
+                            <source type="image/webp" srcset="/img/settings_menu-720w.webp 720w" sizes="(min-width: 1024px) 240px, 70vw">
+                            <source type="image/jpeg" srcset="/img/settings_menu-720w.jpg 720w" sizes="(min-width: 1024px) 240px, 70vw">
+                            <img src="/img/settings_menu-720w.jpg" alt="Recording screen" class="w-full h-full object-cover" width="720" height="1487" loading="lazy" decoding="async">
                              </picture>
                         </div>
                     </div>
@@ -226,9 +226,9 @@
                 <div class="col-span-1 md:col-span-2 md:row-span-2 glass-panel rounded-3xl p-0 relative overflow-hidden group">
                      <!-- Screenshot Integration (Full Background) -->
                     <picture>
-                        <source type="image/webp" srcset="../img/dream_detail-700w.webp 700w, ../img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                        <source type="image/jpeg" srcset="../img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
-                        <img src="../img/dream_detail-1000w.jpg" alt="Dream list" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60" width="1000" height="2078" loading="lazy" decoding="async">
+                            <source type="image/webp" srcset="/img/dream_detail-700w.webp 700w, /img/dream_detail-1000w.webp 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
+                            <source type="image/jpeg" srcset="/img/dream_detail-1000w.jpg 1000w" sizes="(min-width: 1024px) 33vw, 100vw">
+                            <img src="/img/dream_detail-1000w.jpg" alt="Dream list" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-60" width="1000" height="2078" loading="lazy" decoding="async">
                     </picture>
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                     
@@ -517,85 +517,85 @@
             <!-- Popular Symbols Grid - Expanded to 16 symbols for better crawl signals -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 reveal">
                 <!-- Common Dreams -->
-                <a href="symbols/water" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/water" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💧</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Water</h3>
                     <p class="text-xs text-gray-400 mt-1">Emotions &amp; subconscious</p>
                 </a>
-                <a href="symbols/falling" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/falling" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌀</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Falling</h3>
                     <p class="text-xs text-gray-400 mt-1">Loss of control</p>
                 </a>
-                <a href="symbols/flying" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/flying" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕊️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Flying</h3>
                     <p class="text-xs text-gray-400 mt-1">Freedom &amp; transcendence</p>
                 </a>
-                <a href="symbols/teeth" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/teeth" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🦷</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Teeth</h3>
                     <p class="text-xs text-gray-400 mt-1">Anxiety &amp; self-image</p>
                 </a>
                 <!-- Animals & Nature -->
-                <a href="symbols/snake" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/snake" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐍</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Snake</h3>
                     <p class="text-xs text-gray-400 mt-1">Transformation</p>
                 </a>
-                <a href="symbols/spider" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/spider" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🕷️</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Spider</h3>
                     <p class="text-xs text-gray-400 mt-1">Creativity &amp; fear</p>
                 </a>
-                <a href="symbols/dog" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/dog" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐕</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Dog</h3>
                     <p class="text-xs text-gray-400 mt-1">Loyalty &amp; protection</p>
                 </a>
-                <a href="symbols/cat" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/cat" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🐈</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Cat</h3>
                     <p class="text-xs text-gray-400 mt-1">Independence &amp; intuition</p>
                 </a>
                 <!-- Places & Objects -->
-                <a href="symbols/house" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/house" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏠</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">House</h3>
                     <p class="text-xs text-gray-400 mt-1">The self &amp; psyche</p>
                 </a>
-                <a href="symbols/car" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/car" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🚗</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Car</h3>
                     <p class="text-xs text-gray-400 mt-1">Life direction</p>
                 </a>
-                <a href="symbols/door" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/door" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🚪</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Door</h3>
                     <p class="text-xs text-gray-400 mt-1">Opportunities</p>
                 </a>
-                <a href="symbols/fire" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/fire" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🔥</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Fire</h3>
                     <p class="text-xs text-gray-400 mt-1">Passion &amp; destruction</p>
                 </a>
                 <!-- Life Themes -->
-                <a href="symbols/death" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/death" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">💀</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Death</h3>
                     <p class="text-xs text-gray-400 mt-1">Endings &amp; rebirth</p>
                 </a>
-                <a href="symbols/being-chased" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/being-chased" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🏃</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Being Chased</h3>
                     <p class="text-xs text-gray-400 mt-1">Avoidance &amp; fear</p>
                 </a>
-                <a href="symbols/ocean" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/ocean" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌊</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Ocean</h3>
                     <p class="text-xs text-gray-400 mt-1">Deep emotions</p>
                 </a>
-                <a href="symbols/forest" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
+                <a href="/en/symbols/forest" class="glass-panel p-5 rounded-xl text-center hover:border-dream-salmon/30 transition-all hover:-translate-y-1 group">
                     <div class="text-3xl mb-3">🌲</div>
                     <h3 class="font-serif text-dream-cream group-hover:text-dream-salmon transition-colors">Forest</h3>
                     <p class="text-xs text-gray-400 mt-1">The unknown</p>
@@ -604,7 +604,7 @@
 
             <!-- CTA to full dictionary -->
             <div class="text-center reveal">
-                <a href="guides/dream-symbols-dictionary" class="inline-flex items-center gap-2 px-8 py-4 glass-button rounded-full font-sans text-white hover:text-dream-salmon transition-colors group">
+                <a href="/en/guides/dream-symbols-dictionary" class="inline-flex items-center gap-2 px-8 py-4 glass-button rounded-full font-sans text-white hover:text-dream-salmon transition-colors group">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                     Explore all 50+ symbols
                     <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>

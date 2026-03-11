@@ -73,6 +73,10 @@ function sourcePath(kind, entryId, lang) {
 }
 
 function outputPathForStaticPage(page, lang) {
+  if (page.pageId === 'page.home' && lang === 'en') {
+    return path.join(DOCS_DIR, 'index.html');
+  }
+
   const slug = page.slugs[lang];
   return slug
     ? path.join(DOCS_DIR, lang, `${slug}.html`)
@@ -111,6 +115,7 @@ function cleanManagedOutputs() {
 
 function writeManagedPages(manifest) {
   const blogEntries = manifest.collections.blog.entries;
+  const homeEntry = manifest.collections.pages.entries['page.home'];
 
   for (const page of staticPagesConfig.pages) {
     for (const lang of Object.keys(page.slugs)) {
@@ -129,6 +134,37 @@ function writeManagedPages(manifest) {
       );
     }
   }
+
+  const englishHomeOutputPath = path.join(DOCS_DIR, manifest.defaultLanguage, 'index.html');
+  const { meta: englishHomeMeta, body: englishHomeBody } = readSourceDocument(
+    sourcePath('pages', 'page.home', manifest.defaultLanguage)
+  );
+
+  ensureDir(path.dirname(englishHomeOutputPath));
+  fs.writeFileSync(
+    englishHomeOutputPath,
+    renderManagedPage({
+      manifest,
+      entryId: 'page.home',
+      meta: {
+        ...englishHomeMeta,
+        robots: 'noindex, follow',
+        currentPath: `/${manifest.defaultLanguage}/`,
+      },
+      bodyHtml: englishHomeBody,
+      entryOverride: {
+        ...homeEntry,
+        locales: {
+          ...homeEntry.locales,
+          [manifest.defaultLanguage]: {
+            ...homeEntry.locales[manifest.defaultLanguage],
+            path: `/${manifest.defaultLanguage}/`,
+          },
+        },
+      },
+    }),
+    'utf8'
+  );
 
   for (const entry of Object.values(blogEntries)) {
     for (const lang of Object.keys(entry.locales)) {

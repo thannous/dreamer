@@ -15,6 +15,7 @@ const locales = loadLocales();
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
 const dreamSymbolsData = readJson(path.join(DOCS_DIR, 'data', 'dream-symbols.json'));
 const curationPagesData = readJson(path.join(DOCS_DIR, 'data', 'curation-pages.json'));
+const AHREFS_ANALYTICS_KEY = 'qDwc7i0RM0aLBY/cZLkOxA';
 
 function stripSiteSuffix(title) {
   return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
@@ -143,6 +144,16 @@ function renderHeadScripts(meta, assetVersion) {
   return lines.join('\n');
 }
 
+function renderAnalyticsHeadScript() {
+  return [
+    '    <script',
+    '      src="https://analytics.ahrefs.com/analytics.js"',
+    `      data-key="${AHREFS_ANALYTICS_KEY}"`,
+    '      async',
+    '    ></script>',
+  ].join('\n');
+}
+
 function renderCommonHead(meta, entry, assetVersion) {
   const lang = meta.lang;
   const pagePath = entry?.locales?.[lang]?.path || meta.currentPath || '/';
@@ -231,6 +242,7 @@ function renderCommonHead(meta, entry, assetVersion) {
     '    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>',
     '    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>',
     preloadLines.join('\n'),
+    renderAnalyticsHeadScript(),
     renderStyles(meta, assetVersion),
     renderHeadScripts(meta, assetVersion),
     renderJsonLd(meta),
@@ -517,10 +529,10 @@ function renderScripts(meta, assetVersion) {
   return lines.join('\n');
 }
 
-function renderManagedPage({ manifest, entryId, meta, bodyHtml }) {
+function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = null }) {
   const assetVersion = readAssetVersion();
   const entryIndex = buildEntryIndex(manifest);
-  const entry = entryIndex.get(entryId);
+  const entry = entryOverride || entryIndex.get(entryId);
   const navHtml =
     meta.layout === 'content'
       ? renderCompactNav(entryIndex, entry, meta.lang)

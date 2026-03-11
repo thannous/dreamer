@@ -2,6 +2,17 @@ const path = require('path');
 const { DATA_DIR, DOCS_DIR, siteConfig, staticPagesConfig } = require('./docs-site-config');
 const { readJson } = require('./docs-source-utils');
 
+function getStaticPageLocalePath(page, lang) {
+  const slug = page.slugs[lang];
+  if (slug == null) return null;
+
+  if (page.pageId === 'page.home' && lang === siteConfig.defaultLanguage) {
+    return '/';
+  }
+
+  return slug ? `/${lang}/${slug}` : `/${lang}/`;
+}
+
 function buildStaticPagesCollection() {
   const entries = {};
 
@@ -11,7 +22,7 @@ function buildStaticPagesCollection() {
       const slug = page.slugs[lang];
       locales[lang] = {
         slug,
-        path: slug ? `/${lang}/${slug}` : `/${lang}/`,
+        path: getStaticPageLocalePath(page, lang),
       };
     }
 

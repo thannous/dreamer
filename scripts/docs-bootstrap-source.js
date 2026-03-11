@@ -112,9 +112,12 @@ function bootstrapStaticPages() {
   for (const page of staticPagesConfig.pages) {
     for (const lang of Object.keys(page.slugs)) {
       const slug = page.slugs[lang];
-      const sourcePath = slug
-        ? path.join(DOCS_DIR, lang, `${slug}.html`)
-        : path.join(DOCS_DIR, lang, 'index.html');
+      const sourcePath =
+        page.pageId === 'page.home' && lang === 'en'
+          ? path.join(DOCS_DIR, 'index.html')
+          : slug
+            ? path.join(DOCS_DIR, lang, `${slug}.html`)
+            : path.join(DOCS_DIR, lang, 'index.html');
 
       const document = readHtmlDocument(sourcePath);
       const source = extractPageSource(document, page.layout, {
