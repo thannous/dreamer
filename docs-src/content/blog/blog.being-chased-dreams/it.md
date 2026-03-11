@@ -299,7 +299,7 @@
                 </p>
 <h3>3. Riduci lo stress per prevenire gli incubi</h3>
 <p>
-                    Riduci l'ansia generale attraverso la meditazione, l'esercizio fisico o la terapia. <strong>Lo stress di base inferiore</strong> significa una minore attivazione dei sistemi di risposta alle minacce durante il sonno.
+                    Riduci l'ansia generale attraverso la meditazione, l'esercizio fisico o la terapia. <strong>Lo stress di base inferiore</strong> significa una minore attivazione dei sistemi di risposta alle minacce durante il sonno e può aiutarti a prevenire <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">gli incubi</a>.
                 </p>
 <h3>4. Usa i sogni lucidi per controllare i sogni di inseguimento</h3>
 <p>

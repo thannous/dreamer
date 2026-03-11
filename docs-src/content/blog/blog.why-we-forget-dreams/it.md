@@ -349,7 +349,7 @@
                 </p>
 <ul>
 <li><strong>Cessazione improvvisa dei sogni</strong> dopo averli sempre avuti: può segnalare un cambiamento nella qualità del sonno</li>
-<li><strong>Incubi molto frequenti o inquietanti</strong>: possono indicare stress eccessivo o traumi irrisolti</li>
+<li><strong><a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">Incubi molto frequenti o inquietanti</a></strong>: possono indicare stress eccessivo o traumi irrisolti</li>
 <li><strong>Comportamento anomalo durante il sonno</strong> (parlare, muoversi, sonnambulismo): può segnalare un disturbo del sonno REM</li>
 <li><strong>Affaticamento cronico nonostante un tempo di sonno sufficiente</strong>: può indicare una scarsa qualità del sonno</li>
 </ul>
