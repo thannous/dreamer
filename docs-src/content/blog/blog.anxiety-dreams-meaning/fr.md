@@ -89,13 +89,21 @@
 <p class="text-purple-100/80 leading-relaxed">Les rêves d'anxiété sont la façon dont votre cerveau traite les inquiétudes non résolues pendant le sommeil. Contrairement aux cauchemars, ils présentent un malaise diffus — être mal préparé, perdre le contrôle ou être en retard — plutôt qu'un danger immédiat. Les techniques cognitives, l'hygiène du sommeil et la tenue d'un journal de rêves peuvent réduire significativement leur fréquence.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
-<aside aria-label="Révision éditoriale" class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note">
-<p class="text-sm text-purple-100/80 leading-relaxed">
-<strong class="text-dream-cream">Révision éditoriale :</strong>
-        Cette page liée à la santé a été vérifiée pour la clarté et l'exactitude des sources citées. Elle est informative et ne remplace pas un avis médical.
-        <a class="text-dream-salmon hover:underline" href="/fr/a-propos">Comment nous vérifions les sujets sensibles</a>.
-    </p>
-</aside>
+<div class="mb-8">
+    <details class="group" role="note">
+        <summary aria-label="Afficher les informations de relecture éditoriale" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors cursor-pointer" style="list-style: none;">
+            Info santé
+            <i class="w-4 h-4 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+        </summary>
+        <div class="glass-panel rounded-2xl p-4 mt-3 border border-white/10 bg-white/5 max-w-2xl">
+            <p class="text-sm text-purple-100/80 leading-relaxed">
+                <strong class="text-dream-cream">Révision éditoriale :</strong>
+                Cette page liée à la santé a été vérifiée pour la clarté et l'exactitude des sources citées. Elle est informative et ne remplace pas un avis médical.
+                <a class="text-dream-salmon hover:underline" href="/fr/a-propos">Comment nous vérifions les sujets sensibles</a>.
+            </p>
+        </div>
+    </details>
+</div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Représentation abstraite de l'anxiété dans les rêves avec des tourbillons de tons violets et bleu foncé" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="1200">

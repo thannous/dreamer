@@ -89,13 +89,21 @@
 <p class="text-purple-100/80 leading-relaxed">Los sueños de ansiedad son la forma en que tu cerebro procesa las preocupaciones no resueltas durante el sueño. A diferencia de las pesadillas, se caracterizan por un malestar difuso - no estar preparado, perder el control, llegar tarde - en lugar de un peligro inmediato. Técnicas cognitivas, higiene del sueño y el diario de sueños pueden reducir significativamente su frecuencia.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
-<aside aria-label="Revisión editorial" class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note">
-<p class="text-sm text-purple-100/80 leading-relaxed">
-<strong class="text-dream-cream">Revisión editorial:</strong>
-        Esta página relacionada con la salud fue revisada para verificar claridad y fiabilidad de las fuentes a partir de las referencias citadas en la propia página. Tiene fines informativos y no sustituye el asesoramiento médico.
-        <a class="text-dream-salmon hover:underline" href="/es/sobre">Cómo revisamos los temas sensibles</a>.
-    </p>
-</aside>
+<div class="mb-8">
+    <details class="group" role="note">
+        <summary aria-label="Mostrar la información de revisión editorial" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors cursor-pointer" style="list-style: none;">
+            Info de salud
+            <i class="w-4 h-4 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+        </summary>
+        <div class="glass-panel rounded-2xl p-4 mt-3 border border-white/10 bg-white/5 max-w-2xl">
+            <p class="text-sm text-purple-100/80 leading-relaxed">
+                <strong class="text-dream-cream">Revisión editorial:</strong>
+                Esta página relacionada con la salud fue revisada para verificar claridad y fiabilidad de las fuentes a partir de las referencias citadas en la propia página. Tiene fines informativos y no sustituye el asesoramiento médico.
+                <a class="text-dream-salmon hover:underline" href="/es/sobre">Cómo revisamos los temas sensibles</a>.
+            </p>
+        </div>
+    </details>
+</div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Representación abstracta de la ansiedad en los sueños con tonos violetas y azul oscuro arremolinados" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="1200">

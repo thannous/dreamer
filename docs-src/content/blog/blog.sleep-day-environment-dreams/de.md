@@ -89,13 +89,21 @@
 <p class="text-purple-100/80 leading-relaxed">Die Umgebung, in der Sie schlafen, beeinflusst direkt die Qualität und den Inhalt Ihrer Träume. Künstliches Licht unterdrückt Melatonin und verkürzt den REM-Schlaf, äußere Geräusche können sich in Ihre Traumszenarien einfügen, und die Temperatur Ihres Schlafzimmers verändert die Lebhaftigkeit Ihrer Träume. Ein kühler (18-19 °C), dunkler und ruhiger Raum ist der Schlüssel zu reicheren Träumen.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
-<aside aria-label="Redaktionelle Überprüfung" class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note">
-<p class="text-sm text-purple-100/80 leading-relaxed">
-<strong class="text-dream-cream">Redaktionelle Überprüfung:</strong>
-        Diese gesundheitsbezogene Seite wurde auf Klarheit und Quellengenauigkeit gegenüber den zitierten Referenzen geprüft. Sie ist informativ und ersetzt keinen ärztlichen Rat.
-        <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahren Sie, wie wir sensible Themen prüfen</a>.
-    </p>
-</aside>
+<div class="mb-8">
+    <details class="group" role="note">
+        <summary aria-label="Informationen zur redaktionellen Prüfung anzeigen" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors cursor-pointer" style="list-style: none;">
+            Gesundheitsinfo
+            <i class="w-4 h-4 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+        </summary>
+        <div class="glass-panel rounded-2xl p-4 mt-3 border border-white/10 bg-white/5 max-w-2xl">
+            <p class="text-sm text-purple-100/80 leading-relaxed">
+                <strong class="text-dream-cream">Redaktionelle Überprüfung:</strong>
+                Diese gesundheitsbezogene Seite wurde auf Klarheit und Quellengenauigkeit gegenüber den zitierten Referenzen geprüft. Sie ist informativ und ersetzt keinen ärztlichen Rat.
+                <a class="text-dream-salmon hover:underline" href="/de/ueber-uns">Erfahren Sie, wie wir sensible Themen prüfen</a>.
+            </p>
+        </div>
+    </details>
+</div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Friedliches Schlafzimmer in sanftem Licht, das die ideale Umgebung für Schlaf und Träume illustriert" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/journee-sommeil-environnement-reves.webp" srcset="../../img/blog/journee-sommeil-environnement-reves-480w.webp 480w, ../../img/blog/journee-sommeil-environnement-reves-800w.webp 800w, ../../img/blog/journee-sommeil-environnement-reves-1200w.webp 1200w" width="1200">
