@@ -159,7 +159,7 @@
 </ul>
 <h3>Vantaggi terapeutici del controllo dei sogni</h3>
 <ul>
-<li>Trattamento degli incubi ricorrenti</li>
+<li>Trattamento degli <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi ricorrenti</a></li>
 <li>Gestione dello stress post-traumatico (come complemento)</li>
 <li>Miglioramento della fiducia in se stessi</li>
 </ul>

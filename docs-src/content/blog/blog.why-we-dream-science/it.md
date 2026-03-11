@@ -238,9 +238,9 @@
                     L'interruzione del sonno REM e dei sogni è associata a:
                 </p>
 <ul>
-<li><strong>PTSD:</strong> I pazienti spesso sperimentano anomalie del sonno REM e incubi ricorrenti</li>
+<li><strong>PTSD:</strong> I pazienti spesso sperimentano anomalie del sonno REM e <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi ricorrenti</a></li>
 <li><strong>Depressione:</strong> I modelli di sonno REM sono alterati negli individui depressi</li>
-<li><strong>Disturbi d'ansia:</strong> Spesso accompagnati da frequenza di incubi</li>
+<li><strong>Disturbi d'ansia:</strong> Spesso accompagnati da frequenza di <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a></li>
 </ul>
 <p>
                     L'incapacità di elaborare correttamente le emozioni durante il sonno può contribuire a queste condizioni' persistenza.
