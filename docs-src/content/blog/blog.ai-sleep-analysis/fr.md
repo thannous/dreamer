@@ -88,13 +88,21 @@
 <p class="text-purple-100/80 leading-relaxed">SleepFM, le modèle d'IA de Stanford publié dans Nature Medicine en janvier 2026, peut prédire plus de 100 maladies — dont Parkinson, la démence et certains cancers — à partir d'une seule nuit de sommeil. Cette avancée ouvre la voie à un bilan de santé complet réalisé pendant que vous dormez, tout en soulevant des questions éthiques importantes sur la confidentialité des données de sommeil.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
-<aside aria-label="Révision éditoriale" class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note">
-<p class="text-sm text-purple-100/80 leading-relaxed">
-<strong class="text-dream-cream">Révision éditoriale :</strong>
-        Cette page liée à la santé a été vérifiée pour la clarté et l'exactitude des sources citées. Elle est informative et ne remplace pas un avis médical.
-        <a class="text-dream-salmon hover:underline" href="/fr/a-propos">Comment nous vérifions les sujets sensibles</a>.
-    </p>
-</aside>
+<div class="mb-8">
+    <details class="group" role="note">
+        <summary aria-label="Afficher les informations de relecture éditoriale" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors cursor-pointer" style="list-style: none;">
+            Info santé
+            <i class="w-4 h-4 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+        </summary>
+        <div class="glass-panel rounded-2xl p-4 mt-3 border border-white/10 bg-white/5 max-w-2xl">
+            <p class="text-sm text-purple-100/80 leading-relaxed">
+                <strong class="text-dream-cream">Révision éditoriale :</strong>
+                Cette page liée à la santé a été vérifiée pour la clarté et l'exactitude des sources citées. Elle est informative et ne remplace pas un avis médical.
+                <a class="text-dream-salmon hover:underline" href="/fr/a-propos">Comment nous vérifions les sujets sensibles</a>.
+            </p>
+        </div>
+    </details>
+</div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Visualisation futuriste de signaux cérébraux analysés par l'intelligence artificielle pendant le sommeil" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/ia-analyse-sommeil-reves.webp" srcset="../../img/blog/ia-analyse-sommeil-reves-480w.webp 480w, ../../img/blog/ia-analyse-sommeil-reves-800w.webp 800w, ../../img/blog/ia-analyse-sommeil-reves-1200w.webp 1200w" width="1200">

@@ -89,13 +89,21 @@
 <p class="text-purple-100/80 leading-relaxed">Anxiety dreams are your brain's way of processing unresolved worry during sleep. Unlike nightmares, they feature pervasive unease - being unprepared, losing control, or running late - rather than immediate danger. Cognitive techniques, sleep hygiene, and dream journaling can significantly reduce their frequency.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
-<aside aria-label="Editorial review" class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note">
-<p class="text-sm text-purple-100/80 leading-relaxed">
-<strong class="text-dream-cream">Editorial review:</strong>
-        This health-related page was reviewed for clarity and source accuracy against the references cited on the page. It is informational and does not replace medical advice.
-        <a class="text-dream-salmon hover:underline" href="/en/about">Learn how we review sensitive topics</a>.
-    </p>
-</aside>
+<div class="mb-8">
+    <details class="group" role="note">
+        <summary aria-label="Show editorial review information" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors cursor-pointer" style="list-style: none;">
+            Health info
+            <i class="w-4 h-4 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+        </summary>
+        <div class="glass-panel rounded-2xl p-4 mt-3 border border-white/10 bg-white/5 max-w-2xl">
+            <p class="text-sm text-purple-100/80 leading-relaxed">
+                <strong class="text-dream-cream">Editorial review:</strong>
+                This health-related page was reviewed for clarity and source accuracy against the references cited on the page. It is informational and does not replace medical advice.
+                <a class="text-dream-salmon hover:underline" href="/en/about">Learn how we review sensitive topics</a>.
+            </p>
+        </div>
+    </details>
+</div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Abstract representation of anxiety in dreams with swirling purple and dark blue tones" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="1200">

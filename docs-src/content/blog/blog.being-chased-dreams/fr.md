@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Réponse rapide</h2>
-    <p class="text-purple-100/80 leading-relaxed">Pourquoi rêvez-vous d</p>
+    <p class="text-purple-100/80 leading-relaxed">Pourquoi rêvez-vous d'être poursuivi ? Comprenez la psychologie de ces rêves et ce qu'ils révèlent sur vos peurs et évitements.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">

@@ -89,13 +89,21 @@
 <p class="text-purple-100/80 leading-relaxed">The environment you sleep in directly shapes the quality and content of your dreams. Artificial light suppresses melatonin and shortens REM sleep, external noise can weave itself into your dream narrative, and bedroom temperature alters dream vividness. A cool (18-19°C / 64-66°F), dark, and quiet room is the key to richer dreams.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
-<aside aria-label="Editorial review" class="glass-panel rounded-2xl p-5 mb-8 border border-white/10 bg-white/5" role="note">
-<p class="text-sm text-purple-100/80 leading-relaxed">
-<strong class="text-dream-cream">Editorial review:</strong>
-        This health-related page was reviewed for clarity and source accuracy against the references cited on the page. It is informational and does not replace medical advice.
-        <a class="text-dream-salmon hover:underline" href="/en/about">Learn how we review sensitive topics</a>.
-    </p>
-</aside>
+<div class="mb-8">
+    <details class="group" role="note">
+        <summary aria-label="Show editorial review information" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors cursor-pointer" style="list-style: none;">
+            Health info
+            <i class="w-4 h-4 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
+        </summary>
+        <div class="glass-panel rounded-2xl p-4 mt-3 border border-white/10 bg-white/5 max-w-2xl">
+            <p class="text-sm text-purple-100/80 leading-relaxed">
+                <strong class="text-dream-cream">Editorial review:</strong>
+                This health-related page was reviewed for clarity and source accuracy against the references cited on the page. It is informational and does not replace medical advice.
+                <a class="text-dream-salmon hover:underline" href="/en/about">Learn how we review sensitive topics</a>.
+            </p>
+        </div>
+    </details>
+</div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Peaceful bedroom bathed in soft light illustrating the ideal environment for sleep and dreams" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/journee-sommeil-environnement-reves.webp" srcset="../../img/blog/journee-sommeil-environnement-reves-480w.webp 480w, ../../img/blog/journee-sommeil-environnement-reves-800w.webp 800w, ../../img/blog/journee-sommeil-environnement-reves-1200w.webp 1200w" width="1200">
