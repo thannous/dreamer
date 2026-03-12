@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -19,7 +19,7 @@ export type SubscriptionCardProps = {
   ctaTestID?: string;
 };
 
-export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
+export const SubscriptionCard: React.FC<SubscriptionCardProps> = memo(function SubscriptionCard({
   title,
   subtitle,
   expiryLabel,
@@ -31,7 +31,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   ctaState = 'enabled',
   testID,
   ctaTestID,
-}) => {
+}) {
   const { colors, mode } = useTheme();
   const cardBg = GlassCardTokens.getBackground(colors.backgroundCard, mode);
 
@@ -85,7 +85,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       )}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   card: {
