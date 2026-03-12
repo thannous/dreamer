@@ -231,13 +231,22 @@ export default function InspirationScreen() {
       nextProgress = storedProgress.steps ?? {};
       nextProgressDate = storedProgress.date;
     } else {
-      await saveRitualStepProgress({ date: todayKey, steps: {} });
+      try {
+        await saveRitualStepProgress({ date: todayKey, steps: {} });
+      } catch (error) {
+        if (__DEV__) {
+          console.error(
+            "[InspirationScreen] Failed to reset stale ritual progress",
+            error,
+          );
+        }
+      }
     }
 
-    const nextSelectedRitualId =
-      preferredRitualId && RITUALS.some((ritual) => ritual.id === preferredRitualId)
-        ? preferredRitualId
-        : "starter";
+    const preferredRitual = preferredRitualId
+      ? RITUALS.find((ritual) => ritual.id === preferredRitualId)
+      : undefined;
+    const nextSelectedRitualId: RitualId = preferredRitual?.id ?? "starter";
 
     return {
       nextProgress,
@@ -549,16 +558,17 @@ const RitualScrollSection = memo(function RitualScrollSection({
       >
         {ritualCards.map(({ ritual, completedCount, progressRatio, totalSteps, iconName }, index) => {
           const isActive = ritual.id === selectedRitualId;
+          const ritualCardStyle = StyleSheet.flatten([
+            styles.ritualCard,
+            isActive && styles.ritualCardActive,
+            isActive && { borderColor: colors.accent },
+          ]);
 
           return (
             <FlatGlassCard
               key={ritual.id}
               intensity="subtle"
-              style={[
-                styles.ritualCard,
-                isActive && styles.ritualCardActive,
-                isActive && { borderColor: colors.accent },
-              ]}
+              style={ritualCardStyle}
               animationDelay={120 * index}
               onPress={() => router.push(`/ritual/${ritual.id}` as any)}
               accessibilityRole="button"
