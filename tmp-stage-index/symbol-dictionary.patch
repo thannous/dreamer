@@ -1,0 +1,116 @@
+diff --git "a/C:\\Users\\thann\\WebstormProjects\\dreamer\\tmp-stage-index\\symbol-dictionary.head.tsx" "b/C:\\Users\\thann\\WebstormProjects\\dreamer\\tmp-stage-index\\symbol-dictionary.stage.tsx"
+index 4f2991af..3a08b3b1 100644
+--- "a/C:\\Users\\thann\\WebstormProjects\\dreamer\\tmp-stage-index\\symbol-dictionary.head.tsx"
++++ "b/C:\\Users\\thann\\WebstormProjects\\dreamer\\tmp-stage-index\\symbol-dictionary.stage.tsx"
+@@ -4 +4 @@ import { Stack, router } from "expo-router";
+-import React, { useCallback, useEffect, useMemo, useState } from "react";
++import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+@@ -95 +95,2 @@ export default function SymbolDictionaryScreen() {
+-  const normalizedQuery = searchQuery.trim();
++  const allSymbols = useMemo(() => getAllSymbols(), []);
++  const deferredSearchQuery = useDeferredValue(searchQuery.trim());
+@@ -104,0 +106,8 @@ export default function SymbolDictionaryScreen() {
++  const filteredSymbols = useMemo(
++    () =>
++      deferredSearchQuery
++        ? searchSymbols(deferredSearchQuery, lang)
++        : allSymbols,
++    [allSymbols, deferredSearchQuery, lang],
++  );
++
+@@ -107,3 +115,0 @@ export default function SymbolDictionaryScreen() {
+-    const sourceSymbols = normalizedQuery
+-      ? searchSymbols(normalizedQuery, lang)
+-      : getAllSymbols();
+@@ -111 +117 @@ export default function SymbolDictionaryScreen() {
+-    sourceSymbols.forEach((symbol) => {
++    filteredSymbols.forEach((symbol) => {
+@@ -115 +121,5 @@ export default function SymbolDictionaryScreen() {
+-  }, [browseMode, normalizedQuery, lang]);
++  }, [browseMode, filteredSymbols, lang]);
++  const availableLetterSet = useMemo(
++    () => new Set(availableLetters),
++    [availableLetters],
++  );
+@@ -126,4 +136 @@ export default function SymbolDictionaryScreen() {
+-      const sourceSymbols = normalizedQuery
+-        ? searchSymbols(normalizedQuery, lang)
+-        : getAllSymbols();
+-      if (sourceSymbols.length === 0) return [];
++      if (filteredSymbols.length === 0) return [];
+@@ -131 +138 @@ export default function SymbolDictionaryScreen() {
+-      const sorted = [...sourceSymbols].sort((a, b) =>
++      const sorted = [...filteredSymbols].sort((a, b) =>
+@@ -157,3 +164,2 @@ export default function SymbolDictionaryScreen() {
+-    if (normalizedQuery) {
+-      const results = searchSymbols(normalizedQuery, lang);
+-      if (results.length === 0) return [];
++    if (deferredSearchQuery) {
++      if (filteredSymbols.length === 0) return [];
+@@ -162 +168,3 @@ export default function SymbolDictionaryScreen() {
+-        const filtered = results.filter((s) => s.category === selectedCategory);
++        const filtered = filteredSymbols.filter(
++          (s) => s.category === selectedCategory,
++        );
+@@ -168 +176 @@ export default function SymbolDictionaryScreen() {
+-      for (const s of results) {
++      for (const s of filteredSymbols) {
+@@ -193 +201 @@ export default function SymbolDictionaryScreen() {
+-  }, [browseMode, normalizedQuery, selectedCategory, lang, categories, selectedLetter]);
++  }, [browseMode, deferredSearchQuery, selectedCategory, lang, categories, selectedLetter, filteredSymbols]);
+@@ -272,17 +280,23 @@ export default function SymbolDictionaryScreen() {
+-  const chipStyle = (isSelected: boolean) => [
+-    styles.chip,
+-    {
+-      backgroundColor: isSelected ? colors.accent : glassBackground,
+-      borderWidth: isSelected ? 0 : 1,
+-      borderColor: isSelected ? "transparent" : colors.divider,
+-    },
+-  ];
+-
+-  const letterStyle = (isSelected: boolean) => [
+-    styles.letterChip,
+-    {
+-      backgroundColor: isSelected ? colors.accent : glassBackground,
+-      borderWidth: isSelected ? 0 : 1,
+-      borderColor: isSelected ? "transparent" : colors.divider,
+-    },
+-  ];
++  const getChipStyle = useCallback(
++    (isSelected: boolean) => [
++      styles.chip,
++      {
++        backgroundColor: isSelected ? colors.accent : glassBackground,
++        borderWidth: isSelected ? 0 : 1,
++        borderColor: isSelected ? "transparent" : colors.divider,
++      },
++    ],
++    [colors.accent, colors.divider, glassBackground],
++  );
++
++  const getLetterStyle = useCallback(
++    (isSelected: boolean) => [
++      styles.letterChip,
++      {
++        backgroundColor: isSelected ? colors.accent : glassBackground,
++        borderWidth: isSelected ? 0 : 1,
++        borderColor: isSelected ? "transparent" : colors.divider,
++      },
++    ],
++    [colors.accent, colors.divider, glassBackground],
++  );
+@@ -452 +466 @@ export default function SymbolDictionaryScreen() {
+-                ...chipStyle(selectedCategory === null),
++                ...getChipStyle(selectedCategory === null),
+@@ -477 +491 @@ export default function SymbolDictionaryScreen() {
+-                  ...chipStyle(selectedCategory === cat),
++                  ...getChipStyle(selectedCategory === cat),
+@@ -504 +518 @@ export default function SymbolDictionaryScreen() {
+-              const hasSymbols = availableLetters.includes(letter);
++              const hasSymbols = availableLetterSet.has(letter);
+@@ -516 +530 @@ export default function SymbolDictionaryScreen() {
+-                    ...letterStyle(isSelected),
++                    ...getLetterStyle(isSelected),
+@@ -546 +560 @@ export default function SymbolDictionaryScreen() {
+-        removeClippedSubviews={false}
++        estimatedItemSize={92}

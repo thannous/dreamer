@@ -1,0 +1,108 @@
+appId: com.tanuki75.noctalia
+env:
+  DEV_CLIENT_URL: exp+noctalia://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8081
+---
+- launchApp:
+    clearState: true
+- openLink: ${DEV_CLIENT_URL}
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "http://10.0.2.2:8081"
+    commands:
+      - tapOn:
+          text: "http://10.0.2.2:8081"
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn:
+          text: "Continue"
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Loading from 10.0.2.2:8081"
+    commands:
+      - extendedWaitUntil:
+          notVisible: "Loading from 10.0.2.2:8081"
+          timeout: 60000
+- runFlow:
+    when:
+      visible: "Reloading"
+    commands:
+      - extendedWaitUntil:
+          notVisible: "Reloading"
+          timeout: 60000
+- runFlow:
+    when:
+      notVisible:
+        id: screen.recording
+    commands:
+      - pressKey: back
+      - openLink: ${DEV_CLIENT_URL}
+      - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "http://10.0.2.2:8081"
+          commands:
+            - tapOn:
+                text: "http://10.0.2.2:8081"
+                retryTapIfNoChange: true
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Continue"
+          commands:
+            - tapOn:
+                text: "Continue"
+                retryTapIfNoChange: true
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Reload"
+          commands:
+            - pressKey: back
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Loading from 10.0.2.2:8081"
+          commands:
+            - extendedWaitUntil:
+                notVisible: "Loading from 10.0.2.2:8081"
+                timeout: 60000
+      - runFlow:
+          when:
+            visible: "Reloading"
+          commands:
+            - extendedWaitUntil:
+                notVisible: "Reloading"
+                timeout: 60000
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn:
+          text: "Continue"
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+      - waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 60000
+- assertVisible:
+    id: screen.recording

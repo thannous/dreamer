@@ -93,7 +93,8 @@
       "Bash(git stash:*)",
       "Bash(git stash pop:*)",
       "Bash(xargs:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(npm run docs:build)"
     ],
     "deny": [],
     "ask": []

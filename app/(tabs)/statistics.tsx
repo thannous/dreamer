@@ -288,6 +288,7 @@ export default function StatisticsScreen() {
 
   const [showAnimations, setShowAnimations] = useState(false);
   const [showDeferredSections, setShowDeferredSections] = useState(false);
+  const hasStatisticsContent = loaded && dreams.length > 0;
 
   useFocusEffect(
     useCallback(() => {
@@ -297,6 +298,12 @@ export default function StatisticsScreen() {
   );
 
   useEffect(() => {
+    if (!hasStatisticsContent) {
+      setShowDeferredSections(false);
+      return;
+    }
+
+    setShowDeferredSections(false);
     const task = InteractionManager.runAfterInteractions(() => {
       setShowDeferredSections(true);
     });
@@ -304,7 +311,7 @@ export default function StatisticsScreen() {
     return () => {
       task.cancel?.();
     };
-  }, []);
+  }, [hasStatisticsContent]);
 
   // Memoize color arrays to avoid re-allocation churn
   const dreamTypeColors = useMemo(() =>

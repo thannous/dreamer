@@ -1,0 +1,23 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+      - waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres|Ajustes)"
+- scrollUntilVisible:
+    element:
+      id: btn.mock.resetState
+    direction: DOWN
+- tapOn:
+    id: btn.mock.resetState
+- waitForAnimationToEnd
+- tapOn: "(Home|Accueil|Inicio)"
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 20000

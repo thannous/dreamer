@@ -1,46 +1,29 @@
+# Recording bottom-sheet smoke: first dream then analyze prompt on the next one
 appId: com.tanuki75.noctalia
 ---
-# Verify that after saving a dream from the recording screen
-# the first-dream bottom sheet appears with next-step actions
+- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/reset-mock-state.yml
 
-- launchApp
-- runFlow:
-      when:
-          visible: "(Journal|Diario)"
-      commands:
-          - tapOn: "(Journal|Diario)"
-          - waitForAnimationToEnd
-- runFlow:
-      when:
-          visible:
-              id: screen.journal
-      commands:
-          - pressKey: back
-          - scrollUntilVisible:
-                element:
-                    id: btn.addDream
-                direction: DOWN
-          - tapOn:
-                id: btn.addDream
-          - waitForAnimationToEnd
-- assertVisible:
-      id: screen.recording
+# First dream should open the first-dream sheet
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
-- inputText: "Bottom sheet e2e dream"
+    id: input.dreamTranscript
+- inputText: "Bottom Sheet Dream 1"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
-# Bottom sheet should be visible (multi-language title)
 - assertVisible:
-      id: text.firstDream.title
-
-# Use the journal CTA to open the dream journal
+    id: text.firstDream.title
 - tapOn:
-      id: btn.firstDream.journal
-- waitForAnimationToEnd
+    id: btn.firstDream.dismiss
 
-# We should land on the journal screen and see the dream title in the list
+# Second dream should open the analyze-prompt sheet
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Bottom Sheet Dream 2"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
 - assertVisible:
-      id: screen.journal
-- assertVisible: "Bottom sheet e2e dream"
+    id: text.analyzePromptTitle

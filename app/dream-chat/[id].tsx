@@ -1093,6 +1093,7 @@ function ComposerFooter({
         >
           <IconSymbol name="bubble.left.and.bubble.right" size={14} color={counterColor} />
           <Text
+            testID={TID.Text.ChatMessageCounter}
             style={[
               styles.messageCounter,
               { color: counterColor },

@@ -257,6 +257,20 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
     }
   };
 
+  const handleMockReset = async () => {
+    if (!isMockModeEnabled || isBusy) return;
+    setSubmitting('signout');
+    try {
+      await signOut();
+      clearPendingVerification();
+      requestStayOnSettingsIntent();
+    } catch (error) {
+      handleSupabaseError(error, 'settings.account.alert.signout_failed.title');
+    } finally {
+      setSubmitting(null);
+    }
+  };
+
   const pollForVerification = useCallback(async () => {
     if (
       !pendingVerification ||
@@ -659,6 +673,30 @@ export const EmailAuthCard: React.FC<Props> = ({ isCompact = false }) => {
                   </Pressable>
                 );
               })}
+              <Pressable
+                testID={TID.Button.MockResetState}
+                style={({ pressed }) => [
+                  styles.mockButton,
+                  { borderColor: colors.divider, backgroundColor: colors.backgroundCard },
+                  pressed && styles.mockButtonPressed,
+                  isBusy && styles.mockButtonDisabled,
+                ]}
+                onPress={handleMockReset}
+                disabled={isBusy}
+              >
+                {submitting === 'signout' ? (
+                  <ActivityIndicator color={colors.textPrimary} size="small" />
+                ) : (
+                  <>
+                    <Text style={[styles.mockButtonTitle, { color: colors.textPrimary }]}>
+                      {t('settings.account.mock.reset')}
+                    </Text>
+                    <Text style={[styles.mockButtonSubtitle, { color: colors.textSecondary }]}>
+                      {t('settings.account.mock.reset_hint')}
+                    </Text>
+                  </>
+                )}
+              </Pressable>
             </View>
           </View>
 

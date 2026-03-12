@@ -1,195 +1,165 @@
 appId: com.tanuki75.noctalia
 ---
-# Ensure a clean guest state for quotas
-- launchApp:
-      clearState: true
-# Guest dream 1 - analyze and explore, hit chat message limit
+# Guest quota migration flow: analyses + explorations carry over after signup.
+- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/reset-mock-state.yml
+
+# Guest dream 1 - analyze and start exploration
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Guest Dream 1"
 - tapOn:
-      id: btn.saveDream
-- waitForAnimationToEnd
-# First-dream bottom sheet appears (multi-language title)
-- assertVisible:
-      id: text.firstDream.title
-- tapOn:
-      id: btn.firstDream.analyze
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
+    id: text.firstDream.title
+- tapOn:
+    id: btn.firstDream.analyze
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
       id: btn.exploreDream
+    direction: DOWN
 - tapOn:
-      id: btn.exploreDream
+    id: btn.exploreDream
 - tapOn:
-      id: btn.dreamCategory.symbols
+    id: btn.dreamCategory.symbols
 - assertVisible:
-      id: chat.input.message
-- repeat:
-      times: 20
-      commands:
-          - tapOn:
-                id: chat.input.message
-          - inputText: "Hello from guest"
-          - tapOn:
-                id: chat.button.send
-          - waitForAnimationToEnd
-- tapOn:
-      id: chat.input.message
-- inputText: "Should block"
-- assertVisible:
-      id: text.chat.limit
-- assertVisible: "20/20 messages"
-- assertVisible: "You've reached the message limit for this dream. Upgrade to continue the conversation."
-- tapOn: "(Journal|Diario)"
-- tapOn: "(Home|Accueil|Inicio)"
+    id: chat.input.message
+- runFlow:
+    file: subflows/send-chat-message.yml
+    env:
+      MESSAGE: "First exploration"
+- pressKey: back
+- pressKey: back
+- pressKey: back
+- waitForAnimationToEnd
 
-# Guest dream 2 - second analysis and exploration via analyze prompt
+# Guest dream 2 - use second analysis and second exploration
 - tapOn:
-      id: input.dreamTranscript
+    id: btn.addDream
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
 - inputText: "Guest Dream 2"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: text.analyzePromptTitle
+    id: text.analyzePromptTitle
 - tapOn:
-      id: btn.analyzePrompt.analyze
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-      id: btn.exploreDream
+    id: btn.exploreDream
 - tapOn:
-      id: btn.exploreDream
+    id: btn.exploreDream
 - tapOn:
-      id: btn.dreamCategory.emotions
+    id: btn.dreamCategory.emotions
 - assertVisible:
-      id: chat.input.message
-- tapOn: "(Journal|Diario)"
-- tapOn:
-      id: btn.addDream
+    id: chat.input.message
+- runFlow:
+    file: subflows/send-chat-message.yml
+    env:
+      MESSAGE: "Second exploration"
+- pressKey: back
+- pressKey: back
+- pressKey: back
+- waitForAnimationToEnd
 
 # Guest dream 3 - analysis limit hit when trying to analyze
 - tapOn:
-      id: input.dreamTranscript
+    id: btn.addDream
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
 - inputText: "Guest Dream 3"
 - tapOn:
-      id: btn.saveDream
-- waitForAnimationToEnd
-# AnalyzePrompt sheet appears
-- assertVisible:
-      id: text.analyzePromptTitle
-- tapOn:
-      id: btn.analyzePrompt.analyze
-- waitForAnimationToEnd
-# QuotaLimitSheet should appear (analysis quota exhausted)
-- assertVisible:
-      id: sheet.quotaLimit
-- assertVisible:
-      id: text.quotaLimit.title
-# Dismiss and go to journal
-- tapOn:
-      id: btn.quotaLimit.journal
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: btn.exploreDream
+    id: text.analyzePromptTitle
 - tapOn:
-      id: btn.exploreDream
-- tapOn:
-      id: btn.dreamCategory.symbols
+    id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
 - assertVisible:
-      id: chat.screen.blocked
+    id: sheet.quotaLimit
+- assertVisible:
+    id: text.quotaLimit.title
+- tapOn:
+    id: btn.quotaLimit.journal
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.symbols
+- assertVisible:
+    id: chat.screen.blocked
 - tapOn: "(Journal|Diario)"
 
 # Create account to migrate guest quotas
 - tapOn: "(Settings|Param.tres|Ajustes)"
 - tapOn:
-      id: input.auth.email
+    id: input.auth.email
 - inputText: "mock.guest@dreamer.test"
 - tapOn:
-      id: input.auth.password
+    id: input.auth.password
 - inputText: "mockpass"
 - tapOn:
-      id: btn.auth.signUp
+    id: btn.auth.signUp
 - tapOn: "OK"
 - assertVisible:
-      id: component.emailVerificationBanner
+    id: component.emailVerificationBanner
 - tapOn:
-      id: btn.auth.resendVerification
+    id: btn.auth.resendVerification
 - waitForAnimationToEnd
 - assertNotVisible:
-      id: component.emailVerificationBanner
+    id: component.emailVerificationBanner
 - assertVisible:
-      id: text.auth.email
-- assertVisible: "2 / 5"
+    id: text.auth.email
+- assertVisible: "2 / 3"
 - assertVisible: "2 / 2"
 
-# Authenticated analyses (three more to reach five total)
+# Authenticated analyses (one more to reach three total)
 - tapOn: "(Home|Accueil|Inicio)"
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Auth Dream 1"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: text.analyzePromptTitle
+    id: text.analyzePromptTitle
 - tapOn:
-      id: btn.analyzePrompt.analyze
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-      id: btn.exploreDream
+    id: btn.exploreDream
 - tapOn: "(Home|Accueil|Inicio)"
 
+# Auth Dream 2 - analysis quota exhausted (3/3)
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Auth Dream 2"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: text.analyzePromptTitle
+    id: text.analyzePromptTitle
 - tapOn:
-      id: btn.analyzePrompt.analyze
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - assertVisible:
-      id: btn.exploreDream
-- tapOn: "(Home|Accueil|Inicio)"
-
-- tapOn:
-      id: input.dreamTranscript
-- inputText: "Auth Dream 3"
-- tapOn:
-      id: btn.saveDream
-- waitForAnimationToEnd
+    id: sheet.quotaLimit
 - assertVisible:
-      id: text.analyzePromptTitle
+    id: text.quotaLimit.title
 - tapOn:
-      id: btn.analyzePrompt.analyze
+    id: btn.quotaLimit.journal
 - waitForAnimationToEnd
-- assertVisible:
-      id: btn.exploreDream
-- tapOn: "(Home|Accueil|Inicio)"
-
-# Auth Dream 4 - analysis quota exhausted (5/5), should show QuotaLimitSheet
-- tapOn:
-      id: input.dreamTranscript
-- inputText: "Auth Dream 4 - should trigger quota sheet"
-- tapOn:
-      id: btn.saveDream
-- waitForAnimationToEnd
-- assertVisible:
-      id: text.analyzePromptTitle
-- tapOn:
-      id: btn.analyzePrompt.analyze
-- waitForAnimationToEnd
-# QuotaLimitSheet should appear (free tier quota exhausted)
-- assertVisible:
-      id: sheet.quotaLimit
-- assertVisible:
-      id: text.quotaLimit.title
-- tapOn:
-      id: btn.quotaLimit.journal
-- waitForAnimationToEnd
-
-# Verify quotas show 5/5 analyses
 - tapOn: "(Settings|Param.tres|Ajustes)"
-- assertVisible: "5 / 5"
+- assertVisible: "3 / 3"

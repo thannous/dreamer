@@ -80,3 +80,4 @@ gen-lang-client-0336445544-fc3b036c6e41.json
 coverage/
 *.lcov
 upload_cert.der
+docs-src/img-tmp/*

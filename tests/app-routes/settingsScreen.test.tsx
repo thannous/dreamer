@@ -216,7 +216,7 @@ jest.doMock('react-native-reanimated', () => {
   };
 });
 
-const { default: SettingsScreen } = require('../settings');
+const { default: SettingsScreen } = require('@/app/(tabs)/settings');
 
 describe('Settings screen', () => {
   it('[B] Given a returning guest is blocked When rendering Then it hides subscription features', () => {

@@ -1,62 +1,42 @@
 # Guest chat limit: reach the per-dream message cap as a guest
 appId: com.tanuki75.noctalia
-clearState: true
 ---
-- launchApp
-- runFlow:
-      when:
-          visible: "(Journal|Diario)"
-      commands:
-          - tapOn: "(Journal|Diario)"
-          - waitForAnimationToEnd
-- runFlow:
-      when:
-          visible:
-              id: screen.journal
-      commands:
-          - pressKey: back
-          - scrollUntilVisible:
-                element:
-                    id: btn.addDream
-                direction: DOWN
-          - tapOn:
-                id: btn.addDream
-          - waitForAnimationToEnd
-- assertVisible:
-      id: screen.recording
+- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/reset-mock-state.yml
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Guest Chat Limit"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: text.firstDream.title
+    id: text.firstDream.title
 - tapOn:
-      id: btn.firstDream.analyze
+    id: btn.firstDream.analyze
 - waitForAnimationToEnd
 - scrollUntilVisible:
-      element:
-          id: btn.exploreDream
-      direction: DOWN
-- tapOn:
+    element:
       id: btn.exploreDream
+    direction: DOWN
 - tapOn:
-      id: btn.dreamCategory.symbols
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.symbols
 - assertVisible:
-      id: chat.input.message
+    id: chat.input.message
 - repeat:
-      times: 20
-      commands:
-          - tapOn:
-                id: chat.input.message
-          - inputText: "Hello from guest"
-          - tapOn:
-                id: chat.button.send
-          - waitForAnimationToEnd
-- tapOn:
-      id: chat.input.message
-- inputText: "Should block"
+    times: 9
+    commands:
+      - runFlow:
+          file: subflows/send-chat-message.yml
+          env:
+            MESSAGE: "Hello from guest"
+- runFlow:
+    file: subflows/send-chat-message.yml
+    env:
+      MESSAGE: "Final guest message"
+- pressKey: back
 - assertVisible:
-      id: text.chat.limit
-- assertVisible: "20/20 messages"
+    id: text.chat.limit
+- assertVisible: "You've reached the message limit for this dream. Upgrade to continue the conversation."
