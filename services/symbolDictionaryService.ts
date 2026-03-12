@@ -22,15 +22,26 @@ const extendedData = extendedDataJson as {
 };
 
 const tier3Data = tier3DataJson as Record<string, Record<string, ExtendedSymbolContent>>;
+const ALL_SYMBOLS = symbolsData.symbols;
+const CATEGORY_LIST = Object.keys(symbolsData.categories) as SymbolCategory[];
+const POPULAR_SYMBOLS = ALL_SYMBOLS
+  .filter((s) => s.priority === 1)
+  .sort((a, b) => a.priority - b.priority);
+const SYMBOLS_BY_CATEGORY = new Map<SymbolCategory, DreamSymbol[]>(
+  CATEGORY_LIST.map((category) => [
+    category,
+    ALL_SYMBOLS
+      .filter((symbol) => symbol.category === category)
+      .sort((a, b) => a.priority - b.priority),
+  ]),
+);
 
 export function getAllSymbols(): DreamSymbol[] {
-  return symbolsData.symbols;
+  return ALL_SYMBOLS;
 }
 
 export function getPopularSymbols(): DreamSymbol[] {
-  return symbolsData.symbols
-    .filter((s) => s.priority === 1)
-    .sort((a, b) => a.priority - b.priority);
+  return POPULAR_SYMBOLS;
 }
 
 export function getCategories(): Record<SymbolCategory, SymbolCategoryInfo> {
@@ -38,11 +49,11 @@ export function getCategories(): Record<SymbolCategory, SymbolCategoryInfo> {
 }
 
 export function getCategoryList(): SymbolCategory[] {
-  return Object.keys(symbolsData.categories) as SymbolCategory[];
+  return CATEGORY_LIST;
 }
 
 export function getSymbolById(id: string): DreamSymbol | undefined {
-  return symbolsData.symbols.find((s) => s.id === id);
+  return ALL_SYMBOLS.find((s) => s.id === id);
 }
 
 export function getExtendedContent(
@@ -55,14 +66,16 @@ export function getExtendedContent(
 }
 
 export function getSymbolsByCategory(category: SymbolCategory): DreamSymbol[] {
-  return symbolsData.symbols
-    .filter((s) => s.category === category)
-    .sort((a, b) => a.priority - b.priority);
+  return SYMBOLS_BY_CATEGORY.get(category) ?? [];
 }
 
 export function searchSymbols(query: string, language: SymbolLanguage): DreamSymbol[] {
-  const lower = query.toLowerCase();
-  return symbolsData.symbols.filter((s) => {
+  const lower = query.trim().toLowerCase();
+  if (!lower) {
+    return ALL_SYMBOLS;
+  }
+
+  return ALL_SYMBOLS.filter((s) => {
     const content = s[language] ?? s.en;
     return (
       content.name.toLowerCase().includes(lower) ||
