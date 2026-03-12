@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -17,7 +17,7 @@ export type PricingOptionProps = {
   testID?: string;
 };
 
-export const PricingOption: React.FC<PricingOptionProps> = memo(function PricingOption({
+export const PricingOption: React.FC<PricingOptionProps> = function PricingOption({
   id,
   title,
   subtitle,
@@ -78,7 +78,7 @@ export const PricingOption: React.FC<PricingOptionProps> = memo(function Pricing
       </View>
     </Pressable>
   );
-});
+};
 
 const styles = StyleSheet.create({
   container: {
