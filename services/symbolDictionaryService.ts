@@ -6,9 +6,9 @@ import type {
   SymbolLanguage,
 } from '@/lib/symbolTypes';
 
-import symbolsDataJson from '@/docs/data/dream-symbols.json';
-import extendedDataJson from '@/docs/data/dream-symbols-extended.json';
-import tier3DataJson from '@/docs/data/dream-symbols-extended-tier3.json';
+import symbolsDataJson from '@/data/dream-symbols.json';
+import extendedDataJson from '@/data/dream-symbols-extended.json';
+import tier3DataJson from '@/data/dream-symbols-extended-tier3.json';
 
 type IconSymbolName = Parameters<typeof import('@/components/ui/icon-symbol').IconSymbol>[0]['name'];
 

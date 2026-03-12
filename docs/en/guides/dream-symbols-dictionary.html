@@ -48,7 +48,8 @@
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-                                                                                        <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
+                                                                                            <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
+<link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-220131">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-215928">
@@ -102,6 +103,7 @@
         .search-input:focus { outline: none; border-color: #FDA481; }
         /* Sticky search + alpha bar */
         #stickyBar { position: sticky; top: 4.5rem; z-index: 40; }
+        #symbolsList > section { scroll-margin-top: var(--dictionary-scroll-offset, 12rem); }
         /* Category left-border colors (applied via JS) */
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
@@ -1113,16 +1115,28 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+            const navbar = document.getElementById('navbar');
+            const stickyBar = document.getElementById('stickyBar');
+            const symbolCards = document.querySelectorAll('.symbol-card');
+            const listSections = document.querySelectorAll('#symbolsList > section');
 
             // ── Navbar scroll effect ──────────────────────────────────────
             window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
                 if (navbar) { navbar.classList.toggle('py-2', window.scrollY > 50); navbar.classList.toggle('py-6', window.scrollY <= 50); }
             });
 
+            function updateSectionScrollOffset() {
+                if (!stickyBar) return;
+                const stickyTop = parseFloat(window.getComputedStyle(stickyBar).top) || 0;
+                const navbarHeight = navbar?.getBoundingClientRect().height || 0;
+                const offset = Math.ceil(Math.max(navbarHeight, stickyTop) + stickyBar.getBoundingClientRect().height + 16);
+                document.documentElement.style.setProperty('--dictionary-scroll-offset', `${offset}px`);
+            }
+
+            updateSectionScrollOffset();
+            window.addEventListener('resize', updateSectionScrollOffset);
+
             // ── Symbol card clickability (keyboard accessible) ────────────
-            const symbolCards = document.querySelectorAll('.symbol-card');
-            const listSections = document.querySelectorAll('#symbolsList > section');
 
             symbolCards.forEach((card) => {
                 const link = card.querySelector('a[href]');
@@ -1158,7 +1172,7 @@
                 falling: 'actions', fire: 'nature', flying: 'actions', forest: 'nature', flood: 'nature',
                 house: 'places', horse: 'animals', hospital: 'places', key: 'objects', lion: 'animals',
                 mirror: 'objects', money: 'objects', moon: 'celestial', mountain: 'nature', mouth: 'body',
-                naked: 'body', night: 'celestial', ocean: 'nature', path: 'places', phone: 'objects',
+                nudity: 'body', night: 'celestial', ocean: 'nature', path: 'places', phone: 'objects',
                 plane: 'objects', pregnancy: 'body', rain: 'nature', rainbow: 'celestial', running: 'actions',
                 snake: 'animals', spider: 'animals', stairs: 'places', sun: 'celestial', school: 'places',
                 storm: 'nature', swimming: 'actions', teeth: 'body', train: 'objects', tree: 'nature',
@@ -1220,6 +1234,7 @@
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
+                    updateSectionScrollOffset();
                     if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
                 });
             });
@@ -1245,6 +1260,6 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=20260311-222021" defer></script>
+    <script src="/js/language-dropdown.js?v=20260312-145214" defer></script>
 </body>
 </html>

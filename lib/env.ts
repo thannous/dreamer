@@ -65,6 +65,7 @@ export function isChatDebugEnabled(): boolean {
 }
 
 export function isReferenceImagesEnabled(): boolean {
-  const value = getExpoPublicEnvValue('EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED');
-  return (value ?? '').toLowerCase() === 'true';
+  // Hard-disabled in code so production bundles cannot re-enable the feature
+  // via environment configuration.
+  return false;
 }
