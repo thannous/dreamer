@@ -1096,7 +1096,7 @@ export default function RecordingScreen() {
   );
 }
 
-const RecordingOverlays = React.memo(function RecordingOverlays({
+function RecordingOverlays({
   firstDreamVisible,
   onFirstDreamDismiss,
   onFirstDreamAnalyze,
@@ -1242,7 +1242,7 @@ const RecordingOverlays = React.memo(function RecordingOverlays({
       />
     </>
   );
-});
+}
 
 const styles = StyleSheet.create({
   gradient: {

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MicButton } from '@/components/recording/MicButton';
@@ -17,7 +17,7 @@ export interface RecordingVoiceInputProps {
   onSwitchToText: () => void;
 }
 
-function RecordingVoiceInputComponent({
+export function RecordingVoiceInput({
   status,
   transcript,
   instructionText,
@@ -77,8 +77,6 @@ function RecordingVoiceInputComponent({
     </>
   );
 }
-
-export const RecordingVoiceInput = memo(RecordingVoiceInputComponent);
 
 const styles = StyleSheet.create({
   recordingSection: {

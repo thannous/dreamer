@@ -1,7 +1,7 @@
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { TID } from '@/lib/testIDs';
-import React, { memo } from 'react';
+import React from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 interface RecordingFooterProps {
@@ -14,7 +14,7 @@ interface RecordingFooterProps {
   journalLinkAccessibilityLabel?: string;
 }
 
-function RecordingFooterComponent({
+export function RecordingFooter({
   onSave,
   onGoToJournal,
   isSaveDisabled,
@@ -75,8 +75,6 @@ function RecordingFooterComponent({
     </View>
   );
 }
-
-export const RecordingFooter = memo(RecordingFooterComponent);
 
 const styles = StyleSheet.create({
   footerActions: {
