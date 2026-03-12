@@ -23,6 +23,7 @@ import {
   useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
 import { MotiView } from '@/lib/moti';
+import { TID } from '@/lib/testIDs';
 import type { ChatMessage } from '@/lib/types';
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -437,6 +438,7 @@ export function LoadingIndicator({ text, visible = true }: { text?: string; visi
 
   return (
     <Animated.View
+      testID={TID.Chat.Loading}
       style={[loadingStyles.wrapper, animatedVisibilityStyle]}
       pointerEvents={visible ? 'auto' : 'none'}
     >

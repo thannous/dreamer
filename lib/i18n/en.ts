@@ -394,6 +394,8 @@ const translations: Record<string, string> = {
     'settings.account.mock.profile.existing_hint': 'Loaded with sample dreams',
     'settings.account.mock.profile.premium': 'Premium user',
     'settings.account.mock.profile.premium_hint': 'Unlimited quotas enabled',
+    'settings.account.mock.reset': 'Reset test state',
+    'settings.account.mock.reset_hint': 'Clears mock storage, quotas, and current session',
     'settings.quota.title': 'Quotas & Subscription',
     'settings.quota.subtitle': 'Track your remaining credits (current tier: {{tier}}).',
     'settings.quota.analysis_label': 'Dream analyses',
@@ -682,6 +684,9 @@ const translations: Record<string, string> = {
     'inspiration.ritual.steps_progress': '{completed}/{total} steps',
     'symbols.popular_title': 'Popular symbols',
     'symbols.view_all': 'View all',
+    'symbols.home_card_title': 'Dream Dictionary',
+    'symbols.home_card_body': 'Explore the most common symbols and jump straight into the dictionary.',
+    'symbols.open_dictionary': 'Open',
   };
 
 export default translations;

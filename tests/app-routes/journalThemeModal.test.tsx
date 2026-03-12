@@ -249,7 +249,7 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
-const { default: JournalListScreen } = require('../journal');
+const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 
 describe('Journal theme modal', () => {
   it('shows a checkmark for the selected theme', () => {

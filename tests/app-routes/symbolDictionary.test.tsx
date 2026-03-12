@@ -203,7 +203,7 @@ jest.mock('@/services/symbolDictionaryService', () => ({
 }));
 
 // ── Import screen after all mocks ───────────────────────────────────────────
-const { default: SymbolDictionaryScreen } = require('../symbol-dictionary');
+const { default: SymbolDictionaryScreen } = require('@/app/symbol-dictionary');
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Tests

@@ -395,6 +395,8 @@ const translations: Record<string, string> = {
     'settings.account.mock.profile.existing_hint': 'Inclut des rêves d’exemple',
     'settings.account.mock.profile.premium': 'Utilisateur premium',
     'settings.account.mock.profile.premium_hint': 'Quotas illimités activés',
+    'settings.account.mock.reset': 'Réinitialiser les tests',
+    'settings.account.mock.reset_hint': 'Vide le stockage mock, les quotas et la session courante',
     'settings.quota.title': 'Quotas & Abonnement',
     'settings.quota.subtitle': 'Suivez vos crédits restants (niveau actuel : {{tier}}).',
     'settings.quota.analysis_label': 'Analyses de rêves',
@@ -683,6 +685,9 @@ const translations: Record<string, string> = {
     'inspiration.ritual.steps_progress': '{completed}/{total} étapes',
     'symbols.popular_title': 'Symboles populaires',
     'symbols.view_all': 'Voir tout',
+    'symbols.home_card_title': 'Dictionnaire de rêves',
+    'symbols.home_card_body': 'Explore les symboles les plus courants et accède rapidement au dictionnaire.',
+    'symbols.open_dictionary': 'Ouvrir',
   };
 
 export default translations;

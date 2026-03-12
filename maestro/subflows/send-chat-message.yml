@@ -1,0 +1,23 @@
+appId: com.tanuki75.noctalia
+env:
+  MESSAGE: "Hello from guest"
+---
+- extendedWaitUntil:
+    notVisible:
+      id: chat.loading
+    timeout: 15000
+- assertVisible:
+    id: chat.input.message
+- tapOn:
+    id: chat.input.message
+- inputText: ${MESSAGE}
+- assertVisible:
+    id: chat.button.send
+- tapOn:
+    id: chat.button.send
+- assertVisible:
+    id: chat.loading
+- extendedWaitUntil:
+    notVisible:
+      id: chat.loading
+    timeout: 15000

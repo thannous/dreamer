@@ -393,6 +393,8 @@ const translations: Record<string, string> = {
     'settings.account.mock.profile.existing_hint': 'Mit Beispielträumen geladen',
     'settings.account.mock.profile.premium': 'Premium-Benutzer',
     'settings.account.mock.profile.premium_hint': 'Unbegrenzte Kontingente aktiviert',
+    'settings.account.mock.reset': 'Testzustand zurücksetzen',
+    'settings.account.mock.reset_hint': 'Leert Mock-Speicher, Kontingente und aktuelle Sitzung',
     'settings.quota.title': 'Kontingente & Abonnement',
     'settings.quota.subtitle': 'Verfolge deine verbleibenden Credits (aktuelle Stufe: {{tier}}).',
     'settings.quota.analysis_label': 'Traumanalysen',
@@ -681,6 +683,9 @@ const translations: Record<string, string> = {
     'inspiration.ritual.steps_progress': '{completed}/{total} Schritte',
     'symbols.popular_title': 'Beliebte Symbole',
     'symbols.view_all': 'Alle anzeigen',
+    'symbols.home_card_title': 'Traumlexikon',
+    'symbols.home_card_body': 'Entdecke die haeufigsten Symbole und springe direkt ins Lexikon.',
+    'symbols.open_dictionary': 'Oeffnen',
   };
 
 export default translations;

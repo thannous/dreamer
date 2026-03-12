@@ -1,131 +1,106 @@
 # Guest exploration limit: exhaust guest exploration credits across multiple dreams
 appId: com.tanuki75.noctalia
-clearState: true
 ---
-- launchApp
-- runFlow:
-      when:
-          visible: "(Journal|Diario)"
-      commands:
-          - tapOn: "(Journal|Diario)"
-          - waitForAnimationToEnd
-- runFlow:
-      when:
-          visible:
-              id: screen.journal
-      commands:
-          - pressKey: back
-          - scrollUntilVisible:
-                element:
-                    id: btn.addDream
-                direction: DOWN
-          - tapOn:
-                id: btn.addDream
-          - waitForAnimationToEnd
-- assertVisible:
-      id: screen.recording
+- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/reset-mock-state.yml
 
 # Dream 1 - analyze and explore
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Exploration Limit Dream 1"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: text.firstDream.title
+    id: text.firstDream.title
 - tapOn:
-      id: btn.firstDream.analyze
+    id: btn.firstDream.analyze
 - waitForAnimationToEnd
 - scrollUntilVisible:
-      element:
-          id: btn.exploreDream
-      direction: DOWN
-- tapOn:
+    element:
       id: btn.exploreDream
+    direction: DOWN
 - tapOn:
-      id: btn.dreamCategory.symbols
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.symbols
 - assertVisible:
-      id: chat.input.message
-# Send one message to mark as explored
-- tapOn:
-      id: chat.input.message
-- inputText: "Hello exploration 1"
-- tapOn:
-      id: chat.button.send
-- waitForAnimationToEnd
+    id: chat.input.message
+- runFlow:
+    file: subflows/send-chat-message.yml
+    env:
+      MESSAGE: "Hello exploration 1"
+- pressKey: back
 - pressKey: back
 - pressKey: back
 - waitForAnimationToEnd
 
 # Dream 2 - analyze and explore
 - tapOn:
-      id: btn.addDream
+    id: btn.addDream
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Exploration Limit Dream 2"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
 - assertVisible:
-      id: text.analyzePromptTitle
+    id: text.analyzePromptTitle
 - tapOn:
-      id: btn.analyzePrompt.analyze
+    id: btn.analyzePrompt.analyze
 - waitForAnimationToEnd
 - scrollUntilVisible:
-      element:
-          id: btn.exploreDream
-      direction: DOWN
-- tapOn:
+    element:
       id: btn.exploreDream
+    direction: DOWN
 - tapOn:
-      id: btn.dreamCategory.emotions
+    id: btn.exploreDream
+- tapOn:
+    id: btn.dreamCategory.emotions
 - assertVisible:
-      id: chat.input.message
-# Send one message to mark as explored
-- tapOn:
-      id: chat.input.message
-- inputText: "Hello exploration 2"
-- tapOn:
-      id: chat.button.send
-- waitForAnimationToEnd
+    id: chat.input.message
+- runFlow:
+    file: subflows/send-chat-message.yml
+    env:
+      MESSAGE: "Hello exploration 2"
+- pressKey: back
 - pressKey: back
 - pressKey: back
 - waitForAnimationToEnd
 
 # Dream 3 - exploration limit should be reached
 - tapOn:
-      id: btn.addDream
+    id: btn.addDream
+- runFlow: subflows/ensure-recording-text.yml
 - tapOn:
-      id: input.dreamTranscript
+    id: input.dreamTranscript
 - inputText: "Exploration Limit Dream 3"
 - tapOn:
-      id: btn.saveDream
+    id: btn.saveDream
 - waitForAnimationToEnd
-# QuotaLimitSheet should appear (analysis quota exhausted - 2 guest analyses used)
-# If analysis was allowed, try to explore
 - runFlow:
-      when:
-          visible:
-              id: btn.analyzePrompt.analyze
-      commands:
-          - tapOn:
-                id: btn.analyzePrompt.analyze
-          - waitForAnimationToEnd
+    when:
+      visible:
+        id: btn.analyzePrompt.analyze
+    commands:
+      - tapOn:
+          id: btn.analyzePrompt.analyze
+      - waitForAnimationToEnd
 - runFlow:
-      when:
-          visible:
-              id: btn.exploreDream
-      commands:
-          - scrollUntilVisible:
-                element:
-                    id: btn.exploreDream
-                direction: DOWN
-          - tapOn:
-                id: btn.exploreDream
-          - tapOn:
-                id: btn.dreamCategory.growth
-          - waitForAnimationToEnd
-# Chat screen should show blocked state (exploration limit reached)
+    when:
+      visible:
+        id: btn.exploreDream
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: btn.exploreDream
+          direction: DOWN
+      - tapOn:
+          id: btn.exploreDream
+      - tapOn:
+          id: btn.dreamCategory.growth
+      - waitForAnimationToEnd
 - assertVisible:
-      id: chat.screen.blocked
+    id: chat.screen.blocked

@@ -1,25 +1,28 @@
 # Ensure the bundle identifier matches the local dev build (Expo Go / dev client).
 appId: com.tanuki75.noctalia
 ---
-- launchApp:
-      clearState: true
+- runFlow: subflows/open-mock-app.yml
 - runFlow:
-      when:
-          visible:
-              id: btn.navigateJournal
-      commands:
-          - tapOn:
-                id: btn.navigateJournal
-          - waitForAnimationToEnd
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+      - waitForAnimationToEnd
 - runFlow:
-      when:
-          visible: "(Journal|Diario)"
-      commands:
-          - tapOn: "(Journal|Diario)"
-          - waitForAnimationToEnd
+    when:
+      visible: "(Journal|Diario)"
+    commands:
+      - tapOn: "(Journal|Diario)"
+      - waitForAnimationToEnd
 - tapOn: "(Settings|Param.tres|Ajustes)"
-- tapOn:
+- scrollUntilVisible:
+    element:
       id: btn.mockProfile.existing
+    direction: DOWN
+- tapOn:
+    id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
 - tapOn: "(Journal|Diario)"
 - assertVisible: "The Infinite Library"

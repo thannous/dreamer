@@ -27,6 +27,7 @@ export const TID = {
     FilterExplored: 'btn.filterExplored',
     ClearFilters: 'btn.clearFilters',
     MockProfile: (profile: string) => `btn.mockProfile.${profile}`,
+    MockResetState: 'btn.mock.resetState',
     ExploreDream: 'btn.exploreDream',
     DreamCategory: (id: string) => `btn.dreamCategory.${id}`,
     DreamFreeChat: 'btn.dreamCategory.freeChat',
@@ -93,6 +94,7 @@ export const TID = {
     AuthEmailVerificationStatus: 'text.auth.emailVerificationStatus',
     AnalysisLimitBanner: 'text.analysisLimit',
     ChatLimitBanner: 'text.chat.limit',
+    ChatMessageCounter: 'text.chat.messageCounter',
     AnalyzePromptTitle: 'text.analyzePromptTitle',
     FirstDreamSheetTitle: 'text.firstDream.title',
     QuotaLimitTitle: 'text.quotaLimit.title',
@@ -108,6 +110,7 @@ export const TID = {
     Input: 'chat.input.message',
     Send: 'chat.button.send',
     Mic: 'chat.button.mic',
+    Loading: 'chat.loading',
     ScreenBlocked: 'chat.screen.blocked',
   },
   Quota: {

@@ -1,0 +1,14 @@
+appId: com.tanuki75.noctalia
+---
+- assertVisible:
+    id: screen.recording
+- runFlow:
+    when:
+      visible:
+        id: btn.recording.switchToText
+    commands:
+      - tapOn:
+          id: btn.recording.switchToText
+      - waitForAnimationToEnd
+- assertVisible:
+    id: input.dreamTranscript

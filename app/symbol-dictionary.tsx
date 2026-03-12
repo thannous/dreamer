@@ -23,6 +23,8 @@ import {
   getAllSymbols,
   getCategoryList,
   getCategoryName,
+  getPopularSymbols,
+  getSymbolIcon,
   getSymbolsByCategory,
   searchSymbols,
 } from "@/services/symbolDictionaryService";
@@ -92,6 +94,7 @@ export default function SymbolDictionaryScreen() {
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
   const categories = useMemo(() => getCategoryList(), []);
+  const popularSymbols = useMemo(() => getPopularSymbols(), []);
   const allSymbols = useMemo(() => getAllSymbols(), []);
   const deferredSearchQuery = useDeferredValue(searchQuery.trim());
 
@@ -381,6 +384,63 @@ export default function SymbolDictionaryScreen() {
         </>
       ) : null}
 
+      <MotiView
+        from={{ opacity: 0, translateY: -8 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: "timing", duration: 500, delay: 80 }}
+        style={styles.popularSection}
+      >
+        <View style={styles.popularHeader}>
+          <Text style={[styles.popularTitle, { color: colors.textPrimary }]}>
+            {t("symbols.popular_title")}
+          </Text>
+          <Text style={[styles.popularSubtitle, { color: colors.textSecondary }]}>
+            {t("symbols.dictionary_subtitle")}
+          </Text>
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.popularScrollContent}
+        >
+          {popularSymbols.map((symbol) => {
+            const content = symbol[lang] ?? symbol.en;
+            const iconName = getSymbolIcon(symbol.id, symbol.category);
+
+            return (
+              <Pressable
+                key={symbol.id}
+                onPress={() => router.push(`/symbol-detail/${symbol.id}` as any)}
+                style={({ pressed }) => [
+                  styles.popularCard,
+                  {
+                    backgroundColor: colors.backgroundCard,
+                    borderColor: colors.divider,
+                  },
+                  pressed && styles.chipPressed,
+                ]}
+              >
+                <View
+                  style={[
+                    styles.popularIconWrap,
+                    { backgroundColor: `${colors.accent}18` },
+                  ]}
+                >
+                  <IconSymbol name={iconName} size={20} color={colors.accent} />
+                </View>
+                <Text
+                  style={[styles.popularCardTitle, { color: colors.textPrimary }]}
+                  numberOfLines={2}
+                >
+                  {content.name}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      </MotiView>
+
       {/* Search bar + chips */}
       <MotiView
         from={{ opacity: 0, translateY: -12 }}
@@ -461,11 +521,11 @@ export default function SymbolDictionaryScreen() {
         {browseMode === "theme" ? (
           <View style={styles.chipRow}>
             <Pressable
-              onPress={() => setSelectedCategory(null)}
-              style={({ pressed }) => [
-                ...getChipStyle(selectedCategory === null),
-                pressed && styles.chipPressed,
-              ]}
+                onPress={() => setSelectedCategory(null)}
+                style={({ pressed }) => [
+                  ...getChipStyle(selectedCategory === null),
+                  pressed && styles.chipPressed,
+                ]}
             >
               <Text
                 style={[
@@ -557,7 +617,6 @@ export default function SymbolDictionaryScreen() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         getItemType={getItemType}
-        estimatedItemSize={92}
         drawDistance={240}
         style={styles.list}
         contentContainerStyle={styles.listContent}
@@ -601,6 +660,48 @@ const styles = StyleSheet.create({
     fontSize: 28,
     letterSpacing: 0.3,
     textAlign: "center",
+  },
+  popularSection: {
+    gap: 14,
+  },
+  popularHeader: {
+    paddingHorizontal: ThemeLayout.spacing.md,
+    gap: 4,
+  },
+  popularTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 20,
+    letterSpacing: 0.3,
+  },
+  popularSubtitle: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  popularScrollContent: {
+    paddingHorizontal: ThemeLayout.spacing.md,
+    gap: 12,
+  },
+  popularCard: {
+    width: 112,
+    minHeight: 112,
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 14,
+    justifyContent: "space-between",
+    gap: 18,
+  },
+  popularIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  popularCardTitle: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 13,
+    lineHeight: 17,
   },
   searchContainer: {
     paddingHorizontal: ThemeLayout.spacing.md,

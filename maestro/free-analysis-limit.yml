@@ -1,0 +1,56 @@
+# Free analysis limit: mock existing profile starts at 2/3 analyses used.
+appId: com.tanuki75.noctalia
+---
+- runFlow: subflows/open-mock-app.yml
+- tapOn:
+    id: btn.navigateJournal
+- waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres|Ajustes)"
+- scrollUntilVisible:
+    element:
+      id: btn.mockProfile.existing
+    direction: DOWN
+- tapOn:
+    id: btn.mockProfile.existing
+- assertVisible: "mock.existing@dreamer.app"
+- tapOn: "(Home|Accueil|Inicio)"
+
+# Analysis 3/3
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Free Analysis Dream 1"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+- assertVisible:
+    id: btn.exploreDream
+- tapOn: "(Home|Accueil|Inicio)"
+
+# Next analysis should be blocked
+- runFlow: subflows/ensure-recording-text.yml
+- tapOn:
+    id: input.dreamTranscript
+- inputText: "Free Analysis Dream 2"
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.analyzePromptTitle
+- tapOn:
+    id: btn.analyzePrompt.analyze
+- waitForAnimationToEnd
+- assertVisible:
+    id: sheet.quotaLimit
+- assertVisible:
+    id: text.quotaLimit.title
+- tapOn:
+    id: btn.quotaLimit.journal
+- waitForAnimationToEnd
+- tapOn: "(Settings|Param.tres|Ajustes)"
+- assertVisible: "3 / 3"

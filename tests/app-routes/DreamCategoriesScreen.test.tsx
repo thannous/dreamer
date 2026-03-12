@@ -136,7 +136,7 @@ jest.mock('@/lib/moti', () => ({
   MotiText: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
 }));
 
-const { default: DreamCategoriesScreen } = require('../[id]');
+const { default: DreamCategoriesScreen } = require('@/app/dream-categories/[id]');
 
 describe('Dream categories screen', () => {
   it('[B] Given a dream When pressing a category Then it navigates to the chat route', () => {
