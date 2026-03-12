@@ -2,10 +2,21 @@ import type { RitualId } from './inspirationRituals';
 
 export type DreamChatCategory = 'symbols' | 'emotions' | 'growth' | 'general';
 
+export interface ChatMessagePart {
+  text?: string;
+  thought?: boolean;
+  thoughtSignature?: string;
+  inlineData?: {
+    data: string;
+    mimeType: string;
+  };
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'model';
   text: string;
+  parts?: ChatMessagePart[];
   createdAt?: number;
   meta?: {
     category?: DreamChatCategory;

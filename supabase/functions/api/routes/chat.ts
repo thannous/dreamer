@@ -1,9 +1,79 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt } from '../lib/prompts.ts';
-import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';
+import {
+  callGeminiWithFallback,
+  classifyGeminiError,
+  GEMINI_FLASH_LITE_MODEL,
+  GEMINI_FLASH_MODEL,
+  type GeminiPart,
+} from '../services/gemini.ts';
 import { requireGuestSession } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
+
+type StoredChatMessage = {
+  role: string;
+  text?: string;
+  parts?: GeminiPart[];
+};
+
+const sanitizeParts = (parts: unknown): GeminiPart[] | undefined => {
+  if (!Array.isArray(parts)) return undefined;
+
+  const sanitized = parts
+    .map((part) => {
+      if (!part || typeof part !== 'object') return null;
+      const candidate = part as Record<string, unknown>;
+      const text = typeof candidate.text === 'string' ? candidate.text : undefined;
+      const thought = typeof candidate.thought === 'boolean' ? candidate.thought : undefined;
+      const thoughtSignature = typeof candidate.thoughtSignature === 'string'
+        ? candidate.thoughtSignature
+        : undefined;
+      const inlineData =
+        candidate.inlineData
+        && typeof candidate.inlineData === 'object'
+        && typeof (candidate.inlineData as Record<string, unknown>).data === 'string'
+        && typeof (candidate.inlineData as Record<string, unknown>).mimeType === 'string'
+          ? {
+              data: String((candidate.inlineData as Record<string, unknown>).data),
+              mimeType: String((candidate.inlineData as Record<string, unknown>).mimeType),
+            }
+          : undefined;
+
+      if (!text && thought == null && !thoughtSignature && !inlineData) return null;
+      return {
+        ...(text ? { text } : {}),
+        ...(thought != null ? { thought } : {}),
+        ...(thoughtSignature ? { thoughtSignature } : {}),
+        ...(inlineData ? { inlineData } : {}),
+      };
+    })
+    .filter((part): part is GeminiPart => part !== null);
+
+  return sanitized.length > 0 ? sanitized : undefined;
+};
+
+const getMessageText = (message: StoredChatMessage): string => {
+  if (typeof message.text === 'string' && message.text.trim()) {
+    return message.text.trim();
+  }
+
+  const parts = sanitizeParts(message.parts);
+  if (!parts) return '';
+
+  return parts
+    .map((part) => (part.thought === true ? '' : part.text ?? ''))
+    .join('')
+    .trim();
+};
+
+const toContentParts = (message: StoredChatMessage): GeminiPart[] => {
+  const parts = sanitizeParts(message.parts);
+  if (parts) return parts;
+
+  const text = getMessageText(message);
+  return text ? [{ text }] : [];
+};
 
 export async function handleChat(ctx: ApiContext): Promise<Response> {
   const { req, supabase, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
@@ -21,7 +91,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
         shareableQuote: string;
         dreamType: string;
         theme?: string;
-        chatHistory?: { role: string; text: string }[];
+        chatHistory?: StoredChatMessage[];
       };
     };
 
@@ -54,7 +124,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
     let dream: {
       id: string;
       user_id: string | null;
-      chat_history: { role: string; text: string }[];
+      chat_history: StoredChatMessage[];
       transcript: string;
       title: string;
       interpretation: string;
@@ -140,9 +210,13 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
     }
 
     const existingHistory = Array.isArray(dream.chat_history)
-      ? (dream.chat_history as { role: string; text: string }[])
+      ? (dream.chat_history as StoredChatMessage[])
       : [];
-    const newUserMessage = { role: 'user', text: userMessage };
+    const newUserMessage: StoredChatMessage = {
+      role: 'user',
+      text: userMessage,
+      parts: [{ text: userMessage }],
+    };
     const historyWithUserMsg = [...existingHistory, newUserMessage];
 
     let userMessagePersisted = false;
@@ -191,7 +265,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
           ? 'Eres un asistente empático que ayuda a interpretar sueños. Sé claro y amable, evita afirmaciones médicas. Responde en español.'
           : 'You are an empathetic assistant helping interpret dreams. Be clear and kind, avoid medical claims. Reply in English.';
 
-    const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
+    const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
     const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
     contents.push({ role: 'user', parts: [{ text: dreamContextPrompt }] });
 
@@ -207,25 +281,33 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
 
     for (const turn of historyWithUserMsg) {
       const r = turn.role === 'model' ? 'model' : 'user';
-      const t = String(turn.text ?? '');
-      if (t) contents.push({ role: r, parts: [{ text: t }] });
+      const parts = toContentParts(turn);
+      if (parts.length > 0) contents.push({ role: r, parts });
     }
 
-    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
-    const { text: reply } = await callGeminiWithFallback(
+    const primaryModel =
+      Deno.env.get('GEMINI_CHAT_MODEL')
+      ?? Deno.env.get('GEMINI_LITE_MODEL')
+      ?? GEMINI_FLASH_LITE_MODEL;
+    const { text: reply, raw } = await callGeminiWithFallback(
       apiKey,
       primaryModel,
-      'gemini-2.5-flash-lite',
+      Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
       contents,
       systemPreamble,
-      { temperature: 0.7 }
+      { thinkingLevel: 'minimal' }
     );
 
     if (typeof reply !== 'string' || !reply.trim()) {
       throw new Error('Empty model response');
     }
 
-    const modelMessage = { role: 'model', text: reply.trim() };
+    const modelParts = sanitizeParts(raw?.candidates?.[0]?.content?.parts);
+    const modelMessage: StoredChatMessage = {
+      role: 'model',
+      text: reply.trim(),
+      ...(modelParts ? { parts: modelParts } : {}),
+    };
     const finalHistory = [...historyWithUserMsg, modelMessage];
 
     if (shouldPersist) {
@@ -254,7 +336,7 @@ export async function handleChat(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    return new Response(JSON.stringify({ text: reply.trim() }), {
+    return new Response(JSON.stringify({ text: reply.trim(), message: modelMessage }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

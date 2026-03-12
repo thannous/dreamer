@@ -175,8 +175,14 @@ describe('geminiServiceMock', () => {
 
       const result = await resultPromise;
 
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+      expect(typeof result.text).toBe('string');
+      expect(result.text.length).toBeGreaterThan(0);
+      expect(result.message).toEqual(
+        expect.objectContaining({
+          role: 'model',
+          text: result.text,
+        })
+      );
     });
 
     it('handles default language', async () => {
@@ -189,8 +195,14 @@ describe('geminiServiceMock', () => {
 
       const result = await resultPromise;
 
-      expect(typeof result).toBe('string');
-      expect(result.length).toBeGreaterThan(0);
+      expect(typeof result.text).toBe('string');
+      expect(result.text.length).toBeGreaterThan(0);
+      expect(result.message).toEqual(
+        expect.objectContaining({
+          role: 'model',
+          text: result.text,
+        })
+      );
     });
   });
 

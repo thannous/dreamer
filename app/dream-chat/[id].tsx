@@ -67,11 +67,16 @@ const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
 const createChatMessage = (
   role: 'user' | 'model',
   text: string,
-  options?: { category?: Exclude<CategoryType, 'general'>; meta?: ChatMessage['meta'] }
+  options?: {
+    category?: Exclude<CategoryType, 'general'>;
+    meta?: ChatMessage['meta'];
+    parts?: ChatMessage['parts'];
+  }
 ): ChatMessage => ({
   id: generateUUID(),
   role,
   text,
+  ...(options?.parts ? { parts: options.parts } : {}),
   createdAt: Date.now(),
   ...(options?.category || options?.meta
     ? { meta: { ...(options?.meta ?? {}), ...(options?.category ? { category: options.category } : {}) } }
@@ -501,7 +506,7 @@ export default function DreamChatScreen() {
 
             // Now proceed with chat using synced.remoteId
             const dreamIdString = String(synced.remoteId);
-            const aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
+            const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
               signal: controller.signal,
             });
 
@@ -511,7 +516,9 @@ export default function DreamChatScreen() {
             });
             const updatedMessages = [...baseMessages, userMessage];
 
-            const aiMessage = createChatMessage('model', aiResponseText);
+            const aiMessage = createChatMessage('model', aiResponse.text, {
+              parts: aiResponse.message?.parts,
+            });
             const finalMessages = [...updatedMessages, aiMessage];
 
             setMessages(finalMessages);
@@ -583,7 +590,7 @@ export default function DreamChatScreen() {
 
         // For guests: send full dream context (no DB entry)
         // For authenticated: send dreamId (server reads from DB)
-        let aiResponseText: string;
+        let aiResponse: Awaited<ReturnType<typeof startOrContinueChat>>;
         let guestFingerprint: string | undefined;
         if (!user) {
           try {
@@ -605,7 +612,7 @@ export default function DreamChatScreen() {
             theme: dream.theme,
             chatHistory: updatedMessages,  // Current messages before AI response
           };
-          aiResponseText = await startOrContinueChat(
+          aiResponse = await startOrContinueChat(
             String(dream.id),
             textToSend,
             language,
@@ -616,12 +623,14 @@ export default function DreamChatScreen() {
         } else {
           // Authenticated mode: send dreamId (current flow)
           const dreamIdString = String(dream.remoteId ?? dream.id);
-          aiResponseText = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
+          aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
             signal: controller.signal,
           });
         }
 
-        const aiMessage = createChatMessage('model', aiResponseText);
+        const aiMessage = createChatMessage('model', aiResponse.text, {
+          parts: aiResponse.message?.parts,
+        });
         const finalMessages = [...updatedMessages, aiMessage];
 
         setMessages(finalMessages);
@@ -629,7 +638,7 @@ export default function DreamChatScreen() {
           console.debug('[DreamChat] sendMessage success', {
             dreamId: dream.id,
             userMessageCount: updatedMessages.length,
-            aiTextLength: aiResponseText.length,
+            aiTextLength: aiResponse.text.length,
             finalMessageCount: finalMessages.length,
             ts: Date.now(),
           });

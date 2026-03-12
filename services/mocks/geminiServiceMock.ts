@@ -175,7 +175,7 @@ export async function startOrContinueChat(
   },
   _fingerprint?: string,
   _options?: { signal?: AbortSignal },
-): Promise<string> {
+): Promise<{ text: string; message: { role: 'model'; text: string; parts: { text: string }[] } }> {
   console.log('[MOCK] startOrContinueChat called with dreamId:', dreamId, 'message:', message);
   await delay(1000 + Math.random() * 1000); // 1-2 seconds
 
@@ -184,7 +184,14 @@ export async function startOrContinueChat(
   const response = generateChatResponse(message, 'your dream');
 
   console.log('[MOCK] startOrContinueChat returning response');
-  return response;
+  return {
+    text: response,
+    message: {
+      role: 'model',
+      text: response,
+      parts: [{ text: response }],
+    },
+  };
 }
 
 /**
@@ -212,25 +219,17 @@ export async function generateSpeechForText(text: string): Promise<string> {
 }
 
 /**
- * Mock image generation with reference subjects (3-5 seconds)
- * Returns a placeholder image regardless of reference images
+ * Reference-image generation is hard-disabled in mock mode too.
  */
 export async function generateImageWithReference(
   request: ReferenceImageGenerationRequest
 ): Promise<string> {
-  const promptText = request.prompt ?? request.transcript;
-  console.log('[MOCK] generateImageWithReference called with', {
-    transcriptLength: request.transcript.length,
-    promptLength: promptText.length,
-    referenceCount: request.referenceImages.length,
-    subjectTypes: request.referenceImages.map(img => img.type),
+  void request;
+  throw Object.assign(new Error('Reference image generation is disabled'), {
+    status: 410,
+    body: {
+      code: 'FEATURE_DISABLED',
+      error: 'Reference image generation is disabled',
+    },
   });
-
-  await delay(3000 + Math.random() * 2000); // 3-5 seconds
-
-  // Return a random placeholder image
-  const imageUrl = getRandomImageForTheme('surreal');
-
-  console.log('[MOCK] generateImageWithReference returning:', imageUrl);
-  return imageUrl;
 }
