@@ -396,7 +396,7 @@ function patchDictionaryPage(lang, t) {
 ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}`,
     'navbar block'
   );
-  next = replaceFirst(next, /[ \t]*<nav class="text-sm text-purple-200\/60 mb-8" aria-label="[^"]+">[\s\S]*?<\/nav>/, `            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
+  next = replaceFirst(next, /[ \t]*<nav class="text-sm text-purple-200\/(?:60|75) mb-8" aria-label="[^"]+">[\s\S]*?<\/nav>/, `            <nav class="text-sm text-purple-200/75 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${escapeHtml(t.home)}</span></a><meta itemprop="position" content="1"></li>
                     <li class="text-purple-400">/</li>
