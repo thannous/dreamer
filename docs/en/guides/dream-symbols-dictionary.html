@@ -48,7 +48,8 @@
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-                                                                                            <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
+                                                                                                <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
+<link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-220131">
@@ -102,9 +103,17 @@
         .letter-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
         .search-input:focus { outline: none; border-color: #FDA481; }
         /* Sticky search + alpha bar */
-        #stickyBar { position: sticky; top: 4.5rem; z-index: 40; }
-        #symbolsList > section { scroll-margin-top: var(--dictionary-scroll-offset, 12rem); }
-        /* Category left-border colors (applied via JS) */
+        #stickyBar {
+            position: sticky; top: 4.5rem; z-index: 40;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        #stickyBar.sb-visible { opacity: 1; pointer-events: auto; }
+        #stickyBar .sb-inner {
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+        }
+        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: 13rem; }
+        #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
     </style>
@@ -257,34 +266,35 @@
 
             <!-- Sticky Search + Alphabet bar (above categories) -->
             <div id="stickyBar" class="glass-panel rounded-2xl p-4 mb-8">
-                <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <div class="sb-inner">
                     <!-- Compact search -->
-                    <div class="relative w-full sm:w-72 shrink-0">
+                    <div class="sb-search">
                         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
                         <input type="text" id="stickySearch" placeholder="Search symbols…"
-                            class="search-input w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-dream-cream placeholder:text-purple-300/40 transition-colors">
+                            class="search-input w-full rounded-full py-2 pl-10 pr-4 text-sm text-dream-cream transition-colors"
+                            style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
                     </div>
                     <!-- Alphabet -->
-                    <div class="letter-nav flex flex-wrap gap-1 justify-center items-center flex-1">
-                        <a href="#B" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="B">B</a>
-                        <a href="#C" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="C">C</a>
-                        <a href="#D" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="D">D</a>
-                        <a href="#E" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="E">E</a>
-                        <a href="#F" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="F">F</a>
-                        <a href="#H" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="H">H</a>
-                        <a href="#K" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="K">K</a>
-                        <a href="#L" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="L">L</a>
-                        <a href="#M" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="M">M</a>
-                        <a href="#N" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="N">N</a>
-                        <a href="#O" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="O">O</a>
-                        <a href="#P" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="P">P</a>
-                        <a href="#R" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="R">R</a>
-                        <a href="#S" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="S">S</a>
-                        <a href="#T" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="T">T</a>
-                        <a href="#W" class="letter-link text-sm text-purple-200/75 hover:text-dream-salmon" data-letter="W">W</a>
+                    <div class="sb-alpha letter-nav">
+                        <a href="#B" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="B">B</a>
+                        <a href="#C" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="C">C</a>
+                        <a href="#D" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="D">D</a>
+                        <a href="#E" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="E">E</a>
+                        <a href="#F" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="F">F</a>
+                        <a href="#H" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="H">H</a>
+                        <a href="#K" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="K">K</a>
+                        <a href="#L" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="L">L</a>
+                        <a href="#M" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="M">M</a>
+                        <a href="#N" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="N">N</a>
+                        <a href="#O" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="O">O</a>
+                        <a href="#P" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="P">P</a>
+                        <a href="#R" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="R">R</a>
+                        <a href="#S" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="S">S</a>
+                        <a href="#T" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="T">T</a>
+                        <a href="#W" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="W">W</a>
                     </div>
                     <!-- Back to top -->
-                    <button id="backToTop" class="hidden shrink-0 glass-button rounded-full p-2 text-purple-300/70 hover:text-white transition-colors" aria-label="Back to top" title="Back to top">
+                    <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="Back to top" title="Back to top" style="display:none;flex-shrink:0;padding:6px;">
                         <i data-lucide="arrow-up" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -1217,9 +1227,16 @@
                 }
             }
 
-            // Hero search
+            // Hero search + sticky bar show/hide
             const heroSearch = document.getElementById('heroSearch');
             const stickySearch = document.getElementById('stickySearch');
+            const stickyBar = document.getElementById('stickyBar');
+            const heroHeader = heroSearch.closest('header');
+            const heroObserver = new IntersectionObserver(([entry]) => {
+                stickyBar.classList.toggle('sb-visible', !entry.isIntersecting);
+            }, { threshold: 0 });
+            heroObserver.observe(heroHeader);
+
             heroSearch.addEventListener('input', (e) => {
                 stickySearch.value = e.target.value;
                 filterSymbols(e.target.value);
@@ -1253,7 +1270,7 @@
             // ── Back-to-top button ────────────────────────────────────────
             const backToTop = document.getElementById('backToTop');
             window.addEventListener('scroll', () => {
-                backToTop.classList.toggle('hidden', window.scrollY < 400);
+                backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
             }, { passive: true });
             backToTop.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
