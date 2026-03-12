@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   InteractionManager,
   KeyboardAvoidingView,
@@ -76,15 +76,20 @@ export default function SettingsScreen() {
     }, []),
   );
 
-  useEffect(() => {
-    const task = InteractionManager.runAfterInteractions(() => {
-      setShowDeferredSections(true);
-    });
+  useFocusEffect(
+    useCallback(() => {
+      setShowDeferredSections(false);
 
-    return () => {
-      task.cancel?.();
-    };
-  }, []);
+      const task = InteractionManager.runAfterInteractions(() => {
+        setShowDeferredSections(true);
+      });
+
+      return () => {
+        task.cancel?.();
+        setShowDeferredSections(false);
+      };
+    }, []),
+  );
 
   const {
     isActive,
