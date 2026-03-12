@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
@@ -17,13 +17,14 @@ export interface RecordingTextInputProps {
   onClear?: () => void;
 }
 
-export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>(
+const RecordingTextInputComponent = forwardRef<TextInput, RecordingTextInputProps>(
   function RecordingTextInput(
     { value, onChange, disabled, lengthWarning, instructionText, onSwitchToVoice, onClear },
     ref
   ) {
     const { colors, shadows } = useTheme();
     const { t } = useTranslation();
+    const hasValue = value.trim().length > 0;
 
     return (
       <>
@@ -82,12 +83,12 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={[
                 styles.modeSwitchButton,
                 styles.modeSwitchVoiceButton,
-                !value.trim() && styles.hiddenButton,
+                !hasValue && styles.hiddenButton,
               ]}
               testID={TID.Button.ClearDream}
-              disabled={disabled || !value.trim()}
-              accessibilityElementsHidden={!value.trim()}
-              importantForAccessibility={value.trim() ? 'yes' : 'no-hide-descendants'}
+              disabled={disabled || !hasValue}
+              accessibilityElementsHidden={!hasValue}
+              importantForAccessibility={hasValue ? 'yes' : 'no-hide-descendants'}
             >
               <IconSymbol
                 name="trash"
@@ -105,6 +106,8 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
     );
   }
 );
+
+export const RecordingTextInput = memo(RecordingTextInputComponent);
 
 const styles = StyleSheet.create({
   recordingSection: {

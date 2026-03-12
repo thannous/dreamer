@@ -1,8 +1,7 @@
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
-import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
-import React from 'react';
+import React, { memo } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 interface RecordingFooterProps {
@@ -15,7 +14,7 @@ interface RecordingFooterProps {
   journalLinkAccessibilityLabel?: string;
 }
 
-export function RecordingFooter({
+function RecordingFooterComponent({
   onSave,
   onGoToJournal,
   isSaveDisabled,
@@ -29,10 +28,7 @@ export function RecordingFooter({
   return (
     <View style={styles.footerActions}>
       <View style={styles.actionButtons}>
-        <MotiView
-          animate={{ opacity: isSaveDisabled ? 0.65 : 1 }}
-          transition={{ type: 'timing', duration: 300 }}
-        >
+        <View style={isSaveDisabled ? styles.submitButtonWrapperDisabled : undefined}>
           <Pressable
             onPress={onSave}
             disabled={isSaveDisabled}
@@ -58,7 +54,7 @@ export function RecordingFooter({
               {saveButtonLabel}
             </Text>
           </Pressable>
-        </MotiView>
+        </View>
       </View>
 
       <Pressable
@@ -80,6 +76,8 @@ export function RecordingFooter({
   );
 }
 
+export const RecordingFooter = memo(RecordingFooterComponent);
+
 const styles = StyleSheet.create({
   footerActions: {
     marginTop: 'auto',
@@ -90,6 +88,9 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     gap: 12,
+  },
+  submitButtonWrapperDisabled: {
+    opacity: 0.65,
   },
   submitButton: {
     paddingVertical: 16,

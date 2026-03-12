@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MicButton } from '@/components/recording/MicButton';
@@ -6,7 +6,6 @@ import { TypewriterText } from '@/components/ui/TypewriterText';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { MotiView } from '@/lib/moti';
 import { TID } from '@/lib/testIDs';
 
 export interface RecordingVoiceInputProps {
@@ -18,7 +17,7 @@ export interface RecordingVoiceInputProps {
   onSwitchToText: () => void;
 }
 
-export function RecordingVoiceInput({
+function RecordingVoiceInputComponent({
   status,
   transcript,
   instructionText,
@@ -58,16 +57,11 @@ export function RecordingVoiceInput({
         </View>
 
         {transcript ? (
-          <MotiView
-            from={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ type: 'timing', duration: 500 }}
-            style={styles.liveTranscriptContainer}
-          >
+          <View style={styles.liveTranscriptContainer}>
             <Text style={[styles.liveTranscriptText, { color: colors.textPrimary }]}>
               {transcript}
             </Text>
-          </MotiView>
+          </View>
         ) : null}
 
         <Pressable
@@ -83,6 +77,8 @@ export function RecordingVoiceInput({
     </>
   );
 }
+
+export const RecordingVoiceInput = memo(RecordingVoiceInputComponent);
 
 const styles = StyleSheet.create({
   recordingSection: {

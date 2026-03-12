@@ -17,12 +17,10 @@ import { GradientColors } from '@/constants/gradients';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { AnalysisStep, useAnalysisProgress } from '@/hooks/useAnalysisProgress';
 import { useQuota } from '@/hooks/useQuota';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
-import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
@@ -64,7 +62,6 @@ export default function RecordingScreen() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const scrollPerf = useScrollIdle();
   const referenceImagesEnabled = isReferenceImagesEnabled();
 
   const [transcript, setTranscript] = useState('');
@@ -910,6 +907,20 @@ export default function RecordingScreen() {
   const gradientColors = mode === 'dark'
     ? GradientColors.surreal
     : ([colors.backgroundSecondary, colors.backgroundDark] as readonly [string, string]);
+  const mainContentStyle = useMemo(
+    () => [
+      styles.mainContent,
+      {
+        paddingTop: 24 + insets.top,
+        paddingBottom: 24 + insets.bottom,
+      },
+    ],
+    [insets.bottom, insets.top]
+  );
+  const subjectPropositionMarginBottom = useMemo(
+    () => 100 + insets.bottom,
+    [insets.bottom]
+  );
 
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
   const focusTranscriptEnd = useCallback((value: string) => {
@@ -958,10 +969,24 @@ export default function RecordingScreen() {
     }
   }, [focusTranscriptEnd, inputMode, transcript]);
 
-  // ... (existing code)
+  const handleGuestLimitDismiss = useCallback(() => {
+    setShowGuestLimitSheet(false);
+    setPendingGuestLimitDream(null);
+  }, []);
+
+  const handleGuestLimitCta = useCallback(() => {
+    setShowGuestLimitSheet(false);
+    router.push('/(tabs)/settings');
+  }, []);
+
+  const analysisRetryHandler = pendingAnalysisDream
+    ? handleFirstDreamAnalyze
+    : pendingSubjectDream
+      ? handleGenerateWithReference
+      : undefined;
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <>
       <LinearGradient
         colors={gradientColors}
         start={{ x: 0, y: 0 }}
@@ -978,21 +1003,8 @@ export default function RecordingScreen() {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
-            onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
-            onScrollEndDrag={scrollPerf.onScrollEndDrag}
-            onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
-            onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
           >
-            {/* Main Content */}
-            <View
-              style={[
-                styles.mainContent,
-                {
-                  paddingTop: 24 + insets.top,
-                  paddingBottom: 24 + insets.bottom,
-                },
-              ]}
-            >
+            <View style={mainContentStyle}>
               <View style={styles.bodySection}>
                 {inputMode === 'voice' ? (
                   <RecordingVoiceInput
@@ -1016,22 +1028,15 @@ export default function RecordingScreen() {
                   />
                 )}
 
-                {/* Analysis Progress */}
-                {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE && (
+                {analysisProgress.step !== AnalysisStep.IDLE && analysisProgress.step !== AnalysisStep.COMPLETE ? (
                   <AnalysisProgress
                     step={analysisProgress.step}
                     progress={analysisProgress.progress}
                     message={analysisProgress.message}
                     error={analysisProgress.error}
-                    onRetry={
-                      pendingAnalysisDream
-                        ? handleFirstDreamAnalyze
-                        : pendingSubjectDream
-                          ? handleGenerateWithReference
-                          : undefined
-                    }
+                    onRetry={analysisRetryHandler}
                   />
-                )}
+                ) : null}
               </View>
 
               <RecordingFooter
@@ -1043,87 +1048,201 @@ export default function RecordingScreen() {
                 saveButtonAccessibilityLabel={t('recording.button.save_dream_accessibility', { defaultValue: t('recording.button.save_dream') })}
                 journalLinkAccessibilityLabel={t('recording.nav_button.accessibility')}
               />
-
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </LinearGradient>
+
+      <RecordingOverlays
+        firstDreamVisible={Boolean(firstDreamPrompt)}
+        onFirstDreamDismiss={handleFirstDreamDismiss}
+        onFirstDreamAnalyze={handleFirstDreamAnalyze}
+        onFirstDreamJournal={handleFirstDreamJournal}
+        analyzePromptVisible={Boolean(analyzePromptDream)}
+        onAnalyzePromptDismiss={handleAnalyzePromptDismiss}
+        onAnalyzePromptAnalyze={handleFirstDreamAnalyze}
+        onAnalyzePromptJournal={handleAnalyzePromptJournal}
+        analyzePromptTranscript={analyzePromptTranscript}
+        guestLimitVisible={showGuestLimitSheet}
+        onGuestLimitClose={handleGuestLimitDismiss}
+        onGuestLimitCta={handleGuestLimitCta}
+        quotaLimitVisible={showQuotaLimitSheet}
+        onQuotaLimitClose={handleQuotaLimitDismiss}
+        onQuotaLimitPrimary={quotaSheetMode === 'error' ? handleQuotaLimitDismiss : handleQuotaLimitPrimary}
+        onQuotaLimitSecondary={quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined}
+        onQuotaLimitLink={quotaSheetMode === 'limit' ? handleQuotaLimitDismiss : undefined}
+        quotaSheetMode={quotaSheetMode}
+        tier={tier}
+        usageLimit={usage?.analysis.limit}
+        quotaSheetMessage={quotaSheetMessage}
+        isPersisting={isPersisting}
+        referenceImagesEnabled={referenceImagesEnabled}
+        showSubjectProposition={showSubjectProposition}
+        detectedSubjectType={detectedSubjectType}
+        onSubjectAccept={handleSubjectAccept}
+        onSubjectDismiss={handleSubjectDismiss}
+        subjectPropositionMarginBottom={subjectPropositionMarginBottom}
+        showReferencePickerSheet={showReferencePickerSheet}
+        referenceImages={referenceImages}
+        onReferencePickerClose={handleReferencePickerClose}
+        onGenerateWithReference={handleGenerateWithReference}
+        onReferenceImagesSelected={handleReferenceImagesSelected}
+        showOfflineModelSheet={showOfflineModelSheet}
+        onOfflineModelSheetClose={handleOfflineModelSheetClose}
+        offlineModelLocale={offlineModelLocale}
+        onOfflineModelDownloadComplete={handleOfflineModelDownloadComplete}
+      />
+    </>
+  );
+}
+
+const RecordingOverlays = React.memo(function RecordingOverlays({
+  firstDreamVisible,
+  onFirstDreamDismiss,
+  onFirstDreamAnalyze,
+  onFirstDreamJournal,
+  analyzePromptVisible,
+  onAnalyzePromptDismiss,
+  onAnalyzePromptAnalyze,
+  onAnalyzePromptJournal,
+  analyzePromptTranscript,
+  guestLimitVisible,
+  onGuestLimitClose,
+  onGuestLimitCta,
+  quotaLimitVisible,
+  onQuotaLimitClose,
+  onQuotaLimitPrimary,
+  onQuotaLimitSecondary,
+  onQuotaLimitLink,
+  quotaSheetMode,
+  tier,
+  usageLimit,
+  quotaSheetMessage,
+  isPersisting,
+  referenceImagesEnabled,
+  showSubjectProposition,
+  detectedSubjectType,
+  onSubjectAccept,
+  onSubjectDismiss,
+  subjectPropositionMarginBottom,
+  showReferencePickerSheet,
+  referenceImages,
+  onReferencePickerClose,
+  onGenerateWithReference,
+  onReferenceImagesSelected,
+  showOfflineModelSheet,
+  onOfflineModelSheetClose,
+  offlineModelLocale,
+  onOfflineModelDownloadComplete,
+}: {
+  firstDreamVisible: boolean;
+  onFirstDreamDismiss: () => void;
+  onFirstDreamAnalyze: () => void;
+  onFirstDreamJournal: () => void;
+  analyzePromptVisible: boolean;
+  onAnalyzePromptDismiss: () => void;
+  onAnalyzePromptAnalyze: () => void;
+  onAnalyzePromptJournal: () => void;
+  analyzePromptTranscript?: string | null;
+  guestLimitVisible: boolean;
+  onGuestLimitClose: () => void;
+  onGuestLimitCta: () => void;
+  quotaLimitVisible: boolean;
+  onQuotaLimitClose: () => void;
+  onQuotaLimitPrimary: () => void;
+  onQuotaLimitSecondary?: () => void;
+  onQuotaLimitLink?: () => void;
+  quotaSheetMode: 'limit' | 'error' | 'login';
+  tier: 'guest' | 'free' | 'plus' | 'premium';
+  usageLimit?: number | null;
+  quotaSheetMessage: string;
+  isPersisting: boolean;
+  referenceImagesEnabled: boolean;
+  showSubjectProposition: boolean;
+  detectedSubjectType: 'person' | 'animal' | null;
+  onSubjectAccept: () => void;
+  onSubjectDismiss: () => void;
+  subjectPropositionMarginBottom: number;
+  showReferencePickerSheet: boolean;
+  referenceImages: ReferenceImage[];
+  onReferencePickerClose: () => void;
+  onGenerateWithReference: () => void;
+  onReferenceImagesSelected: (images: ReferenceImage[]) => void;
+  showOfflineModelSheet: boolean;
+  onOfflineModelSheetClose: () => void;
+  offlineModelLocale: string;
+  onOfflineModelDownloadComplete: (_success: boolean) => void;
+}) {
+  return (
+    <>
       <FirstDreamSheet
-        visible={Boolean(firstDreamPrompt)}
-        onDismiss={handleFirstDreamDismiss}
-        onAnalyze={handleFirstDreamAnalyze}
-        onJournal={handleFirstDreamJournal}
+        visible={firstDreamVisible}
+        onDismiss={onFirstDreamDismiss}
+        onAnalyze={onFirstDreamAnalyze}
+        onJournal={onFirstDreamJournal}
         isPersisting={isPersisting}
       />
 
       <AnalyzePromptSheet
-        visible={Boolean(analyzePromptDream)}
-        onDismiss={handleAnalyzePromptDismiss}
-        onAnalyze={handleFirstDreamAnalyze}
-        onJournal={handleAnalyzePromptJournal}
+        visible={analyzePromptVisible}
+        onDismiss={onAnalyzePromptDismiss}
+        onAnalyze={onAnalyzePromptAnalyze}
+        onJournal={onAnalyzePromptJournal}
         transcript={analyzePromptTranscript}
         isPersisting={isPersisting}
       />
 
       <GuestLimitSheet
-        visible={showGuestLimitSheet}
-        onClose={() => {
-          setShowGuestLimitSheet(false);
-          setPendingGuestLimitDream(null);
-        }}
-        onCta={() => {
-          setShowGuestLimitSheet(false);
-          router.push('/(tabs)/settings');
-        }}
+        visible={guestLimitVisible}
+        onClose={onGuestLimitClose}
+        onCta={onGuestLimitCta}
       />
 
       <QuotaLimitSheet
-        visible={showQuotaLimitSheet}
-        onClose={handleQuotaLimitDismiss}
-        onPrimary={quotaSheetMode === 'error' ? handleQuotaLimitDismiss : handleQuotaLimitPrimary}
-        onSecondary={quotaSheetMode === 'limit' ? handleQuotaLimitJournal : undefined}
-        onLink={quotaSheetMode === 'limit' ? handleQuotaLimitDismiss : undefined}
+        visible={quotaLimitVisible}
+        onClose={onQuotaLimitClose}
+        onPrimary={onQuotaLimitPrimary}
+        onSecondary={onQuotaLimitSecondary}
+        onLink={onQuotaLimitLink}
         mode={quotaSheetMode}
         tier={tier}
-        usageLimit={usage?.analysis.limit}
+        usageLimit={usageLimit}
         message={quotaSheetMessage}
       />
 
-      {/* Subject Proposition */}
-      {referenceImagesEnabled && showSubjectProposition && detectedSubjectType && (
+      {referenceImagesEnabled && showSubjectProposition && detectedSubjectType ? (
         <View style={styles.subjectPropositionOverlay}>
           <View style={styles.subjectPropositionBackdrop} />
-          <View style={[styles.subjectPropositionCard, { marginBottom: 100 + insets.bottom }]}>
+          <View style={[styles.subjectPropositionCard, { marginBottom: subjectPropositionMarginBottom }]}>
             <SubjectProposition
               subjectType={detectedSubjectType}
-              onAccept={handleSubjectAccept}
-              onDismiss={handleSubjectDismiss}
+              onAccept={onSubjectAccept}
+              onDismiss={onSubjectDismiss}
             />
           </View>
         </View>
-      )}
+      ) : null}
 
       <ReferenceImageSheet
         visible={referenceImagesEnabled && showReferencePickerSheet}
         subjectType={detectedSubjectType}
         referenceImages={referenceImages}
         isPersisting={isPersisting}
-        onClose={handleReferencePickerClose}
-        onPrimary={handleGenerateWithReference}
-        onSecondary={handleReferencePickerClose}
-        onImagesSelected={handleReferenceImagesSelected}
+        onClose={onReferencePickerClose}
+        onPrimary={onGenerateWithReference}
+        onSecondary={onReferencePickerClose}
+        onImagesSelected={onReferenceImagesSelected}
       />
 
-      {/* Offline Model Download Sheet */}
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}
-        onClose={handleOfflineModelSheetClose}
+        onClose={onOfflineModelSheetClose}
         locale={offlineModelLocale}
-        onDownloadComplete={handleOfflineModelDownloadComplete}
+        onDownloadComplete={onOfflineModelDownloadComplete}
       />
-    </ScrollPerfProvider>
+    </>
   );
-}
+});
 
 const styles = StyleSheet.create({
   gradient: {
