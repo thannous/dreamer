@@ -49,7 +49,8 @@
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-                                                                                            <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
+                                                                                                <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
+<link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
 <link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-220131">
@@ -97,10 +98,24 @@
         .symbol-card { transition: all 0.3s ease; }
         .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
         .symbol-card:focus { outline: none; border-color: rgba(253, 164, 129, 0.3); box-shadow: 0 0 0 2px rgba(253, 164, 129, 0.25); }
-        .letter-nav { scroll-behavior: smooth; }
-        .letter-link { transition: all 0.2s ease; }
-        .letter-link:hover, .letter-link.active { color: #FDA481; transform: scale(1.1); }
+                .letter-link { transition: all 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 0.375rem; padding: 2px 4px; }
+        .letter-link:hover { color: #FDA481; transform: scale(1.1); }
+        .letter-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
         .search-input:focus { outline: none; border-color: #FDA481; }
+        /* Sticky search + alpha bar */
+        #stickyBar {
+            position: sticky; top: 4.5rem; z-index: 40;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        #stickyBar.sb-visible { opacity: 1; pointer-events: auto; }
+        #stickyBar .sb-inner {
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+        }
+        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: 13rem; }
+        #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
+        /* Hero search */
+        .hero-search:focus { outline: none; border-color: #FDA481; }
     </style>
 
     <script type="application/ld+json">
@@ -258,55 +273,46 @@
                     <a href="/es/simbolos/naturaleza" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="leaf" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Naturaleza</h3>
-                        <span class="text-xs text-purple-300/60">9 símbolos</span>
+                        <span class="text-xs text-purple-300/80">9 símbolos</span>
                     </a>
                     <a href="/es/simbolos/animales" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="paw-print" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Animales</h3>
-                        <span class="text-xs text-purple-300/60">8 símbolos</span>
+                        <span class="text-xs text-purple-300/80">8 símbolos</span>
                     </a>
                     <a href="/es/simbolos/cuerpo" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="user" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Cuerpo</h3>
-                        <span class="text-xs text-purple-300/60">5 símbolos</span>
+                        <span class="text-xs text-purple-300/80">5 símbolos</span>
                     </a>
                     <a href="/es/simbolos/lugares" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="home" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Lugares</h3>
-                        <span class="text-xs text-purple-300/60">8 símbolos</span>
+                        <span class="text-xs text-purple-300/80">8 símbolos</span>
                     </a>
                     <a href="/es/simbolos/objetos" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="package" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Objetos</h3>
-                        <span class="text-xs text-purple-300/60">9 símbolos</span>
+                        <span class="text-xs text-purple-300/80">9 símbolos</span>
                     </a>
                     <a href="/es/simbolos/acciones" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="zap" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Acciones</h3>
-                        <span class="text-xs text-purple-300/60">10 símbolos</span>
+                        <span class="text-xs text-purple-300/80">10 símbolos</span>
                     </a>
                     <a href="/es/simbolos/personas" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="users" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Personas</h3>
-                        <span class="text-xs text-purple-300/60">4 símbolos</span>
+                        <span class="text-xs text-purple-300/80">4 símbolos</span>
                     </a>
                     <a href="/es/simbolos/celestial" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
                         <i data-lucide="sun" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
                         <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">Celestial</h3>
-                        <span class="text-xs text-purple-300/60">4 símbolos</span>
+                        <span class="text-xs text-purple-300/80">4 símbolos</span>
                     </a>
                 </div>
             </section>
 
-            <!-- Search & Navigation -->
-            <div class="glass-panel rounded-2xl p-6 mb-12">
-                <div class="flex flex-col md:flex-row gap-6 items-center justify-between">
-                    <!-- Search -->
-                    <div class="relative w-full md:w-80">
-                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50"></i>
-                        <input type="text" id="searchInput" placeholder="Buscar un símbolo..."
-                            class="search-input w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-sm text-dream-cream placeholder:text-purple-300/40 transition-colors">
-                    </div>
 
                     <!-- Letter Navigation -->
                     <div class="letter-nav flex flex-wrap gap-2 justify-center">
@@ -332,6 +338,17 @@
                 </div>
             </div>
 
+            <!-- Intermediate CTA -->
+            <div class="glass-panel rounded-2xl p-5 mb-12 flex items-center justify-between flex-wrap gap-4 border border-dream-salmon/10">
+                <div>
+                    <p class="font-serif text-dream-cream text-lg">¿Listo para descifrar <em class="text-dream-salmon not-italic">tus</em> sueños?</p>
+                    <p class="text-sm text-purple-200/70 mt-1">Análisis IA personalizado según el contexto de tu sueño.</p>
+                </div>
+                <a href="/es/" class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors text-sm shrink-0">
+                    Probar Noctalia <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
             <!-- Symbols Dictionary -->
             <div id="symbolsList">
 
@@ -346,7 +363,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="agua water ocean river mar río">
                             <a href="/es/simbolos/agua" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Agua</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El agua representa las emociones y el subconsciente. El agua tranquila sugiere paz interior, mientras que el agua turbulenta indica agitación emocional.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cuál es mi estado emocional actual? ¿Hay emociones que estoy reprimiendo?
                             </div>
                         </div>
@@ -354,7 +371,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="araña spider web telaraña">
                             <a href="/es/simbolos/arana" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Araña</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Las arañas suelen simbolizar creatividad, paciencia y tejer el propio destino. También pueden representar miedos o sentirse atrapado.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Me siento atrapado en una situación? ¿Estoy tejiendo algo nuevo?
                             </div>
                         </div>
@@ -362,7 +379,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="árbol tree nature naturaleza">
                             <a href="/es/simbolos/arbol" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Árbol</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un árbol simboliza el crecimiento personal, las raíces familiares y el ciclo de la vida. Un árbol muerto puede representar el fin de una fase o necesidad de renovación.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy bien enraizado en mi vida? ¿Qué parte de mí necesita crecer?
                             </div>
                         </div>
@@ -370,7 +387,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="avión plane airplane flying volando">
                             <a href="/es/simbolos/avion" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Avión</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un avión representa ambiciones elevadas, deseo de escapar o un viaje de transformación. Un avión que se estrella puede indicar miedo al fracaso.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cuáles son mis metas a largo plazo? ¿Necesito ganar perspectiva?
                             </div>
                         </div>
@@ -379,7 +396,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="acantilado acantilado cliff">
                             <a href="/es/simbolos/acantilado" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Acantilado</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los acantilados representan decisiones importantes, peligro o estar al borde de un cambio significativo. Simbolizan tomar riesgos y el miedo a dar el siguiente paso.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué decisión estoy enfrentando? ¿Qué riesgo tengo miedo de tomar?
                             </div>
                         </div>
@@ -387,7 +404,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arcoiris arcoiris rainbow">
                             <a href="/es/simbolos/arcoiris" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Arcoíris</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los arcoíris simbolizan esperanza, transformación y promesa después de tiempos difíciles. Representan la belleza que emerge después de las tormentas y la conexión entre cielo y tierra.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué esperanza está emergiendo después de un período difícil? ¿Qué transformación estoy experimentando?
                             </div>
                         </div>
@@ -395,7 +412,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ascensor ascensor elevator">
                             <a href="/es/simbolos/ascensor" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Ascensor</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los ascensores simbolizan transiciones, movilidad social y cambios en el estatus de vida. Subir sugiere avance; bajar puede indicar retrocesos o exploración de niveles más profundos.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué transición estoy experimentando? ¿Estoy subiendo o bajando en algún área de la vida?
                             </div>
                         </div>
@@ -413,7 +430,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bebé baby infant niño">
                             <a href="/es/simbolos/bebe" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Bebé</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un bebé simboliza nuevos comienzos, inocencia o un proyecto naciente. Puede representar una parte vulnerable de ti mismo que necesita atención.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué nuevo proyecto o idea estoy desarrollando? ¿Hay una parte de mí que necesita cuidado?
                             </div>
                         </div>
@@ -421,7 +438,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="boca mouth lips hablar comunicación">
                             <a href="/es/simbolos/boca" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Boca</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La boca representa comunicación, expresión personal y necesidades. Una boca cerrada puede indicar dificultad para expresarse o secretos guardados.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué estoy tratando de decir? ¿Hay algo que estoy guardando?
                             </div>
                         </div>
@@ -429,7 +446,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bosque forest woods árboles trees">
                             <a href="/es/simbolos/bosque" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Bosque</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El bosque representa el subconsciente, el misterio y la autoexploración. Perderse en un bosque puede simbolizar confusión o búsqueda de dirección en la vida.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy preparado para explorar mi subconsciente? ¿Qué está oculto dentro de mí?
                             </div>
                         </div>
@@ -438,7 +455,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="boda boda wedding">
                             <a href="/es/simbolos/boda" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Boda</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los sueños sobre bodas simbolizan compromiso, nuevos comienzos o transiciones importantes más allá del matrimonio.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué compromiso estoy haciendo o considerando? ¿Qué nuevo capítulo está comenzando en mi vida?
                             </div>
                         </div>
@@ -456,7 +473,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="caída falling fall drop caer">
                             <a href="/es/simbolos/caida" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Caída</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Caer es uno de los sueños más comunes. Simboliza pérdida de control, inseguridad o miedo al fracaso. También puede indicar necesidad de soltar.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿En qué área de mi vida me siento fuera de control? ¿Qué necesito soltar?
                             </div>
                         </div>
@@ -464,7 +481,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="camino path road vía way">
                             <a href="/es/simbolos/camino" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Camino</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un camino representa tu viaje de vida y las elecciones futuras. Un camino bloqueado sugiere obstáculos, mientras que una encrucijada simboliza una decisión importante.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy en el camino correcto? ¿Hay una decisión que estoy evitando?
                             </div>
                         </div>
@@ -472,7 +489,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="casa house home building hogar">
                             <a href="/es/simbolos/casa" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Casa</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Una casa representa el yo y el estado psicológico. Cada habitación puede simbolizar un aspecto diferente de tu personalidad. Una casa en ruinas puede indicar necesidad de reconstrucción interior.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cómo está mi espacio interior? ¿Hay "habitaciones" de mí mismo que estoy descuidando?
                             </div>
                         </div>
@@ -480,7 +497,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="coche car vehicle driving conducir auto">
                             <a href="/es/simbolos/coche" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Coche</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un coche representa el control sobre tu vida. Estar al volante indica control; ser pasajero puede sugerir que alguien más dirige tu vida.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Tengo control de mi vida? ¿Quién está dirigiendo mi trayectoria?
                             </div>
                         </div>
@@ -489,7 +506,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="caballo caballo horse">
                             <a href="/es/simbolos/caballo" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Caballo</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los caballos representan libertad, poder y el viaje de la vida. Simbolizan fuerza personal, energía sexual y el deseo de avanzar en la vida.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Dónde necesito más libertad en mi vida? ¿Qué viaje estoy haciendo?
                             </div>
                         </div>
@@ -497,7 +514,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="correr correr running">
                             <a href="/es/simbolos/correr" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Correr</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Correr en sueños puede simbolizar escape, búsqueda de metas o urgencia. El contexto determina si es huir o perseguir.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿De qué estoy huyendo o hacia qué corro? ¿Hay urgencia en mi vida despierta?
                             </div>
                         </div>
@@ -515,7 +532,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="desnudez nudity naked nude desnudo">
                             <a href="/es/simbolos/desnudez" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Desnudez</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Estar desnudo en público simboliza vulnerabilidad, miedo al juicio o sentirse expuesto. Este es un sueño muy común relacionado con la ansiedad social.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Tengo miedo de ser juzgado? ¿Hay algo que estoy ocultando a los demás?
                             </div>
                         </div>
@@ -523,7 +540,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dientes teeth tooth falling losing perder">
                             <a href="/es/simbolos/dientes" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Dientes (perder dientes)</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Perder dientes es un sueño muy común. Simboliza ansiedad, miedo al envejecimiento, pérdida de poder o preocupaciones sobre la apariencia y la autoimagen.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy ansioso por mi apariencia? ¿Tengo miedo de perder algo importante?
                             </div>
                         </div>
@@ -531,7 +548,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dinero money cash wealth riqueza">
                             <a href="/es/simbolos/dinero" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Dinero</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El dinero en sueños a menudo representa autoestima, poder o energía vital. Perder dinero puede simbolizar una sensación de pérdida o inseguridad.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cómo me siento sobre mi autoestima? ¿Qué tiene valor para mí?
                             </div>
                         </div>
@@ -550,7 +567,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escaleras stairs staircase climbing subir">
                             <a href="/es/simbolos/escaleras" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Escaleras</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Las escaleras simbolizan progresión, ascenso social o espiritual. Subir indica crecimiento; bajar puede sugerir exploración del subconsciente.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy progresando en mi vida? ¿Qué dirección estoy tomando?
                             </div>
                         </div>
@@ -558,7 +575,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="espejo mirror reflection reflejo">
                             <a href="/es/simbolos/espejo" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Espejo</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un espejo simboliza introspección y autoimagen. Un reflejo distorsionado puede indicar una percepción alterada de ti mismo o necesidad de verte con más claridad.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cómo me percibo a mí mismo? ¿Es realista mi autoimagen?
                             </div>
                         </div>
@@ -566,7 +583,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="examen exam test escuela school prueba">
                             <a href="/es/simbolos/examen" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Examen / Prueba</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Soñar con un examen, especialmente suspenderlo, simboliza ansiedad sobre la evaluación, perfeccionismo o síndrome del impostor. Este es un sueño muy común entre adultos.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Tengo miedo de no estar a la altura? ¿En qué área me siento juzgado?
                             </div>
                         </div>
@@ -575,7 +592,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="embarazo embarazo pregnancy">
                             <a href="/es/simbolos/embarazo" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Embarazo</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los sueños de embarazo simbolizan creación, nuevos proyectos, potencial o cambios importantes desarrollándose.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué estoy creando o desarrollando? ¿Qué nuevo aspecto de mí está creciendo?
                             </div>
                         </div>
@@ -583,7 +600,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escuela escuela school">
                             <a href="/es/simbolos/escuela" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Escuela</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La escuela en sueños representa aprendizaje, evaluación, ansiedad social o revisitar experiencias pasadas.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué lección estoy aprendiendo? ¿Estoy siendo probado o evaluado de alguna manera?
                             </div>
                         </div>
@@ -591,7 +608,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perdido estar perdido lost">
                             <a href="/es/simbolos/perdido" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Estar Perdido</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Estar perdido en sueños simboliza confusión, falta de dirección o incertidumbre sobre el camino de vida. Refleja sentimientos de estar abrumado o desconectado del propósito.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Dónde me siento sin dirección en mi vida? ¿Qué guía o claridad necesito?
                             </div>
                         </div>
@@ -599,7 +616,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-pareja ex-pareja ex partner">
                             <a href="/es/simbolos/ex-pareja" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Ex-Pareja</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Soñar con una ex-pareja a menudo representa sentimientos no resueltos, lecciones de relaciones pasadas o aspectos de ti mismo que asocias con esa persona en lugar de un deseo literal de reconectar.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué sentimientos no resueltos todavía tengo? ¿Qué me enseñó esta relación?
                             </div>
                         </div>
@@ -617,7 +634,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="fuego fire flame burning llama quemar">
                             <a href="/es/simbolos/fuego" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Fuego</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El fuego simboliza pasión, transformación y purificación. Un fuego controlado representa energía positiva, mientras que un incendio puede indicar ira o destrucción.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué enciende mi pasión? ¿Hay una situación que me está consumiendo?
                             </div>
                         </div>
@@ -636,7 +653,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="gato cat feline animal felino">
                             <a href="/es/simbolos/gato" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Gato</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los gatos simbolizan independencia, intuición femenina y misterio. Pueden representar tu lado salvaje o una situación que escapa a tu control.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy escuchando suficiente mi intuición? ¿Necesito más independencia?
                             </div>
                         </div>
@@ -655,7 +672,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hospital hospital hospital">
                             <a href="/es/simbolos/hospital" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Hospital</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los hospitales en sueños representan sanación, preocupaciones de salud o necesidad de cuidado emocional.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué necesita sanación en mi vida? ¿Estoy descuidando mi salud física o emocional?
                             </div>
                         </div>
@@ -674,7 +691,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inundacion inundacion flood">
                             <a href="/es/simbolos/inundacion" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Inundación</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Una inundación suele simbolizar emociones abrumadoras, cambios repentinos o sentir que los problemas se desbordan. También puede representar limpieza y la oportunidad de reconstruir tras una sacudida.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué se siente abrumador ahora mismo? ¿Dónde necesito poner límites más firmes en mi vida?
                             </div>
                         </div>
@@ -693,7 +710,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="león lion animal">
                             <a href="/es/simbolos/leon" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">León</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El león representa fuerza, coraje y liderazgo. Puede simbolizar tu propio poder o una figura de autoridad en tu vida.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy en contacto con mi fuerza interior? ¿Cómo expreso mi poder?
                             </div>
                         </div>
@@ -701,7 +718,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="llave key lock puerta acceso">
                             <a href="/es/simbolos/llave" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Llave</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Una llave simboliza acceso, soluciones y nuevas oportunidades. Perder una llave puede indicar sentirse bloqueado o haber perdido una oportunidad.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué puertas estoy tratando de abrir? ¿Qué soluciones estoy buscando?
                             </div>
                         </div>
@@ -709,7 +726,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lluvia rain raining weather clima">
                             <a href="/es/simbolos/lluvia" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Lluvia</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La lluvia puede simbolizar purificación, renovación o tristeza. Una lluvia suave sugiere sanación, mientras que una tormenta indica emociones intensas.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Necesito dejar fluir mis emociones? ¿Qué renovación es posible?
                             </div>
                         </div>
@@ -717,7 +734,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="luna moon night noche">
                             <a href="/es/simbolos/luna" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Luna</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La luna simboliza feminidad, intuición y ciclos naturales. También representa aspectos ocultos del yo y emociones profundas.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy escuchando mi intuición? ¿Qué ciclos están pasando por mi vida?
                             </div>
                         </div>
@@ -726,7 +743,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="llorar llorar crying">
                             <a href="/es/simbolos/llorar" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Llorar</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Llorar en sueños representa liberación emocional, sanación o sentimientos no expresados buscando reconocimiento. Puede ser una experiencia catártica.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué emociones estoy reprimiendo? ¿Qué necesita ser liberado o expresado?
                             </div>
                         </div>
@@ -734,7 +751,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lobo lobo wolf">
                             <a href="/es/simbolos/lobo" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Lobo</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los lobos en sueños simbolizan el instinto, la mentalidad de manada y aspectos salvajes del yo. Pueden representar tanto peligro como lealtad según el contexto del sueño.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué instintos estoy suprimiendo? ¿Cómo me relaciono con mi comunidad o manada?
                             </div>
                         </div>
@@ -752,7 +769,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montaña mountain climbing peak cima escalar">
                             <a href="/es/simbolos/montana" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Montaña</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Una montaña representa desafíos, metas ambiciosas y búsqueda espiritual. Escalar una montaña simboliza esfuerzos para alcanzar tus objetivos.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué desafío estoy enfrentando? ¿Vale la pena el esfuerzo?
                             </div>
                         </div>
@@ -760,7 +777,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="muerte death dying dead deceased morir">
                             <a href="/es/simbolos/muerte" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Muerte</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La muerte en sueños raramente simboliza muerte literal. Representa el fin de una fase, transformación importante o necesidad de dejar ir algo.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué necesita "morir" en mi vida para poder evolucionar?
                             </div>
                         </div>
@@ -779,7 +796,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="niño child kid children hijo">
                             <a href="/es/simbolos/nino" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Niño</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un niño a menudo representa tu niño interior, inocencia o aspectos de tu pasado. También puede simbolizar un nuevo proyecto o una parte de ti en desarrollo.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cómo está mi niño interior? ¿Hay heridas del pasado que sanar?
                             </div>
                         </div>
@@ -787,7 +804,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="noche night darkness dark oscuridad">
                             <a href="/es/simbolos/noche" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Noche / Oscuridad</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La noche representa lo desconocido, miedos ocultos o el subconsciente. También puede simbolizar un período de incertidumbre o introspección.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué no estoy viendo con claridad? ¿Qué miedos están ocultos dentro de mí?
                             </div>
                         </div>
@@ -796,7 +813,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nadar nadar swimming">
                             <a href="/es/simbolos/nadar" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Nadar</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Nadar en sueños representa navegar a través de emociones y desafíos de la vida. La facilidad o dificultad para nadar refleja tus capacidades de afrontamiento emocional.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Cómo estoy manejando mi vida emocional? ¿Me mantengo a flote o lucho con mis sentimientos?
                             </div>
                         </div>
@@ -814,7 +831,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="océano ocean sea waves mar olas">
                             <a href="/es/simbolos/oceano" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Océano / Mar</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El océano representa el inconsciente colectivo y emociones profundas. Nadar en el océano puede indicar autoexploración, mientras que ahogarse sugiere estar abrumado por emociones.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Me estoy dejando llevar o abrumar por mis emociones?
                             </div>
                         </div>
@@ -833,7 +850,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pájaro bird flying volando ave">
                             <a href="/es/simbolos/pajaro" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Pájaro</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los pájaros simbolizan libertad, aspiración espiritual y perspectivas elevadas. Un pájaro enjaulado puede representar sentirse atrapado.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Me siento libre? ¿Cuáles son mis aspiraciones más elevadas?
                             </div>
                         </div>
@@ -841,7 +858,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perro dog canine animal pet mascota">
                             <a href="/es/simbolos/perro" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Perro</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Los perros representan lealtad, amistad y protección. Un perro agresivo puede simbolizar conflicto interno o una amenaza percibida en tu entorno.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Quiénes son mis aliados leales? ¿Me siento protegido?
                             </div>
                         </div>
@@ -849,7 +866,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="persecución chase chasing running pursued correr perseguir">
                             <a href="/es/simbolos/persecucion" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Persecución / Ser Perseguido</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué estoy evitando? ¿De qué miedo estoy huyendo?
                             </div>
                         </div>
@@ -857,7 +874,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="persona fallecida deceased dead person ghost fantasma difunto">
                             <a href="/es/simbolos/persona-fallecida" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Persona Fallecida</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Soñar con un ser querido fallecido puede representar duelo, recuerdos o un mensaje de tu subconsciente. También puede simbolizar una parte de ti asociada con esa persona.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué mensaje podría traerme esta persona? ¿Qué representaba para mí?
                             </div>
                         </div>
@@ -865,7 +882,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="puente bridge">
                             <a href="/es/simbolos/puente" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Puente</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un puente simboliza transición, paso de un estado a otro. Cruzar un puente sugiere cambio, mientras que un puente colapsado indica obstáculos.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué transición estoy atravesando? ¿Estoy preparado para seguir adelante?
                             </div>
                         </div>
@@ -873,7 +890,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="puerta door doorway entrance entrada">
                             <a href="/es/simbolos/puerta" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Puerta</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Una puerta simboliza oportunidades, transiciones y nuevos comienzos. Una puerta cerrada puede indicar obstáculos, mientras que una abierta sugiere posibilidades.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué nuevas oportunidades están disponibles para mí? ¿Qué me está bloqueando?
                             </div>
                         </div>
@@ -892,7 +909,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ropa clothes clothing dress vestir">
                             <a href="/es/simbolos/ropa" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Ropa</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La ropa representa la imagen que proyectas al mundo. Ropa inapropiada puede indicar sentirse fuera de lugar.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Mi imagen pública refleja quién soy realmente?
                             </div>
                         </div>
@@ -911,7 +928,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sangre blood">
                             <a href="/es/simbolos/sangre" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Sangre</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La sangre representa fuerza vital, lazos familiares o pérdida de energía. Perder sangre puede simbolizar agotamiento o sacrificio.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Algo está drenando mi energía? ¿Qué lazos me conectan a mi familia?
                             </div>
                         </div>
@@ -919,7 +936,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="serpiente snake">
                             <a href="/es/simbolos/serpiente" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Serpiente</h3></a>
                             <p class="text-sm text-gray-300 mb-3">La serpiente es un símbolo complejo: transformación, sabiduría, sexualidad o peligro. Su significado depende mucho de tu relación personal con las serpientes.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Hay una transformación en curso? ¿Qué representa personalmente la serpiente para mí?
                             </div>
                         </div>
@@ -927,7 +944,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sol sun sunshine">
                             <a href="/es/simbolos/sol" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Sol</h3></a>
                             <p class="text-sm text-gray-300 mb-3">El sol simboliza consciencia, energía vital y optimismo. Representa claridad, verdad e iluminación espiritual.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué me da energía? ¿Qué verdad necesito ver?
                             </div>
                         </div>
@@ -946,7 +963,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="teléfono phone telephone">
                             <a href="/es/simbolos/telefono" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Teléfono</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un teléfono representa comunicación. Un teléfono que no funciona puede indicar dificultades para conectar con otros o un mensaje que no puedes transmitir.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Hay alguien con quien necesito hablar? ¿Estoy comunicándome eficazmente?
                             </div>
                         </div>
@@ -954,7 +971,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tren train railway ferrocarril">
                             <a href="/es/simbolos/tren" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Tren</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Un tren simboliza el viaje de la vida y su trayectoria. Perder un tren puede indicar una oportunidad perdida o miedo a no cumplir tus objetivos a tiempo.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Estoy en el camino correcto? ¿Tengo miedo de perderme algo?
                             </div>
                         </div>
@@ -963,7 +980,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="tormenta tormenta storm">
                             <a href="/es/simbolos/tormenta" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Tormenta</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Las tormentas simbolizan turbulencia emocional, cambio dramático y fuerzas poderosas fuera de tu control. Pueden representar tanto destrucción como limpieza necesaria.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿Qué turbulencia emocional estoy experimentando? ¿Qué necesita ser eliminado en mi vida?
                             </div>
                         </div>
@@ -981,7 +998,7 @@
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="volar flying fly float air aire">
                             <a href="/es/simbolos/volar" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">Volar</h3></a>
                             <p class="text-sm text-gray-300 mb-3">Volar por el aire es un sueño eufórico que simboliza libertad, trascendencia y superación de límites. La dificultad para volar puede indicar obstáculos percibidos.</p>
-                            <div class="text-xs text-purple-300/60">
+                            <div class="text-xs text-purple-300/80">
                                 <strong class="text-dream-salmon">Pregúntate:</strong> ¿De qué necesito liberarme? ¿Qué límites estoy listo para trascender?
                             </div>
                         </div>
@@ -990,6 +1007,40 @@
                 </section>
 
             </div>
+
+            <!-- FAQ Section -->
+            <section class="mt-16 max-w-3xl mx-auto">
+                <h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
+                <div class="space-y-4">
+                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                        <summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Cómo interpretar los símbolos de los sueños?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                        </summary>
+                        <p class="mt-4 text-sm text-gray-300 leading-relaxed">
+                            La interpretación depende del contexto personal. El mismo símbolo puede tener diferentes significados según tus experiencias y cultura. Considera tus emociones en el sueño y tus asociaciones personales con el símbolo.
+                        </p>
+                    </details>
+                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                        <summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Son universales los símbolos de los sueños?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                        </summary>
+                        <p class="mt-4 text-sm text-gray-300 leading-relaxed">
+                            Algunos símbolos tienen significados relativamente universales (como el agua para las emociones), pero muchos dependen del contexto cultural y personal. Usa este diccionario como punto de partida, no como verdad absoluta.
+                        </p>
+                    </details>
+                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                        <summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ¿Por qué sueño siempre con los mismos símbolos?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                        </summary>
+                        <p class="mt-4 text-sm text-gray-300 leading-relaxed">
+                            Los símbolos recurrentes suelen indicar temas no resueltos. Tu subconsciente intenta llamar tu atención sobre algo. Llevar un diario de sueños puede ayudarte a identificar estos patrones.
+                        </p>
+                    </details>
+                </div>
+            </section>
 
             <!-- CTA Section -->
             <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
@@ -1005,49 +1056,24 @@
                 </a>
             </aside>
 
-            <!-- FAQ Section -->
-            <section class="mt-16 max-w-3xl mx-auto">
-                <h2 class="font-serif text-2xl text-dream-cream mb-8">Preguntas frecuentes</h2>
-                <div class="space-y-4">
-                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                        <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Cómo interpretar los símbolos de los sueños?
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                        </summary>
-                        <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La interpretación depende del contexto personal. El mismo símbolo puede tener diferentes significados según tus experiencias y cultura. Considera tus emociones en el sueño y tus asociaciones personales con el símbolo.
-                        </p>
-                    </details>
-                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                        <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Son universales los símbolos de los sueños?
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                        </summary>
-                        <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Algunos símbolos tienen significados relativamente universales (como el agua para las emociones), pero muchos dependen del contexto cultural y personal. Usa este diccionario como punto de partida, no como verdad absoluta.
-                        </p>
-                    </details>
-                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
-                        <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            ¿Por qué sueño siempre con los mismos símbolos?
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
-                        </summary>
-                        <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los símbolos recurrentes suelen indicar temas no resueltos. Tu subconsciente intenta llamar tu atención sobre algo. Llevar un diario de sueños puede ayudarte a identificar estos patrones.
-                        </p>
-                    </details>
-                </div>
-            </section>
-
             <!-- Related Articles -->
-            <section class="mt-16 max-w-3xl mx-auto">
+            <section class="mt-16 max-w-4xl mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">Artículos relacionados</h2>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <a href="/es/guides/" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">Ver todas las guías de sueños</a>
-                    <a href="../blog/como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors">
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <a href="../blog/significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
+                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: significados</h3>
+                        <p class="text-sm text-gray-300">Por qué ciertos sueños siguen volviendo.</p>
+                    </a>
+                    <a href="../blog/como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo Recordar tus Sueños</h3>
-                        <p class="text-sm text-gray-400">Técnicas para mejorar tu recuerdo de sueños.</p>
+                        <p class="text-sm text-gray-300">Técnicas para mejorar tu recuerdo de sueños.</p>
+                    </a>
+                    <a href="../blog/guia-diario-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
+                        <span class="text-xs text-dream-salmon uppercase mb-2 block">Práctica</span>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo Llevar un Diario de Sueños</h3>
+                        <p class="text-sm text-gray-300">Empieza tu diario de sueños esta noche.</p>
                     </a>
                 </div>
             </section>
@@ -1110,103 +1136,141 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 
-            // Navbar scroll effect
+            // ── Navbar scroll effect ──────────────────────────────────────
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
                 if (navbar) { navbar.classList.toggle('py-2', window.scrollY > 50); navbar.classList.toggle('py-6', window.scrollY <= 50); }
             });
 
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
+            // ── Symbol card clickability (keyboard accessible) ────────────
             const symbolCards = document.querySelectorAll('.symbol-card');
-            const sections = document.querySelectorAll('#symbolsList > section');
+            const listSections = document.querySelectorAll('#symbolsList > section');
 
-            // Make the whole symbol card clickable + keyboard accessible.
-            // Keep only one tab stop: focus the card, not the inner title link.
             symbolCards.forEach((card) => {
                 const link = card.querySelector('a[href]');
                 if (!link) return;
-
                 const href = link.getAttribute('href');
                 if (!href) return;
-
                 card.style.cursor = 'pointer';
                 card.setAttribute('role', 'link');
                 card.setAttribute('tabindex', '0');
-
                 const title = card.querySelector('h3')?.textContent?.trim();
                 if (title) card.setAttribute('aria-label', title);
-
                 link.setAttribute('tabindex', '-1');
-
                 const navigate = (openInNewTab = false) => {
-                    if (openInNewTab) {
-                        window.open(href, '_blank', 'noopener');
-                        return;
-                    }
+                    if (openInNewTab) { window.open(href, '_blank', 'noopener'); return; }
                     window.location.href = href;
                 };
-
                 card.addEventListener('click', (e) => {
-                    // If user clicked an anchor (title), let the browser handle it.
                     if (e.target.closest('a')) return;
-
-                    // Respect ctrl/cmd click behavior.
-                    if (e.metaKey || e.ctrlKey) {
-                        navigate(true);
-                        return;
-                    }
-
+                    if (e.metaKey || e.ctrlKey) { navigate(true); return; }
                     navigate(false);
                 });
-
                 card.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        navigate(e.metaKey || e.ctrlKey);
-                    }
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(e.metaKey || e.ctrlKey); }
                 });
             });
 
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase().trim();
+            // ── Category color borders (JS-driven) ───────────────────────
+            const symbolCategories = {
+                baby: 'people', bird: 'animals', blood: 'body', bridge: 'places', lost: 'actions',
+                car: 'objects', cat: 'animals', 'being-chased': 'actions', child: 'people', clothes: 'objects',
+                cliff: 'places', crying: 'actions', death: 'actions', 'deceased-person': 'people', dog: 'animals',
+                door: 'objects', exam: 'actions', elevator: 'objects', 'ex-partner': 'people',
+                falling: 'actions', fire: 'nature', flying: 'actions', forest: 'nature', flood: 'nature',
+                house: 'places', horse: 'animals', hospital: 'places', key: 'objects', lion: 'animals',
+                mirror: 'objects', money: 'objects', moon: 'celestial', mountain: 'nature', mouth: 'body',
+                naked: 'body', night: 'celestial', ocean: 'nature', path: 'places', phone: 'objects',
+                plane: 'objects', pregnancy: 'body', rain: 'nature', rainbow: 'celestial', running: 'actions',
+                snake: 'animals', spider: 'animals', stairs: 'places', sun: 'celestial', school: 'places',
+                storm: 'nature', swimming: 'actions', teeth: 'body', train: 'objects', tree: 'nature',
+                water: 'nature', wedding: 'actions', wolf: 'animals'
+            };
+            const categoryColors = {
+                nature: '#4ade80', animals: '#fbbf24', body: '#f87171',
+                places: '#60a5fa', objects: '#c084fc', actions: '#fb923c',
+                people: '#f472b6', celestial: '#818cf8'
+            };
+            symbolCards.forEach((card) => {
+                const link = card.querySelector('a[href]');
+                if (!link) return;
+                const slug = link.getAttribute('href').split('/').pop();
+                const cat = symbolCategories[slug];
+                if (cat) {
+                    card.style.borderLeft = '3px solid ' + categoryColors[cat];
+                    card.dataset.category = cat;
+                }
+            });
 
-                if (query === '') {
-                    // Show all
+            // ── Shared search filter ──────────────────────────────────────
+            function filterSymbols(query) {
+                const q = query.toLowerCase().trim();
+                if (q === '') {
                     symbolCards.forEach(card => card.style.display = '');
-                    sections.forEach(section => section.style.display = '');
+                    listSections.forEach(section => section.style.display = '');
                 } else {
-                    sections.forEach(section => {
+                    listSections.forEach(section => {
                         const cards = section.querySelectorAll('.symbol-card');
-                        let hasVisibleCard = false;
-
+                        let hasVisible = false;
                         cards.forEach(card => {
                             const symbolData = card.dataset.symbol || '';
                             const title = card.querySelector('h3')?.textContent?.toLowerCase() || '';
                             const content = card.querySelector('p')?.textContent?.toLowerCase() || '';
-
-                            if (symbolData.includes(query) || title.includes(query) || content.includes(query)) {
-                                card.style.display = '';
-                                hasVisibleCard = true;
-                            } else {
-                                card.style.display = 'none';
-                            }
+                            const visible = symbolData.includes(q) || title.includes(q) || content.includes(q);
+                            card.style.display = visible ? '' : 'none';
+                            if (visible) hasVisible = true;
                         });
-
-                        section.style.display = hasVisibleCard ? '' : 'none';
+                        section.style.display = hasVisible ? '' : 'none';
                     });
                 }
+            }
+
+            // Hero search + sticky bar show/hide
+            const heroSearch = document.getElementById('heroSearch');
+            const stickySearch = document.getElementById('stickySearch');
+            const stickyBar = document.getElementById('stickyBar');
+            const heroHeader = heroSearch.closest('header');
+            const heroObserver = new IntersectionObserver(([entry]) => {
+                stickyBar.classList.toggle('sb-visible', !entry.isIntersecting);
+            }, { threshold: 0 });
+            heroObserver.observe(heroHeader);
+
+            heroSearch.addEventListener('input', (e) => {
+                stickySearch.value = e.target.value;
+                filterSymbols(e.target.value);
+            });
+            stickySearch.addEventListener('input', (e) => {
+                heroSearch.value = e.target.value;
+                filterSymbols(e.target.value);
             });
 
-            // Smooth scroll for letter navigation
+            // ── Smooth scroll for letter navigation ───────────────────────
             document.querySelectorAll('.letter-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                    if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
                 });
+            });
+
+            // ── Active letter tracking (IntersectionObserver) ─────────────
+            function setActiveAlpha(letter) {
+                document.querySelectorAll('.letter-link').forEach(l => {
+                    l.classList.toggle('alpha-active', l.dataset.letter === letter);
+                });
+            }
+            const alphaObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) setActiveAlpha(e.target.id); });
+            }, { rootMargin: '-5% 0px -80% 0px' });
+            listSections.forEach(s => alphaObserver.observe(s));
+
+            // ── Back-to-top button ────────────────────────────────────────
+            const backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', () => {
+                backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
+            }, { passive: true });
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>
