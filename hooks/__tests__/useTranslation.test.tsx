@@ -1,12 +1,13 @@
 /**
  * @jest-environment jsdom
  */
-import { renderHook } from '@testing-library/react';
-import { describe, expect, it, jest } from '@jest/globals';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { useTranslation } from '../useTranslation';
 // Mock LanguageContext
 const mockLanguage = ((factory: any) => factory())(() => ({ current: 'en' }));
+const mockLoadTranslations = jest.fn(() => new Promise<void>(() => {}));
 
 jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
@@ -53,9 +54,14 @@ jest.mock('../../lib/i18n', () => ({
       return result;
     };
   },
-  loadTranslations: () => new Promise(() => {}),
+  loadTranslations: (language: string) => mockLoadTranslations(language),
 }));
 
+beforeEach(() => {
+  mockLanguage.current = 'en';
+  mockLoadTranslations.mockClear();
+  mockLoadTranslations.mockImplementation(() => new Promise<void>(() => {}));
+});
 
 describe('useTranslation', () => {
   describe('translation function', () => {
@@ -148,6 +154,32 @@ describe('useTranslation', () => {
       const secondT = result.current.t;
 
       expect(firstT).toBe(secondT);
+    });
+
+    it('given async locale load when translations finish then exposes a new translation revision', async () => {
+      mockLanguage.current = 'fr';
+      let resolveLoad: (() => void) | undefined;
+      mockLoadTranslations.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveLoad = resolve;
+          })
+      );
+
+      const { result } = renderHook(() => useTranslation());
+      const firstT = result.current.t;
+
+      expect(result.current.translationRevision).toBe(0);
+      expect(mockLoadTranslations).toHaveBeenCalledWith('fr');
+
+      await act(async () => {
+        resolveLoad?.();
+      });
+
+      await waitFor(() => {
+        expect(result.current.translationRevision).toBe(1);
+      });
+      expect(result.current.t).toBe(firstT);
     });
   });
 
