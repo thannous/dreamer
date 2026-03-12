@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -17,7 +17,7 @@ export type PricingOptionProps = {
   testID?: string;
 };
 
-export const PricingOption: React.FC<PricingOptionProps> = ({
+export const PricingOption: React.FC<PricingOptionProps> = memo(function PricingOption({
   id,
   title,
   subtitle,
@@ -27,18 +27,18 @@ export const PricingOption: React.FC<PricingOptionProps> = ({
   state,
   onPress,
   testID,
-}) => {
+}) {
   const { colors } = useTheme();
 
   const isDisabled = state === 'disabled' || state === 'selectedDisabled';
   const isSelected = state === 'selected' || state === 'selectedDisabled';
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (isDisabled) return;
     if (onPress) {
       onPress(id);
     }
-  };
+  }, [id, isDisabled, onPress]);
 
   const borderColor = isSelected ? colors.accent : colors.divider;
   const backgroundColor = isSelected ? colors.backgroundSecondary : colors.backgroundCard;
@@ -78,7 +78,7 @@ export const PricingOption: React.FC<PricingOptionProps> = ({
       </View>
     </Pressable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
