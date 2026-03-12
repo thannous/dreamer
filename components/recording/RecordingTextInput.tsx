@@ -1,4 +1,4 @@
-import React, { forwardRef, memo } from 'react';
+import React, { forwardRef } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
@@ -17,7 +17,7 @@ export interface RecordingTextInputProps {
   onClear?: () => void;
 }
 
-const RecordingTextInputComponent = forwardRef<TextInput, RecordingTextInputProps>(
+export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>(
   function RecordingTextInput(
     { value, onChange, disabled, lengthWarning, instructionText, onSwitchToVoice, onClear },
     ref
@@ -106,8 +106,6 @@ const RecordingTextInputComponent = forwardRef<TextInput, RecordingTextInputProp
     );
   }
 );
-
-export const RecordingTextInput = memo(RecordingTextInputComponent);
 
 const styles = StyleSheet.create({
   recordingSection: {
