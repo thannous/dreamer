@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -19,7 +19,7 @@ export type SubscriptionCardProps = {
   ctaTestID?: string;
 };
 
-export const SubscriptionCard: React.FC<SubscriptionCardProps> = memo(function SubscriptionCard({
+export const SubscriptionCard: React.FC<SubscriptionCardProps> = function SubscriptionCard({
   title,
   subtitle,
   expiryLabel,
@@ -85,7 +85,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = memo(function S
       )}
     </View>
   );
-});
+};
 
 const styles = StyleSheet.create({
   card: {
