@@ -23,7 +23,7 @@ const log = createScopedLogger('[Paywall]');
 
 export default function PaywallScreen() {
   const { colors } = useTheme();
-  const { t } = useTranslation();
+  const { t, translationRevision } = useTranslation();
   useClearWebFocus();
   const {
     status: subscriptionStatus,
@@ -118,12 +118,13 @@ export default function PaywallScreen() {
     : t('subscription.paywall.header.subtitle.free');
 
   const translateWithFallback = useCallback((key: string, fallback?: string) => {
+    void translationRevision;
     const translated = t(key);
     if (translated === key) {
       return fallback ?? key;
     }
     return translated;
-  }, [t]);
+  }, [t, translationRevision]);
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -147,18 +148,22 @@ export default function PaywallScreen() {
   }, [subscriptionStatus?.expiryDate]);
 
   const subscriptionFeatures = useMemo(
-    () => [
-      t('subscription.paywall.card.feature.unlimited_analyses'),
-      t('subscription.paywall.card.feature.unlimited_explorations'),
-      t('subscription.paywall.card.feature.recorded_dreams'),
-      t('subscription.paywall.card.feature.priority'),
-    ],
-    [t]
+    () => {
+      void translationRevision;
+      return [
+        t('subscription.paywall.card.feature.unlimited_analyses'),
+        t('subscription.paywall.card.feature.unlimited_explorations'),
+        t('subscription.paywall.card.feature.recorded_dreams'),
+        t('subscription.paywall.card.feature.priority'),
+      ];
+    },
+    [t, translationRevision]
   );
 
   const packageOptions = useMemo(
-    () =>
-      sortedPackages.map((pkg) => {
+    () => {
+      void translationRevision;
+      return sortedPackages.map((pkg) => {
         const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
         return {
           id: pkg.id,
@@ -185,8 +190,9 @@ export default function PaywallScreen() {
               ? TID.Button.PaywallSelectMonthly
               : TID.Button.PaywallSelectAnnual,
         };
-      }),
-    [annualDiscount, sortedPackages, t, translateWithFallback]
+      });
+    },
+    [annualDiscount, sortedPackages, t, translateWithFallback, translationRevision]
   );
 
   if (isDeviceUpgraded) {

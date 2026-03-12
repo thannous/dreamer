@@ -4,7 +4,7 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export const useTranslation = () => {
   const { language } = useLanguage();
-  const [, setRevision] = useState(0);
+  const [translationRevision, setTranslationRevision] = useState(0);
 
   useEffect(() => {
     if (language === 'en') {
@@ -15,7 +15,7 @@ export const useTranslation = () => {
 
     loadTranslations(language).then(() => {
       if (active) {
-        setRevision((current) => current + 1);
+        setTranslationRevision((current) => current + 1);
       }
     });
 
@@ -25,5 +25,5 @@ export const useTranslation = () => {
   }, [language]);
 
   const t = useMemo(() => getTranslator(language), [language]);
-  return { t, currentLang: language };
+  return { t, currentLang: language, translationRevision };
 };
