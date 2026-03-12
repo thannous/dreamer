@@ -25,12 +25,19 @@ type GlassCardBaseProps = GlassCardProps & {
   useBlur?: boolean;
 };
 
+type GlassCardFrameProps = GlassCardBaseProps & {
+  colors: ReturnType<typeof useTheme>['colors'];
+  mode: ReturnType<typeof useTheme>['mode'];
+  shadows: ReturnType<typeof useTheme>['shadows'];
+  reduceEffects: boolean;
+};
+
 /**
  * GlassCard component provides a glassmorphism effect card wrapper.
  * Uses BlurView on iOS for true blur effect.
  * Falls back to a semi-transparent background on Android/web.
  */
-function GlassCardBase({
+function GlassCardFrame({
   children,
   style,
   intensity = 'moderate',
@@ -42,12 +49,11 @@ function GlassCardBase({
   animateOnMount = true,
   shadow,
   useBlur = true,
-}: GlassCardBaseProps) {
-  const { colors, mode, shadows } = useTheme();
-  const isScrolling = useScrollPerf();
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const reduceEffects = isScrolling || prefersReducedMotion;
-
+  colors,
+  mode,
+  shadows,
+  reduceEffects,
+}: GlassCardFrameProps) {
   // Blur intensity mapping - very light for light mode to preserve colors
   const blurIntensity = mode === 'dark'
     ? {
@@ -152,10 +158,43 @@ function GlassCardBase({
   return animatedContent;
 }
 
+function GlassCardBase(props: GlassCardBaseProps) {
+  const { colors, mode, shadows } = useTheme();
+  const isScrolling = useScrollPerf();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <GlassCardFrame
+      {...props}
+      colors={colors}
+      mode={mode}
+      shadows={shadows}
+      reduceEffects={isScrolling || prefersReducedMotion}
+    />
+  );
+}
+
 export function GlassCard(props: GlassCardProps) {
   return <GlassCardBase {...props} shadow="on" useBlur />;
 }
 
 export function FlatGlassCard(props: GlassCardProps) {
   return <GlassCardBase {...props} shadow="off" useBlur={false} />;
+}
+
+export function StaticFlatGlassCard(props: GlassCardProps) {
+  const { colors, mode, shadows } = useTheme();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  return (
+    <GlassCardFrame
+      {...props}
+      shadow="off"
+      useBlur={false}
+      colors={colors}
+      mode={mode}
+      shadows={shadows}
+      reduceEffects={prefersReducedMotion}
+    />
+  );
 }

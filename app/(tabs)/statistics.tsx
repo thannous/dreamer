@@ -1,6 +1,7 @@
 import { useFocusEffect } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  InteractionManager,
   Platform,
   ScrollView,
   StyleSheet,
@@ -10,7 +11,7 @@ import {
 } from 'react-native';
 
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { FlatGlassCard } from '@/components/inspiration/GlassCard';
+import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -248,7 +249,7 @@ function StatCard({ title, value, subtitle, colors, valueTestID }: StatCardProps
 
 // ─── Section Glass Wrapper ────────────────────────────────────────────────────
 
-function SectionGlass({
+const SectionGlass = memo(function SectionGlass({
   children,
   colors,
   animationDelay = 0,
@@ -258,7 +259,7 @@ function SectionGlass({
   animationDelay?: number;
 }) {
   return (
-    <FlatGlassCard
+    <StaticFlatGlassCard
       intensity="subtle"
       animationDelay={animationDelay}
       style={styles.sectionGlassCard}
@@ -267,9 +268,9 @@ function SectionGlass({
       <View style={styles.sectionInner}>
         {children}
       </View>
-    </FlatGlassCard>
+    </StaticFlatGlassCard>
   );
-}
+});
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
@@ -286,6 +287,7 @@ export default function StatisticsScreen() {
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
 
   const [showAnimations, setShowAnimations] = useState(false);
+  const [showDeferredSections, setShowDeferredSections] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -293,6 +295,16 @@ export default function StatisticsScreen() {
       return () => setShowAnimations(false);
     }, []),
   );
+
+  useEffect(() => {
+    const task = InteractionManager.runAfterInteractions(() => {
+      setShowDeferredSections(true);
+    });
+
+    return () => {
+      task.cancel?.();
+    };
+  }, []);
 
   // Memoize color arrays to avoid re-allocation churn
   const dreamTypeColors = useMemo(() =>
@@ -480,7 +492,7 @@ export default function StatisticsScreen() {
             </View>
 
             {/* Dream Type Distribution */}
-            {stats.dreamTypeDistribution.length > 0 && (
+            {showDeferredSections && stats.dreamTypeDistribution.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionChartDesktop]}>
                 <SectionGlass colors={colors} animationDelay={450}>
                     <SectionHeading
@@ -624,7 +636,7 @@ export default function StatisticsScreen() {
             )}
 
             {/* Top Themes */}
-            {stats.topThemes.length > 0 && (
+            {showDeferredSections && stats.topThemes.length > 0 && (
               <View style={[styles.section, isDesktopLayout && styles.sectionTopThemesDesktop]}>
                 <SectionGlass colors={colors} animationDelay={600}>
                   <SectionHeading
@@ -680,56 +692,58 @@ export default function StatisticsScreen() {
             )}
 
             {/* Engagement */}
-            <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
-              <SectionGlass colors={colors} animationDelay={750}>
-                <SectionHeading
-                  title={t('stats.section.engagement')}
-                  icon="bubble.left.and.bubble.right.fill"
-                  colors={colors}
-                />
-                <View style={styles.statsRow}>
-                  <StatCard
-                    title={t('stats.engagement.total_chats')}
-                    value={formatNumber(stats.totalChatMessages)}
+            {showDeferredSections && (
+              <View style={[styles.section, isDesktopLayout && styles.sectionEngagementDesktop]}>
+                <SectionGlass colors={colors} animationDelay={750}>
+                  <SectionHeading
+                    title={t('stats.section.engagement')}
+                    icon="bubble.left.and.bubble.right.fill"
                     colors={colors}
-                    valueTestID={TID.Stats.TotalChatsValue}
                   />
-                  <StatCard
-                    title={t('stats.engagement.dreams_with_chat')}
-                    value={formatNumber(stats.dreamsWithChat)}
-                    colors={colors}
-                    valueTestID={TID.Stats.DreamsWithChatValue}
-                  />
-                </View>
-                <View style={styles.singleStatCard}>
-                  <StatCard
-                    title={t('stats.engagement.analyzed_dreams')}
-                    value={formatNumber(stats.analyzedDreams)}
-                    colors={colors}
-                    valueTestID={TID.Stats.AnalyzedDreamsValue}
-                  />
-                </View>
-                {stats.mostDiscussedDream && (
-                  <View style={styles.mostDiscussedCard}>
-                    <View style={[styles.mostDiscussedDecoLine, { backgroundColor: `${colors.accent}60` }]} />
-                    <View style={styles.mostDiscussedInner}>
-                      <IconSymbol name="quote.opening" size={18} color={colors.accent} />
-                      <Text style={[styles.mostDiscussedTitle, { color: colors.textSecondary }]}>
-                        {t('stats.engagement.most_discussed')}
-                      </Text>
-                      <Text style={[styles.mostDiscussedDreamTitle, { color: colors.textPrimary }]} numberOfLines={1}>
-                        {stats.mostDiscussedDream.title}
-                      </Text>
-                      <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
-                        {t('stats.engagement.messages', {
-                          count: formatNumber(stats.mostDiscussedDreamUserMessages),
-                        })}
-                      </Text>
-                    </View>
+                  <View style={styles.statsRow}>
+                    <StatCard
+                      title={t('stats.engagement.total_chats')}
+                      value={formatNumber(stats.totalChatMessages)}
+                      colors={colors}
+                      valueTestID={TID.Stats.TotalChatsValue}
+                    />
+                    <StatCard
+                      title={t('stats.engagement.dreams_with_chat')}
+                      value={formatNumber(stats.dreamsWithChat)}
+                      colors={colors}
+                      valueTestID={TID.Stats.DreamsWithChatValue}
+                    />
                   </View>
-                )}
-              </SectionGlass>
-            </View>
+                  <View style={styles.singleStatCard}>
+                    <StatCard
+                      title={t('stats.engagement.analyzed_dreams')}
+                      value={formatNumber(stats.analyzedDreams)}
+                      colors={colors}
+                      valueTestID={TID.Stats.AnalyzedDreamsValue}
+                    />
+                  </View>
+                  {stats.mostDiscussedDream && (
+                    <View style={styles.mostDiscussedCard}>
+                      <View style={[styles.mostDiscussedDecoLine, { backgroundColor: `${colors.accent}60` }]} />
+                      <View style={styles.mostDiscussedInner}>
+                        <IconSymbol name="quote.opening" size={18} color={colors.accent} />
+                        <Text style={[styles.mostDiscussedTitle, { color: colors.textSecondary }]}>
+                          {t('stats.engagement.most_discussed')}
+                        </Text>
+                        <Text style={[styles.mostDiscussedDreamTitle, { color: colors.textPrimary }]} numberOfLines={1}>
+                          {stats.mostDiscussedDream.title}
+                        </Text>
+                        <Text style={[styles.mostDiscussedCount, { color: colors.accent }]}>
+                          {t('stats.engagement.messages', {
+                            count: formatNumber(stats.mostDiscussedDreamUserMessages),
+                          })}
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </SectionGlass>
+              </View>
+            )}
           </View>
           </ScreenContainer>
         </ScrollView>

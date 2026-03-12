@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { getAnalyzedDreamCount, getExploredDreamCount, getUserChatMessageCount } from '@/lib/dreamUsage';
+import { getUserChatMessageCount, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { calculateStreaks, isWithinDays, startOfDay } from '@/lib/streakUtils';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
@@ -37,24 +37,73 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
     const effectiveNow = now;
 
     const totalDreams = dreams.length;
-    const favoriteDreams = dreams.filter(d => d.isFavorite).length;
-    const dreamsThisWeek = dreams.filter(d => isWithinDays(d.id, 7, effectiveNow)).length;
-    const dreamsThisMonth = dreams.filter(d => isWithinDays(d.id, 30, effectiveNow)).length;
+    let favoriteDreams = 0;
+    let dreamsThisWeek = 0;
+    let dreamsThisMonth = 0;
 
     const streaks = calculateStreaks(dreams);
     const currentStreak = streaks.current;
     const longestStreak = streaks.longest;
 
-    const firstDreamDate = dreams.length > 0
-      ? Math.min(...dreams.map(d => d.id))
-      : effectiveNow;
-    const weeksSinceFirst = Math.max(1, Math.floor((effectiveNow - firstDreamDate) / (7 * 24 * 60 * 60 * 1000)));
-    const averageDreamsPerWeek = totalDreams / weeksSinceFirst;
+    let firstDreamDate = effectiveNow;
 
     const dayCount = new Map<number, number>();
+    const dateCount = new Map<number, number>();
+    const typeCount = new Map<string, number>();
+    const themeCount = new Map<DreamTheme, number>();
+    let totalChatMessages = 0;
+    let dreamsWithChat = 0;
+    let analyzedDreams = 0;
+    let mostDiscussedDream: DreamAnalysis | null = null;
+    let mostDiscussedDreamUserMessages = 0;
+
     dreams.forEach(dream => {
+      if (dream.isFavorite) {
+        favoriteDreams += 1;
+      }
+
+      if (isWithinDays(dream.id, 7, effectiveNow)) {
+        dreamsThisWeek += 1;
+      }
+
+      const isWithinMonth = isWithinDays(dream.id, 30, effectiveNow);
+      if (isWithinMonth) {
+        dreamsThisMonth += 1;
+      }
+
+      if (dream.id < firstDreamDate) {
+        firstDreamDate = dream.id;
+      }
+
       const day = new Date(dream.id).getDay();
       dayCount.set(day, (dayCount.get(day) || 0) + 1);
+
+      if (isWithinMonth) {
+        const date = startOfDay(dream.id);
+        const dayTimestamp = date.getTime();
+        dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
+      }
+
+      const type = dream.dreamType || 'Unknown';
+      typeCount.set(type, (typeCount.get(type) || 0) + 1);
+      if (dream.theme) {
+        themeCount.set(dream.theme, (themeCount.get(dream.theme) || 0) + 1);
+      }
+
+      if (isDreamExplored(dream)) {
+        dreamsWithChat += 1;
+      }
+
+      if (isDreamAnalyzed(dream)) {
+        analyzedDreams += 1;
+      }
+
+      const userMessages = getUserChatMessageCount(dream);
+      totalChatMessages += userMessages;
+      if (userMessages > mostDiscussedDreamUserMessages) {
+        mostDiscussedDream = dream;
+        mostDiscussedDreamUserMessages = userMessages;
+      }
     });
 
     const dreamsByDay = ORDERED_WEEKDAYS.map(weekday => ({
@@ -62,13 +111,8 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       count: dayCount.get(weekday) || 0,
     }));
 
-    const dateCount = new Map<number, number>();
-    const last30Days = dreams.filter(d => isWithinDays(d.id, 30, effectiveNow));
-    last30Days.forEach(dream => {
-      const date = startOfDay(dream.id);
-      const dayTimestamp = date.getTime();
-      dateCount.set(dayTimestamp, (dateCount.get(dayTimestamp) || 0) + 1);
-    });
+    const weeksSinceFirst = Math.max(1, Math.floor((effectiveNow - firstDreamDate) / (7 * 24 * 60 * 60 * 1000)));
+    const averageDreamsPerWeek = totalDreams / weeksSinceFirst;
 
     const today = startOfDay(effectiveNow);
     const dreamsOverTime = [];
@@ -81,12 +125,6 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       });
     }
 
-    const typeCount = new Map<string, number>();
-    dreams.forEach(dream => {
-      const type = dream.dreamType || 'Unknown';
-      typeCount.set(type, (typeCount.get(type) || 0) + 1);
-    });
-
     const dreamTypeDistribution = Array.from(typeCount.entries())
       .map(([type, count]) => ({
         type,
@@ -95,31 +133,10 @@ export const useDreamStatistics = (dreams: DreamAnalysis[]): DreamStatistics => 
       }))
       .sort((a, b) => b.count - a.count);
 
-    const themeCount = new Map<DreamTheme, number>();
-    dreams.forEach(dream => {
-      if (dream.theme) {
-        themeCount.set(dream.theme, (themeCount.get(dream.theme) || 0) + 1);
-      }
-    });
-
     const topThemes = Array.from(themeCount.entries())
       .map(([theme, count]) => ({ theme, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
-
-    const totalChatMessages = dreams.reduce((sum, dream) => sum + getUserChatMessageCount(dream), 0);
-    const dreamsWithChat = getExploredDreamCount(dreams);
-    const analyzedDreams = getAnalyzedDreamCount(dreams);
-
-    let mostDiscussedDream: DreamAnalysis | null = null;
-    let mostDiscussedDreamUserMessages = 0;
-    dreams.forEach((dream) => {
-      const userMessages = getUserChatMessageCount(dream);
-      if (userMessages > mostDiscussedDreamUserMessages) {
-        mostDiscussedDream = dream;
-        mostDiscussedDreamUserMessages = userMessages;
-      }
-    });
 
     if (mostDiscussedDreamUserMessages === 0) {
       mostDiscussedDream = null;
