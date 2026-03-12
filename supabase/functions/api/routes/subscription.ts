@@ -73,7 +73,7 @@ export async function handleSubscriptionSync(ctx: ApiContext): Promise<Response>
         ? 500
         : status === 404
           ? 200
-          : status === 429 || status >= 500
+          : status === 429 || (status !== null && status >= 500)
             ? 503
             : 502;
 

@@ -1,27 +1,43 @@
-type GeminiInlineData = {
+import {
+  ApiError as GoogleGenAiApiError,
+  GoogleGenAI,
+  Modality,
+  ThinkingLevel,
+} from 'https://esm.sh/@google/genai@1.34.0?target=deno';
+
+export type GeminiInlineData = {
   data: string;
   mimeType: string;
 };
 
-type GeminiPart = {
+export type GeminiPart = {
   text?: string;
   inlineData?: GeminiInlineData;
+  thought?: boolean;
+  thoughtSignature?: string;
 };
 
-type GeminiContent = {
+export type GeminiContent = {
   role?: string;
   parts: GeminiPart[];
 };
 
-type GeminiGenerationConfig = {
+type GeminiThinkingLevel = 'minimal' | 'low' | 'medium' | 'high';
+
+export type GeminiGenerationConfig = {
   temperature?: number;
   responseMimeType?: string;
   responseJsonSchema?: unknown;
-  responseModalities?: string[];
+  responseModalities?: ('TEXT' | 'IMAGE' | 'AUDIO')[];
   imageConfig?: {
     aspectRatio?: string;
   };
+  thinkingLevel?: GeminiThinkingLevel;
 };
+
+export const GEMINI_FLASH_MODEL = 'gemini-3-flash-preview';
+export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.1-flash-lite-preview';
+export const GEMINI_FLASH_IMAGE_MODEL = 'gemini-3.1-flash-image-preview';
 
 export class ApiError extends Error {
   public readonly status: number;
@@ -38,31 +54,72 @@ export class ApiError extends Error {
   }
 }
 
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+const clients = new Map<string, GoogleGenAI>();
 
-const normalizeContents = (contents: GeminiContent[] | string): GeminiContent[] => {
+const getClient = (apiKey: string): GoogleGenAI => {
+  const cached = clients.get(apiKey);
+  if (cached) return cached;
+
+  const client = new GoogleGenAI({ apiKey, apiVersion: 'v1beta' });
+  clients.set(apiKey, client);
+  return client;
+};
+
+const normalizeContents = (contents: GeminiContent[] | string): GeminiContent[] | string => {
   if (Array.isArray(contents)) return contents;
-  return [{ role: 'user', parts: [{ text: String(contents) }] }];
+  return String(contents);
 };
 
 const normalizeSystemInstruction = (
   systemInstruction?: string | GeminiContent
-): GeminiContent | undefined => {
+): string | GeminiContent | undefined => {
   if (!systemInstruction) return undefined;
-  if (typeof systemInstruction === 'string') {
-    return { role: 'user', parts: [{ text: systemInstruction }] };
-  }
+  if (typeof systemInstruction === 'string') return systemInstruction;
   if (typeof systemInstruction === 'object' && Array.isArray(systemInstruction.parts)) {
     return systemInstruction;
   }
-  return { role: 'user', parts: [{ text: String(systemInstruction) }] };
+  return String(systemInstruction);
+};
+
+const toSdkModality = (modality: 'TEXT' | 'IMAGE' | 'AUDIO'): Modality => {
+  switch (modality) {
+    case 'IMAGE':
+      return Modality.IMAGE;
+    case 'AUDIO':
+      return Modality.AUDIO;
+    case 'TEXT':
+    default:
+      return Modality.TEXT;
+  }
+};
+
+const toSdkThinkingLevel = (thinkingLevel?: GeminiThinkingLevel): ThinkingLevel | undefined => {
+  switch (thinkingLevel) {
+    case 'minimal':
+      return ThinkingLevel.MINIMAL;
+    case 'low':
+      return ThinkingLevel.LOW;
+    case 'medium':
+      return ThinkingLevel.MEDIUM;
+    case 'high':
+      return ThinkingLevel.HIGH;
+    default:
+      return undefined;
+  }
 };
 
 const extractText = (response: any): string => {
+  if (typeof response?.text === 'string' && response.text.trim()) {
+    return response.text;
+  }
+
   const parts = response?.candidates?.[0]?.content?.parts;
   if (!Array.isArray(parts)) return '';
   return parts
-    .map((part: any) => (typeof part?.text === 'string' ? part.text : ''))
+    .map((part: any) => {
+      if (part?.thought === true) return '';
+      return typeof part?.text === 'string' ? part.text : '';
+    })
     .join('');
 };
 
@@ -74,53 +131,36 @@ export const requestGeminiGenerateContent = async (options: {
   config?: GeminiGenerationConfig;
 }): Promise<any> => {
   const { apiKey, model, contents, systemInstruction, config } = options;
-
-  const payload: Record<string, unknown> = {
-    contents: normalizeContents(contents),
-  };
-
+  const client = getClient(apiKey);
   const normalizedSystem = normalizeSystemInstruction(systemInstruction);
-  if (normalizedSystem) {
-    payload.systemInstruction = normalizedSystem;
-  }
+  const sdkThinkingLevel = toSdkThinkingLevel(config?.thinkingLevel);
 
-  if (config && Object.keys(config).length > 0) {
-    payload.generationConfig = config;
-  }
-
-  const res = await fetch(
-    `${GEMINI_API_BASE}/models/${encodeURIComponent(model)}:generateContent`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
+  try {
+    return await client.models.generateContent({
+      model,
+      contents: normalizeContents(contents),
+      config: {
+        ...(normalizedSystem ? { systemInstruction: normalizedSystem } : {}),
+        ...(typeof config?.temperature === 'number' ? { temperature: config.temperature } : {}),
+        ...(config?.responseMimeType ? { responseMimeType: config.responseMimeType } : {}),
+        ...(config?.responseJsonSchema ? { responseJsonSchema: config.responseJsonSchema } : {}),
+        ...(config?.responseModalities?.length
+          ? { responseModalities: config.responseModalities.map(toSdkModality) }
+          : {}),
+        ...(config?.imageConfig ? { imageConfig: config.imageConfig } : {}),
+        ...(sdkThinkingLevel ? { thinkingConfig: { thinkingLevel: sdkThinkingLevel } } : {}),
       },
-      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    if (error instanceof GoogleGenAiApiError) {
+      throw new ApiError({
+        message: error.message ?? 'Gemini API error',
+        status: error.status ?? 500,
+        body: (error as { error?: unknown }).error,
+      });
     }
-  );
-
-  const bodyText = await res.text();
-  let data: any = null;
-  if (bodyText.trim()) {
-    try {
-      data = JSON.parse(bodyText);
-    } catch {
-      data = null;
-    }
+    throw error;
   }
-
-  if (!res.ok) {
-    const fallbackText = bodyText && bodyText.trim() ? bodyText : undefined;
-    const message =
-      data?.error?.message ??
-      fallbackText ??
-      res.statusText ??
-      'Gemini API error';
-    throw new ApiError({ message, status: res.status, body: data ?? bodyText });
-  }
-
-  return data ?? {};
 };
 
 /**
@@ -143,7 +183,12 @@ export const classifyGeminiError = (error: any): {
     return { status, userMessage: error.message ?? 'Request failed', canRetry: false };
   }
 
-  const httpStatus = typeof error?.httpStatus === 'number' ? error.httpStatus : null;
+  const httpStatus = typeof error?.httpStatus === 'number'
+    ? error.httpStatus
+    : typeof error?.status === 'number'
+      ? error.status
+      : null;
+
   if (httpStatus === 401) return { status: 401, userMessage: 'Authentication failed', canRetry: false };
   if (httpStatus === 403) return { status: 403, userMessage: 'Access denied', canRetry: false };
   if (httpStatus === 400) return { status: 400, userMessage: 'Invalid request format', canRetry: false };
@@ -155,7 +200,6 @@ export const classifyGeminiError = (error: any): {
 
   const message = String(error?.message ?? error);
 
-  // Check for specific error codes in message
   if (message.includes('401')) {
     return { status: 401, userMessage: 'Authentication failed', canRetry: false };
   }
@@ -188,28 +232,17 @@ export const callGeminiWithFallback = async (
   apiKey: string,
   primaryModel: string,
   fallbackModel: string,
-  contents: any[],
+  contents: GeminiContent[],
   systemInstruction: string,
-  config: {
-    temperature?: number;
-    responseMimeType?: string;
-    responseJsonSchema?: any;
-  }
+  config: GeminiGenerationConfig
 ): Promise<{ text: string; raw: any }> => {
-  // Lower temperature for JSON generation (more deterministic)
-  const temperature = config.responseMimeType === 'application/json' ? 0.2 : (config.temperature ?? 0.7);
-
   const makeCall = async (modelName: string) => {
     const raw = await requestGeminiGenerateContent({
       apiKey,
       model: modelName,
       contents,
       systemInstruction,
-      config: {
-        temperature,
-        ...(config.responseMimeType ? { responseMimeType: config.responseMimeType } : {}),
-        ...(config.responseJsonSchema ? { responseJsonSchema: config.responseJsonSchema } : {}),
-      },
+      config,
     });
     const text = extractText(raw);
     return { text, raw };
@@ -219,7 +252,6 @@ export const callGeminiWithFallback = async (
     return await makeCall(primaryModel);
   } catch (err) {
     const error = err as any;
-    // Don't fallback on non-retryable errors (per docs, ApiError exposes status codes)
     if (error instanceof ApiError) {
       if ([400, 401, 403, 404].includes(error.status)) throw error;
       if (primaryModel === fallbackModel) throw error;

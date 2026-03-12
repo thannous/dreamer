@@ -23,9 +23,10 @@ Expected endpoints
   - Response JSON: `{ "title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": string, "imagePrompt": string }`
   - Env required: `GEMINI_API_KEY`
   - Optional env overrides:
-    - `GEMINI_API_BASE` (SDK uses default `https://generativelanguage.googleapis.com`)
-    - `GEMINI_API_VERSION` (not used with SDK)
-    - `GEMINI_MODEL` (default `gemini-3-flash-preview`; fallback to `gemini-2.5-flash` on failure)
+    - `GEMINI_MODEL` (default `gemini-3-flash-preview`)
+    - `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite-preview`)
+    - `GEMINI_LITE_MODEL` (default `gemini-3.1-flash-lite-preview`)
+    - `IMAGEN_MODEL` (default `gemini-3.1-flash-image-preview`)
 
 - POST `/generateImage`
   - Request JSON: `{ "prompt": string }`

@@ -486,7 +486,7 @@ describe('geminiServiceReal', () => {
           body: JSON.stringify({ dreamId, message: 'What does water mean?', lang: 'en' }),
         })
       );
-      expect(result).toBe('AI response');
+      expect(result).toEqual({ text: 'AI response' });
     });
 
     it('handles default language', async () => {
@@ -504,7 +504,7 @@ describe('geminiServiceReal', () => {
           body: JSON.stringify({ dreamId, message: 'First message', lang: 'en' }),
         })
       );
-      expect(result).toBe('First response');
+      expect(result).toEqual({ text: 'First response' });
     });
   });
 

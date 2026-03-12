@@ -1,7 +1,12 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { ANALYZE_DREAM_SCHEMA, CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
-import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';
+import {
+  callGeminiWithFallback,
+  classifyGeminiError,
+  GEMINI_FLASH_LITE_MODEL,
+  GEMINI_FLASH_MODEL,
+} from '../services/gemini.ts';
 import { generateImageFromPrompt } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
@@ -101,16 +106,17 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
 
     const prompt = `You analyze user dreams with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
-    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
+    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? GEMINI_FLASH_MODEL;
     const { text } = await callGeminiWithFallback(
       apiKey,
       primaryModel,
-      'gemini-3-flash-preview',
+      Deno.env.get('GEMINI_FALLBACK_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
       [{ role: 'user', parts: [{ text: prompt }] }],
       systemInstruction,
       {
         responseMimeType: 'application/json',
-        responseJsonSchema: ANALYZE_DREAM_SCHEMA
+        responseJsonSchema: ANALYZE_DREAM_SCHEMA,
+        thinkingLevel: 'low',
       }
     );
 
@@ -219,16 +225,17 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
 
     const prompt = `You analyze user dreams with keys: {"title": string, "interpretation": string, "shareableQuote": string, "theme": "surreal"|"mystical"|"calm"|"noir", "dreamType": "Lucid Dream"|"Recurring Dream"|"Nightmare"|"Symbolic Dream", "imagePrompt": string}. Choose the single most appropriate dreamType from that list. The content (title, interpretation, quote) MUST be in ${langName}.\nDream transcript:\n${transcript}`;
 
-    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3-flash-preview';
+    const primaryModel = Deno.env.get('GEMINI_MODEL') ?? GEMINI_FLASH_MODEL;
     const { text } = await callGeminiWithFallback(
       apiKey,
       primaryModel,
-      'gemini-3-flash-preview',
+      Deno.env.get('GEMINI_FALLBACK_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
       [{ role: 'user', parts: [{ text: prompt }] }],
       systemInstruction,
       {
         responseMimeType: 'application/json',
-        responseJsonSchema: ANALYZE_DREAM_SCHEMA
+        responseJsonSchema: ANALYZE_DREAM_SCHEMA,
+        thinkingLevel: 'low',
       }
     );
 
@@ -298,7 +305,6 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
         imagePrompt,
         imageUrl,
         imageBytes: optimized.base64,
-        ...(quotaUsed && { quotaUsed }),
       }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
@@ -357,13 +363,14 @@ Dream transcript:\n${transcript}`;
 
     const { text } = await callGeminiWithFallback(
       apiKey,
-      'gemini-2.5-flash-lite',
-      'gemini-2.5-flash-lite',
+      Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
+      Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
       [{ role: 'user', parts: [{ text: prompt }] }],
       systemInstruction,
       {
         responseMimeType: 'application/json',
-        responseJsonSchema: CATEGORIZE_DREAM_SCHEMA
+        responseJsonSchema: CATEGORIZE_DREAM_SCHEMA,
+        thinkingLevel: 'minimal',
       }
     );
 

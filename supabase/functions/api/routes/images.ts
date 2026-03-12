@@ -1,6 +1,10 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { callGeminiWithFallback, classifyGeminiError } from '../services/gemini.ts';
+import {
+  callGeminiWithFallback,
+  classifyGeminiError,
+  GEMINI_FLASH_LITE_MODEL,
+} from '../services/gemini.ts';
 import { generateImageFromPrompt, generateImageWithReferences } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
@@ -92,11 +96,11 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       console.log('[api] /generateImage generating prompt from transcript');
       const { text: generatedPrompt } = await callGeminiWithFallback(
         apiKey,
-        'gemini-2.5-flash-lite',
-        'gemini-2.5-flash-lite',
+        Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
+        Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
         [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
         'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
-        { temperature: 0.8 }
+        { thinkingLevel: 'minimal' }
       );
       prompt = generatedPrompt.trim();
       console.log('[api] /generateImage generated prompt:', prompt);
@@ -290,18 +294,18 @@ export async function handleGenerateImageWithReference(ctx: ApiContext): Promise
       hasPrompt: !!prompt,
       hasTranscript: !!transcript,
       referenceCount: referenceImages.length,
-      referenceTypes: referenceImages.map(r => r.type),
+      referenceTypes: referenceImages.map((r) => r.type),
     });
 
     if (!prompt && transcript) {
       console.log('[api] /generateImageWithReference generating prompt from transcript');
       const { text: generatedPrompt } = await callGeminiWithFallback(
         apiKey,
-        'gemini-2.5-flash-lite',
-        'gemini-2.5-flash-lite',
+        Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
+        Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
         [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
         'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
-        { temperature: 0.8 }
+        { thinkingLevel: 'minimal' }
       );
       prompt = generatedPrompt.trim();
       console.log('[api] /generateImageWithReference generated prompt:', prompt);

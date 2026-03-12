@@ -3,7 +3,7 @@
 // - POST /api/analyzeDream { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt }
 // - POST /api/categorizeDream { transcript } -> { title, theme, dreamType, hasPerson, hasAnimal }
 // - POST /api/generateImage { prompt } -> { imageUrl | imageBytes }
-// - POST /api/generateImageWithReference { prompt, referenceImages } -> { imageUrl } (auth required)
+// - POST /api/generateImageWithReference { prompt|transcript, referenceImages } -> { imageUrl }
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
 // - POST /api/subscription/sync { source? } -> { ok, tier, updated, currentTier }

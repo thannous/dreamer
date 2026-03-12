@@ -237,8 +237,8 @@ export async function startOrContinueChat(
   },
   fingerprint?: string,
   options?: { signal?: AbortSignal }
-): Promise<string> {
-  const res = await fetchWithGuestHeaders<{ text: string }>('/chat', {
+): Promise<{ text: string; message?: Partial<ChatMessage> }> {
+  const res = await fetchWithGuestHeaders<{ text: string; message?: Partial<ChatMessage> }>('/chat', {
     method: 'POST',
     body: {
       dreamId,
@@ -250,7 +250,7 @@ export async function startOrContinueChat(
     ...NETWORK_REQUEST_POLICIES.chat,
     signal: options?.signal,
   });
-  return res.text;
+  return res;
 }
 
 export function resetChat() {
@@ -268,86 +268,17 @@ export async function generateSpeechForText(text: string): Promise<string> {
 }
 
 /**
- * Generate a dream image with reference subjects (person/animal).
- * Reference images should be pre-compressed (512px max, WEBP, quality 0.7)
- * and will be encoded to base64 at send time.
- *
- * @param request - The request containing transcript, prompt, and reference images
- * @returns The generated image URL or base64 data URI
+ * Reference-image generation is hard-disabled.
  */
 export async function generateImageWithReference(
   request: ReferenceImageGenerationRequest
 ): Promise<string> {
-  // Import FileSystem for reading file URIs on native
-  const FileSystem = await import('expo-file-system');
-  const FileSystemLegacy = await import('expo-file-system/legacy');
-
-  // Convert reference images to base64 at send time
-  const referenceImagesPayload = await Promise.all(
-    request.referenceImages.map(async (img) => {
-      let base64: string;
-
-      if (img.uri.startsWith('data:')) {
-        // Already a data URI, extract base64
-        const match = /^data:[^;]+;base64,(.+)$/i.exec(img.uri);
-        base64 = match?.[1] ?? '';
-      } else if (img.uri.startsWith('file://')) {
-        // Read from file system
-        const file = new FileSystem.File(img.uri);
-        base64 = await file.base64();
-      } else {
-        // Try legacy API for cache URIs
-        base64 = await FileSystemLegacy.readAsStringAsync(img.uri, {
-          encoding: FileSystemLegacy.EncodingType.Base64,
-        });
-      }
-
-      return {
-        data: base64,
-        mimeType: img.mimeType,
-        type: img.type,
-      };
-    })
-  );
-
-  try {
-    const prompt = request.prompt?.trim();
-    const previousImageUrl = request.previousImageUrl?.trim();
-    const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImageWithReference', {
-      method: 'POST',
-      body: {
-        transcript: request.transcript,
-        ...(prompt ? { prompt } : {}),
-        referenceImages: referenceImagesPayload,
-        ...(previousImageUrl ? { previousImageUrl } : {}),
-        lang: request.lang ?? 'en',
-      },
-      ...NETWORK_REQUEST_POLICIES.generateImageWithReference,
-    });
-
-    if (res.imageUrl) return res.imageUrl;
-    if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
-    throw new Error('Invalid image response from backend');
-  } catch (error) {
-    if (error instanceof HttpError && error.body && typeof error.body === 'object' && error.body !== null) {
-      const body = error.body as Partial<ImageGenerationErrorResponse>;
-      if (typeof body.error === 'string') {
-        if (__DEV__) {
-          console.warn('[geminiService] generateImageWithReference failed', {
-            status: error.status,
-            blockReason: body.blockReason ?? null,
-            finishReason: body.finishReason ?? null,
-            retryAttempts: body.retryAttempts ?? null,
-            isTransient: body.isTransient ?? null,
-          });
-        }
-        const classified = classifyImageError(body as ImageGenerationErrorResponse);
-        const enriched = Object.assign(new Error(classified.userMessage), classified, {
-          originalError: error instanceof Error ? error : classified.originalError,
-        });
-        throw enriched;
-      }
-    }
-    throw error;
-  }
+  void request;
+  throw Object.assign(new Error('Reference image generation is disabled'), {
+    status: 410,
+    body: {
+      code: 'FEATURE_DISABLED',
+      error: 'Reference image generation is disabled',
+    },
+  });
 }

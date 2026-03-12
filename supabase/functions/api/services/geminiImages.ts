@@ -1,11 +1,11 @@
-import { ApiError, requestGeminiGenerateContent } from './gemini.ts';
+import { ApiError, GEMINI_FLASH_IMAGE_MODEL, requestGeminiGenerateContent } from './gemini.ts';
 
 /**
  * Normalize the image model to a supported Gemini image model. Avoids using Imagen
  * models that are not available on the Gemini API endpoints.
  */
 export const resolveImageModel = (): string => {
-  return Deno.env.get('IMAGEN_MODEL') ?? 'gemini-2.5-flash-image';
+  return Deno.env.get('IMAGEN_MODEL') ?? GEMINI_FLASH_IMAGE_MODEL;
 };
 
 export async function generateImageFromPrompt(options: {
@@ -145,7 +145,7 @@ export async function generateImageFromPrompt(options: {
 export async function generateImageWithReferences(options: {
   prompt: string;
   apiKey: string;
-  referenceImages: Array<{ data: string; mimeType: string; type: string }>;
+  referenceImages: { data: string; mimeType: string; type: string }[];
   aspectRatio?: string;
   model?: string;
 }): Promise<{ imageBase64?: string; mimeType?: string; raw: any; retryAttempts?: number }> {

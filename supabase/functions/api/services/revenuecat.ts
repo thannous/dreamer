@@ -32,7 +32,7 @@ function getOptionalEnv(name: string): string | null {
 }
 
 export class RevenueCatHttpError extends Error {
-  public readonly name = 'RevenueCatHttpError';
+  public override readonly name = 'RevenueCatHttpError';
   public readonly status: number;
   public readonly statusText: string;
   public readonly url: string;
