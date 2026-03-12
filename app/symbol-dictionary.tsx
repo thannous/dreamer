@@ -1,7 +1,7 @@
 import { FlashList, type ListRenderItemInfo } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, router } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
@@ -92,7 +92,8 @@ export default function SymbolDictionaryScreen() {
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
 
   const categories = useMemo(() => getCategoryList(), []);
-  const normalizedQuery = searchQuery.trim();
+  const allSymbols = useMemo(() => getAllSymbols(), []);
+  const deferredSearchQuery = useDeferredValue(searchQuery.trim());
 
   const gradientColors =
     mode === "dark"
@@ -102,17 +103,26 @@ export default function SymbolDictionaryScreen() {
   const glassBackground =
     mode === "dark" ? "rgba(35, 26, 63, 0.4)" : `${colors.backgroundCard}A6`;
 
+  const filteredSymbols = useMemo(
+    () =>
+      deferredSearchQuery
+        ? searchSymbols(deferredSearchQuery, lang)
+        : allSymbols,
+    [allSymbols, deferredSearchQuery, lang],
+  );
+
   const availableLetters = useMemo(() => {
     if (browseMode !== "alphabetical") return [];
-    const sourceSymbols = normalizedQuery
-      ? searchSymbols(normalizedQuery, lang)
-      : getAllSymbols();
     const letters = new Set<string>();
-    sourceSymbols.forEach((symbol) => {
+    filteredSymbols.forEach((symbol) => {
       letters.add(getSymbolLetter(getSymbolName(symbol, lang)));
     });
     return Array.from(letters).sort((a, b) => a.localeCompare(b, lang));
-  }, [browseMode, normalizedQuery, lang]);
+  }, [browseMode, filteredSymbols, lang]);
+  const availableLetterSet = useMemo(
+    () => new Set(availableLetters),
+    [availableLetters],
+  );
 
   useEffect(() => {
     if (browseMode !== "alphabetical") return;
@@ -123,12 +133,9 @@ export default function SymbolDictionaryScreen() {
 
   const sections: Section[] = useMemo(() => {
     if (browseMode === "alphabetical") {
-      const sourceSymbols = normalizedQuery
-        ? searchSymbols(normalizedQuery, lang)
-        : getAllSymbols();
-      if (sourceSymbols.length === 0) return [];
+      if (filteredSymbols.length === 0) return [];
 
-      const sorted = [...sourceSymbols].sort((a, b) =>
+      const sorted = [...filteredSymbols].sort((a, b) =>
         normalizeValue(getSymbolName(a, lang)).localeCompare(
           normalizeValue(getSymbolName(b, lang)),
           lang,
@@ -154,18 +161,19 @@ export default function SymbolDictionaryScreen() {
       }));
     }
 
-    if (normalizedQuery) {
-      const results = searchSymbols(normalizedQuery, lang);
-      if (results.length === 0) return [];
+    if (deferredSearchQuery) {
+      if (filteredSymbols.length === 0) return [];
 
       if (selectedCategory) {
-        const filtered = results.filter((s) => s.category === selectedCategory);
+        const filtered = filteredSymbols.filter(
+          (s) => s.category === selectedCategory,
+        );
         if (filtered.length === 0) return [];
         return [{ type: "category", category: selectedCategory, data: filtered }];
       }
 
       const grouped = new Map<SymbolCategory, DreamSymbol[]>();
-      for (const s of results) {
+      for (const s of filteredSymbols) {
         const list = grouped.get(s.category) ?? [];
         list.push(s);
         grouped.set(s.category, list);
@@ -190,7 +198,7 @@ export default function SymbolDictionaryScreen() {
       category: c,
       data: getSymbolsByCategory(c),
     }));
-  }, [browseMode, normalizedQuery, selectedCategory, lang, categories, selectedLetter]);
+  }, [browseMode, deferredSearchQuery, selectedCategory, lang, categories, selectedLetter, filteredSymbols]);
 
   const listData: Row[] = useMemo(() => {
     const rows: Row[] = [];
@@ -269,23 +277,29 @@ export default function SymbolDictionaryScreen() {
     [colors.textSecondary, colors.textTertiary, t],
   );
 
-  const chipStyle = (isSelected: boolean) => [
-    styles.chip,
-    {
-      backgroundColor: isSelected ? colors.accent : glassBackground,
-      borderWidth: isSelected ? 0 : 1,
-      borderColor: isSelected ? "transparent" : colors.divider,
-    },
-  ];
+  const getChipStyle = useCallback(
+    (isSelected: boolean) => [
+      styles.chip,
+      {
+        backgroundColor: isSelected ? colors.accent : glassBackground,
+        borderWidth: isSelected ? 0 : 1,
+        borderColor: isSelected ? "transparent" : colors.divider,
+      },
+    ],
+    [colors.accent, colors.divider, glassBackground],
+  );
 
-  const letterStyle = (isSelected: boolean) => [
-    styles.letterChip,
-    {
-      backgroundColor: isSelected ? colors.accent : glassBackground,
-      borderWidth: isSelected ? 0 : 1,
-      borderColor: isSelected ? "transparent" : colors.divider,
-    },
-  ];
+  const getLetterStyle = useCallback(
+    (isSelected: boolean) => [
+      styles.letterChip,
+      {
+        backgroundColor: isSelected ? colors.accent : glassBackground,
+        borderWidth: isSelected ? 0 : 1,
+        borderColor: isSelected ? "transparent" : colors.divider,
+      },
+    ],
+    [colors.accent, colors.divider, glassBackground],
+  );
 
   const handleBrowseModeChange = useCallback((nextMode: BrowseMode) => {
     setBrowseMode(nextMode);
@@ -449,7 +463,7 @@ export default function SymbolDictionaryScreen() {
             <Pressable
               onPress={() => setSelectedCategory(null)}
               style={({ pressed }) => [
-                ...chipStyle(selectedCategory === null),
+                ...getChipStyle(selectedCategory === null),
                 pressed && styles.chipPressed,
               ]}
             >
@@ -474,7 +488,7 @@ export default function SymbolDictionaryScreen() {
                   setSelectedCategory(selectedCategory === cat ? null : cat)
                 }
                 style={({ pressed }) => [
-                  ...chipStyle(selectedCategory === cat),
+                  ...getChipStyle(selectedCategory === cat),
                   pressed && styles.chipPressed,
                 ]}
               >
@@ -501,7 +515,7 @@ export default function SymbolDictionaryScreen() {
             contentContainerStyle={styles.letterRow}
           >
             {FULL_ALPHABET.map((letter) => {
-              const hasSymbols = availableLetters.includes(letter);
+              const hasSymbols = availableLetterSet.has(letter);
               const isSelected = selectedLetter === letter;
               return (
                 <Pressable
@@ -513,7 +527,7 @@ export default function SymbolDictionaryScreen() {
                   }
                   disabled={!hasSymbols}
                   style={({ pressed }) => [
-                    ...letterStyle(isSelected),
+                    ...getLetterStyle(isSelected),
                     !hasSymbols && { opacity: 0.3 },
                     pressed && hasSymbols && styles.chipPressed,
                   ]}
@@ -543,7 +557,7 @@ export default function SymbolDictionaryScreen() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         getItemType={getItemType}
-        removeClippedSubviews={false}
+        estimatedItemSize={92}
         drawDistance={240}
         style={styles.list}
         contentContainerStyle={styles.listContent}
