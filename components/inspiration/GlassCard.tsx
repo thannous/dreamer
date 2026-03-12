@@ -17,6 +17,7 @@ export type GlassCardProps = {
   accessibilityRole?: PressableProps['accessibilityRole'];
   accessibilityLabel?: string;
   animationDelay?: number;
+  animateOnMount?: boolean;
 };
 
 type GlassCardBaseProps = GlassCardProps & {
@@ -38,6 +39,7 @@ function GlassCardBase({
   accessibilityRole,
   accessibilityLabel,
   animationDelay = 0,
+  animateOnMount = true,
   shadow,
   useBlur = true,
 }: GlassCardBaseProps) {
@@ -107,8 +109,11 @@ function GlassCardBase({
     </>
   );
 
-  const motionFrom = reduceEffects ? { opacity: 1, translateY: 0 } : { opacity: 0, translateY: 20 };
-  const motionTransition = reduceEffects
+  const shouldAnimateOnMount = animateOnMount && !reduceEffects;
+  const motionFrom = shouldAnimateOnMount ? { opacity: 0, translateY: 20 } : { opacity: 1, translateY: 0 };
+  const motionTransition = !shouldAnimateOnMount
+    ? { type: 'timing' as const, duration: 0 }
+    : reduceEffects
     ? { type: 'timing' as const, duration: 0 }
     : { type: 'timing' as const, duration: 650, delay: animationDelay };
 

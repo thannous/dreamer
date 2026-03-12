@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Platform,
   Pressable,
@@ -34,24 +34,22 @@ import {
   type RitualConfig,
   type RitualId,
 } from "@/lib/inspirationRituals";
-import { MotiView } from "@/lib/moti";
 import {
   getLocalDateKey,
   shouldResetDailyProgress,
 } from "@/lib/ritualProgressUtils";
-import type { SymbolLanguage } from "@/lib/symbolTypes";
 import { TID } from "@/lib/testIDs";
-import {
-  getRitualPreference,
-  getRitualStepProgress,
-  saveRitualStepProgress,
-} from "@/services/storageService";
-import {
-  getPopularSymbols,
-  getSymbolIcon,
-} from "@/services/symbolDictionaryService";
+import { getRitualPreference, getRitualStepProgress, saveRitualStepProgress } from "@/services/storageService";
 
 type IconName = Parameters<typeof IconSymbol>[0]["name"];
+type TranslateFn = ReturnType<typeof useTranslation>["t"];
+type RitualProgressState = Partial<Record<RitualId, Record<string, boolean>>>;
+type ResolvedCopyCard = {
+  id: string;
+  icon: IconName;
+  title: string;
+  body: string;
+};
 
 const TIP_KEYS = [
   "inspiration.tips.captureImmediately",
@@ -134,16 +132,13 @@ const MYTH_CARDS: CopyCard[] = [
  */
 export default function InspirationScreen() {
   const { colors, mode } = useTheme();
-  const { t, currentLang } = useTranslation();
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const scrollPerf = useScrollIdle();
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
-  const [tipIndex, setTipIndex] = useState(0);
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>("starter");
-  const [ritualProgress, setRitualProgress] = useState<
-    Partial<Record<RitualId, Record<string, boolean>>>
-  >({});
+  const [ritualProgress, setRitualProgress] = useState<RitualProgressState>({});
   const [progressDate, setProgressDate] = useState<string>(getLocalDateKey());
   const [showAnimations, setShowAnimations] = useState(false);
 
@@ -158,10 +153,13 @@ export default function InspirationScreen() {
     (showAddButton
       ? ADD_BUTTON_RESERVED_SPACE + ThemeLayout.spacing.sm
       : ThemeLayout.spacing.sm);
+  const handleAddDream = useCallback(() => {
+    router.push("/recording");
+  }, []);
 
   const tips = useMemo(() => TIP_KEYS.map((key) => t(key)), [t]);
   const prompts = useMemo(
-    () =>
+    (): ResolvedCopyCard[] =>
       PROMPT_CARDS.map((card) => ({
         id: card.id,
         icon: card.icon,
@@ -171,7 +169,7 @@ export default function InspirationScreen() {
     [t],
   );
   const exercises = useMemo(
-    () =>
+    (): ResolvedCopyCard[] =>
       EXERCISE_CARDS.map((card) => ({
         id: card.id,
         icon: card.icon,
@@ -181,7 +179,7 @@ export default function InspirationScreen() {
     [t],
   );
   const myths = useMemo(
-    () =>
+    (): ResolvedCopyCard[] =>
       MYTH_CARDS.map((card) => ({
         id: card.id,
         icon: card.icon,
@@ -219,27 +217,62 @@ export default function InspirationScreen() {
     }
   }, [progressDate]);
 
+  const loadRitualState = useCallback(async () => {
+    const todayKey = getLocalDateKey();
+    const [storedProgress, preferredRitualId] = await Promise.all([
+      getRitualStepProgress(),
+      getRitualPreference(),
+    ]);
+
+    let nextProgress: RitualProgressState = {};
+    let nextProgressDate = todayKey;
+
+    if (storedProgress && storedProgress.date === todayKey) {
+      nextProgress = storedProgress.steps ?? {};
+      nextProgressDate = storedProgress.date;
+    } else {
+      await saveRitualStepProgress({ date: todayKey, steps: {} });
+    }
+
+    const nextSelectedRitualId =
+      preferredRitualId && RITUALS.some((ritual) => ritual.id === preferredRitualId)
+        ? preferredRitualId
+        : "starter";
+
+    return {
+      nextProgress,
+      nextProgressDate,
+      nextSelectedRitualId,
+    };
+  }, []);
+
   // Reload progress from storage on focus (picks up changes from ritual detail page)
   useFocusEffect(
     useCallback(() => {
+      let isActive = true;
+
       refreshProgressOnDateChange();
-      const todayKey = getLocalDateKey();
       void (async () => {
         try {
-          const stored = await getRitualStepProgress();
-          if (stored && stored.date === todayKey) {
-            setRitualProgress(stored.steps ?? {});
+          const state = await loadRitualState();
+          if (!isActive) return;
+          setRitualProgress(state.nextProgress);
+          setProgressDate(state.nextProgressDate);
+          setSelectedRitualId(state.nextSelectedRitualId);
+        } catch (error) {
+          if (__DEV__) {
+            console.error(
+              "[InspirationScreen] Failed to load ritual state",
+              error,
+            );
           }
-          const pref = await getRitualPreference();
-          if (pref) {
-            const match = RITUALS.find((r) => r.id === pref);
-            if (match) setSelectedRitualId(match.id);
-          }
-        } catch {
-          // ignore
         }
       })();
-    }, [refreshProgressOnDateChange]),
+
+      return () => {
+        isActive = false;
+      };
+    }, [loadRitualState, refreshProgressOnDateChange]),
   );
 
   // Check when returning to foreground
@@ -253,69 +286,6 @@ export default function InspirationScreen() {
     );
     return () => clearInterval(timer);
   }, [refreshProgressOnDateChange]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    (async () => {
-      try {
-        const stored = await getRitualPreference();
-        if (!isMounted || !stored) return;
-        const match = RITUALS.find((ritual) => ritual.id === stored);
-        if (match) {
-          setSelectedRitualId(match.id);
-        }
-      } catch (error) {
-        if (__DEV__) {
-          console.error(
-            "[InspirationScreen] Failed to load ritual preference",
-            error,
-          );
-        }
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    (async () => {
-      const todayKey = getLocalDateKey();
-      try {
-        const storedProgress = await getRitualStepProgress();
-        if (!isMounted) return;
-
-        if (storedProgress && storedProgress.date === todayKey) {
-          setRitualProgress(storedProgress.steps ?? {});
-          setProgressDate(storedProgress.date);
-        } else {
-          setRitualProgress({});
-          setProgressDate(todayKey);
-          await saveRitualStepProgress({ date: todayKey, steps: {} });
-        }
-      } catch (error) {
-        if (__DEV__) {
-          console.error(
-            "[InspirationScreen] Failed to load ritual step progress",
-            error,
-          );
-        }
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    // Defer randomization to the client to avoid SSR hydration mismatches.
-    setTipIndex(Math.floor(Math.random() * TIP_KEYS.length));
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -357,14 +327,9 @@ export default function InspirationScreen() {
             ]}
           >
             <View style={isDesktopLayout ? styles.desktopGrid : undefined}>
-              {/* Popular Symbols - Constellation style */}
+              {/* Dream dictionary card */}
               <View style={styles.sectionSpacing}>
-                <PopularSymbolsSection
-                  colors={colors}
-                  mode={mode}
-                  language={currentLang as SymbolLanguage}
-                  t={t}
-                />
+                <DictionaryCardSection colors={colors} t={t} />
               </View>
 
               {/* Rituals with Progress Rings */}
@@ -389,8 +354,7 @@ export default function InspirationScreen() {
               >
                 <TipCard
                   colors={colors}
-                  tip={tips[tipIndex]}
-                  onNext={() => setTipIndex((prev) => (prev + 1) % tips.length)}
+                  tips={tips}
                   title={t("inspiration.tip.title")}
                   subtitle={t("inspiration.tip.subtitle")}
                   nextLabel={t("inspiration.tip.next")}
@@ -412,18 +376,7 @@ export default function InspirationScreen() {
                   colors={colors}
                   icon="lightbulb.fill"
                 />
-                <View style={styles.stack}>
-                  {prompts.map((prompt, index) => (
-                    <InfoCard
-                      key={prompt.id}
-                      colors={colors}
-                      icon={prompt.icon}
-                      title={prompt.title}
-                      body={prompt.body}
-                      index={index}
-                    />
-                  ))}
-                </View>
+                <InfoCardsSection colors={colors} cards={prompts} />
               </View>
 
               {/* Exercises */}
@@ -440,18 +393,7 @@ export default function InspirationScreen() {
                   colors={colors}
                   icon="pencil"
                 />
-                <View style={styles.stack}>
-                  {exercises.map((exercise, index) => (
-                    <InfoCard
-                      key={exercise.id}
-                      colors={colors}
-                      icon={exercise.icon}
-                      title={exercise.title}
-                      body={exercise.body}
-                      index={index}
-                    />
-                  ))}
-                </View>
+                <InfoCardsSection colors={colors} cards={exercises} />
               </View>
 
               {/* Myths */}
@@ -468,18 +410,7 @@ export default function InspirationScreen() {
                   colors={colors}
                   icon="quote.opening"
                 />
-                <View style={styles.stack}>
-                  {myths.map((myth, index) => (
-                    <InfoCard
-                      key={myth.id}
-                      colors={colors}
-                      icon={myth.icon}
-                      title={myth.title}
-                      body={myth.body}
-                      index={index}
-                    />
-                  ))}
-                </View>
+                <InfoCardsSection colors={colors} cards={myths} />
               </View>
 
               {/* Closing Quote */}
@@ -498,7 +429,7 @@ export default function InspirationScreen() {
 
         {showAddButton && (
           <FloatingAddDreamButton
-            onPress={() => router.push("/recording")}
+            onPress={handleAddDream}
             label={t("journal.add_button.label")}
             accessibilityLabel={t("journal.add_button.accessibility")}
             bottomOffset={floatingOffset - 60}
@@ -511,99 +442,53 @@ export default function InspirationScreen() {
   );
 }
 
-// ─── Popular Symbols (Constellation Cards) ───────────────────────────────────
-
-type PopularSymbolsSectionProps = {
+type DictionaryCardSectionProps = {
   colors: ReturnType<typeof useTheme>["colors"];
-  mode: "light" | "dark";
-  language: SymbolLanguage;
-  t: (key: string) => string;
+  t: TranslateFn;
 };
 
-function PopularSymbolsSection({
-  colors,
-  mode,
-  language,
-  t,
-}: PopularSymbolsSectionProps) {
-  const popularSymbols = useMemo(() => getPopularSymbols(), []);
-
+const DictionaryCardSection = memo(function DictionaryCardSection({ colors, t }: DictionaryCardSectionProps) {
   return (
-    <View>
-      <View style={styles.popularHeader}>
-        <Text style={[styles.popularTitle, { color: colors.textPrimary }]}>
-          {t("symbols.popular_title")}
-        </Text>
-        <Pressable
-          onPress={() => router.push("/symbol-dictionary" as any)}
-          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-          accessibilityRole="link"
-          accessibilityLabel={t("symbols.view_all")}
-        >
-          <Text style={[styles.popularViewAll, { color: colors.accent }]}>
-            {t("symbols.view_all")} →
-          </Text>
-        </Pressable>
-      </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.popularScrollContent}
+    <View style={styles.dictionaryCardContainer}>
+      <FlatGlassCard
+        intensity="moderate"
+        style={styles.dictionaryCard}
+        onPress={() => router.push("/symbol-dictionary" as any)}
+        accessibilityRole="button"
+        accessibilityLabel={t("symbols.home_card_title")}
       >
-        {popularSymbols.map((symbol, index) => {
-          const content = symbol[language] ?? symbol.en;
-          const symbolIcon = getSymbolIcon(symbol.id, symbol.category);
-
-          return (
-            <MotiView
-              key={symbol.id}
-              // Avoid rendering invisible content if animations are delayed/frozen.
-              from={{ opacity: 1, scale: 0.8, translateY: 12 }}
-              animate={{ opacity: 1, scale: 1, translateY: 0 }}
-              transition={{
-                type: "spring",
-                damping: 16,
-                stiffness: 100,
-                delay: 80 * index,
-              }}
+        <View style={styles.dictionaryCardContent}>
+          <View
+            style={[
+              styles.dictionaryCardIconWrap,
+              { backgroundColor: `${colors.accent}22` },
+            ]}
+          >
+            <IconSymbol name="book.closed.fill" size={22} color={colors.accent} />
+          </View>
+          <View style={styles.dictionaryCardCopy}>
+            <Text
+              style={[styles.dictionaryCardTitle, { color: colors.textPrimary }]}
             >
-              <Pressable
-                onPress={() =>
-                  router.push(`/symbol-detail/${symbol.id}` as any)
-                }
-                style={({ pressed }) => [
-                  styles.symbolCard,
-                  {
-                    backgroundColor: colors.backgroundCard,
-                    borderColor: colors.divider,
-                  },
-                  pressed && styles.symbolCardPressed,
-                ]}
-                accessibilityRole="button"
-                accessibilityLabel={content.name}
-              >
-                {/* Large background icon */}
-                <View style={styles.symbolBgIcon}>
-                  <IconSymbol
-                    name={symbolIcon}
-                    size={82}
-                    color={mode === "dark" ? `${colors.accent}40` : `${colors.accent}55`}
-                  />
-                </View>
-                <Text
-                  style={[styles.symbolName, { color: colors.textPrimary }]}
-                  numberOfLines={3}
-                >
-                  {content.name}
-                </Text>
-              </Pressable>
-            </MotiView>
-          );
-        })}
-      </ScrollView>
+              {t("symbols.home_card_title")}
+            </Text>
+            <Text
+              style={[
+                styles.dictionaryCardBody,
+                { color: colors.textSecondary },
+              ]}
+            >
+              {t("symbols.home_card_body")}
+            </Text>
+          </View>
+          <Text style={[styles.dictionaryCardCta, { color: colors.accent }]}>
+            {t("symbols.open_dictionary")} →
+          </Text>
+        </View>
+      </FlatGlassCard>
     </View>
   );
-}
+});
 
 // SectionHeading is now imported from @/components/inspiration/SectionHeading
 
@@ -619,12 +504,12 @@ type RitualScrollSectionProps = {
   colors: ReturnType<typeof useTheme>["colors"];
   rituals: RitualConfig[];
   selectedRitualId: RitualId;
-  ritualProgress: Partial<Record<RitualId, Record<string, boolean>>>;
-  t: (key: string) => string;
+  ritualProgress: RitualProgressState;
+  t: TranslateFn;
   mode: "light" | "dark";
 };
 
-function RitualScrollSection({
+const RitualScrollSection = memo(function RitualScrollSection({
   colors,
   rituals,
   selectedRitualId,
@@ -632,6 +517,24 @@ function RitualScrollSection({
   t,
   mode,
 }: RitualScrollSectionProps) {
+  const ritualCards = useMemo(
+    () =>
+      rituals.map((ritual) => {
+        const steps = ritualProgress[ritual.id] ?? {};
+        const completedCount = Object.values(steps).filter(Boolean).length;
+        const totalSteps = ritual.steps.length;
+
+        return {
+          ritual,
+          completedCount,
+          progressRatio: totalSteps > 0 ? completedCount / totalSteps : 0,
+          totalSteps,
+          iconName: RITUAL_ICONS[ritual.id] ?? "moon.stars.fill",
+        };
+      }),
+    [ritualProgress, rituals],
+  );
+
   return (
     <View>
       <View style={styles.popularHeader}>
@@ -644,25 +547,18 @@ function RitualScrollSection({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.ritualScrollContainer}
       >
-        {rituals.map((ritual, index) => {
+        {ritualCards.map(({ ritual, completedCount, progressRatio, totalSteps, iconName }, index) => {
           const isActive = ritual.id === selectedRitualId;
-          const steps = ritualProgress[ritual.id] ?? {};
-          const completedCount = Object.values(steps).filter(Boolean).length;
-          const totalSteps = ritual.steps.length;
-          const progressRatio =
-            totalSteps > 0 ? completedCount / totalSteps : 0;
-          const iconName = RITUAL_ICONS[ritual.id] ?? "moon.stars.fill";
-          const ritualCardStyle = StyleSheet.flatten([
-            styles.ritualCard,
-            isActive && styles.ritualCardActive,
-            isActive && { borderColor: colors.accent },
-          ]);
 
           return (
             <FlatGlassCard
               key={ritual.id}
               intensity="subtle"
-              style={ritualCardStyle}
+              style={[
+                styles.ritualCard,
+                isActive && styles.ritualCardActive,
+                isActive && { borderColor: colors.accent },
+              ]}
               animationDelay={120 * index}
               onPress={() => router.push(`/ritual/${ritual.id}` as any)}
               accessibilityRole="button"
@@ -735,7 +631,7 @@ function RitualScrollSection({
       </ScrollView>
     </View>
   );
-}
+});
 
 // ─── Tip Card ────────────────────────────────────────────────────────────────
 
@@ -743,21 +639,30 @@ type TipCardProps = {
   colors: ReturnType<typeof useTheme>["colors"];
   title: string;
   subtitle: string;
-  tip: string;
+  tips: string[];
   nextLabel: string;
-  onNext: () => void;
   mode: "light" | "dark";
 };
 
-function TipCard({
+const TipCard = memo(function TipCard({
   colors,
   title,
   subtitle,
-  tip,
+  tips,
   nextLabel,
-  onNext,
   mode,
 }: TipCardProps) {
+  const [tipIndex, setTipIndex] = useState(0);
+
+  useEffect(() => {
+    // Defer randomization to the client to avoid SSR hydration mismatches.
+    setTipIndex(Math.floor(Math.random() * tips.length));
+  }, [tips]);
+
+  const handleNext = useCallback(() => {
+    setTipIndex((prev) => (prev + 1) % tips.length);
+  }, [tips.length]);
+
   return (
     <FlatGlassCard
       intensity="moderate"
@@ -793,11 +698,11 @@ function TipCard({
         </View>
 
         <Text style={[styles.tipBody, { color: colors.textPrimary }]}>
-          {tip}
+          {tips[tipIndex]}
         </Text>
 
         <Pressable
-          onPress={onNext}
+          onPress={handleNext}
           style={({ pressed }) => [
             styles.tipButton,
             {
@@ -820,7 +725,7 @@ function TipCard({
       </View>
     </FlatGlassCard>
   );
-}
+});
 
 // QuickAccess section intentionally removed to keep the home
 // focused on guidance, rituals and inspiration rather than navigation.
@@ -832,53 +737,67 @@ type InfoCardProps = {
   icon: IconName;
   title: string;
   body: string;
-  index?: number;
 };
 
-function InfoCard({ colors, icon, title, body, index = 0 }: InfoCardProps) {
+const InfoCardsSection = memo(function InfoCardsSection({
+  colors,
+  cards,
+}: {
+  colors: ReturnType<typeof useTheme>["colors"];
+  cards: ResolvedCopyCard[];
+}) {
+  return (
+    <View style={styles.stack}>
+      {cards.map((card) => (
+        <InfoCard
+          key={card.id}
+          colors={colors}
+          icon={card.icon}
+          title={card.title}
+          body={card.body}
+        />
+      ))}
+    </View>
+  );
+});
+
+const InfoCard = memo(function InfoCard({ colors, icon, title, body }: InfoCardProps) {
   const cardBackgroundColor = colors.backgroundCard;
 
   return (
-    <MotiView
-      // Keep content visible even if entrance animations don't run.
-      from={{ opacity: 1, translateX: -8 }}
-      animate={{ opacity: 1, translateX: 0 }}
-      transition={{ type: "timing", duration: 500, delay: 100 * index }}
+    <View
+      style={[
+        styles.infoCard,
+        { borderColor: colors.divider, backgroundColor: cardBackgroundColor },
+      ]}
     >
       <View
         style={[
-          styles.infoCard,
-          { borderColor: colors.divider, backgroundColor: cardBackgroundColor },
+          styles.infoIconWrapper,
+          { backgroundColor: colors.backgroundSecondary },
         ]}
       >
-        <View
-          style={[
-            styles.infoIconWrapper,
-            { backgroundColor: colors.backgroundSecondary },
-          ]}
-        >
-          <IconSymbol
-            name={icon}
-            size={18}
-            color={colors.textOnAccentSurface}
-          />
-        </View>
-        <View style={styles.infoContent}>
-          <Text style={[styles.infoTitle, { color: colors.textPrimary }]}>
-            {title}
-          </Text>
-          <Text style={[styles.infoBody, { color: colors.textSecondary }]}>
-            {body}
-          </Text>
-        </View>
+        <IconSymbol
+          name={icon}
+          size={18}
+          color={colors.textOnAccentSurface}
+        />
       </View>
-    </MotiView>
+      <View style={styles.infoContent}>
+        <Text style={[styles.infoTitle, { color: colors.textPrimary }]}>
+          {title}
+        </Text>
+        <Text style={[styles.infoBody, { color: colors.textSecondary }]}>
+          {body}
+        </Text>
+      </View>
+    </View>
   );
-}
+});
 
 // ─── Quote Card ──────────────────────────────────────────────────────────────
 
-function QuoteCard({
+const QuoteCard = memo(function QuoteCard({
   colors,
   mode,
 }: {
@@ -895,7 +814,7 @@ function QuoteCard({
     <FlatGlassCard
       intensity="subtle"
       style={quoteCardStyle}
-      animationDelay={600}
+      animateOnMount={false}
     >
       {/* Top decorative line */}
       <View
@@ -926,7 +845,7 @@ function QuoteCard({
       </View>
     </FlatGlassCard>
   );
-}
+});
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
@@ -979,11 +898,45 @@ const styles = StyleSheet.create({
     gap: 14,
   },
 
-  // Popular Symbols
-  popularHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+  dictionaryCardContainer: {
+    paddingHorizontal: 20,
+  },
+  dictionaryCard: {
+    borderRadius: 24,
+  },
+  dictionaryCardContent: {
+    minHeight: 132,
+    padding: 22,
+    gap: 14,
     justifyContent: "space-between",
+  },
+  dictionaryCardIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dictionaryCardCopy: {
+    gap: 6,
+  },
+  dictionaryCardTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 22,
+    letterSpacing: 0.3,
+  },
+  dictionaryCardBody: {
+    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  dictionaryCardCta: {
+    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: 14,
+  },
+
+  // Ritual Cards
+  popularHeader: {
     paddingHorizontal: 20,
     marginBottom: 16,
   },
@@ -992,45 +945,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.3,
   },
-  popularViewAll: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
-  },
-  popularScrollContent: {
-    paddingHorizontal: 20,
-    gap: 12,
-  },
-
-  // Symbol constellation cards
-  symbolCard: {
-    width: 110,
-    height: 110,
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    overflow: "hidden",
-  },
-  symbolCardPressed: {
-    transform: [{ scale: 0.95 }],
-    opacity: 0.85,
-  },
-  symbolBgIcon: {
-    position: "absolute",
-    top: -10,
-    right: -14,
-    opacity: 1,
-  },
-  symbolName: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
-    textAlign: "center",
-    lineHeight: 16,
-  },
-
-  // Ritual Cards
   ritualScrollContainer: {
     paddingHorizontal: 20,
     paddingVertical: 8,
