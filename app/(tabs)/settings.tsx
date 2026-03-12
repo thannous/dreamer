@@ -1,6 +1,7 @@
 import { router, useFocusEffect } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  InteractionManager,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,7 +12,7 @@ import {
 } from 'react-native';
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
-import { FlatGlassCard } from '@/components/inspiration/GlassCard';
+import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -66,6 +67,7 @@ export default function SettingsScreen() {
   useClearWebFocus();
 
   const [showAnimations, setShowAnimations] = useState(false);
+  const [showDeferredSections, setShowDeferredSections] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -73,6 +75,16 @@ export default function SettingsScreen() {
       return () => setShowAnimations(false);
     }, []),
   );
+
+  useEffect(() => {
+    const task = InteractionManager.runAfterInteractions(() => {
+      setShowDeferredSections(true);
+    });
+
+    return () => {
+      task.cancel?.();
+    };
+  }, []);
 
   const {
     isActive,
@@ -136,6 +148,14 @@ export default function SettingsScreen() {
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
   const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : undefined;
+  const scrollContentStyle = useMemo(
+    () => [styles.scrollContent, { paddingBottom: ThemeLayout.spacing.xl }],
+    [],
+  );
+  const sectionsContainerStyle = useMemo(
+    () => [styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop],
+    [isDesktopLayout],
+  );
 
   const handleOpenPaywall = useCallback(() => {
     router.push('/paywall');
@@ -155,10 +175,7 @@ export default function SettingsScreen() {
           <ScrollView
             style={styles.scrollView}
             contentInsetAdjustmentBehavior="automatic"
-            contentContainerStyle={[
-              styles.scrollContent,
-              { paddingBottom: ThemeLayout.spacing.xl },
-            ]}
+            contentContainerStyle={scrollContentStyle}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
@@ -168,7 +185,7 @@ export default function SettingsScreen() {
           >
             <ScreenContainer>
               {/* Welcome back banner */}
-              <FlatGlassCard
+              <StaticFlatGlassCard
                 intensity="moderate"
                 animationDelay={100}
                 style={styles.returningGuestGlassCard}
@@ -183,7 +200,7 @@ export default function SettingsScreen() {
                     {t('auth.returning_guest.message')}
                   </Text>
                 </View>
-              </FlatGlassCard>
+              </StaticFlatGlassCard>
 
               {/* Auth card */}
               <MotiView
@@ -225,10 +242,7 @@ export default function SettingsScreen() {
         <ScrollView
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingBottom: ThemeLayout.spacing.xl },
-          ]}
+          contentContainerStyle={scrollContentStyle}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
@@ -237,7 +251,7 @@ export default function SettingsScreen() {
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <ScreenContainer>
-            <View style={[styles.sectionsContainer, isDesktopLayout && styles.sectionsContainerDesktop]}>
+            <View style={sectionsContainerStyle}>
 
             {/* ─── Account Section ─── */}
             <View style={styles.settingsSection}>
@@ -314,42 +328,44 @@ export default function SettingsScreen() {
             <SectionDivider color={colors.accent} delay={550} />
 
             {/* ─── Preferences Section ─── */}
-            <View style={styles.settingsSection}>
-              <MotiView
-                from={{ opacity: 1, translateY: 16 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 500, delay: 600 }}
-              >
-                <SectionHeading
-                  title={t('settings.section.preferences')}
-                  icon="slider.horizontal.3"
-                  colors={colors}
-                />
-              </MotiView>
-              <View style={styles.settingsSectionCards}>
+            {showDeferredSections && (
+              <View style={styles.settingsSection}>
                 <MotiView
                   from={{ opacity: 1, translateY: 16 }}
                   animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ type: 'timing', duration: 500, delay: 700 }}
+                  transition={{ type: 'timing', duration: 500, delay: 600 }}
                 >
-                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                    <ThemeSettingsCard />
-                  </View>
+                  <SectionHeading
+                    title={t('settings.section.preferences')}
+                    icon="slider.horizontal.3"
+                    colors={colors}
+                  />
                 </MotiView>
-                <MotiView
-                  from={{ opacity: 1, translateY: 16 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  transition={{ type: 'timing', duration: 500, delay: 800 }}
-                >
-                  <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                    <LanguageSettingsCard />
-                  </View>
-                </MotiView>
+                <View style={styles.settingsSectionCards}>
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 700 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <ThemeSettingsCard />
+                    </View>
+                  </MotiView>
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 800 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <LanguageSettingsCard />
+                    </View>
+                  </MotiView>
+                </View>
               </View>
-            </View>
+            )}
 
             {/* ─── Notifications Section (native only) ─── */}
-            {Platform.OS !== 'web' && (
+            {showDeferredSections && Platform.OS !== 'web' && (
               <>
                 <SectionDivider color={colors.accent} delay={850} />
                 <View style={styles.settingsSection}>
@@ -379,7 +395,7 @@ export default function SettingsScreen() {
           </View>
 
           {/* ─── Version Footer ─── */}
-          {appVersion ? (
+          {showDeferredSections && appVersion ? (
             <MotiView
               from={{ opacity: 1 }}
               animate={{ opacity: 1 }}
