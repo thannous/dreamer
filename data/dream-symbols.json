@@ -2,7 +2,7 @@
   "meta": {
     "version": "1.0.0",
     "lastUpdated": "2026-02-02",
-    "totalSymbols": 57,
+    "totalSymbols": 62,
     "languages": [
       "en",
       "fr",
@@ -3479,6 +3479,316 @@
         "lightning"
       ],
       "relatedArticles": {
+        "de": "",
+        "it": ""
+      }
+    },
+    {
+      "id": "abandonment",
+      "category": "actions",
+      "priority": 3,
+      "en": {
+        "slug": "abandonment",
+        "name": "Abandonment",
+        "shortDescription": "Dreaming of being abandoned reflects deep fears of rejection, loneliness, or losing important relationships. It often signals unresolved attachment issues or insecurity.",
+        "askYourself": [
+          "Am I afraid of being left behind or rejected?",
+          "Are there relationships in my life that feel unstable?"
+        ]
+      },
+      "fr": {
+        "slug": "abandon",
+        "name": "Abandon",
+        "shortDescription": "Rêver d'être abandonné reflète des peurs profondes de rejet, de solitude ou de perte de relations importantes. Cela signale souvent des problèmes d'attachement non résolus ou de l'insécurité.",
+        "askYourself": [
+          "Ai-je peur d'être laissé pour compte ou rejeté ?",
+          "Y a-t-il des relations dans ma vie qui semblent instables ?"
+        ]
+      },
+      "es": {
+        "slug": "abandono",
+        "name": "Abandono",
+        "shortDescription": "Soñar con ser abandonado refleja miedos profundos al rechazo, la soledad o la pérdida de relaciones importantes. A menudo señala problemas de apego no resueltos o inseguridad.",
+        "askYourself": [
+          "¿Tengo miedo de ser dejado atrás o rechazado?",
+          "¿Hay relaciones en mi vida que se sienten inestables?"
+        ]
+      },
+      "de": {
+        "slug": "verlassenwerden",
+        "name": "Verlassenwerden",
+        "shortDescription": "Vom Verlassenwerden zu träumen spiegelt tiefe Ängste vor Ablehnung, Einsamkeit oder dem Verlust wichtiger Beziehungen wider. Es deutet oft auf ungelöste Bindungsprobleme oder Unsicherheit hin.",
+        "askYourself": [
+          "Habe ich Angst, zurückgelassen oder abgelehnt zu werden?",
+          "Gibt es Beziehungen in meinem Leben, die sich instabil anfühlen?"
+        ]
+      },
+      "it": {
+        "slug": "abbandono",
+        "name": "Abbandono",
+        "shortDescription": "Sognare di essere abbandonati riflette paure profonde di rifiuto, solitudine o perdita di relazioni importanti. Spesso segnala problemi di attaccamento irrisolti o insicurezza.",
+        "askYourself": [
+          "Ho paura di essere lasciato indietro o rifiutato?",
+          "Ci sono relazioni nella mia vita che sembrano instabili?"
+        ]
+      },
+      "relatedSymbols": [
+        "lost",
+        "crying",
+        "ex-partner"
+      ],
+      "relatedArticles": {
+        "en": "",
+        "fr": "",
+        "es": "",
+        "de": "",
+        "it": ""
+      }
+    },
+    {
+      "id": "accident",
+      "category": "actions",
+      "priority": 3,
+      "en": {
+        "slug": "accident",
+        "name": "Accident",
+        "shortDescription": "Dreams about accidents symbolize fear of losing control, anxiety about unexpected changes, or a warning to slow down. They often reflect stress or a sense of vulnerability.",
+        "askYourself": [
+          "Do I feel like something in my life is spinning out of control?",
+          "Am I taking risks I'm not comfortable with?"
+        ]
+      },
+      "fr": {
+        "slug": "accident",
+        "name": "Accident",
+        "shortDescription": "Les rêves d'accidents symbolisent la peur de perdre le contrôle, l'anxiété face aux changements inattendus ou un avertissement de ralentir. Ils reflètent souvent le stress ou un sentiment de vulnérabilité.",
+        "askYourself": [
+          "Ai-je l'impression que quelque chose dans ma vie m'échappe ?",
+          "Est-ce que je prends des risques qui me mettent mal à l'aise ?"
+        ]
+      },
+      "es": {
+        "slug": "accidente",
+        "name": "Accidente",
+        "shortDescription": "Los sueños con accidentes simbolizan el miedo a perder el control, la ansiedad ante cambios inesperados o una advertencia para reducir el ritmo. A menudo reflejan estrés o vulnerabilidad.",
+        "askYourself": [
+          "¿Siento que algo en mi vida se está saliendo de control?",
+          "¿Estoy tomando riesgos con los que no me siento cómodo?"
+        ]
+      },
+      "de": {
+        "slug": "unfall",
+        "name": "Unfall",
+        "shortDescription": "Träume von Unfällen symbolisieren die Angst vor Kontrollverlust, Sorgen über unerwartete Veränderungen oder eine Warnung, langsamer zu machen. Sie spiegeln oft Stress oder ein Gefühl der Verletzlichkeit wider.",
+        "askYourself": [
+          "Habe ich das Gefühl, dass etwas in meinem Leben außer Kontrolle gerät?",
+          "Gehe ich Risiken ein, bei denen ich mich unwohl fühle?"
+        ]
+      },
+      "it": {
+        "slug": "incidente",
+        "name": "Incidente",
+        "shortDescription": "I sogni di incidenti simboleggiano la paura di perdere il controllo, l'ansia per i cambiamenti inaspettati o un avvertimento a rallentare. Spesso riflettono stress o un senso di vulnerabilità.",
+        "askYourself": [
+          "Sento che qualcosa nella mia vita sta sfuggendo al controllo?",
+          "Sto prendendo rischi con cui non mi sento a mio agio?"
+        ]
+      },
+      "relatedSymbols": [
+        "car",
+        "falling",
+        "hospital"
+      ],
+      "relatedArticles": {
+        "en": "",
+        "fr": "",
+        "es": "",
+        "de": "",
+        "it": ""
+      }
+    },
+    {
+      "id": "angel",
+      "category": "celestial",
+      "priority": 3,
+      "en": {
+        "slug": "angel",
+        "name": "Angel",
+        "shortDescription": "Angels in dreams represent guidance, protection, hope, or a spiritual message. They may appear during times of crisis to offer comfort or signal an important transition.",
+        "askYourself": [
+          "Am I seeking guidance or reassurance in my life?",
+          "Is there a message or intuition I've been ignoring?"
+        ]
+      },
+      "fr": {
+        "slug": "ange",
+        "name": "Ange",
+        "shortDescription": "Les anges dans les rêves représentent la guidance, la protection, l'espoir ou un message spirituel. Ils peuvent apparaître en période de crise pour offrir du réconfort ou signaler une transition importante.",
+        "askYourself": [
+          "Est-ce que je cherche des conseils ou du réconfort dans ma vie ?",
+          "Y a-t-il un message ou une intuition que j'ignore ?"
+        ]
+      },
+      "es": {
+        "slug": "angel",
+        "name": "Ángel",
+        "shortDescription": "Los ángeles en los sueños representan guía, protección, esperanza o un mensaje espiritual. Pueden aparecer en tiempos de crisis para ofrecer consuelo o señalar una transición importante.",
+        "askYourself": [
+          "¿Estoy buscando guía o tranquilidad en mi vida?",
+          "¿Hay algún mensaje o intuición que he estado ignorando?"
+        ]
+      },
+      "de": {
+        "slug": "engel",
+        "name": "Engel",
+        "shortDescription": "Engel in Träumen stehen für Führung, Schutz, Hoffnung oder eine spirituelle Botschaft. Sie können in Krisenzeiten erscheinen, um Trost zu spenden oder einen wichtigen Übergang anzuzeigen.",
+        "askYourself": [
+          "Suche ich nach Orientierung oder Bestätigung in meinem Leben?",
+          "Gibt es eine Botschaft oder Intuition, die ich ignoriert habe?"
+        ]
+      },
+      "it": {
+        "slug": "angelo",
+        "name": "Angelo",
+        "shortDescription": "Gli angeli nei sogni rappresentano guida, protezione, speranza o un messaggio spirituale. Possono apparire durante momenti di crisi per offrire conforto o segnalare una transizione importante.",
+        "askYourself": [
+          "Sto cercando una guida o rassicurazione nella mia vita?",
+          "C'è un messaggio o un'intuizione che ho ignorato?"
+        ]
+      },
+      "relatedSymbols": [
+        "deceased-person",
+        "sun",
+        "moon"
+      ],
+      "relatedArticles": {
+        "en": "",
+        "fr": "",
+        "es": "",
+        "de": "",
+        "it": ""
+      }
+    },
+    {
+      "id": "arguing",
+      "category": "actions",
+      "priority": 3,
+      "en": {
+        "slug": "arguing",
+        "name": "Arguing",
+        "shortDescription": "Dreams of arguing reflect inner conflict, unresolved tension, or suppressed frustration. They often point to communication issues or unspoken disagreements in waking life.",
+        "askYourself": [
+          "Is there an unresolved conflict I need to address?",
+          "Am I holding back words I need to say?"
+        ]
+      },
+      "fr": {
+        "slug": "dispute",
+        "name": "Dispute",
+        "shortDescription": "Les rêves de disputes reflètent un conflit intérieur, des tensions non résolues ou une frustration refoulée. Ils pointent souvent vers des problèmes de communication ou des désaccords non exprimés dans la vie éveillée.",
+        "askYourself": [
+          "Y a-t-il un conflit non résolu que je dois aborder ?",
+          "Est-ce que je retiens des mots que j'ai besoin de dire ?"
+        ]
+      },
+      "es": {
+        "slug": "discusion",
+        "name": "Discusión",
+        "shortDescription": "Los sueños de discusiones reflejan conflictos internos, tensiones no resueltas o frustración reprimida. A menudo señalan problemas de comunicación o desacuerdos no expresados en la vida real.",
+        "askYourself": [
+          "¿Hay algún conflicto no resuelto que necesito abordar?",
+          "¿Estoy reteniendo palabras que necesito decir?"
+        ]
+      },
+      "de": {
+        "slug": "streit",
+        "name": "Streit",
+        "shortDescription": "Träume von Streit spiegeln innere Konflikte, ungelöste Spannungen oder unterdrückte Frustration wider. Sie weisen oft auf Kommunikationsprobleme oder unausgesprochene Meinungsverschiedenheiten im Wachleben hin.",
+        "askYourself": [
+          "Gibt es einen ungelösten Konflikt, den ich angehen muss?",
+          "Halte ich Worte zurück, die ich sagen müsste?"
+        ]
+      },
+      "it": {
+        "slug": "litigio",
+        "name": "Litigio",
+        "shortDescription": "I sogni di litigi riflettono conflitti interiori, tensioni irrisolte o frustrazione repressa. Spesso indicano problemi di comunicazione o disaccordi inespressi nella vita reale.",
+        "askYourself": [
+          "C'è un conflitto irrisolto che devo affrontare?",
+          "Sto trattenendo parole che ho bisogno di dire?"
+        ]
+      },
+      "relatedSymbols": [
+        "ex-partner",
+        "mouth",
+        "phone"
+      ],
+      "relatedArticles": {
+        "en": "",
+        "fr": "",
+        "es": "",
+        "de": "",
+        "it": ""
+      }
+    },
+    {
+      "id": "apocalypse",
+      "category": "nature",
+      "priority": 3,
+      "en": {
+        "slug": "apocalypse",
+        "name": "Apocalypse",
+        "shortDescription": "Apocalypse dreams symbolize major life upheaval, the end of one chapter, or overwhelming anxiety about the future. They often represent transformation rather than literal destruction.",
+        "askYourself": [
+          "Am I going through a major life transition or upheaval?",
+          "Do I feel overwhelmed by forces beyond my control?"
+        ]
+      },
+      "fr": {
+        "slug": "apocalypse",
+        "name": "Apocalypse",
+        "shortDescription": "Les rêves d'apocalypse symbolisent un bouleversement majeur, la fin d'un chapitre ou une anxiété écrasante face à l'avenir. Ils représentent souvent une transformation plutôt qu'une destruction littérale.",
+        "askYourself": [
+          "Est-ce que je traverse une transition ou un bouleversement majeur ?",
+          "Est-ce que je me sens submergé par des forces hors de mon contrôle ?"
+        ]
+      },
+      "es": {
+        "slug": "apocalipsis",
+        "name": "Apocalipsis",
+        "shortDescription": "Los sueños de apocalipsis simbolizan una gran transformación vital, el fin de una etapa o una ansiedad abrumadora sobre el futuro. A menudo representan transformación más que destrucción literal.",
+        "askYourself": [
+          "¿Estoy atravesando una gran transición o cambio en mi vida?",
+          "¿Me siento abrumado por fuerzas fuera de mi control?"
+        ]
+      },
+      "de": {
+        "slug": "apokalypse",
+        "name": "Apokalypse",
+        "shortDescription": "Apokalypse-Träume symbolisieren große Lebensumbrüche, das Ende eines Kapitels oder überwältigende Zukunftsangst. Sie stehen oft für Transformation statt wörtliche Zerstörung.",
+        "askYourself": [
+          "Durchlebe ich gerade einen großen Lebensumbruch?",
+          "Fühle ich mich von Kräften überwältigt, die ich nicht kontrollieren kann?"
+        ]
+      },
+      "it": {
+        "slug": "apocalisse",
+        "name": "Apocalisse",
+        "shortDescription": "I sogni di apocalisse simboleggiano grandi sconvolgimenti di vita, la fine di un capitolo o un'ansia travolgente per il futuro. Spesso rappresentano una trasformazione piuttosto che una distruzione letterale.",
+        "askYourself": [
+          "Sto attraversando una grande transizione o sconvolgimento di vita?",
+          "Mi sento sopraffatto da forze fuori dal mio controllo?"
+        ]
+      },
+      "relatedSymbols": [
+        "storm",
+        "flood",
+        "fire"
+      ],
+      "relatedArticles": {
+        "en": "",
+        "fr": "",
+        "es": "",
         "de": "",
         "it": ""
       }

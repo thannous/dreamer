@@ -48,29 +48,7 @@
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=20260122-0819">
-                                                                                                <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-222021">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-220131">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260311-215928">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-225300">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-224751">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-224534">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-213607">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-211350">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-211106">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-204740">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-193903">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-193709">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-123813">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-123731">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260310-123250">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260309-104557">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260309-095445">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-114636">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-081658">
-<link rel="stylesheet" href="/css/language-dropdown.css?v=20260306-081127">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
 <!-- Lucide Icons (deferred) -->
     <script src="/js/lucide.min.js?v=20260122-0819" defer></script>
 
@@ -116,6 +94,39 @@
         #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
+        /* == dict-layout == */
+        #dictionaryLayout { display: flex; gap: 2rem; }
+        #mainContentArea { flex: 1; min-width: 0; }
+        #dictionarySidebar { display: none; }
+        #categoryGridSection { display: none !important; }
+        #mobilePills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+        .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,10,40,0.5); backdrop-filter: blur(8px); color: #e2daff; transition: all 0.2s ease; text-decoration: none; }
+        .cat-pill:hover { border-color: rgba(253,164,129,0.3); color: #fda481; }
+        .cat-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .cat-pill .pill-count { font-size: 0.7rem; opacity: 0.6; }
+        #mobileAlpha { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 1rem; }
+        .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
+        .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
+        .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        @media (min-width: 1024px) {
+            #dictionarySidebar { display: block; width: 220px; flex-shrink: 0; position: sticky; top: 7rem; align-self: flex-start; max-height: calc(100vh - 8rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #4c1d95 transparent; }
+            #dictionarySidebar::-webkit-scrollbar { width: 4px; }
+            #dictionarySidebar::-webkit-scrollbar-track { background: transparent; }
+            #dictionarySidebar::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 2px; }
+            #mobilePills, #mobileAlpha { display: none; }
+            #stickyBar .sb-alpha { display: none; }
+        }
+        .sidebar-section { margin-bottom: 1.5rem; }
+        .sidebar-heading { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(196,181,253,0.6); margin-bottom: 0.75rem; font-weight: 600; }
+        .sidebar-cat-link { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; font-size: 0.82rem; color: #e2daff; transition: all 0.15s ease; text-decoration: none; }
+        .sidebar-cat-link:hover { background: rgba(255,255,255,0.06); color: #fda481; }
+        .sidebar-cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .sidebar-cat-count { margin-left: auto; font-size: 0.7rem; opacity: 0.5; }
+        .sidebar-alpha-grid { display: flex; flex-wrap: wrap; gap: 2px; }
+        .sidebar-alpha-link { min-width: 1.75rem; text-align: center; padding: 3px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
+        .sidebar-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
+        .sidebar-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        /* == /dict-layout == */
     </style>
 
     <script type="application/ld+json">
@@ -231,7 +242,7 @@
     </nav>
 
     <main class="pt-32 pb-20 px-4">
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-6xl mx-auto">
 
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/75 mb-8" aria-label="Breadcrumb">
@@ -246,7 +257,6 @@
 
             <!-- Header -->
             <header class="text-center mb-8">
-                <a href="/en/guides/" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">Browse all dream guides</a>
 
                 <h1 class="font-serif text-3xl md:text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Dream Symbols Dictionary
@@ -264,7 +274,73 @@
                 </div>
             </header>
 
-            <!-- Sticky Search + Alphabet bar (above categories) -->
+            <!-- dict-pills -->
+                <div id="mobilePills">
+                    <a href="/en/symbols/nature" class="cat-pill">
+                        <span class="pill-dot" style="background:#4ade80"></span>
+                        Nature
+                        <span class="pill-count">10</span>
+                    </a>
+                    <a href="/en/symbols/animals" class="cat-pill">
+                        <span class="pill-dot" style="background:#fbbf24"></span>
+                        Animals
+                        <span class="pill-count">8</span>
+                    </a>
+                    <a href="/en/symbols/body" class="cat-pill">
+                        <span class="pill-dot" style="background:#f87171"></span>
+                        Body
+                        <span class="pill-count">5</span>
+                    </a>
+                    <a href="/en/symbols/places" class="cat-pill">
+                        <span class="pill-dot" style="background:#60a5fa"></span>
+                        Places
+                        <span class="pill-count">8</span>
+                    </a>
+                    <a href="/en/symbols/objects" class="cat-pill">
+                        <span class="pill-dot" style="background:#c084fc"></span>
+                        Objects
+                        <span class="pill-count">9</span>
+                    </a>
+                    <a href="/en/symbols/actions" class="cat-pill">
+                        <span class="pill-dot" style="background:#fb923c"></span>
+                        Actions
+                        <span class="pill-count">13</span>
+                    </a>
+                    <a href="/en/symbols/people" class="cat-pill">
+                        <span class="pill-dot" style="background:#f472b6"></span>
+                        People
+                        <span class="pill-count">4</span>
+                    </a>
+                    <a href="/en/symbols/celestial" class="cat-pill">
+                        <span class="pill-dot" style="background:#818cf8"></span>
+                        Celestial
+                        <span class="pill-count">5</span>
+                    </a>
+                </div>
+            <!-- /dict-pills -->
+
+            <!-- dict-alpha-mobile -->
+                <div id="mobileAlpha">
+                    <a href="#B" class="mobile-alpha-link" data-letter="B">B</a>
+                    <a href="#C" class="mobile-alpha-link" data-letter="C">C</a>
+                    <a href="#D" class="mobile-alpha-link" data-letter="D">D</a>
+                    <a href="#E" class="mobile-alpha-link" data-letter="E">E</a>
+                    <a href="#F" class="mobile-alpha-link" data-letter="F">F</a>
+                    <a href="#H" class="mobile-alpha-link" data-letter="H">H</a>
+                    <a href="#K" class="mobile-alpha-link" data-letter="K">K</a>
+                    <a href="#L" class="mobile-alpha-link" data-letter="L">L</a>
+                    <a href="#M" class="mobile-alpha-link" data-letter="M">M</a>
+                    <a href="#N" class="mobile-alpha-link" data-letter="N">N</a>
+                    <a href="#O" class="mobile-alpha-link" data-letter="O">O</a>
+                    <a href="#P" class="mobile-alpha-link" data-letter="P">P</a>
+                    <a href="#R" class="mobile-alpha-link" data-letter="R">R</a>
+                    <a href="#S" class="mobile-alpha-link" data-letter="S">S</a>
+                    <a href="#T" class="mobile-alpha-link" data-letter="T">T</a>
+                    <a href="#W" class="mobile-alpha-link" data-letter="W">W</a>
+                </div>
+            <!-- /dict-alpha-mobile -->
+
+<!-- Sticky Search + Alphabet bar (above categories) -->
             <div id="stickyBar" class="glass-panel rounded-2xl p-4 mb-8">
                 <div class="sb-inner">
                     <!-- Compact search -->
@@ -301,7 +377,79 @@
             </div>
 
             <!-- Browse by Category -->
-            <section class="mb-12">
+            <!-- dict-layout-open -->
+            <div id="dictionaryLayout">
+                <aside id="dictionarySidebar">
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">Categories</div>
+                        <div>
+                        <a href="/en/symbols/nature" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#4ade80"></span>
+                            Nature
+                            <span class="sidebar-cat-count">10</span>
+                        </a>
+                        <a href="/en/symbols/animals" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
+                            Animals
+                            <span class="sidebar-cat-count">8</span>
+                        </a>
+                        <a href="/en/symbols/body" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#f87171"></span>
+                            Body
+                            <span class="sidebar-cat-count">5</span>
+                        </a>
+                        <a href="/en/symbols/places" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
+                            Places
+                            <span class="sidebar-cat-count">8</span>
+                        </a>
+                        <a href="/en/symbols/objects" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#c084fc"></span>
+                            Objects
+                            <span class="sidebar-cat-count">9</span>
+                        </a>
+                        <a href="/en/symbols/actions" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#fb923c"></span>
+                            Actions
+                            <span class="sidebar-cat-count">13</span>
+                        </a>
+                        <a href="/en/symbols/people" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#f472b6"></span>
+                            People
+                            <span class="sidebar-cat-count">4</span>
+                        </a>
+                        <a href="/en/symbols/celestial" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:#818cf8"></span>
+                            Celestial
+                            <span class="sidebar-cat-count">5</span>
+                        </a>
+                        </div>
+                    </div>
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">A – Z</div>
+                        <div class="sidebar-alpha-grid">
+                            <a href="#B" class="sidebar-alpha-link" data-letter="B">B</a>
+                            <a href="#C" class="sidebar-alpha-link" data-letter="C">C</a>
+                            <a href="#D" class="sidebar-alpha-link" data-letter="D">D</a>
+                            <a href="#E" class="sidebar-alpha-link" data-letter="E">E</a>
+                            <a href="#F" class="sidebar-alpha-link" data-letter="F">F</a>
+                            <a href="#H" class="sidebar-alpha-link" data-letter="H">H</a>
+                            <a href="#K" class="sidebar-alpha-link" data-letter="K">K</a>
+                            <a href="#L" class="sidebar-alpha-link" data-letter="L">L</a>
+                            <a href="#M" class="sidebar-alpha-link" data-letter="M">M</a>
+                            <a href="#N" class="sidebar-alpha-link" data-letter="N">N</a>
+                            <a href="#O" class="sidebar-alpha-link" data-letter="O">O</a>
+                            <a href="#P" class="sidebar-alpha-link" data-letter="P">P</a>
+                            <a href="#R" class="sidebar-alpha-link" data-letter="R">R</a>
+                            <a href="#S" class="sidebar-alpha-link" data-letter="S">S</a>
+                            <a href="#T" class="sidebar-alpha-link" data-letter="T">T</a>
+                            <a href="#W" class="sidebar-alpha-link" data-letter="W">W</a>
+                        </div>
+                    </div>
+                </aside>
+                <div id="mainContentArea">
+            <!-- /dict-layout-open -->
+<section id="categoryGridSection" class="mb-6">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
                     <i data-lucide="grid-3x3" class="w-6 h-6 text-dream-salmon"></i>
                     Browse by Category
@@ -997,6 +1145,10 @@
                 </section>
 
             </div>
+<!-- dict-layout-close -->
+                </div><!-- /mainContentArea -->
+            </div><!-- /dictionaryLayout -->
+            <!-- /dict-layout-close -->
 
             <!-- FAQ Section (before CTA to address objections first) -->
             <section class="mt-16 max-w-3xl mx-auto">
@@ -1247,7 +1399,7 @@
             });
 
             // ── Smooth scroll for letter navigation ───────────────────────
-            document.querySelectorAll('.letter-link').forEach(link => {
+            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
@@ -1258,7 +1410,7 @@
 
             // ── Active letter tracking (IntersectionObserver) ─────────────
             function setActiveAlpha(letter) {
-                document.querySelectorAll('.letter-link').forEach(l => {
+                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
                     l.classList.toggle('alpha-active', l.dataset.letter === letter);
                 });
             }

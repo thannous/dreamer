@@ -71,7 +71,18 @@
     "curation_read_full": "Read full interpretation",
     "curation_symbols_count": "{count} symbols explored",
     "curation_related_guides": "Related Guides",
-    "curation_back_to_guides": "Back to Dream Guides"
+    "curation_back_to_guides": "Back to Dream Guides",
+    "categories_heading": "Categories",
+    "category_names": {
+      "nature": "Nature",
+      "animals": "Animals",
+      "body": "Body",
+      "places": "Places",
+      "objects": "Objects",
+      "actions": "Actions",
+      "people": "People",
+      "celestial": "Celestial"
+    }
   },
   "fr": {
     "locale": "fr_FR",
@@ -145,7 +156,18 @@
     "curation_read_full": "Lire l'interprétation complète",
     "curation_symbols_count": "{count} symboles explorés",
     "curation_related_guides": "Guides associés",
-    "curation_back_to_guides": "Retour aux guides oniriques"
+    "curation_back_to_guides": "Retour aux guides oniriques",
+    "categories_heading": "Catégories",
+    "category_names": {
+      "nature": "Nature",
+      "animals": "Animaux",
+      "body": "Corps",
+      "places": "Lieux",
+      "objects": "Objets",
+      "actions": "Actions",
+      "people": "Personnes",
+      "celestial": "Céleste"
+    }
   },
   "es": {
     "locale": "es_ES",
@@ -219,7 +241,18 @@
     "curation_read_full": "Leer interpretación completa",
     "curation_symbols_count": "{count} símbolos explorados",
     "curation_related_guides": "Guías relacionadas",
-    "curation_back_to_guides": "Volver a las guías de sueños"
+    "curation_back_to_guides": "Volver a las guías de sueños",
+    "categories_heading": "Categorías",
+    "category_names": {
+      "nature": "Naturaleza",
+      "animals": "Animales",
+      "body": "Cuerpo",
+      "places": "Lugares",
+      "objects": "Objetos",
+      "actions": "Acciones",
+      "people": "Personas",
+      "celestial": "Celestial"
+    }
   },
   "de": {
     "locale": "de_DE",
@@ -293,7 +326,18 @@
     "curation_read_full": "Vollständige Deutung lesen",
     "curation_symbols_count": "{count} Symbole erkundet",
     "curation_related_guides": "Verwandte Ratgeber",
-    "curation_back_to_guides": "Zurück zu den Traumratgebern"
+    "curation_back_to_guides": "Zurück zu den Traumratgebern",
+    "categories_heading": "Kategorien",
+    "category_names": {
+      "nature": "Natur",
+      "animals": "Tiere",
+      "body": "Körper",
+      "places": "Orte",
+      "objects": "Objekte",
+      "actions": "Handlungen",
+      "people": "Menschen",
+      "celestial": "Himmlisch"
+    }
   },
   "it": {
     "locale": "it_IT",
@@ -367,6 +411,17 @@
     "curation_read_full": "Leggi l'interpretazione completa",
     "curation_symbols_count": "{count} simboli esplorati",
     "curation_related_guides": "Guide correlate",
-    "curation_back_to_guides": "Torna alle guide dei sogni"
+    "curation_back_to_guides": "Torna alle guide dei sogni",
+    "categories_heading": "Categorie",
+    "category_names": {
+      "nature": "Natura",
+      "animals": "Animali",
+      "body": "Corpo",
+      "places": "Luoghi",
+      "objects": "Oggetti",
+      "actions": "Azioni",
+      "people": "Persone",
+      "celestial": "Celeste"
+    }
   }
 }
