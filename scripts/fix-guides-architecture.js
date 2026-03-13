@@ -32,6 +32,10 @@ const COPY = {
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
 };
 
+const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
+const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
+const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
+
 function readJson(fileName) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8'));
 }
@@ -362,6 +366,131 @@ function replaceFirstOrKeep(html, currentRegex, replacement, alreadyRegex, label
   throw new Error(`Missing ${label}`);
 }
 
+function computeCategoryCounts() {
+  const data = readJson('dream-symbols.json');
+  const counts = {};
+  (data.symbols || []).forEach(s => { counts[s.category] = (counts[s.category] || 0) + 1; });
+  return counts;
+}
+
+function extractLetterSet(html) {
+  const letters = [];
+  const re = /data-letter="([A-ZÀ-Ü])"/g;
+  let m;
+  while ((m = re.exec(html))) {
+    if (!letters.includes(m[1])) letters.push(m[1]);
+  }
+  return letters;
+}
+
+function renderLayoutCss() {
+  return `        /* == dict-layout == */
+        #dictionaryLayout { display: flex; gap: 2rem; }
+        #mainContentArea { flex: 1; min-width: 0; }
+        #dictionarySidebar { display: none; }
+        #categoryGridSection { display: none !important; }
+        #mobilePills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+        .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,10,40,0.5); backdrop-filter: blur(8px); color: #e2daff; transition: all 0.2s ease; text-decoration: none; }
+        .cat-pill:hover { border-color: rgba(253,164,129,0.3); color: #fda481; }
+        .cat-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .cat-pill .pill-count { font-size: 0.7rem; opacity: 0.6; }
+        #mobileAlpha { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 1rem; }
+        .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
+        .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
+        .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        @media (min-width: 1024px) {
+            #dictionarySidebar { display: block; width: 220px; flex-shrink: 0; position: sticky; top: 7rem; align-self: flex-start; max-height: calc(100vh - 8rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #4c1d95 transparent; }
+            #dictionarySidebar::-webkit-scrollbar { width: 4px; }
+            #dictionarySidebar::-webkit-scrollbar-track { background: transparent; }
+            #dictionarySidebar::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 2px; }
+            #mobilePills, #mobileAlpha { display: none; }
+            #stickyBar .sb-alpha { display: none; }
+        }
+        .sidebar-section { margin-bottom: 1.5rem; }
+        .sidebar-heading { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(196,181,253,0.6); margin-bottom: 0.75rem; font-weight: 600; }
+        .sidebar-cat-link { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; font-size: 0.82rem; color: #e2daff; transition: all 0.15s ease; text-decoration: none; }
+        .sidebar-cat-link:hover { background: rgba(255,255,255,0.06); color: #fda481; }
+        .sidebar-cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .sidebar-cat-count { margin-left: auto; font-size: 0.7rem; opacity: 0.5; }
+        .sidebar-alpha-grid { display: flex; flex-wrap: wrap; gap: 2px; }
+        .sidebar-alpha-link { min-width: 1.75rem; text-align: center; padding: 3px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
+        .sidebar-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
+        .sidebar-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        /* == /dict-layout == */`;
+}
+
+function renderSidebarHtml(lang, t, counts, letters) {
+  const catNames = t.category_names || {};
+  const catSlugs = t.category_slugs || {};
+  const heading = t.categories_heading || 'Categories';
+  const symbolPath = SYMBOL_PATHS[lang];
+  const catLinks = CATEGORY_ORDER.map(cat => {
+    const name = catNames[cat] || cat;
+    const slug = catSlugs[cat] || cat;
+    const count = counts[cat] || 0;
+    const color = CATEGORY_COLORS[cat];
+    return `                        <a href="/${lang}/${symbolPath}/${slug}" class="sidebar-cat-link">
+                            <span class="sidebar-cat-dot" style="background:${color}"></span>
+                            ${escapeHtml(name)}
+                            <span class="sidebar-cat-count">${count}</span>
+                        </a>`;
+  }).join('\n');
+  const alphaLinks = letters.map(l =>
+    `                            <a href="#${l}" class="sidebar-alpha-link" data-letter="${l}">${l}</a>`
+  ).join('\n');
+  return `            <!-- dict-layout-open -->
+            <div id="dictionaryLayout">
+                <aside id="dictionarySidebar">
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">${escapeHtml(heading)}</div>
+                        <div>
+${catLinks}
+                        </div>
+                    </div>
+                    <div class="sidebar-section">
+                        <div class="sidebar-heading">A – Z</div>
+                        <div class="sidebar-alpha-grid">
+${alphaLinks}
+                        </div>
+                    </div>
+                </aside>
+                <div id="mainContentArea">
+            <!-- /dict-layout-open -->`;
+}
+
+function renderMobilePillsHtml(lang, t, counts) {
+  const catNames = t.category_names || {};
+  const catSlugs = t.category_slugs || {};
+  const symbolPath = SYMBOL_PATHS[lang];
+  const pills = CATEGORY_ORDER.map(cat => {
+    const name = catNames[cat] || cat;
+    const slug = catSlugs[cat] || cat;
+    const count = counts[cat] || 0;
+    const color = CATEGORY_COLORS[cat];
+    return `                    <a href="/${lang}/${symbolPath}/${slug}" class="cat-pill">
+                        <span class="pill-dot" style="background:${color}"></span>
+                        ${escapeHtml(name)}
+                        <span class="pill-count">${count}</span>
+                    </a>`;
+  }).join('\n');
+  return `            <!-- dict-pills -->
+                <div id="mobilePills">
+${pills}
+                </div>
+            <!-- /dict-pills -->`;
+}
+
+function renderMobileAlphaHtml(letters) {
+  const links = letters.map(l =>
+    `                    <a href="#${l}" class="mobile-alpha-link" data-letter="${l}">${l}</a>`
+  ).join('\n');
+  return `            <!-- dict-alpha-mobile -->
+                <div id="mobileAlpha">
+${links}
+                </div>
+            <!-- /dict-alpha-mobile -->`;
+}
+
 function patchDictionaryPage(lang, t) {
   const copy = COPY[lang];
   const absPath = path.join(DOCS_DIR, lang, 'guides', `${t.dictionary_slug}.html`);
@@ -382,13 +511,16 @@ function patchDictionaryPage(lang, t) {
   const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t.home, item: `${DOMAIN}/${lang}/` }, { '@type': 'ListItem', position: 2, name: copy.label, item: guidesUrl }, { '@type': 'ListItem', position: 3, name: pageTitle, item: canonical }] };
   next = replaceJsonLdBlock(next, (data) => data['@type'] === 'Article' || data['@type'] === 'CollectionPage', collection).next;
   next = replaceJsonLdBlock(next, (data) => data['@type'] === 'BreadcrumbList', breadcrumb).next;
-  next = replaceFirstOrKeep(
-    next,
-    /<link rel="stylesheet" href="\/css\/styles\.min\.css\?v=[^"]+">\s*/i,
-    (next.match(/<link rel="stylesheet" href="\/css\/styles\.min\.css\?v=[^"]+">\s*/i) || [''])[0] + `    <link rel="stylesheet" href="/css/language-dropdown.css?v=${readVersion()}">\n`,
-    /<link rel="stylesheet" href="\/css\/language-dropdown\.css\?v=[^"]+">/i,
-    'language dropdown css',
-  );
+  // Remove ALL existing language-dropdown.css links (deduplication), then add one fresh link
+  next = next.replace(/[ \t]*<link rel="stylesheet" href="\/css\/language-dropdown\.css\?v=[^"]+">[ \t]*(?:\r?\n)?/gi, '');
+  {
+    const stylesMatch = next.match(/<link rel="stylesheet" href="\/css\/styles\.min\.css\?v=[^"]+">/i);
+    if (!stylesMatch) throw new Error('Missing styles.min.css link');
+    next = next.replace(
+      /<link rel="stylesheet" href="\/css\/styles\.min\.css\?v=[^"]+">/i,
+      `${stylesMatch[0]}\n    <link rel="stylesheet" href="/css/language-dropdown.css?v=${readVersion()}">`,
+    );
+  }
   next = replaceFirst(
     next,
     /[ \t]*<!-- Navbar -->[\s\S]*?<\/nav>/,
@@ -419,13 +551,8 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}`,
     new RegExp(`<li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${escapeHtml(copy.label)}</a></li>`),
     'footer link',
   );
-  next = replaceFirstOrKeep(
-    next,
-    new RegExp(`<a\\b(?=[^>]*href="(?:\\.\\./blog/[^"]+|/${lang}/guides/)")(?=[^>]*class="[^"]*text-xs font-mono[^"]*")[^>]*>[\\s\\S]*?<\\/a>`),
-    `<a href="/${lang}/guides/" class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">${escapeHtml(copy.browseAll)}</a>`,
-    new RegExp(`<a\\b(?=[^>]*href="/${lang}/guides/")(?=[^>]*class="[^"]*text-xs font-mono[^"]*")[^>]*>\\s*${escapeRegExp(copy.browseAll)}\\s*<\\/a>`),
-    'hero link',
-  );
+  // Remove the "browse all guides" hero link — redundant now that breadcrumb handles navigation
+  next = next.replace(/[ \t]*<a\b[^>]*class="[^"]*\btext-xs\b[^"]*\bfont-mono\b[^"]*"[^>]*>[^<]*<\/a>[ \t]*(?:\r?\n)?/g, '');
   next = replaceFirst(
     next,
     /[ \t]*<!-- Footer -->[\s\S]*?<\/footer>/,
@@ -440,6 +567,73 @@ ${renderGuidesFooter(lang, t, pages)}`,
     /<script src="\/js\/language-dropdown\.js\?v=[^"]+" defer><\/script>/i,
     'language dropdown script'
   );
+
+  // ── Dictionary layout: sidebar (desktop) + pills (mobile) ───────────
+  // Cleanup previous injection (new markers)
+  next = next.replace(/[ \t]*\/\* == dict-layout == \*\/[\s\S]*?\/\* == \/dict-layout == \*\/\n?/g, '');
+  next = next.replace(/[ \t]*<!-- dict-pills -->[\s\S]*?<!-- \/dict-pills -->\s*/g, '');
+  next = next.replace(/[ \t]*<!-- dict-alpha-mobile -->[\s\S]*?<!-- \/dict-alpha-mobile -->\s*/g, '');
+  next = next.replace(/[ \t]*<!-- dict-layout-open -->[\s\S]*?<!-- \/dict-layout-open -->\s*/g, '');
+  next = next.replace(/[ \t]*<!-- dict-layout-close -->[\s\S]*?<!-- \/dict-layout-close -->\s*/g, '');
+  // Cleanup old sidebar implementation (no markers)
+  next = next.replace(/[ \t]*<div id="mobileCategoryPills"[^>]*>[\s\S]*?<\/div>\s*/g, '');
+  next = next.replace(/[ \t]*<div id="mobileAlphaStrip"[^>]*>[\s\S]*?<\/div>\s*/g, '');
+  next = next.replace(/[ \t]*<div id="dictionaryLayout">\s*\n\s*<aside id="dictionarySidebar">[\s\S]*?<\/aside>\s*\n\s*<div id="mainContentArea">\s*/g, '');
+  next = next.replace(/[ \t]*<\/div><!-- \/mainContentArea -->\s*\n\s*<\/div><!-- \/dictionaryLayout -->\s*/g, '');
+  // Cleanup shared attributes/classes
+  next = next.replace(/ id="categoryGridSection"/g, '');
+  next = next.replace(/class="max-w-6xl mx-auto"/g, 'class="max-w-5xl mx-auto"');
+  next = next.replace(/\.querySelectorAll\('\.letter-link, \.sidebar-alpha-link, \.mobile-alpha-link'\)/g, ".querySelectorAll('.letter-link')");
+
+  const counts = computeCategoryCounts();
+  const letters = extractLetterSet(next);
+
+  // 1. Inject CSS (replace everything between .hero-search rule and </style>)
+  next = next.replace(
+    /(\.hero-search:focus\s*\{[^}]+\})[\s\S]*?(<\/style>)/,
+    `$1\n${renderLayoutCss()}\n    $2`
+  );
+
+  // 2. Widen container for sidebar room
+  next = next.replace('class="max-w-5xl mx-auto"', 'class="max-w-6xl mx-auto"');
+
+  // 3. Insert mobile pills + alpha strip after </header>
+  next = next.replace(
+    /(<\/header>[ \t]*\n)/,
+    `$1\n${renderMobilePillsHtml(lang, t, counts)}\n\n${renderMobileAlphaHtml(letters)}\n`
+  );
+
+  // 4. Add id="categoryGridSection" to category grid section (mb-6 or mb-12)
+  next = next.replace(
+    /(<section class="mb-(?:6|12)">\s*<h2[^>]*>[\s\S]*?grid grid-cols-2 md:grid-cols-4)/,
+    (match) => match.replace(/<section class="mb-(?:6|12)">/, '<section id="categoryGridSection" class="mb-6">')
+  );
+
+  // 5. Insert layout wrapper + sidebar before category grid
+  {
+    const sidebarHtml = renderSidebarHtml(lang, t, counts, letters);
+    next = next.replace(
+      /([ \t]*<section id="categoryGridSection")/,
+      `${sidebarHtml}\n$1`
+    );
+  }
+
+  // 6. Close layout wrapper after symbolsList, before FAQ
+  next = next.replace(
+    /(<!-- FAQ)/,
+    `<!-- dict-layout-close -->\n                </div><!-- /mainContentArea -->\n            </div><!-- /dictionaryLayout -->\n            <!-- /dict-layout-close -->\n\n            $1`
+  );
+
+  // 7+8. Update JS selectors to include sidebar and mobile alpha links
+  next = next.replace(
+    ".querySelectorAll('.letter-link').forEach(link",
+    ".querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link"
+  );
+  next = next.replace(
+    ".querySelectorAll('.letter-link').forEach(l ",
+    ".querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l "
+  );
+
   const output = matchLineEndings(next, originalRaw);
   if (output !== originalRaw && !DRY_RUN) fs.writeFileSync(absPath, output, 'utf8');
   return output !== originalRaw;
