@@ -2995,6 +2995,146 @@
             }
           }
         },
+        "symbol.abandonment": {
+          "id": "symbol.abandonment",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "abandonment",
+          "locales": {
+            "en": {
+              "slug": "abandonment",
+              "path": "/en/symbols/abandonment"
+            },
+            "fr": {
+              "slug": "abandon",
+              "path": "/fr/symboles/abandon"
+            },
+            "es": {
+              "slug": "abandono",
+              "path": "/es/simbolos/abandono"
+            },
+            "de": {
+              "slug": "verlassenwerden",
+              "path": "/de/traumsymbole/verlassenwerden"
+            },
+            "it": {
+              "slug": "abbandono",
+              "path": "/it/simboli/abbandono"
+            }
+          }
+        },
+        "symbol.accident": {
+          "id": "symbol.accident",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "accident",
+          "locales": {
+            "en": {
+              "slug": "accident",
+              "path": "/en/symbols/accident"
+            },
+            "fr": {
+              "slug": "accident",
+              "path": "/fr/symboles/accident"
+            },
+            "es": {
+              "slug": "accidente",
+              "path": "/es/simbolos/accidente"
+            },
+            "de": {
+              "slug": "unfall",
+              "path": "/de/traumsymbole/unfall"
+            },
+            "it": {
+              "slug": "incidente",
+              "path": "/it/simboli/incidente"
+            }
+          }
+        },
+        "symbol.angel": {
+          "id": "symbol.angel",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "angel",
+          "locales": {
+            "en": {
+              "slug": "angel",
+              "path": "/en/symbols/angel"
+            },
+            "fr": {
+              "slug": "ange",
+              "path": "/fr/symboles/ange"
+            },
+            "es": {
+              "slug": "angel",
+              "path": "/es/simbolos/angel"
+            },
+            "de": {
+              "slug": "engel",
+              "path": "/de/traumsymbole/engel"
+            },
+            "it": {
+              "slug": "angelo",
+              "path": "/it/simboli/angelo"
+            }
+          }
+        },
+        "symbol.arguing": {
+          "id": "symbol.arguing",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "arguing",
+          "locales": {
+            "en": {
+              "slug": "arguing",
+              "path": "/en/symbols/arguing"
+            },
+            "fr": {
+              "slug": "dispute",
+              "path": "/fr/symboles/dispute"
+            },
+            "es": {
+              "slug": "discusion",
+              "path": "/es/simbolos/discusion"
+            },
+            "de": {
+              "slug": "streit",
+              "path": "/de/traumsymbole/streit"
+            },
+            "it": {
+              "slug": "litigio",
+              "path": "/it/simboli/litigio"
+            }
+          }
+        },
+        "symbol.apocalypse": {
+          "id": "symbol.apocalypse",
+          "type": "symbol",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "apocalypse",
+          "locales": {
+            "en": {
+              "slug": "apocalypse",
+              "path": "/en/symbols/apocalypse"
+            },
+            "fr": {
+              "slug": "apocalypse",
+              "path": "/fr/symboles/apocalypse"
+            },
+            "es": {
+              "slug": "apocalipsis",
+              "path": "/es/simbolos/apocalipsis"
+            },
+            "de": {
+              "slug": "apokalypse",
+              "path": "/de/traumsymbole/apokalypse"
+            },
+            "it": {
+              "slug": "apocalisse",
+              "path": "/it/simboli/apocalisse"
+            }
+          }
+        },
         "symbolCategory.nature": {
           "id": "symbolCategory.nature",
           "type": "symbolCategory",
