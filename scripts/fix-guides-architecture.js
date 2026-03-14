@@ -581,6 +581,13 @@ ${renderGuidesFooter(lang, t, pages)}`,
     'language dropdown script'
   );
 
+  // ── Normalize spacing (EN is the reference) ────────────────────────
+  next = next.replace(/<main class="pt-24 pb-20/g, '<main class="pt-32 pb-20');
+  next = next.replace(/<header class="text-center mb-(?:4|16)">/g, '<header class="text-center mb-8">');
+
+  // Remove "GUIDE DE RÉFÉRENCE" badge (only FR had it, inconsistent with other langs)
+  next = next.replace(/[ \t]*<div class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon[^>]*>[\s\S]*?<\/div>\s*\n?/g, '');
+
   // ── Dictionary layout: sidebar (desktop) + pills (mobile) ───────────
   // Cleanup previous injection (new markers)
   next = next.replace(/[ \t]*\/\* == dict-layout == \*\/[\s\S]*?\/\* == \/dict-layout == \*\/\n?/g, '');
@@ -649,6 +656,16 @@ ${renderGuidesFooter(lang, t, pages)}`,
     const heroSearchHtml = `\n                <!-- Hero search -->\n                <div class="relative max-w-xl mx-auto">\n                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>\n                    <input type="text" id="heroSearch" placeholder="${placeholder}"\n                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-300/50 transition-colors">\n                </div>`;
     next = next.replace(/([ \t]*<\/header>)/, `${heroSearchHtml}\n$1`);
   }
+
+  // Auto-scroll to results when searching from hero input
+  next = next.replace(
+    /heroSearch\.addEventListener\('input',\s*\(e\)\s*=>\s*\{\s*\n\s*stickySearch\.value = e\.target\.value;\s*\n\s*filterSymbols\(e\.target\.value\);\s*\n\s*\}\);/,
+    `heroSearch.addEventListener('input', (e) => {
+                stickySearch.value = e.target.value;
+                filterSymbols(e.target.value);
+                if (e.target.value.trim()) { document.getElementById('symbolsList').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });`
+  );
 
   // 7+8. Update JS selectors to include sidebar and mobile alpha links
   next = next.replace(
