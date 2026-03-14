@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { SUPPORTED_LANGS, extractTitleTag, matchLineEndings } = require('./lib/docs-seo-utils');
+const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -32,22 +32,6 @@ const COPY = {
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
 };
 
-const NO_RESULTS_TEXT = {
-  en: 'No symbols found for',
-  fr: 'Aucun symbole trouv\u00e9 pour',
-  es: 'Ning\u00fan s\u00edmbolo encontrado para',
-  de: 'Keine Symbole gefunden f\u00fcr',
-  it: 'Nessun simbolo trovato per',
-};
-
-const HERO_SEARCH_PLACEHOLDERS = {
-  en: 'Search a symbol (water, snake, falling\u2026)',
-  fr: 'Rechercher un symbole (eau, serpent, chute\u2026)',
-  es: 'Buscar un s\u00edmbolo (agua, serpiente, ca\u00edda\u2026)',
-  de: 'Symbol suchen (Wasser, Schlange, Fallen\u2026)',
-  it: 'Cerca un simbolo (acqua, serpente, caduta\u2026)',
-};
-
 const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
@@ -67,10 +51,6 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-}
-
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function normalizeTitle(title) {
@@ -252,22 +232,6 @@ function renderGuidesFooter(lang, t, pages) {
     </footer>`;
 }
 
-function replaceJsonLdBlock(html, matchFn, newData) {
-  let replaced = false;
-  const next = html.replace(/^[ \t]*<script\s+type=(["'])application\/ld\+json\1>\s*([\s\S]*?)\s*<\/script>/gim, (full, _q, jsonText) => {
-    if (replaced) return full;
-    try {
-      const data = JSON.parse(jsonText.trim());
-      if (!matchFn(data)) return full;
-      replaced = true;
-      return renderJsonLd(newData);
-    } catch {
-      return full;
-    }
-  });
-  return { next, replaced };
-}
-
 function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
@@ -363,40 +327,11 @@ ${renderGuidesFooter(lang, t, pages)}
 </html>`;
 }
 
-function replaceFirst(html, regex, replacement, label) {
-  if (!regex.test(html)) {
-    throw new Error(`Missing ${label}`);
-  }
-  regex.lastIndex = 0;
-  return html.replace(regex, replacement);
-}
-
-function replaceFirstOrKeep(html, currentRegex, replacement, alreadyRegex, label) {
-  if (currentRegex.test(html)) {
-    currentRegex.lastIndex = 0;
-    return html.replace(currentRegex, replacement);
-  }
-  if (alreadyRegex && alreadyRegex.test(html)) {
-    return html;
-  }
-  throw new Error(`Missing ${label}`);
-}
-
 function computeCategoryCounts() {
   const data = readJson('dream-symbols.json');
   const counts = {};
   (data.symbols || []).forEach(s => { counts[s.category] = (counts[s.category] || 0) + 1; });
   return counts;
-}
-
-function extractLetterSet(html) {
-  const letters = [];
-  const re = /data-letter="([A-ZÀ-Ü])"/g;
-  let m;
-  while ((m = re.exec(html))) {
-    if (!letters.includes(m[1])) letters.push(m[1]);
-  }
-  return letters;
 }
 
 function renderLayoutCss() {
@@ -512,44 +447,268 @@ ${links}
             <!-- /dict-alpha-mobile -->`;
 }
 
-function patchDictionaryPage(lang, t) {
+const OG_LOCALES = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' };
+const CATEGORY_ICONS = { nature: 'leaf', animals: 'paw-print', body: 'user', places: 'home', objects: 'package', actions: 'zap', people: 'users', celestial: 'star' };
+
+function generateDictionaryPage(lang, t) {
   const copy = COPY[lang];
-  const absPath = path.join(DOCS_DIR, lang, 'guides', `${t.dictionary_slug}.html`);
-  const originalRaw = fs.readFileSync(absPath, 'utf8');
-  let next = originalRaw.replace(/\r\n/g, '\n');
+  const version = readVersion();
+  const dictContent = readJson('dictionary-content.json');
+  const dc = dictContent[lang];
+  const symbolsData = readJson('dream-symbols.json');
+  const i18n = readJson('symbol-i18n.json');
   const pages = readJson('curation-pages.json').pages || [];
-  const currentPaths = Object.fromEntries(
-    SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/${readJson('symbol-i18n.json')[candidate].dictionary_slug}`])
-  );
+  const counts = computeCategoryCounts();
+  const symbolPath = SYMBOL_PATHS[lang];
+
   const canonical = `${DOMAIN}/${lang}/guides/${t.dictionary_slug}`;
   const guidesUrl = `${DOMAIN}/${lang}/guides/`;
-  const pageTitle = normalizeTitle(extractTitleTag(next));
-  const descriptionMatch = next.match(/<meta\b[^>]*\bname=(["'])description\1[^>]*\bcontent=(["'])(.*?)\2/i);
-  const description = descriptionMatch ? descriptionMatch[3] : copy.dictionary;
-  const imageMatch = next.match(/<meta\b[^>]*\bproperty=(["'])og:image\1[^>]*\bcontent=(["'])(.*?)\2/i);
-  const image = imageMatch ? imageMatch[3] : `${DOMAIN}/img/og/noctalia-${lang}-1200x630.jpg`;
-  const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: pageTitle, headline: pageTitle, description, url: canonical, image, inLanguage: lang, isPartOf: { '@type': 'CollectionPage', name: copy.label, url: guidesUrl } };
-  const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t.home, item: `${DOMAIN}/${lang}/` }, { '@type': 'ListItem', position: 2, name: copy.label, item: guidesUrl }, { '@type': 'ListItem', position: 3, name: pageTitle, item: canonical }] };
-  next = replaceJsonLdBlock(next, (data) => data['@type'] === 'Article' || data['@type'] === 'CollectionPage', collection).next;
-  next = replaceJsonLdBlock(next, (data) => data['@type'] === 'BreadcrumbList', breadcrumb).next;
-  // Remove ALL existing language-dropdown.css links (deduplication), then add one fresh link
-  next = next.replace(/[ \t]*<link rel="stylesheet" href="\/css\/language-dropdown\.css\?v=[^"]+">[ \t]*(?:\r?\n)?/gi, '');
-  {
-    const stylesMatch = next.match(/<link rel="stylesheet" href="\/css\/styles\.min\.css\?v=[^"]+">/i);
-    if (!stylesMatch) throw new Error('Missing styles.min.css link');
-    next = next.replace(
-      /<link rel="stylesheet" href="\/css\/styles\.min\.css\?v=[^"]+">/i,
-      `${stylesMatch[0]}\n    <link rel="stylesheet" href="/css/language-dropdown.css?v=${readVersion()}">`,
-    );
-  }
-  next = replaceFirst(
-    next,
-    /[ \t]*<!-- Navbar -->[\s\S]*?<\/nav>/,
-    `    <!-- Navbar -->
-${renderGuidesNav(lang, t, currentPaths, 'dictionary')}`,
-    'navbar block'
+  const ogImage = `${DOMAIN}/img/og/noctalia-${lang}-1200x630.jpg`;
+  const pageTitle = normalizeTitle(dc.page_title);
+
+  // ── Build current paths for language switcher ────────────────────────
+  const currentPaths = Object.fromEntries(
+    SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/${i18n[candidate].dictionary_slug}`])
   );
-  next = replaceFirst(next, /[ \t]*<nav class="text-sm text-purple-200\/(?:60|75) mb-8" aria-label="[^"]+">[\s\S]*?<\/nav>/, `            <nav class="text-sm text-purple-200/75 mb-8" aria-label="Breadcrumb">
+
+  // ── Build symbols grouped by first letter ────────────────────────────
+  const allSymbols = symbolsData.symbols || [];
+  const sorted = [...allSymbols].sort((a, b) => (a[lang].name).localeCompare(b[lang].name, lang));
+  const groups = {};
+  sorted.forEach((sym) => {
+    const firstChar = sym[lang].name[0].toUpperCase();
+    if (!groups[firstChar]) groups[firstChar] = [];
+    groups[firstChar].push(sym);
+  });
+  const letters = Object.keys(groups).sort((a, b) => a.localeCompare(b, lang));
+
+  // ── Build symbol categories map for JS ───────────────────────────────
+  const symbolCatEntries = allSymbols
+    .map((sym) => `                '${sym[lang].slug}': '${sym.category}'`)
+    .join(',\n');
+
+  // ── Build category grid HTML ─────────────────────────────────────────
+  const catGridCards = CATEGORY_ORDER.map((cat) => {
+    const catName = (t.category_names || {})[cat] || cat;
+    const catSlug = (t.category_slugs || {})[cat] || cat;
+    const icon = CATEGORY_ICONS[cat] || 'circle';
+    const count = counts[cat] || 0;
+    return `                    <a href="/${lang}/${symbolPath}/${catSlug}" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
+                        <i data-lucide="${icon}" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
+                        <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">${escapeHtml(catName)}</h3>
+                        <span class="text-xs text-purple-300/80">${count} ${escapeHtml(t.symbols_in_category || 'symbols')}</span>
+                    </a>`;
+  }).join('\n');
+
+  // ── Build symbol sections HTML ───────────────────────────────────────
+  const symbolSectionsHtml = letters.map((letter) => {
+    const syms = groups[letter];
+    const cards = syms.map((sym) => {
+      const s = sym[lang];
+      const dataSymbol = escapeHtml(s.slug + ' ' + s.slug + ' ' + s.slug);
+      const askText = (s.askYourself || []).join(' ');
+      return `
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}">
+                            <a href="/${lang}/${symbolPath}/${s.slug}" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(s.name)}</h3></a>
+                            <p class="text-sm text-gray-300 mb-3">${escapeHtml(s.shortDescription)}</p>
+                            <div class="text-xs text-purple-300/80">
+                                <strong class="text-dream-salmon">${escapeHtml(dc.ask_yourself_label)}</strong> ${escapeHtml(askText)}
+                            </div>
+                        </div>`;
+    }).join('\n');
+    return `                <section id="${letter}" class="mb-12">
+                    <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">${letter}</span>
+                        ${escapeHtml(dc.section_heading)} ${letter}
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">${cards}
+                    </div>
+                </section>`;
+  }).join('\n\n');
+
+  // ── Build sticky bar letter links ────────────────────────────────────
+  const stickyAlphaLinks = letters.map((l) =>
+    `                        <a href="#${l}" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="${l}">${l}</a>`
+  ).join('\n');
+
+  // ── Build FAQ HTML ───────────────────────────────────────────────────
+  const faqHtml = (dc.faq || []).map((item) =>
+    `                    <details class="glass-panel rounded-xl p-4 group cursor-pointer">
+                        <summary class="font-medium flex justify-between items-center text-dream-cream">
+                            ${escapeHtml(item.q)}
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                        </summary>
+                        <p class="mt-4 text-sm text-gray-300 leading-relaxed">
+                            ${escapeHtml(item.a)}
+                        </p>
+                    </details>`
+  ).join('\n');
+
+  // ── Build related articles HTML ──────────────────────────────────────
+  const relatedHtml = (dc.related_articles || []).map((article) =>
+    `                    <a href="${article.href}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
+                        <span class="text-xs text-dream-salmon uppercase mb-2 block">${escapeHtml(article.tag)}</span>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(article.title)}</h3>
+                        <p class="text-sm text-gray-300">${escapeHtml(article.desc)}</p>
+                    </a>`
+  ).join('\n');
+
+  // ── Build JSON-LD ────────────────────────────────────────────────────
+  const collection = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: pageTitle,
+    headline: pageTitle,
+    description: dc.meta_description,
+    url: canonical,
+    image: ogImage,
+    inLanguage: lang,
+    isPartOf: { '@type': 'CollectionPage', name: copy.label, url: guidesUrl },
+  };
+  const faqPageLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: (dc.faq || []).map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  };
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.home, item: `${DOMAIN}/${lang}/` },
+      { '@type': 'ListItem', position: 2, name: copy.label, item: guidesUrl },
+      { '@type': 'ListItem', position: 3, name: pageTitle, item: canonical },
+    ],
+  };
+
+  // ── Build hreflang links ─────────────────────────────────────────────
+  const hreflangLinks = SUPPORTED_LANGS.map((targetLang) =>
+    `    <link rel="alternate" hreflang="${targetLang}" href="${DOMAIN}/${targetLang}/guides/${i18n[targetLang].dictionary_slug}">`
+  ).join('\n');
+
+  // ── Build OG locale alternates ───────────────────────────────────────
+  const ogLocaleAlts = SUPPORTED_LANGS
+    .filter((l) => l !== lang)
+    .map((l) => `    <meta property="og:locale:alternate" content="${OG_LOCALES[l]}">`)
+    .join('\n');
+
+  // ── Assemble full HTML ───────────────────────────────────────────────
+  return `<!DOCTYPE html>
+<html lang="${lang}" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0514">
+    <title>${escapeHtml(dc.page_title)}</title>
+    <meta name="description"
+        content="${escapeHtml(dc.meta_description)}">
+    <link rel="canonical" href="${canonical}">
+${hreflangLinks}
+    <link rel="alternate" hreflang="x-default" href="${DOMAIN}/en/guides/${i18n.en.dictionary_slug}">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
+
+    <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="${escapeHtml(dc.og_title)}">
+    <meta property="og:description" content="${escapeHtml(dc.og_description)}">
+    <meta property="og:url" content="${canonical}">
+    <meta property="og:image" content="${ogImage}">
+    <meta property="og:site_name" content="Noctalia">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="${OG_LOCALES[lang]}">
+${ogLocaleAlts}
+    <meta property="article:published_time" content="2025-01-06">
+    <meta property="article:author" content="Noctalia">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@NoctaliaDreams">
+    <meta name="twitter:title" content="${escapeHtml(dc.twitter_title)}">
+    <meta name="twitter:description" content="${escapeHtml(dc.twitter_description)}">
+    <meta name="twitter:image" content="${ogImage}">
+    <meta name="twitter:image:alt" content="${escapeHtml(dc.og_title)}">
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Compiled Tailwind CSS -->
+    <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
+<!-- Lucide Icons (deferred) -->
+    <script src="/js/lucide.min.js?v=${version}" defer></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0514; }
+        ::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 4px; }
+        .aurora-bg {
+            background: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(260, 39%, 20%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 20%, 1) 0, transparent 50%);
+            background-size: 200% 200%; animation: aurora 20s ease infinite;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+        }
+        .orb { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.5; max-width: 100vw; max-height: 100vw; }
+        .glass-panel {
+            background: rgba(20, 10, 40, 0.4); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
+        .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
+        @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        html, body { overflow-x: hidden; }
+        .symbol-card { transition: all 0.3s ease; }
+        .symbol-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
+        .symbol-card:focus { outline: none; border-color: rgba(253, 164, 129, 0.3); box-shadow: 0 0 0 2px rgba(253, 164, 129, 0.25); }
+        .letter-nav { scroll-behavior: smooth; }
+        .letter-link { transition: all 0.2s ease; min-width: 1.75rem; text-align: center; border-radius: 0.375rem; padding: 2px 4px; }
+        .letter-link:hover { color: #FDA481; transform: scale(1.1); }
+        .letter-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        .search-input:focus { outline: none; border-color: #FDA481; }
+        /* Sticky search + alpha bar */
+        #stickyBar {
+            position: sticky; top: 4.5rem; z-index: 40;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        #stickyBar.sb-visible { opacity: 1; pointer-events: auto; }
+        #stickyBar .sb-inner {
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+        }
+        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: 13rem; }
+        #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
+        /* Hero search */
+        .hero-search:focus { outline: none; border-color: #FDA481; }
+${renderLayoutCss()}
+    </style>
+
+${renderJsonLd(collection)}
+
+${renderJsonLd(faqPageLd)}
+
+${renderJsonLd(breadcrumb)}
+</head>
+
+<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+
+    <div class="aurora-bg"></div>
+    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
+    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
+
+    <!-- Navbar -->
+${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
+
+    <main class="pt-32 pb-20 px-4">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Breadcrumb -->
+            <nav class="text-sm text-purple-200/75 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap" itemscope itemtype="https://schema.org/BreadcrumbList">
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/${lang}/" itemprop="item" class="hover:text-dream-salmon transition-colors"><span itemprop="name">${escapeHtml(t.home)}</span></a><meta itemprop="position" content="1"></li>
                     <li class="text-purple-400">/</li>
@@ -557,185 +716,280 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}`,
                     <li class="text-purple-400">/</li>
                     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a href="/${lang}/guides/${t.dictionary_slug}" itemprop="item" class="text-dream-cream"><span itemprop="name">${escapeHtml(pageTitle)}</span></a><meta itemprop="position" content="3"></li>
                 </ol>
-            </nav>`, 'breadcrumb');
-  next = replaceFirstOrKeep(
-    next,
-    new RegExp(`<a href="/${lang}/(?:blog|guides)/" class="hidden sm:inline-flex [^"]*">[^<]+</a>`),
-    `<a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${escapeHtml(copy.label)}</a>`,
-    new RegExp(`<a href="/${lang}/guides/" class="hidden sm:inline-flex text-dream-salmon">${escapeHtml(copy.label)}</a>`),
-    'navbar link',
-  );
-  next = replaceFirstOrKeep(
-    next,
-    new RegExp(`<li><a href="/${lang}/(?:blog|guides)/" class="[^"]*">[^<]+</a></li>`),
-    `<li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${escapeHtml(copy.label)}</a></li>`,
-    new RegExp(`<li><a href="/${lang}/guides/" class="hover:text-dream-salmon transition-colors">${escapeHtml(copy.label)}</a></li>`),
-    'footer link',
-  );
-  // Remove the "browse all guides" hero link — redundant now that breadcrumb handles navigation
-  next = next.replace(/[ \t]*<a\b[^>]*class="[^"]*\btext-xs\b[^"]*\bfont-mono\b[^"]*"[^>]*>[^<]*<\/a>[ \t]*(?:\r?\n)?/g, '');
-  next = replaceFirst(
-    next,
-    /[ \t]*<!-- Footer -->[\s\S]*?<\/footer>/,
-    `    <!-- Footer -->
-${renderGuidesFooter(lang, t, pages)}`,
-    'footer block'
-  );
-  next = replaceFirstOrKeep(
-    next,
-    /<script src="\/js\/language-dropdown\.js\?v=[^"]+" defer><\/script>/i,
-    `<script src="/js/language-dropdown.js?v=${readVersion()}" defer></script>`,
-    /<script src="\/js\/language-dropdown\.js\?v=[^"]+" defer><\/script>/i,
-    'language dropdown script'
-  );
+            </nav>
 
-  // ── Normalize spacing (EN is the reference) ────────────────────────
-  next = next.replace(/<main class="pt-24 pb-20/g, '<main class="pt-32 pb-20');
-  next = next.replace(/<header class="text-center mb-(?:4|16)">/g, '<header class="text-center mb-8">');
+            <!-- Header -->
+            <header class="text-center mb-8">
 
-  // Remove "GUIDE DE RÉFÉRENCE" badge (only FR had it, inconsistent with other langs)
-  next = next.replace(/[ \t]*<div class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon[^>]*>[\s\S]*?<\/div>\s*\n?/g, '');
+                <h1 class="font-serif text-3xl md:text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                    ${escapeHtml(dc.h1_text)}
+                </h1>
 
-  // Normalize h1 margin-bottom to mb-4 (FR had mb-6)
-  next = next.replace(/(class="font-serif text-3xl md:text-5xl) mb-6 /g, '$1 mb-4 ');
+                <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto mb-6">
+                    ${escapeHtml(dc.intro_paragraph)}
+                </p>
 
-  // Normalize paragraph margin-bottom to mb-6 (FR missing, DE/ES had mb-4)
-  next = next.replace(
-    /(class="text-lg text-purple-200\/80 leading-relaxed max-w-2xl mx-auto)(?: mb-4)?(")/g,
-    '$1 mb-6$2'
-  );
+                <!-- Hero search -->
+                <div class="relative max-w-xl mx-auto">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
+                    <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
+                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-300/50 transition-colors">
+                </div>
+            </header>
 
-  // Ensure .letter-nav CSS rule exists (FR was missing it)
-  if (!next.includes('.letter-nav {')) {
-    next = next.replace(
-      /(\.hero-search:focus)/,
-      '.letter-nav { scroll-behavior: smooth; }\n        $1'
-    );
-  }
+            <!-- dict-no-results -->
+            <div id="noResults" style="display:none" class="text-center py-16 text-purple-200/60">
+                <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 opacity-40"></i>
+                <p class="text-lg">${escapeHtml(dc.no_results_text)} &laquo;<span id="noResultsQuery"></span>&raquo;</p>
+            </div>
+            <!-- /dict-no-results -->
 
-  // ── Dictionary layout: sidebar (desktop) + pills (mobile) ───────────
-  // Cleanup previous injection (new markers)
-  next = next.replace(/[ \t]*\/\* == dict-layout == \*\/[\s\S]*?\/\* == \/dict-layout == \*\/\n?/g, '');
-  next = next.replace(/[ \t]*<!-- dict-pills -->[\s\S]*?<!-- \/dict-pills -->\s*/g, '');
-  next = next.replace(/[ \t]*<!-- dict-alpha-mobile -->[\s\S]*?<!-- \/dict-alpha-mobile -->\s*/g, '');
-  next = next.replace(/[ \t]*<!-- dict-layout-open -->[\s\S]*?<!-- \/dict-layout-open -->\s*/g, '');
-  next = next.replace(/[ \t]*<!-- dict-layout-close -->[\s\S]*?<!-- \/dict-layout-close -->\s*/g, '');
-  // Cleanup old sidebar implementation (no markers)
-  next = next.replace(/[ \t]*<div id="mobileCategoryPills"[^>]*>[\s\S]*?<\/div>\s*/g, '');
-  next = next.replace(/[ \t]*<div id="mobileAlphaStrip"[^>]*>[\s\S]*?<\/div>\s*/g, '');
-  next = next.replace(/[ \t]*<div id="dictionaryLayout">\s*\n\s*<aside id="dictionarySidebar">[\s\S]*?<\/aside>\s*\n\s*<div id="mainContentArea">\s*/g, '');
-  next = next.replace(/[ \t]*<\/div><!-- \/mainContentArea -->\s*\n\s*<\/div><!-- \/dictionaryLayout -->\s*/g, '');
-  // Cleanup shared attributes/classes
-  next = next.replace(/ id="categoryGridSection"/g, '');
-  next = next.replace(/class="max-w-6xl mx-auto"/g, 'class="max-w-5xl mx-auto"');
-  next = next.replace(/\.querySelectorAll\('\.letter-link, \.sidebar-alpha-link, \.mobile-alpha-link'\)/g, ".querySelectorAll('.letter-link')");
+${renderMobilePillsHtml(lang, t, counts)}
 
-  const counts = computeCategoryCounts();
-  const letters = extractLetterSet(next);
+${renderMobileAlphaHtml(letters)}
 
-  // 1. Inject CSS (replace everything between .hero-search rule and </style>)
-  next = next.replace(
-    /(\.hero-search:focus\s*\{[^}]+\})[\s\S]*?(<\/style>)/,
-    `$1\n${renderLayoutCss()}\n    $2`
-  );
+<!-- Sticky Search + Alphabet bar (above categories) -->
+            <div id="stickyBar" class="glass-panel rounded-2xl p-4 mb-8">
+                <div class="sb-inner">
+                    <!-- Compact search -->
+                    <div class="sb-search">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
+                        <input type="text" id="stickySearch" placeholder="${escapeHtml(dc.sticky_search_placeholder)}"
+                            class="search-input w-full rounded-full py-2 pl-10 pr-4 text-sm text-dream-cream transition-colors"
+                            style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
+                    </div>
+                    <!-- Alphabet -->
+                    <div class="sb-alpha letter-nav">
+${stickyAlphaLinks}
+                    </div>
+                    <!-- Back to top -->
+                    <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="Back to top" title="Back to top" style="display:none;flex-shrink:0;padding:6px;">
+                        <i data-lucide="arrow-up" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
 
-  // 2. Widen container for sidebar room
-  next = next.replace('class="max-w-5xl mx-auto"', 'class="max-w-6xl mx-auto"');
+            <!-- Browse by Category -->
+${renderSidebarHtml(lang, t, counts, letters)}
+<section id="categoryGridSection" class="mb-6">
+                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
+                    <i data-lucide="grid-3x3" class="w-6 h-6 text-dream-salmon"></i>
+                    ${escapeHtml(dc.browse_by_category)}
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+${catGridCards}
+                </div>
+            </section>
 
-  // 3. Insert mobile pills + alpha strip after </header>
-  next = next.replace(
-    /(<\/header>[ \t]*\n)/,
-    `$1\n${renderMobilePillsHtml(lang, t, counts)}\n\n${renderMobileAlphaHtml(letters)}\n`
-  );
+            <!-- Intermediate CTA -->
+            <div class="glass-panel rounded-2xl p-5 mb-12 flex items-center justify-between flex-wrap gap-4 border border-dream-salmon/10">
+                <div>
+                    <p class="font-serif text-dream-cream text-lg">${dc.cta_title.replace(/<em>/g, '<em class="text-dream-salmon not-italic">')}</p>
+                    <p class="text-sm text-purple-200/70 mt-1">${escapeHtml(dc.cta_subtitle)}</p>
+                </div>
+                <a href="/${lang}/" class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors text-sm shrink-0">
+                    ${escapeHtml(dc.cta_button)} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
 
-  // 4. Add id="categoryGridSection" to category grid section (mb-6 or mb-12)
-  next = next.replace(
-    /(<section class="mb-(?:6|12)">\s*<h2[^>]*>[\s\S]*?grid grid-cols-2 md:grid-cols-4)/,
-    (match) => match.replace(/<section class="mb-(?:6|12)">/, '<section id="categoryGridSection" class="mb-6">')
-  );
+            <!-- Symbols Dictionary -->
+            <div id="symbolsList">
+${symbolSectionsHtml}
 
-  // 5. Insert layout wrapper + sidebar before category grid
-  {
-    const sidebarHtml = renderSidebarHtml(lang, t, counts, letters);
-    next = next.replace(
-      /([ \t]*<section id="categoryGridSection")/,
-      `${sidebarHtml}\n$1`
-    );
-  }
+            </div>
+<!-- dict-layout-close -->
+                </div><!-- /mainContentArea -->
+            </div><!-- /dictionaryLayout -->
+            <!-- /dict-layout-close -->
 
-  // 6. Close layout wrapper after symbolsList, before FAQ
-  next = next.replace(
-    /(<!-- FAQ)/,
-    `<!-- dict-layout-close -->\n                </div><!-- /mainContentArea -->\n            </div><!-- /dictionaryLayout -->\n            <!-- /dict-layout-close -->\n\n            $1`
-  );
+            <!-- FAQ Section (before CTA to address objections first) -->
+            <section class="mt-16 max-w-3xl mx-auto">
+                <h2 class="font-serif text-2xl text-dream-cream mb-8">${escapeHtml(dc.faq_title)}</h2>
+                <div class="space-y-4">
+${faqHtml}
+                </div>
+            </section>
 
-  // Fix duplicate const stickyBar declaration (causes SyntaxError in EN)
-  next = next.replace(
-    /(const stickySearch[^\n]*\n)\s*const stickyBar = document\.getElementById\('stickyBar'\);\s*\n/,
-    '$1'
-  );
+            <!-- CTA Section -->
+            <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
+                <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
+                </div>
+                <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">${escapeHtml(dc.analyze_heading)}</h3>
+                <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
+                    ${escapeHtml(dc.analyze_text)}
+                </p>
+                <a href="${getAndroidStoreUrl(lang)}" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
+                    ${escapeHtml(dc.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+            </aside>
 
-  // Inject missing hero search input (FR was missing it)
-  if (!next.includes('id="heroSearch"')) {
-    const placeholder = escapeHtml(HERO_SEARCH_PLACEHOLDERS[lang] || HERO_SEARCH_PLACEHOLDERS.en);
-    const heroSearchHtml = `\n                <!-- Hero search -->\n                <div class="relative max-w-xl mx-auto">\n                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>\n                    <input type="text" id="heroSearch" placeholder="${placeholder}"\n                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-300/50 transition-colors">\n                </div>`;
-    next = next.replace(/([ \t]*<\/header>)/, `${heroSearchHtml}\n$1`);
-  }
+            <!-- Related Articles -->
+            <section class="mt-16 max-w-4xl mx-auto">
+                <h2 class="font-serif text-2xl text-dream-cream mb-8">${escapeHtml(dc.related_heading)}</h2>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+${relatedHtml}
+                </div>
+            </section>
 
-  // Inject "no results" message (hidden by default) — placed right after </header> for visibility
-  {
-    const noResultsLabel = escapeHtml(NO_RESULTS_TEXT[lang] || NO_RESULTS_TEXT.en);
-    // Remove previous injection
-    next = next.replace(/[ \t]*<!-- dict-no-results -->[\s\S]*?<!-- \/dict-no-results -->\s*/g, '');
-    next = next.replace(
-      /(<\/header>[ \t]*\n)/,
-      `$1\n            <!-- dict-no-results -->\n            <div id="noResults" style="display:none" class="text-center py-16 text-purple-200/60">\n                <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 opacity-40"></i>\n                <p class="text-lg">${noResultsLabel} &laquo;<span id="noResultsQuery"></span>&raquo;</p>\n            </div>\n            <!-- /dict-no-results -->\n`
-    );
-  }
+        </div>
+    </main>
 
-  // Patch filterSymbols to toggle "no results" message
-  // First revert any previous patch to keep idempotent
-  next = next.replace(/\n\s*const noResults = document\.getElementById\('noResults'\);\s*\n\s*const noResultsQuery = document\.getElementById\('noResultsQuery'\);/g, '');
-  next = next.replace(/\n\s*if \(noResults\) noResults\.style\.display = 'none';/g, '');
-  next = next.replace(/\n\s*const anyVisible = \[\.\.\.listSections\]\.some\(s => s\.style\.display !== 'none'\);\s*\n\s*if \(noResults\) \{ noResults\.style\.display = anyVisible \? 'none' : 'block'; \}\s*\n\s*if \(noResultsQuery\) \{ noResultsQuery\.textContent = query; \}/g, '');
-  // Now apply
-  next = next.replace(
-    /function filterSymbols\(query\)\s*\{/,
-    `function filterSymbols(query) {
+    <!-- Footer -->
+${renderGuidesFooter(lang, t, pages)}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+            const navbar = document.getElementById('navbar');
+            const stickyBar = document.getElementById('stickyBar');
+            const symbolCards = document.querySelectorAll('.symbol-card');
+            const listSections = document.querySelectorAll('#symbolsList > section');
+
+            // ── Navbar scroll effect ──────────────────────────────────────
+            window.addEventListener('scroll', () => {
+                if (navbar) { navbar.classList.toggle('py-2', window.scrollY > 50); navbar.classList.toggle('py-6', window.scrollY <= 50); }
+            });
+
+            function updateSectionScrollOffset() {
+                if (!stickyBar) return;
+                const stickyTop = parseFloat(window.getComputedStyle(stickyBar).top) || 0;
+                const navbarHeight = navbar?.getBoundingClientRect().height || 0;
+                const offset = Math.ceil(Math.max(navbarHeight, stickyTop) + stickyBar.getBoundingClientRect().height + 16);
+                document.documentElement.style.setProperty('--dictionary-scroll-offset', \`\${offset}px\`);
+            }
+
+            updateSectionScrollOffset();
+            window.addEventListener('resize', updateSectionScrollOffset);
+
+            // ── Symbol card clickability (keyboard accessible) ────────────
+
+            symbolCards.forEach((card) => {
+                const link = card.querySelector('a[href]');
+                if (!link) return;
+                const href = link.getAttribute('href');
+                if (!href) return;
+                card.style.cursor = 'pointer';
+                card.setAttribute('role', 'link');
+                card.setAttribute('tabindex', '0');
+                const title = card.querySelector('h3')?.textContent?.trim();
+                if (title) card.setAttribute('aria-label', title);
+                link.setAttribute('tabindex', '-1');
+                const navigate = (openInNewTab = false) => {
+                    if (openInNewTab) { window.open(href, '_blank', 'noopener'); return; }
+                    window.location.href = href;
+                };
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    if (e.metaKey || e.ctrlKey) { navigate(true); return; }
+                    navigate(false);
+                });
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigate(e.metaKey || e.ctrlKey); }
+                });
+            });
+
+            // ── Category color borders (JS-driven) ───────────────────────
+            const symbolCategories = {
+${symbolCatEntries}
+            };
+            const categoryColors = {
+                nature: '#4ade80', animals: '#fbbf24', body: '#f87171',
+                places: '#60a5fa', objects: '#c084fc', actions: '#fb923c',
+                people: '#f472b6', celestial: '#818cf8'
+            };
+            symbolCards.forEach((card) => {
+                const link = card.querySelector('a[href]');
+                if (!link) return;
+                const slug = link.getAttribute('href').split('/').pop();
+                const cat = symbolCategories[slug];
+                if (cat) {
+                    card.style.borderLeft = '3px solid ' + categoryColors[cat];
+                    card.dataset.category = cat;
+                }
+            });
+
+            // ── Shared search filter ──────────────────────────────────────
+            function filterSymbols(query) {
                 const noResults = document.getElementById('noResults');
-                const noResultsQuery = document.getElementById('noResultsQuery');`
-  );
-  next = next.replace(
-    /symbolCards\.forEach\(card => card\.style\.display = ''\);\s*\n\s*listSections\.forEach\(section => section\.style\.display = ''\);/,
-    `symbolCards.forEach(card => card.style.display = '');
+                const noResultsQuery = document.getElementById('noResultsQuery');
+                const q = query.toLowerCase().trim();
+                if (q === '') {
+                    symbolCards.forEach(card => card.style.display = '');
                     listSections.forEach(section => section.style.display = '');
-                    if (noResults) noResults.style.display = 'none';`
-  );
-  next = next.replace(
-    /(section\.style\.display = hasVisible \? '' : 'none';\s*\n\s*\}\);)\s*\n\s*\}/,
-    `$1
+                    if (noResults) noResults.style.display = 'none';
+                } else {
+                    listSections.forEach(section => {
+                        const cards = section.querySelectorAll('.symbol-card');
+                        let hasVisible = false;
+                        cards.forEach(card => {
+                            const symbolData = card.dataset.symbol || '';
+                            const title = card.querySelector('h3')?.textContent?.toLowerCase() || '';
+                            const content = card.querySelector('p')?.textContent?.toLowerCase() || '';
+                            const visible = symbolData.includes(q) || title.includes(q) || content.includes(q);
+                            card.style.display = visible ? '' : 'none';
+                            if (visible) hasVisible = true;
+                        });
+                        section.style.display = hasVisible ? '' : 'none';
+                    });
                     const anyVisible = [...listSections].some(s => s.style.display !== 'none');
                     if (noResults) { noResults.style.display = anyVisible ? 'none' : 'block'; }
                     if (noResultsQuery) { noResultsQuery.textContent = query; }
-                }`
-  );
+                }
+            }
 
-  // Remove auto-scroll (was added previously, clean up)
-  next = next.replace(/\n\s*if \(e\.target\.value\.trim\(\)\) \{ document\.getElementById\('symbolsList'\)\.scrollIntoView\(\{ behavior: 'smooth', block: 'start' \}\); \}/g, '');
+            // Hero search + sticky bar show/hide
+            const heroSearch = document.getElementById('heroSearch');
+            const stickySearch = document.getElementById('stickySearch');
+            const heroHeader = heroSearch.closest('header');
+            const heroObserver = new IntersectionObserver(([entry]) => {
+                stickyBar.classList.toggle('sb-visible', !entry.isIntersecting);
+            }, { threshold: 0 });
+            heroObserver.observe(heroHeader);
 
-  // 7+8. Update JS selectors to include sidebar and mobile alpha links
-  next = next.replace(
-    ".querySelectorAll('.letter-link').forEach(link",
-    ".querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link"
-  );
-  next = next.replace(
-    ".querySelectorAll('.letter-link').forEach(l ",
-    ".querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l "
-  );
+            heroSearch.addEventListener('input', (e) => {
+                stickySearch.value = e.target.value;
+                filterSymbols(e.target.value);
+            });
+            stickySearch.addEventListener('input', (e) => {
+                heroSearch.value = e.target.value;
+                filterSymbols(e.target.value);
+            });
 
-  const output = matchLineEndings(next, originalRaw);
-  if (output !== originalRaw && !DRY_RUN) fs.writeFileSync(absPath, output, 'utf8');
-  return output !== originalRaw;
+            // ── Smooth scroll for letter navigation ───────────────────────
+            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    updateSectionScrollOffset();
+                    if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                });
+            });
+
+            // ── Active letter tracking (IntersectionObserver) ─────────────
+            function setActiveAlpha(letter) {
+                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
+                    l.classList.toggle('alpha-active', l.dataset.letter === letter);
+                });
+            }
+            const alphaObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) setActiveAlpha(e.target.id); });
+            }, { rootMargin: '-5% 0px -80% 0px' });
+            listSections.forEach(s => alphaObserver.observe(s));
+
+            // ── Back-to-top button ────────────────────────────────────────
+            const backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', () => {
+                backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
+            }, { passive: true });
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+    <script src="/js/language-dropdown.js?v=${version}" defer></script>
+</body>
+</html>`;
 }
 
 function main() {
@@ -753,9 +1007,13 @@ function main() {
       if (!DRY_RUN) fs.writeFileSync(hubPath, hubHtml, 'utf8');
       console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/index.html`);
     }
-    if (patchDictionaryPage(lang, i18n[lang])) {
+    const dictPath = path.join(DOCS_DIR, lang, 'guides', `${i18n[lang].dictionary_slug}.html`);
+    const dictHtml = generateDictionaryPage(lang, i18n[lang]);
+    const currentDict = fs.existsSync(dictPath) ? fs.readFileSync(dictPath, 'utf8') : null;
+    if (currentDict !== dictHtml) {
       dictionaries += 1;
-      console.log(`${DRY_RUN ? 'Would patch' : 'Patched'} docs/${lang}/guides/${i18n[lang].dictionary_slug}.html`);
+      if (!DRY_RUN) fs.writeFileSync(dictPath, dictHtml, 'utf8');
+      console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/${i18n[lang].dictionary_slug}.html`);
     }
   }
   console.log(`[fix-guides-architecture] mode=${DRY_RUN ? 'dry-run' : 'write'} hubPages=${hubs} dictionaryPages=${dictionaries}`);
