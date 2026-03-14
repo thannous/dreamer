@@ -17,6 +17,9 @@ const DRY_RUN = process.argv.includes('--dry-run');
 const SITE_CONFIG = fs.existsSync(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'))
   ? JSON.parse(fs.readFileSync(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'), 'utf8'))
   : { seoLinking: { featuredBlogEntries: [], featuredGuideEntries: [], featuredSymbols: [] } };
+const SITE_MANIFEST = fs.existsSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'))
+  ? JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'), 'utf8'))
+  : { collections: { blog: { entries: {} } } };
 
 const LOCALES = Object.fromEntries(
   SUPPORTED_LANGS.map((lang) => {
@@ -90,6 +93,23 @@ function renderFooterLinkList(links, { highlightFirst = false } = {}) {
       return `<li><a href="${link.href}" class="${className}">${escapeHtml(link.label)}</a></li>`;
     })
     .join('');
+}
+
+const RELATED_ARTICLE_IDS = {
+  'recurring-dreams-meaning': 'blog.recurring-dreams-meaning',
+  'how-to-remember-dreams': 'blog.how-to-remember-dreams',
+  'dream-journal-guide': 'blog.dream-journal-guide',
+};
+
+function resolveLocalizedRelatedArticleHref(lang, href) {
+  const match = String(href || '').match(/\.\.\/blog\/([^/?#]+)/);
+  if (!match) return href;
+
+  const entryId = RELATED_ARTICLE_IDS[match[1]];
+  if (!entryId) return href;
+
+  const localizedPath = SITE_MANIFEST.collections?.blog?.entries?.[entryId]?.locales?.[lang]?.path;
+  return localizedPath || href;
 }
 
 function buildSeoLinkData(lang, t, pages) {
@@ -548,7 +568,7 @@ function generateDictionaryPage(lang, t) {
 
   // ── Build related articles HTML ──────────────────────────────────────
   const relatedHtml = (dc.related_articles || []).map((article) =>
-    `                    <a href="${article.href}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
+    `                    <a href="${resolveLocalizedRelatedArticleHref(lang, article.href)}" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">${escapeHtml(article.tag)}</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(article.title)}</h3>
                         <p class="text-sm text-gray-300">${escapeHtml(article.desc)}</p>
