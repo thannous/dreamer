@@ -32,6 +32,14 @@ const COPY = {
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
 };
 
+const NO_RESULTS_TEXT = {
+  en: 'No symbols found for',
+  fr: 'Aucun symbole trouv\u00e9 pour',
+  es: 'Ning\u00fan s\u00edmbolo encontrado para',
+  de: 'Keine Symbole gefunden f\u00fcr',
+  it: 'Nessun simbolo trovato per',
+};
+
 const HERO_SEARCH_PLACEHOLDERS = {
   en: 'Search a symbol (water, snake, falling\u2026)',
   fr: 'Rechercher un symbole (eau, serpent, chute\u2026)',
@@ -657,7 +665,47 @@ ${renderGuidesFooter(lang, t, pages)}`,
     next = next.replace(/([ \t]*<\/header>)/, `${heroSearchHtml}\n$1`);
   }
 
+  // Inject "no results" message (hidden by default) — placed right after </header> for visibility
+  {
+    const noResultsLabel = escapeHtml(NO_RESULTS_TEXT[lang] || NO_RESULTS_TEXT.en);
+    // Remove previous injection
+    next = next.replace(/[ \t]*<!-- dict-no-results -->[\s\S]*?<!-- \/dict-no-results -->\s*/g, '');
+    next = next.replace(
+      /(<\/header>[ \t]*\n)/,
+      `$1\n            <!-- dict-no-results -->\n            <div id="noResults" style="display:none" class="text-center py-16 text-purple-200/60">\n                <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 opacity-40"></i>\n                <p class="text-lg">${noResultsLabel} &laquo;<span id="noResultsQuery"></span>&raquo;</p>\n            </div>\n            <!-- /dict-no-results -->\n`
+    );
+  }
+
+  // Patch filterSymbols to toggle "no results" message
+  // First revert any previous patch to keep idempotent
+  next = next.replace(/\n\s*const noResults = document\.getElementById\('noResults'\);\s*\n\s*const noResultsQuery = document\.getElementById\('noResultsQuery'\);/g, '');
+  next = next.replace(/\n\s*if \(noResults\) noResults\.style\.display = 'none';/g, '');
+  next = next.replace(/\n\s*const anyVisible = \[\.\.\.listSections\]\.some\(s => s\.style\.display !== 'none'\);\s*\n\s*if \(noResults\) \{ noResults\.style\.display = anyVisible \? 'none' : 'block'; \}\s*\n\s*if \(noResultsQuery\) \{ noResultsQuery\.textContent = query; \}/g, '');
+  // Now apply
+  next = next.replace(
+    /function filterSymbols\(query\)\s*\{/,
+    `function filterSymbols(query) {
+                const noResults = document.getElementById('noResults');
+                const noResultsQuery = document.getElementById('noResultsQuery');`
+  );
+  next = next.replace(
+    /symbolCards\.forEach\(card => card\.style\.display = ''\);\s*\n\s*listSections\.forEach\(section => section\.style\.display = ''\);/,
+    `symbolCards.forEach(card => card.style.display = '');
+                    listSections.forEach(section => section.style.display = '');
+                    if (noResults) noResults.style.display = 'none';`
+  );
+  next = next.replace(
+    /(section\.style\.display = hasVisible \? '' : 'none';\s*\n\s*\}\);)\s*\n\s*\}/,
+    `$1
+                    const anyVisible = [...listSections].some(s => s.style.display !== 'none');
+                    if (noResults) { noResults.style.display = anyVisible ? 'none' : 'block'; }
+                    if (noResultsQuery) { noResultsQuery.textContent = query; }
+                }`
+  );
+
   // Auto-scroll to results when searching from hero input
+  // Revert previous patch first for idempotency
+  next = next.replace(/\n\s*if \(e\.target\.value\.trim\(\)\) \{ document\.getElementById\('symbolsList'\)\.scrollIntoView\(\{ behavior: 'smooth', block: 'start' \}\); \}/g, '');
   next = next.replace(
     /heroSearch\.addEventListener\('input',\s*\(e\)\s*=>\s*\{\s*\n\s*stickySearch\.value = e\.target\.value;\s*\n\s*filterSymbols\(e\.target\.value\);\s*\n\s*\}\);/,
     `heroSearch.addEventListener('input', (e) => {

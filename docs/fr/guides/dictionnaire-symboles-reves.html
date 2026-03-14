@@ -277,6 +277,13 @@
                 </div>
             </header>
 
+            <!-- dict-no-results -->
+            <div id="noResults" style="display:none" class="text-center py-16 text-purple-200/60">
+                <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 opacity-40"></i>
+                <p class="text-lg">Aucun symbole trouvé pour &laquo;<span id="noResultsQuery"></span>&raquo;</p>
+            </div>
+            <!-- /dict-no-results -->
+
             <!-- dict-pills -->
                 <div id="mobilePills">
                     <a href="/fr/symboles/nature" class="cat-pill">
@@ -541,8 +548,7 @@
 
             <!-- Symbols Dictionary -->
             <div id="symbolsList">
-
-                <!-- A -->
+<!-- A -->
                 <section id="A" class="mb-12">
                     <h2 class="font-serif text-2xl text-dream-salmon mb-6 flex items-center gap-3">
                         <span class="w-10 h-10 rounded-full bg-dream-salmon/10 flex items-center justify-center">A</span>
@@ -1387,10 +1393,13 @@
 
             // ── Shared search filter ──────────────────────────────────────
             function filterSymbols(query) {
+                const noResults = document.getElementById('noResults');
+                const noResultsQuery = document.getElementById('noResultsQuery');
                 const q = query.toLowerCase().trim();
                 if (q === '') {
                     symbolCards.forEach(card => card.style.display = '');
                     listSections.forEach(section => section.style.display = '');
+                    if (noResults) noResults.style.display = 'none';
                 } else {
                     listSections.forEach(section => {
                         const cards = section.querySelectorAll('.symbol-card');
@@ -1405,6 +1414,9 @@
                         });
                         section.style.display = hasVisible ? '' : 'none';
                     });
+                    const anyVisible = [...listSections].some(s => s.style.display !== 'none');
+                    if (noResults) { noResults.style.display = anyVisible ? 'none' : 'block'; }
+                    if (noResultsQuery) { noResultsQuery.textContent = query; }
                 }
             }
 
