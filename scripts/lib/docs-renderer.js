@@ -10,6 +10,7 @@ const {
 } = require('./docs-site-config');
 const { escapeHtml, readJson, readSourceDocument } = require('./docs-source-utils');
 const { buildEntryIndex } = require('./site-manifest');
+const { renderViewTransitionHeadStyles } = require('./docs-view-transitions');
 
 const locales = loadLocales();
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
@@ -244,6 +245,7 @@ function renderCommonHead(meta, entry, assetVersion) {
     preloadLines.join('\n'),
     renderAnalyticsHeadScript(),
     renderStyles(meta, assetVersion),
+    renderViewTransitionHeadStyles(),
     renderHeadScripts(meta, assetVersion),
     renderJsonLd(meta),
   ]
