@@ -1,0 +1,167 @@
+{
+  "en": {
+    "page_title": "Dream Symbols Dictionary: Interpretation from A to Z | Noctalia",
+    "meta_description": "Complete dream symbols dictionary. Discover the meaning of over 50 common dream symbols: water, falling, flying, teeth, animals and more.",
+    "og_title": "Dream Symbols Dictionary: Interpretation from A to Z",
+    "og_description": "Over 50 dream symbols and their meanings.",
+    "twitter_title": "Dream Symbols Dictionary",
+    "twitter_description": "Discover the meaning of your dream symbols.",
+    "h1_text": "Dream Symbols Dictionary",
+    "intro_paragraph": "Explore the meaning of over 50 common dream symbols. Each symbol comes with its most widespread interpretations and questions to ask yourself.",
+    "hero_search_placeholder": "Search a symbol (water, snake, falling\u2026)",
+    "sticky_search_placeholder": "Search symbols\u2026",
+    "no_results_text": "No symbols found for",
+    "browse_by_category": "Browse by Category",
+    "section_heading": "Symbols starting with",
+    "ask_yourself_label": "Ask yourself:",
+    "cta_title": "Ready to decode <em>your</em> dreams?",
+    "cta_subtitle": "AI analysis personalized to your dream's context.",
+    "cta_button": "Try Noctalia",
+    "faq_title": "Frequently Asked Questions",
+    "faq": [
+      { "q": "How to interpret dream symbols?", "a": "Dream symbol interpretation depends on the dreamer's personal context. The same symbol can have different meanings depending on each person's experiences and culture. It's important to consider your emotions in the dream and your personal associations with the symbol." },
+      { "q": "Are dream symbols universal?", "a": "Some symbols have relatively universal meanings (like water for emotions), but many depend on cultural and personal context. That's why a dream dictionary should be used as a starting point, not as absolute truth." },
+      { "q": "Why do I always dream of the same symbols?", "a": "Recurring symbols often indicate unresolved themes in your life. Your subconscious is trying to draw your attention to something. Keeping a dream journal can help you identify these patterns." }
+    ],
+    "analyze_heading": "Analyze your symbols with Noctalia",
+    "analyze_text": "Noctalia goes beyond a simple dictionary. Noctalia analyzes your symbols in the context of YOUR dream for personalized interpretation.",
+    "related_heading": "Related Articles",
+    "related_articles": [
+      { "tag": "Interpretation", "title": "Recurring Dreams Meaning", "desc": "Understand why certain dreams keep coming back.", "href": "../blog/recurring-dreams-meaning" },
+      { "tag": "Guide", "title": "How to Remember Your Dreams", "desc": "Techniques to improve your dream recall.", "href": "../blog/how-to-remember-dreams" },
+      { "tag": "Practice", "title": "How to Start a Dream Journal", "desc": "Build a lasting dream journaling habit tonight.", "href": "../blog/dream-journal-guide" }
+    ]
+  },
+  "fr": {
+    "page_title": "Dictionnaire des symboles de r\u00eaves | Noctalia",
+    "meta_description": "Dictionnaire complet des symboles de r\u00eaves. D\u00e9couvrez la signification de plus de 50 symboles oniriques courants : eau, chute, vol, dents, animaux et plus.",
+    "og_title": "Dictionnaire des symboles de r\u00eaves",
+    "og_description": "Plus de 50 symboles de r\u00eaves et leur signification.",
+    "twitter_title": "Dictionnaire des symboles de r\u00eaves",
+    "twitter_description": "D\u00e9couvrez la signification de vos symboles oniriques.",
+    "h1_text": "Dictionnaire des symboles de r\u00eaves",
+    "intro_paragraph": "Explorez la signification de plus de 50 symboles oniriques courants. Chaque symbole est accompagn\u00e9 de ses interpr\u00e9tations les plus r\u00e9pandues et des questions \u00e0 vous poser.",
+    "hero_search_placeholder": "Rechercher un symbole (eau, serpent, chute\u2026)",
+    "sticky_search_placeholder": "Rechercher les symboles\u2026",
+    "no_results_text": "Aucun symbole trouv\u00e9 pour",
+    "browse_by_category": "Parcourir par cat\u00e9gorie",
+    "section_heading": "Symboles commen\u00e7ant par",
+    "ask_yourself_label": "A vous demander :",
+    "cta_title": "Pr\u00eat \u00e0 d\u00e9coder <em>vos</em> r\u00eaves ?",
+    "cta_subtitle": "Analyse IA personnalis\u00e9e selon le contexte de votre r\u00eave.",
+    "cta_button": "Essayer Noctalia",
+    "faq_title": "Questions fr\u00e9quentes",
+    "faq": [
+      { "q": "Comment interpr\u00e9ter les symboles de r\u00eaves ?", "a": "L'interpr\u00e9tation d\u00e9pend du contexte personnel du r\u00eaveur. Le m\u00eame symbole peut avoir des significations diff\u00e9rentes selon les exp\u00e9riences et la culture de chacun. Il est important de consid\u00e9rer vos \u00e9motions dans le r\u00eave et vos associations personnelles avec le symbole." },
+      { "q": "Les symboles de r\u00eaves sont-ils universels ?", "a": "Certains symboles ont des significations relativement universelles (comme l'eau pour les \u00e9motions), mais beaucoup d\u00e9pendent du contexte culturel et personnel. C'est pourquoi un dictionnaire des r\u00eaves doit \u00eatre utilis\u00e9 comme point de d\u00e9part, pas comme v\u00e9rit\u00e9 absolue." },
+      { "q": "Pourquoi je r\u00eave toujours des memes symboles ?", "a": "Les symboles r\u00e9currents indiquent souvent des th\u00e8mes non r\u00e9solus dans votre vie. Votre subconscient essaie d'attirer votre attention sur quelque chose. Tenir un journal de r\u00eaves peut vous aider \u00e0 identifier ces sch\u00e9mas." }
+    ],
+    "analyze_heading": "Analysez vos symboles avec Noctalia",
+    "analyze_text": "Noctalia va au-del\u00e0 d'un simple dictionnaire. Noctalia analyse vos symboles dans le contexte de VOTRE r\u00eave pour une interpr\u00e9tation personnalis\u00e9e.",
+    "related_heading": "Articles connexes",
+    "related_articles": [
+      { "tag": "Interpr\u00e9tation", "title": "R\u00eaves r\u00e9currents : significations", "desc": "Pourquoi certains r\u00eaves reviennent encore et encore.", "href": "../blog/recurring-dreams-meaning" },
+      { "tag": "Guide", "title": "Comment se souvenir de ses r\u00eaves", "desc": "Techniques pour am\u00e9liorer votre m\u00e9moire onirique.", "href": "../blog/how-to-remember-dreams" },
+      { "tag": "Pratique", "title": "Tenir un journal de r\u00eaves", "desc": "Commencez votre journal onirique d\u00e8s ce soir.", "href": "../blog/dream-journal-guide" }
+    ]
+  },
+  "es": {
+    "page_title": "Diccionario de s\u00edmbolos de sue\u00f1os (A-Z): 50+ significados",
+    "meta_description": "Explora m\u00e1s de 50 s\u00edmbolos de sue\u00f1os, desde agua y ca\u00edda hasta volar, dientes y animales, con interpretaciones claras.",
+    "og_title": "Diccionario de s\u00edmbolos de sue\u00f1os (A-Z): 50+ significados",
+    "og_description": "Explora m\u00e1s de 50 s\u00edmbolos de sue\u00f1os con interpretaciones claras.",
+    "twitter_title": "Diccionario de s\u00edmbolos de sue\u00f1os",
+    "twitter_description": "Descubre el significado de tus s\u00edmbolos on\u00edricos.",
+    "h1_text": "Diccionario de S\u00edmbolos de Sue\u00f1os",
+    "intro_paragraph": "Explora el significado de m\u00e1s de 50 s\u00edmbolos on\u00edricos comunes. Cada s\u00edmbolo viene con sus interpretaciones m\u00e1s extendidas y preguntas para hacerte a ti mismo.",
+    "hero_search_placeholder": "Buscar un s\u00edmbolo (agua, serpiente, ca\u00edda\u2026)",
+    "sticky_search_placeholder": "Buscar s\u00edmbolos\u2026",
+    "no_results_text": "Ning\u00fan s\u00edmbolo encontrado para",
+    "browse_by_category": "Explorar por categor\u00eda",
+    "section_heading": "S\u00edmbolos que empiezan con",
+    "ask_yourself_label": "Preg\u00fantate:",
+    "cta_title": "\u00bfListo para descifrar <em>tus</em> sue\u00f1os?",
+    "cta_subtitle": "An\u00e1lisis IA personalizado seg\u00fan el contexto de tu sue\u00f1o.",
+    "cta_button": "Probar Noctalia",
+    "faq_title": "Preguntas frecuentes",
+    "faq": [
+      { "q": "\u00bfC\u00f3mo interpretar s\u00edmbolos de sue\u00f1os?", "a": "La interpretaci\u00f3n depende del contexto personal del so\u00f1ador. El mismo s\u00edmbolo puede tener significados diferentes seg\u00fan las experiencias y la cultura de cada persona. Es importante considerar tus emociones en el sue\u00f1o y tus asociaciones personales con el s\u00edmbolo." },
+      { "q": "\u00bfSon universales los s\u00edmbolos de sue\u00f1os?", "a": "Algunos s\u00edmbolos tienen significados relativamente universales (como el agua para las emociones), pero muchos dependen del contexto cultural y personal. Por eso, un diccionario de sue\u00f1os debe usarse como punto de partida, no como verdad absoluta." },
+      { "q": "\u00bfPor qu\u00e9 siempre sue\u00f1o con los mismos s\u00edmbolos?", "a": "Los s\u00edmbolos recurrentes suelen indicar temas no resueltos en tu vida. Tu subconsciente intenta llamar tu atenci\u00f3n sobre algo. Llevar un diario de sue\u00f1os puede ayudarte a identificar estos patrones." }
+    ],
+    "analyze_heading": "Analiza tus s\u00edmbolos con Noctalia",
+    "analyze_text": "Noctalia va m\u00e1s all\u00e1 de un simple diccionario. Noctalia analiza tus s\u00edmbolos en el contexto de TU sue\u00f1o para una interpretaci\u00f3n personalizada.",
+    "related_heading": "Art\u00edculos relacionados",
+    "related_articles": [
+      { "tag": "Interpretaci\u00f3n", "title": "Significado de sue\u00f1os recurrentes", "desc": "Entiende por qu\u00e9 ciertos sue\u00f1os siguen apareciendo.", "href": "../blog/recurring-dreams-meaning" },
+      { "tag": "Gu\u00eda", "title": "C\u00f3mo recordar tus sue\u00f1os", "desc": "T\u00e9cnicas para mejorar tu recuerdo on\u00edrico.", "href": "../blog/how-to-remember-dreams" },
+      { "tag": "Pr\u00e1ctica", "title": "C\u00f3mo empezar un diario de sue\u00f1os", "desc": "Construye un h\u00e1bito de registro de sue\u00f1os desde esta noche.", "href": "../blog/dream-journal-guide" }
+    ]
+  },
+  "de": {
+    "page_title": "Traumsymbole-Lexikon: Deutung von A bis Z | Noctalia",
+    "meta_description": "Komplettes Lexikon der Traumsymbole. Entdecke die Bedeutung von \u00fcber 50 h\u00e4ufigen Traumsymbolen: Wasser, Fallen, Fliegen, Z\u00e4hne, Tiere und mehr.",
+    "og_title": "Traumsymbole-Lexikon: Deutung von A bis Z",
+    "og_description": "\u00dcber 50 Traumsymbole und ihre Bedeutungen.",
+    "twitter_title": "Traumsymbole-Lexikon",
+    "twitter_description": "Entdecke die Bedeutung deiner Traumsymbole.",
+    "h1_text": "Traumsymbole-Lexikon",
+    "intro_paragraph": "Entdecke die Bedeutung von \u00fcber 50 h\u00e4ufigen Traumsymbolen. Jedes Symbol enth\u00e4lt die verbreitetsten Deutungen und Fragen zur Selbstreflexion.",
+    "hero_search_placeholder": "Symbol suchen (Wasser, Schlange, Fallen\u2026)",
+    "sticky_search_placeholder": "Symbole suchen\u2026",
+    "no_results_text": "Keine Symbole gefunden f\u00fcr",
+    "browse_by_category": "Nach Kategorie durchsuchen",
+    "section_heading": "Symbole mit",
+    "ask_yourself_label": "Frage dich:",
+    "cta_title": "Bereit, <em>deine</em> Tr\u00e4ume zu entschl\u00fcsseln?",
+    "cta_subtitle": "KI-Analyse, die auf den Kontext deines Traums zugeschnitten ist.",
+    "cta_button": "Noctalia ausprobieren",
+    "faq_title": "H\u00e4ufig gestellte Fragen",
+    "faq": [
+      { "q": "Wie interpretiert man Traumsymbole?", "a": "Die Interpretation h\u00e4ngt vom pers\u00f6nlichen Kontext des Tr\u00e4umers ab. Dasselbe Symbol kann je nach Erfahrungen und Kultur unterschiedliche Bedeutungen haben. Es ist wichtig, die eigenen Emotionen im Traum und die pers\u00f6nlichen Assoziationen mit dem Symbol zu ber\u00fccksichtigen." },
+      { "q": "Sind Traumsymbole universell?", "a": "Einige Symbole haben relativ universelle Bedeutungen (wie Wasser f\u00fcr Emotionen), aber viele h\u00e4ngen vom kulturellen und pers\u00f6nlichen Kontext ab. Deshalb sollte ein Traumlexikon als Ausgangspunkt genutzt werden, nicht als absolute Wahrheit." },
+      { "q": "Warum tr\u00e4ume ich immer von denselben Symbolen?", "a": "Wiederkehrende Symbole deuten oft auf ungel\u00f6ste Themen im Leben hin. Das Unterbewusstsein versucht, die Aufmerksamkeit auf etwas zu lenken. Ein Traumtagebuch kann helfen, diese Muster zu erkennen." }
+    ],
+    "analyze_heading": "Analysiere deine Symbole mit Noctalia",
+    "analyze_text": "Noctalia geht \u00fcber ein einfaches Lexikon hinaus. Noctalia analysiert deine Symbole im Kontext DEINES Traums f\u00fcr eine pers\u00f6nliche Deutung.",
+    "related_heading": "Verwandte Artikel",
+    "related_articles": [
+      { "tag": "Deutung", "title": "Bedeutung wiederkehrender Tr\u00e4ume", "desc": "Verstehe, warum bestimmte Tr\u00e4ume immer wiederkehren.", "href": "../blog/recurring-dreams-meaning" },
+      { "tag": "Ratgeber", "title": "Tr\u00e4ume besser erinnern", "desc": "Techniken zur Verbesserung deiner Traumerinnerung.", "href": "../blog/how-to-remember-dreams" },
+      { "tag": "Praxis", "title": "Traumtagebuch starten", "desc": "Entwickle ab heute eine Gewohnheit des Traum-Tagebuchs.", "href": "../blog/dream-journal-guide" }
+    ]
+  },
+  "it": {
+    "page_title": "Dizionario dei simboli dei sogni (A\u2013Z) | Noctalia",
+    "meta_description": "Dizionario completo dei simboli dei sogni. Scopri il significato di oltre 50 simboli onirici comuni: acqua, cadere, volare, denti, animali e altro.",
+    "og_title": "Dizionario dei simboli dei sogni (A\u2013Z)",
+    "og_description": "Oltre 50 simboli dei sogni e i loro significati.",
+    "twitter_title": "Dizionario dei simboli dei sogni",
+    "twitter_description": "Scopri il significato dei tuoi simboli onirici.",
+    "h1_text": "Dizionario dei simboli dei sogni",
+    "intro_paragraph": "Esplora il significato di oltre 50 simboli onirici comuni. Ogni simbolo include le interpretazioni pi\u00f9 diffuse e domande da porsi.",
+    "hero_search_placeholder": "Cerca un simbolo (acqua, serpente, caduta\u2026)",
+    "sticky_search_placeholder": "Cerca i simboli\u2026",
+    "no_results_text": "Nessun simbolo trovato per",
+    "browse_by_category": "Sfoglia per categoria",
+    "section_heading": "Simboli che iniziano con",
+    "ask_yourself_label": "Chiediti:",
+    "cta_title": "Pronto a decifrare <em>i tuoi</em> sogni?",
+    "cta_subtitle": "Analisi IA personalizzata in base al contesto del tuo sogno.",
+    "cta_button": "Prova Noctalia",
+    "faq_title": "Domande frequenti",
+    "faq": [
+      { "q": "Come si interpretano i simboli dei sogni?", "a": "L'interpretazione dipende dal contesto personale del sognatore. Lo stesso simbolo pu\u00f2 avere significati diversi a seconda delle esperienze e della cultura di ciascuno. \u00c8 importante considerare le proprie emozioni nel sogno e le associazioni personali con il simbolo." },
+      { "q": "I simboli dei sogni sono universali?", "a": "Alcuni simboli hanno significati relativamente universali (come l'acqua per le emozioni), ma molti dipendono dal contesto culturale e personale. Per questo un dizionario dei sogni va usato come punto di partenza, non come verit\u00e0 assoluta." },
+      { "q": "Perch\u00e9 sogno sempre gli stessi simboli?", "a": "I simboli ricorrenti spesso indicano temi irrisolti nella vita. Il subconscio cerca di attirare l'attenzione su qualcosa. Tenere un diario dei sogni pu\u00f2 aiutare a identificare questi schemi." }
+    ],
+    "analyze_heading": "Analizza i tuoi simboli con Noctalia",
+    "analyze_text": "Noctalia va oltre un semplice dizionario. Noctalia analizza i tuoi simboli nel contesto del TUO sogno per un'interpretazione personalizzata.",
+    "related_heading": "Articoli correlati",
+    "related_articles": [
+      { "tag": "Interpretazione", "title": "Significato dei sogni ricorrenti", "desc": "Comprendi perch\u00e9 certi sogni continuano a verificarsi.", "href": "../blog/recurring-dreams-meaning" },
+      { "tag": "Guida", "title": "Come ricordare i tuoi sogni", "desc": "Tecniche per migliorare il ricordo dei tuoi sogni.", "href": "../blog/how-to-remember-dreams" },
+      { "tag": "Pratica", "title": "Come iniziare un diario dei sogni", "desc": "Costruisci un'abitudine duratura di diaristica dei sogni.", "href": "../blog/dream-journal-guide" }
+    ]
+  }
+}
