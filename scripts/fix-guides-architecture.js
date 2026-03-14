@@ -388,23 +388,6 @@ function renderLayoutCss() {
           gap: 1rem;
           margin-bottom: 1.75rem;
         }
-        .dictionary-summary {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.75rem;
-          margin-top: 0.25rem;
-        }
-        .summary-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.65rem 0.9rem;
-          border-radius: 9999px;
-          border: 1px solid rgba(255,255,255,0.1);
-          background: rgba(255,255,255,0.04);
-          color: rgba(248,245,255,0.84);
-          font-size: 0.82rem;
-        }
         .quick-browse-panel {
           padding: 1.1rem;
           margin-bottom: 1.5rem;
@@ -857,7 +840,7 @@ ${renderViewTransitionHeadStyles()}
         #stickyBar .sb-inner {
             display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
         }
-        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: 13rem; }
+        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(22rem, 100%); }
         #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
@@ -901,27 +884,8 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
                     ${escapeHtml(dc.h1_text)}
                 </h1>
 
-                <p class="text-base md:text-lg text-purple-200/80 leading-relaxed max-w-3xl mx-auto lg:mx-0 mb-0">
-                    ${escapeHtml(dc.intro_paragraph)}
-                </p>
-
-                <div class="dictionary-summary justify-center lg:justify-start">
-                    <span class="summary-chip">
-                        <i data-lucide="book-open" class="w-4 h-4 text-dream-salmon"></i>
-                        ${allSymbols.length} ${escapeHtml(t.symbols_in_category || 'symbols')}
-                    </span>
-                    <span class="summary-chip">
-                        <i data-lucide="folders" class="w-4 h-4 text-dream-salmon"></i>
-                        ${CATEGORY_ORDER.length} ${escapeHtml(uiCopy.categoriesShort)}
-                    </span>
-                    <span class="summary-chip">
-                        <i data-lucide="list-filter" class="w-4 h-4 text-dream-salmon"></i>
-                        A-Z
-                    </span>
-                </div>
-
                 <!-- Hero search -->
-                <div class="relative max-w-2xl mx-auto lg:mx-0">
+                <div class="relative w-full max-w-4xl mx-auto lg:mx-0">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
                     <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
                         class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
