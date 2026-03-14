@@ -4,6 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
+const { renderViewTransitionHeadStyles } = require('./lib/docs-view-transitions');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -268,6 +269,7 @@ ${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${tar
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
     <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
+${renderViewTransitionHeadStyles()}
     <script src="/js/lucide.min.js?v=${version}" defer></script>
     <style>
         body { margin: 0; background: #0a0514; color: #f8f5ff; font-family: system-ui, sans-serif; }
@@ -640,6 +642,7 @@ ${ogLocaleAlts}
     <!-- Compiled Tailwind CSS -->
     <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
+${renderViewTransitionHeadStyles()}
 <!-- Lucide Icons (deferred) -->
     <script src="/js/lucide.min.js?v=${version}" defer></script>
 

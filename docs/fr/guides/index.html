@@ -17,9 +17,22 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
     <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo192.png" sizes="192x192">
-    <link rel="stylesheet" href="/css/styles.min.css?v=20260312-145214">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260312-145214">
-    <script src="/js/lucide.min.js?v=20260312-145214" defer></script>
+    <link rel="stylesheet" href="/css/styles.min.css?v=20260314-191635">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=20260314-191635">
+    <style>
+      @view-transition {
+        navigation: auto;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-group(*),
+        ::view-transition-old(*),
+        ::view-transition-new(*) {
+          animation: none !important;
+        }
+      }
+    </style>
+    <script src="/js/lucide.min.js?v=20260314-191635" defer></script>
     <style>
         body { margin: 0; background: #0a0514; color: #f8f5ff; font-family: system-ui, sans-serif; }
         a { color: inherit; text-decoration: none; }
@@ -296,6 +309,6 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=20260312-145214" defer></script>
+    <script src="/js/language-dropdown.js?v=20260314-191635" defer></script>
 </body>
 </html>
