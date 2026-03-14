@@ -40,11 +40,11 @@ const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actio
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
 const DICTIONARY_UI_COPY = {
-  en: { categoriesShort: 'categories', quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.' },
-  fr: { categoriesShort: 'catégories', quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.' },
-  es: { categoriesShort: 'categorías', quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.' },
-  de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.' },
-  it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.' },
+  en: { categoriesShort: 'categories', quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.', clearSearch: 'Clear search' },
+  fr: { categoriesShort: 'catégories', quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.', clearSearch: 'Vider la recherche' },
+  es: { categoriesShort: 'categorías', quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.', clearSearch: 'Borrar búsqueda' },
+  de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.', clearSearch: 'Suche löschen' },
+  it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.', clearSearch: 'Cancella ricerca' },
 };
 
 function readJson(fileName) {
@@ -378,9 +378,6 @@ function renderLayoutCss() {
         .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
         .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
         .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
-        @media (min-width: 1024px) {
-            #stickyBar .sb-alpha { display: none; }
-        }
         .dictionary-shell { max-width: 70rem; }
         .dictionary-header {
           display: flex;
@@ -496,6 +493,9 @@ function renderLayoutCss() {
           margin-top: 0.95rem;
           border-top: 1px solid rgba(255,255,255,0.06);
           color: rgba(196,181,253,0.82);
+        }
+        #symbolsList > section {
+          scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
         }
         @media (min-width: 768px) {
           .dictionary-header { margin-bottom: 2rem; }
@@ -833,15 +833,37 @@ ${renderViewTransitionHeadStyles()}
         /* Sticky search + alpha bar */
         #stickyBar {
             position: sticky; top: 4.5rem; z-index: 40;
-            opacity: 0; pointer-events: none;
+            display: none; opacity: 0; pointer-events: none;
             transition: opacity 0.25s ease;
         }
-        #stickyBar.sb-visible { opacity: 1; pointer-events: auto; }
+        #stickyBar.sb-visible { display: block; opacity: 1; pointer-events: auto; }
         #stickyBar .sb-inner {
             display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
         }
         #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(22rem, 100%); }
         #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
+        .search-clear {
+          position: absolute;
+          right: 0.8rem;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 2rem;
+          height: 2rem;
+          border-radius: 9999px;
+          border: 0;
+          background: rgba(255,255,255,0.08);
+          color: rgba(248,245,255,0.76);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 0.2s ease, color 0.2s ease;
+        }
+        .search-clear:hover {
+          background: rgba(253,164,129,0.18);
+          color: #fff;
+        }
+        .search-clear[hidden] { display: none !important; }
         /* Hero search */
         .hero-search:focus { outline: none; border-color: #FDA481; }
 ${renderLayoutCss()}
@@ -888,7 +910,10 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
                 <div class="relative w-full max-w-4xl mx-auto lg:mx-0">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
                     <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
-                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
+                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
+                    <button type="button" id="heroSearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" hidden>
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </header>
 
@@ -910,8 +935,11 @@ ${renderMobileAlphaHtml(letters)}
                     <div class="sb-search">
                         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
                         <input type="text" id="stickySearch" placeholder="${escapeHtml(dc.sticky_search_placeholder)}"
-                            class="search-input w-full rounded-full py-2 pl-10 pr-4 text-sm text-dream-cream transition-colors"
+                            class="search-input w-full rounded-full py-2 pl-10 pr-12 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
+                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" hidden>
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
                     </div>
                     <!-- Alphabet -->
                     <div class="sb-alpha letter-nav">
@@ -1004,7 +1032,8 @@ ${renderGuidesFooter(lang, t, pages)}
                 if (!stickyBar) return;
                 const stickyTop = parseFloat(window.getComputedStyle(stickyBar).top) || 0;
                 const navbarHeight = navbar?.getBoundingClientRect().height || 0;
-                const offset = Math.ceil(Math.max(navbarHeight, stickyTop) + stickyBar.getBoundingClientRect().height + 16);
+                const stickyHeight = stickyBar.classList.contains('sb-visible') ? stickyBar.getBoundingClientRect().height : 0;
+                const offset = Math.ceil(Math.max(navbarHeight, stickyTop) + stickyHeight + 16);
                 document.documentElement.style.setProperty('--dictionary-scroll-offset', \`\${offset}px\`);
             }
 
@@ -1090,20 +1119,49 @@ ${symbolCatEntries}
             // Hero search + sticky bar show/hide
             const heroSearch = document.getElementById('heroSearch');
             const stickySearch = document.getElementById('stickySearch');
+            const heroSearchClear = document.getElementById('heroSearchClear');
+            const stickySearchClear = document.getElementById('stickySearchClear');
             const heroHeader = heroSearch.closest('header');
-            const heroObserver = new IntersectionObserver(([entry]) => {
-                stickyBar.classList.toggle('sb-visible', !entry.isIntersecting);
-            }, { threshold: 0 });
-            heroObserver.observe(heroHeader);
+
+            function setSearchValue(nextValue, source = 'hero') {
+                heroSearch.value = nextValue;
+                stickySearch.value = nextValue;
+                const hasValue = nextValue.trim().length > 0;
+                if (heroSearchClear) heroSearchClear.hidden = !hasValue;
+                if (stickySearchClear) stickySearchClear.hidden = !hasValue;
+                filterSymbols(nextValue);
+                if (source === 'sticky') {
+                    stickySearch.focus({ preventScroll: true });
+                }
+            }
+
+            function syncStickyBarVisibility() {
+                if (!heroHeader || !stickyBar) return;
+                const heroBottom = heroHeader.getBoundingClientRect().bottom;
+                const navbarHeight = navbar?.getBoundingClientRect().height || 0;
+                const shouldShow = heroBottom <= navbarHeight + 12;
+                stickyBar.classList.toggle('sb-visible', shouldShow);
+                updateSectionScrollOffset();
+            }
+
+            syncStickyBarVisibility();
+            window.addEventListener('scroll', syncStickyBarVisibility, { passive: true });
+            window.addEventListener('resize', syncStickyBarVisibility);
 
             heroSearch.addEventListener('input', (e) => {
-                stickySearch.value = e.target.value;
-                filterSymbols(e.target.value);
+                setSearchValue(e.target.value, 'hero');
             });
             stickySearch.addEventListener('input', (e) => {
-                heroSearch.value = e.target.value;
-                filterSymbols(e.target.value);
+                setSearchValue(e.target.value, 'sticky');
             });
+            heroSearchClear?.addEventListener('click', () => {
+                setSearchValue('', 'hero');
+                heroSearch.focus({ preventScroll: true });
+            });
+            stickySearchClear?.addEventListener('click', () => {
+                setSearchValue('', 'sticky');
+            });
+            setSearchValue(heroSearch.value || '');
 
             // ── Smooth scroll for letter navigation ───────────────────────
             document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
@@ -1111,7 +1169,10 @@ ${symbolCatEntries}
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
                     updateSectionScrollOffset();
-                    if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                    if (target) {
+                        setActiveAlpha(link.dataset.letter);
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
                 });
             });
 
@@ -1121,10 +1182,21 @@ ${symbolCatEntries}
                     l.classList.toggle('alpha-active', l.dataset.letter === letter);
                 });
             }
-            const alphaObserver = new IntersectionObserver((entries) => {
-                entries.forEach(e => { if (e.isIntersecting) setActiveAlpha(e.target.id); });
-            }, { rootMargin: '-5% 0px -80% 0px' });
-            listSections.forEach(s => alphaObserver.observe(s));
+            function syncActiveAlphaFromScroll() {
+                const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
+                let activeSection = listSections[0]?.id || null;
+                listSections.forEach((section) => {
+                    if (section.style.display === 'none') return;
+                    const top = section.getBoundingClientRect().top;
+                    if (top - offset <= 24) {
+                        activeSection = section.id;
+                    }
+                });
+                if (activeSection) setActiveAlpha(activeSection);
+            }
+            syncActiveAlphaFromScroll();
+            window.addEventListener('scroll', syncActiveAlphaFromScroll, { passive: true });
+            window.addEventListener('resize', syncActiveAlphaFromScroll);
 
             // ── Back-to-top button ────────────────────────────────────────
             const backToTop = document.getElementById('backToTop');
