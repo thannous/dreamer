@@ -32,6 +32,14 @@ const COPY = {
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
 };
 
+const HERO_SEARCH_PLACEHOLDERS = {
+  en: 'Search a symbol (water, snake, falling\u2026)',
+  fr: 'Rechercher un symbole (eau, serpent, chute\u2026)',
+  es: 'Buscar un s\u00edmbolo (agua, serpiente, ca\u00edda\u2026)',
+  de: 'Symbol suchen (Wasser, Schlange, Fallen\u2026)',
+  it: 'Cerca un simbolo (acqua, serpente, caduta\u2026)',
+};
+
 const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
@@ -416,6 +424,11 @@ function renderLayoutCss() {
         .sidebar-alpha-link { min-width: 1.75rem; text-align: center; padding: 3px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
         .sidebar-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
         .sidebar-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        .hero-search, .search-input {
+          background: rgba(255,255,255,0.08) !important;
+          color: #f8f5ff !important;
+          caret-color: #f8f5ff;
+        }
         /* == /dict-layout == */`;
 }
 
@@ -623,6 +636,19 @@ ${renderGuidesFooter(lang, t, pages)}`,
     /(<!-- FAQ)/,
     `<!-- dict-layout-close -->\n                </div><!-- /mainContentArea -->\n            </div><!-- /dictionaryLayout -->\n            <!-- /dict-layout-close -->\n\n            $1`
   );
+
+  // Fix duplicate const stickyBar declaration (causes SyntaxError in EN)
+  next = next.replace(
+    /(const stickySearch[^\n]*\n)\s*const stickyBar = document\.getElementById\('stickyBar'\);\s*\n/,
+    '$1'
+  );
+
+  // Inject missing hero search input (FR was missing it)
+  if (!next.includes('id="heroSearch"')) {
+    const placeholder = escapeHtml(HERO_SEARCH_PLACEHOLDERS[lang] || HERO_SEARCH_PLACEHOLDERS.en);
+    const heroSearchHtml = `\n                <!-- Hero search -->\n                <div class="relative max-w-xl mx-auto">\n                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>\n                    <input type="text" id="heroSearch" placeholder="${placeholder}"\n                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-300/50 transition-colors">\n                </div>`;
+    next = next.replace(/([ \t]*<\/header>)/, `${heroSearchHtml}\n$1`);
+  }
 
   // 7+8. Update JS selectors to include sidebar and mobile alpha links
   next = next.replace(

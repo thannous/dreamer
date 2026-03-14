@@ -125,6 +125,11 @@
         .sidebar-alpha-link { min-width: 1.75rem; text-align: center; padding: 3px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
         .sidebar-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
         .sidebar-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
+        .hero-search, .search-input {
+          background: rgba(255,255,255,0.08) !important;
+          color: #f8f5ff !important;
+          caret-color: #f8f5ff;
+        }
         /* == /dict-layout == */
     </style>
 
@@ -268,6 +273,13 @@
                 <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto">
                     Explorez la signification de plus de 50 symboles oniriques courants. Chaque symbole est accompagne de ses interprétations les plus répandues et des questions a vous poser.
                 </p>
+
+                <!-- Hero search -->
+                <div class="relative max-w-xl mx-auto">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
+                    <input type="text" id="heroSearch" placeholder="Rechercher un symbole (eau, serpent, chute…)"
+                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-300/50 transition-colors">
+                </div>
             </header>
 
             <!-- dict-pills -->
@@ -1404,7 +1416,6 @@
             // Hero search + sticky bar show/hide
             const heroSearch = document.getElementById('heroSearch');
             const stickySearch = document.getElementById('stickySearch');
-            const stickyBar = document.getElementById('stickyBar');
             const heroHeader = heroSearch.closest('header');
             const heroObserver = new IntersectionObserver(([entry]) => {
                 stickyBar.classList.toggle('sb-visible', !entry.isIntersecting);
