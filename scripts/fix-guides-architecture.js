@@ -596,6 +596,23 @@ ${renderGuidesFooter(lang, t, pages)}`,
   // Remove "GUIDE DE RÉFÉRENCE" badge (only FR had it, inconsistent with other langs)
   next = next.replace(/[ \t]*<div class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon[^>]*>[\s\S]*?<\/div>\s*\n?/g, '');
 
+  // Normalize h1 margin-bottom to mb-4 (FR had mb-6)
+  next = next.replace(/(class="font-serif text-3xl md:text-5xl) mb-6 /g, '$1 mb-4 ');
+
+  // Normalize paragraph margin-bottom to mb-6 (FR missing, DE/ES had mb-4)
+  next = next.replace(
+    /(class="text-lg text-purple-200\/80 leading-relaxed max-w-2xl mx-auto)(?: mb-4)?(")/g,
+    '$1 mb-6$2'
+  );
+
+  // Ensure .letter-nav CSS rule exists (FR was missing it)
+  if (!next.includes('.letter-nav {')) {
+    next = next.replace(
+      /(\.hero-search:focus)/,
+      '.letter-nav { scroll-behavior: smooth; }\n        $1'
+    );
+  }
+
   // ── Dictionary layout: sidebar (desktop) + pills (mobile) ───────────
   // Cleanup previous injection (new markers)
   next = next.replace(/[ \t]*\/\* == dict-layout == \*\/[\s\S]*?\/\* == \/dict-layout == \*\/\n?/g, '');
@@ -703,17 +720,8 @@ ${renderGuidesFooter(lang, t, pages)}`,
                 }`
   );
 
-  // Auto-scroll to results when searching from hero input
-  // Revert previous patch first for idempotency
+  // Remove auto-scroll (was added previously, clean up)
   next = next.replace(/\n\s*if \(e\.target\.value\.trim\(\)\) \{ document\.getElementById\('symbolsList'\)\.scrollIntoView\(\{ behavior: 'smooth', block: 'start' \}\); \}/g, '');
-  next = next.replace(
-    /heroSearch\.addEventListener\('input',\s*\(e\)\s*=>\s*\{\s*\n\s*stickySearch\.value = e\.target\.value;\s*\n\s*filterSymbols\(e\.target\.value\);\s*\n\s*\}\);/,
-    `heroSearch.addEventListener('input', (e) => {
-                stickySearch.value = e.target.value;
-                filterSymbols(e.target.value);
-                if (e.target.value.trim()) { document.getElementById('symbolsList').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-            });`
-  );
 
   // 7+8. Update JS selectors to include sidebar and mobile alpha links
   next = next.replace(

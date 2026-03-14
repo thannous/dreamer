@@ -1408,7 +1408,6 @@
             heroSearch.addEventListener('input', (e) => {
                 stickySearch.value = e.target.value;
                 filterSymbols(e.target.value);
-                if (e.target.value.trim()) { document.getElementById('symbolsList').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             });
             stickySearch.addEventListener('input', (e) => {
                 heroSearch.value = e.target.value;
