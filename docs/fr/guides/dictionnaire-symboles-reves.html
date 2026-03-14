@@ -92,6 +92,7 @@
         #stickyBar .sb-search { position: relative; flex-shrink: 0; width: 13rem; }
         #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
         /* Hero search */
+        .letter-nav { scroll-behavior: smooth; }
         .hero-search:focus { outline: none; border-color: #FDA481; }
         /* == dict-layout == */
         #dictionaryLayout { display: flex; gap: 2rem; }
@@ -261,11 +262,11 @@
 
             <!-- Header -->
 	            <header class="text-center mb-8">
-<h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+<h1 class="font-serif text-3xl md:text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
 	                    Dictionnaire des symboles de rêves
 	                </h1>
 
-                <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto">
+                <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto mb-6">
                     Explorez la signification de plus de 50 symboles oniriques courants. Chaque symbole est accompagne de ses interprétations les plus répandues et des questions a vous poser.
                 </p>
 
@@ -1432,7 +1433,6 @@
             heroSearch.addEventListener('input', (e) => {
                 stickySearch.value = e.target.value;
                 filterSymbols(e.target.value);
-                if (e.target.value.trim()) { document.getElementById('symbolsList').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             });
             stickySearch.addEventListener('input', (e) => {
                 heroSearch.value = e.target.value;
