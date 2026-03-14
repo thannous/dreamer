@@ -246,7 +246,7 @@
         </div>
     </nav>
 
-    <main class="pt-24 pb-20 px-4">
+    <main class="pt-32 pb-20 px-4">
         <div class="max-w-6xl mx-auto">
 
             <!-- Breadcrumb -->
@@ -261,7 +261,7 @@
             </nav>
 
             <!-- Header -->
-            <header class="text-center mb-4">
+            <header class="text-center mb-8">
                 <h1 class="font-serif text-3xl md:text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Dizionario dei simboli dei sogni
                 </h1>
@@ -1417,6 +1417,7 @@
             heroSearch.addEventListener('input', (e) => {
                 stickySearch.value = e.target.value;
                 filterSymbols(e.target.value);
+                if (e.target.value.trim()) { document.getElementById('symbolsList').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             });
             stickySearch.addEventListener('input', (e) => {
                 heroSearch.value = e.target.value;
