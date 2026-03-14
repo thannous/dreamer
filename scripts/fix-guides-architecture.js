@@ -39,6 +39,13 @@ const COPY = {
 const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
+const DICTIONARY_UI_COPY = {
+  en: { categoriesShort: 'categories', quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.' },
+  fr: { categoriesShort: 'catégories', quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.' },
+  es: { categoriesShort: 'categorías', quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.' },
+  de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.' },
+  it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.' },
+};
 
 function readJson(fileName) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8'));
@@ -358,11 +365,11 @@ function computeCategoryCounts() {
 
 function renderLayoutCss() {
   return `        /* == dict-layout == */
-        #dictionaryLayout { display: flex; gap: 2rem; }
+        #dictionaryLayout { display: block; }
         #mainContentArea { flex: 1; min-width: 0; }
-        #dictionarySidebar { display: none; }
-        #categoryGridSection { display: none !important; }
-        #mobilePills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+        #dictionarySidebar { display: none !important; }
+        #categoryGridSection { display: block !important; }
+        #mobilePills, #mobileAlpha { display: none; }
         .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,10,40,0.5); backdrop-filter: blur(8px); color: #e2daff; transition: all 0.2s ease; text-decoration: none; }
         .cat-pill:hover { border-color: rgba(253,164,129,0.3); color: #fda481; }
         .cat-pill .pill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
@@ -372,12 +379,144 @@ function renderLayoutCss() {
         .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
         .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
         @media (min-width: 1024px) {
-            #dictionarySidebar { display: block; width: 220px; flex-shrink: 0; position: sticky; top: 7rem; align-self: flex-start; max-height: calc(100vh - 8rem); overflow-y: auto; scrollbar-width: thin; scrollbar-color: #4c1d95 transparent; }
-            #dictionarySidebar::-webkit-scrollbar { width: 4px; }
-            #dictionarySidebar::-webkit-scrollbar-track { background: transparent; }
-            #dictionarySidebar::-webkit-scrollbar-thumb { background: #4c1d95; border-radius: 2px; }
-            #mobilePills, #mobileAlpha { display: none; }
             #stickyBar .sb-alpha { display: none; }
+        }
+        .dictionary-shell { max-width: 70rem; }
+        .dictionary-header {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 1.75rem;
+        }
+        .dictionary-summary {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin-top: 0.25rem;
+        }
+        .summary-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.65rem 0.9rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.04);
+          color: rgba(248,245,255,0.84);
+          font-size: 0.82rem;
+        }
+        .quick-browse-panel {
+          padding: 1.1rem;
+          margin-bottom: 1.5rem;
+          border: 1px solid rgba(253,164,129,0.08);
+        }
+        .quick-browse-copy {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: baseline;
+          justify-content: space-between;
+          gap: 0.75rem;
+          margin-bottom: 0.9rem;
+        }
+        .quick-browse-copy p {
+          color: rgba(226,218,255,0.72);
+          font-size: 0.92rem;
+        }
+        .category-browse-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.85rem;
+        }
+        .category-browse-card {
+          display: flex;
+          align-items: center;
+          gap: 0.9rem;
+          padding: 1rem;
+          border-radius: 1rem;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255,255,255,0.03);
+          text-decoration: none;
+          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .category-browse-card:hover {
+          transform: translateY(-1px);
+          border-color: rgba(253,164,129,0.2);
+          background: rgba(255,255,255,0.045);
+        }
+        .category-browse-icon {
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 9999px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(253,164,129,0.1);
+          color: #fda481;
+          flex-shrink: 0;
+        }
+        .category-browse-meta {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.18rem;
+        }
+        .category-browse-title {
+          color: #f8f5ff;
+          font-family: Georgia, serif;
+          font-size: 1rem;
+        }
+        .category-browse-count {
+          color: rgba(196,181,253,0.72);
+          font-size: 0.8rem;
+        }
+        .symbol-card {
+          background: rgba(16, 8, 30, 0.86);
+          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .symbol-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(253,164,129,0.18);
+          background: rgba(20, 10, 36, 0.94);
+        }
+        .symbol-card-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+          margin-bottom: 0.8rem;
+        }
+        .symbol-card-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.35rem 0.65rem;
+          border-radius: 9999px;
+          background: rgba(255,255,255,0.05);
+          color: rgba(248,245,255,0.78);
+          font-size: 0.72rem;
+          letter-spacing: 0.02em;
+        }
+        .symbol-card-arrow {
+          color: rgba(196,181,253,0.72);
+          font-size: 0.95rem;
+        }
+        .symbol-card-desc {
+          color: rgba(226,218,255,0.84);
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+          min-height: 4.5rem;
+        }
+        .symbol-card-question {
+          padding-top: 0.85rem;
+          margin-top: 0.95rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+          color: rgba(196,181,253,0.82);
+        }
+        @media (min-width: 768px) {
+          .dictionary-header { margin-bottom: 2rem; }
+          .category-browse-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         }
         .sidebar-section { margin-bottom: 1.5rem; }
         .sidebar-heading { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(196,181,253,0.6); margin-bottom: 0.75rem; font-weight: 600; }
@@ -474,6 +613,7 @@ const CATEGORY_ICONS = { nature: 'leaf', animals: 'paw-print', body: 'user', pla
 
 function generateDictionaryPage(lang, t) {
   const copy = COPY[lang];
+  const uiCopy = DICTIONARY_UI_COPY[lang] || DICTIONARY_UI_COPY.en;
   const version = readVersion();
   const dictContent = readJson('dictionary-content.json');
   const dc = dictContent[lang];
@@ -515,10 +655,14 @@ function generateDictionaryPage(lang, t) {
     const catSlug = (t.category_slugs || {})[cat] || cat;
     const icon = CATEGORY_ICONS[cat] || 'circle';
     const count = counts[cat] || 0;
-    return `                    <a href="/${lang}/${symbolPath}/${catSlug}" class="glass-panel rounded-xl p-5 text-center border border-transparent hover:border-dream-salmon/30 transition-all group">
-                        <i data-lucide="${icon}" class="w-8 h-8 mx-auto mb-3 text-dream-salmon"></i>
-                        <h3 class="font-serif text-dream-cream mb-1 group-hover:text-dream-salmon transition-colors">${escapeHtml(catName)}</h3>
-                        <span class="text-xs text-purple-300/80">${count} ${escapeHtml(t.symbols_in_category || 'symbols')}</span>
+    return `                    <a href="/${lang}/${symbolPath}/${catSlug}" class="category-browse-card group">
+                        <span class="category-browse-icon">
+                            <i data-lucide="${icon}" class="w-5 h-5"></i>
+                        </span>
+                        <span class="category-browse-meta">
+                            <span class="category-browse-title group-hover:text-dream-salmon transition-colors">${escapeHtml(catName)}</span>
+                            <span class="category-browse-count">${count} ${escapeHtml(t.symbols_in_category || 'symbols')}</span>
+                        </span>
                     </a>`;
   }).join('\n');
 
@@ -528,12 +672,21 @@ function generateDictionaryPage(lang, t) {
     const cards = syms.map((sym) => {
       const s = sym[lang];
       const dataSymbol = escapeHtml(s.slug + ' ' + s.slug + ' ' + s.slug);
-      const askText = (s.askYourself || []).join(' ');
+      const askText = s.askYourself?.[0] || '';
+      const catName = (t.category_names || {})[sym.category] || sym.category;
+      const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       return `
                         <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}">
-                            <a href="/${lang}/${symbolPath}/${s.slug}" class="block hover:opacity-80 transition-opacity"><h3 class="font-serif text-lg text-dream-cream mb-2">${escapeHtml(s.name)}</h3></a>
-                            <p class="text-sm text-gray-300 mb-3">${escapeHtml(s.shortDescription)}</p>
-                            <div class="text-xs text-purple-300/80">
+                            <div class="symbol-card-top">
+                                <span class="symbol-card-tag">
+                                    <span class="sidebar-cat-dot" style="background:${catColor}"></span>
+                                    ${escapeHtml(catName)}
+                                </span>
+                                <span class="symbol-card-arrow" aria-hidden="true">↗</span>
+                            </div>
+                            <a href="/${lang}/${symbolPath}/${s.slug}" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">${escapeHtml(s.name)}</h3></a>
+                            <p class="symbol-card-desc text-sm mb-0">${escapeHtml(s.shortDescription)}</p>
+                            <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">${escapeHtml(dc.ask_yourself_label)}</strong> ${escapeHtml(askText)}
                             </div>
                         </div>`;
@@ -727,8 +880,8 @@ ${renderJsonLd(breadcrumb)}
     <!-- Navbar -->
 ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
 
-    <main class="pt-32 pb-20 px-4">
-        <div class="max-w-6xl mx-auto">
+    <main class="pt-28 pb-20 px-4">
+        <div class="dictionary-shell mx-auto">
 
             <!-- Breadcrumb -->
             <nav class="text-sm text-purple-200/75 mb-8" aria-label="Breadcrumb">
@@ -742,21 +895,36 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="text-center mb-8">
+            <header class="dictionary-header text-center lg:text-left">
 
-                <h1 class="font-serif text-3xl md:text-5xl mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl mx-auto lg:mx-0">
                     ${escapeHtml(dc.h1_text)}
                 </h1>
 
-                <p class="text-lg text-purple-200/80 leading-relaxed max-w-2xl mx-auto mb-6">
+                <p class="text-base md:text-lg text-purple-200/80 leading-relaxed max-w-3xl mx-auto lg:mx-0 mb-0">
                     ${escapeHtml(dc.intro_paragraph)}
                 </p>
 
+                <div class="dictionary-summary justify-center lg:justify-start">
+                    <span class="summary-chip">
+                        <i data-lucide="book-open" class="w-4 h-4 text-dream-salmon"></i>
+                        ${allSymbols.length} ${escapeHtml(t.symbols_in_category || 'symbols')}
+                    </span>
+                    <span class="summary-chip">
+                        <i data-lucide="folders" class="w-4 h-4 text-dream-salmon"></i>
+                        ${CATEGORY_ORDER.length} ${escapeHtml(uiCopy.categoriesShort)}
+                    </span>
+                    <span class="summary-chip">
+                        <i data-lucide="list-filter" class="w-4 h-4 text-dream-salmon"></i>
+                        A-Z
+                    </span>
+                </div>
+
                 <!-- Hero search -->
-                <div class="relative max-w-xl mx-auto">
+                <div class="relative max-w-2xl mx-auto lg:mx-0">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
                     <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
-                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-300/50 transition-colors">
+                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-6 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
                 </div>
             </header>
 
@@ -794,26 +962,20 @@ ${stickyAlphaLinks}
 
             <!-- Browse by Category -->
 ${renderSidebarHtml(lang, t, counts, letters)}
-<section id="categoryGridSection" class="mb-6">
-                <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
-                    <i data-lucide="grid-3x3" class="w-6 h-6 text-dream-salmon"></i>
-                    ${escapeHtml(dc.browse_by_category)}
-                </h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
+                <div class="quick-browse-copy">
+                    <div>
+                        <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
+                            <i data-lucide="grid-3x3" class="w-5 h-5 text-dream-salmon"></i>
+                            ${escapeHtml(dc.browse_by_category)}
+                        </h2>
+                    </div>
+                    <p>${escapeHtml(uiCopy.quickBrowseHelp)}</p>
+                </div>
+                <div class="category-browse-grid">
 ${catGridCards}
                 </div>
             </section>
-
-            <!-- Intermediate CTA -->
-            <div class="glass-panel rounded-2xl p-5 mb-12 flex items-center justify-between flex-wrap gap-4 border border-dream-salmon/10">
-                <div>
-                    <p class="font-serif text-dream-cream text-lg">${dc.cta_title.replace(/<em>/g, '<em class="text-dream-salmon not-italic">')}</p>
-                    <p class="text-sm text-purple-200/70 mt-1">${escapeHtml(dc.cta_subtitle)}</p>
-                </div>
-                <a href="/${lang}/" class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors text-sm shrink-0">
-                    ${escapeHtml(dc.cta_button)} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-            </div>
 
             <!-- Symbols Dictionary -->
             <div id="symbolsList">
