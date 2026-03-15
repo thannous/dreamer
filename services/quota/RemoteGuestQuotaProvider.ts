@@ -3,8 +3,8 @@ import type { User } from '@supabase/supabase-js';
 import { QUOTAS, type UserTier } from '@/constants/limits';
 import { getApiBaseUrl } from '@/lib/config';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
-import { isGuestSessionError } from '@/lib/errors';
-import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
+import { GuestSessionError, GuestSessionErrorCode, isGuestSessionError } from '@/lib/errors';
+import { getGuestBootstrapState, getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
 import { fetchJSON } from '@/lib/http';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type { QuotaStatus } from '@/lib/types';
@@ -142,17 +142,64 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         ...NETWORK_REQUEST_POLICIES.quotaStatus,
       });
 
-    const initialHeaders = await getGuestHeaders();
+    const initialHeaders = await getGuestHeaders({ requireSession: true });
     try {
       return await requestWithHeaders(initialHeaders);
     } catch (error) {
       if (error instanceof Error && isGuestSessionError(error)) {
         await invalidateGuestSession();
-        const freshHeaders = await getGuestHeaders();
-        return await requestWithHeaders(freshHeaders);
+        const freshHeaders = await getGuestHeaders({ requireSession: true });
+        try {
+          return await requestWithHeaders(freshHeaders);
+        } catch (retryError) {
+          if (retryError instanceof Error && isGuestSessionError(retryError)) {
+            throw new GuestSessionError(
+              GuestSessionErrorCode.EXPIRED,
+              'guest_session_expired'
+            );
+          }
+          throw retryError;
+        }
       }
       throw error;
     }
+  }
+
+  private buildDegradedStatus(
+    fallback: QuotaStatus,
+    reasonCode: GuestSessionErrorCode,
+    defaults = QUOTAS.guest
+  ): QuotaStatus {
+    const usage = this.buildUsage(undefined, fallback.usage, defaults);
+    const reasonsByCode: Record<GuestSessionErrorCode, string> = {
+      [GuestSessionErrorCode.UNAVAILABLE]:
+        'Guest AI is temporarily unavailable. You can still record dreams locally.',
+      [GuestSessionErrorCode.EXPIRED]:
+        'Guest access expired. Please try again in a moment.',
+      [GuestSessionErrorCode.PLATFORM_UNSUPPORTED]:
+        'Guest AI is not available on this platform right now. You can still record dreams locally.',
+      [GuestSessionErrorCode.QUOTA_UNAVAILABLE]:
+        'Guest quota is temporarily unavailable. You can still record dreams locally.',
+    };
+
+    return {
+      tier: 'guest',
+      usage,
+      canAnalyze: false,
+      canExplore: false,
+      isUpgraded: fallback.isUpgraded ?? false,
+      reasons: [reasonsByCode[reasonCode]],
+      guestBootstrapStatus: 'degraded',
+      guestBootstrapReasonCode: reasonCode,
+    };
+  }
+
+  private getBootstrapReasonCode(): GuestSessionErrorCode | null {
+    const state = getGuestBootstrapState();
+    if (state.status === 'ready') {
+      return null;
+    }
+    return state.reasonCode ?? GuestSessionErrorCode.UNAVAILABLE;
   }
 
   private async fetchQuota(target?: QuotaDreamTarget, tier: UserTier = 'guest'): Promise<QuotaStatus> {
@@ -164,13 +211,18 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
     }
 
     const fallbackStatus = await this.fallback.getQuotaStatus(null, tier, target);
-    const cacheFallback = () => {
-      this.cache.set(cacheKey, { value: fallbackStatus, expiresAt: Date.now() + this.CACHE_TTL });
-      return fallbackStatus;
-    };
+
+    const degradedReason = this.getBootstrapReasonCode();
+    if (degradedReason) {
+      const degraded = this.buildDegradedStatus(fallbackStatus, degradedReason);
+      this.cache.set(cacheKey, { value: degraded, expiresAt: Date.now() + this.CACHE_TTL });
+      return degraded;
+    }
 
     if (this.remoteUnavailable) {
-      return cacheFallback();
+      const degraded = this.buildDegradedStatus(fallbackStatus, GuestSessionErrorCode.QUOTA_UNAVAILABLE);
+      this.cache.set(cacheKey, { value: degraded, expiresAt: Date.now() + this.CACHE_TTL });
+      return degraded;
     }
 
     try {
@@ -192,15 +244,25 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       this.cache.set(cacheKey, { value: status, expiresAt: Date.now() + this.CACHE_TTL });
       return status;
     } catch (error) {
-      if (this.isEndpointUnavailable(error)) {
+      const reasonCode =
+        error instanceof GuestSessionError
+          ? error.code
+          : this.isEndpointUnavailable(error)
+            ? GuestSessionErrorCode.QUOTA_UNAVAILABLE
+            : GuestSessionErrorCode.UNAVAILABLE;
+
+      if (this.isEndpointUnavailable(error) || error instanceof GuestSessionError) {
         this.remoteUnavailable = true;
         if (__DEV__) {
-          console.log('[Quota] Remote guest quota endpoint unavailable, using local store');
+          console.log('[Quota] Remote guest quota unavailable, entering degraded guest mode');
         }
       } else if (__DEV__) {
-        console.warn('[Quota] Remote guest quota failed, falling back to local store', error);
+        console.warn('[Quota] Remote guest quota failed, entering degraded guest mode', error);
       }
-      return cacheFallback();
+
+      const degraded = this.buildDegradedStatus(fallbackStatus, reasonCode);
+      this.cache.set(cacheKey, { value: degraded, expiresAt: Date.now() + this.CACHE_TTL });
+      return degraded;
     }
   }
 
@@ -237,6 +299,9 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
   async canSendChatMessage(target: QuotaDreamTarget | undefined, user: User | null, tier: UserTier = 'guest'): Promise<boolean> {
     if (user) return true;
     const status = await this.fetchQuota(target, tier);
+    if (status.guestBootstrapStatus && status.guestBootstrapStatus !== 'ready') {
+      return false;
+    }
     const { used, limit } = status.usage.messages;
     if (limit === null) return true;
     return used < limit;

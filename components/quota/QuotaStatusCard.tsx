@@ -49,6 +49,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
   const { quotaStatus, loading, error, refetch, tier } = useQuota();
   const [guestRecordedTotal, setGuestRecordedTotal] = useState(0);
   const isUpgradedGuest = !user && Boolean(quotaStatus?.isUpgraded);
+  const isDegradedGuest = !user && quotaStatus?.guestBootstrapStatus === 'degraded';
 
   useEffect(() => {
     if (user) {
@@ -174,11 +175,13 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       {isGuest && !isUpgradedGuest && (
         <View style={[styles.notice, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[styles.noticeText, { color: colors.textSecondary }]}>
-            {t('settings.quota.guest_message', {
-              recordLimit: guestRecordingLimit,
-              analysisLimit: QUOTAS.guest.analysis ?? 0,
-              explorationLimit: QUOTAS.guest.exploration ?? 0,
-            })}
+            {isDegradedGuest && quotaStatus?.reasons?.length
+              ? quotaStatus.reasons[0]
+              : t('settings.quota.guest_message', {
+                recordLimit: guestRecordingLimit,
+                analysisLimit: QUOTAS.guest.analysis ?? 0,
+                explorationLimit: QUOTAS.guest.exploration ?? 0,
+              })}
           </Text>
         </View>
       )}

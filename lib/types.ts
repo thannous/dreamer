@@ -170,6 +170,12 @@ export interface QuotaStatus {
   canExplore: boolean;
   reasons?: string[]; // Reasons why an action is blocked
   isUpgraded?: boolean; // Whether this device fingerprint has already created an account
+  guestBootstrapStatus?: 'ready' | 'degraded' | 'disabled';
+  guestBootstrapReasonCode?:
+    | 'guest_session_unavailable'
+    | 'guest_session_expired'
+    | 'guest_platform_unsupported'
+    | 'guest_quota_unavailable';
 }
 
 /**
