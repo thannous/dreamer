@@ -377,7 +377,8 @@ function renderLayoutCss() {
         #dictionaryLayout { display: block; }
         #mainContentArea { flex: 1; min-width: 0; }
         #dictionarySidebar { display: none !important; }
-        #categoryGridSection { display: block !important; }
+        #categoryGridSection { display: block; }
+        #categoryGridSection[hidden] { display: none !important; }
         #mobilePills, #mobileAlpha { display: none !important; }
         .cat-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 9999px; font-size: 0.8rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,10,40,0.5); backdrop-filter: blur(8px); color: #e2daff; transition: all 0.2s ease; text-decoration: none; }
         .cat-pill:hover { border-color: rgba(253,164,129,0.3); color: #fda481; }
