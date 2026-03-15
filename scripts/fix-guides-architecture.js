@@ -559,6 +559,10 @@ function renderLayoutCss() {
         @media (max-width: 767px) {
           #mobileAlpha { display: flex !important; }
           #searchFeedback { display: none !important; }
+          body.dictionary-search-active #heroSearchShell,
+          body.dictionary-search-active #mobileAlpha {
+            display: none !important;
+          }
           .search-feedback {
             align-items: flex-start;
             flex-direction: column;
@@ -1009,7 +1013,7 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
                 </h1>
 
                 <!-- Hero search -->
-                <div class="relative w-full max-w-4xl mx-auto lg:mx-0">
+                <div id="heroSearchShell" class="relative w-full max-w-4xl mx-auto lg:mx-0">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
                     <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
                         class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
@@ -1280,6 +1284,7 @@ ${symbolCatEntries}
 
             function updateSearchUi(query, visibleCount) {
                 const hasQuery = query.trim().length > 0;
+                const mobileSearchActive = hasQuery && window.matchMedia('(max-width: 767px)').matches;
                 if (categoryGridSection) {
                     categoryGridSection.hidden = hasQuery;
                 }
@@ -1290,6 +1295,7 @@ ${symbolCatEntries}
                     stickySearchStatus.hidden = !hasQuery;
                 }
                 stickyBar?.classList.toggle('search-active', hasQuery);
+                document.body.classList.toggle('dictionary-search-active', mobileSearchActive);
                 if (searchFeedbackText) {
                     searchFeedbackText.textContent = hasQuery ? buildSearchStatus(query, visibleCount) : '';
                 }
