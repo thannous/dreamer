@@ -40,12 +40,21 @@ const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actio
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
 const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
 const DICTIONARY_UI_COPY = {
-  en: { categoriesShort: 'categories', quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.', clearSearch: 'Clear search' },
-  fr: { categoriesShort: 'catégories', quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.', clearSearch: 'Vider la recherche' },
-  es: { categoriesShort: 'categorías', quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.', clearSearch: 'Borrar búsqueda' },
-  de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.', clearSearch: 'Suche löschen' },
-  it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.', clearSearch: 'Cancella ricerca' },
+  en: { categoriesShort: 'categories', quickBrowseHelp: 'Choose a category or use A-Z to jump straight to the right symbol.', clearSearch: 'Clear search', activeSearchLabel: 'Active search' },
+  fr: { categoriesShort: 'catégories', quickBrowseHelp: 'Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.', clearSearch: 'Vider la recherche', activeSearchLabel: 'Recherche active' },
+  es: { categoriesShort: 'categorías', quickBrowseHelp: 'Elige una categoría o usa A-Z para ir directamente al símbolo adecuado.', clearSearch: 'Borrar búsqueda', activeSearchLabel: 'Búsqueda activa' },
+  de: { categoriesShort: 'Kategorien', quickBrowseHelp: 'Wähle eine Kategorie oder nutze A-Z, um direkt zum richtigen Symbol zu springen.', clearSearch: 'Suche löschen', activeSearchLabel: 'Aktive Suche' },
+  it: { categoriesShort: 'categorie', quickBrowseHelp: 'Scegli una categoria oppure usa A-Z per arrivare subito al simbolo giusto.', clearSearch: 'Cancella ricerca', activeSearchLabel: 'Ricerca attiva' },
 };
+
+function formatSearchStatus(lang, uiCopy, count, query) {
+  const quoted = `«${query}»`;
+  if (lang === 'fr') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} résultat(s)`;
+  if (lang === 'es') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} resultado(s)`;
+  if (lang === 'de') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} Treffer`;
+  if (lang === 'it') return `${uiCopy.activeSearchLabel} ${quoted} · ${count} risultato/i`;
+  return `${uiCopy.activeSearchLabel} ${quoted} · ${count} result(s)`;
+}
 
 function readJson(fileName) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8'));
@@ -390,6 +399,7 @@ function renderLayoutCss() {
           margin-bottom: 1.5rem;
           border: 1px solid rgba(253,164,129,0.08);
         }
+        .quick-browse-panel[hidden] { display: none !important; }
         .quick-browse-copy {
           display: flex;
           flex-wrap: wrap;
@@ -497,12 +507,66 @@ function renderLayoutCss() {
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
         }
+        #searchFeedback, #noResults {
+          scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
+        }
+        .search-feedback {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.9rem;
+          padding: 0.9rem 1rem;
+          margin-bottom: 1rem;
+          border-radius: 1rem;
+          border: 1px solid rgba(253,164,129,0.12);
+          background: rgba(18, 10, 34, 0.88);
+        }
+        .search-feedback-copy {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+        }
+        .search-feedback-label {
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: rgba(253,164,129,0.8);
+        }
+        .search-feedback-text {
+          color: rgba(248,245,255,0.92);
+          font-size: 0.95rem;
+          line-height: 1.35;
+        }
+        .search-feedback-clear {
+          flex-shrink: 0;
+          padding: 0.55rem 0.85rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.05);
+          color: rgba(248,245,255,0.86);
+          font-size: 0.82rem;
+          transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .search-feedback-clear:hover {
+          background: rgba(253,164,129,0.14);
+          border-color: rgba(253,164,129,0.22);
+        }
         @media (min-width: 768px) {
           .dictionary-header { margin-bottom: 2rem; }
           .category-browse-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         }
         @media (max-width: 767px) {
           #mobileAlpha { display: flex !important; }
+          #searchFeedback { display: none !important; }
+          .search-feedback {
+            align-items: flex-start;
+            flex-direction: column;
+          }
+          .search-feedback-clear {
+            width: 100%;
+            justify-content: center;
+          }
         }
         .sidebar-section { margin-bottom: 1.5rem; }
         .sidebar-heading { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(196,181,253,0.6); margin-bottom: 0.75rem; font-weight: 600; }
@@ -852,6 +916,21 @@ ${renderViewTransitionHeadStyles()}
         }
         #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(22rem, 100%); }
         #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
+        .sticky-status {
+          display: none;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.4rem 0.7rem;
+          border-radius: 9999px;
+          background: rgba(253,164,129,0.12);
+          color: rgba(253,164,129,0.96);
+          font-size: 0.78rem;
+          line-height: 1.2;
+          flex-shrink: 0;
+        }
+        #stickyBar.search-active .sticky-status {
+          display: inline-flex;
+        }
         .search-clear {
           position: absolute;
           right: 0.8rem;
@@ -880,6 +959,13 @@ ${renderViewTransitionHeadStyles()}
             #stickyBar {
                 width: calc(100vw - 1rem);
                 top: var(--sticky-bar-top, 4.8rem);
+            }
+            #stickyBar .sb-inner {
+                gap: 0.75rem;
+            }
+            .sticky-status {
+                width: 100%;
+                order: 3;
             }
         }
 ${renderLayoutCss()}
@@ -957,6 +1043,10 @@ ${renderMobileAlphaHtml(letters)}
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
+                    <div id="stickySearchStatus" class="sticky-status" hidden>
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                        <span id="stickySearchStatusText"></span>
+                    </div>
                     <!-- Alphabet -->
                     <div class="sb-alpha letter-nav">
 ${stickyAlphaLinks}
@@ -970,7 +1060,7 @@ ${stickyAlphaLinks}
 
             <!-- Browse by Category -->
 ${renderSidebarHtml(lang, t, counts, letters)}
-<section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
+            <section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
                 <div class="quick-browse-copy">
                     <div>
                         <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
@@ -984,6 +1074,14 @@ ${renderSidebarHtml(lang, t, counts, letters)}
 ${catGridCards}
                 </div>
             </section>
+
+            <div id="searchFeedback" class="search-feedback" hidden>
+                <div class="search-feedback-copy">
+                    <span class="search-feedback-label">${escapeHtml(uiCopy.activeSearchLabel)}</span>
+                    <span id="searchFeedbackText" class="search-feedback-text"></span>
+                </div>
+                <button type="button" id="searchFeedbackClear" class="search-feedback-clear">${escapeHtml(uiCopy.clearSearch)}</button>
+            </div>
 
             <!-- Symbols Dictionary -->
             <div id="symbolsList">
@@ -1109,10 +1207,12 @@ ${symbolCatEntries}
                 const noResults = document.getElementById('noResults');
                 const noResultsQuery = document.getElementById('noResultsQuery');
                 const q = query.toLowerCase().trim();
+                let visibleCount = 0;
                 if (q === '') {
                     symbolCards.forEach(card => card.style.display = '');
                     listSections.forEach(section => section.style.display = '');
                     if (noResults) noResults.style.display = 'none';
+                    visibleCount = symbolCards.length;
                 } else {
                     listSections.forEach(section => {
                         const cards = section.querySelectorAll('.symbol-card');
@@ -1123,7 +1223,10 @@ ${symbolCatEntries}
                             const content = card.querySelector('p')?.textContent?.toLowerCase() || '';
                             const visible = symbolData.includes(q) || title.includes(q) || content.includes(q);
                             card.style.display = visible ? '' : 'none';
-                            if (visible) hasVisible = true;
+                            if (visible) {
+                                hasVisible = true;
+                                visibleCount += 1;
+                            }
                         });
                         section.style.display = hasVisible ? '' : 'none';
                     });
@@ -1131,6 +1234,7 @@ ${symbolCatEntries}
                     if (noResults) { noResults.style.display = anyVisible ? 'none' : 'block'; }
                     if (noResultsQuery) { noResultsQuery.textContent = query; }
                 }
+                return visibleCount;
             }
 
             // Hero search + sticky bar show/hide
@@ -1139,6 +1243,60 @@ ${symbolCatEntries}
             const heroSearchClear = document.getElementById('heroSearchClear');
             const stickySearchClear = document.getElementById('stickySearchClear');
             const heroHeader = heroSearch.closest('header');
+            const categoryGridSection = document.getElementById('categoryGridSection');
+            const searchFeedback = document.getElementById('searchFeedback');
+            const searchFeedbackText = document.getElementById('searchFeedbackText');
+            const searchFeedbackClear = document.getElementById('searchFeedbackClear');
+            const stickySearchStatus = document.getElementById('stickySearchStatus');
+            const stickySearchStatusText = document.getElementById('stickySearchStatusText');
+            const symbolsListEl = document.getElementById('symbolsList');
+            const searchResultWord = ${JSON.stringify(
+              lang === 'fr' ? 'résultat(s)' :
+              lang === 'es' ? 'resultado(s)' :
+              lang === 'de' ? 'Treffer' :
+              lang === 'it' ? 'risultato/i' :
+              'result(s)'
+            )};
+
+            function buildSearchStatus(query, count) {
+                return \`${escapeHtml(uiCopy.activeSearchLabel)} «\${query}» · \${count} \${searchResultWord}\`;
+            }
+
+            function revealSearchArea(query, visibleCount) {
+                if (!window.matchMedia('(max-width: 767px)').matches) return;
+                if (!query.trim()) return;
+                const firstVisibleCard = visibleCount > 0
+                    ? [...document.querySelectorAll('.symbol-card')].find((card) => getComputedStyle(card).display !== 'none')
+                    : null;
+                const target = visibleCount > 0 ? firstVisibleCard || symbolsListEl : document.getElementById('noResults');
+                if (!target) return;
+                const rect = target.getBoundingClientRect();
+                if (rect.top > window.innerHeight * 0.6 || rect.top < 0) {
+                    const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
+                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset + 16;
+                    window.scrollTo({ top: Math.max(nextTop, 0), behavior: 'smooth' });
+                }
+            }
+
+            function updateSearchUi(query, visibleCount) {
+                const hasQuery = query.trim().length > 0;
+                if (categoryGridSection) {
+                    categoryGridSection.hidden = hasQuery;
+                }
+                if (searchFeedback) {
+                    searchFeedback.hidden = !hasQuery;
+                }
+                if (stickySearchStatus) {
+                    stickySearchStatus.hidden = !hasQuery;
+                }
+                stickyBar?.classList.toggle('search-active', hasQuery);
+                if (searchFeedbackText) {
+                    searchFeedbackText.textContent = hasQuery ? buildSearchStatus(query, visibleCount) : '';
+                }
+                if (stickySearchStatusText) {
+                    stickySearchStatusText.textContent = hasQuery ? buildSearchStatus(query, visibleCount) : '';
+                }
+            }
 
             function setSearchValue(nextValue, source = 'hero') {
                 heroSearch.value = nextValue;
@@ -1146,7 +1304,13 @@ ${symbolCatEntries}
                 const hasValue = nextValue.trim().length > 0;
                 if (heroSearchClear) heroSearchClear.hidden = !hasValue;
                 if (stickySearchClear) stickySearchClear.hidden = !hasValue;
-                filterSymbols(nextValue);
+                const visibleCount = filterSymbols(nextValue);
+                updateSearchUi(nextValue, visibleCount);
+                if (hasValue && window.matchMedia('(max-width: 767px)').matches) {
+                    stickyBar?.classList.add('sb-visible');
+                    updateSectionScrollOffset();
+                }
+                revealSearchArea(nextValue, visibleCount);
                 if (source === 'sticky') {
                     stickySearch.focus({ preventScroll: true });
                 }
@@ -1177,6 +1341,10 @@ ${symbolCatEntries}
             });
             stickySearchClear?.addEventListener('click', () => {
                 setSearchValue('', 'sticky');
+            });
+            searchFeedbackClear?.addEventListener('click', () => {
+                setSearchValue('', 'hero');
+                heroSearch.focus({ preventScroll: true });
             });
             setSearchValue(heroSearch.value || '');
 
