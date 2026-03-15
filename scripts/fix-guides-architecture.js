@@ -1254,6 +1254,7 @@ ${symbolCatEntries}
             const stickySearchStatus = document.getElementById('stickySearchStatus');
             const stickySearchStatusText = document.getElementById('stickySearchStatusText');
             const symbolsListEl = document.getElementById('symbolsList');
+            let revealSearchAreaTimer = null;
             const searchResultWord = ${JSON.stringify(
               lang === 'fr' ? 'résultat(s)' :
               lang === 'es' ? 'resultado(s)' :
@@ -1280,6 +1281,18 @@ ${symbolCatEntries}
                     const nextTop = target.getBoundingClientRect().top + window.scrollY - offset + 16;
                     window.scrollTo({ top: Math.max(nextTop, 0), behavior: 'smooth' });
                 }
+            }
+
+            function scheduleRevealSearchArea(query, visibleCount) {
+                if (revealSearchAreaTimer) {
+                    window.clearTimeout(revealSearchAreaTimer);
+                    revealSearchAreaTimer = null;
+                }
+                if (!query.trim()) return;
+                revealSearchAreaTimer = window.setTimeout(() => {
+                    revealSearchArea(query, visibleCount);
+                    revealSearchAreaTimer = null;
+                }, 500);
             }
 
             function updateSearchUi(query, visibleCount) {
@@ -1321,7 +1334,10 @@ ${symbolCatEntries}
                     updateSectionScrollOffset();
                 }
                 if (!(isMobile && source === 'hero' && heroIsFocused)) {
-                    revealSearchArea(nextValue, visibleCount);
+                    scheduleRevealSearchArea(nextValue, visibleCount);
+                } else if (revealSearchAreaTimer) {
+                    window.clearTimeout(revealSearchAreaTimer);
+                    revealSearchAreaTimer = null;
                 }
                 if (source === 'sticky') {
                     stickySearch.focus({ preventScroll: true });
