@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
+import { getGuestBootstrapState, subscribeGuestBootstrapState } from '@/lib/guestSession';
 import { quotaService } from '@/services/quotaService';
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from './useSubscription';
@@ -42,6 +43,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   const [quotaStatus, setQuotaStatus] = useState<QuotaStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [guestBootstrapState, setGuestBootstrapState] = useState(() => getGuestBootstrapState());
 
   const targetDreamId = targetInput?.dream?.id ?? targetInput?.dreamId;
   const normalizedDreamId = Number.isFinite(targetDreamId) ? Number(targetDreamId) : undefined;
@@ -91,6 +93,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
   }, [subscriptionStatus?.tier, subscriptionStatus?.expiryDate, subscriptionStatus?.willRenew, supabaseTier, user?.id]);
   const isPaidTier = tier === 'plus' || tier === 'premium';
+  const isGuestBootstrapReady = user?.id ? true : guestBootstrapState.status === 'ready';
 
   /**
    * Fetch quota status
@@ -204,6 +207,19 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     return unsubscribe;
   }, [fetchQuotaStatus]);
 
+  useEffect(() => {
+    const unsubscribe = subscribeGuestBootstrapState(() => {
+      setGuestBootstrapState(getGuestBootstrapState());
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (!user?.id) {
+      void fetchQuotaStatus();
+    }
+  }, [fetchQuotaStatus, guestBootstrapState.status, user?.id]);
+
   // Invalidate cache when user changes (sign in/out)
   useEffect(() => {
     quotaService.invalidateAll();
@@ -224,10 +240,10 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     // Convenience flags from quota status
     // Use tier from RevenueCat (source of truth), not from quotaStatus
     tier,
-    // Default to optimistic while loading to avoid false blocks (gate will fail later if quota is actually exceeded)
-    canAnalyzeNow: quotaStatus?.canAnalyze ?? true,
-    canExploreNow: quotaStatus?.canExplore ?? true,
+    canAnalyzeNow: isGuestBootstrapReady ? (quotaStatus?.canAnalyze ?? true) : false,
+    canExploreNow: isGuestBootstrapReady ? (quotaStatus?.canExplore ?? true) : false,
     usage: quotaStatus?.usage,
     reasons: quotaStatus?.reasons,
+    guestBootstrapStatus: quotaStatus?.guestBootstrapStatus ?? (!user ? guestBootstrapState.status : undefined),
   };
 }

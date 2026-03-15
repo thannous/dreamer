@@ -20,6 +20,9 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.owner_agent_limit_reached': 'You have reached the maximum number of saved keys ({limit}). Delete one before adding another.',
   'error.login_required': 'This device is already linked to an account. Please sign in to continue.',
   'error.guest_session': 'App verification failed. Please try again in a moment.',
+  'error.guest_platform_unsupported': 'Guest AI is not available on this platform right now. You can still record dreams locally.',
+  'error.guest_quota_unavailable': 'Guest AI is temporarily unavailable. You can still record dreams locally and try again later.',
+  'error.guest_session_expired': 'Guest access expired. Please try again in a moment.',
   'error.image_transient': 'The image service is temporarily busy. Your dream has been saved and you can retry later.',
   'error.image_blocked': 'This dream\'s imagery couldn\'t be generated due to content guidelines.',
   'error.unknown': 'An unexpected error occurred.',
@@ -125,6 +128,23 @@ export const isGuestSessionError = (error: Error): boolean => {
   );
 };
 
+export enum GuestSessionErrorCode {
+  UNAVAILABLE = 'guest_session_unavailable',
+  EXPIRED = 'guest_session_expired',
+  PLATFORM_UNSUPPORTED = 'guest_platform_unsupported',
+  QUOTA_UNAVAILABLE = 'guest_quota_unavailable',
+}
+
+export class GuestSessionError extends Error {
+  public readonly code: GuestSessionErrorCode;
+
+  constructor(code: GuestSessionErrorCode, message?: string) {
+    super(message ?? code);
+    this.name = 'GuestSessionError';
+    this.code = code;
+  }
+}
+
 /**
  * Classifies an error and returns metadata about it.
  * Optionally accepts a translation function for i18n support.
@@ -149,6 +169,46 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
   };
 
   const httpDetails = getHttpErrorDetails(error);
+  const guestSessionCode =
+    error instanceof GuestSessionError
+      ? error.code
+      : typeof (error as unknown as { code?: unknown }).code === 'string'
+        ? ((error as unknown as { code: string }).code as GuestSessionErrorCode)
+        : null;
+
+  if (guestSessionCode === GuestSessionErrorCode.PLATFORM_UNSUPPORTED) {
+    return {
+      type: ErrorType.CLIENT,
+      message: error.message,
+      originalError: error,
+      userMessage: translate('error.guest_platform_unsupported'),
+      canRetry: false,
+    };
+  }
+
+  if (guestSessionCode === GuestSessionErrorCode.EXPIRED) {
+    return {
+      type: ErrorType.CLIENT,
+      message: error.message,
+      originalError: error,
+      userMessage: translate('error.guest_session_expired'),
+      canRetry: true,
+    };
+  }
+
+  if (
+    guestSessionCode === GuestSessionErrorCode.UNAVAILABLE ||
+    guestSessionCode === GuestSessionErrorCode.QUOTA_UNAVAILABLE
+  ) {
+    return {
+      type: ErrorType.CLIENT,
+      message: error.message,
+      originalError: error,
+      userMessage: translate('error.guest_quota_unavailable'),
+      canRetry: true,
+    };
+  }
+
   if (httpDetails) {
     const status = httpDetails.status;
     const body = httpDetails.body ?? {};

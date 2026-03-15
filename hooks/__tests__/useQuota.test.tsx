@@ -34,6 +34,7 @@ const {
 let mockUser: any = null;
 let mockSubscriptionStatus: any = null;
 let mockSubscriptionLoading = false;
+let mockGuestBootstrapState: any = { status: 'ready', updatedAt: 0 };
 
 jest.mock('../../context/AuthContext', () => ({
   useAuth: () => ({
@@ -68,6 +69,11 @@ jest.mock('../../services/quotaService', () => ({
   },
 }));
 
+jest.mock('../../lib/guestSession', () => ({
+  getGuestBootstrapState: () => mockGuestBootstrapState,
+  subscribeGuestBootstrapState: () => () => {},
+}));
+
 // Import after mocks
 const { useQuota } = require('../useQuota');
 
@@ -90,6 +96,7 @@ describe('useQuota', () => {
     mockUser = null;
     mockSubscriptionStatus = { tier: 'free' };
     mockSubscriptionLoading = false;
+    mockGuestBootstrapState = { status: 'ready', updatedAt: 0 };
     mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus());
     mockCanAnalyzeDream.mockResolvedValue(true);
     mockCanExploreDream.mockResolvedValue(true);
@@ -250,6 +257,25 @@ describe('useQuota', () => {
 
       expect(result.current.canAnalyzeNow).toBe(false);
       expect(result.current.canExploreNow).toBe(false);
+    });
+
+    it('fails closed for guest AI when guest bootstrap is degraded', async () => {
+      mockGuestBootstrapState = {
+        status: 'degraded',
+        reasonCode: 'guest_session_unavailable',
+        updatedAt: Date.now(),
+      };
+
+      const { result } = renderHook(() => useQuota());
+
+      expect(result.current.canAnalyzeNow).toBe(false);
+      expect(result.current.canExploreNow).toBe(false);
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current.guestBootstrapStatus).toBe('degraded');
     });
 
     it('provides canAnalyzeNow flag from quota status', async () => {

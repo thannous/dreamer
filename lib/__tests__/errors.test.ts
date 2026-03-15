@@ -3,6 +3,8 @@ import {
     canRetryError,
     classifyError,
     ErrorType,
+    GuestSessionError,
+    GuestSessionErrorCode,
     getUserErrorMessage,
     isGuestSessionError,
     QuotaError,
@@ -126,6 +128,15 @@ describe('classifyError', () => {
     
     expect(result.originalError).toBe(error);
     expect(result.message).toBe('Test error');
+  });
+
+  it('should classify degraded guest platform support as a client error', () => {
+    const error = new GuestSessionError(GuestSessionErrorCode.PLATFORM_UNSUPPORTED);
+    const result = classifyError(error);
+
+    expect(result.type).toBe(ErrorType.CLIENT);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toContain('not available on this platform');
   });
 });
 

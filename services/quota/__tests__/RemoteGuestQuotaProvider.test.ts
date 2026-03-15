@@ -13,6 +13,7 @@ jest.mock('../../../lib/deviceFingerprint', () => ({
 jest.mock('../../../lib/guestSession', () => ({
   getGuestHeaders: jest.fn().mockResolvedValue({}),
   invalidateGuestSession: jest.fn().mockResolvedValue(undefined),
+  getGuestBootstrapState: jest.fn().mockReturnValue({ status: 'ready', updatedAt: 0 }),
 }));
 
 jest.mock('../../../lib/errors', () => ({
@@ -32,6 +33,7 @@ let mockSyncWithServerCount: ReturnType<typeof jest.fn>;
 let mockGetGuestHeaders: ReturnType<typeof jest.fn>;
 let mockInvalidateGuestSession: ReturnType<typeof jest.fn>;
 let mockIsGuestSessionError: ReturnType<typeof jest.fn>;
+let mockGetGuestBootstrapState: ReturnType<typeof jest.fn>;
 
 const buildUsage = (analysisUsed: number) => ({
   analysis: { used: analysisUsed, limit: 2, remaining: Math.max(2 - analysisUsed, 0) },
@@ -71,6 +73,7 @@ describe('RemoteGuestQuotaProvider', () => {
     const { getGuestHeaders, invalidateGuestSession } = require('../../../lib/guestSession');
     mockGetGuestHeaders = jest.mocked(getGuestHeaders);
     mockInvalidateGuestSession = jest.mocked(invalidateGuestSession);
+    mockGetGuestBootstrapState = jest.mocked(require('../../../lib/guestSession').getGuestBootstrapState);
     const { isGuestSessionError } = require('../../../lib/errors');
     mockIsGuestSessionError = jest.mocked(isGuestSessionError);
     mockFetchJSON.mockReset();
@@ -79,6 +82,8 @@ describe('RemoteGuestQuotaProvider', () => {
     mockGetGuestHeaders.mockResolvedValue({});
     mockInvalidateGuestSession.mockReset();
     mockInvalidateGuestSession.mockResolvedValue(undefined);
+    mockGetGuestBootstrapState.mockReset();
+    mockGetGuestBootstrapState.mockReturnValue({ status: 'ready', updatedAt: 0 });
     mockIsGuestSessionError.mockReset();
     mockIsGuestSessionError.mockReturnValue(false);
   });
@@ -180,7 +185,7 @@ describe('RemoteGuestQuotaProvider', () => {
     expect(status.usage.analysis.remaining).toBe(0);
   });
 
-  it('avoids re-fetching when endpoint becomes unavailable', async () => {
+  it('enters degraded mode when endpoint becomes unavailable', async () => {
     const fallback = createFallback(0);
     mockFetchJSON.mockRejectedValueOnce(new Error('HTTP 401'));
 
@@ -190,7 +195,9 @@ describe('RemoteGuestQuotaProvider', () => {
     const second = await provider.getQuotaStatus(null, 'guest');
 
     expect(first.usage.analysis.used).toBe(0);
-    expect(second.usage.analysis.used).toBe(0);
+    expect(first.canAnalyze).toBe(false);
+    expect(first.guestBootstrapStatus).toBe('degraded');
+    expect(second.canAnalyze).toBe(false);
     expect(mockFetchJSON).toHaveBeenCalledTimes(1);
   });
 
@@ -255,5 +262,24 @@ describe('RemoteGuestQuotaProvider', () => {
         headers: { 'x-guest-token': 'fresh-token' },
       })
     );
+  });
+
+  it('fails closed when guest bootstrap is already degraded', async () => {
+    const fallback = createFallback(1);
+    mockGetGuestBootstrapState.mockReturnValue({
+      status: 'degraded',
+      reasonCode: 'guest_platform_unsupported',
+      updatedAt: Date.now(),
+    });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+    const status = await provider.getQuotaStatus(null, 'guest');
+
+    expect(status.canAnalyze).toBe(false);
+    expect(status.canExplore).toBe(false);
+    expect(status.guestBootstrapStatus).toBe('degraded');
+    expect(status.guestBootstrapReasonCode).toBe('guest_platform_unsupported');
+    expect(mockFetchJSON).not.toHaveBeenCalled();
   });
 });

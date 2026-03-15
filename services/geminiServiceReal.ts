@@ -8,7 +8,13 @@
 
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON, HttpError, type HttpOptions } from '@/lib/http';
-import { classifyImageError, isGuestSessionError, type ImageGenerationErrorResponse } from '@/lib/errors';
+import {
+  classifyImageError,
+  GuestSessionError,
+  GuestSessionErrorCode,
+  isGuestSessionError,
+  type ImageGenerationErrorResponse,
+} from '@/lib/errors';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
 import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
@@ -29,14 +35,24 @@ async function fetchWithGuestHeaders<T>(
   retryGuestSession = true
 ): Promise<T> {
   const base = getApiBaseUrl();
-  const headers = await getGuestHeaders();
+  const headers = await getGuestHeaders({ requireSession: true });
   try {
     return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...headers, ...options.headers } });
   } catch (error) {
     if (retryGuestSession && error instanceof Error && isGuestSessionError(error)) {
       await invalidateGuestSession();
-      const freshHeaders = await getGuestHeaders();
-      return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...freshHeaders, ...options.headers } });
+      const freshHeaders = await getGuestHeaders({ requireSession: true });
+      try {
+        return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...freshHeaders, ...options.headers } });
+      } catch (retryError) {
+        if (retryError instanceof Error && isGuestSessionError(retryError)) {
+          throw new GuestSessionError(
+            GuestSessionErrorCode.EXPIRED,
+            'guest_session_expired'
+          );
+        }
+        throw retryError;
+      }
     }
     throw error;
   }
