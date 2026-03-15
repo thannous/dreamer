@@ -627,9 +627,9 @@
                 <div class="sb-inner">
                     <!-- Compact search -->
                     <div class="sb-search">
-                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
+                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
                         <input type="text" id="stickySearch" placeholder="Buscar símbolos…"
-                            class="search-input w-full rounded-full py-2 pl-10 pr-12 text-sm text-dream-cream transition-colors"
+                            class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
                         <button type="button" id="stickySearchClear" class="search-clear" aria-label="Borrar búsqueda" title="Borrar búsqueda" hidden>
                             <i data-lucide="x" class="w-4 h-4"></i>
@@ -2258,17 +2258,19 @@
 
             function updateSearchUi(query, visibleCount) {
                 const hasQuery = query.trim().length > 0;
-                const mobileSearchActive = hasQuery && window.matchMedia('(max-width: 767px)').matches;
+                const isMobile = window.matchMedia('(max-width: 767px)').matches;
+                const holdHeroMode = hasQuery && isMobile && document.activeElement === heroSearch;
+                const mobileSearchActive = hasQuery && isMobile && document.activeElement !== heroSearch;
                 if (categoryGridSection) {
-                    categoryGridSection.hidden = hasQuery;
+                    categoryGridSection.hidden = hasQuery && !holdHeroMode;
                 }
                 if (searchFeedback) {
                     searchFeedback.hidden = !hasQuery;
                 }
                 if (stickySearchStatus) {
-                    stickySearchStatus.hidden = !hasQuery;
+                    stickySearchStatus.hidden = !(hasQuery && (!window.matchMedia('(max-width: 767px)').matches || mobileSearchActive));
                 }
-                stickyBar?.classList.toggle('search-active', hasQuery);
+                stickyBar?.classList.toggle('search-active', hasQuery && (!window.matchMedia('(max-width: 767px)').matches || mobileSearchActive));
                 document.body.classList.toggle('dictionary-search-active', mobileSearchActive);
                 if (searchFeedbackText) {
                     searchFeedbackText.textContent = hasQuery ? buildSearchStatus(query, visibleCount) : '';
@@ -2282,15 +2284,19 @@
                 heroSearch.value = nextValue;
                 stickySearch.value = nextValue;
                 const hasValue = nextValue.trim().length > 0;
+                const isMobile = window.matchMedia('(max-width: 767px)').matches;
+                const heroIsFocused = document.activeElement === heroSearch;
                 if (heroSearchClear) heroSearchClear.hidden = !hasValue;
                 if (stickySearchClear) stickySearchClear.hidden = !hasValue;
                 const visibleCount = filterSymbols(nextValue);
                 updateSearchUi(nextValue, visibleCount);
-                if (hasValue && window.matchMedia('(max-width: 767px)').matches) {
+                if (hasValue && isMobile && source !== 'hero') {
                     stickyBar?.classList.add('sb-visible');
                     updateSectionScrollOffset();
                 }
-                revealSearchArea(nextValue, visibleCount);
+                if (!(isMobile && source === 'hero' && heroIsFocused)) {
+                    revealSearchArea(nextValue, visibleCount);
+                }
                 if (source === 'sticky') {
                     stickySearch.focus({ preventScroll: true });
                 }
@@ -2311,6 +2317,11 @@
 
             heroSearch.addEventListener('input', (e) => {
                 setSearchValue(e.target.value, 'hero');
+            });
+            heroSearch.addEventListener('blur', () => {
+                if (window.matchMedia('(max-width: 767px)').matches && heroSearch.value.trim()) {
+                    setSearchValue(heroSearch.value, 'sticky');
+                }
             });
             stickySearch.addEventListener('input', (e) => {
                 setSearchValue(e.target.value, 'sticky');
