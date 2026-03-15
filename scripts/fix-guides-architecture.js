@@ -1298,10 +1298,9 @@ ${symbolCatEntries}
             function updateSearchUi(query, visibleCount) {
                 const hasQuery = query.trim().length > 0;
                 const isMobile = window.matchMedia('(max-width: 767px)').matches;
-                const holdHeroMode = hasQuery && isMobile && document.activeElement === heroSearch;
                 const mobileSearchActive = hasQuery && isMobile && document.activeElement !== heroSearch;
                 if (categoryGridSection) {
-                    categoryGridSection.hidden = hasQuery && !holdHeroMode;
+                    categoryGridSection.hidden = hasQuery;
                 }
                 if (searchFeedback) {
                     searchFeedback.hidden = !hasQuery;
