@@ -1,6 +1,12 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
-import { buildDreamMutationEntityKey, createDreamMutation, generateUUID } from '@/lib/dreamUtils';
+import {
+  buildDreamMutationEntityKey,
+  createDreamMutation,
+  generateUUID,
+  getMutationDreamId,
+  getMutationRemoteId,
+} from '@/lib/dreamUtils';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
@@ -600,6 +606,127 @@ const isSingleObjectResultError = (error: PostgrestError | null): boolean => {
   );
 };
 
+const isMissingSyncMutationsRpcError = (error: PostgrestError | null): boolean => {
+  if (!error) return false;
+
+  const combinedText = [error.message, error.details, error.hint]
+    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' ')
+    .toLowerCase();
+
+  if (!combinedText.includes('sync_dream_mutations')) {
+    return false;
+  }
+
+  return (
+    error.code === 'PGRST202' ||
+    error.code === '42883' ||
+    combinedText.includes('could not find the function') ||
+    combinedText.includes('does not exist')
+  );
+};
+
+const getDreamClientRequestId = (mutation: DreamMutation): string | undefined =>
+  mutation.payload.dream?.clientRequestId ?? mutation.payload.tombstone?.clientRequestId;
+
+const applyResolvedRemoteId = (
+  mutation: DreamMutation,
+  remoteId: number
+): DreamMutation => {
+  if (mutation.operation === 'create' || getMutationRemoteId(mutation) === remoteId) {
+    return mutation;
+  }
+
+  const dream = mutation.payload.dream
+    ? {
+        ...mutation.payload.dream,
+        remoteId,
+      }
+    : undefined;
+  const tombstone = mutation.payload.tombstone
+    ? {
+        ...mutation.payload.tombstone,
+        remoteId,
+      }
+    : undefined;
+
+  return {
+    ...mutation,
+    entityKey: dream ? buildDreamMutationEntityKey(dream) : `remote:${remoteId}`,
+    payload: {
+      ...mutation.payload,
+      remoteId,
+      ...(dream ? { dream } : {}),
+      ...(tombstone ? { tombstone } : {}),
+    },
+  };
+};
+
+const rememberRemoteId = (
+  mutation: DreamMutation,
+  remoteId: number,
+  idsByDreamId: Map<number, number>,
+  idsByClientRequestId: Map<string, number>
+) => {
+  const dreamId = getMutationDreamId(mutation);
+  const dreamClientRequestId = getDreamClientRequestId(mutation);
+
+  if (dreamId != null) {
+    idsByDreamId.set(dreamId, remoteId);
+  }
+
+  if (dreamClientRequestId) {
+    idsByClientRequestId.set(dreamClientRequestId, remoteId);
+  }
+};
+
+const forgetRemoteId = (
+  mutation: DreamMutation,
+  idsByDreamId: Map<number, number>,
+  idsByClientRequestId: Map<string, number>
+) => {
+  const dreamId = getMutationDreamId(mutation);
+  const dreamClientRequestId = getDreamClientRequestId(mutation);
+
+  if (dreamId != null) {
+    idsByDreamId.delete(dreamId);
+  }
+
+  if (dreamClientRequestId) {
+    idsByClientRequestId.delete(dreamClientRequestId);
+  }
+};
+
+const hydrateKnownRemoteId = (
+  mutation: DreamMutation,
+  idsByDreamId: Map<number, number>,
+  idsByClientRequestId: Map<string, number>
+): DreamMutation => {
+  const existingRemoteId = getMutationRemoteId(mutation);
+  if (existingRemoteId != null) {
+    return mutation;
+  }
+
+  const dreamId = getMutationDreamId(mutation);
+  const dreamClientRequestId = getDreamClientRequestId(mutation);
+  const resolvedRemoteId =
+    (dreamId != null ? idsByDreamId.get(dreamId) : undefined) ??
+    (dreamClientRequestId ? idsByClientRequestId.get(dreamClientRequestId) : undefined);
+
+  return resolvedRemoteId != null ? applyResolvedRemoteId(mutation, resolvedRemoteId) : mutation;
+};
+
+const createMissingRemoteIdResult = (mutation: DreamMutation): SyncMutationResult => ({
+  mutationId: mutation.id,
+  clientRequestId: mutation.clientRequestId,
+  operation: mutation.operation,
+  status: 'failed',
+  error:
+    mutation.operation === 'update'
+      ? 'Missing remote id for update'
+      : 'Missing remote id for delete',
+});
+
 const mapDreamToSyncPayload = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => ({
   ...mapDreamToRow(dream, userId, includeImageColumns),
   remote_id: dream.remoteId ?? null,
@@ -777,27 +904,99 @@ const syncDreamMutationsDirectly = async (
   return results;
 };
 
+const syncDreamMutationsWithResolvedRemoteIds = async (
+  mutations: DreamMutation[],
+  executeBatch: (batch: DreamMutation[]) => Promise<SyncMutationResult[]>
+): Promise<SyncMutationResult[]> => {
+  if (!mutations.length) {
+    return [];
+  }
+
+  const results: SyncMutationResult[] = [];
+  const idsByDreamId = new Map<number, number>();
+  const idsByClientRequestId = new Map<string, number>();
+  let batch: DreamMutation[] = [];
+
+  const flushBatch = async () => {
+    if (!batch.length) {
+      return;
+    }
+
+    const currentBatch = batch;
+    batch = [];
+
+    const batchResults = await executeBatch(currentBatch);
+    results.push(...batchResults);
+
+    const mutationsById = new Map(currentBatch.map((mutation) => [mutation.id, mutation]));
+    batchResults.forEach((result) => {
+      const sourceMutation = mutationsById.get(result.mutationId);
+      if (!sourceMutation || result.status !== 'ack') {
+        return;
+      }
+
+      if (sourceMutation.operation === 'delete') {
+        forgetRemoteId(sourceMutation, idsByDreamId, idsByClientRequestId);
+        return;
+      }
+
+      const remoteId = result.remoteId ?? result.dream?.remoteId;
+      if (remoteId != null) {
+        rememberRemoteId(sourceMutation, remoteId, idsByDreamId, idsByClientRequestId);
+      }
+    });
+  };
+
+  for (const mutation of mutations) {
+    let hydratedMutation = hydrateKnownRemoteId(mutation, idsByDreamId, idsByClientRequestId);
+    const missingRemoteId =
+      hydratedMutation.operation !== 'create' && getMutationRemoteId(hydratedMutation) == null;
+
+    if (missingRemoteId && batch.length) {
+      await flushBatch();
+      hydratedMutation = hydrateKnownRemoteId(mutation, idsByDreamId, idsByClientRequestId);
+    }
+
+    if (hydratedMutation.operation !== 'create' && getMutationRemoteId(hydratedMutation) == null) {
+      results.push(createMissingRemoteIdResult(hydratedMutation));
+      continue;
+    }
+
+    batch.push(hydratedMutation);
+  }
+
+  await flushBatch();
+
+  return results;
+};
+
 export async function syncDreamMutationsInSupabase(
   mutations: DreamMutation[],
   userId?: string
 ): Promise<SyncMutationResult[]> {
-  if (typeof supabase.rpc !== 'function') {
-    return syncDreamMutationsDirectly(mutations, userId);
-  }
+  return syncDreamMutationsWithResolvedRemoteIds(mutations, async (batch) => {
+    if (typeof supabase.rpc !== 'function') {
+      return syncDreamMutationsDirectly(batch, userId);
+    }
 
-  const preparedMutations = await Promise.all(
-    mutations.map((mutation) => mapMutationToSyncPayload(mutation, userId))
-  );
+    const preparedMutations = await Promise.all(
+      batch.map((mutation) => mapMutationToSyncPayload(mutation, userId))
+    );
 
-  const { data, error } = await supabase.rpc('sync_dream_mutations', {
-    mutations: preparedMutations,
+    const { data, error } = await supabase.rpc('sync_dream_mutations', {
+      mutations: preparedMutations,
+    });
+
+    if (isMissingSyncMutationsRpcError(error)) {
+      return syncDreamMutationsDirectly(batch, userId);
+    }
+
+    if (error) {
+      throw formatError(error, 'Failed to sync dream mutations');
+    }
+
+    return parseSyncResult(data);
   });
-
-  if (error) {
-    throw formatError(error, 'Failed to sync dream mutations');
-  }
-
-  return parseSyncResult(data);
 }
 
 export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {

@@ -351,12 +351,8 @@ export async function getCachedRemoteDreams(userScope?: string | null): Promise<
   console.log('[MOCK STORAGE] getCachedRemoteDreams called');
   try {
     const scopedKey = scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope);
-    const cached = mockStorage[scopedKey] ?? (userScope ? mockStorage[REMOTE_DREAMS_CACHE_KEY] : undefined);
+    const cached = mockStorage[scopedKey];
     if (cached) {
-      if (userScope && !mockStorage[scopedKey]) {
-        mockStorage[scopedKey] = cached;
-        delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
-      }
       return JSON.parse(cached) as DreamAnalysis[];
     }
   } catch (error) {
@@ -394,7 +390,7 @@ export async function getPendingDreamMutations(userScope?: string | null): Promi
   console.log('[MOCK STORAGE] getPendingDreamMutations called');
   try {
     const scopedKey = scopedStorageKey(DREAM_MUTATIONS_KEY, userScope);
-    const pending = mockStorage[scopedKey] ?? (userScope ? mockStorage[DREAM_MUTATIONS_KEY] : undefined);
+    const pending = mockStorage[scopedKey];
     if (pending) {
       const parsed = JSON.parse(pending) as unknown;
       if (!Array.isArray(parsed)) {
@@ -418,10 +414,6 @@ export async function getPendingDreamMutations(userScope?: string | null): Promi
           return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
         })
         .filter((entry): entry is DreamMutation => Boolean(entry));
-      if (userScope) {
-        mockStorage[scopedKey] = JSON.stringify(migrated);
-        delete mockStorage[DREAM_MUTATIONS_KEY];
-      }
       return migrated;
     }
   } catch (error) {

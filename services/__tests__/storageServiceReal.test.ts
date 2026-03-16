@@ -804,6 +804,52 @@ describe('storageServiceReal', () => {
     }
   });
 
+  it('does not migrate legacy global sync data into a scoped user bucket', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+
+      localStorage.setItem(
+        REMOTE_DREAMS_CACHE_KEY,
+        JSON.stringify([
+          {
+            id: 7,
+            title: 'Legacy cache',
+            transcript: 'hello',
+            interpretation: '',
+            shareableQuote: '',
+            imageUrl: '',
+            dreamType: 'Symbolic Dream',
+            chatHistory: [],
+            isFavorite: false,
+          },
+        ]),
+      );
+      localStorage.setItem(
+        DREAM_MUTATIONS_KEY,
+        JSON.stringify([
+          {
+            id: 'legacy-mutation',
+            type: 'delete',
+            createdAt: 123,
+            dreamId: 7,
+          },
+        ]),
+      );
+
+      const storage = require('../storageServiceReal');
+
+      expect(await storage.getCachedRemoteDreams('user:user-b')).toEqual([]);
+      expect(await storage.getPendingDreamMutations('user:user-b')).toEqual([]);
+      expect(localStorage.getItem(`${REMOTE_DREAMS_CACHE_KEY}:user:user-b`)).toBeNull();
+      expect(localStorage.getItem(`${DREAM_MUTATIONS_KEY}:user:user-b`)).toBeNull();
+      expect(localStorage.getItem(REMOTE_DREAMS_CACHE_KEY)).not.toBeNull();
+      expect(localStorage.getItem(DREAM_MUTATIONS_KEY)).not.toBeNull();
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
   it('persists pending image jobs on web storage', async () => {
     const originalIndexedDB = (globalThis as any).indexedDB;
     try {
