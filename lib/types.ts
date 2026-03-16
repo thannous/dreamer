@@ -33,6 +33,9 @@ export interface ChatMessage {
  */
 export type AnalysisStatus = 'none' | 'pending' | 'done' | 'failed';
 export type ImageJobStatus = 'queued' | 'running';
+export type DreamSyncState = 'clean' | 'pending' | 'failed' | 'conflict';
+export type SyncMutationStatus = 'pending' | 'sending' | 'acked' | 'failed' | 'blocked';
+export type SyncMutationOperation = 'create' | 'update' | 'delete';
 
 /**
  * Canonical dream type categories used in the app.
@@ -49,6 +52,9 @@ export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
   clientRequestId?: string; // Idempotency key for creates to avoid duplicates
+  revisionId?: string; // Server-side optimistic concurrency token
+  updatedAt?: number; // Server timestamp for the latest accepted mutation
+  clientUpdatedAt?: number; // Client timestamp for the latest local edit
   transcript: string;
   title: string;
   interpretation: string;
@@ -62,6 +68,10 @@ export interface DreamAnalysis {
   dreamType: DreamType;
   isFavorite?: boolean;
   imageGenerationFailed?: boolean; // True if analysis succeeded but image generation failed
+  syncState?: DreamSyncState;
+  lastSyncedAt?: number;
+  lastSyncError?: string;
+  conflictRemoteDream?: DreamAnalysis;
   pendingSync?: boolean;
 
   // Subject detection for reference image generation
@@ -111,26 +121,30 @@ export type AppLanguage = 'en' | 'fr' | 'es' | 'de' | 'it';
 
 export type LanguagePreference = 'auto' | 'en' | 'fr' | 'es' | 'de' | 'it';
 
-export type DreamMutation =
-  | {
-      id: string;
-      type: 'create';
-      createdAt: number;
-      dream: DreamAnalysis;
-    }
-  | {
-      id: string;
-      type: 'update';
-      createdAt: number;
-      dream: DreamAnalysis;
-    }
-  | {
-      id: string;
-      type: 'delete';
-      createdAt: number;
-      dreamId: number;
-      remoteId?: number;
-    };
+export interface DreamMutationPayload {
+  dream?: DreamAnalysis;
+  tombstone?: DreamAnalysis;
+  dreamId?: number;
+  remoteId?: number;
+}
+
+export interface DreamMutation {
+  version: 1;
+  id: string;
+  userScope: string;
+  entityType: 'dream';
+  entityKey: string;
+  operation: SyncMutationOperation;
+  clientRequestId: string;
+  baseRevision?: string;
+  clientUpdatedAt: number;
+  payload: DreamMutationPayload;
+  status: SyncMutationStatus;
+  retryCount: number;
+  lastError?: string;
+  createdAt: number;
+  lastAttemptAt?: number;
+}
 
 /**
  * Quota usage information

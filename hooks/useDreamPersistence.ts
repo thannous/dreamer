@@ -84,6 +84,7 @@ export function useDreamPersistence({
   const { user, sessionReady } = useAuth();
   // ✅ FIX: Extract only userId to prevent unnecessary re-renders when user object changes
   const userId = user?.id;
+  const userScope = userId ? `user:${userId}` : null;
   const authSessionReady = Boolean(userId) && sessionReady;
   const [dreams, setDreams] = useState<DreamAnalysis[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -156,9 +157,9 @@ export function useDreamPersistence({
       }
       dreamsRef.current = sorted;
       setDreams(sorted);
-      await saveCachedRemoteDreams(sorted);
+      await saveCachedRemoteDreams(sorted, userScope);
     },
-    [canUseRemoteSync]
+    [canUseRemoteSync, userScope]
   );
 
   /**
@@ -210,15 +211,15 @@ export function useDreamPersistence({
     try {
       // Prefer local sources: pending mutation queue + cached/local storage
       const [pendingMutationsFromStorage, cachedRemoteDreams, localDreams] = await Promise.all([
-        getPendingDreamMutations(),
-        getCachedRemoteDreams(),
+        getPendingDreamMutations(userScope),
+        getCachedRemoteDreams(userScope),
         getSavedDreams(),
       ]);
 
       const candidates: DreamAnalysis[] = [
         ...pendingMutationsFromStorage
-          .filter((mutation) => mutation.type === 'create')
-          .map((mutation) => mutation.dream)
+          .filter((mutation) => mutation.operation === 'create' && mutation.payload.dream)
+          .map((mutation) => mutation.payload.dream!)
           .filter((dream) => !dream.remoteId),
         ...cachedRemoteDreams.filter((dream) => !dream.remoteId),
         ...localDreams.filter((dream) => !dream.remoteId),
@@ -272,7 +273,7 @@ export function useDreamPersistence({
       logger.error('Background migration failed', error);
       // Don't mark as migrated in case of catastrophic failure
     }
-  }, [canUseRemoteSync, ensureAccessToken, userId, persistRemoteDreams]);
+  }, [canUseRemoteSync, ensureAccessToken, userId, userScope, persistRemoteDreams]);
 
   /**
    * Load dreams from storage/server
@@ -298,8 +299,8 @@ export function useDreamPersistence({
       // Parallelize initial reads - fetch pending mutations and cached dreams simultaneously
       // This saves 500-1500ms on app startup
       const [pendingResult, cachedResult] = await Promise.allSettled([
-        getPendingDreamMutations(),
-        getCachedRemoteDreams(),
+        getPendingDreamMutations(userScope),
+        getCachedRemoteDreams(userScope),
       ]);
 
       pendingMutations = pendingResult.status === 'fulfilled' ? pendingResult.value : [];
@@ -333,7 +334,7 @@ export function useDreamPersistence({
 
         const remoteDreams = await fetchDreamsFromSupabase();
         const normalizedRemote = normalizeDreamList(remoteDreams);
-        await saveCachedRemoteDreams(sortDreams(normalizedRemote));
+        await saveCachedRemoteDreams(sortDreams(normalizedRemote), userScope);
         const hydrated = normalizeDreamList(applyPendingMutations(normalizedRemote, pendingMutations));
         const nextDreams = sortDreams(hydrated);
         if (mounted.current) {
@@ -380,7 +381,7 @@ export function useDreamPersistence({
         setLoaded(true);
       }
     }
-  }, [canUseRemoteSync, authSessionReady, ensureAccessToken, migrateGuestDreamsToSupabase, migrateUnsyncedDreams]);
+  }, [canUseRemoteSync, authSessionReady, ensureAccessToken, migrateGuestDreamsToSupabase, migrateUnsyncedDreams, userScope]);
 
   /**
    * Public reload function

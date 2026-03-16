@@ -2,6 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
+import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
 import type {
   DreamAnalysis,
@@ -35,6 +36,9 @@ const FILE_BACKED_KEYS = new Set([
   REMOTE_DREAMS_CACHE_KEY,
   DREAM_MUTATIONS_KEY,
 ]);
+
+const scopedStorageKey = (baseKey: string, userScope?: string | null): string =>
+  userScope ? `${baseKey}:${userScope}` : baseKey;
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -686,11 +690,46 @@ async function normalizeDreamsForStorage(dreams: DreamAnalysis[]): Promise<Dream
 async function normalizeMutationsForStorage(mutations: DreamMutation[]): Promise<DreamMutation[]> {
   return Promise.all(
     mutations.map(async (mutation) => {
-      if (mutation.type === 'create' || mutation.type === 'update') {
-        const dream = await normalizeDreamForStorage(mutation.dream);
-        return { ...mutation, dream };
+      const legacyMutation = mutation as DreamMutation & {
+        dream?: DreamAnalysis;
+        dreamId?: number;
+        remoteId?: number;
+      };
+      const payload =
+        mutation.payload && typeof mutation.payload === 'object'
+          ? mutation.payload
+          : {
+              ...(legacyMutation.dream ? { dream: legacyMutation.dream } : {}),
+              ...(legacyMutation.dreamId != null ? { dreamId: legacyMutation.dreamId } : {}),
+              ...(legacyMutation.remoteId != null ? { remoteId: legacyMutation.remoteId } : {}),
+            };
+      const dream = payload.dream
+        ? await normalizeDreamForStorage(payload.dream)
+        : undefined;
+      const tombstone = payload.tombstone
+        ? await normalizeDreamForStorage(payload.tombstone)
+        : undefined;
+
+      if (dream || tombstone) {
+        return {
+          ...mutation,
+          payload: {
+            ...payload,
+            ...(dream ? { dream } : {}),
+            ...(tombstone ? { tombstone } : {}),
+          },
+          dream,
+          dreamId: payload.dreamId,
+          remoteId: payload.remoteId,
+        };
       }
-      return mutation;
+      return {
+        ...mutation,
+        payload,
+        dream: payload.dream,
+        dreamId: payload.dreamId,
+        remoteId: payload.remoteId,
+      };
     })
   );
 }
@@ -960,9 +999,44 @@ export async function setDreamsMigrationSynced(userId: string, synced: boolean):
   await setItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`, synced ? 'true' : 'false');
 }
 
-export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
+async function readScopedJson(
+  baseKey: string,
+  userScope?: string | null
+): Promise<string | null> {
+  const scopedKey = scopedStorageKey(baseKey, userScope);
+  const scopedValue = await getItem(scopedKey);
+  if (scopedValue != null) {
+    return scopedValue;
+  }
+
+  if (!userScope) {
+    return null;
+  }
+
+  const legacyValue = await getItem(baseKey);
+  if (legacyValue == null) {
+    return null;
+  }
+
+  await setItem(scopedKey, legacyValue);
+  await removeItem(baseKey);
+  return legacyValue;
+}
+
+async function writeScopedJson(
+  baseKey: string,
+  payload: string,
+  userScope?: string | null
+): Promise<void> {
+  await setItem(scopedStorageKey(baseKey, userScope), payload);
+  if (userScope) {
+    await removeItem(baseKey);
+  }
+}
+
+export async function getCachedRemoteDreams(userScope?: string | null): Promise<DreamAnalysis[]> {
   try {
-    const cachedDreams = await getItem(REMOTE_DREAMS_CACHE_KEY);
+    const cachedDreams = await readScopedJson(REMOTE_DREAMS_CACHE_KEY, userScope);
     if (cachedDreams) {
       return JSON.parse(cachedDreams) as DreamAnalysis[];
     }
@@ -974,10 +1048,13 @@ export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
   return [];
 }
 
-export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<void> {
+export async function saveCachedRemoteDreams(
+  dreams: DreamAnalysis[],
+  userScope?: string | null
+): Promise<void> {
   try {
     const normalized = await normalizeDreamsForStorage(dreams);
-    await setItem(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized));
+    await writeScopedJson(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized), userScope);
   } catch (error) {
     if (__DEV__) {
       if (isSQLiteBusyError(error)) {
@@ -989,18 +1066,40 @@ export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<v
   }
 }
 
-export async function clearRemoteDreamStorage(): Promise<void> {
+export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
   await Promise.all([
-    removeItem(REMOTE_DREAMS_CACHE_KEY),
-    removeItem(DREAM_MUTATIONS_KEY),
+    removeItem(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)),
+    removeItem(scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)),
+    ...(userScope ? [removeItem(REMOTE_DREAMS_CACHE_KEY), removeItem(DREAM_MUTATIONS_KEY)] : []),
   ]);
 }
 
-export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
+export async function getPendingDreamMutations(userScope?: string | null): Promise<DreamMutation[]> {
   try {
-    const pending = await getItem(DREAM_MUTATIONS_KEY);
+    const pending = await readScopedJson(DREAM_MUTATIONS_KEY, userScope);
     if (pending) {
-      return JSON.parse(pending) as DreamMutation[];
+      const parsed = JSON.parse(pending) as unknown;
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+      return parsed
+        .map((entry) => {
+          if (
+            typeof entry === 'object' &&
+            entry !== null &&
+            'version' in entry &&
+            (entry as { version?: unknown }).version === 1
+          ) {
+            return entry as DreamMutation;
+          }
+
+          if (!userScope) {
+            return null;
+          }
+
+          return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
+        })
+        .filter((entry): entry is DreamMutation => Boolean(entry));
     }
   } catch (error) {
     if (__DEV__) {
@@ -1010,10 +1109,13 @@ export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
   return [];
 }
 
-export async function savePendingDreamMutations(mutations: DreamMutation[]): Promise<void> {
+export async function savePendingDreamMutations(
+  mutations: DreamMutation[],
+  userScope?: string | null
+): Promise<void> {
   try {
     const normalized = await normalizeMutationsForStorage(mutations);
-    await setItem(DREAM_MUTATIONS_KEY, JSON.stringify(normalized));
+    await writeScopedJson(DREAM_MUTATIONS_KEY, JSON.stringify(normalized), userScope);
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save pending dream mutations:', error);

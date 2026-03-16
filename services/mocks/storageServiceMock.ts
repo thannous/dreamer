@@ -12,6 +12,7 @@ import type {
   RitualStepProgress,
   ThemePreference,
 } from '@/lib/types';
+import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
 // In-memory storage
@@ -39,6 +40,9 @@ const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
 const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
 const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
 const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
+
+const scopedStorageKey = (baseKey: string, userScope?: string | null): string =>
+  userScope ? `${baseKey}:${userScope}` : baseKey;
 
 export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
@@ -343,11 +347,16 @@ export async function setDreamsMigrationSynced(userId: string, synced: boolean):
   mockStorage[key] = synced ? 'true' : 'false';
 }
 
-export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
+export async function getCachedRemoteDreams(userScope?: string | null): Promise<DreamAnalysis[]> {
   console.log('[MOCK STORAGE] getCachedRemoteDreams called');
   try {
-    const cached = mockStorage[REMOTE_DREAMS_CACHE_KEY];
+    const scopedKey = scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope);
+    const cached = mockStorage[scopedKey] ?? (userScope ? mockStorage[REMOTE_DREAMS_CACHE_KEY] : undefined);
     if (cached) {
+      if (userScope && !mockStorage[scopedKey]) {
+        mockStorage[scopedKey] = cached;
+        delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
+      }
       return JSON.parse(cached) as DreamAnalysis[];
     }
   } catch (error) {
@@ -356,27 +365,64 @@ export async function getCachedRemoteDreams(): Promise<DreamAnalysis[]> {
   return [];
 }
 
-export async function saveCachedRemoteDreams(dreams: DreamAnalysis[]): Promise<void> {
+export async function saveCachedRemoteDreams(
+  dreams: DreamAnalysis[],
+  userScope?: string | null
+): Promise<void> {
   console.log('[MOCK STORAGE] saveCachedRemoteDreams called with', dreams.length, 'dreams');
   try {
-    mockStorage[REMOTE_DREAMS_CACHE_KEY] = JSON.stringify(dreams);
+    mockStorage[scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)] = JSON.stringify(dreams);
+    if (userScope) {
+      delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
+    }
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to cache remote dreams:', error);
     throw new Error('Failed to cache remote dreams');
   }
 }
 
-export async function clearRemoteDreamStorage(): Promise<void> {
-  delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
-  delete mockStorage[DREAM_MUTATIONS_KEY];
+export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
+  delete mockStorage[scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)];
+  delete mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)];
+  if (userScope) {
+    delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
+    delete mockStorage[DREAM_MUTATIONS_KEY];
+  }
 }
 
-export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
+export async function getPendingDreamMutations(userScope?: string | null): Promise<DreamMutation[]> {
   console.log('[MOCK STORAGE] getPendingDreamMutations called');
   try {
-    const pending = mockStorage[DREAM_MUTATIONS_KEY];
+    const scopedKey = scopedStorageKey(DREAM_MUTATIONS_KEY, userScope);
+    const pending = mockStorage[scopedKey] ?? (userScope ? mockStorage[DREAM_MUTATIONS_KEY] : undefined);
     if (pending) {
-      return JSON.parse(pending) as DreamMutation[];
+      const parsed = JSON.parse(pending) as unknown;
+      if (!Array.isArray(parsed)) {
+        return [];
+      }
+      const migrated = parsed
+        .map((entry) => {
+          if (
+            typeof entry === 'object' &&
+            entry !== null &&
+            'version' in entry &&
+            (entry as { version?: unknown }).version === 1
+          ) {
+            return entry as DreamMutation;
+          }
+
+          if (!userScope) {
+            return null;
+          }
+
+          return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
+        })
+        .filter((entry): entry is DreamMutation => Boolean(entry));
+      if (userScope) {
+        mockStorage[scopedKey] = JSON.stringify(migrated);
+        delete mockStorage[DREAM_MUTATIONS_KEY];
+      }
+      return migrated;
     }
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to read pending dream mutations:', error);
@@ -384,10 +430,16 @@ export async function getPendingDreamMutations(): Promise<DreamMutation[]> {
   return [];
 }
 
-export async function savePendingDreamMutations(mutations: DreamMutation[]): Promise<void> {
+export async function savePendingDreamMutations(
+  mutations: DreamMutation[],
+  userScope?: string | null
+): Promise<void> {
   console.log('[MOCK STORAGE] savePendingDreamMutations called with', mutations.length, 'mutations');
   try {
-    mockStorage[DREAM_MUTATIONS_KEY] = JSON.stringify(mutations);
+    mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)] = JSON.stringify(mutations);
+    if (userScope) {
+      delete mockStorage[DREAM_MUTATIONS_KEY];
+    }
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save pending dream mutations:', error);
     throw new Error('Failed to save pending dream mutations');

@@ -1,13 +1,5 @@
 /**
- * useOfflineSyncQueue - Handles offline mutation queue and synchronization
- *
- * Responsibilities:
- * - Queue mutations (create/update/delete) when offline
- * - Persist mutation queue to storage
- * - Sync pending mutations when network becomes available
- * - Handle race conditions with sync tokens
- *
- * This hook is extracted from useDreamJournal for better separation of concerns.
+ * useOfflineSyncQueue - Handles durable offline mutation logging and replay
  */
 
 import { useCallback, useEffect, useRef } from 'react';
@@ -17,85 +9,204 @@ import { logger } from '../lib/logger';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import {
   type DreamListUpdater,
+  buildDreamMutationEntityKey,
   generateMutationId,
   generateUUID,
-  hasPendingMutationsForDream,
-  isNotFoundError,
+  getMutationDreamId,
+  getMutationRemoteId,
   removeDream,
+  setDreamSyncState,
+  upsertDream,
 } from '../lib/dreamUtils';
 import { savePendingDreamMutations } from '../services/storageService';
 import {
   createDreamInSupabase,
   deleteDreamFromSupabase,
+  type SyncMutationResult,
+  syncDreamMutationsInSupabase,
   updateDreamInSupabase,
 } from '../services/supabaseDreamService';
 
 export type UseOfflineSyncQueueOptions = {
-  /** Whether remote sync is enabled */
   canUseRemoteSync: boolean;
-  /** Whether network is available */
   hasNetwork: boolean;
-  /** Function to persist dreams to remote cache */
+  userScope?: string | null;
   persistRemoteDreams: (updater: DreamListUpdater) => Promise<void>;
-  /** Function to resolve remoteId from local dreamId */
   resolveRemoteId: (dreamId: number) => number | undefined;
-  /** Initial pending mutations (from loadDreams) */
   initialMutations?: DreamMutation[];
 };
 
 export type UseOfflineSyncQueueResult = {
-  /** Ref to pending mutations */
   pendingMutationsRef: React.RefObject<DreamMutation[]>;
-  /** Queue an offline operation */
   queueOfflineOperation: (mutation: DreamMutation, updater: DreamListUpdater) => Promise<void>;
-  /** Clear queued mutations for a specific dream */
   clearQueuedMutationsForDream: (dreamId: number) => Promise<boolean>;
-  /** Sync all pending mutations */
+  retryDreamMutations: (dreamId: number) => Promise<boolean>;
   syncPendingMutations: () => Promise<void>;
-  /** Generate a unique mutation ID */
   generateMutationId: () => string;
-  /** Set pending mutations (for initial load) */
   setPendingMutations: (mutations: DreamMutation[]) => void;
 };
 
-/**
- * Hook for managing offline mutation queue and synchronization
- */
+const mergeServerDreamWithLocalState = (
+  serverDream: DreamAnalysis,
+  localDream?: DreamAnalysis
+): DreamAnalysis =>
+  setDreamSyncState(
+    {
+      ...serverDream,
+      id: localDream?.id ?? serverDream.id,
+      imageUpdatedAt: localDream?.imageUpdatedAt ?? serverDream.imageUpdatedAt,
+      imageSource: localDream?.imageSource ?? serverDream.imageSource,
+      imageJobId: localDream?.imageJobId,
+      imageJobStatus: localDream?.imageJobStatus,
+      imageJobRequestId: localDream?.imageJobRequestId,
+      imageJobErrorCode: localDream?.imageJobErrorCode,
+      imageJobErrorMessage: localDream?.imageJobErrorMessage,
+    },
+    'clean',
+    {
+      lastSyncedAt: Date.now(),
+      lastSyncError: undefined,
+      conflictRemoteDream: undefined,
+    }
+  );
+
+const normalizeMutation = (mutation: DreamMutation, userScope?: string | null): DreamMutation => {
+  const legacyMutation = mutation as DreamMutation & {
+    dream?: DreamAnalysis;
+    dreamId?: number;
+    remoteId?: number;
+    type?: DreamMutation['operation'];
+  };
+  const payload =
+    mutation.payload && typeof mutation.payload === 'object'
+      ? mutation.payload
+      : {
+          ...(legacyMutation.dream ? { dream: legacyMutation.dream } : {}),
+          ...(legacyMutation.dreamId != null ? { dreamId: legacyMutation.dreamId } : {}),
+          ...(legacyMutation.remoteId != null ? { remoteId: legacyMutation.remoteId } : {}),
+        };
+  const dream = payload.dream;
+  const tombstone = payload.tombstone;
+  const operation = mutation.operation ?? legacyMutation.type ?? 'update';
+  const entityKey =
+    mutation.entityKey ||
+    (dream ? buildDreamMutationEntityKey(dream) : payload.remoteId != null
+      ? `remote:${payload.remoteId}`
+      : `local:${payload.dreamId ?? mutation.id}`);
+
+  const clientRequestId =
+    mutation.clientRequestId ||
+    dream?.clientRequestId ||
+    tombstone?.clientRequestId ||
+    generateUUID();
+  const normalizedPayload = {
+    ...payload,
+    ...(dream ? { dream: { ...dream, clientRequestId: dream.clientRequestId ?? clientRequestId } } : {}),
+    ...(tombstone
+      ? { tombstone: { ...tombstone, clientRequestId: tombstone.clientRequestId ?? clientRequestId } }
+      : {}),
+  };
+
+  return {
+    ...mutation,
+    version: 1,
+    userScope: mutation.userScope || userScope || 'user:unknown',
+    entityType: 'dream',
+    entityKey,
+    operation,
+    clientRequestId,
+    payload: normalizedPayload,
+    clientUpdatedAt:
+      mutation.clientUpdatedAt ||
+      dream?.clientUpdatedAt ||
+      tombstone?.clientUpdatedAt ||
+      mutation.createdAt,
+    status: mutation.status ?? 'pending',
+    retryCount: mutation.retryCount ?? 0,
+    type: operation,
+    dream: normalizedPayload.dream,
+    dreamId: normalizedPayload.dreamId,
+    remoteId: normalizedPayload.remoteId,
+  } as DreamMutation;
+};
+
+const isRetryableMutation = (mutation: DreamMutation): boolean =>
+  mutation.status === 'pending' || mutation.status === 'failed';
+
+const applyAckedMutation = (
+  list: DreamAnalysis[],
+  mutation: DreamMutation,
+  result: SyncMutationResult
+): DreamAnalysis[] => {
+  if (mutation.operation === 'delete') {
+    return removeDream(
+      list,
+      mutation.payload.dreamId ?? mutation.payload.tombstone?.id ?? -1,
+      result.remoteId ?? getMutationRemoteId(mutation)
+    );
+  }
+
+  if (!result.dream) {
+    return list;
+  }
+
+  return upsertDream(list, mergeServerDreamWithLocalState(result.dream, mutation.payload.dream));
+};
+
+const applyFailedMutation = (
+  list: DreamAnalysis[],
+  mutation: DreamMutation,
+  syncState: 'failed' | 'conflict',
+  error?: string,
+  remoteDream?: DreamAnalysis
+): DreamAnalysis[] => {
+  const localDream = mutation.payload.dream ?? mutation.payload.tombstone ?? remoteDream;
+  if (!localDream) {
+    return list;
+  }
+
+  const existingDream = list.find(
+    (entry) =>
+      entry.id === localDream.id ||
+      (localDream.remoteId != null && entry.remoteId === localDream.remoteId) ||
+      (remoteDream?.remoteId != null && entry.remoteId === remoteDream.remoteId)
+  );
+
+  const nextDream = setDreamSyncState(
+    {
+      ...existingDream,
+      ...localDream,
+      remoteId: localDream.remoteId ?? existingDream?.remoteId ?? remoteDream?.remoteId,
+      revisionId: localDream.revisionId ?? existingDream?.revisionId ?? remoteDream?.revisionId,
+      updatedAt: localDream.updatedAt ?? existingDream?.updatedAt ?? remoteDream?.updatedAt,
+    },
+    syncState,
+    {
+      lastSyncError: error,
+      conflictRemoteDream: syncState === 'conflict' ? remoteDream : undefined,
+    }
+  );
+
+  return upsertDream(list, nextDream);
+};
+
 export function useOfflineSyncQueue({
   canUseRemoteSync,
   hasNetwork,
+  userScope,
   persistRemoteDreams,
   resolveRemoteId,
   initialMutations = [],
 }: UseOfflineSyncQueueOptions): UseOfflineSyncQueueResult {
   const { user } = useAuth();
-  const pendingMutationsRef = useRef<DreamMutation[]>(initialMutations);
+  const pendingMutationsRef = useRef<DreamMutation[]>(
+    initialMutations.map((mutation) => normalizeMutation(mutation, userScope))
+  );
   const syncingRef = useRef(false);
-
-  // Monotonic sync token to prevent older completions from overwriting newer state
   const syncTokenRef = useRef(0);
-  // Single in-flight promise to queue subsequent sync calls
   const inFlightSyncRef = useRef<Promise<void> | null>(null);
-  // Track component mount state to bail out of async operations
   const mountedRef = useRef(true);
 
-  const ensureClientRequestId = useCallback((mutation: DreamMutation): DreamMutation => {
-    if (mutation.type === 'create' || mutation.type === 'update') {
-      if (mutation.dream.clientRequestId) return mutation;
-      const clientRequestId =
-        // Deterministic fallback based on local id to avoid regenerating new ids on each retry
-        typeof mutation.dream.id === 'number'
-          ? `dream-${mutation.dream.id}`
-          : generateUUID();
-      return {
-        ...mutation,
-        dream: { ...mutation.dream, clientRequestId },
-      };
-    }
-    return mutation;
-  }, []);
-
-  // Track mount state for async safety
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -103,39 +214,29 @@ export function useOfflineSyncQueue({
     };
   }, []);
 
-  /**
-   * Set pending mutations (used after loadDreams)
-   */
-  const setPendingMutations = useCallback((mutations: DreamMutation[]) => {
-    pendingMutationsRef.current = mutations.map(ensureClientRequestId);
-  }, [ensureClientRequestId]);
-
-  /**
-   * Persist pending mutations to storage
-   */
   const persistPendingMutations = useCallback(
     async (mutations: DreamMutation[]) => {
-      const normalized = mutations.map(ensureClientRequestId);
+      const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
       pendingMutationsRef.current = normalized;
       if (!canUseRemoteSync) return;
-      await savePendingDreamMutations(normalized);
+      await savePendingDreamMutations(normalized, userScope);
     },
-    [canUseRemoteSync, ensureClientRequestId]
+    [canUseRemoteSync, userScope]
   );
 
-  /**
-   * Hydrate queue with initial mutations loaded from storage.
-   * Merge with any mutations already enqueued in this session to avoid dropping new work.
-   */
+  const setPendingMutations = useCallback((mutations: DreamMutation[]) => {
+    pendingMutationsRef.current = mutations.map((mutation) => normalizeMutation(mutation, userScope));
+  }, [userScope]);
+
   useEffect(() => {
-    const current = pendingMutationsRef.current.map(ensureClientRequestId);
+    const current = pendingMutationsRef.current.map((mutation) => normalizeMutation(mutation, userScope));
     const mergedById = new Map<string, DreamMutation>();
-    [...initialMutations.map(ensureClientRequestId), ...current].forEach((mutation) => {
-      mergedById.set(mutation.id, ensureClientRequestId(mutation));
+    [...initialMutations.map((mutation) => normalizeMutation(mutation, userScope)), ...current].forEach((mutation) => {
+      mergedById.set(mutation.id, mutation);
     });
 
     const merged = Array.from(mergedById.values()).sort(
-      (a, b) => a.createdAt - b.createdAt
+      (a, b) => a.clientUpdatedAt - b.clientUpdatedAt
     );
 
     const changed =
@@ -146,11 +247,8 @@ export function useOfflineSyncQueue({
       setPendingMutations(merged);
       void persistPendingMutations(merged);
     }
-  }, [ensureClientRequestId, initialMutations, persistPendingMutations, setPendingMutations]);
+  }, [initialMutations, persistPendingMutations, setPendingMutations, userScope]);
 
-  /**
-   * Append a mutation to the queue
-   */
   const appendPendingMutation = useCallback(
     async (mutation: DreamMutation) => {
       await persistPendingMutations([...pendingMutationsRef.current, mutation]);
@@ -158,31 +256,17 @@ export function useOfflineSyncQueue({
     [persistPendingMutations]
   );
 
-  /**
-   * Queue an offline operation with optimistic update
-   */
   const queueOfflineOperation = useCallback(
     async (mutation: DreamMutation, updater: DreamListUpdater) => {
       await persistRemoteDreams(updater);
-      await appendPendingMutation(mutation);
+      await appendPendingMutation(normalizeMutation(mutation, userScope));
     },
-    [appendPendingMutation, persistRemoteDreams]
+    [appendPendingMutation, persistRemoteDreams, userScope]
   );
 
-  /**
-   * Clear all queued mutations for a specific dream
-   */
   const clearQueuedMutationsForDream = useCallback(
     async (dreamId: number): Promise<boolean> => {
-      const filtered = pendingMutationsRef.current.filter((mutation) => {
-        if (mutation.type === 'delete') {
-          return mutation.dreamId !== dreamId;
-        }
-        if (mutation.type === 'create' || mutation.type === 'update') {
-          return mutation.dream.id !== dreamId;
-        }
-        return true;
-      });
+      const filtered = pendingMutationsRef.current.filter((mutation) => getMutationDreamId(mutation) !== dreamId);
       const changed = filtered.length !== pendingMutationsRef.current.length;
       if (changed) {
         await persistPendingMutations(filtered);
@@ -192,139 +276,263 @@ export function useOfflineSyncQueue({
     [persistPendingMutations]
   );
 
-  /**
-   * Sync all pending mutations to the server
-   */
+  const retryDreamMutations = useCallback(
+    async (dreamId: number): Promise<boolean> => {
+      let changed = false;
+      const nextQueue: DreamMutation[] = pendingMutationsRef.current.map((mutation) => {
+        if (getMutationDreamId(mutation) !== dreamId || mutation.status !== 'failed') {
+          return mutation;
+        }
+
+        changed = true;
+        return {
+          ...mutation,
+          status: 'pending',
+          lastError: undefined,
+        };
+      });
+
+      if (!changed) {
+        return false;
+      }
+
+      await persistPendingMutations(nextQueue);
+      return true;
+    },
+    [persistPendingMutations]
+  );
+
   const syncPendingMutations = useCallback(async () => {
     if (!canUseRemoteSync || !user || !hasNetwork) return;
     if (!pendingMutationsRef.current.length) return;
 
-    // Wait for any in-flight sync to complete before starting
     if (inFlightSyncRef.current) {
       await inFlightSyncRef.current;
     }
 
-    // Double-check conditions after waiting
     if (!mountedRef.current || syncingRef.current) return;
-    if (!pendingMutationsRef.current.length) return;
 
-    // Acquire the sync token - newer syncs will have higher tokens
+    const eligibleMutations = pendingMutationsRef.current.filter(isRetryableMutation);
+    if (!eligibleMutations.length) return;
+
     const currentToken = ++syncTokenRef.current;
     syncingRef.current = true;
 
+    const markMutationState = (
+      mutation: DreamMutation,
+      status: DreamMutation['status'],
+      extras: Partial<Pick<DreamMutation, 'lastError' | 'lastAttemptAt' | 'retryCount'>> = {}
+    ): DreamMutation => ({
+      ...mutation,
+      status,
+      lastError: extras.lastError,
+      lastAttemptAt: extras.lastAttemptAt ?? Date.now(),
+      retryCount: extras.retryCount ?? mutation.retryCount,
+    });
+
     const syncPromise = (async () => {
+      const sendingIds = new Set(eligibleMutations.map((mutation) => mutation.id));
+      const sendingQueue = pendingMutationsRef.current.map((mutation) =>
+        sendingIds.has(mutation.id) ? markMutationState(mutation, 'sending') : mutation
+      );
+      await persistPendingMutations(sendingQueue);
+
       try {
-        let queue = [...pendingMutationsRef.current];
-        while (queue.length) {
-          // Bail out if unmounted or a newer sync was started
-          if (!mountedRef.current || syncTokenRef.current !== currentToken) {
-            return;
-          }
+        const canUseBatchSync = userScope && typeof syncDreamMutationsInSupabase === 'function';
+        const results = canUseBatchSync
+          ? await syncDreamMutationsInSupabase(eligibleMutations, user.id)
+          : await (async (): Promise<SyncMutationResult[]> => {
+              const legacyResults: SyncMutationResult[] = [];
+              const workingMutations = eligibleMutations.map((mutation) => normalizeMutation(mutation, userScope));
 
-          const mutation = queue[0];
-          try {
-            if (mutation.type === 'create') {
-              const created = await createDreamInSupabase(mutation.dream, user.id);
+              for (let index = 0; index < workingMutations.length; index += 1) {
+                const mutation = workingMutations[index];
 
-              // Check again after async operation
-              if (!mountedRef.current || syncTokenRef.current !== currentToken) return;
+                if (mutation.operation === 'create' && mutation.payload.dream) {
+                  const dream = await createDreamInSupabase(mutation.payload.dream, user.id);
+                  legacyResults.push({
+                    mutationId: mutation.id,
+                    clientRequestId: mutation.clientRequestId,
+                    operation: mutation.operation,
+                    status: 'ack',
+                    dream,
+                    remoteId: dream.remoteId,
+                  });
 
-              const createdWithLocal = mutation.dream.imageUpdatedAt
-                ? { ...created, imageUpdatedAt: mutation.dream.imageUpdatedAt }
-                : created;
-              queue.shift();
-              queue = queue.map((entry) => {
-                if (entry.type === 'update' && entry.dream.id === mutation.dream.id) {
-                  return {
-                    ...entry,
-                    dream: { ...entry.dream, remoteId: created.remoteId, id: created.id },
-                  };
-                }
-                if (entry.type === 'delete' && entry.dreamId === mutation.dream.id) {
-                  return { ...entry, remoteId: created.remoteId, dreamId: created.id };
-                }
-                return entry;
-              });
-              const stillPending = hasPendingMutationsForDream(queue, created.id);
-              await persistRemoteDreams((prev: DreamAnalysis[]) =>
-                prev.map((d) => {
-                  if (d.id !== mutation.dream.id) return d;
-                  return stillPending
-                    ? { ...d, id: created.id, remoteId: created.remoteId }
-                    : { ...createdWithLocal, id: created.id, pendingSync: undefined };
-                })
-              );
-            } else if (mutation.type === 'update') {
-              const remoteId = mutation.dream.remoteId ?? resolveRemoteId(mutation.dream.id);
-              if (!remoteId) {
-                // Recovery: if an update is queued without remoteId (e.g. stale cache / older app version),
-                // convert it to a create/upsert so we can obtain a remoteId and unblock the queue.
-                // createDreamInSupabase is idempotent on (user_id, client_request_id).
-                queue[0] = {
-                  ...mutation,
-                  type: 'create',
-                  dream: { ...mutation.dream, remoteId: undefined, pendingSync: true },
-                };
-                continue;
-              }
-              try {
-                const saved = await updateDreamInSupabase({ ...mutation.dream, remoteId });
-
-                // Check again after async operation
-                if (!mountedRef.current || syncTokenRef.current !== currentToken) return;
-
-                const savedWithLocal = mutation.dream.imageUpdatedAt
-                  ? { ...saved, imageUpdatedAt: mutation.dream.imageUpdatedAt }
-                  : saved;
-                queue.shift();
-                const stillPending = hasPendingMutationsForDream(queue, mutation.dream.id);
-                await persistRemoteDreams((prev: DreamAnalysis[]) =>
-                  prev.map((d) => {
-                    if (d.id !== mutation.dream.id) return d;
-                    if (stillPending) {
-                      return d;
+                  workingMutations.slice(index + 1).forEach((entry) => {
+                    const sameDream = getMutationDreamId(entry) === mutation.payload.dream?.id;
+                    if (!sameDream || dream.remoteId == null) {
+                      return;
                     }
-                    return { ...savedWithLocal, id: d.id, pendingSync: undefined };
-                  })
-                );
-              } catch (error) {
-                if (isNotFoundError(error)) {
-                  queue[0] = {
-                    ...mutation,
-                    type: 'create',
-                    dream: { ...mutation.dream, remoteId: undefined, pendingSync: true },
-                  };
+
+                    if (entry.payload.dream) {
+                      entry.payload = {
+                        ...entry.payload,
+                        dream: {
+                          ...entry.payload.dream,
+                          remoteId: dream.remoteId,
+                        },
+                      };
+                    } else {
+                      entry.payload = {
+                        ...entry.payload,
+                        remoteId: dream.remoteId,
+                      };
+                    }
+                  });
                   continue;
                 }
-                throw error;
-              }
-            } else if (mutation.type === 'delete') {
-              const remoteId = mutation.remoteId ?? resolveRemoteId(mutation.dreamId);
-              if (!remoteId) {
-                throw new Error('Missing remote id for Supabase dream delete');
-              }
-              await deleteDreamFromSupabase(remoteId);
 
-              // Check again after async operation
-              if (!mountedRef.current || syncTokenRef.current !== currentToken) return;
+                if (mutation.operation === 'update' && mutation.payload.dream) {
+                  const remoteId = mutation.payload.dream.remoteId ?? mutation.payload.remoteId;
+                  if (remoteId == null) {
+                    legacyResults.push({
+                      mutationId: mutation.id,
+                      clientRequestId: mutation.clientRequestId,
+                      operation: mutation.operation,
+                      status: 'failed',
+                      error: 'Missing remote id for update',
+                    });
+                    continue;
+                  }
 
-              queue.shift();
-              await persistRemoteDreams((prev: DreamAnalysis[]) =>
-                removeDream(prev, mutation.dreamId, remoteId)
-              );
+                  const dream = await updateDreamInSupabase({
+                    ...mutation.payload.dream,
+                    remoteId,
+                  });
+                  legacyResults.push({
+                    mutationId: mutation.id,
+                    clientRequestId: mutation.clientRequestId,
+                    operation: mutation.operation,
+                    status: 'ack',
+                    dream,
+                    remoteId: dream.remoteId,
+                  });
+                  continue;
+                }
+
+                if (mutation.operation === 'delete') {
+                  const remoteId = mutation.payload.remoteId ?? mutation.payload.tombstone?.remoteId;
+                  if (remoteId == null) {
+                    legacyResults.push({
+                      mutationId: mutation.id,
+                      clientRequestId: mutation.clientRequestId,
+                      operation: mutation.operation,
+                      status: 'failed',
+                      error: 'Missing remote id for delete',
+                    });
+                    continue;
+                  }
+                  await deleteDreamFromSupabase(remoteId);
+                  legacyResults.push({
+                    mutationId: mutation.id,
+                    clientRequestId: mutation.clientRequestId,
+                    operation: mutation.operation,
+                    status: 'ack',
+                    remoteId,
+                  });
+                  continue;
+                }
+
+                legacyResults.push({
+                  mutationId: mutation.id,
+                  clientRequestId: mutation.clientRequestId,
+                  operation: mutation.operation,
+                  status: 'failed',
+                  error: 'Malformed mutation payload',
+                });
+              }
+
+              return legacyResults;
+            })();
+
+        if (!mountedRef.current || syncTokenRef.current !== currentToken) {
+          return;
+        }
+
+        const resultsById = new Map(results.map((result) => [result.mutationId, result]));
+        const nextQueue = pendingMutationsRef.current
+          .map((mutation) => {
+            const result = resultsById.get(mutation.id);
+            if (!result) {
+              return mutation;
             }
-          } catch (error) {
-            logger.warn('Failed to sync offline mutation', error);
-            break;
-          }
-        }
 
-        // Final check before persisting
-        if (mountedRef.current && syncTokenRef.current === currentToken) {
-          await persistPendingMutations(queue);
-        }
+            if (result.status === 'ack') {
+              return markMutationState(mutation, 'acked', { lastError: undefined });
+            }
+
+            if (result.status === 'conflict') {
+              return markMutationState(mutation, 'blocked', {
+                lastError: result.error ?? 'Conflict detected during sync',
+              });
+            }
+
+            return markMutationState(mutation, 'failed', {
+              lastError: result.error ?? 'Failed to sync mutation',
+              retryCount: mutation.retryCount + 1,
+            });
+          })
+          .filter((mutation) => mutation.status !== 'acked');
+
+        await persistRemoteDreams((prev) => {
+          let nextDreams = prev;
+          results.forEach((result) => {
+            const mutation = eligibleMutations.find((entry) => entry.id === result.mutationId);
+            if (!mutation) {
+              return;
+            }
+
+            if (result.status === 'ack') {
+              nextDreams = applyAckedMutation(nextDreams, mutation, result);
+              return;
+            }
+
+            if (result.status === 'conflict') {
+              nextDreams = applyFailedMutation(
+                nextDreams,
+                mutation,
+                'conflict',
+                result.error ?? 'Conflict detected during sync',
+                result.dream
+              );
+              return;
+            }
+
+            nextDreams = applyFailedMutation(
+              nextDreams,
+              mutation,
+              'failed',
+              result.error ?? 'Failed to sync mutation'
+            );
+          });
+          return nextDreams;
+        });
+
+        await persistPendingMutations(nextQueue);
+      } catch (error) {
+        logger.warn('Failed to sync offline mutations', error);
+        const message = error instanceof Error ? error.message : 'Failed to sync mutation batch';
+        const nextQueue = pendingMutationsRef.current.map((mutation) => {
+          if (!sendingIds.has(mutation.id)) {
+            return mutation;
+          }
+          return markMutationState(mutation, 'failed', {
+            lastError: message,
+            retryCount: mutation.retryCount + 1,
+          });
+        });
+
+        await persistRemoteDreams((prev) => {
+          let nextDreams = prev;
+          eligibleMutations.forEach((mutation) => {
+            nextDreams = applyFailedMutation(nextDreams, mutation, 'failed', message);
+          });
+          return nextDreams;
+        });
+
+        await persistPendingMutations(nextQueue);
       } finally {
-        // Only release lock if we still hold the current token
         if (syncTokenRef.current === currentToken) {
           syncingRef.current = false;
         }
@@ -334,17 +542,17 @@ export function useOfflineSyncQueue({
 
     inFlightSyncRef.current = syncPromise;
     return syncPromise;
-  }, [canUseRemoteSync, hasNetwork, persistPendingMutations, persistRemoteDreams, resolveRemoteId, user]);
+  }, [canUseRemoteSync, hasNetwork, persistPendingMutations, persistRemoteDreams, user, userScope]);
 
-  // Auto-sync when network becomes available or dependencies change
   useEffect(() => {
-    syncPendingMutations();
+    void syncPendingMutations();
   }, [syncPendingMutations]);
 
   return {
     pendingMutationsRef,
     queueOfflineOperation,
     clearQueuedMutationsForDream,
+    retryDreamMutations,
     syncPendingMutations,
     generateMutationId,
     setPendingMutations,

@@ -6,7 +6,6 @@ import { isMockModeEnabled } from '@/lib/env';
 import { getCurrentUser, onAuthChange, wasAccountCreatedOnDevice } from '@/lib/auth';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
-import { clearRemoteDreamStorage } from '@/services/storageService';
 import type { SubscriptionTier } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 
@@ -193,18 +192,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           tier: nextUser?.app_metadata?.tier ?? nextUser?.user_metadata?.tier,
         });
       }
-      const previousUserId = previousUserIdRef.current;
       const nextUserId = nextUser?.id ?? null;
-      if (previousUserId !== nextUserId) {
-        try {
-          await clearRemoteDreamStorage();
-        } catch (error) {
-          if (__DEV__) {
-            console.warn('[AuthContext] Failed to clear remote dream cache', error);
-          }
-        }
-      }
-
       previousUserIdRef.current = nextUserId;
       setUser(nextUser);
       if (isMockMode) {

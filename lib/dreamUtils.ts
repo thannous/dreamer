@@ -4,7 +4,13 @@
  */
 
 import { getThumbnailUrl } from '@/lib/imageUtils';
-import type { ChatMessage, DreamAnalysis, DreamMutation } from '@/lib/types';
+import type {
+  ChatMessage,
+  DreamAnalysis,
+  DreamMutation,
+  DreamSyncState,
+  SyncMutationStatus,
+} from '@/lib/types';
 
 /**
  * Sort dreams by ID (timestamp) in descending order (newest first)
@@ -40,6 +46,16 @@ export const isNotFoundError = (error: unknown): error is { code: string } =>
       (error as Record<string, unknown>).code === 'NOT_FOUND'
   );
 
+export const isConflictError = (
+  error: unknown
+): error is { code: string; message?: string; remoteDream?: DreamAnalysis } =>
+  Boolean(
+    error &&
+      typeof error === 'object' &&
+      'code' in (error as Record<string, unknown>) &&
+      (error as Record<string, unknown>).code === 'CONFLICT'
+  );
+
 /**
  * Normalize dream images - derive thumbnail from imageUrl
  */
@@ -66,6 +82,85 @@ export const normalizeDreamImages = (dream: DreamAnalysis): DreamAnalysis => {
     thumbnailUrl: derivedThumbnail,
     imageGenerationFailed: newImageGenerationFailed,
   };
+};
+
+export const getDreamSyncState = (dream: DreamAnalysis): DreamSyncState => {
+  if (dream.syncState) {
+    return dream.syncState;
+  }
+  return dream.pendingSync ? 'pending' : 'clean';
+};
+
+export const setDreamSyncState = (
+  dream: DreamAnalysis,
+  syncState: DreamSyncState,
+  extras: Partial<Pick<DreamAnalysis, 'lastSyncedAt' | 'lastSyncError' | 'conflictRemoteDream'>> = {}
+): DreamAnalysis => ({
+  ...dream,
+  syncState,
+  pendingSync: syncState === 'pending' ? true : undefined,
+  lastSyncedAt: extras.lastSyncedAt ?? dream.lastSyncedAt,
+  lastSyncError: extras.lastSyncError,
+  conflictRemoteDream: extras.conflictRemoteDream,
+});
+
+const getMutationPayload = (
+  mutation: DreamMutation | (Record<string, unknown> & {
+    dream?: DreamAnalysis;
+    dreamId?: number;
+    remoteId?: number;
+  })
+) => {
+  if ('payload' in mutation && mutation.payload && typeof mutation.payload === 'object') {
+    return mutation.payload as DreamMutation['payload'];
+  }
+
+  return {
+    dream: 'dream' in mutation ? (mutation.dream as DreamAnalysis | undefined) : undefined,
+    dreamId: 'dreamId' in mutation && typeof mutation.dreamId === 'number' ? mutation.dreamId : undefined,
+    remoteId: 'remoteId' in mutation && typeof mutation.remoteId === 'number' ? mutation.remoteId : undefined,
+  };
+};
+
+const getMutationOperation = (mutation: DreamMutation | Record<string, unknown>): string =>
+  ('operation' in mutation && typeof mutation.operation === 'string'
+    ? mutation.operation
+    : 'type' in mutation && typeof mutation.type === 'string'
+      ? mutation.type
+      : '');
+
+export const getMutationDream = (mutation: DreamMutation): DreamAnalysis | undefined => {
+  const payload = getMutationPayload(mutation);
+  return payload.dream ?? payload.tombstone;
+};
+
+export const getMutationDreamId = (mutation: DreamMutation): number | undefined => {
+  const payload = getMutationPayload(mutation);
+  return payload.dream?.id ?? payload.tombstone?.id ?? payload.dreamId;
+};
+
+export const getMutationRemoteId = (mutation: DreamMutation): number | undefined => {
+  const payload = getMutationPayload(mutation);
+  return payload.dream?.remoteId ?? payload.tombstone?.remoteId ?? payload.remoteId;
+};
+
+const getMutationSortTime = (mutation: DreamMutation): number =>
+  mutation.clientUpdatedAt || mutation.createdAt;
+
+const isMutationActive = (mutation: DreamMutation): boolean =>
+  !('status' in mutation) || mutation.status !== 'acked';
+
+const dreamSyncStateFromMutationStatus = (
+  status: SyncMutationStatus
+): Extract<DreamSyncState, 'pending' | 'failed' | 'conflict'> => {
+  switch (status) {
+    case 'blocked':
+      return 'conflict';
+    case 'failed':
+      return 'failed';
+    default:
+      return 'pending';
+  }
 };
 
 type NormalizedChatMessage = {
@@ -208,6 +303,12 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.imageGenerationFailed ?? false) !== (right.imageGenerationFailed ?? false)) return false;
   if (left.hasPerson !== right.hasPerson) return false;
   if (left.hasAnimal !== right.hasAnimal) return false;
+  if (getDreamSyncState(left) !== getDreamSyncState(right)) return false;
+  if ((left.lastSyncedAt ?? null) !== (right.lastSyncedAt ?? null)) return false;
+  if ((left.lastSyncError ?? null) !== (right.lastSyncError ?? null)) return false;
+  if ((left.revisionId ?? null) !== (right.revisionId ?? null)) return false;
+  if ((left.updatedAt ?? null) !== (right.updatedAt ?? null)) return false;
+  if ((left.clientUpdatedAt ?? null) !== (right.clientUpdatedAt ?? null)) return false;
   if ((left.pendingSync ?? false) !== (right.pendingSync ?? false)) return false;
   if ((left.isAnalyzed ?? false) !== (right.isAnalyzed ?? false)) return false;
   if ((left.analyzedAt ?? null) !== (right.analyzedAt ?? null)) return false;
@@ -277,9 +378,7 @@ export const hasPendingMutationsForDream = (
   mutations: DreamMutation[],
   dreamId: number
 ): boolean =>
-  mutations.some((mutation) =>
-    mutation.type === 'delete' ? mutation.dreamId === dreamId : mutation.dream.id === dreamId
-  );
+  mutations.some((mutation) => isMutationActive(mutation) && getMutationDreamId(mutation) === dreamId);
 
 /**
  * Apply pending mutations to a source list of dreams
@@ -291,22 +390,130 @@ export const applyPendingMutations = (
 ): DreamAnalysis[] => {
   if (!mutations.length) return sortDreams(source);
   let next = [...source];
-  mutations.forEach((mutation) => {
-    switch (mutation.type) {
-      case 'create':
-        next = upsertDream(next, mutation.dream);
-        break;
-      case 'update':
-        next = upsertDream(next, mutation.dream);
-        break;
-      case 'delete':
-        next = removeDream(next, mutation.dreamId, mutation.remoteId);
-        break;
-      default:
-        break;
-    }
-  });
+  [...mutations]
+    .filter(isMutationActive)
+    .sort((a, b) => getMutationSortTime(a) - getMutationSortTime(b))
+    .forEach((mutation) => {
+      const dream = getMutationDream(mutation);
+      switch (getMutationOperation(mutation)) {
+        case 'create':
+        case 'update':
+          if (dream) {
+            next = upsertDream(
+              next,
+              setDreamSyncState(dream, dreamSyncStateFromMutationStatus(mutation.status), {
+                lastSyncError: mutation.lastError,
+              })
+            );
+          }
+          break;
+        case 'delete':
+          if (mutation.status === 'failed' || mutation.status === 'blocked') {
+            if (dream) {
+              next = upsertDream(
+                next,
+                setDreamSyncState(dream, dreamSyncStateFromMutationStatus(mutation.status), {
+                  lastSyncError: mutation.lastError,
+                })
+              );
+            }
+            break;
+          }
+          const payload = getMutationPayload(mutation);
+          next = removeDream(
+            next,
+            payload.dreamId ?? dream?.id ?? -1,
+            payload.remoteId ?? dream?.remoteId
+          );
+          break;
+        default:
+          break;
+      }
+    });
   return sortDreams(next);
+};
+
+export const getDreamSyncError = (dream: DreamAnalysis): string | undefined =>
+  dream.lastSyncError?.trim() || undefined;
+
+export const clearDreamConflict = (dream: DreamAnalysis): DreamAnalysis =>
+  setDreamSyncState(dream, 'clean', {
+    lastSyncedAt: dream.lastSyncedAt,
+    lastSyncError: undefined,
+    conflictRemoteDream: undefined,
+  });
+
+export const buildDreamMutationEntityKey = (dream: DreamAnalysis): string => {
+  if (dream.remoteId != null) {
+    return `remote:${dream.remoteId}`;
+  }
+  if (dream.clientRequestId) {
+    return `client:${dream.clientRequestId}`;
+  }
+  return `local:${dream.id}`;
+};
+
+export const createDreamMutation = (
+  mutation: Omit<DreamMutation, 'version'>
+): DreamMutation => ({
+  version: 1,
+  ...mutation,
+});
+
+export const migrateLegacyDreamMutation = (
+  legacy: Record<string, unknown>,
+  userScope: string
+): DreamMutation | null => {
+  if (
+    typeof legacy !== 'object' ||
+    legacy === null ||
+    !('type' in legacy) ||
+    !('id' in legacy) ||
+    !('createdAt' in legacy)
+  ) {
+    return null;
+  }
+
+  const operation = legacy.type;
+  if (operation !== 'create' && operation !== 'update' && operation !== 'delete') {
+    return null;
+  }
+
+  const dream = 'dream' in legacy ? (legacy.dream as DreamAnalysis | undefined) : undefined;
+  const dreamId = typeof legacy.dreamId === 'number' ? legacy.dreamId : dream?.id;
+  const remoteId = typeof legacy.remoteId === 'number' ? legacy.remoteId : dream?.remoteId;
+  const createdAt = typeof legacy.createdAt === 'number' ? legacy.createdAt : Date.now();
+  const clientRequestId =
+    typeof legacy.clientRequestId === 'string'
+      ? legacy.clientRequestId
+      : dream?.clientRequestId ?? generateUUID();
+
+  return createDreamMutation({
+    id: String(legacy.id),
+    userScope,
+    entityType: 'dream',
+    entityKey: dream
+      ? buildDreamMutationEntityKey(dream)
+      : remoteId != null
+        ? `remote:${remoteId}`
+        : `local:${dreamId ?? String(legacy.id)}`,
+    operation,
+    clientRequestId,
+    baseRevision: dream?.revisionId,
+    clientUpdatedAt: dream?.clientUpdatedAt ?? createdAt,
+    payload:
+      operation === 'delete'
+        ? {
+            dreamId,
+            remoteId,
+          }
+        : {
+            dream,
+          },
+    status: 'pending',
+    retryCount: 0,
+    createdAt,
+  });
 };
 
 /**
@@ -366,6 +573,7 @@ export function buildDraftDream(
 
   return {
     id: now(),
+    clientUpdatedAt: now(),
     transcript: trimmed,
     title,
     interpretation: '',
@@ -379,6 +587,8 @@ export function buildDraftDream(
     // Stable idempotency key so offline retries don't duplicate on reconnect
     clientRequestId: generateUUID(),
     imageGenerationFailed: false,
+    syncState: 'clean',
+    lastSyncError: undefined,
     isAnalyzed: false,
     analysisStatus: 'none',
   };

@@ -4,6 +4,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScalePress } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamThemeLabel } from '@/lib/dreamLabels';
+import { getDreamSyncState } from '@/lib/dreamUtils';
 import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { getDreamImageVersion, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { DreamAnalysis } from '@/lib/types';
@@ -100,9 +101,14 @@ export const DreamCard = memo(function DreamCard({
   const isExplored = isDreamExplored(dream);
   const isAnalyzed = isDreamAnalyzed(dream);
   const isFavorite = !!dream.isFavorite;
+  const syncState = getDreamSyncState(dream);
 
   const badges = useMemo(() => {
-    const list: { label?: string; icon?: Parameters<typeof IconSymbol>[0]['name']; variant: 'accent' | 'secondary' }[] = [];
+    const list: {
+      label?: string;
+      icon?: Parameters<typeof IconSymbol>[0]['name'];
+      variant: 'accent' | 'secondary' | 'warning' | 'danger';
+    }[] = [];
     if (isExplored) {
       list.push({
         label: t('journal.badge.explored'),
@@ -125,8 +131,27 @@ export const DreamCard = memo(function DreamCard({
         variant: 'secondary',
       });
     }
+    if (syncState === 'pending') {
+      list.push({
+        label: t('journal.badge.sync_pending'),
+        icon: 'arrow.triangle.2.circlepath',
+        variant: 'secondary',
+      });
+    } else if (syncState === 'failed') {
+      list.push({
+        label: t('journal.badge.sync_failed'),
+        icon: 'exclamationmark.triangle.fill',
+        variant: 'warning',
+      });
+    } else if (syncState === 'conflict') {
+      list.push({
+        label: t('journal.badge.sync_conflict'),
+        icon: 'exclamationmark.octagon.fill',
+        variant: 'danger',
+      });
+    }
     return list;
-  }, [isExplored, isAnalyzed, isFavorite, hasImage, t]);
+  }, [hasImage, isAnalyzed, isExplored, isFavorite, syncState, t]);
 
   const imageHeight = isFeatured ? 200 : 160;
 
@@ -200,17 +225,25 @@ export const DreamCard = memo(function DreamCard({
                     <Text style={[styles.tagText, { color: colors.textPrimary }]}>{themeLabel}</Text>
                   </View>
                 )}
-                {badges.map((badge, i) => {
-                  const isAccent = badge.variant === 'accent';
-                  const key = badge.label || badge.icon || String(i);
+                  {badges.map((badge, i) => {
+                    const isAccent = badge.variant === 'accent';
+                    const isWarning = badge.variant === 'warning';
+                    const isDanger = badge.variant === 'danger';
+                    const key = badge.label || badge.icon || String(i);
 
-                  return (
+                    return (
                     <View
                       key={key}
                       style={[
                         styles.stateBadge,
                         {
-                          backgroundColor: isAccent ? colors.accent : colors.backgroundSecondary,
+                          backgroundColor: isAccent
+                            ? colors.accent
+                            : isDanger
+                              ? '#FEE2E2'
+                              : isWarning
+                                ? '#FEF3C7'
+                                : colors.backgroundSecondary,
                         },
                       ]}
                       accessibilityLabel={badge.label}
@@ -220,7 +253,7 @@ export const DreamCard = memo(function DreamCard({
                         <IconSymbol
                           name={badge.icon}
                           size={14}
-                          color={isAccent ? colors.textOnAccentSurface : colors.textPrimary}
+                          color={isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary}
                         />
                       )}
                       {!badge.icon && badge.label && (
@@ -228,7 +261,7 @@ export const DreamCard = memo(function DreamCard({
                           style={[
                             styles.stateBadgeText,
                             {
-                              color: isAccent ? colors.textOnAccentSurface : colors.textPrimary,
+                              color: isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary,
                             },
                           ]}
                         >
@@ -279,33 +312,41 @@ export const DreamCard = memo(function DreamCard({
               )}
               {badges.map((badge, i) => {
                 const isAccent = badge.variant === 'accent';
+                const isWarning = badge.variant === 'warning';
+                const isDanger = badge.variant === 'danger';
                 const key = badge.label || badge.icon || String(i);
 
                 return (
                   <View
                     key={key}
                     style={[
-                      styles.stateBadge,
-                      {
-                        backgroundColor: isAccent ? colors.accent : colors.backgroundSecondary,
-                      },
-                    ]}
+                    styles.stateBadge,
+                    {
+                      backgroundColor: isAccent
+                        ? colors.accent
+                        : isDanger
+                          ? '#FEE2E2'
+                          : isWarning
+                            ? '#FEF3C7'
+                            : colors.backgroundSecondary,
+                    },
+                  ]}
                     accessibilityLabel={badge.label}
                     accessible={!!badge.label}
                   >
                     {badge.icon && (
-                      <IconSymbol
-                        name={badge.icon}
-                        size={14}
-                        color={isAccent ? colors.textOnAccentSurface : colors.textPrimary}
-                      />
-                    )}
+                    <IconSymbol
+                      name={badge.icon}
+                      size={14}
+                      color={isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary}
+                    />
+                  )}
                     {!badge.icon && badge.label && (
                       <Text
                         style={[
                           styles.stateBadgeText,
                           {
-                            color: isAccent ? colors.textOnAccentSurface : colors.textPrimary,
+                            color: isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary,
                           },
                         ]}
                       >
@@ -350,6 +391,8 @@ export const DreamCard = memo(function DreamCard({
     && prevDream.isAnalyzed === nextDream.isAnalyzed
     && prevDream.explorationStartedAt === nextDream.explorationStartedAt
     && prevDream.shareableQuote === nextDream.shareableQuote
+    && prevDream.syncState === nextDream.syncState
+    && prevDream.lastSyncError === nextDream.lastSyncError
     && prevHasModelMessage === nextHasModelMessage
   );
 });
