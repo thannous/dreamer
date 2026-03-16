@@ -21,12 +21,12 @@ describe('subscriptionSyncService', () => {
   });
 
   it('calls the subscription sync endpoint with POST', async () => {
-    mockFetchJSON.mockResolvedValue({ ok: true, tier: 'free' });
+    mockFetchJSON.mockResolvedValue({ ok: true, tier: 'free', isActive: false, version: 3, changed: false });
 
     const result = await syncSubscriptionFromServer('app_launch');
 
     expect(mockFetchJSON).toHaveBeenCalledWith(
-      'https://api.dreamer.test/subscription/sync',
+      'https://api.dreamer.test/subscription/refresh',
       expect.objectContaining({
         method: 'POST',
         body: { source: 'app_launch' },
@@ -36,5 +36,6 @@ describe('subscriptionSyncService', () => {
     );
     expect(result.ok).toBe(true);
     expect(result.tier).toBe('free');
+    expect(result.version).toBe(3);
   });
 });

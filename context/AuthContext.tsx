@@ -7,6 +7,7 @@ import { getCurrentUser, onAuthChange, wasAccountCreatedOnDevice } from '@/lib/a
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { consumeStayOnSettingsIntent } from '@/lib/navigationIntents';
 import type { SubscriptionTier } from '@/lib/types';
+import { clearRemoteDreamStorage } from '@/services/storageService';
 import { supabase } from '@/lib/supabase';
 
 export type AuthContextValue = {
@@ -15,7 +16,7 @@ export type AuthContextValue = {
   sessionReady: boolean;
   returningGuestBlocked: boolean;
   refreshUser: (options?: RefreshUserOptions) => Promise<User | null>;
-  setUserTierLocally: (tier: SubscriptionTier) => void;
+  setUserTierLocally: (input: LocalSubscriptionCacheInput) => void;
 };
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
@@ -25,6 +26,18 @@ export type RefreshUserOptions = {
   skipJwtRefresh?: boolean;
   jwtRefreshTimeoutMs?: number;
 };
+
+export type LocalSubscriptionCacheInput =
+  | SubscriptionTier
+  | {
+      tier: SubscriptionTier;
+      version?: number | null;
+      isActive?: boolean;
+      productId?: string | null;
+      entitlementId?: string | null;
+      source?: string | null;
+      sourceUpdatedAt?: string | null;
+    };
 
 const isMockMode = isMockModeEnabled();
 const SESSION_READY_RETRIES = 4;
@@ -192,7 +205,15 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           tier: nextUser?.app_metadata?.tier ?? nextUser?.user_metadata?.tier,
         });
       }
+      const previousUserId = previousUserIdRef.current;
       const nextUserId = nextUser?.id ?? null;
+      if (previousUserId !== nextUserId) {
+        try {
+          await clearRemoteDreamStorage();
+        } catch {
+          // Best-effort cache clearing on account switch/logout.
+        }
+      }
       previousUserIdRef.current = nextUserId;
       setUser(nextUser);
       if (isMockMode) {
@@ -293,7 +314,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     }
   }, []); // ✅ CRITICAL: Remove 'user' from dependencies to break circular dependency
 
-  const setUserTierLocally = useCallback((tier: SubscriptionTier) => {
+  const setUserTierLocally = useCallback((input: LocalSubscriptionCacheInput) => {
+    const cache = typeof input === 'string' ? { tier: input } : input;
+
     setUser((prev) => {
       if (!prev) return prev;
       // Mirror tier into app_metadata (source of truth for quota) and keep user_metadata for backward UI paths.
@@ -301,11 +324,17 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         ...prev,
         app_metadata: {
           ...(prev.app_metadata ?? {}),
-          tier,
+          tier: cache.tier,
+          ...(cache.version !== undefined && { subscription_version: cache.version }),
+          ...(cache.isActive !== undefined && { subscription_is_active: cache.isActive }),
+          ...(cache.productId !== undefined && { subscription_product_id: cache.productId }),
+          ...(cache.entitlementId !== undefined && { subscription_entitlement_id: cache.entitlementId }),
+          ...(cache.source !== undefined && { subscription_source: cache.source }),
+          ...(cache.sourceUpdatedAt !== undefined && { subscription_source_updated_at: cache.sourceUpdatedAt }),
         },
         user_metadata: {
           ...(prev.user_metadata ?? {}),
-          tier,
+          tier: cache.tier,
         },
       } as User;
     });

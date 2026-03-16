@@ -1,18 +1,32 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { corsHeaders, RECONCILE_DEFAULT_BATCH, RECONCILE_DEFAULT_MAX_TOTAL, RECONCILE_DEFAULT_MIN_AGE_HOURS, RECONCILE_MAX_BATCH, RECONCILE_MAX_DURATION_MS } from '../lib/constants.ts';
+
+import {
+  corsHeaders,
+  RECONCILE_DEFAULT_BATCH,
+  RECONCILE_DEFAULT_MAX_TOTAL,
+  RECONCILE_DEFAULT_MIN_AGE_HOURS,
+  RECONCILE_MAX_BATCH,
+  RECONCILE_MAX_DURATION_MS,
+} from '../lib/constants.ts';
 import type { ApiContext } from '../types.ts';
 import {
-  buildUpdatedMetadata,
   fetchRevenueCatCustomer,
-  getRevenueCatEntitlementLookup,
   getReconcileSecret,
   getRevenueCatApiKey,
+  getRevenueCatEntitlementLookup,
   getRevenueCatProjectId,
-  getTierUpdatedAt,
-  normalizeTier,
   RevenueCatHttpError,
 } from '../services/revenuecat.ts';
-import { inferTierFromCustomer } from '../lib/revenuecatSubscriber.ts';
+import {
+  applySubscriptionStateUpdate,
+  buildSubscriptionSnapshotFromCustomer,
+  type ApplySubscriptionStateUpdateResult,
+} from '../../../lib/subscriptionState.ts';
+
+type SubscriptionStateRow = {
+  user_id: string;
+  updated_at: string;
+};
 
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -23,194 +37,185 @@ function timingSafeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
-export async function handleSubscriptionSync(ctx: ApiContext): Promise<Response> {
+function createAdminClient(supabaseUrl: string, supabaseServiceRoleKey: string) {
+  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
+function jsonResponse(body: unknown, status: number = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  });
+}
+
+function parseRefreshSource(body: { source?: string } | null | undefined): string {
+  const rawSource = typeof body?.source === 'string' ? body.source.trim() : '';
+  return rawSource || 'app_launch';
+}
+
+async function fetchCustomerSnapshot(
+  userId: string,
+  entitlementLookup?: Record<string, string>
+): Promise<ReturnType<typeof buildSubscriptionSnapshotFromCustomer>> {
+  const apiKey = getRevenueCatApiKey();
+  const projectId = getRevenueCatProjectId();
+
+  let customer = null;
+
+  try {
+    customer = await fetchRevenueCatCustomer(userId, apiKey, projectId);
+  } catch (error) {
+    if (error instanceof RevenueCatHttpError && error.status === 404) {
+      customer = null;
+    } else {
+      throw error;
+    }
+  }
+
+  return buildSubscriptionSnapshotFromCustomer(customer, Date.now(), entitlementLookup);
+}
+
+function mapRevenueCatErrorToResponse(error: unknown, route: string, userId?: string): Response {
+  const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
+  const status = isRevenueCatHttpError ? error.status : null;
+  const truncatedBodyText = isRevenueCatHttpError ? error.bodyText.slice(0, 500) : null;
+  const upstreamStatus = !isRevenueCatHttpError
+    ? 503
+    : status === 401 || status === 403
+      ? 500
+      : status === 429 || (status !== null && status >= 500)
+        ? 503
+        : 502;
+
+  console.error(`[api] ${route} RevenueCat lookup failed`, {
+    userId: userId ?? null,
+    message: (error as Error).message,
+    status,
+    bodyText: truncatedBodyText,
+  });
+
+  const clientError =
+    upstreamStatus === 500
+      ? 'RevenueCat authentication failed'
+      : upstreamStatus === 503
+        ? 'RevenueCat temporarily unavailable'
+        : 'RevenueCat lookup failed';
+
+  return jsonResponse({ error: clientError }, upstreamStatus);
+}
+
+async function applySnapshotForUser(
+  adminClient: ReturnType<typeof createAdminClient>,
+  input: {
+    userId: string;
+    source: string;
+    sourceEventId?: string | null;
+    sourceUpdatedAt: string;
+    requestedSource?: string | null;
+    entitlementLookup?: Record<string, string>;
+  }
+): Promise<ApplySubscriptionStateUpdateResult> {
+  const snapshot = await fetchCustomerSnapshot(input.userId, input.entitlementLookup);
+
+  return applySubscriptionStateUpdate(adminClient, {
+    userId: input.userId,
+    source: input.source,
+    sourceEventId: input.sourceEventId,
+    sourceUpdatedAt: input.sourceUpdatedAt,
+    tier: snapshot.tier,
+    isActive: snapshot.isActive,
+    productId: snapshot.productId,
+    entitlementId: snapshot.entitlementId,
+    revenueCatCustomerId: snapshot.revenueCatCustomerId,
+    metadata: input.requestedSource ? { requestedSource: input.requestedSource } : undefined,
+  });
+}
+
+export async function handleSubscriptionRefresh(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
   if (!user) {
-    return new Response(JSON.stringify({ error: 'Authentication required' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResponse({ error: 'Authentication required' }, 401);
   }
 
   if (!supabaseServiceRoleKey) {
-    return new Response(JSON.stringify({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResponse({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' }, 500);
   }
 
   const body = (await req.json().catch(() => ({}))) as { source?: string };
-  const source = typeof body?.source === 'string' && body.source.trim() ? body.source.trim() : 'app_launch';
+  const requestedSource = parseRefreshSource(body);
 
-  let apiKey: string;
-  let projectId: string;
   try {
-    apiKey = getRevenueCatApiKey();
-    projectId = getRevenueCatProjectId();
+    getRevenueCatApiKey();
+    getRevenueCatProjectId();
   } catch (error) {
-    console.error('[api] /subscription/sync RevenueCat not configured', {
+    console.error('[api] /subscription/refresh RevenueCat not configured', {
       userId: user.id,
       message: (error as Error).message,
     });
-    return new Response(JSON.stringify({ error: 'RevenueCat not configured' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResponse({ error: 'RevenueCat not configured' }, 500);
   }
 
-  let customer;
+  const adminClient = createAdminClient(supabaseUrl, supabaseServiceRoleKey);
+
+  let entitlementLookup: Record<string, string> | undefined;
   try {
-    customer = await fetchRevenueCatCustomer(user.id, apiKey, projectId);
+    entitlementLookup = await getRevenueCatEntitlementLookup(getRevenueCatApiKey(), getRevenueCatProjectId());
   } catch (error) {
-    const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
-    const status = isRevenueCatHttpError ? error.status : null;
-
-    const truncatedBodyText = isRevenueCatHttpError ? error.bodyText.slice(0, 500) : null;
-    const upstreamStatus = !isRevenueCatHttpError
-      ? 503
-      : status === 401 || status === 403
-        ? 500
-        : status === 404
-          ? 200
-          : status === 429 || (status !== null && status >= 500)
-            ? 503
-            : 502;
-
-    console.error('[api] /subscription/sync RevenueCat lookup failed', {
-      userId: user.id,
-      message: (error as Error).message,
-      status,
-      bodyText: truncatedBodyText,
-    });
-
-    if (upstreamStatus === 200) {
-      return new Response(JSON.stringify({ ok: true, skipped: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-
-    const clientError =
-      upstreamStatus === 500
-        ? 'RevenueCat authentication failed'
-        : upstreamStatus === 503
-          ? 'RevenueCat temporarily unavailable'
-          : 'RevenueCat lookup failed';
-
-    return new Response(JSON.stringify({ error: clientError }), {
-      status: upstreamStatus,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
-  }
-
-  let entitlementLookup: Record<string, string> | null = null;
-  try {
-    entitlementLookup = await getRevenueCatEntitlementLookup(apiKey, projectId);
-  } catch (error) {
-    console.warn('[api] /subscription/sync entitlement lookup failed', {
+    console.warn('[api] /subscription/refresh entitlement lookup failed', {
       userId: user.id,
       message: (error as Error).message,
     });
-    entitlementLookup = null;
+    entitlementLookup = undefined;
   }
 
-  const inferredTier = inferTierFromCustomer(customer, Date.now(), entitlementLookup ?? undefined);
-  if (inferredTier === null) {
-    return new Response(JSON.stringify({ ok: true, skipped: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+  try {
+    const result = await applySnapshotForUser(adminClient, {
+      userId: user.id,
+      source: 'subscription_refresh',
+      sourceUpdatedAt: new Date().toISOString(),
+      requestedSource,
+      entitlementLookup,
     });
+
+    return jsonResponse({
+      ...result,
+      requestedSource,
+    });
+  } catch (error) {
+    return mapRevenueCatErrorToResponse(error, '/subscription/refresh', user.id);
   }
-
-  const currentMeta = (user.app_metadata ?? {}) as Record<string, unknown>;
-  const currentTier = normalizeTier(currentMeta.tier ?? user.user_metadata?.tier);
-  const tierUpdatedAt = getTierUpdatedAt(currentMeta);
-  const shouldUpdate = currentTier !== inferredTier || !tierUpdatedAt;
-
-  if (shouldUpdate) {
-    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
-    const updatedMeta = buildUpdatedMetadata(currentMeta, inferredTier, source);
-    const { error } = await adminClient.auth.admin.updateUserById(user.id, {
-      app_metadata: updatedMeta,
-    });
-    if (error) {
-      console.error('[api] /subscription/sync metadata update failed', {
-        userId: user.id,
-        message: error.message,
-      });
-      return new Response(JSON.stringify({ error: 'Failed to update user metadata' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-  }
-
-  return new Response(
-    JSON.stringify({
-      ok: true,
-      tier: inferredTier,
-      updated: shouldUpdate,
-      currentTier,
-    }),
-    { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-  );
 }
+
+export const handleSubscriptionSync = handleSubscriptionRefresh;
 
 export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Response> {
   const { req, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
   const secret = getReconcileSecret();
   if (!secret) {
-    return new Response(JSON.stringify({ error: 'Missing REVENUECAT_RECONCILE_SECRET' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResponse({ error: 'Missing REVENUECAT_RECONCILE_SECRET' }, 500);
   }
 
   const provided = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '').trim();
   if (!provided || !timingSafeEqual(provided, secret)) {
-    return new Response(JSON.stringify({ error: 'Invalid reconcile authentication' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResponse({ error: 'Invalid reconcile authentication' }, 401);
   }
 
   if (!supabaseServiceRoleKey) {
-    return new Response(JSON.stringify({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return jsonResponse({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' }, 500);
   }
 
-  let apiKey: string;
-  let projectId: string;
   try {
-    apiKey = getRevenueCatApiKey();
-    projectId = getRevenueCatProjectId();
+    getRevenueCatApiKey();
+    getRevenueCatProjectId();
   } catch (error) {
     console.error('[api] /subscription/reconcile RevenueCat not configured', {
       message: (error as Error).message,
     });
-    return new Response(JSON.stringify({ error: 'RevenueCat not configured' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
-  }
-
-  let entitlementLookup: Record<string, string> | null = null;
-  try {
-    entitlementLookup = await getRevenueCatEntitlementLookup(apiKey, projectId);
-    console.log('[api] /subscription/reconcile entitlement lookup loaded', {
-      count: Object.keys(entitlementLookup).length,
-    });
-  } catch (error) {
-    console.warn('[api] /subscription/reconcile entitlement lookup failed', {
-      message: (error as Error).message,
-    });
-    entitlementLookup = null;
+    return jsonResponse({ error: 'RevenueCat not configured' }, 500);
   }
 
   const body = (await req.json().catch(() => ({}))) as {
@@ -235,9 +240,17 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
   );
   const minAgeMs = minAgeHours * 60 * 60 * 1000;
 
-  const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
+  const adminClient = createAdminClient(supabaseUrl, supabaseServiceRoleKey);
+
+  let entitlementLookup: Record<string, string> | undefined;
+  try {
+    entitlementLookup = await getRevenueCatEntitlementLookup(getRevenueCatApiKey(), getRevenueCatProjectId());
+  } catch (error) {
+    console.warn('[api] /subscription/reconcile entitlement lookup failed', {
+      message: (error as Error).message,
+    });
+    entitlementLookup = undefined;
+  }
 
   const startedAt = Date.now();
   let processed = 0;
@@ -251,8 +264,7 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
     let query = adminClient
       .schema('auth')
       .from('users')
-      .select('id, raw_app_meta_data')
-      .or('raw_app_meta_data->>tier.eq.plus,raw_app_meta_data->>tier.eq.premium')
+      .select('id')
       .order('id', { ascending: true })
       .limit(batchSize);
 
@@ -265,75 +277,77 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
       console.error('[api] /subscription/reconcile user fetch failed', error.message);
       break;
     }
-    if (!data?.length) break;
+
+    if (!data?.length) {
+      break;
+    }
+
+    const ids = data.map((row) => row.id);
+    const { data: stateRows, error: stateError } = await adminClient
+      .from('subscription_state')
+      .select('user_id,updated_at')
+      .in('user_id', ids);
+
+    if (stateError) {
+      console.warn('[api] /subscription/reconcile state fetch failed', stateError.message);
+    }
+
+    const stateByUserId = new Map<string, SubscriptionStateRow>(
+      (stateRows ?? []).map((row) => [row.user_id, row as SubscriptionStateRow])
+    );
 
     for (const row of data) {
       processed += 1;
       lastId = row.id;
 
-      const meta = (row.raw_app_meta_data ?? {}) as Record<string, unknown>;
-      const currentTier = normalizeTier(meta.tier);
-      const lastSyncedAt = getTierUpdatedAt(meta);
-      const lastSyncedMs = lastSyncedAt ? new Date(lastSyncedAt).getTime() : null;
-      if (lastSyncedMs && Number.isFinite(lastSyncedMs) && Date.now() - lastSyncedMs < minAgeMs) {
+      const existingState = stateByUserId.get(row.id);
+      const updatedAtMs = existingState?.updated_at ? new Date(existingState.updated_at).getTime() : null;
+      if (updatedAtMs && Number.isFinite(updatedAtMs) && Date.now() - updatedAtMs < minAgeMs) {
         skipped += 1;
         continue;
       }
 
-      let customer;
       try {
-        customer = await fetchRevenueCatCustomer(row.id, apiKey, projectId);
+        const result = await applySnapshotForUser(adminClient, {
+          userId: row.id,
+          source: 'revenuecat_reconcile',
+          sourceUpdatedAt: new Date().toISOString(),
+          entitlementLookup,
+        });
+
+        if (result.updated) {
+          updated += 1;
+        }
+        if (result.changed) {
+          changed += 1;
+        }
+        if (result.skipped) {
+          skipped += 1;
+        }
       } catch (error) {
-        const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
         errors += 1;
-        console.warn('[api] /subscription/reconcile RevenueCat lookup failed', {
-          userId: row.id,
-          message: (error as Error).message,
-          status: isRevenueCatHttpError ? error.status : null,
-          bodyText: isRevenueCatHttpError ? error.bodyText.slice(0, 200) : null,
-        });
-        continue;
+
+        if (error instanceof RevenueCatHttpError || error instanceof Error) {
+          const response = mapRevenueCatErrorToResponse(error, '/subscription/reconcile', row.id);
+          if (response.status >= 500) {
+            console.warn('[api] /subscription/reconcile user sync failed', {
+              userId: row.id,
+              message: (error as Error).message,
+            });
+          }
+        }
       }
-
-      const inferredTier = inferTierFromCustomer(customer, Date.now(), entitlementLookup ?? undefined);
-      if (inferredTier === null) {
-        skipped += 1;
-        continue;
-      }
-
-      if (inferredTier !== currentTier) {
-        changed += 1;
-      }
-
-      const updatedMeta = buildUpdatedMetadata(meta, inferredTier, 'revenuecat_reconcile');
-      const { error: updateError } = await adminClient.auth.admin.updateUserById(row.id, {
-        app_metadata: updatedMeta,
-      });
-
-      if (updateError) {
-        errors += 1;
-        console.warn('[api] /subscription/reconcile metadata update failed', {
-          userId: row.id,
-          message: updateError.message,
-        });
-        continue;
-      }
-
-      updated += 1;
     }
   }
 
-  return new Response(
-    JSON.stringify({
-      ok: true,
-      processed,
-      updated,
-      changed,
-      skipped,
-      errors,
-      lastId,
-      durationMs: Date.now() - startedAt,
-    }),
-    { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-  );
+  return jsonResponse({
+    ok: true,
+    processed,
+    updated,
+    changed,
+    skipped,
+    errors,
+    lastId,
+    durationMs: Date.now() - startedAt,
+  });
 }

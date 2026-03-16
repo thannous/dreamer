@@ -6,7 +6,8 @@
 // - POST /api/generateImageWithReference { prompt|transcript, referenceImages } -> { imageUrl }
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
-// - POST /api/subscription/sync { source? } -> { ok, tier, updated, currentTier }
+// - POST /api/subscription/refresh { source? } -> { ok, tier, version, updated }
+// - POST /api/subscription/sync { source? } -> { ok, tier, version, updated }
 // - POST /api/subscription/reconcile { batchSize?, maxTotal?, minAgeHours? } -> { ok, processed, updated, changed }
 
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
@@ -18,13 +19,14 @@ import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJob
 import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
 import { handleGuestSession } from './routes/guestSession.ts';
 import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
-import { handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
+import { handleSubscriptionRefresh, handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
 import type { ApiContext } from './types.ts';
 
 type RouteHandler = (ctx: ApiContext) => Promise<Response>;
 
 const routes = new Map<string, RouteHandler>([
   ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
+  ['POST /subscription/refresh', handleSubscriptionRefresh],
   ['POST /subscription/sync', handleSubscriptionSync],
   ['POST /subscription/reconcile', handleSubscriptionReconcile],
   ['POST /quota/status', handleQuotaStatus],
