@@ -1,9 +1,17 @@
+const preset = require('jest-expo/jest-preset');
+
 /** @type {import('jest').Config} */
 module.exports = {
-  preset: 'jest-expo',
-  testEnvironment: 'jsdom',
+  ...preset,
+  testEnvironment: 'node',
+  setupFiles: (preset.setupFiles ?? []).map((entry) =>
+    /react-native[\\/]jest[\\/]setup\.js$/.test(entry)
+      ? '<rootDir>/tests/jest/react-native-setup.js'
+      : entry
+  ),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
+    ...(preset.moduleNameMapper ?? {}),
     '^@/(.*)$': '<rootDir>/$1',
     '^react-native$': '<rootDir>/tests/react-native-stub.ts',
     '^react-native-reanimated$': '<rootDir>/tests/react-native-reanimated-stub.ts',

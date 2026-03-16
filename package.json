@@ -48,7 +48,7 @@
     "ti-97:eeat": "node ./scripts/ti-97-eeat-improvements.js",
     "ti-97:eeat:dry-run": "node ./scripts/ti-97-eeat-improvements.js --dry-run",
     "ti-97:eeat:verify": "node ./scripts/ti-97-eeat-improvements.js --verify-links",
-    "lint": "expo lint app components hooks lib context constants services tests",
+    "lint": "expo lint app components hooks lib context constants services tests supabase/functions",
     "typecheck:app": "tsc --noEmit",
     "typecheck:tests": "tsc -p tsconfig.test.json --noEmit",
     "test": "jest",

@@ -47,12 +47,26 @@ jest.doMock('react-native', () => {
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
     };
   };
-  const createElement = (tag: string) => (
-    { children, ...props }: { children?: React.ReactNode; [key: string]: any },
-  ) => React.createElement(tag, toDomProps(props), children);
+  const createElement = (tag: string) => {
+    const MockNativeElement = ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: any;
+    }) => React.createElement(tag, toDomProps(props), children);
+    MockNativeElement.displayName = `MockNative${tag}`;
+    return MockNativeElement;
+  };
 
   return {
     __esModule: true,
+    InteractionManager: {
+      runAfterInteractions: (callback: () => void) => {
+        callback();
+        return { cancel: jest.fn() };
+      },
+    },
     KeyboardAvoidingView: createElement('div'),
     ScrollView: createElement('div'),
     Pressable: createElement('button'),
@@ -123,6 +137,7 @@ jest.doMock('@/components/inspiration/SectionHeading', () => ({
 
 jest.doMock('@/components/inspiration/GlassCard', () => ({
   FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  StaticFlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 }));
 
 jest.doMock('@/context/ThemeContext', () => ({
@@ -153,12 +168,26 @@ jest.doMock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+jest.doMock('@/context/ScrollPerfContext', () => ({
+  ScrollPerfProvider: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+}));
+
+jest.doMock('@/hooks/useScrollIdle', () => ({
+  useScrollIdle: () => ({
+    isScrolling: false,
+    onScrollBeginDrag: jest.fn(),
+    onScrollEndDrag: jest.fn(),
+    onMomentumScrollBegin: jest.fn(),
+    onMomentumScrollEnd: jest.fn(),
+  }),
+}));
+
 jest.doMock('@/components/auth/EmailAuthCard', () => ({
   EmailAuthCard: () => <div data-testid="email-auth-card" />,
 }));
 
 jest.doMock('@/components/subscription/SubscriptionCard', () => ({
-  SubscriptionCard: (props: any) => {
+  SubscriptionCard: function MockSubscriptionCard(props: any) {
     capturedSubscriptionProps = props;
     return <div data-testid="subscription-card" />;
   },

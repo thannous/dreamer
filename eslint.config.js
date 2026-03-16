@@ -8,6 +8,17 @@ module.exports = defineConfig([
     ignores: ['dist/*'],
   },
   {
+    files: ['supabase/functions/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: {
+        Deno: 'readonly',
+      },
+    },
+    rules: {
+      'import/no-unresolved': 'off',
+    },
+  },
+  {
     files: [
       '**/__tests__/**/*.{js,jsx,ts,tsx}',
       '**/*.test.{js,jsx,ts,tsx}',
