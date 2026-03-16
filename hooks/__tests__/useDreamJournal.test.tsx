@@ -4,7 +4,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import type { DreamAnalysis, DreamMutation, QuotaStatus } from '../../lib/types';
+import type { DreamAnalysis, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
 import { QuotaError, QuotaErrorCode } from '../../lib/errors';
 
 // Hoist mock functions
@@ -15,12 +15,15 @@ const {
   mockSaveCachedRemoteDreams,
   mockGetPendingDreamMutations,
   mockSavePendingDreamMutations,
+  mockGetPendingImageJobs,
+  mockSavePendingImageJobs,
   mockCreateDreamInSupabase,
   mockUpdateDreamInSupabase,
   mockDeleteDreamFromSupabase,
   mockFetchDreamsFromSupabase,
   mockAnalyzeDreamText,
-  mockGenerateImageFromTranscript,
+  mockSubmitImageGenerationJob,
+  mockGetImageGenerationJobStatus,
   mockGetQuotaStatus,
   mockInvalidateQuota,
   mockGetThumbnailUrl,
@@ -37,12 +40,15 @@ const {
   mockSaveCachedRemoteDreams: jest.fn<(dreams: DreamAnalysis[]) => Promise<void>>(),
   mockGetPendingDreamMutations: jest.fn<() => Promise<DreamMutation[]>>(),
   mockSavePendingDreamMutations: jest.fn<(mutations: DreamMutation[]) => Promise<void>>(),
+  mockGetPendingImageJobs: jest.fn<() => Promise<PendingImageJob[]>>(),
+  mockSavePendingImageJobs: jest.fn<(jobs: PendingImageJob[]) => Promise<void>>(),
   mockCreateDreamInSupabase: jest.fn<(dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>>(),
   mockUpdateDreamInSupabase: jest.fn<(dream: DreamAnalysis) => Promise<DreamAnalysis>>(),
   mockDeleteDreamFromSupabase: jest.fn<(remoteId: number) => Promise<void>>(),
   mockFetchDreamsFromSupabase: jest.fn<() => Promise<DreamAnalysis[]>>(),
   mockAnalyzeDreamText: jest.fn<(transcript: string, lang?: string, fingerprint?: string) => Promise<unknown>>(),
-  mockGenerateImageFromTranscript: jest.fn<(transcript: string, previousImageUrl?: string) => Promise<string>>(),
+  mockSubmitImageGenerationJob: jest.fn<(request: unknown) => Promise<unknown>>(),
+  mockGetImageGenerationJobStatus: jest.fn<(jobId: string) => Promise<unknown>>(),
   mockGetQuotaStatus: jest.fn<(user: unknown, tier: string, target?: unknown) => Promise<QuotaStatus>>(),
   mockInvalidateQuota: jest.fn<(user: unknown) => void>(),
   mockGetThumbnailUrl: jest.fn<(url: string | undefined) => string | undefined>(),
@@ -117,6 +123,8 @@ jest.mock('../../services/storageService', () => ({
   saveCachedRemoteDreams: mockSaveCachedRemoteDreams,
   getPendingDreamMutations: mockGetPendingDreamMutations,
   savePendingDreamMutations: mockSavePendingDreamMutations,
+  getPendingImageJobs: mockGetPendingImageJobs,
+  savePendingImageJobs: mockSavePendingImageJobs,
 }));
 
 // Mock supabaseDreamService
@@ -130,7 +138,8 @@ jest.mock('../../services/supabaseDreamService', () => ({
 // Mock geminiService
 jest.mock('../../services/geminiService', () => ({
   analyzeDream: mockAnalyzeDreamText,
-  generateImageFromTranscript: mockGenerateImageFromTranscript,
+  submitImageGenerationJob: mockSubmitImageGenerationJob,
+  getImageGenerationJobStatus: mockGetImageGenerationJobStatus,
 }));
 
 // Mock quotaService
@@ -234,12 +243,24 @@ describe('useDreamJournal', () => {
     mockSaveCachedRemoteDreams.mockResolvedValue(undefined);
     mockGetPendingDreamMutations.mockResolvedValue([]);
     mockSavePendingDreamMutations.mockResolvedValue(undefined);
+    mockGetPendingImageJobs.mockResolvedValue([]);
+    mockSavePendingImageJobs.mockResolvedValue(undefined);
     mockFetchDreamsFromSupabase.mockResolvedValue([]);
     mockGetThumbnailUrl.mockImplementation((url) => url ? `${url}-thumb` : undefined);
     mockIncrementLocalAnalysisCount.mockResolvedValue(1);
     mockSyncWithServerCount.mockResolvedValue(1);
     mockGetAccessToken.mockResolvedValue('test-token');
     mockMarkMockAnalysis.mockResolvedValue(1);
+    mockSubmitImageGenerationJob.mockResolvedValue({
+      jobId: 'job-1',
+      status: 'queued',
+      clientRequestId: 'image-job-request-1',
+    });
+    mockGetImageGenerationJobStatus.mockResolvedValue({
+      jobId: 'job-1',
+      status: 'queued',
+      clientRequestId: 'image-job-request-1',
+    });
     mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus());
   });
 
@@ -669,7 +690,11 @@ describe('useDreamJournal', () => {
         dreamType: 'Lucid Dream',
         imagePrompt: 'A surreal landscape',
       });
-      mockGenerateImageFromTranscript.mockResolvedValue('https://example.com/new-image.jpg');
+      mockSubmitImageGenerationJob.mockResolvedValue({
+        jobId: 'job-queued',
+        status: 'queued',
+        clientRequestId: 'image-job-request-queued',
+      });
     });
 
     it('checks quota before analyzing', async () => {
@@ -718,7 +743,7 @@ describe('useDreamJournal', () => {
       );
     });
 
-    it('analyzes dream and generates image in parallel', async () => {
+    it('analyzes dream and queues image generation in parallel', async () => {
       const existingDream = buildDream({
         id: 1,
         isAnalyzed: false,
@@ -738,20 +763,27 @@ describe('useDreamJournal', () => {
       });
 
       expect(mockAnalyzeDreamText).toHaveBeenCalledWith('My dream transcript', undefined, 'mock-hash-fingerprint');
-      expect(mockGenerateImageFromTranscript).toHaveBeenCalledWith('My dream transcript', '');
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transcript: 'My dream transcript',
+          previousImageUrl: '',
+        })
+      );
       expect(mockInvalidateQuota).toHaveBeenCalled();
       expect(mockIncrementLocalAnalysisCount).toHaveBeenCalled();
 
       const analyzedDream = result.current.dreams[0];
       expect(analyzedDream.title).toBe('Analyzed Title');
       expect(analyzedDream.interpretation).toBe('Deep meaning');
-      expect(analyzedDream.imageUrl).toBe('https://example.com/new-image.jpg');
+      expect(analyzedDream.imageUrl).toBe('');
       expect(analyzedDream.isAnalyzed).toBe(true);
       expect(analyzedDream.analysisStatus).toBe('done');
+      expect(analyzedDream.imageJobId).toBe('job-queued');
+      expect(analyzedDream.imageJobStatus).toBe('queued');
       expect(analyzedDream.analyzedAt).toBeDefined();
     });
 
-    it('marks image as failed if generation fails but analysis succeeds', async () => {
+    it('marks image as failed if job submission fails and there is no existing image', async () => {
       const existingDream = buildDream({
         id: 1,
         isAnalyzed: false,
@@ -759,7 +791,7 @@ describe('useDreamJournal', () => {
         imageUrl: '',
       });
       mockGetSavedDreams.mockResolvedValue([existingDream]);
-      mockGenerateImageFromTranscript.mockRejectedValue(new Error('Image generation failed'));
+      mockSubmitImageGenerationJob.mockRejectedValue(new Error('Image generation failed'));
 
       const { result } = renderHook(() => useDreamJournal());
 
@@ -774,6 +806,7 @@ describe('useDreamJournal', () => {
       const analyzedDream = result.current.dreams[0];
       expect(analyzedDream.isAnalyzed).toBe(true);
       expect(analyzedDream.imageGenerationFailed).toBe(true);
+      expect(analyzedDream.imageJobId).toBeUndefined();
     });
 
     it('marks analysis as failed if analysis throws error', async () => {

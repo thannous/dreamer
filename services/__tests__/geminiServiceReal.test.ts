@@ -6,8 +6,9 @@ jest.mock('../../lib/config', () => ({
 }));
 
 // Mock auth to avoid supabase dependency
+const mockGetAccessToken = jest.fn();
 jest.mock('../../lib/auth', () => ({
-  getAccessToken: () => Promise.resolve(null),
+  getAccessToken: () => mockGetAccessToken(),
 }));
 
 const mockGetGuestHeaders = jest.fn();
@@ -37,8 +38,10 @@ const {
   categorizeDream,
   generateImageForDream,
   generateImageFromTranscript,
+  getImageGenerationJobStatus,
   generateSpeechForText,
   resetChat,
+  submitImageGenerationJob,
   startOrContinueChat,
 } = require('../geminiServiceReal');
 
@@ -69,6 +72,7 @@ describe('geminiServiceReal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetAccessToken.mockResolvedValue(null);
     mockGetGuestHeaders.mockResolvedValue({});
     mockInvalidateGuestSession.mockResolvedValue(undefined);
     global.fetch = jest.fn();
@@ -136,6 +140,25 @@ describe('geminiServiceReal', () => {
         expect.any(String),
         expect.objectContaining({
           body: JSON.stringify({ transcript: 'Test dream', lang: 'en' }),
+        })
+      );
+    });
+
+    it('uses bearer auth for signed-in requests without requiring guest headers', async () => {
+      mockGetAccessToken.mockResolvedValue('user-token');
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse(buildAnalysisResult())
+      );
+
+      await analyzeDream('Authenticated dream');
+
+      expect(mockGetGuestHeaders).not.toHaveBeenCalled();
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.example.com/analyzeDream',
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: 'Bearer user-token',
+          }),
         })
       );
     });
@@ -466,6 +489,65 @@ describe('geminiServiceReal', () => {
       await expect(generateImageFromTranscript('dream')).rejects.toThrow(
         'The image service is temporarily busy. Your dream has been saved and you can retry later.'
       );
+    });
+  });
+
+  describe('image job endpoints', () => {
+    it('submits an image job command', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({
+          jobId: 'job-123',
+          status: 'queued',
+          clientRequestId: 'request-123',
+        }, true, 202, 'Accepted')
+      );
+
+      const result = await submitImageGenerationJob({
+        clientRequestId: 'request-123',
+        transcript: 'I dreamed of flying',
+        previousImageUrl: 'https://old.example.com/image.jpg',
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.example.com/image-jobs',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({
+            clientRequestId: 'request-123',
+            transcript: 'I dreamed of flying',
+            previousImageUrl: 'https://old.example.com/image.jpg',
+          }),
+        })
+      );
+      expect(result).toEqual({
+        jobId: 'job-123',
+        status: 'queued',
+        clientRequestId: 'request-123',
+      });
+    });
+
+    it('reads image job status', async () => {
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(
+        mockFetchResponse({
+          jobId: 'job-123',
+          status: 'succeeded',
+          clientRequestId: 'request-123',
+          resultPayload: {
+            imageUrl: 'https://img.example.com/generated.jpg',
+          },
+        })
+      );
+
+      const result = await getImageGenerationJobStatus('job-123');
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.example.com/image-jobs/status',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ jobId: 'job-123' }),
+        })
+      );
+      expect(result.resultPayload?.imageUrl).toBe('https://img.example.com/generated.jpg');
     });
   });
 

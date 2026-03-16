@@ -15,6 +15,15 @@ export type DreamsActionsContextValue = {
   updateDream: (dream: DreamAnalysis) => Promise<void>;
   deleteDream: (id: number) => Promise<void>;
   toggleFavorite: (id: number) => Promise<void>;
+  generateDreamImage: (
+    dreamId: number,
+    options?: {
+      prompt?: string;
+      transcript?: string;
+      previousImageUrl?: string;
+      clientRequestId?: string;
+    }
+  ) => Promise<DreamAnalysis>;
   analyzeDream: (
     dreamId: number,
     transcript: string,
@@ -48,6 +57,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       updateDream: journal.updateDream,
       deleteDream: journal.deleteDream,
       toggleFavorite: journal.toggleFavorite,
+      generateDreamImage: journal.generateDreamImage,
       analyzeDream: journal.analyzeDream,
     }),
     [
@@ -55,6 +65,7 @@ export const DreamsProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       journal.updateDream,
       journal.deleteDream,
       journal.toggleFavorite,
+      journal.generateDreamImage,
       journal.analyzeDream,
     ]
   );

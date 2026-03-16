@@ -14,6 +14,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from './lib/constants.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
+import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
 import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
 import { handleGuestSession } from './routes/guestSession.ts';
 import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
@@ -32,6 +33,8 @@ const routes = new Map<string, RouteHandler>([
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],
   ['POST /categorizeDream', handleCategorizeDream],
+  ['POST /image-jobs', handleCreateImageJob],
+  ['POST /image-jobs/status', handleGetImageJobStatus],
   ['POST /generateImage', handleGenerateImage],
   ['POST /generateImageWithReference', handleGenerateImageWithReference],
 ]);

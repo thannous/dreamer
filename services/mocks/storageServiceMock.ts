@@ -8,6 +8,7 @@ import type {
   DreamMutation,
   LanguagePreference,
   NotificationSettings,
+  PendingImageJob,
   RitualStepProgress,
   ThemePreference,
 } from '@/lib/types';
@@ -22,6 +23,7 @@ let shouldPreloadDreams = false;
 
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
+const IMAGE_JOBS_KEY = 'gemini_dream_journal_pending_image_jobs';
 
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   weekdayEnabled: false,
@@ -389,6 +391,29 @@ export async function savePendingDreamMutations(mutations: DreamMutation[]): Pro
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save pending dream mutations:', error);
     throw new Error('Failed to save pending dream mutations');
+  }
+}
+
+export async function getPendingImageJobs(): Promise<PendingImageJob[]> {
+  console.log('[MOCK STORAGE] getPendingImageJobs called');
+  try {
+    const pending = mockStorage[IMAGE_JOBS_KEY];
+    if (pending) {
+      return JSON.parse(pending) as PendingImageJob[];
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to read pending image jobs:', error);
+  }
+  return [];
+}
+
+export async function savePendingImageJobs(jobs: PendingImageJob[]): Promise<void> {
+  console.log('[MOCK STORAGE] savePendingImageJobs called with', jobs.length, 'jobs');
+  try {
+    mockStorage[IMAGE_JOBS_KEY] = JSON.stringify(jobs);
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to save pending image jobs:', error);
+    throw new Error('Failed to save pending image jobs');
   }
 }
 

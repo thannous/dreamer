@@ -17,6 +17,7 @@ import {
 } from '@/lib/errors';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
+import { getAccessToken } from '@/lib/auth';
 import { getGuestHeaders, invalidateGuestSession } from '@/lib/guestSession';
 
 export type AnalysisResult = {
@@ -29,21 +30,62 @@ export type AnalysisResult = {
   quotaUsed?: { analysis: number };
 };
 
-async function fetchWithGuestHeaders<T>(
+export type ImageJobCommandRequest = {
+  clientRequestId: string;
+  dreamId?: number;
+  prompt?: string;
+  transcript?: string;
+  previousImageUrl?: string;
+};
+
+export type ImageJobCommandResponse = {
+  jobId: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  clientRequestId: string;
+};
+
+export type ImageJobStatusResponse = {
+  jobId: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  clientRequestId: string;
+  resultPayload?: {
+    imageUrl?: string;
+    imageBytes?: string;
+    prompt?: string;
+  } | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+};
+
+async function fetchWithSessionHeaders<T>(
   path: string,
   options: HttpOptions & { signal?: AbortSignal },
   retryGuestSession = true
 ): Promise<T> {
   const base = getApiBaseUrl();
+  const accessToken = await getAccessToken();
+  if (accessToken) {
+    return fetchJSON<T>(`${base}${path}`, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        ...options.headers,
+      },
+    });
+  }
+
+  const requestWithHeaders = (headers: Record<string, string>) =>
+    fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...headers, ...options.headers } });
+
   const headers = await getGuestHeaders({ requireSession: true });
   try {
-    return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...headers, ...options.headers } });
+    return await requestWithHeaders(headers);
   } catch (error) {
     if (retryGuestSession && error instanceof Error && isGuestSessionError(error)) {
       await invalidateGuestSession();
       const freshHeaders = await getGuestHeaders({ requireSession: true });
       try {
-        return await fetchJSON<T>(`${base}${path}`, { ...options, headers: { ...freshHeaders, ...options.headers } });
+        return await requestWithHeaders(freshHeaders);
       } catch (retryError) {
         if (retryError instanceof Error && isGuestSessionError(retryError)) {
           throw new GuestSessionError(
@@ -63,7 +105,7 @@ export async function analyzeDream(
   lang: string = 'en',
   fingerprint?: string
 ): Promise<AnalysisResult> {
-  return fetchWithGuestHeaders<AnalysisResult>('/analyzeDream', {
+  return fetchWithSessionHeaders<AnalysisResult>('/analyzeDream', {
     method: 'POST',
     body: { transcript, lang, ...(fingerprint && { fingerprint }) },
     ...NETWORK_REQUEST_POLICIES.analyzeDream,
@@ -76,7 +118,7 @@ export type CategorizeDreamResult = Pick<AnalysisResult, 'title' | 'theme' | 'dr
 };
 
 export async function categorizeDream(transcript: string, lang: string = 'en'): Promise<CategorizeDreamResult> {
-  return fetchWithGuestHeaders<CategorizeDreamResult>('/categorizeDream', {
+  return fetchWithSessionHeaders<CategorizeDreamResult>('/categorizeDream', {
     method: 'POST',
     body: { transcript, lang },
     ...NETWORK_REQUEST_POLICIES.categorizeDream,
@@ -88,7 +130,7 @@ export async function analyzeDreamWithImage(
   lang: string = 'en',
   fingerprint?: string
 ): Promise<AnalysisResult & { imageUrl: string }> {
-  const res = await fetchWithGuestHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
+  const res = await fetchWithSessionHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
     '/analyzeDreamFull',
     {
       method: 'POST',
@@ -114,7 +156,7 @@ export async function analyzeDreamWithImageResilient(
 ): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
   try {
     // Try combined analysis + image generation first
-    const res = await fetchWithGuestHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
+    const res = await fetchWithSessionHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
       '/analyzeDreamFull',
       {
         method: 'POST',
@@ -160,7 +202,7 @@ export async function analyzeDreamWithImageResilient(
 
 export async function generateImageForDream(prompt: string, previousImageUrl?: string): Promise<string> {
   try {
-    const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImage', {
+    const res = await fetchWithSessionHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImage', {
       method: 'POST',
       body: { prompt, previousImageUrl },
       ...NETWORK_REQUEST_POLICIES.generateImage,
@@ -189,9 +231,27 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
   }
 }
 
+export async function submitImageGenerationJob(
+  request: ImageJobCommandRequest
+): Promise<ImageJobCommandResponse> {
+  return fetchWithSessionHeaders<ImageJobCommandResponse>('/image-jobs', {
+    method: 'POST',
+    body: request,
+    ...NETWORK_REQUEST_POLICIES.imageJobCommand,
+  });
+}
+
+export async function getImageGenerationJobStatus(jobId: string): Promise<ImageJobStatusResponse> {
+  return fetchWithSessionHeaders<ImageJobStatusResponse>('/image-jobs/status', {
+    method: 'POST',
+    body: { jobId },
+    ...NETWORK_REQUEST_POLICIES.imageJobStatus,
+  });
+}
+
 export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
   try {
-    const res = await fetchWithGuestHeaders<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(
+    const res = await fetchWithSessionHeaders<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(
       '/generateImage',
       {
         method: 'POST',
@@ -254,7 +314,7 @@ export async function startOrContinueChat(
   fingerprint?: string,
   options?: { signal?: AbortSignal }
 ): Promise<{ text: string; message?: Partial<ChatMessage> }> {
-  const res = await fetchWithGuestHeaders<{ text: string; message?: Partial<ChatMessage> }>('/chat', {
+  const res = await fetchWithSessionHeaders<{ text: string; message?: Partial<ChatMessage> }>('/chat', {
     method: 'POST',
     body: {
       dreamId,
@@ -274,7 +334,7 @@ export function resetChat() {
 }
 
 export async function generateSpeechForText(text: string): Promise<string> {
-  const res = await fetchWithGuestHeaders<{ audioBase64: string }>('/tts', {
+  const res = await fetchWithSessionHeaders<{ audioBase64: string }>('/tts', {
     method: 'POST',
     body: { text },
     ...NETWORK_REQUEST_POLICIES.textToSpeech,

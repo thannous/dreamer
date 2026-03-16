@@ -8,9 +8,24 @@ import { generateAnalysisResult, generateChatResponse } from '@/mock-data/genera
 
 import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
 
-import type { AnalysisResult, CategorizeDreamResult } from '../geminiServiceReal';
+import type {
+  AnalysisResult,
+  CategorizeDreamResult,
+  ImageJobCommandRequest,
+  ImageJobCommandResponse,
+  ImageJobStatusResponse,
+} from '../geminiServiceReal';
 
 export type { AnalysisResult, CategorizeDreamResult } from '../geminiServiceReal';
+
+const mockImageJobs = new Map<
+  string,
+  {
+    createdAt: number;
+    clientRequestId: string;
+    imageUrl: string;
+  }
+>();
 
 /**
  * Simulate network delay
@@ -152,6 +167,57 @@ export async function generateImageFromTranscript(transcript: string, _previousI
   const imageUrl = getRandomImageForTheme('surreal');
   console.log('[MOCK] generateImageFromTranscript returning:', imageUrl);
   return imageUrl;
+}
+
+export async function submitImageGenerationJob(
+  request: ImageJobCommandRequest
+): Promise<ImageJobCommandResponse> {
+  await delay(150);
+  const jobId = `mock-image-job-${request.clientRequestId}`;
+  mockImageJobs.set(jobId, {
+    createdAt: Date.now(),
+    clientRequestId: request.clientRequestId,
+    imageUrl: getRandomImageForTheme('surreal'),
+  });
+  return {
+    jobId,
+    status: 'queued',
+    clientRequestId: request.clientRequestId,
+  };
+}
+
+export async function getImageGenerationJobStatus(jobId: string): Promise<ImageJobStatusResponse> {
+  await delay(120);
+  const job = mockImageJobs.get(jobId);
+  if (!job) {
+    throw Object.assign(new Error('Job not found'), { status: 404 });
+  }
+
+  const elapsed = Date.now() - job.createdAt;
+  if (elapsed < 600) {
+    return {
+      jobId,
+      status: 'queued',
+      clientRequestId: job.clientRequestId,
+    };
+  }
+
+  if (elapsed < 1200) {
+    return {
+      jobId,
+      status: 'running',
+      clientRequestId: job.clientRequestId,
+    };
+  }
+
+  return {
+    jobId,
+    status: 'succeeded',
+    clientRequestId: job.clientRequestId,
+    resultPayload: {
+      imageUrl: job.imageUrl,
+    },
+  };
 }
 
 /**
