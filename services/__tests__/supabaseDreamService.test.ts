@@ -9,6 +9,7 @@ const mocks = ((factory: any) => factory())(() => {
 
   return {
     from: jest.fn(),
+    rpc: undefined as undefined | jest.Mock,
     storageUpload,
     storageRemove,
     storageGetPublicUrl,
@@ -24,6 +25,7 @@ const mocks = ((factory: any) => factory())(() => {
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
     from: mocks.from,
+    rpc: mocks.rpc,
     storage: { from: mocks.storageFrom },
     auth: { getUser: mocks.authGetUser },
   })),
@@ -39,9 +41,49 @@ jest.mock('expo-image-manipulator', () => ({
 }));
 
 describe('supabaseDreamService', () => {
+  const buildDream = (overrides: Record<string, unknown> = {}) => ({
+    id: 1,
+    clientRequestId: 'dream-req-1',
+    transcript: 't',
+    title: 'x',
+    interpretation: '',
+    shareableQuote: '',
+    imageUrl: '',
+    dreamType: 'Symbolic Dream',
+    chatHistory: [],
+    isFavorite: false,
+    ...overrides,
+  });
+
+  const buildRow = (overrides: Record<string, unknown> = {}) => ({
+    id: 42,
+    created_at: '2020-01-01T00:00:00.000Z',
+    user_id: 'user-1',
+    transcript: 't',
+    title: 'x',
+    interpretation: '',
+    shareable_quote: '',
+    image_url: null,
+    chat_history: [],
+    theme: null,
+    dream_type: 'Symbolic Dream',
+    is_favorite: false,
+    image_generation_failed: false,
+    is_analyzed: false,
+    analyzed_at: null,
+    analysis_status: 'none',
+    analysis_request_id: null,
+    exploration_started_at: null,
+    client_request_id: 'dream-req-1',
+    has_person: null,
+    has_animal: null,
+    ...overrides,
+  });
+
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
+    mocks.rpc = undefined;
     process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://example.com';
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'anon-key';
   });
@@ -192,6 +234,140 @@ describe('supabaseDreamService', () => {
 
     expect(dream.thumbnailUrl).toBe('https://example.com/dream.webp');
     expect(dream.imageGenerationFailed).toBe(false);
+  });
+
+  it('syncDreamMutationsInSupabase splits dependent create and update mutations', async () => {
+    mocks.rpc = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: [
+          {
+            mutation_id: 'mut-create',
+            client_request_id: 'mutation-create',
+            operation: 'create',
+            status: 'ack',
+            remote_id: 42,
+            dream: buildRow(),
+          },
+        ],
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: [
+          {
+            mutation_id: 'mut-update',
+            client_request_id: 'mutation-update',
+            operation: 'update',
+            status: 'ack',
+            remote_id: 42,
+            dream: buildRow({ title: 'updated title' }),
+          },
+        ],
+        error: null,
+      });
+
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+
+    const createMutation = {
+      version: 1,
+      id: 'mut-create',
+      userScope: 'user:user-1',
+      entityType: 'dream',
+      entityKey: 'client:dream-req-1',
+      operation: 'create',
+      clientRequestId: 'mutation-create',
+      clientUpdatedAt: 1,
+      payload: {
+        dream: buildDream(),
+      },
+      status: 'pending',
+      retryCount: 0,
+      createdAt: 1,
+    };
+
+    const updateMutation = {
+      version: 1,
+      id: 'mut-update',
+      userScope: 'user:user-1',
+      entityType: 'dream',
+      entityKey: 'client:dream-req-1',
+      operation: 'update',
+      clientRequestId: 'mutation-update',
+      clientUpdatedAt: 2,
+      payload: {
+        dream: buildDream({ title: 'updated title' }),
+      },
+      status: 'pending',
+      retryCount: 0,
+      createdAt: 2,
+    };
+
+    const results = await syncDreamMutationsInSupabase(
+      [createMutation, updateMutation],
+      'user-1',
+    );
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(2);
+    expect(mocks.rpc?.mock.calls[0]?.[1]?.mutations).toHaveLength(1);
+    expect(mocks.rpc?.mock.calls[1]?.[1]?.mutations).toHaveLength(1);
+    expect(mocks.rpc?.mock.calls[1]?.[1]?.mutations[0]?.payload?.remote_id).toBe(42);
+    expect(results).toEqual([
+      expect.objectContaining({ mutationId: 'mut-create', status: 'ack', remoteId: 42 }),
+      expect.objectContaining({ mutationId: 'mut-update', status: 'ack', remoteId: 42 }),
+    ]);
+  });
+
+  it('syncDreamMutationsInSupabase falls back to direct writes when the RPC is missing', async () => {
+    mocks.rpc = jest.fn().mockResolvedValue({
+      data: null,
+      error: {
+        code: 'PGRST202',
+        message: 'Could not find the function public.sync_dream_mutations(mutations) in the schema cache',
+      },
+    });
+
+    const singleMock = jest.fn().mockResolvedValueOnce({
+      data: buildRow(),
+      error: null,
+    });
+
+    const upsertMock = jest.fn((_row: any) => ({
+      select: jest.fn(() => ({
+        single: singleMock,
+      })),
+    }));
+
+    mocks.from.mockReturnValue({
+      upsert: upsertMock,
+    });
+
+    const { syncDreamMutationsInSupabase } = require('../supabaseDreamService');
+
+    const [result] = await syncDreamMutationsInSupabase(
+      [
+        {
+          version: 1,
+          id: 'mut-create',
+          userScope: 'user:user-1',
+          entityType: 'dream',
+          entityKey: 'client:dream-req-1',
+          operation: 'create',
+          clientRequestId: 'mutation-create',
+          clientUpdatedAt: 1,
+          payload: {
+            dream: buildDream(),
+          },
+          status: 'pending',
+          retryCount: 0,
+          createdAt: 1,
+        },
+      ],
+      'user-1',
+    );
+
+    expect(mocks.rpc).toHaveBeenCalledTimes(1);
+    expect(upsertMock).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(expect.objectContaining({ status: 'ack', remoteId: 42 }));
   });
 
   it('fetchDreamsFromSupabase maps rows correctly', async () => {

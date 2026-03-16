@@ -1013,14 +1013,9 @@ async function readScopedJson(
     return null;
   }
 
-  const legacyValue = await getItem(baseKey);
-  if (legacyValue == null) {
-    return null;
-  }
-
-  await setItem(scopedKey, legacyValue);
-  await removeItem(baseKey);
-  return legacyValue;
+  // Legacy global sync blobs predate per-user scoping, so they cannot be
+  // safely attributed to whichever account reads them first after upgrade.
+  return null;
 }
 
 async function writeScopedJson(
