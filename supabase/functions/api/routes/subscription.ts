@@ -21,7 +21,7 @@ import {
   applySubscriptionStateUpdate,
   buildSubscriptionSnapshotFromCustomer,
   type ApplySubscriptionStateUpdateResult,
-} from '../../../lib/subscriptionState.ts';
+} from '../../lib/subscriptionState.ts';
 
 type SubscriptionStateRow = {
   user_id: string;
