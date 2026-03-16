@@ -32,12 +32,12 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
-import { getDreamImageVersion, getImageConfig, getThumbnailUrl, withCacheBuster } from '@/lib/imageUtils';
+import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
-import { categorizeDream, generateImageFromTranscript, generateImageWithReference } from '@/services/geminiService';
+import { categorizeDream, generateImageWithReference } from '@/services/geminiService';
 import { Image, type ImageLoadEventData } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -193,7 +193,7 @@ const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: S
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
-  const { dreams, toggleFavorite, updateDream, deleteDream, analyzeDream } = useDreams();
+  const { dreams, toggleFavorite, updateDream, deleteDream, generateDreamImage, analyzeDream } = useDreams();
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const { language } = useLanguage();
@@ -367,6 +367,7 @@ export default function JournalDetailScreen() {
   const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
   const isAnalysisLocked = !!dream && (dream.analysisStatus === 'pending' || isAnalyzing);
   const isAnalysisPending = dream?.analysisStatus === 'pending';
+  const isImageJobPending = dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running';
   const shareMessage = useMemo(() => {
     if (!dream) return '';
     const sections: string[] = [];
@@ -738,29 +739,17 @@ export default function JournalDetailScreen() {
         throw new Error(t('journal.detail.image.no_source'));
       }
 
-      const imageUrl = await generateImageFromTranscript(sourceText, dream.imageUrl);
-      const thumbnailUrl = imageUrl ? getThumbnailUrl(imageUrl) : undefined;
-
-      const imageUpdatedAt = Date.now();
-      const analysisRequestId = generateUUID();
-      const updatedDream: DreamAnalysis = {
-        ...dream,
-        imageUrl,
-        thumbnailUrl,
-        imageGenerationFailed: false,
-        imageUpdatedAt,
-        analysisRequestId,
-        imageSource: 'ai',
-      };
-
-      await updateDream(updatedDream);
+      await generateDreamImage(dream.id, {
+        transcript: sourceText,
+        previousImageUrl: dream.imageUrl || undefined,
+      });
     } catch (error) {
       const msg = error instanceof Error ? error.message : t('common.unknown_error');
       setImageErrorMessage(msg);
     } finally {
       setIsRetryingImage(false);
     }
-  }, [canAnalyzeNow, dream, isAnalysisLocked, updateDream, t]);
+  }, [canAnalyzeNow, dream, generateDreamImage, isAnalysisLocked, t]);
 
   const handleBackPress = useCallback(() => {
     router.replace('/(tabs)/journal');
@@ -1327,7 +1316,7 @@ export default function JournalDetailScreen() {
                       </Text>
                     </View>
                   )
-                ) : dream.analysisStatus === 'pending' ? (
+                ) : dream.analysisStatus === 'pending' || isImageJobPending ? (
                   <Skeleton style={{ width: '100%', height: '100%' }} />
                 ) : (
                   <View
@@ -1347,13 +1336,13 @@ export default function JournalDetailScreen() {
                     <Text style={[styles.imagePlaceholderSubtitle, { color: colors.textSecondary }]}>
                       {t('journal.detail.image.no_image_subtitle')}
                     </Text>
-                    {!isRetryingImage && !isAnalysisLocked && (
+                    {!isRetryingImage && !isImageJobPending && !isAnalysisLocked && (
                       <View style={styles.imageActionsColumn}>
                         {canGenerateImage && (
                           <>
                             <Pressable
                               onPress={onRetryImage}
-                              disabled={isRetryingImage || isAnalysisLocked}
+                              disabled={isRetryingImage || isImageJobPending || isAnalysisLocked}
                               style={[
                                 styles.imageActionButton,
                                 shadows.md,

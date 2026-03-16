@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
+const IMAGE_JOBS_KEY = 'gemini_dream_journal_pending_image_jobs';
 const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
@@ -791,6 +792,38 @@ describe('storageServiceReal', () => {
 
       const stored = JSON.parse(localStorage.getItem(DREAM_MUTATIONS_KEY) ?? '[]');
       expect(stored).toEqual([{ id: 'mutation-1', type: 'delete', createdAt: 123, dreamId: 9 }]);
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
+  it('persists pending image jobs on web storage', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+
+      const storage = require('../storageServiceReal');
+      await storage.savePendingImageJobs([
+        {
+          dreamId: 7,
+          jobId: 'job-7',
+          clientRequestId: 'image-request-7',
+          status: 'queued',
+          requestedAt: 123,
+        },
+      ]);
+
+      const stored = JSON.parse(localStorage.getItem(IMAGE_JOBS_KEY) ?? '[]');
+      expect(stored).toEqual([
+        {
+          dreamId: 7,
+          jobId: 'job-7',
+          clientRequestId: 'image-request-7',
+          status: 'queued',
+          requestedAt: 123,
+        },
+      ]);
+      expect(await storage.getPendingImageJobs()).toEqual(stored);
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }

@@ -8,6 +8,7 @@ import type {
   DreamMutation,
   LanguagePreference,
   NotificationSettings,
+  PendingImageJob,
   RitualStepProgress,
   ThemePreference,
 } from '@/lib/types';
@@ -15,6 +16,7 @@ import type {
 const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
 const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
+const IMAGE_JOBS_KEY = 'gemini_dream_journal_pending_image_jobs';
 const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
@@ -1017,5 +1019,30 @@ export async function savePendingDreamMutations(mutations: DreamMutation[]): Pro
       console.error('Failed to save pending dream mutations:', error);
     }
     throw new Error('Failed to save pending dream mutations');
+  }
+}
+
+export async function getPendingImageJobs(): Promise<PendingImageJob[]> {
+  try {
+    const pending = await getItem(IMAGE_JOBS_KEY);
+    if (pending) {
+      return JSON.parse(pending) as PendingImageJob[];
+    }
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to read pending image jobs:', error);
+    }
+  }
+  return [];
+}
+
+export async function savePendingImageJobs(jobs: PendingImageJob[]): Promise<void> {
+  try {
+    await setItem(IMAGE_JOBS_KEY, JSON.stringify(jobs));
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to save pending image jobs:', error);
+    }
+    throw new Error('Failed to save pending image jobs');
   }
 }

@@ -31,8 +31,9 @@ export const NETWORK_REQUEST_POLICIES = {
 
   // Media generation
   generateImage: createPolicy(60000, 2, 1200),
+  imageJobCommand: createPolicy(15000, 1, 1000),
+  imageJobStatus: createPolicy(10000, 1, 1000),
   generateImageWithReference: createPolicy(90000, 1, 1500),
   textToSpeech: createPolicy(60000, 1, 1200),
   transcribeAudio: createPolicy(60000, 1, 1200),
 } as const;
-

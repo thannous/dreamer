@@ -11,6 +11,7 @@ const { mockJournal } = ((factory: any) => factory())(() => {
     updateDream: jest.fn(async () => undefined),
     deleteDream: jest.fn(async () => undefined),
     toggleFavorite: jest.fn(async () => undefined),
+    generateDreamImage: jest.fn(async () => ({ id: 1 })),
     analyzeDream: jest.fn(async () => ({ id: 1 })),
   };
 

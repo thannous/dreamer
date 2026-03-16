@@ -32,6 +32,7 @@ export interface ChatMessage {
  * Analysis status for tracking async operations and offline queue
  */
 export type AnalysisStatus = 'none' | 'pending' | 'done' | 'failed';
+export type ImageJobStatus = 'queued' | 'running';
 
 /**
  * Canonical dream type categories used in the app.
@@ -74,6 +75,20 @@ export interface DreamAnalysis {
   analysisStatus?: AnalysisStatus; // Current status of analysis (for offline queue, idempotence)
   analysisRequestId?: string; // UUID for server-side idempotence
   explorationStartedAt?: number; // Timestamp when first chat message was sent (marks dream as "explored")
+  imageJobId?: string; // Local-only async image job tracking
+  imageJobStatus?: ImageJobStatus; // Local-only async image job state
+  imageJobRequestId?: string; // Idempotency key for the active image job
+  imageJobErrorCode?: string; // Last async image failure code
+  imageJobErrorMessage?: string; // Last async image failure message
+}
+
+export interface PendingImageJob {
+  dreamId: number;
+  remoteDreamId?: number;
+  jobId: string;
+  clientRequestId: string;
+  status: ImageJobStatus;
+  requestedAt: number;
 }
 
 export interface NotificationSettings {

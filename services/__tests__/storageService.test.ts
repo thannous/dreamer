@@ -24,6 +24,8 @@ const {
     'clearRemoteDreamStorage',
     'getPendingDreamMutations',
     'savePendingDreamMutations',
+    'getPendingImageJobs',
+    'savePendingImageJobs',
     'getRitualPreference',
     'saveRitualPreference',
     'getRitualStepProgress',

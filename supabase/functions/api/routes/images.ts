@@ -1,13 +1,12 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import {
-  callGeminiWithFallback,
   classifyGeminiError,
-  GEMINI_FLASH_LITE_MODEL,
 } from '../services/gemini.ts';
-import { generateImageFromPrompt, generateImageWithReferences } from '../services/geminiImages.ts';
+import { generateImageWithReferences } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
+import { ensureImagePrompt, generateAndStoreImage } from '../services/imagePipeline.ts';
 import { requireGuestSession, requireUser } from '../lib/guards.ts';
 import type { ApiContext } from '../types.ts';
 
@@ -92,61 +91,23 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    if (!prompt && transcript) {
-      console.log('[api] /generateImage generating prompt from transcript');
-      const { text: generatedPrompt } = await callGeminiWithFallback(
-        apiKey,
-        Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
-        Deno.env.get('GEMINI_LITE_MODEL') ?? GEMINI_FLASH_LITE_MODEL,
-        [{ role: 'user', parts: [{ text: `Generate a short, vivid, artistic image prompt (max 40 words) to visualize this dream. Do not include any other text.\nDream: ${transcript}` }] }],
-        'You are a creative image prompt generator. Output ONLY the prompt, nothing else.',
-        { thinkingLevel: 'minimal' }
-      );
-      prompt = generatedPrompt.trim();
-      console.log('[api] /generateImage generated prompt:', prompt);
-    }
-
-    const { imageBase64, mimeType, raw: imgJson } = await generateImageFromPrompt({
-      prompt,
-      apiKey,
-      aspectRatio: '9:16',
-    });
-
-    if (!imageBase64) {
-      return new Response(
-        JSON.stringify({
-          error: 'No image returned',
-          raw: imgJson,
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        }
-      );
-    }
-
-    const optimized =
-      (await optimizeImage(
-        { base64: imageBase64, contentType: mimeType ?? 'image/png' },
-        { maxWidth: 1024, maxHeight: 1024, quality: 78, aspectRatio: 9 / 16 }
-      ).catch(() => null)) ?? {
-        base64: imageBase64,
-        contentType: mimeType ?? 'image/png',
-      };
-
+    prompt = await ensureImagePrompt({ apiKey, prompt, transcript });
     const ownerId = user?.id ?? (fingerprint ? `guest_${fingerprint}` : 'guest');
-    const { uploadImageToStorage, deleteImageFromStorage } = createStorageHelpers({
+    const { deleteImageFromStorage } = createStorageHelpers({
       supabaseUrl,
       supabaseServiceRoleKey,
       storageBucket,
       ownerId,
     });
-    const storedImageUrl = await uploadImageToStorage(optimized.base64, optimized.contentType);
-    const imageUrl = storedImageUrl ?? `data:${optimized.contentType};base64,${optimized.base64}`;
-
-    if (previousImageUrl) {
-      await deleteImageFromStorage(previousImageUrl, ownerId);
-    }
+    const { imageUrl, imageBytes, storedImageUrl } = await generateAndStoreImage({
+      apiKey,
+      prompt,
+      previousImageUrl,
+      supabaseUrl,
+      supabaseServiceRoleKey,
+      storageBucket,
+      ownerId,
+    });
 
     if (adminClient && fingerprint) {
       const { data: quotaResult, error: quotaError } = await adminClient.rpc('increment_guest_quota', {
@@ -174,7 +135,7 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       }
     }
 
-    return new Response(JSON.stringify({ imageUrl, imageBytes: optimized.base64, prompt }), {
+    return new Response(JSON.stringify({ imageUrl, imageBytes, prompt }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

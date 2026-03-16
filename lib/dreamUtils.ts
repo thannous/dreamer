@@ -214,6 +214,11 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.analysisStatus ?? 'none') !== (right.analysisStatus ?? 'none')) return false;
   if ((left.analysisRequestId ?? null) !== (right.analysisRequestId ?? null)) return false;
   if ((left.explorationStartedAt ?? null) !== (right.explorationStartedAt ?? null)) return false;
+  if ((left.imageJobId ?? null) !== (right.imageJobId ?? null)) return false;
+  if ((left.imageJobStatus ?? null) !== (right.imageJobStatus ?? null)) return false;
+  if ((left.imageJobRequestId ?? null) !== (right.imageJobRequestId ?? null)) return false;
+  if ((left.imageJobErrorCode ?? null) !== (right.imageJobErrorCode ?? null)) return false;
+  if ((left.imageJobErrorMessage ?? null) !== (right.imageJobErrorMessage ?? null)) return false;
 
   const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
   const rightChat = Array.isArray(right.chatHistory) ? right.chatHistory : [];
