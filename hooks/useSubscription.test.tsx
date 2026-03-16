@@ -28,7 +28,13 @@ jest.mock('../services/subscriptionService', () => {
 });
 
 jest.mock('../services/subscriptionSyncService', () => ({
-  syncSubscriptionFromServer: jest.fn(async () => ({ ok: true })),
+  syncSubscriptionFromServer: jest.fn(async () => ({
+    ok: true,
+    tier: 'plus',
+    isActive: true,
+    version: 1,
+    changed: true,
+  })),
 }));
 
 const mockMapStatusFromInfo = jest.fn((..._args: unknown[]) => ({ tier: 'free', isActive: false }));
@@ -39,7 +45,7 @@ jest.mock('../lib/revenuecat', () => ({
   mapStatus: (...args: unknown[]) => mockMapStatusFromInfo(...args),
 }));
 
-let mockCurrentUser: any = { id: 'user-1' };
+let mockCurrentUser: any = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
 const mockRefreshUser = jest.fn(async () => mockCurrentUser);
 const mockSetUserTierLocally = jest.fn();
 
@@ -107,7 +113,7 @@ const renderSubscriptionHook = (options?: UseSubscriptionOptions) =>
 describe('useSubscription', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockCurrentUser = { id: 'user-1' };
+    mockCurrentUser = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
     mockIsEntitlementExpired.mockReturnValue(false);
     mockMapStatusFromInfo.mockReturnValue({ tier: 'free', isActive: false });
 
@@ -225,7 +231,7 @@ describe('useSubscription', () => {
       // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
-      expect(mockSetUserTierLocally).toHaveBeenCalledWith('plus');
+      expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
     });
 
     it('given authenticated user when purchasing fails then sets error and throws', async () => {
@@ -275,7 +281,7 @@ describe('useSubscription', () => {
       // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
-      expect(mockSetUserTierLocally).toHaveBeenCalledWith('plus');
+      expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
     });
 
     it('given authenticated user when restoring fails then sets error and throws', async () => {

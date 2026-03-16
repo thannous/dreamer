@@ -17,6 +17,8 @@ export type RevenueCatV1SubscriberResponse = {
 export type RevenueCatV2ActiveEntitlement = {
   entitlement_id?: string | null;
   expires_at?: number | null;
+  product_identifier?: string | null;
+  product_id?: string | null;
 };
 
 export type RevenueCatV2CustomerResponse = {

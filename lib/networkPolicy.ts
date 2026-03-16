@@ -21,7 +21,7 @@ export const NETWORK_REQUEST_POLICIES = {
 
   // Quota / subscription
   quotaStatus: createPolicy(10000, 1, 750),
-  subscriptionSync: createPolicy(10000, 1, 1000),
+  subscriptionRefresh: createPolicy(10000, 1, 1000),
 
   // Analysis + chat
   analyzeDream: createPolicy(45000, 1, 1200),

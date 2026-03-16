@@ -7,6 +7,11 @@ import {
   type RevenueCatEntitlementLookupById,
   type RevenueCatV2CustomerResponse,
 } from '../../lib/revenuecatSubscriber.ts';
+import {
+  applySubscriptionStateUpdate,
+  buildSubscriptionSnapshotFromCustomer,
+  buildSubscriptionSnapshotFromTier,
+} from '../../lib/subscriptionState.ts';
 
 const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -36,11 +41,6 @@ type RevenueCatEntitlementCache = {
 const ENTITLEMENT_CACHE_TTL_MS = 5 * 60 * 1000;
 let entitlementCache: RevenueCatEntitlementCache | null = null;
 let entitlementCachePromise: Promise<RevenueCatEntitlementLookupById> | null = null;
-
-function normalizeTierForComparison(tier: string | null | undefined): Tier {
-  if (tier === 'plus' || tier === 'premium') return 'plus';
-  return 'free';
-}
 
 function isRevenueCatAnonymousId(id: string): boolean {
   return id.startsWith('$RCAnonymousID:');
@@ -174,6 +174,44 @@ function getAppUserIdCandidates(payload: any): string[] {
   return Array.from(ids);
 }
 
+function getWebhookEventId(payload: any): string | null {
+  const candidates = [
+    payload?.event?.id,
+    payload?.event?.event_id,
+    payload?.event?.eventId,
+    payload?.event?.transaction_id,
+    payload?.event?.transactionId,
+  ];
+
+  for (const candidate of candidates) {
+    if (typeof candidate === 'string' && candidate.trim()) {
+      return candidate.trim();
+    }
+  }
+
+  return null;
+}
+
+function getWebhookEventTimestampIso(payload: any, fallbackMs: number): string {
+  const raw =
+    payload?.event?.event_timestamp_ms ??
+    payload?.event?.purchased_at_ms ??
+    payload?.event?.expiration_at_ms ??
+    null;
+
+  const timestampMs = typeof raw === 'number'
+    ? raw
+    : typeof raw === 'string'
+      ? Number(raw)
+      : null;
+
+  if (timestampMs !== null && Number.isFinite(timestampMs)) {
+    return new Date(timestampMs).toISOString();
+  }
+
+  return new Date(fallbackMs).toISOString();
+}
+
 async function rcFetchJson<T>(url: string, apiKey: string, timeoutMs = 8000): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -221,7 +259,7 @@ function getRevenueCatProjectId(): string {
 }
 
 type RevenueCatV2AliasesResponse = {
-  items?: Array<{ id?: string | null }> | null;
+  items?: { id?: string | null }[] | null;
 };
 
 async function fetchCustomerV2(
@@ -644,14 +682,12 @@ serve(async (req: Request) => {
     }
 
     const currentTier = userData.user.app_metadata?.tier as string | undefined;
-    const currentAppMeta = (userData.user.app_metadata ?? {}) as Record<string, unknown>;
 
-    // Cache tier from customer (calculé une seule fois)
     const tierFromCustomer = customerV2
       ? inferTierFromCustomer(customerV2, nowMs, entitlementLookupById ?? undefined)
       : null;
-    const normalizedCurrentTier = normalizeTierForComparison(currentTier);
-    const normalizedNewTier = normalizeTierForComparison(newTier);
+    const normalizedCurrentTier = currentTier === 'plus' || currentTier === 'premium' ? 'plus' : 'free';
+    const normalizedNewTier = newTier === 'plus' ? 'plus' : 'free';
 
     // Protection supplémentaire: Empêcher CANCELLATION d'upgrader un utilisateur déjà 'free'
     // Ceci couvre le cas où EXPIRATION a déjà été traité mais CANCELLATION arrive après
@@ -683,126 +719,69 @@ serve(async (req: Request) => {
       });
     }
 
-    const rawEventTimestampMs = payload?.event?.event_timestamp_ms;
-    const eventTimestampMs = typeof rawEventTimestampMs === 'number'
-      ? rawEventTimestampMs
-      : typeof rawEventTimestampMs === 'string'
-        ? Number(rawEventTimestampMs)
-        : null;
-    const validEventTimestampMs = eventTimestampMs !== null && Number.isFinite(eventTimestampMs)
-      ? eventTimestampMs
-      : null;
-    const rawLastEventTimestampMs = currentAppMeta.last_tier_event_timestamp_ms;
-    const lastEventTimestampMs = typeof rawLastEventTimestampMs === 'number'
-      ? rawLastEventTimestampMs
-      : typeof rawLastEventTimestampMs === 'string'
-        ? Number(rawLastEventTimestampMs)
-        : undefined;
-    const validLastEventTimestampMs = Number.isFinite(lastEventTimestampMs)
-      ? lastEventTimestampMs
-      : undefined;
-
-    if (
-      validEventTimestampMs !== null &&
-      typeof validLastEventTimestampMs === 'number' &&
-      validEventTimestampMs < validLastEventTimestampMs
-    ) {
-      console.log('[revenuecat-webhook] Ignoring older event', {
-        timestamp: new Date().toISOString(),
-        userId: resolvedUserId,
-        eventTimestampMs: validEventTimestampMs,
-        lastEventTimestampMs: validLastEventTimestampMs,
-        deltaMs: validLastEventTimestampMs - validEventTimestampMs,
-      });
-      return new Response(JSON.stringify({
-        ok: true,
-        skipped: true,
-        reason: 'event older than last processed',
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-
-    const shouldUpdateTimestamp = validEventTimestampMs !== null &&
-      (validLastEventTimestampMs === undefined || validEventTimestampMs > validLastEventTimestampMs);
-
-    if (normalizedCurrentTier === normalizedNewTier) {
-      if (shouldUpdateTimestamp) {
-        const { error: updateError } = await supabase.auth.admin.updateUserById(resolvedUserId, {
-          app_metadata: {
-            ...currentAppMeta,
-            last_tier_event_timestamp_ms: validEventTimestampMs,
-          },
+    const eventTimestampIso = getWebhookEventTimestampIso(payload, nowMs);
+    const productId =
+      (typeof payload?.event?.product_id === 'string' && payload.event.product_id.trim()
+        ? payload.event.product_id.trim()
+        : null) ??
+      (typeof payload?.event?.product_identifier === 'string' && payload.event.product_identifier.trim()
+        ? payload.event.product_identifier.trim()
+        : null);
+    const mappedEntitlementId = mappedEntitlementKeysForLog[0] ??
+      (typeof payload?.event?.entitlement_id === 'string' && payload.event.entitlement_id.trim()
+        ? payload.event.entitlement_id.trim()
+        : null);
+    const snapshot = customerV2
+      ? buildSubscriptionSnapshotFromCustomer(customerV2, nowMs, entitlementLookupById ?? undefined)
+      : buildSubscriptionSnapshotFromTier({
+          tier: normalizedNewTier,
+          isActive: normalizedNewTier === 'plus',
+          productId,
+          entitlementId: mappedEntitlementId,
+          revenueCatCustomerId: appUserIdUsed,
         });
-        if (updateError) {
-          console.warn('[revenuecat-webhook] Failed to update timestamp', { error: updateError.message });
-        }
-      }
-      console.log('[revenuecat-webhook] Tier unchanged', {
-        timestamp: new Date().toISOString(),
-        userId: resolvedUserId,
-        tier: newTier,
-        eventType: payload?.event?.type,
-      });
-      return new Response(JSON.stringify({
-        ok: true,
-        skipped: true,
-        reason: 'tier unchanged',
-        timestampUpdated: shouldUpdateTimestamp,
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
 
-    console.log('[revenuecat-webhook] Tier change detected', {
-      timestamp: new Date().toISOString(),
+    const result = await applySubscriptionStateUpdate(supabase, {
       userId: resolvedUserId,
-      fromTier: currentTier,
-      toTier: newTier,
-      eventType: payload?.event?.type,
+      source: 'revenuecat_webhook',
+      sourceEventId: getWebhookEventId(payload),
+      sourceUpdatedAt: eventTimestampIso,
+      tier: snapshot.tier,
+      isActive: snapshot.isActive,
+      productId: snapshot.productId,
+      entitlementId: snapshot.entitlementId,
+      revenueCatCustomerId: snapshot.revenueCatCustomerId ?? appUserIdUsed,
+      metadata: {
+        eventType: payload?.event?.type ?? null,
+        appUserId: appUserIdUsed,
+        entitlementIds: entitlementIdsForLog,
+        entitlementKeys: mappedEntitlementKeysForLog,
+      },
     });
 
-    const updatedAppMeta = {
-      ...currentAppMeta,
-      tier: newTier,
-      tier_updated_at: new Date().toISOString(),
-      tier_source: 'revenuecat_webhook',
-      ...(validEventTimestampMs !== null && { last_tier_event_timestamp_ms: validEventTimestampMs }),
-    };
-
-    const { error: updateError } = await supabase.auth.admin.updateUserById(resolvedUserId, {
-      app_metadata: updatedAppMeta,
-    });
-
-    if (updateError) {
-      console.error('[revenuecat-webhook] Failed to update user metadata', {
-        timestamp: new Date().toISOString(),
-        userId: resolvedUserId,
-        fromTier: currentTier,
-        toTier: newTier,
-        error: updateError.message,
-        eventType: payload?.event?.type,
-      });
-      // Security: don't echo internal backend errors to callers.
-      return new Response(JSON.stringify({ error: 'Failed to update user metadata' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-
-    console.log('[revenuecat-webhook] User tier updated successfully', {
+    console.log('[revenuecat-webhook] Subscription state converged', {
       timestamp: new Date().toISOString(),
       userId: resolvedUserId,
       userEmail: userData.user.email,
-      fromTier: currentTier,
-      toTier: newTier,
+      fromTier: currentTier ?? 'free',
+      toTier: result.tier,
+      version: result.version,
+      outcome: result.outcome ?? null,
+      changed: result.changed,
+      skipped: result.skipped ?? false,
       eventType: payload?.event?.type,
       expiryDate: payload?.event?.expiration_date || null,
     });
 
-    return new Response(JSON.stringify({ ok: true, tier: newTier }), {
+    return new Response(JSON.stringify({
+      ok: true,
+      tier: result.tier,
+      isActive: result.isActive,
+      version: result.version,
+      changed: result.changed,
+      skipped: result.skipped ?? false,
+      outcome: result.outcome ?? null,
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
