@@ -34,15 +34,26 @@ export type GuestBootstrapState = {
 const STORAGE_KEY = 'guest-session-v1';
 const EXPIRY_SAFETY_MS = 30_000;
 
+const createInitialGuestBootstrapState = (): GuestBootstrapState => {
+  if (Platform.OS === 'web') {
+    return {
+      status: 'degraded',
+      reasonCode: GuestSessionErrorCode.PLATFORM_UNSUPPORTED,
+      updatedAt: Date.now(),
+    };
+  }
+
+  return {
+    status: 'ready',
+    updatedAt: Date.now(),
+  };
+};
+
 let cached: GuestSessionRecord | null = null;
 let preparePromise: Promise<boolean> | null = null;
 let sessionPromise: Promise<GuestSessionRecord | null> | null = null;
 let sessionEpoch = 0;
-let guestBootstrapState: GuestBootstrapState = {
-  status: 'degraded',
-  reasonCode: GuestSessionErrorCode.UNAVAILABLE,
-  updatedAt: Date.now(),
-};
+let guestBootstrapState: GuestBootstrapState = createInitialGuestBootstrapState();
 const guestBootstrapListeners = new Set<() => void>();
 
 const updateGuestBootstrapState = (
@@ -109,6 +120,8 @@ export async function initGuestSession(): Promise<boolean> {
   if (Platform.OS !== 'android') {
     if (Platform.OS === 'web') {
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.PLATFORM_UNSUPPORTED);
+    } else {
+      updateGuestBootstrapState('ready');
     }
     return false;
   }

@@ -4,7 +4,7 @@
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
       "sourceType": "github",
-      "computedHash": "234f541bf6e9ac5316efa1a35ef971fd342b32d976578852c016ceb442000a81"
+      "computedHash": "d268731ffbcccb98fe174b361b28c3ecf00b56c80a99a440df5673f9edbea04c"
     },
     "ai-seo": {
       "source": "coreyhaines31/marketingskills",
@@ -79,7 +79,7 @@
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "computedHash": "3ff06f0712886f7c2660d6746856c22d3127bd6568ddde29ddad8b72dbaaa226"
+      "computedHash": "ff602214356ac15c65aa8702aff5a2aedaf958d66d301e3279f1dfeaf18c94e9"
     },
     "vercel-react-native-skills": {
       "source": "vercel-labs/agent-skills",
