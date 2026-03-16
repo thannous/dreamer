@@ -165,6 +165,17 @@ export const useDreamJournal = () => {
     [canUseRemoteSync, dreamsRef, persistLocalDreams, persistRemoteDreams]
   );
 
+  const resolveCurrentDream = useCallback(
+    (dream: DreamAnalysis): DreamAnalysis =>
+      dreamsRef.current.find(
+        (entry) =>
+          entry.id === dream.id ||
+          (dream.remoteId != null && entry.remoteId === dream.remoteId) ||
+          (dream.clientRequestId != null && entry.clientRequestId === dream.clientRequestId)
+      ) ?? dream,
+    [dreamsRef]
+  );
+
   const hydratePendingImageJobs = useCallback(async () => {
     const jobs = await getPendingImageJobs();
     pendingImageJobsRef.current = jobs;
@@ -265,16 +276,17 @@ export const useDreamJournal = () => {
         previousImageUrl?: string;
       }
     ) => {
+      const latestDream = resolveCurrentDream(dream);
       const clientRequestId = request.clientRequestId ?? generateUUID();
       const job = await submitImageGenerationJob({
         clientRequestId,
-        dreamId: dream.remoteId,
+        dreamId: latestDream.remoteId,
         prompt: request.prompt,
         transcript: request.transcript,
         previousImageUrl: request.previousImageUrl,
       });
 
-      const currentDream = dreamsRef.current.find((entry) => entry.id === dream.id) ?? dream;
+      const currentDream = resolveCurrentDream(latestDream);
       const nextDream = await registerPendingImageJob(currentDream, {
         jobId: job.jobId,
         clientRequestId: job.clientRequestId,
@@ -286,7 +298,7 @@ export const useDreamJournal = () => {
         job,
       };
     },
-    [dreamsRef, registerPendingImageJob]
+    [registerPendingImageJob, resolveCurrentDream]
   );
 
   /**
@@ -756,6 +768,7 @@ export const useDreamJournal = () => {
       await updateDream(currentDreamState);
       // Best-effort: flush any pending sync so Supabase reflects "pending" before the user navigates away.
       await syncPendingMutations();
+      const syncedDream = resolveCurrentDream(currentDreamState);
 
       // Get fingerprint for guest users to enable server-side quota tracking
       const fingerprint = !user ? await getDeviceFingerprint() : undefined;
@@ -792,9 +805,9 @@ export const useDreamJournal = () => {
           return result;
         });
       const imagePromise = shouldReplaceImage
-        ? submitImageJobForDream(dream, {
+        ? submitImageJobForDream(syncedDream, {
             transcript,
-            previousImageUrl: dream.imageUrl || undefined,
+            previousImageUrl: syncedDream.imageUrl || undefined,
           })
             .then((result) => {
               imageDone = true;
@@ -917,6 +930,7 @@ export const useDreamJournal = () => {
       isMockMode,
       persistLocalDreams,
       persistRemoteDreams,
+      resolveCurrentDream,
       submitImageJobForDream,
       syncPendingMutations,
       updateDream,

@@ -31,17 +31,35 @@ const releaseImageClaim = async (
   adminClient: ReturnType<typeof createAdminClient>,
   fingerprint: string | null
 ) => {
-  if (!fingerprint) return;
+  if (!fingerprint) return true;
   try {
     await adminClient.rpc('release_guest_quota_claim', {
       p_fingerprint: fingerprint,
       p_quota_type: 'image',
     });
+    return true;
   } catch (error) {
     console.warn('[image-job-worker] Failed to release guest image claim', {
       error: error instanceof Error ? error.message : String(error),
     });
+    return false;
   }
+};
+
+const clearGuestImageClaim = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  job: ImageJobRow
+) => {
+  const released = await releaseImageClaim(adminClient, job.guest_fingerprint);
+  if (!released) {
+    return false;
+  }
+
+  await updateJob(adminClient, job.id, {
+    quota_claimed: false,
+    quota_claimed_at: null,
+  });
+  return true;
 };
 
 const claimSpecificJob = async (
@@ -99,6 +117,28 @@ const updateJob = async (
   values: Partial<ImageJobRow>
 ) => {
   const { error } = await adminClient.from('ai_jobs').update(values).eq('id', jobId);
+  if (error) {
+    throw error;
+  }
+};
+
+const persistDreamImageResult = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  job: ImageJobRow,
+  imageUrl: string
+) => {
+  if (job.dream_id == null) {
+    return;
+  }
+
+  const { error } = await adminClient
+    .from('dreams')
+    .update({
+      image_url: imageUrl,
+      image_generation_failed: false,
+    })
+    .eq('id', job.dream_id);
+
   if (error) {
     throw error;
   }
@@ -242,6 +282,7 @@ serve(async (req: Request) => {
         ownerId,
       });
 
+      await persistDreamImageResult(adminClient, job, result.imageUrl);
       await updateJob(adminClient, job.id, {
         status: 'succeeded',
         result_payload: {
@@ -257,12 +298,9 @@ serve(async (req: Request) => {
       return json({ ok: true, jobId: job.id, status: 'succeeded' });
     } catch (error) {
       const serialized = serializeImageJobError(error);
+      let guestClaimCleared = false;
       if (claimedQuotaThisRun && !startedUpstream) {
-        await releaseImageClaim(adminClient, job.guest_fingerprint);
-        await updateJob(adminClient, job.id, {
-          quota_claimed: false,
-          quota_claimed_at: null,
-        });
+        guestClaimCleared = await clearGuestImageClaim(adminClient, job);
       }
 
       if (serialized.retryable && job.attempt_count < job.max_attempts) {
@@ -273,6 +311,10 @@ serve(async (req: Request) => {
           status: 'queued',
           retryable: true,
         });
+      }
+
+      if (!guestClaimCleared && job.guest_fingerprint && (job.quota_claimed || claimedQuotaThisRun)) {
+        await clearGuestImageClaim(adminClient, job);
       }
 
       await markTerminalFailure(adminClient, job, serialized.errorCode, serialized.errorMessage);

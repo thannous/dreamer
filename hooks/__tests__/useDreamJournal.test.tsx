@@ -783,6 +783,61 @@ describe('useDreamJournal', () => {
       expect(analyzedDream.analyzedAt).toBeDefined();
     });
 
+    it('re-resolves an offline-created dream after sync before submitting the image job', async () => {
+      setMockUser({ id: 'user-1' });
+      const localDream = buildDream({
+        id: 1,
+        clientRequestId: 'offline-create-1',
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+      });
+      const syncedDream = {
+        ...localDream,
+        id: 1000,
+        remoteId: 101,
+        pendingSync: undefined,
+      };
+
+      mockFetchDreamsFromSupabase.mockResolvedValue([]);
+      mockGetPendingDreamMutations.mockResolvedValue([
+        {
+          id: 'mutation-create-1',
+          type: 'create',
+          createdAt: Date.now(),
+          dream: { ...localDream, pendingSync: true },
+        },
+      ]);
+      mockCreateDreamInSupabase.mockResolvedValue(syncedDream);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream) => ({ ...dream }));
+
+      const { result } = renderHook(() => useDreamJournal());
+
+      await waitFor(() => {
+        expect(result.current.loaded).toBe(true);
+      });
+
+      await act(async () => {
+        await result.current.analyzeDream(1, 'My dream transcript');
+      });
+
+      expect(mockSubmitImageGenerationJob).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dreamId: 101,
+          transcript: 'My dream transcript',
+        })
+      );
+      expect(result.current.dreams).toHaveLength(1);
+      expect(result.current.dreams[0]).toEqual(
+        expect.objectContaining({
+          id: 1000,
+          remoteId: 101,
+          imageJobId: 'job-queued',
+          imageJobStatus: 'queued',
+        })
+      );
+    });
+
     it('marks image as failed if job submission fails and there is no existing image', async () => {
       const existingDream = buildDream({
         id: 1,
