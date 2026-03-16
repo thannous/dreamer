@@ -23,6 +23,20 @@ async function loadModule<T>(importer: () => Promise<T>): Promise<T> {
   return importer();
 }
 
+function shouldUseJestRequire(): boolean {
+  return typeof process !== 'undefined' && typeof process.env?.JEST_WORKER_ID === 'string';
+}
+
+async function loadModuleWithJestRequire<T>(
+  importer: () => Promise<T>,
+  syncLoader: () => T
+): Promise<T> {
+  if (shouldUseJestRequire()) {
+    return syncLoader();
+  }
+  return loadModule(importer);
+}
+
 let googleSignInModule: Promise<GoogleSignInModule> | null = null;
 let googleSignInConfigurePromise: Promise<void> | null = null;
 let googleSignInConfigured = false;
@@ -57,7 +71,10 @@ async function getGoogleSignInModule(): Promise<GoogleSignInModule> {
   }
 
   if (!googleSignInModule) {
-    googleSignInModule = loadModule(() => import('@react-native-google-signin/google-signin'));
+    googleSignInModule = loadModuleWithJestRequire(
+      () => import('@react-native-google-signin/google-signin'),
+      () => require('@react-native-google-signin/google-signin') as GoogleSignInModule
+    );
   }
 
   return googleSignInModule;
@@ -157,8 +174,9 @@ async function markAccountCreated(): Promise<void> {
   }
 
   try {
-    const { markAccountCreatedOnDevice } = await loadModule<typeof import('./deviceFingerprint')>(() =>
-      import('./deviceFingerprint')
+    const { markAccountCreatedOnDevice } = await loadModuleWithJestRequire(
+      () => import('./deviceFingerprint'),
+      () => require('./deviceFingerprint') as typeof import('./deviceFingerprint')
     );
     await markAccountCreatedOnDevice();
     log.debug('Successfully marked account as created on device');
@@ -177,8 +195,9 @@ export async function wasAccountCreatedOnDevice(): Promise<boolean> {
   }
 
   try {
-    const deviceFingerprint = await loadModule<typeof import('./deviceFingerprint')>(() =>
-      import('./deviceFingerprint')
+    const deviceFingerprint = await loadModuleWithJestRequire(
+      () => import('./deviceFingerprint'),
+      () => require('./deviceFingerprint') as typeof import('./deviceFingerprint')
     );
     return deviceFingerprint.wasAccountCreatedOnDevice();
   } catch (error) {
@@ -198,11 +217,18 @@ async function markFingerprintUpgraded(): Promise<void> {
   }
 
   try {
-    const { getDeviceFingerprint } = await loadModule<typeof import('./deviceFingerprint')>(() =>
-      import('./deviceFingerprint')
+    const { getDeviceFingerprint } = await loadModuleWithJestRequire(
+      () => import('./deviceFingerprint'),
+      () => require('./deviceFingerprint') as typeof import('./deviceFingerprint')
     );
-    const { getApiBaseUrl } = await loadModule<typeof import('./config')>(() => import('./config'));
-    const { fetchJSON } = await loadModule<typeof import('./http')>(() => import('./http'));
+    const { getApiBaseUrl } = await loadModuleWithJestRequire(
+      () => import('./config'),
+      () => require('./config') as typeof import('./config')
+    );
+    const { fetchJSON } = await loadModuleWithJestRequire(
+      () => import('./http'),
+      () => require('./http') as typeof import('./http')
+    );
 
     const fingerprint = await getDeviceFingerprint();
     const token = await waitForAccessToken();
@@ -463,8 +489,9 @@ export async function signOut() {
 
   try {
     try {
-      const subscriptionService = await loadModule<typeof import('../services/subscriptionService')>(() =>
-        import('@/services/subscriptionService')
+      const subscriptionService = await loadModuleWithJestRequire(
+        () => import('@/services/subscriptionService'),
+        () => require('@/services/subscriptionService') as typeof import('../services/subscriptionService')
       );
       const logOut =
         subscriptionService.logOutSubscriptionUser ??

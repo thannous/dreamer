@@ -205,19 +205,19 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
   private async fetchQuota(target?: QuotaDreamTarget, tier: UserTier = 'guest'): Promise<QuotaStatus> {
     const dreamId = this.resolveDreamId(target);
     const cacheKey = dreamId ? `dream-${dreamId}` : 'global';
+    const degradedReason = this.getBootstrapReasonCode();
+    if (degradedReason) {
+      const fallbackStatus = await this.fallback.getQuotaStatus(null, tier, target);
+      const degraded = this.buildDegradedStatus(fallbackStatus, degradedReason);
+      return degraded;
+    }
+
     const cached = this.cache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now()) {
       return cached.value;
     }
 
     const fallbackStatus = await this.fallback.getQuotaStatus(null, tier, target);
-
-    const degradedReason = this.getBootstrapReasonCode();
-    if (degradedReason) {
-      const degraded = this.buildDegradedStatus(fallbackStatus, degradedReason);
-      this.cache.set(cacheKey, { value: degraded, expiresAt: Date.now() + this.CACHE_TTL });
-      return degraded;
-    }
 
     if (this.remoteUnavailable) {
       const degraded = this.buildDegradedStatus(fallbackStatus, GuestSessionErrorCode.QUOTA_UNAVAILABLE);
@@ -250,18 +250,24 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
           : this.isEndpointUnavailable(error)
             ? GuestSessionErrorCode.QUOTA_UNAVAILABLE
             : GuestSessionErrorCode.UNAVAILABLE;
+      const endpointUnavailable = this.isEndpointUnavailable(error);
+      const guestSessionError = error instanceof GuestSessionError;
 
-      if (this.isEndpointUnavailable(error) || error instanceof GuestSessionError) {
+      if (endpointUnavailable) {
         this.remoteUnavailable = true;
         if (__DEV__) {
           console.log('[Quota] Remote guest quota unavailable, entering degraded guest mode');
         }
+      } else if (guestSessionError && __DEV__) {
+        console.log('[Quota] Guest session unavailable, waiting for bootstrap recovery');
       } else if (__DEV__) {
         console.warn('[Quota] Remote guest quota failed, entering degraded guest mode', error);
       }
 
       const degraded = this.buildDegradedStatus(fallbackStatus, reasonCode);
-      this.cache.set(cacheKey, { value: degraded, expiresAt: Date.now() + this.CACHE_TTL });
+      if (!guestSessionError) {
+        this.cache.set(cacheKey, { value: degraded, expiresAt: Date.now() + this.CACHE_TTL });
+      }
       return degraded;
     }
   }

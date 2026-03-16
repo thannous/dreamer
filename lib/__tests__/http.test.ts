@@ -170,7 +170,7 @@ describe('http', () => {
       await expect(fetchJSON('https://api.example.com/data')).rejects.toThrow('Invalid JSON response');
     });
 
-    it('given Supabase URL when fetching then skips auth headers when host config is unavailable', async () => {
+    it('given Supabase URL with an auth token when fetching then attaches auth and apikey headers', async () => {
       mockGetAccessToken.mockResolvedValue('user-access-token');
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
@@ -180,8 +180,8 @@ describe('http', () => {
       await fetchJSON('https://test.supabase.co/rest/v1/dreams');
 
       const request = (global.fetch as any).mock.calls[0][1];
-      expect(request.headers.Authorization).toBeUndefined();
-      expect(request.headers.apikey).toBeUndefined();
+      expect(request.headers.Authorization).toBe('Bearer user-access-token');
+      expect(request.headers.apikey).toBe('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
     });
 
     it('given insecure Supabase URL when fetching then skips auth headers', async () => {
@@ -198,7 +198,7 @@ describe('http', () => {
       expect(request.headers.apikey).toBeUndefined();
     });
 
-    it('given Supabase URL without auth token when fetching then keeps default headers only', async () => {
+    it('given Supabase URL without user auth token when fetching then falls back to anon apikey only', async () => {
       mockGetAccessToken.mockResolvedValue(null);
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
@@ -209,7 +209,7 @@ describe('http', () => {
 
       const request = (global.fetch as any).mock.calls[0][1];
       expect(request.headers.Authorization).toBeUndefined();
-      expect(request.headers.apikey).toBeUndefined();
+      expect(request.headers.apikey).toBe('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test');
     });
 
     it('given non-Supabase URL when fetching then does not attach Supabase auth', async () => {

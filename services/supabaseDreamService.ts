@@ -106,12 +106,17 @@ type ImageManipulatorModule = typeof import('expo-image-manipulator');
 
 let imageManipulatorModule: ImageManipulatorModule | null = null;
 
+const shouldUseJestRequire = (): boolean =>
+  typeof process !== 'undefined' && typeof process.env?.JEST_WORKER_ID === 'string';
+
 const getImageManipulator = async (): Promise<ImageManipulatorModule | null> => {
   if (imageManipulatorModule !== null) {
     return imageManipulatorModule;
   }
   try {
-    const mod = await import('expo-image-manipulator');
+    const mod = shouldUseJestRequire()
+      ? (require('expo-image-manipulator') as ImageManipulatorModule)
+      : await import('expo-image-manipulator');
     imageManipulatorModule = mod;
     return mod;
   } catch (err) {
@@ -240,10 +245,11 @@ const extractStoragePathFromUrl = (url: string): string | null => {
   }
 };
 
-const deleteFromBucketIfPossible = async (url?: string | null) => {
+const deleteFromBucketIfPossible = async (url?: string | null, ownerId?: string) => {
   if (!url || !isRemoteImageUrl(url)) return;
   const path = extractStoragePathFromUrl(url);
   if (!path) return;
+  if (ownerId && !path.startsWith(`${ownerId}/`)) return;
   try {
     await supabase.storage.from(DREAM_IMAGE_BUCKET).remove([path]);
     if (__DEV__) console.log('[supabaseDreamService] deleted old image', path);
@@ -412,10 +418,10 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
     }
 
     if (previousRemoteImageUrl && imageUrl && previousRemoteImageUrl !== imageUrl) {
-      await deleteFromBucketIfPossible(previousRemoteImageUrl);
+      await deleteFromBucketIfPossible(previousRemoteImageUrl, ownerId);
     }
     if (previousRemoteThumbnailUrl && thumbnailUrl && previousRemoteThumbnailUrl !== thumbnailUrl) {
-      await deleteFromBucketIfPossible(previousRemoteThumbnailUrl);
+      await deleteFromBucketIfPossible(previousRemoteThumbnailUrl, ownerId);
     }
 
     return {

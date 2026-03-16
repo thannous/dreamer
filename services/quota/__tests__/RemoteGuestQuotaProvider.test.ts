@@ -16,9 +16,30 @@ jest.mock('../../../lib/guestSession', () => ({
   getGuestBootstrapState: jest.fn().mockReturnValue({ status: 'ready', updatedAt: 0 }),
 }));
 
-jest.mock('../../../lib/errors', () => ({
-  isGuestSessionError: jest.fn().mockReturnValue(false),
-}));
+jest.mock('../../../lib/errors', () => {
+  const GuestSessionErrorCode = {
+    UNAVAILABLE: 'guest_session_unavailable',
+    EXPIRED: 'guest_session_expired',
+    PLATFORM_UNSUPPORTED: 'guest_platform_unsupported',
+    QUOTA_UNAVAILABLE: 'guest_quota_unavailable',
+  };
+
+  class GuestSessionError extends Error {
+    code: string;
+
+    constructor(code: string, message?: string) {
+      super(message ?? code);
+      this.name = 'GuestSessionError';
+      this.code = code;
+    }
+  }
+
+  return {
+    GuestSessionError,
+    GuestSessionErrorCode,
+    isGuestSessionError: jest.fn().mockReturnValue(false),
+  };
+});
 
 jest.mock('../../../lib/config', () => ({
   getApiBaseUrl: () => 'https://example.com',
@@ -281,5 +302,41 @@ describe('RemoteGuestQuotaProvider', () => {
     expect(status.guestBootstrapStatus).toBe('degraded');
     expect(status.guestBootstrapReasonCode).toBe('guest_platform_unsupported');
     expect(mockFetchJSON).not.toHaveBeenCalled();
+  });
+
+  it('does not cache degraded bootstrap results after recovery', async () => {
+    const fallback = createFallback(0);
+    mockGetGuestBootstrapState
+      .mockReturnValueOnce({
+        status: 'degraded',
+        reasonCode: 'guest_session_unavailable',
+        updatedAt: Date.now(),
+      })
+      .mockReturnValue({
+        status: 'ready',
+        updatedAt: Date.now(),
+      });
+    mockFetchJSON.mockResolvedValue({
+      tier: 'guest',
+      usage: {
+        analysis: { used: 1, limit: 2 },
+        exploration: { used: 0, limit: 2 },
+        messages: { used: 0, limit: 20 },
+      },
+      canAnalyze: true,
+      canExplore: true,
+    });
+
+    const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
+    const provider = new RemoteGuestQuotaProvider(fallback as any);
+
+    const degraded = await provider.getQuotaStatus(null, 'guest');
+    const recovered = await provider.getQuotaStatus(null, 'guest');
+
+    expect(degraded.guestBootstrapStatus).toBe('degraded');
+    expect(recovered.guestBootstrapStatus).toBeUndefined();
+    expect(recovered.canAnalyze).toBe(true);
+    expect(recovered.usage.analysis.used).toBe(1);
+    expect(mockFetchJSON).toHaveBeenCalledTimes(1);
   });
 });
