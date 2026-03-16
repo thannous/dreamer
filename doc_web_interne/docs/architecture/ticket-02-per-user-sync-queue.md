@@ -1,5 +1,18 @@
 # Ticket 02: Per-User Offline Sync Queue and Convergence Slice
 
+## Status
+
+Closed on 2026-03-16.
+
+The scope of this ticket was completed and then subsumed by the broader durable sync/convergence implementation:
+
+- per-user queue storage implemented
+- auth transitions no longer erase incompatible queues
+- deterministic replay preserved
+- server-side revision/conflict contract added
+- sync-state UI, retry, and conflict resolution added
+- operational observability added for queue depth, queue age, replay success/conflict rates, and unsafe queue clears
+
 ## Objective
 
 Implement the smallest meaningful slice that fixes the most dangerous offline sync divergence issue in the current app: the mutation queue is still globally scoped and is cleared on auth transitions.

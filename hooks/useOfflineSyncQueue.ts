@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useAuth } from '../context/AuthContext';
 import { logger } from '../lib/logger';
+import { recordSyncReplayMetrics, reportSyncQueueMetrics } from '../lib/syncObservability';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import {
   type DreamListUpdater,
@@ -218,6 +219,11 @@ export function useOfflineSyncQueue({
     async (mutations: DreamMutation[]) => {
       const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
       pendingMutationsRef.current = normalized;
+      reportSyncQueueMetrics({
+        mutations: normalized,
+        reason: 'persist_pending_mutations',
+        userScope,
+      });
       if (!canUseRemoteSync) return;
       await savePendingDreamMutations(normalized, userScope);
     },
@@ -225,7 +231,13 @@ export function useOfflineSyncQueue({
   );
 
   const setPendingMutations = useCallback((mutations: DreamMutation[]) => {
-    pendingMutationsRef.current = mutations.map((mutation) => normalizeMutation(mutation, userScope));
+    const normalized = mutations.map((mutation) => normalizeMutation(mutation, userScope));
+    pendingMutationsRef.current = normalized;
+    reportSyncQueueMetrics({
+      mutations: normalized,
+      reason: 'hydrate_pending_mutations',
+      userScope,
+    });
   }, [userScope]);
 
   useEffect(() => {
@@ -331,6 +343,7 @@ export function useOfflineSyncQueue({
     });
 
     const syncPromise = (async () => {
+      const startedAt = Date.now();
       const sendingIds = new Set(eligibleMutations.map((mutation) => mutation.id));
       const sendingQueue = pendingMutationsRef.current.map((mutation) =>
         sendingIds.has(mutation.id) ? markMutationState(mutation, 'sending') : mutation
@@ -510,6 +523,16 @@ export function useOfflineSyncQueue({
         });
 
         await persistPendingMutations(nextQueue);
+        recordSyncReplayMetrics({
+          attemptedCount: eligibleMutations.length,
+          ackCount: results.filter((result) => result.status === 'ack').length,
+          failedCount: results.filter((result) => result.status === 'failed').length,
+          conflictCount: results.filter((result) => result.status === 'conflict').length,
+          durationMs: Date.now() - startedAt,
+          pendingMutationsAfter: nextQueue,
+          reason: 'sync_batch_completed',
+          userScope,
+        });
       } catch (error) {
         logger.warn('Failed to sync offline mutations', error);
         const message = error instanceof Error ? error.message : 'Failed to sync mutation batch';
@@ -532,6 +555,16 @@ export function useOfflineSyncQueue({
         });
 
         await persistPendingMutations(nextQueue);
+        recordSyncReplayMetrics({
+          attemptedCount: eligibleMutations.length,
+          ackCount: 0,
+          failedCount: eligibleMutations.length,
+          conflictCount: 0,
+          durationMs: Date.now() - startedAt,
+          pendingMutationsAfter: nextQueue,
+          reason: 'sync_batch_failed',
+          userScope,
+        });
       } finally {
         if (syncTokenRef.current === currentToken) {
           syncingRef.current = false;

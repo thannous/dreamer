@@ -1,5 +1,17 @@
 # Spec 02: Make Offline Sync Durable and Convergent
 
+## Status
+
+Closed on 2026-03-16.
+
+Implemented in app code, storage, UI, tests, and Supabase migration/RPC. Operational observability is now wired for:
+
+- pending mutation count per user
+- oldest pending mutation age
+- replay success rate
+- conflict rate
+- queue-clear incidents while pending mutations exist
+
 ## Verification Snapshot (2026-03-15)
 
 ### Confirmed
@@ -151,6 +163,12 @@ Alert when:
 - oldest pending mutation age exceeds 1 hour
 - replay success drops below 99%
 - queue is cleared while pending count was non-zero
+
+Implemented notes:
+
+- queue metrics are emitted during hydration and every pending-queue persistence cycle
+- replay metrics are emitted after each sync batch with aggregate success/conflict rates
+- queue-clearing code emits an explicit alert if pending mutations exist before deletion
 
 ## Acceptance Criteria
 
