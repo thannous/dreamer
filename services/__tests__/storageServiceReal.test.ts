@@ -791,7 +791,14 @@ describe('storageServiceReal', () => {
       ] as any);
 
       const stored = JSON.parse(localStorage.getItem(DREAM_MUTATIONS_KEY) ?? '[]');
-      expect(stored).toEqual([{ id: 'mutation-1', type: 'delete', createdAt: 123, dreamId: 9 }]);
+      expect(stored).toEqual([
+        expect.objectContaining({
+          id: 'mutation-1',
+          type: 'delete',
+          createdAt: 123,
+          dreamId: 9,
+        }),
+      ]);
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }

@@ -294,7 +294,8 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams).toHaveLength(1);
       expect(mockFetchDreamsFromSupabase).toHaveBeenCalled();
       expect(mockSaveCachedRemoteDreams).toHaveBeenCalledWith(
-        expect.arrayContaining([expect.objectContaining({ id: 1 })])
+        expect.arrayContaining([expect.objectContaining({ id: 1 })]),
+        'user:user-1'
       );
     });
 
@@ -454,7 +455,8 @@ describe('useDreamJournal', () => {
             type: 'create',
             dream: expect.objectContaining({ id: 1, pendingSync: true }),
           }),
-        ])
+        ]),
+        'user:user-1'
       );
     });
   });
@@ -545,7 +547,8 @@ describe('useDreamJournal', () => {
             type: 'update',
             dream: expect.objectContaining({ pendingSync: true }),
           }),
-        ])
+        ]),
+        'user:user-1'
       );
     });
   });
@@ -585,7 +588,7 @@ describe('useDreamJournal', () => {
         await result.current.deleteDream(1);
       });
 
-      expect(mockDeleteDreamFromSupabase).toHaveBeenCalledWith(101);
+      expect(mockDeleteDreamFromSupabase).toHaveBeenCalledWith(101, undefined);
       expect(result.current.dreams).toHaveLength(0);
     });
 
@@ -612,7 +615,8 @@ describe('useDreamJournal', () => {
             dreamId: 1,
             remoteId: 101,
           }),
-        ])
+        ]),
+        'user:user-1'
       );
       expect(result.current.dreams).toHaveLength(0);
     });
@@ -830,7 +834,7 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams).toHaveLength(1);
       expect(result.current.dreams[0]).toEqual(
         expect.objectContaining({
-          id: 1000,
+          id: 1,
           remoteId: 101,
           imageJobId: 'job-queued',
           imageJobStatus: 'queued',

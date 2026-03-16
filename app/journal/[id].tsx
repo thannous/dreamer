@@ -29,6 +29,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
 import { isCategoryExplored } from '@/lib/chatCategoryUtils';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getDreamSyncState } from '@/lib/dreamUtils';
 import { getDreamDetailAction } from '@/lib/dreamUsage';
 import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
@@ -193,7 +194,16 @@ const TypewriterText = ({ text, style, shouldAnimate }: { text: string; style: S
 export default function JournalDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const dreamId = useMemo(() => Number(id), [id]);
-  const { dreams, toggleFavorite, updateDream, deleteDream, generateDreamImage, analyzeDream } = useDreams();
+  const {
+    dreams,
+    toggleFavorite,
+    updateDream,
+    deleteDream,
+    retryDreamSync,
+    resolveDreamConflict,
+    generateDreamImage,
+    analyzeDream,
+  } = useDreams();
   const { user } = useAuth();
   const { colors, shadows, mode } = useTheme();
   const { language } = useLanguage();
@@ -240,6 +250,7 @@ export default function JournalDetailScreen() {
   const canUseReference = referenceImagesEnabled && Boolean(user);
 
   const dream = useMemo(() => dreams.find((d) => d.id === dreamId), [dreams, dreamId]);
+  const dreamSyncState = useMemo(() => (dream ? getDreamSyncState(dream) : 'clean'), [dream]);
   const hasExistingImage = useMemo(() => Boolean(dream?.imageUrl?.trim()), [dream?.imageUrl]);
   useEffect(() => {
     setImageAspectRatio(null);
@@ -368,6 +379,9 @@ export default function JournalDetailScreen() {
   const isAnalysisLocked = !!dream && (dream.analysisStatus === 'pending' || isAnalyzing);
   const isAnalysisPending = dream?.analysisStatus === 'pending';
   const isImageJobPending = dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running';
+  const isSyncPending = dreamSyncState === 'pending';
+  const isSyncFailed = dreamSyncState === 'failed';
+  const isSyncConflict = dreamSyncState === 'conflict';
   const shareMessage = useMemo(() => {
     if (!dream) return '';
     const sections: string[] = [];
@@ -692,6 +706,27 @@ export default function JournalDetailScreen() {
       setFavoriteError(t('journal.detail.favorite.error'));
     }
   }, [dream, isAnalysisLocked, toggleFavorite, t]);
+
+  const handleRetrySync = useCallback(async () => {
+    if (!dream) return;
+    try {
+      await retryDreamSync(dream.id);
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[JournalDetail] Failed to retry sync', error);
+      }
+    }
+  }, [dream, retryDreamSync]);
+
+  const handleUseServerVersion = useCallback(async () => {
+    if (!dream) return;
+    await resolveDreamConflict(dream.id, 'use_server');
+  }, [dream, resolveDreamConflict]);
+
+  const handleKeepLocalVersion = useCallback(async () => {
+    if (!dream) return;
+    await resolveDreamConflict(dream.id, 'keep_local');
+  }, [dream, resolveDreamConflict]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
@@ -1228,6 +1263,78 @@ export default function JournalDetailScreen() {
   );
   };
 
+  const renderSyncStatusCard = () => {
+    if (!dream || dreamSyncState === 'clean') {
+      return null;
+    }
+
+    const title = isSyncConflict
+      ? t('journal.detail.sync.conflict_title')
+      : isSyncFailed
+        ? t('journal.detail.sync.failed_title')
+        : t('journal.detail.sync.pending_title');
+    const message = isSyncConflict
+      ? (dream.lastSyncError || t('journal.detail.sync.conflict_message'))
+      : isSyncFailed
+        ? (dream.lastSyncError || t('journal.detail.sync.failed_message'))
+        : t('journal.detail.sync.pending_message');
+    const cardBackground = isSyncConflict
+      ? '#FEF2F2'
+      : isSyncFailed
+        ? '#FEF3C7'
+        : colors.backgroundSecondary;
+    const iconColor = isSyncConflict ? '#991B1B' : isSyncFailed ? '#92400E' : colors.accent;
+    const iconName = isSyncConflict
+      ? 'exclamationmark.octagon.fill'
+      : isSyncFailed
+        ? 'exclamationmark.triangle.fill'
+        : 'arrow.triangle.2.circlepath';
+
+    return (
+      <View style={[styles.statusCard, { backgroundColor: cardBackground }]}>
+        <View style={styles.statusHeader}>
+          <IconSymbol name={iconName} size={24} color={iconColor} />
+          <Text style={[styles.statusTitle, { color: colors.textPrimary }]}>{title}</Text>
+        </View>
+        <Text style={[styles.statusMessage, { color: colors.textSecondary }]}>{message}</Text>
+        {isSyncPending ? (
+          <ActivityIndicator size="small" color={colors.accent} />
+        ) : null}
+        {isSyncFailed ? (
+          <Pressable
+            style={[styles.analyzeButton, { backgroundColor: colors.accent }]}
+            onPress={handleRetrySync}
+          >
+            <IconSymbol name="arrow.clockwise" size={18} color={colors.textPrimary} />
+            <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}>
+              {t('journal.detail.sync.retry')}
+            </Text>
+          </Pressable>
+        ) : null}
+        {isSyncConflict ? (
+          <View style={styles.sheetButtons}>
+            <Pressable
+              style={[styles.sheetPrimaryButton, { backgroundColor: colors.accent }]}
+              onPress={handleKeepLocalVersion}
+            >
+              <Text style={[styles.sheetPrimaryButtonText, { color: colors.textPrimary }]}>
+                {t('journal.detail.sync.keep_local')}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.sheetSecondaryButton, { borderColor: colors.divider }]}
+              onPress={handleUseServerVersion}
+            >
+              <Text style={[styles.sheetSecondaryButtonText, { color: colors.textPrimary }]}>
+                {t('journal.detail.sync.use_server')}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
+      </View>
+    );
+  };
+
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.screen, { backgroundColor: screenBackgroundColor }]}>
@@ -1412,6 +1519,7 @@ export default function JournalDetailScreen() {
 
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
+            {renderSyncStatusCard()}
 
             {(dream.isAnalyzed || isAnalysisPending) && (
               <>

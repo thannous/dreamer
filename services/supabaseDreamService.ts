@@ -1,15 +1,20 @@
 import type { PostgrestError } from '@supabase/supabase-js';
 
-import { generateUUID } from '@/lib/dreamUtils';
+import { buildDreamMutationEntityKey, createDreamMutation, generateUUID } from '@/lib/dreamUtils';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import type { Action as ImageManipulatorAction } from 'expo-image-manipulator';
 import { Image, Platform } from 'react-native';
-import type { ChatMessage, DreamAnalysis, DreamType, DreamTheme } from '@/lib/types';
+import type {
+  ChatMessage,
+  DreamAnalysis,
+  DreamMutation,
+  DreamType,
+  DreamTheme,
+} from '@/lib/types';
 
 const DREAMS_TABLE = 'dreams';
-let imageGenerationFailedColumnAvailable = true;
 const DREAM_IMAGE_BUCKET = 'dream-images';
 
 const isRemoteImageUrl = (url?: string | null): boolean =>
@@ -440,6 +445,9 @@ async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise
 type SupabaseDreamRow = {
   id: number;
   created_at: string | null;
+  updated_at?: string | null;
+  client_updated_at?: string | null;
+  revision_id?: string | null;
   user_id?: string;
   transcript: string;
   title: string;
@@ -469,6 +477,9 @@ const mapRowToDream = (row: SupabaseDreamRow): DreamAnalysis => {
   return {
     id: createdAt,
     remoteId: row.id,
+    revisionId: row.revision_id ?? undefined,
+    updatedAt: row.updated_at ? Date.parse(row.updated_at) : undefined,
+    clientUpdatedAt: row.client_updated_at ? Date.parse(row.client_updated_at) : createdAt,
     transcript: row.transcript ?? '',
     title: row.title ?? '',
     interpretation: row.interpretation ?? '',
@@ -506,6 +517,7 @@ const mapDreamToRow = (dream: DreamAnalysis, userId?: string, includeImageColumn
     is_favorite: dream.isFavorite ?? false,
     is_analyzed: dream.isAnalyzed ?? false,
     analysis_status: dream.analysisStatus ?? 'none',
+    client_updated_at: new Date(dream.clientUpdatedAt ?? Date.now()).toISOString(),
   };
 
   // Avoid clearing existing server-side values when a field is missing locally.
@@ -540,18 +552,40 @@ const formatError = (error: PostgrestError | null, defaultMessage: string): Code
   return err;
 };
 
-const isMissingImageGenerationColumnError = (error: PostgrestError | null): boolean => {
-  if (!error) return false;
-  if (error.code !== 'PGRST204') return false;
-  return /image_generation_failed|image_source/.test(error.message ?? '');
-};
-
 type CodedError = Error & { code?: string };
+type ConflictError = CodedError & { remoteDream?: DreamAnalysis };
+
+export type SyncMutationResultStatus = 'ack' | 'conflict' | 'failed';
+
+export type SyncMutationResult = {
+  mutationId: string;
+  clientRequestId: string;
+  operation: DreamMutation['operation'];
+  status: SyncMutationResultStatus;
+  dream?: DreamAnalysis;
+  remoteId?: number;
+  error?: string;
+};
 
 const createNotFoundError = (message: string): CodedError => {
   const error = new Error(message) as CodedError;
   error.code = 'NOT_FOUND';
   return error;
+};
+
+const createConflictError = (message: string, remoteDream?: DreamAnalysis): ConflictError => {
+  const error = new Error(message) as ConflictError;
+  error.code = 'CONFLICT';
+  error.remoteDream = remoteDream;
+  return error;
+};
+
+let imageGenerationFailedColumnAvailable = true;
+
+const isMissingImageGenerationColumnError = (error: PostgrestError | null): boolean => {
+  if (!error) return false;
+  if (error.code !== 'PGRST204') return false;
+  return /image_generation_failed|image_source/.test(error.message ?? '');
 };
 
 const isSingleObjectResultError = (error: PostgrestError | null): boolean => {
@@ -565,6 +599,206 @@ const isSingleObjectResultError = (error: PostgrestError | null): boolean => {
     message.includes('no rows')
   );
 };
+
+const mapDreamToSyncPayload = (dream: DreamAnalysis, userId?: string, includeImageColumns = true) => ({
+  ...mapDreamToRow(dream, userId, includeImageColumns),
+  remote_id: dream.remoteId ?? null,
+  revision_id: dream.revisionId ?? null,
+});
+
+const mapMutationToSyncPayload = async (
+  mutation: DreamMutation,
+  userId?: string
+): Promise<Record<string, unknown>> => {
+  const shouldPrepareDream =
+    mutation.operation === 'create' || mutation.operation === 'update';
+  const preparedDream =
+    shouldPrepareDream && mutation.payload.dream
+      ? await ensureRemoteImage(mutation.payload.dream, userId)
+      : mutation.payload.dream;
+
+  return {
+    mutation_id: mutation.id,
+    operation: mutation.operation,
+    client_request_id: mutation.clientRequestId,
+    entity_key: mutation.entityKey,
+    base_revision: mutation.baseRevision ?? null,
+    client_updated_at: new Date(mutation.clientUpdatedAt || Date.now()).toISOString(),
+    payload:
+      mutation.operation === 'delete'
+        ? {
+            remote_id: mutation.payload.remoteId ?? mutation.payload.tombstone?.remoteId ?? null,
+            dream_id: mutation.payload.dreamId ?? mutation.payload.tombstone?.id ?? null,
+          }
+        : mapDreamToSyncPayload(preparedDream ?? mutation.payload.dream!, userId, true),
+  };
+};
+
+const parseSyncResult = (data: unknown): SyncMutationResult[] => {
+  if (!Array.isArray(data)) {
+    return [];
+  }
+
+  return data.map((entry) => {
+    const row = entry as Record<string, unknown>;
+    const dreamPayload = row.dream as SupabaseDreamRow | undefined;
+    return {
+      mutationId: String(row.mutation_id ?? ''),
+      clientRequestId: String(row.client_request_id ?? ''),
+      operation: (row.operation as DreamMutation['operation']) ?? 'update',
+      status: (row.status as SyncMutationResultStatus) ?? 'failed',
+      dream: dreamPayload ? mapRowToDream(dreamPayload) : undefined,
+      remoteId:
+        typeof row.remote_id === 'number'
+          ? row.remote_id
+          : typeof row.remote_id === 'string'
+            ? Number(row.remote_id)
+            : undefined,
+      error: typeof row.error === 'string' ? row.error : undefined,
+    };
+  });
+};
+
+const syncDreamMutationsDirectly = async (
+  mutations: DreamMutation[],
+  userId?: string
+): Promise<SyncMutationResult[]> => {
+  const results: SyncMutationResult[] = [];
+
+  for (const mutation of mutations) {
+    if (mutation.operation === 'create' && mutation.payload.dream) {
+      const preparedDream = await ensureRemoteImage(mutation.payload.dream, userId);
+      const upsert = (includeImageColumn: boolean) =>
+        supabase
+          .from(DREAMS_TABLE)
+          .upsert(mapDreamToRow(preparedDream, userId, includeImageColumn), {
+            onConflict: 'user_id,client_request_id',
+          })
+          .select('*')
+          .single();
+
+      const tryImageColumn = imageGenerationFailedColumnAvailable;
+      let { data, error } = await upsert(tryImageColumn);
+
+      if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
+        imageGenerationFailedColumnAvailable = false;
+        ({ data, error } = await upsert(false));
+      }
+
+      if (error || !data) {
+        throw formatError(error, 'Failed to create dream in Supabase');
+      }
+
+      const dream = mapRowToDream(data);
+      results.push({
+        mutationId: mutation.id,
+        clientRequestId: mutation.clientRequestId,
+        operation: mutation.operation,
+        status: 'ack',
+        dream,
+        remoteId: dream.remoteId,
+      });
+      continue;
+    }
+
+    if (mutation.operation === 'update' && mutation.payload.dream) {
+      const dreamToUpdate = mutation.payload.dream;
+      if (!dreamToUpdate.remoteId) {
+        throw new Error('Missing remote id for Supabase dream update');
+      }
+
+      const preparedDream = await ensureRemoteImage(dreamToUpdate, userId);
+      const update = (includeImageColumn: boolean) =>
+        supabase
+          .from(DREAMS_TABLE)
+          .update(mapDreamToRow(preparedDream, undefined, includeImageColumn))
+          .eq('id', dreamToUpdate.remoteId)
+          .select('*')
+          .single();
+
+      const tryImageColumn = imageGenerationFailedColumnAvailable;
+      let { data, error } = await update(tryImageColumn);
+
+      if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
+        imageGenerationFailedColumnAvailable = false;
+        ({ data, error } = await update(false));
+      }
+
+      if (isSingleObjectResultError(error) || (!error && !data)) {
+        throw createNotFoundError('Dream not found in Supabase');
+      }
+
+      if (error || !data) {
+        throw formatError(error, 'Failed to update dream in Supabase');
+      }
+
+      const dream = mapRowToDream(data);
+      results.push({
+        mutationId: mutation.id,
+        clientRequestId: mutation.clientRequestId,
+        operation: mutation.operation,
+        status: 'ack',
+        dream,
+        remoteId: dream.remoteId,
+      });
+      continue;
+    }
+
+    if (mutation.operation === 'delete') {
+      const remoteId = mutation.payload.remoteId ?? mutation.payload.tombstone?.remoteId;
+      if (remoteId == null) {
+        throw new Error('Missing remote id for Supabase dream delete');
+      }
+
+      const { error } = await supabase.from(DREAMS_TABLE).delete().eq('id', remoteId);
+      if (error) {
+        throw formatError(error, 'Failed to delete dream from Supabase');
+      }
+
+      results.push({
+        mutationId: mutation.id,
+        clientRequestId: mutation.clientRequestId,
+        operation: mutation.operation,
+        status: 'ack',
+        remoteId,
+      });
+      continue;
+    }
+
+    results.push({
+      mutationId: mutation.id,
+      clientRequestId: mutation.clientRequestId,
+      operation: mutation.operation,
+      status: 'failed',
+      error: 'Malformed mutation payload',
+    });
+  }
+
+  return results;
+};
+
+export async function syncDreamMutationsInSupabase(
+  mutations: DreamMutation[],
+  userId?: string
+): Promise<SyncMutationResult[]> {
+  if (typeof supabase.rpc !== 'function') {
+    return syncDreamMutationsDirectly(mutations, userId);
+  }
+
+  const preparedMutations = await Promise.all(
+    mutations.map((mutation) => mapMutationToSyncPayload(mutation, userId))
+  );
+
+  const { data, error } = await supabase.rpc('sync_dream_mutations', {
+    mutations: preparedMutations,
+  });
+
+  if (error) {
+    throw formatError(error, 'Failed to sync dream mutations');
+  }
+
+  return parseSyncResult(data);
+}
 
 export async function fetchDreamsFromSupabase(): Promise<DreamAnalysis[]> {
   const { data, error } = await supabase
@@ -583,70 +817,98 @@ export async function createDreamInSupabase(dream: DreamAnalysis, userId: string
   const withRequestId = dream.clientRequestId
     ? dream
     : { ...dream, clientRequestId: generateUUID() };
+  const [result] = await syncDreamMutationsInSupabase([
+    createDreamMutation({
+      id: generateUUID(),
+      userScope: `user:${userId}`,
+      entityType: 'dream',
+      entityKey: buildDreamMutationEntityKey(withRequestId),
+      operation: 'create',
+      clientRequestId: withRequestId.clientRequestId!,
+      clientUpdatedAt: withRequestId.clientUpdatedAt ?? Date.now(),
+      payload: { dream: withRequestId },
+      status: 'pending',
+      retryCount: 0,
+      createdAt: Date.now(),
+    }),
+  ], userId);
 
-  const preparedDream = await ensureRemoteImage(withRequestId, userId);
-
-  const upsert = (includeImageColumn: boolean) =>
-    supabase
-      .from(DREAMS_TABLE)
-      .upsert(mapDreamToRow(preparedDream, userId, includeImageColumn), {
-        onConflict: 'user_id,client_request_id',
-      })
-      .select('*')
-      .single();
-
-  const tryImageColumn = imageGenerationFailedColumnAvailable;
-  let { data, error } = await upsert(tryImageColumn);
-
-  if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
-    imageGenerationFailedColumnAvailable = false;
-    ({ data, error } = await upsert(false));
+  if (!result) {
+    throw new Error('Failed to create dream in Supabase');
   }
-
-  if (error || !data) {
-    throw formatError(error, 'Failed to create dream in Supabase');
+  if (result.status === 'conflict') {
+    throw createConflictError(result.error ?? 'Dream create conflict', result.dream);
   }
-
-  return mapRowToDream(data);
+  if (result.status === 'failed' || !result.dream) {
+    throw new Error(result.error ?? 'Failed to create dream in Supabase');
+  }
+  return result.dream;
 }
 
 export async function updateDreamInSupabase(dream: DreamAnalysis): Promise<DreamAnalysis> {
   if (!dream.remoteId) {
     throw new Error('Missing remote id for Supabase dream update');
   }
+  const [result] = await syncDreamMutationsInSupabase([
+    createDreamMutation({
+      id: generateUUID(),
+      userScope: 'user:active',
+      entityType: 'dream',
+      entityKey: buildDreamMutationEntityKey(dream),
+      operation: 'update',
+      clientRequestId: generateUUID(),
+      baseRevision: dream.revisionId,
+      clientUpdatedAt: dream.clientUpdatedAt ?? Date.now(),
+      payload: { dream },
+      status: 'pending',
+      retryCount: 0,
+      createdAt: Date.now(),
+    }),
+  ]);
 
-  const preparedDream = await ensureRemoteImage(dream);
-
-  const update = (includeImageColumn: boolean) =>
-    supabase
-      .from(DREAMS_TABLE)
-      .update(mapDreamToRow(preparedDream, undefined, includeImageColumn))
-      .eq('id', dream.remoteId)
-      .select('*')
-      .single();
-
-  const tryImageColumn = imageGenerationFailedColumnAvailable;
-  let { data, error } = await update(tryImageColumn);
-
-  if ((error || !data) && tryImageColumn && isMissingImageGenerationColumnError(error)) {
-    imageGenerationFailedColumnAvailable = false;
-    ({ data, error } = await update(false));
+  if (!result) {
+    throw new Error('Failed to update dream in Supabase');
   }
-
-  if (isSingleObjectResultError(error) || (!error && !data)) {
-    throw createNotFoundError('Dream not found in Supabase');
+  if (result.status === 'conflict') {
+    throw createConflictError(result.error ?? 'Dream update conflict', result.dream);
   }
-
-  if (error || !data) {
-    throw formatError(error, 'Failed to update dream in Supabase');
+  if (result.status === 'failed') {
+    if (result.error?.toLowerCase().includes('not found')) {
+      throw createNotFoundError(result.error);
+    }
+    throw new Error(result.error ?? 'Failed to update dream in Supabase');
   }
-
-  return mapRowToDream(data);
+  if (!result.dream) {
+    throw new Error('Failed to update dream in Supabase');
+  }
+  return result.dream;
 }
 
-export async function deleteDreamFromSupabase(remoteId: number): Promise<void> {
-  const { error } = await supabase.from(DREAMS_TABLE).delete().eq('id', remoteId);
-  if (error) {
-    throw formatError(error, 'Failed to delete dream from Supabase');
+export async function deleteDreamFromSupabase(remoteId: number, baseRevision?: string): Promise<void> {
+  const [result] = await syncDreamMutationsInSupabase([
+    createDreamMutation({
+      id: generateUUID(),
+      userScope: 'user:active',
+      entityType: 'dream',
+      entityKey: `remote:${remoteId}`,
+      operation: 'delete',
+      clientRequestId: generateUUID(),
+      baseRevision,
+      clientUpdatedAt: Date.now(),
+      payload: { remoteId },
+      status: 'pending',
+      retryCount: 0,
+      createdAt: Date.now(),
+    }),
+  ]);
+
+  if (!result) {
+    throw new Error('Failed to delete dream from Supabase');
+  }
+  if (result.status === 'conflict') {
+    throw createConflictError(result.error ?? 'Dream delete conflict', result.dream);
+  }
+  if (result.status === 'failed') {
+    throw new Error(result.error ?? 'Failed to delete dream from Supabase');
   }
 }
