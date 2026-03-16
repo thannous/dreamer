@@ -13,6 +13,7 @@ import type {
   ThemePreference,
 } from '@/lib/types';
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
+import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
 // In-memory storage
@@ -378,6 +379,22 @@ export async function saveCachedRemoteDreams(
 }
 
 export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
+  const scopedPending = mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)];
+  if (scopedPending) {
+    try {
+      const parsed = JSON.parse(scopedPending) as DreamMutation[];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        reportSyncQueueClearedWithPending({
+          mutations: parsed,
+          reason: 'clear_remote_dream_storage_mock',
+          userScope,
+        });
+      }
+    } catch (error) {
+      console.error('[MOCK STORAGE] Failed to inspect pending mutations before clearing:', error);
+    }
+  }
+
   delete mockStorage[scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)];
   delete mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)];
   if (userScope) {

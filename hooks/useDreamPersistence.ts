@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getAccessToken } from '../lib/auth';
 import { logger } from '../lib/logger';
+import { reportSyncQueueMetrics } from '../lib/syncObservability';
 import type { DreamAnalysis, DreamMutation } from '../lib/types';
 import {
   applyPendingMutations,
@@ -215,6 +216,11 @@ export function useDreamPersistence({
         getCachedRemoteDreams(userScope),
         getSavedDreams(),
       ]);
+      reportSyncQueueMetrics({
+        mutations: pendingMutationsFromStorage,
+        reason: 'bootstrap_pending_queue',
+        userScope,
+      });
 
       const candidates: DreamAnalysis[] = [
         ...pendingMutationsFromStorage
@@ -305,6 +311,11 @@ export function useDreamPersistence({
 
       pendingMutations = pendingResult.status === 'fulfilled' ? pendingResult.value : [];
       const cached = cachedResult.status === 'fulfilled' ? cachedResult.value : [];
+      reportSyncQueueMetrics({
+        mutations: pendingMutations,
+        reason: 'reload_pending_queue',
+        userScope,
+      });
 
       try {
         const hasSession = authSessionReady || await ensureAccessToken({

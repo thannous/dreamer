@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
+import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import type {
   DreamAnalysis,
   DreamMutation,
@@ -1062,6 +1063,15 @@ export async function saveCachedRemoteDreams(
 }
 
 export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
+  const pendingMutations = await getPendingDreamMutations(userScope);
+  if (pendingMutations.length > 0) {
+    reportSyncQueueClearedWithPending({
+      mutations: pendingMutations,
+      reason: 'clear_remote_dream_storage',
+      userScope,
+    });
+  }
+
   await Promise.all([
     removeItem(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)),
     removeItem(scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)),

@@ -22,9 +22,16 @@ const mockAsyncStorage = {
   removeItem: jest.fn<(key: string) => Promise<void>>(),
 };
 
+const mockReportSyncQueueClearedWithPending = jest.fn();
+
 jest.mock('@react-native-async-storage/async-storage', () => ({
   __esModule: true,
   default: mockAsyncStorage,
+}));
+
+jest.mock('@/lib/syncObservability', () => ({
+  reportSyncQueueClearedWithPending: (...args: unknown[]) =>
+    mockReportSyncQueueClearedWithPending(...args),
 }));
 
 const createFakeIndexedDB = () => {
@@ -96,6 +103,7 @@ describe('storageServiceReal', () => {
     mockAsyncStorage.getItem.mockReset().mockResolvedValue(null);
     mockAsyncStorage.setItem.mockReset().mockResolvedValue(undefined);
     mockAsyncStorage.removeItem.mockReset().mockResolvedValue(undefined);
+    mockReportSyncQueueClearedWithPending.mockReset();
     const { Platform } = require('react-native');
     Platform.OS = 'web';
   });
@@ -877,6 +885,46 @@ describe('storageServiceReal', () => {
         },
       ]);
       expect(await storage.getPendingImageJobs()).toEqual(stored);
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
+
+  it('alerts before clearing scoped queue data when pending mutations still exist', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+
+      localStorage.setItem(
+        `${DREAM_MUTATIONS_KEY}:user:user-1`,
+        JSON.stringify([
+          {
+            version: 1,
+            id: 'mutation-1',
+            userScope: 'user:user-1',
+            entityType: 'dream',
+            entityKey: 'local:1',
+            operation: 'update',
+            clientRequestId: 'request-1',
+            clientUpdatedAt: 1000,
+            payload: { dreamId: 1 },
+            status: 'pending',
+            retryCount: 0,
+            createdAt: 1000,
+          },
+        ]),
+      );
+
+      const storage = require('../storageServiceReal');
+      await storage.clearRemoteDreamStorage('user:user-1');
+
+      expect(mockReportSyncQueueClearedWithPending).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reason: 'clear_remote_dream_storage',
+          userScope: 'user:user-1',
+        })
+      );
+      expect(localStorage.getItem(`${DREAM_MUTATIONS_KEY}:user:user-1`)).toBeNull();
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }
