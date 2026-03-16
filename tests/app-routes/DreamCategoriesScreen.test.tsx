@@ -43,9 +43,17 @@ jest.mock('react-native', () => {
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
     };
   };
-  const createElement = (tag: string) => (
-    { children, ...props }: { children?: React.ReactNode; [key: string]: any },
-  ) => React.createElement(tag, toDomProps(props), children);
+  const createElement = (tag: string) => {
+    const MockNativeElement = ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: any;
+    }) => React.createElement(tag, toDomProps(props), children);
+    MockNativeElement.displayName = `MockNative${tag}`;
+    return MockNativeElement;
+  };
 
   return {
     __esModule: true,
@@ -103,12 +111,24 @@ jest.mock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.mock('@/components/inspiration/GlassCard', () => ({
-  FlatGlassCard: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-  GlassCard: ({ children, onPress, testID }: { children?: React.ReactNode; onPress?: () => void; testID?: string }) => (
-    <button data-testid={testID} onClick={onPress}>
-      {children}
-    </button>
-  ),
+  FlatGlassCard: function MockFlatGlassCard({ children }: { children?: React.ReactNode }) {
+    return <div>{children}</div>;
+  },
+  GlassCard: function MockGlassCard({
+    children,
+    onPress,
+    testID,
+  }: {
+    children?: React.ReactNode;
+    onPress?: () => void;
+    testID?: string;
+  }) {
+    return (
+      <button data-testid={testID} onClick={onPress}>
+        {children}
+      </button>
+    );
+  },
 }));
 
 jest.mock('@/components/inspiration/PageHeader', () => ({

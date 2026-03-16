@@ -1,4 +1,4 @@
-// @jest-environment jsdom
+/* @jest-environment jsdom */
 
 import { act, renderHook } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';

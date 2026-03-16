@@ -87,16 +87,16 @@ jest.mock('expo-secure-store', () => ({
   WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'WHEN_UNLOCKED_THIS_DEVICE_ONLY',
   ALWAYS: 'ALWAYS',
   ALWAYS_THIS_DEVICE_ONLY: 'ALWAYS_THIS_DEVICE_ONLY',
-  getItemAsync: jest.fn().mockResolvedValue(null),
-  setItemAsync: jest.fn().mockResolvedValue(undefined),
-  deleteItemAsync: jest.fn().mockResolvedValue(undefined),
-  isAvailableAsync: jest.fn().mockResolvedValue(true),
+  getItemAsync: jest.fn(async () => null),
+  setItemAsync: jest.fn(async () => undefined),
+  deleteItemAsync: jest.fn(async () => undefined),
+  isAvailableAsync: jest.fn(async () => true),
 }));
 
 // Mock expo-crypto for fingerprint generation in tests.
 jest.mock('expo-crypto', () => ({
   randomUUID: jest.fn(() => 'mock-uuid-1234'),
-  digestStringAsync: jest.fn().mockResolvedValue('mock-hash-fingerprint'),
+  digestStringAsync: jest.fn(async () => 'mock-hash-fingerprint'),
   CryptoDigestAlgorithm: { SHA256: 'SHA256' },
 }));
 
@@ -124,11 +124,11 @@ jest.mock('expo-file-system', () => {
     ExpoFileSystem: { FileSystemFile: class {} },
     documentDirectory: '/tmp/',
     cacheDirectory: '/tmp/',
-    readAsStringAsync: jest.fn().mockResolvedValue(''),
-    writeAsStringAsync: jest.fn().mockResolvedValue(undefined),
-    deleteAsync: jest.fn().mockResolvedValue(undefined),
-    getInfoAsync: jest.fn().mockResolvedValue({ exists: true }),
-    makeDirectoryAsync: jest.fn().mockResolvedValue(undefined),
+    readAsStringAsync: jest.fn(async () => ''),
+    writeAsStringAsync: jest.fn(async () => undefined),
+    deleteAsync: jest.fn(async () => undefined),
+    getInfoAsync: jest.fn(async () => ({ exists: true })),
+    makeDirectoryAsync: jest.fn(async () => undefined),
     EncodingType: { Base64: 'base64' },
     FileSystemUploadType: { RAW: 'raw' },
   };
@@ -137,11 +137,11 @@ jest.mock('expo-file-system', () => {
 jest.mock('expo-file-system/legacy', () => ({
   documentDirectory: '/tmp/',
   cacheDirectory: '/tmp/',
-  readAsStringAsync: jest.fn().mockResolvedValue(''),
-  writeAsStringAsync: jest.fn().mockResolvedValue(undefined),
-  deleteAsync: jest.fn().mockResolvedValue(undefined),
-  getInfoAsync: jest.fn().mockResolvedValue({ exists: true, isDirectory: false }),
-  makeDirectoryAsync: jest.fn().mockResolvedValue(undefined),
+  readAsStringAsync: jest.fn(async () => ''),
+  writeAsStringAsync: jest.fn(async () => undefined),
+  deleteAsync: jest.fn(async () => undefined),
+  getInfoAsync: jest.fn(async () => ({ exists: true, isDirectory: false })),
+  makeDirectoryAsync: jest.fn(async () => undefined),
   EncodingType: { Base64: 'base64' },
   FileSystemUploadType: { RAW: 'raw' },
 }));

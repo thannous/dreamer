@@ -1,7 +1,7 @@
 import type {
   RevenueCatV2CustomerResponse,
   Tier as RevenueCatTier,
-} from '../../../lib/revenuecatSubscriber.ts';
+} from '../lib/revenuecatSubscriber.ts';
 
 const SUBSCRIPTION_SYNC_TIMEOUT_MS = 8000;
 const ENTITLEMENT_CACHE_TTL_MS = 5 * 60 * 1000;

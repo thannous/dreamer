@@ -12,7 +12,7 @@ import {
   normalizeTier,
   RevenueCatHttpError,
 } from '../services/revenuecat.ts';
-import { inferTierFromCustomer } from '../../../lib/revenuecatSubscriber.ts';
+import { inferTierFromCustomer } from '../lib/revenuecatSubscriber.ts';
 
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;

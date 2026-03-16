@@ -88,7 +88,11 @@ jest.doMock('@/lib/imageUtils', () => ({
 }));
 
 jest.doMock('@/components/journal/FilterBar', () => ({
-  FilterBar: ({ items }: { items: { id: string; onPress: () => void }[] }) => {
+  FilterBar: function MockFilterBar({
+    items,
+  }: {
+    items: { id: string; onPress: () => void }[];
+  }) {
     const themeItem = items.find((item) => item.id === 'theme');
     return (
       <button data-testid="open-theme-modal" onClick={themeItem?.onPress}>
@@ -168,9 +172,17 @@ jest.doMock('react-native', () => {
       ...(accessibilityLabel ? { 'aria-label': accessibilityLabel } : {}),
     };
   };
-  const createElement = (tag: string) => (
-    { children, ...props }: { children?: React.ReactNode; [key: string]: any },
-  ) => React.createElement(tag, toDomProps(props), children);
+  const createElement = (tag: string) => {
+    const MockNativeElement = ({
+      children,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      [key: string]: any;
+    }) => React.createElement(tag, toDomProps(props), children);
+    MockNativeElement.displayName = `MockNative${tag}`;
+    return MockNativeElement;
+  };
 
   return {
     __esModule: true,
@@ -208,9 +220,27 @@ jest.doMock('@/components/journal/EmptyState', () => ({
 }));
 
 jest.doMock('react-native-reanimated', () => {
-  const View = ({ children, style, entering, ...props }: { children?: React.ReactNode; style?: any; entering?: any; [key: string]: any }) => <div {...props}>{children}</div>;
+  const View = function MockReanimatedView({
+    children,
+    style,
+    entering,
+    ...props
+  }: {
+    children?: React.ReactNode;
+    style?: any;
+    entering?: any;
+    [key: string]: any;
+  }) {
+    return <div {...props}>{children}</div>;
+  };
   const createAnimatedComponent = (Component: any) => {
-    const AnimatedComponent = ({ style, entering, ...props }: any) => <Component {...props} />;
+    const AnimatedComponent = function MockAnimatedComponent({
+      style,
+      entering,
+      ...props
+    }: any) {
+      return <Component {...props} />;
+    };
     AnimatedComponent.displayName = 'ReanimatedAnimatedComponent';
     return AnimatedComponent;
   };

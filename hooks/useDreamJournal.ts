@@ -145,6 +145,7 @@ export const useDreamJournal = () => {
 
   const pendingImageJobsRef = useRef<PendingImageJob[]>([]);
   const [pendingImageJobsVersion, setPendingImageJobsVersion] = useState(0);
+  const analysisStatusOverridesRef = useRef<Map<number, DreamAnalysis['analysisStatus']>>(new Map());
 
   const persistPendingImageJobState = useCallback(async (jobs: PendingImageJob[]) => {
     pendingImageJobsRef.current = jobs;
@@ -224,6 +225,7 @@ export const useDreamJournal = () => {
     ) => {
       const nextDream: DreamAnalysis = {
         ...dream,
+        analysisStatus: analysisStatusOverridesRef.current.get(dream.id) ?? dream.analysisStatus,
         imageGenerationFailed: false,
         imageJobId: job.jobId,
         imageJobStatus: job.status,
@@ -272,7 +274,8 @@ export const useDreamJournal = () => {
         previousImageUrl: request.previousImageUrl,
       });
 
-      const nextDream = await registerPendingImageJob(dream, {
+      const currentDream = dreamsRef.current.find((entry) => entry.id === dream.id) ?? dream;
+      const nextDream = await registerPendingImageJob(currentDream, {
         jobId: job.jobId,
         clientRequestId: job.clientRequestId,
         status: job.status === 'running' ? 'running' : 'queued',
@@ -283,7 +286,7 @@ export const useDreamJournal = () => {
         job,
       };
     },
-    [registerPendingImageJob]
+    [dreamsRef, registerPendingImageJob]
   );
 
   /**
@@ -749,6 +752,7 @@ export const useDreamJournal = () => {
         analysisStatus: 'pending',
         analysisRequestId: requestId,
       };
+      analysisStatusOverridesRef.current.set(dreamId, 'pending');
       await updateDream(currentDreamState);
       // Best-effort: flush any pending sync so Supabase reflects "pending" before the user navigates away.
       await syncPendingMutations();
@@ -870,11 +874,13 @@ export const useDreamJournal = () => {
               : undefined
             : undefined,
         };
+        analysisStatusOverridesRef.current.set(dreamId, 'done');
 
         // Persist locally and best-effort sync to Supabase. updateDream intentionally falls back
         // to the offline queue for most errors, so we force a sync attempt right after.
         await updateDream(next);
         await syncPendingMutations();
+        analysisStatusOverridesRef.current.delete(dreamId);
 
         if (isMockMode) {
           await markMockAnalysis({ id: dreamId });
@@ -884,6 +890,7 @@ export const useDreamJournal = () => {
         emitProgress(AnalysisStep.COMPLETE);
         return next;
       } catch (error) {
+        analysisStatusOverridesRef.current.set(dreamId, 'failed');
         const failedDream: DreamAnalysis = {
           ...currentDreamState,
           analysisStatus: 'failed',

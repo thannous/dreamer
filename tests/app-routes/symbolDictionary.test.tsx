@@ -193,6 +193,7 @@ const MOCK_SYMBOLS = [
 jest.mock('@/services/symbolDictionaryService', () => ({
   getAllSymbols: () => MOCK_SYMBOLS,
   getCategoryList: () => ['nature', 'animals', 'body'],
+  getPopularSymbols: () => MOCK_SYMBOLS.slice(0, 3),
   getSymbolsByCategory: (cat: string) => MOCK_SYMBOLS.filter((s) => s.category === cat),
   searchSymbols: (query: string) =>
     MOCK_SYMBOLS.filter((s) =>
@@ -200,6 +201,7 @@ jest.mock('@/services/symbolDictionaryService', () => ({
     ),
   getCategoryName: (cat: string) => cat.charAt(0).toUpperCase() + cat.slice(1),
   getCategoryIcon: () => 'leaf.fill',
+  getSymbolIcon: () => 'moon.fill',
 }));
 
 // ── Import screen after all mocks ───────────────────────────────────────────
