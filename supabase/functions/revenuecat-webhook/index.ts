@@ -732,7 +732,16 @@ serve(async (req: Request) => {
         ? payload.event.entitlement_id.trim()
         : null);
     const snapshot = customerV2
-      ? buildSubscriptionSnapshotFromCustomer(customerV2, nowMs, entitlementLookupById ?? undefined)
+      ? (
+          buildSubscriptionSnapshotFromCustomer(customerV2, nowMs, entitlementLookupById ?? undefined) ??
+          buildSubscriptionSnapshotFromTier({
+            tier: normalizedNewTier,
+            isActive: normalizedNewTier === 'plus',
+            productId,
+            entitlementId: mappedEntitlementId,
+            revenueCatCustomerId: appUserIdUsed,
+          })
+        )
       : buildSubscriptionSnapshotFromTier({
           tier: normalizedNewTier,
           isActive: normalizedNewTier === 'plus',

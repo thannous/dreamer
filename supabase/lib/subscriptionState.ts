@@ -86,8 +86,22 @@ export function buildSubscriptionSnapshotFromCustomer(
   customer: RevenueCatV2CustomerResponse | null,
   nowMs: number = Date.now(),
   entitlementLookupById?: RevenueCatEntitlementLookupById
-): SubscriptionSnapshot {
+): SubscriptionSnapshot | null {
+  if (!customer) {
+    return {
+      tier: 'free',
+      isActive: false,
+      productId: null,
+      entitlementId: null,
+      revenueCatCustomerId: null,
+    };
+  }
+
   const inferredTier = inferTierFromCustomer(customer, nowMs, entitlementLookupById);
+  if (inferredTier === null) {
+    return null;
+  }
+
   const activeEntitlement = getFirstActiveEntitlement(customer, nowMs);
   const mappedEntitlementId = activeEntitlement?.entitlement_id
     ? mapEntitlementKeys([activeEntitlement.entitlement_id], entitlementLookupById)[0] ?? activeEntitlement.entitlement_id
