@@ -27,7 +27,33 @@
         "analysis_status",
         "analysis_request_id",
         "exploration_started_at",
-        "client_request_id"
+        "client_request_id",
+        "has_person",
+        "has_animal"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "ai_jobs",
+      "requiredColumns": [
+        "id",
+        "user_id",
+        "guest_fingerprint",
+        "dream_id",
+        "job_type",
+        "status",
+        "request_payload",
+        "result_payload",
+        "error_code",
+        "error_message",
+        "attempt_count",
+        "max_attempts",
+        "client_request_id",
+        "quota_claimed",
+        "quota_claimed_at",
+        "created_at",
+        "started_at",
+        "finished_at"
       ]
     },
     {
@@ -81,6 +107,12 @@
       "schema": "public",
       "name": "increment_guest_quota",
       "identityArguments": "p_fingerprint text, p_quota_type text, p_limit integer",
+      "result": "json"
+    },
+    {
+      "schema": "public",
+      "name": "release_guest_quota_claim",
+      "identityArguments": "p_fingerprint text, p_quota_type text",
       "result": "json"
     },
     {
@@ -161,6 +193,36 @@
     }
   ],
   "requiredIndexes": [
+    {
+      "schema": "public",
+      "table": "ai_jobs",
+      "name": "idx_ai_jobs_type_actor_request",
+      "unique": true,
+      "definitionIncludes": [
+        "coalesce((user_id)::text, guest_fingerprint)",
+        "client_request_id"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "ai_jobs",
+      "name": "idx_ai_jobs_status_created_at",
+      "unique": false,
+      "columns": [
+        "status",
+        "created_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "ai_jobs",
+      "name": "idx_ai_jobs_actor_created_at",
+      "unique": false,
+      "definitionIncludes": [
+        "coalesce((user_id)::text, guest_fingerprint)",
+        "created_at DESC"
+      ]
+    },
     {
       "schema": "public",
       "table": "dreams",
@@ -347,6 +409,12 @@
       "expect": {
         "quota_limit": null
       }
+    }
+  ],
+  "requiredBehaviorChecks": [
+    {
+      "type": "guest_quota_image_support",
+      "target": "public guest quota RPC image support"
     }
   ]
 }

@@ -15,10 +15,11 @@ Supabase Edge Functions
 DB Contract Readiness
 - The checked-in contract lives at `supabase/db-contract.manifest.json`.
 - It covers the runtime objects the mobile app currently depends on for dream sync and quota flows:
-  - tables and key columns for `public.dreams`, `public.quota_limits`, `public.quota_usage`, and `public.guest_usage`
-  - RPCs used by guest flows: `get_guest_quota_status`, `increment_guest_quota`, `mark_fingerprint_upgraded`
+  - tables and key columns for `public.dreams`, `public.ai_jobs`, `public.quota_limits`, `public.quota_usage`, and `public.guest_usage`
+  - RPCs used by guest flows and async image jobs: `get_guest_quota_status`, `increment_guest_quota`, `release_guest_quota_claim`, and `mark_fingerprint_upgraded`
   - quota trigger functions and `public.dreams` triggers that enforce monthly limits and per-dream chat limits
-  - critical uniqueness/index assumptions and seeded monthly `quota_limits` rows for `guest`, `free`, `plus`, and `premium`
+  - critical uniqueness/index assumptions for dream sync and async image-job deduplication, plus seeded monthly `quota_limits` rows for `guest`, `free`, `plus`, and `premium`
+  - guest image quota behavior checks, so stale RPC implementations that omit `image_count` or fail to claim/release image quota now fail readiness
 - Run the readiness check against a database with:
   - `npm run db:contract:check -- --local` after `npx supabase start`
   - or `SUPABASE_DB_URL=postgresql://... npm run db:contract:check`

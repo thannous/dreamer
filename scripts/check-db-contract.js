@@ -1,4 +1,5 @@
 'use strict';
+/* global __dirname */
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -190,6 +191,7 @@ async function fetchIndexes(client, requiredIndexes) {
         tbl.relname as table_name,
         idx.relname as index_name,
         index_meta.indisunique as is_unique,
+        pg_get_indexdef(index_meta.indexrelid) as index_definition,
         coalesce(
           array_agg(att.attname order by ord.ordinality)
             filter (where att.attname is not null),
@@ -203,7 +205,7 @@ async function fetchIndexes(client, requiredIndexes) {
       left join pg_attribute att on att.attrelid = tbl.oid and att.attnum = ord.attnum
       where ns.nspname = any($1::text[])
         and tbl.relname = any($2::text[])
-      group by ns.nspname, tbl.relname, idx.relname, index_meta.indisunique
+      group by ns.nspname, tbl.relname, idx.relname, index_meta.indisunique, index_meta.indexrelid
     `,
     [schemas, tableNames]
   );
@@ -216,6 +218,7 @@ async function fetchIndexes(client, requiredIndexes) {
       table: row.table_name,
       name: row.index_name,
       unique: row.is_unique,
+      definition: row.index_definition ?? '',
       columns: row.index_columns,
     });
   });
@@ -277,12 +280,151 @@ function matchesExpectedSeedRow(actualRow, expectedRow) {
     Object.entries(expect).every(([column, value]) => actualRow[column] === value);
 }
 
-function toSortedArray(values) {
-  return [...values].sort((left, right) => left.localeCompare(right));
-}
-
 function normalizeArray(values) {
   return Array.isArray(values) ? values : [];
+}
+
+function normalizeObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
+function requireFiniteNumber(value, label) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new Error(`${label} must be a finite number`);
+  }
+  return value;
+}
+
+function requireBoolean(value, label) {
+  if (typeof value !== 'boolean') {
+    throw new Error(`${label} must be a boolean`);
+  }
+  return value;
+}
+
+function formatFailure(error) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+async function queryFunctionJsonResult(client, sql, params) {
+  const { rows } = await client.query(sql, params);
+  return normalizeObject(rows[0]?.result);
+}
+
+async function runGuestQuotaImageSupportBehaviorCheck(client) {
+  const fingerprint = `db-contract-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  await client.query('BEGIN');
+  try {
+    const initialStatus = await queryFunctionJsonResult(
+      client,
+      'select public.get_guest_quota_status($1::text) as result',
+      [fingerprint]
+    );
+
+    requireFiniteNumber(initialStatus.analysis_count, 'get_guest_quota_status().analysis_count');
+    requireFiniteNumber(initialStatus.exploration_count, 'get_guest_quota_status().exploration_count');
+    if (requireFiniteNumber(initialStatus.image_count, 'get_guest_quota_status().image_count') !== 0) {
+      throw new Error('get_guest_quota_status().image_count must start at 0 for a new fingerprint');
+    }
+    if (requireBoolean(initialStatus.is_upgraded, 'get_guest_quota_status().is_upgraded') !== false) {
+      throw new Error('get_guest_quota_status().is_upgraded must start as false for a new fingerprint');
+    }
+
+    const incrementResult = await queryFunctionJsonResult(
+      client,
+      'select public.increment_guest_quota($1::text, $2::text, $3::integer) as result',
+      [fingerprint, 'image', 1]
+    );
+
+    if (requireBoolean(incrementResult.allowed, 'increment_guest_quota().allowed') !== true) {
+      throw new Error('increment_guest_quota() must allow the first guest image claim');
+    }
+    if (requireFiniteNumber(incrementResult.new_count, 'increment_guest_quota().new_count') !== 1) {
+      throw new Error('increment_guest_quota().new_count must be 1 after the first image claim');
+    }
+    if (requireBoolean(incrementResult.is_upgraded, 'increment_guest_quota().is_upgraded') !== false) {
+      throw new Error('increment_guest_quota().is_upgraded must be false for a new fingerprint');
+    }
+
+    const statusAfterIncrement = await queryFunctionJsonResult(
+      client,
+      'select public.get_guest_quota_status($1::text) as result',
+      [fingerprint]
+    );
+    if (requireFiniteNumber(statusAfterIncrement.image_count, 'post-increment image_count') !== 1) {
+      throw new Error('get_guest_quota_status().image_count must increment after an image claim');
+    }
+
+    const releaseResult = await queryFunctionJsonResult(
+      client,
+      'select public.release_guest_quota_claim($1::text, $2::text) as result',
+      [fingerprint, 'image']
+    );
+
+    if (requireBoolean(releaseResult.released, 'release_guest_quota_claim().released') !== true) {
+      throw new Error('release_guest_quota_claim().released must be true');
+    }
+    if (requireFiniteNumber(releaseResult.new_count, 'release_guest_quota_claim().new_count') !== 0) {
+      throw new Error('release_guest_quota_claim().new_count must return to 0 after release');
+    }
+
+    const statusAfterRelease = await queryFunctionJsonResult(
+      client,
+      'select public.get_guest_quota_status($1::text) as result',
+      [fingerprint]
+    );
+    if (requireFiniteNumber(statusAfterRelease.image_count, 'post-release image_count') !== 0) {
+      throw new Error('get_guest_quota_status().image_count must decrement after release');
+    }
+
+    return {
+      ok: true,
+      details: 'guest quota RPCs support image_count claims and release semantics',
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      details: formatFailure(error),
+    };
+  } finally {
+    await client.query('ROLLBACK');
+  }
+}
+
+async function runBehaviorChecks(client, requiredBehaviorChecks) {
+  const checks = [];
+  const failures = [];
+
+  for (const behaviorCheck of normalizeArray(requiredBehaviorChecks)) {
+    const target = behaviorCheck.target || behaviorCheck.type || 'behavior check';
+    let result;
+
+    switch (behaviorCheck.type) {
+      case 'guest_quota_image_support':
+        result = await runGuestQuotaImageSupportBehaviorCheck(client);
+        break;
+      default:
+        result = {
+          ok: false,
+          details: `unknown behavior check type: ${behaviorCheck.type}`,
+        };
+        break;
+    }
+
+    checks.push({
+      type: 'behavior',
+      target,
+      ok: result.ok,
+      details: result.details,
+    });
+
+    if (!result.ok) {
+      failures.push(`Behavior check failed for ${target}: ${result.details}`);
+    }
+  }
+
+  return { checks, failures };
 }
 
 async function runChecks(options) {
@@ -303,9 +445,10 @@ async function runChecks(options) {
     const triggersByName = await fetchTriggers(client, manifest.requiredTriggers ?? []);
     const indexesByName = await fetchIndexes(client, manifest.requiredIndexes ?? []);
     const seedRowsByTable = await fetchSeedRows(client, manifest.requiredSeedRows ?? []);
+    const behaviorCheckResults = await runBehaviorChecks(client, manifest.requiredBehaviorChecks ?? []);
 
-    const failures = [];
-    const checks = [];
+    const failures = [...behaviorCheckResults.failures];
+    const checks = [...behaviorCheckResults.checks];
 
     normalizeArray(manifest.requiredTables).forEach((table) => {
       const tableKey = `${table.schema}.${table.name}`;
@@ -423,7 +566,7 @@ async function runChecks(options) {
       }
 
       const expectedColumns = normalizeArray(index.columns);
-      if (actual.columns.join(',') !== expectedColumns.join(',')) {
+      if (expectedColumns.length > 0 && actual.columns.join(',') !== expectedColumns.join(',')) {
         failures.push(
           `Index ${indexKey} columns are ${actual.columns.join(', ')}, expected ${expectedColumns.join(', ')}`
         );
@@ -431,11 +574,27 @@ async function runChecks(options) {
         return;
       }
 
+      const missingDefinitionParts = normalizeArray(index.definitionIncludes).filter(
+        (part) => !String(actual.definition).toLowerCase().includes(String(part).toLowerCase())
+      );
+      if (missingDefinitionParts.length > 0) {
+        failures.push(
+          `Index ${indexKey} definition drifted; missing: ${missingDefinitionParts.join(' | ')}`
+        );
+        checks.push({
+          type: 'index',
+          target: indexKey,
+          ok: false,
+          details: actual.definition || `columns=${actual.columns.join(', ')}`,
+        });
+        return;
+      }
+
       checks.push({
         type: 'index',
         target: indexKey,
         ok: true,
-        details: `${actual.unique ? 'unique' : 'non-unique'} on ${actual.columns.join(', ')}`,
+        details: actual.definition || `${actual.unique ? 'unique' : 'non-unique'} on ${actual.columns.join(', ')}`,
       });
     });
 
@@ -532,5 +691,7 @@ module.exports = {
   parseArgs,
   resolveDbUrl,
   runChecks,
+  runBehaviorChecks,
+  runGuestQuotaImageSupportBehaviorCheck,
   sanitizeDbUrl,
 };
