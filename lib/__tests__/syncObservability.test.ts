@@ -55,6 +55,24 @@ describe('syncObservability', () => {
     expect(metrics.oldestPendingAgeMs).toBe(4_000);
   });
 
+  it('treats blocked mutations as outstanding when computing queue age', () => {
+    const { summarizeSyncQueueMetrics } = require('@/lib/syncObservability');
+
+    const metrics = summarizeSyncQueueMetrics(
+      [
+        buildMutation({ id: 'pending-new', createdAt: 4_000, clientUpdatedAt: 4_000, status: 'pending' }),
+        buildMutation({ id: 'blocked-old', createdAt: 1_000, clientUpdatedAt: 1_000, status: 'blocked' }),
+      ],
+      'user:user-1',
+      5_000
+    );
+
+    expect(metrics.pendingCount).toBe(1);
+    expect(metrics.blockedCount).toBe(1);
+    expect(metrics.oldestPendingMutationId).toBe('blocked-old');
+    expect(metrics.oldestPendingAgeMs).toBe(4_000);
+  });
+
   it('alerts when the oldest pending mutation exceeds the age threshold', () => {
     const { reportSyncQueueMetrics, SYNC_PENDING_AGE_ALERT_MS } = require('@/lib/syncObservability');
 
@@ -101,6 +119,50 @@ describe('syncObservability', () => {
       expect.objectContaining({
         reason: 'test_replay_failure_rate',
         threshold: 0.99,
+      })
+    );
+  });
+
+  it('alerts on a bad replay batch even when the aggregate success rate stays healthy', () => {
+    const { recordSyncReplayMetrics, resetSyncObservabilityState } = require('@/lib/syncObservability');
+    resetSyncObservabilityState();
+
+    recordSyncReplayMetrics({
+      attemptedCount: 1_000,
+      ackCount: 1_000,
+      failedCount: 0,
+      conflictCount: 0,
+      durationMs: 42,
+      pendingMutationsAfter: [],
+      reason: 'baseline_batch',
+      userScope: 'user:user-1',
+      now: 10_000,
+    });
+    mockLogger.error.mockClear();
+
+    recordSyncReplayMetrics({
+      attemptedCount: 100,
+      ackCount: 98,
+      failedCount: 2,
+      conflictCount: 0,
+      durationMs: 42,
+      pendingMutationsAfter: [buildMutation({ status: 'failed' })],
+      reason: 'regressed_batch',
+      userScope: 'user:user-1',
+      now: 20_000,
+    });
+
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      expect.stringContaining('replay success rate below threshold'),
+      expect.objectContaining({
+        reason: 'regressed_batch',
+        threshold: 0.99,
+        batch: expect.objectContaining({
+          successRate: 0.98,
+        }),
+        aggregate: expect.objectContaining({
+          successRate: 1098 / 1100,
+        }),
       })
     );
   });

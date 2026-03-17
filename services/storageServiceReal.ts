@@ -1062,8 +1062,70 @@ export async function saveCachedRemoteDreams(
   }
 }
 
+function parsePendingDreamMutationsPayload(
+  payload: string | null,
+  userScope?: string | null
+): DreamMutation[] {
+  if (!payload) {
+    return [];
+  }
+
+  const parsed = JSON.parse(payload) as unknown;
+  if (!Array.isArray(parsed)) {
+    return [];
+  }
+
+  return parsed
+    .map((entry) => {
+      if (
+        typeof entry === 'object' &&
+        entry !== null &&
+        'version' in entry &&
+        (entry as { version?: unknown }).version === 1
+      ) {
+        return entry as DreamMutation;
+      }
+
+      if (!userScope) {
+        return null;
+      }
+
+      return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
+    })
+    .filter((entry): entry is DreamMutation => Boolean(entry));
+}
+
+async function getPendingDreamMutationsBeforeClear(userScope?: string | null): Promise<DreamMutation[]> {
+  const scopedMutations = await getPendingDreamMutations(userScope);
+  if (!userScope) {
+    return scopedMutations;
+  }
+
+  try {
+    const legacyPayload = await getItem(DREAM_MUTATIONS_KEY);
+    const legacyMutations = parsePendingDreamMutationsPayload(legacyPayload, userScope);
+    if (legacyMutations.length === 0) {
+      return scopedMutations;
+    }
+
+    const deduped = new Map<string, DreamMutation>();
+    for (const mutation of scopedMutations) {
+      deduped.set(mutation.id, mutation);
+    }
+    for (const mutation of legacyMutations) {
+      deduped.set(mutation.id, mutation);
+    }
+    return Array.from(deduped.values());
+  } catch (error) {
+    if (__DEV__) {
+      console.error('Failed to inspect legacy pending dream mutations before clearing:', error);
+    }
+    return scopedMutations;
+  }
+}
+
 export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
-  const pendingMutations = await getPendingDreamMutations(userScope);
+  const pendingMutations = await getPendingDreamMutationsBeforeClear(userScope);
   if (pendingMutations.length > 0) {
     reportSyncQueueClearedWithPending({
       mutations: pendingMutations,
@@ -1082,30 +1144,7 @@ export async function clearRemoteDreamStorage(userScope?: string | null): Promis
 export async function getPendingDreamMutations(userScope?: string | null): Promise<DreamMutation[]> {
   try {
     const pending = await readScopedJson(DREAM_MUTATIONS_KEY, userScope);
-    if (pending) {
-      const parsed = JSON.parse(pending) as unknown;
-      if (!Array.isArray(parsed)) {
-        return [];
-      }
-      return parsed
-        .map((entry) => {
-          if (
-            typeof entry === 'object' &&
-            entry !== null &&
-            'version' in entry &&
-            (entry as { version?: unknown }).version === 1
-          ) {
-            return entry as DreamMutation;
-          }
-
-          if (!userScope) {
-            return null;
-          }
-
-          return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
-        })
-        .filter((entry): entry is DreamMutation => Boolean(entry));
-    }
+    return parsePendingDreamMutationsPayload(pending, userScope);
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to read pending dream mutations:', error);

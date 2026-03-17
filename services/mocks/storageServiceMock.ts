@@ -378,21 +378,65 @@ export async function saveCachedRemoteDreams(
   }
 }
 
-export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
-  const scopedPending = mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)];
-  if (scopedPending) {
-    try {
-      const parsed = JSON.parse(scopedPending) as DreamMutation[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        reportSyncQueueClearedWithPending({
-          mutations: parsed,
-          reason: 'clear_remote_dream_storage_mock',
-          userScope,
-        });
+function parsePendingDreamMutationsPayload(
+  payload: string | undefined,
+  userScope?: string | null
+): DreamMutation[] {
+  if (!payload) {
+    return [];
+  }
+
+  const parsed = JSON.parse(payload) as unknown;
+  if (!Array.isArray(parsed)) {
+    return [];
+  }
+
+  return parsed
+    .map((entry) => {
+      if (
+        typeof entry === 'object' &&
+        entry !== null &&
+        'version' in entry &&
+        (entry as { version?: unknown }).version === 1
+      ) {
+        return entry as DreamMutation;
       }
-    } catch (error) {
-      console.error('[MOCK STORAGE] Failed to inspect pending mutations before clearing:', error);
+
+      if (!userScope) {
+        return null;
+      }
+
+      return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
+    })
+    .filter((entry): entry is DreamMutation => Boolean(entry));
+}
+
+export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
+  try {
+    const scopedMutations = parsePendingDreamMutationsPayload(
+      mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)],
+      userScope
+    );
+    const legacyMutations =
+      userScope != null
+        ? parsePendingDreamMutationsPayload(mockStorage[DREAM_MUTATIONS_KEY], userScope)
+        : [];
+    const deduped = new Map<string, DreamMutation>();
+    for (const mutation of scopedMutations) {
+      deduped.set(mutation.id, mutation);
     }
+    for (const mutation of legacyMutations) {
+      deduped.set(mutation.id, mutation);
+    }
+    if (deduped.size > 0) {
+      reportSyncQueueClearedWithPending({
+        mutations: Array.from(deduped.values()),
+        reason: 'clear_remote_dream_storage_mock',
+        userScope,
+      });
+    }
+  } catch (error) {
+    console.error('[MOCK STORAGE] Failed to inspect pending mutations before clearing:', error);
   }
 
   delete mockStorage[scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)];
@@ -407,32 +451,7 @@ export async function getPendingDreamMutations(userScope?: string | null): Promi
   console.log('[MOCK STORAGE] getPendingDreamMutations called');
   try {
     const scopedKey = scopedStorageKey(DREAM_MUTATIONS_KEY, userScope);
-    const pending = mockStorage[scopedKey];
-    if (pending) {
-      const parsed = JSON.parse(pending) as unknown;
-      if (!Array.isArray(parsed)) {
-        return [];
-      }
-      const migrated = parsed
-        .map((entry) => {
-          if (
-            typeof entry === 'object' &&
-            entry !== null &&
-            'version' in entry &&
-            (entry as { version?: unknown }).version === 1
-          ) {
-            return entry as DreamMutation;
-          }
-
-          if (!userScope) {
-            return null;
-          }
-
-          return migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
-        })
-        .filter((entry): entry is DreamMutation => Boolean(entry));
-      return migrated;
-    }
+    return parsePendingDreamMutationsPayload(mockStorage[scopedKey], userScope);
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to read pending dream mutations:', error);
   }
