@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
+import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
@@ -256,6 +257,7 @@ export default function SettingsScreen() {
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <ScreenContainer>
+            <MockNavigationRail />
             <View style={sectionsContainerStyle}>
 
             {/* ─── Account Section ─── */}

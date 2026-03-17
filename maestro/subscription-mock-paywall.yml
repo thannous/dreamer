@@ -2,6 +2,8 @@ appId: com.tanuki75.noctalia
 ---
 # Validate subscription paywall flow in mock mode
 
+- runFlow: subflows/open-mock-app.yml
+
 # If paywall already open, close it to reset state
 - runFlow:
       when:
@@ -12,18 +14,9 @@ appId: com.tanuki75.noctalia
                 id: btn.paywall.close
           - waitForAnimationToEnd
 
-# Navigate to tab bar if starting on recording screen
-- runFlow:
-      when:
-          visible:
-              id: btn.navigateJournal
-      commands:
-          - tapOn:
-                id: btn.navigateJournal
-          - waitForAnimationToEnd
-
 # Go to Settings tab
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+      id: btn.mockNav.settings
 - waitForAnimationToEnd
 
 # If already signed in, sign out to reset to free state

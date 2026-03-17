@@ -11,7 +11,7 @@ appId: com.tanuki75.noctalia
           id: btn.navigateJournal
       - waitForAnimationToEnd
 - tapOn:
-    text: "(Settings|Param.tres|Ajustes)"
+    id: btn.mockNav.settings
 - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
@@ -28,7 +28,7 @@ appId: com.tanuki75.noctalia
 - assertVisible: "Dream analyses: 2 / 3|Analyses de rêves: 2 / 3|Análisis de sueños: 2 / 3"
 - assertVisible: "Dream explorations: 2 / 2|Explorations de rêves: 2 / 2|Exploraciones de sueños: 2 / 2"
 - tapOn:
-    text: "(Stats|Estad.sticas)"
+    id: btn.mockNav.stats
 - waitForAnimationToEnd
 - swipe:
     start: 50%, 78%

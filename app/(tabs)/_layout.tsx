@@ -60,7 +60,11 @@ export default function TabLayout() {
   if (Platform.OS !== 'web') {
     return (
       <NativeTabs tintColor={colors.accent}>
-        <NativeTabs.Trigger name="index" hidden={returningGuestBlocked}>
+        <NativeTabs.Trigger
+          name="index"
+          hidden={returningGuestBlocked}
+          unstable_nativeProps={{ tabBarItemTestID: TID.Tab.Home }}
+        >
           <NativeTabs.Trigger.Label>{t('nav.home')}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf={{ default: 'house', selected: 'house.fill' }}
@@ -70,21 +74,32 @@ export default function TabLayout() {
             }}
           />
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="journal" hidden={returningGuestBlocked}>
+        <NativeTabs.Trigger
+          name="journal"
+          hidden={returningGuestBlocked}
+          unstable_nativeProps={{ tabBarItemTestID: TID.Tab.Journal }}
+        >
           <NativeTabs.Trigger.Label>{t('nav.journal')}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf={{ default: 'book', selected: 'book.fill' }}
             src={<NativeTabs.Trigger.VectorIcon family={MaterialIcons} name="menu-book" />}
           />
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="statistics" hidden={returningGuestBlocked}>
+        <NativeTabs.Trigger
+          name="statistics"
+          hidden={returningGuestBlocked}
+          unstable_nativeProps={{ tabBarItemTestID: TID.Tab.Stats }}
+        >
           <NativeTabs.Trigger.Label>{t('nav.stats')}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }}
             src={<NativeTabs.Trigger.VectorIcon family={MaterialIcons} name="bar-chart" />}
           />
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="settings">
+        <NativeTabs.Trigger
+          name="settings"
+          unstable_nativeProps={{ tabBarItemTestID: TID.Tab.Settings }}
+        >
           <NativeTabs.Trigger.Label>{t('nav.settings')}</NativeTabs.Trigger.Label>
           <NativeTabs.Trigger.Icon
             sf="gear"

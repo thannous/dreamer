@@ -12,11 +12,14 @@ appId: com.tanuki75.noctalia
       - waitForAnimationToEnd
 - runFlow:
     when:
-      visible: "(Journal|Diario)"
+      visible:
+        id: btn.mockNav.journal
     commands:
-      - tapOn: "(Journal|Diario)"
+      - tapOn:
+          id: btn.mockNav.journal
       - waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+    id: btn.mockNav.settings
 - scrollUntilVisible:
     element:
       id: btn.mockProfile.existing
@@ -24,5 +27,6 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn: "(Journal|Diario)"
+- tapOn:
+    id: btn.mockNav.journal
 - assertVisible: "The Infinite Library"

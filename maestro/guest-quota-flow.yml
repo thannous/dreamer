@@ -98,10 +98,12 @@ appId: com.tanuki75.noctalia
     id: btn.dreamCategory.symbols
 - assertVisible:
     id: chat.screen.blocked
-- tapOn: "(Journal|Diario)"
+- tapOn:
+    id: btn.mockNav.journal
 
 # Create account to migrate guest quotas
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+    id: btn.mockNav.settings
 - tapOn:
     id: input.auth.email
 - inputText: "mock.guest@dreamer.test"
@@ -124,7 +126,8 @@ appId: com.tanuki75.noctalia
 - assertVisible: "2 / 2"
 
 # Authenticated analyses (one more to reach three total)
-- tapOn: "(Home|Accueil|Inicio)"
+- tapOn:
+    id: btn.mockNav.home
 - runFlow: subflows/ensure-recording-text.yml
 - tapOn:
     id: input.dreamTranscript
@@ -139,7 +142,8 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
-- tapOn: "(Home|Accueil|Inicio)"
+- tapOn:
+    id: btn.mockNav.home
 
 # Auth Dream 2 - analysis quota exhausted (3/3)
 - runFlow: subflows/ensure-recording-text.yml
@@ -161,5 +165,6 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.quotaLimit.journal
 - waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+    id: btn.mockNav.settings
 - assertVisible: "3 / 3"

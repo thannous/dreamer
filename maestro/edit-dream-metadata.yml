@@ -1,16 +1,15 @@
 appId: com.tanuki75.noctalia
 ---
-# Navigate to Journal
-- tapOn:
-      id: btn.navigateJournal
-- waitForAnimationToEnd
+- runFlow: subflows/open-mock-app.yml
 
 # Switch to existing user profile to load predefined dreams
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+      id: btn.mockNav.settings
 - tapOn:
       id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn: "(Journal|Diario)"
+- tapOn:
+      id: btn.mockNav.journal
 - waitForAnimationToEnd
 
 # Open a specific dream (assuming mock data "The Infinite Library")
