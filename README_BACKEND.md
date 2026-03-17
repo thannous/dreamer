@@ -12,6 +12,18 @@ Supabase Edge Functions
   - Requests will go to `/api/analyzeDream`, `/api/generateImage`, etc.
   - See `supabase/functions/api/index.ts` and `doc_web_interne/docs/supabase-setup.md`.
 
+DB Contract Readiness
+- The checked-in contract lives at `supabase/db-contract.manifest.json`.
+- It covers the runtime objects the mobile app currently depends on for dream sync and quota flows:
+  - tables and key columns for `public.dreams`, `public.quota_limits`, `public.quota_usage`, and `public.guest_usage`
+  - RPCs used by guest flows: `get_guest_quota_status`, `increment_guest_quota`, `mark_fingerprint_upgraded`
+  - quota trigger functions and `public.dreams` triggers that enforce monthly limits and per-dream chat limits
+  - critical uniqueness/index assumptions and seeded monthly `quota_limits` rows for `guest`, `free`, `plus`, and `premium`
+- Run the readiness check against a database with:
+  - `npm run db:contract:check -- --local` after `npx supabase start`
+  - or `SUPABASE_DB_URL=postgresql://... npm run db:contract:check`
+- A failure means the live database has drifted from the checked-in contract: an expected table, column, function, trigger, index, or seeded quota row is missing or no longer matches.
+
 Expected endpoints
 - POST `/transcribe`
   - Request JSON: `{ "contentBase64": string, "encoding": "LINEAR16"|"AMR_WB"|"WEBM_OPUS", "languageCode": string, "sampleRateHertz"?: number }`
