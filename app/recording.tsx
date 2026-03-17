@@ -1,4 +1,5 @@
 import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
+import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
@@ -1004,6 +1005,7 @@ export default function RecordingScreen() {
             keyboardShouldPersistTaps="handled"
             testID={TID.Screen.Recording}
           >
+            <MockNavigationRail />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
                 {inputMode === 'voice' ? (

@@ -15,6 +15,7 @@ import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { PageHeader } from '@/components/inspiration/PageHeader';
 import { SectionHeading } from '@/components/inspiration/SectionHeading';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import type { LabelLineConfig, pieDataItem } from 'react-native-gifted-charts';
@@ -429,6 +430,7 @@ export default function StatisticsScreen() {
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
           <ScreenContainer>
+            <MockNavigationRail />
             <View style={[styles.scrollContent, isDesktopLayout && styles.scrollContentDesktop]}>
             {/* Overview Cards */}
             <View style={[styles.section, isDesktopLayout && styles.sectionOverviewDesktop]}>

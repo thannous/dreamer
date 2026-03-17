@@ -1,6 +1,7 @@
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
+import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
@@ -482,6 +483,7 @@ export default function JournalListScreen() {
         <View
           style={filtersContainerStyle}
         >
+          <MockNavigationRail />
           {/* SearchBar */}
           <SearchBar
             testID={TID.Component.SearchBar}

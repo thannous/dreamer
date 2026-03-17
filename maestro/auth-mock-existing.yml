@@ -2,10 +2,12 @@
 appId: com.tanuki75.noctalia
 clearState: true
 ---
-- launchApp
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- runFlow: subflows/open-mock-app.yml
+- tapOn:
+      id: btn.mockNav.settings
 - tapOn:
       id: btn.mockProfile.existing
 - waitForAnimationToEnd
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn: "(Journal|Diario)"
+- tapOn:
+      id: btn.mockNav.journal

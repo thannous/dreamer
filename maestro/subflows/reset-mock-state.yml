@@ -8,7 +8,8 @@ appId: com.tanuki75.noctalia
       - tapOn:
           id: btn.navigateJournal
       - waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+    id: btn.mockNav.settings
 - scrollUntilVisible:
     element:
       id: btn.mock.resetState
@@ -16,7 +17,8 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.mock.resetState
 - waitForAnimationToEnd
-- tapOn: "(Home|Accueil|Inicio)"
+- tapOn:
+    id: btn.mockNav.home
 - extendedWaitUntil:
     visible:
       id: screen.recording

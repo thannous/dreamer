@@ -5,7 +5,8 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.navigateJournal
 - waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+    id: btn.mockNav.settings
 - scrollUntilVisible:
     element:
       id: btn.mockProfile.existing
@@ -13,7 +14,8 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.mockProfile.existing
 - assertVisible: "mock.existing@dreamer.app"
-- tapOn: "(Home|Accueil|Inicio)"
+- tapOn:
+    id: btn.mockNav.home
 
 # Analysis 3/3
 - runFlow: subflows/ensure-recording-text.yml
@@ -30,7 +32,8 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 - assertVisible:
     id: btn.exploreDream
-- tapOn: "(Home|Accueil|Inicio)"
+- tapOn:
+    id: btn.mockNav.home
 
 # Next analysis should be blocked
 - runFlow: subflows/ensure-recording-text.yml
@@ -52,5 +55,6 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.quotaLimit.journal
 - waitForAnimationToEnd
-- tapOn: "(Settings|Param.tres|Ajustes)"
+- tapOn:
+    id: btn.mockNav.settings
 - assertVisible: "3 / 3"

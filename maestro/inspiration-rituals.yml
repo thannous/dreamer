@@ -1,16 +1,9 @@
 # Ensure the bundle identifier matches the local dev build.
 appId: com.tanuki75.noctalia
 ---
-- launchApp
-- runFlow:
-      when:
-          visible:
-              id: btn.navigateJournal
-      commands:
-          - tapOn:
-                id: btn.navigateJournal
-          - waitForAnimationToEnd
-- tapOn: "(Home|Accueil|Inicio)"
+- runFlow: subflows/open-mock-app.yml
+- tapOn:
+      id: btn.mockNav.home
 - assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
 
 # Switch to the memory / recall ritual and verify one of its steps

@@ -2,8 +2,6 @@ appId: com.tanuki75.noctalia
 env:
   DEV_CLIENT_URL: exp+noctalia://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8081
 ---
-- launchApp:
-    clearState: true
 - openLink: ${DEV_CLIENT_URL}
 - waitForAnimationToEnd
 - runFlow:
@@ -27,6 +25,22 @@ env:
       visible: "Reload"
     commands:
       - pressKey: back
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Minimize"
+    commands:
+      - tapOn:
+          text: "Minimize"
+          retryTapIfNoChange: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -74,6 +88,22 @@ env:
             - waitForAnimationToEnd
       - runFlow:
           when:
+            visible: "Dismiss"
+          commands:
+            - tapOn:
+                text: "Dismiss"
+                retryTapIfNoChange: true
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Minimize"
+          commands:
+            - tapOn:
+                text: "Minimize"
+                retryTapIfNoChange: true
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
             visible: "Loading from 10.0.2.2:8081"
           commands:
             - extendedWaitUntil:
@@ -99,6 +129,22 @@ env:
       visible: "Reload"
     commands:
       - pressKey: back
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          retryTapIfNoChange: true
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: "Minimize"
+    commands:
+      - tapOn:
+          text: "Minimize"
+          retryTapIfNoChange: true
       - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
