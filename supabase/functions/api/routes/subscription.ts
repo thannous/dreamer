@@ -26,7 +26,13 @@ import {
 type SubscriptionStateRow = {
   user_id: string;
   updated_at: string;
+  source_updated_at: string | null;
+  tier: 'free' | 'plus';
+  is_active: boolean;
+  version: number;
 };
+
+const SNAPSHOT_ORDERING_FLOOR_ISO = '1970-01-01T00:00:00.000Z';
 
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
@@ -77,6 +83,47 @@ async function fetchCustomerSnapshot(
   return buildSubscriptionSnapshotFromCustomer(customer, Date.now(), entitlementLookup);
 }
 
+function resolveSnapshotOrderingTimestamp(existingState?: SubscriptionStateRow | null): string {
+  const sourceUpdatedAt =
+    typeof existingState?.source_updated_at === 'string' ? existingState.source_updated_at.trim() : '';
+  return sourceUpdatedAt || SNAPSHOT_ORDERING_FLOOR_ISO;
+}
+
+function buildUnknownEntitlementSkipResult(
+  existingState?: SubscriptionStateRow | null
+): ApplySubscriptionStateUpdateResult {
+  const tier = existingState?.tier === 'plus' ? 'plus' : 'free';
+
+  return {
+    ok: true,
+    skipped: true,
+    updated: false,
+    changed: false,
+    outcome: 'unknown_entitlement',
+    tier,
+    isActive: tier === 'plus' && existingState?.is_active === true,
+    version: typeof existingState?.version === 'number' ? existingState.version : 0,
+    sourceUpdatedAt: existingState?.source_updated_at ?? null,
+  };
+}
+
+async function fetchCurrentSubscriptionState(
+  adminClient: ReturnType<typeof createAdminClient>,
+  userId: string
+): Promise<SubscriptionStateRow | null> {
+  const { data, error } = await adminClient
+    .from('subscription_state')
+    .select('user_id,updated_at,source_updated_at,tier,is_active,version')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as SubscriptionStateRow | null) ?? null;
+}
+
 function mapRevenueCatErrorToResponse(error: unknown, route: string, userId?: string): Response {
   const isRevenueCatHttpError = error instanceof RevenueCatHttpError;
   const status = isRevenueCatHttpError ? error.status : null;
@@ -112,18 +159,21 @@ async function applySnapshotForUser(
     userId: string;
     source: string;
     sourceEventId?: string | null;
-    sourceUpdatedAt: string;
     requestedSource?: string | null;
     entitlementLookup?: Record<string, string>;
+    existingState?: SubscriptionStateRow | null;
   }
 ): Promise<ApplySubscriptionStateUpdateResult> {
   const snapshot = await fetchCustomerSnapshot(input.userId, input.entitlementLookup);
+  if (!snapshot) {
+    return buildUnknownEntitlementSkipResult(input.existingState);
+  }
 
   return applySubscriptionStateUpdate(adminClient, {
     userId: input.userId,
     source: input.source,
     sourceEventId: input.sourceEventId,
-    sourceUpdatedAt: input.sourceUpdatedAt,
+    sourceUpdatedAt: resolveSnapshotOrderingTimestamp(input.existingState),
     tier: snapshot.tier,
     isActive: snapshot.isActive,
     productId: snapshot.productId,
@@ -172,12 +222,13 @@ export async function handleSubscriptionRefresh(ctx: ApiContext): Promise<Respon
   }
 
   try {
+    const existingState = await fetchCurrentSubscriptionState(adminClient, user.id);
     const result = await applySnapshotForUser(adminClient, {
       userId: user.id,
       source: 'subscription_refresh',
-      sourceUpdatedAt: new Date().toISOString(),
       requestedSource,
       entitlementLookup,
+      existingState,
     });
 
     return jsonResponse({
@@ -285,7 +336,7 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
     const ids = data.map((row) => row.id);
     const { data: stateRows, error: stateError } = await adminClient
       .from('subscription_state')
-      .select('user_id,updated_at')
+      .select('user_id,updated_at,source_updated_at,tier,is_active,version')
       .in('user_id', ids);
 
     if (stateError) {
@@ -311,8 +362,8 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
         const result = await applySnapshotForUser(adminClient, {
           userId: row.id,
           source: 'revenuecat_reconcile',
-          sourceUpdatedAt: new Date().toISOString(),
           entitlementLookup,
+          existingState,
         });
 
         if (result.updated) {

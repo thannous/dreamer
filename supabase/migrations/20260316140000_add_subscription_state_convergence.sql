@@ -75,10 +75,17 @@ security definer
 set search_path = public
 as $$
 declare
+  caller_role text := coalesce((select auth.role()), '');
+  caller_user_id uuid := auth.uid();
   resolved_tier text;
 begin
   if p_user_id is null then
     return 'free';
+  end if;
+
+  if caller_role = 'authenticated' and caller_user_id is distinct from p_user_id then
+    raise exception 'insufficient_privilege'
+      using errcode = '42501', message = 'Cannot read another user''s subscription tier';
   end if;
 
   select
@@ -93,6 +100,9 @@ begin
   return coalesce(resolved_tier, 'free');
 end;
 $$;
+
+revoke execute on function public.get_effective_subscription_tier(uuid) from public, anon;
+grant execute on function public.get_effective_subscription_tier(uuid) to authenticated, service_role;
 
 create or replace function public.apply_subscription_state_update(
   p_user_id uuid,
@@ -112,6 +122,7 @@ security definer
 set search_path = public, auth
 as $$
 declare
+  caller_role text := coalesce((select auth.role()), '');
   current_state public.subscription_state%rowtype;
   current_meta jsonb := '{}'::jsonb;
   effective_tier text;
@@ -126,6 +137,11 @@ declare
 begin
   if p_user_id is null then
     raise exception 'p_user_id is required';
+  end if;
+
+  if caller_role not in ('service_role', 'supabase_admin') then
+    raise exception 'insufficient_privilege'
+      using errcode = '42501', message = 'apply_subscription_state_update requires service role access';
   end if;
 
   effective_tier :=
@@ -320,6 +336,11 @@ begin
   return response;
 end;
 $$;
+
+revoke execute on function public.apply_subscription_state_update(uuid, text, boolean, text, text, text, text, timestamptz, text, jsonb)
+  from public, anon, authenticated;
+grant execute on function public.apply_subscription_state_update(uuid, text, boolean, text, text, text, text, timestamptz, text, jsonb)
+  to service_role;
 
 insert into public.subscription_state (
   user_id,
