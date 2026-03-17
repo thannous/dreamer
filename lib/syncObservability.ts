@@ -78,7 +78,9 @@ const getMutationTimestamp = (mutation: DreamMutation): number =>
   mutation.clientUpdatedAt || mutation.createdAt || 0;
 
 const isPendingForAge = (mutation: DreamMutation): boolean =>
-  (mutation.status ?? 'pending') === 'pending' || (mutation.status ?? 'pending') === 'failed';
+  (mutation.status ?? 'pending') === 'pending' ||
+  (mutation.status ?? 'pending') === 'failed' ||
+  mutation.status === 'blocked';
 
 export const summarizeSyncQueueMetrics = (
   mutations: DreamMutation[],
@@ -189,7 +191,7 @@ export const recordSyncReplayMetrics = ({
     queueMetrics,
   });
 
-  if (attemptedCount > 0 && aggregate.successRate < SYNC_SUCCESS_RATE_ALERT_THRESHOLD) {
+  if (attemptedCount > 0 && batch.successRate < SYNC_SUCCESS_RATE_ALERT_THRESHOLD) {
     logger.error(`${SYNC_LOG_PREFIX} replay success rate below threshold`, {
       reason,
       threshold: SYNC_SUCCESS_RATE_ALERT_THRESHOLD,

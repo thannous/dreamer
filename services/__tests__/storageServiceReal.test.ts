@@ -929,4 +929,43 @@ describe('storageServiceReal', () => {
       (globalThis as any).indexedDB = originalIndexedDB;
     }
   });
+
+  it('alerts before clearing when legacy global pending mutations still exist', async () => {
+    const originalIndexedDB = (globalThis as any).indexedDB;
+    try {
+      delete (globalThis as any).indexedDB;
+
+      localStorage.setItem(
+        DREAM_MUTATIONS_KEY,
+        JSON.stringify([
+          {
+            id: 'legacy-mutation-1',
+            type: 'update',
+            dreamId: 1,
+            createdAt: 1000,
+          },
+        ]),
+      );
+
+      const storage = require('../storageServiceReal');
+      await storage.clearRemoteDreamStorage('user:user-1');
+
+      expect(mockReportSyncQueueClearedWithPending).toHaveBeenCalledWith(
+        expect.objectContaining({
+          reason: 'clear_remote_dream_storage',
+          userScope: 'user:user-1',
+          mutations: [
+            expect.objectContaining({
+              id: 'legacy-mutation-1',
+              userScope: 'user:user-1',
+              status: 'pending',
+            }),
+          ],
+        })
+      );
+      expect(localStorage.getItem(DREAM_MUTATIONS_KEY)).toBeNull();
+    } finally {
+      (globalThis as any).indexedDB = originalIndexedDB;
+    }
+  });
 });
