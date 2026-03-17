@@ -94,7 +94,13 @@
       "Bash(git stash pop:*)",
       "Bash(xargs:*)",
       "Bash(node:*)",
-      "Bash(npm run docs:build)"
+      "Bash(npm run docs:build)",
+      "Skill(agent-browser)",
+      "Bash(agent-browser screenshot:*)",
+      "Bash(agent-browser open:*)",
+      "Bash(git -C /home/tchau@france.groupe.intra/WebstormProjects/dreamer checkout -- docs/en/guides/dream-symbols-dictionary.html docs/fr/guides/dictionnaire-symboles-reves.html)",
+      "Bash(agent-browser eval:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": []
