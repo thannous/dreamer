@@ -1,0 +1,352 @@
+{
+  "version": 1,
+  "name": "dreamer-db-contract",
+  "description": "Minimal runtime contract required for mobile dream sync and quota enforcement to work against Supabase.",
+  "requiredTables": [
+    {
+      "schema": "public",
+      "name": "dreams",
+      "requiredColumns": [
+        "id",
+        "user_id",
+        "created_at",
+        "updated_at",
+        "client_updated_at",
+        "revision_id",
+        "transcript",
+        "title",
+        "interpretation",
+        "shareable_quote",
+        "image_url",
+        "chat_history",
+        "theme",
+        "dream_type",
+        "is_favorite",
+        "is_analyzed",
+        "analyzed_at",
+        "analysis_status",
+        "analysis_request_id",
+        "exploration_started_at",
+        "client_request_id"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "quota_limits",
+      "requiredColumns": [
+        "tier",
+        "period",
+        "quota_type",
+        "quota_limit",
+        "updated_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "quota_usage",
+      "requiredColumns": [
+        "id",
+        "user_id",
+        "dream_id",
+        "quota_type",
+        "occurred_at",
+        "metadata"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "guest_usage",
+      "requiredColumns": [
+        "id",
+        "fingerprint_hash",
+        "analysis_count",
+        "exploration_count",
+        "image_count",
+        "is_upgraded",
+        "upgraded_user_id",
+        "upgraded_at",
+        "first_seen_at",
+        "last_seen_at"
+      ]
+    }
+  ],
+  "requiredFunctions": [
+    {
+      "schema": "public",
+      "name": "get_guest_quota_status",
+      "identityArguments": "p_fingerprint text",
+      "result": "json"
+    },
+    {
+      "schema": "public",
+      "name": "increment_guest_quota",
+      "identityArguments": "p_fingerprint text, p_quota_type text, p_limit integer",
+      "result": "json"
+    },
+    {
+      "schema": "public",
+      "name": "mark_fingerprint_upgraded",
+      "identityArguments": "p_fingerprint text, p_user_id uuid",
+      "result": "boolean"
+    },
+    {
+      "schema": "public",
+      "name": "set_exploration_started_at_from_chat_history",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "log_user_quota_event",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "enforce_authenticated_monthly_quota",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "enforce_quota_for_chat",
+      "identityArguments": "",
+      "result": "trigger"
+    }
+  ],
+  "requiredTriggers": [
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_00_set_exploration_started_at_from_chat_history",
+      "functionSchema": "public",
+      "functionName": "set_exploration_started_at_from_chat_history",
+      "definitionIncludes": [
+        "BEFORE INSERT OR UPDATE",
+        "EXECUTE FUNCTION public.set_exploration_started_at_from_chat_history()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_10_enforce_authenticated_monthly_quota",
+      "functionSchema": "public",
+      "functionName": "enforce_authenticated_monthly_quota",
+      "definitionIncludes": [
+        "BEFORE INSERT OR UPDATE",
+        "EXECUTE FUNCTION public.enforce_authenticated_monthly_quota()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_log_quota_event_on_dreams",
+      "functionSchema": "public",
+      "functionName": "log_user_quota_event",
+      "definitionIncludes": [
+        "AFTER INSERT OR UPDATE",
+        "EXECUTE FUNCTION public.log_user_quota_event()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_enforce_quota_for_chat",
+      "functionSchema": "public",
+      "functionName": "enforce_quota_for_chat",
+      "definitionIncludes": [
+        "BEFORE UPDATE OF chat_history",
+        "EXECUTE FUNCTION public.enforce_quota_for_chat()"
+      ]
+    }
+  ],
+  "requiredIndexes": [
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "idx_dreams_user_client_request",
+      "unique": true,
+      "columns": [
+        "user_id",
+        "client_request_id"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "name": "quota_limits_pk",
+      "unique": true,
+      "columns": [
+        "tier",
+        "period",
+        "quota_type"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "quota_usage",
+      "name": "idx_quota_usage_user_type_time",
+      "unique": false,
+      "columns": [
+        "user_id",
+        "quota_type",
+        "occurred_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "guest_usage",
+      "name": "guest_usage_fingerprint_hash_key",
+      "unique": true,
+      "columns": [
+        "fingerprint_hash"
+      ]
+    }
+  ],
+  "requiredSeedRows": [
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "guest",
+        "period": "monthly",
+        "quota_type": "analysis"
+      },
+      "expect": {
+        "quota_limit": 2
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "guest",
+        "period": "monthly",
+        "quota_type": "exploration"
+      },
+      "expect": {
+        "quota_limit": 2
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "guest",
+        "period": "monthly",
+        "quota_type": "messages_per_dream"
+      },
+      "expect": {
+        "quota_limit": 10
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "free",
+        "period": "monthly",
+        "quota_type": "analysis"
+      },
+      "expect": {
+        "quota_limit": 3
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "free",
+        "period": "monthly",
+        "quota_type": "exploration"
+      },
+      "expect": {
+        "quota_limit": 2
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "free",
+        "period": "monthly",
+        "quota_type": "messages_per_dream"
+      },
+      "expect": {
+        "quota_limit": 20
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "plus",
+        "period": "monthly",
+        "quota_type": "analysis"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "plus",
+        "period": "monthly",
+        "quota_type": "exploration"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "plus",
+        "period": "monthly",
+        "quota_type": "messages_per_dream"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "premium",
+        "period": "monthly",
+        "quota_type": "analysis"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "premium",
+        "period": "monthly",
+        "quota_type": "exploration"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    },
+    {
+      "schema": "public",
+      "table": "quota_limits",
+      "match": {
+        "tier": "premium",
+        "period": "monthly",
+        "quota_type": "messages_per_dream"
+      },
+      "expect": {
+        "quota_limit": null
+      }
+    }
+  ]
+}
