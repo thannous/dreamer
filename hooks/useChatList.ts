@@ -39,15 +39,19 @@ const LONG_MESSAGE_THRESHOLD = 280;
 
 export function useMessageListProps() {
   const { composerHeight } = useComposerHeightContext();
+  const { isKeyboardVisible, keyboardHeight } = useKeyboardStateContext();
   const { listRef, containerHeight, contentHeight, scrollY, isNearBottom, hasNewMessages } = useMessageListContext();
   const insets = useSafeAreaInsets();
 
   // Animated props for ScrollView/LegendList contentInset
-  // This keeps the composer floating on top while allowing scroll
-  // Note: Keyboard height is now handled by KeyboardAwareChatContent wrapper
+  // This keeps the composer floating on top while allowing scroll.
+  // On Android, also reserve keyboard space so the latest messages stay above the IME
+  // without animating layout on the outer container.
   const animatedProps = useAnimatedProps(() => {
-    // Add extra space so the last message isn't tucked under the composer/footer
-    const bottomInset = composerHeight.value.value + insets.bottom + 40;
+    const keyboardInset = Platform.OS === 'android' && isKeyboardVisible.get()
+      ? keyboardHeight.get()
+      : 0;
+    const bottomInset = composerHeight.get() + insets.bottom + 40 + keyboardInset;
     return {
       contentInset: {
         bottom: Platform.OS === 'ios' ? bottomInset : 0,
@@ -67,20 +71,20 @@ export function useMessageListProps() {
   // Animated scroll handler - also tracks isNearBottom
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
-      scrollY.value.value = event.contentOffset.y;
-      containerHeight.value.value = event.layoutMeasurement.height;
+      scrollY.set(event.contentOffset.y);
+      containerHeight.set(event.layoutMeasurement.height);
 
       // Calculate distance from bottom and update isNearBottom
-      const distanceFromEnd = contentHeight.value.value - event.contentOffset.y - event.layoutMeasurement.height;
+      const distanceFromEnd = contentHeight.get() - event.contentOffset.y - event.layoutMeasurement.height;
       const nearBottom = distanceFromEnd < NEAR_BOTTOM_THRESHOLD;
 
-      if (isNearBottom.value.value !== nearBottom) {
-        isNearBottom.value.value = nearBottom;
+      if (isNearBottom.get() !== nearBottom) {
+        isNearBottom.set(nearBottom);
       }
 
       // Clear hasNewMessages when user scrolls to bottom
-      if (nearBottom && hasNewMessages.value.value) {
-        hasNewMessages.value.value = false;
+      if (nearBottom && hasNewMessages.get()) {
+        hasNewMessages.set(false);
       }
     },
   });
@@ -174,7 +178,7 @@ export function useKeyboardAwareMessageList() {
 
   // Auto-scroll to end when keyboard shows, but ONLY if user is near bottom
   useAnimatedReaction(
-    () => ({ visible: isKeyboardVisible.value.value, nearBottom: isNearBottom.value.value }),
+    () => ({ visible: isKeyboardVisible.get(), nearBottom: isNearBottom.get() }),
     (current, previous) => {
       const justBecameVisible = current.visible && !previous?.visible;
       // Only auto-scroll if keyboard just appeared AND user was near bottom
@@ -209,7 +213,7 @@ export function useScrollWhenComposerSizeUpdates() {
   }, [listRef, scrollToEnd, isNearBottom]);
 
   useAnimatedReaction(
-    () => composerHeight.value.value,
+    () => composerHeight.get(),
     (height, prevHeight) => {
       if (height > 0 && height !== prevHeight) {
         runOnJS(autoscrollToEnd)();
@@ -339,7 +343,7 @@ export function useHasNewMessages() {
   const [hasNew, setHasNew] = useState(false);
 
   useAnimatedReaction(
-    () => hasNewMessages.value.value,
+    () => hasNewMessages.get(),
     (current, prev) => {
       if (current !== prev) {
         runOnJS(setHasNew)(current);
@@ -373,7 +377,7 @@ export function useScrollToBottomButton() {
   );
 
   useAnimatedReaction(
-    () => isNearBottom.value.value,
+    () => isNearBottom.get(),
     (current, prev) => {
       if (current !== prev) {
         runOnJS(setIsNearBottomSnapshot)(current);

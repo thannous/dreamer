@@ -33,7 +33,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 type CategoryType = DreamChatCategory;
@@ -1001,19 +1002,17 @@ export default function DreamChatScreen() {
             <IconSymbol name="chevron.left" size={22} color={colors.textPrimary} />
           </Pressable>
 
-          <KeyboardAwareChatContent>
-            <MessagesList
-              messages={messages}
-              isLoading={isLoading}
-              loadingText={t('dream_chat.thinking')}
-              ListHeaderComponent={headerComponent}
-              style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
-              contentContainerStyle={styles.messagesContent}
-              onRetryMessage={handleRetryMessage}
-              retryA11yLabel={t('analysis.retry')}
-              onScrollStateChange={setIsScrolling}
-            />
-          </KeyboardAwareChatContent>
+          <MessagesList
+            messages={messages}
+            isLoading={isLoading}
+            loadingText={t('dream_chat.thinking')}
+            ListHeaderComponent={headerComponent}
+            style={[styles.messagesContainer, { backgroundColor: colors.backgroundDark }]}
+            contentContainerStyle={styles.messagesContent}
+            onRetryMessage={handleRetryMessage}
+            retryA11yLabel={t('analysis.retry')}
+            onScrollStateChange={setIsScrolling}
+          />
 
           <Composer.Root
             value={inputText}
@@ -1073,12 +1072,10 @@ function ComposerFooter({
 
   const footerAnimatedStyle = useAnimatedStyle(() => {
     // Hide when keyboard is visible OR when not visible
-    const hidden = isKeyboardVisible.value.value || !visible;
+    const hidden = isKeyboardVisible.get() || !visible;
     return {
       opacity: withTiming(hidden ? 0 : 1, { duration: 150 }),
       transform: [{ translateY: withTiming(hidden ? 8 : 0, { duration: 150 }) }],
-      // Collapse height when not visible to prevent layout issues
-      maxHeight: withTiming(visible ? 100 : 0, { duration: 150 }),
     };
   }, [isKeyboardVisible, visible]);
 
@@ -1090,7 +1087,7 @@ function ComposerFooter({
 
   return (
     <Animated.View
-      style={[styles.footerWrapper, footerAnimatedStyle]}
+      style={[styles.footerWrapper, !visible && styles.footerWrapperHidden, footerAnimatedStyle]}
       pointerEvents={visible ? 'box-none' : 'none'}
     >
       {!messageLimitReached && (
@@ -1125,7 +1122,7 @@ function ComposerFooter({
             </Text>
           </View>
           <View>
-            <Pressable
+            <GesturePressable
               onPress={() => router.push('/(tabs)/settings')}
               style={styles.limitCtaButton}
             >
@@ -1134,38 +1131,10 @@ function ComposerFooter({
                   ? t('dream_chat.limit_cta_guest')
                   : t('dream_chat.limit_cta_free')}
               </Text>
-            </Pressable>
+            </GesturePressable>
           </View>
         </View>
       )}
-    </Animated.View>
-  );
-}
-
-/**
- * KeyboardAwareChatContent - Adjusts container height when keyboard is visible
- * This ensures the message list shrinks and messages remain visible above the keyboard
- */
-type KeyboardAwareChatContentProps = {
-  children: React.ReactNode;
-};
-
-function KeyboardAwareChatContent({ children }: KeyboardAwareChatContentProps) {
-  const { keyboardHeight, isKeyboardVisible } = useKeyboardStateContext();
-
-  const animatedStyle = useAnimatedStyle(() => {
-    const kbHeight = Platform.OS === 'android' && isKeyboardVisible.value.value
-      ? keyboardHeight.value.value
-      : 0;
-    return {
-      flex: 1,
-      marginBottom: withTiming(kbHeight, { duration: 150 }),
-    };
-  }, [keyboardHeight, isKeyboardVisible]);
-
-  return (
-    <Animated.View style={animatedStyle}>
-      {children}
     </Animated.View>
   );
 }
@@ -1397,5 +1366,8 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 6,
     alignItems: 'center',
+  },
+  footerWrapperHidden: {
+    display: 'none',
   },
 });

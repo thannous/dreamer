@@ -162,7 +162,7 @@ function Root({
     // Update shared context value on UI thread
     runOnUI(() => {
       'worklet';
-      composerHeight.value.value = height;
+      composerHeight.set(height);
     })();
   }, [composerHeight, localHeight]);
 
@@ -376,7 +376,7 @@ function Root({
 
   // Lift the composer above the keyboard on Android (KeyboardStickyView handles iOS)
   const animatedWrapperStyle = useAnimatedStyle(() => {
-    const offset = Platform.OS === 'android' ? keyboardHeight.value.value : 0;
+    const offset = Platform.OS === 'android' ? keyboardHeight.get() : 0;
     return {
       transform: [{ translateY: withTiming(-offset, { duration: 160 }) }],
     };

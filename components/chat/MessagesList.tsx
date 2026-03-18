@@ -427,19 +427,18 @@ function AnimatedDot({ delay, color }: { delay: number; color: string }) {
 export function LoadingIndicator({ text, visible = true }: { text?: string; visible?: boolean }) {
   const { colors } = useTheme();
 
-  // Animate visibility to prevent Android crash when removing animated views
+  // Keep visibility work on transform/opacity and skip layout animation altogether.
   const animatedVisibilityStyle = useAnimatedStyle(() => {
     return {
       opacity: withTiming(visible ? 1 : 0, { duration: 150 }),
-      // Use maxHeight instead of height to allow content to size naturally when visible
-      maxHeight: withTiming(visible ? 100 : 0, { duration: 150 }),
+      transform: [{ translateY: withTiming(visible ? 0 : 8, { duration: 150 }) }],
     };
   }, [visible]);
 
   return (
     <Animated.View
       testID={TID.Chat.Loading}
-      style={[loadingStyles.wrapper, animatedVisibilityStyle]}
+      style={[loadingStyles.wrapper, !visible && loadingStyles.wrapperHidden, animatedVisibilityStyle]}
       pointerEvents={visible ? 'auto' : 'none'}
     >
       <View style={loadingStyles.container}>
@@ -466,6 +465,9 @@ export function LoadingIndicator({ text, visible = true }: { text?: string; visi
 const loadingStyles = StyleSheet.create({
   wrapper: {
     overflow: 'hidden',
+  },
+  wrapperHidden: {
+    display: 'none',
   },
   container: {
     flexDirection: 'row',
@@ -505,7 +507,7 @@ const loadingStyles = StyleSheet.create({
 
 /**
  * BottomSpacer - Adds space at the bottom of the list for the floating composer
- * Keyboard height is now handled by KeyboardAwareChatContent wrapper
+ * Keyboard height is handled by animated list insets in useChatList
  */
 function BottomSpacer() {
   const { composerHeight } = useComposerHeightContext();
@@ -513,7 +515,7 @@ function BottomSpacer() {
 
   const animatedStyle = useAnimatedStyle(() => {
     // Space for composer + safe area + extra padding
-    const height = composerHeight.value.value + insets.bottom + 40;
+    const height = composerHeight.get() + insets.bottom + 40;
     return { height };
   }, [insets.bottom]);
 
@@ -574,13 +576,8 @@ export function MessagesList({
     return null;
   }, [messages]);
 
-  // Sync shared value to JS state to avoid reading .value during render
-  useEffect(() => {
-    setIsStreamingSnapshot(isStreaming.value.value);
-  }, [isStreaming]);
-
   useAnimatedReaction(
-    () => isStreaming.value.value,
+    () => isStreaming.get(),
     (current, prev) => {
       if (current === prev) return;
       runOnJS(setIsStreamingSnapshot)(current);
@@ -597,11 +594,6 @@ export function MessagesList({
     }
   }, [didInitialHydrate, hasAnimatedMessages, messages]);
 
-  // Sync isNearBottom to JS so we can disable expensive behaviors when the user is reading history.
-  useEffect(() => {
-    setIsNearBottomSnapshot(isNearBottom.value.value);
-  }, [isNearBottom]);
-
   const setScrolling = useCallback((next: boolean) => {
     if (scrollStateRef.current === next) return;
     scrollStateRef.current = next;
@@ -610,7 +602,7 @@ export function MessagesList({
   }, [onScrollStateChange]);
 
   useAnimatedReaction(
-    () => isNearBottom.value.value,
+    () => isNearBottom.get(),
     (current, prev) => {
       if (current === prev) return;
       runOnJS(setIsNearBottomSnapshot)(current);
