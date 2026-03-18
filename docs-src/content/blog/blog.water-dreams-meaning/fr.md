@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fondateur &amp; Directeur de la publication · <a href="/fr/a-propos" class="text-dream-salmon hover:underline">Notre processus éditorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">En bref</h2>
+    <p class="text-purple-100/80 leading-relaxed">L'eau est l'un des symboles oniriques les plus universels, apparaissant dans environ 15 à 20 % de tous les rêves rapportés. En psychologie du rêve, l'eau représente généralement les émotions, l'inconscient et les transitions de vie. L'état de l'eau révèle votre paysage émotionnel : une eau calme suggère la paix intérieure, une eau agitée indique des turbulences émotionnelles, la noyade reflète un sentiment d'être submergé, et les inondations symbolisent des émotions hors de contrôle. Les interprétations culturelles varient, mais le lien émotionnel avec l'eau dans les rêves est remarquablement constant à travers les traditions.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Surface d'eau calme reflétant les émotions du subconscient" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-eau.webp" srcset="../../img/blog/reves-eau-480w.webp 480w, ../../img/blog/reves-eau-800w.webp 800w, ../../img/blog/reves-eau-1200w.webp 1200w" width="1200">
 </figure>
@@ -355,17 +360,16 @@
 </details>
 </div>
 </section>
-<!-- Sources / Trust (TI-97) -->
+<!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) — Dream analysis and classification (review, PubMed)</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20620045/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2010) — Frequency of typical dream thèmes (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/12927121/" rel="nofollow noopener noreferrer" target="_blank">Nielsen et al. (2003) — Typical dreams and common thèmes (PubMed)</a></li>
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net: G. William Domhoff (dream research overview)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29316455/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2018): Dream Content Analysis</a></li>
+<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stages of sleep</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 26 décembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 6 janvier 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articles Connexes</h2>

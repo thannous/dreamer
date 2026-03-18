@@ -316,3 +316,10 @@
 </section>
 <!-- Blog Related End -->
 </article>
+
+<!-- Health Disclaimer (TI-97 E-E-A-T) -->
+<aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
+<p class="text-sm text-purple-200/70">
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional de la salud cualificado.
+</p>
+</aside>

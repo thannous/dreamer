@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Founder &amp; Publication Director · <a href="/en/about" class="text-dream-salmon hover:underline">About our editorial process</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
+    <p class="text-purple-100/80 leading-relaxed">Nightmares are vivid, distressing dreams that wake you up with strong negative emotions. They affect 2-8% of adults regularly and up to 50% of children aged 3-6. Unlike night terrors (which occur during deep sleep with no recall), nightmares happen during REM sleep and are clearly remembered. The most effective evidence-based treatment is Image Rehearsal Therapy (IRT): rewrite your nightmare scenario while awake, then mentally rehearse the new version before sleep. Stress management, consistent sleep schedules, and addressing underlying trauma also significantly reduce nightmare frequency.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Dawn light breaking through darkness, symbolizing freedom from nightmares" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
@@ -402,6 +407,18 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Best practice guide for the treatment of nightmare disorder in adults</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Position paper for the treatment of nightmare disorder in adults</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Brain Basics: Understanding Sleep</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: January 6, 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

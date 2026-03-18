@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fundador y Director de publicación · <a href="/es/sobre" class="text-dream-salmon hover:underline">Nuestro proceso editorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rapida</h2>
+    <p class="text-purple-100/80 leading-relaxed">Los suenos de embarazo se encuentran entre los temas oniricos mas comunes y ocurren independientemente del genero o del estado real de embarazo. En psicologia del sueno, el embarazo simboliza creatividad, nuevos comienzos y crecimiento personal. Para quienes estan realmente embarazadas, los cambios hormonales y las alteraciones del sueno aumentan la intensidad y la frecuencia de los suenos. Los escenarios mas habituales incluyen dar a luz (nuevos proyectos o ideas que emergen), estar embarazada inesperadamente (ansiedad ante el cambio) o que otra persona este embarazada (cualidades que se desarrollan en esa persona o en uno mismo).</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Luz suave que simboliza crecimiento y nuevos comienzos" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/suenos-de-embarazo.webp" srcset="../../img/blog/suenos-de-embarazo-480w.webp 480w, ../../img/blog/suenos-de-embarazo-800w.webp 800w, ../../img/blog/suenos-de-embarazo-1200w.webp 1200w" width="1200">
 </figure>

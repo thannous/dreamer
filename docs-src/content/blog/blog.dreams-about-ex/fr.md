@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fondateur &amp; Directeur de la publication · <a href="/fr/a-propos" class="text-dream-salmon hover:underline">Notre processus éditorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">En bref</h2>
+    <p class="text-purple-100/80 leading-relaxed">Les rêves d'un ex-partenaire sont extrêmement courants et signifient rarement que vous souhaitez vous remettre ensemble. La recherche en psychologie des rêves indique que ces rêves reflètent généralement des émotions non résolues, une croissance personnelle en cours ou des schémas que votre esprit traite. Les déclencheurs fréquents incluent les grands changements de vie, les nouvelles relations ou les anniversaires. Plutôt que des désirs littéraux, les rêves d'ex symbolisent souvent des qualités que vous associez à cette personne ou un traitement émotionnel inachevé.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Silhouette contemplative évoquant les souvenirs et les relations passées" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-ex-partenaire.webp" srcset="../../img/blog/reves-ex-partenaire-480w.webp 480w, ../../img/blog/reves-ex-partenaire-800w.webp 800w, ../../img/blog/reves-ex-partenaire-1200w.webp 1200w" width="1200">
 </figure>
@@ -343,17 +348,16 @@
 </details>
 </div>
 </section>
-<!-- Sources / Trust (TI-97) -->
+<!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Pour aller plus loin</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) — Dream analysis and classification (review, PubMed)</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20620045/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2010) — Frequency of typical dream thèmes (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/12927121/" rel="nofollow noopener noreferrer" target="_blank">Nielsen et al. (2003) — Typical dreams and common thèmes (PubMed)</a></li>
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/18220080/" rel="nofollow noopener noreferrer" target="_blank">McNamara (2008) — Nightmares: The science and solution of those frightening visions (PubMed)</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — Dream research overview</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/16796779/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2006) — Factors affecting the continuity between waking and dreaming (PubMed)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 26 décembre 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Mis à jour le 6 janvier 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articles Connexes</h2>

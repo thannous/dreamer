@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Gründer &amp; Verantwortlicher · <a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Unser redaktioneller Prozess</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
+    <p class="text-purple-100/80 leading-relaxed">Träume vom Tod sagen fast nie einen tatsächlichen Tod voraus. In der Traumpsychologie symbolisiert der Tod Transformation, Abschlüsse und Neuanfänge. Über 70 % der Menschen erleben irgendwann Todesträume. Häufige Szenarien sind der Traum vom eigenen Tod (persönliche Transformation), vom Tod eines geliebten Menschen (Verlustangst oder Beziehungsveränderungen) oder vom Tod eines Fremden (unerforschte Aspekte des eigenen Selbst). Diese Träume treten besonders häufig in großen Lebensphasen des Wandels auf.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Nebeliger Wald, der Transformation und die symbolische Bedeutung des Todes darstellt" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/death-dreams-meaning.webp" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
@@ -392,6 +397,17 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — The scientific study of dreams</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Barrett (2001) — The "Committee of Sleep": creativity and dreams (PubMed)</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

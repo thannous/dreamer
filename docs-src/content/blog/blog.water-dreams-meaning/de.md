@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Gründer &amp; Verantwortlicher · <a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Unser redaktioneller Prozess</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
+    <p class="text-purple-100/80 leading-relaxed">Wasser ist eines der universellsten Traumsymbole und taucht in etwa 15-20 % aller berichteten Träume auf. In der Traumpsychologie steht Wasser typischerweise für Emotionen, das Unbewusste und Lebensübergänge. Der Zustand des Wassers offenbart Ihre emotionale Landschaft: Ruhiges Wasser deutet auf inneren Frieden hin, turbulentes Wasser zeigt emotionale Aufruhr an, Ertrinken spiegelt das Gefühl wider, überwältigt zu sein, und Überschwemmungen symbolisieren Emotionen außer Kontrolle. Kulturelle Interpretationen variieren, doch die emotionale Verbindung zu Wasser in Träumen ist über alle Traditionen hinweg bemerkenswert konsistent.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Riesige Meeresoberfläche, die die Tiefen des emotionalen Unterbewusstseins darstellt" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
@@ -413,6 +418,17 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream (Traum)</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net: G. William Domhoff (Überblick zur Traumforschung)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29316455/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2018): Dream Content Analysis (Analyse von Trauminhalten)</a></li>
+<li><a href="https://www.sleepfoundation.org/stages-of-sleep" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Stages of sleep (Schlafphasen)</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
