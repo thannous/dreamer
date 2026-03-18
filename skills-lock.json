@@ -21,6 +21,11 @@
       "sourceType": "github",
       "computedHash": "a0316d2ce842d2dd8067a144e339cf502329dc7701f9f5122268fdb3d4c980f7"
     },
+    "content-strategy": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "e1ab02527702ead90a9e5774cfe1be9a222bdcc6e861f2cae778ad7cc293f225"
+    },
     "copy-editing": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
@@ -54,7 +59,7 @@
     "seo-audit": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
-      "computedHash": "ec3109d213dde1747614ad1112ef0e498e04b24e464538968e156dfbfadb2121"
+      "computedHash": "941f6f4db0f79248f6480256cf1838ed19bc1a0d70f499bb756f491142625cb4"
     },
     "site-architecture": {
       "source": "coreyhaines31/marketingskills",
