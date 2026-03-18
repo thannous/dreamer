@@ -174,8 +174,8 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-6" data-compact-class="py-2">
-        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
+    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
             <a href="/es/" class="flex items-center gap-2">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
                 <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
@@ -184,10 +184,12 @@
                 <a href="/es/#como-funciona" class="hidden lg:inline-flex hover:text-white transition-colors">Cómo funciona</a>
                 <a href="/es/#caracteristicas" class="hidden lg:inline-flex hover:text-white transition-colors">Características</a>
                 <a href="/es/blog/" class="text-dream-salmon transition-colors">Recursos</a>
+                <a href="/es/guides/" class="hover:text-white transition-colors">Guías de sueños</a>
+                <a href="/es/guides/diccionario-simbolos-suenos" class="hover:text-white transition-colors">Diccionario de sueños</a>
             </div>
             <div class="flex items-center gap-3">
                 <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button" class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
+                    <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
                         <span class="hidden sm:inline">ES</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
@@ -292,28 +294,28 @@
 <h2 id="how-trackers-work">C&oacute;mo funcionan los rastreadores de sue&ntilde;o</h2>
 <h3>Aceler&oacute;metros: el movimiento como indicador</h3>
 <p>
-                    El sensor fundamental de cualquier rastreador de sue&ntilde;o wearable es el <strong>aceler&oacute;metro</strong>. Este componente mide el movimiento en tres ejes y permite al dispositivo distinguir entre vigilia y sue&ntilde;o bas&aacute;ndose en un principio simple: cuando dormimos, nos movemos menos. Los algoritmos interpretan la inmovilidad prolongada como sue&ntilde;o y los movimientos frecuentes como vigilia o sue&ntilde;o ligero. Esta t&eacute;cnica, conocida como <em>actigraf&iacute;a</em>, se utiliza en investigaci&oacute;n del sue&ntilde;o desde los a&ntilde;os 70, mucho antes de la era de los relojes inteligentes.
+                    En el n&uacute;cleo de cualquier rastreador de sue&ntilde;o wearable se encuentra el <strong>aceler&oacute;metro</strong>. Este componente mide el movimiento en tres ejes y permite al dispositivo distinguir entre vigilia y sue&ntilde;o bas&aacute;ndose en un principio simple: cuando dormimos, nos movemos menos. Los algoritmos interpretan la inmovilidad prolongada como sue&ntilde;o y los movimientos frecuentes como vigilia o sue&ntilde;o ligero. Conocida como <em>actigraf&iacute;a</em>, esta t&eacute;cnica se utiliza en investigaci&oacute;n del sue&ntilde;o desde los a&ntilde;os 70, mucho antes de la era de los relojes inteligentes.
                 </p>
 <p>
                     Sin embargo, la actigraf&iacute;a tiene una limitaci&oacute;n inherente: confunde la inmovilidad con el sue&ntilde;o. Si est&aacute;s acostado leyendo sin moverte apenas, el dispositivo puede registrarlo como sue&ntilde;o. Y si te mueves mucho durante una fase de sue&ntilde;o REM (que puede incluir peque&ntilde;as contracciones musculares), puede clasificarlo err&oacute;neamente como vigilia. El movimiento es un indicador &uacute;til pero imperfecto del estado de consciencia.
                 </p>
 <h3>Fotopletismograf&iacute;a (PPG): la frecuencia card&iacute;aca como ventana</h3>
 <p>
-                    Los wearables modernos complementan el aceler&oacute;metro con un sensor &oacute;ptico de frecuencia card&iacute;aca llamado <strong>PPG</strong> (fotopletismograf&iacute;a). Un LED verde emite luz a trav&eacute;s de la piel y un fotodetector mide las variaciones en la absorci&oacute;n, que corresponden a las pulsaciones del flujo sangu&iacute;neo. Durante el sue&ntilde;o, la frecuencia card&iacute;aca desciende progresivamente: es m&aacute;s baja en el sue&ntilde;o profundo y ligeramente m&aacute;s alta e irregular durante el REM. La variabilidad de la frecuencia card&iacute;aca (HRV) ofrece informaci&oacute;n adicional sobre la actividad del sistema nervioso aut&oacute;nomo, permitiendo estimar mejor las transiciones entre fases.
+                    Un segundo sensor complementa al aceler&oacute;metro en los wearables modernos: el sensor &oacute;ptico de frecuencia card&iacute;aca <strong>PPG</strong> (fotopletismograf&iacute;a). Un LED verde emite luz a trav&eacute;s de la piel y un fotodetector mide las variaciones en la absorci&oacute;n, correspondientes a las pulsaciones del flujo sangu&iacute;neo. Durante el sue&ntilde;o, la frecuencia card&iacute;aca desciende progresivamente: es m&aacute;s baja en el sue&ntilde;o profundo y ligeramente m&aacute;s alta e irregular durante el REM. La variabilidad de la frecuencia card&iacute;aca (HRV) aporta informaci&oacute;n adicional sobre la actividad del sistema nervioso aut&oacute;nomo, lo que mejora la estimaci&oacute;n de las transiciones entre fases.
                 </p>
 
 <h2 id="what-they-measure">Qu&eacute; miden realmente</h2>
 <h3>Duraci&oacute;n total del sue&ntilde;o</h3>
 <p>
-                    La m&eacute;trica m&aacute;s fiable de un wearable es la duraci&oacute;n total del sue&ntilde;o. Combinando movimiento y frecuencia card&iacute;aca, los dispositivos actuales estiman razonablemente cu&aacute;ndo te dormiste y cu&aacute;ndo despertaste, con un margen de error t&iacute;pico de 15 a 30 minutos. Para la mayor&iacute;a de los usuarios, esta precisi&oacute;n es suficiente para identificar si cumplen con las 7 a 9 horas recomendadas.
+                    Donde mejor funcionan los wearables es en la duraci&oacute;n total del sue&ntilde;o. Combinando movimiento y frecuencia card&iacute;aca, los dispositivos actuales estiman razonablemente cu&aacute;ndo te dormiste y cu&aacute;ndo despertaste, con un margen de error t&iacute;pico de 15 a 30 minutos. Para la mayor&iacute;a de los usuarios, esta precisi&oacute;n basta para verificar si cumplen con las 7 a 9 horas recomendadas.
                 </p>
 <h3>Clasificaci&oacute;n de fases del sue&ntilde;o</h3>
 <p>
-                    La mayor&iacute;a de los wearables presentan un hipnograma, un gr&aacute;fico que muestra las transiciones entre sue&ntilde;o ligero, sue&ntilde;o profundo y <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sue&ntilde;o REM</a>. Sin embargo, esta clasificaci&oacute;n es una <strong>estimaci&oacute;n indirecta</strong>. La polisomnograf&iacute;a cl&iacute;nica, el est&aacute;ndar de referencia, utiliza electroencefalograma (EEG), electrooculograma y electromiograma para medir directamente la actividad cerebral, los movimientos oculares y el tono muscular. Los wearables infieren estas fases a partir de indicadores perif&eacute;ricos (movimiento y pulso), lo que introduce errores sistem&aacute;ticos significativos.
+                    Casi todos los wearables presentan un hipnograma, un gr&aacute;fico que muestra las transiciones entre sue&ntilde;o ligero, sue&ntilde;o profundo y <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sue&ntilde;o REM</a>. Esta clasificaci&oacute;n, sin embargo, es una <strong>estimaci&oacute;n indirecta</strong>. La polisomnograf&iacute;a cl&iacute;nica (el est&aacute;ndar de referencia) mide directamente la actividad cerebral, los movimientos oculares y el tono muscular mediante EEG, electrooculograma y electromiograma. Los wearables, en cambio, infieren las fases a partir de indicadores perif&eacute;ricos (movimiento y pulso), lo que introduce errores sistem&aacute;ticos significativos.
                 </p>
 <h3>M&eacute;tricas complementarias</h3>
 <p>
-                    Adem&aacute;s de la duraci&oacute;n y las fases, muchos dispositivos ofrecen m&eacute;tricas como la saturaci&oacute;n de ox&iacute;geno (SpO2), la temperatura cut&aacute;nea, la frecuencia respiratoria y un &iacute;ndice de &laquo;calidad del sue&ntilde;o&raquo; propietario. Estas m&eacute;tricas pueden ser &uacute;tiles para detectar anomal&iacute;as, por ejemplo, ca&iacute;das de SpO2 que sugieran apnea del sue&ntilde;o, pero sus algoritmos var&iacute;an entre fabricantes y no est&aacute;n estandarizados cl&iacute;nicamente.
+                    M&aacute;s all&aacute; de la duraci&oacute;n y las fases, muchos dispositivos ofrecen m&eacute;tricas como saturaci&oacute;n de ox&iacute;geno (SpO2), temperatura cut&aacute;nea, frecuencia respiratoria y un &iacute;ndice de &laquo;calidad del sue&ntilde;o&raquo; propietario. Pueden ser &uacute;tiles para detectar anomal&iacute;as (por ejemplo, ca&iacute;das de SpO2 que sugieran apnea del sue&ntilde;o), pero sus algoritmos var&iacute;an entre fabricantes y no est&aacute;n estandarizados cl&iacute;nicamente.
                 </p>
 
 <h2 id="accuracy">L&iacute;mites de precisi&oacute;n</h2>
@@ -327,13 +329,13 @@
                 </p>
 <h3>Tendencias frente a datos absolutos</h3>
 <p>
-                    La recomendaci&oacute;n cient&iacute;fica es clara: utilizar los wearables para detectar <strong>tendencias</strong>, no para confiar en valores absolutos. Si tu dispositivo indica una disminuci&oacute;n progresiva del sue&ntilde;o profundo durante varias semanas, es una se&ntilde;al digna de atenci&oacute;n, aunque el valor exacto de cada noche no sea preciso. Las tendencias a lo largo del tiempo son m&aacute;s informativas que cualquier lectura individual.
+                    Desde la ciencia, la recomendaci&oacute;n es clara: usa los wearables para detectar <strong>tendencias</strong>, no para confiar en valores absolutos. Si tu dispositivo indica una disminuci&oacute;n progresiva del sue&ntilde;o profundo durante varias semanas, presta atenci&oacute;n, aunque el valor exacto de cada noche no sea preciso. Las tendencias a lo largo del tiempo aportan m&aacute;s que cualquier lectura individual.
                 </p>
 
 <h2 id="tracker-plus-journal">Rastreador + diario de sue&ntilde;os: la combinaci&oacute;n perfecta</h2>
 <h3>Lo que falta en los datos</h3>
 <p>
-                    La limitaci&oacute;n m&aacute;s profunda de los wearables no es la precisi&oacute;n de sus sensores, sino lo que no pueden medir en absoluto: la <strong>experiencia subjetiva del sue&ntilde;o</strong>. Ning&uacute;n aceler&oacute;metro ni sensor PPG puede registrar el contenido de un sue&ntilde;o, su carga emocional, su viveza o su significado personal. Un wearable puede indicar que pasaste 90 minutos en REM; no puede decirte que so&ntilde;aste con <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a> y que despertaste con una sensaci&oacute;n de calma profunda.
+                    M&aacute;s que la precisi&oacute;n de sus sensores, la limitaci&oacute;n m&aacute;s profunda de los wearables es lo que no pueden medir en absoluto: la <strong>experiencia subjetiva del sue&ntilde;o</strong>. Ning&uacute;n aceler&oacute;metro ni sensor PPG registra el contenido de un sue&ntilde;o, su carga emocional, su viveza o su significado personal. Un wearable puede indicar que pasaste 90 minutos en REM, pero no puede decirte que so&ntilde;aste con <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a> y que despertaste con una sensaci&oacute;n de calma profunda.
                 </p>
 <h3>La sinergia cuantitativa-cualitativa</h3>
 <p>
@@ -343,21 +345,21 @@
 <h2 id="future">El futuro de la tecnolog&iacute;a del sue&ntilde;o</h2>
 <h3>EEG de banda seca</h3>
 <p>
-                    La pr&oacute;xima frontera en monitorizaci&oacute;n del sue&ntilde;o son los sensores EEG miniaturizados integrados en cintas frontales o auriculares. Estos dispositivos miden directamente la actividad el&eacute;ctrica cerebral, eliminando la necesidad de inferir las fases del sue&ntilde;o a partir de indicadores perif&eacute;ricos. Los modelos actuales de grado de investigaci&oacute;n ya muestran una concordancia del 80-85 % con la polisomnograf&iacute;a completa, y los productos de consumo est&aacute;n acort&aacute;ndose la distancia r&aacute;pidamente.
+                    Sensores EEG miniaturizados integrados en cintas frontales o auriculares representan la pr&oacute;xima frontera en monitorizaci&oacute;n del sue&ntilde;o. Estos dispositivos miden directamente la actividad el&eacute;ctrica cerebral, eliminando la necesidad de inferir las fases a partir de indicadores perif&eacute;ricos. Los modelos actuales de grado de investigaci&oacute;n ya muestran una concordancia del 80-85 % con la polisomnograf&iacute;a completa, y los productos de consumo est&aacute;n acortando la distancia r&aacute;pidamente.
                 </p>
 <h3>Inteligencia artificial y modelos predictivos</h3>
 <p>
-                    Los algoritmos de aprendizaje autom&aacute;tico est&aacute;n mejorando la precisi&oacute;n de los wearables existentes al combinar m&uacute;ltiples se&ntilde;ales (movimiento, frecuencia card&iacute;aca, temperatura, SpO2) en modelos predictivos m&aacute;s sofisticados. Algunos fabricantes ya entrenan sus modelos con millones de noches de datos, correlacionando las lecturas de mu&ntilde;eca con validaciones de polisomnograf&iacute;a. La tendencia apunta hacia una precisi&oacute;n que, sin alcanzar el est&aacute;ndar cl&iacute;nico, ser&aacute; suficiente para la detecci&oacute;n temprana de trastornos del sue&ntilde;o.
+                    Algoritmos de aprendizaje autom&aacute;tico est&aacute;n mejorando la precisi&oacute;n de los wearables existentes al combinar m&uacute;ltiples se&ntilde;ales (movimiento, frecuencia card&iacute;aca, temperatura, SpO2) en modelos predictivos m&aacute;s sofisticados. Algunos fabricantes ya entrenan sus modelos con millones de noches de datos, correlacionando lecturas de mu&ntilde;eca con validaciones de polisomnograf&iacute;a. Todo apunta hacia una precisi&oacute;n que, sin alcanzar el est&aacute;ndar cl&iacute;nico, bastar&aacute; para la detecci&oacute;n temprana de trastornos del sue&ntilde;o.
                 </p>
 <h3>Integraci&oacute;n con el diario on&iacute;rico</h3>
 <p>
-                    El futuro m&aacute;s prometedor no est&aacute; en los sensores aislados, sino en la integraci&oacute;n de datos fisiol&oacute;gicos con el registro de los sue&ntilde;os. Aplicaciones que combinan la informaci&oacute;n del wearable con el an&aacute;lisis del contenido on&iacute;rico, usando inteligencia artificial para identificar patrones entre la arquitectura del sue&ntilde;o y la experiencia on&iacute;rica, representan el pr&oacute;ximo salto cualitativo en la comprensi&oacute;n personal del sue&ntilde;o.
+                    No son los sensores aislados lo que marca el futuro m&aacute;s prometedor, sino la integraci&oacute;n de datos fisiol&oacute;gicos con el registro de los sue&ntilde;os. Aplicaciones que combinan informaci&oacute;n del wearable con an&aacute;lisis del contenido on&iacute;rico, usando inteligencia artificial para identificar patrones entre arquitectura del sue&ntilde;o y experiencia on&iacute;rica, representan el pr&oacute;ximo salto cualitativo en la comprensi&oacute;n personal del sue&ntilde;o.
                 </p>
 
 <h2 id="privacy">Consideraciones de privacidad</h2>
 <h3>Datos sensibles en la nube</h3>
 <p>
-                    Los datos de sue&ntilde;o son informaci&oacute;n biom&eacute;trica sensible. La frecuencia card&iacute;aca, los patrones de sue&ntilde;o, la saturaci&oacute;n de ox&iacute;geno y la temperatura corporal revelan informaci&oacute;n sobre tu estado de salud, nivel de estr&eacute;s, posibles patolog&iacute;as e incluso h&aacute;bitos de vida. La mayor&iacute;a de los fabricantes de wearables almacenan estos datos en servidores en la nube, y sus pol&iacute;ticas de privacidad no siempre son transparentes respecto a c&oacute;mo se utilizan, comparten o monetizan estos datos.
+                    Tus datos de sue&ntilde;o son informaci&oacute;n biom&eacute;trica sensible. Frecuencia card&iacute;aca, patrones de sue&ntilde;o, saturaci&oacute;n de ox&iacute;geno y temperatura corporal revelan detalles sobre tu estado de salud, nivel de estr&eacute;s, posibles patolog&iacute;as e incluso h&aacute;bitos de vida. La mayor&iacute;a de los fabricantes de wearables almacenan estos datos en servidores en la nube, y sus pol&iacute;ticas de privacidad no siempre aclaran c&oacute;mo se utilizan, comparten o monetizan.
                 </p>
 <h3>Recomendaciones pr&aacute;cticas</h3>
 <p>
