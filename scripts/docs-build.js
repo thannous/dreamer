@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { spawnSync } = require('child_process');
 const {
   DATA_DIR,
@@ -40,12 +41,31 @@ function generateBuildVersion(date = new Date()) {
   ].join('');
 }
 
+function hashAssetFiles() {
+  const hash = crypto.createHash('sha256');
+  const assetDirs = [
+    path.join(DOCS_DIR, 'css'),
+    path.join(DOCS_DIR, 'js'),
+  ];
+  for (const dir of assetDirs) {
+    if (!fs.existsSync(dir)) continue;
+    const files = fs.readdirSync(dir).sort();
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      if (fs.statSync(filePath).isFile()) {
+        hash.update(fs.readFileSync(filePath));
+      }
+    }
+  }
+  return hash.digest('hex').slice(0, 12);
+}
+
 function resolveBuildVersion() {
   const fromEnv = process.env.DOCS_BUILD_VERSION;
   if (typeof fromEnv === 'string' && fromEnv.trim() !== '') {
     return fromEnv.trim();
   }
-  return generateBuildVersion();
+  return hashAssetFiles();
 }
 
 function runNodeScript(relativeScriptPath, args = []) {
