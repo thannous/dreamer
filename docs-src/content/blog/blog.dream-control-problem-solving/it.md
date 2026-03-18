@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-14",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/ia-analisi-sonno-sogni",
-  "nextPath": "",
+  "nextPath": "/it/blog/ora-legale-sonno-sogni",
   "preloadImage": "/img/blog/controler-reves-resolution-problemes.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Controllare i sogni per risolvere problemi: lo studio che cambia tutto\",\n            \"description\": \"Lo studio Northwestern 2026 dimostra che la TMR può orientare i sogni verso problemi specifici, raddoppiando il tasso di risoluzione. Scopri questa svolta scientifica.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-14\",\n            \"dateModified\": \"2026-03-14\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi\"\n        }",
@@ -294,12 +294,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">IA e analisi del sonno: come l'intelligenza artificiale decifra i tuoi sogni</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Tutte le risorse</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Vedi tutte le risorse</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="ora-legale-sonno-sogni">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>
