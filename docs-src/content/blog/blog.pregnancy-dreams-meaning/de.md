@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Gründer &amp; Verantwortlicher · <a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Unser redaktioneller Prozess</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
+    <p class="text-purple-100/80 leading-relaxed">Schwangerschaftstraume gehoren zu den haufigsten Traumthemen und treten unabhangig von Geschlecht oder tatsachlicher Schwangerschaft auf. In der Traumpsychologie symbolisiert Schwangerschaft Kreativitat, Neuanfange und personliches Wachstum. Bei tatsachlich Schwangeren erhohen hormonelle Veranderungen und Schlafstorungen die Lebhaftigkeit und Haufigkeit der Traume. Haufige Schwangerschaftstraumszenarien umfassen eine Geburt (neue Projekte oder Ideen, die entstehen), unerwartet schwanger zu sein (Angst vor Veranderung) oder dass jemand anderes schwanger ist (Eigenschaften, die sich bei dieser Person oder bei einem selbst entwickeln).</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Sanftes Licht und Symbole für Wachstum und Neuanfang" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
@@ -386,6 +391,17 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterfuhrende Literatur</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/17689042/" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Traumhaufigkeit und -inhalt bei schwangeren und nicht schwangeren Frauen (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/24135556/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Mutterliche Darstellungen in den Traumen schwangerer Frauen (PubMed)</a></li>
+<li><a href="https://www.sleepfoundation.org/pregnancy/dreaming-during-pregnancy" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Traume wahrend der Schwangerschaft</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

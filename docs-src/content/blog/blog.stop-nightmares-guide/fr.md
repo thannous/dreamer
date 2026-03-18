@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fondateur &amp; Directeur de la publication · <a href="/fr/a-propos" class="text-dream-salmon hover:underline">Notre processus éditorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">En bref</h2>
+    <p class="text-purple-100/80 leading-relaxed">Les cauchemars sont des rêves vifs et angoissants qui vous réveillent avec de fortes émotions négatives. Ils touchent régulièrement 2 à 8 % des adultes et jusqu'à 50 % des enfants de 3 à 6 ans. Contrairement aux terreurs nocturnes (qui surviennent pendant le sommeil profond sans souvenir), les cauchemars se produisent pendant le sommeil paradoxal et sont clairement mémorisés. Le traitement le plus efficace fondé sur des preuves est la Thérapie par Répétition d'Images (IRT) : réécrivez le scénario de votre cauchemar en état d'éveil, puis répétez mentalement la nouvelle version avant de dormir. La gestion du stress, des horaires de sommeil réguliers et le traitement des traumatismes sous-jacents réduisent également significativement la fréquence des cauchemars.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guide-cauchemars.webp" srcset="../../img/blog/guide-cauchemars-480w.webp 480w, ../../img/blog/guide-cauchemars-800w.webp 800w, ../../img/blog/guide-cauchemars-1200w.webp 1200w" width="1200">
 </figure>

@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Founder &amp; Publication Director · <a href="/en/about" class="text-dream-salmon hover:underline">About our editorial process</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
+    <p class="text-purple-100/80 leading-relaxed">Dreams about an ex-partner are extremely common and rarely mean you want to get back together. Research in dream psychology suggests these dreams typically reflect unresolved emotions, ongoing personal growth, or patterns your mind is processing. Common triggers include major life changes, new relationships, or anniversaries. Rather than literal desires, ex dreams often symbolize qualities you associate with that person or unfinished emotional processing.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Reflective silhouette symbolizing memories of past relationships" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="1200">
 </figure>
@@ -381,6 +386,17 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Sources / Further Reading</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/18220080/" rel="nofollow noopener noreferrer" target="_blank">McNamara (2008) — Nightmares: The science and solution of those frightening visions (PubMed)</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — Dream research overview</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/16796779/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2006) — Factors affecting the continuity between waking and dreaming (PubMed)</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Last updated: January 6, 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

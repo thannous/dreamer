@@ -371,9 +371,9 @@
 </section>
 <!-- Blog Related End -->
 </article>
-<!-- Health Disclaimer (E-E-A-T) -->
-<aside aria-label="Haftungsausschluss" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
+<!-- Health Disclaimer (TI-97 E-E-A-T) -->
+<aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschlie&szlig;lich zu Informationszwecken und stellt keine medizinische Beratung dar. Konsultieren Sie bei schlafbezogenen Beschwerden einen Arzt.
-                </p>
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+</p>
 </aside>

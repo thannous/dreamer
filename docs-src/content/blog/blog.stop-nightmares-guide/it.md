@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fondatore e Direttore della pubblicazione · <a href="/it/chi-siamo" class="text-dream-salmon hover:underline">Il nostro processo editoriale</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
+    <p class="text-purple-100/80 leading-relaxed">Gli incubi sono sogni vividi e angoscianti che ti svegliano con forti emozioni negative. Colpiscono regolarmente il 2-8 % degli adulti e fino al 50 % dei bambini tra i 3 e i 6 anni. A differenza dei terrori notturni (che si verificano durante il sonno profondo senza ricordo), gli incubi avvengono durante il sonno REM e vengono ricordati chiaramente. Il trattamento più efficace basato sull'evidenza è la Terapia di Ripetizione delle Immagini (IRT): riscrivi lo scenario del tuo incubo da sveglio, poi ripeti mentalmente la nuova versione prima di dormire. La gestione dello stress, orari di sonno regolari e l'elaborazione dei traumi sottostanti riducono significativamente la frequenza degli incubi.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="La luce dell'alba che irrompe nell'oscurità, simboleggia la libertà dagli incubi" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
@@ -402,6 +407,18 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare (incubo)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guida alle migliori pratiche per il trattamento del disturbo da incubi negli adulti</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento di posizione per il trattamento del disturbo da incubi negli adulti</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares (incubi)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Nozioni di base sul cervello: Comprendere il sonno</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 6 gennaio 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

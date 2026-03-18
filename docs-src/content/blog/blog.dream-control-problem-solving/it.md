@@ -330,3 +330,10 @@
 </section>
 <!-- Blog Related End -->
 </article>
+
+<!-- Health Disclaimer (TI-97 E-E-A-T) -->
+<aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
+<p class="text-sm text-purple-200/70">
+<strong class="text-dream-cream">Importante:</strong> Questo articolo è pubblicato a solo scopo informativo e non costituisce un parere medico o psicologico. Se soffri di disturbi del sonno persistenti o problemi di salute mentale, consulta un professionista sanitario qualificato.
+</p>
+</aside>

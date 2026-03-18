@@ -357,3 +357,9 @@
 </section>
 <!-- Blog Related End -->
 </article>
+<!-- Health Disclaimer (TI-97 E-E-A-T) -->
+<aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
+<p class="text-sm text-purple-200/70">
+<strong class="text-dream-cream">Important:</strong> This article is for informational purposes only and does not constitute medical or psychological advice. If you experience persistent sleep disturbances or mental health concerns, please consult a qualified healthcare professional.
+</p>
+</aside>

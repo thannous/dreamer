@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fundador y Director de publicación · <a href="/es/sobre" class="text-dream-salmon hover:underline">Nuestro proceso editorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rapida</h2>
+    <p class="text-purple-100/80 leading-relaxed">Las pesadillas son sueños vívidos y angustiantes que te despiertan con fuertes emociones negativas. Afectan regularmente al 2-8 % de los adultos y hasta al 50 % de los niños de 3 a 6 años. A diferencia de los terrores nocturnos (que ocurren durante el sueño profundo sin recuerdo), las pesadillas suceden durante el sueño REM y se recuerdan claramente. El tratamiento más eficaz basado en evidencia es la Terapia de Ensayo de Imágenes (IRT): reescribe el escenario de tu pesadilla estando despierto y luego ensaya mentalmente la nueva versión antes de dormir. La gestión del estrés, los horarios de sueño regulares y el tratamiento del trauma subyacente también reducen significativamente la frecuencia de las pesadillas.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Atmósfera misteriosa que representa el mundo de las pesadillas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guia-pesadillas.webp" srcset="../../img/blog/guia-pesadillas-480w.webp 480w, ../../img/blog/guia-pesadillas-800w.webp 800w, ../../img/blog/guia-pesadillas-1200w.webp 1200w" width="1200">
 </figure>
@@ -402,6 +407,18 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lectura adicional</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare (pesadilla)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Guía de mejores prácticas para el tratamiento del trastorno de pesadillas en adultos</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Documento de posición para el tratamiento del trastorno de pesadillas en adultos</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares (pesadillas)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Conceptos básicos del cerebro: Comprender el sueño</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Última actualización: 6 de enero de 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

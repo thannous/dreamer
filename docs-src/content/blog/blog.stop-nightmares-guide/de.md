@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Gründer &amp; Verantwortlicher · <a href="/de/ueber-uns" class="text-dream-salmon hover:underline">Unser redaktioneller Prozess</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
+    <p class="text-purple-100/80 leading-relaxed">Albträume sind lebhafte, belastende Träume, die Sie mit starken negativen Emotionen aufwecken. Sie betreffen regelmäßig 2-8 % der Erwachsenen und bis zu 50 % der Kinder im Alter von 3 bis 6 Jahren. Im Gegensatz zu Nachtangst (die während des Tiefschlafs ohne Erinnerung auftritt) geschehen Albträume während des REM-Schlafs und werden klar erinnert. Die wirksamste evidenzbasierte Behandlung ist die Image Rehearsal Therapy (IRT): Schreiben Sie das Szenario Ihres Albtraums im Wachzustand um und üben Sie dann die neue Version mental vor dem Einschlafen. Stressbewältigung, regelmäßige Schlafzeiten und die Aufarbeitung zugrunde liegender Traumata reduzieren die Häufigkeit von Albträumen ebenfalls erheblich.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Morgenlicht bricht durch die Dunkelheit und symbolisiert die Freiheit von Albträumen" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
@@ -402,6 +407,18 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Quellen / Weiterführende Literatur</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/nightmare" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Nightmare (Albtraum)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/20815183/" rel="nofollow noopener noreferrer" target="_blank">Aurora et al. (2010): Leitfaden zur Behandlung der Albtraumstörung bei Erwachsenen</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29991437/" rel="nofollow noopener noreferrer" target="_blank">Morgenthaler et al. (2018): Positionspapier zur Behandlung der Albtraumstörung bei Erwachsenen</a></li>
+<li><a href="https://www.sleepfoundation.org/nightmares" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation: Nightmares (Albträume)</a></li>
+<li><a href="https://www.ninds.nih.gov/health-information/public-education/brain-basics/brain-basics-understanding-sleep" rel="nofollow noopener noreferrer" target="_blank">NINDS: Grundlagen des Gehirns: Schlaf verstehen</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">

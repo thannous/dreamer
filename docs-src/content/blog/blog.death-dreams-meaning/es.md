@@ -80,6 +80,11 @@
         <span class="block text-xs text-purple-300/60">Fundador y Director de publicación · <a href="/es/sobre" class="text-dream-salmon hover:underline">Nuestro proceso editorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rapida</h2>
+    <p class="text-purple-100/80 leading-relaxed">Los sueños sobre la muerte casi nunca predicen una muerte real. En psicología onírica, la muerte simboliza transformación, finales y nuevos comienzos. Más del 70 % de las personas experimentan sueños de muerte en algún momento. Los escenarios más comunes incluyen soñar con tu propia muerte (transformación personal), con la muerte de un ser querido (miedo a la pérdida o cambios en la relación) o con un desconocido que muere (aspectos inexplorados de ti mismo). Estos sueños suelen aparecer durante grandes transiciones vitales.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Bosque con niebla que representa el cambio y el renacimiento" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/suenos-de-muerte.webp" srcset="../../img/blog/suenos-de-muerte-480w.webp 480w, ../../img/blog/suenos-de-muerte-800w.webp 800w, ../../img/blog/suenos-de-muerte-1200w.webp 1200w" width="1200">
 </figure>
@@ -354,17 +359,16 @@
 </details>
 </div>
 </section>
-<!-- Sources / Trust (TI-97) -->
+<!-- Sources / Trust -->
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
-<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Para Ir Más Lejos</h2>
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lectura adicional</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology — Dream</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20416888/" rel="nofollow noopener noreferrer" target="_blank">Nielsen (2010) — Dream analysis and classification (review, PubMed)</a></li>
-<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">DreamResearch.net — G. William Domhoff (dream research overview)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/20620045/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2010) — Frequency of typical dream themes (PubMed)</a></li>
-<li><a href="https://pubmed.ncbi.nlm.nih.gov/12927121/" rel="nofollow noopener noreferrer" target="_blank">Nielsen et al. (2003) — Typical dreams and common themes (PubMed)</a></li>
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — The scientific study of dreams</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/22024432/" rel="nofollow noopener noreferrer" target="_blank">De Gennaro et al. (2012) — Brain mechanisms of dream recall (PubMed)</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="nofollow noopener noreferrer" target="_blank">Barrett (2001) — The "Committee of Sleep": creativity and dreams (PubMed)</a></li>
 </ul>
-<p class="mt-6 text-xs text-purple-200/60">Actualizado el 26 de diciembre de 2025</p>
+<p class="mt-6 text-xs text-purple-200/60">Actualizado el 6 de enero de 2026</p>
 </section>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articulos relacionados</h2>
