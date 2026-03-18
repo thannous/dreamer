@@ -768,6 +768,34 @@
             }
           }
         },
+        "blog.sleep-health-priority": {
+          "id": "blog.sleep-health-priority",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sleep-health-priority",
+          "locales": {
+            "en": {
+              "slug": "sleep-health-priority",
+              "path": "/en/blog/sleep-health-priority"
+            },
+            "fr": {
+              "slug": "sommeil-sante-priorite",
+              "path": "/fr/blog/sommeil-sante-priorite"
+            },
+            "es": {
+              "slug": "sueno-salud-prioridad",
+              "path": "/es/blog/sueno-salud-prioridad"
+            },
+            "de": {
+              "slug": "schlaf-gesundheit-prioritaet",
+              "path": "/de/blog/schlaf-gesundheit-prioritaet"
+            },
+            "it": {
+              "slug": "sonno-salute-priorita",
+              "path": "/it/blog/sonno-salute-priorita"
+            }
+          }
+        },
         "blog.sleep-paralysis-guide": {
           "id": "blog.sleep-paralysis-guide",
           "type": "blogArticle",
@@ -821,6 +849,34 @@
             "it": {
               "slug": "sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo",
               "path": "/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo"
+            }
+          }
+        },
+        "blog.spring-sleep-disruption": {
+          "id": "blog.spring-sleep-disruption",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "spring-sleep-disruption-dreams",
+          "locales": {
+            "en": {
+              "slug": "spring-sleep-disruption-dreams",
+              "path": "/en/blog/spring-sleep-disruption-dreams"
+            },
+            "fr": {
+              "slug": "perturbation-sommeil-printemps-reves",
+              "path": "/fr/blog/perturbation-sommeil-printemps-reves"
+            },
+            "es": {
+              "slug": "alteracion-sueno-primavera-suenos",
+              "path": "/es/blog/alteracion-sueno-primavera-suenos"
+            },
+            "de": {
+              "slug": "fruehling-schlaf-stoerung-traeume",
+              "path": "/de/blog/fruehling-schlaf-stoerung-traeume"
+            },
+            "it": {
+              "slug": "disturbo-sonno-primavera-sogni",
+              "path": "/it/blog/disturbo-sonno-primavera-sogni"
             }
           }
         },
@@ -933,6 +989,34 @@
             "it": {
               "slug": "sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione",
               "path": "/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"
+            }
+          }
+        },
+        "blog.wearable-sleep-trackers": {
+          "id": "blog.wearable-sleep-trackers",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "wearable-sleep-trackers-dreams",
+          "locales": {
+            "en": {
+              "slug": "wearable-sleep-trackers-dreams",
+              "path": "/en/blog/wearable-sleep-trackers-dreams"
+            },
+            "fr": {
+              "slug": "traqueurs-sommeil-connectes-reves",
+              "path": "/fr/blog/traqueurs-sommeil-connectes-reves"
+            },
+            "es": {
+              "slug": "rastreadores-sueno-wearables-suenos",
+              "path": "/es/blog/rastreadores-sueno-wearables-suenos"
+            },
+            "de": {
+              "slug": "schlaf-tracker-wearables-traeume",
+              "path": "/de/blog/schlaf-tracker-wearables-traeume"
+            },
+            "it": {
+              "slug": "tracker-sonno-wearable-sogni",
+              "path": "/it/blog/tracker-sonno-wearable-sogni"
             }
           }
         },

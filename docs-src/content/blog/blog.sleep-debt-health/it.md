@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-17",
   "author": "Thanh Chau",
   "prevPath": "/it/blog/ora-legale-sonno-sogni",
-  "nextPath": "",
+  "nextPath": "/it/blog/disturbo-sonno-primavera-sogni",
   "preloadImage": "/img/blog/dette-sommeil-sante-reves.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni\",\n            \"description\": \"Scopri cos'\\u00e8 il debito di sonno, come si accumula, le conseguenze per la salute e i sogni, e le strategie scientifiche per recuperare un riposo ristoratore.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dette-sommeil-sante-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Fondatore e Direttore della pubblicazione\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-17\",\n            \"dateModified\": \"2026-03-17\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/debito-sonno-salute-sogni\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/it/blog/debito-sonno-salute-sogni\"\n        }",
@@ -280,9 +280,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-center justify-center gap-2 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">
-<i class="w-5 h-5 text-dream-salmon shrink-0" data-lucide="home"></i>
-<span class="font-serif text-lg text-dream-cream">Tutte le risorse</span>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="disturbo-sonno-primavera-sogni">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Disturbo del sonno in primavera: come le giornate pi&ugrave; lunghe alterano il sonno e i sogni</div>
+</div>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

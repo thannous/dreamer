@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-17",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/horario-verano-sueno-suenos",
-  "nextPath": "",
+  "nextPath": "/es/blog/alteracion-sueno-primavera-suenos",
   "preloadImage": "/img/blog/dette-sommeil-sante-reves.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Deuda de sue\\u00f1o y privaci\\u00f3n cr\\u00f3nica: c\\u00f3mo afectan tu salud y tus sue\\u00f1os\",\n            \"description\": \"Descubre qu\\u00e9 es la deuda de sue\\u00f1o, c\\u00f3mo se acumula, sus consecuencias para la salud y los sue\\u00f1os, y las estrategias cient\\u00edficas para recuperar un descanso reparador.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dette-sommeil-sante-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-17\",\n            \"dateModified\": \"2026-03-17\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/deuda-sueno-salud-suenos\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/es/blog/deuda-sueno-salud-suenos\"\n        }",
@@ -280,9 +280,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Cambio de hora y sue&ntilde;o: c&oacute;mo el horario de verano altera tus sue&ntilde;os</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-center justify-center gap-2 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">
-<i class="w-5 h-5 text-dream-salmon shrink-0" data-lucide="home"></i>
-<span class="font-serif text-lg text-dream-cream">Todos los recursos</span>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="alteracion-sueno-primavera-suenos">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Siguiente art&iacute;culo</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Alteraci&oacute;n del sue&ntilde;o en primavera: c&oacute;mo los d&iacute;as m&aacute;s largos cambian tu descanso y tus sue&ntilde;os</div>
+</div>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>
