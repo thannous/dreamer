@@ -90,7 +90,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Risposta rapida</h2>
-<p class="text-purple-100/80 leading-relaxed">La primavera allunga le giornate in modo brusco, sopprimendo la melatonina serale e costringendo il nucleo soprachiasmatico &mdash; il vostro orologio biologico centrale &mdash; a ricalibrarsi. Questo sfasamento genera la stanchezza primaverile (che colpisce 1 europeo su 3), altera l'architettura del sonno e modifica l'intensit&agrave; e il contenuto dei sogni. Gestire l'esposizione alla luce, mantenere un orario costante e registrare i sogni sono le chiavi per attraversare questa transizione senza perdere qualit&agrave; del riposo.</p>
+<p class="text-purple-100/80 leading-relaxed">La primavera allunga le giornate in modo brusco, sopprimendo la melatonina serale e costringendo il nucleo soprachiasmatico, il vostro orologio biologico centrale, a ricalibrarsi. Questo sfasamento genera la stanchezza primaverile (che colpisce 1 europeo su 3), altera l'architettura del sonno e modifica l'intensit&agrave; e il contenuto dei sogni. Gestire l'esposizione alla luce, mantenere un orario costante e registrare i sogni sono le chiavi per attraversare questa transizione senza perdere qualit&agrave; del riposo.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -117,7 +117,7 @@
                     L'equinozio di primavera segna il punto in cui il giorno e la <a class="text-dream-salmon hover:underline" href="../simboli/notte">notte</a> hanno approssimativamente la stessa durata. Ma ci&ograve; che conta veramente non &egrave; quell'istante di equilibrio, bens&igrave; ci&ograve; che viene dopo: un aumento accelerato del fotoperiodo che, alle latitudini medie europee, aggiunge tra 3 e 4 minuti di luce ogni giorno. In appena sei settimane, la giornata si allunga di oltre due ore.
                 </p>
 <p>
-                    Questo cambiamento non &egrave; graduale dal punto di vista del cervello. Il nucleo soprachiasmatico (NSC), l'orologio maestro situato nell'ipotalamo, dipende dal segnale luminoso per sincronizzare i ritmi circadiani con il ciclo di 24 ore. Quando il fotoperiodo cambia con la rapidit&agrave; della transizione primaverile, il NSC deve ricalibrarsi. Riceve informazioni dalle cellule ganglionari retiniche intrinsecamente fotosensibili &mdash; neuroni specializzati che rilevano la luce ambientale e la trasmettono direttamente all'orologio biologico &mdash; e questo processo di adattamento non &egrave; istantaneo.
+                    Questo cambiamento non &egrave; graduale dal punto di vista del cervello. Il nucleo soprachiasmatico (NSC), l'orologio maestro situato nell'ipotalamo, dipende dal segnale luminoso per sincronizzare i ritmi circadiani con il ciclo di 24 ore. Quando il fotoperiodo cambia con la rapidit&agrave; della transizione primaverile, il NSC deve ricalibrarsi. Riceve informazioni dalle cellule ganglionari retiniche intrinsecamente fotosensibili, neuroni specializzati che rilevano la luce ambientale e la trasmettono direttamente all'orologio biologico, e questo processo di adattamento non &egrave; istantaneo.
                 </p>
 <p>
                     La ricerca scientifica mostra che la ricalibrazione del NSC al nuovo fotoperiodo richiede da 1 a 3 settimane. Durante quel periodo di transizione, il corpo funziona con un orologio leggermente sfasato rispetto ai segnali ambientali, generando una forma sottile di jet lag stagionale. Il risultato: difficolt&agrave; ad addormentarsi, risvegli precoci e una stanchezza diurna che sembra contraddire l'energia che la primavera dovrebbe portare.
@@ -126,14 +126,14 @@
 <h2 id="melatonin">Melatonina sotto pressione</h2>
 <h3>La luce serale come perturbatore</h3>
 <p>
-                    La melatonina &mdash; l'ormone che segnala al corpo che &egrave; ora di dormire &mdash; &egrave; estremamente sensibile alla luce. La sua secrezione da parte della ghiandola pineale inizia normalmente 1-2 ore prima dell'orario abituale di addormentamento, quando la luce ambientale diminuisce. In inverno, il tramonto precoce permette a questo processo di avviarsi senza interferenze. Ma in primavera, i tramonti si spostano progressivamente in avanti, e la luce serale penetra nelle ore in cui la melatonina dovrebbe cominciare a salire.
+                    La melatonina, l'ormone che segnala al corpo che &egrave; ora di dormire, &egrave; estremamente sensibile alla luce. La sua secrezione da parte della ghiandola pineale inizia normalmente 1-2 ore prima dell'orario abituale di addormentamento, quando la luce ambientale diminuisce. In inverno, il tramonto precoce permette a questo processo di avviarsi senza interferenze. Ma in primavera, i tramonti si spostano progressivamente in avanti, e la luce serale penetra nelle ore in cui la melatonina dovrebbe cominciare a salire.
                 </p>
 <p>
-                    Studi sul fotoperiodo hanno dimostrato che anche un'esposizione moderata alla luce serale &mdash; l'equivalente di un tramonto prolungato del <a class="text-dream-salmon hover:underline" href="../simboli/sole">sole</a> che inonda la casa &mdash; pu&ograve; sopprimere la produzione di melatonina del 50 % o pi&ugrave;. Ci&ograve; significa che il corpo riceve il segnale &laquo;&egrave; ancora giorno&raquo; quando voi avete bisogno che sia notte. La conseguenza diretta &egrave; una maggiore latenza del sonno: ci vuole pi&ugrave; tempo per addormentarsi, nonostante la stessa stanchezza dell'inverno.
+                    Studi sul fotoperiodo hanno dimostrato che anche un'esposizione moderata alla luce serale, l'equivalente di un tramonto prolungato del <a class="text-dream-salmon hover:underline" href="../simboli/sole">sole</a> che inonda la casa, pu&ograve; sopprimere la produzione di melatonina del 50 % o pi&ugrave;. Ci&ograve; significa che il corpo riceve il segnale &laquo;&egrave; ancora giorno&raquo; quando voi avete bisogno che sia notte. La conseguenza diretta &egrave; una maggiore latenza del sonno: ci vuole pi&ugrave; tempo per addormentarsi, nonostante la stessa stanchezza dell'inverno.
                 </p>
 <h3>La luce mattutina come anticipatore</h3>
 <p>
-                    Se la luce serale ritarda l'orologio, la luce mattutina lo anticipa. L'<a class="text-dream-salmon hover:underline" href="../simboli/sole">alba</a> primaverile pi&ugrave; precoce invia un segnale potente al NSC: &laquo;il giorno &egrave; iniziato&raquo;. Questo sopprime la melatonina residua e attiva le vie di allerta del cortisolo. Per chi dorme con tende leggere o camere orientate a est, il risultato &egrave; un risveglio prematuro &mdash; talvolta 30-60 minuti prima della sveglia &mdash; senza che il ciclo di sonno si sia completato. Una doppia pressione: ci si addormenta pi&ugrave; tardi e ci si sveglia prima.
+                    Se la luce serale ritarda l'orologio, la luce mattutina lo anticipa. L'<a class="text-dream-salmon hover:underline" href="../simboli/sole">alba</a> primaverile pi&ugrave; precoce invia un segnale potente al NSC: &laquo;il giorno &egrave; iniziato&raquo;. Questo sopprime la melatonina residua e attiva le vie di allerta del cortisolo. Per chi dorme con tende leggere o camere orientate a est, il risultato &egrave; un risveglio prematuro, talvolta 30-60 minuti prima della sveglia, senza che il ciclo di sonno si sia completato. Una doppia pressione: ci si addormenta pi&ugrave; tardi e ci si sveglia prima.
                 </p>
 
 <blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
@@ -151,7 +151,7 @@
                 </p>
 <h3>Fattori aggravanti</h3>
 <p>
-                    La stanchezza primaverile &egrave; acuita da fattori che spesso passano inosservati. I cambiamenti di temperatura attivano la vasodilatazione periferica, che abbassa leggermente la pressione arteriosa e contribuisce alla sensazione di sonnolenza. Le allergie stagionali &mdash; che coincidono con la fioritura &mdash; aggiungono infiammazione sistemica e frammentazione del sonno per la congestione nasale. E la tentazione di sfruttare le serate luminose per attivit&agrave; all'aperto pu&ograve; ritardare ulteriormente l'orario di addormentamento, ampliando il debito di sonno.
+                    La stanchezza primaverile &egrave; acuita da fattori che spesso passano inosservati. I cambiamenti di temperatura attivano la vasodilatazione periferica, che abbassa leggermente la pressione arteriosa e contribuisce alla sensazione di sonnolenza. Le allergie stagionali, che coincidono con la fioritura, aggiungono infiammazione sistemica e frammentazione del sonno per la congestione nasale. E la tentazione di sfruttare le serate luminose per attivit&agrave; all'aperto pu&ograve; ritardare ulteriormente l'orario di addormentamento, ampliando il debito di sonno.
                 </p>
 </div>
 
@@ -174,14 +174,14 @@
 <h2 id="dream-quality">La qualit&agrave; dei sogni in primavera</h2>
 <h3>Redistribuzione del sonno REM</h3>
 <p>
-                    La compressione della notte biologica ha un impatto diretto sull'architettura del sonno. I periodi di sonno REM pi&ugrave; lunghi e pi&ugrave; ricchi di sogni vividi si concentrano nell'ultimo terzo della notte &mdash; proprio le ore che l'alba prematura tende a tagliare. Quando la luce mattutina vi sveglia prima che il vostro ultimo ciclo REM si sia completato, perdete la porzione di sonno con la maggiore densit&agrave; onirica.
+                    La compressione della notte biologica ha un impatto diretto sull'architettura del sonno. I periodi di sonno REM pi&ugrave; lunghi e pi&ugrave; ricchi di sogni vividi si concentrano nell'ultimo terzo della notte, proprio le ore che l'alba prematura tende a tagliare. Quando la luce mattutina vi sveglia prima che il vostro ultimo ciclo REM si sia completato, perdete la porzione di sonno con la maggiore densit&agrave; onirica.
                 </p>
 <p>
                     Tuttavia, il cervello non rinuncia ai suoi sogni senza combattere. Come accade con la privazione di sonno, la perdita di REM primaverile pu&ograve; innescare un <strong>rimbalzo REM compensatorio</strong>: il cervello intensifica le fasi REM rimanenti, producendo in meno tempo sogni pi&ugrave; densi, pi&ugrave; vividi e pi&ugrave; carichi emotivamente. Questo spiega perch&eacute; molte persone riferiscono sogni particolarmente intensi all'inizio della primavera.
                 </p>
 <h3>Schemi stagionali nel contenuto onirico</h3>
 <p>
-                    La ricerca sugli schemi onirici stagionali rivela che i sogni primaverili tendono a contenere pi&ugrave; immagini di movimento, trasformazione e natura rispetto a quelli delle altre stagioni. I temi di rinascita, crescita e cambiamento compaiono con maggiore frequenza &mdash; un possibile riflesso della risposta del cervello ai segnali ambientali di rinnovamento. Le <a class="text-dream-salmon hover:underline" href="../simboli/notte">scene notturne</a> nei sogni primaverili sono spesso pi&ugrave; luminose, come se l'aumento della luce diurna filtrasse anche nel paesaggio onirico.
+                    La ricerca sugli schemi onirici stagionali rivela che i sogni primaverili tendono a contenere pi&ugrave; immagini di movimento, trasformazione e natura rispetto a quelli delle altre stagioni. I temi di rinascita, crescita e cambiamento compaiono con maggiore frequenza, un possibile riflesso della risposta del cervello ai segnali ambientali di rinnovamento. Le <a class="text-dream-salmon hover:underline" href="../simboli/notte">scene notturne</a> nei sogni primaverili sono spesso pi&ugrave; luminose, come se l'aumento della luce diurna filtrasse anche nel paesaggio onirico.
                 </p>
 <p>
                     Per chi sperimenta sogni perturbanti durante questa transizione, &egrave; importante capire che l'intensificazione onirica &egrave; una risposta normale del cervello alla ricalibrazione circadiana. Non indica un problema di salute mentale, ma un sistema di sonno che si sta adattando attivamente al nuovo fotoperiodo.
@@ -190,11 +190,11 @@
 <h2 id="adaptation">Strategie di adattamento</h2>
 <h3>Gestione della luce</h3>
 <p>
-                    Lo strumento pi&ugrave; potente per facilitare la transizione primaverile &egrave; la luce. Al mattino, esponetevi a <strong>luce naturale intensa per 20-30 minuti dopo il risveglio</strong>. Una passeggiata mattutina fornisce circa 10.000 lux &mdash; il segnale pi&ugrave; forte per anticipare la vostra fase circadiana e sincronizzare l'orologio con il nuovo fotoperiodo. La sera, fate il contrario: abbassate le luci 90 minuti prima di coricarvi, usate lampadine a luce calda (2.700K o meno) e installate tende oscuranti per impedire alla luce dell'alba di interrompere i vostri ultimi cicli di sonno.
+                    Lo strumento pi&ugrave; potente per facilitare la transizione primaverile &egrave; la luce. Al mattino, esponetevi a <strong>luce naturale intensa per 20-30 minuti dopo il risveglio</strong>. Una passeggiata mattutina fornisce circa 10.000 lux, il segnale pi&ugrave; forte per anticipare la vostra fase circadiana e sincronizzare l'orologio con il nuovo fotoperiodo. La sera, fate il contrario: abbassate le luci 90 minuti prima di coricarvi, usate lampadine a luce calda (2.700K o meno) e installate tende oscuranti per impedire alla luce dell'alba di interrompere i vostri ultimi cicli di sonno.
                 </p>
 <h3>Orario di sonno costante</h3>
 <p>
-                    Resistete alla tentazione di andare a letto molto pi&ugrave; tardi solo perch&eacute; c'&egrave; ancora luce. Mantenere un orario di addormentamento e risveglio costante &mdash; compresi i fine settimana &mdash; &egrave; la base di un adattamento graduale. Se dovete modificare il vostro orario, fatelo con incrementi di 15 minuti al giorno, non all'improvviso. Il vostro NSC si adatta meglio a cambiamenti piccoli e progressivi piuttosto che a salti bruschi.
+                    Resistete alla tentazione di andare a letto molto pi&ugrave; tardi solo perch&eacute; c'&egrave; ancora luce. Mantenere un orario di addormentamento e risveglio costante, compresi i fine settimana, &egrave; la base di un adattamento graduale. Se dovete modificare il vostro orario, fatelo con incrementi di 15 minuti al giorno, non all'improvviso. Il vostro NSC si adatta meglio a cambiamenti piccoli e progressivi piuttosto che a salti bruschi.
                 </p>
 <h3>Esercizio fisico e temperatura</h3>
 <p>
@@ -204,10 +204,10 @@
 <h2 id="journaling">Il diario dei sogni durante la transizione</h2>
 <h3>Un barometro del vostro adattamento circadiano</h3>
 <p>
-                    Tenere un diario dei sogni durante la transizione primaverile non &egrave; solo un esercizio di autoconoscenza: &egrave; uno strumento di monitoraggio della vostra salute circadiana. I cambiamenti nella vividezza, nell'emozionalit&agrave; e nel contenuto dei sogni riflettono direttamente come il cervello sta elaborando il nuovo fotoperiodo. Un aumento improvviso dell'intensit&agrave; onirica pu&ograve; indicare un rimbalzo REM &mdash; un segnale che il sonno viene compresso dalla nuova luce.
+                    Tenere un diario dei sogni durante la transizione primaverile non &egrave; solo un esercizio di autoconoscenza: &egrave; uno strumento di monitoraggio della vostra salute circadiana. I cambiamenti nella vividezza, nell'emozionalit&agrave; e nel contenuto dei sogni riflettono direttamente come il cervello sta elaborando il nuovo fotoperiodo. Un aumento improvviso dell'intensit&agrave; onirica pu&ograve; indicare un rimbalzo REM, un segnale che il sonno viene compresso dalla nuova luce.
                 </p>
 <p>
-                    Registrare i sogni con la voce al risveglio &mdash; prima che i dettagli svaniscano &mdash; permette di catturare sfumature che un registro scritto serale potrebbe perdere. Confrontare i propri schemi onirici di febbraio con quelli di aprile pu&ograve; rivelare l'impronta esatta della transizione stagionale nella vostra architettura del sonno.
+                    Registrare i sogni con la voce al risveglio, prima che i dettagli svaniscano, permette di catturare sfumature che un registro scritto serale potrebbe perdere. Confrontare i propri schemi onirici di febbraio con quelli di aprile pu&ograve; rivelare l'impronta esatta della transizione stagionale nella vostra architettura del sonno.
                 </p>
 <h3>Schemi da osservare</h3>
 <p>
@@ -249,7 +249,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&igrave;. I cambiamenti nell'architettura del sonno durante la primavera &mdash; in particolare la redistribuzione del sonno REM &mdash; alterano l'esperienza onirica. Molte persone riferiscono sogni pi&ugrave; vividi e emotivamente intensi durante la transizione primaverile, spesso con temi legati alla luce, al movimento e alla trasformazione, riflettendo la ricalibrazione circadiana del cervello.
+                            S&igrave;. I cambiamenti nell'architettura del sonno durante la primavera, in particolare la redistribuzione del sonno REM, alterano l'esperienza onirica. Molte persone riferiscono sogni pi&ugrave; vividi e emotivamente intensi durante la transizione primaverile, spesso con temi legati alla luce, al movimento e alla trasformazione, riflettendo la ricalibrazione circadiana del cervello.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">

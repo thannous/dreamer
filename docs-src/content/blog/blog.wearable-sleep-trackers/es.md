@@ -127,11 +127,11 @@
                 </p>
 <h3>Clasificaci&oacute;n de fases del sue&ntilde;o</h3>
 <p>
-                    La mayor&iacute;a de los wearables presentan un hipnograma &mdash; un gr&aacute;fico que muestra las transiciones entre sue&ntilde;o ligero, sue&ntilde;o profundo y <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sue&ntilde;o REM</a>. Sin embargo, esta clasificaci&oacute;n es una <strong>estimaci&oacute;n indirecta</strong>. La polisomnograf&iacute;a cl&iacute;nica &mdash; el est&aacute;ndar de referencia &mdash; utiliza electroencefalograma (EEG), electrooculograma y electromiograma para medir directamente la actividad cerebral, los movimientos oculares y el tono muscular. Los wearables infieren estas fases a partir de indicadores perif&eacute;ricos (movimiento y pulso), lo que introduce errores sistem&aacute;ticos significativos.
+                    La mayor&iacute;a de los wearables presentan un hipnograma, un gr&aacute;fico que muestra las transiciones entre sue&ntilde;o ligero, sue&ntilde;o profundo y <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sue&ntilde;o REM</a>. Sin embargo, esta clasificaci&oacute;n es una <strong>estimaci&oacute;n indirecta</strong>. La polisomnograf&iacute;a cl&iacute;nica, el est&aacute;ndar de referencia, utiliza electroencefalograma (EEG), electrooculograma y electromiograma para medir directamente la actividad cerebral, los movimientos oculares y el tono muscular. Los wearables infieren estas fases a partir de indicadores perif&eacute;ricos (movimiento y pulso), lo que introduce errores sistem&aacute;ticos significativos.
                 </p>
 <h3>M&eacute;tricas complementarias</h3>
 <p>
-                    Adem&aacute;s de la duraci&oacute;n y las fases, muchos dispositivos ofrecen m&eacute;tricas como la saturaci&oacute;n de ox&iacute;geno (SpO2), la temperatura cut&aacute;nea, la frecuencia respiratoria y un &iacute;ndice de &laquo;calidad del sue&ntilde;o&raquo; propietario. Estas m&eacute;tricas pueden ser &uacute;tiles para detectar anomal&iacute;as &mdash; por ejemplo, ca&iacute;das de SpO2 que sugieran apnea del sue&ntilde;o &mdash; pero sus algoritmos var&iacute;an entre fabricantes y no est&aacute;n estandarizados cl&iacute;nicamente.
+                    Adem&aacute;s de la duraci&oacute;n y las fases, muchos dispositivos ofrecen m&eacute;tricas como la saturaci&oacute;n de ox&iacute;geno (SpO2), la temperatura cut&aacute;nea, la frecuencia respiratoria y un &iacute;ndice de &laquo;calidad del sue&ntilde;o&raquo; propietario. Estas m&eacute;tricas pueden ser &uacute;tiles para detectar anomal&iacute;as, por ejemplo, ca&iacute;das de SpO2 que sugieran apnea del sue&ntilde;o, pero sus algoritmos var&iacute;an entre fabricantes y no est&aacute;n estandarizados cl&iacute;nicamente.
                 </p>
 
 <h2 id="accuracy">L&iacute;mites de precisi&oacute;n</h2>
@@ -169,7 +169,7 @@
                 </p>
 <h3>Integraci&oacute;n con el diario on&iacute;rico</h3>
 <p>
-                    El futuro m&aacute;s prometedor no est&aacute; en los sensores aislados, sino en la integraci&oacute;n de datos fisiol&oacute;gicos con el registro de los sue&ntilde;os. Aplicaciones que combinan la informaci&oacute;n del wearable con el an&aacute;lisis del contenido on&iacute;rico &mdash; usando inteligencia artificial para identificar patrones entre la arquitectura del sue&ntilde;o y la experiencia on&iacute;rica &mdash; representan el pr&oacute;ximo salto cualitativo en la comprensi&oacute;n personal del sue&ntilde;o.
+                    El futuro m&aacute;s prometedor no est&aacute; en los sensores aislados, sino en la integraci&oacute;n de datos fisiol&oacute;gicos con el registro de los sue&ntilde;os. Aplicaciones que combinan la informaci&oacute;n del wearable con el an&aacute;lisis del contenido on&iacute;rico, usando inteligencia artificial para identificar patrones entre la arquitectura del sue&ntilde;o y la experiencia on&iacute;rica, representan el pr&oacute;ximo salto cualitativo en la comprensi&oacute;n personal del sue&ntilde;o.
                 </p>
 
 <h2 id="privacy">Consideraciones de privacidad</h2>
@@ -209,7 +209,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los wearables de consumo detectan la duraci&oacute;n total del sue&ntilde;o con precisi&oacute;n razonable (error t&iacute;pico del 10-15 %). Sin embargo, su clasificaci&oacute;n de las fases del sue&ntilde;o &mdash; especialmente la distinci&oacute;n entre sue&ntilde;o ligero, profundo y <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">REM</a> &mdash; es significativamente menos fiable que la polisomnograf&iacute;a cl&iacute;nica. Son &uacute;tiles para identificar tendencias generales, pero no deben usarse para autodiagn&oacute;stico.
+                            Los wearables de consumo detectan la duraci&oacute;n total del sue&ntilde;o con precisi&oacute;n razonable (error t&iacute;pico del 10-15 %). Sin embargo, su clasificaci&oacute;n de las fases del sue&ntilde;o, especialmente la distinci&oacute;n entre sue&ntilde;o ligero, profundo y <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">REM</a>, es significativamente menos fiable que la polisomnograf&iacute;a cl&iacute;nica. Son &uacute;tiles para identificar tendencias generales, pero no deben usarse para autodiagn&oacute;stico.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -218,7 +218,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No directamente. Los wearables pueden estimar cu&aacute;ndo est&aacute;s en fase REM &mdash; la fase donde ocurren los sue&ntilde;os m&aacute;s v&iacute;vidos &mdash; pero no pueden registrar el contenido de tus sue&ntilde;os. Para capturar la experiencia on&iacute;rica, un diario de sue&ntilde;os (por voz o texto) al despertar sigue siendo el m&eacute;todo m&aacute;s eficaz.
+                            No directamente. Los wearables pueden estimar cu&aacute;ndo est&aacute;s en fase REM, la fase donde ocurren los sue&ntilde;os m&aacute;s v&iacute;vidos, pero no pueden registrar el contenido de tus sue&ntilde;os. Para capturar la experiencia on&iacute;rica, un diario de sue&ntilde;os (por voz o texto) al despertar sigue siendo el m&eacute;todo m&aacute;s eficaz.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">

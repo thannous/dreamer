@@ -90,7 +90,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta r&aacute;pida</h2>
-<p class="text-purple-100/80 leading-relaxed">La primavera alarga los d&iacute;as de forma abrupta, lo que suprime la melatonina vespertina y obliga al n&uacute;cleo supraquiasm&aacute;tico &mdash; tu reloj biol&oacute;gico central &mdash; a recalibrarse. Este desfase genera la fatiga primaveral (que afecta a 1 de cada 3 europeos), altera la arquitectura del sue&ntilde;o y modifica la intensidad y el contenido de los sue&ntilde;os. Gestionar la exposici&oacute;n a la luz, mantener un horario consistente y registrar tus sue&ntilde;os son las claves para atravesar esta transici&oacute;n sin perder calidad de descanso.</p>
+<p class="text-purple-100/80 leading-relaxed">La primavera alarga los d&iacute;as de forma abrupta, lo que suprime la melatonina vespertina y obliga al n&uacute;cleo supraquiasm&aacute;tico, tu reloj biol&oacute;gico central, a recalibrarse. Este desfase genera la fatiga primaveral (que afecta a 1 de cada 3 europeos), altera la arquitectura del sue&ntilde;o y modifica la intensidad y el contenido de los sue&ntilde;os. Gestionar la exposici&oacute;n a la luz, mantener un horario consistente y registrar tus sue&ntilde;os son las claves para atravesar esta transici&oacute;n sin perder calidad de descanso.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -117,7 +117,7 @@
                     El equinoccio de primavera marca el punto en que el d&iacute;a y la <a class="text-dream-salmon hover:underline" href="../simbolos/noche">noche</a> tienen aproximadamente la misma duraci&oacute;n. Pero lo verdaderamente significativo no es ese instante de equilibrio, sino lo que viene despu&eacute;s: un aumento acelerado del fotoperiodo que, en latitudes medias europeas, a&ntilde;ade entre 3 y 4 minutos de luz cada d&iacute;a. En apenas seis semanas, el d&iacute;a se alarga m&aacute;s de dos horas.
                 </p>
 <p>
-                    Este cambio no es gradual desde la perspectiva del cerebro. El n&uacute;cleo supraquiasm&aacute;tico (NSQ), el reloj maestro ubicado en el hipot&aacute;lamo, depende de la se&ntilde;al lum&iacute;nica para sincronizar los ritmos circadianos con el ciclo de 24 horas. Cuando el fotoperiodo cambia con la rapidez de la transici&oacute;n primaveral, el NSQ necesita recalibrarse. Recibe informaci&oacute;n de las c&eacute;lulas ganglionares retinianas intr&iacute;nsecamente fotosensibles &mdash; neuronas especializadas que detectan la luz ambiental y la transmiten directamente al reloj biol&oacute;gico &mdash; y este proceso de ajuste no es instant&aacute;neo.
+                    Este cambio no es gradual desde la perspectiva del cerebro. El n&uacute;cleo supraquiasm&aacute;tico (NSQ), el reloj maestro ubicado en el hipot&aacute;lamo, depende de la se&ntilde;al lum&iacute;nica para sincronizar los ritmos circadianos con el ciclo de 24 horas. Cuando el fotoperiodo cambia con la rapidez de la transici&oacute;n primaveral, el NSQ necesita recalibrarse. Recibe informaci&oacute;n de las c&eacute;lulas ganglionares retinianas intr&iacute;nsecamente fotosensibles, neuronas especializadas que detectan la luz ambiental y la transmiten directamente al reloj biol&oacute;gico, y este proceso de ajuste no es instant&aacute;neo.
                 </p>
 <p>
                     La investigaci&oacute;n cient&iacute;fica muestra que la recalibraci&oacute;n del NSQ al nuevo fotoperiodo tarda entre 1 y 3 semanas en completarse. Durante ese per&iacute;odo de transici&oacute;n, tu cuerpo funciona con un reloj ligeramente desfasado respecto a las se&ntilde;ales ambientales, lo que genera una forma sutil de jet lag estacional. El resultado: dificultades para conciliar el sue&ntilde;o, despertares prematuros y un cansancio diurno que parece contradecir la energ&iacute;a que la primavera deber&iacute;a traer.
@@ -126,14 +126,14 @@
 <h2 id="melatonin">Melatonina bajo presi&oacute;n</h2>
 <h3>La luz vespertina como disruptor</h3>
 <p>
-                    La melatonina &mdash; la hormona que se&ntilde;aliza al cuerpo que es hora de dormir &mdash; es extremadamente sensible a la luz. Su secreci&oacute;n por la gl&aacute;ndula pineal comienza normalmente entre 1 y 2 horas antes de la hora habitual de acostarse, cuando la luz ambiental desciende. En invierno, el atardecer temprano permite que este proceso se inicie sin interferencias. Pero en primavera, los atardeceres se retrasan progresivamente, y la luz vespertina penetra en las horas en que la melatonina deber&iacute;a comenzar a elevarse.
+                    La melatonina, la hormona que se&ntilde;aliza al cuerpo que es hora de dormir, es extremadamente sensible a la luz. Su secreci&oacute;n por la gl&aacute;ndula pineal comienza normalmente entre 1 y 2 horas antes de la hora habitual de acostarse, cuando la luz ambiental desciende. En invierno, el atardecer temprano permite que este proceso se inicie sin interferencias. Pero en primavera, los atardeceres se retrasan progresivamente, y la luz vespertina penetra en las horas en que la melatonina deber&iacute;a comenzar a elevarse.
                 </p>
 <p>
-                    Estudios de fotoperiodo han demostrado que incluso una exposici&oacute;n moderada a luz vespertina &mdash; el equivalente a una puesta de <a class="text-dream-salmon hover:underline" href="../simbolos/sol">sol</a> prolongada que inunda la casa &mdash; puede suprimir la producci&oacute;n de melatonina en un 50 % o m&aacute;s. Esto significa que tu cuerpo recibe la se&ntilde;al de &laquo;todav&iacute;a es de d&iacute;a&raquo; cuando t&uacute; necesitas que sea de noche. La consecuencia directa es una mayor latencia de sue&ntilde;o: tardas m&aacute;s en dormirte, a pesar de sentir el mismo cansancio que en invierno.
+                    Estudios de fotoperiodo han demostrado que incluso una exposici&oacute;n moderada a luz vespertina, el equivalente a una puesta de <a class="text-dream-salmon hover:underline" href="../simbolos/sol">sol</a> prolongada que inunda la casa, puede suprimir la producci&oacute;n de melatonina en un 50 % o m&aacute;s. Esto significa que tu cuerpo recibe la se&ntilde;al de &laquo;todav&iacute;a es de d&iacute;a&raquo; cuando t&uacute; necesitas que sea de noche. La consecuencia directa es una mayor latencia de sue&ntilde;o: tardas m&aacute;s en dormirte, a pesar de sentir el mismo cansancio que en invierno.
                 </p>
 <h3>La luz matutina como adelantador</h3>
 <p>
-                    Si la luz vespertina retrasa el reloj, la luz matutina lo adelanta. El <a class="text-dream-salmon hover:underline" href="../simbolos/sol">amanecer</a> primaveral m&aacute;s temprano env&iacute;a una se&ntilde;al potente al NSQ: &laquo;el d&iacute;a ha comenzado&raquo;. Esto suprime la melatonina residual y activa las v&iacute;as de alerta del cortisol. Para quienes duermen con cortinas ligeras o habitaciones orientadas al este, el resultado es un despertar prematuro &mdash; a veces 30-60 minutos antes de la alarma &mdash; sin que el ciclo de sue&ntilde;o se haya completado. Es una doble presi&oacute;n: te acuestas m&aacute;s tarde y te despiertas antes.
+                    Si la luz vespertina retrasa el reloj, la luz matutina lo adelanta. El <a class="text-dream-salmon hover:underline" href="../simbolos/sol">amanecer</a> primaveral m&aacute;s temprano env&iacute;a una se&ntilde;al potente al NSQ: &laquo;el d&iacute;a ha comenzado&raquo;. Esto suprime la melatonina residual y activa las v&iacute;as de alerta del cortisol. Para quienes duermen con cortinas ligeras o habitaciones orientadas al este, el resultado es un despertar prematuro, a veces 30-60 minutos antes de la alarma, sin que el ciclo de sue&ntilde;o se haya completado. Es una doble presi&oacute;n: te acuestas m&aacute;s tarde y te despiertas antes.
                 </p>
 
 <blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
@@ -151,7 +151,7 @@
                 </p>
 <h3>Factores agravantes</h3>
 <p>
-                    La fatiga primaveral se agudiza por factores que a menudo pasan desapercibidos. Los cambios de temperatura activan la vasodilataci&oacute;n perif&eacute;rica, lo que reduce ligeramente la presi&oacute;n arterial y contribuye a la sensaci&oacute;n de somnolencia. La alergia estacional &mdash; que coincide con la polinizaci&oacute;n &mdash; a&ntilde;ade inflamaci&oacute;n sist&eacute;mica y fragmentaci&oacute;n del sue&ntilde;o por congesti&oacute;n nasal. Y la tentaci&oacute;n de aprovechar las tardes luminosas para actividades al aire libre puede retrasar a&uacute;n m&aacute;s la hora de acostarse, ampliando la deuda de sue&ntilde;o.
+                    La fatiga primaveral se agudiza por factores que a menudo pasan desapercibidos. Los cambios de temperatura activan la vasodilataci&oacute;n perif&eacute;rica, lo que reduce ligeramente la presi&oacute;n arterial y contribuye a la sensaci&oacute;n de somnolencia. La alergia estacional, que coincide con la polinizaci&oacute;n, a&ntilde;ade inflamaci&oacute;n sist&eacute;mica y fragmentaci&oacute;n del sue&ntilde;o por congesti&oacute;n nasal. Y la tentaci&oacute;n de aprovechar las tardes luminosas para actividades al aire libre puede retrasar a&uacute;n m&aacute;s la hora de acostarse, ampliando la deuda de sue&ntilde;o.
                 </p>
 </div>
 
@@ -174,14 +174,14 @@
 <h2 id="dream-quality">La calidad de los sue&ntilde;os en primavera</h2>
 <h3>Redistribuci&oacute;n del sue&ntilde;o REM</h3>
 <p>
-                    La compresi&oacute;n de la noche biol&oacute;gica tiene un impacto directo sobre la arquitectura del sue&ntilde;o. Los periodos de sue&ntilde;o REM m&aacute;s largos y m&aacute;s ricos en sue&ntilde;os v&iacute;vidos se concentran en el &uacute;ltimo tercio de la noche &mdash; precisamente las horas que el amanecer prematuro tiende a recortar. Cuando la luz matutina te despierta antes de completar tu &uacute;ltimo ciclo REM, pierdes la porci&oacute;n de sue&ntilde;o con mayor densidad on&iacute;rica.
+                    La compresi&oacute;n de la noche biol&oacute;gica tiene un impacto directo sobre la arquitectura del sue&ntilde;o. Los periodos de sue&ntilde;o REM m&aacute;s largos y m&aacute;s ricos en sue&ntilde;os v&iacute;vidos se concentran en el &uacute;ltimo tercio de la noche, precisamente las horas que el amanecer prematuro tiende a recortar. Cuando la luz matutina te despierta antes de completar tu &uacute;ltimo ciclo REM, pierdes la porci&oacute;n de sue&ntilde;o con mayor densidad on&iacute;rica.
                 </p>
 <p>
                     Sin embargo, el cerebro no abandona sus sue&ntilde;os sin luchar. Al igual que ocurre con la privaci&oacute;n de sue&ntilde;o, la p&eacute;rdida de REM primaveral puede desencadenar un <strong>rebote REM compensatorio</strong>: el cerebro intensifica las fases REM restantes, produciendo sue&ntilde;os m&aacute;s densos, m&aacute;s v&iacute;vidos y emocionalmente m&aacute;s cargados en menos tiempo. Esto explica por qu&eacute; muchas personas reportan sue&ntilde;os especialmente intensos al inicio de la primavera.
                 </p>
 <h3>Patrones estacionales del contenido on&iacute;rico</h3>
 <p>
-                    La investigaci&oacute;n sobre patrones on&iacute;ricos estacionales revela que los sue&ntilde;os primaverales tienden a contener m&aacute;s im&aacute;genes de movimiento, transformaci&oacute;n y naturaleza que los de otras estaciones. Los temas de renacimiento, crecimiento y cambio aparecen con mayor frecuencia &mdash; un posible reflejo de la respuesta del cerebro a las se&ntilde;ales ambientales de renovaci&oacute;n. Las <a class="text-dream-salmon hover:underline" href="../simbolos/noche">escenas nocturnas</a> en los sue&ntilde;os primaverales suelen ser m&aacute;s luminosas, como si el aumento de la luz diurna se filtrara incluso en el paisaje on&iacute;rico.
+                    La investigaci&oacute;n sobre patrones on&iacute;ricos estacionales revela que los sue&ntilde;os primaverales tienden a contener m&aacute;s im&aacute;genes de movimiento, transformaci&oacute;n y naturaleza que los de otras estaciones. Los temas de renacimiento, crecimiento y cambio aparecen con mayor frecuencia, un posible reflejo de la respuesta del cerebro a las se&ntilde;ales ambientales de renovaci&oacute;n. Las <a class="text-dream-salmon hover:underline" href="../simbolos/noche">escenas nocturnas</a> en los sue&ntilde;os primaverales suelen ser m&aacute;s luminosas, como si el aumento de la luz diurna se filtrara incluso en el paisaje on&iacute;rico.
                 </p>
 <p>
                     Para quienes experimentan sue&ntilde;os perturbadores durante esta transici&oacute;n, es importante entender que la intensificaci&oacute;n on&iacute;rica es una respuesta normal del cerebro a la recalibraci&oacute;n circadiana. No indica un problema de salud mental, sino un sistema de sue&ntilde;o que se est&aacute; adaptando activamente al nuevo fotoperiodo.
@@ -190,11 +190,11 @@
 <h2 id="adaptation">Estrategias de adaptaci&oacute;n</h2>
 <h3>Gesti&oacute;n de la luz</h3>
 <p>
-                    La herramienta m&aacute;s poderosa para facilitar la transici&oacute;n primaveral es la luz. Por la ma&ntilde;ana, exp&oacute;nte a <strong>luz natural intensa durante los 20-30 minutos siguientes al despertar</strong>. Un paseo matutino proporciona alrededor de 10.000 lux &mdash; la se&ntilde;al m&aacute;s potente para adelantar tu fase circadiana y sincronizar tu reloj con el nuevo fotoperiodo. Por la noche, haz lo contrario: aten&uacute;a las luces 90 minutos antes de acostarte, usa bombillas c&aacute;lidas (2.700K o inferior) e instala cortinas opacas para impedir que la luz del amanecer interrumpa tus &uacute;ltimos ciclos de sue&ntilde;o.
+                    La herramienta m&aacute;s poderosa para facilitar la transici&oacute;n primaveral es la luz. Por la ma&ntilde;ana, exp&oacute;nte a <strong>luz natural intensa durante los 20-30 minutos siguientes al despertar</strong>. Un paseo matutino proporciona alrededor de 10.000 lux, la se&ntilde;al m&aacute;s potente para adelantar tu fase circadiana y sincronizar tu reloj con el nuevo fotoperiodo. Por la noche, haz lo contrario: aten&uacute;a las luces 90 minutos antes de acostarte, usa bombillas c&aacute;lidas (2.700K o inferior) e instala cortinas opacas para impedir que la luz del amanecer interrumpa tus &uacute;ltimos ciclos de sue&ntilde;o.
                 </p>
 <h3>Horario de sue&ntilde;o consistente</h3>
 <p>
-                    Resiste la tentaci&oacute;n de acostarte significativamente m&aacute;s tarde solo porque todav&iacute;a hay luz. Mantener una hora de acostarte y una hora de despertarte constantes &mdash; incluyendo los fines de semana &mdash; es la base de una adaptaci&oacute;n suave. Si necesitas ajustar tu horario, hazlo en incrementos de 15 minutos por d&iacute;a, no de golpe. Tu NSQ se ajusta mejor a cambios peque&ntilde;os y progresivos que a saltos bruscos.
+                    Resiste la tentaci&oacute;n de acostarte significativamente m&aacute;s tarde solo porque todav&iacute;a hay luz. Mantener una hora de acostarte y una hora de despertarte constantes, incluyendo los fines de semana, es la base de una adaptaci&oacute;n suave. Si necesitas ajustar tu horario, hazlo en incrementos de 15 minutos por d&iacute;a, no de golpe. Tu NSQ se ajusta mejor a cambios peque&ntilde;os y progresivos que a saltos bruscos.
                 </p>
 <h3>Ejercicio y temperatura</h3>
 <p>
@@ -204,10 +204,10 @@
 <h2 id="journaling">El diario de sue&ntilde;os durante la transici&oacute;n</h2>
 <h3>Un bar&oacute;metro de tu adaptaci&oacute;n circadiana</h3>
 <p>
-                    Llevar un diario de sue&ntilde;os durante la transici&oacute;n primaveral no es solo un ejercicio de autoconocimiento: es una herramienta de monitorizaci&oacute;n de tu salud circadiana. Los cambios en la viveza, la emocionalidad y el contenido de tus sue&ntilde;os reflejan directamente c&oacute;mo tu cerebro est&aacute; procesando el nuevo fotoperiodo. Un aumento repentino en la intensidad on&iacute;rica puede indicar un rebote REM &mdash; una se&ntilde;al de que tu sue&ntilde;o est&aacute; siendo comprimido por la nueva luz.
+                    Llevar un diario de sue&ntilde;os durante la transici&oacute;n primaveral no es solo un ejercicio de autoconocimiento: es una herramienta de monitorizaci&oacute;n de tu salud circadiana. Los cambios en la viveza, la emocionalidad y el contenido de tus sue&ntilde;os reflejan directamente c&oacute;mo tu cerebro est&aacute; procesando el nuevo fotoperiodo. Un aumento repentino en la intensidad on&iacute;rica puede indicar un rebote REM, una se&ntilde;al de que tu sue&ntilde;o est&aacute; siendo comprimido por la nueva luz.
                 </p>
 <p>
-                    Registrar tus sue&ntilde;os por voz al despertar &mdash; antes de que los detalles se desvanezcan &mdash; te permite capturar matices que un registro escrito nocturno podr&iacute;a perder. Comparar tus patrones on&iacute;ricos de febrero con los de abril puede revelar la huella exacta de la transici&oacute;n estacional en tu arquitectura de sue&ntilde;o.
+                    Registrar tus sue&ntilde;os por voz al despertar, antes de que los detalles se desvanezcan, te permite capturar matices que un registro escrito nocturno podr&iacute;a perder. Comparar tus patrones on&iacute;ricos de febrero con los de abril puede revelar la huella exacta de la transici&oacute;n estacional en tu arquitectura de sue&ntilde;o.
                 </p>
 <h3>Patrones a observar</h3>
 <p>
@@ -249,7 +249,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            S&iacute;. Los cambios en la arquitectura del sue&ntilde;o durante la primavera &mdash; especialmente la redistribuci&oacute;n del sue&ntilde;o REM &mdash; alteran la experiencia on&iacute;rica. Muchas personas reportan sue&ntilde;os m&aacute;s v&iacute;vidos y emocionalmente intensos durante la transici&oacute;n primaveral, a menudo con temas relacionados con la luz, el movimiento y la transformaci&oacute;n, reflejando la recalibraci&oacute;n circadiana que experimenta el cerebro.
+                            S&iacute;. Los cambios en la arquitectura del sue&ntilde;o durante la primavera, especialmente la redistribuci&oacute;n del sue&ntilde;o REM, alteran la experiencia on&iacute;rica. Muchas personas reportan sue&ntilde;os m&aacute;s v&iacute;vidos y emocionalmente intensos durante la transici&oacute;n primaveral, a menudo con temas relacionados con la luz, el movimiento y la transformaci&oacute;n, reflejando la recalibraci&oacute;n circadiana que experimenta el cerebro.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">

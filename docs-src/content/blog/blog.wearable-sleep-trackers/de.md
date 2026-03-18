@@ -110,7 +110,7 @@
 <h2 id="how-trackers-work">Wie Schlaf-Tracker funktionieren</h2>
 <h3>Beschleunigungsmesser: Bewegung als Indikator</h3>
 <p>
-                    Der grundlegende Sensor jedes Schlaf-Tracker-Wearables ist der <strong>Beschleunigungsmesser</strong>. Dieses Bauteil misst Bewegungen in drei Achsen und erm&ouml;glicht es dem Ger&auml;t, zwischen Wachsein und Schlaf zu unterscheiden &mdash; basierend auf einem einfachen Prinzip: Wenn wir schlafen, bewegen wir uns weniger. Die Algorithmen interpretieren l&auml;ngere Bewegungslosigkeit als Schlaf und h&auml;ufige Bewegungen als Wachsein oder Leichtschlaf. Diese Technik, bekannt als <em>Aktigraphie</em>, wird seit den 1970er Jahren in der Schlafforschung eingesetzt &mdash; lange vor der &Auml;ra der Smartwatches.
+                    Der grundlegende Sensor jedes Schlaf-Tracker-Wearables ist der <strong>Beschleunigungsmesser</strong>. Dieses Bauteil misst Bewegungen in drei Achsen und erm&ouml;glicht es dem Ger&auml;t, zwischen Wachsein und Schlaf zu unterscheiden, basierend auf einem einfachen Prinzip: Wenn wir schlafen, bewegen wir uns weniger. Die Algorithmen interpretieren l&auml;ngere Bewegungslosigkeit als Schlaf und h&auml;ufige Bewegungen als Wachsein oder Leichtschlaf. Diese Technik, bekannt als <em>Aktigraphie</em>, wird seit den 1970er Jahren in der Schlafforschung eingesetzt, lange vor der &Auml;ra der Smartwatches.
                 </p>
 <p>
                     Die Aktigraphie hat jedoch eine inh&auml;rente Einschr&auml;nkung: Sie verwechselt Bewegungslosigkeit mit Schlaf. Wenn Sie reglos im Bett lesen, kann das Ger&auml;t dies als Schlaf registrieren. Und wenn Sie sich w&auml;hrend einer REM-Schlafphase stark bewegen (die kleine Muskelzuckungen beinhalten kann), wird dies m&ouml;glicherweise f&auml;lschlicherweise als Wachsein klassifiziert. Bewegung ist ein n&uuml;tzlicher, aber unvollkommener Indikator f&uuml;r den Bewusstseinszustand.
@@ -127,11 +127,11 @@
                 </p>
 <h3>Schlafphasenklassifizierung</h3>
 <p>
-                    Die meisten Wearables pr&auml;sentieren ein Hypnogramm &mdash; eine Grafik, die die &Uuml;berg&auml;nge zwischen Leichtschlaf, Tiefschlaf und <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> zeigt. Diese Klassifizierung ist jedoch eine <strong>indirekte Sch&auml;tzung</strong>. Die klinische Polysomnographie &mdash; der Goldstandard &mdash; verwendet Elektroenzephalogramm (EEG), Elektrookulogramm und Elektromyogramm, um die Gehirnaktivit&auml;t, Augenbewegungen und den Muskeltonus direkt zu messen. Wearables leiten diese Phasen aus peripheren Indikatoren (Bewegung und Puls) ab, was zu erheblichen systematischen Fehlern f&uuml;hrt.
+                    Die meisten Wearables pr&auml;sentieren ein Hypnogramm, eine Grafik, die die &Uuml;berg&auml;nge zwischen Leichtschlaf, Tiefschlaf und <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> zeigt. Diese Klassifizierung ist jedoch eine <strong>indirekte Sch&auml;tzung</strong>. Die klinische Polysomnographie, der Goldstandard, verwendet Elektroenzephalogramm (EEG), Elektrookulogramm und Elektromyogramm, um die Gehirnaktivit&auml;t, Augenbewegungen und den Muskeltonus direkt zu messen. Wearables leiten diese Phasen aus peripheren Indikatoren (Bewegung und Puls) ab, was zu erheblichen systematischen Fehlern f&uuml;hrt.
                 </p>
 <h3>Erg&auml;nzende Metriken</h3>
 <p>
-                    Neben Dauer und Phasen bieten viele Ger&auml;te Metriken wie Sauerstoffs&auml;ttigung (SpO2), Hauttemperatur, Atemfrequenz und einen propriet&auml;ren &laquo;Schlafqualit&auml;tsindex&raquo;. Diese Metriken k&ouml;nnen n&uuml;tzlich sein, um Anomalien zu erkennen &mdash; beispielsweise SpO2-Abf&auml;lle, die auf Schlafapnoe hindeuten &mdash;, aber ihre Algorithmen variieren zwischen Herstellern und sind klinisch nicht standardisiert.
+                    Neben Dauer und Phasen bieten viele Ger&auml;te Metriken wie Sauerstoffs&auml;ttigung (SpO2), Hauttemperatur, Atemfrequenz und einen propriet&auml;ren &laquo;Schlafqualit&auml;tsindex&raquo;. Diese Metriken k&ouml;nnen n&uuml;tzlich sein, um Anomalien zu erkennen, beispielsweise SpO2-Abf&auml;lle, die auf Schlafapnoe hindeuten,  aber ihre Algorithmen variieren zwischen Herstellern und sind klinisch nicht standardisiert.
                 </p>
 
 <h2 id="accuracy">Grenzen der Genauigkeit</h2>
@@ -169,7 +169,7 @@
                 </p>
 <h3>Integration mit dem Traumtagebuch</h3>
 <p>
-                    Die vielversprechendste Zukunft liegt nicht in isolierten Sensoren, sondern in der Integration physiologischer Daten mit der Traumdokumentation. Anwendungen, die Wearable-Informationen mit der Analyse des Trauminhalts kombinieren &mdash; mithilfe k&uuml;nstlicher Intelligenz zur Identifizierung von Mustern zwischen Schlafarchitektur und Traumerlebnis &mdash; repr&auml;sentieren den n&auml;chsten qualitativen Sprung im pers&ouml;nlichen Schlafverst&auml;ndnis.
+                    Die vielversprechendste Zukunft liegt nicht in isolierten Sensoren, sondern in der Integration physiologischer Daten mit der Traumdokumentation. Anwendungen, die Wearable-Informationen mit der Analyse des Trauminhalts kombinieren, mithilfe k&uuml;nstlicher Intelligenz zur Identifizierung von Mustern zwischen Schlafarchitektur und Traumerlebnis, repr&auml;sentieren den n&auml;chsten qualitativen Sprung im pers&ouml;nlichen Schlafverst&auml;ndnis.
                 </p>
 
 <h2 id="privacy">Datenschutz&uuml;berlegungen</h2>
@@ -209,7 +209,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Consumer-Wearables erkennen die Gesamtschlafdauer mit akzeptabler Genauigkeit (typischer Fehler von 10&ndash;15 %). Allerdings ist ihre Klassifizierung der Schlafphasen &mdash; insbesondere die Unterscheidung zwischen Leichtschlaf, Tiefschlaf und <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM</a> &mdash; deutlich weniger zuverl&auml;ssig als die klinische Polysomnographie. Sie eignen sich zur Erkennung allgemeiner Trends, sollten aber nicht zur Selbstdiagnose verwendet werden.
+                            Consumer-Wearables erkennen die Gesamtschlafdauer mit akzeptabler Genauigkeit (typischer Fehler von 10&ndash;15 %). Allerdings ist ihre Klassifizierung der Schlafphasen, insbesondere die Unterscheidung zwischen Leichtschlaf, Tiefschlaf und <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM</a>, deutlich weniger zuverl&auml;ssig als die klinische Polysomnographie. Sie eignen sich zur Erkennung allgemeiner Trends, sollten aber nicht zur Selbstdiagnose verwendet werden.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -218,7 +218,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nicht direkt. Wearables k&ouml;nnen sch&auml;tzen, wann Sie sich in der REM-Phase befinden &mdash; der Phase, in der die lebhaftesten Tr&auml;ume auftreten &mdash;, aber sie k&ouml;nnen den Inhalt Ihrer Tr&auml;ume nicht aufzeichnen. Um das Traumerlebnis festzuhalten, bleibt ein Traumtagebuch (per Sprache oder Text) beim Aufwachen die effektivste Methode.
+                            Nicht direkt. Wearables k&ouml;nnen sch&auml;tzen, wann Sie sich in der REM-Phase befinden, der Phase, in der die lebhaftesten Tr&auml;ume auftreten,  aber sie k&ouml;nnen den Inhalt Ihrer Tr&auml;ume nicht aufzeichnen. Um das Traumerlebnis festzuhalten, bleibt ein Traumtagebuch (per Sprache oder Text) beim Aufwachen die effektivste Methode.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
