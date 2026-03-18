@@ -464,7 +464,13 @@ export async function savePendingDreamMutations(
 ): Promise<void> {
   console.log('[MOCK STORAGE] savePendingDreamMutations called with', mutations.length, 'mutations');
   try {
-    mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)] = JSON.stringify(mutations);
+    const effectiveUserScope = userScope || 'user:unknown';
+    const normalized = mutations.map((mutation) =>
+      mutation.version === 1
+        ? mutation
+        : migrateLegacyDreamMutation(mutation as unknown as Record<string, unknown>, effectiveUserScope) ?? mutation
+    );
+    mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)] = JSON.stringify(normalized);
     if (userScope) {
       delete mockStorage[DREAM_MUTATIONS_KEY];
     }

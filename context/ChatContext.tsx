@@ -65,10 +65,14 @@ const createAdapter = <T,>(shared: SharedValue<T>): SharedValueAdapter<T> => ({
   value: shared,
   get: () => {
     'worklet';
-    return shared.value;
+    return typeof shared.get === 'function' ? shared.get() : shared.value;
   },
   set: (next: T) => {
     'worklet';
+    if (typeof shared.set === 'function') {
+      shared.set(next);
+      return;
+    }
     shared.value = next;
   },
 });

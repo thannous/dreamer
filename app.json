@@ -16,6 +16,7 @@
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
+        "CADisableMinimumFrameDurationOnPhone": true,
         "LSApplicationQueriesSchemes": [
           "mailto",
           "tel"
@@ -101,7 +102,8 @@
         {
           "android": {
             "minSdkVersion": 33,
-            "enableMinifyInReleaseBuilds": true
+            "enableMinifyInReleaseBuilds": true,
+            "reactNativeReleaseLevel": "experimental"
           }
         }
       ],

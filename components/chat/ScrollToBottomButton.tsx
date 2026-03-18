@@ -8,7 +8,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { useScrollToBottomButton } from '@/hooks/useChatList';
 import { isChatDebugEnabled } from '@/lib/env';
 import React, { useCallback, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Pressable } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   useAnimatedStyle,
