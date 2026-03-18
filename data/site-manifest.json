@@ -325,6 +325,34 @@
             }
           }
         },
+        "blog.daylight-saving-time-sleep": {
+          "id": "blog.daylight-saving-time-sleep",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "daylight-saving-time-sleep",
+          "locales": {
+            "en": {
+              "slug": "daylight-saving-time-sleep",
+              "path": "/en/blog/daylight-saving-time-sleep"
+            },
+            "fr": {
+              "slug": "heure-ete-sommeil-reves",
+              "path": "/fr/blog/heure-ete-sommeil-reves"
+            },
+            "es": {
+              "slug": "horario-verano-sueno-suenos",
+              "path": "/es/blog/horario-verano-sueno-suenos"
+            },
+            "de": {
+              "slug": "zeitumstellung-schlaf-traeume",
+              "path": "/de/blog/zeitumstellung-schlaf-traeume"
+            },
+            "it": {
+              "slug": "ora-legale-sonno-sogni",
+              "path": "/it/blog/ora-legale-sonno-sogni"
+            }
+          }
+        },
         "blog.death-dreams-meaning": {
           "id": "blog.death-dreams-meaning",
           "type": "blogArticle",
@@ -882,6 +910,34 @@
             "it": {
               "slug": "giornata-sonno-ambiente-sogni",
               "path": "/it/blog/giornata-sonno-ambiente-sogni"
+            }
+          }
+        },
+        "blog.sleep-debt-health": {
+          "id": "blog.sleep-debt-health",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "sleep-debt-health-dreams",
+          "locales": {
+            "en": {
+              "slug": "sleep-debt-health-dreams",
+              "path": "/en/blog/sleep-debt-health-dreams"
+            },
+            "fr": {
+              "slug": "dette-sommeil-sante-reves",
+              "path": "/fr/blog/dette-sommeil-sante-reves"
+            },
+            "es": {
+              "slug": "deuda-sueno-salud-suenos",
+              "path": "/es/blog/deuda-sueno-salud-suenos"
+            },
+            "de": {
+              "slug": "schlafschuld-gesundheit-traeume",
+              "path": "/de/blog/schlafschuld-gesundheit-traeume"
+            },
+            "it": {
+              "slug": "debito-sonno-salute-sogni",
+              "path": "/it/blog/debito-sonno-salute-sogni"
             }
           }
         },

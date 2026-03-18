@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-14",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/ia-analyse-sommeil-reves",
-  "nextPath": "",
+  "nextPath": "/fr/blog/heure-ete-sommeil-reves",
   "preloadImage": "/img/blog/controler-reves-resolution-problemes.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Contrôler ses rêves pour résoudre des problèmes : l'étude qui change tout\",\n            \"description\": \"L'étude Northwestern 2026 montre que la TMR peut orienter les rêves vers des problèmes spécifiques, doublant le taux de résolution. Découvrez cette percée scientifique.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Fondateur & Directeur de la publication\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-14\",\n            \"dateModified\": \"2026-03-14\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/controler-reves-resolution-problemes\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/controler-reves-resolution-problemes\"\n        }",
@@ -294,12 +294,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">IA et analyse du sommeil : comment l'intelligence artificielle décrypte vos rêves</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/fr/blog/">
+<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="heure-ete-sommeil-reves">
 <div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Toutes les ressources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Parcourir toutes les ressources</div>
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Heure d'été et sommeil : comment le changement d'heure perturbe vos rêves</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

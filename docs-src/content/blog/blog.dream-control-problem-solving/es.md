@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-14",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/ia-analisis-sueno-suenos",
-  "nextPath": "",
+  "nextPath": "/es/blog/horario-verano-sueno-suenos",
   "preloadImage": "/img/blog/controler-reves-resolution-problemes.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Controlar tus sueños para resolver problemas: el estudio que lo cambia todo\",\n            \"description\": \"El estudio de Northwestern 2026 muestra que la TMR puede dirigir los sueños hacia problemas específicos, duplicando la tasa de resolución. Descubre este avance científico.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-14\",\n            \"dateModified\": \"2026-03-14\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/es/blog/controlar-suenos-resolucion-problemas\"\n        }",
@@ -294,12 +294,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">IA y análisis del sueño: cómo la inteligencia artificial descifra tus sueños</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Todos los recursos</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Ver todos los recursos</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="horario-verano-sueno-suenos">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Siguiente art&iacute;culo</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Cambio de hora y sue&ntilde;o: c&oacute;mo el horario de verano altera tus sue&ntilde;os</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

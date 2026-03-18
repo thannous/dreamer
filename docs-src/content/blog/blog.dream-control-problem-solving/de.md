@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-14",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/ki-schlafanalyse-traeume",
-  "nextPath": "",
+  "nextPath": "/de/blog/zeitumstellung-schlaf-traeume",
   "preloadImage": "/img/blog/controler-reves-resolution-problemes.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Träume steuern zur Problemlösung: Die Studie, die alles verändert\",\n            \"description\": \"Die Northwestern-Studie 2026 zeigt, dass TMR Träume auf spezifische Probleme lenken kann und die Lösungsrate verdoppelt. Entdecken Sie diesen wissenschaftlichen Durchbruch.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/controler-reves-resolution-problemes.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Gründer & Publikationsleiter\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-14\",\n            \"dateModified\": \"2026-03-14\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n        }",
@@ -294,12 +294,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">KI und Schlafanalyse: Wie künstliche Intelligenz Ihre Träume entschlüsselt</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Alle Ressourcen</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Alle Ressourcen ansehen</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="zeitumstellung-schlaf-traeume">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel Ihre Tr&auml;ume st&ouml;rt</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

@@ -40,6 +40,23 @@ function isoDateFromDocsVersion(version) {
   return new Date().toISOString().slice(0, 10);
 }
 
+/**
+ * Returns the ISO date of the last git commit that touched any of the given files.
+ * Falls back to fallbackDate if git is unavailable or the files have no history.
+ */
+function gitLastModifiedDate(filePaths, fallbackDate) {
+  const { execSync } = require('child_process');
+  try {
+    const result = execSync(
+      `git log -1 --format=%aI -- ${filePaths.map(f => `"${f}"`).join(' ')}`,
+      { cwd: path.join(__dirname, '..'), encoding: 'utf8', timeout: 5000 }
+    ).trim();
+    return result ? result.slice(0, 10) : fallbackDate;
+  } catch {
+    return fallbackDate;
+  }
+}
+
 const DOCS_ASSET_VERSION = readDocsAssetVersionOrExit();
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
@@ -62,8 +79,13 @@ const CONFIG = {
     it: 'simboli'
   },
   datePublished: '2025-01-21',
-  // Keep the historical publish date but refresh `dateModified` on each docs build.
-  dateModified: isoDateFromDocsVersion(DOCS_ASSET_VERSION),
+  // Automatically set to the last git commit date that touched symbol data files.
+  dateModified: gitLastModifiedDate([
+    'data/dream-symbols.json',
+    'data/symbol-i18n.json',
+    'data/dream-symbols-extended.json',
+    'data/dream-symbols-extended-tier3.json',
+  ], '2025-01-21'),
   cssVersion: DOCS_ASSET_VERSION
 };
 
