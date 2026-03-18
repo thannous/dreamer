@@ -90,7 +90,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
-<p class="text-purple-100/80 leading-relaxed">Der Fr&uuml;hling verl&auml;ngert die Tage abrupt, was die abendliche Melatoninproduktion unterdr&uuml;ckt und den Nucleus suprachiasmaticus &mdash; Ihre zentrale biologische Uhr &mdash; zur Neukalibrierung zwingt. Diese Desynchronisation erzeugt die Fr&uuml;hjahrm&uuml;digkeit (die etwa jeden dritten Europ&auml;er betrifft), ver&auml;ndert die Schlafarchitektur und beeinflusst Intensit&auml;t und Inhalt der Tr&auml;ume. Lichtmanagement, ein konsistenter Schlafrhythmus und das F&uuml;hren eines Traumtagebuchs sind die Schl&uuml;ssel, um diesen &Uuml;bergang ohne Qualit&auml;tsverlust im Schlaf zu meistern.</p>
+<p class="text-purple-100/80 leading-relaxed">Der Fr&uuml;hling verl&auml;ngert die Tage abrupt, was die abendliche Melatoninproduktion unterdr&uuml;ckt und den Nucleus suprachiasmaticus, Ihre zentrale biologische Uhr, zur Neukalibrierung zwingt. Diese Desynchronisation erzeugt die Fr&uuml;hjahrm&uuml;digkeit (die etwa jeden dritten Europ&auml;er betrifft), ver&auml;ndert die Schlafarchitektur und beeinflusst Intensit&auml;t und Inhalt der Tr&auml;ume. Lichtmanagement, ein konsistenter Schlafrhythmus und das F&uuml;hren eines Traumtagebuchs sind die Schl&uuml;ssel, um diesen &Uuml;bergang ohne Qualit&auml;tsverlust im Schlaf zu meistern.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -117,7 +117,7 @@
                     Die Fr&uuml;hlings-Tagundnachtgleiche markiert den Punkt, an dem Tag und <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a> ungef&auml;hr gleich lang sind. Doch das wirklich Bedeutsame ist nicht dieser Moment des Gleichgewichts, sondern was danach kommt: eine beschleunigte Zunahme der Fotoperiode, die in mitteleurop&auml;ischen Breiten t&auml;glich 3 bis 4 Minuten Tageslicht hinzuf&uuml;gt. In nur sechs Wochen wird der Tag um mehr als zwei Stunden l&auml;nger.
                 </p>
 <p>
-                    Aus Sicht des Gehirns ist diese Ver&auml;nderung alles andere als schrittweise. Der Nucleus suprachiasmaticus (SCN), die Meisteruhr im Hypothalamus, ist auf das Lichtsignal angewiesen, um die zirkadianen Rhythmen mit dem 24-Stunden-Zyklus zu synchronisieren. Wenn sich die Fotoperiode mit der Geschwindigkeit des Fr&uuml;hlings&uuml;bergangs &auml;ndert, muss sich der SCN neu kalibrieren. Er erh&auml;lt Informationen von den intrinsisch lichtempfindlichen retinalen Ganglienzellen &mdash; spezialisierten Neuronen, die das Umgebungslicht erfassen und direkt an die biologische Uhr weiterleiten &mdash; und dieser Anpassungsprozess geschieht nicht sofort.
+                    Aus Sicht des Gehirns ist diese Ver&auml;nderung alles andere als schrittweise. Der Nucleus suprachiasmaticus (SCN), die Meisteruhr im Hypothalamus, ist auf das Lichtsignal angewiesen, um die zirkadianen Rhythmen mit dem 24-Stunden-Zyklus zu synchronisieren. Wenn sich die Fotoperiode mit der Geschwindigkeit des Fr&uuml;hlings&uuml;bergangs &auml;ndert, muss sich der SCN neu kalibrieren. Er erh&auml;lt Informationen von den intrinsisch lichtempfindlichen retinalen Ganglienzellen, spezialisierten Neuronen, die das Umgebungslicht erfassen und direkt an die biologische Uhr weiterleiten, und dieser Anpassungsprozess geschieht nicht sofort.
                 </p>
 <p>
                     Die wissenschaftliche Forschung zeigt, dass die Neukalibrierung des SCN auf die neue Fotoperiode 1 bis 3 Wochen dauert. W&auml;hrend dieser &Uuml;bergangsphase arbeitet Ihr K&ouml;rper mit einer leicht verstellten Uhr im Verh&auml;ltnis zu den Umgebungssignalen, was eine subtile Form von saisonalem Jetlag erzeugt. Das Ergebnis: Einschlafprobleme, verfrühtes Erwachen und eine Tagesm&uuml;digkeit, die der Energie zu widersprechen scheint, die der Fr&uuml;hling bringen sollte.
@@ -126,14 +126,14 @@
 <h2 id="melatonin">Melatonin unter Druck</h2>
 <h3>Abendlicht als St&ouml;rfaktor</h3>
 <p>
-                    Melatonin &mdash; das Hormon, das dem K&ouml;rper signalisiert, dass es Zeit zum Schlafen ist &mdash; reagiert extrem empfindlich auf Licht. Seine Aussch&uuml;ttung durch die Zirbeldr&uuml;se beginnt normalerweise 1 bis 2 Stunden vor der &uuml;blichen Schlafenszeit, wenn das Umgebungslicht abnimmt. Im Winter erm&ouml;glicht der fr&uuml;he Sonnenuntergang, dass dieser Prozess ungest&ouml;rt beginnt. Im Fr&uuml;hling jedoch verschieben sich die Sonnenunterg&auml;nge zunehmend nach hinten, und das Abendlicht dringt in die Stunden ein, in denen das Melatonin ansteigen sollte.
+                    Melatonin, das Hormon, das dem K&ouml;rper signalisiert, dass es Zeit zum Schlafen ist, reagiert extrem empfindlich auf Licht. Seine Aussch&uuml;ttung durch die Zirbeldr&uuml;se beginnt normalerweise 1 bis 2 Stunden vor der &uuml;blichen Schlafenszeit, wenn das Umgebungslicht abnimmt. Im Winter erm&ouml;glicht der fr&uuml;he Sonnenuntergang, dass dieser Prozess ungest&ouml;rt beginnt. Im Fr&uuml;hling jedoch verschieben sich die Sonnenunterg&auml;nge zunehmend nach hinten, und das Abendlicht dringt in die Stunden ein, in denen das Melatonin ansteigen sollte.
                 </p>
 <p>
-                    Fotoperiodensstudien haben gezeigt, dass selbst eine moderate Exposition gegen&uuml;ber Abendlicht &mdash; das &Auml;quivalent eines verl&auml;ngerten <a class="text-dream-salmon hover:underline" href="../traumsymbole/sonne">Sonnenuntergangs</a>, der das Haus flutet &mdash; die Melatoninproduktion um 50 % oder mehr unterdr&uuml;cken kann. Das bedeutet, dass Ihr K&ouml;rper das Signal &laquo;es ist noch Tag&raquo; empf&auml;ngt, wenn Sie eigentlich Nacht brauchen. Die direkte Folge ist eine erh&ouml;hte Schlaflatenz: Sie brauchen l&auml;nger zum Einschlafen, trotz derselben M&uuml;digkeit wie im Winter.
+                    Fotoperiodensstudien haben gezeigt, dass selbst eine moderate Exposition gegen&uuml;ber Abendlicht, das &Auml;quivalent eines verl&auml;ngerten <a class="text-dream-salmon hover:underline" href="../traumsymbole/sonne">Sonnenuntergangs</a>, der das Haus flutet, die Melatoninproduktion um 50 % oder mehr unterdr&uuml;cken kann. Das bedeutet, dass Ihr K&ouml;rper das Signal &laquo;es ist noch Tag&raquo; empf&auml;ngt, wenn Sie eigentlich Nacht brauchen. Die direkte Folge ist eine erh&ouml;hte Schlaflatenz: Sie brauchen l&auml;nger zum Einschlafen, trotz derselben M&uuml;digkeit wie im Winter.
                 </p>
 <h3>Morgenlicht als Taktgeber</h3>
 <p>
-                    Wenn Abendlicht die Uhr verz&ouml;gert, beschleunigt Morgenlicht sie. Der fr&uuml;here Fr&uuml;hlingssonnenaufgang sendet ein starkes Signal an den SCN: &laquo;Der Tag hat begonnen&raquo;. Dies unterdr&uuml;ckt das verbliebene Melatonin und aktiviert die Cortisol-Wachheitspfade. F&uuml;r Menschen, die mit leichten Vorh&auml;ngen oder nach Osten ausgerichteten Schlafzimmern schlafen, ist das Ergebnis ein vorzeitiges Erwachen &mdash; manchmal 30 bis 60 Minuten vor dem Wecker &mdash; ohne dass der Schlafzyklus abgeschlossen wurde. Ein doppelter Druck: Sie gehen sp&auml;ter ins Bett und wachen fr&uuml;her auf.
+                    Wenn Abendlicht die Uhr verz&ouml;gert, beschleunigt Morgenlicht sie. Der fr&uuml;here Fr&uuml;hlingssonnenaufgang sendet ein starkes Signal an den SCN: &laquo;Der Tag hat begonnen&raquo;. Dies unterdr&uuml;ckt das verbliebene Melatonin und aktiviert die Cortisol-Wachheitspfade. F&uuml;r Menschen, die mit leichten Vorh&auml;ngen oder nach Osten ausgerichteten Schlafzimmern schlafen, ist das Ergebnis ein vorzeitiges Erwachen, manchmal 30 bis 60 Minuten vor dem Wecker, ohne dass der Schlafzyklus abgeschlossen wurde. Ein doppelter Druck: Sie gehen sp&auml;ter ins Bett und wachen fr&uuml;her auf.
                 </p>
 
 <blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
@@ -151,7 +151,7 @@
                 </p>
 <h3>Verschlimmernde Faktoren</h3>
 <p>
-                    Die Fr&uuml;hjahrm&uuml;digkeit wird durch Faktoren verst&auml;rkt, die oft unbemerkt bleiben. Temperaturver&auml;nderungen aktivieren die periphere Vasodilatation, was den Blutdruck leicht senkt und zum Gef&uuml;hl der Schl&auml;frigkeit beitr&auml;gt. Saisonale Allergien &mdash; die mit dem Pollenflug zusammenfallen &mdash; f&uuml;gen systemische Entz&uuml;ndungen und Schlaffragmentierung durch verstopfte Nase hinzu. Und die Versuchung, die hellen Abende f&uuml;r Aktivit&auml;ten im Freien zu nutzen, kann die Schlafenszeit weiter nach hinten verschieben und die Schlafschuld vergr&ouml;&szlig;ern.
+                    Die Fr&uuml;hjahrm&uuml;digkeit wird durch Faktoren verst&auml;rkt, die oft unbemerkt bleiben. Temperaturver&auml;nderungen aktivieren die periphere Vasodilatation, was den Blutdruck leicht senkt und zum Gef&uuml;hl der Schl&auml;frigkeit beitr&auml;gt. Saisonale Allergien, die mit dem Pollenflug zusammenfallen, f&uuml;gen systemische Entz&uuml;ndungen und Schlaffragmentierung durch verstopfte Nase hinzu. Und die Versuchung, die hellen Abende f&uuml;r Aktivit&auml;ten im Freien zu nutzen, kann die Schlafenszeit weiter nach hinten verschieben und die Schlafschuld vergr&ouml;&szlig;ern.
                 </p>
 </div>
 
@@ -174,14 +174,14 @@
 <h2 id="dream-quality">Traumqualit&auml;t im Fr&uuml;hling</h2>
 <h3>Umverteilung des REM-Schlafs</h3>
 <p>
-                    Die Kompression der biologischen Nacht wirkt sich direkt auf die Schlafarchitektur aus. Die l&auml;ngsten REM-Schlafphasen mit den lebhaftesten Tr&auml;umen konzentrieren sich im letzten Drittel der Nacht &mdash; genau die Stunden, die der fr&uuml;he Sonnenaufgang tendenziell abschneidet. Wenn das Morgenlicht Sie aufweckt, bevor Ihr letzter REM-Zyklus abgeschlossen ist, verlieren Sie den Schlafabschnitt mit der h&ouml;chsten Traumdichte.
+                    Die Kompression der biologischen Nacht wirkt sich direkt auf die Schlafarchitektur aus. Die l&auml;ngsten REM-Schlafphasen mit den lebhaftesten Tr&auml;umen konzentrieren sich im letzten Drittel der Nacht, genau die Stunden, die der fr&uuml;he Sonnenaufgang tendenziell abschneidet. Wenn das Morgenlicht Sie aufweckt, bevor Ihr letzter REM-Zyklus abgeschlossen ist, verlieren Sie den Schlafabschnitt mit der h&ouml;chsten Traumdichte.
                 </p>
 <p>
                     Das Gehirn gibt seine Tr&auml;ume jedoch nicht kampflos auf. Wie bei Schlafentzug kann der fr&uuml;hlingsbedingte REM-Verlust einen <strong>kompensatorischen REM-Rebound</strong> ausl&ouml;sen: Das Gehirn intensiviert die verbleibenden REM-Phasen und erzeugt in k&uuml;rzerer Zeit dichtere, lebhaftere und emotional aufgeladenere Tr&auml;ume. Dies erkl&auml;rt, warum viele Menschen zu Beginn des Fr&uuml;hlings von besonders intensiven Tr&auml;umen berichten.
                 </p>
 <h3>Saisonale Muster im Trauminhalt</h3>
 <p>
-                    Die Forschung zu saisonalen Traummustern zeigt, dass Fr&uuml;hlingstr&auml;ume tendenziell mehr Bilder von Bewegung, Verwandlung und Natur enthalten als die anderer Jahreszeiten. Themen wie Wiedergeburt, Wachstum und Ver&auml;nderung treten h&auml;ufiger auf &mdash; m&ouml;glicherweise eine Widerspiegelung der Reaktion des Gehirns auf die Umweltsignale der Erneuerung. <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">N&auml;chtliche Szenen</a> in Fr&uuml;hlingstr&auml;umen sind oft heller, als ob die Zunahme des Tageslichts sogar in die Traumlandschaft einsickert.
+                    Die Forschung zu saisonalen Traummustern zeigt, dass Fr&uuml;hlingstr&auml;ume tendenziell mehr Bilder von Bewegung, Verwandlung und Natur enthalten als die anderer Jahreszeiten. Themen wie Wiedergeburt, Wachstum und Ver&auml;nderung treten h&auml;ufiger auf, m&ouml;glicherweise eine Widerspiegelung der Reaktion des Gehirns auf die Umweltsignale der Erneuerung. <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">N&auml;chtliche Szenen</a> in Fr&uuml;hlingstr&auml;umen sind oft heller, als ob die Zunahme des Tageslichts sogar in die Traumlandschaft einsickert.
                 </p>
 <p>
                     F&uuml;r diejenigen, die w&auml;hrend dieses &Uuml;bergangs beunruhigende Tr&auml;ume erleben, ist es wichtig zu verstehen, dass die Traumintensivierung eine normale Reaktion des Gehirns auf die zirkadiane Neukalibrierung darstellt. Sie deutet nicht auf ein psychisches Problem hin, sondern auf ein Schlafsystem, das sich aktiv an die neue Fotoperiode anpasst.
@@ -190,11 +190,11 @@
 <h2 id="adaptation">Anpassungsstrategien</h2>
 <h3>Lichtmanagement</h3>
 <p>
-                    Das wirksamste Werkzeug f&uuml;r einen reibungslosen Fr&uuml;hlings&uuml;bergang ist das Licht. Setzen Sie sich morgens <strong>20 bis 30 Minuten nach dem Aufwachen hellem nat&uuml;rlichem Licht aus</strong>. Ein Morgenspaziergang liefert etwa 10.000 Lux &mdash; das st&auml;rkste Signal, um Ihre zirkadiane Phase vorzuziehen und Ihre Uhr mit der neuen Fotoperiode zu synchronisieren. Abends machen Sie das Gegenteil: Dimmen Sie die Beleuchtung 90 Minuten vor dem Schlafengehen, verwenden Sie warmwei&szlig;e Lampen (2.700K oder weniger) und installieren Sie Verdunklungsvorh&auml;nge, um zu verhindern, dass das Morgenlicht Ihre letzten Schlafzyklen unterbricht.
+                    Das wirksamste Werkzeug f&uuml;r einen reibungslosen Fr&uuml;hlings&uuml;bergang ist das Licht. Setzen Sie sich morgens <strong>20 bis 30 Minuten nach dem Aufwachen hellem nat&uuml;rlichem Licht aus</strong>. Ein Morgenspaziergang liefert etwa 10.000 Lux, das st&auml;rkste Signal, um Ihre zirkadiane Phase vorzuziehen und Ihre Uhr mit der neuen Fotoperiode zu synchronisieren. Abends machen Sie das Gegenteil: Dimmen Sie die Beleuchtung 90 Minuten vor dem Schlafengehen, verwenden Sie warmwei&szlig;e Lampen (2.700K oder weniger) und installieren Sie Verdunklungsvorh&auml;nge, um zu verhindern, dass das Morgenlicht Ihre letzten Schlafzyklen unterbricht.
                 </p>
 <h3>Konsistenter Schlafrhythmus</h3>
 <p>
-                    Widerstehen Sie der Versuchung, deutlich sp&auml;ter ins Bett zu gehen, nur weil es noch hell ist. Eine konstante Einschlaf- und Aufwachzeit &mdash; auch am Wochenende &mdash; bildet die Grundlage f&uuml;r eine sanfte Anpassung. Wenn Sie Ihren Zeitplan &auml;ndern m&uuml;ssen, tun Sie es in 15-Minuten-Schritten pro Tag, nicht abrupt. Ihr SCN passt sich besser an kleine, progressive &Auml;nderungen an als an pl&ouml;tzliche Spr&uuml;nge.
+                    Widerstehen Sie der Versuchung, deutlich sp&auml;ter ins Bett zu gehen, nur weil es noch hell ist. Eine konstante Einschlaf- und Aufwachzeit, auch am Wochenende, bildet die Grundlage f&uuml;r eine sanfte Anpassung. Wenn Sie Ihren Zeitplan &auml;ndern m&uuml;ssen, tun Sie es in 15-Minuten-Schritten pro Tag, nicht abrupt. Ihr SCN passt sich besser an kleine, progressive &Auml;nderungen an als an pl&ouml;tzliche Spr&uuml;nge.
                 </p>
 <h3>Bewegung und Temperatur</h3>
 <p>
@@ -204,10 +204,10 @@
 <h2 id="journaling">Traumtagebuch w&auml;hrend des &Uuml;bergangs</h2>
 <h3>Ein Barometer Ihrer zirkadianen Anpassung</h3>
 <p>
-                    Ein Traumtagebuch w&auml;hrend des Fr&uuml;hlings&uuml;bergangs zu f&uuml;hren ist nicht nur eine &Uuml;bung der Selbsterkenntnis: Es ist ein Instrument zur &Uuml;berwachung Ihrer zirkadianen Gesundheit. Ver&auml;nderungen in der Lebhaftigkeit, Emotionalit&auml;t und dem Inhalt Ihrer Tr&auml;ume spiegeln direkt wider, wie Ihr Gehirn die neue Fotoperiode verarbeitet. Ein pl&ouml;tzlicher Anstieg der Traumintensit&auml;t kann auf einen REM-Rebound hinweisen &mdash; ein Signal, dass Ihr Schlaf durch das neue Licht komprimiert wird.
+                    Ein Traumtagebuch w&auml;hrend des Fr&uuml;hlings&uuml;bergangs zu f&uuml;hren ist nicht nur eine &Uuml;bung der Selbsterkenntnis: Es ist ein Instrument zur &Uuml;berwachung Ihrer zirkadianen Gesundheit. Ver&auml;nderungen in der Lebhaftigkeit, Emotionalit&auml;t und dem Inhalt Ihrer Tr&auml;ume spiegeln direkt wider, wie Ihr Gehirn die neue Fotoperiode verarbeitet. Ein pl&ouml;tzlicher Anstieg der Traumintensit&auml;t kann auf einen REM-Rebound hinweisen, ein Signal, dass Ihr Schlaf durch das neue Licht komprimiert wird.
                 </p>
 <p>
-                    Das Aufzeichnen Ihrer Tr&auml;ume per Spracheingabe direkt nach dem Aufwachen &mdash; bevor die Details verblassen &mdash; erm&ouml;glicht es Ihnen, Nuancen festzuhalten, die eine abendliche schriftliche Aufzeichnung verlieren w&uuml;rde. Der Vergleich Ihrer Traummuster von Februar mit denen von April kann den genauen Abdruck des saisonalen &Uuml;bergangs in Ihrer Schlafarchitektur offenbaren.
+                    Das Aufzeichnen Ihrer Tr&auml;ume per Spracheingabe direkt nach dem Aufwachen, bevor die Details verblassen, erm&ouml;glicht es Ihnen, Nuancen festzuhalten, die eine abendliche schriftliche Aufzeichnung verlieren w&uuml;rde. Der Vergleich Ihrer Traummuster von Februar mit denen von April kann den genauen Abdruck des saisonalen &Uuml;bergangs in Ihrer Schlafarchitektur offenbaren.
                 </p>
 <h3>Muster, auf die Sie achten sollten</h3>
 <p>
@@ -249,7 +249,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Ja. Die Ver&auml;nderungen der Schlafarchitektur im Fr&uuml;hling &mdash; insbesondere die Umverteilung des REM-Schlafs &mdash; ver&auml;ndern das Traumerlebnis. Viele Menschen berichten w&auml;hrend des Fr&uuml;hlingsumbruchs von lebhafteren und emotional intensiveren Tr&auml;umen, h&auml;ufig mit Themen rund um Licht, Bewegung und Verwandlung, die die zirkadiane Neukalibrierung des Gehirns widerspiegeln.
+                            Ja. Die Ver&auml;nderungen der Schlafarchitektur im Fr&uuml;hling, insbesondere die Umverteilung des REM-Schlafs, ver&auml;ndern das Traumerlebnis. Viele Menschen berichten w&auml;hrend des Fr&uuml;hlingsumbruchs von lebhafteren und emotional intensiveren Tr&auml;umen, h&auml;ufig mit Themen rund um Licht, Bewegung und Verwandlung, die die zirkadiane Neukalibrierung des Gehirns widerspiegeln.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
