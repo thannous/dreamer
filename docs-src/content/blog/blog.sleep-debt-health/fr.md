@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-17",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/heure-ete-sommeil-reves",
-  "nextPath": "",
+  "nextPath": "/fr/blog/perturbation-sommeil-printemps-reves",
   "preloadImage": "/img/blog/dette-sommeil-sante-reves.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Dette de sommeil : comment la privation chronique affecte votre sant\u00e9 et vos r\u00eaves\",\n            \"description\": \"La dette de sommeil s'accumule silencieusement et perturbe le sommeil paradoxal, le rappel onirique et la sant\u00e9 \u00e0 long terme. D\u00e9couvrez la science de l'accumulation, le rebond REM et comment r\u00e9cup\u00e9rer.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dette-sommeil-sante-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Fondateur & Directeur de la publication\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-17\",\n            \"dateModified\": \"2026-03-17\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/fr/blog/dette-sommeil-sante-reves\"\n        }",
@@ -312,12 +312,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Changement d'heure et sommeil : comment l'heure d'&#233;t&#233; perturbe vos r&#234;ves</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/fr/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">Toutes les ressources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Parcourir toutes les ressources</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="perturbation-sommeil-printemps-reves">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Perturbation du sommeil au printemps : comment les jours plus longs alt&#232;rent votre sommeil et vos r&#234;ves</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

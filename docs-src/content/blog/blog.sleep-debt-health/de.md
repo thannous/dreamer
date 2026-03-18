@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-17",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/zeitumstellung-schlaf-traeume",
-  "nextPath": "",
+  "nextPath": "/de/blog/fruehling-schlaf-stoerung-traeume",
   "preloadImage": "/img/blog/dette-sommeil-sante-reves.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Tr\\u00e4ume\",\n            \"description\": \"Erfahren Sie, was Schlafschuld ist, wie sie sich aufbaut, welche Folgen sie f\\u00fcr Gesundheit und Tr\\u00e4ume hat und welche wissenschaftlichen Strategien helfen, erholsamen Schlaf zur\\u00fcckzugewinnen.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dette-sommeil-sante-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Gr\\u00fcnder & Publikationsleiter\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-17\",\n            \"dateModified\": \"2026-03-17\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/schlafschuld-gesundheit-traeume\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/de/blog/schlafschuld-gesundheit-traeume\"\n        }",
@@ -280,9 +280,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel Ihre Tr&auml;ume st&ouml;rt</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-center justify-center gap-2 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
-<i class="w-5 h-5 text-dream-salmon shrink-0" data-lucide="home"></i>
-<span class="font-serif text-lg text-dream-cream">Alle Ressourcen</span>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="fruehling-schlaf-stoerung-traeume">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlafst&ouml;rung im Fr&uuml;hling: Wie l&auml;ngere Tage Ihren Schlaf und Ihre Tr&auml;ume ver&auml;ndern</div>
+</div>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

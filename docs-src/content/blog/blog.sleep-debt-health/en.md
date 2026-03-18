@@ -26,7 +26,7 @@
   "modifiedTime": "2026-03-17",
   "author": "Thanh Chau",
   "prevPath": "/en/blog/daylight-saving-time-sleep",
-  "nextPath": "",
+  "nextPath": "/en/blog/spring-sleep-disruption-dreams",
   "preloadImage": "/img/blog/dette-sommeil-sante-reves.webp",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sleep Debt: How Chronic Sleep Deprivation Affects Your Health and Dreams\",\n            \"description\": \"Sleep debt accumulates silently and disrupts REM sleep, dream recall, and long-term health. Learn the science of accumulation, REM rebound, and how to recover.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dette-sommeil-sante-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/en/about#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/en/about\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-17\",\n            \"dateModified\": \"2026-03-17\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/en/blog/sleep-debt-health-dreams\"\n            },\n            \"inLanguage\": \"en\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1600,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/en/blog/sleep-debt-health-dreams\"\n        }",
@@ -312,12 +312,12 @@
 <div class="font-serif text-lg text-dream-cream mt-1">Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams</div>
 </div>
 </a>
-<a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/en/blog/">
-<div>
-<span class="text-xs text-purple-300/60 uppercase tracking-wide">All resources</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Browse all resources</div>
+<a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="spring-sleep-disruption-dreams">
+<div class="text-right">
+<span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
+<div class="font-serif text-lg text-dream-cream mt-1">Spring Sleep Disruption: How Longer Days Alter Your Sleep and Dreams</div>
 </div>
-<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="home"></i>
+<i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
 </div>
 </section>

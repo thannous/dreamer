@@ -111,6 +111,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/dream-journal-guide"/>
   </url>
   <url>
+    <loc>https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/de/blog/ki-schlafanalyse-traeume</loc>
     <lastmod>2026-03-18</lastmod>
     <priority>0.6</priority>
@@ -175,6 +186,28 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-salud-prioridad"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-salute-priorita"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/tracker-sonno-wearable-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen</loc>
@@ -1662,6 +1695,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
   </url>
   <url>
+    <loc>https://noctalia.app/en/blog/sleep-health-priority</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-salud-prioridad"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-salute-priorita"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/en/blog/sleep-paralysis-guide</loc>
     <lastmod>2026-03-18</lastmod>
     <priority>0.6</priority>
@@ -1682,6 +1726,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/snake-dreams-meaning"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/blog/spring-sleep-disruption-dreams</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/stop-nightmares-guide</loc>
@@ -1726,6 +1781,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/water-dreams-meaning"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/en/blog/wearable-sleep-trackers-dreams</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/tracker-sonno-wearable-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/en/blog/why-we-dream-science</loc>
@@ -2696,6 +2762,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/"/>
   </url>
   <url>
+    <loc>https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/es/blog/como-recordar-suenos</loc>
     <lastmod>2026-03-18</lastmod>
     <priority>0.6</priority>
@@ -2872,6 +2949,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/why-we-dream-science"/>
   </url>
   <url>
+    <loc>https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/tracker-sonno-wearable-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/es/blog/significado-de-suenos</loc>
     <lastmod>2026-03-18</lastmod>
     <priority>0.6</priority>
@@ -2903,6 +2991,17 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/es/blog/sueno-salud-prioridad</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-salud-prioridad"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-salute-priorita"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-health-priority"/>
   </url>
   <url>
     <loc>https://noctalia.app/es/blog/suenos-con-ex</loc>
@@ -4181,6 +4280,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-day-environment-dreams"/>
   </url>
   <url>
+    <loc>https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/fr/blog/pourquoi-nous-revons-science</loc>
     <lastmod>2026-03-18</lastmod>
     <priority>0.6</priority>
@@ -4399,6 +4509,28 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/sommeil-sante-priorite</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-salud-prioridad"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-salute-priorita"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/tracker-sonno-wearable-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/fr/cgu</loc>
@@ -5380,6 +5512,17 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-debt-health-dreams"/>
   </url>
   <url>
+    <loc>https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/perturbation-sommeil-printemps-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/alteracion-sueno-primavera-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/spring-sleep-disruption-dreams"/>
+  </url>
+  <url>
     <loc>https://noctalia.app/it/blog/dream-journal-richiamo-metodi-e-routine</loc>
     <lastmod>2026-03-18</lastmod>
     <priority>0.6</priority>
@@ -5719,6 +5862,28 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/rem-sleep-dreams"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/it/blog/sonno-salute-priorita</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/sommeil-sante-priorite"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/sueno-salud-prioridad"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/sonno-salute-priorita"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/sleep-health-priority"/>
+  </url>
+  <url>
+    <loc>https://noctalia.app/it/blog/tracker-sonno-wearable-sogni</loc>
+    <lastmod>2026-03-18</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://noctalia.app/fr/blog/traqueurs-sommeil-connectes-reves"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://noctalia.app/es/blog/rastreadores-sueno-wearables-suenos"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://noctalia.app/it/blog/tracker-sonno-wearable-sogni"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://noctalia.app/en/blog/wearable-sleep-trackers-dreams"/>
   </url>
   <url>
     <loc>https://noctalia.app/it/chi-siamo</loc>
