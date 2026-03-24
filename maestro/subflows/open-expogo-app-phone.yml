@@ -1,0 +1,51 @@
+appId: host.exp.exponent
+env:
+  EXPO_GO_URL: exp://localhost:8081
+---
+- openLink: ${EXPO_GO_URL}
+- runFlow:
+    when:
+      visible: "Open"
+    commands:
+      - tapOn:
+          text: "Open"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn:
+          text: "Continue"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Minimize"
+    commands:
+      - tapOn:
+          text: "Minimize"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+- runFlow:
+    when:
+      visible: "Open from Clipboard"
+    commands:
+      - tapOn:
+          text: "Open from Clipboard"
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 60000
+- assertVisible:
+    id: screen.recording

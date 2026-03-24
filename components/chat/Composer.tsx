@@ -32,7 +32,6 @@ import {
   Alert,
   NativeModules,
   Platform,
-  Pressable,
   StyleSheet,
   TextInput,
   View,
@@ -40,6 +39,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Pressable } from 'react-native-gesture-handler';
 
 import Animated, {
   runOnUI,
@@ -548,6 +548,7 @@ function MicButton() {
       ]}
       onPress={toggleRecording}
       disabled={isLoading || isDisabled}
+      accessibilityRole="button"
       accessibilityLabel={isRecording ? t('dream_chat.mic.stop') : t('dream_chat.mic.start')}
       testID={micTestID}
     >

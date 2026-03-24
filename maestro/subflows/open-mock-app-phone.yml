@@ -1,0 +1,138 @@
+appId: com.tanuki75.noctalia
+env:
+  DEV_CLIENT_URL: exp+noctalia://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+---
+- openLink: ${DEV_CLIENT_URL}
+- runFlow:
+    when:
+      visible: "http://localhost:8081"
+    commands:
+      - tapOn:
+          text: "http://localhost:8081"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn:
+          text: "Continue"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Minimize"
+    commands:
+      - tapOn:
+          text: "Minimize"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Loading from localhost:8081"
+    commands:
+      - extendedWaitUntil:
+          notVisible: "Loading from localhost:8081"
+          timeout: 60000
+- runFlow:
+    when:
+      visible: "Reloading"
+    commands:
+      - extendedWaitUntil:
+          notVisible: "Reloading"
+          timeout: 60000
+- runFlow:
+    when:
+      notVisible:
+        id: screen.recording
+    commands:
+      - pressKey: back
+      - openLink: ${DEV_CLIENT_URL}
+      - runFlow:
+          when:
+            visible: "http://localhost:8081"
+          commands:
+            - tapOn:
+                text: "http://localhost:8081"
+                retryTapIfNoChange: true
+      - runFlow:
+          when:
+            visible: "Continue"
+          commands:
+            - tapOn:
+                text: "Continue"
+                retryTapIfNoChange: true
+      - runFlow:
+          when:
+            visible: "Reload"
+          commands:
+            - pressKey: back
+      - runFlow:
+          when:
+            visible: "Dismiss"
+          commands:
+            - tapOn:
+                text: "Dismiss"
+                retryTapIfNoChange: true
+      - runFlow:
+          when:
+            visible: "Minimize"
+          commands:
+            - tapOn:
+                text: "Minimize"
+                retryTapIfNoChange: true
+      - runFlow:
+          when:
+            visible: "Loading from localhost:8081"
+          commands:
+            - extendedWaitUntil:
+                notVisible: "Loading from localhost:8081"
+                timeout: 60000
+      - runFlow:
+          when:
+            visible: "Reloading"
+          commands:
+            - extendedWaitUntil:
+                notVisible: "Reloading"
+                timeout: 60000
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn:
+          text: "Continue"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn:
+          text: "Dismiss"
+          retryTapIfNoChange: true
+- runFlow:
+    when:
+      visible: "Minimize"
+    commands:
+      - tapOn:
+          text: "Minimize"
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: screen.recording
+    timeout: 60000
+- assertVisible:
+    id: screen.recording

@@ -1,0 +1,32 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow: subflows/open-mock-app-phone.yml
+- runFlow:
+      when:
+          visible:
+              id: screen.journal
+      commands:
+          - tapOn:
+                id: btn.addDream
+- extendedWaitUntil:
+      visible:
+          id: screen.recording
+      timeout: 20000
+- assertVisible:
+      id: screen.recording
+- runFlow: subflows/go-to-journal-phone.yml
+- assertVisible:
+      id: screen.journal
+- tapOn:
+      id: input.searchDreams
+- inputText: Lucide
+- eraseText
+- pressKey: back
+- tapOn:
+      id: btn.addDream
+- extendedWaitUntil:
+      visible:
+          id: screen.recording
+      timeout: 20000
+- assertVisible:
+      id: screen.recording

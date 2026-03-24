@@ -12,8 +12,25 @@ appId: com.tanuki75.noctalia
           - waitForAnimationToEnd
 - assertVisible:
       id: screen.recording
-- tapOn:
-      id: btn.mockNav.journal
+- runFlow:
+      when:
+          visible:
+              id: btn.navigateJournal
+      commands:
+          - tapOn:
+                id: btn.navigateJournal
+          - waitForAnimationToEnd
+          - tapOn:
+                id: tab.journal
+          - waitForAnimationToEnd
+- runFlow:
+      when:
+          visible:
+              id: btn.mockNav.journal
+      commands:
+          - tapOn:
+                id: btn.mockNav.journal
+          - waitForAnimationToEnd
 - assertVisible:
       id: screen.journal
 - tapOn:
