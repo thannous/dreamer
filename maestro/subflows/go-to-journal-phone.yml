@@ -1,0 +1,40 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow:
+    when:
+      visible:
+        id: btn.navigateJournal
+    commands:
+      - tapOn:
+          id: btn.navigateJournal
+      - extendedWaitUntil:
+          visible:
+            text: Journal
+          timeout: 10000
+- runFlow:
+    when:
+      visible:
+        id: btn.mockNav.journal
+    commands:
+      - tapOn:
+          id: btn.mockNav.journal
+- runFlow:
+    when:
+      visible:
+        id: tab.journal
+    commands:
+      - tapOn:
+          id: tab.journal
+- runFlow:
+    when:
+      visible:
+        text: Journal
+    commands:
+      - tapOn:
+          text: Journal
+- extendedWaitUntil:
+    visible:
+      id: screen.journal
+    timeout: 20000
+- assertVisible:
+    id: screen.journal
