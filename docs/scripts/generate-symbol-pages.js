@@ -2,18 +2,25 @@
 /**
  * Dream Symbol Pages Generator
  *
- * Generates individual HTML pages for each dream symbol in each language
+ * Generates the full dream-symbol page family in each language:
+ * individual symbol pages, category pages, and curated guide pages.
  * using the data from dream-symbols.json and symbol-i18n.json
  *
  * Usage:
- *   node scripts/generate-symbol-pages.js
+ *   node scripts/generate-symbol-pages.js             # All symbol pages
  *   node scripts/generate-symbol-pages.js --priority=1  # Only priority 1 symbols
  *   node scripts/generate-symbol-pages.js --lang=en     # Only English
+ *   node scripts/generate-symbol-pages.js --categories  # Only category pages
+ *   node scripts/generate-symbol-pages.js --curation    # Only curated guide pages
  *   node scripts/generate-symbol-pages.js --dry-run     # Preview without writing
  */
 
 const fs = require('fs');
 const path = require('path');
+const { createRenderContext } = require('../../scripts/lib/docs-components/context');
+const { renderFooter: renderSharedFooter } = require('../../scripts/lib/docs-components/footer');
+const { renderNavigation } = require('../../scripts/lib/docs-components/navigation');
+const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
 
 function readDocsAssetVersionOrExit() {
   const versionPath = path.join(__dirname, '..', 'version.txt');
@@ -61,6 +68,7 @@ const DOCS_ASSET_VERSION = readDocsAssetVersionOrExit();
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
+const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
 
 // Configuration
 const CONFIG = {
@@ -112,6 +120,41 @@ function parseSourceDocument(raw) {
 }
 
 const SHARED_SITE_CONFIG = loadSharedSiteConfig();
+
+function loadSiteManifest() {
+  return JSON.parse(fs.readFileSync(SITE_MANIFEST_PATH, 'utf8'));
+}
+
+function createGeneratedShellContext(lang, currentPaths, activeNav = 'dictionary') {
+  const locales = Object.fromEntries(
+    CONFIG.languages.map((candidate) => [
+      candidate,
+      { path: currentPaths[candidate] || `/${candidate}/` },
+    ])
+  );
+
+  return createRenderContext({
+    manifest: loadSiteManifest(),
+    entryId: 'page.home',
+    meta: {
+      lang,
+      layout: 'generated',
+      activeNav,
+    },
+    entryOverride: {
+      id: `generated.${activeNav}`,
+      locales,
+    },
+  });
+}
+
+function renderPseoNav(lang, currentPaths, activeNav = 'dictionary') {
+  return renderNavigation(createGeneratedShellContext(lang, currentPaths, activeNav));
+}
+
+function renderPseoFooter(lang, currentPaths, activeNav = 'dictionary') {
+  return renderSharedFooter(createGeneratedShellContext(lang, currentPaths, activeNav));
+}
 
 const GUIDES_HUB_LABELS = {
   en: 'Dream Guides',
@@ -455,7 +498,7 @@ function renderPseoNavLinks(lang, t) {
                 <a href="/${lang}/guides/${t.dictionary_slug}" class="hidden sm:inline-flex text-dream-salmon transition-colors">${DICTIONARY_NAV_LABELS[lang]}</a>`;
 }
 
-function renderPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CURATION_PAGES) {
+function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CURATION_PAGES) {
   const resourcesLinks = [
     { href: `/${lang}/blog/`, label: t.nav_resources },
     ...(FEATURED_BLOG_LINKS[lang] || [])
@@ -756,6 +799,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     .filter(l => hreflang[l])
     .map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`)
     .join('\n');
+  const currentPaths = Object.fromEntries(
+    CONFIG.languages.map(l => [l, `/${l}/${CONFIG.symbolsPath[l]}/${symbol[l]?.slug || symbolData.slug}`])
+  );
 
   // Generate the full HTML
   return `<!DOCTYPE html>
@@ -808,6 +854,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <!-- Styles -->
     <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
+${renderSharedComponentStyles()}
     <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
 
     <style>
@@ -855,33 +902,7 @@ ${renderJsonLd(faqPageJsonLd)}
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
-            <a href="/${lang}/" class="flex items-center gap-2">
-                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
-            </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">${renderPseoNavLinks(lang, t)}
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Choose language"
-                            id="languageDropdownButton">
-                        <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
-                    </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">${langDropdownHtml}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+${renderPseoNav(lang, currentPaths, 'dictionary')}
 
     <main class="pt-32 pb-20 px-4">
         <article class="max-w-3xl mx-auto">
@@ -993,7 +1014,7 @@ ${relatedArticleHtml}
         </article>
     </main>
 
-${renderPseoFooter(lang, t, allSymbols)}
+${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1010,6 +1031,7 @@ ${renderPseoFooter(lang, t, allSymbols)}
         });
     </script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
+    <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>
 </body>
 </html>`;
 }
@@ -1097,6 +1119,14 @@ function main() {
       console.log(`   /${lang}/${CONFIG.symbolsPath[lang]}/`);
     }
   }
+
+  if (args.id || args.priority) {
+    console.log('\nℹ️  Skipping category and curation pages because a symbol filter is active.');
+    return;
+  }
+
+  generateCategoryPages(symbols, i18n, languages);
+  generateCurationPages(symbols, i18n, extended, languages);
 }
 
 // =====================================================
@@ -1246,6 +1276,9 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
                             <span class="w-5 text-center">${langItems[l].flag}</span> ${langItems[l].name}
                         </a>`;
   }).join('\n');
+  const currentPaths = Object.fromEntries(
+    CONFIG.languages.map(l => [l, `/${l}/${CONFIG.symbolsPath[l]}/${i18n[l].category_slugs[categoryId]}`])
+  );
 
   // Generate symbols grid HTML
   const symbolsHtml = symbolsInCategory.map(s => `
@@ -1392,6 +1425,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <!-- Styles -->
     <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
+${renderSharedComponentStyles()}
     <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
 
     <style>
@@ -1437,33 +1471,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
-            <a href="/${lang}/" class="flex items-center gap-2">
-                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
-            </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">${renderPseoNavLinks(lang, t)}
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Choose language"
-                            id="languageDropdownButton">
-                        <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
-                    </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">${langDropdownHtml}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+${renderPseoNav(lang, currentPaths, 'dictionary')}
 
     <main class="pt-32 pb-20 px-4">
         <div class="max-w-5xl mx-auto">
@@ -1545,7 +1553,7 @@ ${relatedGuidesHtml}
         </div>
     </main>
 
-${renderPseoFooter(lang, t, allSymbols, curationPages)}
+${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1562,6 +1570,7 @@ ${renderPseoFooter(lang, t, allSymbols, curationPages)}
         });
     </script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
+    <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>
 </body>
 </html>`;
 }
@@ -1729,6 +1738,9 @@ function generateCurationPage(page, allSymbols, i18n, extended, lang) {
                             <span class="w-5 text-center">${langItems[l].flag}</span> ${langItems[l].name}
                         </a>`;
   }).join('\n');
+  const currentPaths = Object.fromEntries(
+    CONFIG.languages.map(l => [l, `/${l}/guides/${page.slugs[l]}`])
+  );
 
   // Generate symbol cards
   const symbolCardsHtml = resolvedSymbols.map((s, i) => {
@@ -1895,6 +1907,7 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <!-- Styles -->
     <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
+${renderSharedComponentStyles()}
     <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
 
     <style>
@@ -1938,33 +1951,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
-            <a href="/${lang}/" class="flex items-center gap-2">
-                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
-            </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">${renderPseoNavLinks(lang, t)}
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Choose language"
-                            id="languageDropdownButton">
-                        <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
-                    </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">${langDropdownHtml}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+${renderPseoNav(lang, currentPaths, 'dictionary')}
 
     <main class="pt-32 pb-20 px-4">
         <div class="max-w-5xl mx-auto">
@@ -2046,7 +2033,7 @@ ${guideHowToHtml}
         </div>
     </main>
 
-${renderPseoFooter(lang, t, allSymbols, curationData.pages)}
+${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -2063,6 +2050,7 @@ ${renderPseoFooter(lang, t, allSymbols, curationData.pages)}
         });
     </script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
+    <script src="/js/mobile-menu.js?v=${CONFIG.cssVersion}" defer></script>
 </body>
 </html>`;
 }

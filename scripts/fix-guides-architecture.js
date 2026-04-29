@@ -4,6 +4,9 @@
 const fs = require('fs');
 const path = require('path');
 const { SUPPORTED_LANGS } = require('./lib/docs-seo-utils');
+const { createRenderContext } = require('./lib/docs-components/context');
+const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
+const { renderNavigation } = require('./lib/docs-components/navigation');
 const { renderViewTransitionHeadStyles } = require('./lib/docs-view-transitions');
 
 const ROOT = path.join(__dirname, '..');
@@ -28,12 +31,243 @@ const LOCALES = Object.fromEntries(
   })
 );
 
+function createGuidesShellContext(lang, currentPaths, activeNav) {
+  const locales = Object.fromEntries(
+    SUPPORTED_LANGS.map((candidate) => [
+      candidate,
+      { path: currentPaths[candidate] || `/${candidate}/guides/` },
+    ])
+  );
+
+  return createRenderContext({
+    manifest: SITE_MANIFEST,
+    entryId: 'guide.index',
+    meta: {
+      lang,
+      layout: 'generated',
+      activeNav,
+    },
+    entryOverride: {
+      id: `generated.guide.${activeNav}`,
+      locales,
+    },
+  });
+}
+
 const COPY = {
   en: { label: 'Dream Guides', title: 'Dream Guides & Symbol Meanings | Noctalia', desc: "Browse Noctalia's dream guides: the dictionary plus themed pages for common, scary, positive, water, people, places, and transformation dreams.", intro: 'Start with the full dream symbols dictionary, then explore themed guides that group related dream patterns and meanings.', dictionary: 'Dream Symbols Dictionary', openDictionary: 'Open dictionary', openGuide: 'Open guide', browseAll: 'Browse all dream guides' },
   fr: { label: 'Guides des rêves', title: 'Guides des rêves et symboles oniriques | Noctalia', desc: 'Explorez les guides des rêves de Noctalia : dictionnaire des symboles, thèmes fréquents, cauchemars, eau, personnes, lieux et transformation.', intro: 'Commencez par le dictionnaire complet des symboles, puis explorez des guides thématiques qui regroupent des motifs oniriques proches.', dictionary: 'Dictionnaire des symboles de rêves', openDictionary: 'Ouvrir le dictionnaire', openGuide: 'Ouvrir le guide', browseAll: 'Parcourir tous les guides des rêves' },
   es: { label: 'Guías de sueños', title: 'Guías de sueños y significados de símbolos | Noctalia', desc: 'Explora las guías de sueños de Noctalia: diccionario de símbolos, sueños frecuentes, pesadillas, agua, personas, lugares y transformación.', intro: 'Empieza por el diccionario completo de símbolos y luego entra en guías temáticas que agrupan patrones y significados relacionados.', dictionary: 'Diccionario de símbolos de sueños', openDictionary: 'Abrir diccionario', openGuide: 'Abrir guía', browseAll: 'Ver todas las guías de sueños' },
   de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecken Sie Noctalias Traumratgeber: Traumsymbole-Lexikon sowie Guides zu häufigen Träumen, Albträumen, Wasser, Personen, Orten und Wandel.', intro: 'Starten Sie mit dem vollständigen Traumsymbole-Lexikon und vertiefen Sie sich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon öffnen', openGuide: 'Ratgeber öffnen', browseAll: 'Alle Traumratgeber ansehen' },
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
+};
+
+const GUIDE_HUB_UI = {
+  en: {
+    eyebrow: 'Dream guides',
+    heroIntro: 'Practical guides, accessible science, and keys to understand, interpret, and work with your dreams.',
+    primaryCta: 'Explore the guides',
+    secondaryCta: 'Open dictionary',
+    chooseTitle: 'Choose your entry point',
+    chooseIntro: 'Start with the dictionary or explore practical guides by theme.',
+    featuredLabel: 'Dream dictionary',
+    dictionarySummary: 'Access our complete dictionary of more than 2000 symbols and interpretations.',
+    dictionaryCta: 'Consult the dictionary',
+    trustVerified: 'Verified content',
+    trustVerifiedDesc: 'Guides written with sleep and dream research references.',
+    trustUpdated: 'Updated regularly',
+    trustUpdatedDesc: 'New guides and research added over time.',
+    trustAccessible: 'Accessible to all',
+    trustAccessibleDesc: 'Clear, practical content for every level.',
+    symbolCount: 'symbols explored',
+    pathSymbols: 'Symbols',
+    pathSymbolsDesc: 'Understand the meaning of the most common dream symbols.',
+    pathNightmares: 'Nightmares',
+    pathNightmaresDesc: 'Decode your nocturnal fears to better tame them.',
+    pathLucid: 'Lucid dream',
+    pathLucidDesc: 'Learn to become aware and orient your dreams.'
+  },
+  fr: {
+    eyebrow: 'Guides des rêves',
+    heroIntro: 'Des guides pratiques, une science accessible et des clés pour comprendre, interpréter et travailler avec vos rêves.',
+    primaryCta: 'Explorer les guides',
+    secondaryCta: 'Dictionnaire',
+    chooseTitle: "Choisissez votre point d'entrée",
+    chooseIntro: 'Commencez par le dictionnaire ou explorez nos guides pratiques par thématique.',
+    featuredLabel: 'Dictionnaire des rêves',
+    dictionarySummary: 'Accédez à notre dictionnaire complet de plus de 2000 symboles et leurs interprétations.',
+    dictionaryCta: 'Consulter le dictionnaire',
+    trustVerified: 'Contenus vérifiés',
+    trustVerifiedDesc: 'Guides rédigés avec des références sur le rêve et le sommeil.',
+    trustUpdated: 'Mise à jour régulière',
+    trustUpdatedDesc: 'De nouveaux guides et recherches ajoutés avec le temps.',
+    trustAccessible: 'Accessible à tous',
+    trustAccessibleDesc: 'Des contenus clairs et pratiques, pour tous les niveaux.',
+    symbolCount: 'symboles explorés',
+    pathSymbols: 'Symboles',
+    pathSymbolsDesc: 'Comprenez la signification des symboles oniriques les plus courants.',
+    pathNightmares: 'Cauchemars',
+    pathNightmaresDesc: 'Décryptez vos peurs nocturnes pour mieux les apprivoiser.',
+    pathLucid: 'Rêve lucide',
+    pathLucidDesc: 'Apprenez à prendre conscience et à orienter vos rêves.'
+  },
+  es: {
+    eyebrow: 'Guías de sueños',
+    heroIntro: 'Guías prácticas, ciencia accesible y claves para comprender, interpretar y trabajar con tus sueños.',
+    primaryCta: 'Explorar guías',
+    secondaryCta: 'Diccionario',
+    chooseTitle: 'Elige tu punto de entrada',
+    chooseIntro: 'Empieza por el diccionario o explora nuestras guías prácticas por tema.',
+    featuredLabel: 'Diccionario de sueños',
+    dictionarySummary: 'Accede a nuestro diccionario completo de más de 2000 símbolos e interpretaciones.',
+    dictionaryCta: 'Consultar diccionario',
+    trustVerified: 'Contenido verificado',
+    trustVerifiedDesc: 'Guías basadas en referencias sobre sueños y sueño.',
+    trustUpdated: 'Actualización regular',
+    trustUpdatedDesc: 'Nuevas guías e investigaciones añadidas con el tiempo.',
+    trustAccessible: 'Accesible para todos',
+    trustAccessibleDesc: 'Contenidos claros y prácticos para todos los niveles.',
+    symbolCount: 'símbolos explorados',
+    pathSymbols: 'Símbolos',
+    pathSymbolsDesc: 'Comprende el significado de los símbolos oníricos más comunes.',
+    pathNightmares: 'Pesadillas',
+    pathNightmaresDesc: 'Descifra tus miedos nocturnos para apaciguarlos.',
+    pathLucid: 'Sueño lúcido',
+    pathLucidDesc: 'Aprende a tomar conciencia y orientar tus sueños.'
+  },
+  de: {
+    eyebrow: 'Traumratgeber',
+    heroIntro: 'Praktische Ratgeber, verständliche Wissenschaft und Schlüssel, um Ihre Träume zu verstehen und zu deuten.',
+    primaryCta: 'Ratgeber erkunden',
+    secondaryCta: 'Lexikon',
+    chooseTitle: 'Wählen Sie Ihren Einstieg',
+    chooseIntro: 'Starten Sie im Lexikon oder erkunden Sie praktische Ratgeber nach Thema.',
+    featuredLabel: 'Traumlexikon',
+    dictionarySummary: 'Greifen Sie auf unser vollständiges Lexikon mit über 2000 Symbolen und Deutungen zu.',
+    dictionaryCta: 'Lexikon öffnen',
+    trustVerified: 'Geprüfte Inhalte',
+    trustVerifiedDesc: 'Ratgeber mit Bezügen zu Traum- und Schlafforschung.',
+    trustUpdated: 'Regelmäßig aktualisiert',
+    trustUpdatedDesc: 'Neue Ratgeber und Forschung werden ergänzt.',
+    trustAccessible: 'Für alle zugänglich',
+    trustAccessibleDesc: 'Klare und praktische Inhalte für jedes Niveau.',
+    symbolCount: 'Symbole erklärt',
+    pathSymbols: 'Symbole',
+    pathSymbolsDesc: 'Verstehen Sie die häufigsten Traumsymbole.',
+    pathNightmares: 'Albträume',
+    pathNightmaresDesc: 'Entschlüsseln Sie nächtliche Ängste und lernen Sie damit umzugehen.',
+    pathLucid: 'Klartraum',
+    pathLucidDesc: 'Lernen Sie, im Traum bewusst zu werden.'
+  },
+  it: {
+    eyebrow: 'Guide ai sogni',
+    heroIntro: 'Guide pratiche, scienza accessibile e chiavi per comprendere, interpretare e lavorare con i tuoi sogni.',
+    primaryCta: 'Esplora le guide',
+    secondaryCta: 'Dizionario',
+    chooseTitle: 'Scegli il tuo punto di partenza',
+    chooseIntro: 'Inizia dal dizionario o esplora le guide pratiche per tema.',
+    featuredLabel: 'Dizionario dei sogni',
+    dictionarySummary: 'Accedi al nostro dizionario completo con oltre 2000 simboli e interpretazioni.',
+    dictionaryCta: 'Consulta il dizionario',
+    trustVerified: 'Contenuti verificati',
+    trustVerifiedDesc: 'Guide basate su riferimenti su sogni e sonno.',
+    trustUpdated: 'Aggiornamento regolare',
+    trustUpdatedDesc: 'Nuove guide e ricerche aggiunte nel tempo.',
+    trustAccessible: 'Accessibile a tutti',
+    trustAccessibleDesc: 'Contenuti chiari e pratici per ogni livello.',
+    symbolCount: 'simboli esplorati',
+    pathSymbols: 'Simboli',
+    pathSymbolsDesc: 'Comprendi i simboli onirici più comuni.',
+    pathNightmares: 'Incubi',
+    pathNightmaresDesc: 'Decifra le paure notturne per gestirle meglio.',
+    pathLucid: 'Sogno lucido',
+    pathLucidDesc: 'Impara a diventare consapevole e orientare i sogni.'
+  }
+};
+
+const GUIDE_HUB_BLOG_SLUGS = {
+  lucid: {
+    en: 'lucid-dreaming-beginners-guide',
+    fr: 'guide-reve-lucide-debutant',
+    es: 'guia-suenos-lucidos-principiantes',
+    de: 'leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte',
+    it: 'guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti'
+  },
+  sleepScience: {
+    en: 'why-we-dream-science',
+    fr: 'pourquoi-nous-revons-science',
+    es: 'por-que-sonamos-ciencia',
+    de: 'warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern',
+    it: 'perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne'
+  },
+  journal: {
+    en: 'dream-journal-guide',
+    fr: 'guide-journal-reves',
+    es: 'guia-diario-suenos',
+    de: 'dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer',
+    it: 'dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne'
+  },
+  emotions: {
+    en: 'dreams-mental-health',
+    fr: 'reves-sante-mentale',
+    es: 'suenos-salud-mental',
+    de: 'traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart',
+    it: 'sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente'
+  }
+};
+
+const GUIDE_HUB_BENTO_COPY = {
+  en: [
+    { key: 'understand', label: 'Practical guide', title: 'Understand your dreams', desc: 'The fundamentals for decoding the language of your unconscious.', tone: 'salmon' },
+    { key: 'science', label: 'Science', title: 'Sleep and dreams', desc: 'What science reveals about your nights and dreams.', tone: 'violet' },
+    { key: 'interpretation', label: 'Interpretation', title: 'Interpretation methods', desc: 'Concrete techniques to analyze your dreams with more accuracy.', tone: 'rose' },
+    { key: 'journal', label: 'Practice', title: 'Dream journal', desc: 'Methods and advice for keeping an effective journal.', tone: 'gold' },
+    { key: 'emotions', label: 'Therapies', title: 'Dreams and emotions', desc: 'Use your dreams as a tool for self-knowledge and transformation.', tone: 'green' },
+    { key: 'spirituality', label: 'Spirituality', title: 'Dreams and spirituality', desc: 'Explore the spiritual and symbolic dimension of your dreams.', tone: 'blue' }
+  ],
+  fr: [
+    { key: 'understand', label: 'Guide pratique', title: 'Comprendre ses rêves', desc: 'Les fondamentaux pour décrypter le langage de votre inconscient.', tone: 'salmon' },
+    { key: 'science', label: 'Science', title: 'Le sommeil et les rêves', desc: 'Ce que la science révèle sur vos nuits et vos rêves.', tone: 'violet' },
+    { key: 'interpretation', label: 'Interprétation', title: "Méthodes d'interprétation", desc: 'Techniques concrètes pour analyser vos rêves avec justesse.', tone: 'rose' },
+    { key: 'journal', label: 'Pratique', title: 'Journal de rêves', desc: 'Méthodes et conseils pour tenir un journal efficace.', tone: 'gold' },
+    { key: 'emotions', label: 'Thérapies', title: 'Rêves et émotions', desc: 'Utiliser vos rêves comme outil de connaissance et de transformation.', tone: 'green' },
+    { key: 'spirituality', label: 'Spiritualité', title: 'Rêves et spiritualité', desc: 'Explorer la dimension spirituelle et symbolique de vos rêves.', tone: 'blue' }
+  ],
+  es: [
+    { key: 'understand', label: 'Guía práctica', title: 'Comprender tus sueños', desc: 'Los fundamentos para descifrar el lenguaje de tu inconsciente.', tone: 'salmon' },
+    { key: 'science', label: 'Ciencia', title: 'El sueño y los sueños', desc: 'Lo que la ciencia revela sobre tus noches y tus sueños.', tone: 'violet' },
+    { key: 'interpretation', label: 'Interpretación', title: 'Métodos de interpretación', desc: 'Técnicas concretas para analizar tus sueños con precisión.', tone: 'rose' },
+    { key: 'journal', label: 'Práctica', title: 'Diario de sueños', desc: 'Métodos y consejos para llevar un diario eficaz.', tone: 'gold' },
+    { key: 'emotions', label: 'Terapias', title: 'Sueños y emociones', desc: 'Usa tus sueños como herramienta de conocimiento y transformación.', tone: 'green' },
+    { key: 'spirituality', label: 'Espiritualidad', title: 'Sueños y espiritualidad', desc: 'Explora la dimensión espiritual y simbólica de tus sueños.', tone: 'blue' }
+  ],
+  de: [
+    { key: 'understand', label: 'Praxisratgeber', title: 'Träume verstehen', desc: 'Die Grundlagen, um die Sprache Ihres Unbewussten zu entschlüsseln.', tone: 'salmon' },
+    { key: 'science', label: 'Wissenschaft', title: 'Schlaf und Träume', desc: 'Was die Wissenschaft über Ihre Nächte und Träume zeigt.', tone: 'violet' },
+    { key: 'interpretation', label: 'Deutung', title: 'Deutungsmethoden', desc: 'Konkrete Techniken, um Träume genauer zu analysieren.', tone: 'rose' },
+    { key: 'journal', label: 'Praxis', title: 'Traumtagebuch', desc: 'Methoden und Tipps für ein wirksames Traumtagebuch.', tone: 'gold' },
+    { key: 'emotions', label: 'Therapie', title: 'Träume und Gefühle', desc: 'Nutzen Sie Träume als Werkzeug für Erkenntnis und Wandel.', tone: 'green' },
+    { key: 'spirituality', label: 'Spiritualität', title: 'Träume und Spiritualität', desc: 'Erkunden Sie die spirituelle und symbolische Dimension Ihrer Träume.', tone: 'blue' }
+  ],
+  it: [
+    { key: 'understand', label: 'Guida pratica', title: 'Comprendere i sogni', desc: "Le basi per decifrare il linguaggio dell'inconscio.", tone: 'salmon' },
+    { key: 'science', label: 'Scienza', title: 'Sonno e sogni', desc: 'Cosa rivela la scienza sulle tue notti e sui tuoi sogni.', tone: 'violet' },
+    { key: 'interpretation', label: 'Interpretazione', title: 'Metodi di interpretazione', desc: 'Tecniche concrete per analizzare i sogni con precisione.', tone: 'rose' },
+    { key: 'journal', label: 'Pratica', title: 'Diario dei sogni', desc: 'Metodi e consigli per tenere un diario efficace.', tone: 'gold' },
+    { key: 'emotions', label: 'Terapie', title: 'Sogni ed emozioni', desc: 'Usa i sogni come strumento di conoscenza e trasformazione.', tone: 'green' },
+    { key: 'spirituality', label: 'Spiritualità', title: 'Sogni e spiritualità', desc: 'Esplora la dimensione spirituale e simbolica dei tuoi sogni.', tone: 'blue' }
+  ]
+};
+
+const GUIDE_CARD_META = {
+  'most-common-dream-symbols': { icon: 'sparkles', tone: 'salmon' },
+  'scary-dream-symbols': { icon: 'moon', tone: 'violet' },
+  'positive-dream-symbols': { icon: 'sun', tone: 'gold' },
+  'animal-dream-symbols': { icon: 'paw-print', tone: 'green' },
+  'water-dream-symbols': { icon: 'waves', tone: 'cyan' },
+  'death-transformation-dreams': { icon: 'refresh-cw', tone: 'rose' },
+  'people-in-dreams': { icon: 'users', tone: 'pink' },
+  'dream-locations': { icon: 'map', tone: 'blue' }
 };
 
 const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
@@ -179,104 +413,540 @@ function renderLanguageDropdown(lang, currentPaths) {
   }).join('\n');
 }
 
-function renderGuidesNav(lang, t, currentPaths, activeLabel) {
+function renderGuidesMobilePanel(lang, t, currentPaths) {
   const locale = LOCALES[lang];
-  return `    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">
-            <a href="/${lang}/" class="flex items-center gap-2">
-                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
-            </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/${lang}/#${locale.navHowItWorksAnchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${escapeHtml(locale.navHowItWorks)}</a>
-                <a href="/${lang}/#${locale.navFeaturesAnchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${escapeHtml(locale.navFeatures)}</a>
-                <a href="/${lang}/blog/" class="hidden sm:inline-flex ${activeLabel === 'resources' ? 'text-dream-salmon' : 'hover:text-white'} transition-colors">${escapeHtml(locale.resources)}</a>
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="hidden sm:inline-flex ${activeLabel === 'dictionary' ? 'text-dream-salmon' : 'hover:text-white'} transition-colors">${escapeHtml(locale.dreamDictionary || COPY[lang].dictionary)}</a>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Choose language"
-                            id="languageDropdownButton">
-                        <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
-                    </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
-${renderLanguageDropdown(lang, currentPaths)}
-                    </div>
+  const linkClass = 'block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors';
+  const langLabels = { en: 'English', fr: 'Français', es: 'Español', de: 'Deutsch', it: 'Italiano' };
+  const langLinks = SUPPORTED_LANGS.map((candidate) => {
+    const activeClass = candidate === lang ? ' text-dream-salmon' : '';
+    return `                    <a href="${currentPaths[candidate]}" hreflang="${candidate}" class="${linkClass}${activeClass}">${langLabels[candidate]}</a>`;
+  }).join('\n');
+
+  return `        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/${lang}/blog/" class="${linkClass}">${escapeHtml(locale.resources)}</a>
+                <a href="/${lang}/guides/" class="${linkClass}">${escapeHtml(locale.dreamGuides)}</a>
+                <a href="/${lang}/guides/${t.dictionary_slug}" class="${linkClass}">${escapeHtml(locale.dreamDictionary || COPY[lang].dictionary)}</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+${langLinks}
                 </div>
             </div>
-        </div>
-    </nav>`;
+        </div>`;
 }
 
-function renderGuidesFooter(lang, t, pages) {
-  const locale = LOCALES[lang];
-  const { featuredResources, featuredGuides, popularSymbols } = buildSeoLinkData(lang, t, pages);
-  return `    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
-            <div class="xl:col-span-2">
-                <a href="/${lang}/" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">${escapeHtml(locale.footerTagline || COPY[lang].intro)}</p>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.resources || 'Resources')}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(featuredResources, { highlightFirst: true })}
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.dreamDictionary || COPY[lang].dictionary)}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(featuredGuides, { highlightFirst: true })}
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.popularSymbols || 'Popular Symbols')}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(popularSymbols)}
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerLegal || 'Legal')}</h5>
-                <ul class="space-y-2 text-sm text-gray-500 mb-4">
-                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${escapeHtml(t.about)}</a></li>
-                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${escapeHtml(t.legal_notice)}</a></li>
-                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${escapeHtml(t.privacy)}</a></li>
-                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${escapeHtml(t.terms)}</a></li>
-                </ul>
-                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerDownload || 'Download')}</h5>
-                <div class="flex flex-col gap-3">
-                    <a href="${getAndroidStoreUrl(lang)}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
-                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
-                        <div class="leading-none">
-                            <div class="text-[9px] uppercase">${escapeHtml(locale.availableOn || 'Available on')}</div>
-                            <div class="text-sm font-bold">${escapeHtml(locale.googlePlay || 'Google Play')}</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>${escapeHtml(locale.copyright || '© 2025 Noctalia Inc.')}</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">${escapeHtml(locale.footerMadeWith || 'Made with')} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${escapeHtml(locale.footerForDreamers || 'for dreamers')}</span>
-        </div>
-    </footer>`;
+function renderGuidesNav(lang, t, currentPaths, activeLabel) {
+  return renderNavigation(createGuidesShellContext(lang, currentPaths, activeLabel));
+}
+
+function renderGuidesFooter(lang, t, pages, currentPaths, activeNav = 'guides') {
+  return renderSharedFooter(createGuidesShellContext(lang, currentPaths, activeNav));
+}
+
+function guideCardMeta(pageId) {
+  return GUIDE_CARD_META[pageId] || { icon: 'book-open', tone: 'salmon' };
+}
+
+function formatGuideSymbolCount(lang, count) {
+  const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
+  return `${count} ${ui.symbolCount}`;
+}
+
+function renderGuideHubStyles() {
+  return `    <style>
+        body { margin: 0; background: #0a0514; color: #f8f5ff; font-family: system-ui, sans-serif; }
+        a { color: inherit; text-decoration: none; }
+        .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+        .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+        .noctalia-premium-nav-inner {
+          width: 100%;
+          max-width: 1720px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: clamp(1rem, 3vw, 3.5rem);
+        }
+        .noctalia-premium-links {
+          justify-content: center;
+          flex-wrap: nowrap;
+          gap: clamp(1.4rem, 3.4vw, 4rem);
+          min-width: 0;
+        }
+        .noctalia-premium-nav-actions { justify-content: flex-end; }
+        .noctalia-premium-action { display: inline-flex; }
+        .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+        .guides-page {
+          position: relative;
+          isolation: isolate;
+          min-height: 100vh;
+          overflow-x: hidden;
+          background: #0a0514;
+        }
+        .guides-page::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 0;
+          background:
+            linear-gradient(180deg, rgba(6, 3, 14, 0.42) 0%, rgba(8, 4, 18, 0.28) 45%, #090413 96%),
+            linear-gradient(90deg, rgba(4, 2, 10, 0.48) 0%, rgba(4, 2, 10, 0.12) 44%, rgba(4, 2, 10, 0.32) 100%),
+            radial-gradient(circle at 24% 22%, rgba(253, 164, 129, 0.12), transparent 20rem),
+            url('/img/guides/noctalia-guides-hub-bg.webp') center top / cover no-repeat,
+            linear-gradient(135deg, #10051b 0%, #090412 48%, #160822 100%);
+        }
+        .guides-shell {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          margin: 0 auto;
+          padding: 0;
+        }
+        .guides-hero {
+          position: relative;
+          min-height: 27rem;
+          padding: 6.65rem clamp(1rem, 4vw, 4.75rem) 2rem;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          gap: clamp(2rem, 4.4vw, 5.2rem);
+          align-items: center;
+          overflow: hidden;
+          border-bottom: 0;
+          background: transparent;
+        }
+        .guides-hero::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: -2;
+          display: none;
+          background: none;
+        }
+        .guides-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          margin-bottom: 1rem;
+          color: #fda481;
+          font-size: 0.76rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          font-weight: 800;
+        }
+        .guides-title {
+          max-width: 11ch;
+          margin: 0;
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(4rem, 5.55vw, 6.7rem);
+          line-height: 0.94;
+          letter-spacing: 0;
+          color: transparent;
+          background: linear-gradient(180deg, #ffffff 0%, #c9b7ff 58%, rgba(168, 101, 231, 0.72) 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          text-wrap: balance;
+        }
+        .guides-lede {
+          max-width: 45rem;
+          margin: 1.15rem 0 0;
+          color: rgba(226,218,255,0.86);
+          font-size: clamp(1.05rem, 1.25vw, 1.25rem);
+          line-height: 1.55;
+        }
+        .guides-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.65rem; }
+        .guides-hero > div {
+          max-width: 58rem;
+        }
+        .guides-button {
+          min-height: 3.25rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.7rem;
+          padding: 0.95rem 1.5rem;
+          border-radius: 999px;
+          font-weight: 800;
+          border: 1px solid rgba(255,255,255,0.13);
+          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .guides-button:hover { transform: translateY(-1px); }
+        .guides-button-primary { background: #fda481; color: #0a0514; border-color: rgba(253,164,129,0.9); }
+        .guides-button-secondary { background: rgba(255,255,255,0.055); color: #f8f5ff; backdrop-filter: blur(16px); }
+        .guides-paths {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0;
+          padding: 1.6rem 1.3rem;
+          border: 1px solid rgba(226,218,255,0.24);
+          border-radius: 18px;
+          background: linear-gradient(135deg, rgba(25, 15, 50, 0.58), rgba(16, 8, 31, 0.68));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 80px rgba(0,0,0,0.32);
+          backdrop-filter: blur(20px);
+        }
+        .guides-paths-section {
+          position: relative;
+          z-index: 1;
+          padding: 1rem clamp(1rem, 4vw, 4.75rem) 3rem;
+          background: transparent;
+        }
+        .guides-paths-section .guides-section-head {
+          max-width: 42rem;
+          min-height: 0;
+          margin-bottom: 1rem;
+        }
+        .guides-path-card, .guides-card, .guides-dictionary-card {
+          position: relative;
+          overflow: hidden;
+          border-radius: 8px;
+          border: 1px solid rgba(226,218,255,0.16);
+          background: rgba(18, 9, 33, 0.68);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.28);
+          backdrop-filter: blur(18px);
+        }
+        .guides-path-card {
+          min-height: 14.6rem;
+          padding: 0.15rem clamp(1rem, 2vw, 2rem);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          border: 0;
+          border-right: 1px solid rgba(226,218,255,0.16);
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          backdrop-filter: none;
+        }
+        .guides-path-card:last-child { border-right: 0; }
+        .guides-card::before, .guides-dictionary-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          opacity: 0.74;
+          pointer-events: none;
+          background: radial-gradient(circle at 78% 20%, var(--guide-tone, rgba(253,164,129,0.26)), transparent 52%);
+        }
+        .guides-path-icon, .guides-card-icon {
+          position: relative;
+          width: 3.6rem;
+          height: 3.6rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          color: #fda481;
+          background: rgba(253,164,129,0.09);
+          border: 1px solid rgba(253,164,129,0.18);
+        }
+        .guides-path-icon {
+          width: 5.7rem;
+          height: 5.7rem;
+          margin: 0 auto 0.9rem;
+          border-color: rgba(226,138,255,0.42);
+          box-shadow: inset 0 0 28px rgba(190,119,255,0.18);
+        }
+        .guides-path-title, .guides-card-title, .guides-dictionary-title {
+          position: relative;
+          margin: 0;
+          font-family: Georgia, 'Times New Roman', serif;
+          color: #fff7f0;
+          line-height: 1.06;
+          letter-spacing: 0;
+          text-wrap: balance;
+          overflow-wrap: anywhere;
+        }
+        .guides-path-title { font-size: clamp(1.28rem, 1.38vw, 1.58rem); color: #fda481; }
+        .guides-path-desc, .guides-card-desc, .guides-dictionary-desc {
+          position: relative;
+          color: rgba(226,218,255,0.78);
+          line-height: 1.5;
+        }
+        .guides-path-desc { margin: 0.55rem auto 1.15rem; max-width: 14rem; font-size: 0.9rem; }
+        .guides-path-arrow, .guides-card-arrow {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          color: #fda481;
+          font-weight: 800;
+        }
+        .guides-section {
+          position: relative;
+          z-index: 1;
+          padding: 2rem clamp(1rem, 4vw, 4.75rem) 2rem;
+          background: transparent;
+        }
+        .guides-section h2 {
+          margin: 0;
+          max-width: 18ch;
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(1.8rem, 2.2vw, 2.65rem);
+          line-height: 0.96;
+          letter-spacing: 0;
+          color: #fff7f0;
+          text-shadow: 0 2px 18px rgba(0,0,0,0.55);
+        }
+        .guides-section-copy { margin: 0; color: rgba(226,218,255,0.78); font-size: 1rem; line-height: 1.65; }
+        .guides-section-head {
+          text-shadow: 0 2px 16px rgba(0,0,0,0.48);
+        }
+        .guides-entry-layout {
+          display: grid;
+          grid-template-columns: minmax(340px, 0.58fr) minmax(0, 1fr);
+          gap: 1rem;
+          align-items: stretch;
+        }
+        .guides-entry-left {
+          display: flex;
+          flex-direction: column;
+          gap: 1.1rem;
+        }
+        .guides-section-head {
+          min-height: 5.65rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          gap: 0.6rem;
+        }
+        .guides-bento {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-auto-rows: 10.15rem;
+          gap: 0.8rem;
+        }
+        .guides-dictionary-card {
+          min-height: 0;
+          flex: 1 1 auto;
+          min-height: 18.45rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: clamp(1.15rem, 2vw, 1.65rem);
+          background:
+            linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.58)),
+            url('/img/blog/dream-symbols-dictionary.webp') center right / cover no-repeat;
+        }
+        .guides-dictionary-cta {
+          position: relative;
+          width: fit-content;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.55rem;
+          padding: 0.72rem 1rem;
+          border-radius: 999px;
+          border: 1px solid rgba(226,218,255,0.24);
+          background: rgba(255,255,255,0.04);
+          color: #fff7f0;
+          font-weight: 700;
+          font-size: 0.9rem;
+        }
+        .guides-feature-label, .guides-card-kicker {
+          position: relative;
+          display: inline-flex;
+          width: fit-content;
+          padding: 0.42rem 0.68rem;
+          border-radius: 999px;
+          border: 1px solid rgba(253,164,129,0.22);
+          color: #fda481;
+          background: rgba(253,164,129,0.08);
+          font-size: 0.72rem;
+          letter-spacing: 0.09em;
+          text-transform: uppercase;
+          font-weight: 900;
+        }
+        .guides-dictionary-title { margin-top: 1rem; max-width: 10ch; font-size: clamp(1.85rem, 2.35vw, 2.85rem); line-height: 0.98; }
+        .guides-dictionary-desc { display: block; max-width: 21rem; margin: 0.85rem 0 0; }
+        .guides-card {
+          min-height: 0;
+          padding: 1rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+          background:
+            linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.72), rgba(18,8,31,0.22)),
+            var(--guide-image) center right / cover no-repeat;
+        }
+        .guides-card:hover, .guides-path-card:hover, .guides-dictionary-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(253,164,129,0.34);
+        }
+        .guides-card-title { margin-top: 0.75rem; font-size: clamp(1.18rem, 1.32vw, 1.62rem); }
+        .guides-card-desc {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          max-width: 15rem;
+          margin: 0.55rem 0 0.65rem;
+          font-size: 0.82rem;
+        }
+        .guides-card-meta { position: relative; display: flex; align-items: center; justify-content: space-between; color: rgba(226,218,255,0.66); font-size: 0.82rem; }
+        .guides-card[data-tone="violet"] { --guide-tone: rgba(178,129,255,0.33); }
+        .guides-card[data-tone="gold"] { --guide-tone: rgba(251,191,36,0.26); }
+        .guides-card[data-tone="green"] { --guide-tone: rgba(74,222,128,0.22); }
+        .guides-card[data-tone="cyan"] { --guide-tone: rgba(96,200,255,0.28); }
+        .guides-card[data-tone="rose"] { --guide-tone: rgba(244,114,182,0.25); }
+        .guides-card[data-tone="pink"] { --guide-tone: rgba(244,114,182,0.30); }
+        .guides-card[data-tone="blue"] { --guide-tone: rgba(96,165,250,0.28); }
+        .guides-trust {
+          position: relative;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.7rem;
+          margin-top: 1.6rem;
+          padding: 1.2rem 1.4rem;
+          border-radius: 10px;
+          border: 1px solid rgba(226,218,255,0.17);
+          background: rgba(18, 9, 33, 0.62);
+          backdrop-filter: blur(16px);
+        }
+        .guides-trust-item { display: flex; align-items: center; gap: 1rem; padding: 0 1.1rem; border-right: 1px solid rgba(226,218,255,0.16); }
+        .guides-trust-item:last-child { border-right: 0; }
+        .guides-trust-icon { width: 3.1rem; height: 3.1rem; flex: 0 0 auto; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: #fda481; border: 1px solid rgba(226,138,255,0.36); background: rgba(253,164,129,0.07); }
+        .guides-trust strong { display: block; color: #fff7f0; font-weight: 600; margin-bottom: 0.25rem; }
+        .guides-trust span { color: rgba(226,218,255,0.7); font-size: 0.86rem; line-height: 1.35; }
+        @media (max-width: 1180px) {
+          .guides-hero { grid-template-columns: 1fr; min-height: auto; padding-top: 7rem; }
+          .guides-paths { grid-template-columns: repeat(3, minmax(13rem, 1fr)); overflow-x: auto; }
+          .guides-entry-layout { grid-template-columns: 1fr; }
+          .guides-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .guides-title { max-width: 16ch; }
+        }
+        @media (max-width: 980px) {
+          .noctalia-premium-nav-inner { display: flex; justify-content: space-between; }
+          .noctalia-premium-nav-actions { margin-left: auto; }
+          .noctalia-premium-links { display: none; }
+          .noctalia-premium-download, .noctalia-premium-about { display: none; }
+          #navMobileGuideLink, #mobileMenuButton { display: inline-flex; }
+        }
+        @media (max-width: 520px) {
+          .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; }
+          .noctalia-premium-brand-text { font-size: 1.35rem; }
+          #navMobileGuideLink { display: none; }
+        }
+        @media (max-width: 720px) {
+          .guides-page { background-position: center top; }
+          .guides-hero { padding: 6.5rem 1rem 2rem; }
+          .guides-paths-section { padding: 0 1rem 2rem; }
+          .guides-title { font-size: clamp(3.35rem, 17vw, 5.2rem); max-width: 9ch; }
+          .guides-lede { font-size: 1rem; }
+          .guides-actions { flex-direction: column; }
+          .guides-button { width: 100%; }
+          .guides-paths { grid-template-columns: 1fr; overflow: visible; padding: 0; }
+          .guides-path-card { min-height: 13.5rem; border-right: 0; border-bottom: 1px solid rgba(226,218,255,0.14); padding: 1.2rem; }
+          .guides-path-card:last-child { border-bottom: 0; }
+          .guides-section { margin-top: 2rem; }
+          .guides-section h2 { font-size: clamp(2rem, 10vw, 3.2rem); max-width: 10ch; }
+          .guides-bento { grid-template-columns: 1fr; }
+          .guides-dictionary-card { grid-column: auto; grid-row: auto; min-height: 22rem; }
+          .guides-card { min-height: 15rem; }
+          .guides-trust { grid-template-columns: 1fr; }
+          .guides-trust-item { border-right: 0; border-bottom: 1px solid rgba(226,218,255,0.14); padding: 1rem 0; }
+          .guides-trust-item:last-child { border-bottom: 0; }
+        }
+    </style>`;
+}
+
+function renderPathCard({ href, icon, title, desc, tone }) {
+  return `                <a href="${href}" class="guides-path-card" style="--guide-tone:${tone}">
+                    <span class="guides-path-icon"><i data-lucide="${icon}" class="w-7 h-7"></i></span>
+                    <span>
+                        <h2 class="guides-path-title">${escapeHtml(title)}</h2>
+                        <p class="guides-path-desc">${escapeHtml(desc)}</p>
+                        <span class="guides-path-arrow"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                    </span>
+                </a>`;
+}
+
+function renderGuideCard(lang, copy, page) {
+  const meta = guideCardMeta(page.id);
+  return `            <a href="/${lang}/guides/${page.slugs[lang]}" class="guides-card" data-tone="${meta.tone}">
+                <span>
+                    <span class="guides-card-icon"><i data-lucide="${meta.icon}" class="w-6 h-6"></i></span>
+                    <span class="guides-card-kicker">${escapeHtml(formatGuideSymbolCount(lang, page.symbols?.length || 0))}</span>
+                    <h3 class="guides-card-title">${escapeHtml(page[lang].title)}</h3>
+                    <span class="guides-card-desc">${escapeHtml(page[lang].metaDescription)}</span>
+                </span>
+                <span class="guides-card-meta">
+                    <span>${escapeHtml(copy.openGuide)}</span>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </span>
+            </a>`;
+}
+
+function resolveGuideHubCardHref(lang, t, pages, card) {
+  if (card.key === 'science') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.sleepScience[lang]}`;
+  if (card.key === 'journal') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.journal[lang]}`;
+  if (card.key === 'emotions') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.emotions[lang]}`;
+  if (card.key === 'interpretation') return `/${lang}/guides/${t.dictionary_slug}`;
+  if (card.key === 'spirituality') {
+    const page = pages.find((candidate) => candidate.id === 'death-transformation-dreams') || pages[5] || pages[0];
+    return `/${lang}/guides/${page.slugs[lang]}`;
+  }
+  const page = pages.find((candidate) => candidate.id === 'most-common-dream-symbols') || pages[0];
+  return `/${lang}/guides/${page.slugs[lang]}`;
+}
+
+function guideHubCardImage(card) {
+  const images = {
+    understand: '/img/blog/why-we-forget-dreams.webp',
+    science: '/img/blog/why-we-dream-science.webp',
+    interpretation: '/img/blog/recurring-dreams-meaning.webp',
+    journal: '/img/blog/dream-journal-guide.webp',
+    emotions: '/img/blog/dreams-mental-health.webp',
+    spirituality: '/img/blog/dream-interpretation-history.webp'
+  };
+  return images[card.key] || '/img/guides/noctalia-guides-hub-bg.webp';
+}
+
+function renderHubBentoCard(lang, t, pages, card) {
+  const href = resolveGuideHubCardHref(lang, t, pages, card);
+  return `                <a href="${href}" class="guides-card" data-tone="${card.tone}" style="--guide-image: url('${guideHubCardImage(card)}')">
+                    <span>
+                        <span class="guides-card-kicker">${escapeHtml(card.label)}</span>
+                        <h3 class="guides-card-title">${escapeHtml(card.title)}</h3>
+                        <span class="guides-card-desc">${escapeHtml(card.desc)}</span>
+                    </span>
+                    <span class="guides-card-meta">
+                        <span></span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </a>`;
 }
 
 function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
+  const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
-  const cards = pages.map((page) => `            <a href="/${lang}/guides/${page.slugs[lang]}" class="card">
-                <strong>${escapeHtml(page[lang].title)}</strong>
-                <span>${escapeHtml(page[lang].metaDescription)}</span>
-                <em>${escapeHtml(copy.openGuide)}</em>
-            </a>`).join('\n');
+  const symbolCount = (readJson('dream-symbols.json').symbols || []).length;
+  const scaryPage = pages.find((page) => page.id === 'scary-dream-symbols') || pages[1];
+  const pathCards = [
+    renderPathCard({
+      href: `/${lang}/guides/${t.dictionary_slug}`,
+      icon: 'aperture',
+      title: ui.pathSymbols,
+      desc: ui.pathSymbolsDesc,
+      tone: 'rgba(253,164,129,0.28)'
+    }),
+    renderPathCard({
+      href: `/${lang}/guides/${scaryPage.slugs[lang]}`,
+      icon: 'moon',
+      title: ui.pathNightmares,
+      desc: ui.pathNightmaresDesc,
+      tone: 'rgba(178,129,255,0.32)'
+    }),
+    renderPathCard({
+      href: `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.lucid[lang]}`,
+      icon: 'moon',
+      title: ui.pathLucid,
+      desc: ui.pathLucidDesc,
+      tone: 'rgba(244,114,182,0.24)'
+    })
+  ].join('\n');
+  const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en).map((card) => renderHubBentoCard(lang, t, pages, card)).join('\n');
   const itemList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -307,60 +977,86 @@ ${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${tar
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
 ${renderViewTransitionHeadStyles()}
     <script src="/js/lucide.min.js?v=${version}" defer></script>
-    <style>
-        body { margin: 0; background: #0a0514; color: #f8f5ff; font-family: system-ui, sans-serif; }
-        a { color: inherit; text-decoration: none; }
-        .shell { max-width: 1120px; margin: 0 auto; padding: 128px 16px 72px; }
-        .crumbs, .lede { color: rgba(226, 218, 255, 0.78); }
-        .hero { padding: 32px 0 24px; }
-        .hero h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); line-height: 1.05; margin: 0 0 16px; }
-        .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-        .card, .feature { display: grid; gap: 14px; padding: 24px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); background: rgba(20,10,40,0.5); }
-        .feature { margin: 28px 0 36px; }
-        .card strong, .feature strong { font-size: 1.1rem; }
-        .card span, .feature span { color: rgba(226, 218, 255, 0.78); line-height: 1.55; }
-        .card em, .feature em { color: #fda481; font-style: normal; font-weight: 600; }
-        .section-title { font-size: 1.5rem; margin: 0 0 12px; }
-    </style>
+${renderGuideHubStyles()}
 ${renderJsonLd(collection)}
 ${renderJsonLd(itemList)}
 ${renderJsonLd(breadcrumb)}
 </head>
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
-    <div class="aurora-bg"></div>
-    <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
-    <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
+<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden">
+    <div class="guides-page">
 ${renderGuidesNav(lang, t, currentPaths, 'guides')}
-    <main class="shell">
-        <p class="crumbs"><a href="/${lang}/">${escapeHtml(t.home)}</a> / ${escapeHtml(copy.label)}</p>
-        <section class="hero">
-            <h1>${escapeHtml(copy.label)}</h1>
-            <p class="lede">${escapeHtml(copy.intro)}</p>
+    <main class="guides-shell">
+        <section class="guides-hero" aria-labelledby="guidesTitle">
+            <div>
+                <h1 id="guidesTitle" class="guides-title">${escapeHtml(copy.label)}</h1>
+                <p class="guides-lede">${escapeHtml(ui.heroIntro)}</p>
+            </div>
         </section>
-        <a href="/${lang}/guides/${t.dictionary_slug}" class="feature">
-            <strong>${escapeHtml(copy.dictionary)}</strong>
-            <span>${escapeHtml(copy.intro)}</span>
-            <em>${escapeHtml(copy.openDictionary)}</em>
-        </a>
-        <h2 class="section-title">${escapeHtml(copy.label)}</h2>
-        <div class="grid">
+        <section id="guidesBento" class="guides-section">
+            <div class="guides-entry-layout">
+                <div class="guides-entry-left">
+                    <div class="guides-section-head">
+                        <h2>${escapeHtml(ui.chooseTitle)}</h2>
+                        <p class="guides-section-copy">${escapeHtml(ui.chooseIntro)}</p>
+                    </div>
+                    <a href="/${lang}/guides/${t.dictionary_slug}" class="guides-dictionary-card">
+                        <span>
+                            <span class="guides-feature-label">${escapeHtml(ui.featuredLabel)}</span>
+                            <h3 class="guides-dictionary-title">${escapeHtml(lang === 'fr' ? 'Le sens de vos rêves' : copy.dictionary)}</h3>
+                            <span class="guides-dictionary-desc">${escapeHtml(ui.dictionarySummary)}</span>
+                        </span>
+                        <span>
+                            <span class="guides-dictionary-cta"><i data-lucide="book-open" class="w-4 h-4"></i>${escapeHtml(ui.dictionaryCta)}</span>
+                        </span>
+                    </a>
+                </div>
+                <div class="guides-bento">
 ${cards}
-        </div>
+                </div>
+            </div>
+            <div class="guides-trust" aria-label="${escapeHtml(ui.trustVerified)}">
+                <div class="guides-trust-item">
+                    <span class="guides-trust-icon"><i data-lucide="badge-check" class="w-5 h-5"></i></span>
+                    <span><strong>${escapeHtml(ui.trustVerified)}</strong><span>${escapeHtml(ui.trustVerifiedDesc)}</span></span>
+                </div>
+                <div class="guides-trust-item">
+                    <span class="guides-trust-icon"><i data-lucide="calendar-sync" class="w-5 h-5"></i></span>
+                    <span><strong>${escapeHtml(ui.trustUpdated)}</strong><span>${escapeHtml(ui.trustUpdatedDesc)}</span></span>
+                </div>
+                <div class="guides-trust-item">
+                    <span class="guides-trust-icon"><i data-lucide="compass" class="w-5 h-5"></i></span>
+                    <span><strong>${escapeHtml(ui.trustAccessible)}</strong><span>${escapeHtml(ui.trustAccessibleDesc)}</span></span>
+                </div>
+            </div>
+        </section>
+        <section class="guides-paths-section" aria-labelledby="guidesPathsTitle">
+            <div class="guides-section-head">
+                <h2 id="guidesPathsTitle">${escapeHtml(ui.chooseTitle)}</h2>
+                <p class="guides-section-copy">${escapeHtml(ui.chooseIntro)}</p>
+            </div>
+            <div class="guides-paths" aria-label="${escapeHtml(ui.chooseTitle)}">
+${pathCards}
+            </div>
+        </section>
     </main>
-${renderGuidesFooter(lang, t, pages)}
+${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
                 if (navbar) {
-                    navbar.classList.toggle('py-2', window.scrollY > 50);
-                    navbar.classList.toggle('py-6', window.scrollY <= 50);
+                    navbar.classList.toggle('py-3', window.scrollY > 50);
+                    navbar.classList.toggle('py-5', window.scrollY <= 50);
+                    navbar.classList.toggle('bg-dream-dark/75', window.scrollY > 50);
+                    navbar.classList.toggle('backdrop-blur-md', window.scrollY > 50);
                 }
             });
         });
     </script>
     <script src="/js/language-dropdown.js?v=${version}" defer></script>
+    <script src="/js/mobile-menu.js?v=${version}" defer></script>
 </body>
 </html>`;
 }
@@ -374,6 +1070,7 @@ function computeCategoryCounts() {
 
 function renderLayoutCss() {
   return `        /* == dict-layout == */
+        :root { --dictionary-edge: clamp(1rem, 4vw, 4.75rem); }
         #dictionaryLayout { display: block; }
         #mainContentArea { flex: 1; min-width: 0; }
         #dictionarySidebar { display: none !important; }
@@ -388,14 +1085,68 @@ function renderLayoutCss() {
         .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
         .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
         .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
-        .dictionary-shell { max-width: 70rem; }
+        body.dictionary-page {
+          position: relative;
+          isolation: isolate;
+          background: #0a0514;
+        }
+        body.dictionary-page::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(180deg, rgba(5, 2, 12, 0.58) 0%, rgba(8, 3, 17, 0.36) 42%, #090413 94%),
+            linear-gradient(90deg, rgba(5, 2, 12, 0.58) 0%, rgba(5, 2, 12, 0.12) 48%, rgba(5, 2, 12, 0.38) 100%),
+            radial-gradient(circle at 24% 18%, rgba(253, 164, 129, 0.12), transparent 18rem),
+            url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
+            linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
+        }
+        .dictionary-page .aurora-bg,
+        .dictionary-page .orb {
+          display: none;
+        }
+        .dictionary-main {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          max-width: none;
+          padding: 0 0 5rem !important;
+        }
+        .dictionary-shell {
+          width: 100%;
+          max-width: none;
+          margin: 0;
+        }
+        .dictionary-shell > nav[aria-label="Breadcrumb"] {
+          display: none;
+        }
         .dictionary-header {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          margin-bottom: 1.75rem;
+          justify-content: center;
+          gap: 1.35rem;
+          min-height: 27rem;
+          margin-bottom: 0;
+          padding: 6.65rem clamp(1rem, 4vw, 4.75rem) 2rem;
+          text-align: left;
+          background: transparent;
         }
+        .dictionary-header h1 {
+          width: min(100%, 11ch);
+          max-width: none;
+          margin: 0;
+          font-size: clamp(4rem, 5.55vw, 6.7rem);
+          line-height: 0.94;
+          letter-spacing: 0;
+        }
+        #heroSearchShell { max-width: 45rem; }
         .quick-browse-panel {
+          width: calc(100% - (var(--dictionary-edge) * 2));
+          max-width: none;
+          margin-left: var(--dictionary-edge);
+          margin-right: var(--dictionary-edge);
           padding: 1.1rem;
           margin-bottom: 1.5rem;
           border: 1px solid rgba(253,164,129,0.08);
@@ -415,7 +1166,7 @@ function renderLayoutCss() {
         }
         .category-browse-grid {
           display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
           gap: 0.85rem;
         }
         .category-browse-card {
@@ -508,6 +1259,27 @@ function renderLayoutCss() {
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
         }
+        #dictionaryLayout,
+        #mobilePills,
+        #mobileAlpha,
+        #searchFeedback,
+        #noResults,
+        #mainContentArea > section,
+        #symbolsList {
+          width: 100%;
+          max-width: none;
+          margin-left: 0;
+          margin-right: 0;
+          padding-left: var(--dictionary-edge);
+          padding-right: var(--dictionary-edge);
+        }
+        #symbolsList > section {
+          padding-left: 0;
+          padding-right: 0;
+        }
+        #symbolsList > section > .grid {
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+        }
         #searchFeedback, #noResults {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
         }
@@ -521,6 +1293,10 @@ function renderLayoutCss() {
           border-radius: 1rem;
           border: 1px solid rgba(253,164,129,0.12);
           background: rgba(18, 10, 34, 0.88);
+        }
+        #searchFeedback[hidden],
+        #noResults[hidden] {
+          display: none !important;
         }
         .search-feedback-copy {
           min-width: 0;
@@ -554,10 +1330,38 @@ function renderLayoutCss() {
           border-color: rgba(253,164,129,0.22);
         }
         @media (min-width: 768px) {
-          .dictionary-header { margin-bottom: 2rem; }
-          .category-browse-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+          .dictionary-header { margin-bottom: 0; }
         }
         @media (max-width: 767px) {
+          :root { --dictionary-edge: 1rem; }
+          .dictionary-header {
+            min-height: auto;
+            padding: 5.9rem 1rem 1.35rem;
+          }
+          .dictionary-header h1 {
+            width: 100%;
+            max-width: 9ch;
+            font-size: clamp(3.35rem, 17vw, 5.2rem);
+          }
+          #dictionaryLayout,
+          #mobilePills,
+          #mobileAlpha,
+          #searchFeedback,
+          #noResults,
+          #mainContentArea > section,
+          #symbolsList,
+          .quick-browse-panel {
+            width: 100%;
+          }
+          .quick-browse-panel {
+            width: calc(100% - 2rem);
+            margin-left: 1rem;
+            margin-right: 1rem;
+          }
+          .category-browse-grid,
+          #symbolsList > section > .grid {
+            grid-template-columns: 1fr;
+          }
           #mobileAlpha { display: flex !important; }
           #searchFeedback { display: none !important; }
           body.dictionary-search-active #heroSearchShell,
@@ -892,6 +1696,27 @@ ${renderViewTransitionHeadStyles()}
         }
         .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
         .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
+        .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+        .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+        .noctalia-premium-nav-inner {
+          width: 100%;
+          max-width: 1720px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: clamp(1rem, 3vw, 3.5rem);
+        }
+        .noctalia-premium-links {
+          justify-content: center;
+          flex-wrap: nowrap;
+          gap: clamp(1.4rem, 3.4vw, 4rem);
+          min-width: 0;
+        }
+        .noctalia-premium-nav-actions { justify-content: flex-end; }
+        .noctalia-premium-action { display: inline-flex; }
+        .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
         @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         html, body { overflow-x: hidden; }
         .symbol-card { transition: all 0.3s ease; }
@@ -973,6 +1798,23 @@ ${renderViewTransitionHeadStyles()}
                 order: 3;
             }
         }
+        @media (max-width: 1100px) {
+            .noctalia-premium-download,
+            .noctalia-premium-about { display: none; }
+            .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); }
+        }
+        @media (max-width: 860px) {
+            .noctalia-premium-nav-inner { display: flex; justify-content: space-between; }
+            .noctalia-premium-nav-actions { margin-left: auto; }
+            .noctalia-premium-links { display: none; }
+            #navMobileGuideLink,
+            #mobileMenuButton { display: inline-flex; }
+        }
+        @media (max-width: 520px) {
+            .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; }
+            .noctalia-premium-brand-text { font-size: 1.35rem; }
+            #navMobileGuideLink { display: none; }
+        }
 ${renderLayoutCss()}
     </style>
 
@@ -983,7 +1825,7 @@ ${renderJsonLd(faqPageLd)}
 ${renderJsonLd(breadcrumb)}
 </head>
 
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+<body class="dictionary-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
 
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
@@ -992,7 +1834,7 @@ ${renderJsonLd(breadcrumb)}
     <!-- Navbar -->
 ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
 
-    <main class="pt-28 pb-20 px-4">
+    <main class="dictionary-main pt-28 pb-20 px-4">
         <div class="dictionary-shell mx-auto">
 
             <!-- Breadcrumb -->
@@ -1132,7 +1974,7 @@ ${relatedHtml}
     </main>
 
     <!-- Footer -->
-${renderGuidesFooter(lang, t, pages)}
+${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1144,7 +1986,10 @@ ${renderGuidesFooter(lang, t, pages)}
 
             // ── Navbar scroll effect ──────────────────────────────────────
             window.addEventListener('scroll', () => {
-                if (navbar) { navbar.classList.toggle('py-2', window.scrollY > 50); navbar.classList.toggle('py-6', window.scrollY <= 50); }
+                if (navbar) {
+                    navbar.classList.toggle('py-3', window.scrollY > 50);
+                    navbar.classList.toggle('py-5', window.scrollY <= 50);
+                }
             });
 
             function updateSectionScrollOffset() {
@@ -1427,6 +2272,7 @@ ${symbolCatEntries}
         });
     </script>
     <script src="/js/language-dropdown.js?v=${version}" defer></script>
+    <script src="/js/mobile-menu.js?v=${version}" defer></script>
 </body>
 </html>`;
 }

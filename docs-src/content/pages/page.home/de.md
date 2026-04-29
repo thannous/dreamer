@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "",
   "title": "Traumtagebuch mit Traumillustrationen & Deutung | Noctalia",
-  "description": "Nimm deine Träume per Sprache auf, erstelle Traumillustrationen und entdecke Bedeutungen und Muster. Starte dein kostenloses Traumtagebuch!",
+  "description": "Beschreibe deine Träume, erstelle Traumillustrationen und entdecke Bedeutungen und Muster. Starte dein kostenloses Traumtagebuch!",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth",
@@ -14,12 +14,12 @@
   "mainClass": "",
   "ogType": "website",
   "ogTitle": "Traumtagebuch mit Traumillustrationen & Deutung | Noctalia",
-  "ogDescription": "Nimm deine Träume per Sprache auf, erstelle Traumillustrationen und entdecke Bedeutungen und Muster. Starte dein kostenloses Traumtagebuch!",
+  "ogDescription": "Beschreibe deine Träume, erstelle Traumillustrationen und entdecke Bedeutungen und Muster. Starte dein kostenloses Traumtagebuch!",
   "ogImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Traumtagebuch mit Traumillustrationen & Deutung | Noctalia",
-  "twitterDescription": "Nimm deine Träume per Sprache auf, erstelle Traumillustrationen und entdecke Bedeutungen und Muster. Starte dein kostenloses Traumtagebuch!",
+  "twitterDescription": "Beschreibe deine Träume, erstelle Traumillustrationen und entdecke Bedeutungen und Muster. Starte dein kostenloses Traumtagebuch!",
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Traumtagebuch mit Traumillustrationen & Deutung",
   "publishedTime": "",
@@ -45,6 +45,8 @@
     <!-- Navbar -->
     
 
+<main class="noctalia-observatory overflow-x-hidden w-full max-w-full">
+
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
@@ -55,7 +57,7 @@
 
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Dein intelligenter Traumbegleiter. Nimm deine Träume per Sprache auf und lass dich leiten, um dich selbst besser zu verstehen.
+                Dein intelligenter Traumbegleiter. Beschreibe deine Träume und lass Noctalia dir helfen, sie zu erkunden und zu verstehen.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -598,6 +600,8 @@
             </div>
         </div>
     </section>
+
+</main>
 
     <!-- 10. Footer -->
     

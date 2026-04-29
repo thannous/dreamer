@@ -65,7 +65,7 @@
                     Significati dei sogni: interpretazione &amp; simboli
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Il significato non è valido per tutti: i simboli cambiano con il contesto, le emozioni e la storia della vita. Questo hub ti aiuta a esplorare temi ricorrenti e simboli onirici comuni con guide chiare e concrete.
+                    Nessun simbolo ha un significato universale: tutto cambia con il contesto, le emozioni e la tua storia personale. Esplora qui temi ricorrenti e simboli onirici comuni con guide chiare e concrete.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
                     Non sai da dove iniziare? Sfoglia i <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">Dizionario dei simboli dei sogni</a> o esplora simboli comuni come <a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a>, <a class="text-dream-salmon hover:underline" href="../simboli/denti">denti</a> e <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpenti</a>.

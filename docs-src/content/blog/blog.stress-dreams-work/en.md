@@ -130,7 +130,7 @@
                     You spend roughly a third of your waking life at work. That's thousands of hours of social interactions, deadlines, performance pressure, and emotional labor - all of which your brain needs to process. During <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, your mind replays and reorganizes the day's most emotionally charged experiences, and for most adults, work tops that list.
                 </p>
 <p>
-                    The phenomenon isn't random. Research from the American Psychological Association shows that <strong>work is the number one source of stress</strong> for adults in most developed countries. When stress hormones like cortisol remain elevated at bedtime, they directly influence dream content, pulling your mind back to the office even as your body rests.
+                    This isn't random. Research from the American Psychological Association shows that <strong>work is the number one source of stress</strong> for adults in most developed countries. When stress hormones like cortisol remain elevated at bedtime, they directly influence dream content, pulling your mind back to the office even as your body rests.
                 </p>
 <p>
                     Several factors make work particularly "sticky" for the dreaming brain:
@@ -183,7 +183,7 @@
                 </p>
 <h3>The continuity hypothesis</h3>
 <p>
-                    The continuity hypothesis of dreaming states that dreams reflect waking concerns. A 2023 study in <em>Sleep</em> journal found that <strong>participants who reported high work stress were 3.2 times more likely to dream about work</strong> than those with low stress levels - a nearly linear relationship between daytime worry and nighttime dream content.
+                    Known as the continuity hypothesis of dreaming, this idea holds that dreams reflect waking concerns. A 2023 study in <em>Sleep</em> journal found that <strong>participants who reported high work stress were 3.2 times more likely to dream about work</strong> than those with low stress levels - a nearly linear relationship between daytime worry and nighttime dream content.
                 </p>
 </div>
 <!-- Work Dream Cards -->
@@ -294,7 +294,7 @@
                 </p>
 <h2 id="dream-journaling">Using Dream Journaling to Manage Work Stress</h2>
 <p>
-                    Dream journaling is one of the most effective self-help tools for work stress dreams. By writing down your dreams consistently, you create a personal database that reveals exactly <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">how to remember</a> and decode the messages your sleeping mind is sending.
+                    Dream journaling is one of the most effective self-help tools for work stress dreams. By writing down your dreams consistently, you create a personal database that reveals exactly <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">how to remember</a> and decode the messages your sleeping mind is sending.
                 </p>
 <h3>What to track</h3>
 <ul>

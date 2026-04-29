@@ -70,7 +70,7 @@
                     REM Sleep and Dreams: Understanding Your Brain's Nightly Reset
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Every night, your brain cycles through distinct sleep stages, but it's during REM sleep that the magic happens. Your most vivid dreams unfold, memories consolidate, and your mind processes emotions. Understanding REM sleep is the key to unlocking better dream recall and sleep quality.
+                    Every night, your brain cycles through distinct sleep stages, but REM sleep is where the real action happens. Your most vivid dreams unfold, memories consolidate, and your mind processes emotions. Understanding this phase is the key to unlocking better dream recall and sleep quality.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -130,10 +130,10 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="what-is-rem">What Is REM Sleep? The Dream Stage Explained</h2>
 <p>
-                    REM stands for <strong>Rapid Eye Movement</strong>, named after the characteristic quick eye movements that occur beneath closed eyelids during this stage. Discovered in 1953 by researchers Eugene Aserinsky and Nathaniel Kleitman, REM sleep represents one of the most fascinating states of consciousness.
+                    REM stands for <strong>Rapid Eye Movement</strong>, named after the characteristic quick eye movements that occur beneath closed eyelids during this stage. Researchers Eugene Aserinsky and Nathaniel Kleitman discovered it in 1953, and it remains one of the most fascinating states of consciousness.
                 </p>
 <p>
-                    During REM sleep, your brain is almost as active as when you're awake, yet your body is temporarily paralyzed. This paradoxical state - sometimes called "paradoxical sleep" - creates the perfect conditions for the most vivid, story-like dreams.
+                    During REM sleep, your brain is almost as active as when you're awake, yet your body is temporarily paralyzed. This paradoxical state - sometimes called "paradoxical sleep" - creates the perfect conditions for vivid, story-like dreams.
                 </p>
 <h3>Key Characteristics of REM Sleep and Dreams</h3>
 <ul>
@@ -182,7 +182,7 @@
 </ul>
 <h3>How Sleep Cycles Change Through the Night</h3>
 <p>
-                    The composition of sleep cycles shifts dramatically as the night progresses:
+                    Sleep cycle composition shifts dramatically as the night progresses:
                 </p>
 <ul>
 <li><strong>Early night (Cycles 1-2):</strong> Dominated by deep sleep (N3), minimal REM</li>
@@ -217,7 +217,7 @@
 <li><strong>Prefrontal cortex:</strong> DEACTIVATED - logical reasoning and self-awareness are offline</li>
 </ul>
 <p>
-                    This unique pattern creates the perfect <a class="text-dream-salmon hover:underline" href="../symbols/storm">storm</a> for vivid, emotional, illogical narratives that feel completely real while experiencing them.
+                    Together, these conditions create the perfect <a class="text-dream-salmon hover:underline" href="../symbols/storm">storm</a> for vivid, emotional, illogical narratives that feel completely real while you experience them.
                 </p>
 <h2 id="rem-vs-nonrem">REM vs Non-REM Dreams: Key Differences</h2>
 <p>
@@ -279,15 +279,15 @@
 </ul>
 <h3>Memory Consolidation During REM Sleep</h3>
 <p>
-                    REM sleep plays a key role in different types of memory:
+                    Your REM phases play a key role in different types of memory:
                 </p>
 <ul>
 <li><strong>Procedural memory:</strong> Skills like playing instruments or sports are strengthened</li>
 <li><strong>Emotional memory:</strong> REM helps process and integrate emotional experiences</li>
-<li><strong>Creative problem-solving:</strong> REM facilitates novel connections between disparate ideas</li>
+<li><strong>Creative problem-solving:</strong> REM helps novel connections between disparate ideas</li>
 </ul>
 <p>
-                    Studies show that <strong>REM-deprived individuals perform worse on creative tasks</strong> and have difficulty learning new motor skills. The famous "sleep on it" advice has scientific backing - REM sleep literally helps you solve problems.
+                    Studies show that <strong>REM-deprived individuals perform worse on creative tasks</strong> and struggle to learn new motor skills. The famous "sleep on it" advice has scientific backing - REM sleep literally helps you solve problems.
                 </p>
 <h3>Emotional Regulation and Processing in REM Sleep</h3>
 <p>
@@ -318,7 +318,7 @@
 </aside>
 <h2 id="optimize">How to Improve Your REM Sleep for Better Dreams</h2>
 <p>
-                    Since REM sleep is concentrated in the later sleep cycles, getting enough total sleep is important. But there are specific strategies to boost REM quality and quantity:
+                    REM sleep concentrates in later sleep cycles, so getting enough total sleep matters. Specific strategies can also boost REM quality and quantity:
                 </p>
 <h3>Sleep Duration and Timing for REM Optimization</h3>
 <ul>
@@ -373,7 +373,7 @@
 <li>Injury to self or sleep partner</li>
 </ul>
 <p>
-                    RBD affects about 0.5% of adults and is more common in men over 50. Importantly, RBD can be an early indicator of neurodegenerative conditions like Parkinson's disease - about 80% of RBD patients eventually develop a parkinsonian disorder.
+                    RBD affects about 0.5% of adults and is more common in men over 50. It can also be an early indicator of neurodegenerative conditions like Parkinson's disease - about 80% of RBD patients eventually develop a parkinsonian disorder.
                 </p>
 <h3>Narcolepsy: REM Sleep Intrusion During Wakefulness</h3>
 <p>
@@ -412,7 +412,7 @@
                 </p>
 <h2 id="dream-recall">Improving dream recall through REM awareness</h2>
 <p>
-                    Understanding REM sleep cycles can dramatically improve your ability to remember dreams:
+                    Knowing how REM sleep cycles work can dramatically improve your ability to remember dreams:
                 </p>
 <h3>Timing your wake-up</h3>
 <p>
@@ -425,7 +425,7 @@
 </ul>
 <h3>The wake-back-to-bed (WBTB) technique</h3>
 <p>
-                    This technique leverages the REM-rich final sleep cycles:
+                    This technique uses the REM-rich final sleep cycles:
                 </p>
 <ol>
 <li>Sleep for 4-6 hours</li>
@@ -451,7 +451,7 @@
 <li><strong>Dream incubation:</strong> Focusing on a topic before sleep can influence REM dream content</li>
 </ul>
 <p>
-                    Understanding that your brain needs <strong>full sleep cycles</strong> to access the richest REM periods is fundamental. Many people sacrifice the last 1-2 hours of sleep, not realizing they're cutting out their most vivid, memorable dreams.
+                    Your brain needs <strong>full sleep cycles</strong> to access the richest REM periods. Many people sacrifice the last 1-2 hours of sleep without realizing they're cutting out their most vivid, memorable dreams.
                 </p>
 </div>
 <!-- CTA Section -->

@@ -130,7 +130,7 @@
                     Sie verbringen etwa ein Drittel Ihres wachen Lebens am Arbeitsplatz. Das sind Tausende von Stunden sozialer Interaktionen, Fristen, Leistungsdruck und emotionaler Arbeit – all das muss Ihr Gehirn verarbeiten. Während des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> spielt Ihr Geist die emotionalsten Erlebnisse des Tages noch einmal ab und ordnet sie neu, und für die meisten Erwachsenen steht die Arbeit ganz oben auf dieser Liste.
                 </p>
 <p>
-                    Das Phänomen ist nicht zufällig. Untersuchungen der American Psychological Association zeigen, dass <strong>Arbeit für Erwachsene in den meisten Industrieländern die häufigste Stressquelle ist</strong>. Wenn Stresshormone wie Cortisol vor dem Schlafengehen erhöht bleiben, wirken sie sich direkt auf den Trauminhalt aus und ziehen Ihren Geist zurück ins Büro, auch wenn Ihr Körper ruht.
+                    Daran ist nichts zufallig. Untersuchungen der American Psychological Association zeigen, dass <strong>Arbeit fur Erwachsene in den meisten Industrielandern die haufigste Stressquelle ist</strong>. Wenn Stresshormone wie Cortisol vor dem Schlafengehen erhöht bleiben, wirken sie sich direkt auf den Trauminhalt aus und ziehen Ihren Geist zurück ins Büro, auch wenn Ihr Körper ruht.
                 </p>
 <p>
                     Mehrere Faktoren machen die Arbeit besonders „klebrig" für das träumende Gehirn:
@@ -183,7 +183,7 @@
                 </p>
 <h3>Die Kontinuitätshypothese</h3>
 <p>
-                    Die Kontinuitätshypothese des Träumens besagt, dass Träume die Sorgen des Wachzustands widerspiegeln. Eine Studie aus dem Jahr 2023 im Fachjournal <em>Sleep</em> ergab, dass <strong>Teilnehmer mit hohem Arbeitsstress 3,2-mal häufiger von der Arbeit träumten</strong> als Teilnehmer mit niedrigem Stressniveau – ein nahezu linearer Zusammenhang zwischen Sorgen tagsüber und nächtlichen Trauminhalten.
+                    Gemass der Kontinuitatshypothese des Traumens spiegeln Traume die Sorgen des Wachzustands wider. Eine Studie aus dem Jahr 2023 im Fachjournal <em>Sleep</em> ergab, dass <strong>Teilnehmer mit hohem Arbeitsstress 3,2-mal häufiger von der Arbeit träumten</strong> als Teilnehmer mit niedrigem Stressniveau – ein nahezu linearer Zusammenhang zwischen Sorgen tagsüber und nächtlichen Trauminhalten.
                 </p>
 </div>
 <!-- Work Dream Cards -->

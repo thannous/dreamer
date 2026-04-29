@@ -110,7 +110,7 @@
                     Think about what pregnancy involves: nurturing something that's growing, anticipating a new arrival, and undergoing transformation yourself in the process. These themes apply to countless life situations beyond having a <a class="text-dream-salmon hover:underline" href="../symbols/baby">baby</a>.
                 </p>
 <p>
-                    Pregnancy dreams often appear when you're:
+                    These dreams tend to appear when you're:
                 </p>
 <ul>
 <li><strong>Starting a creative project</strong> - a book, business, artwork, or any creative endeavor</li>
@@ -203,7 +203,7 @@
                 </p>
 <h3>2. Personal Transformation and Growth</h3>
 <p>
-                    Pregnancy dreams often appear during periods of <strong>significant personal growth</strong>. You're "pregnant" with a new version of yourself - developing new traits, beliefs, or ways of being that haven't fully manifested yet.
+                    These dreams frequently appear during periods of <strong>significant personal growth</strong>. You're "pregnant" with a new version of yourself - developing new traits, beliefs, or ways of being that haven't fully manifested yet.
                 </p>
 <h3>3. New Beginnings and Life Transitions</h3>
 <p>
@@ -258,7 +258,7 @@
                 </p>
 <h3>Processing Anxieties Through Pregnancy Dreams</h3>
 <p>
-                    Dreams during pregnancy often process <strong>fears and anxieties about parenthood</strong>, birth, and the changes ahead. This is normal and healthy emotional processing.
+                    Dreams during pregnancy frequently process <strong>fears and anxieties about parenthood</strong>, birth, and the changes ahead. This is normal and healthy emotional processing.
                 </p>
 <h3>Common Themes in Pregnant Women's Dreams</h3>
 <p>

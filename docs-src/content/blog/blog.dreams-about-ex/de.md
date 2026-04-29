@@ -113,14 +113,14 @@
                     Diese Erinnerungen können in vertrauten Umgebungen wie einem <a class="text-dream-salmon hover:underline" href="../traumsymbole/haus">Haus</a> auftauchen, das sich voller Bedeutung anfühlt.
                 </p>
 <p>
-                    Untersuchungen zeigen das Wir träumen eher von Menschen, die einen starken emotionalen Einfluss auf uns hatten, unabhängig davon, ob diese Emotionen positiv oder negativ waren. Ihr Ex repräsentiert ein wichtiges Kapitel Ihres Lebens und Ihr Gehirn nutzt diesen Bezugspunkt, wenn es ähnliche Themen verarbeitet.
+                    Untersuchungen zeigen, dass wir eher von Menschen träumen, die einen starken emotionalen Einfluss auf uns hatten, unabhängig davon, ob diese Emotionen positiv oder negativ waren. Ihr Ex repräsentiert ein prägendes Kapitel Ihres Lebens, und Ihr Gehirn nutzt diesen Bezugspunkt, wenn es ähnliche Themen verarbeitet.
                 </p>
 <blockquote>
                     "Träume über Ex-Partner handeln selten von der tatsächlichen Person. Normalerweise geht es darum, was diese Person repräsentiert – eine Zeit in Ihrem Leben, ein Gefühl oder einen Aspekt Ihrer selbst.“ - Dr. Wendy Walsh, Beziehungspsychologin
                 </blockquote>
 <h2 id="scenarios">Häufige Träume über Ihren Ex und ihre Bedeutung</h2>
 <p>
-                    Das Szenario in Ihrem Traum liefert wichtige Hinweise auf seine Bedeutung:
+                    Jedes Traumszenario liefert wichtige Hinweise auf seine Bedeutung:
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -187,7 +187,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Ihr Ex entschuldigt sich</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Träume, in denen sich ein Ex entschuldigt, können Ihr Bedürfnis nach Abschluss <strong>your need for closure</strong> oder Bestätigung widerspiegeln. Ihr Unterbewusstsein schafft die Lösung, die Sie in der Realität nicht bekommen haben.
+                        Träume, in denen sich ein Ex entschuldigt, können <strong>Ihr Bedürfnis nach Abschluss</strong> oder Bestätigung widerspiegeln. Ihr Unterbewusstsein schafft die Lösung, die Sie in der Realität nicht bekommen haben.
                     </p>
 </div>
 </div>
@@ -199,7 +199,7 @@
                 </p>
 <h3>2. Auf der Suche nach dem Abschluss vergangener Beziehungen</h3>
 <p>
-                    Hinten die Dinge abrupt? Gab es unausgesprochene Worte? Träume von Ex-Partnern tauchen oft auf, wenn es einen emotionalen Abschluss gibt, den Sie nie erfahren haben <strong>emotional closure you never received</strong>. Ihr Unterbewusstsein spielt Szenarien ab und versucht, eine Lösung zu finden.
+                    Endete alles abrupt? Gab es unausgesprochene Worte? Träume von Ex-Partnern tauchen oft auf, wenn Sie <strong>einen emotionalen Abschluss nie erhalten haben</strong>. Ihr Unterbewusstsein spielt Szenarien ab und versucht, eine Lösung zu finden.
                 </p>
 <h3>3. Durch Träume Lektionen fürs Leben lernen</h3>
 <p>
@@ -209,9 +209,9 @@
 <p>
                     Etwas in Ihrem aktuellen Leben kann Ex-Träume auslösen. Vielleicht stehen Sie vor ähnlichen Situationen – <strong>Vertrauensprobleme, Kommunikationsprobleme oder Beziehungsdynamik</strong> -, die Ihr Gehirn mit dieser früheren Beziehung in Verbindung bringt.
                 </p>
-<h3>5. Sich wieder mit deinem früheren Selbst verbinden</h3>
+<h3>5. Sich wieder mit Ihrem früheren Selbst verbinden</h3>
 <p>
-                    Manchmal verlieren wir Teile von uns selbst in Beziehungen oder deren Folgen. Träume über einen Ex könnten <strong>Aspekte von dir selbst aus dieser Zeit</strong> darstellen – Hobbys, die du aufgegeben hast, Selbstvertrauen, das du verloren hast, oder eine Version von dir selbst, die du vermisst.
+                    Manchmal verlieren wir Teile von uns selbst in Beziehungen oder deren Folgen. Träume über einen Ex könnten <strong>Aspekte von Ihnen selbst aus dieser Zeit</strong> darstellen – Hobbys, die Sie aufgegeben haben, Selbstvertrauen, das Sie verloren haben, oder eine Version von Ihnen selbst, die Sie vermissen.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -219,8 +219,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Entschlüssele deine Beziehungsträume</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analysiert die spezifischen Details deiner Ex-Träume – das Szenario, die Emotionen und den Kontext –, um dir zu helfen, zu verstehen, was deine Ex-Träume sind Das Unterbewusstsein verarbeitet.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Entschlüsseln Sie Ihre Beziehungsträume</h4>
+<p class="text-sm text-gray-400 mb-4">Noctalia analysiert die spezifischen Details Ihrer Ex-Träume – das Szenario, die Emotionen und den Kontext –, um Ihnen zu helfen, zu verstehen, was Ihr Unterbewusstsein verarbeitet.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
                                 Probieren Sie Noctalia kostenlos aus <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -257,7 +257,7 @@
                 </p>
 <h3>Sollten Sie Ihrem Partner von Ex-Träumen erzählen?</h3>
 <p>
-                    Es besteht keine Verpflichtung, Träume zu teilen. Betrachten Sie den Kontext: Würde es Ihrer Beziehung helfen oder unnötige Sorgen verursachen? Wenn Ex-Träume häufig und belastend sind, kann es angemessener sein, Muster (nicht Details) mit einem Therapeuten zu besprechen. <strong>discussing patterns (not details)</strong> with a therapist may be more appropriate.
+                    Es besteht keine Verpflichtung, Träume zu teilen. Betrachten Sie den Kontext: Würde es Ihrer Beziehung helfen oder unnötige Sorgen verursachen? Wenn Ex-Träume häufig und belastend sind, kann es angemessener sein, <strong>Muster (nicht Details)</strong> mit einem Therapeuten zu besprechen.
                 </p>
 <h2 id="moving-on">Wie Sie aufhören, von Ihrem Ex zu träumen</h2>
 <h3>1. Führen Sie ein <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> Über Ex-Träume</h3>

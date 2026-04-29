@@ -116,7 +116,7 @@
                     A lucid dream is a particular state of consciousness in which <strong>you know you are dreaming</strong> while remaining asleep. This awareness can occur spontaneously or be induced through various techniques.
                 </p>
 <p>
-                    Levels of lucidity vary considerably:
+                    Lucidity exists on a spectrum:
                 </p>
 <ul>
 <li><strong>Minimal lucidity:</strong> You know you're dreaming but control nothing</li>
@@ -273,7 +273,7 @@
 <li>Go back to bed while practicing MILD</li>
 </ol>
 <p>
-                    The success rate of WBTB+MILD is <strong>60% higher</strong> than MILD alone according to studies.
+                    Studies show WBTB+MILD has a <strong>60% higher</strong> success rate than MILD alone.
                 </p>
 <h3>3. DILD: Recognizing Dream Signs Naturally</h3>
 <p>
@@ -302,7 +302,7 @@
                 </p>
 <h2 id="stabilize">How to Stabilize a Lucid Dream and Stay Lucid</h2>
 <p>
-                    The first lucid dream is often brief - a few seconds before waking up or losing lucidity. Here's how to extend the experience:
+                    Your first lucid dream will likely be brief - a few seconds before waking up or losing lucidity. Here's how to extend the experience:
                 </p>
 <h3>Dream Stabilization Techniques That Work</h3>
 <ul>
@@ -456,7 +456,7 @@
                 <p class="text-sm text-purple-300/60">More resources on the same topic</p>
               </header>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+                    <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
                         <p class="text-sm text-gray-400">Discover scientifically proven methods to improve your dream recall and never forget your dreams upon waking again. Simple techniques you can apply tonight.</p>

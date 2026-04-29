@@ -24,7 +24,7 @@
     <meta property="og:title" content="The AI That Reads Your Sleep: Stanford&#39;s SleepFM Revolution | Noctalia">
     <meta property="og:description" content="Stanford publishes SleepFM, an AI predicting Parkinson&#39;s and cancers from a single night&#39;s sleep. Discover how AI is transforming sleep and dream analysis.">
     <meta property="og:url" content="https://noctalia.app/en/blog/ai-sleep-analysis-dreams">
-    <meta property="og:image" content="https://noctalia.app/img/blog/ia-analyse-sommeil-reves.webp">
+    <meta property="og:image" content="https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Futuristic visualization of brain signals analyzed by artificial intelligence during sleep">
@@ -41,25 +41,36 @@
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="The AI That Reads Your Sleep: Stanford&#39;s SleepFM Revolution | Noctalia">
     <meta name="twitter:description" content="Stanford publishes SleepFM, an AI predicting Parkinson&#39;s and cancers from a single night&#39;s sleep. Discover how AI is transforming sleep and dream analysis.">
-    <meta name="twitter:image" content="https://noctalia.app/img/blog/ia-analyse-sommeil-reves.webp">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp">
     <meta name="twitter:image:alt" content="Futuristic visualization of brain signals analyzed by artificial intelligence during sleep">
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Preload featured image -->
-    <link rel="preload" href="/img/blog/ia-analyse-sommeil-reves.webp" as="image" type="image/webp">
+    <link rel="preload" href="/img/blog/ai-sleep-analysis-dreams.webp" as="image" type="image/webp">
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -78,7 +89,7 @@
             "description": "Stanford publishes SleepFM, an AI predicting Parkinson's and cancers from a single night's sleep. Discover how AI is transforming sleep and dream analysis.",
             "image": {
                 "@type": "ImageObject",
-                "url": "https://noctalia.app/img/blog/ia-analyse-sommeil-reves.webp",
+                "url": "https://noctalia.app/img/blog/ai-sleep-analysis-dreams.webp",
                 "width": 1200,
                 "height": 630
             },
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/en/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/en/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/en/#how-it-works" class="hidden lg:inline-flex hover:text-white transition-colors">How it works</a>
-                <a href="/en/#features" class="hidden lg:inline-flex hover:text-white transition-colors">Features</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/en/blog/" class="text-dream-salmon transition-colors">Resources</a>
                 <a href="/en/guides/" class="hover:text-white transition-colors">Dream Guides</a>
                 <a href="/en/guides/dream-symbols-dictionary" class="hover:text-white transition-colors">Dream Dictionary</a>
+                <a href="/en/about" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">About</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">EN</span>
+                        <span>EN</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Download app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/en/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Resources</a>
+                <a href="/en/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dream Guides</a>
+                <a href="/en/guides/dream-symbols-dictionary" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dream Dictionary</a>
+                <a href="/en/about" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">About</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Download app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/ai-sleep-analysis-dreams" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">English</a>
+                    <a href="/fr/blog/ia-analyse-sommeil-reves" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/ia-analisis-sueno-suenos" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/ki-schlafanalyse-traeume" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/ia-analisi-sonno-sogni" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -290,7 +320,7 @@
 </div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Futuristic visualization of brain signals analyzed by artificial intelligence during sleep" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/ia-analyse-sommeil-reves.webp" srcset="../../img/blog/ia-analyse-sommeil-reves-480w.webp 480w, ../../img/blog/ia-analyse-sommeil-reves-800w.webp 800w, ../../img/blog/ia-analyse-sommeil-reves-1200w.webp 1200w" width="1200">
+<img alt="Futuristic visualization of brain signals analyzed by artificial intelligence during sleep" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/ai-sleep-analysis-dreams.webp" srcset="../../img/blog/ai-sleep-analysis-dreams-480w.webp 480w, ../../img/blog/ai-sleep-analysis-dreams-800w.webp 800w, ../../img/blog/ai-sleep-analysis-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -316,7 +346,7 @@
                     Polysomnography (PSG) — the gold standard test performed in a sleep laboratory — simultaneously records brain activity (EEG), eye movements (EOG), muscle tone (EMG), heart rate, and oxygen saturation. Until now, this data primarily served to diagnose sleep apnea or narcolepsy. SleepFM demonstrates that these same signals contain predictive information about diseases that will only manifest clinically years later.
                 </p>
 <p>
-                    The approach fits into a broader trend in medicine: using <strong>multi-modal foundation models</strong> — similar to large language models (LLMs) like GPT — but applied to biomedical data. Just as an LLM learns the structures of language before applying them to specific tasks, SleepFM learns the structures of sleep before using them for medical screening.
+                    This approach fits into a broader trend in medicine: using <strong>multi-modal foundation models</strong> — similar to large language models (LLMs) like GPT — but applied to biomedical data. Just as an LLM learns the structures of language before applying them to specific tasks, SleepFM learns the structures of sleep before using them for medical screening.
                 </p>
 
 <h2 id="how-it-works">How AI Decodes Sleep Signals</h2>
@@ -325,14 +355,14 @@
                     SleepFM processes three types of signals recorded during a full night of sleep. The <strong>electroencephalogram (EEG)</strong> captures the brain's electrical activity through multiple electrodes, revealing sleep spindles, slow waves, and <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> activity. The <strong>electrooculogram (EOG)</strong> records the rapid eye movements characteristic of REM sleep — the stage where our most vivid dreams occur. The <strong>electromyogram (EMG)</strong> measures muscle tone, which drops dramatically during REM sleep (the muscle atonia that prevents us from physically acting out our dreams).
                 </p>
 <p>
-                    The model transforms these raw signals into high-dimensional vector representations — "embeddings" — that capture micro-structures of sleep invisible to the human eye. These representations are then used as input for disease-specific classifiers.
+                    From these raw signals, the model builds high-dimensional vector representations — "embeddings" — that capture micro-structures of sleep invisible to the human eye. These representations then feed into disease-specific classifiers.
                 </p>
 <h3>One network for hundreds of conditions</h3>
 <p>
                     SleepFM's architecture relies on self-supervised pre-training: the model first learns to predict missing segments of the sleep signal, forcing the network to understand the deep temporal structure of sleep. This step requires no disease labels. The learned representations are then fine-tuned for each specific prediction task, using much smaller labeled datasets.
                 </p>
 <p>
-                    This two-stage strategy explains why SleepFM outperforms end-to-end models trained on a single disease: it has acquired a fundamental understanding of sleep physiology that transfers to multiple diagnostic tasks. It is the same logic that makes pre-trained LLMs outperform specialized models on individual tasks.
+                    This two-stage strategy explains why SleepFM outperforms end-to-end models trained on a single disease: it has acquired a fundamental understanding of sleep physiology that transfers to multiple diagnostic tasks. Pre-trained LLMs succeed for the same reason — broad knowledge beats narrow specialization on individual tasks.
                 </p>
 
 <h2 id="predictions">What SleepFM Can Predict: Key Figures</h2>
@@ -341,14 +371,14 @@
                     SleepFM's most striking results concern neurodegenerative diseases. The model achieves a <strong>C-index of 0.89 for Parkinson's disease</strong> and <strong>0.85 for dementia</strong>, performances that rival the most advanced blood biomarkers. The C-index measures a model's discriminative ability: 0.5 is chance, 1.0 is perfect prediction. A score of 0.89 means that in 89% of cases, SleepFM correctly ranks a patient who will develop Parkinson's above one who will not.
                 </p>
 <p>
-                    These performances are especially remarkable because signs of Parkinson's appear in sleep <strong>years before the first motor symptoms</strong>. REM sleep behavior disorder (RBD) — where patients physically act out their dreams due to failing muscle atonia — is a known marker of Parkinson's risk. SleepFM goes beyond this single marker by detecting subtle patterns across all sleep signals.
+                    What makes these results especially striking is timing: signs of Parkinson's appear in sleep <strong>years before the first motor symptoms</strong>. REM sleep behavior disorder (RBD) — where patients physically act out their dreams due to failing muscle atonia — is a known marker of Parkinson's risk. SleepFM goes beyond this single marker by detecting subtle patterns across all sleep signals.
                 </p>
 <h3>Cardiovascular diseases and cancers</h3>
 <p>
-                    Beyond neurology, SleepFM shows significant predictive capabilities for cardiovascular diseases (C-index of 0.87) and certain cancers (C-index of 0.89). The researchers hypothesize that systemic diseases leave detectable fingerprints in the autonomic regulation of sleep — heart rate, heart rate variability, and micro-arousals — long before they become clinically evident.
+                    Beyond neurology, SleepFM shows strong predictive capabilities for cardiovascular diseases (C-index of 0.87) and certain cancers (C-index of 0.89). Researchers hypothesize that systemic diseases leave detectable fingerprints in the autonomic regulation of sleep — heart rate, heart rate variability, and micro-arousals — long before they become clinically evident.
                 </p>
 <p>
-                    The model also predicts 5-year all-cause mortality risk with a C-index of 0.83, making a single night of sleep a <strong>global health indicator</strong> comparable to certain batteries of blood tests.
+                    It also predicts 5-year all-cause mortality risk with a C-index of 0.83, making a single night of sleep a <strong>global health indicator</strong> comparable to certain batteries of blood tests.
                 </p>
 
 <h2 id="dream-database">The DREAM Database: Revolution for Dream Research</h2>
@@ -356,7 +386,7 @@
                     Alongside advances in medical AI, dream research is reaching a milestone thanks to the DREAM consortium, whose results were published in <em>Nature Communications</em>. This project brings together <strong>37 international research institutions</strong> that pooled their polysomnography data and dream journals, creating the largest standardized database ever assembled for the scientific study of dreams.
                 </p>
 <p>
-                    The DREAM database enables researchers for the first time to cross-reference physiological sleep data (EEG, EOG, EMG) with reported dream content at scale. Scientists can now study the neural correlates of dream themes — for example, which brain activity patterns are associated with dreams of <a class="text-dream-salmon hover:underline" href="../symbols/mirror">introspection</a>, dreams of <a class="text-dream-salmon hover:underline" href="../symbols/key">discovery</a>, or dreams of <a class="text-dream-salmon hover:underline" href="../symbols/path">journeying</a>.
+                    For the first time, DREAM enables researchers to cross-reference physiological sleep data (EEG, EOG, EMG) with reported dream content at scale. Scientists can now study the neural correlates of dream themes — for example, which brain activity patterns are associated with dreams of <a class="text-dream-salmon hover:underline" href="../symbols/mirror">introspection</a>, dreams of <a class="text-dream-salmon hover:underline" href="../symbols/key">discovery</a>, or dreams of <a class="text-dream-salmon hover:underline" href="../symbols/path">journeying</a>.
                 </p>
 <p>
                     This convergence between sleep neuroscience and dream science paves the way for an integrated understanding of what our brain does at night — not only how it regulates our vital functions, but also <a class="text-dream-salmon hover:underline" href="why-we-dream-science">why we dream</a> and what our dreams reveal about our mental state.
@@ -392,7 +422,7 @@
                     While physiological sleep signal analysis still requires laboratory equipment, dream content analysis is accessible to everyone right now. Noctalia uses artificial intelligence to transform your morning voice recordings into rich analyses: identifying emotional themes, detecting recurring symbols, tracking trends over time. The <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a> becomes a personal exploration tool powered by the same NLP technologies used in academic research.
                 </p>
 <p>
-                    The goal is not to replace a therapist but to make visible what usually goes unnoticed: the patterns that repeat night after night, the correlations between your dreams and waking life events, the emotional shifts that only become apparent with enough hindsight.
+                    Noctalia does not aim to replace a therapist. Instead, it makes visible what usually goes unnoticed: patterns that repeat night after night, correlations between your dreams and waking life events, emotional shifts that only become apparent with enough hindsight.
                 </p>
 
 <h2 id="future">The Future of Sleep Technology</h2>
@@ -401,11 +431,11 @@
                     SleepFM foreshadows a future where a single night of sleep could provide a health assessment as informative as a full battery of medical tests. Stanford researchers are already working on adapting the model to data from consumer devices: smartwatches, sleep rings, and portable EEG headbands. If these adaptations succeed, early screening for serious diseases could become accessible from your bedroom, without a trip to the sleep laboratory.
                 </p>
 <p>
-                    The convergence of wearable sensors, edge AI, and foundation models like SleepFM outlines a future where your sleep is analyzed every night, and any significant deviation from your personal "sleep signature" triggers an alert. Combined with dream content analysis, this approach could offer a 360-degree view of your physical and mental health during sleep.
+                    Wearable sensors, edge AI, and foundation models like SleepFM are converging toward a future where your sleep is analyzed every night, and any meaningful deviation from your personal "sleep signature" triggers an alert. Combined with dream content analysis, this approach could offer a 360-degree view of your physical and mental health during sleep.
                 </p>
 <h3>Limitations and ethical questions</h3>
 <p>
-                    Despite legitimate excitement, several limitations temper SleepFM's promises. The model was trained primarily on data from American patients referred to a sleep laboratory — a selection bias that limits the generalizability of results. External validation on diverse cohorts (age, ethnicity, comorbidities) remains to be completed.
+                    Despite legitimate excitement, several limitations temper SleepFM's promises. Researchers trained the model primarily on data from American patients referred to a sleep laboratory — a selection bias that limits the generalizability of results. External validation on diverse cohorts (age, ethnicity, comorbidities) remains to be completed.
                 </p>
 <p>
                     Ethical questions are equally pressing. Who gets access to these health predictions? Could insurers require sleep analyses as a coverage condition? How do we manage the anxiety of a false positive indicating Parkinson's risk in a healthy person? The <strong>right not to know</strong> — recognized in genetics — will need to extend to sleep data.
@@ -538,7 +568,7 @@
                 </p>
 </aside>
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/en/" class="flex items-center gap-2 mb-4">
@@ -615,8 +645,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> for dreamers</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

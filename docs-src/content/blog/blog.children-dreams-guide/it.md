@@ -153,7 +153,7 @@
 
 <h2 id="what-children-dream">Di cosa sognano i bambini?</h2>
 <p>
-                    Il contenuto dei sogni dei bambini cambia drasticamente con la crescita. Mentre gli adulti sognano spesso di lavoro, relazioni e preoccupazioni quotidiane, i bambini più piccoli abitano un paesaggio onirico molto diverso, popolato da ciò che conta di più nel loro mondo.
+                    Di cosa sognano i bambini? Cambia drasticamente con la crescita. Mentre gli adulti sognano spesso di lavoro, relazioni e preoccupazioni quotidiane, i bambini più piccoli abitano un paesaggio onirico diverso, popolato da ciò che conta di più nel loro mondo.
                 </p>
 <h3>3-5 anni: Animali e ambienti familiari</h3>
 <p>
@@ -195,7 +195,7 @@
                     I terrori notturni sono fondamentalmente diversi dagli incubi. Si verificano durante il <strong>sonno profondo non-REM</strong>, solitamente 1-3 ore dopo l'addormentamento. Durante un terrore notturno, il bambino può urlare, agitarsi, sedersi con gli occhi spalancati o persino camminare, ma non è veramente sveglio e <strong>non avrà alcun ricordo dell'episodio</strong> il mattino seguente. I terrori notturni raggiungono il picco tra i 3 e gli 8 anni e colpiscono circa l'1-6% dei bambini.
                 </p>
 <p>
-                    I terrori notturni non sono causati da disturbi emotivi. Si verificano quando il cervello ha difficoltà a passare fluidamente tra le fasi del sonno profondo. La privazione del sonno, orari di sonno irregolari e la febbre possono scatenarli. La cosa più importante che i genitori possono fare durante un terrore notturno è <strong>mantenere la calma e tenere il bambino al sicuro</strong> senza cercare di svegliarlo. Questo è molto diverso dalla <a class="text-dream-salmon hover:underline" href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla">paralisi del sonno</a>, che si verifica durante le transizioni REM nei bambini più grandi e negli adulti.
+                    Nessun disturbo emotivo causa i terrori notturni. Si verificano quando il cervello ha difficoltà a passare fluidamente tra le fasi del sonno profondo. La privazione del sonno, orari di sonno irregolari e la febbre possono scatenarli. La cosa più importante che i genitori possono fare durante un terrore notturno è <strong>mantenere la calma e tenere il bambino al sicuro</strong> senza cercare di svegliarlo. Questo è molto diverso dalla <a class="text-dream-salmon hover:underline" href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla">paralisi del sonno</a>, che si verifica durante le transizioni REM nei bambini più grandi e negli adulti.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -272,7 +272,7 @@
 
 <h2 id="journaling-for-kids">Il diario dei sogni per i bambini</h2>
 <p>
-                    Il diario dei sogni non è solo per gli adulti. Adattato all'età e alle capacità del bambino, può diventare un potente strumento per lo sviluppo emotivo, la creatività e l'autoconsapevolezza. La chiave è renderlo adatto all'età e divertente - mai un dovere.
+                    Tenere un diario dei sogni funziona anche per i bambini, non solo per gli adulti. Adattato all'età e alle capacità del bambino, diventa un potente strumento per lo sviluppo emotivo, la creatività e l'autoconsapevolezza. Rendetelo adatto all'età e divertente - mai un dovere.
                 </p>
 <h3>3-5 anni: Disegnare i sogni</h3>
 <p>

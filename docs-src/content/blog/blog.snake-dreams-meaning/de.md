@@ -113,7 +113,7 @@
 <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a> haben Menschen seit Beginn des Bewusstseins fasziniert und erschreckt. Sie tauchen in den ältesten Mythologien, religiösen Texten und Kunstwerken auf – von der Schlange in Eden bis zum Heilstab des Asklepios, von Medusas Haar bis zur Kundalini-Energie der hinduistischen Tradition.
                 </p>
 <p>
-                    Diese <strong>universelle Präsenz</strong> ist kein Zufall. Evolutionspsychologen vermuten, dass wir darauf programmiert sind, Schlangen zu bemerken – unsere Vorfahren, die ihnen Aufmerksamkeit schenkten, überlebten und gaben ihre Gene weiter. Diese Urprogrammierung bedeutet, dass Schlangen in unseren Träumen eine außerordentliche symbolische Bedeutung haben.
+                    Diese <strong>universelle Präsenz</strong> ist kein Zufall. Evolutionspsychologen vermuten, dass wir darauf programmiert sind, Schlangen zu bemerken - unsere Vorfahren, die ihnen Aufmerksamkeit schenkten, überlebten und gaben ihre Gene weiter. Diese Urprogrammierung verleiht Schlangen in unseren Träumen eine außerordentliche symbolische Bedeutung.
                 </p>
 <blockquote>
                     „Die Schlange ist das wichtigste und komplexeste Symbol in der Mythologie der Menschheit … Sie repräsentiert sowohl Tod als auch Wiedergeburt, Gift und Medizin, Zerstörung und Schöpfung.“ - Joseph Campbell, Mythologe
@@ -223,7 +223,7 @@
 <p>
                     Diese Träume entfalten sich manchmal in dunklen <a class="text-dream-salmon hover:underline" href="../traumsymbole/wald">Wäldern</a> oder zusammen mit anderen Angstsymbolen wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/spinne">Spinnen</a>, die das Gefühl der Bedrohung verstärken können.
                 </p>
-<h3>Schlangenabwurf Haut</h3>
+<h3>Schlangenhäutung</h3>
 <p>
                     Zu sehen, wie sich eine Schlange häutet, ist ein kraftvolles <strong>Transformationssymbol</strong>. Sie sind bereit, alte Muster, Überzeugungen oder Identitäten loszulassen. Die Wiedergeburt steht unmittelbar bevor – nehmen Sie die Veränderung an.
                 </p>
@@ -244,11 +244,11 @@
 </aside>
 <h2 id="interpretations">Die 7 Hauptinterpretationen</h2>
 <p>
-                    Der Kontext ist zwar alles, aber diese sind es Die häufigsten Bedeutungen hinter Schlangenträumen:
+                    Kontext ist zwar entscheidend, aber hier sind die häufigsten Bedeutungen hinter Schlangenträumen:
                 </p>
 <h3>1. Transformation und Erneuerung</h3>
 <p>
-                    Die positivste Interpretation. Wie eine Schlange, die ihre Haut abstreift, durchleben Sie vielleicht <strong>tiefgreifende persönliche Veränderungen</strong>. Alte Muster fallen weg. Der Traum ermutigt Sie, die Transformation anzunehmen, anstatt sich ihr zu widersetzen.
+                    Hier ist die positivste Interpretation. Wie eine Schlange, die ihre Haut abstreift, durchleben Sie vielleicht <strong>tiefgreifende persönliche Veränderungen</strong>. Alte Muster fallen weg. Ihr Traum ermutigt Sie, die Transformation anzunehmen, anstatt sich ihr zu widersetzen.
                 </p>
 <h3>2. Versteckte Ängste oder Bedrohungen</h3>
 <p>
@@ -256,15 +256,15 @@
                 </p>
 <h3>3. Heilung und Medizin</h3>
 <p>
-                    Die Schlange ist seit dem antiken Griechenland ein Symbol der Heilung (der Stab des Asklepios). Ihr Traum kann darauf hindeuten, dass heilende Energie in Ihrem Leben am Werk ist <strong>healing energy at work</strong> oder darauf hindeuten, dass Sie sich auf die Gesundheit konzentrieren müssen – körperlich, emotional oder spirituell.
+                    Als Symbol der Heilung seit dem antiken Griechenland (der Stab des Asklepios) kann Ihr Schlangentraum darauf hindeuten, dass <strong>heilende Energie in Ihrem Leben am Werk ist</strong>, oder darauf, dass Sie sich auf die Gesundheit konzentrieren müssen - körperlich, emotional oder spirituell.
                 </p>
 <h3>4. Sexualität und Lebenskraft</h3>
 <p>
-                    Freud interpretierte Schlangen bekanntlich als phallische Symbole. Über die einfache sexuelle Symbolik hinaus repräsentieren Schlangen rohe Lebensenergie und kreative Kraft – die Kundalini-Kraft in der hinduistischen Tradition. In Ihrem Traum kann es um Leidenschaft, Kreativität oder Urtriebe gehen. <strong>raw life energy and creative power</strong> - the kundalini force in Hindu tradition. Your dream may be about passion, creativity, or primal drives.
+                    Freud interpretierte Schlangen bekanntlich als phallische Symbole. Über die einfache sexuelle Symbolik hinaus repräsentieren Schlangen <strong>rohe Lebensenergie und kreative Kraft</strong> - die Kundalini-Kraft in der hinduistischen Tradition. Ihr Traum kann sich um Leidenschaft, Kreativität oder Urtriebe drehen.
                 </p>
 <h3>5. Verrat und Täuschung</h3>
 <p>
-                    "Snake" ist umgangssprachlich für eine verräterische Person. Ihr Traum könnte Sie vor einer Person in Ihrem Leben warnen, die nicht vertrauenswürdig ist. Achten Sie darauf, wer sonst noch im Traum auftaucht oder an wen die Schlange Sie erinnert. <strong>someone untrustworthy</strong> in your life. Pay attention to who else appears in the dream, or who the snake reminds you of.
+                    "Schlange" ist umgangssprachlich ein Wort für eine verräterische Person. Ihr Traum könnte Sie vor <strong>jemandem Unzuverlässigem</strong> in Ihrem Leben warnen. Achten Sie darauf, wer sonst noch im Traum auftaucht oder an wen die Schlange Sie erinnert.
                 </p>
 <h3>6. Weisheit und Intuition</h3>
 <p>
@@ -299,7 +299,7 @@
                 </p>
 <h3>1. Notieren Sie jedes Detail</h3>
 <p>
-                    Schreiben Sie alles sofort nach dem Aufwachen auf: das Aussehen der Schlange, Ihr Verhalten, Ihre Emotionen, die Umgebung, andere anwesende Personen. <strong>Details verblassen schnell</strong> haben aber oft eine wichtige symbolische Bedeutung.
+                    Schreiben Sie alles sofort nach dem Aufwachen auf: das Aussehen der Schlange, Ihr Verhalten, Ihre Emotionen, die Umgebung, andere anwesende Personen. <strong>Details verblassen schnell</strong>, haben aber oft eine wichtige symbolische Bedeutung.
                 </p>
 <h3>2. Beachten Sie Ihre emotionale Reaktion</h3>
 <p>

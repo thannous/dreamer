@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -194,24 +205,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/de/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/de/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/de/#so-funktioniert-es" class="hidden lg:inline-flex hover:text-white transition-colors">So funktioniert&#39;s</a>
-                <a href="/de/#funktionen" class="hidden lg:inline-flex hover:text-white transition-colors">Funktionen</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/de/blog/" class="text-dream-salmon transition-colors">Ressourcen</a>
                 <a href="/de/guides/" class="hover:text-white transition-colors">Traumratgeber</a>
                 <a href="/de/guides/traumsymbole-lexikon" class="hover:text-white transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Über uns</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">DE</span>
+                        <span>DE</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -236,6 +246,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/de/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressourcen</a>
+                <a href="/de/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumratgeber</a>
+                <a href="/de/guides/traumsymbole-lexikon" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Über uns</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/falling-dreams-meaning" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/reves-de-chute" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/suenos-de-caer" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Deutsch</a>
+                    <a href="/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -324,7 +354,7 @@
                     „Fallträume treten oft in dem Moment auf, in dem der Schlaf einsetzt, wenn das Gehirn die normale Muskelentspannung möglicherweise als tatsächlichen körperlichen Sturz fehlinterpretiert.“ - Dr. Matthew Walker, Schlafwissenschaftler
                 </blockquote>
 <p>
-                    Das Gefühl fühlt sich bemerkenswert real an, weil die Gleichgewichtszentren Ihres Gehirns (das Vestibularsystem) währenddessen aktiv werden können <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> und die Illusion von Bewegung erzeugen, selbst wenn Sie still liegen.
+                    Warum fühlt es sich so real an? Die Gleichgewichtszentren Ihres Gehirns (das Vestibularsystem) können während des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> aktiv werden und die Illusion von Bewegung erzeugen, selbst wenn Sie still liegen.
                 </p>
 <h2 id="variations">Arten fallender Träume und ihre Bedeutung</h2>
 <p>
@@ -407,7 +437,7 @@
                 </p>
 <h3>1. Fallende Träume und Kontrollverlust</h3>
 <p>
-                    Die am weitesten verbreitete Interpretation. Wenn Sie fallen, können Sie sich nicht aufhalten – Sie sind der Schwerkraft ausgeliefert. Dies spiegelt Situationen wider, in denen Sie sich <strong>nicht in der Lage fühlen, Ergebnisse zu ändern</strong>. Arbeitsplatzinstabilität, Gesundheitsprobleme, Beziehungsprobleme – alle Bereiche, in denen Kontrolle unmöglich erscheint.
+                    Mit Abstand die häufigste Deutung. Wenn Sie fallen, können Sie sich nicht aufhalten – Sie sind der Schwerkraft ausgeliefert. Das spiegelt Situationen wider, in denen Sie sich <strong>nicht in der Lage fühlen, Ergebnisse zu ändern</strong>. Arbeitsplatzinstabilität, Gesundheitsprobleme, Beziehungsprobleme – alle Bereiche, in denen Kontrolle unmöglich erscheint.
                 </p>
 <h3>2. Fallende Träume spiegeln die Angst vor dem Scheitern wider</h3>
 <p>
@@ -415,7 +445,7 @@
                 </p>
 <h3>3. Sturzträume durch überwältigenden Stress</h3>
 <p>
-                    Wenn sich der Stress über Ihre Bewältigungskapazität hinaus ansammelt, treten Sturzträume häufiger auf. Das Gefühl des Fallens spiegelt das Gefühl wider, überwältigt zu sein <strong>feeling of being overwhelmed</strong>  – alles geht zu schnell und man kann nicht mithalten.
+                    Wenn sich der Stress über Ihre Bewältigungskapazität hinaus ansammelt, treten Sturzträume häufiger auf. Das Gefühl des Fallens spiegelt das <strong>Gefühl wider, überwältigt zu sein</strong> – alles geht zu schnell und man kann nicht mithalten.
                 </p>
 <h3>4. Fallende Träume und das Bedürfnis loszulassen</h3>
 <p>
@@ -473,7 +503,7 @@
                 </p>
 <h3>Jungs Interpretation der fallenden Träume</h3>
 <p>
-                    Carl Jung vertrat eine breitere Sichtweise. Für ihn stellte der Sturz einen notwendigen Abstieg ins Unbewusste dar – eine Reise in das Schattenselbst. Der Traum könnte Sie dazu aufrufen, vernachlässigte Teile Ihrer Psyche zu erforschen. <strong>necessary descent into the unconscious</strong> - a journey into the shadow self. The dream might be calling you to explore neglected parts of your psyche.
+                    Carl Jung vertrat eine breitere Sichtweise. Für ihn stellte der Sturz einen <strong>notwendigen Abstieg ins Unbewusste</strong> dar – eine Reise in das Schattenselbst. Der Traum könnte Sie dazu aufrufen, vernachlässigte Teile Ihrer Psyche zu erforschen.
                 </p>
 <h3>Kognitive Theorie fallender Träume</h3>
 <p>
@@ -518,7 +548,7 @@
                 </p>
 <h3>6. Suchen Sie professionelle Hilfe bei anhaltenden fallenden Träumen.</h3>
 <p>
-                    Wenn fallende Träume bestehen bleiben und Ihre Schlafqualität erheblich beeinträchtigen, sollten Sie mit einem Schlafspezialisten oder Therapeuten sprechen, der sich mit den zugrunde liegenden Problemen befassen kann.
+                    Wenn fallende Träume bestehen bleiben und Ihre Schlafqualität spürbar beeinträchtigen, sollten Sie mit einem Schlafspezialisten oder Therapeuten sprechen, der sich mit den zugrunde liegenden Problemen befassen kann.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -664,7 +694,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/de/" class="flex items-center gap-2 mb-4">
@@ -741,8 +771,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Gemacht mit <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> für Träumer</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

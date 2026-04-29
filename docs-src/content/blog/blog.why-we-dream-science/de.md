@@ -115,17 +115,17 @@
                     Menschen verbringen etwa <strong>sechs Jahre ihres Lebens mit Träumen</strong>. Trotz dieser enormen Investition an Zeit und neuronalen Ressourcen hat die Wissenschaft immer noch keine endgültige Antwort auf die Frage, warum Träume existieren. Was wir haben, sind mehrere überzeugende Theorien, die jeweils durch unterschiedliche Beweislinien gestützt werden.
                 </p>
 <p>
-                    Die wissenschaftliche Erforschung von Träumen beschleunigte sich dramatisch im Jahr 1953, als die Forscher Eugene Aserinsky und Nathaniel Kleitman entdeckten <strong>REM-Schlaf (Rapid Eye Movement)</strong>. Diese Entdeckung ergab, dass der Schlaf kein einheitlicher Zustand ist, sondern aus unterschiedlichen Phasen besteht, wobei <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> das lebhafteste Träumen auftritt.
+                    Die Traumforschung beschleunigte sich dramatisch im Jahr 1953, als die Forscher Eugene Aserinsky und Nathaniel Kleitman den <strong>REM-Schlaf (Rapid Eye Movement)</strong> entdeckten. Ihre Entdeckung ergab, dass der Schlaf kein einheitlicher Zustand ist, sondern aus unterschiedlichen Phasen besteht, wobei im <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> das lebhafteste Träumen auftritt.
                 </p>
 <blockquote>
                     „Der Traum ist die kleine verborgene Tür im tiefsten und intimsten Heiligtum der Seele.“ - Carl Jung
                 </blockquote>
 <p>
-                    Die moderne Neurowissenschaft ist über die Freudsche Psychoanalyse hinausgegangen und untersucht Träume mittels Bildgebung des Gehirns, Schlafstudien und Kognitionswissenschaft. Auch wenn wir vielleicht nie eine einzige einheitliche Theorie des Träumens haben werden, verstehen wir jetzt mehrere Funktionen, denen Träume wahrscheinlich dienen.
+                    Über die Freudsche Psychoanalyse hinaus untersucht die moderne Neurowissenschaft Träume mittels Bildgebung des Gehirns, Schlafstudien und Kognitionswissenschaft. Auch wenn wir vielleicht nie eine einzige einheitliche Theorie des Träumens haben werden, verstehen wir jetzt mehrere Funktionen, denen Träume wahrscheinlich dienen.
                 </p>
 <h2 id="activation-synthesis">Aktivierungs-Synthese-Theorie des Träumens</h2>
 <p>
-                    1977 wurde von den Psychiatern J. Allan Hobson und Robert McCarley die <strong>Aktivierungs-Synthese-Hypothese</strong> war eine der ersten modernen wissenschaftlichen Theorien zum Träumen.
+                    Die 1977 von den Psychiatern J. Allan Hobson und Robert McCarley vorgestellte <strong>Aktivierungs-Synthese-Hypothese</strong> war eine der ersten modernen wissenschaftlichen Theorien zum Träumen.
                 </p>
 <h3>Das Kernkonzept</h3>
 <p>
@@ -137,7 +137,7 @@
 <li><strong>Traumentstehung:</strong> Das Gehirn verwebt diese Signale zu einer Erzählung und erschafft so die bizarren Traumerlebnisse, an die wir uns erinnern.</li>
 </ol>
 <p>
-                    Stellen Sie sich das so vor, als würde Ihr Gehirn ein Improvisationsspiel spielen – gegebene zufällige neuronale „Eingabeaufforderungen“, Es entstehen spontan Geschichten. Dies erklärt, warum sich Träume oft unlogisch oder unmöglich anfühlen: <strong>Sie bestehen aus Rauschen und nicht aus kohärentem Input</strong>.
+                    Stellen Sie sich das so vor, als würde Ihr Gehirn ein Improvisationsspiel spielen – bei zufälligen neuronalen „Eingabeaufforderungen” entstehen spontan Geschichten. Dies erklärt, warum sich Träume oft unlogisch oder unmöglich anfühlen: <strong>Sie bestehen aus Rauschen und nicht aus kohärentem Input</strong>.
                 </p>
 <h3>Unterstützende Beweise</h3>
 <ul>
@@ -155,16 +155,16 @@
                 </p>
 <h3>So funktioniert es</h3>
 <p>
-                    Während des Schlafs spielen. Insbesondere <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>Ihr Gehirn:
+                    Während des Schlafs, insbesondere im <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>, vollbringt Ihr Gehirn Folgendes:
                 </p>
 <ul>
 <li><strong>Erlebt Erlebnisse noch einmal:</strong> Neuronale Muster des Tages werden reaktiviert und gestärkt</li>
 <li><strong>Integriert neue Informationen:</strong> Neue Erinnerungen werden mit bestehenden Wissensnetzwerken verbunden</li>
-<li><strong>Beschneidet irrelevant data:</strong> Unwichtige Informationen werden abgeschwächt oder verworfen</li>
+<li><strong>Bereinigt irrelevante Daten:</strong> Unwichtige Informationen werden abgeschwächt oder verworfen</li>
 <li><strong>Extrahiert Muster:</strong> Das Gehirn identifiziert Regeln und Gesetzmäßigkeiten aus Erfahrungen</li>
 </ul>
 <p>
-                    Träume können die <strong>bewusste Erfahrung dieser Erinnerung sein, die</strong> Einblicke Ihres Gehirns verarbeitet, indem es die Erlebnisse des Tages sortiert, sie entsprechend abordnet und neue Verbindungen herstellt.
+                    Träume können die <strong>bewusste Erfahrung dieser Gedächtnisverarbeitung</strong> sein: Ihr Gehirn sortiert die Erlebnisse des Tages, ordnet sie entsprechend ein und stellt neue Verbindungen her.
                 </p>
 <h3>Überzeugende Forschung</h3>
 <p>
@@ -333,7 +333,7 @@
 <ul>
 <li><strong>Ratten träumen über Labyrinthe:</strong> Hippocampusmuster im Schlaf stimmen mit der Labyrinthnavigation im Wachzustand überein</li>
 <li><strong>Hunde zucken im Traum:</strong> Motorische Aktivität deutet darauf hin, dass sie vom Laufen und Spielen träumen</li>
-<li><strong>Katzen in der REM-Phase:</strong> Mit deaktivierter Muskellähmung schleichen und stürzen sie sich darauf imaginäre Beute</li>
+<li><strong>Katzen in der REM-Phase:</strong> Mit deaktivierter Muskellähmung schleichen sie und stürzen sich auf imaginäre Beute</li>
 <li><strong>Singvögel proben:</strong> Junge Vögel üben im Schlaf Lieder und verbessern so ihre Leistung</li>
 </ul>
 <h3>Evolutionärer Druck</h3>
@@ -439,7 +439,7 @@
 <li>Warum tun manche? Menschen träumen in Farbe, während andere in Schwarz und Weiß?</li>
 </ul>
 <p>
-                    Das Geheimnis des Träumens bleibt eines der faszinierendsten Gebiete der Neurowissenschaften – eine nächtliche Erinnerung daran, dass das Bewusstsein immer noch Geheimnisse birgt, die wir gerade erst zu verstehen beginnen.
+                    Träumen bleibt eines der faszinierendsten Gebiete der Neurowissenschaften – eine nächtliche Erinnerung daran, dass das Bewusstsein immer noch Geheimnisse birgt, die wir gerade erst zu verstehen beginnen.
                 </p>
 </div>
 <!-- CTA Section -->

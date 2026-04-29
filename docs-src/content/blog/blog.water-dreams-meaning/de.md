@@ -107,7 +107,7 @@
                     In der Traumdeutung ist <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a> vielleicht das <strong>universellste Symbol für Emotionen</strong>. So wie Wasser ruhig oder turbulent, tief oder flach, klar oder trüb sein kann, so können auch unsere emotionalen Zustände sein. Diese Symbolik taucht in praktisch jeder Kultur und psychologischen Tradition auf.
                 </p>
 <p>
-                    Wasser repräsentiert auch das <strong>Unbewusste</strong>  – die riesigen, oft verborgenen Tiefen unserer Psyche, die unter dem Oberflächenbewusstsein liegen. Wenn Sie davon träumen, tief ins Wasser zu tauchen, erkunden Sie möglicherweise die Tiefen Ihres Unterbewusstseins. Wenn Wasser ungebeten ansteigt, fordern möglicherweise Emotionen oder unbewusste Dinge Ihre Aufmerksamkeit.
+                    Neben Emotionen repräsentiert Wasser auch das <strong>Unbewusste</strong>  – die riesigen, oft verborgenen Tiefen unserer Psyche, die unter dem Oberflächenbewusstsein liegen. Wenn Sie davon träumen, tief ins Wasser zu tauchen, erkunden Sie möglicherweise die Tiefen Ihres Unterbewusstseins. Wenn Wasser ungebeten ansteigt, fordern möglicherweise Emotionen oder unbewusste Dinge Ihre Aufmerksamkeit.
                 </p>
 <blockquote>
                     "Wasser ist das häufigste Symbol für das Unbewusste. Der See im Tal ist das Unbewusste, das sozusagen unter dem Bewusstsein liegt.“ - Carl Jung
@@ -200,7 +200,7 @@
                 </p>
 <h3>Ruhiges Wasser</h3>
 <p>
-                    Dennoch spiegelt friedliches Wasser <strong>inneren Frieden, emotionale Ruhe und Ausgeglichenheit wider</strong>. Möglicherweise befinden Sie sich in einer guten emotionalen Verfassung oder Ihr Traum zeigt Ihnen, was möglich ist, wenn Sie Ruhe finden.
+                    Stilles, friedliches Wasser spiegelt <strong>inneren Frieden, emotionale Ruhe und Ausgeglichenheit wider</strong>. Möglicherweise befinden Sie sich in einer guten emotionalen Verfassung oder Ihr Traum zeigt Ihnen, was möglich ist, wenn Sie Ruhe finden.
                 </p>
 <h3>Turbulentes Wasser</h3>
 <p>
@@ -208,11 +208,11 @@
                 </p>
 <h3>Steigendes Wasser</h3>
 <p>
-                    Ein steigender Wasserspiegel deutet darauf hin, dass Gefühle oder Situationen überwältigend werden <strong>emotions or situations that are becoming overwhelming</strong>. Möglicherweise baut sich etwas in Ihrem Leben auf und erfordert Aufmerksamkeit, bevor es „überflutet“ wird.
+                    Ein steigender Wasserspiegel deutet auf <strong>Gefühle oder Situationen hin, die zunehmend überwältigend werden</strong>. Möglicherweise baut sich etwas in Ihrem Leben auf und erfordert Aufmerksamkeit, bevor es „überflutet“ wird.
                 </p>
 <h3>Warmes oder kaltes Wasser</h3>
 <p>
-                    Warmes Wasser symbolisiert oft <strong>Behaglichkeit, emotionale Wärme oder pflegende Gefühle</strong>. Kaltes Wasser kann emotionale Kälte, erfrischende Klarheit oder einen „Weckruf“ für Ihre Emotionen darstellen. <strong>emotional coldness, refreshing clarity, or a "wake-up call"</strong> to your emotions.
+                    Warmes Wasser symbolisiert oft <strong>Behaglichkeit, emotionale Wärme oder pflegende Gefühle</strong>. Kaltes Wasser kann <strong>emotionale Kälte, erfrischende Klarheit oder einen „Weckruf”</strong> für Ihre Emotionen darstellen.
                 </p>
 <h2 id="interpretations">Gemeinsame Wassertraumdeutungen</h2>
 <h3>1. Emotionale Überwältigung</h3>
@@ -264,7 +264,7 @@
                 </p>
 <h3>Moderne Psychologie</h3>
 <p>
-                    Zeitgenössische Traumforschung verbindet Wasserträume mit <strong>emotionaler Verarbeitung und Stressregulierung</strong>. Das Gehirn kann Wasserbilder verwenden, um emotionale Erfahrungen zu verarbeiten, wobei der Zustand des Wassers aktuelle emotionale Zustände widerspiegelt.
+                    Zeitgenössische Traumforschung verbindet Wasserträume mit <strong>emotionaler Verarbeitung und Stressregulierung</strong>. Ihr Gehirn kann Wasserbilder verwenden, um emotionale Erfahrungen zu verarbeiten, wobei der Zustand des Wassers aktuelle emotionale Zustände widerspiegelt.
                 </p>
 <blockquote>
                     "Wasserträume sind die Art und Weise der Psyche, uns unsere emotionale Landschaft zu zeigen. Achten Sie darauf, wie sich das Wasser verhält – es sagt Ihnen, wie Ihre Gefühle fließen." - Dr. Kelly Bulkeley, Traumforscherin
@@ -287,11 +287,11 @@
                 </p>
 <h3>4. Suchen Sie nach Parallelen im Leben</h3>
 <p>
-                    Fragen Sie sich: <strong>Wo in meinem wachen Leben fühle ich mich so?</strong> Überfordert? In über meinem Kopf? Emotional verwirrt? Mit dem Strom schwimmen? Der Traum kann bestimmte Lebensbereiche hervorheben.
+                    Fragen Sie sich: <strong>Wo in meinem wachen Leben fühle ich mich so?</strong> Überfordert? Überwältigt? Emotional verwirrt? Treibe ich mit dem Strom? Der Traum kann bestimmte Lebensbereiche hervorheben.
                 </p>
 <h3>5. Gehen Sie auf wiederkehrende Wasserträume ein</h3>
 <p>
-                    Wenn sich Wasserträume wiederholen, insbesondere belastende, <strong>Ihre Psyche betont etwas, das Aufmerksamkeit erfordert</strong>. Überlegen Sie, welche Emotionen Sie möglicherweise unterdrücken oder welche Situationen sich überwältigend anfühlen.
+                    Wenn sich Wasserträume wiederholen, insbesondere belastende, <strong>betont Ihre Psyche etwas, das Aufmerksamkeit erfordert</strong>. Überlegen Sie, welche Emotionen Sie möglicherweise unterdrücken oder welche Situationen sich überwältigend anfühlen.
                 </p>
 <h3>6. Beschäftigen Sie sich mit dem Symbol</h3>
 <p>

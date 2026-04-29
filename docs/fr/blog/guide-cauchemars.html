@@ -24,7 +24,7 @@
     <meta property="og:title" content="Cauchemars : comprendre et stopper les mauvais rêves | Noctalia">
     <meta property="og:description" content="Découvrez les causes des cauchemars et les techniques pour dormir paisiblement.">
     <meta property="og:url" content="https://noctalia.app/fr/blog/guide-cauchemars">
-    <meta property="og:image" content="https://noctalia.app/img/blog/guide-cauchemars.webp">
+    <meta property="og:image" content="https://noctalia.app/img/blog/stop-nightmares-guide.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars">
@@ -41,25 +41,36 @@
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Cauchemars : comprendre et stopper les mauvais rêves | Noctalia">
     <meta name="twitter:description" content="Comprenez les causes et stoppez vos cauchemars.">
-    <meta name="twitter:image" content="https://noctalia.app/img/blog/guide-cauchemars.webp">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/stop-nightmares-guide.webp">
     <meta name="twitter:image:alt" content="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars">
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Preload featured image -->
-    <link rel="preload" href="/img/blog/guide-cauchemars.webp" as="image" type="image/webp">
+    <link rel="preload" href="/img/blog/stop-nightmares-guide.webp" as="image" type="image/webp">
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -78,7 +89,7 @@
             "description": "Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour les réduire.",
             "image": {
                 "@type": "ImageObject",
-                "url": "https://noctalia.app/img/blog/guide-cauchemars.webp",
+                "url": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
                 "width": 1200,
                 "height": 630
             },
@@ -185,24 +196,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/fr/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/fr/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/fr/#comment-ca-marche" class="hidden lg:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="/fr/#fonctionnalites" class="hidden lg:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/fr/blog/" class="text-dream-salmon transition-colors">Ressources</a>
                 <a href="/fr/guides/" class="hover:text-white transition-colors">Guides des rêves</a>
                 <a href="/fr/guides/dictionnaire-symboles-reves" class="hover:text-white transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">À propos</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">FR</span>
+                        <span>FR</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -227,6 +237,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/fr/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressources</a>
+                <a href="/fr/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guides des rêves</a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">À propos</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/stop-nightmares-guide" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/guide-cauchemars" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Français</a>
+                    <a href="/es/blog/guia-pesadillas" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/incubi-cause-significato-e-come-fermarli" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -276,8 +306,13 @@
         <span class="block text-xs text-purple-300/60">Fondateur &amp; Directeur de la publication · <a href="/fr/a-propos" class="text-dream-salmon hover:underline">Notre processus éditorial</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">En bref</h2>
+    <p class="text-purple-100/80 leading-relaxed">Les cauchemars sont des rêves vifs et angoissants qui vous réveillent avec de fortes émotions négatives. Ils touchent régulièrement 2 à 8 % des adultes et jusqu'à 50 % des enfants de 3 à 6 ans. Contrairement aux terreurs nocturnes (qui surviennent pendant le sommeil profond sans souvenir), les cauchemars se produisent pendant le sommeil paradoxal et sont clairement mémorisés. Le traitement le plus efficace fondé sur des preuves est la Thérapie par Répétition d'Images (IRT) : réécrivez le scénario de votre cauchemar en état d'éveil, puis répétez mentalement la nouvelle version avant de dormir. La gestion du stress, des horaires de sommeil réguliers et le traitement des traumatismes sous-jacents réduisent également significativement la fréquence des cauchemars.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guide-cauchemars.webp" srcset="../../img/blog/guide-cauchemars-480w.webp 480w, ../../img/blog/guide-cauchemars-800w.webp 800w, ../../img/blog/guide-cauchemars-1200w.webp 1200w" width="1200">
+<img alt="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
@@ -301,7 +336,7 @@
                     Ils mettent souvent en scène une <a class="text-dream-salmon hover:underline" href="../symboles/poursuite">poursuite</a> ou d'autres menaces qui amplifient la peur.
                 </p>
 <p>
-                    Bien que les cauchemars occasionnels soient normaux, <strong>2 à 8% des adultes en font fréquemment</strong> - une fois par semaine ou plus. Lorsque les cauchemars impactent significativement la qualité du sommeil ou le fonctionnement quotidien, ils peuvent être classés comme Trouble des Cauchemars.
+                    Bien que les cauchemars occasionnels soient normaux, <strong>2 à 8% des adultes en font fréquemment</strong> - une fois par semaine ou plus. Lorsque les cauchemars perturbent la qualité du sommeil ou le fonctionnement quotidien, ils peuvent être classés comme Trouble des Cauchemars.
                 </p>
 <p>
                     Les cauchemars diffèrent des terreurs nocturnes, qui surviennent pendant le sommeil non-REM, impliquent des réactions physiques comme des cris, et sont rarement mémorisées. Les cauchemars sont entièrement mémorisés et se produisent pendant les phases de sommeil plus légères.
@@ -382,7 +417,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="signification">Signification des cauchemars : ce qu'ils revelent</h2>
 <p>
-                    Les cauchemars ne sont pas aléatoires - ils portent souvent des messages significatifs de votre subconscient :
+                    Vos cauchemars ne sont pas aléatoires - ils portent souvent des messages significatifs de votre subconscient :
                 </p>
 <p>
                     Si vos cauchemars tournent autour de thèmes comme <a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, <a class="text-dream-salmon hover:underline" href="../symboles/chute">chuter</a>, la <a class="text-dream-salmon hover:underline" href="../symboles/mort">mort</a>, ou des créatures inquiétantes comme un <a class="text-dream-salmon hover:underline" href="../symboles/serpent">serpent</a> ou une <a class="text-dream-salmon hover:underline" href="../symboles/araignee">araignée</a>, rechercher ces symboles peut aider à comprendre le message en profondeur.
@@ -405,19 +440,19 @@
 <h2 id="types">Les differents types de cauchemars et mauvais reves</h2>
 <h3>Cauchemars lies au stress et a l'anxiete</h3>
 <p>
-                    Le type le plus courant, directement lié aux facteurs de stress quotidiens. Ces cauchemars présentent souvent <strong>des scénarios d'impréparation, d'échec ou de situations embarrassantes</strong>. Ils diminuent généralement quand le stress est résolu.
+                    C'est le type le plus courant, directement lié aux facteurs de stress quotidiens. Ces cauchemars présentent souvent <strong>des scénarios d'impréparation, d'échec ou de situations embarrassantes</strong>. Ils diminuent généralement quand le stress est résolu.
                 </p>
 <h3>Cauchemars post-traumatiques et SSPT</h3>
 <p>
                     Suite à des événements traumatisants, les cauchemars peuvent <strong>rejouer le trauma ou des thèmes associés</strong>. Ils sont particulièrement persistants et peuvent nécessiter un traitement professionnel. Ils sont un symptôme caractéristique du SSPT.
                 </p>
-<h3>Cauchemars repetitifs : pourquoi le meme reve revient</h3>
+<h3>Cauchemars repetitifs : pourquoi le même reve revient</h3>
 <p>
-                    Le même cauchemar se répétant nuit après nuit suggère un <strong>problème non résolu que votre psyché tente de traiter</strong>. La répétition continue souvent jusqu'à ce que le problème sous-jacent soit abordé.
+                    Quand le même cauchemar se répète nuit après nuit, il suggère un <strong>problème non résolu que votre psyché tente de traiter</strong>. Attendez-vous à ce que la répétition continue jusqu'à ce que vous abordiez le problème sous-jacent.
                 </p>
 <h3>Cauchemars sur la mort et l'angoisse existentielle</h3>
 <p>
-                    Les rêves sur la mort, la fin du monde ou la perte d'êtres chers reflètent souvent <strong>des anxiétés existentielles profondes ou la peur de la perte</strong>. Ils tendent à augmenter pendant les transitions majeures de vie.
+                    Rêver de mort, de fin du monde ou de perte d'êtres chers reflète souvent <strong>des anxiétés existentielles profondes ou la peur de la perte</strong>. Ces cauchemars tendent à augmenter pendant les transitions majeures de vie.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -439,7 +474,7 @@
                 </p>
 <h3>1. Therapie par Repetition d'Images contre les cauchemars</h3>
 <p>
-                    La technique la plus efficace pour les cauchemars récurrents. <strong>Éveillé, visualisez le cauchemar mais changez la fin</strong> pour quelque chose de neutre ou positif. Pratiquez cette nouvelle version quotidiennement pendant 10-20 minutes. Les études montrent que l'IRT peut réduire la fréquence des cauchemars de 50 à 80%.
+                    Considérez cette technique comme la référence pour les cauchemars récurrents. <strong>Éveillé, visualisez le cauchemar mais changez la fin</strong> pour quelque chose de neutre ou positif. Pratiquez cette nouvelle version quotidiennement pendant 10-20 minutes. Les études montrent que l'IRT peut réduire la fréquence des cauchemars de 50 à 80%.
                 </p>
 <h3>2. Ameliorer son hygiene de sommeil pour moins de cauchemars</h3>
 <p>
@@ -643,7 +678,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/fr/" class="flex items-center gap-2 mb-4">
@@ -720,8 +755,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

@@ -163,7 +163,7 @@
                     Der Philosoph <strong>Aristoteles</strong> (384-322 v. Chr.) vertrat eine rationalistischere Sichtweise und argumentierte in seinem Werk „Über Träume“: dass Träume keine göttlichen Botschaften waren, sondern mentale Überbleibsel täglicher Erfahrungen und Sinneseindrücke, die im Schlaf verarbeitet wurden.
                 </p>
 <p>
-                    Der einflussreichste griechische Text war jedoch <strong>Artemidorus‘ „Oneirocritica“</strong> (Die Traumdeutung), geschrieben um 200 n. Chr. Dieses fünfbändige Werk wurde über 1.500 Jahre lang zum Standardhandbuch zur Traumdeutung. Artemidorus klassifizierte Träume in zwei Kategorien:
+                    Am einflussreichsten erwies sich <strong>Artemidorus’ „Oneirocritica”</strong> (Die Traumdeutung), geschrieben um 200 n. Chr. Dieses fünfbändige Werk wurde über 1.500 Jahre lang zum Standardhandbuch zur Traumdeutung. Artemidorus klassifizierte Träume in zwei Kategorien:
                 </p>
 <ul>
 <li><strong>Theorematische Träume:</strong> Direkte Prophezeiungen, die buchstäblich wahr werden würden</li>
@@ -188,7 +188,7 @@
                     Die islamische Tradition kennt <strong>drei Arten von Träumen</strong>: wahre Träume von Allah (ru'ya), Träume aus den eigenen Gedanken (hulm) und Träume von Satan. Berichten zufolge sagte der Prophet Muhammad, dass wahre Träume „einer der sechsundvierzig Teile des Prophetentums“ seien.
                 </p>
 <p>
-                    Der Gelehrte <strong>Ibn Sirin</strong> (653-728 n. Chr.) stellte eines der wichtigsten Traumdeutungshandbücher des Islam zusammen, das bis heute einflussreich ist. Seine Interpretationen betonten den persönlichen Kontext und den spirituellen Zustand des Träumers.
+                    <strong>Ibn Sirin</strong> (653-728 n. Chr.) stellte eines der wichtigsten Traumdeutungshandbücher des Islam zusammen, das bis heute einflussreich ist. Seine Interpretationen betonten den persönlichen Kontext und den spirituellen Zustand des Träumers.
                 </p>
 <h3>Traumdeutung im Hinduismus und Buddhismus</h3>
 <p>
@@ -213,7 +213,7 @@
 <li>Beliebte Almanache enthielten Traumwörterbücher für das einfache Volk</li>
 </ul>
 <p>
-                    Das <strong>Zeitalter der Aufklärung</strong> (1685-1815) brachte jedoch Skepsis mit sich. Rationalistische Philosophen taten die Traumdeutung als Aberglauben ab und betrachteten Träume als bedeutungslosen mentalen Lärm.
+                    Dann brachte das <strong>Zeitalter der Aufklärung</strong> (1685-1815) Skepsis mit sich. Rationalistische Philosophen taten die Traumdeutung als Aberglauben ab und betrachteten Träume als bedeutungslosen mentalen Lärm.
                 </p>
 </div>
 <!-- Era Cards -->
@@ -382,17 +382,17 @@
                     Zeitgenössische Traumforscher erkennen zunehmend, dass <strong>Interpretationsmethoden kulturelle Aspekte berücksichtigen sollten Kontext</strong>. Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlange</a> in einem Traum könnte in der hinduistischen Tradition Weisheit, in westlichen Kontexten Gefahr oder in indianischer Sicht Heilung darstellen.
                 </p>
 <p>
-                    Dieses kulturelle Bewusstsein hat die westliche Psychologie bereichert und zu differenzierteren, kontextsensitiveren Ansätzen zur Traumdeutung geführt, die sowohl universelle Muster als auch kulturelle Besonderheiten berücksichtigen.
+                    Dieses Bewusstsein hat die westliche Psychologie bereichert und zu differenzierteren Ansätzen geführt, die sowohl universelle Muster als auch kulturelle Besonderheiten berücksichtigen.
                 </p>
 <h3>Die Zukunft der Traumdeutung und Wissenschaft</h3>
 <p>
                     Während die Neurowissenschaft Fortschritte macht, entwickeln wir Werkzeuge, die wie Science-Fiction schienen: <strong>Trauminhalte aus Gehirnscans entschlüsseln, bestimmte Traumthemen induzieren und sogar mit Klarträumern im Schlaf kommunizieren</strong>.
                 </p>
 <p>
-                    Dennoch bleibt der grundlegende menschliche Impuls bestehen, in Träumen einen Sinn zu finden. Die vielleicht tiefgreifendste Erkenntnis aus dieser 5.000-jährigen Geschichte ist, dass Träume mehrere Funktionen erfüllen: Sie verarbeiten Emotionen, festigen Erinnerungen, simulieren Bedrohungen, drücken Wünsche aus und spiegeln unsere tiefsten Sorgen wider – und das alles gleichzeitig.
+                    Trotzdem bleibt der grundlegende menschliche Impuls bestehen, in Träumen einen Sinn zu finden. Die tiefgreifendste Erkenntnis aus dieser 5.000-jährigen Geschichte: Träume erfüllen mehrere Funktionen gleichzeitig. Sie verarbeiten Emotionen, festigen Erinnerungen, simulieren Bedrohungen, drücken Wünsche aus und spiegeln unsere tiefsten Sorgen wider.
                 </p>
 <p>
-                    Die Geschichte der Traumdeutung offenbart einen sich entwickelnden Dialog zwischen Menschen und ihren inneren Welten, wobei jede Ära einzigartige Erkenntnisse liefert und gleichzeitig auf uralter Weisheit aufbaut.
+                    Was diese 5.000-jährige Geschichte offenbart, ist ein sich entwickelnder Dialog zwischen Menschen und ihren inneren Welten, wobei jede Ära einzigartige Erkenntnisse liefert und auf uralter Weisheit aufbaut.
                 </p>
 </div>
 <!-- Related Symbols Start -->

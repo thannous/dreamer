@@ -141,7 +141,7 @@
                     I sogni si verificano principalmente durante <strong><a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a></strong>, quando l'ippocampo (centro della memoria) è meno attivo rispetto alle ore di veglia. Questa attività ridotta significa che i sogni non vengono consolidati nella memoria a lungo termine allo stesso modo delle esperienze di veglia.
                 </p>
 <p>
-                    Inoltre, al risveglio:
+                    Al risveglio:
                 </p>
 <ul>
 <li><strong>i livelli di norepinefrina</strong> aumentano, portando il cervello in "modalità sveglio" e mettendo da parte il contenuto del sogno</li>
@@ -175,7 +175,7 @@
 </ul>
 <h3>Passaggio 3: imposta l'intenzione di ricordare i tuoi sogni</h3>
 <p>
-                    Prima di dormire, informa te stesso: <strong>"Ricorderò i miei sogni."</strong> È stato dimostrato che questa semplice definizione delle intenzioni migliora significativamente il ricordo dei sogni. Visualizza te stesso mentre ti svegli e registri i tuoi sogni.
+                    Prima di dormire, dì a te stesso: <strong>"Ricorderò i miei sogni."</strong> Questa semplice definizione delle intenzioni migliora in modo misurabile il ricordo dei sogni. Visualizza te stesso mentre ti svegli e registri i tuoi sogni.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">

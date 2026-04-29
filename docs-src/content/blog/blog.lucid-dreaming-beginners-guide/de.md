@@ -116,7 +116,7 @@
                     Ein Klartraum ist ein bestimmter Bewusstseinszustand, in dem <strong>Sie wissen, dass Sie träumen</strong> während Sie schlafen. Dieses Bewusstsein kann spontan auftreten oder durch verschiedene Techniken induziert werden.
                 </p>
 <p>
-                    Der Grad der Klarheit variiert erheblich:
+                    Klarheit zeigt sich in verschiedenen Abstufungen:
                 </p>
 <ul>
 <li><strong>Minimale Klarheit:</strong> Sie wissen, dass Sie träumen, kontrollieren aber nichts</li>
@@ -128,13 +128,13 @@
                 </blockquote>
 <h2 id="science">Die Wissenschaft hinter Klarträumen erklärt</h2>
 <p>
-                    Klarträumen ist kein Mythos – es ist ein wissenschaftlich nachgewiesenes Phänomen. Im Jahr 1975 demonstrierte der Psychologe Keith Hearne zum ersten Mal, dass ein Klarträumer durch vorgegebene Augenbewegungen mit der Wachwelt kommunizieren kann. Seitdem hat die Neurowissenschaft herausgefunden, dass während eines Klartraums: der dorsolaterale präfrontale Kortex <strong>Keith Hearne</strong> demonstrated for the first time that a lucid dreamer could communicate with the waking world through predetermined eye movements.
+                    Klarträumen ist kein Mythos - es ist ein wissenschaftlich nachgewiesenes Phänomen. 1975 wies der Psychologe <strong>Keith Hearne</strong> erstmals nach, dass ein Klarträumer durch vorgegebene Augenbewegungen mit der Wachwelt kommunizieren kann.
                 </p>
 <p>
-                    Since then, neuroscience has revealed that during a lucid dream:
+                    Seitdem hat die Neurowissenschaft aufgedeckt, dass während eines Klartraums:
                 </p>
 <ul>
-<li>Der <strong>dorsolateral prefrontal cortex</strong> (verbunden mit Selbstbewusstsein) wird aktiv</li>
+<li>Der <strong>dorsolaterale präfrontale Kortex</strong> (verbunden mit Selbstbewusstsein) wird aktiv</li>
 <li>Gehirnwellen zeigen eine Mischung aus REM- und Wachaktivität (Gammawellen)</li>
 <li>Der Träumer behält sein Arbeitsgedächtnis und seine Fähigkeit zur Reflexion</li>
 </ul>
@@ -151,7 +151,7 @@
 <li>Üben Sie Situationen, bevor Sie sie erleben</li>
 <li>Zugriff auf Erkenntnisse aus Ihrem Unterbewusstsein</li>
 </ul>
-<h3>Boost Kreativität durch luzide Träume</h3>
+<h3>Kreativität durch luzide Träume steigern</h3>
 <ul>
 <li>Ideen ohne körperliche Einschränkungen entdecken</li>
 <li>Viele Künstler und Wissenschaftler lassen sich von Träumen inspirieren</li>
@@ -159,7 +159,7 @@
 </ul>
 <h3>Therapeutische Vorteile der Traumkontrolle</h3>
 <ul>
-<li>Behandlung wiederkehrender Träume Albträume</li>
+<li>Behandlung wiederkehrender Albträume</li>
 <li>Management von posttraumatischem Stress (als Ergänzung)</li>
 <li>Gesteigertes Selbstvertrauen</li>
 </ul>
@@ -169,7 +169,7 @@
                 </p>
 <h3>1. Starten Sie ein Traumtagebuch für luzides Träumen</h3>
 <p>
-	                    Dies ist <strong>DIE wesentliche Grundlage</strong>. Ohne die Erinnerung an Ihre Träume werden Sie nie wissen, ob Sie klar waren. Schreiben Sie jeden Morgen Ihre Träume auf, auch in Fragmenten. Wenn Sie gerade erst anfangen, befolgen Sie diesen <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumjournal-Leitfaden</a> , um Ihre Notizen zu strukturieren. Innerhalb weniger Wochen wird sich Ihre Traumerinnerung deutlich verbessern.
+	                    Dies ist <strong>DIE wesentliche Grundlage</strong>. Ohne die Erinnerung an Ihre Träume werden Sie nie wissen, ob Sie klar waren. Schreiben Sie jeden Morgen Ihre Träume auf, auch in Fragmenten. Wenn Sie gerade erst anfangen, befolgen Sie diesen <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumjournal-Leitfaden</a> , um Ihre Notizen zu strukturieren. Innerhalb weniger Wochen verbessert sich Ihre Traumerinnerung spürbar.
 	                </p>
 <h3>2. Schlafhygiene-Tipps für eine bessere Traumerinnerung</h3>
 <p>
@@ -247,7 +247,7 @@
 </div>
 <div class="prose max-w-none text-gray-300">
 <p>
-<strong>Wichtiger Tipp:</strong> Führen Sie diese Tests nicht mechanisch durch. Stellen Sie sich bei jedem Realitätscheck ernsthaft die Frage: „Träume ich?“ und warte ein paar Sekunden. Es ist diese <strong>Haltung des aufrichtigen Fragens</strong> die sich in Ihren Träumen reproduzieren wird.
+<strong>Wichtiger Tipp:</strong> Führen Sie diese Tests nicht mechanisch durch. Stellen Sie sich bei jedem Realitätscheck ernsthaft die Frage: „Träume ich?” und warten Sie ein paar Sekunden. Es ist diese <strong>Haltung des aufrichtigen Fragens</strong>, die sich in Ihren Träumen reproduzieren wird.
                 </p>
 <h2 id="techniques">Techniken zur Induktion von Klarträumen, die funktionieren</h2>
 <p>
@@ -265,7 +265,7 @@
 </ol>
 <h3>2. WBTB-Methode zur Herbeiführung luzider Träume</h3>
 <p>
-                    In Kombination mit MILD erhöht diese Technik Ihre Chancen erheblich:
+                    Kombiniert mit MILD vervielfacht diese Technik Ihre Chancen:
                 </p>
 <ol>
 <li>Stellen Sie einen Wecker, um nach 5–6 Stunden aufzuwachen</li>

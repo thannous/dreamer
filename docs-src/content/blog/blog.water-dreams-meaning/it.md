@@ -107,7 +107,7 @@
                     Nell'interpretazione dei sogni, <a class="text-dream-salmon hover:underline" href="../simboli/acqua">acqua</a> è forse il <strong>simbolo più universale per le emozioni</strong>. Proprio come l’acqua può essere calma o turbolenta, profonda o poco profonda, limpida o torbida, lo stesso vale per i nostri stati emotivi. Questo simbolismo appare praticamente in ogni cultura e tradizione psicologica.
                 </p>
 <p>
-                    L'acqua rappresenta anche la <strong>mente inconscia</strong> - le vaste, spesso nascoste profondità della nostra psiche che si trovano sotto la consapevolezza superficiale. Quando sogni di immergerti in profondità nell’acqua, potresti esplorare le profondità del tuo inconscio. Quando l'acqua sale spontaneamente, emozioni o materiale inconscio potrebbero richiedere la tua attenzione.
+                    Oltre alle emozioni, l'acqua rappresenta la <strong>mente inconscia</strong> - le vaste, spesso nascoste profondità della nostra psiche che si trovano sotto la consapevolezza superficiale. Quando sogni di immergerti in profondità nell’acqua, potresti esplorare le profondità del tuo inconscio. Quando l'acqua sale spontaneamente, emozioni o materiale inconscio potrebbero richiedere la tua attenzione.
                 </p>
 <blockquote>
                     "L'acqua è il simbolo più comune dell'inconscio. Il lago nella valle è l'inconscio che giace, per così dire, sotto la coscienza." - Carl Jung
@@ -200,7 +200,7 @@
                 </p>
 <h3>Acqua calma</h3>
 <p>
-                    Tuttavia, l'acqua pacifica riflette <strong>pace interiore, tranquillità emotiva ed equilibrio</strong>. Potresti trovarti in una situazione emotiva positiva o il tuo sogno ti sta mostrando cosa è possibile quando trovi la calma.
+                    Acqua calma e pacifica riflette <strong>pace interiore, tranquillità emotiva ed equilibrio</strong>. Potresti trovarti in una situazione emotiva positiva o il tuo sogno ti sta mostrando cosa è possibile quando trovi la calma.
                 </p>
 <h3>Acqua turbolenta</h3>
 <p>

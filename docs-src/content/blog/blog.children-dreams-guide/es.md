@@ -70,7 +70,7 @@
                     Sueños de los niños: de qué sueñan y cómo ayudarlos
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Tu hijo se despierta llorando y te cuenta que un monstruo lo perseguía por un bosque oscuro. O describe con entusiasmo cómo voló sobre un arcoíris con su perro. Los sueños de los niños son vívidos, emocionalmente intensos y fundamentalmente diferentes de los de los adultos. Comprender cómo sueñan los niños en cada etapa te da las herramientas para acompañarlos durante las pesadillas y cultivar una relación sana con el sueño para toda la vida.
+                    Tu hijo se despierta llorando y te cuenta que un monstruo lo perseguía por un bosque oscuro. O describe con entusiasmo cómo voló sobre un arcoíris con su perro. ¿Los sueños de los niños son vívidos, emocionalmente intensos y fundamentalmente diferentes de los de los adultos. Comprender cómo sueñan los niños en cada etapa te da las herramientas para acompañarlos durante las pesadillas y cultivar una relación sana con el sueño para toda la vida.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -153,7 +153,7 @@
 
 <h2 id="what-children-dream">¿Con qué sueñan los niños?</h2>
 <p>
-                    El contenido de los sueños infantiles cambia drásticamente a medida que los niños crecen. Mientras que los adultos suelen soñar con el trabajo, las relaciones y las preocupaciones cotidianas, los niños pequeños habitan un mundo onírico muy diferente, poblado por lo que más importa en su universo.
+                    ¿Con qué sueñan los niños? Cambia drásticamente a medida que crecen. Mientras que los adultos suelen soñar con el trabajo, las relaciones y las preocupaciones cotidianas, los niños pequeños habitan un mundo onírico diferente, poblado por lo que más importa en su universo.
                 </p>
 <h3>3-5 años: Animales y escenarios familiares</h3>
 <p>
@@ -165,11 +165,11 @@
                 </p>
 <h3>8-12 años: Mundos sociales y vida escolar</h3>
 <p>
-                    Los niños en edad escolar sueñan cada vez más con <strong>situaciones sociales</strong>: amistades, conflictos con compañeros, profesores y escenarios de la <a class="text-dream-salmon hover:underline" href="../simbolos/escuela">escuela</a>. Los sueños de ser perseguido, caer o pasar vergüenza en público se vuelven más comunes durante este período, reflejando la creciente importancia del estatus social y la ansiedad por el rendimiento en la vida del niño.
+                    Los niños en edad escolar sueñan cada vez más con <strong>situaciones sociales</strong>: amistades, conflictos con compañeros, profesores y escenarios de la <a class="text-dream-salmon hover:underline" href="../simbolos/escuela">escuela</a>. ¿Los sueños de ser perseguido, caer o pasar vergüenza en público se vuelven más comunes durante este período, reflejando la creciente importancia del estatus social y la ansiedad por el rendimiento en la vida del niño.
                 </p>
 <h3>Adolescentes: Identidad y emociones</h3>
 <p>
-                    Los sueños de los adolescentes se asemejan a los de los adultos en su complejidad. Dominan los temas de identidad, relaciones románticas, imagen corporal y aspiraciones futuras. Los adolescentes también experimentan más <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> durante los períodos de cambios hormonales y presión académica. Entender <a class="text-dream-salmon hover:underline" href="por-que-sonamos-ciencia">por qué soñamos</a> puede ayudar a los adolescentes a dar sentido a la intensidad emocional que experimentan durante el sueño.
+                    ¿Los sueños de los adolescentes se asemejan a los de los adultos en su complejidad. Dominan los temas de identidad, relaciones románticas, imagen corporal y aspiraciones futuras. Los adolescentes también experimentan más <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> durante los períodos de cambios hormonales y presión académica. Entender <a class="text-dream-salmon hover:underline" href="por-que-sonamos-ciencia">por qué soñamos</a> puede ayudar a los adolescentes a dar sentido a la intensidad emocional que experimentan durante el sueño.
                 </p>
 
 <h2 id="nightmares-vs-terrors">Por qué los niños tienen pesadillas y terrores nocturnos</h2>
@@ -195,7 +195,7 @@
                     Los terrores nocturnos son fundamentalmente diferentes de las pesadillas. Ocurren durante el <strong>sueño profundo no-REM</strong>, normalmente 1-3 horas después de que el niño se duerme. Durante un terror nocturno, el niño puede gritar, agitarse, sentarse con los ojos bien abiertos o incluso caminar, pero no está realmente despierto y <strong>no tendrá ningún recuerdo del episodio</strong> a la mañana siguiente. Los terrores nocturnos alcanzan su punto máximo entre los 3 y 8 años y afectan a aproximadamente el 1-6 % de los niños.
                 </p>
 <p>
-                    Los terrores nocturnos no son causados por un trastorno emocional. Se producen cuando el cerebro tiene dificultad para transitar fluidamente entre las fases de sueño profundo. La falta de sueño, los horarios irregulares y la fiebre pueden desencadenarlos. Lo más importante que pueden hacer los padres durante un terror nocturno es <strong>mantener la calma y asegurar que el niño esté a salvo</strong> sin intentar despertarlo. Esto es muy diferente de la <a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">parálisis del sueño</a>, que ocurre durante las transiciones REM en niños mayores y adultos.
+                    Ningún trastorno emocional causa los terrores nocturnos. Se producen cuando el cerebro tiene dificultad para transitar fluidamente entre las fases de sueño profundo. La falta de sueño, los horarios irregulares y la fiebre pueden desencadenarlos. Lo más importante que pueden hacer los padres durante un terror nocturno es <strong>mantener la calma y asegurar que el niño esté a salvo</strong> sin intentar despertarlo. Esto es muy diferente de la <a class="text-dream-salmon hover:underline" href="guia-paralisis-sueno">parálisis del sueño</a>, que ocurre durante las transiciones REM en niños mayores y adultos.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -228,7 +228,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="helping-children">Cómo ayudar a un niño que tiene malos sueños</h2>
 <p>
-                    Cuando tu hijo viene a buscarte después de una pesadilla, tu respuesta importa enormemente. Cómo manejas estos momentos moldea no solo su relación con el sueño, sino también su resiliencia emocional y su capacidad para procesar sentimientos difíciles.
+                    ¿Cuándo tu hijo viene a buscarte después de una pesadilla, tu respuesta importa enormemente. Cómo manejas estos momentos moldea no solo su relación con el sueño, sino también su resiliencia emocional y su capacidad para procesar sentimientos difíciles.
                 </p>
 <h3>Validar sus sentimientos</h3>
 <p>
@@ -272,7 +272,7 @@
 
 <h2 id="journaling-for-kids">El diario de sueños para niños</h2>
 <p>
-                    El diario de sueños no es solo para adultos. Adaptado a la edad y las capacidades del niño, puede convertirse en una herramienta poderosa para el desarrollo emocional, la creatividad y la autoconciencia. La clave es hacerlo apropiado para su edad y divertido, nunca una obligación.
+                    Llevar un diario de sueños funciona también para los niños, no solo para adultos. Adaptado a la edad y las capacidades del niño, se convierte en una herramienta poderosa para el desarrollo emocional, la creatividad y la autoconciencia. Hazlo apropiado para su edad y divertido, nunca una obligación.
                 </p>
 <h3>3-5 años: Dibujar los sueños</h3>
 <p>
@@ -368,12 +368,12 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/nino">Soñar con niño</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/casa">Soñar con casa</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/bosque">Soñar con bosque</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/perro">Soñar con perro</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/noche">Soñar con noche</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/escuela">Soñar con escuela</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/nino">¿Soñar con niño</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/casa">¿Soñar con casa</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/bosque">¿Soñar con bosque</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/perro">¿Soñar con perro</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/noche">¿Soñar con noche</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/escuela">¿Soñar con escuela</a>
 </div>
 </section>
 <!-- Related Symbols End -->

@@ -15,22 +15,22 @@
   "ogType": "article",
   "ogTitle": "Rêves d'eau : noyade, océan et inondation décryptés | Noctalia",
   "ogDescription": "L'eau symbolise les émotions : décryptez vos rêves de noyade ou océan.",
-  "ogImage": "https://noctalia.app/img/blog/reves-eau.webp",
+  "ogImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "ogImageAlt": "Surface d'eau calme reflétant les émotions du subconscient",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêves d'eau : noyade, océan et inondation décryptés | Noctalia",
   "twitterDescription": "L'eau symbolise les émotions dans vos rêves.",
-  "twitterImage": "https://noctalia.app/img/blog/reves-eau.webp",
+  "twitterImage": "https://noctalia.app/img/blog/water-dreams-meaning.webp",
   "twitterImageAlt": "Surface d'eau calme reflétant les émotions du subconscient",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-de-mort",
   "nextPath": "/fr/blog/reves-ex-partenaire",
-  "preloadImage": "/img/blog/reves-eau.webp",
+  "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation\",\n            \"description\": \"Que signifient les rêves d'eau ? Découvrez les interprétations symboliques des rêves de noyade, océan et inondation.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/reves-eau.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-eau\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 911,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-eau\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que symbolise l'eau dans les rêves ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"L'eau dans les rêves représente universellement les émotions et l'inconscient. L'état de l'eau - calme, turbulente, claire ou trouble - reflète votre état émotionnel. L'eau profonde symbolise souvent les émotions profondes ou l'inconscient, tandis que la surface représente la conscience.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver de se noyer ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les rêves de noyade symbolisent généralement le sentiment d'être submerge par les émotions ou les circonstances de la vie. Vous pouvez avoir l'impression d'avoir 'la tete sous l'eau' avec les responsabilités, les relations ou les sentiments. Cela peut aussi indiquer des émotions réprimées qui menacent de faire surface.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifient les rêves d'inondation ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les rêves d'inondation représentent souvent des émotions débordantes, des changements majeurs de vie, ou le sentiment de perte de contrôle. Ils peuvent symboliser la libération émotionnelle, la purification, ou des situations dans votre vie qui semblent incontenables. Le contexte et votre réponse émotionnelle fournissent des indices importants sur la signification.\" }\n                }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation\",\n            \"description\": \"Que signifient les rêves d'eau ? Découvrez les interprétations symboliques des rêves de noyade, océan et inondation.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-eau\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 911,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-eau\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que symbolise l'eau dans les rêves ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"L'eau dans les rêves représente universellement les émotions et l'inconscient. L'état de l'eau - calme, turbulente, claire ou trouble - reflète votre état émotionnel. L'eau profonde symbolise souvent les émotions profondes ou l'inconscient, tandis que la surface représente la conscience.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver de se noyer ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les rêves de noyade symbolisent généralement le sentiment d'être submergé par les émotions ou les circonstances de la vie. Vous pouvez avoir l'impression d'avoir 'la tete sous l'eau' avec les responsabilités, les relations ou les sentiments. Cela peut aussi indiquer des émotions réprimées qui menacent de faire surface.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifient les rêves d'inondation ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les rêves d'inondation représentent souvent des émotions débordantes, des changements majeurs de vie, ou le sentiment de perte de contrôle. Ils peuvent symboliser la libération émotionnelle, la purification, ou des situations dans votre vie qui semblent incontenables. Le contexte et votre réponse émotionnelle fournissent des indices importants sur la signification.\" }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves d'Eau\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-eau\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -60,7 +60,7 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Interprétation</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
-<span class="text-sm text-purple-300/60">Publie le 11 décembre 2025</span>
+<span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
 <span class="text-sm text-purple-300/60">4 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
@@ -86,7 +86,7 @@
     <p class="text-purple-100/80 leading-relaxed">L'eau est l'un des symboles oniriques les plus universels, apparaissant dans environ 15 à 20 % de tous les rêves rapportés. En psychologie du rêve, l'eau représente généralement les émotions, l'inconscient et les transitions de vie. L'état de l'eau révèle votre paysage émotionnel : une eau calme suggère la paix intérieure, une eau agitée indique des turbulences émotionnelles, la noyade reflète un sentiment d'être submergé, et les inondations symbolisent des émotions hors de contrôle. Les interprétations culturelles varient, mais le lien émotionnel avec l'eau dans les rêves est remarquablement constant à travers les traditions.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Surface d'eau calme reflétant les émotions du subconscient" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/reves-eau.webp" srcset="../../img/blog/reves-eau-480w.webp 480w, ../../img/blog/reves-eau-800w.webp 800w, ../../img/blog/reves-eau-1200w.webp 1200w" width="1200">
+<img alt="Surface d'eau calme reflétant les émotions du subconscient" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
@@ -107,7 +107,7 @@
                     Dans l'interprétation des rêves, <a class="text-dream-salmon hover:underline" href="../symboles/eau">l'eau</a> est peut-être le <strong>symbole le plus universel des émotions</strong>. Tout comme l'eau peut être calme ou turbulente, profonde ou peu profonde, claire ou trouble, nos états émotionnels peuvent l'être aussi. Ce symbolisme apparaît dans pratiquement toutes les cultures et traditions psychologiques.
                 </p>
 <p>
-                    L'eau représente aussi l'<strong>inconscient</strong> - les vastes profondeurs souvent cachées de notre psyché qui se trouvent sous la conscience de surface. Quand vous rêvez de plonger dans l'eau profonde, vous explorez peut-être les profondeurs de votre inconscient. Quand l'eau monte sans être invitée, des émotions ou du matériel inconscient peuvent exiger votre attention.
+                    Au-delà des émotions, l'eau représente l'<strong>inconscient</strong> - les vastes profondeurs souvent cachées de notre psyché qui se trouvent sous la conscience de surface. Quand vous rêvez de plonger dans l'eau profonde, vous explorez peut-être les profondeurs de votre inconscient. Quand l'eau monte sans être invitée, des émotions ou du matériel inconscient peuvent exiger votre attention.
                 </p>
 <blockquote>
                     "L'eau est le symbole le plus courant de l'inconscient. Le lac dans la vallée est l'inconscient couche, pour ainsi dire, sous la conscience." - Carl Jung
@@ -137,7 +137,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Rêve de noyade : que signifie se noyer en rêve</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        La noyade symbolise généralement le <strong>sentiment d'être submerge par les émotions ou les circonstances</strong>. Vous pouvez vous sentir "la tete sous l'eau" ou incapable de faire face à ce que la vie vous envoie.
+                        La noyade symbolise généralement le <strong>sentiment d'être submergé par les émotions ou les circonstances</strong>. Vous pouvez vous sentir "la tete sous l'eau" ou incapable de faire face à ce que la vie vous envoie.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -209,7 +209,7 @@
 <h2 id="interpretations">Interprétations courantes des rêves d'eau</h2>
 <h3>1. Rêve d'eau et débordement émotionnel</h3>
 <p>
-                    L'interprétation la plus courante des rêves d'eau - surtout la noyade, les inondations ou les tsunamis - est le <strong>sentiment d'être émotionnellement submerge</strong>. La vie peut vous envoyer plus que ce que vous vous sentez capable de gérer.
+                    L'interprétation la plus courante des rêves d'eau - surtout la noyade, les inondations ou les tsunamis - est le <strong>sentiment d'être émotionnellement submergé</strong>. La vie peut vous envoyer plus que ce que vous vous sentez capable de gérer.
                 </p>
 <h3>2. Eau dans les rêves et processus inconscients</h3>
 <p>
@@ -248,7 +248,7 @@
                 </p>
 <h3>Recherche moderne sur les rêves d'eau</h3>
 <p>
-                    La recherche contemporaine sur les rêves connecte les rêves d'eau au <strong>traitement émotionnel et à la régulation du stress</strong>. Le cerveau peut utiliser l'imagerie de l'eau pour traiter les expériences émotionnelles, avec l'état de l'eau reflétant les états émotionnels actuels.
+                    La recherche contemporaine sur les rêves connecte les rêves d'eau au <strong>traitement émotionnel et à la régulation du stress</strong>. Votre cerveau peut utiliser l'imagerie de l'eau pour traiter les expériences émotionnelles, l'état de l'eau reflétant vos états émotionnels actuels.
                 </p>
 <blockquote>
                     "Les rêves d'eau sont la façon dont la psyché nous montre notre paysage émotionnel. Faites attention a comment l'eau se comporte - elle vous dit comment vos émotions coulent." - Dr. Kelly Bulkeley, Chercheur sur les rêves
@@ -346,7 +346,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Les rêves de noyade symbolisent généralement le sentiment d'être submerge par les émotions ou les circonstances de la vie. Vous pouvez avoir l'impression d'avoir "la tete sous l'eau" avec les responsabilités, les relations ou les sentiments. Cela peut aussi indiquer des émotions réprimées qui menacent de faire surface.
+                            Les rêves de noyade symbolisent généralement le sentiment d'être submergé par les émotions ou les circonstances de la vie. Vous pouvez avoir l'impression d'avoir "la tete sous l'eau" avec les responsabilités, les relations ou les sentiments. Cela peut aussi indiquer des émotions réprimées qui menacent de faire surface.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -382,7 +382,7 @@
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="signification-reves-recurrents">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des Rêves Récurrents</h3>
-<p class="text-sm text-gray-400">Pourquoi faites-vous toujours le meme rêve ?</p>
+<p class="text-sm text-gray-400">Pourquoi faites-vous toujours le même rêve ?</p>
 </a>
 </div>
 </section>
@@ -417,7 +417,7 @@
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le meme rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>

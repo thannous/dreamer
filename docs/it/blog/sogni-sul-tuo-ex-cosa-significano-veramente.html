@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -183,7 +194,7 @@
         {
             "@type": "ListItem",
             "position": 3,
-            "name": "Dreams About Ex",
+            "name": "Sogni sull'ex",
             "item": "https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente"
         }
     ]
@@ -194,24 +205,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/it/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/it/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/it/#come-funziona" class="hidden lg:inline-flex hover:text-white transition-colors">Come funziona</a>
-                <a href="/it/#funzionalita" class="hidden lg:inline-flex hover:text-white transition-colors">Funzionalità</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/it/blog/" class="text-dream-salmon transition-colors">Risorse</a>
                 <a href="/it/guides/" class="hover:text-white transition-colors">Guide ai sogni</a>
                 <a href="/it/guides/dizionario-simboli-sogni" class="hover:text-white transition-colors">Dizionario dei sogni</a>
+                <a href="/it/chi-siamo" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Chi siamo</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">IT</span>
+                        <span>IT</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -237,6 +247,26 @@
                     </a>
                     </div>
                 </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Scarica l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/it/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Risorse</a>
+                <a href="/it/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guide ai sogni</a>
+                <a href="/it/guides/dizionario-simboli-sogni" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dizionario dei sogni</a>
+                <a href="/it/chi-siamo" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Chi siamo</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Scarica l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/dreams-about-ex" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/reves-ex-partenaire" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/suenos-con-ex" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Italiano</a>
+                </div>
             </div>
         </div>
     </nav>
@@ -255,7 +285,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Dreams About Ex</span>
+<span class="text-dream-cream" itemprop="name">Sogni sull'ex</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -285,6 +315,11 @@
         <span class="block text-xs text-purple-300/60">Fondatore e Direttore della pubblicazione · <a href="/it/chi-siamo" class="text-dream-salmon hover:underline">Il nostro processo editoriale</a></span>
     </div>
 </div>
+<!-- Quick Answer (AI SEO) -->
+<section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
+    <p class="text-purple-100/80 leading-relaxed">I sogni su un ex partner sono estremamente comuni e raramente significano che si desidera tornare insieme. La ricerca in psicologia dei sogni indica che questi sogni riflettono tipicamente emozioni irrisolte, crescita personale in corso o schemi che la mente sta elaborando. I fattori scatenanti più frequenti includono grandi cambiamenti di vita, nuove relazioni o anniversari. Piuttosto che desideri letterali, i sogni sull'ex simboleggiano spesso qualità che si associano a quella persona o un'elaborazione emotiva incompiuta.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Silhouette riflettente che simboleggia i ricordi delle relazioni passate" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="1200">
 </figure>
@@ -313,14 +348,14 @@
                     Questi ricordi possono emergere in ambienti familiari come una <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a> che sembra carica di significato.
                 </p>
 <p>
-                    La ricerca dimostra che è più probabile che sogniamo persone che hanno avuto un forte impatto emotivo su di noi, indipendentemente dal fatto che tali emozioni fossero positive o negative. Il tuo ex rappresenta un capitolo significativo della tua vita e il tuo cervello usa quel punto di riferimento quando elabora temi simili.
+                    La ricerca dimostra che è più probabile sognare persone che hanno avuto un forte impatto emotivo su di noi, indipendentemente dal fatto che tali emozioni fossero positive o negative. Il tuo ex rappresenta un capitolo centrale della tua vita e il tuo cervello usa quel punto di riferimento quando elabora temi simili.
                 </p>
 <blockquote>
                     "I sogni sugli ex raramente riguardano la persona reale. Di solito riguardano ciò che quella persona rappresenta: un momento della tua vita, un sentimento o un aspetto di te stesso." - Dott.ssa Wendy Walsh, psicologa relazionale
                 </blockquote>
 <h2 id="scenarios">Sogni comuni sul tuo ex e il suo significato</h2>
 <p>
-                    Lo scenario del tuo sogno fornisce importanti indizi sul suo significato:
+                    Ogni scenario onirico fornisce importanti indizi sul suo significato:
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -343,7 +378,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Lotta o conflitto</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Gli argomenti nei sogni suggeriscono <strong>irrisolti problemi o risentimento persistente</strong>. Il tuo subconscio potrebbe elaborare cose che non hai mai avuto da dire o sentimenti che non hai completamente elaborato.
+                        I litigi nei sogni suggeriscono <strong>problemi irrisolti o risentimento persistente</strong>. Il tuo subconscio potrebbe elaborare cose che non hai mai avuto modo di dire o sentimenti che non hai completamente affrontato.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -365,7 +400,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Ex con qualcuno di nuovo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Vedere il proprio ex con un'altra persona spesso riflette <strong>la perdita dell'elaborazione, la paura di essere sostituiti</strong> o l'elaborazione di sentimenti di inadeguatezza della relazione.
+                        Vedere il proprio ex con un'altra persona spesso riflette <strong>l'elaborazione della perdita, la paura di essere sostituiti</strong> o l'elaborazione di sentimenti di inadeguatezza legati alla relazione.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -403,7 +438,7 @@
                 </p>
 <h3>3. Imparare lezioni di vita attraverso i sogni</h3>
 <p>
-                    Le relazioni ci insegnano cose su noi stessi. I sogni possono apparire quando <strong>integra inconsciamente lezioni da quella relazione</strong> riconoscendo modelli, comprendendo le tue esigenze o elaborando il modo in cui sei cresciuto.
+                    Le relazioni ci insegnano molto su noi stessi. I sogni possono comparire quando <strong>integri inconsciamente le lezioni di quella relazione</strong>, riconoscendo schemi ricorrenti, comprendendo i tuoi bisogni o elaborando il modo in cui sei cresciuto.
                 </p>
 <h3>4. La relazione attuale innesca ex sogni</h3>
 <p>
@@ -420,7 +455,7 @@
 </div>
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Decodifica i tuoi sogni relazionali</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analizza i dettagli specifici dei tuoi ex sogni - lo scenario, le emozioni e il contesto - per aiutarti a capire quali sono i tuoi sogni il subconscio sta elaborando.</p>
+<p class="text-sm text-gray-400 mb-4">Noctalia analizza i dettagli specifici dei tuoi sogni sull'ex - lo scenario, le emozioni e il contesto - per aiutarti a capire cosa il tuo subconscio sta elaborando.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
                                 Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -430,7 +465,7 @@
 <h2 id="psychology">Psicologia dietro i sogni sugli ex partner</h2>
 <h3>Come lo stile di attaccamento influisce sugli ex sogni</h3>
 <p>
-                    Il nostro stile di attaccamento influenza il modo in cui elaboriamo le rotture. <strong>Individui ansiosi</strong> tendono ad avere ex sogni più frequenti e impiegano più tempo per smettere di averli loro. <strong>Le persone con attaccamento evitante</strong> potrebbero sopprimere i pensieri della veglia solo per farli emergere nei sogni.
+                    Il nostro stile di attaccamento influenza il modo in cui elaboriamo le rotture. Le <strong>persone con attaccamento ansioso</strong> tendono ad avere sogni sull'ex più frequenti e impiegano più tempo a smettere di farli. <strong>Le persone con attaccamento evitante</strong> potrebbero sopprimere i pensieri da svegli solo per vederli riemergere nei sogni.
                 </p>
 <h3>Consolidamento della memoria durante il sonno REM</h3>
 <p>
@@ -453,7 +488,7 @@
                 </p>
 <h3>Il tuo cervello confronta i partner passati e attuali</h3>
 <p>
-                    Il tuo subconscio potrebbe <strong>confrontando le dinamiche</strong> - non per preferirne uno rispetto all'altro, ma per comprendere la tua relazione attuale attraverso la lente dell'esperienza passata.
+                    Il tuo subconscio potrebbe stare <strong>confrontando le dinamiche</strong> - non per preferire un partner rispetto all'altro, ma per comprendere la tua relazione attuale attraverso la lente dell'esperienza passata.
                 </p>
 <h3>Dovresti parlare al tuo partner dei sogni degli ex?</h3>
 <p>
@@ -462,11 +497,11 @@
 <h2 id="moving-on">Come smettere di sognare il tuo ex</h2>
 <h3>1. Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">Diario dei sogni</a> Sugli ex sogni</h3>
 <p>
-                    Annota il sogno immediatamente dopo esserti svegliato. Annota <strong>lo scenario, le emozioni e tutti i simboli</strong> (come un <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simboli/porta">porta</a>, un <a class="text-dream-salmon hover:underline" href="../simboli/telefono">telefono</a> o un <a class="text-dream-salmon hover:underline" href="../simboli/specchio">mirror</a>). Nel corso del tempo emergono modelli che rivelano su cosa sta lavorando il tuo subconscio.
+                    Annota il sogno immediatamente dopo esserti svegliato. Annota <strong>lo scenario, le emozioni e tutti i simboli</strong> (come un <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simboli/porta">porta</a>, un <a class="text-dream-salmon hover:underline" href="../simboli/telefono">telefono</a> o uno <a class="text-dream-salmon hover:underline" href="../simboli/specchio">specchio</a>). Nel corso del tempo emergono modelli che rivelano su cosa sta lavorando il tuo subconscio.
                 </p>
 <h3>2. Identifica cosa scatena gli ex sogni</h3>
 <p>
-                    Chiediti: cosa sta succedendo nella mia vita adesso? <strong>Eventi, fattori di stress o situazioni recenti</strong> potrebbe aver innescato il sogno. La connessione non è sempre ovvia, ma esplorare aiuta.
+                    Chiediti: cosa sta succedendo nella mia vita adesso? <strong>Eventi, fattori di stress o situazioni recenti</strong> potrebbero aver innescato il sogno. La connessione non è sempre ovvia, ma esplorare aiuta.
                 </p>
 <h3>3. Crea la tua chiusura emotiva</h3>
 <p>
@@ -586,6 +621,17 @@
               </div>
             </section>
             <!-- Blog Related End -->
+<!-- Sources / Trust -->
+<section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Fonti / Approfondimenti</h2>
+<ul class="mt-6 space-y-2 text-sm text-gray-400">
+<li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/18220080/" rel="nofollow noopener noreferrer" target="_blank">McNamara (2008) — Nightmares: The science and solution of those frightening visions (PubMed)</a></li>
+<li><a href="https://dreamresearch.net/" rel="nofollow noopener noreferrer" target="_blank">Domhoff (2003) — Dream research overview</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/16796779/" rel="nofollow noopener noreferrer" target="_blank">Schredl (2006) — Factors affecting the continuity between waking and dreaming (PubMed)</a></li>
+</ul>
+<p class="mt-6 text-xs text-purple-200/60">Ultimo aggiornamento: 6 gennaio 2026</p>
+</section>
 </article>
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
@@ -595,7 +641,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/it/" class="flex items-center gap-2 mb-4">
@@ -672,8 +718,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fatto con <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> per i sognatori</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

@@ -127,7 +127,7 @@
                 </p>
 <h3>L'incubazione dei sogni nell'antica Grecia</h3>
 <p>
-                    I Greci ne costruirono oltre 300 <strong>"Asclepieia"</strong> - templi dedicati alla guarigione dei sogni. I pellegrini malati venivano sottoposti a rituali di purificazione, facevano offerte, poi dormivano in camere sacre sperando in visioni curative da Asclepio, il dio della medicina. Sorprendentemente, molti riportarono cure.
+                    I Greci ne costruirono oltre 300 <strong>"Asclepieia"</strong> - templi dedicati alla guarigione dei sogni. I pellegrini malati venivano sottoposti a rituali di purificazione, facevano offerte, poi dormivano in camere sacre sperando in visioni curative da Asclepio, il dio della medicina. Molti pellegrini riportarono guarigioni.
                 </p>
 <h3>L'incubazione dei sogni nell'antico Egitto</h3>
 <p>
@@ -139,7 +139,7 @@
                 </p>
 <h3>L'incubazione dei sogni: risultati della ricerca moderna</h3>
 <p>
-                    Studi contemporanei convalidano ciò che sapevano gli antichi. La dottoressa Deirdre Barrett, ricercatrice di Harvard, ha scoperto che quando i partecipanti si concentravano su problemi specifici prima di dormire, <strong>circa il 50% sognava il problema e il 25% sognava soluzioni</strong>. La mente che sogna è straordinariamente reattiva alle intenzioni.
+                    Studi contemporanei convalidano ciò che sapevano gli antichi. La dottoressa Deirdre Barrett, ricercatrice di Harvard, ha scoperto che quando i partecipanti si concentravano su problemi specifici prima di dormire, <strong>circa il 50% sognava il problema e il 25% sognava soluzioni</strong>. La mente che sogna si rivela altamente reattiva alle intenzioni.
                 </p>
 <h2 id="how-it-works">La scienza dietro le tecniche di incubazione dei sogni</h2>
 <p>
@@ -286,11 +286,11 @@
 </aside>
 <h2 id="uses">Usi potenti per i sogni Incubazione</h2>
 <p>
-                    Cosa puoi ottenere con l'incubazione dei sogni? Le applicazioni sono notevolmente diverse:
+                    Cosa puoi ottenere con l'incubazione dei sogni? Le applicazioni spaziano in campi sorprendenti:
                 </p>
 <h3>Risoluzione dei problemi</h3>
 <p>
-                    L'applicazione più studiata. Scienziati, inventori e artisti hanno utilizzato i sogni incubati per risolvere problemi complessi. <strong>Elias Howe</strong> sognava la soluzione all'ago della macchina da cucire; <strong>Dmitri Mendeleev</strong> vide la tavola periodica in sogno. Il tuo cervello elabora i problemi in modo diverso mentre sogni, spesso trovando soluzioni che la tua mente sveglia non vedeva.
+                    Risolvere problemi è l'applicazione più studiata. Scienziati, inventori e artisti hanno utilizzato i sogni incubati per affrontare sfide complesse. <strong>Elias Howe</strong> sognava la soluzione all'ago della macchina da cucire; <strong>Dmitri Mendeleev</strong> vide la tavola periodica in sogno. Il tuo cervello elabora i problemi in modo diverso mentre sogni, spesso trovando soluzioni che la tua mente sveglia non vedeva.
                 </p>
 <h3>Ispirazione creativa</h3>
 <p>
@@ -318,7 +318,7 @@
                 </p>
 <h3>Mantieni un programma di sonno coerente</h3>
 <p>
-<strong>I modelli di sonno regolari migliorano notevolmente il ricordo dei sogni</strong> . Vai a letto e svegliati a orari costanti. I tuoi cicli REM, quando si verificano i sogni più vividi, diventano più prevedibili e accessibili.
+<strong>Orari di sonno regolari rafforzano il ricordo dei sogni</strong>. Vai a letto e svegliati a orari costanti. I tuoi cicli REM, quando si verificano i sogni più vividi, diventano più prevedibili e accessibili.
                 </p>
 <h3>Evita alcol e cannabis</h3>
 <p>

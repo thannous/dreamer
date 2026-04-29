@@ -65,10 +65,10 @@
                     Significado de sueños: interpretación y símbolos
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    El significado no es único: los símbolos cambian según tu contexto, emociones y biografía. Este hub te ayuda a explorar patrones recurrentes y símbolos frecuentes con guías claras.
+                    Ningún símbolo tiene un significado fijo: todo cambia según tu contexto, emociones y biografía. Explora aquí patrones recurrentes y símbolos frecuentes con guías claras.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
-                    No sabes por donde empezar? Explora el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de simbolos de suenos</a>, o revisa simbolos comunes como <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/dientes">dientes</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpientes</a>.
+                    No sabes por donde empezar? Explora el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de símbolos de sueños</a>, o revisa símbolos comunes como <a class="text-dream-salmon hover:underline" href="../simbolos/agua">agua</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/dientes">dientes</a> y <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpientes</a>.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">
@@ -177,7 +177,7 @@
                     Símbolos relacionados
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">
-                    Explora los símbolos mencionados en este hub - o revisa el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de simbolos de suenos</a>.
+                    Explora los símbolos mencionados en este hub - o revisa el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">diccionario de símbolos de sueños</a>.
                 </p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/agua">

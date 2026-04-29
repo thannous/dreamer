@@ -116,7 +116,7 @@
                     Le prime testimonianze scritte dell'interpretazione dei sogni provengono dall'antica <strong>Mesopotamia intorno al 3100 a.C.</strong>. I Sumeri, gli Assiri e i Babilonesi conservavano meticolosi registri dei sogni su tavolette di argilla, considerando i sogni messaggi del regno divino.
                 </p>
 <p>
-                    Il manufatto più famoso è il <strong>Libro dei sogni assiri</strong>, una raccolta di presagi onirici risalenti al VII secolo a.C. Questo testo classifica i sogni e i loro significati con notevole specificità:
+                    Tra questi documenti spicca il <strong>Libro dei sogni assiri</strong>, una raccolta di presagi onirici risalenti al VII secolo a.C. Questo testo classifica i sogni e i loro significati con notevole specificità:
                 </p>
 <ul>
 <li><strong>Sogni volanti:</strong> Indica la libertà da pesi o elevazione di status</li>
@@ -154,7 +154,7 @@
                 </p>
 <h2 id="ancient-greece">Interpretazione dei sogni nell'antica Grecia e a Roma: sogni medici e profetici</h2>
 <p>
-                    Gli antichi greci si avvicinavano ai sogni da entrambi <strong>prospettive mediche e mistiche</strong>. Nel V secolo a.C., i medici greci iniziarono a considerare i sogni come strumenti diagnostici per le malattie fisiche.
+                    Nell'antica Grecia, i sogni venivano affrontati da <strong>prospettive sia mediche che mistiche</strong>. Nel V secolo a.C., i medici greci iniziarono a usare i sogni come strumenti diagnostici per le malattie fisiche.
                 </p>
 <p>
 <strong>Ippocrate</strong> (460-370 a.C.), il padre della medicina, scrisse che i sogni potevano rivelare squilibri negli umori del corpo. Credeva che alcune immagini oniriche indicassero condizioni di salute specifiche - ad esempio, sogni di inondazioni potrebbero suggerire un eccesso di catarro.
@@ -163,7 +163,7 @@
                     Il filosofo <strong>Aristotele</strong> (384-322 a.C.) adottò una visione più razionalista, sostenendo nella sua opera "Sui sogni" che i sogni non erano messaggi divini ma piuttosto residui mentali di esperienze quotidiane e impressioni sensoriali elaborate durante il sonno.
                 </p>
 <p>
-                    Tuttavia, il testo greco più influente fu <strong>"Oneirocritica" di Artemidoro</strong> (L'interpretazione dei sogni), scritto intorno al 200 d.C. Quest'opera in cinque volumi divenne il manuale standard di interpretazione dei sogni per oltre 1.500 anni. Artemidoro classificò i sogni in due categorie:
+                    Eppure il testo greco più influente fu <strong>"Oneirocritica" di Artemidoro</strong> (L'interpretazione dei sogni), scritto intorno al 200 d.C. Quest'opera in cinque volumi divenne il manuale di riferimento per oltre 1.500 anni. Artemidoro classificò i sogni in due categorie:
                 </p>
 <ul>
 <li><strong>Sogni teorici:</strong> profezie dirette che si sarebbero avverate letteralmente</li>
@@ -174,7 +174,7 @@
                 </p>
 <h2 id="religious-traditions">Interpretazione religiosa dei sogni attraverso le culture</h2>
 <p>
-                    I sogni hanno un significato profondo praticamente in tutte le principali tradizioni religiose, spesso visti come un canale per la rivelazione divina.
+                    Praticamente tutte le principali tradizioni religiose attribuiscono ai sogni un significato profondo, considerandoli un canale per la rivelazione divina.
                 </p>
 <h3>Interpretazione dei sogni nel giudaismo e nel cristianesimo</h3>
 <p>
@@ -188,7 +188,7 @@
                     La tradizione islamica riconosce <strong>tre tipi di sogni</strong>: i veri sogni di Allah (ru'ya), i sogni dei propri pensieri (hulm) e i sogni di Satana. Si dice che il profeta Maometto abbia affermato che i veri sogni sono "una delle quarantasei parti della profezia".
                 </p>
 <p>
-                    Lo studioso <strong>Ibn Sirin</strong> (653-728 d.C.) compilò uno dei più importanti manuali di interpretazione dei sogni dell'Islam, che rimane influente anche oggi. Le sue interpretazioni enfatizzavano il contesto personale e lo stato spirituale del sognatore.
+                    <strong>Ibn Sirin</strong> (653-728 d.C.) compilò uno dei più importanti manuali di interpretazione dei sogni dell'Islam, ancora influente oggi. Le sue interpretazioni enfatizzavano il contesto personale e lo stato spirituale del sognatore.
                 </p>
 <h3>Interpretazione del sogno nell'induismo e nel buddismo</h3>
 <p>
@@ -213,7 +213,7 @@
 <li>Almanacchi popolari includevano dizionari dei sogni per la gente comune</li>
 </ul>
 <p>
-                    Tuttavia, il <strong>Secolo dell'Illuminismo</strong> (1685-1815) suscitò scetticismo. I filosofi razionalisti liquidavano l'interpretazione dei sogni come una superstizione, considerandoli un rumore mentale privo di significato.
+                    Poi il <strong>Secolo dell'Illuminismo</strong> (1685-1815) portò scetticismo. I filosofi razionalisti liquidavano l'interpretazione dei sogni come superstizione, considerandoli rumore mentale privo di significato.
                 </p>
 </div>
 <!-- Era Cards -->
@@ -382,17 +382,17 @@
                     I dreamworker contemporanei riconoscono sempre più che <strong>i metodi di interpretazione dovrebbero onorare la cultura contesto</strong>. Un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a> in un sogno potrebbe rappresentare la saggezza nella tradizione indù, il pericolo nei contesti occidentali o la guarigione nella prospettiva dei nativi americani.
                 </p>
 <p>
-                    Questa consapevolezza culturale ha arricchito la psicologia occidentale, portando ad approcci all'interpretazione dei sogni più sfumati e sensibili al contesto che riconoscono sia modelli universali che specificità culturale.
+                    Questa consapevolezza ha arricchito la psicologia occidentale, producendo approcci più sfumati e sensibili al contesto che riconoscono sia modelli universali che specificità culturale.
                 </p>
 <h3>Il futuro dell'interpretazione dei sogni e Scienza</h3>
 <p>
                     Con l'avanzare delle neuroscienze, stiamo sviluppando strumenti che sembravano fantascienza: <strong>decodificare il contenuto dei sogni dalle scansioni cerebrali, inducendo specifici temi dei sogni e persino comunicando con i sognatori lucidi durante il sonno</strong>.
                 </p>
 <p>
-                    Tuttavia l'impulso umano fondamentale a trovare un significato nei sogni persiste. Forse l'intuizione più profonda di questa storia di 5.000 anni è che i sogni svolgono molteplici funzioni: elaborano emozioni, consolidano ricordi, simulano minacce, esprimono desideri e riflettono le nostre preoccupazioni più profonde, il tutto contemporaneamente.
+                    Eppure l'impulso umano di trovare un significato nei sogni persiste. Forse la lezione più profonda di questa storia di 5.000 anni: i sogni svolgono molteplici funzioni contemporaneamente. Elaborano emozioni, consolidano ricordi, simulano minacce, esprimono desideri e riflettono le nostre preoccupazioni più profonde.
                 </p>
 <p>
-                    La storia dell'interpretazione dei sogni rivela una conversazione in evoluzione tra gli esseri umani e i loro mondi interiori, ogni epoca apporta intuizioni uniche mentre si basa sull'antica saggezza.
+                    Ciò che emerge da questa storia è un dialogo in evoluzione tra gli esseri umani e i loro mondi interiori, ogni epoca con intuizioni uniche che si basano sull'antica saggezza.
                 </p>
 </div>
 <!-- Related Symbols Start -->

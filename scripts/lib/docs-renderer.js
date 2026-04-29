@@ -1,44 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const {
-  DOCS_DIR,
   DOCS_SRC_DIR,
-  getAndroidStoreUrl,
-  loadLocales,
   readAssetVersion,
   siteConfig,
 } = require('./docs-site-config');
-const { escapeHtml, readJson, readSourceDocument } = require('./docs-source-utils');
-const { buildEntryIndex } = require('./site-manifest');
+const { escapeHtml } = require('./docs-source-utils');
 const { renderViewTransitionHeadStyles } = require('./docs-view-transitions');
+const { createRenderContext } = require('./docs-components/context');
+const { renderFooter: renderSharedFooter } = require('./docs-components/footer');
+const { renderPageHero } = require('./docs-components/hero');
+const { renderNavigation } = require('./docs-components/navigation');
+const { renderSharedComponentStyles } = require('./docs-components/styles');
 
-const locales = loadLocales();
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
-const dreamSymbolsData = readJson(path.join(DOCS_DIR, 'data', 'dream-symbols.json'));
-const curationPagesData = readJson(path.join(DOCS_DIR, 'data', 'curation-pages.json'));
 const AHREFS_ANALYTICS_KEY = 'qDwc7i0RM0aLBY/cZLkOxA';
-
-function stripSiteSuffix(title) {
-  return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
-}
-
-function loadFeaturedBlogTitles() {
-  const titles = new Map();
-  const featuredEntries = siteConfig.seoLinking?.featuredBlogEntries || [];
-
-  for (const entryId of featuredEntries) {
-    for (const lang of siteConfig.languages) {
-      const sourcePath = path.join(DOCS_SRC_DIR, 'content', 'blog', entryId, `${lang}.md`);
-      if (!fs.existsSync(sourcePath)) continue;
-      const { meta } = readSourceDocument(sourcePath);
-      titles.set(`${entryId}:${lang}`, stripSiteSuffix(meta.title));
-    }
-  }
-
-  return titles;
-}
-
-const featuredBlogTitles = loadFeaturedBlogTitles();
 
 function renderTemplate(tokens) {
   return Object.entries(tokens).reduce(
@@ -128,6 +104,16 @@ function renderStyles(meta, assetVersion) {
     lines.push(`    <link rel="stylesheet" href="${assets.blogCss}?v=${assetVersion}">`);
   }
 
+  if (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium')) {
+    lines.push(`    <link rel="stylesheet" href="/css/blog-premium.css?v=${assetVersion}">`);
+  }
+
+  if (meta.layout === 'landing') {
+    lines.push(`    <link rel="stylesheet" href="/css/observatory.css?v=${assetVersion}">`);
+  }
+
+  lines.push(renderSharedComponentStyles());
+
   return lines.join('\n');
 }
 
@@ -135,7 +121,7 @@ function renderHeadScripts(meta, assetVersion) {
   const assets = siteConfig.assetPaths;
   const lines = [`    <script src="${assets.lucideJs}?v=${assetVersion}" defer></script>`];
 
-  if (meta.layout === 'landing') {
+  if (meta.layout === 'landing' || (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium'))) {
     lines.push(`    <script src="${assets.gsapJs}?v=${assetVersion}" defer></script>`);
     lines.push(
       `    <script src="${assets.scrollTriggerJs}?v=${assetVersion}" defer></script>`
@@ -253,235 +239,6 @@ function renderCommonHead(meta, entry, assetVersion) {
     .join('\n');
 }
 
-function renderLanguageDropdown(entry, lang) {
-  return siteConfig.languages
-    .map((candidate) => {
-      const locale = locales[candidate];
-      const pagePath = entry?.locales?.[candidate]?.path || `/${candidate}/`;
-      const currentClass = candidate === lang ? '' : ' hidden';
-      return [
-        `                    <a href="${pagePath}" hreflang="${candidate}" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">`,
-        `                        <span>${escapeHtml(locale.language)}</span>`,
-        `                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon${currentClass}"></i>`,
-        '                    </a>',
-      ].join('\n');
-    })
-    .join('\n');
-}
-
-function navLinkClass(isActive, alwaysVisible = false) {
-  const visibility = alwaysVisible ? '' : 'hidden sm:inline-flex ';
-  return `${visibility}${isActive ? 'text-dream-salmon' : 'hover:text-white'} transition-colors`;
-}
-
-function buildSeoFooterLinks(entryIndex, lang) {
-  const locale = locales[lang];
-
-  const featuredResources = [
-    {
-      href: routePath(entryIndex, 'blog.index', lang),
-      label: locale.resources,
-    },
-    ...(siteConfig.seoLinking?.featuredBlogEntries || [])
-      .map((entryId) => {
-        const href = routePath(entryIndex, entryId, lang);
-        const label = featuredBlogTitles.get(`${entryId}:${lang}`);
-        if (!href || !label) return null;
-        return { href, label };
-      })
-      .filter(Boolean),
-  ];
-
-  const featuredGuides = [
-    {
-      href: routePath(entryIndex, 'guide.dictionary', lang),
-      label: locale.dreamDictionary,
-    },
-    {
-      href: routePath(entryIndex, 'guide.index', lang),
-      label: locale.dreamGuides,
-    },
-    ...(siteConfig.seoLinking?.featuredGuideEntries || [])
-      .map((entryId) => {
-        const pageId = entryId.replace(/^guide\./, '');
-        const page = (curationPagesData.pages || []).find((item) => item.id === pageId);
-        if (!page || !page[lang]?.title) return null;
-        return {
-          href: routePath(entryIndex, entryId, lang),
-          label: page[lang].title,
-        };
-      })
-      .filter(Boolean),
-  ];
-
-  const popularSymbols = (siteConfig.seoLinking?.featuredSymbols || [])
-    .map((symbolId) => {
-      const symbol = (dreamSymbolsData.symbols || []).find((item) => item.id === symbolId);
-      if (!symbol || !symbol[lang]?.name) return null;
-      return {
-        href: routePath(entryIndex, `symbol.${symbolId}`, lang),
-        label: symbol[lang].name,
-      };
-    })
-    .filter(Boolean);
-
-  return { featuredResources, featuredGuides, popularSymbols };
-}
-
-function renderFooterLinks(links, { highlightFirst = false } = {}) {
-  return links
-    .map(
-      (link, index) =>
-        `                    <li><a href="${link.href}" class="${highlightFirst && index === 0 ? 'text-dream-salmon' : 'hover:text-dream-salmon'} transition-colors">${escapeHtml(link.label)}</a></li>`
-    )
-    .join('\n');
-}
-
-function renderGlassNav(entryIndex, entry, lang, activeNav) {
-  const locale = locales[lang];
-  const dropdown = renderLanguageDropdown(entry, lang);
-  const resourcesHref = routePath(entryIndex, 'blog.index', lang);
-
-  return [
-    '    <nav class="fixed w-full z-50 top-0 left-0 px-4 md:px-6 py-4 md:py-6 transition-all duration-300" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-6" data-compact-class="py-2">',
-    '        <div class="max-w-7xl mx-auto glass-panel rounded-full px-4 py-2 flex items-center justify-between gap-2 sm:px-6 sm:py-3 sm:gap-4">',
-    `            <a href="/${lang}/" class="flex items-center gap-2">`,
-    '                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>',
-    '                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>',
-    '            </a>',
-    '            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">',
-    `                <a href="/${lang}/#${locale.navHowItWorksAnchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${escapeHtml(locale.navHowItWorks)}</a>`,
-    `                <a href="/${lang}/#${locale.navFeaturesAnchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${escapeHtml(locale.navFeatures)}</a>`,
-    `                <a href="${resourcesHref}" class="${navLinkClass(activeNav === 'resources', true)}">${escapeHtml(locale.resources)}</a>`,
-    '            </div>',
-    '            <div class="flex items-center gap-3">',
-    '                <div class="language-dropdown-wrapper relative" id="languageDropdown">',
-    '                    <button type="button" class="glass-button px-3 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">',
-    '                        <i data-lucide="languages" class="w-4 h-4"></i>',
-    `                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>`,
-    '                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>',
-    '                    </button>',
-    '                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">',
-    dropdown,
-    '                    </div>',
-    '                </div>',
-    '            </div>',
-    '        </div>',
-    '    </nav>',
-  ].join('\n');
-}
-
-function renderCompactNav(entryIndex, entry, lang) {
-  const locale = locales[lang];
-  const dropdown = renderLanguageDropdown(entry, lang);
-  const resourcesHref = routePath(entryIndex, 'blog.index', lang);
-
-  return [
-    '    <nav class="fixed w-full z-50 top-0 left-0 px-6 py-4 bg-dream-dark/80 backdrop-blur-md border-b border-white/5">',
-    '        <div class="max-w-4xl mx-auto flex justify-between items-center">',
-    `            <a href="/${lang}/" class="flex items-center gap-2">`,
-    '                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>',
-    '                <span class="font-serif text-xl font-semibold text-dream-cream">Noctalia</span>',
-    '            </a>',
-    '            <div class="flex items-center gap-3">',
-    '                <div class="language-dropdown-wrapper relative" id="languageDropdown">',
-    '                    <button type="button" class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">',
-    '                        <i data-lucide="languages" class="w-4 h-4"></i>',
-    `                        <span class="hidden sm:inline">${lang.toUpperCase()}</span>`,
-    '                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>',
-    '                    </button>',
-    '                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">',
-    dropdown,
-    '                    </div>',
-    '                </div>',
-    `                <a href="${resourcesHref}" class="hidden md:inline-flex text-sm text-gray-400 hover:text-white transition-colors">${escapeHtml(locale.resources)}</a>`,
-    `                <a href="/${lang}/" class="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2">`,
-    '                    <i data-lucide="arrow-left" class="w-4 h-4"></i>',
-    `                    ${escapeHtml(locale.back)}`,
-    '                </a>',
-    '            </div>',
-    '        </div>',
-    '    </nav>',
-  ].join('\n');
-}
-
-function routePath(entryIndex, pageId, lang) {
-  return entryIndex.get(pageId)?.locales?.[lang]?.path || `/${lang}/`;
-}
-
-function renderFooter(entryIndex, lang) {
-  const locale = locales[lang];
-  const { featuredResources, featuredGuides, popularSymbols } = buildSeoFooterLinks(entryIndex, lang);
-  const socialLinks = siteConfig.socialLinks
-    .map(
-      (item) => [
-        `                    <a href="${item.url}" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="${escapeHtml(item.label)}">`,
-        `                        <i data-lucide="${item.icon}" class="w-5 h-5"></i>`,
-        '                    </a>',
-      ].join('\n')
-    )
-    .join('\n');
-
-  return [
-    '    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">',
-    '        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">',
-    '            <div class="xl:col-span-2">',
-    `                <a href="/${lang}/" class="flex items-center gap-2 mb-4">`,
-    '                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>',
-    '                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>',
-    '                </a>',
-    `                <p class="text-sm text-gray-500 max-w-xs mb-6">${escapeHtml(locale.footerTagline)}</p>`,
-    '                <div class="flex gap-4">',
-    socialLinks,
-    '                </div>',
-    '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerResources)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(featuredResources, { highlightFirst: true }),
-    '                </ul>',
-    '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.dreamDictionary)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(featuredGuides, { highlightFirst: true }),
-    '                </ul>',
-    '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.popularSymbols)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500">',
-    renderFooterLinks(popularSymbols),
-    '                </ul>',
-    '            </div>',
-    '            <div>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerLegal)}</h5>`,
-    '                <ul class="space-y-2 text-sm text-gray-500 mb-4">',
-    `                    <li><a href="${routePath(entryIndex, 'page.about', lang)}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.about)}</a></li>`,
-    `                    <li><a href="${routePath(entryIndex, 'legal.notice', lang)}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.legalNotice)}</a></li>`,
-    `                    <li><a href="${routePath(entryIndex, 'legal.privacy', lang)}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.privacy)}</a></li>`,
-    `                    <li><a href="${routePath(entryIndex, 'legal.terms', lang)}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.terms)}</a></li>`,
-    `                    <li><a href="${routePath(entryIndex, 'legal.account-deletion', lang)}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.accountDeletion)}</a></li>`,
-    '                </ul>',
-    `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerDownload)}</h5>`,
-    '                <div class="flex flex-col gap-3">',
-    `                    <a href="${getAndroidStoreUrl(lang)}" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">`,
-    '                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>',
-    '                        <div class="leading-none">',
-    `                            <div class="text-[9px] uppercase">${escapeHtml(locale.availableOn)}</div>`,
-    `                            <div class="text-sm font-bold">${escapeHtml(locale.googlePlay)}</div>`,
-    '                        </div>',
-    '                    </a>',
-    '                </div>',
-    '            </div>',
-    '        </div>',
-    '        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">',
-    `            <span>${escapeHtml(locale.copyright)}</span>`,
-    `            <span class="mt-2 md:mt-0 flex gap-2 items-center">${escapeHtml(locale.footerMadeWith)} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${escapeHtml(locale.footerForDreamers)}</span>`,
-    '        </div>',
-    '    </footer>',
-  ].join('\n');
-}
-
 function renderBeforeBody(meta) {
   if (meta.layout === 'landing') {
     return [
@@ -503,13 +260,14 @@ function renderBeforeBody(meta) {
   return '';
 }
 
-function renderContent(meta, bodyHtml) {
+function renderContent(meta, bodyHtml, heroHtml = '') {
   if (meta.layout === 'landing') {
     return bodyHtml;
   }
 
   const classAttr = meta.mainClass ? ` class="${escapeHtml(meta.mainClass)}"` : '';
-  return `    <main${classAttr}>\n${bodyHtml}\n    </main>`;
+  const sections = [heroHtml, bodyHtml].filter(Boolean).join('\n');
+  return `    <main${classAttr}>\n${sections}\n    </main>`;
 }
 
 function renderScripts(meta, assetVersion) {
@@ -517,11 +275,16 @@ function renderScripts(meta, assetVersion) {
   const lines = [
     `    <script src="${assets.siteShellJs}?v=${assetVersion}" defer></script>`,
     `    <script src="${assets.languageDropdownJs}?v=${assetVersion}" defer></script>`,
+    `    <script src="${assets.mobileMenuJs}?v=${assetVersion}" defer></script>`,
   ];
 
   if (meta.layout === 'landing') {
     lines.push(`    <script src="${assets.landingPageJs}?v=${assetVersion}" defer></script>`);
     lines.push('    <script type="module" src="/js/landing-animations.js"></script>');
+  }
+
+  if (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium')) {
+    lines.push(`    <script type="module" src="/js/blog-premium.js?v=${assetVersion}"></script>`);
   }
 
   if (meta.layout === 'blogArticle') {
@@ -533,12 +296,9 @@ function renderScripts(meta, assetVersion) {
 
 function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = null }) {
   const assetVersion = readAssetVersion();
-  const entryIndex = buildEntryIndex(manifest);
-  const entry = entryOverride || entryIndex.get(entryId);
-  const navHtml =
-    meta.layout === 'content'
-      ? renderCompactNav(entryIndex, entry, meta.lang)
-      : renderGlassNav(entryIndex, entry, meta.lang, meta.activeNav || null);
+  const context = createRenderContext({ manifest, entryId, meta, entryOverride });
+  const entry = context.entry;
+  const navHtml = renderNavigation(context);
 
   return renderTemplate({
     HTML_ATTRS: htmlAttributes(meta),
@@ -546,8 +306,8 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
     HEAD_HTML: renderCommonHead(meta, entry, assetVersion),
     BEFORE_BODY_HTML: renderBeforeBody(meta),
     NAV_HTML: navHtml,
-    CONTENT_HTML: renderContent(meta, bodyHtml),
-    FOOTER_HTML: renderFooter(entryIndex, meta.lang),
+    CONTENT_HTML: renderContent(meta, bodyHtml, renderPageHero(context)),
+    FOOTER_HTML: renderSharedFooter(context),
     SCRIPTS_HTML: renderScripts(meta, assetVersion),
   });
 }
