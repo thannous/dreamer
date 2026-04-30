@@ -47,8 +47,8 @@
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/styles.min.css?v=c501f00332f6">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=c501f00332f6">
     <style>
       /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
@@ -61,7 +61,7 @@
       }
     </style>
 <!-- Lucide Icons (deferred) -->
-    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
+    <script src="/js/lucide.min.js?v=c501f00332f6" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -327,137 +327,6 @@
           flex: 0 0 4rem;
           border: 1px solid rgba(255,255,255,0.12);
           background: rgba(12,7,25,0.74);
-        }
-        .dictionary-hero-panel {
-          position: relative;
-          overflow: hidden;
-          border-radius: 1.4rem;
-          border: 1px solid rgba(255,255,255,0.12);
-          background:
-            linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.035)),
-            rgba(14, 7, 28, 0.68);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.34);
-          padding: clamp(1rem, 2vw, 1.35rem);
-        }
-        .dictionary-hero-panel::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background:
-            linear-gradient(135deg, rgba(253,164,129,0.18), transparent 38%),
-            linear-gradient(315deg, rgba(129,140,248,0.13), transparent 34%);
-          opacity: 0.86;
-        }
-        .dictionary-hero-panel > * {
-          position: relative;
-          z-index: 1;
-        }
-        .dictionary-hero-panel-main {
-          min-height: 9rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          padding: 1rem;
-          border-radius: 1rem;
-          background:
-            linear-gradient(180deg, rgba(5,2,12,0.18), rgba(5,2,12,0.72)),
-            url('/img/blog/dream-symbols-dictionary-800w.webp') center / cover no-repeat;
-          border: 1px solid rgba(255,255,255,0.08);
-        }
-        .dictionary-hero-panel-label {
-          color: rgba(253,164,129,0.94);
-          font-size: 0.72rem;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          font-weight: 700;
-          margin-bottom: 0.55rem;
-        }
-        .dictionary-hero-panel-main p {
-          max-width: 22rem;
-          color: rgba(248,245,255,0.9);
-          font-size: 1rem;
-          line-height: 1.45;
-        }
-        .dictionary-hero-stats {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 0.65rem;
-          margin-top: 0.75rem;
-        }
-        .dictionary-hero-stats div {
-          min-width: 0;
-          padding: 0.85rem;
-          border-radius: 0.85rem;
-          border: 1px solid rgba(255,255,255,0.08);
-          background: rgba(255,255,255,0.045);
-        }
-        .dictionary-hero-stats strong {
-          display: block;
-          color: #fff;
-          font-family: Georgia, serif;
-          font-size: clamp(1.4rem, 2vw, 1.9rem);
-          line-height: 1;
-        }
-        .dictionary-hero-stats span {
-          display: block;
-          margin-top: 0.32rem;
-          color: rgba(226,218,255,0.72);
-          font-size: 0.74rem;
-          line-height: 1.2;
-        }
-        .dictionary-hero-letters {
-          display: grid;
-          grid-template-columns: repeat(8, minmax(0, 1fr));
-          gap: 0.35rem;
-          margin-top: 0.75rem;
-        }
-        .dictionary-hero-letter {
-          min-height: 2.25rem;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 0.65rem;
-          background: rgba(255,255,255,0.055);
-          color: rgba(248,245,255,0.78);
-          font-weight: 700;
-          text-decoration: none;
-          transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
-        }
-        .dictionary-hero-letter:hover {
-          background: rgba(253,164,129,0.16);
-          color: #fff;
-          transform: translateY(-1px);
-        }
-        .dictionary-hero-letter.alpha-active {
-          background: rgba(255,255,255,0.92);
-          color: #0a0514;
-        }
-        .dictionary-hero-chips {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 0.5rem;
-          margin-top: 0.75rem;
-        }
-        .dictionary-hero-chip {
-          overflow: hidden;
-          min-height: 2.6rem;
-          display: flex;
-          align-items: center;
-          padding: 0.75rem 0.85rem;
-          border-radius: 0.8rem;
-          border: 1px solid color-mix(in srgb, var(--cat-color) 36%, transparent);
-          background: linear-gradient(135deg, color-mix(in srgb, var(--cat-color) 16%, transparent), rgba(255,255,255,0.035));
-          color: rgba(248,245,255,0.9);
-          font-size: 0.84rem;
-          text-decoration: none;
-          transition: transform 0.18s ease, border-color 0.18s ease;
-        }
-        .dictionary-hero-chip:hover {
-          transform: translateY(-1px);
-          border-color: color-mix(in srgb, var(--cat-color) 58%, transparent);
         }
         .quick-browse-panel {
           width: calc(100% - (var(--dictionary-edge) * 2));
@@ -2878,7 +2747,7 @@
             setSearchValue(heroSearch.value || '');
 
             // ── Smooth scroll for letter navigation ───────────────────────
-            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link, .dictionary-hero-letter').forEach(link => {
+            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
@@ -2892,7 +2761,7 @@
 
             // ── Active letter tracking (IntersectionObserver) ─────────────
             function setActiveAlpha(letter) {
-                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link, .dictionary-hero-letter').forEach(l => {
+                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
                     l.classList.toggle('alpha-active', l.dataset.letter === letter);
                 });
             }
@@ -2922,7 +2791,7 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
-    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=c501f00332f6" defer></script>
+    <script src="/js/mobile-menu.js?v=c501f00332f6" defer></script>
 </body>
 </html>
