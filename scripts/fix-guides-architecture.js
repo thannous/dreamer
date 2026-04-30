@@ -1097,9 +1097,9 @@ function renderLayoutCss() {
           z-index: 0;
           pointer-events: none;
           background:
-            linear-gradient(180deg, rgba(5, 2, 12, 0.58) 0%, rgba(8, 3, 17, 0.36) 42%, #090413 94%),
-            linear-gradient(90deg, rgba(5, 2, 12, 0.58) 0%, rgba(5, 2, 12, 0.12) 48%, rgba(5, 2, 12, 0.38) 100%),
-            radial-gradient(circle at 24% 18%, rgba(253, 164, 129, 0.12), transparent 18rem),
+            linear-gradient(180deg, rgba(5, 2, 12, 0.62) 0%, rgba(8, 3, 17, 0.42) 38%, #090413 94%),
+            linear-gradient(90deg, rgba(5, 2, 12, 0.72) 0%, rgba(5, 2, 12, 0.22) 48%, rgba(5, 2, 12, 0.58) 100%),
+            radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
             url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
             linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
         }
@@ -1123,35 +1123,255 @@ function renderLayoutCss() {
           display: none;
         }
         .dictionary-header {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 1.35rem;
-          min-height: 27rem;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          align-items: end;
+          gap: clamp(1.5rem, 4vw, 5rem);
+          min-height: 35rem;
           margin-bottom: 0;
-          padding: 6.65rem clamp(1rem, 4vw, 4.75rem) 2rem;
+          padding: 8.1rem clamp(1rem, 4vw, 4.75rem) 3.2rem;
           text-align: left;
           background: transparent;
         }
+        .dictionary-hero-copy {
+          display: flex;
+          flex-direction: column;
+          gap: 1.1rem;
+          min-width: 0;
+        }
+        .dictionary-hero-kicker {
+          width: fit-content;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.45rem 0.72rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(253,164,129,0.22);
+          background: rgba(253,164,129,0.09);
+          color: rgba(253,164,129,0.96);
+          font-size: 0.74rem;
+          line-height: 1;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-weight: 700;
+        }
         .dictionary-header h1 {
-          width: min(100%, 11ch);
+          width: min(100%, 16ch);
           max-width: none;
           margin: 0;
-          font-size: clamp(4rem, 5.55vw, 6.7rem);
-          line-height: 0.94;
+          font-size: clamp(4rem, 6.1vw, 7.4rem);
+          line-height: 0.91;
           letter-spacing: 0;
         }
-        #heroSearchShell { max-width: 45rem; }
+        .dictionary-hero-intro {
+          max-width: 44rem;
+          color: rgba(237,225,255,0.78);
+          font-size: clamp(1rem, 1.6vw, 1.2rem);
+          line-height: 1.55;
+        }
+        #heroSearchShell {
+          max-width: 49rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          filter: drop-shadow(0 1.25rem 2.5rem rgba(0,0,0,0.26));
+        }
+        .dictionary-hero-search-input {
+          position: relative;
+          flex: 1;
+          min-width: 0;
+        }
+        #heroSearchShell .hero-search {
+          min-height: 4rem;
+          border-color: rgba(255,255,255,0.2) !important;
+          background: rgba(12,7,25,0.74) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(253,164,129,0.08);
+        }
+        #heroSearchShell .search-clear {
+          position: static;
+          transform: none;
+          width: 4rem;
+          height: 4rem;
+          flex: 0 0 4rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(12,7,25,0.74);
+        }
+        .dictionary-hero-panel {
+          position: relative;
+          overflow: hidden;
+          border-radius: 1.4rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          background:
+            linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.035)),
+            rgba(14, 7, 28, 0.68);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.34);
+          padding: clamp(1rem, 2vw, 1.35rem);
+        }
+        .dictionary-hero-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(135deg, rgba(253,164,129,0.18), transparent 38%),
+            linear-gradient(315deg, rgba(129,140,248,0.13), transparent 34%);
+          opacity: 0.86;
+        }
+        .dictionary-hero-panel > * {
+          position: relative;
+          z-index: 1;
+        }
+        .dictionary-hero-panel-main {
+          min-height: 9rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 1rem;
+          border-radius: 1rem;
+          background:
+            linear-gradient(180deg, rgba(5,2,12,0.18), rgba(5,2,12,0.72)),
+            url('/img/blog/dream-symbols-dictionary-800w.webp') center / cover no-repeat;
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+        .dictionary-hero-panel-label {
+          color: rgba(253,164,129,0.94);
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-weight: 700;
+          margin-bottom: 0.55rem;
+        }
+        .dictionary-hero-panel-main p {
+          max-width: 22rem;
+          color: rgba(248,245,255,0.9);
+          font-size: 1rem;
+          line-height: 1.45;
+        }
+        .dictionary-hero-stats {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.65rem;
+          margin-top: 0.75rem;
+        }
+        .dictionary-hero-stats div {
+          min-width: 0;
+          padding: 0.85rem;
+          border-radius: 0.85rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.045);
+        }
+        .dictionary-hero-stats strong {
+          display: block;
+          color: #fff;
+          font-family: Georgia, serif;
+          font-size: clamp(1.4rem, 2vw, 1.9rem);
+          line-height: 1;
+        }
+        .dictionary-hero-stats span {
+          display: block;
+          margin-top: 0.32rem;
+          color: rgba(226,218,255,0.72);
+          font-size: 0.74rem;
+          line-height: 1.2;
+        }
+        .dictionary-hero-letters {
+          display: grid;
+          grid-template-columns: repeat(8, minmax(0, 1fr));
+          gap: 0.35rem;
+          margin-top: 0.75rem;
+        }
+        .dictionary-hero-letter {
+          min-height: 2.25rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.65rem;
+          background: rgba(255,255,255,0.055);
+          color: rgba(248,245,255,0.78);
+          font-weight: 700;
+          text-decoration: none;
+          transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+        .dictionary-hero-letter:hover {
+          background: rgba(253,164,129,0.16);
+          color: #fff;
+          transform: translateY(-1px);
+        }
+        .dictionary-hero-letter.alpha-active {
+          background: rgba(255,255,255,0.92);
+          color: #0a0514;
+        }
+        .dictionary-hero-chips {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+        }
+        .dictionary-hero-chip {
+          overflow: hidden;
+          min-height: 2.6rem;
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 0.85rem;
+          border-radius: 0.8rem;
+          border: 1px solid color-mix(in srgb, var(--cat-color) 36%, transparent);
+          background: linear-gradient(135deg, color-mix(in srgb, var(--cat-color) 16%, transparent), rgba(255,255,255,0.035));
+          color: rgba(248,245,255,0.9);
+          font-size: 0.84rem;
+          text-decoration: none;
+          transition: transform 0.18s ease, border-color 0.18s ease;
+        }
+        .dictionary-hero-chip:hover {
+          transform: translateY(-1px);
+          border-color: color-mix(in srgb, var(--cat-color) 58%, transparent);
+        }
         .quick-browse-panel {
           width: calc(100% - (var(--dictionary-edge) * 2));
           max-width: none;
           margin-left: var(--dictionary-edge);
           margin-right: var(--dictionary-edge);
-          padding: 1.1rem;
-          margin-bottom: 1.5rem;
-          border: 1px solid rgba(253,164,129,0.08);
+          padding: clamp(1rem, 2vw, 1.35rem);
+          margin-bottom: 1.75rem;
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(12, 7, 25, 0.72);
         }
         .quick-browse-panel[hidden] { display: none !important; }
+        .quick-browse-alpha {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.35rem;
+          padding: 0.35rem;
+          margin-bottom: 1rem;
+          border-radius: 1rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.04);
+        }
+        .quick-browse-alpha .letter-link {
+          min-width: 2.25rem;
+          min-height: 2.25rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.7rem;
+          background: rgba(255,255,255,0.045);
+          color: rgba(226,218,255,0.78) !important;
+          font-weight: 700;
+          text-decoration: none;
+          transform: none;
+        }
+        .quick-browse-alpha .letter-link:hover {
+          background: rgba(253,164,129,0.14);
+          color: #fff !important;
+          transform: translateY(-1px);
+        }
+        .quick-browse-alpha .letter-link.alpha-active {
+          background: rgba(255,255,255,0.92);
+          color: #0a0514 !important;
+          transform: none;
+        }
         .quick-browse-copy {
           display: flex;
           flex-wrap: wrap;
@@ -1166,34 +1386,39 @@ function renderLayoutCss() {
         }
         .category-browse-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+          grid-template-columns: repeat(8, minmax(0, 1fr));
           gap: 0.85rem;
+          grid-auto-flow: dense;
         }
         .category-browse-card {
           display: flex;
+          min-width: 0;
           align-items: center;
-          gap: 0.9rem;
-          padding: 1rem;
-          border-radius: 1rem;
-          border: 1px solid rgba(255,255,255,0.06);
-          background: rgba(255,255,255,0.03);
+          gap: 0.75rem;
+          grid-column: span 2;
+          padding: 1rem 0.9rem;
+          border-radius: 0.85rem;
+          border: 1px solid color-mix(in srgb, var(--cat-color) 23%, rgba(255,255,255,0.05));
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 12%, transparent), rgba(255,255,255,0.028));
           text-decoration: none;
           transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         .category-browse-card:hover {
-          transform: translateY(-1px);
-          border-color: rgba(253,164,129,0.2);
-          background: rgba(255,255,255,0.045);
+          transform: translateY(-2px);
+          border-color: color-mix(in srgb, var(--cat-color) 45%, rgba(255,255,255,0.08));
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 18%, transparent), rgba(255,255,255,0.04));
         }
         .category-browse-icon {
-          width: 2.5rem;
-          height: 2.5rem;
-          border-radius: 9999px;
+          width: 2.35rem;
+          height: 2.35rem;
+          border-radius: 0.72rem;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: rgba(253,164,129,0.1);
-          color: #fda481;
+          background: color-mix(in srgb, var(--cat-color) 16%, rgba(255,255,255,0.04));
+          color: color-mix(in srgb, var(--cat-color) 84%, #fff);
           flex-shrink: 0;
         }
         .category-browse-meta {
@@ -1212,13 +1437,38 @@ function renderLayoutCss() {
           font-size: 0.8rem;
         }
         .symbol-card {
-          background: rgba(16, 8, 30, 0.86);
-          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+          position: relative;
+          overflow: hidden;
+          min-height: 14.25rem;
+          display: flex;
+          flex-direction: column;
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 10%, transparent), transparent 45%),
+            rgba(14, 8, 28, 0.88);
+          border-color: rgba(255,255,255,0.075) !important;
+          transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+        }
+        .symbol-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, color-mix(in srgb, var(--cat-color) 54%, transparent), transparent 34%),
+            linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%);
+          opacity: 0.26;
+        }
+        .symbol-card > * {
+          position: relative;
+          z-index: 1;
         }
         .symbol-card:hover {
-          transform: translateY(-2px);
-          border-color: rgba(253,164,129,0.18);
-          background: rgba(20, 10, 36, 0.94);
+          transform: translateY(-3px);
+          border-color: color-mix(in srgb, var(--cat-color) 42%, rgba(255,255,255,0.08)) !important;
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 14%, transparent), transparent 45%),
+            rgba(18, 10, 34, 0.96);
+          box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.24);
         }
         .symbol-card-top {
           display: flex;
@@ -1231,16 +1481,33 @@ function renderLayoutCss() {
           display: inline-flex;
           align-items: center;
           gap: 0.45rem;
-          padding: 0.35rem 0.65rem;
+          padding: 0.36rem 0.62rem;
           border-radius: 9999px;
-          background: rgba(255,255,255,0.05);
+          background: rgba(255,255,255,0.055);
           color: rgba(248,245,255,0.78);
           font-size: 0.72rem;
           letter-spacing: 0.02em;
         }
         .symbol-card-arrow {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.85rem;
+          height: 1.85rem;
+          border-radius: 9999px;
+          background: rgba(255,255,255,0.045);
           color: rgba(196,181,253,0.72);
           font-size: 0.95rem;
+          transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .symbol-card:hover .symbol-card-arrow {
+          background: color-mix(in srgb, var(--cat-color) 20%, rgba(255,255,255,0.04));
+          color: #fff;
+          transform: translate(1px, -1px);
+        }
+        .symbol-card-title-link h3 {
+          font-size: clamp(1.35rem, 1.7vw, 1.75rem);
+          line-height: 1.05;
         }
         .symbol-card-desc {
           color: rgba(226,218,255,0.84);
@@ -1251,8 +1518,8 @@ function renderLayoutCss() {
           min-height: 4.5rem;
         }
         .symbol-card-question {
+          margin-top: auto;
           padding-top: 0.85rem;
-          margin-top: 0.95rem;
           border-top: 1px solid rgba(255,255,255,0.06);
           color: rgba(196,181,253,0.82);
         }
@@ -1278,7 +1545,8 @@ function renderLayoutCss() {
           padding-right: 0;
         }
         #symbolsList > section > .grid {
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+          grid-auto-flow: dense;
         }
         #searchFeedback, #noResults {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
@@ -1331,17 +1599,47 @@ function renderLayoutCss() {
         }
         @media (min-width: 768px) {
           .dictionary-header { margin-bottom: 0; }
+          #symbolsList > section:nth-child(3n + 1) .symbol-card:first-child,
+          #symbolsList > section:nth-child(4n + 2) .symbol-card:nth-child(2) {
+            grid-row: span 2;
+            min-height: 18.5rem;
+          }
+        }
+        @media (max-width: 1180px) {
+          .dictionary-header {
+            grid-template-columns: 1fr;
+            align-items: start;
+            min-height: auto;
+            padding-top: 7rem;
+          }
+          .category-browse-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+          }
+          .category-browse-card {
+            grid-column: span 2;
+          }
         }
         @media (max-width: 767px) {
           :root { --dictionary-edge: 1rem; }
           .dictionary-header {
+            grid-template-columns: 1fr;
             min-height: auto;
-            padding: 5.9rem 1rem 1.35rem;
+            gap: 1rem;
+            padding: 5.9rem 1rem 1.45rem;
           }
           .dictionary-header h1 {
             width: 100%;
-            max-width: 9ch;
-            font-size: clamp(3.35rem, 17vw, 5.2rem);
+            max-width: 10.5ch;
+            font-size: clamp(3.05rem, 15vw, 4.75rem);
+          }
+          .dictionary-hero-intro {
+            font-size: 0.98rem;
+          }
+          .quick-browse-alpha {
+            gap: 0.28rem;
+          }
+          .quick-browse-alpha .letter-link {
+            min-width: 2rem;
           }
           #dictionaryLayout,
           #mobilePills,
@@ -1361,6 +1659,9 @@ function renderLayoutCss() {
           .category-browse-grid,
           #symbolsList > section > .grid {
             grid-template-columns: 1fr;
+          }
+          .category-browse-card {
+            grid-column: span 1;
           }
           #mobileAlpha { display: flex !important; }
           #searchFeedback { display: none !important; }
@@ -1514,7 +1815,8 @@ function generateDictionaryPage(lang, t) {
     const catSlug = (t.category_slugs || {})[cat] || cat;
     const icon = CATEGORY_ICONS[cat] || 'circle';
     const count = counts[cat] || 0;
-    return `                    <a href="/${lang}/${symbolPath}/${catSlug}" class="category-browse-card group">
+    const color = CATEGORY_COLORS[cat] || '#c084fc';
+    return `                    <a href="/${lang}/${symbolPath}/${catSlug}" class="category-browse-card group" style="--cat-color:${color}">
                         <span class="category-browse-icon">
                             <i data-lucide="${icon}" class="w-5 h-5"></i>
                         </span>
@@ -1535,7 +1837,7 @@ function generateDictionaryPage(lang, t) {
       const catName = (t.category_names || {})[sym.category] || sym.category;
       const catColor = CATEGORY_COLORS[sym.category] || '#c084fc';
       return `
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="${dataSymbol}" style="--cat-color:${catColor}">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:${catColor}"></span>
@@ -1543,7 +1845,7 @@ function generateDictionaryPage(lang, t) {
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/${lang}/${symbolPath}/${s.slug}" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">${escapeHtml(s.name)}</h3></a>
+                            <a href="/${lang}/${symbolPath}/${s.slug}" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">${escapeHtml(s.name)}</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">${escapeHtml(s.shortDescription)}</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">${escapeHtml(dc.ask_yourself_label)}</strong> ${escapeHtml(askText)}
@@ -1564,6 +1866,14 @@ function generateDictionaryPage(lang, t) {
   const stickyAlphaLinks = letters.map((l) =>
     `                        <a href="#${l}" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="${l}">${l}</a>`
   ).join('\n');
+
+  const heroCopy = {
+    en: { atlas: 'Dream atlas', guide: 'Search, filter, then open the symbol that matches your dream.' },
+    fr: { atlas: 'Atlas onirique', guide: 'Recherchez, filtrez, puis ouvrez le symbole qui correspond à votre rêve.' },
+    es: { atlas: 'Atlas onírico', guide: 'Busca, filtra y abre el símbolo que coincide con tu sueño.' },
+    de: { atlas: 'Traumatlas', guide: 'Suche, filtere und öffne das Symbol, das zu deinem Traum passt.' },
+    it: { atlas: 'Atlante onirico', guide: 'Cerca, filtra e apri il simbolo che corrisponde al tuo sogno.' },
+  }[lang] || {};
 
   // ── Build FAQ HTML ───────────────────────────────────────────────────
   const faqHtml = (dc.faq || []).map((item) =>
@@ -1766,6 +2076,7 @@ ${renderViewTransitionHeadStyles()}
           right: 0.8rem;
           top: 50%;
           transform: translateY(-50%);
+          z-index: 2;
           width: 2rem;
           height: 2rem;
           border-radius: 9999px;
@@ -1849,20 +2160,25 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
             </nav>
 
             <!-- Header -->
-            <header class="dictionary-header text-center lg:text-left">
+            <header class="dictionary-header">
+                <div class="dictionary-hero-copy">
+                    <span class="dictionary-hero-kicker">${escapeHtml(heroCopy.atlas)}</span>
+                    <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl">
+                        ${escapeHtml(dc.h1_text)}
+                    </h1>
+                    <p class="dictionary-hero-intro">${escapeHtml(heroCopy.guide)}</p>
 
-                <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl mx-auto lg:mx-0">
-                    ${escapeHtml(dc.h1_text)}
-                </h1>
-
-                <!-- Hero search -->
-                <div id="heroSearchShell" class="relative w-full max-w-4xl mx-auto lg:mx-0">
-                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
-                    <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
-                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
-                    <button type="button" id="heroSearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" hidden>
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
+                    <!-- Hero search -->
+                    <div id="heroSearchShell" class="relative w-full">
+                        <div class="dictionary-hero-search-input">
+                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
+                            <input type="text" id="heroSearch" placeholder="${escapeHtml(dc.hero_search_placeholder)}"
+                                class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
+                        </div>
+                        <button type="button" id="heroSearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -1886,7 +2202,7 @@ ${renderMobileAlphaHtml(letters)}
                         <input type="text" id="stickySearch" placeholder="${escapeHtml(dc.sticky_search_placeholder)}"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
-                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" hidden>
+                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -1908,6 +2224,9 @@ ${stickyAlphaLinks}
             <!-- Browse by Category -->
 ${renderSidebarHtml(lang, t, counts, letters)}
             <section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
+                <div class="quick-browse-alpha letter-nav" aria-label="Alphabet">
+${stickyAlphaLinks}
+                </div>
                 <div class="quick-browse-copy">
                     <div>
                         <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
@@ -1927,7 +2246,7 @@ ${catGridCards}
                     <span class="search-feedback-label">${escapeHtml(uiCopy.activeSearchLabel)}</span>
                     <span id="searchFeedbackText" class="search-feedback-text"></span>
                 </div>
-                <button type="button" id="searchFeedbackClear" class="search-feedback-clear">${escapeHtml(uiCopy.clearSearch)}</button>
+                <button type="button" id="searchFeedbackClear" class="search-feedback-clear" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));">${escapeHtml(uiCopy.clearSearch)}</button>
             </div>
 
             <!-- Symbols Dictionary -->
@@ -2227,7 +2546,7 @@ ${symbolCatEntries}
             setSearchValue(heroSearch.value || '');
 
             // ── Smooth scroll for letter navigation ───────────────────────
-            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
+            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link, .dictionary-hero-letter').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
@@ -2241,7 +2560,7 @@ ${symbolCatEntries}
 
             // ── Active letter tracking (IntersectionObserver) ─────────────
             function setActiveAlpha(letter) {
-                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
+                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link, .dictionary-hero-letter').forEach(l => {
                     l.classList.toggle('alpha-active', l.dataset.letter === letter);
                 });
             }
