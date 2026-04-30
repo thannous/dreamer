@@ -30,6 +30,22 @@ Recommended local path:
 C:\Users\thann\.config\gsc\noctalia-search-console-service-account.json
 ```
 
+## Current status on 2026-04-29
+
+- Google Search Console API is enabled in Google Cloud project `gen-lang-client-0336445544`.
+- Service account created:
+
+```text
+noctalia-search-console@gen-lang-client-0336445544.iam.gserviceaccount.com
+```
+
+- The local MCP entry is already present in `.mcp.json`.
+- Still required:
+  - Download a JSON key for this service account and place it at the recommended local path above.
+  - Add the service account email as a Search Console user for `sc-domain:noctalia.app`.
+
+Chrome download note: the key download failed in Chrome with `Erreur réseau`. If it happens again, save the JSON manually to the recommended local path, or recreate a new key after fixing Chrome's download folder.
+
 ## Google Cloud steps
 
 1. Open Google Cloud Console:
@@ -47,7 +63,7 @@ C:\Users\thann\.config\gsc\noctalia-search-console-service-account.json
 ## Search Console permission step
 
 1. Open Search Console users/settings for the domain property:
-   `https://search.google.com/search-console/settings/users?resource_id=sc-domain%3Anoctalia.app&hl=fr`
+   `https://search.google.com/search-console/users?resource_id=sc-domain%3Anoctalia.app&hl=fr`
 2. Add the service account email as a user.
 3. Use Full permission if you only need analytics and inspection. Owner/admin is not required for read-only analytics.
 
@@ -93,4 +109,3 @@ Recommended first queries:
   "detectQuickWins": true
 }
 ```
-
