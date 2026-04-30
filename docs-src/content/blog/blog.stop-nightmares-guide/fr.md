@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Cauchemars : comprendre et stopper les mauvais rêves | Noctalia",
   "ogDescription": "Découvrez les causes des cauchemars et les techniques pour dormir paisiblement.",
-  "ogImage": "https://noctalia.app/img/blog/guide-cauchemars.webp",
+  "ogImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "ogImageAlt": "Atmosphère mystérieuse et sombre évoquant le monde des cauchemars",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Cauchemars : comprendre et stopper les mauvais rêves | Noctalia",
   "twitterDescription": "Comprenez les causes et stoppez vos cauchemars.",
-  "twitterImage": "https://noctalia.app/img/blog/guide-cauchemars.webp",
+  "twitterImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "twitterImageAlt": "Atmosphère mystérieuse et sombre évoquant le monde des cauchemars",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-de-grossesse",
   "nextPath": "/fr/blog/guide-paralysie-sommeil",
-  "preloadImage": "/img/blog/guide-cauchemars.webp",
+  "preloadImage": "/img/blog/stop-nightmares-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Cauchemars : Causes, Signification et Comment les Arrêter\",\n            \"description\": \"Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour les réduire.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/guide-cauchemars.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-cauchemars\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 984,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-cauchemars\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Cauchemars : Causes, Signification et Comment les Arrêter\",\n            \"description\": \"Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour les réduire.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stop-nightmares-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-cauchemars\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 984,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-cauchemars\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi je fais des cauchemars ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les cauchemars peuvent être causés par le stress, l'anxiété, un traumatisme, certains médicaments, le manque de sommeil ou manger tard le soir. C'est souvent la façon dont votre cerveau traite les émotions difficiles. Environ 2 à 8% des adultes font des cauchemars fréquents.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Comment arrêter de faire des cauchemars ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Pour réduire les cauchemars : maintenez un horaire de sommeil régulier, pratiquez la gestion du stress, évitez les écrans avant le coucher, créez un environnement de sommeil calme, et essayez la Thérapie par Répétition d'Images (IRT) - une technique où vous réécrivez les fins de cauchemars en état d'éveil.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les cauchemars ont-ils une signification ?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Oui, les cauchemars reflètent souvent des anxiétés sous-jacentes, des émotions non traitées ou des sources de stress dans votre vie éveillée. Ils peuvent être votre subconscient mettant en lumière des problèmes qui nécessitent attention. Les thèmes courants concernent la peur de la perte, de l'échec ou de perdre le contrôle.\" }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Guide des Cauchemars\",\n            \"item\": \"https://noctalia.app/fr/blog/guide-cauchemars\"\n        }\n    ]\n}"
   ],
@@ -86,7 +86,7 @@
     <p class="text-purple-100/80 leading-relaxed">Les cauchemars sont des rêves vifs et angoissants qui vous réveillent avec de fortes émotions négatives. Ils touchent régulièrement 2 à 8 % des adultes et jusqu'à 50 % des enfants de 3 à 6 ans. Contrairement aux terreurs nocturnes (qui surviennent pendant le sommeil profond sans souvenir), les cauchemars se produisent pendant le sommeil paradoxal et sont clairement mémorisés. Le traitement le plus efficace fondé sur des preuves est la Thérapie par Répétition d'Images (IRT) : réécrivez le scénario de votre cauchemar en état d'éveil, puis répétez mentalement la nouvelle version avant de dormir. La gestion du stress, des horaires de sommeil réguliers et le traitement des traumatismes sous-jacents réduisent également significativement la fréquence des cauchemars.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guide-cauchemars.webp" srcset="../../img/blog/guide-cauchemars-480w.webp 480w, ../../img/blog/guide-cauchemars-800w.webp 800w, ../../img/blog/guide-cauchemars-1200w.webp 1200w" width="1200">
+<img alt="Atmosphère mystérieuse et sombre évoquant le monde des cauchemars" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
@@ -110,7 +110,7 @@
                     Ils mettent souvent en scène une <a class="text-dream-salmon hover:underline" href="../symboles/poursuite">poursuite</a> ou d'autres menaces qui amplifient la peur.
                 </p>
 <p>
-                    Bien que les cauchemars occasionnels soient normaux, <strong>2 à 8% des adultes en font fréquemment</strong> - une fois par semaine ou plus. Lorsque les cauchemars impactent significativement la qualité du sommeil ou le fonctionnement quotidien, ils peuvent être classés comme Trouble des Cauchemars.
+                    Bien que les cauchemars occasionnels soient normaux, <strong>2 à 8% des adultes en font fréquemment</strong> - une fois par semaine ou plus. Lorsque les cauchemars perturbent la qualité du sommeil ou le fonctionnement quotidien, ils peuvent être classés comme Trouble des Cauchemars.
                 </p>
 <p>
                     Les cauchemars diffèrent des terreurs nocturnes, qui surviennent pendant le sommeil non-REM, impliquent des réactions physiques comme des cris, et sont rarement mémorisées. Les cauchemars sont entièrement mémorisés et se produisent pendant les phases de sommeil plus légères.
@@ -191,7 +191,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="signification">Signification des cauchemars : ce qu'ils revelent</h2>
 <p>
-                    Les cauchemars ne sont pas aléatoires - ils portent souvent des messages significatifs de votre subconscient :
+                    Vos cauchemars ne sont pas aléatoires - ils portent souvent des messages significatifs de votre subconscient :
                 </p>
 <p>
                     Si vos cauchemars tournent autour de thèmes comme <a class="text-dream-salmon hover:underline" href="../symboles/poursuite">être poursuivi</a>, <a class="text-dream-salmon hover:underline" href="../symboles/chute">chuter</a>, la <a class="text-dream-salmon hover:underline" href="../symboles/mort">mort</a>, ou des créatures inquiétantes comme un <a class="text-dream-salmon hover:underline" href="../symboles/serpent">serpent</a> ou une <a class="text-dream-salmon hover:underline" href="../symboles/araignee">araignée</a>, rechercher ces symboles peut aider à comprendre le message en profondeur.
@@ -214,19 +214,19 @@
 <h2 id="types">Les differents types de cauchemars et mauvais reves</h2>
 <h3>Cauchemars lies au stress et a l'anxiete</h3>
 <p>
-                    Le type le plus courant, directement lié aux facteurs de stress quotidiens. Ces cauchemars présentent souvent <strong>des scénarios d'impréparation, d'échec ou de situations embarrassantes</strong>. Ils diminuent généralement quand le stress est résolu.
+                    C'est le type le plus courant, directement lié aux facteurs de stress quotidiens. Ces cauchemars présentent souvent <strong>des scénarios d'impréparation, d'échec ou de situations embarrassantes</strong>. Ils diminuent généralement quand le stress est résolu.
                 </p>
 <h3>Cauchemars post-traumatiques et SSPT</h3>
 <p>
                     Suite à des événements traumatisants, les cauchemars peuvent <strong>rejouer le trauma ou des thèmes associés</strong>. Ils sont particulièrement persistants et peuvent nécessiter un traitement professionnel. Ils sont un symptôme caractéristique du SSPT.
                 </p>
-<h3>Cauchemars repetitifs : pourquoi le meme reve revient</h3>
+<h3>Cauchemars repetitifs : pourquoi le même reve revient</h3>
 <p>
-                    Le même cauchemar se répétant nuit après nuit suggère un <strong>problème non résolu que votre psyché tente de traiter</strong>. La répétition continue souvent jusqu'à ce que le problème sous-jacent soit abordé.
+                    Quand le même cauchemar se répète nuit après nuit, il suggère un <strong>problème non résolu que votre psyché tente de traiter</strong>. Attendez-vous à ce que la répétition continue jusqu'à ce que vous abordiez le problème sous-jacent.
                 </p>
 <h3>Cauchemars sur la mort et l'angoisse existentielle</h3>
 <p>
-                    Les rêves sur la mort, la fin du monde ou la perte d'êtres chers reflètent souvent <strong>des anxiétés existentielles profondes ou la peur de la perte</strong>. Ils tendent à augmenter pendant les transitions majeures de vie.
+                    Rêver de mort, de fin du monde ou de perte d'êtres chers reflète souvent <strong>des anxiétés existentielles profondes ou la peur de la perte</strong>. Ces cauchemars tendent à augmenter pendant les transitions majeures de vie.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -248,7 +248,7 @@
                 </p>
 <h3>1. Therapie par Repetition d'Images contre les cauchemars</h3>
 <p>
-                    La technique la plus efficace pour les cauchemars récurrents. <strong>Éveillé, visualisez le cauchemar mais changez la fin</strong> pour quelque chose de neutre ou positif. Pratiquez cette nouvelle version quotidiennement pendant 10-20 minutes. Les études montrent que l'IRT peut réduire la fréquence des cauchemars de 50 à 80%.
+                    Considérez cette technique comme la référence pour les cauchemars récurrents. <strong>Éveillé, visualisez le cauchemar mais changez la fin</strong> pour quelque chose de neutre ou positif. Pratiquez cette nouvelle version quotidiennement pendant 10-20 minutes. Les études montrent que l'IRT peut réduire la fréquence des cauchemars de 50 à 80%.
                 </p>
 <h3>2. Ameliorer son hygiene de sommeil pour moins de cauchemars</h3>
 <p>

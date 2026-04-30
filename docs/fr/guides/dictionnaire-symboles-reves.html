@@ -47,12 +47,10 @@
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -63,7 +61,7 @@
       }
     </style>
 <!-- Lucide Icons (deferred) -->
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -83,6 +81,27 @@
         }
         .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
         .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
+        .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+        .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+        .noctalia-premium-nav-inner {
+          width: 100%;
+          max-width: 1720px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr) auto;
+          align-items: center;
+          gap: clamp(1rem, 3vw, 3.5rem);
+        }
+        .noctalia-premium-links {
+          justify-content: center;
+          flex-wrap: nowrap;
+          gap: clamp(1.4rem, 3.4vw, 4rem);
+          min-width: 0;
+        }
+        .noctalia-premium-nav-actions { justify-content: flex-end; }
+        .noctalia-premium-action { display: inline-flex; }
+        .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+        .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
         @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         html, body { overflow-x: hidden; }
         .symbol-card { transition: all 0.3s ease; }
@@ -132,6 +151,7 @@
           right: 0.8rem;
           top: 50%;
           transform: translateY(-50%);
+          z-index: 2;
           width: 2rem;
           height: 2rem;
           border-radius: 9999px;
@@ -164,7 +184,25 @@
                 order: 3;
             }
         }
+        @media (max-width: 1100px) {
+            .noctalia-premium-download,
+            .noctalia-premium-about { display: none; }
+            .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); }
+        }
+        @media (max-width: 860px) {
+            .noctalia-premium-nav-inner { display: flex; justify-content: space-between; }
+            .noctalia-premium-nav-actions { margin-left: auto; }
+            .noctalia-premium-links { display: none; }
+            #navMobileGuideLink,
+            #mobileMenuButton { display: inline-flex; }
+        }
+        @media (max-width: 520px) {
+            .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; }
+            .noctalia-premium-brand-text { font-size: 1.35rem; }
+            #navMobileGuideLink { display: none; }
+        }
         /* == dict-layout == */
+        :root { --dictionary-edge: clamp(1rem, 4vw, 4.75rem); }
         #dictionaryLayout { display: block; }
         #mainContentArea { flex: 1; min-width: 0; }
         #dictionarySidebar { display: none !important; }
@@ -179,19 +217,293 @@
         .mobile-alpha-link { min-width: 1.75rem; text-align: center; padding: 2px 4px; border-radius: 0.375rem; font-size: 0.8rem; color: rgba(196,181,253,0.75); transition: all 0.2s ease; text-decoration: none; }
         .mobile-alpha-link:hover { color: #FDA481; transform: scale(1.1); }
         .mobile-alpha-link.alpha-active { background: white; color: #0a0514 !important; font-weight: 700; transform: scale(1.05); }
-        .dictionary-shell { max-width: 70rem; }
+        body.dictionary-page {
+          position: relative;
+          isolation: isolate;
+          background: #0a0514;
+        }
+        body.dictionary-page::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(180deg, rgba(5, 2, 12, 0.62) 0%, rgba(8, 3, 17, 0.42) 38%, #090413 94%),
+            linear-gradient(90deg, rgba(5, 2, 12, 0.72) 0%, rgba(5, 2, 12, 0.22) 48%, rgba(5, 2, 12, 0.58) 100%),
+            radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
+            url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
+            linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
+        }
+        .dictionary-page .aurora-bg,
+        .dictionary-page .orb {
+          display: none;
+        }
+        .dictionary-main {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          max-width: none;
+          padding: 0 0 5rem !important;
+        }
+        .dictionary-shell {
+          width: 100%;
+          max-width: none;
+          margin: 0;
+        }
+        .dictionary-shell > nav[aria-label="Breadcrumb"] {
+          display: none;
+        }
         .dictionary-header {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          align-items: end;
+          gap: clamp(1.5rem, 4vw, 5rem);
+          min-height: 35rem;
+          margin-bottom: 0;
+          padding: 8.1rem clamp(1rem, 4vw, 4.75rem) 3.2rem;
+          text-align: left;
+          background: transparent;
+        }
+        .dictionary-hero-copy {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          margin-bottom: 1.75rem;
+          gap: 1.1rem;
+          min-width: 0;
+        }
+        .dictionary-hero-kicker {
+          width: fit-content;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.45rem 0.72rem;
+          border-radius: 9999px;
+          border: 1px solid rgba(253,164,129,0.22);
+          background: rgba(253,164,129,0.09);
+          color: rgba(253,164,129,0.96);
+          font-size: 0.74rem;
+          line-height: 1;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-weight: 700;
+        }
+        .dictionary-header h1 {
+          width: min(100%, 16ch);
+          max-width: none;
+          margin: 0;
+          font-size: clamp(4rem, 6.1vw, 7.4rem);
+          line-height: 0.91;
+          letter-spacing: 0;
+        }
+        .dictionary-hero-intro {
+          max-width: 44rem;
+          color: rgba(237,225,255,0.78);
+          font-size: clamp(1rem, 1.6vw, 1.2rem);
+          line-height: 1.55;
+        }
+        #heroSearchShell {
+          max-width: 49rem;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          filter: drop-shadow(0 1.25rem 2.5rem rgba(0,0,0,0.26));
+        }
+        .dictionary-hero-search-input {
+          position: relative;
+          flex: 1;
+          min-width: 0;
+        }
+        #heroSearchShell .hero-search {
+          min-height: 4rem;
+          border-color: rgba(255,255,255,0.2) !important;
+          background: rgba(12,7,25,0.74) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(253,164,129,0.08);
+        }
+        #heroSearchShell .search-clear {
+          position: static;
+          transform: none;
+          width: 4rem;
+          height: 4rem;
+          flex: 0 0 4rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(12,7,25,0.74);
+        }
+        .dictionary-hero-panel {
+          position: relative;
+          overflow: hidden;
+          border-radius: 1.4rem;
+          border: 1px solid rgba(255,255,255,0.12);
+          background:
+            linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.035)),
+            rgba(14, 7, 28, 0.68);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          box-shadow: 0 1.5rem 4rem rgba(0,0,0,0.34);
+          padding: clamp(1rem, 2vw, 1.35rem);
+        }
+        .dictionary-hero-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(135deg, rgba(253,164,129,0.18), transparent 38%),
+            linear-gradient(315deg, rgba(129,140,248,0.13), transparent 34%);
+          opacity: 0.86;
+        }
+        .dictionary-hero-panel > * {
+          position: relative;
+          z-index: 1;
+        }
+        .dictionary-hero-panel-main {
+          min-height: 9rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 1rem;
+          border-radius: 1rem;
+          background:
+            linear-gradient(180deg, rgba(5,2,12,0.18), rgba(5,2,12,0.72)),
+            url('/img/blog/dream-symbols-dictionary-800w.webp') center / cover no-repeat;
+          border: 1px solid rgba(255,255,255,0.08);
+        }
+        .dictionary-hero-panel-label {
+          color: rgba(253,164,129,0.94);
+          font-size: 0.72rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-weight: 700;
+          margin-bottom: 0.55rem;
+        }
+        .dictionary-hero-panel-main p {
+          max-width: 22rem;
+          color: rgba(248,245,255,0.9);
+          font-size: 1rem;
+          line-height: 1.45;
+        }
+        .dictionary-hero-stats {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 0.65rem;
+          margin-top: 0.75rem;
+        }
+        .dictionary-hero-stats div {
+          min-width: 0;
+          padding: 0.85rem;
+          border-radius: 0.85rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.045);
+        }
+        .dictionary-hero-stats strong {
+          display: block;
+          color: #fff;
+          font-family: Georgia, serif;
+          font-size: clamp(1.4rem, 2vw, 1.9rem);
+          line-height: 1;
+        }
+        .dictionary-hero-stats span {
+          display: block;
+          margin-top: 0.32rem;
+          color: rgba(226,218,255,0.72);
+          font-size: 0.74rem;
+          line-height: 1.2;
+        }
+        .dictionary-hero-letters {
+          display: grid;
+          grid-template-columns: repeat(8, minmax(0, 1fr));
+          gap: 0.35rem;
+          margin-top: 0.75rem;
+        }
+        .dictionary-hero-letter {
+          min-height: 2.25rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.65rem;
+          background: rgba(255,255,255,0.055);
+          color: rgba(248,245,255,0.78);
+          font-weight: 700;
+          text-decoration: none;
+          transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+        .dictionary-hero-letter:hover {
+          background: rgba(253,164,129,0.16);
+          color: #fff;
+          transform: translateY(-1px);
+        }
+        .dictionary-hero-letter.alpha-active {
+          background: rgba(255,255,255,0.92);
+          color: #0a0514;
+        }
+        .dictionary-hero-chips {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+        }
+        .dictionary-hero-chip {
+          overflow: hidden;
+          min-height: 2.6rem;
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 0.85rem;
+          border-radius: 0.8rem;
+          border: 1px solid color-mix(in srgb, var(--cat-color) 36%, transparent);
+          background: linear-gradient(135deg, color-mix(in srgb, var(--cat-color) 16%, transparent), rgba(255,255,255,0.035));
+          color: rgba(248,245,255,0.9);
+          font-size: 0.84rem;
+          text-decoration: none;
+          transition: transform 0.18s ease, border-color 0.18s ease;
+        }
+        .dictionary-hero-chip:hover {
+          transform: translateY(-1px);
+          border-color: color-mix(in srgb, var(--cat-color) 58%, transparent);
         }
         .quick-browse-panel {
-          padding: 1.1rem;
-          margin-bottom: 1.5rem;
-          border: 1px solid rgba(253,164,129,0.08);
+          width: calc(100% - (var(--dictionary-edge) * 2));
+          max-width: none;
+          margin-left: var(--dictionary-edge);
+          margin-right: var(--dictionary-edge);
+          padding: clamp(1rem, 2vw, 1.35rem);
+          margin-bottom: 1.75rem;
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(12, 7, 25, 0.72);
         }
         .quick-browse-panel[hidden] { display: none !important; }
+        .quick-browse-alpha {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.35rem;
+          padding: 0.35rem;
+          margin-bottom: 1rem;
+          border-radius: 1rem;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.04);
+        }
+        .quick-browse-alpha .letter-link {
+          min-width: 2.25rem;
+          min-height: 2.25rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.7rem;
+          background: rgba(255,255,255,0.045);
+          color: rgba(226,218,255,0.78) !important;
+          font-weight: 700;
+          text-decoration: none;
+          transform: none;
+        }
+        .quick-browse-alpha .letter-link:hover {
+          background: rgba(253,164,129,0.14);
+          color: #fff !important;
+          transform: translateY(-1px);
+        }
+        .quick-browse-alpha .letter-link.alpha-active {
+          background: rgba(255,255,255,0.92);
+          color: #0a0514 !important;
+          transform: none;
+        }
         .quick-browse-copy {
           display: flex;
           flex-wrap: wrap;
@@ -206,34 +518,39 @@
         }
         .category-browse-grid {
           display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: repeat(8, minmax(0, 1fr));
           gap: 0.85rem;
+          grid-auto-flow: dense;
         }
         .category-browse-card {
           display: flex;
+          min-width: 0;
           align-items: center;
-          gap: 0.9rem;
-          padding: 1rem;
-          border-radius: 1rem;
-          border: 1px solid rgba(255,255,255,0.06);
-          background: rgba(255,255,255,0.03);
+          gap: 0.75rem;
+          grid-column: span 2;
+          padding: 1rem 0.9rem;
+          border-radius: 0.85rem;
+          border: 1px solid color-mix(in srgb, var(--cat-color) 23%, rgba(255,255,255,0.05));
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 12%, transparent), rgba(255,255,255,0.028));
           text-decoration: none;
           transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         .category-browse-card:hover {
-          transform: translateY(-1px);
-          border-color: rgba(253,164,129,0.2);
-          background: rgba(255,255,255,0.045);
+          transform: translateY(-2px);
+          border-color: color-mix(in srgb, var(--cat-color) 45%, rgba(255,255,255,0.08));
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 18%, transparent), rgba(255,255,255,0.04));
         }
         .category-browse-icon {
-          width: 2.5rem;
-          height: 2.5rem;
-          border-radius: 9999px;
+          width: 2.35rem;
+          height: 2.35rem;
+          border-radius: 0.72rem;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: rgba(253,164,129,0.1);
-          color: #fda481;
+          background: color-mix(in srgb, var(--cat-color) 16%, rgba(255,255,255,0.04));
+          color: color-mix(in srgb, var(--cat-color) 84%, #fff);
           flex-shrink: 0;
         }
         .category-browse-meta {
@@ -252,13 +569,38 @@
           font-size: 0.8rem;
         }
         .symbol-card {
-          background: rgba(16, 8, 30, 0.86);
-          transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+          position: relative;
+          overflow: hidden;
+          min-height: 14.25rem;
+          display: flex;
+          flex-direction: column;
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 10%, transparent), transparent 45%),
+            rgba(14, 8, 28, 0.88);
+          border-color: rgba(255,255,255,0.075) !important;
+          transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+        }
+        .symbol-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, color-mix(in srgb, var(--cat-color) 54%, transparent), transparent 34%),
+            linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%);
+          opacity: 0.26;
+        }
+        .symbol-card > * {
+          position: relative;
+          z-index: 1;
         }
         .symbol-card:hover {
-          transform: translateY(-2px);
-          border-color: rgba(253,164,129,0.18);
-          background: rgba(20, 10, 36, 0.94);
+          transform: translateY(-3px);
+          border-color: color-mix(in srgb, var(--cat-color) 42%, rgba(255,255,255,0.08)) !important;
+          background:
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 14%, transparent), transparent 45%),
+            rgba(18, 10, 34, 0.96);
+          box-shadow: 0 1rem 2.5rem rgba(0,0,0,0.24);
         }
         .symbol-card-top {
           display: flex;
@@ -271,16 +613,33 @@
           display: inline-flex;
           align-items: center;
           gap: 0.45rem;
-          padding: 0.35rem 0.65rem;
+          padding: 0.36rem 0.62rem;
           border-radius: 9999px;
-          background: rgba(255,255,255,0.05);
+          background: rgba(255,255,255,0.055);
           color: rgba(248,245,255,0.78);
           font-size: 0.72rem;
           letter-spacing: 0.02em;
         }
         .symbol-card-arrow {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.85rem;
+          height: 1.85rem;
+          border-radius: 9999px;
+          background: rgba(255,255,255,0.045);
           color: rgba(196,181,253,0.72);
           font-size: 0.95rem;
+          transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .symbol-card:hover .symbol-card-arrow {
+          background: color-mix(in srgb, var(--cat-color) 20%, rgba(255,255,255,0.04));
+          color: #fff;
+          transform: translate(1px, -1px);
+        }
+        .symbol-card-title-link h3 {
+          font-size: clamp(1.35rem, 1.7vw, 1.75rem);
+          line-height: 1.05;
         }
         .symbol-card-desc {
           color: rgba(226,218,255,0.84);
@@ -291,13 +650,35 @@
           min-height: 4.5rem;
         }
         .symbol-card-question {
+          margin-top: auto;
           padding-top: 0.85rem;
-          margin-top: 0.95rem;
           border-top: 1px solid rgba(255,255,255,0.06);
           color: rgba(196,181,253,0.82);
         }
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
+        }
+        #dictionaryLayout,
+        #mobilePills,
+        #mobileAlpha,
+        #searchFeedback,
+        #noResults,
+        #mainContentArea > section,
+        #symbolsList {
+          width: 100%;
+          max-width: none;
+          margin-left: 0;
+          margin-right: 0;
+          padding-left: var(--dictionary-edge);
+          padding-right: var(--dictionary-edge);
+        }
+        #symbolsList > section {
+          padding-left: 0;
+          padding-right: 0;
+        }
+        #symbolsList > section > .grid {
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+          grid-auto-flow: dense;
         }
         #searchFeedback, #noResults {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
@@ -312,6 +693,10 @@
           border-radius: 1rem;
           border: 1px solid rgba(253,164,129,0.12);
           background: rgba(18, 10, 34, 0.88);
+        }
+        #searchFeedback[hidden],
+        #noResults[hidden] {
+          display: none !important;
         }
         .search-feedback-copy {
           min-width: 0;
@@ -345,10 +730,71 @@
           border-color: rgba(253,164,129,0.22);
         }
         @media (min-width: 768px) {
-          .dictionary-header { margin-bottom: 2rem; }
-          .category-browse-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+          .dictionary-header { margin-bottom: 0; }
+          #symbolsList > section:nth-child(3n + 1) .symbol-card:first-child,
+          #symbolsList > section:nth-child(4n + 2) .symbol-card:nth-child(2) {
+            grid-row: span 2;
+            min-height: 18.5rem;
+          }
+        }
+        @media (max-width: 1180px) {
+          .dictionary-header {
+            grid-template-columns: 1fr;
+            align-items: start;
+            min-height: auto;
+            padding-top: 7rem;
+          }
+          .category-browse-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+          }
+          .category-browse-card {
+            grid-column: span 2;
+          }
         }
         @media (max-width: 767px) {
+          :root { --dictionary-edge: 1rem; }
+          .dictionary-header {
+            grid-template-columns: 1fr;
+            min-height: auto;
+            gap: 1rem;
+            padding: 5.9rem 1rem 1.45rem;
+          }
+          .dictionary-header h1 {
+            width: 100%;
+            max-width: 10.5ch;
+            font-size: clamp(3.05rem, 15vw, 4.75rem);
+          }
+          .dictionary-hero-intro {
+            font-size: 0.98rem;
+          }
+          .quick-browse-alpha {
+            gap: 0.28rem;
+          }
+          .quick-browse-alpha .letter-link {
+            min-width: 2rem;
+          }
+          #dictionaryLayout,
+          #mobilePills,
+          #mobileAlpha,
+          #searchFeedback,
+          #noResults,
+          #mainContentArea > section,
+          #symbolsList,
+          .quick-browse-panel {
+            width: 100%;
+          }
+          .quick-browse-panel {
+            width: calc(100% - 2rem);
+            margin-left: 1rem;
+            margin-right: 1rem;
+          }
+          .category-browse-grid,
+          #symbolsList > section > .grid {
+            grid-template-columns: 1fr;
+          }
+          .category-browse-card {
+            grid-column: span 1;
+          }
           #mobileAlpha { display: flex !important; }
           #searchFeedback { display: none !important; }
           body.dictionary-search-active #heroSearchShell,
@@ -461,62 +907,80 @@
     </script>
 </head>
 
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+<body class="dictionary-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
 
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/fr/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/fr/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/fr/#comment-ca-marche" class="hidden lg:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="/fr/#fonctionnalites" class="hidden lg:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/fr/blog/" class="hover:text-white transition-colors">Ressources</a>
                 <a href="/fr/guides/" class="hover:text-white transition-colors">Guides des rêves</a>
                 <a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">À propos</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
-                    <button type="button"
-                            class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                            aria-label="Choose language"
-                            id="languageDropdownButton">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
+                    <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">FR</span>
+                        <span>FR</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
-                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50"
-                         role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
-                        <a href="/en/guides/dream-symbols-dictionary" hreflang="en" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
-                            <span class="w-5 text-center">🇺🇸</span> English
-                        </a>
-                        <a href="/fr/guides/dictionnaire-symboles-reves" hreflang="fr" class="flex items-center gap-3 px-4 py-2 text-sm text-dream-salmon bg-dream-salmon/10 transition-colors" role="menuitem">
-                            <span class="w-5 text-center">🇫🇷</span> Français
-                        </a>
-                        <a href="/es/guides/diccionario-simbolos-suenos" hreflang="es" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
-                            <span class="w-5 text-center">🇪🇸</span> Español
-                        </a>
-                        <a href="/de/guides/traumsymbole-lexikon" hreflang="de" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
-                            <span class="w-5 text-center">🇩🇪</span> Deutsch
-                        </a>
-                        <a href="/it/guides/dizionario-simboli-sogni" hreflang="it" class="flex items-center gap-3 px-4 py-2 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors" role="menuitem">
-                            <span class="w-5 text-center">🇮🇹</span> Italiano
-                        </a>
+                    <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
+                    <a href="/en/guides/dream-symbols-dictionary" hreflang="en" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>English</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/fr/guides/dictionnaire-symboles-reves" hreflang="fr" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Français</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
+                    </a>
+                    <a href="/es/guides/diccionario-simbolos-suenos" hreflang="es" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Español</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/de/guides/traumsymbole-lexikon" hreflang="de" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Deutsch</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
+                    <a href="/it/guides/dizionario-simboli-sogni" hreflang="it" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
+                        <span>Italiano</span>
+                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                    </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/fr/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressources</a>
+                <a href="/fr/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guides des rêves</a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">À propos</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/guides/dream-symbols-dictionary" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/guides/dictionnaire-symboles-reves" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Français</a>
+                    <a href="/es/guides/diccionario-simbolos-suenos" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/guides/traumsymbole-lexikon" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/guides/dizionario-simboli-sogni" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="pt-28 pb-20 px-4">
+    <main class="dictionary-main pt-28 pb-20 px-4">
         <div class="dictionary-shell mx-auto">
 
             <!-- Breadcrumb -->
@@ -531,20 +995,25 @@
             </nav>
 
             <!-- Header -->
-            <header class="dictionary-header text-center lg:text-left">
+            <header class="dictionary-header">
+                <div class="dictionary-hero-copy">
+                    <span class="dictionary-hero-kicker">Atlas onirique</span>
+                    <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl">
+                        Dictionnaire des symboles de rêves
+                    </h1>
+                    <p class="dictionary-hero-intro">Recherchez, filtrez, puis ouvrez le symbole qui correspond à votre rêve.</p>
 
-                <h1 class="font-serif text-3xl md:text-5xl lg:text-[3.4rem] mb-0 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/55 leading-tight max-w-4xl mx-auto lg:mx-0">
-                    Dictionnaire des symboles de rêves
-                </h1>
-
-                <!-- Hero search -->
-                <div id="heroSearchShell" class="relative w-full max-w-4xl mx-auto lg:mx-0">
-                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
-                    <input type="text" id="heroSearch" placeholder="Rechercher un symbole (eau, serpent, chute…)"
-                        class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
-                    <button type="button" id="heroSearchClear" class="search-clear" aria-label="Vider la recherche" title="Vider la recherche" hidden>
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
+                    <!-- Hero search -->
+                    <div id="heroSearchShell" class="relative w-full">
+                        <div class="dictionary-hero-search-input">
+                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
+                            <input type="text" id="heroSearch" placeholder="Rechercher un symbole (eau, serpent, chute…)"
+                                class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
+                        </div>
+                        <button type="button" id="heroSearchClear" class="search-clear" aria-label="Vider la recherche" title="Vider la recherche" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -633,7 +1102,7 @@
                         <input type="text" id="stickySearch" placeholder="Rechercher les symboles…"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
-                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="Vider la recherche" title="Vider la recherche" hidden>
+                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="Vider la recherche" title="Vider la recherche" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -747,6 +1216,27 @@
                 <div id="mainContentArea">
             <!-- /dict-layout-open -->
             <section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
+                <div class="quick-browse-alpha letter-nav" aria-label="Alphabet">
+                        <a href="#A" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="A">A</a>
+                        <a href="#B" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="B">B</a>
+                        <a href="#C" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="C">C</a>
+                        <a href="#D" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="D">D</a>
+                        <a href="#E" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="E">E</a>
+                        <a href="#É" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="É">É</a>
+                        <a href="#Ê" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="Ê">Ê</a>
+                        <a href="#F" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="F">F</a>
+                        <a href="#G" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="G">G</a>
+                        <a href="#H" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="H">H</a>
+                        <a href="#I" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="I">I</a>
+                        <a href="#L" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="L">L</a>
+                        <a href="#M" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="M">M</a>
+                        <a href="#N" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="N">N</a>
+                        <a href="#O" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="O">O</a>
+                        <a href="#P" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="P">P</a>
+                        <a href="#S" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="S">S</a>
+                        <a href="#T" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="T">T</a>
+                        <a href="#V" class="letter-link text-sm" style="color:rgba(196,181,253,0.75);" data-letter="V">V</a>
+                </div>
                 <div class="quick-browse-copy">
                     <div>
                         <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
@@ -757,7 +1247,7 @@
                     <p>Choisissez une catégorie ou utilisez A-Z pour aller droit au bon symbole.</p>
                 </div>
                 <div class="category-browse-grid">
-                    <a href="/fr/symboles/nature" class="category-browse-card group">
+                    <a href="/fr/symboles/nature" class="category-browse-card group" style="--cat-color:#4ade80">
                         <span class="category-browse-icon">
                             <i data-lucide="leaf" class="w-5 h-5"></i>
                         </span>
@@ -766,7 +1256,7 @@
                             <span class="category-browse-count">10 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/animaux" class="category-browse-card group">
+                    <a href="/fr/symboles/animaux" class="category-browse-card group" style="--cat-color:#fbbf24">
                         <span class="category-browse-icon">
                             <i data-lucide="paw-print" class="w-5 h-5"></i>
                         </span>
@@ -775,7 +1265,7 @@
                             <span class="category-browse-count">8 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/corps" class="category-browse-card group">
+                    <a href="/fr/symboles/corps" class="category-browse-card group" style="--cat-color:#f87171">
                         <span class="category-browse-icon">
                             <i data-lucide="user" class="w-5 h-5"></i>
                         </span>
@@ -784,7 +1274,7 @@
                             <span class="category-browse-count">5 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/lieux" class="category-browse-card group">
+                    <a href="/fr/symboles/lieux" class="category-browse-card group" style="--cat-color:#60a5fa">
                         <span class="category-browse-icon">
                             <i data-lucide="home" class="w-5 h-5"></i>
                         </span>
@@ -793,7 +1283,7 @@
                             <span class="category-browse-count">8 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/objets" class="category-browse-card group">
+                    <a href="/fr/symboles/objets" class="category-browse-card group" style="--cat-color:#c084fc">
                         <span class="category-browse-icon">
                             <i data-lucide="package" class="w-5 h-5"></i>
                         </span>
@@ -802,7 +1292,7 @@
                             <span class="category-browse-count">9 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/actions" class="category-browse-card group">
+                    <a href="/fr/symboles/actions" class="category-browse-card group" style="--cat-color:#fb923c">
                         <span class="category-browse-icon">
                             <i data-lucide="zap" class="w-5 h-5"></i>
                         </span>
@@ -811,7 +1301,7 @@
                             <span class="category-browse-count">13 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/personnes" class="category-browse-card group">
+                    <a href="/fr/symboles/personnes" class="category-browse-card group" style="--cat-color:#f472b6">
                         <span class="category-browse-icon">
                             <i data-lucide="users" class="w-5 h-5"></i>
                         </span>
@@ -820,7 +1310,7 @@
                             <span class="category-browse-count">4 symboles</span>
                         </span>
                     </a>
-                    <a href="/fr/symboles/celeste" class="category-browse-card group">
+                    <a href="/fr/symboles/celeste" class="category-browse-card group" style="--cat-color:#818cf8">
                         <span class="category-browse-icon">
                             <i data-lucide="star" class="w-5 h-5"></i>
                         </span>
@@ -837,7 +1327,7 @@
                     <span class="search-feedback-label">Recherche active</span>
                     <span id="searchFeedbackText" class="search-feedback-text"></span>
                 </div>
-                <button type="button" id="searchFeedbackClear" class="search-feedback-clear">Vider la recherche</button>
+                <button type="button" id="searchFeedbackClear" class="search-feedback-clear" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));">Vider la recherche</button>
             </div>
 
             <!-- Symbols Dictionary -->
@@ -848,7 +1338,7 @@
                         Symboles commençant par A
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abandon abandon abandon">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abandon abandon abandon" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -856,14 +1346,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/abandon" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Abandon</h3></a>
+                            <a href="/fr/symboles/abandon" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Abandon</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Rêver d&#039;être abandonné reflète des peurs profondes de rejet, de solitude ou de perte de relations importantes. Cela signale souvent des problèmes d&#039;attachement non résolus ou de l&#039;insécurité.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Ai-je peur d&#039;être laissé pour compte ou rejeté ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="accident accident accident">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="accident accident accident" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -871,14 +1361,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/accident" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Accident</h3></a>
+                            <a href="/fr/symboles/accident" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Accident</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les rêves d&#039;accidents symbolisent la peur de perdre le contrôle, l&#039;anxiété face aux changements inattendus ou un avertissement de ralentir. Ils reflètent souvent le stress ou un sentiment de vulnérabilité.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Ai-je l&#039;impression que quelque chose dans ma vie m&#039;échappe ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ange ange ange">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ange ange ange" style="--cat-color:#818cf8">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -886,14 +1376,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/ange" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Ange</h3></a>
+                            <a href="/fr/symboles/ange" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Ange</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les anges dans les rêves représentent la guidance, la protection, l&#039;espoir ou un message spirituel. Ils peuvent apparaître en période de crise pour offrir du réconfort ou signaler une transition importante.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je cherche des conseils ou du réconfort dans ma vie ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="apocalypse apocalypse apocalypse">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="apocalypse apocalypse apocalypse" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -901,14 +1391,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/apocalypse" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Apocalypse</h3></a>
+                            <a href="/fr/symboles/apocalypse" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Apocalypse</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les rêves d&#039;apocalypse symbolisent un bouleversement majeur, la fin d&#039;un chapitre ou une anxiété écrasante face à l&#039;avenir. Ils représentent souvent une transformation plutôt qu&#039;une destruction littérale.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je traverse une transition ou un bouleversement majeur ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="araignee araignee araignee">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="araignee araignee araignee" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -916,14 +1406,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/araignee" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Araignée</h3></a>
+                            <a href="/fr/symboles/araignee" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Araignée</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;araignée symbolise souvent la créativité, la patience et le tissage de son destin. Elle peut aussi représenter des peurs ou un sentiment d&#039;être pris au piège.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je me sens pris au piège dans une situation ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arbre arbre arbre">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arbre arbre arbre" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -931,14 +1421,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/arbre" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Arbre</h3></a>
+                            <a href="/fr/symboles/arbre" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Arbre</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;arbre symbolise la croissance personnelle, les racines familiales et le cycle de la vie. Un arbre mort peut représenter la fin d&#039;une phase ou un besoin de renouveau.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je bien ancré dans ma vie ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arc-en-ciel arc-en-ciel arc-en-ciel">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arc-en-ciel arc-en-ciel arc-en-ciel" style="--cat-color:#818cf8">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -946,14 +1436,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/arc-en-ciel" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Arc-en-ciel</h3></a>
+                            <a href="/fr/symboles/arc-en-ciel" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Arc-en-ciel</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les arcs-en-ciel symbolisent l&#039;espoir, la transformation et la promesse après des moments difficiles. Ils représentent la beauté qui émerge après les tempêtes et le lien entre le ciel et la terre.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quel espoir émerge après une période difficile ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="argent argent argent">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="argent argent argent" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -961,14 +1451,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/argent" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Argent</h3></a>
+                            <a href="/fr/symboles/argent" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Argent</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;argent dans les rêves représente souvent la valeur personnelle, le pouvoir ou l&#039;énergie vitale. Perdre de l&#039;argent peut symboliser un sentiment de perte ou d&#039;insécurité.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Comment je me sens par rapport à ma valeur personnelle ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ascenseur ascenseur ascenseur">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ascenseur ascenseur ascenseur" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -976,14 +1466,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/ascenseur" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Ascenseur</h3></a>
+                            <a href="/fr/symboles/ascenseur" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Ascenseur</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;ascenseur symbolise les transitions, la mobilité sociale et les changements de statut dans la vie. Monter suggère une avancée ; descendre peut indiquer des revers ou l&#039;exploration de niveaux plus profonds.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelle transition est-ce que je vis ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="avion avion avion">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="avion avion avion" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -991,7 +1481,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/avion" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Avion</h3></a>
+                            <a href="/fr/symboles/avion" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Avion</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;avion représente les ambitions élevées, le désir de s&#039;échapper ou un voyage de transformation. Un avion qui s&#039;écrase peut indiquer une peur de l&#039;échec.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quels sont mes objectifs à long terme ?
@@ -1006,7 +1496,7 @@
                         Symboles commençant par B
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bebe bebe bebe">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bebe bebe bebe" style="--cat-color:#f472b6">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1014,14 +1504,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/bebe" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Bébé</h3></a>
+                            <a href="/fr/symboles/bebe" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Bébé</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le bébé symbolise un nouveau départ, l&#039;innocence ou un projet naissant. Il peut représenter une partie vulnérable de vous-même qui a besoin d&#039;attention.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quel nouveau projet ou idée suis-je en train de développer ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bouche bouche bouche">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bouche bouche bouche" style="--cat-color:#f87171">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1029,7 +1519,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/bouche" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Bouche</h3></a>
+                            <a href="/fr/symboles/bouche" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Bouche</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La bouche représente la communication, l&#039;expression de soi et les besoins. Une bouche fermée peut indiquer une difficulté à s&#039;exprimer ou des secrets gardés.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Y a-t-il quelque chose que j&#039;ai besoin de dire ?
@@ -1044,7 +1534,7 @@
                         Symboles commençant par C
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chat chat chat">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chat chat chat" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1052,14 +1542,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/chat" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chat</h3></a>
+                            <a href="/fr/symboles/chat" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chat</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le chat symbolise l&#039;indépendance, l&#039;intuition féminine et les mystères. Il peut représenter votre côté sauvage ou une situation qui échappe à votre contrôle.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je assez à l&#039;écoute de mon intuition ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chemin chemin chemin">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chemin chemin chemin" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1067,14 +1557,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/chemin" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chemin / Route</h3></a>
+                            <a href="/fr/symboles/chemin" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chemin / Route</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le chemin représente votre parcours de vie et les choix à venir. Un chemin bloqué suggère des obstacles, tandis qu&#039;un carrefour symbolise une décision importante.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je sur le bon chemin ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cheval cheval cheval">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cheval cheval cheval" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1082,14 +1572,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/cheval" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Cheval</h3></a>
+                            <a href="/fr/symboles/cheval" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Cheval</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les chevaux représentent la liberté, la puissance et le voyage de la vie. Ils symbolisent la force personnelle, l&#039;énergie sexuelle et le désir d&#039;avancer dans la vie.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Où ai-je besoin de plus de liberté dans ma vie ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chien chien chien">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chien chien chien" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1097,14 +1587,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/chien" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chien</h3></a>
+                            <a href="/fr/symboles/chien" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chien</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le chien représente la loyauté, l&#039;amitié et la protection. Un chien agressif peut symboliser un conflit interne ou une menace perçue dans votre environnement.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qui sont mes alliés fidèles ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chute chute chute">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chute chute chute" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1112,14 +1602,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/chute" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chute</h3></a>
+                            <a href="/fr/symboles/chute" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Chute</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La chute est l&#039;un des rêves les plus courants. Elle symbolise la perte de contrôle, l&#039;insécurité ou la peur de l&#039;échec. Elle peut aussi indiquer un besoin de lâcher prise.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Dans quel domaine de ma vie je me sens en perte de contrôle ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cle cle cle">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cle cle cle" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1127,14 +1617,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/cle" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Clé</h3></a>
+                            <a href="/fr/symboles/cle" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Clé</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La clé symbolise l&#039;accès, les solutions et les nouvelles opportunités. Perdre une clé peut indiquer un sentiment d&#039;être bloqué ou d&#039;avoir perdu une opportunité.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelle porte suis-je prêt à ouvrir ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="courir courir courir">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="courir courir courir" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1142,7 +1632,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/courir" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Courir</h3></a>
+                            <a href="/fr/symboles/courir" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Courir</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Courir dans les rêves peut symboliser la fuite, la poursuite d&#039;objectifs ou l&#039;urgence. Le contexte détermine si c&#039;est fuir ou poursuivre.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce que je fuis ou poursuis ?
@@ -1157,7 +1647,7 @@
                         Symboles commençant par D
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="defunt defunt defunt">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="defunt defunt defunt" style="--cat-color:#f472b6">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1165,14 +1655,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/defunt" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Défunt / Personne décédée</h3></a>
+                            <a href="/fr/symboles/defunt" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Défunt / Personne décédée</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Rêver d&#039;un proche décédé peut représenter le deuil, les souvenirs ou un message de l&#039;inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quel message cette personne pourrait-elle m&#039;apporter ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dents dents dents">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dents dents dents" style="--cat-color:#f87171">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1180,14 +1670,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/dents" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Dents (perdre ses dents)</h3></a>
+                            <a href="/fr/symboles/dents" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Dents (perdre ses dents)</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Perdre ses dents est un rêve très courant. Il symbolise l&#039;anxiété, la peur de vieillir, la perte de pouvoir ou des préoccupations sur l&#039;apparence et l&#039;image de soi.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je anxieux à propos de mon apparence ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dispute dispute dispute">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dispute dispute dispute" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1195,7 +1685,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/dispute" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Dispute</h3></a>
+                            <a href="/fr/symboles/dispute" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Dispute</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les rêves de disputes reflètent un conflit intérieur, des tensions non résolues ou une frustration refoulée. Ils pointent souvent vers des problèmes de communication ou des désaccords non exprimés dans la vie éveillée.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Y a-t-il un conflit non résolu que je dois aborder ?
@@ -1210,7 +1700,7 @@
                         Symboles commençant par E
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eau eau eau">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eau eau eau" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1218,14 +1708,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/eau" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Eau</h3></a>
+                            <a href="/fr/symboles/eau" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Eau</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;eau représente les émotions et l&#039;inconscient. Une eau calme suggère la paix intérieure, tandis qu&#039;une eau agitée indique des turbulences émotionnelles.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quel est mon état émotionnel actuel ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="enfant enfant enfant">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="enfant enfant enfant" style="--cat-color:#f472b6">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1233,14 +1723,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/enfant" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Enfant</h3></a>
+                            <a href="/fr/symboles/enfant" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Enfant</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;enfant représente souvent votre enfant intérieur, l&#039;innocence ou des aspects de votre passé. Il peut aussi symboliser un nouveau projet ou une partie de vous en développement.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Comment va mon enfant intérieur ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escalier escalier escalier">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escalier escalier escalier" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1248,14 +1738,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/escalier" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Escalier</h3></a>
+                            <a href="/fr/symboles/escalier" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Escalier</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;escalier symbolise la progression, l&#039;ascension sociale ou spirituelle. Monter indique la croissance, descendre peut suggérer l&#039;exploration de l&#039;inconscient.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je progresse dans ma vie ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-partenaire ex-partenaire ex-partenaire">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-partenaire ex-partenaire ex-partenaire" style="--cat-color:#f472b6">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1263,14 +1753,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/ex-partenaire" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Ex-Partenaire</h3></a>
+                            <a href="/fr/symboles/ex-partenaire" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Ex-Partenaire</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Rêver d&#039;un ex-partenaire représente souvent des sentiments non résolus, des leçons de relations passées ou des aspects de vous-même que vous associez à cette personne plutôt qu&#039;un désir littéral de se reconnecter.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quels sentiments non résolus ai-je encore ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="examen examen examen">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="examen examen examen" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1278,7 +1768,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/examen" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Examen / Test</h3></a>
+                            <a href="/fr/symboles/examen" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Examen / Test</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Rêver d&#039;un examen, surtout raté, symbolise l&#039;anxiété face à l&#039;évaluation, le perfectionnisme ou le syndrome de l&#039;imposteur. C&#039;est un rêve très courant chez les adultes.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Ai-je peur de ne pas être à la hauteur ?
@@ -1293,7 +1783,7 @@
                         Symboles commençant par É
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ecole ecole ecole">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ecole ecole ecole" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1301,7 +1791,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/ecole" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">École</h3></a>
+                            <a href="/fr/symboles/ecole" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">École</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;école dans les rêves représente souvent l&#039;apprentissage, l&#039;évaluation, l&#039;anxiété sociale ou la revisite d&#039;expériences passées.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelle leçon suis-je en train d&#039;apprendre ?
@@ -1316,7 +1806,7 @@
                         Symboles commençant par Ê
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perdu perdu perdu">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perdu perdu perdu" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1324,7 +1814,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/perdu" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Être Perdu</h3></a>
+                            <a href="/fr/symboles/perdu" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Être Perdu</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Être perdu dans les rêves symbolise la confusion, le manque de direction ou l&#039;incertitude sur le chemin de vie. Cela reflète souvent un sentiment d&#039;être dépassé ou déconnecté de son but.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Où est-ce que je me sens sans direction dans ma vie ?
@@ -1339,7 +1829,7 @@
                         Symboles commençant par F
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="falaise falaise falaise">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="falaise falaise falaise" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1347,14 +1837,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/falaise" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Falaise</h3></a>
+                            <a href="/fr/symboles/falaise" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Falaise</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les falaises représentent des décisions majeures, le danger ou se tenir au bord d&#039;un changement significatif. Elles symbolisent la prise de risque et la peur de faire le prochain pas.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelle décision suis-je en train d&#039;affronter ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="feu feu feu">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="feu feu feu" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1362,14 +1852,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/feu" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Feu</h3></a>
+                            <a href="/fr/symboles/feu" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Feu</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le feu symbolise la passion, la transformation et la purification. Un feu contrôlé représente l&#039;énergie positive, tandis qu&#039;un incendie peut indiquer la colère ou la destruction.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce qui m&#039;enflamme de passion ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="foret foret foret">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="foret foret foret" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1377,7 +1867,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/foret" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Forêt</h3></a>
+                            <a href="/fr/symboles/foret" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Forêt</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La forêt représente l&#039;inconscient, le mystère et l&#039;exploration de soi. Se perdre en forêt peut symboliser la confusion ou la recherche de direction dans la vie.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je prêt à explorer mon inconscient ?
@@ -1392,7 +1882,7 @@
                         Symboles commençant par G
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossesse grossesse grossesse">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossesse grossesse grossesse" style="--cat-color:#f87171">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1400,7 +1890,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/grossesse" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Grossesse</h3></a>
+                            <a href="/fr/symboles/grossesse" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Grossesse</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les rêves de grossesse symbolisent la création, de nouveaux projets, le potentiel ou des changements majeurs se développant en vous.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce que je crée ou développe ?
@@ -1415,7 +1905,7 @@
                         Symboles commençant par H
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hopital hopital hopital">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hopital hopital hopital" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1423,7 +1913,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/hopital" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Hôpital</h3></a>
+                            <a href="/fr/symboles/hopital" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Hôpital</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;hôpital dans les rêves représente souvent la guérison, les préoccupations de santé ou le besoin de soins émotionnels.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce qui a besoin de guérison dans ma vie ?
@@ -1438,7 +1928,7 @@
                         Symboles commençant par I
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inondation inondation inondation">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inondation inondation inondation" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1446,7 +1936,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/inondation" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Inondation</h3></a>
+                            <a href="/fr/symboles/inondation" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Inondation</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Une inondation symbolise souvent des émotions débordantes, un changement soudain ou la sensation que les problèmes vous submergent. Elle peut aussi représenter une purification et une opportunité de repartir sur de nouvelles bases.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce qui me submerge en ce moment ?
@@ -1461,7 +1951,7 @@
                         Symboles commençant par L
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lion lion lion">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lion lion lion" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1469,14 +1959,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/lion" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Lion</h3></a>
+                            <a href="/fr/symboles/lion" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Lion</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le lion représente la force, le courage et le leadership. Il peut symboliser votre propre puissance ou une figure d&#039;autorité dans votre vie.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je en contact avec ma force intérieure ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="loup loup loup">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="loup loup loup" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1484,14 +1974,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/loup" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Loup</h3></a>
+                            <a href="/fr/symboles/loup" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Loup</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les loups dans les rêves symbolisent l&#039;instinct, la mentalité de meute et les aspects sauvages du soi. Ils peuvent représenter à la fois le danger et la loyauté selon le contexte du rêve.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quels instincts est-ce que je réprime ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lune lune lune">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lune lune lune" style="--cat-color:#818cf8">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -1499,7 +1989,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/lune" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Lune</h3></a>
+                            <a href="/fr/symboles/lune" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Lune</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La lune symbolise la féminité, l&#039;intuition et les cycles naturels. Elle représente aussi les aspects cachés de soi et les émotions profondes.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je à l&#039;écoute de mon intuition ?
@@ -1514,7 +2004,7 @@
                         Symboles commençant par M
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maison maison maison">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maison maison maison" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1522,14 +2012,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/maison" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Maison</h3></a>
+                            <a href="/fr/symboles/maison" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Maison</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La maison représente le soi et l&#039;état psychologique. Chaque pièce peut symboliser un aspect différent de votre personnalité. Une maison en ruine peut indiquer un besoin de reconstruction intérieure.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Comment va mon espace intérieur ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mariage mariage mariage">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mariage mariage mariage" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1537,14 +2027,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/mariage" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Mariage</h3></a>
+                            <a href="/fr/symboles/mariage" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Mariage</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les rêves de mariage symbolisent souvent l&#039;engagement, les nouveaux départs ou des transitions importantes au-delà du mariage.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quel engagement suis-je en train de prendre ou de considérer ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mer mer mer">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mer mer mer" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1552,14 +2042,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/mer" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Mer / Océan</h3></a>
+                            <a href="/fr/symboles/mer" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Mer / Océan</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La mer représente l&#039;inconscient collectif et les émotions profondes. Nager dans la mer peut indiquer l&#039;exploration de soi, tandis que se noyer suggère d&#039;être submergé par les émotions.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je me laisse porter ou submerger par mes émotions ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="miroir miroir miroir">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="miroir miroir miroir" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1567,14 +2057,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/miroir" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Miroir</h3></a>
+                            <a href="/fr/symboles/miroir" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Miroir</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le miroir symbolise l&#039;introspection et l&#039;image de soi. Un reflet déformé peut indiquer une perception altérée de soi-même ou un besoin de vous voir plus clairement.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Comment je me perçois ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montagne montagne montagne">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montagne montagne montagne" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1582,14 +2072,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/montagne" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Montagne</h3></a>
+                            <a href="/fr/symboles/montagne" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Montagne</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La montagne représente les défis, les objectifs ambitieux et la quête spirituelle. Gravir une montagne symbolise les efforts pour atteindre vos buts.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quel défi suis-je en train de relever ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mort mort mort">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mort mort mort" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1597,7 +2087,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/mort" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Mort</h3></a>
+                            <a href="/fr/symboles/mort" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Mort</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La mort dans les rêves symbolise rarement une mort littérale. Elle représente la fin d&#039;une phase, une transformation majeure ou le besoin de laisser partir quelque chose.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce qui doit &quot;mourir&quot; dans ma vie pour que je puisse évoluer ?
@@ -1612,7 +2102,7 @@
                         Symboles commençant par N
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nager nager nager">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nager nager nager" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1620,14 +2110,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/nager" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Nager</h3></a>
+                            <a href="/fr/symboles/nager" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Nager</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Nager dans les rêves représente la navigation à travers les émotions et les défis de la vie. La facilité ou difficulté à nager reflète vos capacités d&#039;adaptation émotionnelle.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Comment je gère ma vie émotionnelle ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nudite nudite nudite">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nudite nudite nudite" style="--cat-color:#f87171">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1635,14 +2125,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/nudite" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Nudité</h3></a>
+                            <a href="/fr/symboles/nudite" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Nudité</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Être nu en public symbolise la vulnérabilité, la peur du jugement ou le sentiment d&#039;être exposé. C&#039;est un rêve très courant lié à l&#039;anxiété sociale.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Ai-je peur d&#039;être jugé ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nuit nuit nuit">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nuit nuit nuit" style="--cat-color:#818cf8">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -1650,7 +2140,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/nuit" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Nuit / Obscurité</h3></a>
+                            <a href="/fr/symboles/nuit" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Nuit / Obscurité</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La nuit représente l&#039;inconnu, les peurs cachées ou l&#039;inconscient. Elle peut aussi symboliser une période d&#039;incertitude ou d&#039;introspection.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce que je ne vois pas clairement ?
@@ -1665,7 +2155,7 @@
                         Symboles commençant par O
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="oiseau oiseau oiseau">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="oiseau oiseau oiseau" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1673,14 +2163,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/oiseau" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Oiseau</h3></a>
+                            <a href="/fr/symboles/oiseau" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Oiseau</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">L&#039;oiseau symbolise la liberté, l&#039;aspiration spirituelle et les perspectives élevées. Un oiseau en cage peut représenter un sentiment d&#039;être prisonnier.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je me sens libre ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="orage orage orage">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="orage orage orage" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1688,7 +2178,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/orage" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Orage</h3></a>
+                            <a href="/fr/symboles/orage" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Orage</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les orages symbolisent la turbulence émotionnelle, le changement dramatique et les forces puissantes hors de votre contrôle. Ils peuvent représenter à la fois la destruction et la purification nécessaire.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelle turbulence émotionnelle suis-je en train de vivre ?
@@ -1703,7 +2193,7 @@
                         Symboles commençant par P
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pleurer pleurer pleurer">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pleurer pleurer pleurer" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1711,14 +2201,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/pleurer" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Pleurer</h3></a>
+                            <a href="/fr/symboles/pleurer" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Pleurer</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Pleurer dans les rêves représente souvent une libération émotionnelle, une guérison ou des sentiments non exprimés cherchant à être reconnus. Cela peut être une expérience cathartique.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelles émotions est-ce que je retiens ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pluie pluie pluie">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pluie pluie pluie" style="--cat-color:#4ade80">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1726,14 +2216,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/pluie" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Pluie</h3></a>
+                            <a href="/fr/symboles/pluie" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Pluie</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La pluie peut symboliser la purification, le renouveau ou la tristesse. Une pluie douce suggère la guérison, tandis qu&#039;un orage indique des émotions intenses.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Ai-je besoin de laisser couler mes émotions ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pont pont pont">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pont pont pont" style="--cat-color:#60a5fa">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1741,14 +2231,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/pont" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Pont</h3></a>
+                            <a href="/fr/symboles/pont" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Pont</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le pont symbolise une transition, un passage d&#039;un état à un autre. Traverser un pont suggère un changement, tandis qu&#039;un pont effondré indique des obstacles.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelle transition suis-je en train de vivre ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="porte porte porte">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="porte porte porte" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1756,14 +2246,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/porte" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Porte</h3></a>
+                            <a href="/fr/symboles/porte" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Porte</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La porte symbolise les opportunités, les transitions et les nouveaux départs. Une porte fermée peut indiquer des obstacles, tandis qu&#039;une porte ouverte suggère des possibilités.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Quelles nouvelles opportunités s&#039;offrent à moi ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="poursuite poursuite poursuite">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="poursuite poursuite poursuite" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1771,7 +2261,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/poursuite" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Poursuite / Être poursuivi</h3></a>
+                            <a href="/fr/symboles/poursuite" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Poursuite / Être poursuivi</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Être poursuivi symbolise souvent l&#039;évitement d&#039;un problème ou d&#039;une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce que j&#039;évite d&#039;affronter ?
@@ -1786,7 +2276,7 @@
                         Symboles commençant par S
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sang sang sang">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sang sang sang" style="--cat-color:#f87171">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1794,14 +2284,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/sang" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Sang</h3></a>
+                            <a href="/fr/symboles/sang" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Sang</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le sang représente la force vitale, les liens familiaux ou une perte d&#039;énergie. Perdre du sang peut symboliser l&#039;épuisement ou un sacrifice.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que quelque chose draine mon énergie ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="serpent serpent serpent">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="serpent serpent serpent" style="--cat-color:#fbbf24">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1809,14 +2299,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/serpent" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Serpent</h3></a>
+                            <a href="/fr/symboles/serpent" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Serpent</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le serpent est un symbole complexe : transformation, sagesse, sexualité ou danger. Sa signification dépend beaucoup de votre relation personnelle avec les serpents.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Y a-t-il une transformation en cours ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="soleil soleil soleil">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="soleil soleil soleil" style="--cat-color:#818cf8">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -1824,7 +2314,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/soleil" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Soleil</h3></a>
+                            <a href="/fr/symboles/soleil" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Soleil</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le soleil symbolise la conscience, l&#039;énergie vitale et l&#039;optimisme. Il représente la clarté, la vérité et l&#039;illumination spirituelle.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Qu&#039;est-ce qui m&#039;apporte de l&#039;énergie ?
@@ -1839,7 +2329,7 @@
                         Symboles commençant par T
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telephone telephone telephone">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telephone telephone telephone" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1847,14 +2337,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/telephone" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Téléphone</h3></a>
+                            <a href="/fr/symboles/telephone" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Téléphone</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le téléphone représente la communication. Un téléphone qui ne fonctionne pas peut indiquer des difficultés à se connecter avec les autres ou un message que vous n&#039;arrivez pas à transmettre.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Y a-t-il quelqu&#039;un à qui je dois parler ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="train train train">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="train train train" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1862,7 +2352,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/train" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Train</h3></a>
+                            <a href="/fr/symboles/train" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Train</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Le train symbolise le voyage de la vie et sa trajectoire. Rater un train peut indiquer une opportunité manquée ou la peur de ne pas être à l&#039;heure dans vos objectifs.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Suis-je sur la bonne trajectoire ?
@@ -1877,7 +2367,7 @@
                         Symboles commençant par V
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vetements vetements vetements">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vetements vetements vetements" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1885,14 +2375,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/vetements" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Vêtements</h3></a>
+                            <a href="/fr/symboles/vetements" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Vêtements</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Les vêtements représentent l&#039;image que vous projetez au monde. Des vêtements inappropriés peuvent indiquer un sentiment de ne pas être à sa place.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que mon image publique reflète qui je suis vraiment ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voiture voiture voiture">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voiture voiture voiture" style="--cat-color:#c084fc">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1900,14 +2390,14 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/voiture" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Voiture</h3></a>
+                            <a href="/fr/symboles/voiture" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Voiture</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">La voiture représente le contrôle sur votre vie. Être au volant indique le contrôle, être passager peut suggérer que quelqu&#039;un d&#039;autre dirige votre vie.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> Est-ce que je suis aux commandes de ma vie ?
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voler voler voler">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voler voler voler" style="--cat-color:#fb923c">
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1915,7 +2405,7 @@
                                 </span>
                                 <span class="symbol-card-arrow" aria-hidden="true">↗</span>
                             </div>
-                            <a href="/fr/symboles/voler" class="block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Voler</h3></a>
+                            <a href="/fr/symboles/voler" class="symbol-card-title-link block hover:opacity-90 transition-opacity"><h3 class="font-serif text-xl text-dream-cream mb-3">Voler</h3></a>
                             <p class="symbol-card-desc text-sm mb-0">Voler dans les airs est un rêve euphorique symbolisant la liberté, la transcendance et le dépassement des limites. Difficulté à voler peut indiquer des obstacles perçus.</p>
                             <div class="symbol-card-question text-xs">
                                 <strong class="text-dream-salmon">A vous demander :</strong> De quoi ai-je besoin de me libérer ?
@@ -2004,7 +2494,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/fr/" class="flex items-center gap-2 mb-4">
@@ -2012,20 +2502,47 @@
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>
                 <p class="text-sm text-gray-500 max-w-xs mb-6">Votre compagnon pour de meilleures nuits.</p>
+                <div class="flex gap-4">
+                    <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://x.com/NoctaliaDreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="X (Twitter) Noctalia">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@noctaliadreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="TikTok Noctalia">
+                        <i data-lucide="music-2" class="w-5 h-5"></i>
+                    </a>
+                </div>
             </div>
             <div>
                 <h5 class="font-bold mb-4 text-white">Ressources</h5>
-                <ul class="space-y-2 text-sm text-gray-500"><li><a href="/fr/blog/" class="text-dream-salmon">Ressources</a></li><li><a href="/fr/blog/comment-se-souvenir-de-ses-reves" class="hover:text-dream-salmon transition-colors">Se souvenir de ses rêves au réveil : 10 techniques</a></li><li><a href="/fr/blog/guide-journal-reves" class="hover:text-dream-salmon transition-colors">Tenir un journal de rêves : guide complet débutant</a></li><li><a href="/fr/blog/guide-reve-lucide-debutant" class="hover:text-dream-salmon transition-colors">Rêve lucide débutant : contrôlez vos nuits facilement - Noctalia</a></li><li><a href="/fr/blog/signification-reves-recurrents" class="hover:text-dream-salmon transition-colors">Rêves récurrents : pourquoi et comment les arrêter</a></li>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/fr/blog/" class="text-dream-salmon transition-colors">Ressources</a></li>
+                    <li><a href="/fr/blog/comment-se-souvenir-de-ses-reves" class="hover:text-dream-salmon transition-colors">Se souvenir de ses rêves au réveil : 10 techniques</a></li>
+                    <li><a href="/fr/blog/guide-journal-reves" class="hover:text-dream-salmon transition-colors">Tenir un journal de rêves : guide complet débutant</a></li>
+                    <li><a href="/fr/blog/guide-reve-lucide-debutant" class="hover:text-dream-salmon transition-colors">Rêve lucide débutant : contrôlez vos nuits facilement - Noctalia</a></li>
+                    <li><a href="/fr/blog/signification-reves-recurrents" class="hover:text-dream-salmon transition-colors">Rêves récurrents : pourquoi et comment les arrêter</a></li>
                 </ul>
             </div>
             <div>
                 <h5 class="font-bold mb-4 text-white">Dictionnaire des rêves</h5>
-                <ul class="space-y-2 text-sm text-gray-500"><li><a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon">Dictionnaire des rêves</a></li><li><a href="/fr/guides/" class="hover:text-dream-salmon transition-colors">Guides des rêves</a></li><li><a href="/fr/guides/symboles-reves-les-plus-courants" class="hover:text-dream-salmon transition-colors">20 symboles de rêves courants</a></li><li><a href="/fr/guides/symboles-reves-effrayants" class="hover:text-dream-salmon transition-colors">Rêves effrayants : symboles et sens</a></li><li><a href="/fr/guides/symboles-reves-animaux" class="hover:text-dream-salmon transition-colors">Animaux en rêve : symboles et sens</a></li><li><a href="/fr/guides/symboles-reves-eau" class="hover:text-dream-salmon transition-colors">Eau en rêve : signification</a></li>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/fr/guides/dictionnaire-symboles-reves" class="text-dream-salmon transition-colors">Dictionnaire des rêves</a></li>
+                    <li><a href="/fr/guides/" class="hover:text-dream-salmon transition-colors">Guides des rêves</a></li>
+                    <li><a href="/fr/guides/symboles-reves-les-plus-courants" class="hover:text-dream-salmon transition-colors">20 symboles de rêves courants</a></li>
+                    <li><a href="/fr/guides/symboles-reves-effrayants" class="hover:text-dream-salmon transition-colors">Rêves effrayants : symboles et sens</a></li>
+                    <li><a href="/fr/guides/symboles-reves-animaux" class="hover:text-dream-salmon transition-colors">Animaux en rêve : symboles et sens</a></li>
+                    <li><a href="/fr/guides/symboles-reves-eau" class="hover:text-dream-salmon transition-colors">Eau en rêve : signification</a></li>
                 </ul>
             </div>
             <div>
                 <h5 class="font-bold mb-4 text-white">Symboles populaires</h5>
-                <ul class="space-y-2 text-sm text-gray-500"><li><a href="/fr/symboles/eau" class="hover:text-dream-salmon transition-colors">Eau</a></li><li><a href="/fr/symboles/chute" class="hover:text-dream-salmon transition-colors">Chute</a></li><li><a href="/fr/symboles/voler" class="hover:text-dream-salmon transition-colors">Voler</a></li><li><a href="/fr/symboles/dents" class="hover:text-dream-salmon transition-colors">Dents (perdre ses dents)</a></li><li><a href="/fr/symboles/serpent" class="hover:text-dream-salmon transition-colors">Serpent</a></li>
+                <ul class="space-y-2 text-sm text-gray-500">
+                    <li><a href="/fr/symboles/eau" class="hover:text-dream-salmon transition-colors">Eau</a></li>
+                    <li><a href="/fr/symboles/chute" class="hover:text-dream-salmon transition-colors">Chute</a></li>
+                    <li><a href="/fr/symboles/voler" class="hover:text-dream-salmon transition-colors">Voler</a></li>
+                    <li><a href="/fr/symboles/dents" class="hover:text-dream-salmon transition-colors">Dents (perdre ses dents)</a></li>
+                    <li><a href="/fr/symboles/serpent" class="hover:text-dream-salmon transition-colors">Serpent</a></li>
                 </ul>
             </div>
             <div>
@@ -2033,8 +2550,9 @@
                 <ul class="space-y-2 text-sm text-gray-500 mb-4">
                     <li><a href="/fr/a-propos" class="hover:text-dream-salmon transition-colors">À propos</a></li>
                     <li><a href="/fr/mentions-legales" class="hover:text-dream-salmon transition-colors">Mentions légales</a></li>
-                    <li><a href="/fr/politique-confidentialite" class="hover:text-dream-salmon transition-colors">Confidentialité</a></li>
+                    <li><a href="/fr/politique-confidentialite" class="hover:text-dream-salmon transition-colors">Politique de confidentialité</a></li>
                     <li><a href="/fr/cgu" class="hover:text-dream-salmon transition-colors">CGU</a></li>
+                    <li><a href="/fr/suppression-compte" class="hover:text-dream-salmon transition-colors">Suppression de compte</a></li>
                 </ul>
                 <h5 class="font-bold mb-4 text-white">Téléchargement</h5>
                 <div class="flex flex-col gap-3">
@@ -2064,7 +2582,10 @@
 
             // ── Navbar scroll effect ──────────────────────────────────────
             window.addEventListener('scroll', () => {
-                if (navbar) { navbar.classList.toggle('py-2', window.scrollY > 50); navbar.classList.toggle('py-6', window.scrollY <= 50); }
+                if (navbar) {
+                    navbar.classList.toggle('py-3', window.scrollY > 50);
+                    navbar.classList.toggle('py-5', window.scrollY <= 50);
+                }
             });
 
             function updateSectionScrollOffset() {
@@ -2357,7 +2878,7 @@
             setSearchValue(heroSearch.value || '');
 
             // ── Smooth scroll for letter navigation ───────────────────────
-            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(link => {
+            document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link, .dictionary-hero-letter').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const target = document.querySelector(link.getAttribute('href'));
@@ -2371,7 +2892,7 @@
 
             // ── Active letter tracking (IntersectionObserver) ─────────────
             function setActiveAlpha(letter) {
-                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link').forEach(l => {
+                document.querySelectorAll('.letter-link, .sidebar-alpha-link, .mobile-alpha-link, .dictionary-hero-letter').forEach(l => {
                     l.classList.toggle('alpha-active', l.dataset.letter === letter);
                 });
             }
@@ -2401,6 +2922,7 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

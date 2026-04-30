@@ -107,7 +107,7 @@
                     Rivolgiamoci all'elefante nella stanza: <strong>sogni di <a class="text-dream-salmon hover:underline" href="../simboli/morte">morte</a> quasi mai prevedere la morte effettiva</strong>. Nonostante secoli di superstizione, non esiste alcuna prova scientifica che i sogni di morte siano profetici. Nel linguaggio dei sogni, la morte è un simbolo e, come la maggior parte dei simboli onirici, raramente significa ciò che descrive letteralmente.
                 </p>
 <p>
-                    In effetti, i sogni di morte sono straordinariamente comuni. Gli studi suggeriscono che <strong>oltre il 70% delle persone</strong> hanno sognato la morte ad un certo punto: la propria, quella di una persona cara o anche quella di un estraneo. Questi sogni compaiono in tutte le culture ed epoche, suggerendo che svolgono un'importante funzione psicologica.
+                    Questi sogni sono anche straordinariamente comuni. Gli studi suggeriscono che <strong>oltre il 70% delle persone</strong> ha sognato la morte a un certo punto: la propria, quella di una persona cara o anche quella di un estraneo. Presenti in tutte le culture ed epoche, svolgono un'importante funzione psicologica.
                 </p>
 <blockquote>
                     "Nei sogni, la morte è un simbolo di trasformazione. Il sogno ti mostra che qualcosa nella tua vita sta finendo affinché qualcosa di nuovo possa iniziare." - Dr. Rubin Naiman, specialista del sonno e dei sogni
@@ -192,11 +192,11 @@
                 </p>
 <h3>1. Sogni di morte come simboli di trasformazione e rinascita</h3>
 <p>
-                    L'interpretazione più comune. La morte nei sogni rappresenta la <strong>fine di un capitolo e l'inizio di un altro</strong>. Potresti superare i vecchi modi di essere, porre fine a una fase della vita o sperimentare un profondo cambiamento interiore. Come la fenice, qualcosa deve morire affinché qualcosa di nuovo possa nascere.
+                    Ecco l'interpretazione più comune. La morte nei sogni rappresenta la <strong>fine di un capitolo e l'inizio di un altro</strong>. Potresti superare i vecchi modi di essere, porre fine a una fase della vita o sperimentare un profondo cambiamento interiore. Come la fenice, qualcosa deve morire affinché qualcosa di nuovo possa nascere.
                 </p>
 <h3>2. I sogni di morte rappresentano la fine e la conclusione</h3>
 <p>
-                    I sogni di morte spesso appaiono quando qualcosa nella tua vita sta <strong>volgendo al termine</strong> - una relazione, un lavoro, una situazione di vita o una fase della vita. Il sogno ti aiuta a elaborare e ad accettare la fine, anche se non sei coscientemente consapevole che sta accadendo.
+                    Questi sogni spesso appaiono quando qualcosa nella tua vita sta <strong>volgendo al termine</strong> - una relazione, un lavoro, una situazione di vita o una fase della vita. Il sogno ti aiuta a elaborare e ad accettare la fine, anche se non ne sei coscientemente consapevole.
                 </p>
 <h3>3. I sogni di morte riflettono paura e ansia</h3>
 <p>
@@ -243,7 +243,7 @@
                 </p>
 <h3>Ricerca moderna sul simbolismo dei sogni di morte</h3>
 <p>
-                    I ricercatori contemporanei sui sogni suggeriscono che i sogni di morte ci aiutano <strong>provare ed elaborare il concetto di fine</strong>. Il nostro cervello può utilizzare lo spazio sicuro dei sogni per esplorare la mortalità, la perdita e il cambiamento senza conseguenze nel mondo reale.
+                    Secondo i ricercatori contemporanei, i sogni di morte ci aiutano a <strong>provare ed elaborare il concetto di fine</strong>. Il nostro cervello può utilizzare lo spazio sicuro dei sogni per esplorare la mortalità, la perdita e il cambiamento senza conseguenze nel mondo reale.
                 </p>
 <blockquote>
                     "La comparsa della morte nei sogni non significa necessariamente qualcosa di negativo. Può indicare che stai effettuando una transizione da una fase della tua vita a un'altra." - Dr. Michael Lennox, psicologo dei sogni

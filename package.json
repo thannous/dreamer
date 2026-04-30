@@ -24,8 +24,13 @@
     "db:contract:check:local": "node ./scripts/check-db-contract.js --local",
     "validate-seo": "node ./scripts/validate-i18n-seo.js",
     "docs:build": "node ./scripts/docs-build.js",
+    "docs:dev": "node ./scripts/docs-dev.js",
     "docs:check": "node ./scripts/docs-check.js",
     "docs:release-check": "node ./scripts/docs-release-check.js",
+    "docs:check-shell": "node ./scripts/check-docs-shell.js",
+    "docs:preview:cf": "npx wrangler pages dev docs",
+    "docs:deploy:preview": "node ./scripts/docs-deploy.js preview",
+    "docs:deploy:prod": "node ./scripts/docs-deploy.js prod",
     "docs:check-links": "node ./scripts/check-docs-links.js",
     "docs:check-crosslinks": "node ./scripts/check-blog-crosslinking-plan.js",
     "serve:docs": "node ./scripts/serve-docs.js",
@@ -164,7 +169,8 @@
     "typescript": "~5.9.2",
     "vite-tsconfig-paths": "^5.1.1",
     "vitest": "^4.0.13",
-    "workbox-cli": "^7.0.0"
+    "workbox-cli": "^7.0.0",
+    "wrangler": "^4.86.0"
   },
   "private": true
 }

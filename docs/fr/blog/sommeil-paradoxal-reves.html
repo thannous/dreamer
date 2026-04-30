@@ -24,7 +24,7 @@
     <meta property="og:title" content="Sommeil paradoxal : la clé de vos rêves intenses | Noctalia">
     <meta property="og:description" content="Qu&#39;est-ce que le sommeil paradoxal (REM) ? Découvrez son rôle essentiel dans vos rêves et comment optimiser cette phase.">
     <meta property="og:url" content="https://noctalia.app/fr/blog/sommeil-paradoxal-reves">
-    <meta property="og:image" content="https://noctalia.app/img/blog/sommeil-paradoxal-reves.webp">
+    <meta property="og:image" content="https://noctalia.app/img/blog/rem-sleep-dreams.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Graphique d&#39;ondes cérébrales typiques du sommeil paradoxal">
@@ -41,25 +41,36 @@
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Sommeil paradoxal : la clé de vos rêves intenses | Noctalia">
     <meta name="twitter:description" content="Qu&#39;est-ce que le sommeil paradoxal (REM) ? Découvrez son rôle essentiel dans vos rêves et comment optimiser cette phase.">
-    <meta name="twitter:image" content="https://noctalia.app/img/blog/sommeil-paradoxal-reves.webp">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/rem-sleep-dreams.webp">
     <meta name="twitter:image:alt" content="Graphique d&#39;ondes cérébrales typiques du sommeil paradoxal">
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Preload featured image -->
-    <link rel="preload" href="/img/blog/sommeil-paradoxal-reves.webp" as="image" type="image/webp">
+    <link rel="preload" href="/img/blog/rem-sleep-dreams.webp" as="image" type="image/webp">
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -78,7 +89,7 @@
             "description": "Découvrez la science du sommeil paradoxal et son rôle crucial dans les rêves. Apprenez les cycles de sommeil et comment optimiser votre sommeil paradoxal.",
             "image": {
                 "@type": "ImageObject",
-                "url": "https://noctalia.app/img/blog/sommeil-paradoxal-reves.webp",
+                "url": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
                 "width": 1200,
                 "height": 630
             },
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/fr/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/fr/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/fr/#comment-ca-marche" class="hidden lg:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="/fr/#fonctionnalites" class="hidden lg:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/fr/blog/" class="text-dream-salmon transition-colors">Ressources</a>
                 <a href="/fr/guides/" class="hover:text-white transition-colors">Guides des rêves</a>
                 <a href="/fr/guides/dictionnaire-symboles-reves" class="hover:text-white transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">À propos</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">FR</span>
+                        <span>FR</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/fr/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressources</a>
+                <a href="/fr/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guides des rêves</a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">À propos</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/rem-sleep-dreams" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/sommeil-paradoxal-reves" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Français</a>
+                    <a href="/es/blog/sueno-rem-suenos" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -293,7 +323,7 @@
 </div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Graphique d'ondes cérébrales typiques du sommeil paradoxal" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/sommeil-paradoxal-reves.webp" srcset="../../img/blog/sommeil-paradoxal-reves-480w.webp 480w, ../../img/blog/sommeil-paradoxal-reves-800w.webp 800w, ../../img/blog/sommeil-paradoxal-reves-1200w.webp 1200w" width="1200">
+<img alt="Graphique d'ondes cérébrales typiques du sommeil paradoxal" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -464,7 +494,7 @@
 </ul>
 <h3>Consolidation de la mémoire</h3>
 <p>
-                    Le sommeil REM joue un rôle crucial dans différents types de mémoire :
+                    Vos phases REM jouent un rôle crucial dans différents types de mémoire :
                 </p>
 <ul>
 <li><strong>Mémoire procédurale :</strong> Les compétences comme jouer d'un instrument ou pratiquer un sport sont renforcées</li>
@@ -472,11 +502,11 @@
 <li><strong>Résolution créative de problèmes :</strong> Le REM facilite les connexions nouvelles entre des idées disparates</li>
 </ul>
 <p>
-                    Les études montrent que <strong>les individus privés de REM performent moins bien sur les tâches créatives</strong> et ont du mal à apprendre de nouvelles compétences motrices. Le célèbre conseil « dormir dessus » à une base scientifique - le sommeil REM vous aide littéralement à résoudre des problèmes.
+                    Les études montrent que <strong>les individus privés de REM performent moins bien sur les tâches créatives</strong> et peinent à apprendre de nouvelles compétences motrices. Le célèbre conseil « dormir dessus » repose sur des bases scientifiques solides : le sommeil REM vous aide littéralement à résoudre des problèmes.
                 </p>
 <h3>Régulation émotionnelle</h3>
 <p>
-                    Le sommeil REM agit comme une « thérapie nocturne » pour les expériences émotionnelles. Pendant le REM :
+                    Considérez le sommeil REM comme une « thérapie nocturne » pour les expériences émotionnelles. Pendant cette phase :
                 </p>
 <ul>
 <li>Les souvenirs émotionnels sont réactivés dans l'amygdale</li>
@@ -503,7 +533,7 @@
 </aside>
 <h2 id="optimiser">Comment améliorer la qualité du sommeil paradoxal</h2>
 <p>
-                    Comme le sommeil REM est concentré dans les cycles de sommeil ultérieurs, dormir suffisamment au total est crucial. Mais il existe des stratégies spécifiques pour améliorer la qualité et la quantité de REM :
+                    Le sommeil REM se concentre dans les cycles ultérieurs, ce qui rend un temps de sommeil total suffisant essentiel. Des stratégies spécifiques permettent aussi d'améliorer la qualité et la quantité de REM :
                 </p>
 <h3>Durée et timing du sommeil</h3>
 <ul>
@@ -558,7 +588,7 @@
 <li>Blessure à soi-même ou au partenaire de sommeil</li>
 </ul>
 <p>
-                    Le TCSP affecte environ 0,5 % des adultes et est plus fréquent chez les hommes de plus de 50 ans. Fait important, le TCSP peut être un indicateur précoce de conditions neurodégénératives comme la maladie de Parkinson - environ 80 % des patients TCSP développent finalement un trouble parkinsonien.
+                    Le TCSP affecte environ 0,5 % des adultes et touche plus souvent les hommes de plus de 50 ans. Il peut aussi servir d'indicateur précoce de conditions neurodégénératives comme la maladie de Parkinson : environ 80 % des patients TCSP développent un trouble parkinsonien.
                 </p>
 <h3>Narcolepsie</h3>
 <p>
@@ -597,7 +627,7 @@
                 </p>
 <h2 id="rappel-reves">Mémoriser ses rêves : techniques liées au sommeil paradoxal</h2>
 <p>
-                    Comprendre les cycles de sommeil REM peut améliorer considérablement votre capacité à vous souvenir des rêves :
+                    Connaître les cycles de sommeil REM peut améliorer considérablement votre capacité à vous souvenir des rêves :
                 </p>
 <h3>Chronométrer votre réveil</h3>
 <p>
@@ -636,7 +666,7 @@
 <li><strong>Incubation de rêve :</strong> Se concentrer sur un sujet avant le sommeil peut influencer le contenu des rêves REM</li>
 </ul>
 <p>
-                    Comprendre que votre cerveau a besoin de <strong>cycles de sommeil complets</strong> pour accéder aux périodes REM les plus riches est fondamental. Beaucoup de gens sacrifient les 1 à 2 dernières heures de sommeil, sans réaliser qu'ils coupent leurs rêves les plus vivaces et mémorables.
+                    Votre cerveau a besoin de <strong>cycles de sommeil complets</strong> pour accéder aux périodes REM les plus riches. Beaucoup de gens sacrifient les 1 à 2 dernières heures de sommeil sans réaliser qu'ils suppriment leurs rêves les plus vivaces et mémorables.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -768,7 +798,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/fr/" class="flex items-center gap-2 mb-4">
@@ -845,8 +875,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

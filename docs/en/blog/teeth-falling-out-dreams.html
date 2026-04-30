@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -194,24 +205,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/en/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/en/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/en/#how-it-works" class="hidden lg:inline-flex hover:text-white transition-colors">How it works</a>
-                <a href="/en/#features" class="hidden lg:inline-flex hover:text-white transition-colors">Features</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/en/blog/" class="text-dream-salmon transition-colors">Resources</a>
                 <a href="/en/guides/" class="hover:text-white transition-colors">Dream Guides</a>
                 <a href="/en/guides/dream-symbols-dictionary" class="hover:text-white transition-colors">Dream Dictionary</a>
+                <a href="/en/about" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">About</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">EN</span>
+                        <span>EN</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -236,6 +246,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Download app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/en/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Resources</a>
+                <a href="/en/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dream Guides</a>
+                <a href="/en/guides/dream-symbols-dictionary" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dream Dictionary</a>
+                <a href="/en/about" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">About</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Download app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/teeth-falling-out-dreams" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">English</a>
+                    <a href="/fr/blog/reves-dents-qui-tombent" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/suenos-dientes-caen" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -318,7 +348,7 @@
                     Dreams about <a class="text-dream-salmon hover:underline" href="../symbols/teeth">teeth falling out</a> rank among the <strong>top 5 most reported dreams worldwide</strong>. A study published in <a href="https://www.frontiersin.org/journals/psychology" rel="nofollow noopener noreferrer" target="_blank">Frontiers in Psychology</a> found that approximately 39% of adults have experienced this dream at least once in their lifetime.
                 </p>
 <p>
-                    What makes this dream particularly fascinating is its <strong>universality across cultures</strong>. Whether you're in Tokyo, Paris, or New York, humans share this strange nocturnal experience. Ancient texts from Egypt, Greece, and China all document interpretations of teeth dreams, suggesting they've puzzled humans for millennia.
+                    What makes this dream particularly fascinating is its <strong>universality across cultures</strong>. Whether you're in Tokyo, Paris, or New York, humans share this strange nocturnal experience. Ancient texts from Egypt, Greece, and China all document teeth dream interpretations, which means they've puzzled humans for millennia.
                 </p>
 <blockquote>
                     "The universality of teeth dreams suggests they tap into something fundamental about the human experience - our fears, our vulnerabilities, our sense of self." - Dr. Antonio Zadra, Dream Researcher
@@ -404,7 +434,7 @@
                 </p>
 <h3>1. Anxiety About Appearance</h3>
 <p>
-                    Teeth are central to our smile and how we present ourselves. Dreams of losing them often reflect <strong>concerns about attractiveness</strong> or how others see us. This interpretation is particularly relevant if you're going through changes that affect your appearance or self-image.
+                    Teeth are central to our smile and how we present ourselves. Losing them in a dream often reflects <strong>concerns about attractiveness</strong> or how others see us. This interpretation is especially relevant if you're going through changes that affect your appearance or self-image.
                 </p>
 <h3>2. Fear of Aging</h3>
 <p>
@@ -412,7 +442,7 @@
                 </p>
 <h3>3. Loss of Power or Control</h3>
 <p>
-                    Teeth represent strength - we use them to bite, tear, and assert ourselves. When they fall out in dreams, it often symbolizes <strong>feeling powerless</strong> in a situation. Are you facing something where you feel you have no control?
+                    Teeth represent strength - we use them to bite, tear, and assert ourselves. When they fall out in dreams, it often symbolizes <strong>feeling powerless</strong> in a situation. Ask yourself: are you facing something where you feel you have no control?
                 </p>
 <h3>4. Communication Issues</h3>
 <p>
@@ -459,7 +489,7 @@
                 </p>
 <h3>Modern Research</h3>
 <p>
-                    Recent studies suggest teeth dreams may be linked to <strong>physical sensations during sleep</strong>. Teeth grinding (bruxism), jaw tension, or even dental irritation can trigger dreams about teeth. A 2018 study found a correlation between dental tension during sleep and teeth dream frequency.
+                    Recent studies suggest teeth dreams may be linked to <strong>physical sensations during sleep</strong>. Teeth grinding (bruxism), jaw tension, or even dental irritation can trigger dreams about teeth. One 2018 study found a correlation between dental tension during sleep and teeth dream frequency.
                 </p>
 <blockquote>
                     "While teeth dreams feel deeply symbolic, we shouldn't discount the possibility that they simply reflect physical sensations from our sleeping body." - Dr. Calvin Yu, Sleep Researcher
@@ -476,7 +506,7 @@
 <li><strong>Native American cultures:</strong> Viewed as wisdom emerging or life transitions</li>
 </ul>
 <p>
-                    These varied interpretations remind us that <strong>context and personal meaning matter most</strong>. What resonates with your life situation?
+                    All these interpretations remind us that <strong>context and personal meaning matter most</strong>. What resonates with your life situation?
                 </p>
 <h2 id="action">What to Do After This Dream</h2>
 <p>
@@ -646,7 +676,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/en/" class="flex items-center gap-2 mb-4">
@@ -723,8 +753,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> for dreamers</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

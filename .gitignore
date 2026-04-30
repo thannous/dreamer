@@ -47,6 +47,8 @@ docs/docs-server.*.log
 docs/*.bak
 docs/**/*.bak
 .docs-build-state.json
+tmp/
+%TEMP%/
 
 # macOS
 .DS_Store

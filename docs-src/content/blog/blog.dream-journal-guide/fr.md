@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Tenir un journal de rêves : guide complet débutant",
   "ogDescription": "Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.",
-  "ogImage": "https://noctalia.app/img/blog/guide-journal-reves.webp",
+  "ogImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "ogImageAlt": "Journal de rêves ouvert sur une table de chevet avec un stylo",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Tenir un journal de rêves : guide complet débutant",
   "twitterDescription": "Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.",
-  "twitterImage": "https://noctalia.app/img/blog/guide-journal-reves.webp",
+  "twitterImage": "https://noctalia.app/img/blog/dream-journal-guide.webp",
   "twitterImageAlt": "Journal de rêves ouvert sur une table de chevet avec un stylo",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-03-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-paralysie-sommeil",
   "nextPath": "/fr/blog/reves-sante-mentale",
-  "preloadImage": "/img/blog/guide-journal-reves.webp",
+  "preloadImage": "/img/blog/dream-journal-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Tenir un journal de rêves : guide complet débutant\",\n            \"description\": \"Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/guide-journal-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1373,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Tenir un journal de rêves : guide complet débutant\",\n            \"description\": \"Comment commencer un journal de rêves, quoi noter chaque matin et comment la pratique améliore le rappel et l'analyse.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dream-journal-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1373,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Combien de temps faut-il pour améliorer la mémoire des rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La plupart des gens remarquent une amélioration significative de leur mémoire onirique en 1 a 2 semaines de journaling régulier. Apres un mois, vous pouvez vous souvenir de 2 a 4 rêves par nuit contre des fragments occasionnels avant de commencer.\" } },\n                { \"@type\": \"Question\", \"name\": \"Dois-je écrire ou taper mon journal de rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les deux méthodes fonctionnent, mais l'enregistrement vocal est souvent le meilleur pour capturer les rêves immédiatement au réveil. Écrire à la main peut approfondir le traitement, tandis que taper est plus rapide. La clé est de choisir une méthode que vous utiliserez régulièrement.\" } },\n                { \"@type\": \"Question\", \"name\": \"Et si je ne me souviens d'aucun rêve ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Commencez par écrire 'Je ne me souviens pas de mes rêves' chaque matin - cela signale l'intention à votre cerveau. Fixez une intention avant de dormir, réveillez-vous lentement sans bouger, et essayez de vous réveiller pendant les cycles REM (environ 90 minutes apres l'endormissement, puis toutes les 90 minutes).\" } }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Guide journal de rêves\",\n            \"item\": \"https://noctalia.app/fr/blog/guide-journal-reves\"\n        }\n    ]\n}"
   ],
@@ -62,7 +62,7 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guide complet</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="journal-de-reves">Thématique : Journal de rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
-<span class="text-sm text-purple-300/60">Publie le 11 décembre 2025</span>
+<span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
 <span class="text-sm text-purple-300/60">5 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Journal de rêves ouvert sur une table de chevet avec un stylo" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/guide-journal-reves.webp" srcset="../../img/blog/guide-journal-reves-480w.webp 480w, ../../img/blog/guide-journal-reves-800w.webp 800w, ../../img/blog/guide-journal-reves-1200w.webp 1200w" width="1200">
+<img alt="Journal de rêves ouvert sur une table de chevet avec un stylo" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/dream-journal-guide.webp" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -140,7 +140,7 @@
                     Les rêves surviennent principalement pendant le <strong><a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a></strong>, quand votre hippocampe (centre de la mémoire) est moins actif qu'à l'éveil. Cette activité réduite signifie que les rêves ne sont pas consolides en mémoire a long terme comme les expériences éveillées.
                 </p>
 <p>
-                    De plus, au réveil :
+                    Au réveil :
                 </p>
 <ul>
 <li>Les niveaux de <strong>norepinephrine</strong> augmentent, passant votre cerveau en "mode éveil" et repoussant le contenu onirique</li>
@@ -174,7 +174,7 @@
 </ul>
 <h3>Etape 3 : Programmer son esprit avant le sommeil</h3>
 <p>
-                    Avant de dormir, dites-vous : <strong>"Je me souviendrai de mes rêves."</strong> Cette simple fixation d'intention a été démontrée pour améliorer significativement le rappel des rêves. Visualisez-vous vous réveiller et enregistrer vos rêves.
+                    Avant de dormir, dites-vous : <strong>"Je me souviendrai de mes rêves."</strong> Cette simple fixation d'intention améliore de façon mesurable le rappel des rêves. Visualisez-vous vous réveiller et enregistrer vos rêves.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -199,7 +199,7 @@
 <li><strong>Date et heure :</strong> Suivez les patterns de quand les rêves vivides surviennent</li>
 <li><strong>Récit :</strong> L'histoire de ce qui s'est passe, au présent</li>
 <li><strong>Émotions :</strong> Comment vous vous êtes senti pendant et apres le rêve</li>
-<li><strong>Personnages :</strong> Qui est apparu - personnes réelles, inconnus, vous-meme</li>
+<li><strong>Personnages :</strong> Qui est apparu - personnes réelles, inconnus, vous-même</li>
 <li><strong>Lieux :</strong> Ou cela s'est passe - endroits familiers, étranges, spécifiques</li>
 </ul>
 <h3>Details oniriques pour enrichir le journal</h3>
@@ -227,7 +227,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Enregistrez immédiatement</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        N'attendez meme pas une minute. Commencez à enregistrer des le réveil, meme avant d'ouvrir les yeux si possible.
+                        N'attendez même pas une minute. Commencez à enregistrer des le réveil, même avant d'ouvrir les yeux si possible.
                     </p>
 </div>
 <div class="tip-card glass-panel rounded-xl p-6 border border-transparent">
@@ -341,7 +341,7 @@
                 </p>
 <h3>Ignorer les rêves banals ou fragmentes</h3>
 <p>
-                    Chaque rêve compte. Les rêves banals révèlent quand meme des patterns et renforcent la capacité de rappel.
+                    Chaque rêve compte. Les rêves banals révèlent quand même des patterns et renforcent la capacité de rappel.
                 </p>
 <h3>Manque de regularite dans le journal</h3>
 <p>

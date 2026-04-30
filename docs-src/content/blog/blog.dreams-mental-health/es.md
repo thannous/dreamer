@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "es",
   "slug": "suenos-salud-mental",
-  "title": "Sueños y Salud Mental: Lo Que Revelan de Ti | Noctalia",
+  "title": "Sueños y Salud Mental: Lo ¿Qué Revelan de Ti | Noctalia",
   "description": "Descubre cómo ansiedad, depresión y trauma afectan tus sueños. Aprende técnicas de trabajo onírico para tu bienestar.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,25 +13,25 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Sueños y Salud Mental: Lo Que Revelan de Ti | Noctalia",
+  "ogTitle": "Sueños y Salud Mental: Lo ¿Qué Revelan de Ti | Noctalia",
   "ogDescription": "Descubre cómo ansiedad, depresión y trauma afectan tus sueños. Aprende técnicas de trabajo onírico para tu bienestar.",
-  "ogImage": "https://noctalia.app/img/blog/suenos-salud-mental.webp",
+  "ogImage": "https://noctalia.app/img/blog/dreams-mental-health.webp",
   "ogImageAlt": "Rostro sereno en equilibrio con su mundo interior",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Sueños y Salud Mental: Lo Que Revelan de Ti | Noctalia",
+  "twitterTitle": "Sueños y Salud Mental: Lo ¿Qué Revelan de Ti | Noctalia",
   "twitterDescription": "Descubre cómo ansiedad, depresión y trauma afectan tus sueños. Aprende técnicas de trabajo onírico para tu bienestar.",
-  "twitterImage": "https://noctalia.app/img/blog/suenos-salud-mental.webp",
+  "twitterImage": "https://noctalia.app/img/blog/dreams-mental-health.webp",
   "twitterImageAlt": "Rostro sereno en equilibrio con su mundo interior",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/guia-diario-suenos",
   "nextPath": "/es/blog/por-que-sonamos-ciencia",
-  "preloadImage": "/img/blog/suenos-salud-mental.webp",
+  "preloadImage": "/img/blog/dreams-mental-health.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente\",\n            \"description\": \"Descubre la conexión entre los sueños y la salud mental, incluyendo cómo la ansiedad, la depresión y el trauma afectan los sueños.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/suenos-salud-mental.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-salud-mental\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1782,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-salud-mental\"\n        }",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-salud-mental\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-salud-mental\",\n    \"name\": \"Sueños y Salud Mental: Lo Que Revelan de Ti | Noctalia\",\n    \"inLanguage\": \"es\",\n    \"reviewedBy\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n    }\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Pueden los sueños indicar problemas de salud mental?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, las pesadillas recurrentes, el contenido onírico perturbador o los cambios significativos en los patrones de sueños pueden ser indicadores de problemas de salud mental como ansiedad, depresión o TEPT. Sin embargo, los malos sueños ocasionales son normales y no necesariamente indican un problema. Si las perturbaciones oníricas persisten y afectan tu vida diaria, consulta a un profesional de salud mental.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Cómo afecta la ansiedad a los sueños?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La ansiedad a menudo se manifiesta en los sueños como escenarios que involucran ser perseguido, caer, estar mal preparado para exámenes o perder el control. Las personas con trastornos de ansiedad tienden a experimentar pesadillas más frecuentes, sueños más vívidos y mayor intensidad emocional en los sueños. La interrupción del sueño REM debido a la ansiedad también puede llevar a un recuerdo fragmentado de los sueños.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Puede trabajar con los sueños mejorar la salud mental?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, el trabajo con sueños puede ser terapéutico. Técnicas como llevar un diario de sueños, terapia de ensayo de imágenes y análisis de sueños en terapia pueden ayudar a procesar emociones, identificar desencadenantes, trabajar a través del trauma y ganar autoconciencia. Sin embargo, el trabajo con sueños debe complementar, no reemplazar, el tratamiento profesional de salud mental cuando sea necesario.\" } }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente\",\n            \"description\": \"Descubre la conexión entre los sueños y la salud mental, incluyendo cómo la ansiedad, la depresión y el trauma afectan los sueños.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dreams-mental-health.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-salud-mental\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1782,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-salud-mental\"\n        }",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-salud-mental\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-salud-mental\",\n    \"name\": \"Sueños y Salud Mental: Lo ¿Qué Revelan de Ti | Noctalia\",\n    \"inLanguage\": \"es\",\n    \"reviewedBy\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n    }\n}",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Pueden los sueños indicar problemas de salud mental?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, las pesadillas recurrentes, el contenido onírico perturbador o los cambios significativos en los patrones de sueños pueden ser indicadores de problemas de salud mental como ansiedad, depresión o TEPT. Sin embargo, los malos sueños ocasionales son normales y no necesariamente indican un problema. Si las perturbaciones oníricas persisten y afectan tu vida diaria, consulta a un profesional de salud mental.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Cómo afecta la ansiedad a los sueños?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La ansiedad a menudo se manifiesta en los sueños como escenarios que involucran ser perseguido, caer, estar mal preparado para exámenes o perder el control. ¿Las personas con trastornos de ansiedad tienden a experimentar pesadillas más frecuentes, sueños más vívidos y mayor intensidad emocional en los sueños. La interrupción del sueño REM debido a la ansiedad también puede llevar a un recuerdo fragmentado de los sueños.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Puede trabajar con los sueños mejorar la salud mental?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, el trabajo con sueños puede ser terapéutico. Técnicas como llevar un diario de sueños, terapia de ensayo de imágenes y análisis de sueños en terapia pueden ayudar a procesar emociones, identificar desencadenantes, trabajar a través del trauma y ganar autoconciencia. Sin embargo, el trabajo con sueños debe complementar, no reemplazar, el tratamiento profesional de salud mental cuando sea necesario.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Inicio\", \"item\": \"https://noctalia.app/es/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Recursos\", \"item\": \"https://noctalia.app/es/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Sueños y Salud Mental\", \"item\": \"https://noctalia.app/es/blog/suenos-salud-mental\" }\n            ]\n        }"
   ],
   "activeNav": "resources"
@@ -108,7 +108,7 @@
 </div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Rostro sereno en equilibrio con su mundo interior" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/suenos-salud-mental.webp" srcset="../../img/blog/suenos-salud-mental-480w.webp 480w, ../../img/blog/suenos-salud-mental-800w.webp 800w, ../../img/blog/suenos-salud-mental-1200w.webp 1200w" width="1200">
+<img alt="Rostro sereno en equilibrio con su mundo interior" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/dreams-mental-health.webp" srcset="../../img/blog/dreams-mental-health-480w.webp 480w, ../../img/blog/dreams-mental-health-800w.webp 800w, ../../img/blog/dreams-mental-health-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -133,7 +133,7 @@
                     Los sueños han fascinado a la humanidad durante milenios, pero solo recientemente la ciencia ha comenzado a descubrir su profunda relación con la salud mental. Durante el <strong><a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> (Movimiento Rápido de Ojos)</strong>, cuando ocurren los sueños más vívidos, tu cerebro procesa emociones, consolida recuerdos y trabaja en desafíos psicológicos.
                 </p>
 <p>
-                    La conexión es bidireccional: tu estado mental influye en tus sueños, y comprender tus sueños puede proporcionar información sobre tu salud mental. La investigación de la Sleep Research Society muestra que las personas con problemas de salud mental a menudo experimentan:
+                    Esta conexión funciona en ambas direcciones: tu estado mental influye en tus sueños, y comprender tus sueños puede revelar claves sobre tu salud mental. Investigaciones de la Sleep Research Society muestran que las personas con problemas de salud mental a menudo experimentan:
                 </p>
 <ul>
 <li><strong>Pesadillas más frecuentes:</strong> Hasta 4 veces más comunes en personas con trastornos de ansiedad</li>
@@ -146,7 +146,7 @@
                 </p>
 <h2 id="anxiety-dreams">Sueños y ansiedad: cómo moldea tus sueños</h2>
 <p>
-                    La ansiedad no se desactiva cuando te duermes: se infiltra en tu mundo onírico. Las personas con trastornos de ansiedad reportan experiencias de sueños distintivamente diferentes en comparación con aquellos sin ansiedad. Comprender el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">simbolismo de los sueños</a> puede ayudar a dar sentido a estos patrones recurrentes.
+                    La ansiedad no se desactiva cuando te duermes: se infiltra en tu mundo onírico. ¿Las personas con trastornos de ansiedad reportan experiencias de sueños distintivamente diferentes en comparación con aquellos sin ansiedad. Comprender el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">simbolismo de los sueños</a> puede ayudar a dar sentido a estos patrones recurrentes.
                 </p>
 <h3>Temas comunes en sueños de ansiedad</h3>
 <ul>
@@ -158,7 +158,7 @@
 </ul>
 <h3>Efectos fisiológicos</h3>
 <p>
-                    La ansiedad afecta no solo el contenido de los sueños sino también la arquitectura del sueño. Los estudios muestran que los individuos ansiosos experimentan:
+                    La ansiedad afecta no solo el contenido de los sueños, sino también la arquitectura del sueño. Estudios muestran que las personas ansiosas experimentan:
                 </p>
 <ul>
 <li><strong>Sueño REM fragmentado:</strong> Despertares más frecuentes durante los períodos de sueño</li>
@@ -167,7 +167,7 @@
 <li><strong>Sesgo en el recuerdo de sueños:</strong> Tendencia a recordar sueños amenazantes o negativos más vívidamente</li>
 </ul>
 <blockquote>
-                    "Mis sueños de ansiedad son como ver una película de terror que no puedo apagar. Siempre estoy huyendo de algo, pero nunca lo suficientemente rápido. Cuando me despierto, mi corazón late como si la amenaza fuera real."
+                    "Mis sueños de ansiedad son como ver una película de terror que no puedo apagar. Siempre estoy huyendo de algo, pero nunca lo suficientemente rápido. ¿Cuándo me despierto, mi corazón late como si la amenaza fuera real."
                 </blockquote>
 <h2 id="depression-dreams">Sueños y depresión: patrones oníricos</h2>
 <p>
@@ -183,7 +183,7 @@
 </ul>
 <h3>Anormalidades del sueño REM</h3>
 <p>
-                    La depresión causa cambios medibles en la estructura del sueño que afectan los sueños:
+                    Estos cambios medibles en la estructura del sueño afectan directamente los sueños:
                 </p>
 <ul>
 <li><strong>Reducción de latencia REM:</strong> Entrar en sueño REM más rápido de lo normal (a menudo menos de 60 minutos)</li>
@@ -276,11 +276,11 @@
 </aside>
 <h2 id="therapeutic-use">Sueños y salud mental: trabajo onírico en terapia</h2>
 <p>
-                    Los profesionales de salud mental reconocen cada vez más los sueños como herramientas terapéuticas valiosas. Varios enfoques basados en evidencia usan sueños para facilitar la sanación:
+                    Los profesionales de salud mental reconocen cada vez más los sueños como herramientas terapéuticas valiosas. Varios enfoques basados en evidencia aprovechan los sueños para facilitar la sanación:
                 </p>
 <h3>Terapia de Ensayo de Imágenes (IRT)</h3>
 <p>
-                    El estándar de oro para tratar <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> crónicas, particularmente en TEPT. Los pacientes reescriben finales de pesadillas mientras están despiertos, luego ensayan mentalmente la nueva versión. Los estudios muestran una <strong>reducción del 70-80% en la frecuencia de pesadillas</strong> en semanas.
+                    Considerada el estándar de oro para las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> crónicas, sobre todo en TEPT. Los pacientes reescriben finales de pesadillas mientras estan despiertos, luego ensayan mentalmente la nueva versión. Los estudios muestran una <strong>reducción del 70-80 % en la frecuencia de pesadillas</strong> en semanas.
                 </p>
 <h3>Análisis de sueños en psicoterapia</h3>
 <p>
@@ -404,7 +404,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La ansiedad a menudo se manifiesta en los sueños como escenarios que involucran ser perseguido, caer, estar mal preparado para exámenes o perder el control. Las personas con trastornos de ansiedad tienden a experimentar pesadillas más frecuentes, sueños más vívidos y mayor intensidad emocional en los sueños. La interrupción del sueño REM debido a la ansiedad también puede llevar a un recuerdo fragmentado de los sueños.
+                            La ansiedad a menudo se manifiesta en los sueños como escenarios que involucran ser perseguido, caer, estar mal preparado para exámenes o perder el control. ¿Las personas con trastornos de ansiedad tienden a experimentar pesadillas más frecuentes, sueños más vívidos y mayor intensidad emocional en los sueños. La interrupción del sueño REM debido a la ansiedad también puede llevar a un recuerdo fragmentado de los sueños.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -439,10 +439,10 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/dientes">Soñar con dientes (perder dientes)</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/examen">Soñar con examen</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/persecucion">Soñar con ser perseguido</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">Soñar con caída</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/dientes">¿Soñar con dientes (perder dientes)</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/examen">¿Soñar con examen</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/persecucion">¿Soñar con ser perseguido</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">¿Soñar con caída</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -453,7 +453,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Diario de suenos: la guia completa para registrar tus aventuras nocturnas</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Diario de sueños: la guia completa para registrar tus aventuras nocturnas</div>
       </div>
     </a>
     <a href="por-que-sonamos-ciencia" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -481,8 +481,8 @@
         </a>
         <a href="suenos-premonitorios-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pueden los suenos predecir el futuro? La ciencia de los suenos premonitorios</h3>
-            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los suenos premonitorios y si realmente pueden predecir el futuro.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios</h3>
+            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los sueños premonitorios y si realmente pueden predecir el futuro.</p>
         </a>
         <a href="por-que-sonamos-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>

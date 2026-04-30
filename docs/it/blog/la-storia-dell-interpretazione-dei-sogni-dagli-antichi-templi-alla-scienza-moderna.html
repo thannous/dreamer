@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=1df567dbbf12">
+    <link rel="stylesheet" href="/css/blog.min.css?v=1df567dbbf12">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=1df567dbbf12" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -194,24 +205,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/it/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/it/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/it/#come-funziona" class="hidden lg:inline-flex hover:text-white transition-colors">Come funziona</a>
-                <a href="/it/#funzionalita" class="hidden lg:inline-flex hover:text-white transition-colors">Funzionalità</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/it/blog/" class="text-dream-salmon transition-colors">Risorse</a>
                 <a href="/it/guides/" class="hover:text-white transition-colors">Guide ai sogni</a>
                 <a href="/it/guides/dizionario-simboli-sogni" class="hover:text-white transition-colors">Dizionario dei sogni</a>
+                <a href="/it/chi-siamo" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Chi siamo</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">IT</span>
+                        <span>IT</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -236,6 +246,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Scarica l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/it/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Risorse</a>
+                <a href="/it/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guide ai sogni</a>
+                <a href="/it/guides/dizionario-simboli-sogni" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dizionario dei sogni</a>
+                <a href="/it/chi-siamo" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Chi siamo</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Scarica l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/dream-interpretation-history" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/histoire-interpretation-reves" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/historia-interpretacion-suenos" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Italiano</a>
                 </div>
             </div>
         </div>
@@ -321,7 +351,7 @@
                     Le prime testimonianze scritte dell'interpretazione dei sogni provengono dall'antica <strong>Mesopotamia intorno al 3100 a.C.</strong>. I Sumeri, gli Assiri e i Babilonesi conservavano meticolosi registri dei sogni su tavolette di argilla, considerando i sogni messaggi del regno divino.
                 </p>
 <p>
-                    Il manufatto più famoso è il <strong>Libro dei sogni assiri</strong>, una raccolta di presagi onirici risalenti al VII secolo a.C. Questo testo classifica i sogni e i loro significati con notevole specificità:
+                    Tra questi documenti spicca il <strong>Libro dei sogni assiri</strong>, una raccolta di presagi onirici risalenti al VII secolo a.C. Questo testo classifica i sogni e i loro significati con notevole specificità:
                 </p>
 <ul>
 <li><strong>Sogni volanti:</strong> Indica la libertà da pesi o elevazione di status</li>
@@ -359,7 +389,7 @@
                 </p>
 <h2 id="ancient-greece">Interpretazione dei sogni nell'antica Grecia e a Roma: sogni medici e profetici</h2>
 <p>
-                    Gli antichi greci si avvicinavano ai sogni da entrambi <strong>prospettive mediche e mistiche</strong>. Nel V secolo a.C., i medici greci iniziarono a considerare i sogni come strumenti diagnostici per le malattie fisiche.
+                    Nell'antica Grecia, i sogni venivano affrontati da <strong>prospettive sia mediche che mistiche</strong>. Nel V secolo a.C., i medici greci iniziarono a usare i sogni come strumenti diagnostici per le malattie fisiche.
                 </p>
 <p>
 <strong>Ippocrate</strong> (460-370 a.C.), il padre della medicina, scrisse che i sogni potevano rivelare squilibri negli umori del corpo. Credeva che alcune immagini oniriche indicassero condizioni di salute specifiche - ad esempio, sogni di inondazioni potrebbero suggerire un eccesso di catarro.
@@ -368,7 +398,7 @@
                     Il filosofo <strong>Aristotele</strong> (384-322 a.C.) adottò una visione più razionalista, sostenendo nella sua opera "Sui sogni" che i sogni non erano messaggi divini ma piuttosto residui mentali di esperienze quotidiane e impressioni sensoriali elaborate durante il sonno.
                 </p>
 <p>
-                    Tuttavia, il testo greco più influente fu <strong>"Oneirocritica" di Artemidoro</strong> (L'interpretazione dei sogni), scritto intorno al 200 d.C. Quest'opera in cinque volumi divenne il manuale standard di interpretazione dei sogni per oltre 1.500 anni. Artemidoro classificò i sogni in due categorie:
+                    Eppure il testo greco più influente fu <strong>"Oneirocritica" di Artemidoro</strong> (L'interpretazione dei sogni), scritto intorno al 200 d.C. Quest'opera in cinque volumi divenne il manuale di riferimento per oltre 1.500 anni. Artemidoro classificò i sogni in due categorie:
                 </p>
 <ul>
 <li><strong>Sogni teorici:</strong> profezie dirette che si sarebbero avverate letteralmente</li>
@@ -379,7 +409,7 @@
                 </p>
 <h2 id="religious-traditions">Interpretazione religiosa dei sogni attraverso le culture</h2>
 <p>
-                    I sogni hanno un significato profondo praticamente in tutte le principali tradizioni religiose, spesso visti come un canale per la rivelazione divina.
+                    Praticamente tutte le principali tradizioni religiose attribuiscono ai sogni un significato profondo, considerandoli un canale per la rivelazione divina.
                 </p>
 <h3>Interpretazione dei sogni nel giudaismo e nel cristianesimo</h3>
 <p>
@@ -393,7 +423,7 @@
                     La tradizione islamica riconosce <strong>tre tipi di sogni</strong>: i veri sogni di Allah (ru'ya), i sogni dei propri pensieri (hulm) e i sogni di Satana. Si dice che il profeta Maometto abbia affermato che i veri sogni sono "una delle quarantasei parti della profezia".
                 </p>
 <p>
-                    Lo studioso <strong>Ibn Sirin</strong> (653-728 d.C.) compilò uno dei più importanti manuali di interpretazione dei sogni dell'Islam, che rimane influente anche oggi. Le sue interpretazioni enfatizzavano il contesto personale e lo stato spirituale del sognatore.
+                    <strong>Ibn Sirin</strong> (653-728 d.C.) compilò uno dei più importanti manuali di interpretazione dei sogni dell'Islam, ancora influente oggi. Le sue interpretazioni enfatizzavano il contesto personale e lo stato spirituale del sognatore.
                 </p>
 <h3>Interpretazione del sogno nell'induismo e nel buddismo</h3>
 <p>
@@ -418,7 +448,7 @@
 <li>Almanacchi popolari includevano dizionari dei sogni per la gente comune</li>
 </ul>
 <p>
-                    Tuttavia, il <strong>Secolo dell'Illuminismo</strong> (1685-1815) suscitò scetticismo. I filosofi razionalisti liquidavano l'interpretazione dei sogni come una superstizione, considerandoli un rumore mentale privo di significato.
+                    Poi il <strong>Secolo dell'Illuminismo</strong> (1685-1815) portò scetticismo. I filosofi razionalisti liquidavano l'interpretazione dei sogni come superstizione, considerandoli rumore mentale privo di significato.
                 </p>
 </div>
 <!-- Era Cards -->
@@ -587,17 +617,17 @@
                     I dreamworker contemporanei riconoscono sempre più che <strong>i metodi di interpretazione dovrebbero onorare la cultura contesto</strong>. Un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a> in un sogno potrebbe rappresentare la saggezza nella tradizione indù, il pericolo nei contesti occidentali o la guarigione nella prospettiva dei nativi americani.
                 </p>
 <p>
-                    Questa consapevolezza culturale ha arricchito la psicologia occidentale, portando ad approcci all'interpretazione dei sogni più sfumati e sensibili al contesto che riconoscono sia modelli universali che specificità culturale.
+                    Questa consapevolezza ha arricchito la psicologia occidentale, producendo approcci più sfumati e sensibili al contesto che riconoscono sia modelli universali che specificità culturale.
                 </p>
 <h3>Il futuro dell'interpretazione dei sogni e Scienza</h3>
 <p>
                     Con l'avanzare delle neuroscienze, stiamo sviluppando strumenti che sembravano fantascienza: <strong>decodificare il contenuto dei sogni dalle scansioni cerebrali, inducendo specifici temi dei sogni e persino comunicando con i sognatori lucidi durante il sonno</strong>.
                 </p>
 <p>
-                    Tuttavia l'impulso umano fondamentale a trovare un significato nei sogni persiste. Forse l'intuizione più profonda di questa storia di 5.000 anni è che i sogni svolgono molteplici funzioni: elaborano emozioni, consolidano ricordi, simulano minacce, esprimono desideri e riflettono le nostre preoccupazioni più profonde, il tutto contemporaneamente.
+                    Eppure l'impulso umano di trovare un significato nei sogni persiste. Forse la lezione più profonda di questa storia di 5.000 anni: i sogni svolgono molteplici funzioni contemporaneamente. Elaborano emozioni, consolidano ricordi, simulano minacce, esprimono desideri e riflettono le nostre preoccupazioni più profonde.
                 </p>
 <p>
-                    La storia dell'interpretazione dei sogni rivela una conversazione in evoluzione tra gli esseri umani e i loro mondi interiori, ogni epoca apporta intuizioni uniche mentre si basa sull'antica saggezza.
+                    Ciò che emerge da questa storia è un dialogo in evoluzione tra gli esseri umani e i loro mondi interiori, ogni epoca con intuizioni uniche che si basano sull'antica saggezza.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -735,7 +765,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/it/" class="flex items-center gap-2 mb-4">
@@ -812,8 +842,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fatto con <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> per i sognatori</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=1df567dbbf12" defer></script>
+    <script src="/js/language-dropdown.js?v=1df567dbbf12" defer></script>
+    <script src="/js/mobile-menu.js?v=1df567dbbf12" defer></script>
+    <script src="/js/blog-article.js?v=1df567dbbf12" defer></script>
 </body>
 </html>

@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sogni sul tuo ex: cosa significano veramente\",\n            \"description\": \"Perché continui a sognare il tuo ex? Scopri i significati psicologici dietro i sogni sugli ex partner.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/dreams-about-ex.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/it/chi-siamo\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente\"\n            },\n            \"inLanguage\": \"it\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1035,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente\"\n        }",
     "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Perché continuo a sognare il mio ex?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Sognare un ex non significa necessariamente che lo rivuoi. Questi sogni spesso rappresentano emozioni irrisolte, lezioni apprese o aspetti di te associati a quella relazione. Il tuo cervello elabora le esperienze passate durante il sonno e le relazioni significative lasciano impronte neurali durature.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Sognare un ex significa che lo amo ancora?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Non necessariamente. I sogni sugli ex possono riflettere molte cose: elaborazione del dolore, elaborazione di questioni irrisolte, mancanza di determinate qualità (non della persona) o il tuo subconscio che usa un volto familiare per rappresentare qualcos'altro. L'emozione nel sogno conta più dell'aspetto del tuo ex.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Perché sogno un ex a cui non penso da anni?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"I sogni improvvisi su un ex dimenticato da tempo spesso si verificano quando qualcosa nella tua vita attuale innesca ricordi o emozioni associati. Potresti dover affrontare dinamiche relazionali, circostanze di vita o sfide emotive simili. Il tuo cervello usa le esperienze passate come punti di riferimento per le situazioni attuali.\"\n                        }\n                }\n        ]\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Dreams About Ex\",\n            \"item\": \"https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente\"\n        }\n    ]\n}"
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/it/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Risorse\",\n            \"item\": \"https://noctalia.app/it/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sogni sull'ex\",\n            \"item\": \"https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
@@ -50,7 +50,7 @@
 </li>
 <li class="text-purple-400">/</li>
 <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="text-dream-cream" itemprop="name">Dreams About Ex</span>
+<span class="text-dream-cream" itemprop="name">Sogni sull'ex</span>
 <meta content="3" itemprop="position">
 </li>
 </ol>
@@ -113,14 +113,14 @@
                     Questi ricordi possono emergere in ambienti familiari come una <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a> che sembra carica di significato.
                 </p>
 <p>
-                    La ricerca dimostra che è più probabile che sogniamo persone che hanno avuto un forte impatto emotivo su di noi, indipendentemente dal fatto che tali emozioni fossero positive o negative. Il tuo ex rappresenta un capitolo significativo della tua vita e il tuo cervello usa quel punto di riferimento quando elabora temi simili.
+                    La ricerca dimostra che è più probabile sognare persone che hanno avuto un forte impatto emotivo su di noi, indipendentemente dal fatto che tali emozioni fossero positive o negative. Il tuo ex rappresenta un capitolo centrale della tua vita e il tuo cervello usa quel punto di riferimento quando elabora temi simili.
                 </p>
 <blockquote>
                     "I sogni sugli ex raramente riguardano la persona reale. Di solito riguardano ciò che quella persona rappresenta: un momento della tua vita, un sentimento o un aspetto di te stesso." - Dott.ssa Wendy Walsh, psicologa relazionale
                 </blockquote>
 <h2 id="scenarios">Sogni comuni sul tuo ex e il suo significato</h2>
 <p>
-                    Lo scenario del tuo sogno fornisce importanti indizi sul suo significato:
+                    Ogni scenario onirico fornisce importanti indizi sul suo significato:
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -143,7 +143,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Lotta o conflitto</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Gli argomenti nei sogni suggeriscono <strong>irrisolti problemi o risentimento persistente</strong>. Il tuo subconscio potrebbe elaborare cose che non hai mai avuto da dire o sentimenti che non hai completamente elaborato.
+                        I litigi nei sogni suggeriscono <strong>problemi irrisolti o risentimento persistente</strong>. Il tuo subconscio potrebbe elaborare cose che non hai mai avuto modo di dire o sentimenti che non hai completamente affrontato.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -165,7 +165,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Ex con qualcuno di nuovo</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Vedere il proprio ex con un'altra persona spesso riflette <strong>la perdita dell'elaborazione, la paura di essere sostituiti</strong> o l'elaborazione di sentimenti di inadeguatezza della relazione.
+                        Vedere il proprio ex con un'altra persona spesso riflette <strong>l'elaborazione della perdita, la paura di essere sostituiti</strong> o l'elaborazione di sentimenti di inadeguatezza legati alla relazione.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -203,7 +203,7 @@
                 </p>
 <h3>3. Imparare lezioni di vita attraverso i sogni</h3>
 <p>
-                    Le relazioni ci insegnano cose su noi stessi. I sogni possono apparire quando <strong>integra inconsciamente lezioni da quella relazione</strong> riconoscendo modelli, comprendendo le tue esigenze o elaborando il modo in cui sei cresciuto.
+                    Le relazioni ci insegnano molto su noi stessi. I sogni possono comparire quando <strong>integri inconsciamente le lezioni di quella relazione</strong>, riconoscendo schemi ricorrenti, comprendendo i tuoi bisogni o elaborando il modo in cui sei cresciuto.
                 </p>
 <h3>4. La relazione attuale innesca ex sogni</h3>
 <p>
@@ -220,7 +220,7 @@
 </div>
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Decodifica i tuoi sogni relazionali</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analizza i dettagli specifici dei tuoi ex sogni - lo scenario, le emozioni e il contesto - per aiutarti a capire quali sono i tuoi sogni il subconscio sta elaborando.</p>
+<p class="text-sm text-gray-400 mb-4">Noctalia analizza i dettagli specifici dei tuoi sogni sull'ex - lo scenario, le emozioni e il contesto - per aiutarti a capire cosa il tuo subconscio sta elaborando.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
                                 Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -230,7 +230,7 @@
 <h2 id="psychology">Psicologia dietro i sogni sugli ex partner</h2>
 <h3>Come lo stile di attaccamento influisce sugli ex sogni</h3>
 <p>
-                    Il nostro stile di attaccamento influenza il modo in cui elaboriamo le rotture. <strong>Individui ansiosi</strong> tendono ad avere ex sogni più frequenti e impiegano più tempo per smettere di averli loro. <strong>Le persone con attaccamento evitante</strong> potrebbero sopprimere i pensieri della veglia solo per farli emergere nei sogni.
+                    Il nostro stile di attaccamento influenza il modo in cui elaboriamo le rotture. Le <strong>persone con attaccamento ansioso</strong> tendono ad avere sogni sull'ex più frequenti e impiegano più tempo a smettere di farli. <strong>Le persone con attaccamento evitante</strong> potrebbero sopprimere i pensieri da svegli solo per vederli riemergere nei sogni.
                 </p>
 <h3>Consolidamento della memoria durante il sonno REM</h3>
 <p>
@@ -253,7 +253,7 @@
                 </p>
 <h3>Il tuo cervello confronta i partner passati e attuali</h3>
 <p>
-                    Il tuo subconscio potrebbe <strong>confrontando le dinamiche</strong> - non per preferirne uno rispetto all'altro, ma per comprendere la tua relazione attuale attraverso la lente dell'esperienza passata.
+                    Il tuo subconscio potrebbe stare <strong>confrontando le dinamiche</strong> - non per preferire un partner rispetto all'altro, ma per comprendere la tua relazione attuale attraverso la lente dell'esperienza passata.
                 </p>
 <h3>Dovresti parlare al tuo partner dei sogni degli ex?</h3>
 <p>
@@ -262,11 +262,11 @@
 <h2 id="moving-on">Come smettere di sognare il tuo ex</h2>
 <h3>1. Tieni un <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">Diario dei sogni</a> Sugli ex sogni</h3>
 <p>
-                    Annota il sogno immediatamente dopo esserti svegliato. Annota <strong>lo scenario, le emozioni e tutti i simboli</strong> (come un <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simboli/porta">porta</a>, un <a class="text-dream-salmon hover:underline" href="../simboli/telefono">telefono</a> o un <a class="text-dream-salmon hover:underline" href="../simboli/specchio">mirror</a>). Nel corso del tempo emergono modelli che rivelano su cosa sta lavorando il tuo subconscio.
+                    Annota il sogno immediatamente dopo esserti svegliato. Annota <strong>lo scenario, le emozioni e tutti i simboli</strong> (come un <a class="text-dream-salmon hover:underline" href="../simboli/casa">casa</a>, una <a class="text-dream-salmon hover:underline" href="../simboli/porta">porta</a>, un <a class="text-dream-salmon hover:underline" href="../simboli/telefono">telefono</a> o uno <a class="text-dream-salmon hover:underline" href="../simboli/specchio">specchio</a>). Nel corso del tempo emergono modelli che rivelano su cosa sta lavorando il tuo subconscio.
                 </p>
 <h3>2. Identifica cosa scatena gli ex sogni</h3>
 <p>
-                    Chiediti: cosa sta succedendo nella mia vita adesso? <strong>Eventi, fattori di stress o situazioni recenti</strong> potrebbe aver innescato il sogno. La connessione non è sempre ovvia, ma esplorare aiuta.
+                    Chiediti: cosa sta succedendo nella mia vita adesso? <strong>Eventi, fattori di stress o situazioni recenti</strong> potrebbero aver innescato il sogno. La connessione non è sempre ovvia, ma esplorare aiuta.
                 </p>
 <h3>3. Crea la tua chiusura emotiva</h3>
 <p>

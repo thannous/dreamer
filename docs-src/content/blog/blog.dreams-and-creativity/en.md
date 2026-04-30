@@ -115,7 +115,7 @@
                     During <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, your brain enters a state neuroscientists describe as "hyperassociative." It pulls fragments from different memories, emotions, and sensory experiences and weaves them together in combinations your waking mind would never attempt. A childhood memory of the ocean might merge with a work problem and a song you heard on the radio, producing an entirely novel idea that feels both strange and profound.
                 </p>
 <p>
-                    This is not a random malfunction. Evolution appears to have designed dreaming as a cognitive sandbox — a space where the brain can test-drive new patterns, rehearse unfamiliar scenarios, and forge connections between seemingly unrelated concepts. The reduced inhibition of the dreaming brain is precisely what makes it so creatively potent.
+                    This is not a random malfunction. Evolution appears to have designed dreaming as a cognitive sandbox — a space where the brain can test-drive new patterns, rehearse unfamiliar scenarios, and forge connections between seemingly unrelated concepts. Reduced inhibition is precisely what makes the dreaming brain so creatively potent.
                 </p>
 <p>
                     Psychologists call this process "divergent thinking" — the ability to generate multiple solutions to an open-ended problem. Studies consistently show that REM sleep enhances divergent thinking far more than quiet rest or non-REM sleep. Your dreaming brain is, quite literally, built for creative breakthroughs.
@@ -162,7 +162,7 @@
                 </p>
 <h3>Why the dreaming brain is uniquely creative</h3>
 <p>
-                    The combination of prefrontal deactivation (less self-censorship), increased amygdala activity (heightened emotional associations), and active memory consolidation creates a brain state that is unlike anything achievable while awake. It's as if evolution built a nightly brainstorming session into your biology — one where the most conservative voice in the room has been asked to step outside.
+                    Prefrontal deactivation (less self-censorship), increased amygdala activity (heightened emotional associations), and active memory consolidation combine to create a brain state unlike anything achievable while awake. It's as if evolution built a nightly brainstorming session into your biology — one where the most conservative voice in the room has been asked to step outside.
                 </p>
 </div>
 <!-- Creativity Dream Cards -->
@@ -210,11 +210,11 @@
                 </p>
 <h2 id="capture-insights">How to Capture and Use Creative Dream Insights</h2>
 <p>
-                    The most creative dream in the world is worthless if it evaporates before you can record it. The average person forgets <strong>90% of their dream content</strong> within 10 minutes of waking. Capturing creative insights from dreams requires both the right tools and the right habits.
+                    The most creative dream in the world is worthless if it evaporates before you can record it. On average, people forget <strong>90% of their dream content</strong> within 10 minutes of waking. Capturing creative insights from dreams requires both the right tools and the right habits.
                 </p>
 <h3>Journal immediately upon waking</h3>
 <p>
-                    Keep a notebook or voice recorder within arm's reach. The first 60 seconds after waking are critical — this is when dream memories are most vivid and most fragile. Write or speak everything you remember, no matter how fragmentary or bizarre it seems. Details that seem meaningless in the moment often reveal their significance later. For proven techniques to strengthen your dream recall, check our guide on <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">how to remember your dreams</a>.
+                    Keep a notebook or voice recorder within arm's reach. The first 60 seconds after waking are critical — this is when dream memories are most vivid and most fragile. Write or speak everything you remember, no matter how fragmentary or bizarre it seems. Details that seem meaningless in the moment often reveal their significance later. For proven techniques to strengthen your dream recall, check our guide on <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">how to remember your dreams</a>.
                 </p>
 <h3>Use voice recording for speed</h3>
 <p>
@@ -343,7 +343,7 @@
 <h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: Understanding Your Brain's Nightly Reset</h3>
 <p class="text-sm text-gray-400">Discover what happens during REM sleep and why this phase is essential for memory, emotion, and creativity.</p>
 </a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="how-to-remember-dreams">
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="why-we-forget-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
 <p class="text-sm text-gray-400">Practical methods to improve dream recall and never lose a creative insight from your sleeping mind again.</p>

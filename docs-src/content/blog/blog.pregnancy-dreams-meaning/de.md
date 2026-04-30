@@ -110,7 +110,7 @@
                     Denken Sie darüber nach, was eine Schwangerschaft bedeutet: etwas zu pflegen, das wächst, auf einen Neuankömmling zu warten und dabei selbst eine Transformation zu durchlaufen. Diese Themen gelten für unzählige Lebenssituationen, die über die Geburt eines <a class="text-dream-salmon hover:underline" href="../traumsymbole/baby">Babys hinausgehen</a>.
                 </p>
 <p>
-                    Schwangerschaftsträume tauchen oft auf, wenn Sie:
+                    Diese Träume tauchen oft auf, wenn Sie:
                 </p>
 <ul>
 <li><strong>ein kreatives Projekt beginnen</strong> - ein Buch, ein Geschäft, ein Kunstwerk oder ein anderes kreatives Unterfangen</li>
@@ -203,11 +203,11 @@
                 </p>
 <h3>2. Persönliche Transformation und persönliches Wachstum</h3>
 <p>
-                    Schwangerschaftsträume tauchen oft in Zeiten <strong>bedeutender persönlicher Entwicklung</strong>. Du bist „schwanger“ mit einer neuen Version von dir selbst – Entwicklung neuer Eigenschaften, Überzeugungen oder Seinsweisen, die sich noch nicht vollständig manifestiert haben.
+                    Diese Träume tauchen häufig in Zeiten <strong>bedeutender persönlicher Entwicklung</strong> auf. Sie sind „schwanger” mit einer neuen Version von sich selbst und entwickeln neue Eigenschaften, Überzeugungen oder Seinsweisen, die sich noch nicht vollständig manifestiert haben.
                 </p>
 <h3>3. Neuanfänge und Lebensübergänge</h3>
 <p>
-                    Etwas Neues zu beginnen – ein Job, eine Beziehung, ein Lebensabschnitt – kann Schwangerschaftsträume auslösen. Der Traum erkennt an, dass <strong>etwas beginnt, das im Laufe der Zeit wachsen und sich entwickeln wird.</strong> over time.
+                    Etwas Neues zu beginnen – ein Job, eine Beziehung, ein Lebensabschnitt – kann Schwangerschaftsträume auslösen. Der Traum erkennt an, dass <strong>etwas beginnt, das im Laufe der Zeit wachsen und sich entwickeln wird</strong>.
                 </p>
 <h3>4. Angst vor Verantwortung in Träumen</h3>
 <p>
@@ -254,7 +254,7 @@
                 </p>
 <h3>Erhöhte Traumerinnerung während der Schwangerschaft</h3>
 <p>
-                    Schwangere berichten oft <strong>lebendigere und bessere Träume Rückruf</strong>. Hormonelle Veränderungen, Schlafstörungen und gesteigerte Emotionen tragen alle zu unvergesslicheren Träumen bei.
+                    Schwangere berichten oft von <strong>lebhafteren Träumen und besserer Erinnerung</strong>. Hormonelle Veränderungen, Schlafstörungen und gesteigerte Emotionen tragen alle zu unvergesslicheren Träumen bei.
                 </p>
 <h3>Ängste durch Schwangerschaftsträume verarbeiten</h3>
 <p>
@@ -274,7 +274,7 @@
                 </p>
 <h3>2. Beachten Sie das Stadium der Schwangerschaft in Ihrem Traum</h3>
 <p>
-                    Frühschwangerschaft? Kurz vor der Lieferung? Die Phase gibt an <strong>wie weit Ihr "Projekt" fortgeschritten ist. ist</strong>. Frühe Stadien deuten auf Neuanfänge hin; Wehen deuten darauf hin, dass sich etwas manifestieren wird.
+                    Frühschwangerschaft? Kurz vor der Entbindung? Das Stadium zeigt, <strong>wie weit Ihr „Projekt" fortgeschritten ist</strong>. Frühe Stadien deuten auf Neuanfänge hin; Wehen deuten darauf hin, dass sich etwas manifestieren wird.
                 </p>
 <h3>3. Untersuchen Sie Ihre Emotionen im Traum</h3>
 <p>

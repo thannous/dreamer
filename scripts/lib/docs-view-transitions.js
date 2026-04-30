@@ -3,9 +3,7 @@ const VIEW_TRANSITION_MARKER = '@view-transition';
 function renderViewTransitionHeadStyles() {
   return [
     '    <style>',
-    '      @view-transition {',
-    '        navigation: auto;',
-    '      }',
+    '      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */',
     '',
     '      @media (prefers-reduced-motion: reduce) {',
     '        ::view-transition-group(*),',

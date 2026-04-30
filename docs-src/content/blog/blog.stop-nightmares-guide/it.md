@@ -110,7 +110,7 @@
                     Spesso presentano temi come <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguiti</a>, che può aumentare il senso di minaccia.
                 </p>
 <p>
-                    Mentre gli incubi occasionali sono normali, <strong>2-8% degli adulti li sperimenta frequentemente</strong> - una volta alla settimana o più. Quando gli incubi influiscono in modo significativo sulla qualità del sonno o sul funzionamento quotidiano, possono essere classificati come disturbo da incubi.
+                    Mentre gli incubi occasionali sono normali, <strong>il 2-8% degli adulti li sperimenta frequentemente</strong> - una volta alla settimana o più. Quando gli incubi compromettono la qualità del sonno o il funzionamento quotidiano, possono essere classificati come disturbo da incubi.
                 </p>
 <p>
                     Gli incubi differiscono dai terrori notturni, che si verificano durante i periodi non<a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a>, comportano reazioni fisiche come urla e vengono ricordati raramente. Gli incubi vengono ricordati completamente e si verificano durante le fasi del sonno più leggero.
@@ -191,7 +191,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="meaning">Significato degli incubi: cosa rivelano i tuoi brutti sogni</h2>
 <p>
-                    Gli incubi non sono casuali: spesso portano messaggi significativi dal tuo subconscio:
+                    I tuoi incubi non sono casuali: spesso portano messaggi significativi dal subconscio:
                 </p>
 <p>
                     Se i tuoi incubi ruotano attorno a temi ricorrenti come <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">essere inseguiti</a>, <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a>, <a class="text-dream-salmon hover:underline" href="../simboli/morte">morte</a> o creature spaventose come un <a class="text-dream-salmon hover:underline" href="../simboli/serpente">serpente</a> o <a class="text-dream-salmon hover:underline" href="../simboli/ragno">ragno</a>, cercare questi simboli può aiutarti a interpretare il messaggio più profondo.
@@ -214,7 +214,7 @@
 <h2 id="types">Tipi di incubi e loro significato psicologico</h2>
 <h3>Incubi da stress</h3>
 <p>
-                    Il tipo più comune, direttamente correlato ai fattori di stress quotidiani. Questi incubi spesso presentano <strong>scenari in cui si è impreparati, si falliscono o si affrontano situazioni imbarazzanti</strong>. In genere diminuiscono quando il fattore di stress viene risolto.
+                    Rappresentano il tipo più comune, direttamente correlato ai fattori di stress quotidiani. Questi incubi spesso presentano <strong>scenari in cui si è impreparati, si fallisce o si affrontano situazioni imbarazzanti</strong>. In genere diminuiscono quando il fattore di stress viene risolto.
                 </p>
 <h3>Incubi da trauma</h3>
 <p>
@@ -222,7 +222,7 @@
                 </p>
 <h3>Incubi ricorrenti</h3>
 <p>
-                    Lo stesso incubo che si ripete notte dopo notte suggerisce un <strong>problema irrisolto che la tua psiche sta cercando di elaborare</strong>. La ripetizione spesso continua finché non viene risolto il problema di fondo.
+                    Quando lo stesso incubo si ripete notte dopo notte, suggerisce un <strong>problema irrisolto che la tua psiche sta cercando di elaborare</strong>. Aspettati che la ripetizione continui finché non risolvi il problema di fondo.
                 </p>
 <h3>Incubi esistenziali</h3>
 <p>
@@ -248,7 +248,7 @@
                 </p>
 <h3>1. Terapia di ripetizione delle immagini (IRT)</h3>
 <p>
-                    La tecnica più efficace per gli incubi ricorrenti. <strong>Mentre sei sveglio, visualizza l'incubo ma cambia il finale</strong> in qualcosa di neutro o positivo. Pratica questa nuova versione ogni giorno per 10-20 minuti. Gli studi dimostrano che la IRT può ridurre la frequenza degli incubi del 50-80%.
+                    Considera questa la tecnica di riferimento per gli incubi ricorrenti. <strong>Mentre sei sveglio, visualizza l'incubo ma cambia il finale</strong> in qualcosa di neutro o positivo. Pratica questa nuova versione ogni giorno per 10-20 minuti. Gli studi dimostrano che la IRT può ridurre la frequenza degli incubi del 50-80%.
                 </p>
 <h3>2. Migliora l'igiene del sonno</h3>
 <p>

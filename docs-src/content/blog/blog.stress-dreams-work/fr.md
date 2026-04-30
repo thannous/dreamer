@@ -115,7 +115,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#why-work-invades">1. Pourquoi le travail envahit vos rêves</a></li>
-<li><a class="toc-link block" href="#common-scenarios">2. Les rêves de stress au travail les plus courants</a></li>
+<li><a class="toc-link block" href="#common-scénarios">2. Les rêves de stress au travail les plus courants</a></li>
 <li><a class="toc-link block" href="#science">3. La science derrière les rêves de stress au travail</a></li>
 <li><a class="toc-link block" href="#what-telling-you">4. Ce que vos rêves de travail vous disent</a></li>
 <li><a class="toc-link block" href="#how-to-stop">5. Comment arrêter les rêves de stress au travail</a></li>
@@ -130,7 +130,7 @@
                     Vous passez environ un tiers de votre vie éveillée au travail. Cela représente des milliers d'heures d'interactions sociales, d'échéances, de pression à la performance et de charge émotionnelle - autant d'éléments que votre cerveau doit traiter. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, votre esprit rejoue et réorganise les expériences les plus chargées émotionnellement de la journée, et pour la plupart des adultes, le travail arrive en tête de liste.
                 </p>
 <p>
-                    Ce phénomène n'est pas aléatoire. Les recherches de l'American Psychological Association montrent que <strong>le travail est la première source de stress</strong> chez les adultes dans la plupart des pays développés. Lorsque les hormones de stress comme le cortisol restent élevées au moment du coucher, elles influencent directement le contenu des rêves, ramenant votre esprit au bureau même lorsque votre corps se repose.
+                    Rien de tout cela n'est aleatoire. Les recherches de l'American Psychological Association montrent que <strong>le travail est la premiere source de stress</strong> chez les adultes dans la plupart des pays developpes. Lorsque les hormones de stress comme le cortisol restent élevées au moment du coucher, elles influencent directement le contenu des rêves, ramenant votre esprit au bureau même lorsque votre corps se repose.
                 </p>
 <p>
                     Plusieurs facteurs rendent le travail particulièrement « collant » pour le cerveau rêveur :
@@ -141,7 +141,7 @@
 <li><strong>Complexité sociale :</strong> Les relations au travail impliquent des dynamiques de pouvoir, de compétition et de collaboration - un matériau riche pour la simulation onirique</li>
 <li><strong>Anxiété de performance :</strong> La pression constante pour obtenir des résultats active les circuits de détection des menaces qui persistent jusque dans le sommeil</li>
 </ul>
-<h2 id="common-scenarios">Les rêves de stress au travail les plus courants</h2>
+<h2 id="common-scénarios">Les rêves de stress au travail les plus courants</h2>
 <p>
                     Si l'expérience de chaque rêveur est unique, certains scénarios liés au travail apparaissent avec une régularité frappante à travers les cultures et les professions. Reconnaître le vôtre peut être le premier pas vers la compréhension du stress sous-jacent. Beaucoup de ces rêves recoupent des <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">schémas de rêves récurrents</a> bien connus.
                 </p>
@@ -183,7 +183,7 @@
                 </p>
 <h3>L'hypothèse de continuité</h3>
 <p>
-                    L'hypothèse de continuité du rêve affirme que les rêves reflètent les préoccupations de l'état d'éveil. Une étude de 2023 publiée dans la revue <em>Sleep</em> a révélé que <strong>les participants signalant un stress élevé au travail avaient 3,2 fois plus de chances de rêver du travail</strong> que ceux avec un faible niveau de stress - une relation quasi linéaire entre les inquiétudes diurnes et le contenu onirique nocturne.
+                    Selon l'hypothese de continuite du reve, les reves refletent les preoccupations de l'etat d'eveil. Une étude de 2023 publiée dans la revue <em>Sleep</em> a révélé que <strong>les participants signalant un stress élevé au travail avaient 3,2 fois plus de chances de rêver du travail</strong> que ceux avec un faible niveau de stress - une relation quasi linéaire entre les inquiétudes diurnes et le contenu onirique nocturne.
                 </p>
 </div>
 <!-- Work Dream Cards -->

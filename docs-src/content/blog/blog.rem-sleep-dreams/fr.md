@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Sommeil paradoxal : la clé de vos rêves intenses | Noctalia",
   "ogDescription": "Qu'est-ce que le sommeil paradoxal (REM) ? Découvrez son rôle essentiel dans vos rêves et comment optimiser cette phase.",
-  "ogImage": "https://noctalia.app/img/blog/sommeil-paradoxal-reves.webp",
+  "ogImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "ogImageAlt": "Graphique d'ondes cérébrales typiques du sommeil paradoxal",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sommeil paradoxal : la clé de vos rêves intenses | Noctalia",
   "twitterDescription": "Qu'est-ce que le sommeil paradoxal (REM) ? Découvrez son rôle essentiel dans vos rêves et comment optimiser cette phase.",
-  "twitterImage": "https://noctalia.app/img/blog/sommeil-paradoxal-reves.webp",
+  "twitterImage": "https://noctalia.app/img/blog/rem-sleep-dreams.webp",
   "twitterImageAlt": "Graphique d'ondes cérébrales typiques du sommeil paradoxal",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/pourquoi-nous-revons-science",
   "nextPath": "/fr/blog/histoire-interpretation-reves",
-  "preloadImage": "/img/blog/sommeil-paradoxal-reves.webp",
+  "preloadImage": "/img/blog/rem-sleep-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau\",\n            \"description\": \"Découvrez la science du sommeil paradoxal et son rôle crucial dans les rêves. Apprenez les cycles de sommeil et comment optimiser votre sommeil paradoxal.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/sommeil-paradoxal-reves.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2133,\n            \"timeRequired\": \"PT8M\",\n            \"url\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sommeil Paradoxal et Rêves : Comprendre la Réinitialisation Nocturne de Votre Cerveau\",\n            \"description\": \"Découvrez la science du sommeil paradoxal et son rôle crucial dans les rêves. Apprenez les cycles de sommeil et comment optimiser votre sommeil paradoxal.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/rem-sleep-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2133,\n            \"timeRequired\": \"PT8M\",\n            \"url\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\",\n    \"url\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\",\n    \"name\": \"Sommeil paradoxal : la clé de vos rêves intenses | Noctalia\",\n    \"inLanguage\": \"fr\",\n    \"reviewedBy\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n    }\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"De combien de sommeil paradoxal ai-je besoin ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les adultes ont généralement besoin de 90 à 120 minutes de sommeil paradoxal par nuit, ce qui représente environ 20 à 25 % du sommeil total. Cela se produit habituellement sur 4 à 6 cycles REM tout au long de la nuit, les périodes REM devenant plus longues vers le matin.\" } },\n                { \"@type\": \"Question\", \"name\": \"Pourquoi les rêves REM sont-ils plus vifs que les autres ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Les rêves REM sont plus vifs car pendant le sommeil paradoxal, l'activité cérébrale dans les centres visuels, moteurs, émotionnels et de la mémoire est aussi élevée qu'à l'état de veille. Le cortex préfrontal (pensée logique) est moins actif, permettant des récits bizarres et émotionnels sans contraintes logiques.\" } },\n                { \"@type\": \"Question\", \"name\": \"Puis-je augmenter naturellement mon sommeil paradoxal ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Oui. Maintenez un horaire de sommeil cohérent, dormez 7 à 9 heures, évitez l'alcool et certains médicaments qui suppriment le REM, faites de l'exercice régulièrement (mais pas avant le coucher), gardez votre chambre fraîche (15-19°C) et réduisez le stress par des techniques de relaxation.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Accueil\", \"item\": \"https://noctalia.app/fr/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Ressources\", \"item\": \"https://noctalia.app/fr/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Sommeil Paradoxal et Rêves\", \"item\": \"https://noctalia.app/fr/blog/sommeil-paradoxal-reves\" }\n            ]\n        }"
@@ -108,7 +108,7 @@
 </div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Graphique d'ondes cérébrales typiques du sommeil paradoxal" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/sommeil-paradoxal-reves.webp" srcset="../../img/blog/sommeil-paradoxal-reves-480w.webp 480w, ../../img/blog/sommeil-paradoxal-reves-800w.webp 800w, ../../img/blog/sommeil-paradoxal-reves-1200w.webp 1200w" width="1200">
+<img alt="Graphique d'ondes cérébrales typiques du sommeil paradoxal" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -279,7 +279,7 @@
 </ul>
 <h3>Consolidation de la mémoire</h3>
 <p>
-                    Le sommeil REM joue un rôle crucial dans différents types de mémoire :
+                    Vos phases REM jouent un rôle crucial dans différents types de mémoire :
                 </p>
 <ul>
 <li><strong>Mémoire procédurale :</strong> Les compétences comme jouer d'un instrument ou pratiquer un sport sont renforcées</li>
@@ -287,11 +287,11 @@
 <li><strong>Résolution créative de problèmes :</strong> Le REM facilite les connexions nouvelles entre des idées disparates</li>
 </ul>
 <p>
-                    Les études montrent que <strong>les individus privés de REM performent moins bien sur les tâches créatives</strong> et ont du mal à apprendre de nouvelles compétences motrices. Le célèbre conseil « dormir dessus » à une base scientifique - le sommeil REM vous aide littéralement à résoudre des problèmes.
+                    Les études montrent que <strong>les individus privés de REM performent moins bien sur les tâches créatives</strong> et peinent à apprendre de nouvelles compétences motrices. Le célèbre conseil « dormir dessus » repose sur des bases scientifiques solides : le sommeil REM vous aide littéralement à résoudre des problèmes.
                 </p>
 <h3>Régulation émotionnelle</h3>
 <p>
-                    Le sommeil REM agit comme une « thérapie nocturne » pour les expériences émotionnelles. Pendant le REM :
+                    Considérez le sommeil REM comme une « thérapie nocturne » pour les expériences émotionnelles. Pendant cette phase :
                 </p>
 <ul>
 <li>Les souvenirs émotionnels sont réactivés dans l'amygdale</li>
@@ -318,7 +318,7 @@
 </aside>
 <h2 id="optimiser">Comment améliorer la qualité du sommeil paradoxal</h2>
 <p>
-                    Comme le sommeil REM est concentré dans les cycles de sommeil ultérieurs, dormir suffisamment au total est crucial. Mais il existe des stratégies spécifiques pour améliorer la qualité et la quantité de REM :
+                    Le sommeil REM se concentre dans les cycles ultérieurs, ce qui rend un temps de sommeil total suffisant essentiel. Des stratégies spécifiques permettent aussi d'améliorer la qualité et la quantité de REM :
                 </p>
 <h3>Durée et timing du sommeil</h3>
 <ul>
@@ -373,7 +373,7 @@
 <li>Blessure à soi-même ou au partenaire de sommeil</li>
 </ul>
 <p>
-                    Le TCSP affecte environ 0,5 % des adultes et est plus fréquent chez les hommes de plus de 50 ans. Fait important, le TCSP peut être un indicateur précoce de conditions neurodégénératives comme la maladie de Parkinson - environ 80 % des patients TCSP développent finalement un trouble parkinsonien.
+                    Le TCSP affecte environ 0,5 % des adultes et touche plus souvent les hommes de plus de 50 ans. Il peut aussi servir d'indicateur précoce de conditions neurodégénératives comme la maladie de Parkinson : environ 80 % des patients TCSP développent un trouble parkinsonien.
                 </p>
 <h3>Narcolepsie</h3>
 <p>
@@ -412,7 +412,7 @@
                 </p>
 <h2 id="rappel-reves">Mémoriser ses rêves : techniques liées au sommeil paradoxal</h2>
 <p>
-                    Comprendre les cycles de sommeil REM peut améliorer considérablement votre capacité à vous souvenir des rêves :
+                    Connaître les cycles de sommeil REM peut améliorer considérablement votre capacité à vous souvenir des rêves :
                 </p>
 <h3>Chronométrer votre réveil</h3>
 <p>
@@ -451,7 +451,7 @@
 <li><strong>Incubation de rêve :</strong> Se concentrer sur un sujet avant le sommeil peut influencer le contenu des rêves REM</li>
 </ul>
 <p>
-                    Comprendre que votre cerveau a besoin de <strong>cycles de sommeil complets</strong> pour accéder aux périodes REM les plus riches est fondamental. Beaucoup de gens sacrifient les 1 à 2 dernières heures de sommeil, sans réaliser qu'ils coupent leurs rêves les plus vivaces et mémorables.
+                    Votre cerveau a besoin de <strong>cycles de sommeil complets</strong> pour accéder aux périodes REM les plus riches. Beaucoup de gens sacrifient les 1 à 2 dernières heures de sommeil sans réaliser qu'ils suppriment leurs rêves les plus vivaces et mémorables.
                 </p>
 </div>
 <!-- CTA Section -->

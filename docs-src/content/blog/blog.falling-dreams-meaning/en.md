@@ -113,13 +113,13 @@
 <a class="text-dream-salmon hover:underline" href="../symbols/falling">Falling</a> dreams occur most frequently during the <strong>hypnagogic state</strong> - that twilight zone between wakefulness and sleep. During this transition, your brain is still partially alert while your body begins to relax and lose consciousness.
                 </p>
 <p>
-                    Research from the Sleep Research Society indicates that <strong>over 70% of people</strong> have experienced falling dreams at some point. They're particularly common in children and tend to decrease with age, though stress can trigger them at any life stage.
+                    Research from the Sleep Research Society indicates that <strong>over 70% of people</strong> have experienced falling dreams at some point. Children report them most often, and the frequency tends to drop with age. Stress, though, can trigger them at any life stage.
                 </p>
 <blockquote>
                     "Falling dreams often occur at the moment of sleep onset, when the brain may misinterpret the normal muscle relaxation as an actual physical fall." - Dr. Matthew Walker, Sleep Scientist
                 </blockquote>
 <p>
-                    The sensation feels remarkably real because your brain's balance centers (the vestibular system) can become active during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, creating the illusion of movement even while lying still.
+                    Why does it feel so real? Your brain's balance centers (the vestibular system) can become active during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, creating the illusion of movement even while lying still.
                 </p>
 <h2 id="variations">Types of Falling Dreams and Their Meanings</h2>
 <p>
@@ -202,11 +202,11 @@
                 </p>
 <h3>1. Falling Dreams and Loss of Control</h3>
 <p>
-                    The most prevalent interpretation. When you're falling, you can't stop yourself - you're at the mercy of gravity. This <a class="text-dream-salmon hover:underline" href="../symbols/mirror">mirrors</a> situations where you feel <strong>powerless to change outcomes</strong>. Job instability, health scares, relationship troubles - any area where control feels impossible.
+                    By far the most common reading. When you're falling, you can't stop yourself - you're at the mercy of gravity. This <a class="text-dream-salmon hover:underline" href="../symbols/mirror">mirrors</a> situations where you feel <strong>powerless to change outcomes</strong>. Job instability, health scares, relationship troubles - any area where control feels impossible.
                 </p>
 <h3>2. Falling Dreams Reflecting Fear of Failure</h3>
 <p>
-                    The phrase "fear of falling" exists for a reason. These dreams often appear before important events - <a class="text-dream-salmon hover:underline" href="../symbols/exam">exams</a>, presentations, job interviews. Your subconscious expresses the fear that <strong>you might not measure up</strong>, that success isn't guaranteed.
+                    "Fear of falling" exists as a phrase for a reason. These dreams often appear before important events - <a class="text-dream-salmon hover:underline" href="../symbols/exam">exams</a>, presentations, job interviews. Your subconscious expresses the fear that <strong>you might not measure up</strong>, that success isn't guaranteed.
                 </p>
 <h3>3. Falling Dreams Caused by Overwhelming Stress</h3>
 <p>
@@ -313,7 +313,7 @@
                 </p>
 <h3>6. Seek Professional Help for Persistent Falling Dreams</h3>
 <p>
-                    If falling dreams persist and significantly impact your sleep quality, consider speaking with a sleep specialist or therapist who can address underlying issues.
+                    If falling dreams persist and noticeably disrupt your sleep quality, consider speaking with a sleep specialist or therapist who can address underlying issues.
                 </p>
 </div>
 <!-- Related Symbols Start -->

@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Sueños Premonitorios: La Verdad Científica - Noctalia",
   "ogDescription": "¿Pueden los sueños predecir el futuro? Explora la ciencia, casos famosos y lo que revela la investigación moderna.",
-  "ogImage": "https://noctalia.app/img/blog/suenos-premonitorios-ciencia.webp",
+  "ogImage": "https://noctalia.app/img/blog/precognitive-dreams-science.webp",
   "ogImageAlt": "Reloj y galaxias fusionados, símbolo de los sueños premonitorios",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Sueños Premonitorios: La Verdad Científica - Noctalia",
   "twitterDescription": "¿Pueden los sueños predecir el futuro? Explora la ciencia, casos famosos y lo que revela la investigación moderna.",
-  "twitterImage": "https://noctalia.app/img/blog/suenos-premonitorios-ciencia.webp",
+  "twitterImage": "https://noctalia.app/img/blog/precognitive-dreams-science.webp",
   "twitterImageAlt": "Reloj y galaxias fusionados, símbolo de los sueños premonitorios",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/guia-incubacion-suenos",
   "nextPath": "/es/blog/suenos-ser-perseguido",
-  "preloadImage": "/img/blog/suenos-premonitorios-ciencia.webp",
+  "preloadImage": "/img/blog/precognitive-dreams-science.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Pueden los sueños predecir el futuro? La sorprendente ciencia de los sueños premonitorios\",\n            \"description\": \"Explora la fascinante ciencia detrás de los sueños premonitorios y si realmente pueden predecir el futuro.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/suenos-premonitorios-ciencia.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1194,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Pueden los sueños predecir el futuro? La sorprendente ciencia de los sueños premonitorios\",\n            \"description\": \"Explora la fascinante ciencia detrás de los sueños premonitorios y si realmente pueden predecir el futuro.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/precognitive-dreams-science.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1194,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Pueden los sueños realmente predecir el futuro?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Aunque muchas personas reportan sueños aparentemente proféticos, la ciencia sugiere que estas experiencias se explican mejor por el reconocimiento de patrones, el sesgo de confirmación y la capacidad del cerebro para procesar señales sutiles. Los sueños pueden anticipar resultados probables en lugar de predecir eventos futuros específicos.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué algunos sueños parecen hacerse realidad?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Varios factores lo explican: sesgo de confirmación (recordar aciertos, olvidar fallos), probabilidad (con miles de sueños, algunos coincidirán con eventos por casualidad), y reconocimiento inconsciente de patrones (tu cerebro nota señales sutiles que tu mente consciente ignora y las incorpora en los sueños).\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Qué porcentaje de personas tiene sueños premonitorios?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Las encuestas sugieren que el 40-60% de las personas reportan haber tenido al menos un sueño que creen predijo el futuro. Sin embargo, esto no prueba la precognición - refleja la experiencia subjetiva de predicciones percibidas y los diversos factores cognitivos que crean esta impresión.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños Premonitorios\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-premonitorios-ciencia\"\n        }\n    ]\n}"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Reloj y galaxias fusionados, símbolo de los sueños premonitorios" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/suenos-premonitorios-ciencia.webp" srcset="../../img/blog/suenos-premonitorios-ciencia-480w.webp 480w, ../../img/blog/suenos-premonitorios-ciencia-800w.webp 800w, ../../img/blog/suenos-premonitorios-ciencia-1200w.webp 1200w" width="1200">
+<img alt="Reloj y galaxias fusionados, símbolo de los sueños premonitorios" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/precognitive-dreams-science.webp" srcset="../../img/blog/precognitive-dreams-science-480w.webp 480w, ../../img/blog/precognitive-dreams-science-800w.webp 800w, ../../img/blog/precognitive-dreams-science-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -102,7 +102,7 @@
 <li><a class="toc-link block" href="#famosos">2. Sueños premonitorios famosos en la historia</a></li>
 <li><a class="toc-link block" href="#ciencia">3. Lo que dice realmente la ciencia</a></li>
 <li><a class="toc-link block" href="#explicaciones">4. Explicaciones científicas</a></li>
-<li><a class="toc-link block" href="#investigacion">5. La frontera de la investigación</a></li>
+<li><a class="toc-link block" href="#investigación">5. La frontera de la investigación</a></li>
 <li><a class="toc-link block" href="#registro">6. Cómo registrar tus sueños premonitorios</a></li>
 </ol>
 </nav>
@@ -113,7 +113,7 @@
                     Los sueños premonitorios - también llamados sueños proféticos o premoniciones - son sueños que parecen <strong>predecir eventos futuros</strong>. El soñador experimenta algo que aún no ha sucedido, y más tarde, elementos del sueño parecen hacerse realidad.
                 </p>
 <p>
-                    Esta experiencia es notablemente común. Las encuestas muestran consistentemente que <strong>el 40-60% de las personas</strong> reportan haber tenido al menos un sueño que creen predijo el futuro. A través de culturas y a lo largo de la historia, los sueños proféticos han sido tomados en serio - desde el José bíblico interpretando los sueños del Faraón hasta Abraham Lincoln supuestamente soñando con su propio asesinato.
+                    ¿Qué tan común es esta experiencia? Las encuestas muestran consistentemente que <strong>el 40-60% de las personas</strong> reportan haber tenido al menos un sueño que creen predijo el futuro. A través de culturas y a lo largo de la historia, los sueños proféticos han sido tomados en serio - desde el José bíblico interpretando los sueños del Faraón hasta Abraham Lincoln supuestamente soñando con su propio asesinato.
                 </p>
 <blockquote>
                     "Soñamos entre 4-6 veces por noche, produciendo miles de sueños anualmente. Algunos coincidirán, por pura probabilidad, con eventos futuros. La pregunta es si la tasa de coincidencia excede el azar." - Dra. Caroline Watt, Investigadora de Parapsicología
@@ -133,7 +133,7 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="ship"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Los sueños del Titanic</h3>
+<h3 class="font-serif text-lg text-dream-cream">¿Los sueños del Titanic</h3>
 </div>
 <p class="text-sm text-gray-300">
                         Múltiples personas supuestamente soñaron con el desastre del Titanic antes de que ocurriera. Notablemente, <strong>varios pasajeros cancelaron sus boletos</strong> debido a perturbadores sueños premonitorios sobre el hundimiento del barco.
@@ -147,7 +147,7 @@
 <h3 class="font-serif text-lg text-dream-cream">El sueño del asesinato de Lincoln</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Días antes de su <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a>, Abraham Lincoln supuestamente soñó con <strong>caminar por la <a class="text-dream-salmon hover:underline" href="../simbolos/casa">Casa</a> Blanca y encontrar un cadáver</strong>. Cuando preguntó quién había muerto, le dijeron "El Presidente."
+                        Días antes de su <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a>, Abraham Lincoln supuestamente soñó con <strong>caminar por la <a class="text-dream-salmon hover:underline" href="../simbolos/casa">Casa</a> Blanca y encontrar un cadáver</strong>. ¿Cuándo preguntó quién había muerto, le dijeron "El Presidente."
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -198,14 +198,14 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="ciencia">Sueños premonitorios: lo que dice realmente la ciencia</h2>
 <p>
-                    La comunidad científica permanece mayormente escéptica sobre la precognición genuina, pero la investigación continúa. Aquí está el estado actual de la investigación:
+                    La mayoría de los científicos permanecen escépticos sobre la precognición genuina, pero la investigación continúa. Aquí está el estado actual:
                 </p>
 <h3>Estudios de laboratorio</h3>
 <p>
                     Varios experimentos de laboratorio han intentado probar los sueños premonitorios bajo condiciones controladas. Los estudios más rigurosos, como los de <strong>Stanley Krippner en el Centro Médico Maimonides</strong>, mostraron resultados estadísticamente significativos - los soñadores parecían incorporar imágenes de fotografías que les mostrarían después de despertar, a tasas superiores al azar.
                 </p>
 <p>
-                    Sin embargo, los críticos señalan problemas metodológicos con muchos estudios. La replicación ha sido inconsistente, y los escépticos argumentan que el <strong>sesgo de publicación</strong> (solo los resultados positivos se publican) distorsiona la evidencia aparente.
+                    Los críticos señalan problemas metodológicos con muchos de estos estudios. La replicación ha sido inconsistente, y los escépticos argumentan que el <strong>sesgo de publicación</strong> (solo los resultados positivos se publican) distorsiona la evidencia aparente.
                 </p>
 <h3>El problema de los números</h3>
 <p>
@@ -258,7 +258,7 @@
 <p>
                     Muchos sueños "proféticos" involucran temas universales: muerte de seres queridos, desastres, accidentes. Estos son <strong>temas de sueños comunes que también ocurren frecuentemente en la vida</strong>. La coincidencia se siente significativa pero puede simplemente reflejar preocupaciones humanas compartidas.
                 </p>
-<h2 id="investigacion">Sueños premonitorios: la frontera de la investigación</h2>
+<h2 id="investigación">Sueños premonitorios: la frontera de la investigación</h2>
 <p>
                     Mientras la ciencia convencional permanece escéptica, algunos investigadores continúan explorando la cognición anómala:
                 </p>
@@ -279,7 +279,7 @@
                 </blockquote>
 <h3>Una pregunta abierta</h3>
 <p>
-                    La respuesta científica honesta es: <strong>no lo sabemos completamente</strong>. La experiencia de los sueños premonitorios es real y común. Si hay alguna previsión real involucrada sigue sin probarse pero no definitivamente refutado. La ciencia continúa investigando.
+                    La respuesta honesta es: <strong>no lo sabemos completamente</strong>. La experiencia de los sueños premonitorios es real y común. Si hay alguna previsión real involucrada sigue sin probarse pero no definitivamente refutado. La ciencia continúa investigando.
                 </p>
 <h2 id="registro">Cómo registrar tus sueños premonitorios</h2>
 <p>
@@ -380,10 +380,10 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/luna">Soñar con luna</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/sol">Soñar con sol</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/tormenta">Soñar con tormenta</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/arcoiris">Soñar con arcoíris</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/luna">¿Soñar con luna</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/sol">¿Soñar con sol</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/tormenta">¿Soñar con tormenta</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/arcoiris">¿Soñar con arcoíris</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -394,13 +394,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Incubacion de suenos: como sonar exactamente lo que quieres esta noche</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Incubación de sueños: como soñar exactamente lo que quieres esta noche</div>
       </div>
     </a>
     <a href="suenos-ser-perseguido" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Suenos de Ser Perseguido: Significado e Interpretacion</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de Ser Perseguido: Significado e Interpretación</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>

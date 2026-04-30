@@ -5,7 +5,7 @@
   "lang": "it",
   "slug": "",
   "title": "Diario dei sogni con illustrazioni e interpretazione | Noctalia",
-  "description": "Registra i tuoi sogni con la voce, genera illustrazioni dei sogni e scopri significati e schemi nelle tue notti. Inizia il tuo diario dei sogni gratuito oggi!",
+  "description": "Descrivi i tuoi sogni, genera illustrazioni dei sogni e scopri significati e schemi nelle tue notti. Inizia il tuo diario dei sogni gratuito oggi!",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth",
@@ -14,12 +14,12 @@
   "mainClass": "",
   "ogType": "website",
   "ogTitle": "Diario dei sogni con illustrazioni e interpretazione | Noctalia",
-  "ogDescription": "Registra i tuoi sogni con la voce, genera illustrazioni dei sogni e scopri significati e schemi nelle tue notti. Inizia il tuo diario dei sogni gratuito oggi!",
+  "ogDescription": "Descrivi i tuoi sogni, genera illustrazioni dei sogni e scopri significati e schemi nelle tue notti. Inizia il tuo diario dei sogni gratuito oggi!",
   "ogImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Diario dei sogni con illustrazioni e interpretazione | Noctalia",
-  "twitterDescription": "Registra i tuoi sogni con la voce, genera illustrazioni dei sogni e scopri significati e schemi nelle tue notti. Inizia il tuo diario dei sogni gratuito oggi!",
+  "twitterDescription": "Descrivi i tuoi sogni, genera illustrazioni dei sogni e scopri significati e schemi nelle tue notti. Inizia il tuo diario dei sogni gratuito oggi!",
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Diario dei sogni con illustrazioni e interpretazione",
   "publishedTime": "",
@@ -45,6 +45,8 @@
     <!-- Navbar -->
     
 
+<main class="noctalia-observatory overflow-x-hidden w-full max-w-full">
+
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
@@ -55,7 +57,7 @@
 
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Il tuo compagno intelligente dei sogni. Cattura i tuoi sogni con la voce e lasciati guidare per conoscerti meglio.
+                Il tuo compagno intelligente dei sogni. Descrivi i tuoi sogni e lascia che Noctalia ti aiuti a esplorarli e comprenderli.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -597,5 +599,7 @@
             </div>
         </div>
     </section>
+
+</main>
 
     <!-- 10. Footer -->

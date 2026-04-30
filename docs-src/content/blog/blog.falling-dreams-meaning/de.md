@@ -119,7 +119,7 @@
                     „Fallträume treten oft in dem Moment auf, in dem der Schlaf einsetzt, wenn das Gehirn die normale Muskelentspannung möglicherweise als tatsächlichen körperlichen Sturz fehlinterpretiert.“ - Dr. Matthew Walker, Schlafwissenschaftler
                 </blockquote>
 <p>
-                    Das Gefühl fühlt sich bemerkenswert real an, weil die Gleichgewichtszentren Ihres Gehirns (das Vestibularsystem) währenddessen aktiv werden können <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> und die Illusion von Bewegung erzeugen, selbst wenn Sie still liegen.
+                    Warum fühlt es sich so real an? Die Gleichgewichtszentren Ihres Gehirns (das Vestibularsystem) können während des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> aktiv werden und die Illusion von Bewegung erzeugen, selbst wenn Sie still liegen.
                 </p>
 <h2 id="variations">Arten fallender Träume und ihre Bedeutung</h2>
 <p>
@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Fallende Träume und Kontrollverlust</h3>
 <p>
-                    Die am weitesten verbreitete Interpretation. Wenn Sie fallen, können Sie sich nicht aufhalten – Sie sind der Schwerkraft ausgeliefert. Dies spiegelt Situationen wider, in denen Sie sich <strong>nicht in der Lage fühlen, Ergebnisse zu ändern</strong>. Arbeitsplatzinstabilität, Gesundheitsprobleme, Beziehungsprobleme – alle Bereiche, in denen Kontrolle unmöglich erscheint.
+                    Mit Abstand die häufigste Deutung. Wenn Sie fallen, können Sie sich nicht aufhalten – Sie sind der Schwerkraft ausgeliefert. Das spiegelt Situationen wider, in denen Sie sich <strong>nicht in der Lage fühlen, Ergebnisse zu ändern</strong>. Arbeitsplatzinstabilität, Gesundheitsprobleme, Beziehungsprobleme – alle Bereiche, in denen Kontrolle unmöglich erscheint.
                 </p>
 <h3>2. Fallende Träume spiegeln die Angst vor dem Scheitern wider</h3>
 <p>
@@ -210,7 +210,7 @@
                 </p>
 <h3>3. Sturzträume durch überwältigenden Stress</h3>
 <p>
-                    Wenn sich der Stress über Ihre Bewältigungskapazität hinaus ansammelt, treten Sturzträume häufiger auf. Das Gefühl des Fallens spiegelt das Gefühl wider, überwältigt zu sein <strong>feeling of being overwhelmed</strong>  – alles geht zu schnell und man kann nicht mithalten.
+                    Wenn sich der Stress über Ihre Bewältigungskapazität hinaus ansammelt, treten Sturzträume häufiger auf. Das Gefühl des Fallens spiegelt das <strong>Gefühl wider, überwältigt zu sein</strong> – alles geht zu schnell und man kann nicht mithalten.
                 </p>
 <h3>4. Fallende Träume und das Bedürfnis loszulassen</h3>
 <p>
@@ -268,7 +268,7 @@
                 </p>
 <h3>Jungs Interpretation der fallenden Träume</h3>
 <p>
-                    Carl Jung vertrat eine breitere Sichtweise. Für ihn stellte der Sturz einen notwendigen Abstieg ins Unbewusste dar – eine Reise in das Schattenselbst. Der Traum könnte Sie dazu aufrufen, vernachlässigte Teile Ihrer Psyche zu erforschen. <strong>necessary descent into the unconscious</strong> - a journey into the shadow self. The dream might be calling you to explore neglected parts of your psyche.
+                    Carl Jung vertrat eine breitere Sichtweise. Für ihn stellte der Sturz einen <strong>notwendigen Abstieg ins Unbewusste</strong> dar – eine Reise in das Schattenselbst. Der Traum könnte Sie dazu aufrufen, vernachlässigte Teile Ihrer Psyche zu erforschen.
                 </p>
 <h3>Kognitive Theorie fallender Träume</h3>
 <p>
@@ -313,7 +313,7 @@
                 </p>
 <h3>6. Suchen Sie professionelle Hilfe bei anhaltenden fallenden Träumen.</h3>
 <p>
-                    Wenn fallende Träume bestehen bleiben und Ihre Schlafqualität erheblich beeinträchtigen, sollten Sie mit einem Schlafspezialisten oder Therapeuten sprechen, der sich mit den zugrunde liegenden Problemen befassen kann.
+                    Wenn fallende Träume bestehen bleiben und Ihre Schlafqualität spürbar beeinträchtigen, sollten Sie mit einem Schlafspezialisten oder Therapeuten sprechen, der sich mit den zugrunde liegenden Problemen befassen kann.
                 </p>
 </div>
 <!-- Related Symbols Start -->
