@@ -62,6 +62,7 @@
       .noctalia-premium-action { display: inline-flex; }
       .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
       .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      .mobile-menu-surface { background: #120720; border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42); }
       @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
       @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
       @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
@@ -340,7 +341,7 @@
             </div>
         </div>
         <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
-            <div class="glass-panel rounded-2xl py-2">
+            <div class="mobile-menu-surface rounded-2xl py-2">
                 <a href="/it/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Risorse</a>
                 <a href="/it/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guide ai sogni</a>
                 <a href="/it/guides/dizionario-simboli-sogni" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dizionario dei sogni</a>
