@@ -66,7 +66,7 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guide</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="journal-de-reves">Thématique : Journal de rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
-<span class="text-sm text-purple-300/60">Publie le 6 janvier 2025</span>
+<span class="text-sm text-purple-300/60">Publié le 6 janvier 2025</span>
 <span class="text-sm text-purple-300/60">4 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
@@ -95,7 +95,7 @@
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <picture>
-<source sizes="(min-width: 1024px) 1024px, 92vw" srcset="/img/blog/dream-memory-hero-600w.webp 600w, /img/blog/dream-memory-hero-1200w.webp 1200w" type="image/webp">
+<source sizes="(min-width: 1024px) 1024px, 92vw" srcset="/img/blog/how-to-remember-dreams.webp 600w, /img/blog/how-to-remember-dreams-1200w.webp 1200w" type="image/webp">
 <img alt="Personne dormant paisiblement, illustration de la mémoire des rêves" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(min-width: 1024px) 1024px, 92vw" src="/img/blog/dream-memory-hero.jpg" srcset="/img/blog/dream-memory-hero-600w.jpg 600w, /img/blog/dream-memory-hero.jpg 1200w" width="1200">
 </picture>
 </figure>
@@ -127,7 +127,7 @@
                     Avant de plonger dans les techniques, comprenons le mécanisme. <strong>L'oubli des rêves n'est pas un défaut</strong>, mais une caractéristique naturelle de notre cerveau. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> (phase REM), la noradrénaline - un neurotransmetteur essentiel à la formation des souvenirs - atteint son niveau le plus bas.
                 </p>
 <p>
-                    De plus, l'hippocampe, cette région cérébrale responsable de transformer les expériences a court terme en souvenirs durables, fonctionne différemment pendant le sommeil. Selon une étude publiée dans <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, le transfert des informations entre l'hippocampe et le cortex est réduit pendant le sommeil paradoxal.
+                    L'hippocampe, cette région cérébrale responsable de transformer les expériences a court terme en souvenirs durables, fonctionne aussi différemment pendant le sommeil. Selon une étude publiée dans <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, le transfert des informations entre l'hippocampe et le cortex diminue pendant le sommeil paradoxal.
                 </p>
 <blockquote>
                     "Nous rêvons environ 4 a 6 fois par nuit, soit pres de 2 heures au total. Pourtant, nous ne nous souvenons que d'une infime fraction de cette activité onirique."
@@ -142,8 +142,8 @@
 <h3>Comment noter ses rêves efficacement</h3>
 <ul>
 <li>Gardez un carnet et un stylo (ou votre téléphone) pres de votre lit</li>
-<li>Écrivez immédiatement au réveil, avant meme de vous lever</li>
-<li>Notez tout : émotions, couleurs, personnages, lieux, meme les fragments flous</li>
+<li>Écrivez immédiatement au réveil, avant même de vous lever</li>
+<li>Notez tout : émotions, couleurs, personnages, lieux, même les fragments flous</li>
 <li>N'essayez pas d'interpréter tout de suite, capturez simplement</li>
 </ul>
 <p>
@@ -161,7 +161,7 @@
 <li>Répétez cette intention jusqu'à l'endormissement</li>
 </ol>
 <p>
-                    Cette méthode simple augmente significativement les chances de rappel onirique, surtout combinée au <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a>.
+                    Cette méthode augmente vos chances de rappel onirique, surtout combinée au <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a>.
                 </p>
 <h2 id="technique-3">3. Se reveiller en douceur pour garder ses rêves</h2>
 <p>
@@ -320,7 +320,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            L'oubli des rêves est lie à la chimie cérébrale. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la noradrénaline (importante pour la mémoire) est à son niveau le plus bas. De plus, l'hippocampe, responsable de la consolidation des souvenirs, fonctionne différemment pendant le sommeil.
+                            L'oubli des rêves est lié à la chimie cérébrale. Pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, la noradrénaline (importante pour la mémoire) est à son niveau le plus bas. De plus, l'hippocampe, responsable de la consolidation des souvenirs, fonctionne différemment pendant le sommeil.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -329,7 +329,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            La plupart des gens constatent une amélioration significative apres 1 a 2 semaines de pratique régulière du journal de rêves. La clé est la constance : noter ses rêves chaque matin, meme les fragments les plus minimes.
+                            La plupart des gens constatent une amélioration significative apres 1 a 2 semaines de pratique régulière du journal de rêves. La clé est la constance : noter ses rêves chaque matin, même les fragments les plus minimes.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">

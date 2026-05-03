@@ -113,7 +113,7 @@
 <a class="text-dream-salmon hover:underline" href="../simboli/serpente">Serpenti</a> hanno affascinato e terrorizzato gli esseri umani sin dagli albori della coscienza. Appaiono nelle mitologie, nei testi religiosi e nelle opere d'arte più antichi: dal serpente dell'Eden al bastone curativo di Asclepio, dai capelli di Medusa all'energia kundalini della tradizione indù.
                 </p>
 <p>
-                    Questa <strong>presenza universale</strong> non è una coincidenza. Gli psicologi evoluzionisti suggeriscono che siamo programmati per notare i serpenti: i nostri antenati che prestavano loro attenzione sono sopravvissuti per trasmettere i loro geni. Questa programmazione primordiale fa sì che i serpenti abbiano uno straordinario peso simbolico nei nostri sogni.
+                    Questa <strong>presenza universale</strong> non è una coincidenza. Secondo gli psicologi evoluzionisti, siamo programmati per notare i serpenti: i nostri antenati che prestavano loro attenzione sono sopravvissuti per trasmettere i loro geni. Questa programmazione primordiale conferisce ai serpenti uno straordinario peso simbolico nei nostri sogni.
                 </p>
 <blockquote>
                     "Il serpente è il simbolo più importante e complesso nella mitologia dell'umanità... Rappresenta sia la morte che la rinascita, il veleno e la medicina, la distruzione e la creazione." - Joseph Campbell, Mitologo
@@ -244,11 +244,11 @@
 </aside>
 <h2 id="interpretations">Le 7 interpretazioni principali</h2>
 <p>
-                    Mentre il contesto è tutto, questi sono i significati più comuni dietro i sogni dei serpenti:
+                    Sebbene il contesto sia fondamentale, ecco i significati più comuni dietro i sogni dei serpenti:
                 </p>
 <h3>1. Trasformazione e Rinnovamento</h3>
 <p>
-                    L'interpretazione più positiva. Come un serpente che cambia pelle, potresti essere sottoposto a <strong>profondo cambiamento personale</strong>. I vecchi schemi stanno scomparendo. Il sogno ti incoraggia ad abbracciare la trasformazione piuttosto che resistervi.
+                    Ecco l'interpretazione più positiva. Come un serpente che cambia pelle, potresti essere nel mezzo di un <strong>profondo cambiamento personale</strong>. I vecchi schemi stanno scomparendo. Il sogno ti incoraggia ad abbracciare la trasformazione piuttosto che resistervi.
                 </p>
 <h3>2. Paure o minacce nascoste</h3>
 <p>
@@ -256,7 +256,7 @@
                 </p>
 <h3>3. Guarigione e medicina</h3>
 <p>
-                    Il serpente è stato un simbolo di guarigione fin dall'antica Grecia (la verga di Asclepio). Il tuo sogno potrebbe indicare <strong>energia curativa all'opera</strong> nella tua vita o suggerire che devi concentrarti sulla salute: fisica, emotiva o spirituale.
+                    Simbolo di guarigione fin dall'antica Grecia (la verga di Asclepio), il serpente in sogno potrebbe indicare <strong>energia curativa all'opera</strong> nella tua vita o suggerire che devi concentrarti sulla salute: fisica, emotiva o spirituale.
                 </p>
 <h3>4. Sessualità e forza vitale</h3>
 <p>
@@ -280,7 +280,7 @@
                 </p>
 <h3>Interpretazione freudiana</h3>
 <p>
-                    Sigmund Freud considerava i serpenti come <strong>fallici simboli</strong> rappresenta desiderio sessuale, ansia o repressione. Anche se questa interpretazione sembra datata, a volte è applicabile, in particolare quando il sogno ha evidenti sfumature sessuali o implica sentimenti di colpa.
+                    Sigmund Freud considerava i serpenti come <strong>simboli fallici</strong> che rappresentano desiderio sessuale, ansia o repressione. Anche se questa interpretazione sembra datata, a volte è applicabile, soprattutto quando il sogno ha evidenti sfumature sessuali o implica sentimenti di colpa.
                 </p>
 <h3>Analisi junghiana</h3>
 <p>

@@ -65,7 +65,7 @@
                     Sogni lucidi: guide &amp; tecniche
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-<a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">Sogno lucido</a> è l'abilità di realizzare che stai sognando mentre il sogno sta accadendo. Questo hub raccoglie guide adatte ai principianti e tecniche pratiche per creare coerenza.
+<a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">Sogno lucido</a> significa rendersi conto che stai sognando mentre il sogno sta accadendo. Questo hub raccoglie guide adatte ai principianti e tecniche pratiche per costruire costanza.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

@@ -133,7 +133,7 @@
                     Dreams have fascinated humanity for millennia, but only recently has science begun to uncover their deep relationship with mental health. During <strong>REM (Rapid Eye Movement) sleep</strong>, when most vivid dreaming occurs, your brain processes emotions, consolidates memories, and works through psychological challenges.
                 </p>
 <p>
-                    The connection is bidirectional: your mental state influences your dreams, and understanding your dreams can provide insights into your mental health. Research from the Sleep Research Society shows that people with mental health conditions often experience:
+                    This connection runs both ways: your mental state shapes your dreams, and paying attention to your dreams can reveal insights about your mental health. Research from the Sleep Research Society shows that people with mental health conditions often experience:
                 </p>
 <ul>
 <li><strong>More frequent nightmares:</strong> Up to 4 times more common in those with anxiety disorders</li>
@@ -192,7 +192,7 @@
 <li><strong>Early morning awakening:</strong> Waking during or after emotional dream periods</li>
 </ul>
 <p>
-                    Interestingly, these REM abnormalities are so consistent that they're sometimes used as <strong>biological markers</strong> in depression diagnosis. A 2022 study in the Journal of Affective Disorders found that analyzing dream patterns could predict depressive episodes with 78% accuracy.
+                    These REM abnormalities are so consistent that clinicians sometimes use them as <strong>biological markers</strong> in depression diagnosis. A 2022 study in the Journal of Affective Disorders found that analyzing dream patterns could predict depressive episodes with 78% accuracy.
                 </p>
 </div>
 <!-- Mental Health Cards -->
@@ -235,7 +235,7 @@
 </ul>
 <h3>Why trauma disrupts dreaming</h3>
 <p>
-                    Trauma fundamentally alters how the brain processes threatening information during sleep:
+                    Trauma alters how the brain processes threatening information during sleep:
                 </p>
 <ul>
 <li><strong>Amygdala hyperactivity:</strong> Fear center remains overactive during REM sleep</li>
@@ -276,11 +276,11 @@
 </aside>
 <h2 id="therapeutic-use">Dream Therapy: Using Dreams in Mental Health Treatment</h2>
 <p>
-                    Mental health professionals increasingly recognize dreams as valuable therapeutic tools. Several evidence-based approaches use dreams to facilitate healing:
+                    Mental health professionals increasingly recognize dreams as valuable therapeutic tools. Several evidence-based approaches harness dreams to support healing:
                 </p>
 <h3>Imagery Rehearsal Therapy (IRT)</h3>
 <p>
-                    The gold standard for treating chronic nightmares, particularly in PTSD. Patients rewrite nightmare endings while awake, then mentally rehearse the new version. Studies show <strong>70-80% reduction in <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmare frequency</a></strong> within weeks.
+                    Considered the gold standard for chronic nightmares, particularly in PTSD. Patients rewrite nightmare endings while awake, then mentally rehearse the new version. Studies show <strong>70-80% reduction in <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmare frequency</a></strong> within weeks.
                 </p>
 <h3>Dream analysis in psychotherapy</h3>
 <p>

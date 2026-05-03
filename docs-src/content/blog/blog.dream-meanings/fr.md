@@ -65,7 +65,7 @@
                     Signification des rêves : interprétation et symboles
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    La signification n’est pas universelle : les symboles changent selon votre contexte, vos émotions et votre histoire. Ce hub rassemble des ressources concrètes pour explorer thèmes récurrents et symboles fréquents.
+                    Aucun symbole n’a un sens universel : tout change selon votre contexte, vos émotions et votre histoire. Ce hub rassemble des ressources concrètes pour explorer thèmes récurrents et symboles fréquents.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
                     Vous ne savez pas par où commencer ? Parcourez le <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">dictionnaire des symboles de rêves</a>, ou explorez des symboles fréquents comme <a class="text-dream-salmon hover:underline" href="../symboles/eau">l'eau</a>, <a class="text-dream-salmon hover:underline" href="../symboles/dents">les dents</a> et les <a class="text-dream-salmon hover:underline" href="../symboles/serpent">serpents</a>.

@@ -73,7 +73,7 @@
                     Wie Sie sich an Ihre Träume erinnern: 10 effektive Techniken
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Sie wachen mit dem Gefühl auf, einen intensiven Traum erlebt zu haben, doch Sekunden später ist dieser vollständig verflogen. Dies ist ein universelles Phänomen. Entdecken Sie, wie Sie diesen Trend mit von Wissenschaft und Praxis bewährten Techniken umkehren können. <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">klares Träumen</a> practitioners.
+                    Sie wachen mit dem Gefühl auf, einen intensiven Traum erlebt zu haben, doch Sekunden später ist er vollständig verflogen. Dieses universelle Phänomen lässt sich umkehren. Entdecken Sie bewährte Techniken aus der Wissenschaft und von Praktikern des <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumens</a>.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -124,7 +124,7 @@
                     Bevor wir uns mit Techniken befassen, wollen wir den Mechanismus verstehen. <strong>Traumvergessen ist kein Fehler</strong>, sondern eine natürliche Eigenschaft unseres Gehirns. Während <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> (wenn die meisten lebhaften Träume auftreten) erreicht Noradrenalin – ein Neurotransmitter, der für die Gedächtnisbildung unerlässlich ist – seinen niedrigsten Wert.
                 </p>
 <p>
-                    Außerdem funktioniert der Hippocampus, die Gehirnregion, die dafür verantwortlich ist, kurzfristige Erlebnisse in bleibende Erinnerungen umzuwandeln, im Schlaf anders. Laut einer in <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a> veröffentlichten Studie ist die Informationsübertragung zwischen Hippocampus und Kortex während des REM-Schlafs reduziert.
+                    Der Hippocampus, die Gehirnregion, die kurzfristige Erlebnisse in bleibende Erinnerungen umwandelt, funktioniert im Schlaf ebenfalls anders. Laut einer in <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a> veröffentlichten Studie sinkt die Informationsübertragung zwischen Hippocampus und Kortex während des REM-Schlafs.
                 </p>
 <blockquote>
                     "Wir träumen ungefähr 4-6 Mal pro Nacht, insgesamt fast 2 Stunden. Doch wir erinnern uns nur an einen winzigen Bruchteil dieser Traumaktivität."
@@ -158,7 +158,7 @@
 <li>Wiederhole diese Absicht, bis du einschläfst</li>
 </ol>
 <p>
-                    Diese einfache Methode erhöht die Chance, sich an einen Traum zu erinnern, erheblich, insbesondere in Kombination mit <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>.
+                    Diese Methode erhöht Ihre Chancen, sich an Träume zu erinnern, besonders in Kombination mit einem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a>.
                 </p>
 <h2 id="technique-3">3. Wachen Sie sanft auf, um Traumerinnerungen zu bewahren</h2>
 <p>

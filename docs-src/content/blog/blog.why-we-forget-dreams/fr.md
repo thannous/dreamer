@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Pourquoi oublie-t-on ses rêves au réveil ? | Noctalia",
   "ogDescription": "Découvrez pourquoi on oublie ses rêves au réveil : rôle du cerveau, sommeil paradoxal et mémoire onirique.",
-  "ogImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+  "ogImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "ogImageAlt": "Illustration d'un cerveau endormi avec des reves qui s'effacent progressivement",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Pourquoi oublie-t-on ses rêves au réveil ? | Noctalia",
   "twitterDescription": "La science explique pourquoi 95% de nos rêves s'effacent au réveil.",
-  "twitterImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+  "twitterImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "twitterImageAlt": "Illustration d'un cerveau endormi avec des reves qui s'effacent progressivement",
   "publishedTime": "2026-01-08",
   "modifiedTime": "2026-01-08",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/comment-se-souvenir-de-ses-reves",
   "nextPath": "/fr/blog/signification-reves-recurrents",
-  "preloadImage": "/img/blog/how-to-remember-dreams.webp",
+  "preloadImage": "/img/blog/why-we-forget-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques\",\n            \"description\": \"Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions la grande majorité de nos rêves dès le réveil, et comment améliorer votre mémoire onirique.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-01-08\",\n            \"dateModified\": \"2026-01-08\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1934,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques\",\n            \"description\": \"Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions la grande majorité de nos rêves dès le réveil, et comment améliorer votre mémoire onirique.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/why-we-forget-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-01-08\",\n            \"dateModified\": \"2026-01-08\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1934,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Est-ce normal d'oublier tous ses rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Oui, c'est parfaitement normal. La majorité des gens oublient entre 90 et 95% de leurs rêves. Cet oubli est lié à la chimie cérébrale pendant le sommeil paradoxal, notamment aux faibles niveaux de noradrénaline. Ce n'est pas un signe de problème de mémoire ou de santé.\" } },\n                { \"@type\": \"Question\", \"name\": \"Pourquoi se souvient-on parfois de ses rêves et pas d'autres fois ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Le moment du réveil est déterminant. Si vous vous réveillez pendant ou juste après une phase de sommeil paradoxal (REM), vous avez beaucoup plus de chances de vous souvenir de votre rêve. Le stress, la qualité du sommeil et l'intention de se souvenir jouent également un rôle important.\" } },\n                { \"@type\": \"Question\", \"name\": \"Les personnes qui ne se souviennent jamais de leurs rêves rêvent-elles quand même ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Absolument. Les études en laboratoire du sommeil montrent que tout le monde reve, généralement 4 à 6 fois par nuit pendant les phases REM. Le fait de ne pas se souvenir de ses rêves n'est pas lié à l'absence de rêves, mais aux mécanismes de mémorisation qui différent entre le sommeil et l'éveil.\" } },\n                { \"@type\": \"Question\", \"name\": \"Comment se souvenir de ses rêves plus facilement ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Plusieurs techniques sont efficaces : tenir un journal de rêves dès le réveil, fixer l'intention de se souvenir avant de dormir, se réveiller en douceur sans alarme brutale, et rester immobile quelques instants au réveil pour laisser les images remonter. L'enregistrement vocal avec Noctalia permet de capturer rapidement les détails avant qu'ils ne s'effacent.\" } },\n                { \"@type\": \"Question\", \"name\": \"L'alcool empêche-t-il de se souvenir de ses rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Oui, l'alcool perturbe significativement le sommeil paradoxal, phase où se produisent les rêves les plus vifs. Il supprime le REM en début de nuit, puis provoque un effet rebond avec des rêves intenses mais fragmentés. Ce déséquilibre nuit à la consolidation des souvenirs oniriques.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Accueil\", \"item\": \"https://noctalia.app/fr/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Ressources\", \"item\": \"https://noctalia.app/fr/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Pourquoi oublie-t-on ses rêves\", \"item\": \"https://noctalia.app/fr/blog/pourquoi-oublie-reves-reveil\" }\n            ]\n        }"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Illustration d'un cerveau endormi avec des reves qui s'effacent progressivement" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="1200">
+<img alt="Illustration d'un cerveau endormi avec des reves qui s'effacent progressivement" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/why-we-forget-dreams.webp" srcset="../../img/blog/why-we-forget-dreams-480w.webp 480w, ../../img/blog/why-we-forget-dreams-800w.webp 800w, ../../img/blog/why-we-forget-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -114,7 +114,7 @@
                 </p>
 <h3>Le rôle de l'hippocampe dans la mémoire onirique</h3>
 <p>
-                    L'hippocampe est la structure cérébrale responsable de la consolidation des souvenirs. C'est lui qui transforme nos expériences à court terme en mémoires durables. Cependant, pendant le sommeil, l'hippocampe fonctionne de manière très différente qu'a l'état de veille.
+                    L'hippocampe est la structure cérébrale responsable de la consolidation des souvenirs. Il transforme nos expériences à court terme en mémoires durables. Pendant le sommeil, pourtant, il fonctionne de manière très différente qu'a l'état de veille.
                 </p>
 <p>
                     Des études en neuroimagerie ont révélé que <strong>la communication entre l'hippocampe et le cortex cérébral est réduite pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a></strong>. Cette déconnexion partielle explique pourquoi les rêves, même les plus intenses, ne sont pas automatiquement stockés dans notre mémoire à long terme. Le transfert d'informations nécessaire à la mémorisation est tout simplement interrompu.
@@ -256,7 +256,7 @@
                 </p>
 <h2 id="améliorer-souvenir">Comment améliorer le souvenir de ses rêves : techniques pour ne plus oublier</h2>
 <p>
-                    Si l'oubli des rêves est un phénomène naturel, il n'est pas inevitable. Des techniques éprouvées permettent d'<strong>améliorer significativement la mémoire onirique</strong>. Voici les plus efficaces, validees par la recherche et les pratiquants du <a class="text-dream-salmon hover:underline" href="guide-reve-lucide-debutant">rêve lucide</a>.
+                    L'oubli des rêves est un phénomène naturel, mais pas une fatalite. Des techniques éprouvées permettent d'<strong>améliorer nettement la mémoire onirique</strong>. Voici les plus efficaces, validees par la recherche et les pratiquants du <a class="text-dream-salmon hover:underline" href="guide-reve-lucide-debutant">rêve lucide</a>.
                 </p>
 <h3>Tenir un journal de rêves dès le réveil</h3>
 <p>
@@ -304,7 +304,7 @@
 <li>Maintenez cette intention comme dernière pensee avant le sommeil</li>
 </ol>
 <p>
-                    Cette methode fonctionne car elle <strong>active la mémoire prospective</strong> (la capacité à se souvenir d'effectuer une action dans le futur) et oriente l'attention du cerveau vers les expériences oniriques.
+                    Cela fonctionne car la technique <strong>active la mémoire prospective</strong> (la capacité à se souvenir d'effectuer une action dans le futur) et oriente l'attention du cerveau vers les expériences oniriques.
                 </p>
 <h3>Optimiser son hygiene de sommeil pour mieux rêver</h3>
 <p>
@@ -319,7 +319,7 @@
 <li><strong>Preferez un réveil en douceur</strong> : alarme progressive ou réveil naturel</li>
 </ul>
 <p>
-                    Pour des conseils detailles sur l'<a href="guide-incubation-reves">incubation de rêves</a>, consultez notre guide specialise.
+                    Pour des conseils detailles sur l'<a href="guide-incubation-reves">incubation de rêves</a>, consultez notre guide spécialisé.
                 </p>
 <h3>Le reve lucide comme outil de mémorisation</h3>
 <p>
@@ -345,7 +345,7 @@
 <li><strong>La mémoire des rêves peut être entraînee</strong> à tout age avec les bonnes techniques</li>
 </ul>
 <p>
-                    Cependant, <strong>certains changements méritent attention</strong> :
+                    Certains changements méritent toutefois attention :
                 </p>
 <ul>
 <li><strong>Arret brutal des rêves</strong> après en avoir toujours eu : peut signaler un changement dans la qualité du sommeil</li>

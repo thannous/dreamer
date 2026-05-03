@@ -261,7 +261,7 @@
 </ul>
 <h3>Consolidamento della memoria durante il sonno REM</h3>
 <p>
-                    Il sonno REM gioca un ruolo cruciale in diversi tipi di memoria:
+                    Le tue fasi REM giocano un ruolo cruciale in diversi tipi di memoria:
                 </p>
 <ul>
 <li><strong>Memoria procedurale:</strong> Abilità come suonare uno strumento o fare sport vengono rafforzate</li>
@@ -273,7 +273,7 @@
                 </p>
 <h3>Regolazione ed elaborazione emotiva nel sonno REM</h3>
 <p>
-                    Il sonno REM agisce come "terapia notturna" per esperienze emotive. Durante la fase REM:
+                    Pensa al sonno REM come a una "terapia notturna" per le esperienze emotive. Durante questa fase:
                 </p>
 <ul>
 <li>I ricordi emotivi vengono riattivati ​​nell'amigdala</li>
@@ -300,7 +300,7 @@
 </aside>
 <h2 id="optimize">Come ottimizzare il tuo sonno REM per sogni migliori</h2>
 <p>
-                    Poiché il sonno REM è concentrato nei cicli di sonno successivi, ottenere un sonno totale sufficiente è fondamentale. Ma esistono strategie specifiche per migliorare la qualità e la quantità della fase REM:
+                    Il sonno REM si concentra nei cicli successivi, rendendo essenziale un sonno totale sufficiente. Strategie specifiche possono migliorare la qualità e la quantità della fase REM:
                 </p>
 <h3>Durata e tempi del sonno per l'ottimizzazione della fase REM</h3>
 <ul>
@@ -355,7 +355,7 @@
 <li>Lesioni a se stessi o al partner che dorme</li>
 </ul>
 <p>
-                    RBD colpisce circa lo 0,5% degli adulti ed è più comune negli uomini oltre i 50 anni. È importante sottolineare che l'RBD può essere un indicatore precoce di condizioni neurodegenerative come il morbo di Parkinson: circa l'80% dei pazienti con RBD sviluppa infine un disturbo parkinsoniano.
+                    RBD colpisce circa lo 0,5% degli adulti ed è più comune negli uomini oltre i 50 anni. Può anche essere un indicatore precoce di condizioni neurodegenerative come il morbo di Parkinson: circa l'80% dei pazienti con RBD sviluppa un disturbo parkinsoniano.
                 </p>
 <h3>Narcolessia: intrusione nel sonno REM durante la veglia</h3>
 <p>
@@ -394,7 +394,7 @@
                 </p>
 <h2 id="dream-recall">Migliorare il ricordo dei sogni attraverso la consapevolezza REM</h2>
 <p>
-                    Comprendere i cicli del sonno REM può migliorare notevolmente la tua capacità di ricordare i sogni:
+                    Conoscere i cicli del sonno REM può migliorare notevolmente la tua capacità di ricordare i sogni:
                 </p>
 <h3>Cronometraggio del risveglio</h3>
 <p>

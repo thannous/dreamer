@@ -230,3 +230,369 @@ html, body {
 .hero-anim {
   opacity: 0;
 }
+
+/* ==========================================================================
+   NOCTALIA OBSERVATORY LANDING
+   ========================================================================== */
+
+.noctalia-observatory {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+.noctalia-observatory::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(253, 164, 129, 0.12), transparent 34rem),
+    radial-gradient(circle at 18% 22%, rgba(168, 85, 247, 0.22), transparent 32rem),
+    radial-gradient(circle at 82% 18%, rgba(46, 16, 101, 0.38), transparent 34rem),
+    #0a0514;
+}
+
+.noctalia-observatory::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.14;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 50% 10%, black, transparent 68%);
+  -webkit-mask-image: radial-gradient(circle at 50% 10%, black, transparent 68%);
+}
+
+.noctalia-observatory > header {
+  min-height: 100svh;
+  width: 100%;
+  padding: 8rem 1.25rem 4rem;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(10, 5, 20, 0.14), rgba(10, 5, 20, 0.94) 78%, #0a0514),
+    radial-gradient(circle at 50% 24%, rgba(253, 164, 129, 0.18), transparent 24rem);
+}
+
+.noctalia-observatory > header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(10, 5, 20, 0.26), rgba(10, 5, 20, 0.62) 58%, rgba(10, 5, 20, 0.94)),
+    url('/img/hero/noctalia-observatory-bg.png') center center / cover no-repeat;
+  opacity: 0.52;
+  filter: saturate(1.08) contrast(1.04);
+  transform: scale(1.01);
+}
+
+.noctalia-observatory > header > div {
+  width: min(100%, 1480px);
+  max-width: none;
+}
+
+.noctalia-observatory > header h1 {
+  width: min(100%, 1200px);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 3.2rem;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.noctalia-observatory > header p {
+  max-width: 760px;
+}
+
+.noctalia-observatory .hero-cta a {
+  min-height: 3.5rem;
+}
+
+.noctalia-observatory .hero-visual,
+.noctalia-observatory > header .hero-anim:last-child {
+  width: min(100vw, 1480px);
+  max-width: none;
+  margin-top: 4.25rem;
+  margin-left: calc(50% - min(50vw, 740px));
+  margin-right: calc(50% - min(50vw, 740px));
+}
+
+.noctalia-observatory .hero-visual picture,
+.noctalia-observatory > header .hero-anim:last-child picture {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 42px 120px rgba(0, 0, 0, 0.58), 0 0 80px rgba(253, 164, 129, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.noctalia-observatory .hero-visual img,
+.noctalia-observatory > header .hero-anim:last-child img {
+  display: block;
+  width: 100%;
+  transform-origin: center;
+}
+
+.noctalia-observatory section {
+  width: 100%;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) {
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) > .max-w-7xl {
+  display: grid;
+  width: min(100%, 1680px);
+  max-width: none;
+  gap: 3rem;
+}
+
+.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 {
+  margin-bottom: 0;
+}
+
+.noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 h2 {
+  font-size: 2.85rem;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.noctalia-observatory :is(#how-it-works-steps, #etapes-reves, #como-funciona-pasos, #schritte-traeume, #passi-sogni) {
+  align-items: start;
+}
+
+.noctalia-observatory :is(#how-it-works-steps, #etapes-reves, #como-funciona-pasos, #schritte-traeume, #passi-sogni) > div:not(.step-line) {
+  min-width: 0;
+}
+
+.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) {
+  padding-top: 9rem;
+  padding-bottom: 9rem;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(46, 16, 101, 0.1), rgba(0, 0, 0, 0.2));
+}
+
+.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) > .max-w-7xl {
+  width: min(100%, 1680px);
+  max-width: none;
+}
+
+.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) .md\:flex {
+  max-width: 1320px;
+}
+
+.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) .grid.md\:grid-cols-6 {
+  grid-auto-flow: dense;
+  gap: 1rem;
+}
+
+.noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita) .glass-panel {
+  border-radius: 20px;
+}
+
+.noctalia-observatory .glass-panel {
+  transform: translateY(0);
+}
+
+.noctalia-observatory .glass-panel:hover {
+  transform: translateY(-4px);
+}
+
+.noctalia-observatory [data-subscription],
+.noctalia-observatory details,
+.noctalia-observatory #temoignages .glass-panel {
+  border-radius: 18px;
+}
+
+.noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
+.noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) .text-xs.font-mono {
+  display: none;
+}
+
+.landing-footer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 4.5rem clamp(1.25rem, 3vw, 3rem) 2.5rem;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(253, 164, 129, 0.11), transparent 28rem),
+    radial-gradient(circle at 76% 10%, rgba(124, 58, 237, 0.16), transparent 32rem),
+    linear-gradient(180deg, #0a0514 0%, #080310 100%);
+  color: #fff7ed;
+}
+
+.landing-footer > .grid {
+  display: grid !important;
+  width: min(100%, 1480px);
+  max-width: none;
+  grid-template-columns: minmax(240px, 1.25fr) repeat(4, minmax(150px, 1fr));
+  gap: clamp(1.5rem, 2.5vw, 2.75rem);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+  align-items: start;
+}
+
+.landing-footer > .grid > * {
+  min-width: 0;
+}
+
+.landing-footer > .grid > :first-child {
+  grid-column: auto !important;
+}
+
+.landing-footer h4,
+.landing-footer h5 {
+  color: #fff7ed;
+}
+
+.landing-footer p,
+.landing-footer li a,
+.landing-footer .text-gray-500,
+.landing-footer .text-gray-600 {
+  color: rgba(233, 213, 255, 0.72);
+}
+
+.landing-footer li a:hover,
+.landing-footer .text-dream-salmon {
+  color: #fda481;
+}
+
+.landing-footer .glass-button {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.landing-footer > .border-t:last-child {
+  width: min(100%, 1480px);
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  color: rgba(233, 213, 255, 0.52);
+}
+
+@media (min-width: 640px) {
+  .noctalia-observatory > header h1 {
+    font-size: 4.6rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .noctalia-observatory > header {
+    padding-top: 9rem;
+  }
+
+  .noctalia-observatory > header h1 {
+    font-size: 6rem;
+  }
+
+  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) > .max-w-7xl {
+    grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.32fr);
+    align-items: start;
+  }
+
+  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 {
+    text-align: left;
+  }
+
+  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 p {
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .noctalia-observatory > header h1 {
+    font-size: 7.25rem;
+  }
+
+  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona),
+  .noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita),
+  .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .noctalia-observatory > header h1 {
+    font-size: 7.8rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .noctalia-observatory > header {
+    min-height: auto;
+    padding-top: 7rem;
+    padding-bottom: 3rem;
+  }
+
+  .noctalia-observatory > header h1 {
+    max-width: 100%;
+    font-size: 2.6rem;
+    line-height: 1.08;
+  }
+
+  .noctalia-observatory .hero-visual,
+  .noctalia-observatory > header .hero-anim:last-child {
+    width: 100%;
+    margin: 3rem auto 0;
+  }
+
+  .noctalia-observatory .hero-visual picture,
+  .noctalia-observatory > header .hero-anim:last-child picture {
+    border-radius: 18px;
+  }
+
+  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona),
+  .noctalia-observatory :is(#features, #fonctionnalites, #caracteristicas, #funktionen, #funzionalita),
+  .noctalia-observatory :is(#symboles, #symbols, #simbolos, #traumsymbole, #simboli) {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  .noctalia-observatory :is(#how-it-works, #comment-ca-marche, #como-funciona, #so-funktioniert-es, #come-funziona) .text-center.mb-16 h2 {
+    font-size: 2.35rem;
+  }
+
+  .landing-footer {
+    padding-top: 3.5rem;
+  }
+
+  .landing-footer > .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .landing-footer > .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .landing-footer > .grid {
+    grid-template-columns: minmax(220px, 1.15fr) repeat(4, minmax(135px, 1fr));
+  }
+}

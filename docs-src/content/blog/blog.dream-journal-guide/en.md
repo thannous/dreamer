@@ -141,7 +141,7 @@
                     Dreams occur primarily during <strong><a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a></strong>, when your hippocampus (memory center) is less active than during waking hours. This reduced activity means dreams aren't consolidated into long-term memory the same way waking experiences are.
                 </p>
 <p>
-                    Additionally, upon waking:
+                    Upon waking:
                 </p>
 <ul>
 <li><strong>Norepinephrine levels</strong> surge, shifting your brain into "awake mode" and pushing dream content aside</li>
@@ -175,7 +175,7 @@
 </ul>
 <h3>Step 3: Set Your Dream Recall Intention</h3>
 <p>
-                    Before sleep, tell yourself: <strong>"I will remember my dreams."</strong> This simple intention-setting has been shown to significantly improve dream recall. Visualize yourself waking up and recording your dreams.
+                    Before sleep, tell yourself: <strong>"I will remember my dreams."</strong> This simple intention-setting has been shown to measurably improve dream recall. Visualize yourself waking up and recording your dreams.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -268,7 +268,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="techniques">Techniques to Boost Dream Recall Fast</h2>
 <p>
-	                    If you're struggling to remember dreams, these proven techniques can dramatically improve recall. For a dedicated walkthrough, read <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">how to remember dreams</a>:
+	                    If you're struggling to remember dreams, these proven techniques can dramatically improve recall. For a dedicated walkthrough, read <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">how to remember dreams</a>:
 	                </p>
 <h3>Wake-Up Strategies for Dream Memory</h3>
 <ol>
@@ -461,7 +461,7 @@
     <p class="text-sm text-purple-300/60">More resources on the same topic</p>
   </header>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+        <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
             <p class="text-sm text-gray-400">Discover scientifically proven methods to improve your dream recall and never forget your dreams upon waking again. Simple techniques you can apply tonight.</p>

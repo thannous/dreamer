@@ -113,7 +113,7 @@
                     I sogni precognitivi, chiamati anche sogni profetici o premonizioni, sono sogni che sembrano <strong>predire eventi futuri</strong>. Il sognatore sperimenta qualcosa che non è ancora accaduto e, in seguito, gli elementi del sogno sembrano diventare realtà.
                 </p>
 <p>
-                    Questa esperienza è straordinariamente comune. I sondaggi mostrano costantemente che <strong>40-60% delle persone</strong> riferiscono di aver fatto almeno un sogno che credono predisse il futuro. In tutte le culture e nel corso della storia, i sogni profetici sono stati presi sul serio: dal biblico Giuseppe che interpreta i sogni del faraone ad Abramo Lincoln che, secondo quanto riferito, sogna il proprio assassinio.
+                    Quanto è comune questa esperienza? I sondaggi mostrano costantemente che <strong>40-60% delle persone</strong> riferiscono di aver fatto almeno un sogno che credono predisse il futuro. In tutte le culture e nel corso della storia, i sogni profetici sono stati presi sul serio: dal biblico Giuseppe che interpreta i sogni del faraone ad Abramo Lincoln che, secondo quanto riferito, sogna il proprio assassinio.
                 </p>
 <blockquote>
                     "Sogniamo dalle 4 alle 6 volte a notte, producendo migliaia di sogni all'anno. Alcuni, per pura probabilità, corrisponderanno a eventi futuri. La domanda è se il tasso di corrispondenza supera il caso." - Dott.ssa Caroline Watt, ricercatrice in parapsicologia
@@ -136,7 +136,7 @@
 <h3 class="font-serif text-lg text-dream-cream">I sogni del Titanic</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Più persone secondo quanto riferito, sognava il disastro del Titanic prima che accadesse. Il più famoso, <strong>diversi passeggeri cancellarono i loro biglietti</strong> a causa di inquietanti sogni premonitori sull'affondamento della nave.
+                        Diverse persone, a quanto si racconta, sognarono il disastro del Titanic prima che accadesse. Nei casi più noti, <strong>alcuni passeggeri cancellarono i loro biglietti</strong> a causa di inquietanti sogni premonitori sull'affondamento della nave.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -147,7 +147,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Il sogno dell'assassinio di Lincoln</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Giorni prima della sua <a class="text-dream-salmon hover:underline" href="../simboli/morte">morte</a>, si dice che Abraham Lincoln sognò <strong>camminando per la <a class="text-dream-salmon hover:underline" href="../simboli/casa">Casa</a> Bianca e trovando un cadavere</strong>. When he asked who died, he was told "The President."
+                        Giorni prima della sua <a class="text-dream-salmon hover:underline" href="../simboli/morte">morte</a>, si dice che Abraham Lincoln sognò di <strong>camminare per la <a class="text-dream-salmon hover:underline" href="../simboli/casa">Casa</a> Bianca e di trovare un cadavere</strong>. Quando chiese chi fosse morto, gli risposero: "Il Presidente."
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -169,7 +169,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Modello atomico di Niels Bohr</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Si dice che il fisico sognasse <strong>seduto sul sole con i pianeti cerchiando sulle stringhe</strong>. Questo sogno ha ispirato il suo modello atomico rivoluzionario con gli elettroni in orbita attorno al nucleo.
+                        Si dice che il fisico sognasse di essere <strong>seduto sul sole con i pianeti che gli ruotavano intorno legati da fili</strong>. Questo sogno ispirò il suo modello atomico rivoluzionario con gli elettroni in orbita attorno al nucleo.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -191,21 +191,21 @@
 <h3 class="font-serif text-lg text-dream-cream">Fratello di Mark Twain</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Settimane prima della morte di suo fratello Henry nell'esplosione di un battello a vapore, Mark Twain sognò di vedere il cadavere di suo fratello in una bara di metallo <strong>brother's corpse in a metal coffin</strong> con un mazzo di fiori bianchi, esattamente come apparve in seguito.
+                        Settimane prima della morte di suo fratello Henry nell'esplosione di un battello a vapore, Mark Twain sognò di vedere <strong>il cadavere di suo fratello in una bara di metallo</strong> con un mazzo di fiori bianchi, esattamente come apparve in seguito.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
 <h2 id="science">Cosa dice la scienza sui sogni precognitivi</h2>
 <p>
-                    La comunità scientifica rimane ampiamente scettica riguardo alla vera precognizione, ma l'indagine continua. Ecco a che punto è la ricerca:
+                    La maggior parte degli scienziati rimane scettica riguardo alla vera precognizione, ma l'indagine continua. Ecco a che punto è la ricerca:
                 </p>
 <h3>Studi di laboratorio sui sogni profetici</h3>
 <p>
                     Diversi esperimenti di laboratorio hanno tentato di testare i sogni precognitivi in ​​condizioni controllate. Gli studi più rigorosi, come quelli di <strong>Stanley Krippner presso il Maimonides Medical Center</strong>, hanno mostrato risultati statisticamente significativi: i sognatori sembravano incorporare immagini da immagini che sarebbero state mostrate dopo essersi svegliati a ritmi superiori al caso.
                 </p>
 <p>
-                    Tuttavia, i critici notano problemi metodologici in molti studi. La replica è stata incoerente e gli scettici sostengono che <strong>bias di pubblicazione</strong> (vengono pubblicati solo risultati positivi) distorce le prove apparenti.
+                    I critici notano però problemi metodologici in molti di questi studi. La replica è stata incoerente e gli scettici sostengono che il <strong>bias di pubblicazione</strong> (vengono pubblicati solo risultati positivi) distorce le prove apparenti.
                 </p>
 <h3>Il problema dei numeri nella ricerca sulla previsione dei sogni</h3>
 <p>
@@ -240,7 +240,7 @@
                 </p>
 <h3>2. Riconoscimento inconscio di schemi nei sogni</h3>
 <p>
-                    Il tuo cervello elabora molte più informazioni di quanto noti consapevolmente. Potrebbe rilevare <strong>sottili segnali di allarme</strong> - informazioni relative al comportamento, agli indicatori di mercato, ai sintomi fisici di un amico - e incorporali nei sogni prima che la tua mente cosciente unisca i punti.
+                    Il tuo cervello elabora molte più informazioni di quanto noti consapevolmente. Potrebbe rilevare <strong>sottili segnali di allarme</strong> - informazioni relative al comportamento, agli indicatori di mercato, ai sintomi fisici di un amico - e incorporarli nei sogni prima che la tua mente cosciente colleghi i punti.
                 </p>
 <h3>3. Trasformazione dei sogni e distorsione della memoria</h3>
 <p>
@@ -256,13 +256,13 @@
                 </p>
 <h3>6. Temi archetipici comuni nei sogni profetici</h3>
 <p>
-                    Molti sogni "profetici" i sogni coinvolgono temi universali: morte di persone care, disastri, incidenti. Questi sono <strong>soggetti da sogno comuni che accadono frequentemente anche nella vita</strong>. La sovrapposizione sembra significativa, ma potrebbe semplicemente riflettere preoccupazioni umane condivise.
+                    Molti sogni "profetici" coinvolgono temi universali: morte di persone care, disastri, incidenti. Questi sono <strong>temi onirici comuni che si verificano frequentemente anche nella vita reale</strong>. La sovrapposizione sembra significativa, ma potrebbe semplicemente riflettere preoccupazioni umane condivise.
                 </p>
 <h2 id="research">La frontiera della ricerca sugli studi sui sogni precognitivi</h2>
 <p>
                     Mentre la scienza tradizionale rimane scettica, alcuni ricercatori continuano a esplorare la cognizione anomala:
                 </p>
-<h3>The Global Consciousness Project e Dream Research</h3>
+<h3>Il Global Consciousness Project e la ricerca sui sogni</h3>
 <p>
                     Questo esperimento di lunga durata utilizza generatori di numeri casuali in tutto il mondo per verificare se <strong>l'attenzione umana collettiva influisce sulla casualità</strong>. Alcuni ricercatori vedono potenziali collegamenti con le esperienze precognitive.
                 </p>
@@ -279,7 +279,7 @@
                 </blockquote>
 <h3>Una domanda aperta nella scienza dei sogni</h3>
 <p>
-                    La risposta scientifica onesta è: <strong>non lo sappiamo completamente</strong>. L'esperienza dei sogni precognitivi è reale e comune. Se sia coinvolta una qualche effettiva previsione rimane non dimostrato ma non definitivamente smentito. La scienza continua a indagare.
+                    La risposta onesta è: <strong>non lo sappiamo completamente</strong>. L'esperienza dei sogni precognitivi è reale e comune. Se sia coinvolta una qualche effettiva previsione rimane non dimostrato ma non definitivamente smentito. La scienza continua a indagare.
                 </p>
 <h2 id="tracking">Come monitorare accuratamente i tuoi sogni precognitivi</h2>
 <p>
@@ -303,7 +303,7 @@
                 </p>
 <h3>5. Imposta un intervallo di tempo per la verifica del sogno</h3>
 <p>
-                    Decidi in anticipo quanto tempo dopo un sogno conterai una corrispondenza. Sognare che "succeda qualcosa di brutto" che "si avverano" dopo anni non ci sono prove concrete. <strong>Una settimana è uno standard comune</strong>.
+                    Decidi in anticipo quanto tempo dopo un sogno conterai una corrispondenza. Sognare che "succeda qualcosa di brutto" e vederlo "avverarsi" dopo anni non costituisce una prova concreta. <strong>Una settimana è un intervallo comunemente adottato</strong>.
                 </p>
 <h3>6. Condividi il tuo sogno prima dell'evento previsto</h3>
 <p>
@@ -378,7 +378,7 @@
 <p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/luna">Significato del sogno lunare</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/sole">Sun Significato del sogno</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/sole">Significato del sogno del sole</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/tempesta">Significato del sogno della tempesta</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/arcobaleno">Significato del sogno dell'arcobaleno</a>
 </div>

@@ -65,7 +65,7 @@
                     Traumtagebuch: Erinnerung, Methoden und Routinen
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Traumtagebuch hilft Ihnen, sich an Ihre Nächte zu erinnern, sie zu strukturieren und darüber nachzudenken. Dieser Hub fasst das Wesentliche zusammen: Erinnerungstechniken, <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> Grundlagen, die <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Bedeutung gängiger Traumsymbole</a> und Gewohnheiten, die das Üben mühelos machen.
+                    Mit einem Traumtagebuch erinnern, strukturieren und reflektieren Sie Ihre Nächte. Hier finden Sie das Wesentliche: Erinnerungstechniken, <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>-Grundlagen, die <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Bedeutung gängiger Traumsymbole</a> und Gewohnheiten, die das Üben mühelos machen.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

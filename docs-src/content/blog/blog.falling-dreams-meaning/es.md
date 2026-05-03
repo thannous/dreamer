@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "¿Qué significa soñar que caes al vacío? | Noctalia",
   "ogDescription": "Aprende por qué sueñas que te caes y cómo se interpreta según la altura, el miedo, la pérdida de control o el estrés actual.",
-  "ogImage": "https://noctalia.app/img/blog/suenos-de-caer.webp",
+  "ogImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "ogImageAlt": "Representación abstracta de la sensación de caer entre nubes",
   "twitterCard": "summary_large_image",
   "twitterTitle": "¿Qué significa soñar que caes al vacío? | Noctalia",
   "twitterDescription": "Aprende por qué sueñas que te caes y cómo se interpreta según la altura, el miedo, la pérdida de control o el estrés actual.",
-  "twitterImage": "https://noctalia.app/img/blog/suenos-de-caer.webp",
+  "twitterImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "twitterImageAlt": "Representación abstracta de la sensación de caer entre nubes",
   "publishedTime": "2025-01-10",
   "modifiedTime": "2026-03-06",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-dientes-caen",
   "nextPath": "/es/blog/suenos-de-volar",
-  "preloadImage": "/img/blog/suenos-de-caer.webp",
+  "preloadImage": "/img/blog/falling-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Qué significa soñar que caes al vacío?\",\n            \"description\": \"Aprende por qué sueñas que te caes y cómo se interpreta según la altura, el miedo, la pérdida de control o el estrés actual.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/suenos-de-caer.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1080,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Qué significa soñar que caes al vacío?\",\n            \"description\": \"Aprende por qué sueñas que te caes y cómo se interpreta según la altura, el miedo, la pérdida de control o el estrés actual.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/falling-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1080,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Qué significa soñar que caes?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Los sueños de caída suelen simbolizar pérdida de control, inseguridad, ansiedad ante el fracaso o sentirse abrumado. A menudo ocurren durante transiciones vitales estresantes o cuando enfrentas situaciones en las que te sientes sin apoyo o fuera de tu zona de confort.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué te despiertas de golpe al soñar que caes?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Esto se llama sacudida hípnica o mioclonía del sueño. Ocurre durante la transición entre la vigilia y el sueño cuando tus músculos se contraen repentinamente. La sensación de caída puede desencadenar este reflejo cuando tu cerebro malinterpreta la relajación muscular del inicio del sueño como una caída real.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Son los sueños de caída una señal de que algo va mal?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Los sueños de caída son normales y la mayoría de las personas los experimentan. Suelen reflejar estrés o ansiedad temporales más que problemas graves. Sin embargo, los sueños perturbadores frecuentes que afectan tu calidad del sueño pueden requerir atención en la gestión del estrés o consulta con un profesional.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Sueños de Caer\",\n            \"item\": \"https://noctalia.app/es/blog/suenos-de-caer\"\n        }\n    ]\n}"
   ],
@@ -66,10 +66,10 @@
 <span class="text-sm text-purple-300/60">4 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Significado de Soñar con Caer: Por Qué Sueñas que Caes
+                    Significado de ¿Soñar con Caer: Por Qué Sueñas que Caes
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Esa sensación repentina en el estómago. El viento que pasa rápidamente. El suelo acercándose a una velocidad aterradora. Entonces te despiertas bruscamente, con el corazón acelerado. Los sueños de caída son una de las experiencias humanas más viscerales y universales. ¿Qué intenta decirte tu mente?
+                    Esa sensación repentina en el estómago. El viento que pasa rápidamente. El suelo acercándose a una velocidad aterradora. Entonces te despiertas bruscamente, con el corazón acelerado. ¿Los sueños de caída son una de las experiencias humanas más viscerales y universales. ¿Qué intenta decirte tu mente?
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Representación abstracta de la sensación de caer entre nubes" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/suenos-de-caer.webp" srcset="../../img/blog/suenos-de-caer-480w.webp 480w, ../../img/blog/suenos-de-caer-800w.webp 800w, ../../img/blog/suenos-de-caer-1200w.webp 1200w" width="1200">
+<img alt="Representación abstracta de la sensación de caer entre nubes" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/falling-dreams-meaning.webp" srcset="../../img/blog/falling-dreams-meaning-480w.webp 480w, ../../img/blog/falling-dreams-meaning-800w.webp 800w, ../../img/blog/falling-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -110,16 +110,16 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="science">Sueños de caer: la ciencia detrás de este fenómeno</h2>
 <p>
-                    Los sueños de <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caída</a> ocurren con mayor frecuencia durante el <strong>estado hipnagógico</strong>, esa zona crepuscular entre la vigilia y el sueño. Durante esta transición, tu cerebro todavía está parcialmente alerta mientras tu cuerpo comienza a relajarse y perder la conciencia.
+                    ¿Los sueños de <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caída</a> ocurren con mayor frecuencia durante el <strong>estado hipnagógico</strong>, esa zona crepuscular entre la vigilia y el sueño. Durante esta transición, tu cerebro todavía está parcialmente alerta mientras tu cuerpo comienza a relajarse y perder la conciencia.
                 </p>
 <p>
-                    La investigación de la Sociedad de Investigación del Sueño indica que <strong>más del 70% de las personas</strong> han experimentado sueños de caída en algún momento. Son particularmente comunes en niños y tienden a disminuir con la edad, aunque el estrés puede desencadenarlos en cualquier etapa de la vida.
+                    Según la Sociedad de Investigación del Sueño, <strong>más del 70% de las personas</strong> han experimentado sueños de caída en algún momento. Son particularmente comunes en niños y tienden a disminuir con la edad, aunque el estrés puede desencadenarlos en cualquier etapa de la vida.
                 </p>
 <blockquote>
                     "Los sueños de caída suelen ocurrir en el momento del inicio del sueño, cuando el cerebro puede malinterpretar la relajación muscular normal como una caída física real." - Dr. Matthew Walker, Científico del Sueño
                 </blockquote>
 <p>
-                    La sensación se siente notablemente real porque los centros de equilibrio de tu cerebro (el sistema vestibular) pueden activarse durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, creando la ilusión de movimiento incluso mientras permaneces quieto.
+                    ¿Por qué se siente tan real? Porque los centros de equilibrio de tu cerebro (el sistema vestibular) pueden activarse durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, creando la ilusión de movimiento incluso mientras permaneces quieto.
                 </p>
 <h2 id="variations">Tipos de sueños de caída</h2>
 <p>
@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Pérdida de control</h3>
 <p>
-                    La interpretación más prevalente. Cuando estás cayendo, no puedes detenerte - estás a merced de la gravedad. Esto refleja situaciones donde te sientes <strong>impotente para cambiar los resultados</strong>. Inestabilidad laboral, sustos de salud, problemas de pareja - cualquier área donde el control parece imposible.
+                    Con diferencia, la lectura más frecuente. ¿Cuándo estás cayendo, no puedes detenerte - estás a merced de la gravedad. Esto refleja situaciones donde te sientes <strong>impotente para cambiar los resultados</strong>. Inestabilidad laboral, sustos de salud, problemas de pareja - cualquier área donde el control parece imposible.
                 </p>
 <h3>2. Miedo al fracaso</h3>
 <p>
@@ -210,7 +210,7 @@
                 </p>
 <h3>3. Estrés abrumador</h3>
 <p>
-                    Cuando el estrés se acumula más allá de tu capacidad de afrontamiento, los sueños de caída se vuelven más frecuentes. La sensación de caer refleja esa <strong>sensación de estar abrumado</strong> - todo está sucediendo demasiado rápido y no puedes seguir el ritmo.
+                    ¿Cuándo el estrés se acumula más allá de tu capacidad de afrontamiento, los sueños de caída se vuelven más frecuentes. La sensación de caer refleja esa <strong>sensación de estar abrumado</strong> - todo está sucediendo demasiado rápido y no puedes seguir el ritmo.
                 </p>
 <h3>4. Necesidad de dejar ir</h3>
 <p>
@@ -222,7 +222,7 @@
                 </p>
 <h3>6. Falta de apoyo</h3>
 <p>
-                    Los sueños de caída pueden indicar que te sientes <strong>sin apoyo en la vida real</strong>. Sin red de seguridad, nadie que te atrape. Esto podría señalar soledad, relaciones tensas o recursos inadecuados.
+                    Estos sueños pueden indicar que te sientes <strong>sin apoyo en la vida real</strong>. Sin red de seguridad, nadie que te atrape. Esto podría señalar soledad, relaciones tensas o recursos inadecuados.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -272,7 +272,7 @@
                 </p>
 <h3>Teoría cognitiva</h3>
 <p>
-                    Los psicólogos cognitivos modernos ven los sueños de caída como <strong>simulaciones de amenazas</strong>. Tu cerebro ensaya escenarios peligrosos durante el sueño para prepararte para los desafíos del mundo real. Los sueños de caída te ayudan a procesar miedos en un entorno seguro.
+                    Los psicólogos cognitivos modernos ven los sueños de caída como <strong>simulaciones de amenazas</strong>. Tu cerebro ensaya escenarios peligrosos durante el sueño para prepararte para los desafíos del mundo real. ¿Los sueños de caída te ayudan a procesar miedos en un entorno seguro.
                 </p>
 <h3>Perspectiva neurocientífica</h3>
 <p>
@@ -287,7 +287,7 @@
                 </p>
 <h3>1. Aborda la ansiedad subyacente</h3>
 <p>
-                    Identifica qué está causando estrés en tu vida despierta. Los sueños de caída a menudo disminuyen cuando <strong>abordas la fuente de tu inseguridad</strong> de frente. Haz un plan concreto para abordar lo que se siente fuera de control.
+                    Identifica qué está causando estrés en tu vida despierta. ¿Los sueños de caída a menudo disminuyen cuando <strong>abordas la fuente de tu inseguridad</strong> de frente. Haz un plan concreto para abordar lo que se siente fuera de control.
                 </p>
 <h3>2. Mejora la higiene del sueño</h3>
 <p>
@@ -313,7 +313,7 @@
                 </p>
 <h3>6. Busca ayuda profesional</h3>
 <p>
-                    Si los sueños de caída persisten e impactan significativamente tu calidad de sueño, considera hablar con un especialista del sueño o terapeuta que pueda abordar los problemas subyacentes.
+                    Si los sueños de caída persisten y alteran notablemente tu calidad de sueño, considera hablar con un especialista del sueño o terapeuta que pueda abordar los problemas subyacentes.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -324,10 +324,10 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">Soñar con caer</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/volar">Soñar con volar</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/escaleras">Soñar con escaleras</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/montana">Soñar con montaña</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">¿Soñar con caer</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/volar">¿Soñar con volar</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/escaleras">¿Soñar con escaleras</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/montana">¿Soñar con montaña</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -369,7 +369,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los sueños de caída suelen simbolizar pérdida de control, inseguridad, ansiedad ante el fracaso o sentirse abrumado. A menudo ocurren durante transiciones vitales estresantes o cuando enfrentas situaciones en las que te sientes sin apoyo o fuera de tu zona de confort.
+                            ¿Los sueños de caída suelen simbolizar pérdida de control, inseguridad, ansiedad ante el fracaso o sentirse abrumado. A menudo ocurren durante transiciones vitales estresantes o cuando enfrentas situaciones en las que te sientes sin apoyo o fuera de tu zona de confort.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -387,7 +387,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Los sueños de caída son normales y la mayoría de las personas los experimentan. Suelen reflejar estrés o ansiedad temporales más que problemas graves. Sin embargo, los sueños perturbadores frecuentes que afectan tu calidad del sueño pueden requerir atención en la gestión del estrés o consulta con un profesional.
+                            ¿Los sueños de caída son normales y la mayoría de las personas los experimentan. Suelen reflejar estrés o ansiedad temporales más que problemas graves. Sin embargo, los sueños perturbadores frecuentes que afectan tu calidad del sueño pueden requerir atención en la gestión del estrés o consulta con un profesional.
                         </p>
 </details>
 </div>
@@ -411,13 +411,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sonar que se caen los dientes: significado e interpretacion</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Soñar que se caen los dientes: significado e interpretación</div>
       </div>
     </a>
     <a href="suenos-de-volar" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Suenos de volar: que significa volar en suenos</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de volar: que significa volar en sueños</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -434,18 +434,18 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Suenos Recurrentes: Entender sus Mensajes</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
             <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Descubre lo que tu subconsciente está tratando de decirte.</p>
         </a>
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sonar que se caen los dientes: significado e interpretacion</h3>
-            <p class="text-sm text-gray-400">Por que suenas que pierdes los dientes? Descubre las 7 interpretaciones mas comunes.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
+            <p class="text-sm text-gray-400">¿Por qué suenas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
         </a>
         <a href="suenos-de-volar" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Suenos de volar: que significa volar en suenos</h3>
-            <p class="text-sm text-gray-400">Por que suenas con volar? Descubre lo que los suenos de volar revelan sobre la libertad y la ambicion.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de volar: que significa volar en sueños</h3>
+            <p class="text-sm text-gray-400">¿Por qué suenas con volar? Descubre lo que los sueños de volar revelan sobre la libertad y la ambición.</p>
         </a>
   </div>
 </section>

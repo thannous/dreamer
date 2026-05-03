@@ -134,7 +134,7 @@
 <ul>
 <li><strong>Vollständige Muskelparalyse:</strong> Gliedmaßen, Rumpf oder Kopf können nicht bewegt werden</li>
 <li><strong>Brustdruck:</strong> Gefühl von Gewicht auf der Brust, Schwierigkeiten beim Atmen</li>
-<li><strong>Augenbewegung bleibt erhalten:</strong> Oft ist es die einzige willkürliche Bewegung möglich</li>
+<li><strong>Augenbewegung bleibt erhalten:</strong> Oft die einzige willkürliche Bewegung, die möglich ist</li>
 <li><strong>Sprechen unmöglich:</strong> Kann nicht um Hilfe rufen oder Geräusche machen</li>
 </ul>
 <h3>Wahrnehmungserlebnisse</h3>
@@ -166,7 +166,7 @@
                 </p>
 <h2 id="causes">Was verursacht Schlafparalyse?</h2>
 <p>
-                    Während jeder an einer Schlaflähmung leiden kann, erhöhen bestimmte Faktoren die Wahrscheinlichkeit erheblich:
+                    Jeder kann eine Schlaflähmung erleben, doch bestimmte Faktoren erhöhen die Wahrscheinlichkeit deutlich:
                 </p>
 <h3>Schlafbezogene Faktoren</h3>
 <ul>
@@ -219,15 +219,15 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="hallucinations">Halluzinationen bei Schlaflähmung: Warum sie auftreten</h2>
 <p>
-                    Die Halluzinationen während der Schlaflähmung sind nicht zufällig – sie folgen vorhersehbaren Mustern, die durch die Neurowissenschaften erklärt werden:
+                    Diese Halluzinationen sind nicht zufällig - sie folgen vorhersehbaren Mustern, die durch die Neurowissenschaften erklärt werden:
                 </p>
 <h3>Die „Eindringling“ Erleben</h3>
 <p>
-                    Das Gefühl einer bedrohlichen Präsenz resultiert aus der Hyperaktivierung Ihrer <strong>Amygdala</strong>. Normalerweise mildert der präfrontale Kortex Angstreaktionen, aber während der Schlaflähmung versagt diese Regulierung. Ihr Gehirn interpretiert die Lähmung als Bedrohung und schafft eine Quelle für diese Gefahr.
+                    Dieses Gefühl einer bedrohlichen Präsenz resultiert aus der Hyperaktivierung Ihrer <strong>Amygdala</strong>. Normalerweise mildert der präfrontale Kortex Angstreaktionen, aber während der Schlaflähmung versagt diese Regulierung. Ihr Gehirn interpretiert die Lähmung als Bedrohung und schafft eine Quelle für diese Gefahr.
                 </p>
 <h3>Der „Incubus“ Erfahrung</h3>
 <p>
-                    Das Gefühl von Druck auf der Brust und Schwierigkeiten beim Atmen entsteht, weil sich die Atemmuskulatur (während sie noch funktioniert) eingeschränkt fühlt. Das Gehirn interpretiert dies als etwas, das auf Sie drückt, oft stellt es sich eine Figur vor, die auf Ihrer Brust sitzt.
+                    Brustdruck und Atemnot entstehen, weil sich die Atemmuskulatur (während sie noch funktioniert) eingeschränkt anfühlt. Ihr Gehirn interpretiert dies als etwas, das auf Sie drückt, oft als eine Gestalt, die auf Ihrer Brust sitzt.
                 </p>
 <h3>Der "Vestibularmotor" Erleben</h3>
 <p>
@@ -262,7 +262,7 @@
 <ul>
 <li><strong>Bleiben Sie ruhig:</strong> Erinnern Sie sich daran, dass dies vorübergehend und harmlos ist</li>
 <li><strong>Kämpfen Sie nicht dagegen:</strong> Kämpfen kann die Episode verlängern und die Angst verstärken</li>
-<li><strong>Konzentrieren Sie sich nach außen:</strong> Hören Sie auf Umgebungsgeräusche, spüren Sie das Bett darunter Sie</li>
+<li><strong>Konzentrieren Sie sich nach außen:</strong> Hören Sie auf Umgebungsgeräusche, spüren Sie das Bett unter sich</li>
 <li><strong>Visualisierung:</strong> Stellen Sie sich vor, Sie bewegen sich, stehen auf und machen das Licht an</li>
 </ul>
 <blockquote>
@@ -270,7 +270,7 @@
                 </blockquote>
 <h2 id="prevent">Präventionsstrategien</h2>
 <p>
-                    Obwohl Sie keine Prävention garantieren können, reduzieren diese Strategien die Episodenhäufigkeit erheblich:
+                    Prävention lässt sich nicht garantieren, doch diese Strategien reduzieren die Episodenhäufigkeit deutlich:
                 </p>
 <h3>Verbesserungen der Schlafhygiene</h3>
 <ul>
@@ -284,13 +284,13 @@
 <li><strong>Reduzieren Sie Stress:</strong> Üben Sie Meditation, Yoga oder andere Entspannungstechniken</li>
 <li><strong>Stimulanzien einschränken:</strong> Koffein und Alkohol kurz vor dem Schlafengehen meiden</li>
 <li><strong>Regelmäßig Sport treiben:</strong> Aber nicht innerhalb von 3 Stunden nach dem Schlafen</li>
-<li><strong>Manage screen time:</strong> Keine Bildschirme 1-2 Stunden vor dem Schlafengehen</li>
+<li><strong>Bildschirmzeit begrenzen:</strong> Keine Bildschirme 1-2 Stunden vor dem Schlafengehen</li>
 </ul>
 <h3>Wenn die Episoden anhalten</h3>
 <ul>
-<li><strong>Führen Sie ein Schlaftagebuch:</strong> Track patterns, triggers, and frequency</li>
-<li><strong>Practice sleep meditation:</strong> Guided relaxation before bed</li>
-<li><strong>Consider CBT-I:</strong> Cognitive Behavioral Therapy for Insomnia</li>
+<li><strong>Führen Sie ein Schlaftagebuch:</strong> Muster, Auslöser und Häufigkeit dokumentieren</li>
+<li><strong>Schlafmeditation praktizieren:</strong> Geführte Entspannung vor dem Schlafengehen</li>
+<li><strong>CBT-I in Betracht ziehen:</strong> Kognitive Verhaltenstherapie bei Schlaflosigkeit</li>
 <li><strong>Behandeln Sie Grunderkrankungen:</strong> Behandeln Sie Angstzustände, Depressionen oder Schlafstörungen</li>
 </ul>
 <h2 id="when-worry">Wann Sie einen Arzt aufsuchen sollten</h2>

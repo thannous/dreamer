@@ -67,7 +67,7 @@
                     Nightmares: Causes, Meaning, and How to Stop Them
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    You wake in terror, heart pounding, the vivid images still fresh in your mind. The fear lingers long after you realize it was just a dream. Nightmares affect nearly everyone occasionally, but for some, they're a regular occurrence that impacts sleep quality and daily life. Let's explore why nightmares happen and, most importantly, what you can do about them.
+                    You wake in terror, heart pounding, the vivid images still fresh in your mind. The fear lingers long after you realize it was just a dream. Nightmares affect nearly everyone occasionally, but for some, they're a regular occurrence that impacts sleep quality and daily life. Let's explore why nightmares happen and, most what you can do about them.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -110,7 +110,7 @@
                     They often feature themes like <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">being chased</a>, which can heighten the sense of threat.
                 </p>
 <p>
-                    While occasional nightmares are normal, <strong>2-8% of adults experience them frequently</strong> - once a week or more. When nightmares significantly impact sleep quality or daily functioning, they may be classified as Nightmare Disorder.
+                    While occasional nightmares are normal, <strong>2-8% of adults experience them frequently</strong> - once a week or more. When nightmares disrupt sleep quality or daily functioning, they may be classified as Nightmare Disorder.
                 </p>
 <p>
                     Nightmares differ from night terrors, which occur during non-<a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, involve physical reactions like screaming, and are rarely remembered. Nightmares are fully remembered and happen while you're in the lighter sleep stages.
@@ -129,7 +129,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Stress and Anxiety</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        The most common cause. <strong>Daily stress, work pressure, or life changes</strong> can manifest as nightmares. Your brain processes threats during sleep, and heightened anxiety increases nightmare frequency.
+                            Stress tops the list. <strong>Daily stress, work pressure, or life changes</strong> can manifest as nightmares. Your brain processes threats during sleep, and heightened anxiety increases nightmare frequency.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -214,7 +214,7 @@
 <h2 id="types">Types of Nightmares and Their Psychological Meanings</h2>
 <h3>Stress Nightmares</h3>
 <p>
-                    The most common type, directly related to daily stressors. These nightmares often feature <strong>scenarios of being unprepared, failing, or facing embarrassing situations</strong>. They typically decrease when the stressor is resolved.
+                    By far the most common type, directly tied to daily stressors. These nightmares often feature <strong>scenarios of being unprepared, failing, or facing embarrassing situations</strong>. They typically fade when the stressor is resolved.
                 </p>
 <h3>Trauma Nightmares</h3>
 <p>
@@ -222,7 +222,7 @@
                 </p>
 <h3>Recurrent Nightmares</h3>
 <p>
-                    The same nightmare repeating night after night suggests an <strong>unresolved issue your psyche is trying to process</strong>. The repetition often continues until the underlying issue is addressed.
+                    When the same nightmare repeats night after night, it suggests an <strong>unresolved issue your psyche is trying to process</strong>. Expect the repetition to continue until you address the underlying issue.
                 </p>
 <h3>Existential Nightmares</h3>
 <p>
@@ -248,7 +248,7 @@
                 </p>
 <h3>1. Image Rehearsal Therapy (IRT)</h3>
 <p>
-                    The most effective technique for recurring nightmares. <strong>While awake, visualize the nightmare but change the ending</strong> to something neutral or positive. Practice this new version daily for 10-20 minutes. Studies show IRT can reduce nightmare frequency by 50-80%.
+                    Consider this the gold standard for recurring nightmares. <strong>While awake, visualize the nightmare but change the ending</strong> to something neutral or positive. Practice this new version daily for 10-20 minutes. Studies show IRT can reduce nightmare frequency by 50-80%.
                 </p>
 <h3>2. Improve Sleep Hygiene</h3>
 <p>
@@ -389,7 +389,7 @@
                 <p class="text-sm text-purple-300/60">More resources on the same topic</p>
               </header>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+                    <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
                         <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
                         <p class="text-sm text-gray-400">Discover scientifically proven methods to improve your dream recall and never forget your dreams upon waking again. Simple techniques you can apply tonight.</p>

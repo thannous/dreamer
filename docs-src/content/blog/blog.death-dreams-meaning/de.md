@@ -107,7 +107,7 @@
                     Lassen Sie uns den Elefanten im Raum ansprechen: <strong>Träume vom <a class="text-dream-salmon hover:underline" href="../traumsymbole/tod">Tod</a> sagen fast nie den tatsächlichen Tod voraus</strong>. Trotz jahrhundertelangem Aberglauben gibt es keinen wissenschaftlichen Beweis dafür, dass Todesträume prophetisch sind. In der Sprache der Träume ist der Tod ein Symbol – und wie die meisten Traumsymbole bedeutet es selten das, was es wörtlich darstellt.
                 </p>
 <p>
-                    Tatsächlich sind Todesträume außerordentlich häufig. Studien deuten darauf hin, dass <strong>über 70 % der Menschen</strong>  schon einmal vom Tod geträumt haben – ihrem eigenen Tod, dem eines geliebten Menschen oder sogar eines Fremden. Diese Träume kommen in allen Kulturen und Zeitaltern vor, was darauf hindeutet, dass sie eine wichtige psychologische Funktion haben.
+                    Todesträume sind auch außerordentlich häufig. Studien deuten darauf hin, dass <strong>über 70 % der Menschen</strong> schon einmal vom Tod geträumt haben - ihrem eigenen Tod, dem eines geliebten Menschen oder sogar eines Fremden. Sie kommen in allen Kulturen und Zeitaltern vor und erfüllen offenbar eine wichtige psychologische Funktion.
                 </p>
 <blockquote>
                     "In Träumen ist der Tod ein Symbol der Transformation. Der Traum zeigt Ihnen, dass etwas in Ihrem Leben zu Ende geht, damit etwas Neues beginnen kann." - Dr. Rubin Naiman, Schlaf- und Traumspezialist
@@ -192,7 +192,7 @@
                 </p>
 <h3>1. Todesträume als Symbole der Transformation und Wiedergeburt</h3>
 <p>
-                    Die häufigste Interpretation. Der Tod in Träumen repräsentiert das <strong>Ende eines Kapitels und den Anfang eines anderen</strong>. Möglicherweise entwachsen Sie alten Lebensgewohnheiten, beenden einen Lebensabschnitt oder erleben tiefgreifende innere Veränderungen. Wie der Phönix muss etwas sterben, damit etwas Neues entsteht.
+                    Hier ist die häufigste Interpretation. Der Tod in Träumen repräsentiert das <strong>Ende eines Kapitels und den Anfang eines anderen</strong>. Möglicherweise entwachsen Sie alten Lebensgewohnheiten, beenden einen Lebensabschnitt oder erleben tiefgreifende innere Veränderungen. Wie der Phönix muss etwas sterben, damit etwas Neues entsteht.
                 </p>
 <h3>2. Todesträume stellen Ende und Abschluss dar</h3>
 <p>
@@ -231,7 +231,7 @@
 <h2 id="psychology">Psychologische Perspektiven auf den Tod Träume</h2>
 <h3>Freudsche Sicht auf Todesträume</h3>
 <p>
-                    Freud glaubte, dass Todesträume eine unterdrückte Feindseligkeit <strong>repressed hostility</strong> gegenüber der Person, die im Traum stirbt, oder unbewusste Wünsche (nicht unbedingt Todeswünsche, aber vielleicht Wünsche nach Veränderung oder Freiheit) darstellen könnten. Er sah sie auch als Ausdruck der Angst vor der eigenen Sterblichkeit.
+                    Freud glaubte, dass Todesträume <strong>unterdrückte Feindseligkeit</strong> gegenüber der Person, die im Traum stirbt, oder unbewusste Wünsche (nicht unbedingt Todeswünsche, aber vielleicht Wünsche nach Veränderung oder Freiheit) darstellen könnten. Er sah sie auch als Ausdruck der Angst vor der eigenen Sterblichkeit.
                 </p>
 <h3>Jungs Interpretation des Todes in Träumen</h3>
 <p>
@@ -243,7 +243,7 @@
                 </p>
 <h3>Moderne Forschung zur Symbolik von Todesträumen</h3>
 <p>
-                    Zeitgenössische Traumforscher schlagen vor, dass Todesträume uns helfen <strong>das Konzept der Endungen einzustudieren und zu verarbeiten</strong>. Unser Gehirn nutzt möglicherweise den sicheren Raum der Träume, um Sterblichkeit, Verlust und Veränderungen zu erforschen, ohne dass dies Konsequenzen für die reale Welt hat.
+                    Zeitgenössische Traumforscher vermuten, dass Todesträume uns helfen, <strong>das Konzept der Endungen einzustudieren und zu verarbeiten</strong>. Unser Gehirn nutzt möglicherweise den sicheren Raum der Träume, um Sterblichkeit, Verlust und Veränderungen ohne reale Konsequenzen zu erforschen.
                 </p>
 <blockquote>
                     "Das Erscheinen des Todes in Träumen bedeutet nicht unbedingt etwas Negatives. Es kann ein Hinweis darauf sein, dass Sie einen Übergang von einer Phase Ihres Lebens in eine andere vollziehen.“ - Dr. Michael Lennox, Traumpsychologe

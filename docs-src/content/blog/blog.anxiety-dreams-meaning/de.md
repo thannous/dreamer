@@ -129,7 +129,7 @@
                     Angstträume sind eine Kategorie belastender Träume, die sich durch Gefühle von Sorge, Hilflosigkeit, Verlegenheit oder Furcht auszeichnen, anstatt durch blanke Angst. Während <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> typischerweise unmittelbare Gefahr beinhalten – von einem Raubtier verfolgt werden, von einer Klippe fallen oder körperlichen Schaden erleiden –, erzeugen Angstträume ein subtileres, allgegenwärtigeres Unbehagen. Sie könnten sich nicht in der Lage finden, ein Telefon zu wählen, ständig zu spät zu einem wichtigen Termin kommen oder nackt vor einer Menschenmenge stehen, ohne zu wissen, wie Sie dorthin gekommen sind.
                 </p>
 <p>
-                    Der Unterschied ist wichtig, weil die beiden Erfahrungen unterschiedliche emotionale Schaltkreise aktivieren. Albträume lösen die akute Angstreaktion aus und wecken Sie oft ruckartig auf. Angstträume hingegen halten Sie tendenziell in ihrer Erzählung gefangen und lassen Sie durch Szenarien der Unzulänglichkeit oder des Kontrollverlusts kreisen, ohne jemals einen klaren Höhepunkt zu erreichen. Sie wachen erschöpft und besorgt auf, statt verängstigt.
+                    Der Unterschied ist wichtig, weil die beiden Erfahrungen unterschiedliche emotionale Schaltkreise aktivieren. Albträume lösen die akute Angstreaktion aus und wecken Sie oft ruckartig auf. Angsttraume halten Sie eher in ihrer Erzahlung gefangen und lassen Sie durch Szenarien der Unzulanglichkeit oder des Kontrollverlusts kreisen, ohne jemals einen klaren Hohepunkt zu erreichen. Sie wachen erschöpft und besorgt auf, statt verängstigt.
                 </p>
 <p>
                     Forschungen des finnischen Neurowissenschaftlers Antti Revonsuo und nachfolgende Studien haben ergeben, dass <strong>bis zu 77 % der Trauminhalte negative Emotionen beinhalten</strong>, wobei Angst die am häufigsten berichtete Traumemotion ist. Dies ist kein Designfehler des schlafenden Gehirns – es ist eine Funktion, wie wir weiter unten untersuchen werden.
@@ -186,7 +186,7 @@
                 </p>
 <h3>Emotionale Verarbeitung während des REM-Schlafs</h3>
 <p>
-                    Die Forschung des Neurowissenschaftlers Matthew Walker an der UC Berkeley hat gezeigt, dass der REM-Schlaf als eine Form der <strong>nächtlichen Therapie</strong> wirkt. Ihr Gehirn entfernt die emotionale Ladung schwieriger Erinnerungen, indem es sie ohne die begleitenden Stresshormone wiederholt (Noradrenalin wird während des REM unterdrückt). Wenn dieses System jedoch durch chronische Angst überlastet wird, bleibt die Verarbeitung unvollständig, und ängstliche Inhalte fließen in lebhafte Träume über, die sich beunruhigend real anfühlen.
+                    Die Forschung des Neurowissenschaftlers Matthew Walker an der UC Berkeley hat gezeigt, dass der REM-Schlaf als eine Form der <strong>nächtlichen Therapie</strong> wirkt. Ihr Gehirn entfernt die emotionale Ladung schwieriger Erinnerungen, indem es sie ohne die begleitenden Stresshormone wiederholt (Noradrenalin wird während des REM unterdrückt). Wird dieses System durch chronische Angst uberlastet, bleibt die Verarbeitung unvollstandig. Angstliche Inhalte fliessen dann in lebhafte Traume uber, die sich beunruhigend real anfuhlen.
                 </p>
 <p>
                     Deshalb deuten <a class="text-dream-salmon hover:underline" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">wiederkehrende Träume</a> mit dem gleichen ängstlichen Thema oft auf ein ungelöstes emotionales Problem hin. Das Gehirn kehrt immer wieder zum selben Material zurück, weil es die Verarbeitung noch nicht abgeschlossen hat.
@@ -198,7 +198,7 @@
                 </p>
 <h3>Generalisierte Angststörung (GAD)</h3>
 <p>
-                    Menschen mit GAD berichten von deutlich höheren Raten von Angstträumen im Vergleich zur Allgemeinbevölkerung. Die anhaltende Sorge, die GAD kennzeichnet, schaltet sich beim Schlafengehen nicht ab – sie folgt ihnen in den Schlaf und erzeugt Träume, die von denselben Themen der Unsicherheit und Katastrophe durchdrungen sind, die auch ihre wachen Gedanken dominieren.
+                    Menschen mit GAD berichten von merklich hoheren Raten von Angsttraumen im Vergleich zur Allgemeinbevolkerung. Die anhaltende Sorge, die GAD kennzeichnet, schaltet sich beim Schlafengehen nicht ab – sie folgt ihnen in den Schlaf und erzeugt Träume, die von denselben Themen der Unsicherheit und Katastrophe durchdrungen sind, die auch ihre wachen Gedanken dominieren.
                 </p>
 <h3>PTBS und Trauma</h3>
 <p>

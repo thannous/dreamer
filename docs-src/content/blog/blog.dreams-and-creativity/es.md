@@ -109,7 +109,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="how-dreams-unlock">Cómo los sueños desbloquean el pensamiento creativo</h2>
 <p>
-                    Cuando te duermes, algo extraordinario ocurre dentro de tu cerebro. La corteza prefrontal — la región responsable de la lógica, la autocensura y el razonamiento lineal — se silencia considerablemente. Mientras tanto, la amígdala, el hipocampo y la corteza visual se activan intensamente. Este cambio neurológico crea un espacio de juego mental donde las ideas pueden colisionar sin los guardianes habituales de la racionalidad diciendo "eso no tiene sentido".
+                    ¿Cuándo te duermes, algo extraordinario ocurre dentro de tu cerebro. La corteza prefrontal — la región responsable de la lógica, la autocensura y el razonamiento lineal — se silencia considerablemente. Mientras tanto, la amígdala, el hipocampo y la corteza visual se activan intensamente. Este cambio neurológico crea un espacio de juego mental donde las ideas pueden colisionar sin los guardianes habituales de la racionalidad diciendo "eso no tiene sentido".
                 </p>
 <p>
                     Durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, tu cerebro entra en un estado que los neurocientíficos describen como "hiperasociativo". Extrae fragmentos de diferentes recuerdos, emociones y experiencias sensoriales y los entrelaza en combinaciones que tu mente despierta nunca intentaría. Un recuerdo de la infancia del océano puede fusionarse con un problema laboral y una canción que escuchaste en la radio, produciendo una idea completamente nueva que se siente a la vez extraña y profunda.
@@ -126,7 +126,7 @@
                 </p>
 <h3>August Kekulé y el anillo de benceno</h3>
 <p>
-                    En 1865, el químico alemán August Kekulé luchaba por determinar la estructura molecular del benceno. Una noche, adormilado junto al fuego, soñó con una serpiente que mordía su propia cola — el antiguo símbolo del uróboro. Se despertó con la certeza de que los átomos de carbono del benceno formaban un anillo cerrado en lugar de una cadena. Esta intuición revolucionó la química orgánica y sigue siendo uno de los ejemplos más citados de <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">descubrimiento impulsado por los sueños</a>.
+                    En 1865, el químico alemán August Kekulé luchaba por determinar la estructura molecular del benceno. Una noche, adormilado junto al fuego, soñó con una serpiente que mordía su propia cola — el antiguo símbolo del uróboro. Se despertó con la certeza de que los átomos de carbono del benceno formaban un anillo cerrado en lugar de una cadena. Esta intuición revoluciónó la química orgánica y sigue siendo uno de los ejemplos más citados de <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">descubrimiento impulsado por los sueños</a>.
                 </p>
 <h3>Paul McCartney y "Yesterday"</h3>
 <p>
@@ -162,7 +162,7 @@
                 </p>
 <h3>Por qué el cerebro soñador es únicamente creativo</h3>
 <p>
-                    La combinación de la desactivación prefrontal (menos autocensura), el aumento de la actividad de la amígdala (asociaciones emocionales intensificadas) y la consolidación activa de la memoria crea un estado cerebral imposible de lograr estando despierto. Es como si la evolución hubiera incorporado a tu biología una sesión de lluvia de ideas nocturna donde la voz más conservadora de la sala ha sido invitada a salir.
+                    Desactivación prefrontal (menos autocensura), mayor actividad de la amígdala (asociaciones emocionales intensificadas) y consolidación activa de la memoria se combinan para crear un estado cerebral imposible de lograr estando despierto. Es como si la evolución hubiera incorporado a tu biología una sesión de lluvia de ideas nocturna donde la voz más conservadora de la sala ha sido invitada a salir.
                 </p>
 </div>
 <!-- Creativity Dream Cards -->
@@ -199,7 +199,7 @@
                 </p>
 <h3>Técnica de incubación de sueños paso a paso</h3>
 <ol>
-<li><strong>Define tu desafío creativo con claridad:</strong> Escríbelo en una sola frase. "¿Cómo puedo resolver X?" o "¿Cuál es un enfoque novedoso para Y?" Cuanto más específico, mejor.</li>
+<li><strong>Define tu desafío creativo con claridad:</strong> Escríbelo en una sola frase. "¿Cómo puedo resolver X?" o "¿Cuál es un enfoque novedoso para Y?" ¿Cuánto más específico, mejor.</li>
 <li><strong>Revisa el problema antes de dormir:</strong> Dedica 10-15 minutos a sumergirte en el desafío — consulta notas, bocetos, datos o cualquier material relacionado. Quieres que el problema esté vívido en tu memoria a corto plazo.</li>
 <li><strong>Verbaliza tu petición:</strong> Al cerrar los ojos, repite tu pregunta en silencio o en voz alta. Dile a tu mente dormida: "Esta noche, muéstrame una nueva forma de pensar sobre esto."</li>
 <li><strong>Mantén un diario junto a tu cama:</strong> En el momento en que despiertes — antes de mirar el teléfono, antes de levantarte de la cama — anota todo lo que recuerdes, incluso fragmentos que parezcan absurdos.</li>

@@ -113,7 +113,7 @@
 <a class="text-dream-salmon hover:underline" href="../symbols/being-chased">Being chased</a> is the <strong>most frequently reported dream theme worldwide</strong>. Studies suggest that over 80% of people experience chase dreams at some point in their lives, with many having them repeatedly.
                 </p>
 <p>
-                    The prevalence of chase dreams is rooted in our <strong>evolutionary biology</strong>. Our ancestors faced real threats from predators, and the fight-or-flight response was essential for survival. Even though most of us no longer face physical predators, our brains still process modern stressors through this ancient neural circuitry.
+                    Why so widespread? Chase dreams are rooted in our <strong>evolutionary biology</strong>. Our ancestors faced real threats from predators, and the fight-or-flight response was essential for survival. Even though most of us no longer face physical predators, our brains still process modern stressors through this ancient neural circuitry.
                 </p>
 <blockquote>
                     "Chase dreams activate the same neural pathways as real threat responses. Your brain doesn't fully distinguish between dreamed danger and waking danger." - Dr. Deirdre Barrett, Harvard Dream Researcher
@@ -123,7 +123,7 @@
                 </p>
 <h2 id="chasers">What Does It Mean When Different Things Chase You?</h2>
 <p>
-                    The identity of your pursuer holds significant meaning. Here are the most common chasers and what they might represent:
+                    Who or what chases you matters a great deal. Here are the most common chasers and what they might represent:
                 </p>
 </div>
 <!-- Dream Variations Cards -->
@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Avoidance Behavior in Waking Life</h3>
 <p>
-                    The most common interpretation is that you're <strong>running from something in waking life</strong>. This could be a difficult conversation, a responsibility, a decision, or an emotion you don't want to face. The dream is your subconscious highlighting your avoidance pattern.
+                    Most likely, you're <strong>running from something in waking life</strong>. This could be a difficult conversation, a responsibility, a decision, or an emotion you don't want to face. Your subconscious uses the chase to spotlight that avoidance pattern.
                 </p>
 <h3>2. Anxiety and Stress Manifesting in Dreams</h3>
 <p>

@@ -129,7 +129,7 @@
                     I sogni d'ansia sono una categoria di sogni angoscianti caratterizzati da sentimenti di preoccupazione, impotenza, imbarazzo o angoscia piuttosto che da paura vera e propria. Mentre gli <a class="text-dream-salmon hover:underline" href="incubi-cause-significato-e-come-fermarli">incubi</a> comportano tipicamente un pericolo immediato — essere inseguiti da un predatore, cadere da una scogliera o subire un danno fisico — i sogni d'ansia creano un senso di disagio più sottile e pervasivo. Potresti trovarti incapace di comporre un numero di telefono, perpetuamente in ritardo per un evento importante, o nudo davanti a una folla senza ricordare come ci sei arrivato.
                 </p>
 <p>
-                    La distinzione è importante perché le due esperienze attivano circuiti emotivi diversi. Gli incubi scatenano la risposta acuta alla paura e spesso ti svegliano di soprassalto. I sogni d'ansia, al contrario, tendono a tenerti intrappolato nella loro narrativa, facendoti attraversare scenari di inadeguatezza o perdita di controllo senza mai raggiungere un climax chiaro. Ti svegli sentendoti svuotato e preoccupato piuttosto che terrorizzato.
+                    La distinzione è importante perché le due esperienze attivano circuiti emotivi diversi. Gli incubi scatenano la risposta acuta alla paura e spesso ti svegliano di soprassalto. I sogni d'ansia tendono piuttosto a tenerti intrappolato nella loro narrativa, facendoti attraversare scenari di inadeguatezza o perdita di controllo senza mai raggiungere un climax chiaro. Ti svegli sentendoti svuotato e preoccupato piuttosto che terrorizzato.
                 </p>
 <p>
                     La ricerca del neuroscienziato finlandese Antti Revonsuo e studi successivi hanno rivelato che <strong>fino al 77% del contenuto onirico coinvolge emozioni negative</strong>, con l'ansia come emozione onirica più frequentemente riportata. Questo non è un difetto di progettazione del cervello addormentato — è una caratteristica, come esploreremo di seguito.
@@ -186,7 +186,7 @@
                 </p>
 <h3>Elaborazione emotiva durante il REM</h3>
 <p>
-                    La ricerca del neuroscienziato Matthew Walker alla UC Berkeley ha dimostrato che il sonno REM agisce come una forma di <strong>terapia notturna</strong>. Il cervello rimuove la carica emotiva dai ricordi difficili riproducendoli senza gli ormoni dello stress accompagnanti (la noradrenalina è soppressa durante il REM). Tuttavia, quando questo sistema è sovraccaricato dall'ansia cronica, l'elaborazione diventa incompleta, e il contenuto ansioso si riversa in sogni vividi che sembrano inquietantemente reali.
+                    La ricerca del neuroscienziato Matthew Walker alla UC Berkeley ha dimostrato che il sonno REM agisce come una forma di <strong>terapia notturna</strong>. Il cervello rimuove la carica emotiva dai ricordi difficili riproducendoli senza gli ormoni dello stress accompagnanti (la noradrenalina è soppressa durante il REM). Quando questo sistema e sovraccaricato dall'ansia cronica, l'elaborazione diventa incompleta. Il contenuto ansioso si riversa allora in sogni vividi che sembrano inquietantemente reali.
                 </p>
 <p>
                     Ecco perché i <a class="text-dream-salmon hover:underline" href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti">sogni ricorrenti</a> con lo stesso tema ansioso spesso indicano un problema emotivo irrisolto. Il cervello continua a tornare sullo stesso materiale perché non ha finito di elaborarlo.
@@ -198,7 +198,7 @@
                 </p>
 <h3>Disturbo d'ansia generalizzato (GAD)</h3>
 <p>
-                    Le persone con GAD riportano tassi significativamente più elevati di sogni d'ansia rispetto alla popolazione generale. La preoccupazione persistente che caratterizza il GAD non si spegne quando si va a dormire — segue nel sonno, producendo sogni saturi degli stessi temi di incertezza e catastrofe che dominano i pensieri della veglia.
+                    Le persone con GAD riportano tassi nettamente più elevati di sogni d'ansia rispetto alla popolazione generale. La preoccupazione persistente che caratterizza il GAD non si spegne quando si va a dormire — segue nel sonno, producendo sogni saturi degli stessi temi di incertezza e catastrofe che dominano i pensieri della veglia.
                 </p>
 <h3>PTSD e trauma</h3>
 <p>

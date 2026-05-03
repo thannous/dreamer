@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/fr/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/fr/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/fr/#comment-ca-marche" class="hidden lg:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="/fr/#fonctionnalites" class="hidden lg:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/fr/blog/" class="text-dream-salmon transition-colors">Ressources</a>
                 <a href="/fr/guides/" class="hover:text-white transition-colors">Guides des rêves</a>
                 <a href="/fr/guides/dictionnaire-symboles-reves" class="hover:text-white transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">À propos</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">FR</span>
+                        <span>FR</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/fr/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressources</a>
+                <a href="/fr/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guides des rêves</a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">À propos</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/anxiety-dreams-meaning" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/reves-anxiete-signification" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Français</a>
+                    <a href="/es/blog/suenos-de-ansiedad-significado" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/angsttraeume-bedeutung" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/sogni-ansia-significato" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -300,7 +330,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#what-are-anxiety-dreams">1. Qu'est-ce qu'un rêve d'anxiété et en quoi il diffère d'un cauchemar</a></li>
-<li><a class="toc-link block" href="#common-scenarios">2. Les 8 scénarios de rêves d'anxiété les plus courants</a></li>
+<li><a class="toc-link block" href="#common-scénarios">2. Les 8 scénarios de rêves d'anxiété les plus courants</a></li>
 <li><a class="toc-link block" href="#why-anxiety-dreams">3. Pourquoi votre cerveau produit des rêves d'anxiété</a></li>
 <li><a class="toc-link block" href="#mental-health">4. Rêves d'anxiété et santé mentale</a></li>
 <li><a class="toc-link block" href="#reduce-anxiety-dreams">5. Techniques éprouvées pour réduire les rêves d'anxiété</a></li>
@@ -314,13 +344,13 @@
                     Les rêves d'anxiété sont une catégorie de rêves perturbants caractérisés par des sentiments d'inquiétude, d'impuissance, de gêne ou d'appréhension plutôt que par une peur franche. Alors que les <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> impliquent généralement un danger immédiat — être poursuivi par un prédateur, tomber d'une falaise ou faire face à un dommage physique — les rêves d'anxiété créent un sentiment de malaise plus subtil et plus diffus. Vous pouvez vous retrouver incapable de composer un numéro de téléphone, perpétuellement en retard pour un événement important, ou debout nu devant une foule sans savoir comment vous êtes arrivé là.
                 </p>
 <p>
-                    Cette distinction est importante car les deux expériences activent des circuits émotionnels différents. Les cauchemars déclenchent la réponse de peur aiguë et vous réveillent souvent en sursaut. Les rêves d'anxiété, en revanche, ont tendance à vous maintenir prisonnier de leur récit, vous faisant traverser des scénarios d'inadéquation ou de perte de contrôle sans jamais atteindre un climax clair. Vous vous réveillez épuisé et inquiet plutôt que terrifié.
+                    Cette distinction est importante car les deux expériences activent des circuits émotionnels différents. Les cauchemars déclenchent la réponse de peur aiguë et vous réveillent souvent en sursaut. Les rêves d'anxiété ont plutôt tendance a vous maintenir prisonnier de leur récit, vous faisant traverser des scénarios d'inadéquation ou de perte de contrôle sans jamais atteindre un climax clair. Vous vous réveillez épuisé et inquiet plutôt que terrifié.
                 </p>
 <p>
                     Les recherches du neuroscientifique finlandais Antti Revonsuo et les études ultérieures ont révélé que <strong>jusqu'à 77 % du contenu onirique implique des émotions négatives</strong>, l'anxiété étant l'émotion la plus fréquemment rapportée dans les rêves. Ce n'est pas un défaut de conception du cerveau endormi — c'est une fonctionnalité, comme nous le verrons ci-dessous.
                 </p>
 
-<h2 id="common-scenarios">Les 8 scénarios de rêves d'anxiété les plus courants</h2>
+<h2 id="common-scénarios">Les 8 scénarios de rêves d'anxiété les plus courants</h2>
 <p>
                     Bien que les détails varient d'une personne à l'autre, certains thèmes de rêves d'anxiété apparaissent à travers les cultures avec une régularité remarquable. Si vous reconnaissez le vôtre, vous êtes loin d'être seul.
                 </p>
@@ -371,7 +401,7 @@
                 </p>
 <h3>Le traitement émotionnel pendant le sommeil paradoxal</h3>
 <p>
-                    Les recherches du neuroscientifique Matthew Walker à UC Berkeley ont montré que le sommeil paradoxal agit comme une forme de <strong>thérapie nocturne</strong>. Votre cerveau atténue la charge émotionnelle des souvenirs difficiles en les rejouant sans les hormones de stress associées (la noradrénaline est supprimée pendant le sommeil paradoxal). Cependant, lorsque ce système est surchargé par une anxiété chronique, le traitement devient incomplet, et le contenu anxieux déborde dans des rêves vivaces qui semblent terriblement réels.
+                    Les recherches du neuroscientifique Matthew Walker à UC Berkeley ont montré que le sommeil paradoxal agit comme une forme de <strong>thérapie nocturne</strong>. Votre cerveau atténue la charge émotionnelle des souvenirs difficiles en les rejouant sans les hormones de stress associées (la noradrénaline est supprimée pendant le sommeil paradoxal). Lorsque ce systeme est surcharge par une anxiete chronique, le traitement devient incomplet. Le contenu anxieux deborde alors dans des reves vivaces qui semblent terriblement reels.
                 </p>
 <p>
                     C'est pourquoi les <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">rêves récurrents</a> avec le même thème anxieux indiquent souvent un problème émotionnel non résolu. Le cerveau revient sans cesse au même matériau parce qu'il n'a pas fini de le traiter.
@@ -383,7 +413,7 @@
                 </p>
 <h3>Trouble anxieux généralisé (TAG)</h3>
 <p>
-                    Les personnes atteintes de TAG rapportent des taux significativement plus élevés de rêves d'anxiété par rapport à la population générale. L'inquiétude persistante qui caractérise le TAG ne s'éteint pas au coucher — elle les suit dans le sommeil, produisant des rêves saturés des mêmes thèmes d'incertitude et de catastrophe qui dominent leurs pensées éveillées.
+                    Les personnes atteintes de TAG rapportent des taux nettement plus eleves de reves d'anxiete par rapport a la population generale. L'inquiétude persistante qui caractérise le TAG ne s'éteint pas au coucher — elle les suit dans le sommeil, produisant des rêves saturés des mêmes thèmes d'incertitude et de catastrophe qui dominent leurs pensées éveillées.
                 </p>
 <h3>TSPT et traumatisme</h3>
 <p>
@@ -619,7 +649,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/fr/" class="flex items-center gap-2 mb-4">
@@ -696,8 +726,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

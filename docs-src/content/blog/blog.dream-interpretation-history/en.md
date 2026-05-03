@@ -116,7 +116,7 @@
                     The earliest written records of dream interpretation come from ancient <strong>Mesopotamia around 3100 BCE</strong>. The Sumerians, Assyrians, and Babylonians kept meticulous dream records on clay tablets, considering dreams to be messages from the divine realm.
                 </p>
 <p>
-                    The most famous artifact is the <strong>Assyrian Dream Book</strong>, a collection of dream omens dating to the 7th century BCE. This text categorized dreams and their meanings with remarkable specificity:
+                    Best known among these records is the <strong>Assyrian Dream Book</strong>, a collection of dream omens dating to the 7th century BCE. This text categorized dreams and their meanings with remarkable specificity:
                 </p>
 <ul>
 <li><strong>Flying dreams:</strong> Indicated freedom from burdens or elevation in status</li>
@@ -154,16 +154,16 @@
                 </p>
 <h2 id="ancient-greece">Dream Interpretation in Ancient Greece and Rome: Medical and Prophetic Dreams</h2>
 <p>
-                    The ancient Greeks approached dreams from both <strong>medical and mystical perspectives</strong>. By the 5th century BCE, Greek physicians began to see dreams as diagnostic tools for physical illness.
+                    Ancient Greeks approached dreams from both <strong>medical and mystical perspectives</strong>. By the 5th century BCE, Greek physicians began treating dreams as diagnostic tools for physical illness.
                 </p>
 <p>
 <strong>Hippocrates</strong> (460-370 BCE), the father of medicine, wrote that dreams could reveal imbalances in bodily humors. He believed certain dream images indicated specific health conditions - for example, dreams of <a class="text-dream-salmon hover:underline" href="../symbols/flood">floods</a> might suggest excess phlegm.
                 </p>
 <p>
-                    The philosopher <strong>Aristotle</strong> (384-322 BCE) took a more rationalist view, arguing in his work "On Dreams" that dreams were not divine messages but rather mental residues of daily experiences and sensory impressions processed during sleep.
+                    <strong>Aristotle</strong> (384-322 BCE) pushed back with a rationalist view, arguing in "On Dreams" that dreams were not divine messages but mental residues of daily experiences and sensory impressions processed during sleep.
                 </p>
 <p>
-                    However, the most influential Greek text was <strong>Artemidorus's "Oneirocritica"</strong> (The Interpretation of Dreams), written around 200 CE. This five-volume work became the standard dream interpretation manual for over 1,500 years. Artemidorus classified dreams into two categories:
+                    Yet the most influential Greek text proved to be <strong>Artemidorus's "Oneirocritica"</strong> (The Interpretation of Dreams), written around 200 CE. This five-volume work became the standard dream interpretation manual for over 1,500 years. Artemidorus classified dreams into two categories:
                 </p>
 <ul>
 <li><strong>Theorematic dreams:</strong> Direct prophecies that would literally come true</li>
@@ -181,14 +181,14 @@
                     The Hebrew Bible contains over 20 significant dream narratives. <strong>Joseph's interpretation of Pharaoh's dreams</strong> (Genesis 41) established a model for prophetic dream reading. The Talmud later declared, "A dream uninterpreted is like a letter unread."
                 </p>
 <p>
-                    In Christianity, dreams guided crucial events: Joseph's dream about Mary's <a class="text-dream-salmon hover:underline" href="../symbols/pregnancy">pregnancy</a>, the Magi's warning not to return to Herod, and numerous visions in the Book of Revelation. Medieval Christian scholars debated whether dreams came from God, nature, or demons.
+                    Within Christianity, dreams guided crucial events: Joseph's dream about Mary's <a class="text-dream-salmon hover:underline" href="../symbols/pregnancy">pregnancy</a>, the Magi's warning not to return to Herod, and numerous visions in the Book of Revelation. Medieval Christian scholars debated whether dreams came from God, nature, or demons.
                 </p>
 <h3>Dream Interpretation in Islamic Tradition</h3>
 <p>
                     Islamic tradition recognizes <strong>three types of dreams</strong>: true dreams from Allah (ru'ya), dreams from one's own thoughts (hulm), and dreams from Satan. The Prophet Muhammad reportedly said that true dreams are "one of the forty-six parts of prophethood."
                 </p>
 <p>
-                    The scholar <strong>Ibn Sirin</strong> (653-728 CE) compiled one of Islam's most important dream interpretation manuals, which remains influential today. His interpretations emphasized the dreamer's personal context and spiritual state.
+                    Scholar <strong>Ibn Sirin</strong> (653-728 CE) compiled one of Islam's most important dream interpretation manuals, still influential today. His interpretations emphasized the dreamer's personal context and spiritual state.
                 </p>
 <h3>Dream Interpretation in Hinduism and Buddhism</h3>
 <p>
@@ -213,7 +213,7 @@
 <li>Popular almanacs included dream dictionaries for common folk</li>
 </ul>
 <p>
-                    However, the <strong>Age of Enlightenment</strong> (1685-1815) brought skepticism. Rationalist philosophers dismissed dream interpretation as superstition, viewing dreams as meaningless mental noise.
+                    Then the <strong>Age of Enlightenment</strong> (1685-1815) brought skepticism. Rationalist philosophers dismissed dream interpretation as superstition, viewing dreams as meaningless mental noise.
                 </p>
 </div>
 <!-- Era Cards -->
@@ -258,7 +258,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="freud-revolution">Freud's Revolution in Dream Interpretation: The Unconscious Mind</h2>
 <p>
-                    In <strong>1899</strong>, Sigmund Freud published "Die Traumdeutung" (The Interpretation of Dreams), fundamentally transforming how Western civilization understood dreams. This work marked the birth of modern dream psychology.
+                    In <strong>1899</strong>, Sigmund Freud published "Die Traumdeutung" (The Interpretation of Dreams), transforming how Western civilization understood dreams. This work marked the birth of modern dream psychology.
                 </p>
 <p>
                     Freud's revolutionary insight was that dreams were not divine messages or meaningless brain activity, but rather <strong>expressions of unconscious wishes and desires</strong>. He proposed that dreams served as "the royal road to the unconscious."
@@ -305,14 +305,14 @@
                 </p>
 <h2 id="modern-neuroscience">Modern Neuroscience of Dream Interpretation: What Science Reveals</h2>
 <p>
-                    The discovery of <strong>REM (Rapid Eye Movement) sleep in 1953</strong> by Eugene Aserinsky and Nathaniel Kleitman opened a new era of scientific dream research. For the first time, scientists could objectively identify when people were dreaming.
+                    When Eugene Aserinsky and Nathaniel Kleitman discovered <strong>REM (Rapid Eye Movement) sleep in 1953</strong>, they opened a new era of scientific dream research. For the first time, scientists could objectively identify when people were dreaming.
                 </p>
 <h3>What Modern Neuroscience Has Discovered About Dreams:</h3>
 <p>
 <strong>Brain activity during dreams:</strong> Modern imaging techniques (fMRI, PET scans) reveal that dreaming involves intense activity in the visual cortex, amygdala (emotions), and hippocampus (memory), while the prefrontal cortex (logical reasoning) shows reduced activity - explaining dreams' often illogical nature.
                 </p>
 <p>
-<strong>The activation-synthesis hypothesis</strong> (J. Allan Hobson, 1977) proposed that dreams result from the brain attempting to make sense of random neural firing during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>. While influential, this theory has been revised - dreams aren't entirely random but reflect waking concerns and emotional processing.
+<strong>The activation-synthesis hypothesis</strong> (J. Allan Hobson, 1977) proposed that dreams result from the brain attempting to make sense of random neural firing during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>. This theory has since been revised: dreams are not entirely random but reflect waking concerns and emotional processing.
                 </p>
 <p>
 <strong>Memory consolidation:</strong> Research by Matthew Walker and others demonstrates that <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> is crucial for emotional memory processing. Dreams may help integrate new experiences, process emotions, and consolidate learning.
@@ -321,11 +321,11 @@
 <strong>The threat simulation theory</strong> (Antti Revonsuo, 2000) suggests dreams evolved as a biological defense mechanism, allowing us to rehearse responses to threats in a safe environment. This explains the prevalence of anxiety dreams and <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a>.
                 </p>
 <p>
-<strong>The continuity hypothesis</strong> shows that dream content reflects waking life concerns. Studies find that approximately <strong>65% of dream content</strong> relates to recent waking experiences, emotional concerns, and ongoing life situations.
+<strong>The continuity hypothesis</strong> confirms that dream content mirrors waking life concerns. Studies find that roughly <strong>65% of dream content</strong> ties to recent waking experiences, emotional concerns, and ongoing life situations.
                 </p>
 <h3>Contemporary Dream Science Insights:</h3>
 <ul>
-<li><strong>Problem-solving:</strong> Studies confirm that dreams can facilitate creative problem-solving and insight</li>
+<li><strong>Problem-solving:</strong> Studies confirm that dreams can help creative problem-solving and insight</li>
 <li><strong>Emotional regulation:</strong> REM sleep helps process and reduce the emotional charge of difficult experiences</li>
 <li><strong>Neural network restructuring:</strong> Dreams may reflect the brain reorganizing neural connections</li>
 <li><strong>Individual differences:</strong> Personality, mental health, and life circumstances strongly influence dream content</li>
@@ -349,7 +349,7 @@
 </aside>
 <h2 id="cultural-differences">Cultural Differences in Dream Interpretation Around the World</h2>
 <p>
-                    While Western psychology has dominated academic dream research, cultures worldwide maintain <strong>vastly different approaches</strong> to understanding dreams. These differences reveal fundamental variations in worldviews.
+                    Western psychology has dominated academic dream research, yet cultures worldwide maintain <strong>vastly different approaches</strong> to understanding dreams. These differences reveal fundamental variations in worldviews.
                 </p>
 <h3>Western Individualistic Approach to Dream Interpretation</h3>
 <p>
@@ -382,7 +382,7 @@
                     Contemporary dream workers increasingly recognize that <strong>interpretation methods should honor cultural context</strong>. A <a class="text-dream-salmon hover:underline" href="../symbols/snake">snake</a> in a dream might represent wisdom in Hindu tradition, danger in Western contexts, or healing in Native American perspectives.
                 </p>
 <p>
-                    This cultural awareness has enriched Western psychology, leading to more nuanced, context-sensitive approaches to dream interpretation that acknowledge both universal patterns and cultural specificity.
+                    This awareness has enriched Western psychology, producing more nuanced, context-sensitive approaches that acknowledge both universal patterns and cultural specificity.
                 </p>
 <h3>The Future of Dream Interpretation and Science</h3>
 <p>
@@ -392,7 +392,7 @@
                     Yet the fundamental human impulse to find meaning in dreams persists. Perhaps the most profound insight from this 5,000-year history is that dreams serve multiple functions: they process emotions, consolidate memories, simulate threats, express desires, and reflect our deepest concerns - all simultaneously.
                 </p>
 <p>
-                    The history of dream interpretation reveals an evolving conversation between humans and their inner worlds, each era contributing unique insights while building on ancient wisdom.
+                    What this 5,000-year history reveals is an evolving conversation between humans and their inner worlds, each era contributing unique insights while building on ancient wisdom.
                 </p>
 </div>
 <div class="glass-panel rounded-xl p-6 my-8 border border-transparent hover:border-dream-salmon/30 transition-colors">

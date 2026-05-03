@@ -133,7 +133,7 @@
                     Sleep paralysis is a temporary inability to move or speak that occurs when <strong>waking up or <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a> asleep</strong>. During an episode, you're fully conscious but your body remains in the paralyzed state of <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>. This disconnect between mind and body creates one of the most frightening experiences in human sleep.
                 </p>
 <p>
-                    The condition has been documented throughout human history, often attributed to supernatural causes:
+                    Cultures worldwide have documented this phenomenon throughout history, often attributing it to supernatural causes:
                 </p>
 <ul>
 <li><strong>Medieval Europe:</strong> Believed to be caused by demons or "night hags" sitting on the chest</li>
@@ -237,15 +237,15 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="hallucinations">Sleep Paralysis Hallucinations: Why They Occur</h2>
 <p>
-                    The hallucinations during sleep paralysis aren't random - they follow predictable patterns explained by neuroscience:
+                    Hallucinations during sleep paralysis aren't random - they follow predictable patterns explained by neuroscience:
                 </p>
 <h3>The "Intruder" experience</h3>
 <p>
-                    The sense of a threatening presence results from your <strong>amygdala's hyperactivation</strong>. Normally, the prefrontal cortex moderates fear responses, but during sleep paralysis, this regulation fails. Your brain interprets the paralysis as a threat and creates a source for that danger.
+                    That feeling of a threatening presence results from your <strong>amygdala's hyperactivation</strong>. Normally, the prefrontal cortex moderates fear responses, but during sleep paralysis, this regulation fails. Your brain interprets the paralysis as a threat and creates a source for that danger.
                 </p>
 <h3>The "Incubus" experience</h3>
 <p>
-                    The sensation of chest pressure and difficulty breathing occurs because respiratory muscles (while still functioning) feel restricted. The brain interprets this as something pressing down on you, often visualized as a figure sitting on your chest.
+                    Chest pressure and difficulty breathing occur because respiratory muscles (while still functioning) feel restricted. Your brain interprets this as something pressing down on you, often visualized as a figure sitting on your chest.
                 </p>
 <h3>The "Vestibular-motor" experience</h3>
 <p>
@@ -431,7 +431,7 @@
     <p class="text-sm text-purple-300/60">More resources on the same topic</p>
   </header>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+        <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
             <p class="text-sm text-gray-400">Discover scientifically proven methods to improve your dream recall and never forget your dreams upon waking again. Simple techniques you can apply tonight.</p>

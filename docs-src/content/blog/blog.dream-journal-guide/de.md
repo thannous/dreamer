@@ -113,7 +113,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="why-journal">Warum ein Traumtagebuch für besseren Schlaf führen?</h2>
 <p>
-                    Traumtagebuch ist nicht nur etwas für Klarträumer oder Psychologie-Enthusiasten. Es handelt sich um ein leistungsstarkes Tool zur Selbstfindung, von dem jeder profitieren kann. Hier erfahren Sie, warum Millionen von Menschen auf der ganzen Welt Traumtagebücher führen: <strong>powerful tool for self-discovery</strong> that anyone can benefit from. Here's why millions of people around the world maintain dream journals:
+                    Ein Traumtagebuch ist nicht nur etwas für Klarträumer oder Psychologie-Enthusiasten. Es ist ein <strong>leistungsstarkes Werkzeug zur Selbstfindung</strong>, von dem jeder profitieren kann. Hier erfahren Sie, warum Millionen von Menschen auf der ganzen Welt Traumtagebücher führen:
                 </p>
 <h3>Traumtagebuch für persönliches Wachstum</h3>
 <ul>
@@ -141,7 +141,7 @@
                     Träume treten hauptsächlich während <strong><a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a></strong> auf, wenn Ihr Hippocampus (Gedächtniszentrum) weniger aktiv ist als während der Wachstunden. Diese verringerte Aktivität bedeutet, dass Träume nicht auf die gleiche Weise im Langzeitgedächtnis verankert werden wie Wacherlebnisse.
                 </p>
 <p>
-                    Außerdem steigen beim Aufwachen
+                    Beim Aufwachen steigen
                 </p>
 <ul>
 <li><strong>der Noradrenalinspiegel</strong> an, wodurch Ihr Gehirn in den „Wachmodus“ versetzt wird. und das Verdrängen von Trauminhalten</li>
@@ -175,7 +175,7 @@
 </ul>
 <h3>Schritt 3: Legen Sie die Absicht Ihrer Traumerinnerung fest</h3>
 <p>
-                    Erzählen Sie es vor dem Schlafengehen sich selbst: <strong>"Ich werde mich an meine Träume erinnern."</strong> Es hat sich gezeigt, dass diese einfache Absichtssetzung die Traumerinnerung deutlich verbessert. Stellen Sie sich vor, wie Sie aufwachen und Ihre Träume aufzeichnen.
+                    Sagen Sie sich vor dem Schlafengehen: <strong>"Ich werde mich an meine Träume erinnern."</strong> Diese einfache Absichtssetzung verbessert die Traumerinnerung messbar. Stellen Sie sich vor, wie Sie aufwachen und Ihre Träume aufzeichnen.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -320,7 +320,7 @@
 <li>Hinweis <strong>wiederkehrende Symbole</strong> - was erscheint immer wieder?</li>
 <li>Verfolgen <strong>gemeinsame Themen</strong> - Gejagt werden, fliegen, Wasser usw.</li>
 <li>Identifizieren <strong>Traumcharaktere</strong> - Wer taucht am häufigsten auf?</li>
-<li>Emotionale Muster kartieren <strong>- Welche Gefühle dominieren Sie Träume?</strong> - what feelings dominate your dreams?</li>
+<li>Emotionale Muster kartieren <strong>- Welche Gefühle dominieren Ihre Träume?</strong></li>
 </ul>
 <h3>Persönliche Interpretation von Traumsymbolen</h3>
 <p>

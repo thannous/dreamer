@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Warum vergessen wir unsere Träume? | Noctalia",
   "ogDescription": "Warum vergessen wir 95 % unserer Träume beim Aufwachen? Erfahren Sie mehr über die Gehirnchemie, den REM-Schlaf und Techniken zur Traumerinnerung.",
-  "ogImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+  "ogImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "ogImageAlt": "Illustration eines schlafenden Gehirns, dessen Träume allmählich verschwinden",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Warum vergessen wir unsere Träume? | Noctalia",
   "twitterDescription": "Warum vergessen wir 95 % unserer Träume beim Aufwachen? Erfahren Sie mehr über die Gehirnchemie, den REM-Schlaf und Techniken zur Traumerinnerung.",
-  "twitterImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+  "twitterImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "twitterImageAlt": "Illustration eines schlafenden Gehirns, dessen Träume allmählich verschwinden",
   "publishedTime": "2026-01-08",
   "modifiedTime": "2026-01-08",
   "author": "Thanh Chau",
   "prevPath": "/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken",
   "nextPath": "/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen",
-  "preloadImage": "/img/blog/how-to-remember-dreams.webp",
+  "preloadImage": "/img/blog/why-we-forget-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie\",\n            \"description\": \"Entdecken Sie die Gehirnmechanismen und die Neurochemie, die erklären, warum wir die meisten unserer Träume beim Aufwachen vergessen, und wie Sie Ihr Traumgedächtnis verbessern können.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-01-08\",\n            \"dateModified\": \"2026-01-08\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1827,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie\",\n            \"description\": \"Entdecken Sie die Gehirnmechanismen und die Neurochemie, die erklären, warum wir die meisten unserer Träume beim Aufwachen vergessen, und wie Sie Ihr Traumgedächtnis verbessern können.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/why-we-forget-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/de/ueber-uns\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-01-08\",\n            \"dateModified\": \"2026-01-08\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n            },\n            \"inLanguage\": \"de\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1827,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n        }",
     "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"FAQPage\",\n        \"mainEntity\": [\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Ist es normal, alle deine Träume zu vergessen?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Ja, das ist völlig normal. Die meisten Menschen vergessen zwischen 90 und 95 % ihrer Träume. Dieses Vergessen hängt mit der Gehirnchemie während des REM-Schlafs zusammen, insbesondere mit einem niedrigen Noradrenalinspiegel. Es ist kein Zeichen von Gedächtnisproblemen oder gesundheitlichen Problemen.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Warum erinnern wir uns an manche Träume, an andere jedoch nicht?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Der Zeitpunkt des Aufwachens ist entscheidend. Wenn Sie während oder kurz nach einer REM-Schlafphase aufwachen, ist die Wahrscheinlichkeit, dass Sie sich an Ihren Traum erinnern, viel höher. Stress, Schlafqualität und die Absicht, sich zu erinnern, spielen ebenfalls eine wichtige Rolle.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Träumen Menschen, die sich nie an Träume erinnern, immer noch?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Absolut. Schlaflaborstudien zeigen, dass jeder träumt, typischerweise 4 bis 6 Mal pro Nacht während der REM-Phasen. Sich nicht an Träume zu erinnern, hängt nicht mit der Abwesenheit von Träumen zusammen, sondern mit den Erinnerungsmechanismen, die sich im Schlaf und im Wachzustand unterscheiden.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Wie kann ich mich leichter an meine Träume erinnern?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Mehrere Techniken sind wirksam: Führen Sie unmittelbar nach dem Aufwachen ein Traumtagebuch, legen Sie die Absicht fest, sich vor dem Einschlafen zu erinnern, wachen Sie sanft ohne störenden Alarm auf und bleiben Sie nach dem Aufwachen einige Momente still, damit die Bilder wieder an die Oberfläche kommen. Durch die Sprachaufzeichnung mit Noctalia können Sie Details schnell erfassen, bevor sie verblassen.\"\n                        }\n                },\n                {\n                        \"@type\": \"Question\",\n                        \"name\": \"Beeinflusst Alkohol die Traumerinnerung?\",\n                        \"acceptedAnswer\": {\n                                \"@type\": \"Answer\",\n                                \"text\": \"Ja, Alkohol stört den REM-Schlaf, die Phase, in der die lebhaftesten Träume auftreten, erheblich. Es unterdrückt die REM-Phase früh in der Nacht und verursacht dann einen Rebound-Effekt mit intensiven, aber fragmentierten Träumen. Dieses Ungleichgewicht beeinträchtigt die Konsolidierung von Traumerinnerungen.\"\n                        }\n                }\n        ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Warum wir Träume vergessen\",\n            \"item\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\"\n        }\n    ]\n}"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Illustration eines schlafenden Gehirns, dessen Träume allmählich verschwinden" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="1200">
+<img alt="Illustration eines schlafenden Gehirns, dessen Träume allmählich verschwinden" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/why-we-forget-dreams.webp" srcset="../../img/blog/why-we-forget-dreams-480w.webp 480w, ../../img/blog/why-we-forget-dreams-800w.webp 800w, ../../img/blog/why-we-forget-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -110,17 +110,17 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="brain-mechanisms">Die Gehirnmechanismen hinter dem Vergessen von Träumen</h2>
 <p>
-                    Um zu verstehen, warum wir unsere Träume vergessen, müssen wir zunächst in die inneren Abläufe unseres schlafenden Gehirns eintauchen. Im Gegensatz zu dem, was Sie vielleicht denken, ist das Vergessen von Träumen keine Fehlfunktion, sondern eine normale und möglicherweise nützliche Funktion unseres Nervensystems. <strong>dream forgetting is not a malfunction</strong>, but rather a normal and possibly beneficial feature of our nervous system.
+                    Um zu verstehen, warum wir unsere Träume vergessen, müssen wir zunächst in die inneren Abläufe unseres schlafenden Gehirns eintauchen. Im Gegensatz zu dem, was Sie vielleicht denken, ist <strong>das Vergessen von Träumen keine Fehlfunktion</strong>, sondern eine normale und möglicherweise nützliche Funktion unseres Nervensystems.
                 </p>
 <h3>Der Hippocampus und das Traumgedächtnis</h3>
 <p>
-                    Der Hippocampus ist die Gehirnstruktur, die für die Gedächtniskonsolidierung verantwortlich ist. Es verwandelt unsere kurzfristigen Erlebnisse in bleibende Erinnerungen. Allerdings funktioniert der Hippocampus im Schlaf ganz anders als im Wachzustand.
+                    Der Hippocampus ist die Gehirnstruktur, die für die Gedächtniskonsolidierung verantwortlich ist. Er verwandelt unsere kurzfristigen Erlebnisse in bleibende Erinnerungen. Im Schlaf funktioniert der Hippocampus allerdings ganz anders als im Wachzustand.
                 </p>
 <p>
                     Neuroimaging-Studien haben gezeigt, dass <strong>die Kommunikation zwischen dem Hippocampus und der Großhirnrinde während <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a></strong> reduziert ist. Diese teilweise Trennung erklärt, warum selbst die intensivsten Träume nicht automatisch in unserem Langzeitgedächtnis gespeichert werden. Die zum Auswendiglernen notwendige Informationsübertragung wird einfach unterbrochen.
                 </p>
 <p>
-                    Eine 2019 vom Team um Dr. Thomas Kilduff veröffentlichte Studie zeigte, dass bestimmte Neuronen im Hypothalamus, sogenannte MCH-Neuronen (Melanin-konzentrierendes Hormon), während des REM-Schlafs gezielt aktiv werden und das Gedächtnis aktiv unterdrücken Bildung <em>Neuron</em> in 2019 by Dr. Thomas Kilduff's team demonstrated that certain neurons in the hypothalamus, called MCH neurons (melanin-concentrating hormone), become specifically active during REM sleep and <strong>actively suppress memory formation</strong>.
+                    Eine 2019 in <em>Neuron</em> veröffentlichte Studie des Teams um Dr. Thomas Kilduff zeigte, dass bestimmte Neuronen im Hypothalamus, sogenannte MCH-Neuronen (Melanin-konzentrierendes Hormon), während des REM-Schlafs gezielt aktiv werden und <strong>die Gedächtnisbildung aktiv unterdrücken</strong>.
                 </p>
 <h3>Noradrenalin: Der wichtigste Neurotransmitter für das Traumgedächtnis</h3>
 <p>
@@ -138,7 +138,7 @@
                 </p>
 <h3>Die Active-Erasure-Theorie: Warum das Gehirn „wählt“? Vergessen</h3>
 <p>
-                    Wissenschaftler glaubten lange Zeit, dass das Vergessen von Träumen ein passives Phänomen sei, einfach aufgrund des Fehlens der für das Auswendiglernen notwendigen Bedingungen. Jüngste Forschungsergebnisse deuten jedoch darauf hin, dass das Gehirn Träume aktiv löschen kann <strong>actively erase dreams</strong>.
+                    Wissenschaftler glaubten lange Zeit, dass das Vergessen von Träumen ein passives Phänomen sei, einfach aufgrund des Fehlens der für das Auswendiglernen notwendigen Bedingungen. Jüngste Forschungsergebnisse deuten jedoch darauf hin, dass das Gehirn <strong>Träume aktiv löschen</strong> kann.
                 </p>
 <p>
                     Nach dieser Theorie erfüllt das aktive Löschen von Träumen mehrere Funktionen:
@@ -168,7 +168,7 @@
                 </p>
 <h3>Wie sich der Zeitpunkt des Aufwachens auf die Traumerinnerung auswirkt</h3>
 <p>
-                    Wenn Sie mitten in einem Traum aufwachen (im REM-Schlaf), haben Sie eine Chance von etwa 80&nbsp;%, sich daran zu erinnern <strong>80% chance of remembering it</strong>. Wenn Sie jedoch während einer anderen Schlafphase aufwachen, sinkt diese Rate auf 20 %.
+                    Wenn Sie mitten in einem Traum aufwachen (im REM-Schlaf), haben Sie eine <strong>Chance von etwa 80 %</strong>, sich daran zu erinnern. Wenn Sie jedoch während einer anderen Schlafphase aufwachen, sinkt diese Rate auf 20 %.
                 </p>
 <p>
                     Folgendes passiert je nachdem, wann Sie aufwachen:
@@ -256,7 +256,7 @@
                 </p>
 <h2 id="remember-dreams">Wie Sie sich an Ihre Träume erinnern: Bewährte Techniken</h2>
 <p>
-                    Träume vergessen ist zwar ein natürliches Phänomen, ist es aber nicht unvermeidlich. Bewährte Techniken können <strong>das Traumgedächtnis deutlich verbessern</strong>. Hier sind die effektivsten, durch Forschung bestätigt und <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">klares Träumen</a> practitioners.
+                    Traumvergessen ist ein natürliches Phänomen, aber kein unabwendbares Schicksal. Bewährte Techniken können <strong>das Traumgedächtnis spürbar verbessern</strong>. Hier sind die effektivsten, bestätigt durch Forschung und Praktiker des <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumens</a>.
                 </p>
 <h3>Führen Sie ein Traumtagebuch</h3>
 <p>
@@ -333,7 +333,7 @@
                 </blockquote>
 <h2 id="should-worry">Sollten Sie sich Sorgen machen, wenn Sie sich nie an Träume erinnern?</h2>
 <p>
-                    Viele Menschen machen sich Sorgen, dass sie sich nie oder nur selten an ihre Träume erinnern. Ist das ein Zeichen für ein Problem? In den allermeisten Fällen lautet die Antwort: Nein. <strong>the answer is no</strong>.
+                    Viele Menschen machen sich Sorgen, dass sie sich nie oder nur selten an ihre Träume erinnern. Ist das ein Zeichen für ein Problem? In den allermeisten Fällen lautet <strong>die Antwort: Nein</strong>.
                 </p>
 <p>
                     Denken Sie daran:
@@ -342,10 +342,10 @@
 <li><strong>Jeder träumt</strong>, sogar diejenigen, die denken, sie würden nie träumen. Laborstudien belegen dies</li>
 <li><strong>Traumerinnerung variiert stark</strong> von Person zu Person und hängt von vielen Faktoren ab (Genetik, Persönlichkeit, Lebensstil)</li>
 <li><strong>Die Nichterinnerung an Träume hat keinen Einfluss auf deren Funktion</strong>. Emotionale Verarbeitung und Gedächtniskonsolidierung erfolgen unabhängig von der bewussten Erinnerung.</li>
-<li><strong>Traumgedächtnis kann in jedem Alter mit den richtigen Techniken trainiert werden</strong> at any age with the right techniques</li>
+<li><strong>Traumgedächtnis kann in jedem Alter mit den richtigen Techniken trainiert werden</strong></li>
 </ul>
 <p>
-                    Jedoch <strong>bestimmte Veränderungen erfordern Aufmerksamkeit</strong>:
+                    Bestimmte Veränderungen erfordern dennoch <strong>Aufmerksamkeit</strong>:
                 </p>
 <ul>
 <li><strong>Plötzliches Aufhören von Träumen</strong> nachdem man sie schon immer gehabt hat: kann ein Zeichen für a sein Veränderung der Schlafqualität</li>

@@ -110,7 +110,7 @@
                     Sie beinhalten oft Themen wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/verfolgung">Gejagtwerden</a>, was das Gefühl der Bedrohung verstärken kann.
                 </p>
 <p>
-                    Gelegentliche Albträume sind zwar normal, <strong>2–8 % der Erwachsenen erleben sie häufig</strong> – einmal pro Woche oder öfter. Wenn Albträume die Schlafqualität oder das tägliche Funktionieren erheblich beeinträchtigen, können sie als Albtraumstörung klassifiziert werden.
+                    Gelegentliche Albträume sind zwar normal, <strong>2-8 % der Erwachsenen erleben sie häufig</strong> - einmal pro Woche oder öfter. Beeinträchtigen Albträume die Schlafqualität oder das tägliche Funktionieren spürbar, können sie als Albtraumstörung klassifiziert werden.
                 </p>
 <p>
                     Alpträume unterscheiden sich von Nachtangst, die während der Nicht-<a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> auftritt, körperliche Reaktionen wie Schreien mit sich bringt und selten in Erinnerung bleibt. Albträume bleiben vollständig im Gedächtnis und passieren, während Sie sich in den leichteren Schlafphasen befinden.
@@ -198,7 +198,7 @@
                 </p>
 <h3>Emotionale Verarbeitung</h3>
 <p>
-                    Ihr Gehirn nutzt Träume, um <strong>Emotionen zu verarbeiten, mit denen Sie sich in der Zeit nicht vollständig auseinandergesetzt haben wach</strong>. Albträume können auftauchen, wenn die Emotionen zu intensiv werden, um sie zu ignorieren. Die Angst im Traum spiegelt oft echte Ängste wider, die Sie unterdrücken.
+                    Ihr Gehirn nutzt Träume, um <strong>Emotionen zu verarbeiten, mit denen Sie sich im Wachzustand nicht vollständig auseinandergesetzt haben</strong>. Albträume können auftauchen, wenn die Emotionen zu intensiv werden, um sie zu ignorieren. Die Angst im Traum spiegelt oft echte Ängste wider, die Sie unterdrücken.
                 </p>
 <h3>Warnsystem</h3>
 <p>
@@ -214,7 +214,7 @@
 <h2 id="types">Arten von Albträumen und ihre psychologischen Bedeutungen</h2>
 <h3>Stress-Albträume</h3>
 <p>
-                    Die häufigste Art, die direkt mit täglichen Stressfaktoren zusammenhängt. In diesen Albträumen geht es häufig darum, dass man unvorbereitet ist, versagt oder mit peinlichen Situationen konfrontiert wird. <strong>Szenarien des Unvorbereitetseins, Versagens oder peinlicher Situationen</strong> Sie nehmen normalerweise ab, wenn der Stressor gelöst ist.
+                    Weit verbreitet und direkt mit täglichen Stressfaktoren verbunden. In diesen Albträumen geht es häufig um <strong>Szenarien des Unvorbereitetseins, Versagens oder peinlicher Situationen</strong>. Sie nehmen normalerweise ab, wenn der Stressor gelöst ist.
                 </p>
 <h3>Trauma-Albträume</h3>
 <p>
@@ -222,7 +222,7 @@
                 </p>
 <h3>Wiederkehrende Albträume</h3>
 <p>
-                    Derselbe Albtraum, der sich Nacht für Nacht wiederholt, deutet auf ein <strong>ungelöstes Problem hin, das Ihre Psyche zu verarbeiten versucht</strong>. Die Wiederholung setzt sich oft fort, bis das zugrunde liegende Problem gelöst ist.
+                    Wiederholt sich derselbe Albtraum Nacht für Nacht, deutet das auf ein <strong>ungelöstes Problem hin, das Ihre Psyche zu verarbeiten versucht</strong>. Erwarten Sie, dass die Wiederholung anhält, bis Sie das zugrunde liegende Problem gelöst haben.
                 </p>
 <h3>Existentielle Albträume</h3>
 <p>
@@ -248,7 +248,7 @@
                 </p>
 <h3>1. Image Rehearsal Therapy (IRT)</h3>
 <p>
-                    Die effektivste Technik für wiederkehrende Albträume. <strong>Visualisierung des Albtraums im Wachzustand, aber ändern Sie das Ende</strong> in etwas Neutrales oder Positives. Üben Sie diese neue Version täglich 10–20 Minuten lang. Studien zeigen, dass IRT die Häufigkeit von Albträumen um 50–80 % reduzieren kann.
+                    Betrachten Sie diese Methode als Goldstandard für wiederkehrende Albträume. <strong>Visualisieren Sie den Albtraum im Wachzustand, aber ändern Sie das Ende</strong> in etwas Neutrales oder Positives. Üben Sie diese neue Version täglich 10-20 Minuten lang. Studien zeigen, dass IRT die Häufigkeit von Albträumen um 50-80 % reduzieren kann.
                 </p>
 <h3>2. Verbessern Sie die Schlafhygiene</h3>
 <p>
@@ -266,7 +266,7 @@
                     Da Stress die Hauptursache für Albträume ist:
                 </p>
 <ul>
-<li>Üben <strong>Meditation oder tiefes Atmen</strong> vor dem Schlafengehen</li>
+<li>Üben Sie <strong>Meditation oder tiefes Atmen</strong> vor dem Schlafengehen</li>
 <li>Machen Sie regelmäßig Sport (aber nicht kurz vor dem Schlafengehen)</li>
 <li>Führen Sie ein <strong>Sorgentagebuch</strong> - Schreiben Sie Ihre Bedenken vor dem Schlafengehen</li>
 <li>Versuchen Sie es mit progressiver Muskelentspannung</li>

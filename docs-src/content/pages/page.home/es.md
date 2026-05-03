@@ -5,7 +5,7 @@
   "lang": "es",
   "slug": "",
   "title": "Diario de sueños con ilustraciones e interpretación | Noctalia",
-  "description": "Graba tus sueños con la voz, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!",
+  "description": "Describe tus sueños, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth",
@@ -14,12 +14,12 @@
   "mainClass": "",
   "ogType": "website",
   "ogTitle": "Diario de sueños con ilustraciones e interpretación | Noctalia",
-  "ogDescription": "Graba tus sueños con la voz, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!",
+  "ogDescription": "Describe tus sueños, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!",
   "ogImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Diario de sueños con ilustraciones e interpretación | Noctalia",
-  "twitterDescription": "Graba tus sueños con la voz, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!",
+  "twitterDescription": "Describe tus sueños, genera ilustraciones de tus sueños y explora significados y patrones en tus noches. ¡Empieza gratis hoy!",
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Diario de sueños con ilustraciones e interpretación",
   "publishedTime": "",
@@ -42,8 +42,10 @@
     
     
 
-        <!-- Navbar -->
+    <!-- Navbar -->
     
+
+<main class="noctalia-observatory overflow-x-hidden w-full max-w-full">
 
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
@@ -55,7 +57,7 @@
 
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Tu compañero inteligente de sueños. Captura tus sueños con la voz y deja que te guíe para conocerte mejor.
+                Tu compañero inteligente de sueños. Describe tus sueños y deja que Noctalia te ayude a explorarlos y comprenderlos.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -612,5 +614,7 @@
             </div>
         </div>
     </section>
+
+</main>
 
     <!-- 10. Footer -->

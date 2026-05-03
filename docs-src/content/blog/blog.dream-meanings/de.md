@@ -65,7 +65,7 @@
                     Traumbedeutungen: Interpretation &amp; Symbole
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Die Bedeutung ist nicht allgemeingültig: Symbole ändern sich je nach Kontext, Emotionen und Lebensgeschichte. Dieser Hub hilft Ihnen, wiederkehrende Themen und gängige Traumsymbole mit klaren, fundierten Anleitungen zu erkunden.
+                    Kein Symbol hat eine feste Bedeutung: Alles verändert sich je nach Kontext, Emotionen und Lebensgeschichte. Erkunden Sie hier wiederkehrende Themen und gängige Traumsymbole mit klaren, fundierten Anleitungen.
                 </p>
 <p class="text-sm text-purple-200/70 leading-relaxed mt-4">
                     Sie wissen nicht, wo Sie anfangen sollen? Durchsuchen Sie die <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Wörterbuch der Traumsymbole</a> oder erkunden Sie gängige Symbole wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/zaehne">Zähne</a> und <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a>.

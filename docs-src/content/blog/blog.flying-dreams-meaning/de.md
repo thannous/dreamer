@@ -201,7 +201,7 @@
                 </p>
 <h3>1. Fliegende Träume symbolisieren Freiheit und Befreiung</h3>
 <p>
-                    Die häufigste Interpretation. Fliegen bedeutet <strong>das Befreien von Einschränkungen</strong>  – ob körperlich, emotional oder sozial. Möglicherweise entkommen Sie restriktiven Situationen, toxischen Beziehungen oder selbst auferlegten Grenzen. Der Traum feiert Ihren Wunsch nach Unabhängigkeit.
+                    Mit Abstand die häufigste Deutung. Fliegen bedeutet <strong>das Befreien von Einschränkungen</strong> – ob körperlich, emotional oder sozial. Möglicherweise entkommen Sie restriktiven Situationen, toxischen Beziehungen oder selbst auferlegten Grenzen. Ihr Traum feiert diesen Wunsch nach Unabhängigkeit.
                 </p>
 <h3>2. Fliegende Träume stehen für Ehrgeiz und Leistung</h3>
 <p>
@@ -221,7 +221,7 @@
                 </p>
 <h3>6. Fliegende Träume und Eskapismus</h3>
 <p>
-                    Nicht alle Interpretationen sind rein positiv. Fliegende Träume deuten manchmal auf den Wunsch hin, der Realität zu entfliehen <strong>desire to escape reality</strong>. Wenn sich das Leben im Wachzustand überwältigend anfühlt, schafft Ihr Unterbewusstsein einen Ausgang – und hebt Sie buchstäblich von Ihren Problemen weg.
+                    Nicht alle Interpretationen sind rein positiv. Fliegende Träume deuten manchmal auf den <strong>Wunsch hin, der Realität zu entfliehen</strong>. Wenn sich das Leben im Wachzustand überwältigend anfühlt, schafft Ihr Unterbewusstsein einen Ausgang – und hebt Sie buchstäblich von Ihren Problemen weg.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">

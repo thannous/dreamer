@@ -202,11 +202,11 @@
                 </p>
 <h3>1. Flying Dreams Symbolizing Freedom and Liberation</h3>
 <p>
-                    The most common interpretation. Flying represents <strong>breaking free from limitations</strong> - whether physical, emotional, or social. You may be escaping restrictive situations, toxic relationships, or self-imposed boundaries. The dream celebrates your desire for independence.
+                    By far the most frequent reading. Flying represents <strong>breaking free from limitations</strong> - whether physical, emotional, or social. You may be escaping restrictive situations, toxic relationships, or self-imposed boundaries. Your dream celebrates that desire for independence.
                 </p>
 <h3>2. Flying Dreams Representing Ambition and Achievement</h3>
 <p>
-                    Flying upward often symbolizes <strong>rising to new heights</strong> in your career, personal growth, or social status. The dream may occur when you're pursuing ambitious goals or feeling confident about your abilities. You're literally "reaching for the sky."
+                    Flying upward often symbolizes <strong>rising to new heights</strong> in your career, personal growth, or social status. You might have this dream when pursuing ambitious goals or feeling confident about your abilities. You're literally "reaching for the sky."
                 </p>
 <h3>3. Flying Dreams and Gaining New Perspective</h3>
 <p>
@@ -214,7 +214,7 @@
                 </p>
 <h3>4. Flying Dreams Indicating Control and Power</h3>
 <p>
-                    Controlling your flight path represents <strong>mastery over your life</strong>. Unlike <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a> dreams where you're helpless, flying puts you in command. The dream may reflect newfound confidence or the desire to take charge of your destiny.
+                    Controlling your flight path represents <strong>mastery over your life</strong>. Unlike <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a> dreams where you're helpless, flying puts you in command. It may reflect newfound confidence or the desire to take charge of your destiny.
                 </p>
 <h3>5. Flying Dreams as Spiritual Transcendence</h3>
 <p>
@@ -265,7 +265,7 @@
                 </p>
 <h3>Flying Dreams as a Lucidity Trigger</h3>
 <p>
-                    The impossibility of flying can serve as a <strong>reality check</strong>. When you find yourself flying, something in your brain might recognize "this isn't possible" - triggering lucidity.
+                    Flight's sheer impossibility can serve as a <strong>reality check</strong>. When you find yourself flying, something in your brain might recognize "this isn't possible" - triggering lucidity.
                 </p>
 <h3>Flying as a Common Lucid Dream Goal</h3>
 <p>

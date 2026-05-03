@@ -113,7 +113,7 @@
                     Precognitive dreams - also called prophetic dreams or premonitions - are dreams that seem to <strong>predict future events</strong>. The dreamer experiences something that hasn't happened yet, and later, elements of the dream appear to come true.
                 </p>
 <p>
-                    This experience is remarkably common. Surveys consistently show that <strong>40-60% of people</strong> report having had at least one dream they believe predicted the future. Across cultures and throughout history, prophetic dreams have been taken seriously - from biblical Joseph interpreting Pharaoh's dreams to Abraham Lincoln reportedly dreaming of his own assassination.
+                    How common is this experience? Surveys consistently show that <strong>40-60% of people</strong> report having had at least one dream they believe predicted the future. Across cultures and throughout history, prophetic dreams have been taken seriously - from biblical Joseph interpreting Pharaoh's dreams to Abraham Lincoln reportedly dreaming of his own assassination.
                 </p>
 <blockquote>
                     "We dream between 4-6 times per night, producing thousands of dreams yearly. Some will, by pure probability, match future events. The question is whether the match rate exceeds chance." - Dr. Caroline Watt, Parapsychology Researcher
@@ -198,14 +198,14 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="science">What Science Says About Precognitive Dreams</h2>
 <p>
-                    The scientific community remains largely skeptical of genuine precognition, but the investigation continues. Here's where the research stands:
+                    Most scientists remain skeptical of genuine precognition, but the investigation continues. Here is where the research stands:
                 </p>
 <h3>Laboratory Studies on Prophetic Dreams</h3>
 <p>
                     Several laboratory experiments have attempted to test precognitive dreaming under controlled conditions. The most rigorous studies, like those by <strong>Stanley Krippner at Maimonides Medical Center</strong>, showed statistically significant results - dreamers appeared to incorporate images from pictures they would be shown after waking at rates above chance.
                 </p>
 <p>
-                    However, critics note methodological issues with many studies. Replication has been inconsistent, and skeptics argue that <strong>publication bias</strong> (only positive results getting published) skews the apparent evidence.
+                    Critics note methodological issues with many of these studies, though. Replication has been inconsistent, and skeptics argue that <strong>publication bias</strong> (only positive results getting published) skews the apparent evidence.
                 </p>
 <h3>The Numbers Problem in Dream Prediction Research</h3>
 <p>
@@ -279,7 +279,7 @@
                 </blockquote>
 <h3>An Open Question in Dream Science</h3>
 <p>
-                    The honest scientific answer is: <strong>we don't fully know</strong>. The experience of precognitive dreams is real and common. Whether any actual foresight is involved remains unproven but not definitively disproven. Science continues to investigate.
+                    The honest answer is: <strong>we don't fully know</strong>. Precognitive dream experiences are real and common. Whether actual foresight is involved remains unproven but not definitively disproven. Science continues to investigate.
                 </p>
 <h2 id="tracking">How to Track Your Precognitive Dreams Accurately</h2>
 <p>

@@ -261,7 +261,7 @@
 </ul>
 <h3>Gedächtniskonsolidierung während des REM-Schlafs</h3>
 <p>
-                    Der REM-Schlaf spielt eine entscheidende Rolle bei verschiedenen Arten des Gedächtnisses:
+                    Ihre REM-Phasen spielen eine entscheidende Rolle bei verschiedenen Arten des Gedächtnisses:
                 </p>
 <ul>
 <li><strong>Prozedurales Gedächtnis:</strong> Fähigkeiten wie das Spielen von Instrumenten oder Sport werden gestärkt</li>
@@ -300,7 +300,7 @@
 </aside>
 <h2 id="optimize">So optimieren Sie Ihren REM-Schlaf für bessere Träume</h2>
 <p>
-                    Da sich der REM-Schlaf auf die späteren Schlafzyklen konzentriert, ist es entscheidend, ausreichend Gesamtschlaf zu bekommen. Es gibt jedoch spezifische Strategien, um die Qualität und Quantität des REM-Schlafs zu verbessern:
+                    REM-Schlaf konzentriert sich auf die späteren Schlafzyklen, weshalb ausreichend Gesamtschlaf entscheidend ist. Spezifische Strategien helfen, die Qualität und Quantität des REM-Schlafs zu verbessern:
                 </p>
 <h3>Schlafdauer und -zeitpunkt zur Optimierung des REM-Schlafs</h3>
 <ul>
@@ -394,7 +394,7 @@
                 </p>
 <h2 id="dream-recall">Verbesserung der Traumerinnerung durch REM-Bewusstsein</h2>
 <p>
-                    Das Verständnis der REM-Schlafzyklen kann Ihre Fähigkeit, sich an Träume zu erinnern, erheblich verbessern:
+                    Wer die REM-Schlafzyklen kennt, kann die Fähigkeit, sich an Träume zu erinnern, erheblich verbessern:
                 </p>
 <h3>Timing Ihres Aufwachens</h3>
 <p>

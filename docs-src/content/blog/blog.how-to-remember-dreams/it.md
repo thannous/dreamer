@@ -90,7 +90,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">Smettila di dimenticare i tuoi sogni stasera. Padroneggia 10 tecniche collaudate per potenziare il ricordo dei sogni, dall</p>
+    <p class="text-purple-100/80 leading-relaxed">Smettila di dimenticare i tuoi sogni stasera. Padroneggia 10 tecniche collaudate per potenziare il ricordo dei sogni, dall'ottimizzazione del sonno ai rituali mattutini efficaci.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -124,7 +124,7 @@
                     Prima di immergerci nelle tecniche, comprendiamo il meccanismo. <strong>Dimenticare i sogni non è un difetto</strong>, ma una caratteristica naturale del nostro cervello. Durante <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a> (quando si verificano i sogni più vividi), la norepinefrina, un neurotrasmettitore essenziale per la formazione della memoria, raggiunge il suo livello più basso.
                 </p>
 <p>
-                    Inoltre, l'ippocampo, la regione del cervello responsabile della trasformazione delle esperienze a breve termine in ricordi duraturi, funziona in modo diverso durante il sonno. Secondo uno studio pubblicato su <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, il trasferimento di informazioni tra l'ippocampo e la corteccia è ridotto durante il sonno REM.
+                    L'ippocampo, la regione del cervello responsabile della trasformazione delle esperienze a breve termine in ricordi duraturi, funziona anch'esso in modo diverso durante il sonno. Secondo uno studio pubblicato su <a href="https://pubmed.ncbi.nlm.nih.gov/31604241/" rel="nofollow noopener noreferrer" target="_blank"><em>Neuron</em> (2019)</a>, il trasferimento di informazioni tra l'ippocampo e la corteccia diminuisce durante il sonno REM.
                 </p>
 <blockquote>
                     "Sogniamo circa 4-6 volte a notte, per un totale di quasi 2 ore. Eppure ricordiamo solo una piccola parte di questa attività onirica."
@@ -144,21 +144,21 @@
 <li>Non provare ancora a interpretare, cattura solo</li>
 </ul>
 <p>
-                    Dopo 1-2 settimane di coerenza Nella pratica, la maggior parte delle persone nota un miglioramento significativo nel ricordo dei sogni.
+                    Dopo 1-2 settimane di pratica costante, la maggior parte delle persone nota un miglioramento significativo nel ricordo dei sogni.
                 </p>
 <h2 id="technique-2">2. Imposta la tua intenzione prima di dormire per ricordare i sogni</h2>
 <p>
                     Il tuo ultimo pensiero prima di addormentarti ha un impatto misurabile sui tuoi sogni. Questa tecnica, convalidata da <a class="text-dream-salmon hover:underline" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">sogni lucidi</a> studi, implica <strong>programmare la mente</strong> per ricordare le esperienze notturne.
                 </p>
-<h3>The Dream Intention Protocol</h3>
+<h3>Il protocollo dell'intenzione onirica</h3>
 <ol>
 <li>Sdraiati comodamente, pronto per dormire</li>
-<li>Ripeti mentalmente: "Stasera, lo farò ricorda i miei sogni"</li>
+<li>Ripeti mentalmente: "Stasera ricorderò i miei sogni"</li>
 <li>Visualizza te stesso mentre ti svegli e ricordi un sogno</li>
 <li>Ripeti questa intenzione finché non ti addormenti</li>
 </ol>
 <p>
-                    Questo semplice metodo aumenta significativamente le possibilità di ricordare i sogni, soprattutto se combinato con <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">dream journaling</a>.
+                    Questo metodo aumenta le possibilità di ricordare i sogni, soprattutto se combinato con il <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>.
                 </p>
 <h2 id="technique-3">3. Svegliati dolcemente per conservare i ricordi dei sogni</h2>
 <p>
@@ -189,7 +189,7 @@
 <p>
                     La qualità del sonno influenza direttamente la quantità e l'intensità dei sogni. <strong>Il sonno frammentato o insufficiente</strong> riduce le fasi REM, dove si verificano i sogni più vividi.
                 </p>
-<h3>Best Practice</h3>
+<h3>Buone abitudini per il sonno</h3>
 <ul>
 <li>Dormi abbastanza (7-9 ore per gli adulti)</li>
 <li>Mantieni orari regolari di sonno/veglia</li>
@@ -202,7 +202,7 @@
                     A volte scrivere al risveglio è troppo lento o difficile. <strong>La registrazione vocale</strong> ti permette di catturare l'essenza di un sogno in pochi secondi, prima che svanisca.
                 </p>
 <p>
-                    Questo è proprio l'approccio adottato da Noctalia: basta parlare all'app al risveglio e questa si avvierà automaticamente trascrive la tua narrazione. Non dovrai più cercare una penna al buio o costringerti a scrivere.
+                    Questo è proprio l'approccio adottato da Noctalia: basta parlare all'app al risveglio e questa trascriverà automaticamente il tuo racconto. Non dovrai più cercare una penna al buio o sforzarti di scrivere.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -224,7 +224,7 @@
                     I praticanti regolari di meditazione spesso riferiscono un migliore ricordo dei sogni. Il motivo? <strong>La meditazione allena la consapevolezza metacognitiva</strong> la capacità di osservare i propri pensieri e stati mentali.
                 </p>
 <p>
-                    Uno studio dell' <a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">Università di Lincoln (2015)</a> ha dimostrato che i meditatori hanno una migliore capacità di ricordare i propri sogni e raggiungi la lucidità dei sogni.
+                    Uno studio dell' <a href="https://pubmed.ncbi.nlm.nih.gov/26256788/" rel="nofollow noopener noreferrer" target="_blank">Università di Lincoln (2015)</a> ha dimostrato che i meditatori hanno una migliore capacità di ricordare i propri sogni e di raggiungere la lucidità onirica.
                 </p>
 <h3>Esercizio semplice</h3>
 <ul>
@@ -355,8 +355,8 @@
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Significato del sogno notturno</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/acqua">Significato del sogno dell'acqua</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/denti">Denti (perdita di denti) Significato del sogno</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/cadere">Significato del sogno che cade</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/denti">Significato del sogno dei denti</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/cadere">Significato del sogno di cadere</a>
 </div>
 </section>
 <!-- Related Symbols End -->

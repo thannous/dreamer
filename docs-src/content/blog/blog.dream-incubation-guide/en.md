@@ -127,7 +127,7 @@
                 </p>
 <h3>Dream Incubation in Ancient Greece</h3>
 <p>
-                    The Greeks built over 300 <strong>"Asclepieia"</strong> - temples dedicated to healing dreams. Sick pilgrims would undergo purification rituals, make offerings, then sleep in sacred chambers hoping for healing visions from Asclepius, the god of medicine. Remarkably, many reported cures.
+                    The Greeks built over 300 <strong>"Asclepieia"</strong> - temples dedicated to healing dreams. Sick pilgrims would undergo purification rituals, make offerings, then sleep in sacred chambers hoping for healing visions from Asclepius, the god of medicine. Many pilgrims reported cures.
                 </p>
 <h3>Dream Incubation in Ancient Egypt</h3>
 <p>
@@ -139,7 +139,7 @@
                 </p>
 <h3>Dream Incubation: Modern Research Findings</h3>
 <p>
-                    Contemporary studies validate what the ancients knew. Harvard researcher Dr. Deirdre Barrett found that when participants focused on specific problems before sleep, <strong>approximately 50% had dreams about the problem, and 25% dreamed solutions</strong>. The dreaming mind is remarkably responsive to intention.
+                    Contemporary studies validate what the ancients knew. Harvard researcher Dr. Deirdre Barrett found that when participants focused on specific problems before sleep, <strong>approximately 50% had dreams about the problem, and 25% dreamed solutions</strong>. The dreaming mind turns out to be highly responsive to intention.
                 </p>
 <h2 id="how-it-works">The Science Behind Dream Incubation Techniques</h2>
 <p>
@@ -286,11 +286,11 @@
 </aside>
 <h2 id="uses">Powerful Uses for Dream Incubation</h2>
 <p>
-                    What can you achieve with dream incubation? The applications are remarkably diverse:
+                    What can you achieve with dream incubation? The applications span far wider than you might expect:
                 </p>
 <h3>Problem Solving</h3>
 <p>
-                    The most studied application. Scientists, inventors, and artists have used incubated dreams to solve complex problems. <strong>Elias Howe</strong> famously dreamed the solution to the sewing machine needle; <strong>Dmitri Mendeleev</strong> saw the periodic table in a dream. Your brain processes problems differently while dreaming, often finding solutions your waking mind missed.
+                    Solving problems is the most studied application. Scientists, inventors, and artists have used incubated dreams to crack complex challenges. <strong>Elias Howe</strong> famously dreamed the solution to the sewing machine needle; <strong>Dmitri Mendeleev</strong> saw the periodic table in a dream. Your brain processes problems differently while dreaming, often finding solutions your waking mind missed.
                 </p>
 <h3>Creative Inspiration</h3>
 <p>
@@ -318,7 +318,7 @@
                 </p>
 <h3>Keep a Consistent Sleep Schedule</h3>
 <p>
-<strong>Regular sleep patterns improve dream recall</strong> dramatically. Go to bed and wake up at consistent times. Your REM cycles - when most vivid dreams occur - become more predictable and accessible.
+<strong>Regular sleep patterns sharpen dream recall</strong>. Go to bed and wake up at consistent times. Your REM cycles - when most vivid dreams occur - become more predictable and accessible.
                 </p>
 <h3>Avoid Alcohol and Cannabis</h3>
 <p>
@@ -454,7 +454,7 @@
     <p class="text-sm text-purple-300/60">More resources on the same topic</p>
   </header>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+        <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
             <p class="text-sm text-gray-400">Discover scientifically proven methods to improve your dream recall and never forget your dreams upon waking again. Simple techniques you can apply tonight.</p>

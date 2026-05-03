@@ -113,7 +113,7 @@
 <a class="text-dream-salmon hover:underline" href="../simboli/inseguimento">Essere inseguiti</a> è il <strong>tema dei sogni più frequentemente riportato in tutto il mondo</strong>. Gli studi suggeriscono che oltre l'80% delle persone sperimenta sogni di inseguimento ad un certo punto della propria vita, e molti li hanno fatti ripetutamente.
                 </p>
 <p>
-                    La prevalenza dei sogni di inseguimento è radicata nella nostra <strong>biologia evoluzionistica</strong>. I nostri antenati hanno dovuto affrontare minacce reali da parte dei predatori e la risposta di lotta o fuga era essenziale per la sopravvivenza. Anche se la maggior parte di noi non si trova più ad affrontare predatori fisici, il nostro cervello elabora ancora i moderni fattori di stress attraverso questi antichi circuiti neurali.
+                    Perché così diffusi? Questi sogni sono radicati nella nostra <strong>biologia evoluzionistica</strong>. I nostri antenati hanno dovuto affrontare minacce reali da parte dei predatori e la risposta di lotta o fuga era essenziale per la sopravvivenza. Anche se la maggior parte di noi non si trova più ad affrontare predatori fisici, il nostro cervello elabora ancora i moderni fattori di stress attraverso questi antichi circuiti neurali.
                 </p>
 <blockquote>
                     "L'inseguimento dei sogni attiva gli stessi percorsi neurali delle risposte alle minacce reali. Il tuo cervello non distingue completamente tra il pericolo sognato e il pericolo nella veglia. - Dott.ssa Deirdre Barrett, ricercatrice sui sogni di Harvard
@@ -123,7 +123,7 @@
                 </p>
 <h2 id="chasers">Cosa significa quando cose diverse ti inseguono?</h2>
 <p>
-                    L'identità del tuo inseguitore ha un significato significativo. Ecco gli inseguitori più comuni e cosa potrebbero rappresentare:
+                    Chi o cosa ti insegue conta molto. Ecco gli inseguitori più comuni e cosa potrebbero rappresentare:
                 </p>
 </div>
 <!-- Dream Variations Cards -->
@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Comportamento di evitamento nella vita da svegli</h3>
 <p>
-                    L'interpretazione più comune è che stai <strong>scappando da qualcosa nella vita da svegli</strong>. Potrebbe trattarsi di una conversazione difficile, di una responsabilità, di una decisione o di un'emozione che non vuoi affrontare. Il sogno è il tuo subconscio che evidenzia il tuo modello di evitamento.
+                    Molto probabilmente stai <strong>scappando da qualcosa nella vita da svegli</strong>. Potrebbe trattarsi di una conversazione difficile, di una responsabilità, di una decisione o di un'emozione che non vuoi affrontare. Il tuo subconscio usa l'inseguimento per evidenziare quel modello di evitamento.
                 </p>
 <h3>2. Ansia e stress che si manifestano nei sogni</h3>
 <p>

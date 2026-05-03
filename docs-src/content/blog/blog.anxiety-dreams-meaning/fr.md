@@ -115,7 +115,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#what-are-anxiety-dreams">1. Qu'est-ce qu'un rêve d'anxiété et en quoi il diffère d'un cauchemar</a></li>
-<li><a class="toc-link block" href="#common-scenarios">2. Les 8 scénarios de rêves d'anxiété les plus courants</a></li>
+<li><a class="toc-link block" href="#common-scénarios">2. Les 8 scénarios de rêves d'anxiété les plus courants</a></li>
 <li><a class="toc-link block" href="#why-anxiety-dreams">3. Pourquoi votre cerveau produit des rêves d'anxiété</a></li>
 <li><a class="toc-link block" href="#mental-health">4. Rêves d'anxiété et santé mentale</a></li>
 <li><a class="toc-link block" href="#reduce-anxiety-dreams">5. Techniques éprouvées pour réduire les rêves d'anxiété</a></li>
@@ -129,13 +129,13 @@
                     Les rêves d'anxiété sont une catégorie de rêves perturbants caractérisés par des sentiments d'inquiétude, d'impuissance, de gêne ou d'appréhension plutôt que par une peur franche. Alors que les <a class="text-dream-salmon hover:underline" href="guide-cauchemars">cauchemars</a> impliquent généralement un danger immédiat — être poursuivi par un prédateur, tomber d'une falaise ou faire face à un dommage physique — les rêves d'anxiété créent un sentiment de malaise plus subtil et plus diffus. Vous pouvez vous retrouver incapable de composer un numéro de téléphone, perpétuellement en retard pour un événement important, ou debout nu devant une foule sans savoir comment vous êtes arrivé là.
                 </p>
 <p>
-                    Cette distinction est importante car les deux expériences activent des circuits émotionnels différents. Les cauchemars déclenchent la réponse de peur aiguë et vous réveillent souvent en sursaut. Les rêves d'anxiété, en revanche, ont tendance à vous maintenir prisonnier de leur récit, vous faisant traverser des scénarios d'inadéquation ou de perte de contrôle sans jamais atteindre un climax clair. Vous vous réveillez épuisé et inquiet plutôt que terrifié.
+                    Cette distinction est importante car les deux expériences activent des circuits émotionnels différents. Les cauchemars déclenchent la réponse de peur aiguë et vous réveillent souvent en sursaut. Les rêves d'anxiété ont plutôt tendance a vous maintenir prisonnier de leur récit, vous faisant traverser des scénarios d'inadéquation ou de perte de contrôle sans jamais atteindre un climax clair. Vous vous réveillez épuisé et inquiet plutôt que terrifié.
                 </p>
 <p>
                     Les recherches du neuroscientifique finlandais Antti Revonsuo et les études ultérieures ont révélé que <strong>jusqu'à 77 % du contenu onirique implique des émotions négatives</strong>, l'anxiété étant l'émotion la plus fréquemment rapportée dans les rêves. Ce n'est pas un défaut de conception du cerveau endormi — c'est une fonctionnalité, comme nous le verrons ci-dessous.
                 </p>
 
-<h2 id="common-scenarios">Les 8 scénarios de rêves d'anxiété les plus courants</h2>
+<h2 id="common-scénarios">Les 8 scénarios de rêves d'anxiété les plus courants</h2>
 <p>
                     Bien que les détails varient d'une personne à l'autre, certains thèmes de rêves d'anxiété apparaissent à travers les cultures avec une régularité remarquable. Si vous reconnaissez le vôtre, vous êtes loin d'être seul.
                 </p>
@@ -186,7 +186,7 @@
                 </p>
 <h3>Le traitement émotionnel pendant le sommeil paradoxal</h3>
 <p>
-                    Les recherches du neuroscientifique Matthew Walker à UC Berkeley ont montré que le sommeil paradoxal agit comme une forme de <strong>thérapie nocturne</strong>. Votre cerveau atténue la charge émotionnelle des souvenirs difficiles en les rejouant sans les hormones de stress associées (la noradrénaline est supprimée pendant le sommeil paradoxal). Cependant, lorsque ce système est surchargé par une anxiété chronique, le traitement devient incomplet, et le contenu anxieux déborde dans des rêves vivaces qui semblent terriblement réels.
+                    Les recherches du neuroscientifique Matthew Walker à UC Berkeley ont montré que le sommeil paradoxal agit comme une forme de <strong>thérapie nocturne</strong>. Votre cerveau atténue la charge émotionnelle des souvenirs difficiles en les rejouant sans les hormones de stress associées (la noradrénaline est supprimée pendant le sommeil paradoxal). Lorsque ce systeme est surcharge par une anxiete chronique, le traitement devient incomplet. Le contenu anxieux deborde alors dans des reves vivaces qui semblent terriblement reels.
                 </p>
 <p>
                     C'est pourquoi les <a class="text-dream-salmon hover:underline" href="signification-reves-recurrents">rêves récurrents</a> avec le même thème anxieux indiquent souvent un problème émotionnel non résolu. Le cerveau revient sans cesse au même matériau parce qu'il n'a pas fini de le traiter.
@@ -198,7 +198,7 @@
                 </p>
 <h3>Trouble anxieux généralisé (TAG)</h3>
 <p>
-                    Les personnes atteintes de TAG rapportent des taux significativement plus élevés de rêves d'anxiété par rapport à la population générale. L'inquiétude persistante qui caractérise le TAG ne s'éteint pas au coucher — elle les suit dans le sommeil, produisant des rêves saturés des mêmes thèmes d'incertitude et de catastrophe qui dominent leurs pensées éveillées.
+                    Les personnes atteintes de TAG rapportent des taux nettement plus eleves de reves d'anxiete par rapport a la population generale. L'inquiétude persistante qui caractérise le TAG ne s'éteint pas au coucher — elle les suit dans le sommeil, produisant des rêves saturés des mêmes thèmes d'incertitude et de catastrophe qui dominent leurs pensées éveillées.
                 </p>
 <h3>TSPT et traumatisme</h3>
 <p>

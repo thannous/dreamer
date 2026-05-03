@@ -83,7 +83,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Risposta rapida</h2>
-    <p class="text-purple-100/80 leading-relaxed">I sogni di gravidanza sono tra i temi onirici piu comuni e si verificano indipendentemente dal sesso o dallo stato di gravidanza effettivo. Nella psicologia dei sogni, la gravidanza simboleggia creativita, nuovi inizi e crescita personale. Per chi e effettivamente in gravidanza, i cambiamenti ormonali e le alterazioni del sonno aumentano la vivacita e la frequenza dei sogni. Gli scenari piu ricorrenti includono partorire (nuovi progetti o idee che emergono), essere incinta inaspettatamente (ansia per il cambiamento) o vedere qualcun altro in gravidanza (qualita che si sviluppano in quella persona o in se stessi).</p>
+    <p class="text-purple-100/80 leading-relaxed">I sogni di gravidanza sono tra i temi onirici più comuni e si verificano indipendentemente dal sesso o dallo stato di gravidanza effettivo. Nella psicologia dei sogni, la gravidanza simboleggia creativita, nuovi inizi e crescita personale. Per chi e effettivamente in gravidanza, i cambiamenti ormonali e le alterazioni del sonno aumentano la vivacita e la frequenza dei sogni. Gli scenari più ricorrenti includono partorire (nuovi progetti o idee che emergono), essere incinta inaspettatamente (ansia per il cambiamento) o vedere qualcun altro in gravidanza (qualita che si sviluppano in quella persona o in se stessi).</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Luce soffusa e simboli che rappresentano la crescita e i nuovi inizi" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="1200">
@@ -110,7 +110,7 @@
                     Pensa a cosa comporta la gravidanza: coltivare qualcosa che sta crescendo, anticipando un nuovo arrivo e subendo tu stesso una trasformazione nel processo. Questi temi si applicano a innumerevoli situazioni della vita oltre all'avere un <a class="text-dream-salmon hover:underline" href="../simboli/bambino-neonato">bambino</a>.
                 </p>
 <p>
-                    I sogni di una gravidanza spesso compaiono quando:
+                    Questi sogni tendono a comparire quando:
                 </p>
 <ul>
 <li><strong>Avviare un progetto creativo</strong> - un libro, un'attività commerciale, un'opera d'arte o qualsiasi attività creativa</li>
@@ -203,7 +203,7 @@
                 </p>
 <h3>2. Trasformazione e crescita personale</h3>
 <p>
-                    I sogni di una gravidanza spesso compaiono durante periodi di <strong>crescita personale significativa</strong>. Sei "incinta" con una nuova versione di te stesso, sviluppando nuovi tratti, convinzioni o modi di essere che non si sono ancora completamente manifestati.
+                    Questi sogni compaiono frequentemente durante periodi di <strong>crescita personale significativa</strong>. Sei "incinta" con una nuova versione di te stesso, sviluppando nuovi tratti, convinzioni o modi di essere che non si sono ancora completamente manifestati.
                 </p>
 <h3>3. Nuovi inizi e transizioni di vita</h3>
 <p>
@@ -254,11 +254,11 @@
                 </p>
 <h3>Maggiore ricordo dei sogni durante la gravidanza</h3>
 <p>
-                    Le persone incinte spesso riferiscono <strong>sogni più vividi e migliori richiamo</strong>. I cambiamenti ormonali, l'interruzione del sonno e l'intensificazione delle emozioni contribuiscono a rendere i sogni più memorabili.
+                    Le persone incinte spesso riferiscono <strong>sogni più vividi e un ricordo migliore</strong>. I cambiamenti ormonali, l'interruzione del sonno e l'intensificazione delle emozioni contribuiscono a rendere i sogni più memorabili.
                 </p>
 <h3>Elaborazione delle ansie attraverso i sogni in gravidanza</h3>
 <p>
-                    I sogni durante la gravidanza spesso elaborano <strong>paure e ansie riguardo alla genitorialità</strong>, alla nascita e ai cambiamenti futuri. Questa è un'elaborazione emotiva normale e sana.
+                    Durante la gravidanza, i sogni elaborano frequentemente <strong>paure e ansie riguardo alla genitorialità</strong>, alla nascita e ai cambiamenti futuri. Questa è un'elaborazione emotiva normale e sana.
                 </p>
 <h3>Temi comuni nei sogni delle donne incinte</h3>
 <p>
@@ -274,7 +274,7 @@
                 </p>
 <h3>2. Nota la fase della gravidanza nel tuo sogno</h3>
 <p>
-                    Gravidanza iniziale? Consegna prossima? La fase indica <strong>quanto lontano è il tuo "progetto" è</strong>. Le prime fasi suggeriscono nuovi inizi; il travaglio suggerisce che qualcosa sta per manifestarsi.
+                    Gravidanza iniziale? Prossima al parto? La fase indica <strong>quanto è avanzato il tuo "progetto"</strong>. Le prime fasi suggeriscono nuovi inizi; il travaglio suggerisce che qualcosa sta per manifestarsi.
                 </p>
 <h3>3. Esamina le tue emozioni nel sogno</h3>
 <p>

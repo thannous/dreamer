@@ -129,7 +129,7 @@
                     Anxiety dreams are a category of distressing dreams characterized by feelings of worry, helplessness, embarrassment, or dread rather than outright fear. While <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmares</a> typically involve immediate danger - being chased by a predator, falling from a cliff, or facing physical harm - anxiety dreams create a subtler, more pervasive sense of unease. You might find yourself unable to dial a phone, perpetually late for an important event, or standing naked in front of a crowd with no memory of how you got there.
                 </p>
 <p>
-                    The distinction matters because the two experiences activate different emotional circuits. Nightmares trigger the acute fear response and often jolt you awake. Anxiety dreams, on the other hand, tend to keep you trapped in their narrative, cycling through scenarios of inadequacy or loss of control without ever reaching a clear climax. You wake feeling drained and worried rather than terrified.
+                    The distinction matters because the two experiences activate different emotional circuits. Nightmares trigger the acute fear response and often jolt you awake. Anxiety dreams tend to keep you trapped in their narrative, cycling through scenarios of inadequacy or loss of control without ever reaching a clear climax. You wake feeling drained and worried rather than terrified.
                 </p>
 <p>
                     Research by Finnish neuroscientist Antti Revonsuo and subsequent studies have revealed that <strong>up to 77% of dream content involves negative emotions</strong>, with anxiety being the single most frequently reported dream emotion. This isn't a design flaw of the sleeping brain - it's a feature, as we'll explore below.
@@ -186,7 +186,7 @@
                 </p>
 <h3>Emotional processing during REM</h3>
 <p>
-                    Neuroscientist Matthew Walker's research at UC Berkeley has shown that REM sleep acts as a form of <strong>overnight therapy</strong>. Your brain strips the emotional charge from difficult memories by replaying them without the accompanying stress hormones (norepinephrine is suppressed during REM). However, when this system is overloaded by chronic anxiety, the processing becomes incomplete, and anxious content spills over into vivid dreams that feel disturbingly real.
+                    Neuroscientist Matthew Walker's research at UC Berkeley has shown that REM sleep acts as a form of <strong>overnight therapy</strong>. Your brain strips the emotional charge from difficult memories by replaying them without the accompanying stress hormones (norepinephrine is suppressed during REM). When this system is overloaded by chronic anxiety, the processing becomes incomplete. Anxious content then spills over into vivid dreams that feel disturbingly real.
                 </p>
 <p>
                     This is why <a class="text-dream-salmon hover:underline" href="recurring-dreams-meaning">recurring dreams</a> with the same anxious theme often indicate an unresolved emotional issue. The brain keeps returning to the same material because it hasn't finished processing it.
@@ -198,11 +198,11 @@
                 </p>
 <h3>Generalized Anxiety Disorder (GAD)</h3>
 <p>
-                    People with GAD report significantly higher rates of anxiety dreams compared to the general population. The persistent worry that characterizes GAD doesn't switch off at bedtime - it follows them into sleep, producing dreams saturated with the same themes of uncertainty and catastrophe that dominate their waking thoughts.
+                    People with GAD report notably higher rates of anxiety dreams compared to the general population. The persistent worry that characterizes GAD doesn't switch off at bedtime - it follows them into sleep, producing dreams saturated with the same themes of uncertainty and catastrophe that dominate their waking thoughts.
                 </p>
 <h3>PTSD and trauma</h3>
 <p>
-                    Post-traumatic stress disorder fundamentally alters dream content. Trauma survivors often experience dreams that replay or symbolically represent the traumatic event. These dreams differ from typical anxiety dreams in that they can include <strong>exact replays of the trauma</strong>, heightened sensory detail, and severe emotional distress that disrupts sleep architecture.
+                    Post-traumatic stress disorder alters dream content. Trauma survivors often experience dreams that replay or symbolically represent the traumatic event. These dreams differ from typical anxiety dreams in that they can include <strong>exact replays of the trauma</strong>, heightened sensory detail, and severe emotional distress that disrupts sleep architecture.
                 </p>
 <h3>Depression</h3>
 <p>
@@ -259,7 +259,7 @@
 </ul>
 <h3>Dream journaling</h3>
 <p>
-                    Keeping a dream journal creates distance between you and your dream content. By <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">writing down your dreams</a> each morning, you externalize the worry, making it easier for your brain to process and release. Studies show that consistent dream journaling <strong>reduces the emotional intensity of dreams within 2-3 weeks</strong>. Tracking patterns also reveals which real-life stressors are feeding your anxious dreams.
+                    Keeping a dream journal creates distance between you and your dream content. By <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">writing down your dreams</a> each morning, you externalize the worry, making it easier for your brain to process and release. Studies show that consistent dream journaling <strong>reduces the emotional intensity of dreams within 2-3 weeks</strong>. Tracking patterns also reveals which real-life stressors are feeding your anxious dreams.
                 </p>
 <h3>Progressive muscle relaxation</h3>
 <p>

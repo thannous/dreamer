@@ -5,7 +5,7 @@
   "lang": "en",
   "slug": "",
   "title": "Dream Journal with Dream Illustrations & Interpretation | Noctalia",
-  "description": "Record your dreams by voice, generate dream illustrations, and explore meanings and patterns in your nights. Start your free dream journal today!",
+  "description": "Describe your dreams, generate dream illustrations, and explore meanings and patterns in your nights. Start your free dream journal today!",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth",
@@ -14,12 +14,12 @@
   "mainClass": "",
   "ogType": "website",
   "ogTitle": "Dream Journal with Dream Illustrations & Interpretation | Noctalia",
-  "ogDescription": "Record your dreams by voice, generate dream illustrations, and explore meanings and patterns in your nights. Start your free dream journal today!",
+  "ogDescription": "Describe your dreams, generate dream illustrations, and explore meanings and patterns in your nights. Start your free dream journal today!",
   "ogImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Dream Journal with Dream Illustrations & Interpretation | Noctalia",
-  "twitterDescription": "Record your dreams by voice, generate dream illustrations, and explore meanings and patterns in your nights. Start your free dream journal today!",
+  "twitterDescription": "Describe your dreams, generate dream illustrations, and explore meanings and patterns in your nights. Start your free dream journal today!",
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Dream Journal with Dream Illustrations & Interpretation",
   "publishedTime": "",
@@ -45,6 +45,8 @@
     <!-- Navbar -->
     
 
+<main class="noctalia-observatory overflow-x-hidden w-full max-w-full">
+
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
         <div class="max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
@@ -55,7 +57,7 @@
             
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim">
-                Your intelligent dream companion. Capture your dreams by voice and let it guide you to understand yourself better.
+                Your intelligent dream companion. Describe your dreams, then let Noctalia help you explore and understand them.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -612,5 +614,7 @@
             </div>
         </div>
     </section>
+
+</main>
 
     <!-- 10. Footer -->

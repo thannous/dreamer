@@ -127,7 +127,7 @@
                 </p>
 <h3>1. Unresolved Trauma and Recurring Dreams</h3>
 <p>
-                    The brain uses dreams to <strong>process emotionally charged experiences</strong>. When a trauma isn't fully integrated, the mind "replays" it hoping to resolve it.
+                    Your brain uses dreams to <strong>process emotionally charged experiences</strong>. When a trauma isn't fully integrated, the mind "replays" it hoping to resolve it.
                 </p>
 <h3>2. Chronic Stress Causes Recurring Dreams</h3>
 <p>
@@ -353,7 +353,7 @@
                 </p>
 <h3>Address the Underlying Issue Behind Your Dream</h3>
 <p>
-                    The dream will naturally stop once you've <strong>resolved the conflict it symbolizes</strong>. Identify the problem in your waking life and take action.
+                    Expect the dream to stop naturally once you've <strong>resolved the conflict it symbolizes</strong>. Identify the problem in your waking life and take action.
                 </p>
 <h3>Meditation and Relaxation to Reduce Recurring Dreams</h3>
 <p>

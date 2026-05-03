@@ -113,7 +113,7 @@
 <a class="text-dream-salmon hover:underline" href="../traumsymbole/verfolgung">Verfolgtwerden</a> ist das <strong>am häufigsten gemeldete Traumthema weltweit</strong>. Studien deuten darauf hin, dass über 80&nbsp;% der Menschen irgendwann in ihrem Leben Verfolgungsträume haben, und viele haben sie wiederholt.
                 </p>
 <p>
-                    Die Verbreitung von Verfolgungsträumen hat ihre Wurzeln in unserer <strong>Evolutionsbiologie</strong>. Unsere Vorfahren waren echten Bedrohungen durch Raubtiere ausgesetzt, und die Reaktion auf Kampf oder Flucht war überlebenswichtig. Auch wenn die meisten von uns keinen physischen Raubtieren mehr ausgesetzt sind, verarbeitet unser Gehirn immer noch moderne Stressfaktoren über diese alten neuronalen Schaltkreise.
+                    Warum so verbreitet? Verfolgungsträume haben ihre Wurzeln in unserer <strong>Evolutionsbiologie</strong>. Unsere Vorfahren waren echten Bedrohungen durch Raubtiere ausgesetzt, und die Reaktion auf Kampf oder Flucht war überlebenswichtig. Auch wenn die meisten von uns keinen physischen Raubtieren mehr ausgesetzt sind, verarbeitet unser Gehirn immer noch moderne Stressfaktoren über diese alten neuronalen Schaltkreise.
                 </p>
 <blockquote>
                     "Verfolgungsträume aktivieren dieselben neuronalen Bahnen wie echte Bedrohungsreaktionen. Ihr Gehirn kann nicht vollständig zwischen geträumter Gefahr und wacher Gefahr unterscheiden." - Dr. Deirdre Barrett, Harvard-Traumforscher
@@ -123,7 +123,7 @@
                 </p>
 <h2 id="chasers">Was bedeutet es, wenn Sie von verschiedenen Dingen verfolgt werden?</h2>
 <p>
-                    Die Identität Ihres Verfolgers ist von großer Bedeutung. Hier sind die häufigsten Verfolger und was sie darstellen könnten:
+                    Wer oder was Sie verfolgt, ist entscheidend. Hier sind die häufigsten Verfolger und was sie darstellen könnten:
                 </p>
 </div>
 <!-- Dream Variations Cards -->
@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Vermeidungsverhalten im Wachleben</h3>
 <p>
-                    Die häufigste Interpretation ist, dass Sie <strong>im Wachleben vor etwas davonlaufen</strong>. Dies kann ein schwieriges Gespräch, eine Verantwortung, eine Entscheidung oder eine Emotion sein, der Sie sich nicht stellen möchten. Der Traum ist Ihr Unterbewusstsein, das Ihr Vermeidungsmuster hervorhebt.
+                    Höchstwahrscheinlich <strong>laufen Sie im Wachleben vor etwas davon</strong>. Dies kann ein schwieriges Gespräch, eine Verantwortung, eine Entscheidung oder eine Emotion sein, der Sie sich nicht stellen möchten. Ihr Unterbewusstsein nutzt die Verfolgung, um dieses Vermeidungsmuster zu beleuchten.
                 </p>
 <h3>2. Angst und Stress manifestieren sich in Träumen</h3>
 <p>

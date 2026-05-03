@@ -115,7 +115,7 @@
                     Träume faszinieren die Menschheit seit Jahrtausenden, doch erst vor kurzem hat die Wissenschaft damit begonnen, ihren tiefen Zusammenhang mit der psychischen Gesundheit aufzudecken. Während <strong>REM-Schlaf (Rapid Eye Movement)</strong>, wenn die lebhaftesten Träume auftreten, verarbeitet Ihr Gehirn Emotionen, festigt Erinnerungen und bewältigt psychologische Herausforderungen.
                 </p>
 <p>
-                    Der Zusammenhang ist bidirektional: Ihr Geisteszustand beeinflusst Ihre Träume, und das Verstehen Ihrer Träume kann Einblicke in Ihre geistige Gesundheit liefern. Untersuchungen der Sleep Research Society zeigen, dass Menschen mit psychischen Erkrankungen häufig Folgendes erleben:
+                    Dieser Zusammenhang funktioniert in beide Richtungen: Ihr Geisteszustand beeinflusst Ihre Träume, und das Verstehen Ihrer Träume kann Einblicke in Ihre geistige Gesundheit liefern. Untersuchungen der Sleep Research Society zeigen, dass Menschen mit psychischen Erkrankungen häufig Folgendes erleben:
                 </p>
 <ul>
 <li><strong>Häufiger Albträume:</strong> Bis zu viermal häufiger bei Menschen mit Angststörungen</li>
@@ -136,7 +136,7 @@
 <li><strong>Stürzen oder Verlieren Kontrolle:</strong> Spiegelt Gefühle der Hilflosigkeit oder Unsicherheit wider</li>
 <li><strong>Unvorbereitet sein:</strong> Testträume, das Vergessen wichtiger Dinge, verpasste Flüge</li>
 <li><strong>Ausfallende Zähne:</strong> Oft verbunden mit Sorgen um das Aussehen oder Kontrollverlust</li>
-<li><strong>Sein gefangen oder gelähmt:</strong> Spiegelt das Gefühl wider, in realen Situationen festzustecken</li>
+<li><strong>Gefangen oder gelähmt sein:</strong> Spiegelt das Gefühl wider, in realen Situationen festzustecken</li>
 </ul>
 <h3>Physiologische Auswirkungen</h3>
 <p>
@@ -153,7 +153,7 @@
                 </blockquote>
 <h2 id="depression-dreams">Depressionsträume: Traummuster verstehen</h2>
 <p>
-                    Depressionen verändern die Traumlandschaft tiefgreifend. Während Angstträume dazu neigen, intensiv und bedrohlich zu sein, <strong>Depression führt oft dazu, dass sich Träume schwer, traurig oder emotional flach anfühlen</strong>.
+                    Depressionen verändern die Traumlandschaft tiefgreifend. Während Angstträume dazu neigen, intensiv und bedrohlich zu sein, <strong>Depressionen führen oft dazu, dass sich Träume schwer, traurig oder emotional flach anfühlen</strong>.
                 </p>
 <h3>Depressions-Traumsignatur</h3>
 <ul>
@@ -165,7 +165,7 @@
 </ul>
 <h3>REM-Schlafanomalien</h3>
 <p>
-                    Depression führt zu messbaren Veränderungen in der Schlafstruktur, die sich auf das Träumen auswirken:
+                    Messbare Veränderungen in der Schlafstruktur wirken sich direkt auf das Träumen aus:
                 </p>
 <ul>
 <li><strong>Reduzierung der REM-Latenz:</strong> Schneller als normal in den REM-Schlaf eintreten (oft unter 60 Minuten)</li>
@@ -174,7 +174,7 @@
 <li><strong>Frühes Erwachen am Morgen:</strong> Aufwachen während oder nach emotionalen Traumperioden</li>
 </ul>
 <p>
-                    Interessanterweise sind diese REM-Anomalien so konsistent, dass sie manchmal als <strong>biologische Marker</strong> bei der Depressionsdiagnose verwendet werden. Eine Studie aus dem Jahr 2022 im Journal of Affective Disorders ergab, dass sich durch die Analyse von Traummustern depressive Episoden mit einer Genauigkeit von 78 % vorhersagen lassen.
+                    Diese REM-Anomalien sind so konsistent, dass Kliniker sie manchmal als <strong>biologische Marker</strong> bei der Depressionsdiagnose verwenden. Eine Studie aus dem Jahr 2022 im Journal of Affective Disorders ergab, dass sich durch die Analyse von Traummustern depressive Episoden mit einer Genauigkeit von 78 % vorhersagen lassen.
                 </p>
 </div>
 <!-- Mental Health Cards -->
@@ -222,11 +222,11 @@
 <ul>
 <li><strong>Amygdala-Hyperaktivität:</strong> Das Angstzentrum bleibt während des REM-Schlafs überaktiv</li>
 <li><strong>Gescheiterte Auslöschung der Angst:</strong> Gehirn ist nicht in der Lage, zu „verlernen“ Bedrohungsreaktionen während Träumen</li>
-<li><strong>Fehler bei der Rekonsolidierung des Gedächtnisses:</strong> Traumatische Erinnerungen stärken statt zu integrieren</li>
+<li><strong>Fehler bei der Rekonsolidierung des Gedächtnisses:</strong> Traumatische Erinnerungen werden gestärkt statt integriert</li>
 <li><strong>Noradrenalin-Dysregulation:</strong> Stresschemikalien bleiben während des Schlafs erhöht</li>
 </ul>
 <p>
-                    Forschung von Dr. Matthew Walker an der UC Berkeley zeigt, dass das Gehirn verwendet <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> um <strong>den Erinnerungen emotionale Ladung zu entziehen</strong>. Bei gesunden Menschen desensibilisieren Träume allmählich die emotionalen Reaktionen auf vergangene Ereignisse. Bei PTSD funktioniert dieser Prozess nicht richtig, sodass traumatische Erinnerungen unverfälscht und emotional aufgeladen bleiben.
+                    Forschung von Dr. Matthew Walker an der UC Berkeley zeigt, dass das Gehirn den <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> nutzt, um <strong>den Erinnerungen emotionale Ladung zu entziehen</strong>. Bei gesunden Menschen desensibilisieren Träume allmählich die emotionalen Reaktionen auf vergangene Ereignisse. Bei PTSD funktioniert dieser Prozess nicht richtig, sodass traumatische Erinnerungen unverfälscht und emotional aufgeladen bleiben.
                 </p>
 <h2 id="stress-dreams">Stressträume: Warum wiederkehrende Träume Anspannung signalisieren</h2>
 <p>
@@ -262,7 +262,7 @@
                 </p>
 <h3>Imagery Rehearsal Therapy (IRT)</h3>
 <p>
-                    Der Goldstandard für die Behandlung chronischer Albträume, insbesondere bei PTSD. Patienten schreiben im Wachzustand das Ende eines Albtraums um und üben dann im Geiste die neue Version. Studien zeigen <strong>70-80 % Reduzierung der <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Häufigkeit von Albträumen</a></strong> innerhalb von Wochen.
+                    Gilt als Goldstandard für die Behandlung chronischer Albträume, insbesondere bei PTSD. Patienten schreiben im Wachzustand das Ende eines Albtraums um und üben dann im Geiste die neue Version. Studien zeigen eine <strong>70-80 % Reduzierung der <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Häufigkeit von Albträumen</a></strong> innerhalb von Wochen.
                 </p>
 <h3>Traumanalyse in der Psychotherapie</h3>
 <p>

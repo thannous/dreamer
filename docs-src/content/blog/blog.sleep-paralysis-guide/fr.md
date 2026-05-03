@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Paralysie du sommeil : causes et solutions efficaces | Noctalia",
   "ogDescription": "Causes, hallucinations et techniques prouvées pour arrêter les épisodes.",
-  "ogImage": "https://noctalia.app/img/blog/guide-paralysie-sommeil.webp",
+  "ogImage": "https://noctalia.app/img/blog/sleep-paralysis-guide.webp",
   "ogImageAlt": "Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Paralysie du sommeil : causes et solutions efficaces | Noctalia",
   "twitterDescription": "Techniques prouvées pour prévenir et arrêter les épisodes.",
-  "twitterImage": "https://noctalia.app/img/blog/guide-paralysie-sommeil.webp",
+  "twitterImage": "https://noctalia.app/img/blog/sleep-paralysis-guide.webp",
   "twitterImageAlt": "Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-cauchemars",
   "nextPath": "/fr/blog/guide-journal-reves",
-  "preloadImage": "/img/blog/guide-paralysie-sommeil.webp",
+  "preloadImage": "/img/blog/sleep-paralysis-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir\",\n            \"description\": \"Guide complet pour comprendre la paralysie du sommeil, ses causes et les techniques prouvées pour prévenir les épisodes.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/guide-paralysie-sommeil.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1325,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Paralysie du sommeil : pourquoi vous ne pouvez plus bouger et comment en sortir\",\n            \"description\": \"Guide complet pour comprendre la paralysie du sommeil, ses causes et les techniques prouvées pour prévenir les épisodes.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1325,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n    \"url\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\",\n    \"name\": \"Paralysie du sommeil : causes et solutions efficaces | Noctalia\",\n    \"inLanguage\": \"fr\",\n    \"reviewedBy\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n    }\n}",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"La paralysie du sommeil est-elle dangereuse ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Non, la paralysie du sommeil n'est pas dangereuse. Bien que l'expérience puisse être terrifiante, c'est une condition bénigne qui ne cause pas de dommage physique. Les épisodes durent généralement de quelques secondes a deux minutes et se terminent d'eux-memes.\" } },\n                { \"@type\": \"Question\", \"name\": \"Peut-on mourir de paralysie du sommeil ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Non, la paralysie du sommeil ne peut pas causer la mort. Malgré la sensation terrifiante de ne pas pouvoir respirer, votre corps continue de respirer automatiquement. La sensation de pression sur la poitrine est une hallucination, pas une restriction respiratoire réelle.\" } },\n                { \"@type\": \"Question\", \"name\": \"Comment arrêter une paralysie du sommeil immédiatement ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Pour sortir de la paralysie du sommeil, concentrez-vous sur le mouvement de petites parties du corps comme vos doigts ou orteils. Essayez de les bouger ou de fermer le poing. Certaines personnes trouvent que se concentrer sur la respiration ou essayer de faire un petit son aide. Restez calme et rappelez-vous que l'épisode se terminera bientôt.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Accueil\", \"item\": \"https://noctalia.app/fr/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Ressources\", \"item\": \"https://noctalia.app/fr/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Guide paralysie du sommeil\", \"item\": \"https://noctalia.app/fr/blog/guide-paralysie-sommeil\" }\n            ]\n        }"
@@ -63,7 +63,7 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Guide complet</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="reve-lucide">Thématique : Rêve lucide</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
-<span class="text-sm text-purple-300/60">Publie le 11 décembre 2025</span>
+<span class="text-sm text-purple-300/60">Publié le 11 décembre 2025</span>
 <span class="text-sm text-purple-300/60">5 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
@@ -108,7 +108,7 @@
 </div>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/guide-paralysie-sommeil.webp" srcset="../../img/blog/guide-paralysie-sommeil-480w.webp 480w, ../../img/blog/guide-paralysie-sommeil-800w.webp 800w, ../../img/blog/guide-paralysie-sommeil-1200w.webp 1200w" width="1200">
+<img alt="Illustration évocatrice d'un réveil nocturne lié à la paralysie du sommeil" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/sleep-paralysis-guide.webp" srcset="../../img/blog/sleep-paralysis-guide-480w.webp 480w, ../../img/blog/sleep-paralysis-guide-800w.webp 800w, ../../img/blog/sleep-paralysis-guide-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -137,7 +137,7 @@
                 </p>
 <ul>
 <li><strong>Europe médiévale :</strong> Attribue à des démons ou "cauchemars" assis sur la poitrine</li>
-<li><strong>Japon :</strong> Appelé "kanashibari", signifiant lie par le métal</li>
+<li><strong>Japon :</strong> Appelé "kanashibari", signifiant lié par le métal</li>
 <li><strong>Terre-Neuve :</strong> Connu comme le syndrome de la "Vieille Sorcière"</li>
 <li><strong>Brésil :</strong> Attribue a "Pisadeira", une vieille femme qui piétine les dormeurs</li>
 </ul>
@@ -184,7 +184,7 @@
                 </p>
 <h2 id="causes">Causes de la paralysie du sommeil : facteurs declencheurs</h2>
 <p>
-                    Bien que n'importe qui puisse expérimenter la paralysie du sommeil, certains facteurs augmentent significativement la probabilité :
+                    Bien que n'importe qui puisse expérimenter la paralysie du sommeil, certains facteurs augmentent nettement la probabilité :
                 </p>
 <h3>Manque de sommeil et horaires irreguliers</h3>
 <ul>
@@ -237,19 +237,19 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="hallucinations">Pourquoi voit-on des presences pendant la paralysie</h2>
 <p>
-                    Les hallucinations pendant la paralysie du sommeil ne sont pas aléatoires - elles suivent des schémas prévisibles expliques par les neurosciences :
+                    Ces hallucinations ne sont pas aléatoires - elles suivent des schémas prévisibles expliqués par les neurosciences :
                 </p>
 <h3>Sensation de presence malveillante expliquee</h3>
 <p>
-                    Le sentiment d'une présence menaçante résulte de l'<strong>hyperactivation de votre amygdale</strong>. Normalement, le cortex préfrontal modère les réponses de peur, mais pendant la paralysie du sommeil, cette régulation échoue. Votre cerveau interprète la paralysie comme une menace et crée une source pour ce danger.
+                    Ce sentiment de présence menaçante résulte de l'<strong>hyperactivation de votre amygdale</strong>. Normalement, le cortex préfrontal modère les réponses de peur, mais pendant la paralysie du sommeil, cette régulation échoue. Votre cerveau interprète la paralysie comme une menace et crée une source pour ce danger.
                 </p>
 <h3>Pression sur la poitrine et difficulte a respirer</h3>
 <p>
-                    La sensation de pression thoracique et de difficulté à respirer survient parce que les muscles respiratoires (bien que fonctionnant toujours) semblent restreints. Le cerveau interprète cela comme quelque chose appuyant sur vous, souvent visualise comme une figure assise sur votre poitrine.
+                    Pression thoracique et difficulté à respirer surviennent parce que les muscles respiratoires (bien que fonctionnant toujours) semblent restreints. Votre cerveau interprète cela comme quelque chose appuyant sur vous, souvent visualisé comme une figure assise sur votre poitrine.
                 </p>
 <h3>Sensation de flottement et sortie de corps</h3>
 <p>
-                    Les sensations de sortie de corps et de flottement surviennent quand le <strong>système vestibulaire</strong> du cerveau (équilibre et conscience spatiale) envoie des signaux conflictuels. Votre cerveau s'attend à un mouvement mais ne reçoit aucun retour, créant des sensations de flottement ou de quitter le corps.
+                    Sortie de corps et flottement surviennent quand le <strong>système vestibulaire</strong> du cerveau (équilibre et conscience spatiale) envoie des signaux conflictuels. Votre cerveau s'attend à un mouvement mais ne reçoit aucun retour, créant des sensations de flottement ou de quitter le corps.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -288,11 +288,11 @@
                 </blockquote>
 <h2 id="prevenir">Comment eviter la paralysie du sommeil : prevention</h2>
 <p>
-                    Bien que vous ne puissiez pas garantir la prévention, ces stratégies réduisent significativement la fréquence des épisodes :
+                    Bien que vous ne puissiez pas garantir la prévention, ces stratégies réduisent nettement la fréquence des épisodes :
                 </p>
 <h3>Hygiene du sommeil pour prevenir les episodes</h3>
 <ul>
-<li><strong>Maintenez des heures de sommeil constantes :</strong> Couchez-vous et réveillez-vous à là meme heure quotidiennement</li>
+<li><strong>Maintenez des heures de sommeil constantes :</strong> Couchez-vous et réveillez-vous à là même heure quotidiennement</li>
 <li><strong>Dormez suffisamment :</strong> Visez 7-9 heures par nuit</li>
 <li><strong>Évitez de dormir sur le dos :</strong> Dormir sur le cote réduit significativement les épisodes</li>
 <li><strong>Créez un environnement propice au sommeil :</strong> Chambre fraîche, sombre, calme</li>

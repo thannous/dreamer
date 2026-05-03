@@ -153,7 +153,7 @@
 
 <h2 id="what-children-dream">De quoi rêvent les enfants ?</h2>
 <p>
-                    Le contenu des rêves des enfants évolue considérablement avec la croissance. Alors que les adultes rêvent souvent du travail, des relations et des préoccupations quotidiennes, les jeunes enfants habitent un monde onirique très différent, peuplé de ce qui compte le plus dans leur univers.
+                    De quoi rêvent les enfants ? Cela évolue considérablement avec la croissance. Alors que les adultes rêvent souvent du travail, des relations et des préoccupations quotidiennes, les jeunes enfants habitent un monde onirique différent, peuplé de ce qui compte le plus dans leur univers.
                 </p>
 <h3>3-5 ans : Animaux et décors familiers</h3>
 <p>
@@ -195,7 +195,7 @@
                     Les terreurs nocturnes sont fondamentalement différentes des cauchemars. Elles surviennent pendant le <strong>sommeil profond non-REM</strong>, habituellement 1 à 3 heures après l'endormissement. Pendant une terreur nocturne, l'enfant peut crier, s'agiter, s'asseoir les yeux grands ouverts ou même marcher - mais il n'est pas vraiment éveillé et n'aura <strong>aucun souvenir de l'épisode</strong> le lendemain matin. Les terreurs nocturnes culminent entre 3 et 8 ans et touchent environ 1 à 6 % des enfants.
                 </p>
 <p>
-                    Les terreurs nocturnes ne sont pas causées par un trouble émotionnel. Elles se produisent quand le cerveau a du mal à transiter entre les stades de sommeil profond. Le manque de sommeil, les horaires irréguliers et la fièvre peuvent les déclencher. Le plus important pour les parents pendant une terreur nocturne est de <strong>rester calme et garder l'enfant en sécurité</strong> sans essayer de le réveiller. Cela diffère considérablement de la <a class="text-dream-salmon hover:underline" href="guide-paralysie-sommeil">paralysie du sommeil</a>, qui survient lors des transitions REM chez les enfants plus âgés et les adultes.
+                    Aucun trouble émotionnel ne provoque les terreurs nocturnes. Elles se produisent quand le cerveau a du mal à transiter entre les stades de sommeil profond. Le manque de sommeil, les horaires irréguliers et la fièvre peuvent les déclencher. Le plus important pour les parents pendant une terreur nocturne est de <strong>rester calme et garder l'enfant en sécurité</strong> sans essayer de le réveiller. Cela diffère considérablement de la <a class="text-dream-salmon hover:underline" href="guide-paralysie-sommeil">paralysie du sommeil</a>, qui survient lors des transitions REM chez les enfants plus âgés et les adultes.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -250,9 +250,9 @@
 <p>
                     Le cerveau des enfants traite les images effrayantes différemment des adultes. Ce qui semble modérément intense pour un adulte peut être véritablement terrifiant pour un enfant de 4 ans. Soyez attentif aux émissions de télévision, films, actualités et même livres d'histoires. L'Académie américaine de pédiatrie recommande <strong>aucun média sur écran pour les enfants de moins de 2 ans</strong> et une sélection attentive du contenu pour les enfants plus âgés, en particulier dans les heures précédant le coucher.
                 </p>
-<h3>Utiliser un attrape-rêves ou un rituel protecteur</h3>
+<h3>Utiliser un attrapé-rêves ou un rituel protecteur</h3>
 <p>
-                    Les jeunes enfants répondent puissamment à la protection symbolique. Accrocher un attrape-rêves, vaporiser un « spray anti-monstres » (de l'eau dans un flacon étiqueté), ou créer une affirmation du coucher comme « ma chambre est sûre et remplie de beaux rêves » peut donner aux enfants un véritable sentiment de contrôle sur leur monde onirique.
+                    Les jeunes enfants répondent puissamment à la protection symbolique. Accrocher un attrapé-rêves, vaporiser un « spray anti-monstres » (de l'eau dans un flacon étiqueté), ou créer une affirmation du coucher comme « ma chambre est sûre et remplie de beaux rêves » peut donner aux enfants un véritable sentiment de contrôle sur leur monde onirique.
                 </p>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -272,7 +272,7 @@
 
 <h2 id="journaling-for-kids">Le journal de rêves pour les enfants</h2>
 <p>
-                    Le journal de rêves n'est pas réservé aux adultes. Adapté à l'âge et aux capacités de l'enfant, il peut devenir un outil puissant de développement émotionnel, de créativité et de conscience de soi. L'essentiel est de le rendre adapté à l'âge et ludique - jamais une corvée.
+                    Tenir un journal de rêves fonctionne aussi pour les enfants, pas seulement pour les adultes. Adapté à l'âge et aux capacités de l'enfant, cet outil favorise le développement émotionnel, la créativité et la conscience de soi. Rendez-le ludique et adapté à l'âge - jamais une corvée.
                 </p>
 <h3>3-5 ans : Dessiner ses rêves</h3>
 <p>

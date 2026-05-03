@@ -104,7 +104,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="why">Why Do You Keep Dreaming About Your Ex?</h2>
 <p>
-                    First, let's address the elephant in the room: <strong>dreaming about an ex doesn't mean you want them back</strong>. In fact, most ex dreams have nothing to do with wanting to rekindle the relationship.
+                    First, let's address the elephant in the room: <strong>dreaming about an ex doesn't mean you want them back</strong>. Most ex dreams have nothing to do with wanting to rekindle the relationship.
                 </p>
 <p>
                     Our brains are pattern-recognition machines. Romantic relationships create deep neural pathways - we spend significant time with these people, share intense emotions, and form lasting memories. When we sleep, our brains <strong>consolidate memories and process emotions</strong>, often pulling from our most significant experiences.
@@ -113,14 +113,14 @@
                     Those memories can surface in familiar settings like a <a class="text-dream-salmon hover:underline" href="../symbols/house">house</a> that feels charged with meaning.
                 </p>
 <p>
-                    Research shows that we're more likely to dream about people who had strong emotional impact on us, regardless of whether those emotions were positive or negative. Your ex represents a significant chapter of your life, and your brain uses that reference point when processing similar themes.
+                    Research shows that we're more likely to dream about people who had strong emotional impact on us, regardless of whether those emotions were positive or negative. Your ex represents a key chapter of your life, and your brain uses that reference point when processing similar themes.
                 </p>
 <blockquote>
                     "Dreams about exes are rarely about the actual person. They're usually about what that person represents - a time in your life, a feeling, or an aspect of yourself." - Dr. Wendy Walsh, Relationship Psychologist
                 </blockquote>
 <h2 id="scenarios">Common Dreams About Your Ex and Their Meanings</h2>
 <p>
-                    The scenario in your dream provides important clues about its meaning:
+                    Each dream scenario provides important clues about its meaning:
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">

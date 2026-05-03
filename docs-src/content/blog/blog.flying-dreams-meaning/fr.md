@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Rêves de voler : signification psychologique profonde - Noctalia",
   "ogDescription": "Ce que les rêves de vol révèlent sur votre liberté et vos ambitions.",
-  "ogImage": "https://noctalia.app/img/blog/reves-de-voler.webp",
+  "ogImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "ogImageAlt": "Perspective aérienne évoquant la liberté du vol onirique",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêves de voler : signification psychologique profonde - Noctalia",
   "twitterDescription": "La psychologie des rêves de vol et leurs significations.",
-  "twitterImage": "https://noctalia.app/img/blog/reves-de-voler.webp",
+  "twitterImage": "https://noctalia.app/img/blog/flying-dreams-meaning.webp",
   "twitterImageAlt": "Perspective aérienne évoquant la liberté du vol onirique",
   "publishedTime": "2025-01-10",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-de-chute",
   "nextPath": "/fr/blog/reves-de-serpents",
-  "preloadImage": "/img/blog/reves-de-voler.webp",
+  "preloadImage": "/img/blog/flying-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Signification des Rêves de Voler : Que Signifie Voler dans Vos Rêves\",\n            \"description\": \"Pourquoi rêvez-vous de voler ? Découvrez la psychologie des rêves de vol et ce qu'ils révèlent sur vous.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/reves-de-voler.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-de-voler\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1221,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-de-voler\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Signification des Rêves de Voler : Que Signifie Voler dans Vos Rêves\",\n            \"description\": \"Pourquoi rêvez-vous de voler ? Découvrez la psychologie des rêves de vol et ce qu'ils révèlent sur vous.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/flying-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-de-voler\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1221,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-de-voler\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver de voler ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de vol symbolisent généralement la liberté, la libération, l'ambition et le dépassement des défis. Ils surviennent souvent lorsque vous vous sentez confiant, que vous surmontez des obstacles ou que vous cherchez à échapper aux limitations de votre vie éveillée.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de voler sont-ils bons ou mauvais ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de vol sont généralement considérés comme positifs, représentant la liberté, la confiance et la transcendance. Cependant, la signification dépend de la qualité du vol : planer sans effort suggère la confiance, tandis que lutter pour voler peut indiquer des obstacles ou des doutes.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Peut-on contrôler les rêves de voler ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Oui, les rêves de vol sont souvent associés au rêve lucide - être conscient de rêver tout en étant encore dans le rêve. Avec de la pratique, vous pouvez apprendre à reconnaître les états de rêve et à contrôler votre vol, ce qui en fait une porte d'entrée vers le rêve conscient.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de Voler\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-de-voler\"\n        }\n    ]\n}"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Perspective aérienne évoquant la liberté du vol onirique" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/reves-de-voler.webp" srcset="../../img/blog/reves-de-voler-480w.webp 480w, ../../img/blog/reves-de-voler-800w.webp 800w, ../../img/blog/reves-de-voler-1200w.webp 1200w" width="1200">
+<img alt="Perspective aérienne évoquant la liberté du vol onirique" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/flying-dreams-meaning.webp" srcset="../../img/blog/flying-dreams-meaning-480w.webp 480w, ../../img/blog/flying-dreams-meaning-800w.webp 800w, ../../img/blog/flying-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -202,11 +202,11 @@
                 </p>
 <h3>1. Rêve de voler et liberté intérieure</h3>
 <p>
-                    L'interprétation la plus courante. Voler représente la <strong>libération des limitations</strong> - qu'elles soient physiques, émotionnelles ou sociales. Vous échappez peut-être à des situations restrictives, des relations toxiques ou des frontières auto-imposées. Le rêve célèbre votre désir d'indépendance.
+                    De loin la lecture la plus fréquente. Voler représente la <strong>libération des limitations</strong> - qu'elles soient physiques, émotionnelles ou sociales. Vous échappez peut-être à des situations restrictives, des relations toxiques ou des frontières auto-imposées. Votre rêve célèbre ce désir d'indépendance.
                 </p>
 <h3>2. Rêver de voler et ambition personnelle</h3>
 <p>
-                    Voler vers le haut symbolise souvent l'<strong>ascension vers de nouveaux sommets</strong> dans votre carrière, votre développement personnel ou votre statut social. Le rêve peut survenir lorsque vous poursuivez des objectifs ambitieux ou que vous vous sentez confiant dans vos capacités. Vous « visez les étoiles », littéralement.
+                    Voler vers le haut symbolise souvent l'<strong>ascension vers de nouveaux sommets</strong> dans votre carrière, votre développement personnel ou votre statut social. Ce rêve peut survenir lorsque vous poursuivez des objectifs ambitieux ou que vous vous sentez confiant dans vos capacités. Vous « visez les étoiles », littéralement.
                 </p>
 <h3>3. Signification du vol en rêve et prise de recul</h3>
 <p>
@@ -265,7 +265,7 @@
                 </p>
 <h3>Le vol en rêve comme déclencheur de lucidité</h3>
 <p>
-                    L'impossibilité de voler peut servir de <strong>test de réalité</strong>. Lorsque vous vous retrouvez en train de voler, quelque chose dans votre cerveau peut reconnaître « ce n'est pas possible » - déclenchant la lucidité.
+                    Voler est tout simplement impossible dans la réalité, ce qui en fait un excellent <strong>test de réalité</strong>. Lorsque vous vous retrouvez en train de voler, quelque chose dans votre cerveau peut reconnaître « ce n'est pas possible » - déclenchant la lucidité.
                 </p>
 <h3>Voler en rêve lucide : objectif populaire</h3>
 <p>
@@ -426,7 +426,7 @@
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le meme rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>

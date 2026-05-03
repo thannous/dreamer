@@ -5,7 +5,7 @@
   "lang": "fr",
   "slug": "",
   "title": "Journal de rêves illustré et interprété | Noctalia",
-  "description": "Enregistrez vos rêves à la voix, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !",
+  "description": "Décrivez vos rêves, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !",
   "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth",
@@ -14,12 +14,12 @@
   "mainClass": "",
   "ogType": "website",
   "ogTitle": "Journal de rêves illustré et interprété | Noctalia",
-  "ogDescription": "Enregistrez vos rêves à la voix, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !",
+  "ogDescription": "Décrivez vos rêves, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !",
   "ogImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "ogImageAlt": "",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Journal de rêves illustré et interprété | Noctalia",
-  "twitterDescription": "Enregistrez vos rêves à la voix, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !",
+  "twitterDescription": "Décrivez vos rêves, créez des illustrations de vos rêves et explorez leur signification. Commencez gratuitement !",
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Journal de rêves illustré et interprété",
   "publishedTime": "",
@@ -42,8 +42,10 @@
     
     
 
-        <!-- Navbar -->
+    <!-- Navbar -->
     
+
+<main class="noctalia-observatory overflow-x-hidden w-full max-w-full">
 
     <!-- 1. Hero Section -->
     <header class="relative min-h-screen flex items-center justify-center pt-28 pb-10 px-4 overflow-visible">
@@ -56,8 +58,7 @@
 
             <!-- Subtitle/Baseline -->
             <p class="font-sans text-lg md:text-xl text-purple-100/80 max-w-2xl mx-auto mb-10 leading-relaxed opacity-0 hero-anim hero-subtitle">
-                Le compagnon de rêves intelligent. Capturez vos rêves à la voix et laissez-vous guider pour mieux vous
-                comprendre.
+                Le compagnon de rêves intelligent. Décrivez vos rêves, puis laissez Noctalia vous aider à les explorer et les comprendre.
             </p>
 
             <!-- CTA & Reassurance -->
@@ -633,5 +634,7 @@
             </div>
         </div>
     </section>
+
+</main>
 
     <!-- 10. Footer -->

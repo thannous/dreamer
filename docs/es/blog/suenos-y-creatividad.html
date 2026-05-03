@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/es/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/es/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/es/#como-funciona" class="hidden lg:inline-flex hover:text-white transition-colors">Cómo funciona</a>
-                <a href="/es/#caracteristicas" class="hidden lg:inline-flex hover:text-white transition-colors">Características</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/es/blog/" class="text-dream-salmon transition-colors">Recursos</a>
                 <a href="/es/guides/" class="hover:text-white transition-colors">Guías de sueños</a>
                 <a href="/es/guides/diccionario-simbolos-suenos" class="hover:text-white transition-colors">Diccionario de sueños</a>
+                <a href="/es/sobre" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Sobre</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">ES</span>
+                        <span>ES</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Descargar la app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/es/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Recursos</a>
+                <a href="/es/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guías de sueños</a>
+                <a href="/es/guides/diccionario-simbolos-suenos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Diccionario de sueños</a>
+                <a href="/es/sobre" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Sobre</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Descargar la app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/dreams-and-creativity" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/reves-et-creativite" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/suenos-y-creatividad" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Español</a>
+                    <a href="/de/blog/traeume-und-kreativitaet" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/sogni-e-creativita" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -294,7 +324,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="how-dreams-unlock">Cómo los sueños desbloquean el pensamiento creativo</h2>
 <p>
-                    Cuando te duermes, algo extraordinario ocurre dentro de tu cerebro. La corteza prefrontal — la región responsable de la lógica, la autocensura y el razonamiento lineal — se silencia considerablemente. Mientras tanto, la amígdala, el hipocampo y la corteza visual se activan intensamente. Este cambio neurológico crea un espacio de juego mental donde las ideas pueden colisionar sin los guardianes habituales de la racionalidad diciendo "eso no tiene sentido".
+                    ¿Cuándo te duermes, algo extraordinario ocurre dentro de tu cerebro. La corteza prefrontal — la región responsable de la lógica, la autocensura y el razonamiento lineal — se silencia considerablemente. Mientras tanto, la amígdala, el hipocampo y la corteza visual se activan intensamente. Este cambio neurológico crea un espacio de juego mental donde las ideas pueden colisionar sin los guardianes habituales de la racionalidad diciendo "eso no tiene sentido".
                 </p>
 <p>
                     Durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, tu cerebro entra en un estado que los neurocientíficos describen como "hiperasociativo". Extrae fragmentos de diferentes recuerdos, emociones y experiencias sensoriales y los entrelaza en combinaciones que tu mente despierta nunca intentaría. Un recuerdo de la infancia del océano puede fusionarse con un problema laboral y una canción que escuchaste en la radio, produciendo una idea completamente nueva que se siente a la vez extraña y profunda.
@@ -311,7 +341,7 @@
                 </p>
 <h3>August Kekulé y el anillo de benceno</h3>
 <p>
-                    En 1865, el químico alemán August Kekulé luchaba por determinar la estructura molecular del benceno. Una noche, adormilado junto al fuego, soñó con una serpiente que mordía su propia cola — el antiguo símbolo del uróboro. Se despertó con la certeza de que los átomos de carbono del benceno formaban un anillo cerrado en lugar de una cadena. Esta intuición revolucionó la química orgánica y sigue siendo uno de los ejemplos más citados de <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">descubrimiento impulsado por los sueños</a>.
+                    En 1865, el químico alemán August Kekulé luchaba por determinar la estructura molecular del benceno. Una noche, adormilado junto al fuego, soñó con una serpiente que mordía su propia cola — el antiguo símbolo del uróboro. Se despertó con la certeza de que los átomos de carbono del benceno formaban un anillo cerrado en lugar de una cadena. Esta intuición revoluciónó la química orgánica y sigue siendo uno de los ejemplos más citados de <a class="text-dream-salmon hover:underline" href="guia-incubacion-suenos">descubrimiento impulsado por los sueños</a>.
                 </p>
 <h3>Paul McCartney y "Yesterday"</h3>
 <p>
@@ -347,7 +377,7 @@
                 </p>
 <h3>Por qué el cerebro soñador es únicamente creativo</h3>
 <p>
-                    La combinación de la desactivación prefrontal (menos autocensura), el aumento de la actividad de la amígdala (asociaciones emocionales intensificadas) y la consolidación activa de la memoria crea un estado cerebral imposible de lograr estando despierto. Es como si la evolución hubiera incorporado a tu biología una sesión de lluvia de ideas nocturna donde la voz más conservadora de la sala ha sido invitada a salir.
+                    Desactivación prefrontal (menos autocensura), mayor actividad de la amígdala (asociaciones emocionales intensificadas) y consolidación activa de la memoria se combinan para crear un estado cerebral imposible de lograr estando despierto. Es como si la evolución hubiera incorporado a tu biología una sesión de lluvia de ideas nocturna donde la voz más conservadora de la sala ha sido invitada a salir.
                 </p>
 </div>
 <!-- Creativity Dream Cards -->
@@ -384,7 +414,7 @@
                 </p>
 <h3>Técnica de incubación de sueños paso a paso</h3>
 <ol>
-<li><strong>Define tu desafío creativo con claridad:</strong> Escríbelo en una sola frase. "¿Cómo puedo resolver X?" o "¿Cuál es un enfoque novedoso para Y?" Cuanto más específico, mejor.</li>
+<li><strong>Define tu desafío creativo con claridad:</strong> Escríbelo en una sola frase. "¿Cómo puedo resolver X?" o "¿Cuál es un enfoque novedoso para Y?" ¿Cuánto más específico, mejor.</li>
 <li><strong>Revisa el problema antes de dormir:</strong> Dedica 10-15 minutos a sumergirte en el desafío — consulta notas, bocetos, datos o cualquier material relacionado. Quieres que el problema esté vívido en tu memoria a corto plazo.</li>
 <li><strong>Verbaliza tu petición:</strong> Al cerrar los ojos, repite tu pregunta en silencio o en voz alta. Dile a tu mente dormida: "Esta noche, muéstrame una nueva forma de pensar sobre esto."</li>
 <li><strong>Mantén un diario junto a tu cama:</strong> En el momento en que despiertes — antes de mirar el teléfono, antes de levantarte de la cama — anota todo lo que recuerdes, incluso fragmentos que parezcan absurdos.</li>
@@ -545,7 +575,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/es/" class="flex items-center gap-2 mb-4">
@@ -622,8 +652,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Hecho con <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> para soñadores</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

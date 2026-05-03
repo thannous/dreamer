@@ -115,7 +115,7 @@
                     Humans spend approximately <strong>six years of their lives dreaming</strong>. Despite this enormous investment of time and neural resources, science still doesn't have a definitive answer to why dreams exist. What we do have are several compelling theories, each supported by different lines of evidence.
                 </p>
 <p>
-                    The scientific study of dreams accelerated dramatically in 1953 when researchers Eugene Aserinsky and Nathaniel Kleitman discovered <strong>REM (Rapid Eye Movement) sleep</strong>. This discovery revealed that sleep isn't a uniform state but consists of distinct stages, with <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> being when most vivid dreaming occurs.
+                    Dream science accelerated dramatically in 1953 when researchers Eugene Aserinsky and Nathaniel Kleitman discovered <strong>REM (Rapid Eye Movement) sleep</strong>. Their work revealed that sleep isn't a uniform state but consists of distinct stages, with <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a> being when most vivid dreaming occurs.
                 </p>
 <blockquote>
                     "The dream is the small hidden door in the deepest and most intimate sanctum of the soul." - Carl Jung
@@ -302,7 +302,7 @@
                 </p>
 <h3>Neurotransmitter changes</h3>
 <p>
-                    The chemical environment of the sleeping brain differs dramatically from waking:
+                    Your sleeping brain operates in a chemical environment that differs dramatically from waking:
                 </p>
 <ul>
 <li><strong>Acetylcholine increases:</strong> Promotes vivid hallucinations and cortical activation</li>
@@ -324,7 +324,7 @@
 <li><strong>Possibly reptiles:</strong> Some evidence suggests primitive REM-like states</li>
 </ul>
 <p>
-                    The fact that REM sleep evolved <strong>over 200 million years ago</strong> and has been preserved across diverse species suggests it serves crucial biological functions.
+                    REM sleep evolved <strong>over 200 million years ago</strong> and has been preserved across diverse species, suggesting it serves crucial biological functions.
                 </p>
 <h3>Comparative dream research</h3>
 <p>
@@ -346,7 +346,7 @@
 <li><strong>Time cost:</strong> Hours spent not foraging or reproducing</li>
 </ul>
 <p>
-                    The persistence of dreaming despite these costs suggests the benefits - memory consolidation, emotional regulation, skill practice - outweigh the risks.
+                    Dreaming persists despite these costs, suggesting the benefits - memory consolidation, emotional regulation, skill practice - outweigh the risks.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -439,7 +439,7 @@
 <li>Why do some people dream in color while others in black and white?</li>
 </ul>
 <p>
-                    The mystery of dreaming remains one of neuroscience's most captivating frontiers - a nightly reminder that consciousness still holds secrets we're only beginning to understand.
+                    Dreaming remains one of neuroscience's most captivating frontiers - a nightly reminder that consciousness still holds secrets we're only beginning to understand.
                 </p>
 </div>
 <div class="glass-panel rounded-xl p-6 my-8 border border-transparent hover:border-dream-salmon/30 transition-colors">

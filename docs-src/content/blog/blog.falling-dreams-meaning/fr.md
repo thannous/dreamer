@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Rêves de chute : signification et interprétation | Noctalia",
   "ogDescription": "Découvrez ce que ces rêves révèlent sur vos peurs et anxiétés.",
-  "ogImage": "https://noctalia.app/img/blog/reves-de-chute.webp",
+  "ogImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "ogImageAlt": "Image abstraite d'une sensation de chute à travers un ciel nuageux",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêves de chute : signification et interprétation | Noctalia",
   "twitterDescription": "Ce que vos rêves de chute révèlent sur vos peurs.",
-  "twitterImage": "https://noctalia.app/img/blog/reves-de-chute.webp",
+  "twitterImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "twitterImageAlt": "Image abstraite d'une sensation de chute à travers un ciel nuageux",
   "publishedTime": "2025-01-10",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-dents-qui-tombent",
   "nextPath": "/fr/blog/reves-de-voler",
-  "preloadImage": "/img/blog/reves-de-chute.webp",
+  "preloadImage": "/img/blog/falling-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Signification des Rêves de Chute : Pourquoi Rêvez-Vous de Tomber\",\n            \"description\": \"Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique des rêves de chute.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/reves-de-chute.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-de-chute\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1203,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-de-chute\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Signification des Rêves de Chute : Pourquoi Rêvez-Vous de Tomber\",\n            \"description\": \"Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique des rêves de chute.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/falling-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-de-chute\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1203,\n            \"timeRequired\": \"PT5M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-de-chute\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver de tomber ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de chute symbolisent généralement la perte de contrôle, l'insécurité, l'anxiété face à l'échec ou le sentiment d'être dépassé. Ils surviennent souvent lors de transitions de vie stressantes ou lorsque vous faites face à des situations où vous vous sentez sans soutien ou dépassé.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi se réveille-t-on brusquement quand on rêve de tomber ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"C'est ce qu'on appelle une secousse hypnique ou myoclonie d'endormissement. Elle se produit pendant la transition entre l'éveil et le sommeil, lorsque vos muscles se contractent soudainement. La sensation de chute peut déclencher ce réflexe car votre cerveau interprète mal la relaxation musculaire de l'endormissement comme une chute réelle.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de chute sont-ils le signe d'un problème ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de chute sont normaux et vécus par la plupart des gens. Ils reflètent généralement un stress ou une anxiété temporaire plutôt que des problèmes graves. Cependant, des rêves dérangeants fréquents qui affectent votre qualité de sommeil peuvent nécessiter une attention à la gestion du stress ou une consultation avec un professionnel.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de Chute\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-de-chute\"\n        }\n    ]\n}"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Image abstraite d'une sensation de chute à travers un ciel nuageux" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/reves-de-chute.webp" srcset="../../img/blog/reves-de-chute-480w.webp 480w, ../../img/blog/reves-de-chute-800w.webp 800w, ../../img/blog/reves-de-chute-1200w.webp 1200w" width="1200">
+<img alt="Image abstraite d'une sensation de chute à travers un ciel nuageux" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/falling-dreams-meaning.webp" srcset="../../img/blog/falling-dreams-meaning-480w.webp 480w, ../../img/blog/falling-dreams-meaning-800w.webp 800w, ../../img/blog/falling-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -119,7 +119,7 @@
                     « Les rêves de chute surviennent souvent au moment de l'endormissement, lorsque le cerveau peut mal interpréter la relaxation musculaire normale comme une chute physique réelle. » - Dr Matthew Walker, Scientifique du Sommeil
                 </blockquote>
 <p>
-                    La sensation semble remarquablement réelle car les centres d'équilibre de votre cerveau (le système vestibulaire) peuvent s'activer pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, créant l'illusion de mouvement même en position allongée.
+                    Pourquoi cette sensation semble-t-elle si réelle ? Parce que les centres d'équilibre de votre cerveau (le système vestibulaire) peuvent s'activer pendant le <a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a>, créant l'illusion de mouvement même en position allongée.
                 </p>
 <h2 id="variations">Types de rêves de chute et leurs variations</h2>
 <p>
@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Rêve de chute et perte de contrôle</h3>
 <p>
-                    L'interprétation la plus répandue. Lorsque vous tombez, vous ne pouvez pas vous arrêter - vous êtes à la merci de la gravité. Cela reflète des situations où vous vous sentez <strong>impuissant à changer les résultats</strong>. Instabilité professionnelle, problèmes de santé, difficultés relationnelles - tout domaine où le contrôle semble impossible.
+                    De loin la lecture la plus courante. Lorsque vous tombez, vous ne pouvez pas vous arrêter - vous êtes à la merci de la gravité. Cela reflète des situations où vous vous sentez <strong>impuissant à changer les résultats</strong>. Instabilité professionnelle, problèmes de santé, difficultés relationnelles - tout domaine où le contrôle semble impossible.
                 </p>
 <h3>2. Rêver de tomber et peur de l'échec</h3>
 <p>
@@ -313,7 +313,7 @@
                 </p>
 <h3>6. Quand consulter un professionnel pour les rêves de chute</h3>
 <p>
-                    Si les rêves de chute persistent et impactent significativement votre qualité de sommeil, envisagez de consulter un spécialiste du sommeil ou un thérapeute qui pourra traiter les problèmes sous-jacents.
+                    Si les rêves de chute persistent et perturbent nettement votre qualité de sommeil, envisagez de consulter un spécialiste du sommeil ou un thérapeute qui pourra traiter les problèmes sous-jacents.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -435,7 +435,7 @@
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le meme rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>

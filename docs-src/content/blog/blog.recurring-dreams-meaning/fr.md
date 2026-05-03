@@ -15,22 +15,22 @@
   "ogType": "article",
   "ogTitle": "Rêves récurrents : pourquoi et comment les arrêter | Noctalia",
   "ogDescription": "Pourquoi rêvez-vous toujours la même chose ? Découvrez les causes des rêves récurrents et comment enfin vous en libérer.",
-  "ogImage": "https://noctalia.app/img/blog/signification-reves-recurrents.webp",
+  "ogImage": "https://noctalia.app/img/blog/recurring-dreams-meaning.webp",
   "ogImageAlt": "Motif en spirale illustrant la répétition des thèmes oniriques",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Rêves récurrents : pourquoi et comment les arrêter | Noctalia",
   "twitterDescription": "Pourquoi rêvez-vous toujours la même chose ? Découvrez les causes des rêves récurrents et comment enfin vous en libérer.",
-  "twitterImage": "https://noctalia.app/img/blog/signification-reves-recurrents.webp",
+  "twitterImage": "https://noctalia.app/img/blog/recurring-dreams-meaning.webp",
   "twitterImageAlt": "Motif en spirale illustrant la répétition des thèmes oniriques",
   "publishedTime": "2025-01-06",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/pourquoi-oublie-reves-reveil",
   "nextPath": "/fr/blog/guide-reve-lucide-debutant",
-  "preloadImage": "/img/blog/signification-reves-recurrents.webp",
+  "preloadImage": "/img/blog/recurring-dreams-meaning.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Signification des rêves récurrents : comprendre leurs messages caches\",\n            \"description\": \"Pourquoi refaites-vous toujours le meme rêve ? Découvrez la signification des rêves récurrents les plus courants.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/signification-reves-recurrents.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 705,\n            \"timeRequired\": \"PT3M\",\n            \"url\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi fait-on des rêves récurrents ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves récurrents surviennent généralement lorsque notre inconscient tente de traiter une situation non résolue, un traumatisme, un stress chronique ou une peur profonde. Ils cessent souvent une fois que le problème sous-jacent est reconnu et traite.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves récurrents sont-ils dangereux ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves récurrents ne sont pas dangereux en eux-memes, mais ils peuvent indiquer un stress non résolu ou un traumatisme. S'ils provoquent une détresse significative ou perturbent votre sommeil, consultez un professionnel de santé mentale.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Comment arrêter de faire le meme rêve ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Pour arrêter un rêve récurrent, identifiez d'abord son déclencheur émotionnel. Tenez un journal de rêves, pratiquez la visualisation d'une fin alternative avant de dormir, et traitez les problèmes sous-jacents dans votre vie éveille. La technique de 'rescripting' en thérapie peut aussi être efficace.\"\n                    }\n                }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Signification des rêves récurrents : comprendre leurs messages cachés\",\n            \"description\": \"Pourquoi refaites-vous toujours le même rêve ? Découvrez la signification des rêves récurrents les plus courants.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/recurring-dreams-meaning.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-06\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 705,\n            \"timeRequired\": \"PT3M\",\n            \"url\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Pourquoi fait-on des rêves récurrents ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves récurrents surviennent généralement lorsque notre inconscient tente de traiter une situation non résolue, un traumatisme, un stress chronique ou une peur profonde. Ils cessent souvent une fois que le problème sous-jacent est reconnu et traite.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves récurrents sont-ils dangereux ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves récurrents ne sont pas dangereux en eux-memes, mais ils peuvent indiquer un stress non résolu ou un traumatisme. S'ils provoquent une détresse significative ou perturbent votre sommeil, consultez un professionnel de santé mentale.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Comment arrêter de faire le même rêve ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Pour arrêter un rêve récurrent, identifiez d'abord son déclencheur émotionnel. Tenez un journal de rêves, pratiquez la visualisation d'une fin alternative avant de dormir, et traitez les problèmes sous-jacents dans votre vie éveille. La technique de 'rescripting' en thérapie peut aussi être efficace.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves récurrents\",\n            \"item\": \"https://noctalia.app/fr/blog/signification-reves-recurrents\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -62,14 +62,14 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Interprétation</span>
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="signification-des-reves">Thématique : Signification des rêves</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
-<span class="text-sm text-purple-300/60">Publie le 6 janvier 2025</span>
+<span class="text-sm text-purple-300/60">Publié le 6 janvier 2025</span>
 <span class="text-sm text-purple-300/60">3 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Signification des rêves récurrents : comprendre leurs messages caches
+                    Signification des rêves récurrents : comprendre leurs messages cachés
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Chuter dans le vide, arriver en retard à un <a class="text-dream-salmon hover:underline" href="../symboles/examen">examen</a>, perdre ses <a class="text-dream-salmon hover:underline" href="../symboles/dents">dents</a>... Si ces scenarios vous semblent familiers, vous n'êtes pas seul. Les rêves récurrents touchent environ 60% de la population. Découvrez pourquoi votre cerveau rejoue ces scènes et comment décoder leurs messages.
+                    Chuter dans le vide, arriver en retard à un <a class="text-dream-salmon hover:underline" href="../symboles/examen">examen</a>, perdre ses <a class="text-dream-salmon hover:underline" href="../symboles/dents">dents</a>... Si ces scénarios vous semblent familiers, vous n'êtes pas seul. Les rêves récurrents touchent environ 60% de la population. Découvrez pourquoi votre cerveau rejoue ces scènes et comment décoder leurs messages.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Motif en spirale illustrant la répétition des thèmes oniriques" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/signification-reves-recurrents.webp" srcset="../../img/blog/signification-reves-recurrents-480w.webp 480w, ../../img/blog/signification-reves-recurrents-800w.webp 800w, ../../img/blog/signification-reves-recurrents-1200w.webp 1200w" width="1200">
+<img alt="Motif en spirale illustrant la répétition des thèmes oniriques" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/recurring-dreams-meaning.webp" srcset="../../img/blog/recurring-dreams-meaning-480w.webp 480w, ../../img/blog/recurring-dreams-meaning-800w.webp 800w, ../../img/blog/recurring-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -110,13 +110,13 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="definition">Rêves récurrents : définition et caractéristiques</h2>
 <p>
-                    Un rêve récurrent est un rêve qui <strong>se répète de manière identique ou similaire</strong> sur une période prolongée - parfois des semaines, des mois, voire des années. Contrairement aux rêves ordinaires qui varient chaque nuit, ces rêves suivent un scenario prévisible.
+                    Un rêve récurrent est un rêve qui <strong>se répète de manière identique ou similaire</strong> sur une période prolongée - parfois des semaines, des mois, voire des années. Contrairement aux rêves ordinaires qui varient chaque nuit, ces rêves suivent un scénario prévisible.
                 </p>
 <p>
                     Ils tournent souvent autour de symboles familiers comme la <a class="text-dream-salmon hover:underline" href="../symboles/chute">chute</a>, ce qui renforce la sensation de répétition.
                 </p>
 <p>
-                    Les recherches montrent que ces rêves sont particulièrement fréquents chez les personnes traversant des périodes de stress ou de transition. Une étude de l'Université de Montreal (2022) a révèle que <strong>75% des rêves récurrents ont une tonalité négative</strong>, impliquant souvent la peur, la frustration ou l'impuissance.
+                    Ces rêves sont particulièrement fréquents chez les personnes traversant des périodes de stress ou de transition. Une étude de l'Université de Montréal (2022) a révélé que <strong>75% des rêves récurrents ont une tonalité négative</strong>, impliquant souvent la peur, la frustration ou l'impuissance.
                 </p>
 <blockquote>
                     "Les rêves récurrents sont comme un message que votre inconscient vous envoie encore et encore, jusqu'à ce que vous l'écoutiez." - Dr. Deirdre Barrett, Harvard Médical School
@@ -127,11 +127,11 @@
                 </p>
 <h3>1. Traumatismes non résolus</h3>
 <p>
-                    Le cerveau utilise les rêves pour <strong>traiter les expériences émotionnellement chargées</strong>. Lorsqu'un traumatisme n'est pas pleinement intègre, l'esprit le "rejoue" dans l'espoir de le résoudre.
+                    Votre cerveau utilise les rêves pour <strong>traiter les expériences émotionnellement chargées</strong>. Lorsqu'un traumatisme n'est pas pleinement intégré, l'esprit le "rejoue" dans l'espoir de le résoudre.
                 </p>
 <h3>2. Stress chronique</h3>
 <p>
-                    Le stress quotidien - travail, relations, finances - se manifeste souvent par des scenarios oniriques répétitifs. Le rêve devient un <a class="text-dream-salmon hover:underline" href="../symboles/miroir">miroir</a> de nos préoccupations conscientes et inconscientes.
+                    Travail, relations, finances - le stress quotidien se manifeste souvent par des scénarios oniriques répétitifs. Le rêve devient un <a class="text-dream-salmon hover:underline" href="../symboles/miroir">miroir</a> de nos préoccupations conscientes et inconscientes.
                 </p>
 <h3>3. Conflits intérieurs</h3>
 <p>
@@ -139,11 +139,11 @@
                 </p>
 <h3>4. Besoins psychologiques non satisfaits</h3>
 <p>
-                    Besoin de sécurité, d'appartenance, de reconnaissance... Lorsque ces besoins fondamentaux ne sont pas combles, ils peuvent s'exprimer à travers des thèmes oniriques répétitifs.
+                    Besoin de sécurité, d'appartenance, de reconnaissance... Lorsque ces besoins fondamentaux ne sont pas comblés, ils peuvent s'exprimer à travers des thèmes oniriques répétitifs.
                 </p>
 <h2 id="top10">Signification des 10 rêves récurrents les plus courants</h2>
 <p>
-                    Voici les rêves récurrents les plus fréquemment rapportes, avec leurs interprétations les plus courantes. Rappelez-vous : <strong>le contexte personnel compte énormément</strong> dans l'interprétation.
+                    Voici les rêves récurrents les plus fréquemment rapportés, avec leurs interprétations les plus courantes. Rappelez-vous : <strong>le contexte personnel compte énormément</strong> dans l'interprétation.
                 </p>
 </div>
 <!-- Dream Cards Grid -->
@@ -160,7 +160,7 @@
 <strong class="text-dream-salmon">Fréquence :</strong> Très courant (40% de la population)
                     </p>
 <p class="text-sm text-gray-300">
-<strong>Signification :</strong> Perte de contrôle, insécurité, peur de l'échec. Ce rêve survient souvent lors de transitions majeures ou quand on se sent submerge.
+<strong>Signification :</strong> Perte de contrôle, insécurité, peur de l'échec. Ce rêve survient souvent lors de transitions majeures ou quand on se sent submergé.
                     </p>
 </div>
 <!-- Dream 2 -->
@@ -190,7 +190,7 @@
 <strong class="text-dream-salmon">Fréquence :</strong> Courant
                     </p>
 <p class="text-sm text-gray-300">
-<strong>Signification :</strong> Vulnérabilité émotionnelle, peur du jugement, syndrome de l'imposteur, sentiment d'être expose ou mal prépare.
+<strong>Signification :</strong> Vulnérabilité émotionnelle, peur du jugement, syndrome de l'imposteur, sentiment d'être exposé ou mal prépare.
                     </p>
 </div>
 <!-- Dream 4 -->
@@ -244,13 +244,13 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="waves"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">7. Être submerge par l'eau</h3>
+<h3 class="font-serif text-lg text-dream-cream">7. Être submergé par l'eau</h3>
 </div>
 <p class="text-sm text-gray-400 mb-3">
 <strong class="text-dream-salmon">Fréquence :</strong> Modérément courant
                     </p>
 <p class="text-sm text-gray-300">
-<strong>Signification :</strong> Émotions débordantes, sentiment d'être submerge par les responsabilités, besoin de "reprendre son souffle".
+<strong>Signification :</strong> Émotions débordantes, sentiment d'être submergé par les responsabilités, besoin de "reprendre son souffle".
                     </p>
 </div>
 <!-- Dream 8 -->
@@ -306,11 +306,11 @@
                 </p>
 <h3>1. Notez tous les détails</h3>
 <p>
-                    Tenez un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> détaille. Notez non seulement le scenario, mais aussi vos <strong>émotions pendant le rêve</strong>, les couleurs, les personnages, le lieu...
+                    Tenez un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> détaille. Notez non seulement le scénario, mais aussi vos <strong>émotions pendant le rêve</strong>, les couleurs, les personnages, le lieu...
                 </p>
 <h3>2. Identifiez le contexte de vie</h3>
 <p>
-                    Quand ce rêve a-t-il commence ? Que se passait-il dans votre vie à ce moment-la ? Y a-t-il une corrélation avec des evenements stressants ?
+                    Quand ce rêve a-t-il commence ? Que se passait-il dans votre vie à ce moment-la ? Y a-t-il une corrélation avec des événements stressants ?
                 </p>
 <h3>3. Explorez les associations personnelles</h3>
 <p>
@@ -349,11 +349,11 @@
                 </p>
 <h3>L'écriture thérapeutique</h3>
 <p>
-                    Écrivez le rêve en détail, puis écrivez une <strong>version alternative</strong> ou vous prenez le contrôle. Relisez cette nouvelle version avant de dormir.
+                    Écrivez le rêve en détail, puis écrivez une <strong>version alternative</strong> où vous prenez le contrôle. Relisez cette nouvelle version avant de dormir.
                 </p>
 <h3>Traitez le problème sous-jacent</h3>
 <p>
-                    Le rêve cessera naturellement une fois que vous aurez <strong>résolu le conflit qu'il symbolise</strong>. Identifiez le problème dans votre vie éveille et agissez.
+                    Attendez-vous à ce que le rêve cesse naturellement une fois que vous aurez <strong>résolu le conflit qu'il symbolise</strong>. Identifiez le problème dans votre vie éveillée et agissez.
                 </p>
 <h3>La méditation et la relaxation</h3>
 <p>
@@ -366,7 +366,7 @@
 <ul>
 <li>Le rêve provoque une <strong>détresse significative</strong> au réveil</li>
 <li>Il perturbe votre qualité de sommeil de manière chronique</li>
-<li>Il est lie à un <strong>traumatisme connu</strong> (PTSD)</li>
+<li>Il est lié à un <strong>traumatisme connu</strong> (PTSD)</li>
 <li>Il s'accompagne d'autres symptômes (anxiété, dépression)</li>
 <li>Il ne s'améliore pas malgré vos efforts</li>
 </ul>
@@ -440,7 +440,7 @@
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
 <summary class="font-medium flex justify-between items-center text-dream-cream">
-                            Comment arrêter de faire le meme rêve ?
+                            Comment arrêter de faire le même rêve ?
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">

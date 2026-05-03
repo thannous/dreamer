@@ -113,7 +113,7 @@
                     Präkognitive Träume – auch prophetische Träume oder Vorahnungen genannt – sind Träume, die scheinbar <strong>zukünftige Ereignisse vorhersagen</strong>. Der Träumer erlebt etwas, das noch nicht geschehen ist, und später scheinen Elemente des Traums wahr zu werden.
                 </p>
 <p>
-                    Diese Erfahrung kommt bemerkenswert häufig vor. Umfragen zeigen immer wieder, dass <strong>40–60 % der Menschen</strong> angeben, mindestens einen Traum gehabt zu haben, von dem sie glauben, dass er die Zukunft vorhersagt. In allen Kulturen und im Laufe der Geschichte wurden prophetische Träume ernst genommen – vom biblischen Joseph, der die Träume des Pharaos interpretierte, bis hin zu Abraham Lincoln, der angeblich von seiner eigenen Ermordung träumte.
+                    Wie häufig ist diese Erfahrung? Umfragen zeigen immer wieder, dass <strong>40–60 % der Menschen</strong> angeben, mindestens einen Traum gehabt zu haben, von dem sie glauben, dass er die Zukunft vorhersagt. In allen Kulturen und im Laufe der Geschichte wurden prophetische Träume ernst genommen – vom biblischen Joseph, der die Träume des Pharaos interpretierte, bis hin zu Abraham Lincoln, der angeblich von seiner eigenen Ermordung träumte.
                 </p>
 <blockquote>
                     "Wir träumen vier- bis sechsmal pro Nacht und produzieren jedes Jahr Tausende von Träumen. Einige werden rein wahrscheinlich mit zukünftigen Ereignissen übereinstimmen. Die Frage ist, ob die Trefferquote den Zufall übersteigt." - Dr. Caroline Watt, Parapsychologieforscherin
@@ -198,14 +198,14 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="science">Was die Wissenschaft über präkognitive Träume sagt</h2>
 <p>
-                    Die wissenschaftliche Gemeinschaft steht echter Präkognition weiterhin weitgehend skeptisch gegenüber, aber die Untersuchung geht weiter. Hier ist der Stand der Forschung:
+                    Die meisten Wissenschaftler stehen echter Präkognition skeptisch gegenüber, doch die Untersuchung geht weiter. Hier ist der Stand der Forschung:
                 </p>
 <h3>Laborstudien zu prophetischen Träumen</h3>
 <p>
                     In mehreren Laborexperimenten wurde versucht, präkognitives Träumen unter kontrollierten Bedingungen zu testen. Die strengsten Studien, wie die von Stanley Krippner am Maimonides Medical Center <strong>Stanley Krippner at Maimonides Medical Center</strong>, zeigten statistisch signifikante Ergebnisse – Träumer schienen Bilder von Bildern, die ihnen nach dem Aufwachen gezeigt wurden, mit einer Häufigkeit einzubeziehen, die über dem Zufall lag.
                 </p>
 <p>
-                    Kritiker bemerken jedoch bei vielen Studien methodische Probleme. Die Replikation war inkonsistent, und Skeptiker argumentieren, dass <strong>Publikationsbias</strong> (nur positive Ergebnisse werden veröffentlicht) die offensichtlichen Beweise verzerrt.
+                    Kritiker bemerken bei vielen dieser Studien allerdings methodische Probleme. Die Replikation war inkonsistent, und Skeptiker argumentieren, dass <strong>Publikationsbias</strong> (nur positive Ergebnisse werden veröffentlicht) die offensichtlichen Beweise verzerrt.
                 </p>
 <h3>Das Zahlenproblem in der Traumvorhersageforschung</h3>
 <p>
@@ -279,7 +279,7 @@
                 </blockquote>
 <h3>Eine offene Frage in der Traumwissenschaft</h3>
 <p>
-                    Die ehrliche wissenschaftliche Antwort lautet: <strong>Wir wissen es nicht vollständig</strong>. Die Erfahrung präkognitiver Träume ist real und weit verbreitet. Ob tatsächlich eine Voraussicht vorliegt, bleibt unbewiesen, aber nicht endgültig widerlegt. Die Wissenschaft forscht weiter.
+                    Die ehrliche Antwort lautet: <strong>Wir wissen es nicht vollständig</strong>. Die Erfahrung präkognitiver Träume ist real und weit verbreitet. Ob tatsächlich eine Voraussicht vorliegt, bleibt unbewiesen, aber nicht endgültig widerlegt. Die Wissenschaft forscht weiter.
                 </p>
 <h2 id="tracking">So verfolgen Sie Ihre präkognitiven Träume genau</h2>
 <p>

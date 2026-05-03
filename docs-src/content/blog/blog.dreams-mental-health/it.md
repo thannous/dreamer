@@ -115,7 +115,7 @@
                     I sogni affascinano l'umanità da millenni, ma solo di recente la scienza ha iniziato a scoprire la loro profonda relazione con la salute mentale. Durante il <strong>sonno REM (Rapid Eye Movement)</strong>, quando si verificano i sogni più vividi, il cervello elabora le emozioni, consolida i ricordi e affronta le sfide psicologiche.
                 </p>
 <p>
-                    La connessione è bidirezionale: il tuo stato mentale influenza i tuoi sogni e comprendere i tuoi sogni può fornire informazioni sulla tua salute mentale. Una ricerca della Sleep Research Society mostra che le persone con problemi di salute mentale spesso sperimentano:
+                    Questa connessione funziona in entrambe le direzioni: il tuo stato mentale influenza i tuoi sogni, e comprendere i tuoi sogni può rivelare informazioni sulla tua salute mentale. Una ricerca della Sleep Research Society mostra che le persone con problemi di salute mentale spesso sperimentano:
                 </p>
 <ul>
 <li><strong>Incubi più frequenti:</strong> Fino a 4 volte più comuni in chi soffre di disturbi d'ansia</li>
@@ -165,7 +165,7 @@
 </ul>
 <h3>Anomalie del sonno REM</h3>
 <p>
-                    La depressione provoca cambiamenti misurabili nella struttura del sonno che influenzano il sogno:
+                    Cambiamenti misurabili nella struttura del sonno influenzano direttamente il sogno:
                 </p>
 <ul>
 <li><strong>Riduzione della latenza REM:</strong> Entrare nel sonno REM più velocemente del normale (spesso meno di 60 minuti)</li>
@@ -174,7 +174,7 @@
 <li><strong>Risveglio mattutino precoce:</strong> Risveglio durante o dopo periodi di sogni emotivi</li>
 </ul>
 <p>
-                    È interessante notare che queste anomalie REM sono così costanti che a volte vengono utilizzate come <strong>marcatori biologici</strong> nella diagnosi della depressione. Uno studio del 2022 pubblicato sul Journal of Affective Disorders ha rilevato che l'analisi dei modelli di sogno potrebbe prevedere episodi depressivi con una precisione del 78%.
+                    Queste anomalie REM sono così costanti che i clinici le utilizzano a volte come <strong>marcatori biologici</strong> nella diagnosi della depressione. Uno studio del 2022 pubblicato sul Journal of Affective Disorders ha rilevato che l'analisi dei modelli di sogno potrebbe prevedere episodi depressivi con una precisione del 78%.
                 </p>
 </div>
 <!-- Mental Health Cards -->
@@ -258,7 +258,7 @@
 </aside>
 <h2 id="therapeutic-use">Dream Therapy: usare i sogni nel trattamento della salute mentale</h2>
 <p>
-                    I professionisti della salute mentale riconoscono sempre più i sogni come preziosi strumenti terapeutici. Diversi approcci basati sull'evidenza utilizzano i sogni per facilitare la guarigione:
+                    I professionisti della salute mentale riconoscono sempre più i sogni come preziosi strumenti terapeutici. Diversi approcci basati sull'evidenza sfruttano i sogni per facilitare la guarigione:
                 </p>
 <h3>Imagery Rehearsal Therapy (IRT)</h3>
 <p>

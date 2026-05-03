@@ -70,7 +70,7 @@
                     Children's Dreams: What Kids Dream About and How to Help
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Your child wakes up crying, saying a monster chased them through a dark forest. Or they excitedly describe flying over a rainbow with their pet dog. Children's dreams are vivid, emotionally intense, and fundamentally different from adult dreams. Understanding how kids dream at every age gives you the tools to support them through nightmares and nurture a lifelong healthy relationship with sleep.
+                    Your child wakes up crying, saying a monster chased them through a dark forest. Or they excitedly describe flying over a rainbow with their pet dog. Children's dreams are vivid, emotionally intense, and different from adult dreams. Understanding how kids dream at every age gives you the tools to support them through nightmares and nurture a lifelong healthy relationship with sleep.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -153,7 +153,7 @@
 
 <h2 id="what-children-dream">What Do Children Dream About?</h2>
 <p>
-                    The content of children's dreams shifts dramatically as they grow. While adults often dream about work, relationships, and daily concerns, younger children inhabit a very different dreamscape, populated by the things that matter most in their world.
+                    What children dream about shifts dramatically as they grow. While adults often dream about work, relationships, and daily concerns, younger children inhabit a different dreamscape, populated by the things that matter most in their world.
                 </p>
 <h3>Ages 3-5: Animals and familiar settings</h3>
 <p>
@@ -192,10 +192,10 @@
 </ul>
 <h3>Night terrors: Deep sleep events</h3>
 <p>
-                    Night terrors are fundamentally different from nightmares. They occur during <strong>deep non-REM sleep</strong>, usually 1-3 hours after the child falls asleep. During a night terror, a child may scream, thrash, sit up with eyes wide open, or even walk around - but they are not truly awake and will have <strong>no memory of the episode</strong> the next morning. Night terrors peak between ages 3-8 and affect roughly 1-6% of children.
+                    Night terrors are different from nightmares. They occur during <strong>deep non-REM sleep</strong>, usually 1-3 hours after the child falls asleep. During a night terror, a child may scream, thrash, sit up with eyes wide open, or even walk around - but they are not truly awake and will have <strong>no memory of the episode</strong> the next morning. Night terrors peak between ages 3-8 and affect roughly 1-6% of children.
                 </p>
 <p>
-                    Night terrors are not caused by emotional disturbance. They happen when the brain has difficulty transitioning smoothly between deep sleep stages. Factors like sleep deprivation, irregular sleep schedules, and fever can trigger them. The most important thing parents can do during a night terror is <strong>stay calm and keep the child safe</strong> without trying to wake them, as waking a child during a night terror can increase confusion and prolong the episode. This is very different from <a class="text-dream-salmon hover:underline" href="sleep-paralysis-guide">sleep paralysis</a>, which occurs during REM transitions in older children and adults.
+                    Emotional disturbance does not cause night terrors. They happen when the brain has difficulty transitioning smoothly between deep sleep stages. Factors like sleep deprivation, irregular sleep schedules, and fever can trigger them. The most important thing parents can do during a night terror is <strong>stay calm and keep the child safe</strong> without trying to wake them, as waking a child during a night terror can increase confusion and prolong the episode. This is very different from <a class="text-dream-salmon hover:underline" href="sleep-paralysis-guide">sleep paralysis</a>, which occurs during REM transitions in older children and adults.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -272,7 +272,7 @@
 
 <h2 id="journaling-for-kids">Dream Journaling for Children</h2>
 <p>
-                    Dream journaling is not just for adults. Adapted to a child's age and abilities, it can become a powerful tool for emotional development, creativity, and self-awareness. The key is making it age-appropriate and fun - never a chore.
+                    Dream journaling works for children too, not just adults. Adapted to a child's age and abilities, it becomes a powerful tool for emotional development, creativity, and self-awareness. Make it age-appropriate and fun - never a chore.
                 </p>
 <h3>Ages 3-5: Drawing dreams</h3>
 <p>
@@ -284,7 +284,7 @@
                 </p>
 <h3>Ages 10+: Independent journaling</h3>
 <p>
-                    Older children and teens can maintain their own dream journals. This is especially valuable during pre-adolescence and adolescence, when dreams become more emotionally complex and can serve as a window into feelings the child might not express directly. Learning <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">how to remember dreams</a> becomes increasingly useful at this age.
+                    Older children and teens can maintain their own dream journals. This is especially valuable during pre-adolescence and adolescence, when dreams become more emotionally complex and can serve as a window into feelings the child might not express directly. Learning <a class="text-dream-salmon hover:underline" href="why-we-forget-dreams">how to remember dreams</a> becomes increasingly useful at this age.
                 </p>
 
 <h2 id="when-to-consult">When to Consult a Professional</h2>

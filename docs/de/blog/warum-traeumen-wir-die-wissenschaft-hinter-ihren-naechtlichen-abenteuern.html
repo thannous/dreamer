@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -194,24 +205,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/de/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/de/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/de/#so-funktioniert-es" class="hidden lg:inline-flex hover:text-white transition-colors">So funktioniert&#39;s</a>
-                <a href="/de/#funktionen" class="hidden lg:inline-flex hover:text-white transition-colors">Funktionen</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/de/blog/" class="text-dream-salmon transition-colors">Ressourcen</a>
                 <a href="/de/guides/" class="hover:text-white transition-colors">Traumratgeber</a>
                 <a href="/de/guides/traumsymbole-lexikon" class="hover:text-white transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Über uns</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">DE</span>
+                        <span>DE</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -236,6 +246,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/de/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressourcen</a>
+                <a href="/de/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumratgeber</a>
+                <a href="/de/guides/traumsymbole-lexikon" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Über uns</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/why-we-dream-science" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/pourquoi-nous-revons-science" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/por-que-sonamos-ciencia" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Deutsch</a>
+                    <a href="/it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -320,17 +350,17 @@
                     Menschen verbringen etwa <strong>sechs Jahre ihres Lebens mit Träumen</strong>. Trotz dieser enormen Investition an Zeit und neuronalen Ressourcen hat die Wissenschaft immer noch keine endgültige Antwort auf die Frage, warum Träume existieren. Was wir haben, sind mehrere überzeugende Theorien, die jeweils durch unterschiedliche Beweislinien gestützt werden.
                 </p>
 <p>
-                    Die wissenschaftliche Erforschung von Träumen beschleunigte sich dramatisch im Jahr 1953, als die Forscher Eugene Aserinsky und Nathaniel Kleitman entdeckten <strong>REM-Schlaf (Rapid Eye Movement)</strong>. Diese Entdeckung ergab, dass der Schlaf kein einheitlicher Zustand ist, sondern aus unterschiedlichen Phasen besteht, wobei <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> das lebhafteste Träumen auftritt.
+                    Die Traumforschung beschleunigte sich dramatisch im Jahr 1953, als die Forscher Eugene Aserinsky und Nathaniel Kleitman den <strong>REM-Schlaf (Rapid Eye Movement)</strong> entdeckten. Ihre Entdeckung ergab, dass der Schlaf kein einheitlicher Zustand ist, sondern aus unterschiedlichen Phasen besteht, wobei im <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> das lebhafteste Träumen auftritt.
                 </p>
 <blockquote>
                     „Der Traum ist die kleine verborgene Tür im tiefsten und intimsten Heiligtum der Seele.“ - Carl Jung
                 </blockquote>
 <p>
-                    Die moderne Neurowissenschaft ist über die Freudsche Psychoanalyse hinausgegangen und untersucht Träume mittels Bildgebung des Gehirns, Schlafstudien und Kognitionswissenschaft. Auch wenn wir vielleicht nie eine einzige einheitliche Theorie des Träumens haben werden, verstehen wir jetzt mehrere Funktionen, denen Träume wahrscheinlich dienen.
+                    Über die Freudsche Psychoanalyse hinaus untersucht die moderne Neurowissenschaft Träume mittels Bildgebung des Gehirns, Schlafstudien und Kognitionswissenschaft. Auch wenn wir vielleicht nie eine einzige einheitliche Theorie des Träumens haben werden, verstehen wir jetzt mehrere Funktionen, denen Träume wahrscheinlich dienen.
                 </p>
 <h2 id="activation-synthesis">Aktivierungs-Synthese-Theorie des Träumens</h2>
 <p>
-                    1977 wurde von den Psychiatern J. Allan Hobson und Robert McCarley die <strong>Aktivierungs-Synthese-Hypothese</strong> war eine der ersten modernen wissenschaftlichen Theorien zum Träumen.
+                    Die 1977 von den Psychiatern J. Allan Hobson und Robert McCarley vorgestellte <strong>Aktivierungs-Synthese-Hypothese</strong> war eine der ersten modernen wissenschaftlichen Theorien zum Träumen.
                 </p>
 <h3>Das Kernkonzept</h3>
 <p>
@@ -342,7 +372,7 @@
 <li><strong>Traumentstehung:</strong> Das Gehirn verwebt diese Signale zu einer Erzählung und erschafft so die bizarren Traumerlebnisse, an die wir uns erinnern.</li>
 </ol>
 <p>
-                    Stellen Sie sich das so vor, als würde Ihr Gehirn ein Improvisationsspiel spielen – gegebene zufällige neuronale „Eingabeaufforderungen“, Es entstehen spontan Geschichten. Dies erklärt, warum sich Träume oft unlogisch oder unmöglich anfühlen: <strong>Sie bestehen aus Rauschen und nicht aus kohärentem Input</strong>.
+                    Stellen Sie sich das so vor, als würde Ihr Gehirn ein Improvisationsspiel spielen – bei zufälligen neuronalen „Eingabeaufforderungen” entstehen spontan Geschichten. Dies erklärt, warum sich Träume oft unlogisch oder unmöglich anfühlen: <strong>Sie bestehen aus Rauschen und nicht aus kohärentem Input</strong>.
                 </p>
 <h3>Unterstützende Beweise</h3>
 <ul>
@@ -360,16 +390,16 @@
                 </p>
 <h3>So funktioniert es</h3>
 <p>
-                    Während des Schlafs spielen. Insbesondere <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>Ihr Gehirn:
+                    Während des Schlafs, insbesondere im <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>, vollbringt Ihr Gehirn Folgendes:
                 </p>
 <ul>
 <li><strong>Erlebt Erlebnisse noch einmal:</strong> Neuronale Muster des Tages werden reaktiviert und gestärkt</li>
 <li><strong>Integriert neue Informationen:</strong> Neue Erinnerungen werden mit bestehenden Wissensnetzwerken verbunden</li>
-<li><strong>Beschneidet irrelevant data:</strong> Unwichtige Informationen werden abgeschwächt oder verworfen</li>
+<li><strong>Bereinigt irrelevante Daten:</strong> Unwichtige Informationen werden abgeschwächt oder verworfen</li>
 <li><strong>Extrahiert Muster:</strong> Das Gehirn identifiziert Regeln und Gesetzmäßigkeiten aus Erfahrungen</li>
 </ul>
 <p>
-                    Träume können die <strong>bewusste Erfahrung dieser Erinnerung sein, die</strong> Einblicke Ihres Gehirns verarbeitet, indem es die Erlebnisse des Tages sortiert, sie entsprechend abordnet und neue Verbindungen herstellt.
+                    Träume können die <strong>bewusste Erfahrung dieser Gedächtnisverarbeitung</strong> sein: Ihr Gehirn sortiert die Erlebnisse des Tages, ordnet sie entsprechend ein und stellt neue Verbindungen her.
                 </p>
 <h3>Überzeugende Forschung</h3>
 <p>
@@ -538,7 +568,7 @@
 <ul>
 <li><strong>Ratten träumen über Labyrinthe:</strong> Hippocampusmuster im Schlaf stimmen mit der Labyrinthnavigation im Wachzustand überein</li>
 <li><strong>Hunde zucken im Traum:</strong> Motorische Aktivität deutet darauf hin, dass sie vom Laufen und Spielen träumen</li>
-<li><strong>Katzen in der REM-Phase:</strong> Mit deaktivierter Muskellähmung schleichen und stürzen sie sich darauf imaginäre Beute</li>
+<li><strong>Katzen in der REM-Phase:</strong> Mit deaktivierter Muskellähmung schleichen sie und stürzen sich auf imaginäre Beute</li>
 <li><strong>Singvögel proben:</strong> Junge Vögel üben im Schlaf Lieder und verbessern so ihre Leistung</li>
 </ul>
 <h3>Evolutionärer Druck</h3>
@@ -644,7 +674,7 @@
 <li>Warum tun manche? Menschen träumen in Farbe, während andere in Schwarz und Weiß?</li>
 </ul>
 <p>
-                    Das Geheimnis des Träumens bleibt eines der faszinierendsten Gebiete der Neurowissenschaften – eine nächtliche Erinnerung daran, dass das Bewusstsein immer noch Geheimnisse birgt, die wir gerade erst zu verstehen beginnen.
+                    Träumen bleibt eines der faszinierendsten Gebiete der Neurowissenschaften – eine nächtliche Erinnerung daran, dass das Bewusstsein immer noch Geheimnisse birgt, die wir gerade erst zu verstehen beginnen.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -773,7 +803,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/de/" class="flex items-center gap-2 mb-4">
@@ -850,8 +880,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Gemacht mit <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> für Träumer</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

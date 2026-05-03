@@ -116,7 +116,7 @@
                     Sie konzentrieren sich oft auf bekannte Symbole wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/fallen">Sturz</a>, wodurch die Botschaft noch nachhaltiger wirken kann.
                 </p>
 <p>
-                    Untersuchungen zeigen, dass diese Träume besonders häufig bei Menschen vorkommen, die sich in Stress- oder Übergangsphasen befinden. Eine Studie der <a href="https://pubmed.ncbi.nlm.nih.gov/35366719/" rel="nofollow noopener noreferrer" target="_blank">Universität von Montreal (2022)</a> hat ergeben, dass <strong>75 % der wiederkehrenden Träume einen negativen Ton haben</strong>, oft mit Angst, Frustration oder Hilflosigkeit verbunden.
+                    Besonders häufig treten diese Träume bei Menschen in Stress- oder Übergangsphasen auf. Eine Studie der <a href="https://pubmed.ncbi.nlm.nih.gov/35366719/" rel="nofollow noopener noreferrer" target="_blank">Universität von Montreal (2022)</a> hat ergeben, dass <strong>75 % der wiederkehrenden Träume einen negativen Ton haben</strong>, oft mit Angst, Frustration oder Hilflosigkeit verbunden.
                 </p>
 <blockquote>
                     "Wiederkehrende Träume sind wie eine Botschaft Dein Unterbewusstsein sendet dir immer wieder Signale, bis du zuhörst." - Dr. Deirdre Barrett, Harvard Medical School
@@ -127,11 +127,11 @@
                 </p>
 <h3>1. Ungelöste Traumata und wiederkehrende Träume</h3>
 <p>
-                    Das Gehirn nutzt Träume, um <strong>emotional aufgeladene Erfahrungen zu verarbeiten</strong>. Wenn ein Trauma nicht vollständig integriert wird, „spielt“ sich der Geist erneut ab. Ich hoffe, das Problem beheben zu können.
+                    Ihr Gehirn nutzt Träume, um <strong>emotional aufgeladene Erfahrungen zu verarbeiten</strong>. Wird ein Trauma nicht vollständig integriert, spielt der Geist es erneut ab - in der Hoffnung, es verarbeiten zu können.
                 </p>
 <h3>2. Chronischer Stress führt zu wiederkehrenden Träumen</h3>
 <p>
-                    Täglicher Stress – Arbeit, Beziehungen, Finanzen – manifestiert sich oft durch sich wiederholende Traumszenarien. Der Traum wird zum <a class="text-dream-salmon hover:underline" href="../traumsymbole/spiegel">Spiegel</a> unserer bewussten und unbewussten Sorgen.
+                    Arbeit, Beziehungen, Finanzen - täglicher Stress manifestiert sich oft durch sich wiederholende Traumszenarien. Der Traum wird zum <a class="text-dream-salmon hover:underline" href="../traumsymbole/spiegel">Spiegel</a> unserer bewussten und unbewussten Sorgen.
                 </p>
 <h3>3. Innere Konflikte, die sich in Träumen manifestieren</h3>
 <p>
@@ -353,7 +353,7 @@
                 </p>
 <h3>Sprechen Sie das zugrunde liegende Problem hinter Ihrem Traum</h3>
 <p>
-                    Der Traum wird natürlich aufhören, sobald Sie <strong>den Konflikt gelöst haben, den er symbolisiert</strong>. Identifizieren Sie das Problem in Ihrem Wachleben und ergreifen Sie Maßnahmen.
+                    Erwarten Sie, dass der Traum aufhört, sobald Sie <strong>den Konflikt gelöst haben, den er symbolisiert</strong>. Identifizieren Sie das Problem in Ihrem Wachleben und ergreifen Sie Maßnahmen.
                 </p>
 <h3>Meditation und Entspannung zur Reduzierung wiederkehrender Träume</h3>
 <p>

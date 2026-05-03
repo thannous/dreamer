@@ -153,7 +153,7 @@
 
 <h2 id="what-children-dream">Wovon träumen Kinder?</h2>
 <p>
-                    Der Inhalt von Kinderträumen verändert sich mit dem Wachstum dramatisch. Während Erwachsene oft von Arbeit, Beziehungen und Alltagssorgen träumen, bewohnen jüngere Kinder eine ganz andere Traumlandschaft, bevölkert von dem, was in ihrer Welt am wichtigsten ist.
+                    Wovon Kinder träumen, verändert sich mit dem Wachstum dramatisch. Während Erwachsene oft von Arbeit, Beziehungen und Alltagssorgen träumen, bewohnen jüngere Kinder eine andere Traumlandschaft, bevölkert von dem, was in ihrer Welt am wichtigsten ist.
                 </p>
 <h3>3-5 Jahre: Tiere und vertraute Umgebungen</h3>
 <p>
@@ -195,7 +195,7 @@
                     Nachtschreck unterscheidet sich grundlegend von Albträumen. Er tritt während des <strong>tiefen Nicht-REM-Schlafs</strong> auf, gewöhnlich 1-3 Stunden nach dem Einschlafen. Während einer Nachtschreck-Episode kann ein Kind schreien, sich heftig bewegen, mit weit geöffneten Augen aufsitzen oder sogar umhergehen - ist aber nicht wirklich wach und wird am nächsten Morgen <strong>keine Erinnerung an das Ereignis</strong> haben. Nachtschreck erreicht seinen Höhepunkt zwischen 3 und 8 Jahren und betrifft etwa 1-6 % der Kinder.
                 </p>
 <p>
-                    Nachtschreck wird nicht durch emotionale Störungen verursacht. Er entsteht, wenn das Gehirn Schwierigkeiten hat, reibungslos zwischen den Tiefschlafstadien zu wechseln. Schlafmangel, unregelmäßige Schlafzeiten und Fieber können ihn auslösen. Das Wichtigste, was Eltern während einer Nachtschreck-Episode tun können, ist, <strong>ruhig zu bleiben und das Kind in Sicherheit zu halten</strong>, ohne es zu wecken. Dies unterscheidet sich deutlich von der <a class="text-dream-salmon hover:underline" href="schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen">Schlaflähmung</a>, die bei REM-Übergängen bei älteren Kindern und Erwachsenen auftritt.
+                    Emotionale Störungen verursachen keinen Nachtschreck. Er entsteht, wenn das Gehirn Schwierigkeiten hat, reibungslos zwischen den Tiefschlafstadien zu wechseln. Schlafmangel, unregelmäßige Schlafzeiten und Fieber können ihn auslösen. Das Wichtigste, was Eltern während einer Nachtschreck-Episode tun können, ist, <strong>ruhig zu bleiben und das Kind in Sicherheit zu halten</strong>, ohne es zu wecken. Dies unterscheidet sich deutlich von der <a class="text-dream-salmon hover:underline" href="schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen">Schlaflähmung</a>, die bei REM-Übergängen bei älteren Kindern und Erwachsenen auftritt.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -272,7 +272,7 @@
 
 <h2 id="journaling-for-kids">Traumtagebuch für Kinder</h2>
 <p>
-                    Das Traumtagebuch ist nicht nur etwas für Erwachsene. An das Alter und die Fähigkeiten eines Kindes angepasst, kann es zu einem mächtigen Werkzeug für die emotionale Entwicklung, Kreativität und Selbstwahrnehmung werden. Der Schlüssel liegt darin, es altersgerecht und unterhaltsam zu gestalten - niemals als Pflicht.
+                    Ein Traumtagebuch funktioniert auch für Kinder, nicht nur für Erwachsene. An das Alter und die Fähigkeiten eines Kindes angepasst, wird es zu einem mächtigen Werkzeug für emotionale Entwicklung, Kreativität und Selbstwahrnehmung. Gestalten Sie es altersgerecht und unterhaltsam - niemals als Pflicht.
                 </p>
 <h3>3-5 Jahre: Träume zeichnen</h3>
 <p>

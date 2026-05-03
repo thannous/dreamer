@@ -65,7 +65,7 @@
                     Diario de sueños: recuerdo, métodos y rutinas
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    El <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> ayuda a recordar, estructurar y explorar tus sueños. Este hub reúne lo esencial: técnicas de recuerdo, bases del sueño REM, el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">significado de los símbolos de sueños comunes</a> y hábitos que facilitan la constancia.
+                    Llevar un <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> ayuda a recordar, estructurar y explorar tus sueños. Aquí encuentras lo esencial: técnicas de recuerdo, bases del sueño REM, el <a class="text-dream-salmon hover:underline" href="../guides/diccionario-simbolos-suenos">significado de los símbolos de sueños comunes</a> y hábitos que facilitan la constancia.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

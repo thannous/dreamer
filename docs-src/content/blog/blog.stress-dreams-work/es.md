@@ -31,7 +31,7 @@
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Sueños de estrés laboral: por qué tu trabajo te sigue al dormir\",\n            \"description\": \"Comprende por qué sueñas con el trabajo, la ciencia detrás de los sueños de estrés laboral y estrategias probadas para recuperar tus noches.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stress-dreams-work.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-03-05\",\n            \"dateModified\": \"2026-03-05\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"url\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\"\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\",\n    \"url\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\",\n    \"name\": \"Sueños de estrés laboral: causas y soluciones | Noctalia\",\n    \"inLanguage\": \"es\",\n    \"reviewedBy\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n    }\n}",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Por qué sigo soñando con el trabajo?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Soñar con el trabajo es extremadamente común y generalmente está vinculado al estrés no procesado, conflictos sin resolver o una alta inversión emocional en tu empleo. Tu cerebro utiliza el sueño REM para procesar los eventos del día, y el trabajo ocupa una parte significativa de las horas de vigilia. La teoría de la simulación de amenazas sugiere que tu mente ensaya escenarios laborales desafiantes durante el sueño como forma de preparación.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Son normales los sueños de estrés laboral?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, los sueños de estrés laboral son muy normales. Los estudios muestran que hasta el 65 % de los adultos reportan soñar con el trabajo al menos una vez por semana. Estos sueños suelen aumentar durante periodos de alta presión como plazos de entrega, evaluaciones de rendimiento o transiciones laborales. Solo se convierten en una preocupación cuando alteran constantemente la calidad del sueño o causan malestar durante el día.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Pueden los sueños de trabajo indicar burnout?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, los sueños frecuentes e intensos relacionados con el trabajo pueden ser una señal de alerta temprana de burnout. Cuando el trabajo invade tu sueño cada noche, tu cerebro está señalando que no puede desconectarse completamente del estrés profesional. Otros indicadores de burnout junto con los sueños laborales incluyen agotamiento emocional al despertar, temor a la jornada laboral y síntomas físicos como dolores de cabeza o tensión muscular.\" } }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Por qué sigo soñando con el trabajo?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Soñar con el trabajo es extremadamente común y generalmente está vinculado al estrés no procesado, conflictos sin resolver o una alta inversión emocional en tu empleo. Tu cerebro utiliza el sueño REM para procesar los eventos del día, y el trabajo ocupa una parte significativa de las horas de vigilia. La teoría de la simulación de amenazas sugiere que tu mente ensaya escenarios laborales desafiantes durante el sueño como forma de preparación.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Son normales los sueños de estrés laboral?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, los sueños de estrés laboral son muy normales. Los estudios muestran que hasta el 65 % de los adultos reportan soñar con el trabajo al menos una vez por semana. Estos sueños suelen aumentar durante periodos de alta presión como plazos de entrega, evaluaciones de rendimiento o transiciones laborales. Solo se convierten en una preocupación cuando alteran constantemente la calidad del sueño o causan malestar durante el día.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Pueden los sueños de trabajo indicar burnout?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, los sueños frecuentes e intensos relacionados con el trabajo pueden ser una señal de alerta temprana de burnout. ¿Cuándo el trabajo invade tu sueño cada noche, tu cerebro está señalando que no puede desconectarse completamente del estrés profesional. Otros indicadores de burnout junto con los sueños laborales incluyen agotamiento emocional al despertar, temor a la jornada laboral y síntomas físicos como dolores de cabeza o tensión muscular.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Inicio\", \"item\": \"https://noctalia.app/es/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Recursos\", \"item\": \"https://noctalia.app/es/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Sueños de estrés laboral\", \"item\": \"https://noctalia.app/es/blog/suenos-estres-trabajo\" }\n            ]\n        }"
   ],
   "activeNav": "resources"
@@ -70,7 +70,7 @@
                     Sueños de estrés laboral: por qué tu trabajo te sigue al dormir
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Por fin cierras el portátil, te metes en la cama y te quedas dormido, solo para encontrarte de vuelta en la oficina, sin preparar una reunión que empezó hace cinco minutos. Los sueños de estrés laboral están entre los más comunes en adultos. Esto es lo que los provoca y lo que puedes hacer al respecto.
+                    Por fin cierras el portátil, te metes en la cama y te quedas dormido, solo para encontrarte de vuelta en la oficina, sin preparar una reunión que empezó hace cinco minutos. ¿Los sueños de estrés laboral están entre los más comunes en adultos. Esto es lo que los provoca y lo que puedes hacer al respecto.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta rápida</h2>
-<p class="text-purple-100/80 leading-relaxed">Los sueños de estrés laboral ocurren porque tu cerebro utiliza el sueño REM para procesar las tensiones profesionales no resueltas. Los niveles elevados de cortisol, la teoría de la simulación de amenazas y la carga emocional del día contribuyen a este fenómeno. Una higiene del sueño constante, una rutina de desconexión y el diario de sueños pueden reducir significativamente su frecuencia.</p>
+<p class="text-purple-100/80 leading-relaxed">¿Los sueños de estrés laboral ocurren porque tu cerebro utiliza el sueño REM para procesar las tensiones profesionales no resueltas. Los niveles elevados de cortisol, la teoría de la simulación de amenazas y la carga emocional del día contribuyen a este fenómeno. Una higiene del sueño constante, una rutina de desconexión y el diario de sueños pueden reducir significativamente su frecuencia.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -115,7 +115,7 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#why-work-invades">1. Por qué el trabajo invade tus sueños</a></li>
-<li><a class="toc-link block" href="#common-scenarios">2. Los sueños de estrés laboral más comunes</a></li>
+<li><a class="toc-link block" href="#common-scenarios">2. ¿Los sueños de estrés laboral más comunes</a></li>
 <li><a class="toc-link block" href="#science">3. La ciencia detrás de los sueños de estrés laboral</a></li>
 <li><a class="toc-link block" href="#what-telling-you">4. Qué te dicen tus sueños de trabajo</a></li>
 <li><a class="toc-link block" href="#how-to-stop">5. Cómo dejar de soñar con el trabajo</a></li>
@@ -130,7 +130,7 @@
                     Pasas aproximadamente un tercio de tu vida despierto en el trabajo. Son miles de horas de interacciones sociales, plazos de entrega, presión por el rendimiento y desgaste emocional, todo lo cual tu cerebro necesita procesar. Durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, tu mente reproduce y reorganiza las experiencias más cargadas emocionalmente del día, y para la mayoría de los adultos, el trabajo encabeza esa lista.
                 </p>
 <p>
-                    El fenómeno no es aleatorio. Investigaciones de la Asociación Americana de Psicología muestran que <strong>el trabajo es la principal fuente de estrés</strong> para los adultos en la mayoría de los países desarrollados. Cuando las hormonas del estrés como el cortisol permanecen elevadas a la hora de acostarse, influyen directamente en el contenido de los sueños, arrastrando tu mente de vuelta a la oficina incluso mientras tu cuerpo descansa.
+                    Nada de esto es aleatorio. Investigaciones de la Asociación Americana de Psicología muestran que <strong>el trabajo es la principal fuente de estres</strong> para los adultos en la mayoría de los paises desarrollados. ¿Cuándo las hormonas del estrés como el cortisol permanecen elevadas a la hora de acostarse, influyen directamente en el contenido de los sueños, arrastrando tu mente de vuelta a la oficina incluso mientras tu cuerpo descansa.
                 </p>
 <p>
                     Varios factores hacen que el trabajo sea especialmente "pegajoso" para el cerebro soñador:
@@ -141,7 +141,7 @@
 <li><strong>Complejidad social:</strong> Las relaciones laborales implican dinámicas de poder, competencia y colaboración, un material rico para la simulación onírica</li>
 <li><strong>Ansiedad de rendimiento:</strong> La presión constante por obtener resultados activa circuitos de detección de amenazas que persisten durante el sueño</li>
 </ul>
-<h2 id="common-scenarios">Los sueños de estrés laboral más comunes</h2>
+<h2 id="common-scenarios">¿Los sueños de estrés laboral más comunes</h2>
 <p>
                     Aunque la experiencia de cada soñador es única, ciertos escenarios laborales aparecen con una consistencia llamativa en todas las culturas y profesiones. Reconocer los tuyos puede ser el primer paso para comprender el estrés subyacente. Muchos de ellos se superponen con <a class="text-dream-salmon hover:underline" href="significado-suenos-recurrentes">patrones de sueños recurrentes</a> bien conocidos.
                 </p>
@@ -155,7 +155,7 @@
                 </p>
 <h3>Ser despedido o degradado</h3>
 <p>
-                    Tu jefe te llama y sabes lo que viene. Los sueños de pérdida de empleo no necesariamente predicen un despido real: suelen reflejar <strong>inseguridad sobre tu posición</strong> o miedo a perder la estabilidad económica.
+                    Tu jefe te llama y sabes lo que viene. ¿Los sueños de pérdida de empleo no necesariamente predicen un despido real: suelen reflejar <strong>inseguridad sobre tu posición</strong> o miedo a perder la estabilidad económica.
                 </p>
 <h3>Tareas infinitas y bandeja de entrada desbordada</h3>
 <p>
@@ -163,7 +163,7 @@
                 </p>
 <h3>Hablar en público y que salga mal</h3>
 <p>
-                    Tu voz desaparece, tu audiencia se ríe o el micrófono se rompe. Los sueños de hablar en público son variaciones de los <a class="text-dream-salmon hover:underline" href="../simbolos/caida">sueños de caer</a>: representan <strong>vulnerabilidad y miedo al juicio</strong> de los demás.
+                    Tu voz desaparece, tu audiencia se ríe o el micrófono se rompe. ¿Los sueños de hablar en público son variaciones de los <a class="text-dream-salmon hover:underline" href="../simbolos/caida">sueños de caer</a>: representan <strong>vulnerabilidad y miedo al juicio</strong> de los demás.
                 </p>
 <h2 id="science">La ciencia detrás de los sueños de estrés laboral</h2>
 <p>
@@ -171,7 +171,7 @@
                 </p>
 <h3>El cortisol y el ciclo estrés-sueño</h3>
 <p>
-                    Cuando sufres estrés crónico en el trabajo, tu eje hipotalámico-pituitario-adrenal (HPA) permanece activado, manteniendo elevados los niveles de cortisol. Investigaciones publicadas en <em>Psychoneuroendocrinology</em> demuestran que <strong>el cortisol elevado por la noche se correlaciona directamente con el contenido negativo de los sueños</strong>. Tu cerebro se empapa literalmente de química del estrés mientras duermes.
+                    ¿Cuándo sufres estrés crónico en el trabajo, tu eje hipotalámico-pituitario-adrenal (HPA) permanece activado, manteniendo elevados los niveles de cortisol. Investigaciones publicadas en <em>Psychoneuroendocrinology</em> demuestran que <strong>el cortisol elevado por la noche se correlaciona directamente con el contenido negativo de los sueños</strong>. Tu cerebro se empapa literalmente de química del estrés mientras duermes.
                 </p>
 <h3>Sueño REM y procesamiento emocional</h3>
 <p>
@@ -183,7 +183,7 @@
                 </p>
 <h3>La hipótesis de la continuidad</h3>
 <p>
-                    La hipótesis de la continuidad del sueño establece que los sueños reflejan las preocupaciones de la vigilia. Un estudio de 2023 en la revista <em>Sleep</em> encontró que <strong>los participantes que reportaban alto estrés laboral tenían 3,2 veces más probabilidades de soñar con el trabajo</strong> que aquellos con bajos niveles de estrés, una relación casi lineal entre la preocupación diurna y el contenido onírico nocturno.
+                    Según la hipotesis de la continuidad del sueño, los sueños reflejan las preocupaciones de la vigilia. Un estudio de 2023 en la revista <em>Sleep</em> encontró que <strong>los participantes que reportaban alto estrés laboral tenían 3,2 veces más probabilidades de soñar con el trabajo</strong> que aquellos con bajos niveles de estrés, una relación casi lineal entre la preocupación diurna y el contenido onírico nocturno.
                 </p>
 </div>
 <!-- Work Dream Cards -->
@@ -216,7 +216,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="what-telling-you">Qué te dicen tus sueños de trabajo</h2>
 <p>
-                    Los sueños de estrés laboral no son ruido aleatorio: llevan mensajes específicos sobre tu estado psicológico. Aprender a descifrarlos puede proporcionarte información valiosa sobre lo que necesita cambiar en tu vida diurna.
+                    ¿Los sueños de estrés laboral no son ruido aleatorio: llevan mensajes específicos sobre tu estado psicológico. Aprender a descifrarlos puede proporcionarte información valiosa sobre lo que necesita cambiar en tu vida diurna.
                 </p>
 <h3>Señales de advertencia de burnout</h3>
 <p>
@@ -282,7 +282,7 @@
                 </p>
 <h3>Señales de alarma a vigilar</h3>
 <ul>
-<li><strong>Ocurrencia nocturna:</strong> Soñar con el trabajo cada noche durante más de dos semanas seguidas</li>
+<li><strong>Ocurrencia nocturna:</strong> ¿Soñar con el trabajo cada noche durante más de dos semanas seguidas</li>
 <li><strong>Evitación del sueño:</strong> Quedarte despierto hasta tarde para evitar las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> laborales</li>
 <li><strong>Temor matutino:</strong> Despertar de sueños laborales con síntomas físicos (corazón acelerado, náuseas, sudoración)</li>
 <li><strong>Flashbacks diurnos:</strong> Escenas de sueños laborales que irrumpen en tus pensamientos durante la vigilia</li>
@@ -335,7 +335,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Soñar con el trabajo es extremadamente común y generalmente está vinculado al estrés no procesado, conflictos sin resolver o una alta inversión emocional en tu empleo. Tu cerebro utiliza el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> para procesar los eventos del día, y el trabajo ocupa una parte significativa de las horas de vigilia. La teoría de la simulación de amenazas sugiere que tu mente ensaya escenarios laborales desafiantes durante el sueño como forma de preparación.
+                            ¿Soñar con el trabajo es extremadamente común y generalmente está vinculado al estrés no procesado, conflictos sin resolver o una alta inversión emocional en tu empleo. Tu cerebro utiliza el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> para procesar los eventos del día, y el trabajo ocupa una parte significativa de las horas de vigilia. La teoría de la simulación de amenazas sugiere que tu mente ensaya escenarios laborales desafiantes durante el sueño como forma de preparación.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">

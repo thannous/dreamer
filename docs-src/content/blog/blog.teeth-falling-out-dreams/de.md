@@ -199,19 +199,19 @@
                 </p>
 <h3>1. Angst vor dem Aussehen</h3>
 <p>
-                    Zähne sind von zentraler Bedeutung für unser Lächeln und dafür, wie wir uns präsentieren. Träume, sie zu verlieren, spiegeln oft <strong>Bedenken hinsichtlich der Attraktivität</strong> oder wie andere uns sehen wider. Diese Interpretation ist besonders relevant, wenn Sie Veränderungen durchmachen, die sich auf Ihr Aussehen oder Ihr Selbstbild auswirken.
+                    Unsere Zähne sind zentral für unser Lächeln und wie wir uns präsentieren. Sie in Träumen zu verlieren spiegelt oft <strong>Bedenken hinsichtlich der Attraktivität</strong> oder wie andere uns sehen wider. Besonders relevant ist diese Interpretation, wenn Sie Veränderungen durchmachen, die sich auf Ihr Aussehen oder Ihr Selbstbild auswirken.
                 </p>
 <h3>2. Angst vor dem Altern</h3>
 <p>
-                    Zähne zu verlieren ist ein natürlicher Teil des Alterns, weshalb dieser Traum weit verbreitet ist unter denen <strong>Angst vor dem Älterwerden</strong>. Meilensteingeburtstage, körperliche Veränderungen oder das Beobachten des Alterns der Eltern können diese Träume auslösen.
+                    Zähne zu verlieren ist ein natürlicher Teil des Alterns, weshalb dieser Traum unter Menschen mit <strong>Angst vor dem Älterwerden</strong> weit verbreitet ist. Meilensteingeburtstage, körperliche Veränderungen oder das Beobachten des Alterns der Eltern können diese Träume auslösen.
                 </p>
 <h3>3. Verlust von Macht oder Kontrolle</h3>
 <p>
-                    Zähne stehen für Stärke – wir nutzen sie, um zu beißen, zu reißen und uns durchzusetzen. Wenn sie in Träumen auseinanderfallen, symbolisiert das oft das Gefühl, in einer Situation machtlos zu sein. Stehen Sie vor etwas, bei dem Sie das Gefühl haben, keine Kontrolle zu haben? <strong>feeling powerless</strong> in a situation. Are you facing something where you feel you have no control?
+                    Zähne stehen für Stärke - wir nutzen sie, um zu beißen, zu reißen und uns durchzusetzen. Wenn sie in Träumen ausfallen, symbolisiert das oft <strong>das Gefühl der Machtlosigkeit</strong> in einer Situation. Fragen Sie sich: Stehen Sie vor etwas, bei dem Sie keine Kontrolle haben?
                 </p>
 <h3>4. Kommunikationsprobleme</h3>
 <p>
-                    Wir brauchen Zähne, um klar sprechen zu können. Dieser Traum kann darauf hindeuten, dass Sie Schwierigkeiten haben, sich auszudrücken <strong></strong> - vielleicht halten Sie sich mit Worten zurück, haben Schwierigkeiten mit der Kommunikation oder haben Angst, das Falsche zu sagen.
+                    Wir brauchen Zähne, um klar sprechen zu können. Dieser Traum kann auf <strong>Schwierigkeiten, sich auszudrücken</strong> hindeuten - vielleicht halten Sie sich mit Worten zurück, haben Schwierigkeiten mit der Kommunikation oder haben Angst, das Falsche zu sagen.
                 </p>
 <h3>5. Wichtige Übergänge im Leben</h3>
 <p>
@@ -219,11 +219,11 @@
                 </p>
 <h3>6. Finanzielle Bedenken</h3>
 <p>
-                    In manchen Interpretationen stellen Zähne Reichtum dar (denken Sie an „<a class="text-dream-salmon hover:underline" href="../traumsymbole/geld">Geld</a> dorthin stecken, wo Ihr Mund ist“). Träume vom Zahnverlust können ein Ausdruck finanzieller Ängste <strong>financial anxiety</strong> oder der Angst vor dem Verlust der materiellen Sicherheit sein.
+                    In manchen Interpretationen stellen Zähne Reichtum dar (denken Sie an „<a class="text-dream-salmon hover:underline" href="../traumsymbole/geld">Geld</a> dorthin stecken, wo Ihr Mund ist”). Träume vom Zahnverlust können <strong>finanzielle Ängste</strong> oder die Angst vor dem Verlust der materiellen Sicherheit widerspiegeln.
                 </p>
 <h3>7. Gesundheitsangst</h3>
 <p>
-                    Manchmal trifft die einfachste Erklärung zu: Sie machen sich Sorgen um Ihre Gesundheit <strong>worried about your health</strong>. Dabei kann es sich speziell um die Zahngesundheit oder allgemeine Bedenken hinsichtlich des körperlichen Wohlbefindens handeln.
+                    Manchmal trifft die einfachste Erklärung zu: Sie <strong>machen sich Sorgen um Ihre Gesundheit</strong>. Dabei kann es sich speziell um die Zahngesundheit oder allgemeine Bedenken hinsichtlich des körperlichen Wohlbefindens handeln.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">

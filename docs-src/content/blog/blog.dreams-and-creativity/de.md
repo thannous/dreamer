@@ -70,7 +70,7 @@
                     Träume und Kreativität: Wie Ihr schlafendes Gehirn Probleme löst
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Einige der größten Durchbrüche der Geschichte wurden nicht in Laboren oder Ateliers geboren, sondern in Träumen. Von der Struktur des Benzols bis zur Melodie von „Yesterday" hat sich der schlafende Geist als kraftvoller kreativer Motor erwiesen. So entfesselt Ihr Gehirn im Schlaf außergewöhnliche Kreativität – und so können Sie sie nutzen.
+                    Einige der größten Durchbrüche der Geschichte entstanden nicht in Laboren oder Ateliers, sondern in Träumen. Von der Struktur des Benzols bis zur Melodie von „Yesterday" hat sich der schlafende Geist als kraftvoller kreativer Motor erwiesen. So entfesselt Ihr Gehirn im Schlaf außergewöhnliche Kreativität, und so können Sie sie nutzen.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -109,20 +109,20 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="how-dreams-unlock">Wie Träume kreatives Denken freisetzen</h2>
 <p>
-                    Wenn Sie einschlafen, geschieht etwas Bemerkenswertes in Ihrem Gehirn. Der präfrontale Kortex – die Region, die für Logik, Selbstzensur und lineares Denken zuständig ist – wird deutlich ruhiger. Gleichzeitig werden Amygdala, Hippocampus und visueller Kortex hochaktiv. Diese neurologische Verschiebung schafft einen mentalen Spielplatz, auf dem Ideen aufeinanderprallen können, ohne dass die üblichen Wächter der Rationalität sagen: „Das ergibt keinen Sinn."
+                    Wenn Sie einschlafen, geschieht etwas Bemerkenswertes in Ihrem Gehirn. Der präfrontale Kortex, zuständig für Logik, Selbstzensur und lineares Denken, wird deutlich ruhiger. Gleichzeitig werden Amygdala, Hippocampus und visueller Kortex hochaktiv. Diese neurologische Verschiebung schafft einen mentalen Spielplatz, auf dem Ideen aufeinanderprallen können, ohne dass die üblichen Wächter der Rationalität sagen: „Das ergibt keinen Sinn."
                 </p>
 <p>
-                    Während des <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlafs</a> tritt Ihr Gehirn in einen Zustand ein, den Neurowissenschaftler als „hyperassoziativ" beschreiben. Es zieht Fragmente aus verschiedenen Erinnerungen, Emotionen und Sinneserfahrungen zusammen und verwebt sie zu Kombinationen, die Ihr wacher Verstand niemals versuchen würde. Eine Kindheitserinnerung an das Meer könnte mit einem Arbeitsproblem und einem Lied verschmelzen, das Sie im Radio gehört haben, und eine völlig neuartige Idee hervorbringen, die sich zugleich seltsam und tiefgründig anfühlt.
+                    Im <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> tritt Ihr Gehirn in einen Zustand ein, den Neurowissenschaftler als „hyperassoziativ" beschreiben. Es zieht Fragmente aus verschiedenen Erinnerungen, Emotionen und Sinneserfahrungen zusammen und verwebt sie zu Kombinationen, die Ihr wacher Verstand niemals versuchen würde. Eine Kindheitserinnerung an das Meer könnte mit einem Arbeitsproblem und einem Lied verschmelzen, das Sie im Radio gehört haben. Das Ergebnis: eine völlig neuartige Idee, die sich zugleich seltsam und tiefgründig anfühlt.
                 </p>
 <p>
-                    Dies ist keine zufällige Fehlfunktion. Die Evolution scheint das Träumen als kognitive Sandbox entworfen zu haben – einen Raum, in dem das Gehirn neue Muster testen, unbekannte Szenarien durchspielen und Verbindungen zwischen scheinbar unzusammenhängenden Konzepten herstellen kann. Die reduzierte Hemmung des träumenden Gehirns ist genau das, was es so kreativ leistungsfähig macht.
+                    Das ist keine zufällige Fehlfunktion. Alles deutet darauf hin, dass die Evolution das Träumen als kognitive Sandbox entworfen hat: einen Raum, in dem das Gehirn neue Muster testen, unbekannte Szenarien durchspielen und Verbindungen zwischen scheinbar unzusammenhängenden Konzepten herstellen kann. Genau diese reduzierte Hemmung macht das träumende Gehirn so kreativ leistungsfähig.
                 </p>
 <p>
-                    Psychologen nennen diesen Prozess „divergentes Denken" – die Fähigkeit, mehrere Lösungen für ein offenes Problem zu generieren. Studien zeigen durchweg, dass der REM-Schlaf das divergente Denken weit mehr fördert als ruhige Ruhe oder Nicht-REM-Schlaf. Ihr träumendes Gehirn ist im wahrsten Sinne des Wortes für kreative Durchbrüche gebaut.
+                    Psychologen nennen diesen Prozess „divergentes Denken": die Fähigkeit, mehrere Lösungen für ein offenes Problem zu generieren. Studien zeigen durchweg, dass REM-Schlaf das divergente Denken weit stärker fördert als ruhige Ruhe oder Nicht-REM-Schlaf. Ihr träumendes Gehirn ist im wahrsten Sinne des Wortes für kreative Durchbrüche gebaut.
                 </p>
 <h2 id="famous-discoveries">Berühmte Entdeckungen und Kunstwerke, die in Träumen entstanden</h2>
 <p>
-                    Die Geschichte ist voll von gut dokumentierten Fällen, in denen Träume tiefgreifende kreative Leistungen ausgelöst haben. Es handelt sich nicht um Mythen – sie stammen von den Erfindern und Künstlern selbst, festgehalten in Briefen, Interviews und Autobiografien.
+                    Gut dokumentierte Fälle zeigen, dass Träume tiefgreifende kreative Leistungen ausgelöst haben. Es handelt sich nicht um Mythen: Die Belege stammen von den Erfindern und Künstlern selbst, festgehalten in Briefen, Interviews und Autobiografien.
                 </p>
 <h3>August Kekulé und der Benzolring</h3>
 <p>
@@ -146,23 +146,23 @@
                 </p>
 <h2 id="science">Die Wissenschaft hinter der Traumkreativität</h2>
 <p>
-                    Die moderne Forschung ist über Anekdoten hinausgegangen und misst genau, wie Schlaf und Träume die kreative Kognition fördern. Die Ergebnisse sind beeindruckend.
+                    Moderne Forschung geht über Anekdoten hinaus und misst genau, wie Schlaf und Träume die kreative Kognition fördern. Die Ergebnisse sind beeindruckend.
                 </p>
 <h3>Die Wagner-Studie (2004): Schlaf fördert Einsicht</h3>
 <p>
-                    In einer wegweisenden Studie, veröffentlicht in <em>Nature</em>, gaben Ullrich Wagner und Kollegen an der Universität Lübeck Teilnehmern eine Mathematikaufgabe mit einer versteckten Abkürzung. Diejenigen, die acht Stunden schliefen, bevor sie die Aufgabe erneut versuchten, waren <strong>33 % wahrscheinlicher, die Abkürzung zu entdecken</strong>, als diejenigen, die im gleichen Zeitraum wach blieben. Die Forscher kamen zu dem Schluss, dass Schlaf – insbesondere der <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> – Gedächtnisrepräsentationen in einer Weise umstrukturiert, die Einsicht fördert.
+                    In einer wegweisenden Studie, veröffentlicht in <em>Nature</em>, gaben Ullrich Wagner und Kollegen an der Universität Lübeck Teilnehmern eine Mathematikaufgabe mit einer versteckten Abkürzung. Wer acht Stunden schlief, bevor er die Aufgabe erneut versuchte, war <strong>33 % wahrscheinlicher, die Abkürzung zu entdecken</strong>, als wer im gleichen Zeitraum wach blieb. Ergebnis: Schlaf, insbesondere der <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a>, strukturiert Gedächtnisrepräsentationen so um, dass Einsicht entsteht.
                 </p>
 <h3>Cai et al. (2009): REM-Schlaf und entfernte Assoziationen</h3>
 <p>
-                    Eine in den <em>Proceedings of the National Academy of Sciences</em> (PNAS) veröffentlichte Studie von Cai, Mednick und Kollegen zeigte, dass speziell der REM-Schlaf – nicht ruhiges Ruhen oder Nicht-REM-Schlaf – die Fähigkeit verbesserte, entfernte Assoziationen zwischen nicht verwandten Konzepten herzustellen. Teilnehmer, die REM-Nickerchen erlebten, zeigten eine <strong>40%ige Verbesserung</strong> bei kreativen Problemlösungsaufgaben im Vergleich zu Nicht-REM-Schläfern oder denen, die einfach ruhten.
+                    Cai, Mednick und Kollegen zeigten in den <em>Proceedings of the National Academy of Sciences</em> (PNAS), dass speziell der REM-Schlaf die Fähigkeit verbesserte, entfernte Assoziationen zwischen nicht verwandten Konzepten herzustellen. Ruhiges Ruhen oder Nicht-REM-Schlaf brachten diesen Effekt nicht. Teilnehmer, die REM-Nickerchen erlebten, erreichten eine <strong>40%ige Verbesserung</strong> bei kreativen Problemlösungsaufgaben.
                 </p>
 <h3>Gedächtnisumstrukturierung während des Schlafs</h3>
 <p>
-                    Forschungen vom MIT und Harvard haben gezeigt, dass der Hippocampus während des Schlafs kürzliche Erfahrungen erneut abspielt, während der Neokortex sie mit älteren Erinnerungen integriert. Dieser Prozess, genannt „Gedächtniskonsolidierung", speichert nicht nur Informationen – er reorganisiert sie aktiv, findet Muster und Zusammenhänge, die während der Wachstunden nicht offensichtlich waren. Es ist im Grunde so, als würde Ihr Gehirn jede Nacht einen Hintergrundoptimierungsprozess ausführen.
+                    Forschungen vom MIT und Harvard zeigen, dass der Hippocampus während des Schlafs kürzliche Erfahrungen erneut abspielt, während der Neokortex sie mit älteren Erinnerungen integriert. Dieser Prozess, die „Gedächtniskonsolidierung", speichert nicht nur Informationen, sondern reorganisiert sie aktiv. Er findet Muster und Zusammenhänge, die während der Wachstunden nicht offensichtlich waren. Stellen Sie sich vor, Ihr Gehirn führt jede Nacht einen Hintergrundoptimierungsprozess aus.
                 </p>
 <h3>Warum das träumende Gehirn einzigartig kreativ ist</h3>
 <p>
-                    Die Kombination aus präfrontaler Deaktivierung (weniger Selbstzensur), erhöhter Amygdala-Aktivität (verstärkte emotionale Assoziationen) und aktiver Gedächtniskonsolidierung erzeugt einen Gehirnzustand, der mit nichts vergleichbar ist, was im Wachzustand erreichbar wäre. Es ist, als hätte die Evolution eine nächtliche Brainstorming-Sitzung in Ihre Biologie eingebaut – eine, bei der die konservativste Stimme im Raum gebeten wurde, nach draußen zu gehen.
+                    Präfrontale Deaktivierung (weniger Selbstzensur), erhöhte Amygdala-Aktivität (stärkere emotionale Assoziationen) und aktive Gedächtniskonsolidierung erzeugen zusammen einen Gehirnzustand, der im Wachzustand unerreichbar ist. Es ist, als hätte die Evolution eine nächtliche Brainstorming-Sitzung in Ihre Biologie eingebaut, bei der die konservativste Stimme im Raum gebeten wurde, nach draußen zu gehen.
                 </p>
 </div>
 <!-- Creativity Dream Cards -->
@@ -195,7 +195,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="dream-incubation">Trauminkubation zur kreativen Problemlösung</h2>
 <p>
-                    Trauminkubation ist die Praxis, eine bestimmte Frage oder ein Problem vor dem Schlafengehen in Ihren Geist zu pflanzen, mit der Absicht, kreative Führung durch Ihre Träume zu erhalten. Weit davon entfernt, ein esoterisches Konzept zu sein, hat sie Wurzeln, die bis zu den antiken griechischen Tempeln zurückreichen – und moderne Forschungen der Harvard-Psychologin Deirdre Barrett bestätigen ihre Wirksamkeit.
+                    Bei der Trauminkubation pflanzen Sie vor dem Schlafengehen eine bestimmte Frage oder ein Problem in Ihren Geist, um kreative Führung durch Ihre Träume zu erhalten. Das ist kein esoterisches Konzept: Die Praxis reicht bis zu den antiken griechischen Tempeln zurück, und moderne Forschungen der Harvard-Psychologin Deirdre Barrett bestätigen ihre Wirksamkeit.
                 </p>
 <h3>Schritt-für-Schritt-Technik der Trauminkubation</h3>
 <ol>
@@ -210,23 +210,23 @@
                 </p>
 <h2 id="capture-insights">So fangen Sie kreative Traumerkenntnisse ein und nutzen sie</h2>
 <p>
-                    Der kreativste Traum der Welt ist wertlos, wenn er sich verflüchtigt, bevor Sie ihn festhalten können. Der durchschnittliche Mensch vergisst <strong>90 % seines Trauminhalts</strong> innerhalb von 10 Minuten nach dem Aufwachen. Das Einfangen kreativer Erkenntnisse aus Träumen erfordert sowohl die richtigen Werkzeuge als auch die richtigen Gewohnheiten.
+                    Selbst der kreativste Traum ist wertlos, wenn er sich verflüchtigt, bevor Sie ihn festhalten können. Wir vergessen <strong>90 % unserer Trauminhalte</strong> innerhalb von 10 Minuten nach dem Aufwachen. Kreative Erkenntnisse aus Träumen einzufangen erfordert die richtigen Werkzeuge und die richtigen Gewohnheiten.
                 </p>
 <h3>Sofort nach dem Aufwachen aufschreiben</h3>
 <p>
-                    Halten Sie ein Notizbuch oder Diktiergerät in Reichweite. Die ersten 60 Sekunden nach dem Aufwachen sind entscheidend – hier sind die Traumerinnerungen am lebhaftesten und am zerbrechlichsten. Schreiben oder sprechen Sie alles auf, woran Sie sich erinnern, egal wie fragmentarisch oder bizarr es erscheint. Details, die im Moment bedeutungslos wirken, offenbaren oft später ihre Bedeutung. Für bewährte Techniken zur Stärkung Ihrer Traumerinnerung lesen Sie unseren Leitfaden <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">So erinnern Sie sich an Ihre Träume</a>.
+                    Halten Sie ein Notizbuch oder Diktiergerät in Reichweite. Die ersten 60 Sekunden nach dem Aufwachen sind entscheidend: Traumerinnerungen sind jetzt am lebhaftesten und am zerbrechlichsten. Schreiben oder sprechen Sie alles auf, woran Sie sich erinnern, egal wie fragmentarisch oder bizarr es erscheint. Details, die im Moment bedeutungslos wirken, offenbaren oft später ihre Bedeutung. Bewährte Techniken zur Stärkung Ihrer Traumerinnerung finden Sie in unserem Leitfaden <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">So erinnern Sie sich an Ihre Träume</a>.
                 </p>
 <h3>Sprachaufnahmen für Schnelligkeit nutzen</h3>
 <p>
-                    Schreiben kann manchmal zu langsam sein, um einen verblassenden Traum festzuhalten. Sprachaufnahmen ermöglichen es Ihnen, in Gedankengeschwindigkeit zu sprechen und Details, Emotionen und Bilder zu bewahren, die möglicherweise verschwinden, während Sie nach einem Stift suchen. Viele kreative Fachleute nehmen ein Sprach-Memo auf, bevor ihre Füße den Boden berühren.
+                    Schreiben kann manchmal zu langsam sein, um einen verblassenden Traum festzuhalten. Mit Sprachaufnahmen sprechen Sie in Gedankengeschwindigkeit und bewahren Details, Emotionen und Bilder, die verschwinden könnten, während Sie nach einem Stift suchen. Viele kreative Fachleute nehmen ein Sprach-Memo auf, bevor ihre Füße den Boden berühren.
                 </p>
 <h3>Regelmäßig überprüfen und vergleichen</h3>
 <p>
-                    Kreative Traumerkenntnisse werden oft erst im Rückblick klar. Nehmen Sie sich wöchentlich Zeit, Ihr Traumtagebuch zu überprüfen und nach wiederkehrenden Themen, Symbolen und emotionalen Mustern zu suchen. Vergleichen Sie Ihre Träume mit Ihren aktuellen kreativen Projekten – die Verbindungen könnten Sie überraschen. Lesen Sie unseren <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch-Leitfaden</a> für eine vollständige Methodik zum Aufbau dieser Gewohnheit.
+                    Kreative Traumerkenntnisse werden oft erst im Rückblick klar. Nehmen Sie sich wöchentlich Zeit, Ihr Traumtagebuch zu überprüfen und nach wiederkehrenden Themen, Symbolen und emotionalen Mustern zu suchen. Vergleichen Sie Ihre Träume mit Ihren aktuellen kreativen Projekten: Die Verbindungen könnten Sie überraschen. Unser <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch-Leitfaden</a> bietet eine vollständige Methodik zum Aufbau dieser Gewohnheit.
                 </p>
 <h3>Eine „Traum-Ideenbank" anlegen</h3>
 <p>
-                    Führen Sie einen separaten Abschnitt in Ihrem Tagebuch speziell für kreative Ideen, die aus Träumen entstanden sind. Versehen Sie sie mit Tags nach Projekt oder Thema. Im Laufe der Zeit wird dies zu einem persönlichen Archiv kreativen Rohmaterials – einer Bibliothek der Inspiration, geschöpft aus dem fantasievollsten Teil Ihres Geistes.
+                    Reservieren Sie einen separaten Abschnitt in Ihrem Tagebuch für kreative Ideen aus Träumen. Versehen Sie sie mit Tags nach Projekt oder Thema. Im Laufe der Zeit entsteht so ein persönliches Archiv kreativen Rohmaterials, eine Bibliothek der Inspiration aus dem fantasievollsten Teil Ihres Geistes.
                 </p>
 <blockquote>
                     „Ich halte ein kleines Aufnahmegerät neben meinem Bett. Mindestens dreimal im Monat wache ich mit einer Idee auf, auf die ich durch bewusstes Denken nie gekommen wäre. Die Träume leisten die laterale Arbeit, die mein bewusster Verstand nicht leisten kann."
@@ -239,7 +239,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Entfesseln Sie Ihre kreativen Träume</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia ermöglicht es Ihnen, kreative Traumerkenntnisse in dem Moment festzuhalten, in dem Sie aufwachen – per Sprach-Journaling, bevor diese genialen Ideen verschwinden. Aufnehmen, überprüfen und Ihren schlafenden Geist für sich arbeiten lassen.
+                    Noctalia ermöglicht es Ihnen, kreative Traumerkenntnisse im Moment des Aufwachens festzuhalten, per Sprach-Journaling, bevor diese genialen Ideen verschwinden. Aufnehmen, überprüfen und Ihren schlafenden Geist für sich arbeiten lassen.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Starten Sie Ihr Traumtagebuch <i class="w-5 h-5" data-lucide="arrow-right"></i>

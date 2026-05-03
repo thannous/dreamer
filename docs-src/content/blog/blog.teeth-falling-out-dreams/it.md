@@ -199,7 +199,7 @@
                 </p>
 <h3>1. Ansia per l'apparenza</h3>
 <p>
-                    I denti sono fondamentali per il nostro sorriso e per il modo in cui ci presentiamo. I sogni di perderli spesso riflettono <strong>preoccupazioni sull'attrattiva</strong> o su come gli altri ci vedono. Questa interpretazione è particolarmente rilevante se stai attraversando cambiamenti che influenzano il tuo aspetto o la tua immagine.
+                    I nostri denti sono fondamentali per il sorriso e per il modo in cui ci presentiamo. Perderli in sogno spesso riflette <strong>preoccupazioni sull'attrattiva</strong> o su come gli altri ci vedono. Questa interpretazione è particolarmente rilevante se stai attraversando cambiamenti che influenzano il tuo aspetto o la tua immagine.
                 </p>
 <h3>2. Paura di invecchiare</h3>
 <p>
@@ -207,7 +207,7 @@
                 </p>
 <h3>3. Perdita di potere o controllo</h3>
 <p>
-                    I denti rappresentano la forza: li usiamo per mordere, strappare e affermarci. Quando litigano nei sogni, spesso simboleggia <strong>sentirsi impotenti</strong> in una situazione. Stai affrontando qualcosa su cui ritieni di non avere alcun controllo?
+                    I denti rappresentano la forza: li usiamo per mordere, strappare e affermarci. Quando cadono nei sogni, spesso simboleggiano il <strong>sentirsi impotenti</strong> in una situazione. Chiediti: stai affrontando qualcosa su cui ritieni di non avere alcun controllo?
                 </p>
 <h3>4. Problemi di comunicazione</h3>
 <p>

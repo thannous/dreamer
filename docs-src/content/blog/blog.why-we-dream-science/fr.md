@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Pourquoi rêvons-nous ? La science des rêves expliquée | Noctalia",
   "ogDescription": "Découvrez ce que l'activité cérébrale révèle sur la conscience.",
-  "ogImage": "https://noctalia.app/img/blog/pourquoi-nous-revons-science.webp",
+  "ogImage": "https://noctalia.app/img/blog/why-we-dream-science.webp",
   "ogImageAlt": "Représentation schématique du cerveau en activité pendant le sommeil",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Pourquoi rêvons-nous ? La science des rêves expliquée | Noctalia",
   "twitterDescription": "Les théories scientifiques majeures sur les rêves.",
-  "twitterImage": "https://noctalia.app/img/blog/pourquoi-nous-revons-science.webp",
+  "twitterImage": "https://noctalia.app/img/blog/why-we-dream-science.webp",
   "twitterImageAlt": "Représentation schématique du cerveau en activité pendant le sommeil",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/reves-sante-mentale",
   "nextPath": "/fr/blog/sommeil-paradoxal-reves",
-  "preloadImage": "/img/blog/pourquoi-nous-revons-science.webp",
+  "preloadImage": "/img/blog/why-we-dream-science.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes\",\n            \"description\": \"Explorez la neuroscience et les grandes théories sur les raisons pour lesquelles les humains rêvent, de la consolidation de la mémoire à la simulation des menaces.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/pourquoi-nous-revons-science.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/pourquoi-nous-revons-science\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2217,\n            \"timeRequired\": \"PT8M\",\n            \"url\": \"https://noctalia.app/fr/blog/pourquoi-nous-revons-science\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes\",\n            \"description\": \"Explorez la neuroscience et les grandes théories sur les raisons pour lesquelles les humains rêvent, de la consolidation de la mémoire à la simulation des menaces.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/why-we-dream-science.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/pourquoi-nous-revons-science\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2217,\n            \"timeRequired\": \"PT8M\",\n            \"url\": \"https://noctalia.app/fr/blog/pourquoi-nous-revons-science\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Tous les humains rêvent-ils ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Oui, tous les humains rêvent pendant leur sommeil. La recherche montre que tout le monde entre dans le sommeil paradoxal plusieurs fois par nuit, période durant laquelle se produisent les rêves les plus vifs. Cependant, beaucoup de gens ne se souviennent pas de leurs rêves au réveil. Le rappel des rêves varie considérablement d'une personne à l'autre et peut être amélioré par la pratique et l'intention.\" } },\n                { \"@type\": \"Question\", \"name\": \"Pourquoi ne puis-je pas me souvenir de mes rêves ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Le rappel des rêves dépend du moment où vous vous réveillez dans votre cycle de sommeil. Les rêves sont plus facilement mémorisés lorsque vous vous réveillez pendant ou immédiatement après le sommeil paradoxal. La neurochimie du sommeil joue également un rôle - le cerveau produit moins de noradrénaline pendant le sommeil paradoxal, qui est importante pour la formation de la mémoire. Tenir un journal de rêves et avoir l'intention de s'en souvenir peut considérablement améliorer le rappel.\" } },\n                { \"@type\": \"Question\", \"name\": \"Les rêves ont-ils une signification ?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"La signification des rêves est débattue parmi les scientifiques. Alors que l'interprétation freudienne suggère que les rêves révèlent des désirs inconscients, la neuroscience moderne les considère comme des sous-produits de la consolidation de la mémoire et du traitement neural. Cependant, les rêves incorporent souvent des préoccupations émotionnelles et des expériences récentes, les rendant personnellement significatifs. La question de savoir s'ils ont une signification inhérente ou sont simplement des schémas d'activité cérébrale interprétés par notre esprit conscient reste ouverte.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Accueil\", \"item\": \"https://noctalia.app/fr/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Ressources\", \"item\": \"https://noctalia.app/fr/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Pourquoi nous rêvons\", \"item\": \"https://noctalia.app/fr/blog/pourquoi-nous-revons-science\" }\n            ]\n        }"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Représentation schématique du cerveau en activité pendant le sommeil" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/pourquoi-nous-revons-science.webp" srcset="../../img/blog/pourquoi-nous-revons-science-480w.webp 480w, ../../img/blog/pourquoi-nous-revons-science-800w.webp 800w, ../../img/blog/pourquoi-nous-revons-science-1200w.webp 1200w" width="1200">
+<img alt="Représentation schématique du cerveau en activité pendant le sommeil" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/why-we-dream-science.webp" srcset="../../img/blog/why-we-dream-science-480w.webp 480w, ../../img/blog/why-we-dream-science-800w.webp 800w, ../../img/blog/why-we-dream-science-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -115,13 +115,13 @@
                     Les humains passent environ <strong>six ans de leur vie à rêver</strong>. Malgré cet énorme investissement de temps et de ressources neuronales, la science n'a toujours pas de réponse définitive sur l'existence des rêves. Ce que nous avons, ce sont plusieurs théories convaincantes, chacune soutenue par différentes lignes de preuves.
                 </p>
 <p>
-                    L'étude scientifique des rêves s'est accélérée de manière spectaculaire en 1953 lorsque les chercheurs Eugene Aserinsky et Nathaniel Kleitman ont découvert le <strong><a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> (REM)</strong>. Cette découverte a révélé que le sommeil n'est pas un état uniforme mais se compose de stades distincts, le sommeil paradoxal étant le moment où se produisent les rêves les plus vifs.
+                    La science des rêves s'est accélérée de manière spectaculaire en 1953 lorsque les chercheurs Eugene Aserinsky et Nathaniel Kleitman ont découvert le <strong><a class="text-dream-salmon hover:underline" href="sommeil-paradoxal-reves">sommeil paradoxal</a> (REM)</strong>. Leur découverte a révélé que le sommeil n'est pas un état uniforme mais se compose de stades distincts, le sommeil paradoxal étant le moment où se produisent les rêves les plus vifs.
                 </p>
 <blockquote>
                     "Le rêve est la petite porte cachée dans le sanctuaire le plus profond et le plus intime de l'âme." - Carl Jung
                 </blockquote>
 <p>
-                    La neuroscience moderne a dépassé la psychanalyse freudienne pour examiner les rêves à travers l'imagerie cérébrale, les études du sommeil et les sciences cognitives. Bien que nous n'ayons peut-être jamais une seule théorie unifiée du rêve, nous comprenons maintenant plusieurs fonctions que les rêves remplissent probablement.
+                    Au-delà de la psychanalyse freudienne, la neuroscience moderne examine les rêves à travers l'imagerie cérébrale, les études du sommeil et les sciences cognitives. Bien que nous n'ayons peut-être jamais une seule théorie unifiée du rêve, nous comprenons maintenant plusieurs fonctions que les rêves remplissent probablement.
                 </p>
 <h2 id="activation-synthesis">Théorie de l'activation-synthèse : explication neurologique des rêves</h2>
 <p>
@@ -324,7 +324,7 @@
 <li><strong>Possiblement les reptiles :</strong> Certaines preuves suggèrent des états primitifs de type paradoxal</li>
 </ul>
 <p>
-                    Le fait que le sommeil paradoxal ait évolué <strong>il y a plus de 200 millions d'années</strong> et ait été préservé à travers des espèces diverses suggère qu'il remplit des fonctions biologiques cruciales.
+                    Le sommeil paradoxal a évolué <strong>il y a plus de 200 millions d'années</strong> et a été préservé à travers des espèces diverses, ce qui suggère qu'il remplit des fonctions biologiques cruciales.
                 </p>
 <h3>Recherche comparative sur les rêves animaux</h3>
 <p>
@@ -346,7 +346,7 @@
 <li><strong>Coût en temps :</strong> Des heures passées à ne pas se nourrir ou se reproduire</li>
 </ul>
 <p>
-                    La persistance du rêve malgré ces coûts suggère que les bénéfices - consolidation de la mémoire, régulation émotionnelle, pratique de compétences - l'emportent sur les risques.
+                    Le rêve persiste malgré ces coûts, ce qui suggère que les bénéfices - consolidation de la mémoire, régulation émotionnelle, pratique de compétences - l'emportent sur les risques.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -439,7 +439,7 @@
 <li>Pourquoi certaines personnes rêvent en couleur tandis que d'autres en noir et blanc ?</li>
 </ul>
 <p>
-                    Le mystère du rêve reste l'une des frontières les plus captivantes de la neuroscience - un rappel nocturne que la conscience recèle encore des secrets que nous commençons seulement à comprendre.
+                    Le rêve reste l'une des frontières les plus captivantes de la neuroscience : un rappel nocturne que la conscience recèle encore des secrets que nous commençons seulement à comprendre.
                 </p>
 </div>
 <!-- CTA Section -->

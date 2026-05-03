@@ -116,7 +116,7 @@
                     Un sogno lucido è un particolare stato di coscienza in cui <strong>sai che stai sognando</strong> mentre rimani addormentato. Questa consapevolezza può verificarsi spontaneamente o essere indotta attraverso varie tecniche.
                 </p>
 <p>
-                    I livelli di lucidità variano considerevolmente:
+                    Esistono diversi gradi di lucidità:
                 </p>
 <ul>
 <li><strong>Lucidità minima:</strong> Sai che stai sognando ma non controlli nulla</li>
@@ -169,7 +169,7 @@
                 </p>
 <h3>1. Start a Dream Journal for Lucid Dreaming</h3>
 <p>
-	                    Questo è <strong>IL fondamento essenziale</strong>. Senza ricordare i tuoi sogni, non saprai mai se eri lucido. Scrivi i tuoi sogni ogni mattina, anche i frammenti. Se sei agli inizi, segui questa <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">guida al diario dei sogni</a> per strutturare le tue note. Nel giro di poche settimane, il ricordo dei tuoi sogni migliorerà in modo significativo.
+	                    Questo è <strong>IL fondamento essenziale</strong>. Senza ricordare i tuoi sogni, non saprai mai se eri lucido. Scrivi i tuoi sogni ogni mattina, anche i frammenti. Se sei agli inizi, segui questa <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">guida al diario dei sogni</a> per strutturare le tue note. Nel giro di poche settimane, il ricordo dei tuoi sogni migliorerà notevolmente.
 	                </p>
 <h3>2. Suggerimenti per l'igiene del sonno per ricordare meglio i sogni</h3>
 <p>
@@ -265,7 +265,7 @@
 </ol>
 <h3>2. Metodo WBTB per indurre sogni lucidi</h3>
 <p>
-                    In combinazione con MILD, questa tecnica aumenta significativamente le tue possibilità:
+                    In combinazione con MILD, questa tecnica moltiplica le tue possibilità:
                 </p>
 <ol>
 <li>Imposta una sveglia per svegliarti dopo 5-6 ore</li>
@@ -302,7 +302,7 @@
                 </p>
 <h2 id="stabilize">Come stabilizzare un sogno lucido e rimanere lucidi</h2>
 <p>
-                    Il primo sogno lucido è spesso breve, pochi secondi prima del risveglio o della perdita di lucidità. Ecco come estendere l'esperienza:
+                    Aspettati che il primo sogno lucido duri poco, pochi secondi prima del risveglio o della perdita di lucidità. Ecco come estendere l'esperienza:
                 </p>
 <h3>Tecniche di stabilizzazione del sogno che funzionano</h3>
 <ul>

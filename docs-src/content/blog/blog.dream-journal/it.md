@@ -65,7 +65,7 @@
                     Dream Journal: richiamo, metodi e routine
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Il diario dei sogni ti aiuta a ricordare, strutturare e riflettere sulle tue notti. Questo hub raccoglie gli elementi essenziali: tecniche di ricordo, <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">il sonno REM</a> nozioni di base, il <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">significato dei simboli più comuni dei sogni</a> e abitudini che rendono la pratica senza sforzo.
+                    Scrivere un diario dei sogni ti aiuta a ricordare, strutturare e riflettere sulle tue notti. Qui trovi gli elementi essenziali: tecniche di ricordo, nozioni di base sul <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, il <a class="text-dream-salmon hover:underline" href="../guides/dizionario-simboli-sogni">significato dei simboli più comuni dei sogni</a> e abitudini che rendono la pratica naturale.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

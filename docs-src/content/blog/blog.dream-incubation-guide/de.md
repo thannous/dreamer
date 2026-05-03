@@ -127,7 +127,7 @@
                 </p>
 <h3>Traum-Inkubation im antiken Griechenland</h3>
 <p>
-                    Die Griechen bauten über 300 <strong>"Asklepieia"</strong> - Tempel, die der Heilung von Träumen gewidmet sind. Kranke Pilger würden sich Reinigungsritualen unterziehen, Opfergaben darbringen und dann in heiligen Kammern schlafen, in der Hoffnung auf heilende Visionen von Asklepios, dem Gott der Medizin. Bemerkenswerterweise berichteten viele über Heilungen.
+                    Die Griechen bauten über 300 <strong>"Asklepieia"</strong> - Tempel, die der Heilung von Träumen gewidmet sind. Kranke Pilger würden sich Reinigungsritualen unterziehen, Opfergaben darbringen und dann in heiligen Kammern schlafen, in der Hoffnung auf heilende Visionen von Asklepios, dem Gott der Medizin. Viele Pilger berichteten tatsächlich über Heilungen.
                 </p>
 <h3>Trauminkubation im alten Ägypten</h3>
 <p>
@@ -139,7 +139,7 @@
                 </p>
 <h3>Trauminkubation: Moderne Forschungsergebnisse</h3>
 <p>
-                    Zeitgenössische Studien bestätigen, was die Alten wussten. Die Harvard-Forscherin Dr. Deirdre Barrett fand heraus, dass, wenn sich die Teilnehmer vor dem Schlafengehen auf bestimmte Probleme konzentrierten, <strong>ungefähr 50 % von dem Problem träumten und 25 % von Lösungen träumten</strong>. Der träumende Geist reagiert bemerkenswert schnell auf Absichten.
+                    Zeitgenössische Studien bestätigen, was die Alten wussten. Die Harvard-Forscherin Dr. Deirdre Barrett fand heraus, dass, wenn sich die Teilnehmer vor dem Schlafengehen auf bestimmte Probleme konzentrierten, <strong>ungefähr 50 % von dem Problem träumten und 25 % von Lösungen träumten</strong>. Der träumende Geist reagiert erstaunlich empfänglich auf Absichten.
                 </p>
 <h2 id="how-it-works">Die Wissenschaft hinter Trauminkubationstechniken</h2>
 <p>
@@ -178,7 +178,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Unbewusstes Problemlösen</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Ihr träumendes Gehirn stellt Verbindungen her, die Ihrem wachen Geist entgehen. <strong>Befreit von logischen Zwängen</strong>, es kann Probleme aus ganz neuen Blickwinkeln angehen.
+                        Ihr träumendes Gehirn stellt Verbindungen her, die Ihrem wachen Geist entgehen. <strong>Befreit von logischen Zwängen</strong> kann es Probleme aus ganz neuen Blickwinkeln angehen.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -189,14 +189,14 @@
 <h3 class="font-serif text-lg text-dream-cream">Vorbereitende Wirkung</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Wie das Vorbereiten einer Pumpe gibt Ihr Fokus vor dem Schlafengehen <strong>die Richtung vor</strong> für Trauminhalte. The last thoughts before sleep have outsized influence on dream material.
+                        Wie das Vorbereiten einer Pumpe gibt Ihr Fokus vor dem Schlafengehen <strong>die Richtung vor</strong> für Trauminhalte. Die letzten Gedanken vor dem Einschlafen haben einen überproportionalen Einfluss auf das Traummaterial.
                     </p>
 </div>
 </div>
 <div class="prose max-w-none text-gray-300">
-<h2 id="technique">6-Step Dream Incubation Technique for Beginners</h2>
+<h2 id="technique">6-Schritte-Technik der Trauminkubation für Anfänger</h2>
 <p>
-                    Follow this proven method to start incubating your dreams tonight:
+                    Befolgen Sie diese bewährte Methode, um noch heute Nacht mit der Inkubation Ihrer Träume zu beginnen:
                 </p>
 </div>
 <!-- Step-by-Step Guide -->
@@ -205,9 +205,9 @@
 <div class="flex gap-4">
 <div class="step-number">1</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Choose Your Intention</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Wählen Sie Ihre Absicht</h3>
 <p class="text-sm text-gray-300">
-                                Select a specific question, problem, or topic. Be precise - <strong>"Show me how to improve my relationship with Sarah"</strong> works better than "dreams about love." Write your intention as a clear, present-tense request.
+                                Wählen Sie eine konkrete Frage, ein Problem oder ein Thema. Seien Sie präzise – <strong>„Zeig mir, wie ich meine Beziehung zu Sarah verbessern kann"</strong> funktioniert besser als „Träume über Liebe". Formulieren Sie Ihre Absicht als klare Bitte in der Gegenwartsform.
                             </p>
 </div>
 </div>
@@ -216,9 +216,9 @@
 <div class="flex gap-4">
 <div class="step-number">2</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Create Your Pre-Sleep Ritual</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Gestalten Sie Ihr Einschlafritual</h3>
 <p class="text-sm text-gray-300">
-                                Spend 10-15 minutes before bed focused on your intention. <strong>Review relevant materials</strong>, look at photos, write about the topic, or simply meditiere darüber. This primes your neural networks.
+                                Verbringen Sie 10-15 Minuten vor dem Schlafengehen mit Ihrer Absicht. <strong>Sichten Sie relevante Materialien</strong>, schauen Sie sich Fotos an, schreiben Sie über das Thema oder meditieren Sie einfach darüber. Dies bereitet Ihre neuronalen Netzwerke vor.
                             </p>
 </div>
 </div>
@@ -227,9 +227,9 @@
 <div class="flex gap-4">
 <div class="step-number">3</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Phrase Your Request</h3>
-<p class="text-sm text-gray-300">
-                                As you drift off, <strong>repeat your intention like a gentle mantra</strong>. Verwenden Sie Sätze wie: „Heute Nacht werde ich von … träumen“ oder „Zeig es mir in meinen Träumen...“ Let this be your last conscious thought.
+<h3 class=”font-serif text-lg text-dream-cream mb-2”>Formulieren Sie Ihre Bitte</h3>
+<p class=”text-sm text-gray-300”>
+                                Während Sie einschlafen, <strong>wiederholen Sie Ihre Absicht wie ein sanftes Mantra</strong>. Verwenden Sie Sätze wie: „Heute Nacht werde ich von … träumen” oder „Zeig es mir in meinen Träumen...” Lassen Sie dies Ihr letzter bewusster Gedanke sein.
                             </p>
 </div>
 </div>
@@ -238,9 +238,9 @@
 <div class="flex gap-4">
 <div class="step-number">4</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Visualize the Dream</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Visualisieren Sie den Traum</h3>
 <p class="text-sm text-gray-300">
-                                Imagine yourself in a dream encountering your topic. <strong>See yourself receiving answers</strong>. Stellen Sie sich das Aufwachen mit Klarheit und Einsicht vor. This creates a template for your dreaming mind.
+                                Stellen Sie sich vor, wie Sie in einem Traum Ihrem Thema begegnen. <strong>Sehen Sie sich selbst Antworten empfangen</strong>. Stellen Sie sich das Aufwachen mit Klarheit und Einsicht vor. Dies schafft eine Vorlage für Ihren träumenden Geist.
                             </p>
 </div>
 </div>
@@ -249,9 +249,9 @@
 <div class="flex gap-4">
 <div class="step-number">5</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Capture Dreams Immediately</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume sofort festhalten</h3>
 <p class="text-sm text-gray-300">
-                                Keep a journal or Noctalia ready beside your bed. <strong>Record your dreams the moment you wake</strong> - even in the middle of the night. Träume verblassen innerhalb von Minuten. Capture everything, even fragments.
+                                Halten Sie ein Tagebuch oder Noctalia neben Ihrem Bett bereit. <strong>Zeichnen Sie Ihre Träume sofort nach dem Aufwachen auf</strong> – auch mitten in der Nacht. Träume verblassen innerhalb von Minuten. Halten Sie alles fest, auch Fragmente.
                             </p>
 </div>
 </div>
@@ -260,9 +260,9 @@
 <div class="flex gap-4">
 <div class="step-number">6</div>
 <div>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Reflect and Interpret</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Reflektieren und interpretieren</h3>
 <p class="text-sm text-gray-300">
-                                Review your dream with your intention in mind. <strong>Look for symbolic connections</strong>, nicht nur wörtliche Antworten. Der Traum kann Ihre Frage auf unerwartete, metaphorische Weise beantworten.
+                                Betrachten Sie Ihren Traum mit Ihrer Absicht im Hinterkopf. <strong>Suchen Sie nach symbolischen Verbindungen</strong>, nicht nur nach wörtlichen Antworten. Der Traum kann Ihre Frage auf unerwartete, metaphorische Weise beantworten.
                             </p>
 </div>
 </div>
@@ -286,11 +286,11 @@
 </aside>
 <h2 id="uses">Leistungsstarke Einsatzmöglichkeiten für die Trauminkubation</h2>
 <p>
-                    Was können Sie mit der Trauminkubation erreichen? Die Anwendungen sind bemerkenswert vielfältig:
+                    Was können Sie mit der Trauminkubation erreichen? Die Anwendungsbereiche sind erstaunlich breit:
                 </p>
 <h3>Problemlösung</h3>
 <p>
-                    Die am häufigsten untersuchte Anwendung. Wissenschaftler, Erfinder und Künstler haben ausgebrütete Träume genutzt, um komplexe Probleme zu lösen. <strong>Elias Howe</strong> berühmt war der Träumer von der Lösung der Nähmaschinennadel; <strong>Dmitri Mendelejew</strong> sah das Periodensystem in einem Traum. Ihr Gehirn verarbeitet Probleme beim Träumen anders und findet oft Lösungen, die Ihr wacher Geist übersehen hat.
+                    Problemlösung ist die am häufigsten untersuchte Anwendung. Wissenschaftler, Erfinder und Künstler haben Trauminkubation genutzt, um komplexe Probleme zu knacken. <strong>Elias Howe</strong> berühmt war der Träumer von der Lösung der Nähmaschinennadel; <strong>Dmitri Mendelejew</strong> sah das Periodensystem in einem Traum. Ihr Gehirn verarbeitet Probleme beim Träumen anders und findet oft Lösungen, die Ihr wacher Geist übersehen hat.
                 </p>
 <h3>Kreative Inspiration</h3>
 <p>
@@ -318,7 +318,7 @@
                 </p>
 <h3>Halten Sie einen konsistenten Schlafplan ein</h3>
 <p>
-<strong>Regelmäßige Schlafmuster verbessern die Traumerinnerung</strong> dramatisch. Gehen Sie zu gleichbleibenden Zeiten ins Bett und stehen Sie auf. Ihre REM-Zyklen – in denen die lebhaftesten Träume auftreten – werden vorhersehbarer und zugänglicher.
+<strong>Regelmäßige Schlafmuster stärken die Traumerinnerung</strong>. Gehen Sie zu gleichbleibenden Zeiten ins Bett und stehen Sie auf. Ihre REM-Zyklen – in denen die lebhaftesten Träume auftreten – werden vorhersehbarer und zugänglicher.
                 </p>
 <h3>Vermeiden Sie Alkohol und Cannabis</h3>
 <p>

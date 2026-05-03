@@ -15,22 +15,22 @@
   "ogType": "article",
   "ogTitle": "Pesadillas: Causas, Significado y Cómo Detenerlas - Noctalia",
   "ogDescription": "¿Por qué tienes pesadillas? Descubre sus causas reales, significado oculto y 5 técnicas probadas para dormir sin miedo.",
-  "ogImage": "https://noctalia.app/img/blog/guia-pesadillas.webp",
+  "ogImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "ogImageAlt": "Atmósfera misteriosa que representa el mundo de las pesadillas",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Pesadillas: Causas, Significado y Cómo Detenerlas - Noctalia",
   "twitterDescription": "¿Por qué tienes pesadillas? Descubre sus causas reales, significado oculto y 5 técnicas probadas para dormir sin miedo.",
-  "twitterImage": "https://noctalia.app/img/blog/guia-pesadillas.webp",
+  "twitterImage": "https://noctalia.app/img/blog/stop-nightmares-guide.webp",
   "twitterImageAlt": "Atmósfera misteriosa que representa el mundo de las pesadillas",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-de-embarazo",
   "nextPath": "/es/blog/guia-paralisis-sueno",
-  "preloadImage": "/img/blog/guia-pesadillas.webp",
+  "preloadImage": "/img/blog/stop-nightmares-guide.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Pesadillas: Causas, Significado y Cómo Detenerlas\",\n            \"description\": \"¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducirlas.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/guia-pesadillas.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 929,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n        }",
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué tengo pesadillas?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Las pesadillas pueden ser causadas por el estrés, la ansiedad, un trauma, ciertos medicamentos, la falta de sueño o comer tarde por la noche. A menudo es la forma en que tu cerebro procesa las emociones difíciles. Aproximadamente el 2-8% de los adultos experimentan pesadillas frecuentes.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Cómo puedo dejar de tener pesadillas?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Para reducir las pesadillas: mantén un horario de sueño regular, practica la gestión del estrés, evita las pantallas antes de dormir, crea un ambiente de sueño tranquilo, y prueba la Terapia de Ensayo de Imágenes (IRT) - una técnica donde reescribes los finales de las pesadillas estando despierto.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Las pesadillas tienen significado?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, las pesadillas a menudo reflejan ansiedades subyacentes, emociones no procesadas o fuentes de estrés en tu vida despierta. Pueden ser tu subconsciente destacando problemas que necesitan atención. Los temas comunes se relacionan con el miedo a la pérdida, el fracaso o perder el control.\" }\n                }\n            ]\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Pesadillas: Causas, Significado y Cómo Detenerlas\",\n            \"description\": \"¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducirlas.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/stop-nightmares-guide.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 929,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Por qué tengo pesadillas?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Las pesadillas pueden ser causadas por el estrés, la ansiedad, un trauma, ciertos medicamentos, la falta de sueño o comer tarde por la noche. A menudo es la forma en que tu cerebro procesa las emociones difíciles. Aproximadamente el 2-8% de los adultos experimentan pesadillas frecuentes.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Cómo puedo dejar de tener pesadillas?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Para reducir las pesadillas: mantén un horario de sueño regular, practica la gestión del estrés, evita las pantallas antes de dormir, crea un ambiente de sueño tranquilo, y prueba la Terapia de Ensayo de Imágenes (IRT) - una técnica donde reescribes los finales de las pesadillas estando despierto.\" }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"¿Las pesadillas tienen significado?\",\n                    \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, las pesadillas a menudo reflejan ansiedades subyacentes, emociones no procesadas o fuentes de estrés en tu vida despierta. ¿Pueden ser tu subconsciente destacando problemas que necesitan atención. Los temas comunes se relacionan con el miedo a la pérdida, el fracaso o perder el control.\" }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Inicio\",\n            \"item\": \"https://noctalia.app/es/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Recursos\",\n            \"item\": \"https://noctalia.app/es/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Guía de Pesadillas\",\n            \"item\": \"https://noctalia.app/es/blog/guia-pesadillas\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -82,11 +82,11 @@
 </div>
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
-    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rapida</h2>
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Respuesta rápida</h2>
     <p class="text-purple-100/80 leading-relaxed">Las pesadillas son sueños vívidos y angustiantes que te despiertan con fuertes emociones negativas. Afectan regularmente al 2-8 % de los adultos y hasta al 50 % de los niños de 3 a 6 años. A diferencia de los terrores nocturnos (que ocurren durante el sueño profundo sin recuerdo), las pesadillas suceden durante el sueño REM y se recuerdan claramente. El tratamiento más eficaz basado en evidencia es la Terapia de Ensayo de Imágenes (IRT): reescribe el escenario de tu pesadilla estando despierto y luego ensaya mentalmente la nueva versión antes de dormir. La gestión del estrés, los horarios de sueño regulares y el tratamiento del trauma subyacente también reducen significativamente la frecuencia de las pesadillas.</p>
 </section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Atmósfera misteriosa que representa el mundo de las pesadillas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/guia-pesadillas.webp" srcset="../../img/blog/guia-pesadillas-480w.webp 480w, ../../img/blog/guia-pesadillas-800w.webp 800w, ../../img/blog/guia-pesadillas-1200w.webp 1200w" width="1200">
+<img alt="Atmósfera misteriosa que representa el mundo de las pesadillas" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="1200">
 </figure>
 <nav class="glass-panel rounded-2xl p-6 mb-12">
 <h2 class="font-serif text-lg text-dream-cream mb-4 flex items-center gap-2">
@@ -110,7 +110,7 @@
                     Muchas incluyen escenas de <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">persecución</a> u otras amenazas que intensifican el miedo.
                 </p>
 <p>
-                    Aunque las pesadillas ocasionales son normales, <strong>el 2-8% de los adultos las experimentan frecuentemente</strong> - una vez por semana o más. Cuando las pesadillas impactan significativamente la calidad del sueño o el funcionamiento diario, pueden clasificarse como Trastorno de Pesadillas.
+                    Aunque las pesadillas ocasionales son normales, <strong>el 2-8% de los adultos las experimentan frecuentemente</strong> - una vez por semana o más. ¿Cuándo las pesadillas alteran la calidad del sueño o el funcionamiento diario, pueden clasificarse como Trastorno de Pesadillas.
                 </p>
 <p>
                     Las pesadillas difieren de los terrores nocturnos, que ocurren durante el sueño no-REM, implican reacciones físicas como gritar, y rara vez se recuerdan. Las pesadillas se recuerdan completamente y ocurren durante las fases de sueño más ligeras.
@@ -191,10 +191,10 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="significado">Significado de las pesadillas: mensajes del subconsciente</h2>
 <p>
-                    Las pesadillas no son aleatorias - a menudo llevan mensajes significativos de tu subconsciente:
+                    Tus pesadillas no son aleatorias - a menudo llevan mensajes significativos de tu subconsciente:
                 </p>
 <p>
-                    Si tus pesadillas giran en torno a temas como <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">ser perseguido</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caer</a>, la <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a>, o criaturas inquietantes como una <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpiente</a> o una <a class="text-dream-salmon hover:underline" href="../simbolos/arana">arana</a>, buscar esos simbolos puede ayudarte a interpretar el mensaje mas profundo.
+                    Si tus pesadillas giran en torno a temas como <a class="text-dream-salmon hover:underline" href="../simbolos/persecucion">ser perseguido</a>, <a class="text-dream-salmon hover:underline" href="../simbolos/caida">caer</a>, la <a class="text-dream-salmon hover:underline" href="../simbolos/muerte">muerte</a>, o criaturas inquietantes como una <a class="text-dream-salmon hover:underline" href="../simbolos/serpiente">serpiente</a> o una <a class="text-dream-salmon hover:underline" href="../simbolos/arana">arana</a>, buscar esos símbolos puede ayudarte a interpretar el mensaje más profundo.
                 </p>
 <h3>Pesadillas y procesamiento emocional nocturno</h3>
 <p>
@@ -214,7 +214,7 @@
 <h2 id="tipos">Tipos de pesadillas: desde estrés hasta trauma</h2>
 <h3>Pesadillas causadas por estrés y ansiedad</h3>
 <p>
-                    El tipo más común, directamente relacionadas con los factores de estrés diarios. Estas pesadillas a menudo presentan <strong>escenarios de no estar preparado, fracasar o enfrentar situaciones embarazosas</strong>. Típicamente disminuyen cuando el estresor se resuelve.
+                    Son el tipo más común, directamente vinculadas a los factores de estrés diarios. Estas pesadillas a menudo presentan <strong>escenarios de no estar preparado, fracasar o enfrentar situaciones embarazosas</strong>. Suelen disminuir cuando el estresor se resuelve.
                 </p>
 <h3>Pesadillas traumáticas y TEPT</h3>
 <p>
@@ -222,7 +222,7 @@
                 </p>
 <h3>Pesadillas recurrentes: sueños que se repiten</h3>
 <p>
-                    La misma pesadilla repitiéndose noche tras noche sugiere un <strong>problema no resuelto que tu psique está tratando de procesar</strong>. La repetición a menudo continúa hasta que el problema subyacente se aborda.
+                    ¿Cuándo la misma pesadilla se repite noche tras noche, sugiere un <strong>problema no resuelto que tu psique está tratando de procesar</strong>. Espera que la repetición continúe hasta que abordes el problema subyacente.
                 </p>
 <h3>Pesadillas existenciales: miedo a la muerte</h3>
 <p>
@@ -248,7 +248,7 @@
                 </p>
 <h3>1. Terapia de Ensayo de Imágenes para pesadillas</h3>
 <p>
-                    La técnica más efectiva para pesadillas recurrentes. <strong>Despierto, visualiza la pesadilla pero cambia el final</strong> por algo neutral o positivo. Practica esta nueva versión diariamente durante 10-20 minutos. Los estudios muestran que la IRT puede reducir la frecuencia de pesadillas en un 50-80%.
+                    Considera esta la técnica de referencia para pesadillas recurrentes. <strong>Despierto, visualiza la pesadilla pero cambia el final</strong> por algo neutral o positivo. Practica esta nueva versión diariamente durante 10-20 minutos. Los estudios muestran que la IRT puede reducir la frecuencia de pesadillas en un 50-80%.
                 </p>
 <h3>2. Higiene del sueño para reducir pesadillas</h3>
 <p>
@@ -308,19 +308,19 @@
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/persecucion">
-                        Soñar con persecución
+                        ¿Soñar con persecución
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/muerte">
-                        Soñar con muerte
+                        ¿Soñar con muerte
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">
-                        Soñar con caer
+                        ¿Soñar con caer
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/serpiente">
-                        Soñar con serpiente
+                        ¿Soñar con serpiente
                     </a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/arana">
-                        Soñar con arana
+                        ¿Soñar con arana
                     </a>
 </div>
 </section>
@@ -344,13 +344,13 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Suenos de Embarazo: Lo Que Significan (Aunque No Estes Embarazada)</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sueños de Embarazo: Lo ¿Qué Significan (Aunque No Estes Embarazada)</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="guia-paralisis-sueno" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Paralisis del sueno: por que no puedes moverte y como detenerla</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Paralisis del sueño: por que no puedes moverte y como detenerla</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -391,18 +391,18 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Como Recordar tus Suenos: 10 Tecnicas Efectivas</h3>
-                        <p class="text-sm text-gray-400">Descubre metodos cientificamente probados para mejorar tu recuerdo de suenos y nunca mas olvidar tus suenos al despertar. Tecnicas simples que puedes aplicar esta noche.</p>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Como Recordar tus Sueños: 10 Tecnicas Efectivas</h3>
+                        <p class="text-sm text-gray-400">Descubre metodos cientificamente probados para mejorar tu recuerdo de sueños y nunca más olvidar tus sueños al despertar. Tecnicas simples que puedes aplicar esta noche.</p>
                     </a>
                     <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Incubacion de suenos: como sonar exactamente lo que quieres esta noche</h3>
-                        <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubacion onirica para resolver problemas y estimular tu creatividad.</p>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: como soñar exactamente lo que quieres esta noche</h3>
+                        <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu creatividad.</p>
                     </a>
                     <a href="guia-paralisis-sueno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisis del sueno: por que no puedes moverte y como detenerla</h3>
-                        <p class="text-sm text-gray-400">Guia completa para entender la paralisis del sueno. Descubre que la causa, por que ocurren las alucinaciones, y tecnicas probadas para prevenir y detener los episodios.</p>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisis del sueño: por que no puedes moverte y como detenerla</h3>
+                        <p class="text-sm text-gray-400">Guia completa para entender la paralisis del sueño. Descubre que la causa, por que ocurren las alucinaciones, y tecnicas probadas para prevenir y detener los episodios.</p>
                     </a>
               </div>
             </section>

@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -152,8 +163,8 @@
             "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [
-                { "@type": "Question", "name": "¿Cuál es la diferencia entre sueños de ansiedad y pesadillas?", "acceptedAnswer": { "@type": "Answer", "text": "Las pesadillas suelen implicar un peligro inmediato e intenso que a menudo te despierta sobresaltado. Los sueños de ansiedad, en cambio, se caracterizan por una sensación generalizada de inquietud, impotencia o aprensión sin una amenaza directa para la vida. Puedes sentirte perdido, no preparado o incapaz de actuar, en lugar de huir activamente de un peligro. Ambos ocurren principalmente durante el sueño REM, pero los sueños de ansiedad dejan una preocupación persistente en vez de un terror agudo." } },
-                { "@type": "Question", "name": "¿Los sueños de ansiedad son señal de un trastorno de ansiedad?", "acceptedAnswer": { "@type": "Answer", "text": "No necesariamente. Los sueños de ansiedad ocasionales son una parte normal del procesamiento del estrés por parte del cerebro. Sin embargo, si ocurren frecuentemente, alteran tu sueño la mayoría de las noches y se acompañan de síntomas diurnos como preocupación persistente, inquietud o dificultad para concentrarse, pueden estar asociados con un trastorno de ansiedad generalizada (TAG) o TEPT. Considera consultar a un profesional de salud mental si los sueños ansiosos impactan significativamente tu vida diaria." } },
+                { "@type": "Question", "name": "¿Cuál es la diferencia entre sueños de ansiedad y pesadillas?", "acceptedAnswer": { "@type": "Answer", "text": "Las pesadillas suelen implicar un peligro inmediato e intenso que a menudo te despierta sobresaltado. ¿Los sueños de ansiedad, en cambio, se caracterizan por una sensación generalizada de inquietud, impotencia o aprensión sin una amenaza directa para la vida. Puedes sentirte perdido, no preparado o incapaz de actuar, en lugar de huir activamente de un peligro. Ambos ocurren principalmente durante el sueño REM, pero los sueños de ansiedad dejan una preocupación persistente en vez de un terror agudo." } },
+                { "@type": "Question", "name": "¿Los sueños de ansiedad son señal de un trastorno de ansiedad?", "acceptedAnswer": { "@type": "Answer", "text": "No necesariamente. ¿Los sueños de ansiedad ocasionales son una parte normal del procesamiento del estrés por parte del cerebro. Sin embargo, si ocurren frecuentemente, alteran tu sueño la mayoría de las noches y se acompañan de síntomas diurnos como preocupación persistente, inquietud o dificultad para concentrarse, pueden estar asociados con un trastorno de ansiedad generalizada (TAG) o TEPT. Considera consultar a un profesional de salud mental si los sueños ansiosos impactan significativamente tu vida diaria." } },
                 { "@type": "Question", "name": "¿Los medicamentos pueden causar sueños de ansiedad?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, ciertos medicamentos pueden aumentar la frecuencia o intensidad de los sueños de ansiedad. Los ISRS (inhibidores selectivos de la recaptación de serotonina), los betabloqueantes y algunos antihipertensivos son conocidos por alterar el contenido onírico. Además, la abstinencia de benzodiazepinas, alcohol o cannabis puede desencadenar sueños ansiosos y vívidos debido al rebote REM. Nunca dejes ni ajustes la medicación sin consultar a tu médico." } }
             ]
         }
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/es/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/es/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/es/#como-funciona" class="hidden lg:inline-flex hover:text-white transition-colors">Cómo funciona</a>
-                <a href="/es/#caracteristicas" class="hidden lg:inline-flex hover:text-white transition-colors">Características</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/es/blog/" class="text-dream-salmon transition-colors">Recursos</a>
                 <a href="/es/guides/" class="hover:text-white transition-colors">Guías de sueños</a>
                 <a href="/es/guides/diccionario-simbolos-suenos" class="hover:text-white transition-colors">Diccionario de sueños</a>
+                <a href="/es/sobre" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Sobre</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">ES</span>
+                        <span>ES</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Descargar la app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/es/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Recursos</a>
+                <a href="/es/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guías de sueños</a>
+                <a href="/es/guides/diccionario-simbolos-suenos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Diccionario de sueños</a>
+                <a href="/es/sobre" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Sobre</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Descargar la app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/anxiety-dreams-meaning" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/reves-anxiete-signification" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/suenos-de-ansiedad-significado" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Español</a>
+                    <a href="/de/blog/angsttraeume-bedeutung" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/sogni-ansia-significato" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -255,7 +285,7 @@
                     Sueños de ansiedad: por qué los tienes y cómo detenerlos
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Repasas mentalmente la lista de tareas del día siguiente, finalmente te quedas dormido, y pasas la noche vagando por un laberinto interminable o descubriendo que olvidaste estudiar para un examen que ni sabías que existía. Los sueños de ansiedad afectan a casi todos, pero siguen siendo una de las experiencias nocturnas más incomprendidas. Aquí tienes la ciencia que los explica y lo que puedes hacer esta noche.
+                    Repasas mentalmente la lista de tareas del día siguiente, finalmente te quedas dormido, y pasas la noche vagando por un laberinto interminable o descubriendo que olvidaste estudiar para un examen que ni sabías que existía. ¿Los sueños de ansiedad afectan a casi todos, pero siguen siendo una de las experiencias nocturnas más incomprendidas. Aquí tienes la ciencia que los explica y lo que puedes hacer esta noche.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -271,7 +301,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section aria-labelledby="quick-answer-title" class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5">
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Respuesta rápida</h2>
-<p class="text-purple-100/80 leading-relaxed">Los sueños de ansiedad son la forma en que tu cerebro procesa las preocupaciones no resueltas durante el sueño. A diferencia de las pesadillas, se caracterizan por un malestar difuso - no estar preparado, perder el control, llegar tarde - en lugar de un peligro inmediato. Técnicas cognitivas, higiene del sueño y el diario de sueños pueden reducir significativamente su frecuencia.</p>
+<p class="text-purple-100/80 leading-relaxed">¿Los sueños de ansiedad son la forma en que tu cerebro procesa las preocupaciones no resueltas durante el sueño. A diferencia de las pesadillas, se caracterizan por un malestar difuso - no estar preparado, perder el control, llegar tarde - en lugar de un peligro inmediato. Técnicas cognitivas, higiene del sueño y el diario de sueños pueden reducir significativamente su frecuencia.</p>
 </section>
 <!-- Editorial Review (E-E-A-T) -->
 <div class="mb-8">
@@ -311,10 +341,10 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="what-are-anxiety-dreams">Qué son los sueños de ansiedad y en qué se diferencian de las pesadillas</h2>
 <p>
-                    Los sueños de ansiedad son una categoría de sueños perturbadores caracterizados por sentimientos de preocupación, impotencia, vergüenza o aprensión, en lugar de miedo directo. Mientras que las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> suelen implicar un peligro inmediato - ser perseguido por un depredador, caer desde un precipicio o sufrir daño físico - los sueños de ansiedad generan un malestar más sutil y generalizado. Puedes encontrarte incapaz de marcar un número de teléfono, perpetuamente tarde para un evento importante, o desnudo ante una multitud sin recordar cómo llegaste allí.
+                    ¿Los sueños de ansiedad son una categoría de sueños perturbadores caracterizados por sentimientos de preocupación, impotencia, vergüenza o aprensión, en lugar de miedo directo. Mientras que las <a class="text-dream-salmon hover:underline" href="guia-pesadillas">pesadillas</a> suelen implicar un peligro inmediato - ser perseguido por un depredador, caer desde un precipicio o sufrir daño físico - los sueños de ansiedad generan un malestar más sutil y generalizado. Puedes encontrarte incapaz de marcar un número de teléfono, perpetuamente tarde para un evento importante, o desnudo ante una multitud sin recordar cómo llegaste allí.
                 </p>
 <p>
-                    La distinción importa porque las dos experiencias activan circuitos emocionales diferentes. Las pesadillas disparan la respuesta de miedo agudo y a menudo te despiertan bruscamente. Los sueños de ansiedad, en cambio, tienden a mantenerte atrapado en su narrativa, dando vueltas por escenarios de inadecuación o pérdida de control sin alcanzar nunca un clímax claro. Te despiertas agotado y preocupado en lugar de aterrorizado.
+                    La distinción importa porque las dos experiencias activan circuitos emocionales diferentes. Las pesadillas disparan la respuesta de miedo agudo y a menudo te despiertan bruscamente. ¿Los sueños de ansiedad tienden a mantenerte atrapado en su narrativa, dando vueltas por escenarios de inadecuación o pérdida de control sin alcanzar nunca un climax claro. Te despiertas agotado y preocupado en lugar de aterrorizado.
                 </p>
 <p>
                     Las investigaciones del neurocientífico finlandés Antti Revonsuo y estudios posteriores han revelado que <strong>hasta el 77 % del contenido onírico implica emociones negativas</strong>, siendo la ansiedad la emoción más frecuentemente reportada en los sueños. Esto no es un fallo del cerebro dormido, sino una característica, como exploraremos a continuación.
@@ -338,7 +368,7 @@
                 </p>
 <h3>4. Desnudez en público</h3>
 <p>
-                    De repente te das cuenta de que estás desnudo en un lugar público, y nadie parece notarlo o, peor, todos lo notan. Los sueños de desnudez simbolizan <strong>vulnerabilidad y exposición</strong>, el miedo a que los demás vean tu verdadero yo con todos sus defectos.
+                    De repente te das cuenta de que estás desnudo en un lugar público, y nadie parece notarlo o, peor, todos lo notan. ¿Los sueños de desnudez simbolizan <strong>vulnerabilidad y exposición</strong>, el miedo a que los demás vean tu verdadero yo con todos sus defectos.
                 </p>
 <h3>5. <a class="text-dream-salmon hover:underline" href="suenos-dientes-caen">Dientes que se caen</a></h3>
 <p>
@@ -359,19 +389,19 @@
 
 <h2 id="why-anxiety-dreams">Por qué tu cerebro produce sueños de ansiedad</h2>
 <p>
-                    Los sueños de ansiedad no son fallos aleatorios. Cumplen funciones neurológicas y evolutivas identificables que los investigadores llevan décadas mapeando.
+                    ¿Los sueños de ansiedad no son fallos aleatorios. Cumplen funciones neurológicas y evolutivas identificables que los investigadores llevan décadas mapeando.
                 </p>
 <h3>Teoría de la simulación de amenazas</h3>
 <p>
-                    En su influyente artículo de 2000 publicado en <em>Behavioral and Brain Sciences</em>, Antti Revonsuo argumentó que el sueño evolucionó principalmente como un <strong>mecanismo de simulación de amenazas</strong>. Al ensayar escenarios peligrosos o estresantes durante el sueño, nuestros ancestros ganaban una ventaja de supervivencia: estaban mejor preparados para enfrentar amenazas reales durante el día. En la vida moderna, los tigres de dientes de sable han sido reemplazados por plazos incumplidos, vergüenza social y ansiedad financiera, así que nuestro cerebro soñador simula eso en su lugar.
+                    En su influyente artículo de 2000 publicado en <em>Behavioral and Brain Sciences</em>, Antti Revonsuo argumentó que el sueño evoluciónó principalmente como un <strong>mecanismo de simulación de amenazas</strong>. Al ensayar escenarios peligrosos o estresantes durante el sueño, nuestros ancestros ganaban una ventaja de supervivencia: estaban mejor preparados para enfrentar amenazas reales durante el día. En la vida moderna, los tigres de dientes de sable han sido reemplazados por plazos incumplidos, vergüenza social y ansiedad financiera, así que nuestro cerebro soñador simula eso en su lugar.
                 </p>
 <h3>Cortisol y la conexión con la amígdala</h3>
 <p>
-                    Cuando te acuestas ansioso, tu eje hipotalámico-pituitario-adrenal (HPA) permanece activado, inundando tu organismo de cortisol. Durante el sueño REM, la amígdala (el sistema de alarma emocional del cerebro) se vuelve <strong>hiperactiva</strong> mientras que la corteza prefrontal (pensamiento racional y regulación emocional) se apaga. Este cóctel neuroquímico crea las condiciones perfectas para sueños cargados de emoción donde la ansiedad se expresa sin el freno de la lógica.
+                    ¿Cuándo te acuestas ansioso, tu eje hipotalámico-pituitario-adrenal (HPA) permanece activado, inundando tu organismo de cortisol. Durante el sueño REM, la amígdala (el sistema de alarma emocional del cerebro) se vuelve <strong>hiperactiva</strong> mientras que la corteza prefrontal (pensamiento racional y regulación emocional) se apaga. Este cóctel neuroquímico crea las condiciones perfectas para sueños cargados de emoción donde la ansiedad se expresa sin el freno de la lógica.
                 </p>
 <h3>Procesamiento emocional durante el sueño REM</h3>
 <p>
-                    Las investigaciones del neurocientífico Matthew Walker en UC Berkeley han demostrado que el sueño REM actúa como una forma de <strong>terapia nocturna</strong>. Tu cerebro despoja a los recuerdos difíciles de su carga emocional al reproducirlos sin las hormonas de estrés acompañantes. Sin embargo, cuando este sistema está sobrecargado por ansiedad crónica, el procesamiento queda incompleto, y el contenido ansioso se desborda en sueños vívidos que se sienten inquietantemente reales.
+                    Las investigaciones del neurocientífico Matthew Walker en UC Berkeley han demostrado que el sueño REM actúa como una forma de <strong>terapia nocturna</strong>. Tu cerebro despoja a los recuerdos difíciles de su carga emocional al reproducirlos sin las hormonas de estrés acompañantes. ¿Cuándo este sistema esta sobrecargado por ansiedad cronica, el procesamiento queda incompleto. El contenido ansioso se desborda entonces en sueños vividos que se sienten inquietantemente reales.
                 </p>
 <p>
                     Por eso los <a class="text-dream-salmon hover:underline" href="significado-suenos-recurrentes">sueños recurrentes</a> con el mismo tema ansioso suelen indicar un problema emocional no resuelto. El cerebro regresa una y otra vez al mismo material porque no ha terminado de procesarlo.
@@ -383,7 +413,7 @@
                 </p>
 <h3>Trastorno de ansiedad generalizada (TAG)</h3>
 <p>
-                    Las personas con TAG reportan tasas significativamente más altas de sueños ansiosos. La preocupación persistente que caracteriza al TAG no se apaga al acostarse: los sigue al sueño, produciendo sueños saturados de los mismos temas de incertidumbre y catástrofe que dominan sus pensamientos durante la vigilia.
+                    ¿Las personas con TAG reportan tasas notablemente más altas de sueños ansiosos. La preocupación persistente que caracteriza al TAG no se apaga al acostarse: los sigue al sueño, produciendo sueños saturados de los mismos temas de incertidumbre y catástrofe que dominan sus pensamientos durante la vigilia.
                 </p>
 <h3>TEPT y trauma</h3>
 <p>
@@ -439,7 +469,7 @@
 <li><strong>Horario constante:</strong> Acuéstate y levántate a la misma hora cada día, incluso los fines de semana. El sueño irregular desestabiliza la arquitectura REM</li>
 <li><strong>Temperatura:</strong> Mantén tu dormitorio entre 18-20 °C. El sobrecalentamiento intensifica la vivacidad de los sueños</li>
 <li><strong>Límite de cafeína:</strong> Nada de cafeína después de las 14 h. La cafeína fragmenta el sueño REM y hace los sueños más ansiosos</li>
-<li><strong>Atención al alcohol:</strong> El alcohol suprime el REM de primera hora de la noche y causa un rebote REM intenso después, produciendo sueños ansiosos más vívidos</li>
+<li><strong>Atención al alcohol:</strong> ¿El alcohol suprime el REM de primera hora de la noche y causa un rebote REM intenso después, produciendo sueños ansiosos más vívidos</li>
 <li><strong>Frontera digital:</strong> Sin pantallas 60 minutos antes de dormir. La luz azul y los contenidos estimulantes preparan al cerebro para soñar con ansiedad</li>
 </ul>
 <h3>Diario de sueños</h3>
@@ -472,7 +502,7 @@
 
 <h2 id="seek-help">Cuándo buscar ayuda profesional</h2>
 <p>
-                    Los sueños de ansiedad son una parte normal del sueño humano. Pero cuando se intensifican en frecuencia o gravedad, pueden convertirse en una preocupación clínica que merece atención profesional.
+                    ¿Los sueños de ansiedad son una parte normal del sueño humano. Pero cuando se intensifican en frecuencia o gravedad, pueden convertirse en una preocupación clínica que merece atención profesional.
                 </p>
 <h3>Considera buscar ayuda si experimentas:</h3>
 <ul>
@@ -513,7 +543,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Las pesadillas suelen implicar un peligro inmediato e intenso que a menudo te despierta sobresaltado. Los sueños de ansiedad, en cambio, se caracterizan por una sensación generalizada de inquietud, impotencia o aprensión sin una amenaza directa para la vida. Puedes sentirte perdido, no preparado o incapaz de actuar, en lugar de huir activamente de un peligro. Ambos ocurren principalmente durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, pero los sueños de ansiedad dejan una preocupación persistente en vez de un terror agudo.
+                            Las pesadillas suelen implicar un peligro inmediato e intenso que a menudo te despierta sobresaltado. ¿Los sueños de ansiedad, en cambio, se caracterizan por una sensación generalizada de inquietud, impotencia o aprensión sin una amenaza directa para la vida. Puedes sentirte perdido, no preparado o incapaz de actuar, en lugar de huir activamente de un peligro. Ambos ocurren principalmente durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, pero los sueños de ansiedad dejan una preocupación persistente en vez de un terror agudo.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -522,7 +552,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            No necesariamente. Los sueños de ansiedad ocasionales son una parte normal del procesamiento del estrés por parte del cerebro. Sin embargo, si ocurren frecuentemente, alteran tu sueño la mayoría de las noches y se acompañan de síntomas diurnos como preocupación persistente, inquietud o dificultad para concentrarse, pueden estar asociados con un trastorno de ansiedad generalizada (TAG) o TEPT. Considera consultar a un <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">profesional de salud mental</a> si los sueños ansiosos impactan significativamente tu vida diaria.
+                            No necesariamente. ¿Los sueños de ansiedad ocasionales son una parte normal del procesamiento del estrés por parte del cerebro. Sin embargo, si ocurren frecuentemente, alteran tu sueño la mayoría de las noches y se acompañan de síntomas diurnos como preocupación persistente, inquietud o dificultad para concentrarse, pueden estar asociados con un trastorno de ansiedad generalizada (TAG) o TEPT. Considera consultar a un <a class="text-dream-salmon hover:underline" href="suenos-salud-mental">profesional de salud mental</a> si los sueños ansiosos impactan significativamente tu vida diaria.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -618,7 +648,7 @@
                 </p>
 </aside>
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/es/" class="flex items-center gap-2 mb-4">
@@ -695,8 +725,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Hecho con <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> para soñadores</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

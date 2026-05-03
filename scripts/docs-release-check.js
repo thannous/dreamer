@@ -64,6 +64,7 @@ function run(command, args, options = {}) {
     cwd,
     env,
     stdio,
+    shell: process.platform === 'win32',
   });
   if (!allowFailure && result.status !== 0) {
     const rendered = [command, ...args].join(' ');
