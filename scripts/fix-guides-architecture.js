@@ -1587,7 +1587,7 @@ function renderLayoutCss() {
           }
           #mobileAlpha { display: flex !important; }
           #searchFeedback { display: none !important; }
-          body.dictionary-search-active #heroSearchShell,
+          body.dictionary-search-active #stickyBar,
           body.dictionary-search-active #mobileAlpha {
             display: none !important;
           }
@@ -2388,7 +2388,7 @@ ${symbolCatEntries}
             function updateSearchUi(query, visibleCount) {
                 const hasQuery = query.trim().length > 0;
                 const isMobile = window.matchMedia('(max-width: 767px)').matches;
-                const mobileSearchActive = hasQuery && isMobile && document.activeElement !== heroSearch;
+                const mobileSearchActive = hasQuery && isMobile;
                 if (categoryGridSection) {
                     categoryGridSection.hidden = hasQuery;
                 }
