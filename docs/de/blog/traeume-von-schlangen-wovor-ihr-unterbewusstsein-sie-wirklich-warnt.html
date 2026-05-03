@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -194,24 +205,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/de/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/de/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/de/#so-funktioniert-es" class="hidden lg:inline-flex hover:text-white transition-colors">So funktioniert&#39;s</a>
-                <a href="/de/#funktionen" class="hidden lg:inline-flex hover:text-white transition-colors">Funktionen</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/de/blog/" class="text-dream-salmon transition-colors">Ressourcen</a>
                 <a href="/de/guides/" class="hover:text-white transition-colors">Traumratgeber</a>
                 <a href="/de/guides/traumsymbole-lexikon" class="hover:text-white transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Über uns</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">DE</span>
+                        <span>DE</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -236,6 +246,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/de/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressourcen</a>
+                <a href="/de/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumratgeber</a>
+                <a href="/de/guides/traumsymbole-lexikon" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Über uns</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/snake-dreams-meaning" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/reves-de-serpents" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/suenos-con-serpientes" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Deutsch</a>
+                    <a href="/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -318,7 +348,7 @@
 <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlangen</a> haben Menschen seit Beginn des Bewusstseins fasziniert und erschreckt. Sie tauchen in den ältesten Mythologien, religiösen Texten und Kunstwerken auf – von der Schlange in Eden bis zum Heilstab des Asklepios, von Medusas Haar bis zur Kundalini-Energie der hinduistischen Tradition.
                 </p>
 <p>
-                    Diese <strong>universelle Präsenz</strong> ist kein Zufall. Evolutionspsychologen vermuten, dass wir darauf programmiert sind, Schlangen zu bemerken – unsere Vorfahren, die ihnen Aufmerksamkeit schenkten, überlebten und gaben ihre Gene weiter. Diese Urprogrammierung bedeutet, dass Schlangen in unseren Träumen eine außerordentliche symbolische Bedeutung haben.
+                    Diese <strong>universelle Präsenz</strong> ist kein Zufall. Evolutionspsychologen vermuten, dass wir darauf programmiert sind, Schlangen zu bemerken - unsere Vorfahren, die ihnen Aufmerksamkeit schenkten, überlebten und gaben ihre Gene weiter. Diese Urprogrammierung verleiht Schlangen in unseren Träumen eine außerordentliche symbolische Bedeutung.
                 </p>
 <blockquote>
                     „Die Schlange ist das wichtigste und komplexeste Symbol in der Mythologie der Menschheit … Sie repräsentiert sowohl Tod als auch Wiedergeburt, Gift und Medizin, Zerstörung und Schöpfung.“ - Joseph Campbell, Mythologe
@@ -428,7 +458,7 @@
 <p>
                     Diese Träume entfalten sich manchmal in dunklen <a class="text-dream-salmon hover:underline" href="../traumsymbole/wald">Wäldern</a> oder zusammen mit anderen Angstsymbolen wie <a class="text-dream-salmon hover:underline" href="../traumsymbole/spinne">Spinnen</a>, die das Gefühl der Bedrohung verstärken können.
                 </p>
-<h3>Schlangenabwurf Haut</h3>
+<h3>Schlangenhäutung</h3>
 <p>
                     Zu sehen, wie sich eine Schlange häutet, ist ein kraftvolles <strong>Transformationssymbol</strong>. Sie sind bereit, alte Muster, Überzeugungen oder Identitäten loszulassen. Die Wiedergeburt steht unmittelbar bevor – nehmen Sie die Veränderung an.
                 </p>
@@ -449,11 +479,11 @@
 </aside>
 <h2 id="interpretations">Die 7 Hauptinterpretationen</h2>
 <p>
-                    Der Kontext ist zwar alles, aber diese sind es Die häufigsten Bedeutungen hinter Schlangenträumen:
+                    Kontext ist zwar entscheidend, aber hier sind die häufigsten Bedeutungen hinter Schlangenträumen:
                 </p>
 <h3>1. Transformation und Erneuerung</h3>
 <p>
-                    Die positivste Interpretation. Wie eine Schlange, die ihre Haut abstreift, durchleben Sie vielleicht <strong>tiefgreifende persönliche Veränderungen</strong>. Alte Muster fallen weg. Der Traum ermutigt Sie, die Transformation anzunehmen, anstatt sich ihr zu widersetzen.
+                    Hier ist die positivste Interpretation. Wie eine Schlange, die ihre Haut abstreift, durchleben Sie vielleicht <strong>tiefgreifende persönliche Veränderungen</strong>. Alte Muster fallen weg. Ihr Traum ermutigt Sie, die Transformation anzunehmen, anstatt sich ihr zu widersetzen.
                 </p>
 <h3>2. Versteckte Ängste oder Bedrohungen</h3>
 <p>
@@ -461,15 +491,15 @@
                 </p>
 <h3>3. Heilung und Medizin</h3>
 <p>
-                    Die Schlange ist seit dem antiken Griechenland ein Symbol der Heilung (der Stab des Asklepios). Ihr Traum kann darauf hindeuten, dass heilende Energie in Ihrem Leben am Werk ist <strong>healing energy at work</strong> oder darauf hindeuten, dass Sie sich auf die Gesundheit konzentrieren müssen – körperlich, emotional oder spirituell.
+                    Als Symbol der Heilung seit dem antiken Griechenland (der Stab des Asklepios) kann Ihr Schlangentraum darauf hindeuten, dass <strong>heilende Energie in Ihrem Leben am Werk ist</strong>, oder darauf, dass Sie sich auf die Gesundheit konzentrieren müssen - körperlich, emotional oder spirituell.
                 </p>
 <h3>4. Sexualität und Lebenskraft</h3>
 <p>
-                    Freud interpretierte Schlangen bekanntlich als phallische Symbole. Über die einfache sexuelle Symbolik hinaus repräsentieren Schlangen rohe Lebensenergie und kreative Kraft – die Kundalini-Kraft in der hinduistischen Tradition. In Ihrem Traum kann es um Leidenschaft, Kreativität oder Urtriebe gehen. <strong>raw life energy and creative power</strong> - the kundalini force in Hindu tradition. Your dream may be about passion, creativity, or primal drives.
+                    Freud interpretierte Schlangen bekanntlich als phallische Symbole. Über die einfache sexuelle Symbolik hinaus repräsentieren Schlangen <strong>rohe Lebensenergie und kreative Kraft</strong> - die Kundalini-Kraft in der hinduistischen Tradition. Ihr Traum kann sich um Leidenschaft, Kreativität oder Urtriebe drehen.
                 </p>
 <h3>5. Verrat und Täuschung</h3>
 <p>
-                    "Snake" ist umgangssprachlich für eine verräterische Person. Ihr Traum könnte Sie vor einer Person in Ihrem Leben warnen, die nicht vertrauenswürdig ist. Achten Sie darauf, wer sonst noch im Traum auftaucht oder an wen die Schlange Sie erinnert. <strong>someone untrustworthy</strong> in your life. Pay attention to who else appears in the dream, or who the snake reminds you of.
+                    "Schlange" ist umgangssprachlich ein Wort für eine verräterische Person. Ihr Traum könnte Sie vor <strong>jemandem Unzuverlässigem</strong> in Ihrem Leben warnen. Achten Sie darauf, wer sonst noch im Traum auftaucht oder an wen die Schlange Sie erinnert.
                 </p>
 <h3>6. Weisheit und Intuition</h3>
 <p>
@@ -504,7 +534,7 @@
                 </p>
 <h3>1. Notieren Sie jedes Detail</h3>
 <p>
-                    Schreiben Sie alles sofort nach dem Aufwachen auf: das Aussehen der Schlange, Ihr Verhalten, Ihre Emotionen, die Umgebung, andere anwesende Personen. <strong>Details verblassen schnell</strong> haben aber oft eine wichtige symbolische Bedeutung.
+                    Schreiben Sie alles sofort nach dem Aufwachen auf: das Aussehen der Schlange, Ihr Verhalten, Ihre Emotionen, die Umgebung, andere anwesende Personen. <strong>Details verblassen schnell</strong>, haben aber oft eine wichtige symbolische Bedeutung.
                 </p>
 <h3>2. Beachten Sie Ihre emotionale Reaktion</h3>
 <p>
@@ -670,7 +700,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/de/" class="flex items-center gap-2 mb-4">
@@ -747,8 +777,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Gemacht mit <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> für Träumer</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

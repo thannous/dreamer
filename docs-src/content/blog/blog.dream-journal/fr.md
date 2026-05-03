@@ -65,7 +65,7 @@
                     Journal de rêves : rappel, méthodes et routines
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Le <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> aide à se souvenir, structurer et analyser ses rêves. Ce hub regroupe les ressources clés : rappel, routines, sommeil REM, <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">signification des symboles de rêves courants</a> et meilleures pratiques.
+                    Tenir un <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> aide à se souvenir, structurer et analyser ses rêves. Retrouvez ici les ressources clés : rappel, routines, sommeil REM, <a class="text-dream-salmon hover:underline" href="../guides/dictionnaire-symboles-reves">signification des symboles de rêves courants</a> et meilleures pratiques.
                 </p>
 </header>
 <section class="glass-panel rounded-2xl p-6 md:p-8 mt-10 border border-dream-salmon/10" data-blog-hub-expanded="true">

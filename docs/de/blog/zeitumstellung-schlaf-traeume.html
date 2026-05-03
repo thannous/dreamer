@@ -24,7 +24,7 @@
     <meta property="og:title" content="Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel Ihre Traeume stoert | Noctalia">
     <meta property="og:description" content="Die Zeitumstellung stoert Ihren zirkadianen Rhythmus, die Schlafarchitektur und Ihre Traeume. Erfahren Sie mehr ueber Gesundheitsrisiken, Traumeffekte und wie Sie Ihren Schlafrhythmus anpassen.">
     <meta property="og:url" content="https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume">
-    <meta property="og:image" content="https://noctalia.app/img/blog/changement-heure-sommeil-reves.webp">
+    <meta property="og:image" content="https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Uhr umgeben von gestoerten Schlafzyklen und Traumsymbolen in Violett- und Bernsteintoenen">
@@ -41,25 +41,36 @@
     <meta name="twitter:site" content="@NoctaliaDreams">
     <meta name="twitter:title" content="Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel Ihre Traeume stoert | Noctalia">
     <meta name="twitter:description" content="Die Zeitumstellung stoert Ihren zirkadianen Rhythmus, die Schlafarchitektur und Ihre Traeume. Erfahren Sie mehr ueber Gesundheitsrisiken, Traumeffekte und wie Sie Ihren Schlafrhythmus anpassen.">
-    <meta name="twitter:image" content="https://noctalia.app/img/blog/changement-heure-sommeil-reves.webp">
+    <meta name="twitter:image" content="https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp">
     <meta name="twitter:image:alt" content="Uhr umgeben von gestoerten Schlafzyklen und Traumsymbolen in Violett- und Bernsteintoenen">
     <link rel="preload" href="/fonts/Outfit-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Preload featured image -->
-    <link rel="preload" href="/img/blog/changement-heure-sommeil-reves.webp" as="image" type="image/webp">
+    <link rel="preload" href="/img/blog/daylight-saving-time-sleep-dreams.webp" as="image" type="image/webp">
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -78,7 +89,7 @@
             "description": "Die Zeitumstellung st\u00f6rt Ihren zirkadianen Rhythmus, die Schlafarchitektur und Ihre Tr\u00e4ume. Erfahren Sie mehr \u00fcber Gesundheitsrisiken, Traumeffekte und wie Sie Ihren Schlafrhythmus anpassen.",
             "image": {
                 "@type": "ImageObject",
-                "url": "https://noctalia.app/img/blog/changement-heure-sommeil-reves.webp",
+                "url": "https://noctalia.app/img/blog/daylight-saving-time-sleep-dreams.webp",
                 "width": 1200,
                 "height": 630
             },
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/de/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/de/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/de/#so-funktioniert-es" class="hidden lg:inline-flex hover:text-white transition-colors">So funktioniert&#39;s</a>
-                <a href="/de/#funktionen" class="hidden lg:inline-flex hover:text-white transition-colors">Funktionen</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/de/blog/" class="text-dream-salmon transition-colors">Ressourcen</a>
                 <a href="/de/guides/" class="hover:text-white transition-colors">Traumratgeber</a>
                 <a href="/de/guides/traumsymbole-lexikon" class="hover:text-white transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">Über uns</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">DE</span>
+                        <span>DE</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/de/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressourcen</a>
+                <a href="/de/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumratgeber</a>
+                <a href="/de/guides/traumsymbole-lexikon" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Traumlexikon</a>
+                <a href="/de/ueber-uns" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Über uns</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">App herunterladen</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/daylight-saving-time-sleep" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/heure-ete-sommeil-reves" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Français</a>
+                    <a href="/es/blog/horario-verano-sueno-suenos" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/zeitumstellung-schlaf-traeume" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Deutsch</a>
+                    <a href="/it/blog/ora-legale-sonno-sogni" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -291,7 +321,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Uhr umgeben von gest&ouml;rten Schlafzyklen und Traumsymbolen in Violett- und Bernsteint&ouml;nen" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/changement-heure-sommeil-reves.webp" srcset="../../img/blog/changement-heure-sommeil-reves-480w.webp 480w, ../../img/blog/changement-heure-sommeil-reves-800w.webp 800w, ../../img/blog/changement-heure-sommeil-reves-1200w.webp 1200w" width="1200">
+<img alt="Uhr umgeben von gest&ouml;rten Schlafzyklen und Traumsymbolen in Violett- und Bernsteint&ouml;nen" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/daylight-saving-time-sleep-dreams.webp" srcset="../../img/blog/daylight-saving-time-sleep-dreams-480w.webp 480w, ../../img/blog/daylight-saving-time-sleep-dreams-800w.webp 800w, ../../img/blog/daylight-saving-time-sleep-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -337,7 +367,7 @@
 
 <h3>Fragmentierter Tiefschlaf</h3>
 <p>
-                    Die St&ouml;rung geht &uuml;ber den REM-Schlaf hinaus. Die durch die Zeitumstellung verursachte zirkadiane Fehlausrichtung fragmentiert auch den Tiefschlaf (Phasen N2 und N3) &mdash; die tiefen, erholsamen Phasen, in denen der K&ouml;rper Gewebe repariert und prozedurales Ged&auml;chtnis konsolidiert. Schl&auml;fer zeigen in der Woche nach der Fr&uuml;hjahrsumstellung eine <strong>erh&ouml;hte Schlaffragmentierung</strong> &mdash; mehr Mikro-Aufwacher, mehr kurze Wachphasen und mehr &Uuml;berg&auml;nge zwischen Schlafphasen. Diese Fragmentierung bedeutet, dass selbst wenn Sie es schaffen, zur &laquo;richtigen&raquo; Zeit einzuschlafen, die Qualit&auml;t Ihres Schlafs beeintr&auml;chtigt ist.
+                    Diese St&ouml;rung geht &uuml;ber den REM-Schlaf hinaus. Die durch die Zeitumstellung verursachte zirkadiane Fehlausrichtung fragmentiert auch den Tiefschlaf (Phasen N2 und N3) &mdash; die tiefen, erholsamen Phasen, in denen der K&ouml;rper Gewebe repariert und prozedurales Ged&auml;chtnis konsolidiert. Schl&auml;fer zeigen in der Woche nach der Fr&uuml;hjahrsumstellung eine <strong>erh&ouml;hte Schlaffragmentierung</strong> &mdash; mehr Mikro-Aufwacher, mehr kurze Wachphasen und mehr &Uuml;berg&auml;nge zwischen Schlafphasen. Diese Fragmentierung bedeutet, dass selbst wenn Sie es schaffen, zur &laquo;richtigen&raquo; Zeit einzuschlafen, die Qualit&auml;t Ihres Schlafs beeintr&auml;chtigt ist.
                 </p>
 
 <blockquote class="border-l-4 border-dream-salmon/40 pl-4 italic text-purple-200/80 my-6">
@@ -365,7 +395,7 @@
 <h2 id="health-risks">Gesundheitsrisiken der Zeitumstellung</h2>
 <h3>Kardiovaskul&auml;re Auswirkungen</h3>
 <p>
-                    Die gesundheitlichen Folgen der Zeitumstellung gehen weit &uuml;ber Benommenheit hinaus. Eine wegweisende Studie von Sandhu et al. (2014), ver&ouml;ffentlicht in <em>Open Heart</em>, zeigte, dass der Montag nach der Fr&uuml;hjahrsumstellung einen <strong>Anstieg der akuten Herzinfarkt-Aufnahmen um 24 %</strong> im Vergleich zum durchschnittlichen Montag verzeichnet. Der Mechanismus ist gut verstanden: Schlafentzug l&ouml;st einen Cortisolanstieg aus, erh&ouml;ht Entz&uuml;ndungsmarker und steigert den Blutdruck &mdash; ein gef&auml;hrlicher Cocktail f&uuml;r Personen mit bereits bestehendem kardiovaskul&auml;rem Risiko.
+                    Die gesundheitlichen Folgen der Zeitumstellung gehen weit &uuml;ber Benommenheit hinaus. Eine wegweisende Studie von Sandhu et al. (2014), ver&ouml;ffentlicht in <em>Open Heart</em>, zeigte, dass der Montag nach der Fr&uuml;hjahrsumstellung einen <strong>Anstieg der akuten Herzinfarkt-Aufnahmen um 24 %</strong> im Vergleich zum durchschnittlichen Montag verzeichnet. Schlafentzug l&ouml;st einen Cortisolanstieg aus, erh&ouml;ht Entz&uuml;ndungsmarker und steigert den Blutdruck &mdash; ein gef&auml;hrlicher Cocktail f&uuml;r Personen mit bereits bestehendem kardiovaskul&auml;rem Risiko.
                 </p>
 <p>
                     Umgekehrt ist die herbstliche Zur&uuml;ckstellung mit einem R&uuml;ckgang der Herzinfarkt-Aufnahmen um 21 % am folgenden Dienstag verbunden, was darauf hindeutet, dass selbst eine zus&auml;tzliche Stunde Schlaf messbaren kardiovaskul&auml;ren Schutz bietet. Diese Asymmetrie veranschaulicht eindrucksvoll, wie empfindlich der menschliche K&ouml;rper selbst auf kleine &Auml;nderungen im Schlaftiming reagiert.
@@ -373,7 +403,7 @@
 
 <h3>Psychische Gesundheit und kognitive Leistung</h3>
 <p>
-                    Die Tage nach der Fr&uuml;hjahrsumstellung verzeichnen auch Anstiege bei Arbeitsunf&auml;llen, Verkehrsunf&auml;llen und Notaufnahmebesuchen. Eine schwedische Studie fand einen <strong>Anstieg der Verkehrsunf&auml;lle um 6,7 %</strong> am Montag nach der Fr&uuml;hjahrsumstellung. Tests der kognitiven Leistung zeigen verringerte Aufmerksamkeit, langsamere Reaktionszeiten und beeintr&auml;chtigte Entscheidungsfindung f&uuml;r bis zu f&uuml;nf Tage nach der Umstellung.
+                    Arbeitsunf&auml;lle, Verkehrsunf&auml;lle und Notaufnahmebesuche steigen in den Tagen nach der Fr&uuml;hjahrsumstellung ebenfalls an. Eine schwedische Studie fand einen <strong>Anstieg der Verkehrsunf&auml;lle um 6,7 %</strong> am Montag nach der Fr&uuml;hjahrsumstellung. Tests der kognitiven Leistung zeigen verringerte Aufmerksamkeit, langsamere Reaktionszeiten und beeintr&auml;chtigte Entscheidungsfindung f&uuml;r bis zu f&uuml;nf Tage nach der Umstellung.
                 </p>
 <p>
                     F&uuml;r Personen mit Stimmungsst&ouml;rungen kann der Einfluss schwerwiegender sein. Die zirkadiane St&ouml;rung verschlimmert Depressions- und Angstsymptome, und Studien haben einen messbaren Anstieg der Krankenhausaufnahmen wegen depressiver Episoden in der Woche nach der Fr&uuml;hjahrsumstellung dokumentiert. Die <a class="text-dream-salmon hover:underline" href="../traumsymbole/nacht">Nacht</a>, bereits eine verwundbare Zeit f&uuml;r Menschen mit psychischen Herausforderungen, wird noch belastender, wenn die Uhr eine Stunde erholsamen Schlafs stiehlt.
@@ -399,7 +429,7 @@
 <h2 id="tips">Tipps zur Anpassung Ihres Schlafrhythmus</h2>
 <h3>Vor der Umstellung: schrittweise Anpassung</h3>
 <p>
-                    Die wirksamste Strategie besteht darin, mit der Anpassung zu beginnen, bevor die Uhren umgestellt werden. Beginnen Sie vier Tage vor der Fr&uuml;hjahrsumstellung, Ihre Schlafens- und Aufwachzeit t&auml;glich um 15 Minuten vorzuverlegen. Wenn die Uhren vorgestellt werden, hat Ihr K&ouml;rper die einst&uuml;ndige Anpassung bereits schrittweise vollzogen und der abrupte Schock bleibt Ihnen erspart.
+                    Beginnen Sie mit der Anpassung, bevor die Uhren umgestellt werden &mdash; das ist die wirksamste Strategie. Beginnen Sie vier Tage vor der Fr&uuml;hjahrsumstellung, Ihre Schlafens- und Aufwachzeit t&auml;glich um 15 Minuten vorzuverlegen. Wenn die Uhren vorgestellt werden, hat Ihr K&ouml;rper die einst&uuml;ndige Anpassung bereits schrittweise vollzogen und der abrupte Schock bleibt Ihnen erspart.
                 </p>
 <p>
                     Wenden Sie dasselbe Prinzip auf Mahlzeiten an. Das Abendessen t&auml;glich 15 Minuten fr&uuml;her einzunehmen hilft, die peripheren zirkadianen Uhren zu verschieben &mdash; die in Leber, Darm und Bauchspeicheldr&uuml;se &mdash;, die stark auf Essenszeiten reagieren. Ein synchronisiertes zirkadianes System passt sich schneller und reibungsloser an.
@@ -425,7 +455,7 @@
 <h2 id="abolish-dst">Sollten wir die Zeitumstellung abschaffen?</h2>
 <h3>Der wissenschaftliche Konsens</h3>
 <p>
-                    Die Debatte &uuml;ber die Abschaffung der Zeitumstellung hat sich vom Rand in den Mainstream bewegt. 2019 ver&ouml;ffentlichten Roenneberg et al. ein umfassendes Positionspapier im <em>Journal of Biological Rhythms</em>, in dem sie argumentierten, dass die <strong>dauerhafte Normalzeit die einzige mit der menschlichen Chronobiologie vereinbare Option ist</strong>. Ihre Begr&uuml;ndung: Die Normalzeit h&auml;lt den Sonnenmittag dem Uhrmittag am n&auml;chsten und gew&auml;hrleistet so, dass der Hell-Dunkel-Zyklus den &uuml;ber Millionen von Jahren evolvierten biologischen Rhythmen am besten entspricht.
+                    Die Abschaffung der Zeitumstellung hat sich von einem Randthema zu einer Mainstream-Debatte entwickelt. 2019 ver&ouml;ffentlichten Roenneberg et al. ein umfassendes Positionspapier im <em>Journal of Biological Rhythms</em>, in dem sie argumentierten, dass die <strong>dauerhafte Normalzeit die einzige mit der menschlichen Chronobiologie vereinbare Option ist</strong>. Ihre Begr&uuml;ndung: Die Normalzeit h&auml;lt den Sonnenmittag dem Uhrmittag am n&auml;chsten und gew&auml;hrleistet so, dass der Hell-Dunkel-Zyklus den &uuml;ber Millionen von Jahren evolvierten biologischen Rhythmen am besten entspricht.
                 </p>
 <p>
                     Das Europ&auml;ische Parlament stimmte 2019 f&uuml;r die Abschaffung der saisonalen Zeitumstellung, doch die Umsetzung wurde durch Meinungsverschiedenheiten zwischen den Mitgliedstaaten &mdash; dauerhafte Sommerzeit oder dauerhafte Normalzeit &mdash; wiederholt verz&ouml;gert. Schlafforscher sind unmissverst&auml;ndlich: Die dauerhafte Sommerzeit w&auml;re <strong>schlechter als das aktuelle System</strong>, da sie eine chronische zirkadiane Fehlausrichtung verursachen w&uuml;rde &mdash; im Grunde w&uuml;rde jeder Morgen zu einer kleinen Fr&uuml;hjahrsumstellung.
@@ -556,14 +586,14 @@
 </section>
 <!-- Blog Related End -->
 </article>
-<!-- Health Disclaimer (E-E-A-T) -->
-<aside aria-label="Haftungsausschluss" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
+<!-- Health Disclaimer (TI-97 E-E-A-T) -->
+<aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschlie&szlig;lich zu Informationszwecken und stellt keine medizinische Beratung dar. Konsultieren Sie bei schlafbezogenen Beschwerden einen Arzt.
-                </p>
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+</p>
 </aside>
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/de/" class="flex items-center gap-2 mb-4">
@@ -640,8 +670,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Gemacht mit <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> für Träumer</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

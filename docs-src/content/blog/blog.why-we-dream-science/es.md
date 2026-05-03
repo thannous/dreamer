@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Por Qué Soñamos: La Ciencia de los Sueños | Noctalia",
   "ogDescription": "Explora la neurociencia de los sueños. Teorías actuales, actividad cerebral y lo que revelan sobre tu consciencia.",
-  "ogImage": "https://noctalia.app/img/blog/por-que-sonamos-ciencia.webp",
+  "ogImage": "https://noctalia.app/img/blog/why-we-dream-science.webp",
   "ogImageAlt": "Imagen de actividad cerebral y redes neuronales durante el sueño",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Por Qué Soñamos: La Ciencia de los Sueños | Noctalia",
   "twitterDescription": "Explora la neurociencia de los sueños. Teorías actuales, actividad cerebral y lo que revelan sobre tu consciencia.",
-  "twitterImage": "https://noctalia.app/img/blog/por-que-sonamos-ciencia.webp",
+  "twitterImage": "https://noctalia.app/img/blog/why-we-dream-science.webp",
   "twitterImageAlt": "Imagen de actividad cerebral y redes neuronales durante el sueño",
   "publishedTime": "2025-12-11",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/es/blog/suenos-salud-mental",
   "nextPath": "/es/blog/sueno-rem-suenos",
-  "preloadImage": "/img/blog/por-que-sonamos-ciencia.webp",
+  "preloadImage": "/img/blog/why-we-dream-science.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas\",\n            \"description\": \"Explora la neurociencia y las principales teorías sobre por qué los humanos sueñan, desde la consolidación de la memoria hasta la simulación de amenazas.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/por-que-sonamos-ciencia.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2025,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas\",\n            \"description\": \"Explora la neurociencia y las principales teorías sobre por qué los humanos sueñan, desde la consolidación de la memoria hasta la simulación de amenazas.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/why-we-dream-science.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/es/sobre#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/es/sobre\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-12-11\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\"\n            },\n            \"inLanguage\": \"es\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 2025,\n            \"timeRequired\": \"PT7M\",\n            \"url\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"¿Todos los humanos sueñan?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Sí, todos los humanos sueñan durante el sueño. Las investigaciones muestran que todos entran en el sueño REM varias veces por noche, durante el cual ocurren los sueños más vívidos. Sin embargo, muchas personas no recuerdan sus sueños al despertar. El recuerdo de sueños varía ampliamente entre individuos y puede mejorarse con práctica e intención.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Por qué no puedo recordar mis sueños?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"El recuerdo de sueños depende de cuándo te despiertas en tu ciclo de sueño. Los sueños se recuerdan más fácilmente cuando te despiertas durante o inmediatamente después del sueño REM. La neuroquímica del sueño también juega un papel: el cerebro produce menos norepinefrina durante el sueño REM, que es importante para la formación de la memoria. Llevar un diario de sueños y tener la intención de recordarlos puede mejorar significativamente el recuerdo.\" } },\n                { \"@type\": \"Question\", \"name\": \"¿Los sueños tienen significado?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"El significado de los sueños es debatido entre científicos. Mientras que la interpretación freudiana sugiere que los sueños revelan deseos inconscientes, la neurociencia moderna los ve como subproductos de la consolidación de la memoria y el procesamiento neural. Sin embargo, los sueños a menudo incorporan preocupaciones emocionales y experiencias recientes, haciéndolos personalmente significativos. Si tienen significado inherente o son simplemente patrones de actividad cerebral interpretados por nuestra mente consciente sigue siendo una pregunta abierta.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Inicio\", \"item\": \"https://noctalia.app/es/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Recursos\", \"item\": \"https://noctalia.app/es/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Por qué soñamos\", \"item\": \"https://noctalia.app/es/blog/por-que-sonamos-ciencia\" }\n            ]\n        }"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Imagen de actividad cerebral y redes neuronales durante el sueño" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/por-que-sonamos-ciencia.webp" srcset="../../img/blog/por-que-sonamos-ciencia-480w.webp 480w, ../../img/blog/por-que-sonamos-ciencia-800w.webp 800w, ../../img/blog/por-que-sonamos-ciencia-1200w.webp 1200w" width="1200">
+<img alt="Imagen de actividad cerebral y redes neuronales durante el sueño" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/why-we-dream-science.webp" srcset="../../img/blog/why-we-dream-science-480w.webp 480w, ../../img/blog/why-we-dream-science-800w.webp 800w, ../../img/blog/why-we-dream-science-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -115,13 +115,13 @@
                     Los humanos pasan aproximadamente <strong>seis años de su vida soñando</strong>. A pesar de esta enorme inversión de tiempo y recursos neuronales, la ciencia aún no tiene una respuesta definitiva sobre por qué existen los sueños. Lo que sí tenemos son varias teorías convincentes, cada una respaldada por diferentes líneas de evidencia.
                 </p>
 <p>
-                    El estudio científico de los sueños se aceleró dramáticamente en 1953 cuando los investigadores Eugene Aserinsky y Nathaniel Kleitman descubrieron el <strong><a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> (Movimiento Rápido de Ojos)</strong>. Este descubrimiento reveló que el sueño no es un estado uniforme sino que consiste en etapas distintas, siendo el sueño REM cuando ocurren los sueños más vívidos.
+                    La ciencia de los sueños se aceleró dramáticamente en 1953 cuando los investigadores Eugene Aserinsky y Nathaniel Kleitman descubrieron el <strong><a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a> (Movimiento Rápido de Ojos)</strong>. Su descubrimiento reveló que el sueño no es un estado uniforme sino que consiste en etapas distintas, siendo el sueño REM cuando ocurren los sueños más vívidos.
                 </p>
 <blockquote>
                     "El sueño es la pequeña puerta oculta en el santuario más profundo e íntimo del alma." - Carl Jung
                 </blockquote>
 <p>
-                    La neurociencia moderna ha ido más allá del psicoanálisis freudiano para examinar los sueños a través de imágenes cerebrales, estudios del sueño y ciencias cognitivas. Aunque quizás nunca tengamos una teoría única unificada sobre los sueños, ahora entendemos múltiples funciones que probablemente cumplen.
+                    Más allá del psicoanálisis freudiano, la neurociencia moderna examina los sueños a través de imágenes cerebrales, estudios del sueño y ciencias cognitivas. Aunque quizás nunca tengamos una teoría única unificada, ahora entendemos múltiples funciones que los sueños probablemente cumplen.
                 </p>
 <h2 id="activation-synthesis">Teoría de activación-síntesis de los sueños</h2>
 <p>
@@ -233,7 +233,7 @@
 <p>
                     Esto explica el dicho "consúltalo con la almohada": después de una noche de sueño, las experiencias emocionales genuinamente se sienten menos intensas.
                 </p>
-<h3>Cuando este sistema falla</h3>
+<h3>¿Cuándo este sistema falla</h3>
 <p>
                     La alteración del sueño REM y los sueños está asociada con:
                 </p>
@@ -268,7 +268,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Teoría de activación continua</h3>
 </div>
 <p class="text-sm text-gray-300 mb-3">
-                        Los sueños mantienen los circuitos neuronales activos durante el sueño, previniendo la degradación de vías importantes. Como mantener un motor de <a class="text-dream-salmon hover:underline" href="../simbolos/coche">coche</a> en marcha para evitar que se atasque.
+                        Los sueños mantienen los circuitos neuronales activos durante el sueño, previniendo la degradación de vías importantes. ¿Cómo mantener un motor de <a class="text-dream-salmon hover:underline" href="../simbolos/coche">coche</a> en marcha para evitar que se atasque.
                     </p>
 <p class="text-xs text-dream-salmon">Mantiene la plasticidad cerebral</p>
 </div>
@@ -324,7 +324,7 @@
 <li><strong>Posiblemente reptiles:</strong> Alguna evidencia sugiere estados primitivos similares al REM</li>
 </ul>
 <p>
-                    El hecho de que el sueño REM evolucionó <strong>hace más de 200 millones de años</strong> y se ha conservado en diversas especies sugiere que sirve funciones biológicas cruciales.
+                    El sueño REM evoluciónó <strong>hace más de 200 millones de años</strong> y se ha conservado en diversas especies, lo que sugiere que sirve funciones biológicas cruciales.
                 </p>
 <h3>Investigación comparativa de sueños</h3>
 <p>
@@ -346,7 +346,7 @@
 <li><strong>Costo de tiempo:</strong> Horas no gastadas en alimentarse o reproducirse</li>
 </ul>
 <p>
-                    La persistencia de soñar a pesar de estos costos sugiere que los beneficios - consolidación de memoria, regulación emocional, práctica de habilidades - superan los riesgos.
+                    Soñar persiste a pesar de estos costos, lo que sugiere que los beneficios - consolidación de memoria, regulación emocional, práctica de habilidades - superan los riesgos.
                 </p>
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -384,7 +384,7 @@
                 </p>
 <ul>
 <li>Los soñadores pueden señalar a los investigadores usando movimientos oculares preestablecidos</li>
-<li>Pueden realizar tareas bajo comando mientras permanecen dormidos</li>
+<li>¿Pueden realizar tareas bajo comando mientras permanecen dormidos</li>
 <li>Las imágenes cerebrales muestran activación de regiones metacognitivas (pensar sobre pensar)</li>
 </ul>
 <p>
@@ -439,7 +439,7 @@
 <li>¿Por qué algunas personas sueñan en color mientras otras en blanco y negro?</li>
 </ul>
 <p>
-                    El misterio de soñar sigue siendo una de las fronteras más cautivadoras de la neurociencia: un recordatorio nocturno de que la consciencia aún guarda secretos que apenas estamos comenzando a entender.
+                    Soñar sigue siendo una de las fronteras más cautivadoras de la neurociencia: un recordatorio nocturno de que la consciencia aún guarda secretos que apenas estamos comenzando a entender.
                 </p>
 </div>
 <!-- CTA Section -->
@@ -506,10 +506,10 @@
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">Explora los símbolos mencionados en este artículo:</p>
 <div class="flex flex-wrap gap-3">
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/agua">Soñar con agua</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/muerte">Soñar con muerte</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/persecucion">Soñar con ser perseguido</a>
-<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">Soñar con caída</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/agua">¿Soñar con agua</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/muerte">¿Soñar con muerte</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/persecucion">¿Soñar con ser perseguido</a>
+<a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simbolos/caida">¿Soñar con caída</a>
 </div>
 </section>
 <!-- Related Symbols End -->
@@ -548,8 +548,8 @@
         </a>
         <a href="suenos-premonitorios-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pueden los suenos predecir el futuro? La ciencia de los suenos premonitorios</h3>
-            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los suenos premonitorios y si realmente pueden predecir el futuro.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios</h3>
+            <p class="text-sm text-gray-400">Explora la fascinante ciencia de los sueños premonitorios y si realmente pueden predecir el futuro.</p>
         </a>
         <a href="suenos-salud-mental" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>

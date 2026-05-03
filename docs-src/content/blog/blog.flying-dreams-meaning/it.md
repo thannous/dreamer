@@ -202,7 +202,7 @@
                 </p>
 <h3>1. Sogni volanti che simboleggiano libertà e liberazione</h3>
 <p>
-                    L'interpretazione più comune. Volare significa <strong>liberarsi dai limiti</strong> , siano essi fisici, emotivi o sociali. Potresti fuggire da situazioni restrittive, relazioni tossiche o confini autoimposti. Il sogno celebra il tuo desiderio di indipendenza.
+                    Di gran lunga la lettura più frequente. Volare significa <strong>liberarsi dai limiti</strong>, siano essi fisici, emotivi o sociali. Potresti fuggire da situazioni restrittive, relazioni tossiche o confini autoimposti. Il tuo sogno celebra quel desiderio di indipendenza.
                 </p>
 <h3>2. Sogni di volo che rappresentano ambizione e successo</h3>
 <p>
@@ -265,7 +265,7 @@
                 </p>
 <h3>Volare nei sogni come fattore di lucidità</h3>
 <p>
-                    L'impossibilità di volare può servire come <strong>controllo della realtà</strong>. Quando ti ritrovi a volare, qualcosa nel tuo cervello potrebbe riconoscere "questo non è possibile" - innescare la lucidità.
+                    Volare è semplicemente impossibile nella realtà, il che lo rende un ottimo <strong>controllo della realtà</strong>. Quando ti ritrovi a volare, qualcosa nel tuo cervello potrebbe riconoscere "questo non è possibile" - innescando la lucidità.
                 </p>
 <h3>Volare come obiettivo comune del sogno lucido</h3>
 <p>

@@ -85,7 +85,7 @@
 <h3 class="font-serif text-lg text-dream-cream mb-2">Dream journaling: the complete guide</h3>
 <p class="text-sm text-gray-400">A simple structure you can follow every morning.</p>
 </a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="how-to-remember-dreams">
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-colors" href="why-we-forget-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Recall</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">How to remember your dreams</h3>
 <p class="text-sm text-gray-400">Proven techniques to stabilize dream memory.</p>

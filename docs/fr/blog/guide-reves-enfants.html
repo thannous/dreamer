@@ -53,13 +53,24 @@
       data-key="qDwc7i0RM0aLBY/cZLkOxA"
       async
     ></script>
-    <link rel="stylesheet" href="/css/styles.min.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=42a817478376">
-    <link rel="stylesheet" href="/css/blog.min.css?v=42a817478376">
+    <link rel="stylesheet" href="/css/styles.min.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=fe46413c30a4">
+    <link rel="stylesheet" href="/css/blog.min.css?v=fe46413c30a4">
     <style>
-      @view-transition {
-        navigation: auto;
-      }
+      .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+      .noctalia-premium-nav-inner { width: 100%; max-width: 1720px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(1rem, 3vw, 3.5rem); }
+      .noctalia-premium-links { justify-content: center; flex-wrap: nowrap; gap: clamp(1.4rem, 3.4vw, 4rem); min-width: 0; }
+      .noctalia-premium-nav-actions { justify-content: flex-end; }
+      .noctalia-premium-action { display: inline-flex; }
+      .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+      .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+      @media (max-width: 1100px) { .noctalia-premium-download, .noctalia-premium-about { display: none; } .noctalia-premium-links { gap: clamp(1rem, 2.5vw, 2rem); } }
+      @media (max-width: 860px) { .noctalia-premium-nav-inner { display: flex; justify-content: space-between; } .noctalia-premium-nav-actions { margin-left: auto; } .noctalia-premium-links { display: none; } #navMobileGuideLink, #mobileMenuButton { display: inline-flex; } }
+      @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
+    </style>
+    <style>
+      /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
       @media (prefers-reduced-motion: reduce) {
         ::view-transition-group(*),
@@ -69,7 +80,7 @@
         }
       }
     </style>
-    <script src="/js/lucide.min.js?v=42a817478376" defer></script>
+    <script src="/js/lucide.min.js?v=fe46413c30a4" defer></script>
     <script type="application/ld+json">
 {
             "@context": "https://schema.org",
@@ -175,24 +186,23 @@
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
-    <nav class="fixed w-full z-50 top-0 left-0 bg-dream-dark/60 backdrop-blur-md transition-all duration-300 py-4" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
-        <div class="px-4 sm:px-8 flex items-center justify-between gap-2 sm:gap-4">
-            <a href="/fr/" class="flex items-center gap-2">
+    <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
+        <div class="noctalia-premium-nav-inner px-4 sm:px-8">
+            <a href="/fr/" class="flex items-center gap-2 min-w-max">
                 <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                <span class="font-serif text-xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
+                <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
-            <div class="flex flex-wrap items-center gap-4 md:gap-8 text-sm font-sans text-purple-100/80">
-                <a href="/fr/#comment-ca-marche" class="hidden lg:inline-flex hover:text-white transition-colors">Comment ça marche</a>
-                <a href="/fr/#fonctionnalites" class="hidden lg:inline-flex hover:text-white transition-colors">Fonctionnalités</a>
+            <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
                 <a href="/fr/blog/" class="text-dream-salmon transition-colors">Ressources</a>
                 <a href="/fr/guides/" class="hover:text-white transition-colors">Guides des rêves</a>
                 <a href="/fr/guides/dictionnaire-symboles-reves" class="hover:text-white transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="noctalia-premium-action noctalia-premium-about hover:text-white transition-colors">À propos</a>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="language-dropdown-wrapper relative" id="languageDropdown">
+            <div class="noctalia-premium-nav-actions flex items-center gap-3">
+                <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
                         <i data-lucide="languages" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">FR</span>
+                        <span>FR</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
@@ -217,6 +227,26 @@
                         <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
                     </a>
                     </div>
+                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
+                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">
+            <div class="glass-panel rounded-2xl py-2">
+                <a href="/fr/blog/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Ressources</a>
+                <a href="/fr/guides/" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Guides des rêves</a>
+                <a href="/fr/guides/dictionnaire-symboles-reves" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Dictionnaire des rêves</a>
+                <a href="/fr/a-propos" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">À propos</a>
+                <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon" rel="nofollow noopener noreferrer" target="_blank">Télécharger l&#39;app</a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <a href="/en/blog/children-dreams-guide" hreflang="en" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">English</a>
+                    <a href="/fr/blog/guide-reves-enfants" hreflang="fr" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors text-dream-salmon">Français</a>
+                    <a href="/es/blog/guia-suenos-ninos" hreflang="es" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Español</a>
+                    <a href="/de/blog/kindertraeume-ratgeber" hreflang="de" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Deutsch</a>
+                    <a href="/it/blog/guida-sogni-bambini" hreflang="it" class="block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors">Italiano</a>
                 </div>
             </div>
         </div>
@@ -338,7 +368,7 @@
 
 <h2 id="what-children-dream">De quoi rêvent les enfants ?</h2>
 <p>
-                    Le contenu des rêves des enfants évolue considérablement avec la croissance. Alors que les adultes rêvent souvent du travail, des relations et des préoccupations quotidiennes, les jeunes enfants habitent un monde onirique très différent, peuplé de ce qui compte le plus dans leur univers.
+                    De quoi rêvent les enfants ? Cela évolue considérablement avec la croissance. Alors que les adultes rêvent souvent du travail, des relations et des préoccupations quotidiennes, les jeunes enfants habitent un monde onirique différent, peuplé de ce qui compte le plus dans leur univers.
                 </p>
 <h3>3-5 ans : Animaux et décors familiers</h3>
 <p>
@@ -380,7 +410,7 @@
                     Les terreurs nocturnes sont fondamentalement différentes des cauchemars. Elles surviennent pendant le <strong>sommeil profond non-REM</strong>, habituellement 1 à 3 heures après l'endormissement. Pendant une terreur nocturne, l'enfant peut crier, s'agiter, s'asseoir les yeux grands ouverts ou même marcher - mais il n'est pas vraiment éveillé et n'aura <strong>aucun souvenir de l'épisode</strong> le lendemain matin. Les terreurs nocturnes culminent entre 3 et 8 ans et touchent environ 1 à 6 % des enfants.
                 </p>
 <p>
-                    Les terreurs nocturnes ne sont pas causées par un trouble émotionnel. Elles se produisent quand le cerveau a du mal à transiter entre les stades de sommeil profond. Le manque de sommeil, les horaires irréguliers et la fièvre peuvent les déclencher. Le plus important pour les parents pendant une terreur nocturne est de <strong>rester calme et garder l'enfant en sécurité</strong> sans essayer de le réveiller. Cela diffère considérablement de la <a class="text-dream-salmon hover:underline" href="guide-paralysie-sommeil">paralysie du sommeil</a>, qui survient lors des transitions REM chez les enfants plus âgés et les adultes.
+                    Aucun trouble émotionnel ne provoque les terreurs nocturnes. Elles se produisent quand le cerveau a du mal à transiter entre les stades de sommeil profond. Le manque de sommeil, les horaires irréguliers et la fièvre peuvent les déclencher. Le plus important pour les parents pendant une terreur nocturne est de <strong>rester calme et garder l'enfant en sécurité</strong> sans essayer de le réveiller. Cela diffère considérablement de la <a class="text-dream-salmon hover:underline" href="guide-paralysie-sommeil">paralysie du sommeil</a>, qui survient lors des transitions REM chez les enfants plus âgés et les adultes.
                 </p>
 </div>
 <!-- Dream Type Cards -->
@@ -435,9 +465,9 @@
 <p>
                     Le cerveau des enfants traite les images effrayantes différemment des adultes. Ce qui semble modérément intense pour un adulte peut être véritablement terrifiant pour un enfant de 4 ans. Soyez attentif aux émissions de télévision, films, actualités et même livres d'histoires. L'Académie américaine de pédiatrie recommande <strong>aucun média sur écran pour les enfants de moins de 2 ans</strong> et une sélection attentive du contenu pour les enfants plus âgés, en particulier dans les heures précédant le coucher.
                 </p>
-<h3>Utiliser un attrape-rêves ou un rituel protecteur</h3>
+<h3>Utiliser un attrapé-rêves ou un rituel protecteur</h3>
 <p>
-                    Les jeunes enfants répondent puissamment à la protection symbolique. Accrocher un attrape-rêves, vaporiser un « spray anti-monstres » (de l'eau dans un flacon étiqueté), ou créer une affirmation du coucher comme « ma chambre est sûre et remplie de beaux rêves » peut donner aux enfants un véritable sentiment de contrôle sur leur monde onirique.
+                    Les jeunes enfants répondent puissamment à la protection symbolique. Accrocher un attrapé-rêves, vaporiser un « spray anti-monstres » (de l'eau dans un flacon étiqueté), ou créer une affirmation du coucher comme « ma chambre est sûre et remplie de beaux rêves » peut donner aux enfants un véritable sentiment de contrôle sur leur monde onirique.
                 </p>
 
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -457,7 +487,7 @@
 
 <h2 id="journaling-for-kids">Le journal de rêves pour les enfants</h2>
 <p>
-                    Le journal de rêves n'est pas réservé aux adultes. Adapté à l'âge et aux capacités de l'enfant, il peut devenir un outil puissant de développement émotionnel, de créativité et de conscience de soi. L'essentiel est de le rendre adapté à l'âge et ludique - jamais une corvée.
+                    Tenir un journal de rêves fonctionne aussi pour les enfants, pas seulement pour les adultes. Adapté à l'âge et aux capacités de l'enfant, cet outil favorise le développement émotionnel, la créativité et la conscience de soi. Rendez-le ludique et adapté à l'âge - jamais une corvée.
                 </p>
 <h3>3-5 ans : Dessiner ses rêves</h3>
 <p>
@@ -616,7 +646,7 @@
 </aside>
 
     </main>
-    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
+    <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/fr/" class="flex items-center gap-2 mb-4">
@@ -693,8 +723,9 @@
             <span class="mt-2 md:mt-0 flex gap-2 items-center">Fait avec <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> pour les rêveurs</span>
         </div>
     </footer>
-    <script src="/js/site-shell.js?v=42a817478376" defer></script>
-    <script src="/js/language-dropdown.js?v=42a817478376" defer></script>
-    <script src="/js/blog-article.js?v=42a817478376" defer></script>
+    <script src="/js/site-shell.js?v=fe46413c30a4" defer></script>
+    <script src="/js/language-dropdown.js?v=fe46413c30a4" defer></script>
+    <script src="/js/mobile-menu.js?v=fe46413c30a4" defer></script>
+    <script src="/js/blog-article.js?v=fe46413c30a4" defer></script>
 </body>
 </html>

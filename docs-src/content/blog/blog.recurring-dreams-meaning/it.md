@@ -116,7 +116,7 @@
                     Spesso sono incentrati su simboli familiari come <a class="text-dream-salmon hover:underline" href="../simboli/cadere">cadere</a>, che possono rendere il messaggio ancora più persistente.
                 </p>
 <p>
-                    La ricerca mostra che questi sogni sono particolarmente comuni tra le persone che attraversano periodi di stress o di transizione. Uno studio dell' <a href="https://pubmed.ncbi.nlm.nih.gov/35366719/" rel="nofollow noopener noreferrer" target="_blank">Università di Montreal (2022)</a> ha rivelato che <strong>75% dei sogni ricorrenti ha un tono negativo</strong>, spesso implicando paura, frustrazione o impotenza.
+                    Questi sogni sono particolarmente comuni tra chi attraversa periodi di stress o transizione. Uno studio dell'<a href="https://pubmed.ncbi.nlm.nih.gov/35366719/" rel="nofollow noopener noreferrer" target="_blank">Università di Montreal (2022)</a> ha rivelato che <strong>il 75% dei sogni ricorrenti ha un tono negativo</strong>, spesso implicando paura, frustrazione o impotenza.
                 </p>
 <blockquote>
                     "I sogni ricorrenti sono come un messaggio per il tuo inconscio ti manda ancora e ancora, finché non ascolti." - Dott.ssa Deirdre Barrett, Harvard Medical School
@@ -127,11 +127,11 @@
                 </p>
 <h3>1. Traumi irrisolti e sogni ricorrenti</h3>
 <p>
-                    Il cervello usa i sogni per <strong>elaborare esperienze cariche di emozioni</strong>. Quando un trauma non è completamente integrato, la mente “si ripete” spera di risolverlo.
+                    Il tuo cervello usa i sogni per <strong>elaborare esperienze cariche di emozioni</strong>. Quando un trauma non viene completamente integrato, la mente lo “riproduce” sperando di risolverlo.
                 </p>
 <h3>2. Lo stress cronico provoca sogni ricorrenti</h3>
 <p>
-                    Lo stress quotidiano (lavoro, relazioni, finanze) si manifesta spesso attraverso scenari onirici ripetitivi. Il sogno diventa uno <a class="text-dream-salmon hover:underline" href="../simboli/specchio">specchio</a> delle nostre preoccupazioni consce e inconsce.
+                    Lavoro, relazioni, finanze - lo stress quotidiano si manifesta spesso attraverso scenari onirici ripetitivi. Il sogno diventa uno <a class="text-dream-salmon hover:underline" href="../simboli/specchio">specchio</a> delle nostre preoccupazioni consce e inconsce.
                 </p>
 <h3>3. Conflitti interiori che si manifestano nei sogni</h3>
 <p>
@@ -353,7 +353,7 @@
                 </p>
 <h3>Affronta il problema alla base del tuo sogno</h3>
 <p>
-                    Il sogno finirà naturalmente una volta che avrai <strong>risolto il conflitto che simboleggia</strong>. Identifica il problema nella tua vita da sveglio e agisci.
+                    Aspettati che il sogno finisca naturalmente una volta che avrai <strong>risolto il conflitto che simboleggia</strong>. Identifica il problema nella tua vita da sveglio e agisci.
                 </p>
 <h3>Meditazione e rilassamento per ridurre i sogni ricorrenti</h3>
 <p>

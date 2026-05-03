@@ -11,7 +11,7 @@
   "htmlClass": "scroll-smooth blog-index",
   "bodyClass": "bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden",
   "bodyStyle": "background-color: #0a0514;",
-  "mainClass": "pt-32 pb-20 px-4",
+  "mainClass": "blog-premium pt-28 pb-20 overflow-x-hidden w-full max-w-full",
   "ogType": "website",
   "ogTitle": "Noctalia Resources - Everything About Dreams",
   "ogDescription": "Guides, science, and dream interpretation: clear resources to understand your nights and remember your dreams.",
@@ -30,13 +30,13 @@
   "preloadImage": "",
   "jsonLd": [
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"Blog\",\n            \"name\": \"Noctalia Resources\",\n            \"description\": \"Articles and guides about dreams, interpretation and lucid dreaming\",\n            \"url\": \"https://noctalia.app/en/blog/\",\n            \"inLanguage\": \"en\",\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            }\n        }",
-    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"ItemList\",\n        \"numberOfItems\": 34,\n        \"itemListElement\": [\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 1,\n                \"url\": \"https://noctalia.app/en/blog/how-to-remember-dreams\",\n                \"name\": \"How to Remember Your Dreams: 10 Effective Techniques\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 2,\n                \"url\": \"https://noctalia.app/en/blog/why-we-forget-dreams\",\n                \"name\": \"Why Do We Forget Our Dreams? The Science Behind Dream Amnesia\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 3,\n                \"url\": \"https://noctalia.app/en/blog/recurring-dreams-meaning\",\n                \"name\": \"Recurring Dreams Meaning: Understanding Their Hidden Messages\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 4,\n                \"url\": \"https://noctalia.app/en/blog/lucid-dreaming-beginners-guide\",\n                \"name\": \"Lucid Dreaming Guide for Beginners: Take Control of Your Nights\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 5,\n                \"url\": \"https://noctalia.app/en/blog/teeth-falling-out-dreams\",\n                \"name\": \"Teeth Falling Out Dreams: Meaning and Interpretation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 6,\n                \"url\": \"https://noctalia.app/en/blog/falling-dreams-meaning\",\n                \"name\": \"Falling Dreams Meaning: Why You Dream of Falling\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 7,\n                \"url\": \"https://noctalia.app/en/blog/flying-dreams-meaning\",\n                \"name\": \"Flying Dreams Meaning: What It Means to Fly in Your Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 8,\n                \"url\": \"https://noctalia.app/en/blog/snake-dreams-meaning\",\n                \"name\": \"Dreams About Snakes: What Your Subconscious is Really Warning You About\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 9,\n                \"url\": \"https://noctalia.app/en/blog/dream-incubation-guide\",\n                \"name\": \"Dream Incubation: How to Dream About Exactly What You Want Tonight\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 10,\n                \"url\": \"https://noctalia.app/en/blog/precognitive-dreams-science\",\n                \"name\": \"Can Dreams Predict the Future? The Surprising Science of Precognitive Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 11,\n                \"url\": \"https://noctalia.app/en/blog/being-chased-dreams\",\n                \"name\": \"Being Chased Dreams: Meaning and Interpretation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 12,\n                \"url\": \"https://noctalia.app/en/blog/death-dreams-meaning\",\n                \"name\": \"Dreams About Death: Meaning and Interpretation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 13,\n                \"url\": \"https://noctalia.app/en/blog/water-dreams-meaning\",\n                \"name\": \"Water Dreams: Meaning of Drowning, Ocean, and Flood Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 14,\n                \"url\": \"https://noctalia.app/en/blog/dreams-about-ex\",\n                \"name\": \"Dreams About Your Ex: What They Really Mean\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 15,\n                \"url\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\",\n                \"name\": \"Pregnancy Dreams: What They Mean (Even If You're Not Pregnant)\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 16,\n                \"url\": \"https://noctalia.app/en/blog/stop-nightmares-guide\",\n                \"name\": \"Nightmares: Causes, Meaning, and How to Stop Them\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 17,\n                \"url\": \"https://noctalia.app/en/blog/sleep-paralysis-guide\",\n                \"name\": \"Sleep Paralysis Explained: Why You Can't Move and How to Stop It\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 18,\n                \"url\": \"https://noctalia.app/en/blog/dream-journal-guide\",\n                \"name\": \"Dream Journaling: The Complete Guide to Recording Your Night Adventures\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 19,\n                \"url\": \"https://noctalia.app/en/blog/dreams-mental-health\",\n                \"name\": \"Dreams and Mental Health: How Your Sleep Reveals Your Mind\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 20,\n                \"url\": \"https://noctalia.app/en/blog/why-we-dream-science\",\n                \"name\": \"Why Do We Dream? The Science Behind Your Nightly Adventures\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 21,\n                \"url\": \"https://noctalia.app/en/blog/rem-sleep-dreams\",\n                \"name\": \"REM Sleep and Dreams: Understanding Your Brain's Nightly Reset\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 22,\n                \"url\": \"https://noctalia.app/en/blog/dream-interpretation-history\",\n                \"name\": \"The History of Dream Interpretation: From Ancient Temples to Modern Science\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 23,\n                \"url\": \"https://noctalia.app/en/blog/stress-dreams-work\",\n                \"name\": \"Stress Dreams About Work: Why Your Job Follows You to Sleep\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 24,\n                \"url\": \"https://noctalia.app/en/blog/dreams-and-creativity\",\n                \"name\": \"Dreams and Creativity: How Your Sleeping Brain Solves Problems\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 25,\n                \"url\": \"https://noctalia.app/en/blog/anxiety-dreams-meaning\",\n                \"name\": \"Anxiety Dreams: Why You Have Them and How to Stop Them\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 26,\n                \"url\": \"https://noctalia.app/en/blog/children-dreams-guide\",\n                \"name\": \"Children's Dreams: What Kids Dream About and How to Help\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 27,\n                \"url\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\",\n                \"name\": \"Sleep Day 2026: How Your Environment Transforms Your Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 28,\n                \"url\": \"https://noctalia.app/en/blog/ai-sleep-analysis-dreams\",\n                \"name\": \"The AI That Reads Your Sleep: Stanford's SleepFM Revolution\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 29,\n                \"url\": \"https://noctalia.app/en/blog/dream-control-problem-solving\",\n                \"name\": \"Controlling Your Dreams to Solve Problems: The Study That Changes Everything\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 30,\n                \"url\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\",\n                \"name\": \"Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 31,\n                \"url\": \"https://noctalia.app/en/blog/sleep-debt-health-dreams\",\n                \"name\": \"Sleep Debt: How Chronic Sleep Deprivation Affects Your Health and Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 32,\n                \"url\": \"https://noctalia.app/en/blog/spring-sleep-disruption-dreams\",\n                \"name\": \"Spring Sleep Disruption: How Longer Days Alter Your Sleep and Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 33,\n                \"url\": \"https://noctalia.app/en/blog/sleep-health-priority\",\n                \"name\": \"Sleep Is Your #1 Health Lever: The OHSU Study That Changes Everything\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 34,\n                \"url\": \"https://noctalia.app/en/blog/wearable-sleep-trackers-dreams\",\n                \"name\": \"Wearable Sleep Trackers and Dreams: What They Measure vs. What They Miss\"\n            }\n        ]\n    }",
+    "{\n        \"@context\": \"https://schema.org\",\n        \"@type\": \"ItemList\",\n        \"numberOfItems\": 34,\n        \"itemListElement\": [\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 1,\n                \"url\": \"https://noctalia.app/en/blog/why-we-forget-dreams\",\n                \"name\": \"How to Remember Your Dreams: 10 Effective Techniques\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 2,\n                \"url\": \"https://noctalia.app/en/blog/why-we-forget-dreams\",\n                \"name\": \"Why Do We Forget Our Dreams? The Science Behind Dream Amnesia\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 3,\n                \"url\": \"https://noctalia.app/en/blog/recurring-dreams-meaning\",\n                \"name\": \"Recurring Dreams Meaning: Understanding Their Hidden Messages\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 4,\n                \"url\": \"https://noctalia.app/en/blog/lucid-dreaming-beginners-guide\",\n                \"name\": \"Lucid Dreaming Guide for Beginners: Take Control of Your Nights\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 5,\n                \"url\": \"https://noctalia.app/en/blog/teeth-falling-out-dreams\",\n                \"name\": \"Teeth Falling Out Dreams: Meaning and Interpretation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 6,\n                \"url\": \"https://noctalia.app/en/blog/falling-dreams-meaning\",\n                \"name\": \"Falling Dreams Meaning: Why You Dream of Falling\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 7,\n                \"url\": \"https://noctalia.app/en/blog/flying-dreams-meaning\",\n                \"name\": \"Flying Dreams Meaning: What It Means to Fly in Your Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 8,\n                \"url\": \"https://noctalia.app/en/blog/snake-dreams-meaning\",\n                \"name\": \"Dreams About Snakes: What Your Subconscious is Really Warning You About\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 9,\n                \"url\": \"https://noctalia.app/en/blog/dream-incubation-guide\",\n                \"name\": \"Dream Incubation: How to Dream About Exactly What You Want Tonight\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 10,\n                \"url\": \"https://noctalia.app/en/blog/precognitive-dreams-science\",\n                \"name\": \"Can Dreams Predict the Future? The Surprising Science of Precognitive Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 11,\n                \"url\": \"https://noctalia.app/en/blog/being-chased-dreams\",\n                \"name\": \"Being Chased Dreams: Meaning and Interpretation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 12,\n                \"url\": \"https://noctalia.app/en/blog/death-dreams-meaning\",\n                \"name\": \"Dreams About Death: Meaning and Interpretation\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 13,\n                \"url\": \"https://noctalia.app/en/blog/water-dreams-meaning\",\n                \"name\": \"Water Dreams: Meaning of Drowning, Ocean, and Flood Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 14,\n                \"url\": \"https://noctalia.app/en/blog/dreams-about-ex\",\n                \"name\": \"Dreams About Your Ex: What They Really Mean\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 15,\n                \"url\": \"https://noctalia.app/en/blog/pregnancy-dreams-meaning\",\n                \"name\": \"Pregnancy Dreams: What They Mean (Even If You're Not Pregnant)\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 16,\n                \"url\": \"https://noctalia.app/en/blog/stop-nightmares-guide\",\n                \"name\": \"Nightmares: Causes, Meaning, and How to Stop Them\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 17,\n                \"url\": \"https://noctalia.app/en/blog/sleep-paralysis-guide\",\n                \"name\": \"Sleep Paralysis Explained: Why You Can't Move and How to Stop It\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 18,\n                \"url\": \"https://noctalia.app/en/blog/dream-journal-guide\",\n                \"name\": \"Dream Journaling: The Complete Guide to Recording Your Night Adventures\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 19,\n                \"url\": \"https://noctalia.app/en/blog/dreams-mental-health\",\n                \"name\": \"Dreams and Mental Health: How Your Sleep Reveals Your Mind\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 20,\n                \"url\": \"https://noctalia.app/en/blog/why-we-dream-science\",\n                \"name\": \"Why Do We Dream? The Science Behind Your Nightly Adventures\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 21,\n                \"url\": \"https://noctalia.app/en/blog/rem-sleep-dreams\",\n                \"name\": \"REM Sleep and Dreams: Understanding Your Brain's Nightly Reset\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 22,\n                \"url\": \"https://noctalia.app/en/blog/dream-interpretation-history\",\n                \"name\": \"The History of Dream Interpretation: From Ancient Temples to Modern Science\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 23,\n                \"url\": \"https://noctalia.app/en/blog/stress-dreams-work\",\n                \"name\": \"Stress Dreams About Work: Why Your Job Follows You to Sleep\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 24,\n                \"url\": \"https://noctalia.app/en/blog/dreams-and-creativity\",\n                \"name\": \"Dreams and Creativity: How Your Sleeping Brain Solves Problems\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 25,\n                \"url\": \"https://noctalia.app/en/blog/anxiety-dreams-meaning\",\n                \"name\": \"Anxiety Dreams: Why You Have Them and How to Stop Them\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 26,\n                \"url\": \"https://noctalia.app/en/blog/children-dreams-guide\",\n                \"name\": \"Children's Dreams: What Kids Dream About and How to Help\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 27,\n                \"url\": \"https://noctalia.app/en/blog/sleep-day-environment-dreams\",\n                \"name\": \"Sleep Day 2026: How Your Environment Transforms Your Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 28,\n                \"url\": \"https://noctalia.app/en/blog/ai-sleep-analysis-dreams\",\n                \"name\": \"The AI That Reads Your Sleep: Stanford's SleepFM Revolution\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 29,\n                \"url\": \"https://noctalia.app/en/blog/dream-control-problem-solving\",\n                \"name\": \"Controlling Your Dreams to Solve Problems: The Study That Changes Everything\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 30,\n                \"url\": \"https://noctalia.app/en/blog/daylight-saving-time-sleep\",\n                \"name\": \"Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 31,\n                \"url\": \"https://noctalia.app/en/blog/sleep-debt-health-dreams\",\n                \"name\": \"Sleep Debt: How Chronic Sleep Deprivation Affects Your Health and Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 32,\n                \"url\": \"https://noctalia.app/en/blog/spring-sleep-disruption-dreams\",\n                \"name\": \"Spring Sleep Disruption: How Longer Days Alter Your Sleep and Dreams\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 33,\n                \"url\": \"https://noctalia.app/en/blog/sleep-health-priority\",\n                \"name\": \"Sleep Is Your #1 Health Lever: The OHSU Study That Changes Everything\"\n            },\n            {\n                \"@type\": \"ListItem\",\n                \"position\": 34,\n                \"url\": \"https://noctalia.app/en/blog/wearable-sleep-trackers-dreams\",\n                \"name\": \"Wearable Sleep Trackers and Dreams: What They Measure vs. What They Miss\"\n            }\n        ]\n    }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/en/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
 }
 ---
-<div class="max-w-6xl mx-auto">
+<div class="blog-premium-shell max-w-6xl mx-auto">
 <!-- Breadcrumb -->
 <nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
 <ol class="flex items-center gap-2" itemscope="" itemtype="https://schema.org/BreadcrumbList">
@@ -54,98 +54,94 @@
 </ol>
 </nav>
 <!-- Header -->
-<header class="text-center mb-12">
+<header class="blog-premium-hero mb-12">
+<div class="blog-premium-hero-inner">
+<div class="blog-premium-hero-copy">
+<p class="blog-premium-eyebrow">Noctalia Resources</p>
 <h1 class="font-serif text-4xl md:text-6xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-normal md:leading-normal pb-2">
-	                    Noctalia Resources
+	                    Understand your dreams
 	                </h1>
-<p class="text-lg text-purple-200/70 max-w-2xl mx-auto">
-	                    Guides, sleep science, interpretation, and references: Noctalia resources to understand your dreams
-	                    and remember them better.
+<p class="text-lg text-purple-200/70 max-w-2xl">
+	                    Practical guides to record, understand and analyze the dreams that keep returning at night.
 	                </p>
+</div>
+</div>
 </header>
-<!-- Topic Hubs -->
-<section class="mb-16">
-<h2 class="font-serif text-2xl text-dream-cream mb-8 text-center">Explore by topic</h2>
-<div class="grid md:grid-cols-3 gap-6">
-<!-- Card 1 - Lucid dreaming -->
-<a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-purple-900/40 via-dream-dark/60 to-dream-dark hover:border-purple-400/30 transition-all duration-500" href="lucid-dreaming">
-<div class="absolute -top-8 -right-8 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-colors"></div>
-<div class="absolute top-4 right-4 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-purple-500/20 transition-all">
-<i class="w-6 h-6 text-purple-400/60 group-hover:text-purple-300 transition-colors" data-lucide="eye"></i>
+<!-- Editorial Carousel -->
+<section class="blog-premium-carousel" aria-label="Read now">
+<div class="blog-premium-carousel-header">
+<div>
+<h2 class="font-serif text-3xl md:text-5xl text-dream-cream">Read now</h2>
+<span>Editor selection</span>
+<p>The guides that help fastest to record, retrieve and interpret your dreams.</p>
 </div>
-<div class="relative">
-<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Lucid dreaming</h3>
-<p class="text-sm text-gray-400 leading-relaxed">Guides and techniques to progress safely.</p>
+<div class="blog-premium-carousel-controls">
+<button class="blog-carousel-button" type="button" data-carousel-prev aria-label="Previous article">
+<i class="w-5 h-5" data-lucide="arrow-left"></i>
+</button>
+<button class="blog-carousel-button" type="button" data-carousel-next aria-label="Next article">
+<i class="w-5 h-5" data-lucide="arrow-right"></i>
+</button>
+<span class="blog-carousel-count">1 / 5</span>
 </div>
-</a>
-<!-- Card 2 - Dream journaling -->
-<a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-blue-900/40 via-dream-dark/60 to-dream-dark hover:border-blue-400/30 transition-all duration-500" href="dream-journal">
-<div class="absolute -top-8 -right-8 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-colors"></div>
-<div class="absolute top-4 right-4 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
-<i class="w-6 h-6 text-blue-400/60 group-hover:text-blue-300 transition-colors" data-lucide="book-open"></i>
 </div>
-<div class="relative">
-<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Dream journaling</h3>
-<p class="text-sm text-gray-400 leading-relaxed">Recall, routines, REM and best practices.</p>
-</div>
-</a>
-<!-- Card 3 - Dream meanings -->
-<a class="group relative rounded-2xl p-6 block overflow-hidden border border-white/5 bg-gradient-to-br from-pink-900/40 via-dream-dark/60 to-dream-dark hover:border-pink-400/30 transition-all duration-500" href="dream-meanings">
-<div class="absolute -top-8 -right-8 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-colors"></div>
-<div class="absolute top-4 right-4 w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-pink-500/20 transition-all">
-<i class="w-6 h-6 text-pink-400/60 group-hover:text-pink-300 transition-colors" data-lucide="sparkles"></i>
-</div>
-<div class="relative">
-<h3 class="font-serif text-xl text-dream-cream mb-2 group-hover:text-white transition-colors pr-14">Dream meanings</h3>
-<p class="text-sm text-gray-400 leading-relaxed">Interpretation, symbols, and recurring themes.</p>
+<div class="blog-premium-carousel-track" data-blog-carousel>
+<article class="blog-carousel-card blog-carousel-card-large">
+<a href="why-we-forget-dreams">
+<img src="../../img/blog/why-we-forget-dreams.webp" alt="Dream journal on a bed" loading="eager">
+<div>
+<span>Guide · 4 min</span>
+<h3>How to remember your dreams</h3>
+<p>Simple techniques you can use tonight to stop losing your dreams at waking.</p>
 </div>
 </a>
+</article>
+<article class="blog-carousel-card">
+<a href="why-we-forget-dreams">
+<img src="../../img/blog/dream-memory-hero-1200w.webp" alt="Dream memory and waking" loading="eager">
+<div>
+<span>Science · 6 min</span>
+<h3>Why do we forget dreams?</h3>
+</div>
+</a>
+</article>
+<article class="blog-carousel-card">
+<a href="recurring-dreams-meaning">
+<img src="../../img/blog/recurring-dreams-meaning.webp" alt="Recurring dreams" loading="eager">
+<div>
+<span>Interpretation · 3 min</span>
+<h3>Understand recurring dreams</h3>
+</div>
+</a>
+</article>
+<article class="blog-carousel-card">
+<a href="lucid-dreaming-beginners-guide">
+<img src="../../img/blog/lucid-dreaming-beginners-guide.webp" alt="Lucid dreaming beginner guide" loading="lazy">
+<div>
+<span>Lucid dreaming · 4 min</span>
+<h3>Start lucid dreaming</h3>
+</div>
+</a>
+</article>
+<article class="blog-carousel-card">
+<a href="dream-journal-guide">
+<img src="../../img/blog/dream-journal-guide.webp" alt="Dream journal" loading="lazy">
+<div>
+<span>Routine · 4 min</span>
+<h3>Build a useful dream journal</h3>
+</div>
+</a>
+</article>
 </div>
 </section>
-
-                <!-- Dream Symbols Module Start -->
-                <section class="mb-16" aria-label="Dream symbols">
-                    <div class="glass-panel rounded-3xl p-8 md:p-10 border border-dream-salmon/20">
-                        <div class="flex items-center justify-center gap-3 mb-4">
-                            <i data-lucide="sparkles" class="w-6 h-6 text-dream-salmon"></i>
-                            <h2 class="font-serif text-2xl md:text-3xl text-dream-cream">Explore Dream Symbols</h2>
-                        </div>
-                        <p class="text-sm md:text-base text-purple-200/70 max-w-3xl mx-auto text-center">Jump from articles to the dictionary: browse categories or open a symbol to learn its meaning.</p>
-
-                        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-                            <a href="/en/guides/dream-symbols-dictionary" class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-bold bg-dream-salmon text-dream-dark hover:bg-dream-salmon/90 transition-colors">
-                                Open the dictionary <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </a>
-                        </div>
-
-                        <h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Browse by category</h3>
-                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-                    <a href="/en/symbols/actions" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Actions</a>
-                    <a href="/en/symbols/animals" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Animals</a>
-                    <a href="/en/symbols/body" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Body</a>
-                    <a href="/en/symbols/celestial" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Celestial</a>
-                    <a href="/en/symbols/nature" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Nature</a>
-                    <a href="/en/symbols/objects" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Objects</a>
-                    <a href="/en/symbols/people" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">People</a>
-                    <a href="/en/symbols/places" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Places</a>
-                        </div>
-
-                        <h3 class="mt-10 font-serif text-lg text-dream-cream text-center">Popular symbols</h3>
-                        <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-                    <a href="/en/symbols/being-chased" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Chase / Being Chased</a>
-                    <a href="/en/symbols/death" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Death</a>
-                    <a href="/en/symbols/falling" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Falling</a>
-                    <a href="/en/symbols/flying" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Flying</a>
-                    <a href="/en/symbols/moon" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Moon</a>
-                    <a href="/en/symbols/snake" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Snake</a>
-                    <a href="/en/symbols/water" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Water</a>
-                    <a href="/en/symbols/baby" class="glass-button inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm text-purple-100/80 border border-white/10 hover:border-dream-salmon hover:text-white transition-colors">Baby</a>
-                        </div>
-                    </div>
-                </section>
-                <!-- Dream Symbols Module End -->
+<div class="blog-premium-latest-heading" aria-hidden="false">
+<div>
+<h2 class="font-serif text-3xl md:text-5xl text-dream-cream">Latest articles</h2>
+<p>Practical guides, sleep science and dream symbols organized in a readable bento grid.</p>
+</div>
+</div>
 <!-- Search and Filters -->
-<div class="mb-10 space-y-6">
+<div class="blog-premium-filters mb-10">
 <!-- Search Bar -->
 <div class="relative max-w-md mx-auto">
 <i class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50" data-lucide="search"></i>
@@ -199,38 +195,13 @@
 <span id="resultsNumber">10</span> resource(s) found
                 </p>
 </div>
-<!-- Featured Article -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group mb-8" data-category="guide" data-reading-time="4" data-testid="featured-article" data-title="How to Remember Your Dreams: 10 Effective Techniques">
-<a class="block md:flex" href="how-to-remember-dreams">
-<div class="md:w-1/2 aspect-video md:aspect-auto overflow-hidden bg-dream-purple/30">
-<img alt="Dream journal on bed" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, 50vw" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="800">
-</div>
-<div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
-<div class="flex items-center gap-3 mb-4">
-<span class="text-xs font-mono bg-dream-salmon/20 text-dream-salmon border border-dream-salmon/30 rounded-full px-3 py-1 uppercase">Featured</span>
-<span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guide</span>
-<span class="text-xs text-purple-300/60">4 min read</span>
-</div>
-<h2 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream group-hover:text-white transition-colors">
-                            How to Remember Your Dreams: 10 Effective Techniques
-                        </h2>
-<p class="text-sm text-gray-400 mb-4 line-clamp-3">
-                            Discover scientifically proven methods to improve your dream recall and never forget
-                            your dreams upon waking again. Simple techniques you can apply tonight.
-                        </p>
-<span class="inline-flex items-center gap-2 text-dream-salmon text-sm font-medium group-hover:gap-3 transition-all">
-                            Read resource <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</span>
-</div>
-</a>
-</article>
 <!-- Articles Grid -->
 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="articles-grid" id="articlesGrid">
 <!-- Article - Why We Forget Dreams (NEW) -->
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Why Do We Forget Our Dreams? The Science Behind Dream Amnesia">
 <a class="block" href="why-we-forget-dreams">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Why we forget our dreams" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="800">
+<img alt="Why we forget our dreams" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/why-we-forget-dreams.webp" srcset="../../img/blog/why-we-forget-dreams-480w.webp 480w, ../../img/blog/why-we-forget-dreams-800w.webp 800w, ../../img/blog/why-we-forget-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -761,7 +732,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sleep Day 2026: How Your Environment Transforms Your Dreams">
 <a class="block" href="sleep-day-environment-dreams">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Peaceful bedroom illustrating the ideal sleep environment" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/journee-sommeil-environnement-reves.webp" srcset="../../img/blog/journee-sommeil-environnement-reves-480w.webp 480w, ../../img/blog/journee-sommeil-environnement-reves-800w.webp 800w, ../../img/blog/journee-sommeil-environnement-reves-1200w.webp 1200w" width="800">
+<img alt="Peaceful bedroom illustrating the ideal sleep environment" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -782,7 +753,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="The AI That Reads Your Sleep: Stanford's SleepFM Revolution">
 <a class="block" href="ai-sleep-analysis-dreams">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Brain signals analyzed by artificial intelligence" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/ia-analyse-sommeil-reves.webp" srcset="../../img/blog/ia-analyse-sommeil-reves-480w.webp 480w, ../../img/blog/ia-analyse-sommeil-reves-800w.webp 800w, ../../img/blog/ia-analyse-sommeil-reves-1200w.webp 1200w" width="800">
+<img alt="Brain signals analyzed by artificial intelligence" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/ai-sleep-analysis-dreams.webp" srcset="../../img/blog/ai-sleep-analysis-dreams-480w.webp 480w, ../../img/blog/ai-sleep-analysis-dreams-800w.webp 800w, ../../img/blog/ai-sleep-analysis-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -803,7 +774,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Controlling Your Dreams to Solve Problems: The Study That Changes Everything">
 <a class="block" href="dream-control-problem-solving">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Brain solving puzzles during sleep" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/controler-reves-resolution-problemes.webp" srcset="../../img/blog/controler-reves-resolution-problemes-480w.webp 480w, ../../img/blog/controler-reves-resolution-problemes-800w.webp 800w, ../../img/blog/controler-reves-resolution-problemes-1200w.webp 1200w" width="800">
+<img alt="Brain solving puzzles during sleep" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-control-problem-solving.webp" srcset="../../img/blog/dream-control-problem-solving-480w.webp 480w, ../../img/blog/dream-control-problem-solving-800w.webp 800w, ../../img/blog/dream-control-problem-solving-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -824,7 +795,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams">
 <a class="block" href="daylight-saving-time-sleep">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Clock surrounded by disrupted sleep cycles and dream symbols in purple and amber tones" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/changement-heure-sommeil-reves.webp" srcset="../../img/blog/changement-heure-sommeil-reves-480w.webp 480w, ../../img/blog/changement-heure-sommeil-reves-800w.webp 800w, ../../img/blog/changement-heure-sommeil-reves-1200w.webp 1200w" width="800">
+<img alt="Clock surrounded by disrupted sleep cycles and dream symbols in purple and amber tones" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/daylight-saving-time-sleep-dreams.webp" srcset="../../img/blog/daylight-saving-time-sleep-dreams-480w.webp 480w, ../../img/blog/daylight-saving-time-sleep-dreams-800w.webp 800w, ../../img/blog/daylight-saving-time-sleep-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -845,7 +816,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Sleep Debt: How Chronic Sleep Deprivation Affects Your Health and Dreams">
 <a class="block" href="sleep-debt-health-dreams">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Exhausted figure surrounded by accumulating sleep debt symbols in deep blue and violet tones" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dette-sommeil-sante-reves.webp" srcset="../../img/blog/dette-sommeil-sante-reves-480w.webp 480w, ../../img/blog/dette-sommeil-sante-reves-800w.webp 800w, ../../img/blog/dette-sommeil-sante-reves-1200w.webp 1200w" width="800">
+<img alt="Exhausted figure surrounded by accumulating sleep debt symbols in deep blue and violet tones" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-debt-health-dreams.webp" srcset="../../img/blog/sleep-debt-health-dreams-480w.webp 480w, ../../img/blog/sleep-debt-health-dreams-800w.webp 800w, ../../img/blog/sleep-debt-health-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -866,7 +837,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Spring Sleep Disruption: How Longer Days Alter Your Sleep and Dreams">
 <a class="block" href="spring-sleep-disruption-dreams">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Dreamlike spring landscape with disrupted circadian light waves in violet and golden tones" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/perturbation-sommeil-printemps-reves.webp" srcset="../../img/blog/perturbation-sommeil-printemps-reves-480w.webp 480w, ../../img/blog/perturbation-sommeil-printemps-reves-800w.webp 800w, ../../img/blog/perturbation-sommeil-printemps-reves-1200w.webp 1200w" width="800">
+<img alt="Dreamlike spring landscape with disrupted circadian light waves in violet and golden tones" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/spring-sleep-disruption-dreams.webp" srcset="../../img/blog/spring-sleep-disruption-dreams-480w.webp 480w, ../../img/blog/spring-sleep-disruption-dreams-800w.webp 800w, ../../img/blog/spring-sleep-disruption-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -887,7 +858,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Sleep Is Your #1 Health Lever: The OHSU Study That Changes Everything">
 <a class="block" href="sleep-health-priority">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Human silhouette with glowing brain surrounded by health indicators with sleep as dominant element" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sommeil-sante-priorite.webp" srcset="../../img/blog/sommeil-sante-priorite-480w.webp 480w, ../../img/blog/sommeil-sante-priorite-800w.webp 800w, ../../img/blog/sommeil-sante-priorite-1200w.webp 1200w" width="800">
+<img alt="Human silhouette with glowing brain surrounded by health indicators with sleep as dominant element" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-health-priority.webp" srcset="../../img/blog/sleep-health-priority-480w.webp 480w, ../../img/blog/sleep-health-priority-800w.webp 800w, ../../img/blog/sleep-health-priority-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">
@@ -908,7 +879,7 @@
 <article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Wearable Sleep Trackers and Dreams: What They Measure vs. What They Miss">
 <a class="block" href="wearable-sleep-trackers-dreams">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
-<img alt="Wrist wearing a smartwatch displaying sleep data alongside ethereal dream fragments" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/traqueurs-sommeil-connectes-reves.webp" srcset="../../img/blog/traqueurs-sommeil-connectes-reves-480w.webp 480w, ../../img/blog/traqueurs-sommeil-connectes-reves-800w.webp 800w, ../../img/blog/traqueurs-sommeil-connectes-reves-1200w.webp 1200w" width="800">
+<img alt="Wrist wearing a smartwatch displaying sleep data alongside ethereal dream fragments" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/wearable-sleep-trackers-dreams.webp" srcset="../../img/blog/wearable-sleep-trackers-dreams-480w.webp 480w, ../../img/blog/wearable-sleep-trackers-dreams-800w.webp 800w, ../../img/blog/wearable-sleep-trackers-dreams-1200w.webp 1200w" width="800">
 </div>
 <div class="p-6">
 <div class="flex items-center gap-3 mb-3">

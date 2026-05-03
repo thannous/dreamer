@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Dents qui tombent en rêve : 7 significations cachées | Noctalia",
   "ogDescription": "Les 7 interprétations les plus courantes et leurs messages.",
-  "ogImage": "https://noctalia.app/img/blog/reves-dents-qui-tombent.webp",
+  "ogImage": "https://noctalia.app/img/blog/teeth-falling-out-dreams.webp",
   "ogImageAlt": "Illustration métaphorique du stress et de la perte de contrôle",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Dents qui tombent en rêve : 7 significations cachées | Noctalia",
   "twitterDescription": "Les 7 significations des rêves de dents qui tombent.",
-  "twitterImage": "https://noctalia.app/img/blog/reves-dents-qui-tombent.webp",
+  "twitterImage": "https://noctalia.app/img/blog/teeth-falling-out-dreams.webp",
   "twitterImageAlt": "Illustration métaphorique du stress et de la perte de contrôle",
   "publishedTime": "2025-01-10",
   "modifiedTime": "2026-01-06",
   "author": "Thanh Chau",
   "prevPath": "/fr/blog/guide-reve-lucide-debutant",
   "nextPath": "/fr/blog/reves-de-chute",
-  "preloadImage": "/img/blog/reves-dents-qui-tombent.webp",
+  "preloadImage": "/img/blog/teeth-falling-out-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves de Dents Qui Tombent : Signification et Interprétation\",\n            \"description\": \"Pourquoi rêvez-vous de perdre vos dents ? Découvrez les interprétations les plus courantes de ce rêve universel.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/reves-dents-qui-tombent.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1138,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Rêves de Dents Qui Tombent : Signification et Interprétation\",\n            \"description\": \"Pourquoi rêvez-vous de perdre vos dents ? Découvrez les interprétations les plus courantes de ce rêve universel.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/teeth-falling-out-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/fr/a-propos#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/fr/a-propos\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2025-01-10\",\n            \"dateModified\": \"2026-01-06\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n            },\n            \"inLanguage\": \"fr\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1138,\n            \"timeRequired\": \"PT4M\",\n            \"url\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Que signifie rêver que ses dents tombent ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Les rêves de dents qui tombent symbolisent généralement l'anxiété liée à l'apparence, la peur du vieillissement, la perte de contrôle, des problèmes de communication ou des transitions de vie importantes. La signification spécifique dépend de votre contexte personnel et des émotions ressenties pendant le rêve.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de dents qui tombent sont-ils courants ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Oui, les rêves de dents qui tombent font partie des thèmes oniriques les plus courants dans le monde. Des études montrent qu'environ 39% des adultes ont vécu ce rêve au moins une fois. Il apparaît dans toutes les cultures et tous les groupes d'âge.\"\n                    }\n                },\n                {\n                    \"@type\": \"Question\",\n                    \"name\": \"Les rêves de dents prédisent-ils des problèmes de santé ?\",\n                    \"acceptedAnswer\": {\n                        \"@type\": \"Answer\",\n                        \"text\": \"Aucune preuve scientifique ne soutient l'idée que les rêves de dents prédisent des problèmes de santé. Cependant, ces rêves peuvent refléter un stress sous-jacent, de l'anxiété ou des préoccupations concernant votre bien-être qui méritent d'être abordées dans la vie éveillée.\"\n                    }\n                }\n            ]\n        }",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Accueil\",\n            \"item\": \"https://noctalia.app/fr/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressources\",\n            \"item\": \"https://noctalia.app/fr/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Rêves de Dents Qui Tombent\",\n            \"item\": \"https://noctalia.app/fr/blog/reves-dents-qui-tombent\"\n        }\n    ]\n}"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Illustration métaphorique du stress et de la perte de contrôle" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/reves-dents-qui-tombent.webp" srcset="../../img/blog/reves-dents-qui-tombent-480w.webp 480w, ../../img/blog/reves-dents-qui-tombent-800w.webp 800w, ../../img/blog/reves-dents-qui-tombent-1200w.webp 1200w" width="1200">
+<img alt="Illustration métaphorique du stress et de la perte de contrôle" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/teeth-falling-out-dreams.webp" srcset="../../img/blog/teeth-falling-out-dreams-480w.webp 480w, ../../img/blog/teeth-falling-out-dreams-800w.webp 800w, ../../img/blog/teeth-falling-out-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -199,7 +199,7 @@
                 </p>
 <h3>1. Dents qui tombent et anxiété liée à l'apparence</h3>
 <p>
-                    Les dents sont au cœur de notre sourire et de la façon dont nous nous présentons. Les rêves de perte de dents reflètent souvent des <strong>préoccupations concernant l'attractivité</strong> ou la façon dont les autres nous voient. Cette interprétation est particulièrement pertinente si vous traversez des changements qui affectent votre apparence ou votre image de soi.
+                    Nos dents sont au cœur de notre sourire et de la façon dont nous nous présentons. Perdre ses dents en rêve reflète souvent des <strong>préoccupations concernant l'attractivité</strong> ou la façon dont les autres nous voient. Cette interprétation est particulièrement pertinente si vous traversez des changements qui affectent votre apparence ou votre image de soi.
                 </p>
 <h3>2. Perdre ses dents en rêve et peur du vieillissement</h3>
 <p>
@@ -207,7 +207,7 @@
                 </p>
 <h3>3. Rêve de dents et perte de pouvoir ou de contrôle</h3>
 <p>
-                    Les dents représentent la force - nous les utilisons pour mordre, déchirer et nous affirmer. Quand elles tombent dans les rêves, cela symbolise souvent le <strong>sentiment d'impuissance</strong> dans une situation. Faites-vous face à quelque chose où vous sentez que vous n'avez aucun contrôle ?
+                    Nos dents représentent la force - nous les utilisons pour mordre, déchirer et nous affirmer. Quand elles tombent dans les rêves, cela symbolise souvent le <strong>sentiment d'impuissance</strong> dans une situation. Faites-vous face à quelque chose où vous sentez que vous n'avez aucun contrôle ?
                 </p>
 <h3>4. Dents qui tombent et problèmes de communication</h3>
 <p>
@@ -254,7 +254,7 @@
                 </p>
 <h3>Recherche moderne sur les rêves de dents</h3>
 <p>
-                    Des études récentes suggèrent que les rêves de dents pourraient être liés à des <strong>sensations physiques pendant le sommeil</strong>. Le grincement des dents (bruxisme), la tension de la mâchoire ou même l'irritation dentaire peuvent déclencher des rêves sur les dents. Une étude de 2018 a trouvé une corrélation entre la tension dentaire pendant le sommeil et la fréquence des rêves de dents.
+                    Des études récentes suggèrent que les rêves de dents pourraient être liés à des <strong>sensations physiques pendant le sommeil</strong>. Le bruxisme, la tension de la mâchoire ou même l'irritation dentaire peuvent déclencher des rêves sur les dents. Une étude de 2018 a mis en évidence une corrélation entre la tension dentaire pendant le sommeil et la fréquence de ces rêves.
                 </p>
 <blockquote>
                     « Bien que les rêves de dents semblent profondément symboliques, nous ne devons pas écarter la possibilité qu'ils reflètent simplement des sensations physiques de notre corps endormi. » - Dr Calvin Yu, Chercheur sur le Sommeil
@@ -417,7 +417,7 @@
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le meme rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>

@@ -224,6 +224,7 @@ function main() {
 
   runNodeScript(path.join('docs', 'scripts', 'generate-symbol-pages.js'));
   runNodeScript(path.join('scripts', 'fix-guides-architecture.js'));
+  runNodeScript(path.join('scripts', 'check-docs-shell.js'));
   runNodeScript(path.join('scripts', 'generate-sitemap-v2.js'));
 
   markDocsBuildSucceeded(ROOT_DIR, { version });

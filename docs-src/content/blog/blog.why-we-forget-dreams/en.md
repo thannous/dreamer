@@ -15,21 +15,21 @@
   "ogType": "article",
   "ogTitle": "Why Do We Forget Our Dreams? | Noctalia",
   "ogDescription": "Discover why we forget 95% of our dreams upon waking and how to improve dream recall.",
-  "ogImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+  "ogImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "ogImageAlt": "Illustration of a sleeping brain with dreams gradually fading away",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Why Do We Forget Our Dreams? | Noctalia",
   "twitterDescription": "The science explains why 95% of our dreams vanish upon waking.",
-  "twitterImage": "https://noctalia.app/img/blog/how-to-remember-dreams.webp",
+  "twitterImage": "https://noctalia.app/img/blog/why-we-forget-dreams.webp",
   "twitterImageAlt": "Illustration of a sleeping brain with dreams gradually fading away",
   "publishedTime": "2026-01-08",
   "modifiedTime": "2026-01-08",
   "author": "Thanh Chau",
-  "prevPath": "/en/blog/how-to-remember-dreams",
+  "prevPath": "/en/blog/why-we-forget-dreams",
   "nextPath": "/en/blog/recurring-dreams-meaning",
-  "preloadImage": "/img/blog/how-to-remember-dreams.webp",
+  "preloadImage": "/img/blog/why-we-forget-dreams.webp",
   "jsonLd": [
-    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Why Do We Forget Our Dreams? The Science Behind Dream Amnesia\",\n            \"description\": \"Discover the brain mechanisms and neurochemistry that explain why we forget most of our dreams upon waking, and how to improve your dream memory.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/how-to-remember-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/en/about#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/en/about\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-01-08\",\n            \"dateModified\": \"2026-01-08\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/en/blog/why-we-forget-dreams\"\n            },\n            \"inLanguage\": \"en\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1648,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/en/blog/why-we-forget-dreams\"\n        }",
+    "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BlogPosting\",\n            \"headline\": \"Why Do We Forget Our Dreams? The Science Behind Dream Amnesia\",\n            \"description\": \"Discover the brain mechanisms and neurochemistry that explain why we forget most of our dreams upon waking, and how to improve your dream memory.\",\n            \"image\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/img/blog/why-we-forget-dreams.webp\",\n                \"width\": 1200,\n                \"height\": 630\n            },\n            \"author\": [\n                {\n                    \"@type\": \"Person\",\n                    \"@id\": \"https://noctalia.app/en/about#person\",\n                    \"name\": \"Thanh Chau\",\n                    \"jobTitle\": \"Founder & Publication Director\",\n                    \"url\": \"https://noctalia.app/en/about\",\n                    \"worksFor\": {\n                        \"@type\": \"Organization\",\n                        \"@id\": \"https://noctalia.app/#organization\",\n                        \"name\": \"Noctalia\",\n                        \"url\": \"https://noctalia.app\"\n                    }\n                },\n                {\n                    \"@type\": \"Organization\",\n                    \"@id\": \"https://noctalia.app/#organization\",\n                    \"name\": \"Noctalia\",\n                    \"url\": \"https://noctalia.app\",\n                    \"logo\": {\n                        \"@type\": \"ImageObject\",\n                        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                    }\n                }\n            ],\n            \"publisher\": {\n                \"@type\": \"Organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\",\n                \"logo\": {\n                    \"@type\": \"ImageObject\",\n                    \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n                }\n            },\n            \"datePublished\": \"2026-01-08\",\n            \"dateModified\": \"2026-01-08\",\n            \"mainEntityOfPage\": {\n                \"@type\": \"WebPage\",\n                \"@id\": \"https://noctalia.app/en/blog/why-we-forget-dreams\"\n            },\n            \"inLanguage\": \"en\",\n            \"isAccessibleForFree\": true,\n            \"wordCount\": 1648,\n            \"timeRequired\": \"PT6M\",\n            \"url\": \"https://noctalia.app/en/blog/why-we-forget-dreams\"\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n                { \"@type\": \"Question\", \"name\": \"Is it normal to forget all your dreams?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Yes, it's completely normal. Most people forget between 90 and 95% of their dreams. This forgetting is linked to brain chemistry during REM sleep, particularly low levels of norepinephrine. It's not a sign of memory problems or health issues.\" } },\n                { \"@type\": \"Question\", \"name\": \"Why do we remember some dreams but not others?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"The timing of waking is crucial. If you wake up during or just after a REM sleep phase, you're much more likely to remember your dream. Stress, sleep quality, and the intention to remember also play important roles.\" } },\n                { \"@type\": \"Question\", \"name\": \"Do people who never remember dreams still dream?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Absolutely. Sleep laboratory studies show that everyone dreams, typically 4 to 6 times per night during REM phases. Not remembering dreams isn't related to the absence of dreams, but to memorization mechanisms that differ between sleep and wakefulness.\" } },\n                { \"@type\": \"Question\", \"name\": \"How can I remember my dreams more easily?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Several techniques are effective: keep a dream journal immediately upon waking, set the intention to remember before falling asleep, wake up gently without a jarring alarm, and stay still for a few moments upon waking to let images resurface. Voice recording with Noctalia allows you to quickly capture details before they fade.\" } },\n                { \"@type\": \"Question\", \"name\": \"Does alcohol affect dream recall?\", \"acceptedAnswer\": { \"@type\": \"Answer\", \"text\": \"Yes, alcohol significantly disrupts REM sleep, the phase where the most vivid dreams occur. It suppresses REM early in the night, then causes a rebound effect with intense but fragmented dreams. This imbalance impairs the consolidation of dream memories.\" } }\n            ]\n        }",
     "{\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"BreadcrumbList\",\n            \"itemListElement\": [\n                { \"@type\": \"ListItem\", \"position\": 1, \"name\": \"Home\", \"item\": \"https://noctalia.app/en/\" },\n                { \"@type\": \"ListItem\", \"position\": 2, \"name\": \"Resources\", \"item\": \"https://noctalia.app/en/blog/\" },\n                { \"@type\": \"ListItem\", \"position\": 3, \"name\": \"Why We Forget Dreams\", \"item\": \"https://noctalia.app/en/blog/why-we-forget-dreams\" }\n            ]\n        }"
   ],
@@ -90,7 +90,7 @@
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
-<img alt="Illustration of a sleeping brain with dreams gradually fading away" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/how-to-remember-dreams.webp" srcset="../../img/blog/how-to-remember-dreams-480w.webp 480w, ../../img/blog/how-to-remember-dreams-800w.webp 800w, ../../img/blog/how-to-remember-dreams-1200w.webp 1200w" width="1200">
+<img alt="Illustration of a sleeping brain with dreams gradually fading away" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/why-we-forget-dreams.webp" srcset="../../img/blog/why-we-forget-dreams-480w.webp 480w, ../../img/blog/why-we-forget-dreams-800w.webp 800w, ../../img/blog/why-we-forget-dreams-1200w.webp 1200w" width="1200">
 </figure>
 <!-- Table of Contents -->
 <nav class="glass-panel rounded-2xl p-6 mb-12">
@@ -114,7 +114,7 @@
                 </p>
 <h3>The Hippocampus and Dream Memory</h3>
 <p>
-                    The hippocampus is the brain structure responsible for memory consolidation. It transforms our short-term experiences into lasting memories. However, during sleep, the hippocampus functions very differently than during waking hours.
+                    The hippocampus is the brain structure responsible for memory consolidation. It transforms our short-term experiences into lasting memories. During sleep, though, the hippocampus operates in a fundamentally different mode than during waking hours.
                 </p>
 <p>
                     Neuroimaging studies have revealed that <strong>communication between the hippocampus and the cerebral cortex is reduced during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a></strong>. This partial disconnection explains why even the most intense dreams are not automatically stored in our long-term memory. The information transfer necessary for memorization is simply interrupted.
@@ -200,7 +200,7 @@
                 </p>
 <h2 id="factors">Factors That Make You Forget Dreams</h2>
 <p>
-                    Beyond basic biological mechanisms, certain factors in our daily lives can <strong>significantly worsen dream forgetting</strong>. Identifying them allows you to take steps to improve your dream memory.
+                    Beyond basic biological mechanisms, certain factors in our daily lives can <strong>worsen dream forgetting dramatically</strong>. Identifying them lets you take steps to improve your dream memory.
                 </p>
 </div>
 <!-- Factor Cards -->
@@ -224,7 +224,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Screen Time Before Bed</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Blue light from screens suppresses melatonin production and delays sleep onset. More importantly, checking your <a class="text-dream-salmon hover:underline" href="../symbols/phone">phone</a> immediately upon waking diverts attention from dream memories, erasing them before they can be consolidated.
+                        Blue light from screens suppresses melatonin production and delays sleep onset. More checking your <a class="text-dream-salmon hover:underline" href="../symbols/phone">phone</a> immediately upon waking diverts attention from dream memories, erasing them before they can be consolidated.
                     </p>
 </div>
 <div class="factor-card glass-panel rounded-xl p-6 border border-transparent">
@@ -256,7 +256,7 @@
                 </p>
 <h2 id="remember-dreams">How to Remember Your Dreams: Proven Techniques</h2>
 <p>
-                    While dream forgetting is a natural phenomenon, it's not inevitable. Proven techniques can <strong>significantly improve dream memory</strong>. Here are the most effective ones, validated by research and <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">lucid dreaming</a> practitioners.
+                    Dream forgetting is natural, but not inevitable. Proven techniques can <strong>dramatically improve dream memory</strong>. Here are the most effective ones, validated by research and <a class="text-dream-salmon hover:underline" href="lucid-dreaming-beginners-guide">lucid dreaming</a> practitioners.
                 </p>
 <h3>Keep a Dream Journal</h3>
 <p>
@@ -273,7 +273,7 @@
 <li>Even a fragment is worth noting</li>
 </ul>
 <p>
-                    After 1 to 2 weeks of regular practice, most people notice a <strong>dramatic improvement</strong> in their dream recall. For more details, check out our <a href="how-to-remember-dreams">complete guide to remembering your dreams</a>.
+                    After 1 to 2 weeks of regular practice, most people notice a <strong>dramatic improvement</strong> in their dream recall. For more details, check out our <a href="why-we-forget-dreams">complete guide to remembering your dreams</a>.
                 </p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
@@ -304,7 +304,7 @@
 <li>Maintain this intention as your last thought before sleep</li>
 </ol>
 <p>
-                    This method works because it <strong>activates prospective memory</strong> (the ability to remember to perform an action in the future) and directs the brain's attention toward dream experiences.
+                    This works because it <strong>activates prospective memory</strong> (the ability to remember to perform an action in the future) and directs the brain's attention toward dream experiences.
                 </p>
 <h3>Optimize Sleep Hygiene for Better Dreams</h3>
 <p>
@@ -345,11 +345,11 @@
 <li><strong>Dream memory can be trained</strong> at any age with the right techniques</li>
 </ul>
 <p>
-                    However, <strong>certain changes warrant attention</strong>:
+                    That said, <strong>certain changes warrant attention</strong>:
                 </p>
 <ul>
 <li><strong>Sudden cessation of dreams</strong> after always having them: may signal a change in sleep quality</li>
-<li><strong>Very frequent or disturbing nightmares</strong>: may indicate excessive stress or unresolved trauma</li>
+<li><strong>Frequent or disturbing nightmares</strong>: may indicate excessive stress or unresolved trauma</li>
 <li><strong>Abnormal behavior during sleep</strong> (talking, moving, sleepwalking): may signal a REM sleep disorder</li>
 <li><strong>Chronic fatigue despite sufficient sleep time</strong>: may indicate poor sleep quality</li>
 </ul>
@@ -361,7 +361,7 @@
                     Dream forgetting isn't a bug in our brain, but a design feature. The neurochemical mechanisms that erase our dream memories likely evolved for good reasons: avoiding confusion between reality and fiction, protecting our memory from overload, allowing emotional processing "behind the scenes."
                 </p>
 <p>
-                    But this natural tendency isn't fate. With intention, good sleep habits, and a few simple techniques, <strong>anyone can significantly improve their dream memory</strong>. The first weeks of dream journaling often hold surprises: unsuspected dream worlds reveal themselves, recurring themes emerge, a new dimension of inner life opens up.
+                    But this natural tendency isn't fate. With intention, good sleep habits, and a few simple techniques, <strong>anyone can sharply improve their dream memory</strong>. The first weeks of dream journaling often hold surprises: unsuspected dream worlds reveal themselves, recurring themes emerge, a new dimension of inner life opens up.
                 </p>
 <p>
                     Dreams remain one of the last great mysteries of human consciousness. Even though science has elucidated why we forget them, it's only beginning to understand why we dream. By learning to remember your dreams, you become an explorer of your own nocturnal mind.
@@ -471,7 +471,7 @@
 <!-- Blog Nav Start -->
 <section class="mt-12" aria-label="Article navigation" data-blog-nav="">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-5 flex items-start gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
+    <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-5 flex items-start gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>

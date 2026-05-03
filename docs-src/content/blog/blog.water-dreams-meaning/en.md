@@ -107,7 +107,7 @@
                     In dream interpretation, <a class="text-dream-salmon hover:underline" href="../symbols/water">water</a> is perhaps the <strong>most universal symbol for emotions</strong>. Just as water can be calm or turbulent, deep or shallow, clear or murky, so too can our emotional states. This symbolism appears across virtually every culture and psychological tradition.
                 </p>
 <p>
-                    Water also represents the <strong>unconscious mind</strong> - the vast, often hidden depths of our psyche that lie beneath surface awareness. When you dream of diving deep into water, you may be exploring the depths of your unconscious. When water rises unbidden, emotions or unconscious material may be demanding your attention.
+                    Beyond emotions, water represents the <strong>unconscious mind</strong> - the vast, often hidden depths of our psyche that lie beneath surface awareness. When you dream of diving deep into water, you may be exploring the depths of your unconscious. When water rises unbidden, emotions or unconscious material may be demanding your attention.
                 </p>
 <blockquote>
                     "Water is the commonest symbol for the unconscious. The lake in the valley is the unconscious lying, as it were, underneath consciousness." - Carl Jung
@@ -221,7 +221,7 @@
                 </p>
 <h3>2. Unconscious Processes</h3>
 <p>
-                    Water dreams often signal that <strong>something from your unconscious is seeking attention</strong>. This might be repressed memories, unacknowledged feelings, or intuitive knowledge trying to surface.
+                    Water dreams frequently signal that <strong>something from your unconscious is seeking attention</strong>. This might be repressed memories, unacknowledged feelings, or intuitive knowledge trying to surface.
                 </p>
 <h3>3. Emotional Cleansing</h3>
 <p>
@@ -260,11 +260,11 @@
                 </p>
 <h3>Freudian Interpretation</h3>
 <p>
-                    Freud associated water with <strong>birth, the womb, and sexuality</strong>. Entering water could symbolize return to the womb or birth memories, while water in dreams might represent primal drives and desires.
+                    Freud associated water with <strong>birth, the womb, and sexuality</strong>. Entering water could symbolize return to the womb or birth memories. Water in dreams might also represent primal drives and desires.
                 </p>
 <h3>Modern Psychology</h3>
 <p>
-                    Contemporary dream research connects water dreams to <strong>emotional processing and stress regulation</strong>. The brain may use water imagery to process emotional experiences, with the state of water reflecting current emotional states.
+                    Contemporary dream research connects water dreams to <strong>emotional processing and stress regulation</strong>. Your brain may use water imagery to process emotional experiences, with the state of water reflecting current emotional states.
                 </p>
 <blockquote>
                     "Water dreams are the psyche's way of showing us our emotional landscape. Pay attention to how the water behaves - it's telling you how your emotions are flowing." - Dr. Kelly Bulkeley, Dream Researcher

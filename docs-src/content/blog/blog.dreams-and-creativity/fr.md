@@ -162,7 +162,7 @@
                 </p>
 <h3>Pourquoi le cerveau rêveur est unique en créativité</h3>
 <p>
-                    La combinaison de la désactivation préfrontale (moins d'autocensure), de l'activité accrue de l'amygdale (associations émotionnelles renforcées) et de la consolidation active de la mémoire crée un état cérébral impossible à reproduire à l'état d'éveil. C'est comme si l'évolution avait intégré à votre biologie une séance de brainstorming nocturne où la voix la plus conservatrice de la salle a été priée de sortir.
+                    Désactivation préfrontale (moins d'autocensure), activité accrue de l'amygdale (associations émotionnelles renforcées) et consolidation active de la mémoire se combinent pour créer un état cérébral impossible à reproduire à l'état d'éveil. C'est comme si l'évolution avait intégré à votre biologie une séance de brainstorming nocturne où la voix la plus conservatrice de la salle a été priée de sortir.
                 </p>
 </div>
 <!-- Creativity Dream Cards -->
@@ -210,7 +210,7 @@
                 </p>
 <h2 id="capture-insights">Comment capturer et utiliser les idées créatives des rêves</h2>
 <p>
-                    Le rêve le plus créatif du monde ne vaut rien s'il s'évapore avant que vous puissiez le consigner. En moyenne, on oublie <strong>90 % du contenu onirique</strong> dans les 10 minutes suivant le réveil. Capturer les intuitions créatives des rêves nécessite à la fois les bons outils et les bonnes habitudes.
+                    Le rêve le plus créatif du monde ne vaut rien s'il s'évapore avant que vous puissiez le consigner. On oublie en moyenne <strong>90 % du contenu onirique</strong> dans les 10 minutes suivant le réveil. Capturer les intuitions créatives des rêves nécessite à la fois les bons outils et les bonnes habitudes.
                 </p>
 <h3>Notez immédiatement au réveil</h3>
 <p>

@@ -107,14 +107,14 @@
                     Let's address the elephant in the room: <strong>dreams about <a class="text-dream-salmon hover:underline" href="../symbols/death">death</a> almost never predict actual death</strong>. Despite centuries of superstition, there's no scientific evidence that death dreams are prophetic. In the language of dreams, death is a symbol - and like most dream symbols, it rarely means what it literally depicts.
                 </p>
 <p>
-                    In fact, death dreams are extraordinarily common. Studies suggest that <strong>over 70% of people</strong> have dreamed about death at some point - their own, a loved one's, or even a stranger's. These dreams appear across all cultures and ages, suggesting they serve an important psychological function.
+                    Death dreams are also extraordinarily common. Studies suggest that <strong>over 70% of people</strong> have dreamed about death at some point - their own, a loved one's, or even a stranger's. These dreams appear across all cultures and ages, pointing to an important psychological function.
                 </p>
 <blockquote>
                     "In dreams, death is a symbol of transformation. The dream is showing you that something in your life is ending so that something new can begin." - Dr. Rubin Naiman, Sleep and Dream Specialist
                 </blockquote>
 <h2 id="scenarios">Common Death Dream Scenarios and Their Symbolic Meanings</h2>
 <p>
-                    The specific scenario of your death dream provides important clues to its meaning:
+                    Each scenario in your death dream provides important clues to its meaning:
                 </p>
 </div>
 <div class="grid md:grid-cols-2 gap-6 my-12">
@@ -192,7 +192,7 @@
                 </p>
 <h3>1. Death Dreams as Symbols of Transformation and Rebirth</h3>
 <p>
-                    The most common interpretation. Death in dreams represents the <strong>end of one chapter and the beginning of another</strong>. You may be outgrowing old ways of being, ending a phase of life, or experiencing profound inner change. Like the phoenix, something must die for something new to be born.
+                    By far the most frequent reading. Death in dreams represents the <strong>end of one chapter and the beginning of another</strong>. You may be outgrowing old ways of being, ending a phase of life, or experiencing profound inner change. Like the phoenix, something must die for something new to be born.
                 </p>
 <h3>2. Death Dreams Representing Endings and Closure</h3>
 <p>
@@ -239,11 +239,11 @@
                 </p>
 <h3>Existential Perspective on Death Dreams</h3>
 <p>
-                    From an existential standpoint, death dreams confront us with the <strong>fundamental human awareness of mortality</strong>. Rather than being morbid, they can awaken us to live more authentically and make conscious choices about how we spend our limited time.
+                    From an existential standpoint, death dreams confront us with the <strong>fundamental human awareness of mortality</strong>. Far from being morbid, they can awaken us to live more authentically and make conscious choices about how we spend our limited time.
                 </p>
 <h3>Modern Research on Death Dream Symbolism</h3>
 <p>
-                    Contemporary dream researchers suggest death dreams help us <strong>rehearse and process the concept of endings</strong>. Our brains may use the safe space of dreams to explore mortality, loss, and change without real-world consequences.
+                    Contemporary dream researchers suggest death dreams help us <strong>rehearse and process the concept of endings</strong>. Our brains may use the safe space of dreams to explore mortality, loss, and change without real-world consequences on the line.
                 </p>
 <blockquote>
                     "The appearance of death in dreams does not necessarily mean anything negative. It can indicate that you are making a transition from one phase of your life to another." - Dr. Michael Lennox, Dream Psychologist
@@ -266,7 +266,7 @@
                 </p>
 <h3>1. Record the Details of Your Death Dream</h3>
 <p>
-                    Write down everything: who died, how, where, and most importantly, <strong>how you felt</strong>. The emotional tone often reveals more than the literal content. Were you scared? Peaceful? Relieved? Sad?
+                    Write down everything: who died, how, where, and most <strong>how you felt</strong>. The emotional tone often reveals more than the literal content. Were you scared? Peaceful? Relieved? Sad?
                 </p>
 <h3>2. Look for Life Transitions Behind Death Dreams</h3>
 <p>
