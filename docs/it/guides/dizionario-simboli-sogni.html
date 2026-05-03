@@ -678,16 +678,29 @@
             line-height: 1.45;
           }
           .category-browse-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            display: flex;
             gap: 0.7rem;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            padding: 0 1rem 0.2rem;
+            overflow-x: auto;
+            overscroll-behavior-inline: contain;
+            scroll-padding-inline: 1rem;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+          }
+          .category-browse-grid::-webkit-scrollbar {
+            display: none;
           }
           .category-browse-card {
-            grid-column: span 1;
+            flex: 0 0 9rem;
+            min-height: 6.9rem;
             align-items: flex-start;
             gap: 0.55rem;
             padding: 0.8rem 0.72rem;
             border-radius: 0.78rem;
             flex-direction: column;
+            scroll-snap-align: start;
           }
           .category-browse-icon {
             width: 2rem;
@@ -2670,9 +2683,12 @@
                 const target = visibleCount > 0 ? firstVisibleCard || symbolsListEl : document.getElementById('noResults');
                 if (!target) return;
                 const rect = target.getBoundingClientRect();
-                if (rect.top > window.innerHeight * 0.6 || rect.top < 0) {
+                const visibleHeight = window.visualViewport?.height || window.innerHeight;
+                const threshold = Math.min(window.innerHeight, visibleHeight) * 0.44;
+                if (rect.top > threshold || rect.top < 0) {
                     const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dictionary-scroll-offset')) || 0;
-                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset + 16;
+                    const keyboardLift = window.visualViewport ? Math.max(0, window.innerHeight - window.visualViewport.height) : 0;
+                    const nextTop = target.getBoundingClientRect().top + window.scrollY - offset - Math.min(keyboardLift, 220) + 12;
                     window.scrollTo({ top: Math.max(nextTop, 0), behavior: 'smooth' });
                 }
             }
@@ -2686,7 +2702,7 @@
                 revealSearchAreaTimer = window.setTimeout(() => {
                     revealSearchArea(query, visibleCount);
                     revealSearchAreaTimer = null;
-                }, 500);
+                }, 180);
             }
 
             function updateSearchUi(query, visibleCount) {
@@ -2717,7 +2733,6 @@
                 stickySearch.value = nextValue;
                 const hasValue = nextValue.trim().length > 0;
                 const isMobile = window.matchMedia('(max-width: 767px)').matches;
-                const heroIsFocused = document.activeElement === heroSearch;
                 if (heroSearchClear) heroSearchClear.hidden = !hasValue;
                 if (stickySearchClear) stickySearchClear.hidden = !hasValue;
                 const visibleCount = filterSymbols(nextValue);
@@ -2726,12 +2741,7 @@
                     stickyBar?.classList.add('sb-visible');
                     updateSectionScrollOffset();
                 }
-                if (!(isMobile && source === 'hero' && heroIsFocused)) {
-                    scheduleRevealSearchArea(nextValue, visibleCount);
-                } else if (revealSearchAreaTimer) {
-                    window.clearTimeout(revealSearchAreaTimer);
-                    revealSearchAreaTimer = null;
-                }
+                scheduleRevealSearchArea(nextValue, visibleCount);
                 if (source === 'sticky') {
                     stickySearch.focus({ preventScroll: true });
                 }
