@@ -49,7 +49,7 @@ function renderMobileMenuPanel(context) {
 
   return [
     '        <div id="mobileMenuPanel" class="hidden px-4 pb-4 pt-2">',
-    '            <div class="glass-panel rounded-2xl py-2">',
+    '            <div class="mobile-menu-surface rounded-2xl py-2">',
     `                <a href="${resourcesHref}" class="${linkClass}">${escapeHtml(locale.resources)}</a>`,
     `                <a href="${guidesHref}" class="${linkClass}">${escapeHtml(locale.dreamGuides)}</a>`,
     `                <a href="${dictionaryHref}" class="${linkClass}">${escapeHtml(locale.dreamDictionary)}</a>`,

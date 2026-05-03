@@ -138,6 +138,7 @@ describe('docs shared components', () => {
     expect(html).toContain('.noctalia-premium-nav.py-2 { background: transparent');
     expect(html).toContain('.noctalia-premium-nav-inner');
     expect(html).toContain('.noctalia-premium-nav-actions');
+    expect(html).toContain('.mobile-menu-surface { background: #120720');
     expect(html).toContain('justify-content: space-between');
     expect(html).toContain('margin-left: auto');
     expect(html).toContain('#mobileMenuButton');
