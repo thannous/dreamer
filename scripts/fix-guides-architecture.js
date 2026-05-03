@@ -1529,8 +1529,48 @@ function renderLayoutCss() {
           #symbolsList > section > .grid {
             grid-template-columns: 1fr;
           }
+          .quick-browse-panel {
+            padding: 1rem;
+          }
+          .quick-browse-alpha {
+            display: none;
+          }
+          .quick-browse-copy {
+            margin-bottom: 0.85rem;
+          }
+          .quick-browse-copy h2 {
+            font-size: 1.35rem;
+          }
+          .quick-browse-copy p {
+            font-size: 0.86rem;
+            line-height: 1.45;
+          }
+          .category-browse-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.7rem;
+          }
           .category-browse-card {
             grid-column: span 1;
+            align-items: flex-start;
+            gap: 0.55rem;
+            padding: 0.8rem 0.72rem;
+            border-radius: 0.78rem;
+            flex-direction: column;
+          }
+          .category-browse-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.62rem;
+          }
+          .category-browse-icon .w-5 {
+            width: 1rem;
+            height: 1rem;
+          }
+          .category-browse-title {
+            font-size: 0.95rem;
+          }
+          .category-browse-count {
+            font-size: 0.76rem;
           }
           #mobileAlpha { display: flex !important; }
           #searchFeedback { display: none !important; }
