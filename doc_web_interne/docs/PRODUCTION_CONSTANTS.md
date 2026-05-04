@@ -1,5 +1,11 @@
 # Noctalia – Check-list des constantes / secrets (prod)
 
+Dernière revue locale: 2026-05-04.
+
+Statut release: **incomplet pour publication store**. Les valeurs cochées ci-dessous
+sont identifiées dans le projet local ou déjà documentées. Les cases non cochées
+restent bloquantes pour un build production fiable, sauf waiver explicite.
+
 - [x] `EXPO_PUBLIC_SUPABASE_URL`  
   - Pourquoi : URL Supabase pour auth et sync des rêves.  
   - Où récupérer : Supabase Dashboard → Settings → API → Project URL.  
@@ -24,12 +30,14 @@
   - Pourquoi : s’assurer que les services réels sont utilisés en prod.  
   - Valeur prod : `false`.  
   - Où placer : variable EAS en `plaintext` (`eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_MOCK_MODE --value false`) ou dans le profil `env` si besoin.
+  - Gate release : vérifier dans les logs du build que le service mock n'est pas sélectionné.
 
 ## Guest sessions (Play Integrity – v1)
 - [ ] `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER`  
   - Pourquoi : initialiser le provider Play Integrity côté app (Android).  
   - Où récupérer : Google Cloud Console → Project number (pas Project ID).  
   - Où placer : variable EAS en `plaintext` (`eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER --value <project_number>`).
+  - Gate release : les warnings `Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER` doivent disparaître en build Internal Testing/prod.
 - [ ] `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`  
   - Pourquoi : vérifier les tokens Play Integrity côté Edge Function.  
   - Où récupérer : Service account JSON (Google Cloud Console).  
@@ -68,6 +76,7 @@
   - Pourquoi : clé SDK RevenueCat côté Android pour les achats In-App.  
   - Où récupérer : RevenueCat Dashboard → Project → API Keys → Public SDK Key (Android) (https://app.revenuecat.com/projects).  
   - Où placer : variable EAS en `plaintext` (ex : `eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_REVENUECAT_ANDROID_KEY --value <public_sdk_key_android>`).
+  - Note locale : `app.json` contient un fallback Android public, mais la release doit confirmer la valeur EAS production et le produit RevenueCat/Google Play associé.
 - [ ] `EXPO_PUBLIC_REVENUECAT_IOS_KEY` (si iOS)  
   - Pourquoi : clé SDK RevenueCat côté iOS.  
   - Où récupérer : RevenueCat Dashboard → Public SDK Key (iOS) (https://app.revenuecat.com/projects).  
@@ -76,12 +85,14 @@
   - Pourquoi : clé SDK RevenueCat côté web (si paywall web).  
   - Où récupérer : RevenueCat Dashboard → Public SDK Key (web) (https://app.revenuecat.com/projects).  
   - Où placer : variable EAS en `plaintext` (ex : `eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_REVENUECAT_WEB_KEY --value <public_sdk_key_web>`).
+  - Note locale : `app.json` contient un fallback web de test; ne pas le traiter comme preuve d'un paywall web production.
 
 ## Expo / EAS
 - [ ] Creds Android (keystore ou Play App Signing via EAS)  
   - Pourquoi : signature requise pour publier sur Play.  
   - Où récupérer : soit générer via `eas credentials`, soit exporter le keystore prod.  
   - Où placer : EAS credentials (dashboard ou `eas credentials --platform android`).
+  - Gate release : récupérer le SHA-1 utilisé et l'ajouter au client OAuth Android si nécessaire; pour Play, ajouter aussi le SHA-1 App Signing de la Play Console.
 - [ ] Service account Google Play (JSON)  
   - Pourquoi : pour `eas submit` / `--auto-submit`.  
   - Où récupérer : Google Play Console → Paramètres développeur → Comptes de service → créer clé JSON.  
@@ -98,6 +109,25 @@
   - Pourquoi : exigée par Play + fiche Data Safety (collecte audio/texte + identifiants).  
   - Où récupérer : page hébergée (site ou CMS).  
   - Où placer : Google Play listing + éventuel lien dans l’app/website.
+- [ ] Fiche Data Safety Google Play
+  - Pourquoi : l'app manipule micro, transcripts/texte de rêves, identifiants auth et données d'achat.
+  - Où placer : Google Play Console → App content → Data safety.
+- [ ] Assets Play Store
+  - Pourquoi : la soumission requiert au minimum listing, screenshots, icône 512px et feature graphic 1024x500.
+  - Où placer : Google Play Console → Store listing.
+- [ ] Politique de support / suppression de compte
+  - Pourquoi : réduire le risque de rejet review et couvrir les demandes utilisateur.
+  - Où placer : app/website + liens Play Console.
+
+## Validation release à noter
+- [ ] `npm run typecheck:app`
+- [ ] `npm run lint`
+- [ ] `npm test -- --runInBand --watchman=false`
+- [ ] `npx expo install --check`
+- [ ] `npx expo-doctor`
+- [ ] `eas build --platform android --profile production`
+- [ ] Test depuis Google Play Internal Testing avec compte testeur licencié
+- [ ] Vérification Google Sign-In, RevenueCat, Play Integrity, enregistrement audio, navigation et restauration d'achats
 
 Notes pratiques
 - Stocker tous ces secrets dans EAS (Commandes : `eas secret:create --scope-project --name ... --value ...`).
