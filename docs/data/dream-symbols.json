@@ -727,10 +727,30 @@
       "it": {
         "slug": "cane",
         "name": "Cane",
-        "shortDescription": "I cani rappresentano lealtà, amicizia e amore incondizionato. Il loro comportamento nel sogno riflette come vivi le relazioni e la fiducia nella tua vita.",
+        "shortDescription": "Sognare un cane parla di fiducia, protezione e legami. Un cane che attacca o morde segnala conflitto, minaccia percepita o lealtà ferita.",
         "askYourself": [
-          "Di chi mi fido incondizionatamente?",
-          "Come esprimo lealtà nelle mie relazioni?"
+          "Il cane era amichevole, aggressivo o protettivo?",
+          "Mi attaccava, mi mordeva o difendeva qualcuno?",
+          "Quale rapporto di fiducia sembra fragile in questo momento?"
+        ],
+        "seoTitle": "un cane che attacca o morde",
+        "faq": [
+          {
+            "question": "Cosa significa sognare un cane?",
+            "answer": "Sognare un cane riguarda spesso fiducia, lealtà, protezione e relazioni. Il significato cambia molto se il cane è affettuoso, aggressivo, randagio o ferito."
+          },
+          {
+            "question": "Cosa significa sognare un cane che ti attacca?",
+            "answer": "Un cane che attacca può indicare conflitto, paura di essere tradito o una minaccia percepita in una relazione. Può anche mostrare rabbia o difesa che non hai ancora espresso."
+          },
+          {
+            "question": "Cosa significa sognare un cane che morde?",
+            "answer": "Il morso di un cane segnala una ferita nella fiducia, una parola aggressiva o una relazione che da protettiva è diventata dolorosa."
+          },
+          {
+            "question": "Cosa significa sognare un cane che ti protegge?",
+            "answer": "Un cane protettivo indica sostegno, alleati fedeli o una parte istintiva di te che cerca sicurezza."
+          }
         ]
       },
       "relatedSymbols": [
@@ -945,10 +965,29 @@
       "es": {
         "slug": "inundacion",
         "name": "Inundación",
-        "shortDescription": "Una inundación suele simbolizar emociones abrumadoras, cambios repentinos o sentir que los problemas se desbordan. También puede representar limpieza y la oportunidad de reconstruir tras una sacudida.",
+        "shortDescription": "Soñar con inundación indica emociones que se desbordan, estrés acumulado o cambios repentinos. La casa, el agua limpia o sucia y tu reacción cambian el significado.",
         "askYourself": [
           "¿Qué se siente abrumador ahora mismo?",
           "¿Dónde necesito poner límites más firmes en mi vida?"
+        ],
+        "seoTitle": "inundaciones y agua que se desborda",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con inundación?",
+            "answer": "Soñar con inundación suele indicar emociones, estrés o cambios que se sienten difíciles de contener. Puede aparecer cuando una situación familiar, laboral o afectiva te supera."
+          },
+          {
+            "question": "¿Qué significa soñar con inundación en casa?",
+            "answer": "Una casa inundada sugiere que preocupaciones, conflictos o emociones intensas están invadiendo tu espacio de seguridad e intimidad."
+          },
+          {
+            "question": "¿Qué significa soñar con inundación de agua limpia?",
+            "answer": "El agua limpia puede indicar liberación emocional, claridad o una limpieza necesaria después de un periodo de tensión."
+          },
+          {
+            "question": "¿Qué significa soñar con inundación de agua sucia?",
+            "answer": "El agua sucia señala confusión, cansancio o emociones mezcladas que todavía necesitan orden."
+          }
         ]
       },
       "de": {
@@ -1073,7 +1112,7 @@
           "¿Estoy evitando una decisión, una conversación o un cambio?",
           "¿La puerta del sueño era de mi casa, desconocida, abierta o cerrada?"
         ],
-        "seoTitle": "Puerta",
+        "seoTitle": "puertas abiertas o cerradas",
         "faq": [
           {
             "question": "¿Qué significa soñar con puertas?",
@@ -1086,6 +1125,10 @@
           {
             "question": "¿Qué significa soñar con la puerta abierta de tu casa?",
             "answer": "Una puerta abierta en casa puede señalar vulnerabilidad, confianza o una situación personal que está demasiado expuesta. También puede simbolizar bienvenida y apertura emocional."
+          },
+          {
+            "question": "¿Qué significa soñar con una puerta que no puedes abrir?",
+            "answer": "Suele mostrar frustración, miedo al rechazo o una oportunidad que requiere preparación, paciencia o una llave simbólica antes de avanzar."
           }
         ]
       },
@@ -1120,7 +1163,8 @@
             "question": "Cosa significa sognare una porta che si apre?",
             "answer": "Una porta che si apre suggerisce possibilità, accesso a una nuova fase o una soluzione che inizia a diventare disponibile."
           }
-        ]
+        ],
+        "seoTitle": "una porta aperta o chiusa"
       },
       "relatedSymbols": [
         "house",
@@ -1400,13 +1444,13 @@
       "es": {
         "slug": "puente",
         "name": "Puente",
-        "shortDescription": "Soñar con un puente habla de transición, decisiones y paso entre dos etapas. Un puente roto o peligroso refleja miedo a que el cambio falle o a no poder cruzar.",
+        "shortDescription": "Soñar con un puente habla de transición, decisiones y paso entre dos etapas. Un puente roto, alto o sobre agua refleja miedo al cambio o a no poder cruzar.",
         "askYourself": [
           "¿Qué etapa estoy intentando cruzar?",
           "¿El puente se veía firme, roto, alto o sobre agua?",
           "¿Tengo miedo de avanzar o de dejar algo atrás?"
         ],
-        "seoTitle": "Puente",
+        "seoTitle": "puentes rotos o sobre agua",
         "faq": [
           {
             "question": "¿Qué significa soñar con un puente?",
@@ -1419,6 +1463,10 @@
           {
             "question": "¿Qué significa soñar con un puente y agua?",
             "answer": "El agua añade carga emocional al sueño. Un puente sobre agua puede mostrar que intentas atravesar una emoción intensa sin dejar que te arrastre."
+          },
+          {
+            "question": "¿Qué significa soñar con cruzar un puente?",
+            "answer": "Cruzar un puente suele indicar avance, decisión tomada o disposición a dejar una etapa atrás para entrar en otra."
           }
         ]
       },
@@ -1717,7 +1765,7 @@
           "¿El bosque era oscuro, verde, grande o de noche?",
           "¿Qué parte de mi vida se siente incierta ahora?"
         ],
-        "seoTitle": "Bosque",
+        "seoTitle": "un bosque oscuro o verde",
         "faq": [
           {
             "question": "¿Qué significa soñar con un bosque?",
@@ -2761,13 +2809,13 @@
       "es": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "Soñar con hospital suele hablar de sanación, preocupación por la salud, vulnerabilidad o necesidad de pedir ayuda antes de que el estrés se vuelva urgente.",
+        "shortDescription": "Soñar con hospital suele hablar de sanación, salud, enfermos, doctores y necesidad de apoyo. Puede aparecer cuando el estrés, la preocupación o el cansancio piden atención.",
         "askYourself": [
           "¿Qué parte de mi vida necesita sanación, descanso o atención?",
           "¿Estoy cargando solo con estrés, miedo o dolor emocional?",
           "¿El sueño se sentía como emergencia, espera, alivio o miedo?"
         ],
-        "seoTitle": "Hospital",
+        "seoTitle": "hospital, doctores o enfermos",
         "faq": [
           {
             "question": "¿Qué significa soñar con hospital?",
@@ -2778,8 +2826,12 @@
             "answer": "Estar en un hospital en sueños suele reflejar vulnerabilidad, recuperación o necesidad de ayuda. El sueño puede aparecer cuando estás agotado, preocupado o intentando resolver algo que requiere cuidado."
           },
           {
-            "question": "¿Qué significa soñar con hospital y doctores, enfermeras o enfermos?",
-            "answer": "Los doctores y enfermeras pueden simbolizar guía, diagnóstico o apoyo. Ver enfermos en un hospital puede reflejar preocupación por otros, miedo a la fragilidad o una parte de tu bienestar que necesita atención."
+            "question": "¿Qué significa soñar con hospital y doctores?",
+            "answer": "Los doctores pueden simbolizar diagnóstico, guía o una parte de ti que busca una respuesta clara. El sueño sugiere mirar el problema con más cuidado en vez de ignorarlo."
+          },
+          {
+            "question": "¿Qué significa soñar con enfermos en un hospital?",
+            "answer": "Ver enfermos puede reflejar preocupación por otros, miedo a la fragilidad o una parte de tu propio bienestar que necesita atención."
           }
         ]
       },
@@ -2833,11 +2885,11 @@
       },
       "relatedSymbols": [
         "house",
-        "school",
-        "deceased-person",
+        "death",
         "blood",
-        "body",
-        "child"
+        "accident",
+        "child",
+        "pregnancy"
       ],
       "relatedArticles": {
         "de": "",
@@ -3353,13 +3405,13 @@
       "es": {
         "slug": "lobo",
         "name": "Lobo",
-        "shortDescription": "Soñar con lobos habla de instinto, amenaza, protección y pertenencia. Un lobo puede reflejar intuición; muchos lobos apuntan a grupo, presión social o necesidad de apoyo.",
+        "shortDescription": "Soñar con lobos habla de instinto, amenaza, protección y pertenencia. Un lobo puede reflejar intuición; una manada o lobos que atacan señalan presión o conflicto.",
         "askYourself": [
           "¿El lobo me atacaba, me protegía o solo me observaba?",
           "¿Era un lobo solo o una manada de lobos?",
           "¿Qué instinto estoy ignorando en mi vida despierta?"
         ],
-        "seoTitle": "Lobo",
+        "seoTitle": "lobos, manadas o ataques",
         "faq": [
           {
             "question": "¿Qué significa soñar con lobos?",
@@ -3372,6 +3424,10 @@
           {
             "question": "¿Qué significa soñar con lobos que atacan?",
             "answer": "Lobos que atacan reflejan presión, miedo, conflicto o una emoción instintiva que se siente fuera de control. También pueden simbolizar sentirte rodeado por críticas o expectativas."
+          },
+          {
+            "question": "¿Qué significa soñar con una manada de lobos?",
+            "answer": "Una manada de lobos habla de grupo, familia, presión social o necesidad de apoyo. El tono cambia según si la manada protege, observa o amenaza."
           }
         ]
       },
