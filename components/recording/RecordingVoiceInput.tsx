@@ -2,6 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MicButton } from '@/components/recording/MicButton';
+import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
 import { TypewriterText } from '@/components/ui/TypewriterText';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
@@ -64,6 +65,12 @@ export function RecordingVoiceInput({
           </View>
         ) : null}
 
+        {transcript ? (
+          <View style={styles.draftProgressWrap}>
+            <RecordingDraftProgress value={transcript} />
+          </View>
+        ) : null}
+
         <Pressable
           onPress={onSwitchToText}
           style={styles.modeSwitchButton}
@@ -112,6 +119,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     fontFamily: Fonts.lora.regular,
+  },
+  draftProgressWrap: {
+    width: '100%',
+    maxWidth: 512,
+    paddingHorizontal: 8,
   },
   instructionText: {
     fontSize: 24,

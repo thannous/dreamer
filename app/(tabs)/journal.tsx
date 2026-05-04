@@ -449,8 +449,11 @@ export default function JournalListScreen() {
 
   const hasActiveFilter = !!(searchQuery || selectedTheme || selectedDreamType || dateRange.start || dateRange.end || showFavoritesOnly || showAnalyzedOnly || showExploredOnly);
   const renderEmptyState = useCallback(() => (
-    <EmptyState hasActiveFilter={hasActiveFilter} />
-  ), [hasActiveFilter]);
+    <EmptyState
+      hasActiveFilter={hasActiveFilter}
+      onClearFilters={handleClearFilters}
+    />
+  ), [handleClearFilters, hasActiveFilter]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => String(item.id), []);
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {

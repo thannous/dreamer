@@ -6,6 +6,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RecordingDraftProgress } from '@/components/recording/RecordingDraftProgress';
 
 export interface RecordingTextInputProps {
   value: string;
@@ -49,11 +50,15 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               ]}
               multiline
               editable={!disabled}
+              placeholder={t('recording.placeholder')}
+              placeholderTextColor={colors.textSecondary}
               testID={TID.Input.DreamTranscript}
               accessibilityLabel={t('recording.placeholder.accessibility')}
               autoFocus
             />
           </View>
+
+          <RecordingDraftProgress value={value} />
 
           {lengthWarning ? (
             <Text style={[styles.lengthWarning, { color: colors.accent }]}>

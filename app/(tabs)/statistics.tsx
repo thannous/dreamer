@@ -1,8 +1,9 @@
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   InteractionManager,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -34,6 +35,7 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getDreamStatsInsight, type DreamStatsInsightKind } from '@/lib/dreamStatsInsight';
 import { splitLabelText } from '@/lib/pieLabelUtils';
 import type { DreamType } from '@/lib/types';
 import { TID } from '@/lib/testIDs';
@@ -53,6 +55,16 @@ const MIN_LABEL_WIDTH = 84;
 const MAX_LABEL_WIDTH = 196;
 const MIN_LABEL_LINE = 14;
 const MAX_LABEL_LINE = 28;
+type IconName = Parameters<typeof IconSymbol>[0]['name'];
+
+const STATS_INSIGHT_ICON: Record<DreamStatsInsightKind, IconName> = {
+  record: 'moon.stars.fill',
+  analyze: 'sparkles',
+  explore: 'bubble.left.and.bubble.right.fill',
+  favorite: 'heart.fill',
+  streak: 'flame.fill',
+  steady: 'checkmark.circle.fill',
+};
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
@@ -273,6 +285,147 @@ const SectionGlass = memo(function SectionGlass({
   );
 });
 
+type StatsInsightCardProps = {
+  colors: ThemeColors;
+  insight: ReturnType<typeof getDreamStatsInsight>;
+  mode: 'light' | 'dark';
+  t: ReturnType<typeof useTranslation>['t'];
+  formatPercent: ReturnType<typeof useLocaleFormatting>['formatPercent'];
+  onPress: () => void;
+};
+
+const StatsInsightCard = memo(function StatsInsightCard({
+  colors,
+  insight,
+  mode,
+  t,
+  formatPercent,
+  onPress,
+}: StatsInsightCardProps) {
+  const progressItems = [
+    {
+      id: 'analysis',
+      label: t('stats.insight.metric.analysis'),
+      value: formatPercent(insight.analysisRatio),
+      ratio: insight.analysisRatio,
+    },
+    {
+      id: 'exploration',
+      label: t('stats.insight.metric.exploration'),
+      value: formatPercent(insight.explorationRatio),
+      ratio: insight.explorationRatio,
+    },
+    {
+      id: 'streak',
+      label: t('stats.insight.metric.streak'),
+      value: formatPercent(insight.streakGoalRatio),
+      ratio: insight.streakGoalRatio,
+    },
+  ];
+
+  return (
+    <StaticFlatGlassCard
+      intensity="moderate"
+      animationDelay={220}
+      style={styles.insightCard}
+      testID={TID.Component.StatsInsight}
+    >
+      <View style={[styles.insightAccent, { backgroundColor: colors.accent }]} />
+      <View style={styles.insightInner}>
+        <View style={styles.insightHeaderRow}>
+          <View
+            style={[
+              styles.insightIconWrap,
+              {
+                backgroundColor:
+                  mode === 'dark' ? `${colors.accent}35` : `${colors.accent}22`,
+              },
+            ]}
+          >
+            <IconSymbol
+              name={STATS_INSIGHT_ICON[insight.kind]}
+              size={22}
+              color={colors.accent}
+            />
+          </View>
+          <View style={styles.insightCopy}>
+            <Text style={[styles.insightEyebrow, { color: colors.accent }]}>
+              {t('stats.insight.eyebrow')}
+            </Text>
+            <Text style={[styles.insightTitle, { color: colors.textPrimary }]}>
+              {t(insight.titleKey)}
+            </Text>
+            <Text style={[styles.insightBody, { color: colors.textSecondary }]}>
+              {t(insight.bodyKey)}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.insightProgressGrid}>
+          {progressItems.map((item) => (
+            <View
+              key={item.id}
+              style={[
+                styles.insightProgressItem,
+                {
+                  borderColor: colors.divider,
+                  backgroundColor:
+                    mode === 'dark' ? `${colors.backgroundSecondary}C4` : `${colors.backgroundSecondary}90`,
+                },
+              ]}
+            >
+              <View style={styles.insightMetricRow}>
+                <Text style={[styles.insightMetricLabel, { color: colors.textSecondary }]}>
+                  {item.label}
+                </Text>
+                <Text style={[styles.insightMetricValue, { color: colors.textPrimary }]}>
+                  {item.value}
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.insightTrack,
+                  {
+                    backgroundColor:
+                      mode === 'dark' ? `${colors.textSecondary}26` : `${colors.textSecondary}1C`,
+                  },
+                ]}
+              >
+                <View
+                  style={[
+                    styles.insightFill,
+                    {
+                      width: `${Math.max(5, item.ratio * 100)}%`,
+                      backgroundColor: colors.accent,
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
+
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t(insight.ctaKey)}
+          testID={TID.Button.StatsInsightCta}
+          onPress={onPress}
+          style={({ pressed }) => [
+            styles.insightButton,
+            { backgroundColor: colors.accent },
+            pressed && styles.pressedButton,
+          ]}
+        >
+          <Text style={[styles.insightButtonText, { color: colors.textOnAccentSurface }]}>
+            {t(insight.ctaKey)}
+          </Text>
+          <IconSymbol name="arrow.right" size={16} color={colors.textOnAccentSurface} />
+        </Pressable>
+      </View>
+    </StaticFlatGlassCard>
+  );
+});
+
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export default function StatisticsScreen() {
@@ -286,6 +439,10 @@ export default function StatisticsScreen() {
   const stats = useDreamStatistics(dreams);
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const pieMetrics = useMemo(() => getPieMetrics(width), [width]);
+  const statsInsight = useMemo(() => getDreamStatsInsight(stats), [stats]);
+  const handleStatsInsightPress = useCallback(() => {
+    router.push(statsInsight.route);
+  }, [statsInsight.route]);
 
   const [showAnimations, setShowAnimations] = useState(false);
   const [showDeferredSections, setShowDeferredSections] = useState(false);
@@ -403,9 +560,29 @@ export default function StatisticsScreen() {
         <View style={[styles.container, { backgroundColor: colors.backgroundDark }]}>
           <AtmosphericBackground />
           {header}
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>{t('stats.empty')}</Text>
-          </View>
+          <ScrollView
+            style={styles.scrollView}
+            contentInsetAdjustmentBehavior="automatic"
+            contentContainerStyle={styles.emptyScrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <ScreenContainer>
+              <MockNavigationRail />
+              <View style={styles.emptyState}>
+                <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+                  {t('stats.empty')}
+                </Text>
+                <StatsInsightCard
+                  colors={colors}
+                  insight={statsInsight}
+                  mode={mode}
+                  t={t}
+                  formatPercent={formatPercent}
+                  onPress={handleStatsInsightPress}
+                />
+              </View>
+            </ScreenContainer>
+          </ScrollView>
         </View>
       </ScrollPerfProvider>
     );
@@ -463,6 +640,17 @@ export default function StatisticsScreen() {
                   />
                 </View>
               </SectionGlass>
+            </View>
+
+            <View style={[styles.section, isDesktopLayout && styles.sectionInsightDesktop]}>
+              <StatsInsightCard
+                colors={colors}
+                insight={statsInsight}
+                mode={mode}
+                t={t}
+                formatPercent={formatPercent}
+                onPress={handleStatsInsightPress}
+              />
             </View>
 
             {/* Streaks */}
@@ -788,6 +976,9 @@ const styles = StyleSheet.create({
   sectionStreaksDesktop: {
     width: '100%',
   },
+  sectionInsightDesktop: {
+    width: '100%',
+  },
   sectionChartDesktop: {
     width: '60%',
     minWidth: 420,
@@ -855,6 +1046,114 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.spaceGrotesk.regular,
     marginTop: ThemeLayout.spacing.xs,
+  },
+
+  // Insight card
+  insightCard: {
+    borderRadius: 26,
+    overflow: 'hidden',
+    padding: 0,
+  },
+  insightAccent: {
+    height: 3,
+    opacity: 0.9,
+  },
+  insightInner: {
+    padding: 22,
+    gap: 18,
+  },
+  insightHeaderRow: {
+    flexDirection: 'row',
+    gap: 14,
+    alignItems: 'flex-start',
+  },
+  insightIconWrap: {
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  insightCopy: {
+    flex: 1,
+    gap: 5,
+  },
+  insightEyebrow: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  insightTitle: {
+    fontSize: 24,
+    lineHeight: 30,
+    fontFamily: Fonts.fraunces.semiBold,
+  },
+  insightBody: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontFamily: Fonts.spaceGrotesk.regular,
+  },
+  insightProgressGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  insightProgressItem: {
+    flex: 1,
+    minWidth: 138,
+    borderWidth: 1,
+    borderRadius: 16,
+    borderCurve: 'continuous',
+    padding: 12,
+    gap: 9,
+  },
+  insightMetricRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  insightMetricLabel: {
+    flex: 1,
+    fontSize: 11,
+    lineHeight: 14,
+    fontFamily: Fonts.spaceGrotesk.medium,
+    textTransform: 'uppercase',
+  },
+  insightMetricValue: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontVariant: ['tabular-nums'],
+  },
+  insightTrack: {
+    height: 5,
+    borderRadius: 999,
+    overflow: 'hidden',
+  },
+  insightFill: {
+    height: '100%',
+    borderRadius: 999,
+  },
+  insightButton: {
+    minHeight: 48,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    paddingHorizontal: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    alignSelf: 'flex-start',
+  },
+  insightButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  pressedButton: {
+    opacity: 0.82,
+    transform: [{ scale: 0.98 }],
   },
 
   // Chart / Pie
@@ -987,10 +1286,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.spaceGrotesk.regular,
   },
   emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: ThemeLayout.spacing.lg,
     padding: ThemeLayout.spacing.lg,
+  },
+  emptyScrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingBottom: ThemeLayout.spacing.xl,
   },
   emptyStateText: {
     fontSize: 16,

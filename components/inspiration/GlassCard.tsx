@@ -126,6 +126,7 @@ function GlassCardFrame({
   const animatedContent = (
     <MotiView
       // Keep cards visible even if animations fail to start (e.g. during screen freezes).
+      testID={!onPress ? testID : undefined}
       from={motionFrom}
       animate={{ opacity: 1, translateY: 0 }}
       transition={motionTransition}
