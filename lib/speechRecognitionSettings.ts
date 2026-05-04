@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-import { requireOptionalNativeModule } from 'expo-modules-core';
+import { requireOptionalNativeModule } from 'expo';
 import * as Linking from 'expo-linking';
 
 type ExpoIntentLauncherModule = {
