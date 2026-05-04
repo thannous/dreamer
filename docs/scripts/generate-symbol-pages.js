@@ -635,6 +635,8 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                 </a>
             </section>` : '';
 
+  const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, 4) : [];
+
   // Generate FAQ answer for variations
   const faqVariationsAnswer = hasVariations
     ? sanitizeEmDashes(variations.slice(0, 3).map(v => `${v.context}: ${v.meaning}`).join(' '))
@@ -758,21 +760,31 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     ]
   };
 
+  const defaultFaqItems = [
+    {
+      question: `${t.faq_what_means} ${symbolData.name}?`,
+      answer: symbolData.shortDescription
+    },
+    {
+      question: t.faq_common_interpretations,
+      answer: faqVariationsAnswer
+    }
+  ];
+  const faqItems = symbolFaq.length > 0 ? symbolFaq : defaultFaqItems;
+  const faqCardsHtml = faqItems.map(item => `
+                    <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                        <h3 class="font-medium text-dream-cream mb-2">${escapeHtml(sanitizeEmDashes(item.question))}</h3>
+                        <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(sanitizeEmDashes(item.answer))}</p>
+                    </div>`).join('\n');
+
   const faqPageJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: `${t.faq_what_means} ${symbolData.name}?`,
-        acceptedAnswer: { '@type': 'Answer', text: symbolData.shortDescription }
-      },
-      {
-        '@type': 'Question',
-        name: t.faq_common_interpretations,
-        acceptedAnswer: { '@type': 'Answer', text: faqVariationsAnswer }
-      }
-    ]
+    mainEntity: faqItems.map(item => ({
+      '@type': 'Question',
+      name: sanitizeEmDashes(item.question),
+      acceptedAnswer: { '@type': 'Answer', text: sanitizeEmDashes(item.answer) }
+    }))
   };
 
   // Language dropdown items
@@ -967,15 +979,7 @@ ${reflectionSectionHtml}
                     <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
                     ${t.section_faq}
                 </h2>
-                <div class="grid gap-4">
-                    <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                        <h3 class="font-medium text-dream-cream mb-2">${t.faq_what_means} ${escapeHtml(symbolData.name)}?</h3>
-                        <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(symbolData.shortDescription)}</p>
-                    </div>
-                    <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                        <h3 class="font-medium text-dream-cream mb-2">${t.faq_common_interpretations}</h3>
-                        <p class="text-sm text-gray-300 leading-relaxed">${escapeHtml(faqVariationsAnswer)}</p>
-                    </div>
+                <div class="grid gap-4">${faqCardsHtml}
                 </div>
             </section>
 

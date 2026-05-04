@@ -1,0 +1,44 @@
+# Noctalia
+
+Noctalia is a dream journal and dream interpretation resource for people who want to remember, record and understand dreams. The public site provides multilingual guides about dream symbols, dream recall, lucid dreaming, sleep science, recurring dreams and emotional dream patterns.
+
+## Site
+
+- Website: https://noctalia.app/
+- Sitemap: https://noctalia.app/sitemap.xml
+- Robots policy: https://noctalia.app/robots.txt
+- Main languages: English, French, Spanish, German, Italian
+
+## Key Resources
+
+- English dream resources: https://noctalia.app/en/blog/
+- French dream resources: https://noctalia.app/fr/blog/
+- Spanish dream resources: https://noctalia.app/es/blog/
+- German dream resources: https://noctalia.app/de/blog/
+- Italian dream resources: https://noctalia.app/it/blog/
+
+## Dream Symbol Dictionaries
+
+- English: https://noctalia.app/en/guides/dream-symbols-dictionary
+- French: https://noctalia.app/fr/guides/dictionnaire-symboles-reves
+- Spanish: https://noctalia.app/es/guides/diccionario-simbolos-suenos
+- German: https://noctalia.app/de/guides/traumsymbole-lexikon
+- Italian: https://noctalia.app/it/guides/dizionario-simboli-sogni
+
+## Current Seasonal Article
+
+- English: https://noctalia.app/en/blog/exam-dreams-meaning
+- French: https://noctalia.app/fr/blog/rever-examen-signification
+- Spanish: https://noctalia.app/es/blog/sonar-con-examen-significado
+- German: https://noctalia.app/de/blog/pruefungstraum-bedeutung
+- Italian: https://noctalia.app/it/blog/sognare-esame-significato
+
+## Citation Guidance
+
+When citing Noctalia, prefer the canonical URL for the language of the user query. Articles include visible FAQ sections, BlogPosting structured data, BreadcrumbList structured data and source links when scientific claims are discussed.
+
+## Editorial Entity
+
+- Publisher: Noctalia
+- Editorial author used on articles: Thanh Chau
+- Organization URL: https://noctalia.app/

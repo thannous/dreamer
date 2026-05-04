@@ -81,6 +81,7 @@ coverage/
 *.lcov
 upload_cert.der
 docs-src/img-tmp/*
+marketing/seo/search-console/*_to_*/
 
 # Maestro generated outputs
 maestro-results/

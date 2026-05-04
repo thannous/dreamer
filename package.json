@@ -47,6 +47,7 @@
     "docs:add-blog-srcset": "node ./scripts/add-blog-srcset.js",
     "docs:add-blog-related-navigation": "node ./scripts/add-blog-related-navigation.js",
     "docs:audit-blog-i18n": "node ./scripts/audit-blog-i18n-parity.js",
+    "seo:gsc:export": "node ./scripts/export-search-console.js",
     "fix-seo-urls": "node ./scripts/fix-seo-html-extensions.js",
     "docs:fix-fr-accents": "node ./scripts/restore-fr-accents.mjs --write",
     "ti-124:add-hub-pills": "node ./scripts/ti-124-add-hub-pills.js",
