@@ -81,6 +81,13 @@
         }
         .glass-button { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s ease; }
         .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
+        .mobile-menu-surface {
+            background: #120720 !important;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
         .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
         .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
         .noctalia-premium-nav-inner {
@@ -131,9 +138,15 @@
             backdrop-filter: blur(18px);
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
-        #stickyBar.sb-visible { display: block; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+        #stickyBar.sb-visible { display: block; opacity: 1; pointer-events: none; transform: translate(-50%, 0); }
         #stickyBar .sb-inner {
             display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
+        }
+        #stickyBar input,
+        #stickyBar button,
+        #stickyBar a {
+            pointer-events: auto;
+            touch-action: manipulation;
         }
         #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(17rem, 34vw); }
         #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; overflow: hidden; }
@@ -578,6 +591,24 @@
         }
         #searchFeedback, #noResults {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
+        }
+        .dictionary-faq-section,
+        .dictionary-related-section {
+          box-sizing: border-box;
+          width: 100%;
+          padding-left: var(--dictionary-edge);
+          padding-right: var(--dictionary-edge);
+        }
+        .dictionary-faq-section {
+          max-width: calc(48rem + (var(--dictionary-edge) * 2));
+        }
+        .dictionary-related-section {
+          max-width: calc(56rem + (var(--dictionary-edge) * 2));
+        }
+        .dictionary-page .site-footer {
+          position: relative;
+          z-index: 2;
+          background: #05020a !important;
         }
         .search-feedback {
           display: flex;
@@ -2391,7 +2422,7 @@
             <!-- /dict-layout-close -->
 
             <!-- FAQ Section (before CTA to address objections first) -->
-            <section class="mt-16 max-w-3xl mx-auto">
+            <section class="dictionary-faq-section mt-16 mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">Domande frequenti</h2>
                 <div class="space-y-4">
                     <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -2439,7 +2470,7 @@
             </aside>
 
             <!-- Related Articles -->
-            <section class="mt-16 max-w-4xl mx-auto">
+            <section class="dictionary-related-section mt-16 mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">Articoli correlati</h2>
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
                     <a href="/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 border border-transparent transition-colors">
@@ -2812,7 +2843,8 @@
                 if (!heroHeader || !stickyBar) return;
                 const heroBottom = heroHeader.getBoundingClientRect().bottom;
                 const navbarHeight = navbar?.getBoundingClientRect().height || 0;
-                const shouldShow = heroBottom <= navbarHeight + 24;
+                const symbolsBottom = symbolsListEl?.getBoundingClientRect().bottom ?? Number.POSITIVE_INFINITY;
+                const shouldShow = heroBottom <= navbarHeight + 24 && symbolsBottom > navbarHeight + 80;
                 stickyBar.classList.toggle('sb-visible', shouldShow);
                 updateSectionScrollOffset();
             }
