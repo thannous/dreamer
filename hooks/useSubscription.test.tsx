@@ -24,6 +24,8 @@ jest.mock('../services/subscriptionService', () => {
     ]),
     purchaseSubscriptionPackage: jest.fn(async () => ({ tier: 'plus', isActive: true })),
     restoreSubscriptionPurchases: jest.fn(async () => ({ tier: 'plus', isActive: true })),
+    syncSubscriptionPurchases: jest.fn(async () => {}),
+    addSubscriptionStatusUpdateListener: jest.fn(() => () => {}),
   };
 });
 
@@ -127,6 +129,8 @@ describe('useSubscription', () => {
     ] as any);
     jest.mocked(service.purchaseSubscriptionPackage).mockResolvedValue({ tier: 'plus', isActive: true } as any);
     jest.mocked(service.restoreSubscriptionPurchases).mockResolvedValue({ tier: 'plus', isActive: true } as any);
+    jest.mocked(service.syncSubscriptionPurchases).mockResolvedValue(undefined as any);
+    jest.mocked(service.addSubscriptionStatusUpdateListener).mockReturnValue(() => {});
   });
 
   describe('authentication handling', () => {
@@ -319,16 +323,17 @@ describe('useSubscription', () => {
 
   describe('refresh and cancellation flows', () => {
     it('refreshes subscription status from RevenueCat', async () => {
+      const { refreshSubscriptionStatus } = require('../services/subscriptionService');
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValueOnce({ tier: 'plus', isActive: true } as any);
+
       const { result } = renderSubscriptionHook();
       await act(async () => {});
-
-      mockMapStatusFromInfo.mockReturnValueOnce({ tier: 'plus', isActive: true });
 
       await act(async () => {
         await result.current.refreshSubscription();
       });
 
-      expect(mockMapStatusFromInfo).toHaveBeenCalled();
+      expect(refreshSubscriptionStatus).toHaveBeenCalled();
       expect(result.current.status?.tier).toBe('plus');
       expect(result.current.refreshing).toBe(false);
     });

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import Purchases from 'react-native-purchases';
 
 import type { SubscriptionStatus } from '@/lib/types';
 import { isMockModeEnabled } from '@/lib/env';
@@ -64,12 +63,6 @@ async function refreshFromTimer(source: string, expiryKey: string | null) {
   const isMockMode = isMockModeEnabled();
 
   try {
-    try {
-      await Purchases.invalidateCustomerInfoCache();
-    } catch {
-      // ignore cache invalidation errors
-    }
-
     let nextStatus: SubscriptionStatus | null = null;
     try {
       nextStatus = await refreshSubscriptionStatus();
