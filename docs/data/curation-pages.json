@@ -13,11 +13,32 @@
         "de": "haeufigste-traumsymbole",
         "it": "simboli-sogni-comuni"
       },
-      "symbols": ["water", "teeth", "falling", "flying", "snake", "death", "chase", "house", "car", "baby", "dog", "fire", "spider", "exam", "nudity", "door", "ocean", "stairs", "cat", "phone"],
+      "symbols": [
+        "water",
+        "teeth",
+        "falling",
+        "flying",
+        "snake",
+        "death",
+        "chase",
+        "house",
+        "car",
+        "baby",
+        "dog",
+        "fire",
+        "spider",
+        "exam",
+        "nudity",
+        "door",
+        "ocean",
+        "stairs",
+        "cat",
+        "phone"
+      ],
       "en": {
-        "title": "20 Most Common Dream Symbols & Their Meanings",
-        "metaDescription": "Discover the 20 most frequently reported dream symbols and what they mean. From falling and flying to teeth and water — understand your most common dreams.",
-        "intro": "Certain dream symbols appear with remarkable consistency across cultures, ages, and backgrounds. Whether you dream of losing your teeth, flying through the sky, or being chased by an unknown force, you are sharing an experience with millions of dreamers worldwide. These 20 symbols represent the most frequently reported dream images, each carrying deep psychological significance that can illuminate your waking life.",
+        "title": "Most common dream symbols: 20 meanings with examples",
+        "metaDescription": "Explore the 20 most common dream symbols and meanings, from water, teeth and falling to animals, death, doors and houses, with practical examples.",
+        "intro": "These are the dream symbols people search and report most often. Start with the quick meaning, then use the example scenarios to separate a general symbol from the specific emotion and situation in your dream.",
         "outro": "These common symbols recur because they tap into universal human experiences — fear, desire, loss, growth, and transformation. The next time one appears in your dream, remember that its meaning is shaped by your unique life context. Use these interpretations as a starting point, then reflect on what each symbol means to you personally."
       },
       "fr": {
@@ -54,7 +75,18 @@
         "de": "angsteinflossende-traumsymbole",
         "it": "simboli-sogni-spaventosi"
       },
-      "symbols": ["snake", "death", "chase", "spider", "falling", "blood", "wolf", "night", "cliff", "lost"],
+      "symbols": [
+        "snake",
+        "death",
+        "chase",
+        "spider",
+        "falling",
+        "blood",
+        "wolf",
+        "night",
+        "cliff",
+        "lost"
+      ],
       "en": {
         "title": "Scary Dream Symbols Explained: What Nightmares Really Mean",
         "metaDescription": "Understand your scariest dream symbols — from death and being chased to snakes and falling. Learn why nightmares happen and what they reveal about your psyche.",
@@ -95,7 +127,18 @@
         "de": "positive-traumsymbole",
         "it": "simboli-sogni-positivi"
       },
-      "symbols": ["flying", "baby", "rainbow", "wedding", "sun", "horse", "key", "bird", "tree", "moon"],
+      "symbols": [
+        "flying",
+        "baby",
+        "rainbow",
+        "wedding",
+        "sun",
+        "horse",
+        "key",
+        "bird",
+        "tree",
+        "moon"
+      ],
       "en": {
         "title": "Positive Dream Symbols: Uplifting Dreams & Their Meanings",
         "metaDescription": "Explore dream symbols that carry positive meanings — from flying and rainbows to babies and weddings. Understand what your uplifting dreams are telling you.",
@@ -136,7 +179,16 @@
         "de": "tier-traumsymbole",
         "it": "simboli-sogni-animali"
       },
-      "symbols": ["dog", "cat", "snake", "spider", "bird", "wolf", "horse", "lion"],
+      "symbols": [
+        "dog",
+        "cat",
+        "snake",
+        "spider",
+        "bird",
+        "wolf",
+        "horse",
+        "lion"
+      ],
       "en": {
         "title": "Animal Dream Symbols: What Animals Mean in Your Dreams",
         "metaDescription": "Discover what animals represent in dreams — from dogs and cats to wolves and lions. Understand the symbolic meaning of animal dreams with our complete guide.",
@@ -177,7 +229,14 @@
         "de": "wasser-traumsymbole",
         "it": "simboli-sogni-acqua"
       },
-      "symbols": ["water", "ocean", "rain", "swimming", "storm", "flood"],
+      "symbols": [
+        "water",
+        "ocean",
+        "rain",
+        "swimming",
+        "storm",
+        "flood"
+      ],
       "en": {
         "title": "Water Dream Symbols: What Water Means in Your Dreams",
         "metaDescription": "Explore all water-related dream symbols — ocean, rain, swimming, storms, and floods. Understand what water represents in your dreams and your emotional landscape.",
@@ -218,7 +277,14 @@
         "de": "traeume-tod-verwandlung",
         "it": "sogni-morte-trasformazione"
       },
-      "symbols": ["death", "deceased-person", "snake", "blood", "night", "bridge"],
+      "symbols": [
+        "death",
+        "deceased-person",
+        "snake",
+        "blood",
+        "night",
+        "bridge"
+      ],
       "en": {
         "title": "Death Dreams & Transformation",
         "metaDescription": "Understand death-related dream symbols — death, deceased loved ones, snakes, and more. Learn why dreams of death usually symbolize transformation, not literal endings.",
@@ -259,7 +325,12 @@
         "de": "menschen-in-traeumen",
         "it": "persone-nei-sogni"
       },
-      "symbols": ["baby", "child", "ex-partner", "deceased-person"],
+      "symbols": [
+        "baby",
+        "child",
+        "ex-partner",
+        "deceased-person"
+      ],
       "en": {
         "title": "People in Dreams: What They Represent & Their Meanings",
         "metaDescription": "Understand what people mean in your dreams — babies, children, ex-partners, and deceased loved ones. Learn who these dream figures really represent.",
@@ -300,7 +371,17 @@
         "de": "orte-in-traeumen",
         "it": "luoghi-nei-sogni"
       },
-      "symbols": ["house", "hospital", "school", "bridge", "elevator", "stairs", "forest", "mountain", "path"],
+      "symbols": [
+        "house",
+        "hospital",
+        "school",
+        "bridge",
+        "elevator",
+        "stairs",
+        "forest",
+        "mountain",
+        "path"
+      ],
       "en": {
         "title": "Places in Dreams: What Dream Locations Reveal About You",
         "metaDescription": "Explore what places and locations mean in dreams — houses, hospitals, schools, forests, and more. Understand how dream settings reflect your inner world.",

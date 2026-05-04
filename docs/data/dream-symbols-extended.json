@@ -1376,27 +1376,23 @@
         ]
       },
       "it": {
-        "fullInterpretation": "<p>I cani sono potenti simboli nell'interpretazione dei sogni, rappresentando lealtà, amicizia, protezione e amore incondizionato. Come compagni fedeli dell'uomo da millenni, i cani nei sogni portano un profondo significato emotivo.</p>\n<p>Un cane amichevole nel tuo sogno può rappresentare amicizie affidabili, lealtà nelle relazioni o il tuo stesso carattere fedele e protettivo. Può anche rappresentare la tua intuizione.</p>\n<p>Un cane aggressivo, invece, potrebbe indicare conflitti nelle relazioni, la sensazione di essere minacciati o aggressività repressa.</p>\n<p>Un cane perso o randagio può simboleggiare sentimenti di solitudine, la ricerca di appartenenza o relazioni trascurate.</p>",
+        "fullInterpretation": "<p>Sognare un cane parla prima di tutto di fiducia, lealtà e protezione. Il cane può rappresentare una relazione fedele, un alleato o la parte istintiva che ti avverte quando qualcosa non va.</p><p>Quando nel sogno il cane attacca, ringhia o morde, il simbolo cambia tono: può indicare conflitto, una fiducia ferita, paura di essere tradito o rabbia che non ha ancora trovato parole. Non significa che una persona ti farà del male; mostra dove una relazione si sente meno sicura.</p><p>Un cane che protegge, invece, indica sostegno e difesa. Può rappresentare una persona affidabile o una risorsa interna che ti aiuta a mettere confini.</p>",
         "variations": [
           {
-            "context": "Un cane amichevole e giocoso",
-            "meaning": "Rappresenta amicizie leali, affidabilità e relazioni positive. Qualcuno nella tua vita ti è devotamente fedele."
+            "context": "Cane che attacca",
+            "meaning": "Conflitto, minaccia percepita o rabbia che chiede attenzione."
           },
           {
-            "context": "Un cane aggressivo o che attacca",
-            "meaning": "Può indicare conflitti, la sensazione di essere minacciati o aggressività repressa in te stesso o nel tuo ambiente."
+            "context": "Cane che morde",
+            "meaning": "Fiducia ferita, parole aggressive o relazione diventata dolorosa."
           },
           {
-            "context": "Un cane perso o randagio",
-            "meaning": "Simboleggia solitudine, amicizie trascurate o la sensazione che qualcosa di leale e affidabile manchi nella tua vita."
+            "context": "Cane amichevole",
+            "meaning": "Lealtà, amicizia affidabile e bisogno di vicinanza."
           },
           {
-            "context": "Essere protetti da un cane o proteggere un cane",
-            "meaning": "Indica il desiderio di sicurezza o la tua natura protettiva nei confronti delle persone a te care."
-          },
-          {
-            "context": "Un cane malato o morente",
-            "meaning": "Può rappresentare la paura di perdere un'amicizia importante o una relazione leale."
+            "context": "Cane che ti protegge",
+            "meaning": "Sostegno, sicurezza e istinto protettivo."
           }
         ]
       }
@@ -1853,32 +1849,20 @@
         "fullInterpretation": "<p>En los sueños, una inundación suele llegar con urgencia: el agua sube, los límites desaparecen y lo conocido se vuelve inestable. Como el agua está muy vinculada a las emociones y al inconsciente, una inundación a menudo apunta a sentimientos demasiado intensos para contener. Puede reflejar una etapa en la que el estrés, el duelo, la ira o la ansiedad se \"desbordan\" en la vida diaria.</p>\n<p>La inundación también puede simbolizar cambios repentinos. Algo se está moviendo más rápido de lo que puedes procesar, y sientes que te arrastra en vez de llevar el control. En este sentido, el sueño puede señalar dónde necesitas límites emocionales más firmes, más apoyo o un ritmo más lento para integrar lo que ocurre.</p>\n<p>Al mismo tiempo, las inundaciones no solo destruyen: también limpian. Si el sueño tiene un tono de alivio o renovación, la inundación puede representar liberación emocional, limpieza o un reinicio necesario que abre espacio para reconstruir.</p>\n<p>Fíjate en dónde ocurre la inundación (casa, calles, trabajo), en la calidad del agua (clara, turbia, sucia) y en tu papel (escapar, rescatar, observar). Estos detalles suelen señalar el área de la vida que se siente abrumada y el tipo de respuesta que tu mente está ensayando: evitación, acción o rendición.</p>",
         "variations": [
           {
-            "context": "Una inundación entrando en tu casa",
-            "meaning": "Puede reflejar emociones que afectan tu intimidad, dinámicas familiares o sensación de seguridad y estabilidad."
+            "context": "Inundación en casa",
+            "meaning": "Emociones o conflictos que invaden tu intimidad y sensación de seguridad."
           },
           {
-            "context": "Ser arrastrado por la corriente",
-            "meaning": "Suele indicar sentirse impotente, abrumado o incapaz de seguir el ritmo de cambios o emociones intensas."
+            "context": "Inundación de agua limpia",
+            "meaning": "Liberación emocional, claridad o limpieza después de una etapa intensa."
+          },
+          {
+            "context": "Inundación de agua sucia",
+            "meaning": "Confusión, cansancio emocional o problemas mezclados que necesitan orden."
           },
           {
             "context": "Escapar de una inundación",
-            "meaning": "Sugiere que estás activando recursos de afrontamiento para protegerte y recuperar control."
-          },
-          {
-            "context": "Ayudar a otros durante una inundación",
-            "meaning": "Puede señalar un rol de cuidador, carga emocional o la necesidad de ofrecer (o pedir) apoyo."
-          },
-          {
-            "context": "Agua turbia o sucia",
-            "meaning": "Puede representar confusión, emociones pesadas o asuntos sin resolver que nublan la claridad."
-          },
-          {
-            "context": "Agua clara",
-            "meaning": "Suele indicar emociones intensas pero honestas, con potencial de limpieza y claridad."
-          },
-          {
-            "context": "La inundación baja y se retira",
-            "meaning": "Puede simbolizar recuperación tras una descarga emocional: lo abrumador empieza a asentarse."
+            "meaning": "Búsqueda de salida, límites y recuperación de control."
           }
         ]
       },
