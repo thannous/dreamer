@@ -186,13 +186,6 @@ const GUIDE_HUB_UI = {
 };
 
 const GUIDE_HUB_BLOG_SLUGS = {
-  lucid: {
-    en: 'lucid-dreaming-beginners-guide',
-    fr: 'guide-reve-lucide-debutant',
-    es: 'guia-suenos-lucidos-principiantes',
-    de: 'leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte',
-    it: 'guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti'
-  },
   sleepScience: {
     en: 'why-we-dream-science',
     fr: 'pourquoi-nous-revons-science',
@@ -573,29 +566,7 @@ function renderGuideHubStyles() {
         .guides-button:hover { transform: translateY(-1px); }
         .guides-button-primary { background: #fda481; color: #0a0514; border-color: rgba(253,164,129,0.9); }
         .guides-button-secondary { background: rgba(255,255,255,0.055); color: #f8f5ff; backdrop-filter: blur(16px); }
-        .guides-paths {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 0;
-          padding: 1.6rem 1.3rem;
-          border: 1px solid rgba(226,218,255,0.24);
-          border-radius: 18px;
-          background: linear-gradient(135deg, rgba(25, 15, 50, 0.58), rgba(16, 8, 31, 0.68));
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 80px rgba(0,0,0,0.32);
-          backdrop-filter: blur(20px);
-        }
-        .guides-paths-section {
-          position: relative;
-          z-index: 1;
-          padding: 1rem clamp(1rem, 4vw, 4.75rem) 3rem;
-          background: transparent;
-        }
-        .guides-paths-section .guides-section-head {
-          max-width: 42rem;
-          min-height: 0;
-          margin-bottom: 1rem;
-        }
-        .guides-path-card, .guides-card, .guides-dictionary-card {
+        .guides-card, .guides-dictionary-card {
           position: relative;
           overflow: hidden;
           border-radius: 8px;
@@ -604,22 +575,6 @@ function renderGuideHubStyles() {
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.28);
           backdrop-filter: blur(18px);
         }
-        .guides-path-card {
-          min-height: 14.6rem;
-          padding: 0.15rem clamp(1rem, 2vw, 2rem);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          border: 0;
-          border-right: 1px solid rgba(226,218,255,0.16);
-          border-radius: 0;
-          background: transparent;
-          box-shadow: none;
-          backdrop-filter: none;
-        }
-        .guides-path-card:last-child { border-right: 0; }
         .guides-card::before, .guides-dictionary-card::before {
           content: "";
           position: absolute;
@@ -628,7 +583,7 @@ function renderGuideHubStyles() {
           pointer-events: none;
           background: radial-gradient(circle at 78% 20%, var(--guide-tone, rgba(253,164,129,0.26)), transparent 52%);
         }
-        .guides-path-icon, .guides-card-icon {
+        .guides-card-icon {
           position: relative;
           width: 3.6rem;
           height: 3.6rem;
@@ -640,14 +595,7 @@ function renderGuideHubStyles() {
           background: rgba(253,164,129,0.09);
           border: 1px solid rgba(253,164,129,0.18);
         }
-        .guides-path-icon {
-          width: 5.7rem;
-          height: 5.7rem;
-          margin: 0 auto 0.9rem;
-          border-color: rgba(226,138,255,0.42);
-          box-shadow: inset 0 0 28px rgba(190,119,255,0.18);
-        }
-        .guides-path-title, .guides-card-title, .guides-dictionary-title {
+        .guides-card-title, .guides-dictionary-title {
           position: relative;
           margin: 0;
           font-family: Georgia, 'Times New Roman', serif;
@@ -657,20 +605,10 @@ function renderGuideHubStyles() {
           text-wrap: balance;
           overflow-wrap: anywhere;
         }
-        .guides-path-title { font-size: clamp(1.28rem, 1.38vw, 1.58rem); color: #fda481; }
-        .guides-path-desc, .guides-card-desc, .guides-dictionary-desc {
+        .guides-card-desc, .guides-dictionary-desc {
           position: relative;
           color: rgba(226,218,255,0.78);
           line-height: 1.5;
-        }
-        .guides-path-desc { margin: 0.55rem auto 1.15rem; max-width: 14rem; font-size: 0.9rem; }
-        .guides-path-arrow, .guides-card-arrow {
-          position: relative;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          color: #fda481;
-          font-weight: 800;
         }
         .guides-section {
           position: relative;
@@ -713,7 +651,7 @@ function renderGuideHubStyles() {
         .guides-bento {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
-          grid-auto-rows: 10.15rem;
+          grid-auto-rows: minmax(10.15rem, auto);
           gap: 0.8rem;
         }
         .guides-dictionary-card {
@@ -769,7 +707,7 @@ function renderGuideHubStyles() {
             linear-gradient(90deg, rgba(18,8,31,0.96), rgba(18,8,31,0.72), rgba(18,8,31,0.22)),
             var(--guide-image) center right / cover no-repeat;
         }
-        .guides-card:hover, .guides-path-card:hover, .guides-dictionary-card:hover {
+        .guides-card:hover, .guides-dictionary-card:hover {
           transform: translateY(-2px);
           border-color: rgba(253,164,129,0.34);
         }
@@ -810,7 +748,6 @@ function renderGuideHubStyles() {
         .guides-trust span { color: rgba(226,218,255,0.7); font-size: 0.86rem; line-height: 1.35; }
         @media (max-width: 1180px) {
           .guides-hero { grid-template-columns: 1fr; min-height: auto; padding-top: 7rem; }
-          .guides-paths { grid-template-columns: repeat(3, minmax(13rem, 1fr)); overflow-x: auto; }
           .guides-entry-layout { grid-template-columns: 1fr; }
           .guides-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .guides-title { max-width: 16ch; }
@@ -829,36 +766,75 @@ function renderGuideHubStyles() {
         }
         @media (max-width: 720px) {
           .guides-page { background-position: center top; }
-          .guides-hero { padding: 6.5rem 1rem 2rem; }
-          .guides-paths-section { padding: 0 1rem 2rem; }
-          .guides-title { font-size: clamp(3.35rem, 17vw, 5.2rem); max-width: 9ch; }
-          .guides-lede { font-size: 1rem; }
+          .guides-hero {
+            min-height: 0;
+            padding: 5.35rem 1rem 0.9rem;
+          }
+          .guides-title { font-size: clamp(2.85rem, 15vw, 4.2rem); max-width: 9ch; }
+          .guides-lede {
+            max-width: 20rem;
+            margin-top: 0.85rem;
+            font-size: 0.96rem;
+            line-height: 1.45;
+          }
           .guides-actions { flex-direction: column; }
           .guides-button { width: 100%; }
-          .guides-paths { grid-template-columns: 1fr; overflow: visible; padding: 0; }
-          .guides-path-card { min-height: 13.5rem; border-right: 0; border-bottom: 1px solid rgba(226,218,255,0.14); padding: 1.2rem; }
-          .guides-path-card:last-child { border-bottom: 0; }
-          .guides-section { margin-top: 2rem; }
+          .guides-section {
+            margin-top: 0;
+            padding-top: 0.5rem;
+          }
+          .guides-entry-left .guides-section-head {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+          }
           .guides-section h2 { font-size: clamp(2rem, 10vw, 3.2rem); max-width: 10ch; }
-          .guides-bento { grid-template-columns: 1fr; }
-          .guides-dictionary-card { grid-column: auto; grid-row: auto; min-height: 22rem; }
-          .guides-card { min-height: 15rem; }
+          .guides-bento {
+            display: flex;
+            flex-direction: column;
+            gap: 0.95rem;
+          }
+          .guides-dictionary-card {
+            grid-column: auto;
+            grid-row: auto;
+            min-height: 13.5rem;
+            padding: 1rem;
+          }
+          .guides-dictionary-title {
+            margin-top: 0.7rem;
+            font-size: clamp(1.65rem, 10vw, 2.35rem);
+          }
+          .guides-dictionary-desc {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-width: 18rem;
+          }
+          .guides-dictionary-cta { display: none; }
+          .guides-card {
+            min-height: 13rem;
+            padding: 1rem;
+            justify-content: space-between;
+          }
+          .guides-card-title { font-size: clamp(1.35rem, 8vw, 2rem); }
+          .guides-card-desc {
+            max-width: 18rem;
+            font-size: 0.94rem;
+            line-height: 1.45;
+          }
+          .guides-card-meta { margin-top: 1.2rem; }
           .guides-trust { grid-template-columns: 1fr; }
           .guides-trust-item { border-right: 0; border-bottom: 1px solid rgba(226,218,255,0.14); padding: 1rem 0; }
           .guides-trust-item:last-child { border-bottom: 0; }
         }
     </style>`;
-}
-
-function renderPathCard({ href, icon, title, desc, tone }) {
-  return `                <a href="${href}" class="guides-path-card" style="--guide-tone:${tone}">
-                    <span class="guides-path-icon"><i data-lucide="${icon}" class="w-7 h-7"></i></span>
-                    <span>
-                        <h2 class="guides-path-title">${escapeHtml(title)}</h2>
-                        <p class="guides-path-desc">${escapeHtml(desc)}</p>
-                        <span class="guides-path-arrow"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
-                    </span>
-                </a>`;
 }
 
 function renderGuideCard(lang, copy, page) {
@@ -921,31 +897,6 @@ function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
   const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
-  const symbolCount = (readJson('dream-symbols.json').symbols || []).length;
-  const scaryPage = pages.find((page) => page.id === 'scary-dream-symbols') || pages[1];
-  const pathCards = [
-    renderPathCard({
-      href: `/${lang}/guides/${t.dictionary_slug}`,
-      icon: 'aperture',
-      title: ui.pathSymbols,
-      desc: ui.pathSymbolsDesc,
-      tone: 'rgba(253,164,129,0.28)'
-    }),
-    renderPathCard({
-      href: `/${lang}/guides/${scaryPage.slugs[lang]}`,
-      icon: 'moon',
-      title: ui.pathNightmares,
-      desc: ui.pathNightmaresDesc,
-      tone: 'rgba(178,129,255,0.32)'
-    }),
-    renderPathCard({
-      href: `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.lucid[lang]}`,
-      icon: 'moon',
-      title: ui.pathLucid,
-      desc: ui.pathLucidDesc,
-      tone: 'rgba(244,114,182,0.24)'
-    })
-  ].join('\n');
   const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en).map((card) => renderHubBentoCard(lang, t, pages, card)).join('\n');
   const itemList = {
     '@context': 'https://schema.org',
@@ -1029,15 +980,6 @@ ${cards}
                 </div>
             </div>
         </section>
-        <section class="guides-paths-section" aria-labelledby="guidesPathsTitle">
-            <div class="guides-section-head">
-                <h2 id="guidesPathsTitle">${escapeHtml(ui.chooseTitle)}</h2>
-                <p class="guides-section-copy">${escapeHtml(ui.chooseIntro)}</p>
-            </div>
-            <div class="guides-paths" aria-label="${escapeHtml(ui.chooseTitle)}">
-${pathCards}
-            </div>
-        </section>
     </main>
 ${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}
     </div>
@@ -1097,8 +1039,8 @@ function renderLayoutCss() {
           z-index: 0;
           pointer-events: none;
           background:
-            linear-gradient(180deg, rgba(5, 2, 12, 0.62) 0%, rgba(8, 3, 17, 0.42) 38%, #090413 94%),
-            linear-gradient(90deg, rgba(5, 2, 12, 0.72) 0%, rgba(5, 2, 12, 0.22) 48%, rgba(5, 2, 12, 0.58) 100%),
+            linear-gradient(180deg, rgba(5, 2, 12, 0.7) 0%, rgba(8, 3, 17, 0.48) 34%, #090413 88%),
+            linear-gradient(90deg, rgba(5, 2, 12, 0.76) 0%, rgba(5, 2, 12, 0.2) 48%, rgba(5, 2, 12, 0.62) 100%),
             radial-gradient(ellipse at 76% 28%, rgba(253, 164, 129, 0.14), transparent 24rem),
             url('/img/blog/dream-symbols-dictionary.webp') center top / cover no-repeat,
             linear-gradient(135deg, #12051d 0%, #0a0514 45%, #130822 100%);
@@ -1127,9 +1069,9 @@ function renderLayoutCss() {
           grid-template-columns: minmax(0, 1fr);
           align-items: end;
           gap: clamp(1.5rem, 4vw, 5rem);
-          min-height: 35rem;
+          min-height: 29.5rem;
           margin-bottom: 0;
-          padding: 8.1rem clamp(1rem, 4vw, 4.75rem) 3.2rem;
+          padding: 7.2rem clamp(1rem, 4vw, 4.75rem) 2.1rem;
           text-align: left;
           background: transparent;
         }
@@ -1144,33 +1086,37 @@ function renderLayoutCss() {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.45rem 0.72rem;
-          border-radius: 9999px;
-          border: 1px solid rgba(253,164,129,0.22);
-          background: rgba(253,164,129,0.09);
-          color: rgba(253,164,129,0.96);
-          font-size: 0.74rem;
-          line-height: 1;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          color: rgba(253,164,129,0.9);
+          font-size: 0.76rem;
+          line-height: 1.2;
           text-transform: uppercase;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.11em;
           font-weight: 700;
         }
         .dictionary-header h1 {
-          width: min(100%, 16ch);
+          width: min(100%, 18ch);
           max-width: none;
           margin: 0;
-          font-size: clamp(4rem, 6.1vw, 7.4rem);
-          line-height: 0.91;
+          font-size: clamp(3.25rem, 5vw, 5.8rem);
+          line-height: 0.94;
           letter-spacing: 0;
+          background: linear-gradient(180deg, #fff 0%, #f8f5ff 54%, rgba(226,218,255,0.9) 100%) !important;
+          -webkit-background-clip: text !important;
+          background-clip: text !important;
+          text-shadow: 0 1.2rem 3rem rgba(0,0,0,0.28);
         }
         .dictionary-hero-intro {
-          max-width: 44rem;
-          color: rgba(237,225,255,0.78);
-          font-size: clamp(1rem, 1.6vw, 1.2rem);
-          line-height: 1.55;
+          max-width: 39rem;
+          color: rgba(237,225,255,0.82);
+          font-size: clamp(0.98rem, 1.3vw, 1.1rem);
+          line-height: 1.5;
         }
         #heroSearchShell {
-          max-width: 49rem;
+          max-width: 43rem;
           display: flex;
           align-items: center;
           gap: 0.6rem;
@@ -1182,7 +1128,7 @@ function renderLayoutCss() {
           min-width: 0;
         }
         #heroSearchShell .hero-search {
-          min-height: 4rem;
+          min-height: 3.7rem;
           border-color: rgba(255,255,255,0.2) !important;
           background: rgba(12,7,25,0.74) !important;
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(253,164,129,0.08);
@@ -1190,19 +1136,20 @@ function renderLayoutCss() {
         #heroSearchShell .search-clear {
           position: static;
           transform: none;
-          width: 4rem;
-          height: 4rem;
-          flex: 0 0 4rem;
+          width: 3.7rem;
+          height: 3.7rem;
+          flex: 0 0 3.7rem;
           border: 1px solid rgba(255,255,255,0.12);
           background: rgba(12,7,25,0.74);
         }
         .quick-browse-panel {
+          position: relative;
           width: calc(100% - (var(--dictionary-edge) * 2));
           max-width: none;
           margin-left: var(--dictionary-edge);
           margin-right: var(--dictionary-edge);
           padding: clamp(1rem, 2vw, 1.35rem);
-          margin-bottom: 1.75rem;
+          margin-bottom: 1.35rem;
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(12, 7, 25, 0.72);
         }
@@ -1308,7 +1255,7 @@ function renderLayoutCss() {
         .symbol-card {
           position: relative;
           overflow: hidden;
-          min-height: 14.25rem;
+          min-height: 12.4rem;
           display: flex;
           flex-direction: column;
           background:
@@ -1375,16 +1322,16 @@ function renderLayoutCss() {
           transform: translate(1px, -1px);
         }
         .symbol-card-title-link h3 {
-          font-size: clamp(1.35rem, 1.7vw, 1.75rem);
+          font-size: clamp(1.24rem, 1.45vw, 1.52rem);
           line-height: 1.05;
         }
         .symbol-card-desc {
           color: rgba(226,218,255,0.84);
           display: -webkit-box;
           -webkit-box-orient: vertical;
-          -webkit-line-clamp: 3;
+          -webkit-line-clamp: 2;
           overflow: hidden;
-          min-height: 4.5rem;
+          min-height: 3.05rem;
         }
         .symbol-card-question {
           margin-top: auto;
@@ -1479,7 +1426,7 @@ function renderLayoutCss() {
             grid-template-columns: 1fr;
             align-items: start;
             min-height: auto;
-            padding-top: 7rem;
+            padding-top: 6.6rem;
           }
           .category-browse-grid {
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1494,15 +1441,26 @@ function renderLayoutCss() {
             grid-template-columns: 1fr;
             min-height: auto;
             gap: 1rem;
-            padding: 5.9rem 1rem 1.45rem;
+            padding: 5.25rem 1rem 1.15rem;
           }
           .dictionary-header h1 {
             width: 100%;
-            max-width: 10.5ch;
-            font-size: clamp(3.05rem, 15vw, 4.75rem);
+            max-width: 11.5ch;
+            font-size: clamp(2.68rem, 13.2vw, 4.05rem);
+            line-height: 0.96;
           }
           .dictionary-hero-intro {
-            font-size: 0.98rem;
+            font-size: 0.94rem;
+            line-height: 1.42;
+          }
+          #heroSearchShell .hero-search {
+            min-height: 3.35rem;
+            font-size: 0.94rem;
+          }
+          #heroSearchShell .search-clear {
+            width: 3.35rem;
+            height: 3.35rem;
+            flex-basis: 3.35rem;
           }
           .quick-browse-alpha {
             gap: 0.28rem;
@@ -1557,6 +1515,17 @@ function renderLayoutCss() {
             scroll-snap-type: x proximity;
             -webkit-overflow-scrolling: touch;
           }
+          .quick-browse-panel::after {
+            content: "";
+            position: absolute;
+            right: 0.25rem;
+            bottom: 1rem;
+            width: 3.25rem;
+            height: 7.5rem;
+            pointer-events: none;
+            border-radius: 1rem;
+            background: linear-gradient(90deg, transparent, rgba(12,7,25,0.88));
+          }
           .category-browse-grid::-webkit-scrollbar {
             display: none;
           }
@@ -1586,7 +1555,7 @@ function renderLayoutCss() {
             font-size: 0.76rem;
           }
           #mobileAlpha { display: flex !important; }
-          #searchFeedback { display: none !important; }
+          #searchFeedback:not([hidden]) { display: flex !important; }
           body.dictionary-search-active #stickyBar,
           body.dictionary-search-active #mobileAlpha {
             display: none !important;
@@ -1964,20 +1933,32 @@ ${renderViewTransitionHeadStyles()}
             position: fixed;
             top: var(--sticky-bar-top, 5.5rem);
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -0.35rem);
             z-index: 45;
-            width: min(calc(100vw - 2rem), 70rem);
+            width: min(calc(100vw - 2rem), 58rem);
             display: none;
             opacity: 0;
             pointer-events: none;
+            padding: 0.62rem 0.72rem !important;
+            border-radius: 1.2rem !important;
+            border-color: rgba(255,255,255,0.12) !important;
+            background: rgba(16, 9, 31, 0.9) !important;
+            box-shadow: 0 1.2rem 3rem rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
+            backdrop-filter: blur(18px);
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
-        #stickyBar.sb-visible { display: block; opacity: 1; pointer-events: auto; }
+        #stickyBar.sb-visible { display: block; opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
         #stickyBar .sb-inner {
-            display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+            display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
         }
-        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(22rem, 100%); }
-        #stickyBar .sb-alpha { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; }
+        #stickyBar .sb-search { position: relative; flex-shrink: 0; width: min(17rem, 34vw); }
+        #stickyBar .sb-alpha { display: flex; flex-wrap: nowrap; gap: 3px; justify-content: center; align-items: center; flex: 1; min-width: 0; overflow: hidden; }
+        #stickyBar .letter-link {
+          min-width: 1.7rem;
+          min-height: 1.7rem;
+          border-radius: 0.55rem;
+          font-size: 0.78rem;
+        }
         .sticky-status {
           display: none;
           align-items: center;
@@ -2022,9 +2003,19 @@ ${renderViewTransitionHeadStyles()}
             #stickyBar {
                 width: calc(100vw - 1rem);
                 top: var(--sticky-bar-top, 4.8rem);
+                padding: 0.62rem !important;
+                border-radius: 1rem !important;
             }
             #stickyBar .sb-inner {
+                flex-wrap: wrap;
                 gap: 0.75rem;
+            }
+            #stickyBar .sb-search {
+                width: 100%;
+            }
+            #stickyBar .sb-alpha {
+                flex-wrap: wrap;
+                overflow: visible;
             }
             .sticky-status {
                 width: 100%;
@@ -2360,7 +2351,8 @@ ${symbolCatEntries}
                 const firstVisibleCard = visibleCount > 0
                     ? [...document.querySelectorAll('.symbol-card')].find((card) => getComputedStyle(card).display !== 'none')
                     : null;
-                const target = visibleCount > 0 ? firstVisibleCard || symbolsListEl : document.getElementById('noResults');
+                const feedbackVisible = searchFeedback && !searchFeedback.hidden;
+                const target = feedbackVisible ? searchFeedback : (visibleCount > 0 ? firstVisibleCard || symbolsListEl : document.getElementById('noResults'));
                 if (!target) return;
                 const rect = target.getBoundingClientRect();
                 const visibleHeight = window.visualViewport?.height || window.innerHeight;
