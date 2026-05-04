@@ -19,6 +19,8 @@ const {
     loadOfferings: jest.fn(),
     purchasePackage: jest.fn(),
     restorePurchases: jest.fn(),
+    syncPurchases: jest.fn(),
+    addStatusUpdateListener: jest.fn(() => () => {}),
     logOutUser: jest.fn(),
   });
 
@@ -59,8 +61,13 @@ describe('subscriptionService', () => {
     mockSetMockMode(false);
     mockSetPlatformOS('ios');
     delete (process.env as Record<string, string | undefined>).EXPO_PUBLIC_REVENUECAT_WEB_KEY;
+    delete (process.env as Record<string, string | undefined>).EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
     mockService.refreshStatus = jest.fn();
     mockRealService.refreshStatus = jest.fn();
+    mockService.syncPurchases = jest.fn();
+    mockRealService.syncPurchases = jest.fn();
+    mockService.addStatusUpdateListener = jest.fn(() => () => {});
+    mockRealService.addStatusUpdateListener = jest.fn(() => () => {});
   });
 
   it('given mock mode__when initializing subscription__then uses mock implementation', async () => {
@@ -99,6 +106,29 @@ describe('subscriptionService', () => {
   it('given native without mock__when loading service__then uses real implementation', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('ios');
+
+    const service = require('../subscriptionService');
+    await service.getSubscriptionStatus();
+
+    expect(mockRealService.getStatus).toHaveBeenCalled();
+    expect(mockService.getStatus).not.toHaveBeenCalled();
+  });
+
+  it('given android dev without explicit key__when loading service__then uses mock implementation', async () => {
+    mockSetMockMode(false);
+    mockSetPlatformOS('android');
+
+    const service = require('../subscriptionService');
+    await service.getSubscriptionStatus();
+
+    expect(mockService.getStatus).toHaveBeenCalled();
+    expect(mockRealService.getStatus).not.toHaveBeenCalled();
+  });
+
+  it('given android dev with explicit key__when loading service__then uses real implementation', async () => {
+    mockSetMockMode(false);
+    mockSetPlatformOS('android');
+    process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY = 'goog_test_key';
 
     const service = require('../subscriptionService');
     await service.getSubscriptionStatus();

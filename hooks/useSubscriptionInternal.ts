@@ -2,18 +2,20 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
-import Purchases from 'react-native-purchases';
 import { useAuth } from '@/context/AuthContext';
 import { isMockModeEnabled } from '@/lib/env';
-import { isEntitlementExpired, mapStatus as mapStatusFromInfo } from '@/lib/revenuecat';
+import { isEntitlementExpired } from '@/lib/revenuecat';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import {
   getSubscriptionStatus,
   initializeSubscription,
+  isSubscriptionInitialized,
   loadSubscriptionPackages,
   purchaseSubscriptionPackage,
+  refreshSubscriptionStatus,
   restoreSubscriptionPurchases,
+  syncSubscriptionPurchases,
 } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerInfoListener';
@@ -408,8 +410,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
           globalAndroidPurchaseSyncState.inProgress = true;
           globalAndroidPurchaseSyncState.lastUserId = user?.id ?? null;
           try {
-            await Purchases.syncPurchases();
-            Purchases.invalidateCustomerInfoCache();
+            await syncSubscriptionPurchases();
             const refreshed = await getSubscriptionStatus();
             if (mounted && refreshed) {
               setStatus(refreshed);
@@ -608,12 +609,10 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         userId: user?.id,
       });
 
-      // Invalidate cache then get fresh customer info
-      Purchases.invalidateCustomerInfoCache();
-      const info = await Purchases.getCustomerInfo();
-
-      // Map the fresh customer info to our status format
-      const nextStatus = mapStatusFromInfo(info as any);
+      const nextStatus = await refreshSubscriptionStatus();
+      if (!nextStatus) {
+        throw new Error('Purchases not initialized');
+      }
 
       console.log('[useSubscription] Refresh completed', {
         timestamp: new Date().toISOString(),
@@ -690,7 +689,10 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   }, [applyStatusUpdate]);
 
   useSubscriptionMonitor(handleStatusFromMonitor);
-  useSubscriptionCustomerInfoListener(handleStatusFromCustomerInfo, !requiresAuth);
+  useSubscriptionCustomerInfoListener(
+    handleStatusFromCustomerInfo,
+    !requiresAuth && isSubscriptionInitialized()
+  );
   useSubscriptionExpiryTimer({
     status,
     userId,

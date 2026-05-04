@@ -19,6 +19,8 @@ type InternalPackage = {
   mapped: PurchasePackage;
 };
 
+type SubscriptionStatusListener = (status: SubscriptionStatus) => void;
+
 type GlobalPurchasesState = {
   configured: boolean;
   apiKey: string | null;
@@ -225,6 +227,7 @@ export async function refreshStatus(): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
+  Purchases.invalidateCustomerInfoCache();
   return fetchStatus();
 }
 
@@ -249,6 +252,43 @@ export async function loadOfferings(): Promise<PurchasePackage[]> {
 
 function findInternalPackage(id: string): InternalPackage | undefined {
   return cachedPackages.find((item) => item.id === id);
+}
+
+export async function syncPurchases(): Promise<void> {
+  if (!persistedState.configured) {
+    throw new Error('Purchases not initialized');
+  }
+  await Purchases.syncPurchases();
+  Purchases.invalidateCustomerInfoCache();
+}
+
+export function addStatusUpdateListener(listener: SubscriptionStatusListener): () => void {
+  if (!persistedState.configured) {
+    return () => {};
+  }
+
+  const customerInfoListener = (info: CustomerInfo) => {
+    listener(mapStatus(info));
+  };
+
+  try {
+    Purchases.addCustomerInfoUpdateListener(customerInfoListener);
+  } catch (err) {
+    if (__DEV__) {
+      log.warn('Failed to attach customer info listener', err);
+    }
+    return () => {};
+  }
+
+  return () => {
+    try {
+      Purchases.removeCustomerInfoUpdateListener(customerInfoListener);
+    } catch (err) {
+      if (__DEV__) {
+        log.warn('Failed to remove customer info listener', err);
+      }
+    }
+  };
 }
 
 export async function purchasePackage(id: string): Promise<SubscriptionStatus> {

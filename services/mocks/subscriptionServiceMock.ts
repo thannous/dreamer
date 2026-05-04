@@ -3,6 +3,8 @@ import type { User } from '@supabase/supabase-js';
 import { getCurrentUser } from '@/lib/auth';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
+type SubscriptionStatusListener = (status: SubscriptionStatus) => void;
+
 let initialized = false;
 let currentStatus: SubscriptionStatus | null = null;
 let currentStatusUserId: string | null = null;
@@ -145,6 +147,14 @@ export async function refreshStatus(): Promise<SubscriptionStatus> {
     throw new Error('Purchases not initialized');
   }
   return syncStatusWithCurrentUser();
+}
+
+export async function syncPurchases(): Promise<void> {
+  return;
+}
+
+export function addStatusUpdateListener(_listener: SubscriptionStatusListener): () => void {
+  return () => {};
 }
 
 export async function logOutUser(): Promise<void> {
