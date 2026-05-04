@@ -452,21 +452,21 @@
           "What fear am I running from?"
         ]
       },
-  "fr": {
-    "slug": "poursuite",
-    "name": "Poursuite / Être poursuivi",
-    "seoTitle": "Poursuite",
-    "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
+      "fr": {
+        "slug": "poursuite",
+        "name": "Poursuite / Être poursuivi",
+        "seoTitle": "Poursuite",
+        "shortDescription": "Être poursuivi symbolise souvent l'évitement d'un problème ou d'une émotion. Ce qui vous poursuit représente généralement ce que vous fuyez dans la vie éveillée.",
         "askYourself": [
           "Qu'est-ce que j'évite d'affronter ?",
           "Quelle peur est-ce que je fuis ?"
         ]
       },
-  "es": {
-    "slug": "persecucion",
-    "name": "Persecución / Ser Perseguido",
-    "seoTitle": "Persecución",
-    "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
+      "es": {
+        "slug": "persecucion",
+        "name": "Persecución / Ser Perseguido",
+        "seoTitle": "Persecución",
+        "shortDescription": "Ser perseguido a menudo simboliza evitar un problema o emoción. Lo que te persigue suele representar lo que estás huyendo en la vida real.",
         "askYourself": [
           "¿Qué estoy evitando?",
           "¿De qué miedo estoy huyendo?"
@@ -481,11 +481,11 @@
           "Welches Problem vermeide ich?"
         ]
       },
-  "it": {
-    "slug": "inseguimento",
-    "name": "Inseguimento / Essere inseguiti",
-    "seoTitle": "Inseguimento",
-    "shortDescription": "Essere inseguiti indica evitamento. Qualcosa nella tua vita – un problema, un'emozione, una situazione – richiede attenzione che stai rifiutando.",
+      "it": {
+        "slug": "inseguimento",
+        "name": "Inseguimento / Essere inseguiti",
+        "seoTitle": "Inseguimento",
+        "shortDescription": "Essere inseguiti indica evitamento. Qualcosa nella tua vita – un problema, un'emozione, una situazione – richiede attenzione che stai rifiutando.",
         "askYourself": [
           "Da cosa o da chi sto fuggendo?",
           "Quale problema sto evitando?"
@@ -1067,10 +1067,26 @@
       "es": {
         "slug": "puerta",
         "name": "Puerta",
-        "shortDescription": "Una puerta simboliza oportunidades, transiciones y nuevos comienzos. Una puerta cerrada puede indicar obstáculos, mientras que una abierta sugiere posibilidades.",
+        "shortDescription": "Soñar con puertas habla de oportunidades, cambios y límites. Una puerta cerrada señala bloqueo o decisión pendiente; una puerta abierta sugiere acceso, permiso o un nuevo comienzo.",
         "askYourself": [
-          "¿Qué nuevas oportunidades están disponibles para mí?",
-          "¿Qué me está bloqueando?"
+          "¿Qué puerta quiero abrir o cerrar en mi vida?",
+          "¿Estoy evitando una decisión, una conversación o un cambio?",
+          "¿La puerta del sueño era de mi casa, desconocida, abierta o cerrada?"
+        ],
+        "seoTitle": "Puerta",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con puertas?",
+            "answer": "Soñar con puertas suele relacionarse con oportunidades, decisiones y cambios de etapa. La interpretación depende de si la puerta estaba abierta, cerrada, bloqueada o si intentabas cruzarla."
+          },
+          {
+            "question": "¿Qué significa soñar con abrir una puerta cerrada?",
+            "answer": "Abrir una puerta cerrada en sueños indica que estás intentando superar un bloqueo, acceder a una oportunidad o resolver algo que antes parecía inaccesible."
+          },
+          {
+            "question": "¿Qué significa soñar con la puerta abierta de tu casa?",
+            "answer": "Una puerta abierta en casa puede señalar vulnerabilidad, confianza o una situación personal que está demasiado expuesta. También puede simbolizar bienvenida y apertura emocional."
+          }
         ]
       },
       "de": {
@@ -1085,10 +1101,25 @@
       "it": {
         "slug": "porta",
         "name": "Porta",
-        "shortDescription": "Le porte simboleggiano transizioni, opportunità e nuovi capitoli. Una porta aperta invita, una chiusa può indicare ostacoli o percorsi non ancora pronti.",
+        "shortDescription": "Sognare una porta parla di passaggi, opportunità e confini personali. Una porta aperta indica accesso o cambiamento; una porta chiusa segnala ostacoli o una decisione rimandata.",
         "askYourself": [
-          "Quali nuove opportunità si stanno aprendo per me?",
-          "Quali porte ho chiuso che dovrei riaprire?"
+          "Quale passaggio sto per attraversare?",
+          "Sto cercando di aprire o chiudere una fase della mia vita?",
+          "La porta era di casa, aperta, chiusa o difficile da aprire?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare una porta?",
+            "answer": "Sognare una porta indica spesso una transizione, una scelta o un confine personale. Il significato cambia se la porta è aperta, chiusa, bloccata o collegata alla casa."
+          },
+          {
+            "question": "Cosa significa sognare la porta di casa aperta?",
+            "answer": "La porta di casa aperta può riflettere vulnerabilità, fiducia o qualcosa della vita privata che senti esposto. In alcuni sogni indica anche disponibilità al cambiamento."
+          },
+          {
+            "question": "Cosa significa sognare una porta che si apre?",
+            "answer": "Una porta che si apre suggerisce possibilità, accesso a una nuova fase o una soluzione che inizia a diventare disponibile."
+          }
         ]
       },
       "relatedSymbols": [
@@ -1232,11 +1263,11 @@
           "What did they represent to me?"
         ]
       },
-  "fr": {
-    "slug": "defunt",
-    "name": "Défunt / Personne décédée",
-    "seoTitle": "Défunt",
-    "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
+      "fr": {
+        "slug": "defunt",
+        "name": "Défunt / Personne décédée",
+        "seoTitle": "Défunt",
+        "shortDescription": "Rêver d'un proche décédé peut représenter le deuil, les souvenirs ou un message de l'inconscient. Cela peut aussi symboliser une partie de vous associée à cette personne.",
         "askYourself": [
           "Quel message cette personne pourrait-elle m'apporter ?",
           "Qu'est-ce qu'elle représentait pour moi ?"
@@ -1369,10 +1400,26 @@
       "es": {
         "slug": "puente",
         "name": "Puente",
-        "shortDescription": "Un puente simboliza transición, paso de un estado a otro. Cruzar un puente sugiere cambio, mientras que un puente colapsado indica obstáculos.",
+        "shortDescription": "Soñar con un puente habla de transición, decisiones y paso entre dos etapas. Un puente roto o peligroso refleja miedo a que el cambio falle o a no poder cruzar.",
         "askYourself": [
-          "¿Qué transición estoy atravesando?",
-          "¿Estoy preparado para seguir adelante?"
+          "¿Qué etapa estoy intentando cruzar?",
+          "¿El puente se veía firme, roto, alto o sobre agua?",
+          "¿Tengo miedo de avanzar o de dejar algo atrás?"
+        ],
+        "seoTitle": "Puente",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un puente?",
+            "answer": "Un puente en sueños representa un paso entre dos etapas, una conexión o una decisión de avance. Cruzarlo suele hablar de cambio; no poder cruzarlo señala duda o bloqueo."
+          },
+          {
+            "question": "¿Qué significa soñar con un puente roto?",
+            "answer": "Soñar con un puente roto indica miedo a que una transición no funcione, una relación dañada o la sensación de que falta apoyo para llegar al otro lado."
+          },
+          {
+            "question": "¿Qué significa soñar con un puente y agua?",
+            "answer": "El agua añade carga emocional al sueño. Un puente sobre agua puede mostrar que intentas atravesar una emoción intensa sin dejar que te arrastre."
+          }
         ]
       },
       "de": {
@@ -1664,10 +1711,26 @@
       "es": {
         "slug": "bosque",
         "name": "Bosque",
-        "shortDescription": "El bosque representa el subconsciente, el misterio y la autoexploración. Perderse en un bosque puede simbolizar confusión o búsqueda de dirección en la vida.",
+        "shortDescription": "Soñar con un bosque refleja exploración interior, incertidumbre y contacto con lo desconocido. Un bosque oscuro señala miedo o confusión; uno verde puede indicar crecimiento.",
         "askYourself": [
-          "¿Estoy preparado para explorar mi subconsciente?",
-          "¿Qué está oculto dentro de mí?"
+          "¿Me sentía perdido, curioso o protegido en el bosque?",
+          "¿El bosque era oscuro, verde, grande o de noche?",
+          "¿Qué parte de mi vida se siente incierta ahora?"
+        ],
+        "seoTitle": "Bosque",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con un bosque?",
+            "answer": "Soñar con un bosque suele simbolizar entrar en una zona desconocida de tu vida o de tu mundo interior. Puede hablar de búsqueda, miedo, crecimiento o necesidad de orientación."
+          },
+          {
+            "question": "¿Qué significa soñar con un bosque oscuro?",
+            "answer": "Un bosque oscuro refleja incertidumbre, miedo a lo desconocido o una etapa en la que no ves claro el camino. No siempre es negativo: también puede marcar el inicio de una exploración profunda."
+          },
+          {
+            "question": "¿Qué significa soñar con un bosque verde?",
+            "answer": "Un bosque verde suele asociarse con crecimiento, recuperación y conexión natural. Puede indicar que algo interno está madurando aunque todavía no esté completamente claro."
+          }
         ]
       },
       "de": {
@@ -2649,52 +2712,132 @@
       "en": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "Hospitals in dreams often represent healing, health concerns, or need for emotional care and attention.",
+        "shortDescription": "A hospital dream often points to healing, vulnerability, health anxiety, or a need to accept help before stress becomes urgent.",
         "askYourself": [
-          "What needs healing in my life?",
-          "Am I neglecting my physical or emotional health?"
+          "What part of my life is asking for care or recovery?",
+          "Am I trying to handle stress, illness, or emotional pain without enough support?",
+          "Did the dream feel like emergency, relief, waiting, or fear?"
+        ],
+        "faq": [
+          {
+            "question": "What does it mean to dream about a hospital?",
+            "answer": "Dreaming about a hospital usually suggests that something needs care, healing, or closer attention. It may point to physical health worries, emotional exhaustion, family concern, or a situation where you need support rather than control."
+          },
+          {
+            "question": "What does it mean to dream that you are in a hospital?",
+            "answer": "Being in a hospital in a dream often reflects vulnerability and recovery. The dream may be showing that you need rest, guidance, treatment, or help processing a stressful period."
+          },
+          {
+            "question": "What does a dream about doctors, nurses, or sick people in a hospital mean?",
+            "answer": "Doctors and nurses can symbolize guidance, care, or the part of you that knows what needs to be repaired. Sick people may reflect worry for others or a neglected part of your own wellbeing."
+          }
         ]
       },
       "fr": {
         "slug": "hopital",
         "name": "Hôpital",
-        "shortDescription": "L'hôpital dans les rêves représente souvent la guérison, les préoccupations de santé ou le besoin de soins émotionnels.",
+        "shortDescription": "Rêver d'hôpital évoque souvent un besoin de guérison, une inquiétude de santé, une période de vulnérabilité ou l'urgence de demander de l'aide.",
         "askYourself": [
-          "Qu'est-ce qui a besoin de guérison dans ma vie ?",
-          "Est-ce que je néglige ma santé physique ou émotionnelle ?"
+          "Quelle partie de ma vie demande du soin ou du repos ?",
+          "Est-ce que je porte seul une fatigue, une peur ou une douleur émotionnelle ?",
+          "Le rêve ressemblait-il à une urgence, une attente, un soulagement ou une peur ?"
+        ],
+        "seoTitle": "Hôpital",
+        "faq": [
+          {
+            "question": "Que signifie rêver d'un hôpital ?",
+            "answer": "Rêver d'un hôpital indique souvent qu'une situation demande de l'attention, du soin ou une forme de réparation. Le rêve peut parler de santé, mais aussi de fatigue émotionnelle, d'inquiétude pour un proche ou d'un besoin d'accompagnement."
+          },
+          {
+            "question": "Que signifie rêver d'être à l'hôpital ?",
+            "answer": "Être à l'hôpital dans un rêve renvoie souvent à la vulnérabilité et à la récupération. Votre inconscient peut signaler que vous avez besoin de repos, de soutien ou d'un temps pour guérir."
+          },
+          {
+            "question": "Que signifient les médecins, infirmières ou malades dans un rêve d'hôpital ?",
+            "answer": "Les soignants peuvent symboliser l'aide, le diagnostic ou la partie de vous qui sait quoi réparer. Les personnes malades peuvent représenter une inquiétude pour autrui ou un aspect de votre bien-être que vous négligez."
+          }
         ]
       },
       "es": {
         "slug": "hospital",
         "name": "Hospital",
-        "shortDescription": "Los hospitales en sueños representan sanación, preocupaciones de salud o necesidad de cuidado emocional.",
+        "shortDescription": "Soñar con hospital suele hablar de sanación, preocupación por la salud, vulnerabilidad o necesidad de pedir ayuda antes de que el estrés se vuelva urgente.",
         "askYourself": [
-          "¿Qué necesita sanación en mi vida?",
-          "¿Estoy descuidando mi salud física o emocional?"
+          "¿Qué parte de mi vida necesita sanación, descanso o atención?",
+          "¿Estoy cargando solo con estrés, miedo o dolor emocional?",
+          "¿El sueño se sentía como emergencia, espera, alivio o miedo?"
+        ],
+        "seoTitle": "Hospital",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con hospital?",
+            "answer": "Soñar con hospital suele indicar que algo en tu vida necesita atención, cuidado o sanación. Puede relacionarse con preocupaciones de salud, cansancio emocional, miedo por un familiar o una situación en la que necesitas apoyo."
+          },
+          {
+            "question": "¿Qué significa soñar que estás en un hospital?",
+            "answer": "Estar en un hospital en sueños suele reflejar vulnerabilidad, recuperación o necesidad de ayuda. El sueño puede aparecer cuando estás agotado, preocupado o intentando resolver algo que requiere cuidado."
+          },
+          {
+            "question": "¿Qué significa soñar con hospital y doctores, enfermeras o enfermos?",
+            "answer": "Los doctores y enfermeras pueden simbolizar guía, diagnóstico o apoyo. Ver enfermos en un hospital puede reflejar preocupación por otros, miedo a la fragilidad o una parte de tu bienestar que necesita atención."
+          }
         ]
       },
       "de": {
         "slug": "krankenhaus",
         "name": "Krankenhaus",
-        "shortDescription": "Krankenhäuser symbolisieren Heilung, Genesung und die Notwendigkeit, sich um Ihre körperliche oder emotionale Gesundheit zu kümmern. Sie können auch Angst vor Krankheit oder Verletzlichkeit darstellen.",
+        "shortDescription": "Ein Krankenhaus im Traum weist oft auf Heilung, Verletzlichkeit, Gesundheitsangst oder den Wunsch nach Unterstützung hin.",
         "askYourself": [
-          "Welcher Aspekt meines Lebens braucht Heilung?",
-          "Kümmere ich mich ausreichend um meine Gesundheit?"
+          "Welcher Bereich meines Lebens braucht Pflege oder Erholung?",
+          "Trage ich Stress, Angst oder emotionale Belastung allein?",
+          "Fühlte sich der Traum wie Notfall, Warten, Erleichterung oder Furcht an?"
+        ],
+        "faq": [
+          {
+            "question": "Was bedeutet ein Krankenhaus im Traum?",
+            "answer": "Ein Krankenhaus im Traum deutet meist darauf hin, dass etwas Aufmerksamkeit, Heilung oder Unterstützung braucht. Es kann um Gesundheit gehen, aber auch um seelische Erschöpfung, Sorge um Angehörige oder den Wunsch nach Hilfe."
+          },
+          {
+            "question": "Was bedeutet es, im Traum selbst im Krankenhaus zu sein?",
+            "answer": "Selbst im Krankenhaus zu sein steht oft für Verletzlichkeit und Erholung. Der Traum kann zeigen, dass Sie Ruhe, Begleitung oder eine bewusstere Fürsorge für sich brauchen."
+          },
+          {
+            "question": "Was bedeuten Ärzte, Pflegekräfte oder kranke Menschen im Krankenhaustraum?",
+            "answer": "Ärzte und Pflegekräfte können Hilfe, Orientierung oder Diagnose symbolisieren. Kranke Menschen können Sorge um andere oder einen vernachlässigten Teil des eigenen Wohlbefindens darstellen."
+          }
         ]
       },
       "it": {
         "slug": "ospedale",
         "name": "Ospedale",
-        "shortDescription": "Gli ospedali simboleggiano guarigione, recupero e il bisogno di prendersi cura della salute fisica o emotiva. Possono anche rappresentare paura della malattia o vulnerabilità.",
+        "shortDescription": "Sognare un ospedale parla spesso di guarigione, vulnerabilità, preoccupazioni di salute o bisogno di accettare aiuto.",
         "askYourself": [
-          "Quale aspetto della mia vita ha bisogno di guarigione?",
-          "Mi sto prendendo abbastanza cura della mia salute?"
+          "Quale parte della mia vita ha bisogno di cura o recupero?",
+          "Sto affrontando stress, paura o dolore emotivo senza abbastanza sostegno?",
+          "Il sogno sembrava un’emergenza, un’attesa, un sollievo o una paura?"
+        ],
+        "faq": [
+          {
+            "question": "Cosa significa sognare un ospedale?",
+            "answer": "Sognare un ospedale indica spesso che qualcosa richiede attenzione, cura o guarigione. Può riguardare la salute, ma anche stanchezza emotiva, preoccupazione per una persona cara o bisogno di supporto."
+          },
+          {
+            "question": "Cosa significa sognare di essere in ospedale?",
+            "answer": "Essere in ospedale in sogno richiama vulnerabilità e recupero. Può indicare che hai bisogno di riposo, aiuto o tempo per affrontare una situazione stressante."
+          },
+          {
+            "question": "Cosa significano medici, infermieri o malati in un sogno di ospedale?",
+            "answer": "Medici e infermieri possono rappresentare guida, diagnosi o sostegno. I malati possono riflettere preoccupazione per gli altri o una parte del tuo benessere che stai trascurando."
+          }
         ]
       },
       "relatedSymbols": [
-        "doctor",
-        "illness",
-        "healing"
+        "house",
+        "school",
+        "deceased-person",
+        "blood",
+        "body",
+        "child"
       ],
       "relatedArticles": {
         "de": "",
@@ -3210,10 +3353,26 @@
       "es": {
         "slug": "lobo",
         "name": "Lobo",
-        "shortDescription": "Los lobos en sueños simbolizan el instinto, la mentalidad de manada y aspectos salvajes del yo. Pueden representar tanto peligro como lealtad según el contexto del sueño.",
+        "shortDescription": "Soñar con lobos habla de instinto, amenaza, protección y pertenencia. Un lobo puede reflejar intuición; muchos lobos apuntan a grupo, presión social o necesidad de apoyo.",
         "askYourself": [
-          "¿Qué instintos estoy suprimiendo?",
-          "¿Cómo me relaciono con mi comunidad o manada?"
+          "¿El lobo me atacaba, me protegía o solo me observaba?",
+          "¿Era un lobo solo o una manada de lobos?",
+          "¿Qué instinto estoy ignorando en mi vida despierta?"
+        ],
+        "seoTitle": "Lobo",
+        "faq": [
+          {
+            "question": "¿Qué significa soñar con lobos?",
+            "answer": "Soñar con lobos puede hablar de instinto, protección, amenaza o pertenencia a un grupo. La interpretación depende de si los lobos atacan, acompañan, persiguen o aparecen como manada."
+          },
+          {
+            "question": "¿Qué significa soñar con un lobo?",
+            "answer": "Un solo lobo suele representar intuición, independencia o una fuerza instintiva que necesitas escuchar. Si el lobo da miedo, puede señalar desconfianza o una amenaza percibida."
+          },
+          {
+            "question": "¿Qué significa soñar con lobos que atacan?",
+            "answer": "Lobos que atacan reflejan presión, miedo, conflicto o una emoción instintiva que se siente fuera de control. También pueden simbolizar sentirte rodeado por críticas o expectativas."
+          }
         ]
       },
       "de": {

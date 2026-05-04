@@ -460,6 +460,34 @@
             }
           }
         },
+        "blog.exam-dreams-meaning": {
+          "id": "blog.exam-dreams-meaning",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "exam-dreams-meaning",
+          "locales": {
+            "en": {
+              "slug": "exam-dreams-meaning",
+              "path": "/en/blog/exam-dreams-meaning"
+            },
+            "fr": {
+              "slug": "rever-examen-signification",
+              "path": "/fr/blog/rever-examen-signification"
+            },
+            "es": {
+              "slug": "sonar-con-examen-significado",
+              "path": "/es/blog/sonar-con-examen-significado"
+            },
+            "de": {
+              "slug": "pruefungstraum-bedeutung",
+              "path": "/de/blog/pruefungstraum-bedeutung"
+            },
+            "it": {
+              "slug": "sognare-esame-significato",
+              "path": "/it/blog/sognare-esame-significato"
+            }
+          }
+        },
         "blog.falling-dreams-meaning": {
           "id": "blog.falling-dreams-meaning",
           "type": "blogArticle",

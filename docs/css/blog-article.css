@@ -1,0 +1,510 @@
+/* Full-width editorial layer for generated blog article pages. */
+
+:root {
+  --article-edge: clamp(1.1rem, 4vw, 5rem);
+  --article-reading: 760px;
+  --article-wide: 1240px;
+  --article-surface: rgba(22, 12, 39, 0.66);
+  --article-border: rgba(255, 255, 255, 0.14);
+  --article-cream: #fff7f0;
+  --article-muted: rgba(231, 220, 255, 0.76);
+  --article-soft: rgba(231, 220, 255, 0.58);
+  --article-salmon: #ffa07d;
+  --article-bg-image: url('/img/hero/noctalia-observatory-bg.png');
+}
+
+html.blog-article {
+  min-height: 100%;
+  background: #0a0514;
+  scroll-padding-top: 7rem;
+}
+
+html.blog-article body {
+  background: #0a0514 !important;
+}
+
+html.blog-article .aurora-bg,
+html.blog-article .orb {
+  display: none;
+}
+
+html.blog-article main {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: none;
+  padding: 0 0 clamp(4rem, 8vw, 7rem) !important;
+  overflow: hidden;
+  background: #0a0514;
+}
+
+html.blog-article main::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(180deg, rgba(9, 4, 18, 0.32) 0%, rgba(9, 4, 18, 0.68) 52%, #090413 100%),
+    linear-gradient(90deg, rgba(7, 3, 15, 0.92) 0%, rgba(7, 3, 15, 0.36) 46%, rgba(7, 3, 15, 0.86) 100%),
+    radial-gradient(circle at 14% 20%, rgba(253, 164, 129, 0.18), transparent 24rem),
+    radial-gradient(circle at 82% 8%, rgba(167, 139, 250, 0.2), transparent 28rem),
+    var(--article-bg-image),
+    linear-gradient(135deg, #12051d 0%, #0a0514 48%, #140824 100%);
+  background-position: center, center, 14% 20%, 82% 8%, center top, center;
+  background-size: cover, cover, auto, auto, cover, cover;
+  background-repeat: no-repeat;
+}
+
+html.blog-article main::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.34;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: linear-gradient(180deg, black 0%, transparent 72%);
+}
+
+html.blog-article main > article {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0;
+}
+
+html.blog-article main > article > * {
+  order: 20;
+}
+
+html.blog-article main > article > nav[aria-label="Breadcrumb"],
+html.blog-article main > article > .flex.items-center.gap-3,
+html.blog-article main > article > .glass-panel,
+html.blog-article main > article > .prose,
+html.blog-article main > article > section,
+html.blog-article main > article > aside,
+html.blog-article main > aside[role="note"] {
+  width: min(calc(100% - (var(--article-edge) * 2)), var(--article-reading));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html.blog-article main > article > figure,
+html.blog-article main > article > div.grid,
+html.blog-article main > article > div.glass-panel,
+html.blog-article main > article > section[aria-label="Related dream symbols"],
+html.blog-article main > article > section[aria-label="Article navigation"],
+html.blog-article main > article > section[aria-label="Read next"] {
+  width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+html.blog-article main > article > nav[aria-label="Breadcrumb"] {
+  order: 1;
+  padding-top: clamp(6.75rem, 8vw, 8rem);
+  margin-bottom: 0;
+  color: rgba(231, 220, 255, 0.58);
+}
+
+html.blog-article main > article > nav[aria-label="Breadcrumb"] ol {
+  gap: 0.55rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+html.blog-article main > article > header {
+  order: 2;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 clamp(1.8rem, 4vw, 3.5rem) !important;
+  min-height: clamp(29rem, 47vw, 42rem);
+  padding: clamp(2.2rem, 5vw, 4.5rem) var(--article-edge) clamp(2.5rem, 5vw, 5rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.blog-article main > article > header > * {
+  max-width: min(100%, 92rem);
+  margin-left: 0;
+  margin-right: auto;
+}
+
+html.blog-article main > article > header .flex {
+  justify-content: flex-start;
+  gap: 0.75rem;
+  margin-bottom: clamp(1.2rem, 2vw, 1.7rem) !important;
+}
+
+html.blog-article main > article > header span,
+html.blog-article main > article > header a {
+  border-radius: 999px;
+}
+
+html.blog-article main > article > header h1 {
+  width: min(100%, 13ch);
+  margin: 0 auto 0 0;
+  color: var(--article-cream) !important;
+  font-size: clamp(3.4rem, 5.4vw, 6.6rem) !important;
+  line-height: 0.94 !important;
+  letter-spacing: 0;
+  text-wrap: balance;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+}
+
+html.blog-article main > article > header p {
+  width: min(100%, 44rem);
+  margin-top: clamp(1.25rem, 2vw, 1.75rem);
+  margin-left: 0;
+  margin-right: auto;
+  color: var(--article-muted) !important;
+  font-size: clamp(1.08rem, 1.55vw, 1.35rem) !important;
+  line-height: 1.58;
+}
+
+html.blog-article main > article > .flex.items-center.gap-3 {
+  order: 6;
+  margin-bottom: 0 !important;
+  padding: 1rem 0;
+  color: var(--article-soft);
+}
+
+html.blog-article main > article > figure {
+  order: 3;
+  position: relative;
+  display: none;
+  width: 100% !important;
+  max-width: none;
+  height: 0;
+  margin: 0 !important;
+  overflow: hidden;
+  border-top: 1px solid var(--article-border);
+  border-bottom: 1px solid var(--article-border);
+  border-radius: 0 !important;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+}
+
+html.blog-article main > article > figure::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(9, 4, 18, 0.44) 0%, transparent 28%, transparent 70%, rgba(9, 4, 18, 0.46) 100%),
+    linear-gradient(180deg, rgba(7, 3, 15, 0.1) 0%, rgba(7, 3, 15, 0.42) 100%);
+}
+
+html.blog-article main > article > figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+html.blog-article .glass-panel {
+  border: 1px solid var(--article-border) !important;
+  border-radius: 8px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.074), rgba(255, 255, 255, 0.024)),
+    var(--article-surface) !important;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {
+  order: 4;
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  align-items: center;
+  padding: clamp(1.25rem, 2.4vw, 2rem) !important;
+}
+
+html.blog-article main > article > section[aria-labelledby="quick-answer-title"] h2 {
+  margin: 0;
+  color: var(--article-salmon);
+  font-family: var(--font-sans, Outfit, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+html.blog-article main > article > section[aria-labelledby="quick-answer-title"] p {
+  margin: 0;
+  color: rgba(245, 237, 255, 0.84);
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+  line-height: 1.62;
+}
+
+html.blog-article main > article > nav.glass-panel {
+  order: 5;
+  margin-top: clamp(2rem, 5vw, 4rem);
+  margin-bottom: clamp(2.5rem, 6vw, 5.5rem) !important;
+  padding: clamp(1.2rem, 2.2vw, 1.75rem) !important;
+}
+
+html.blog-article main > article > nav.glass-panel h2 {
+  margin-bottom: 1rem;
+  color: var(--article-cream);
+}
+
+html.blog-article main > article > nav.glass-panel ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1.25rem;
+}
+
+html.blog-article .toc-link {
+  padding: 0.55rem 0;
+  color: rgba(231, 220, 255, 0.72);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+html.blog-article .toc-link:hover {
+  color: var(--article-salmon);
+}
+
+html.blog-article main > article > .prose {
+  order: 7;
+  max-width: var(--article-reading) !important;
+  color: rgba(235, 228, 249, 0.86);
+  font-size: clamp(1.04rem, 1vw, 1.12rem);
+  line-height: 1.82;
+}
+
+html.blog-article .prose h2 {
+  margin-top: clamp(3rem, 7vw, 5.75rem);
+  margin-bottom: 1.1rem;
+  color: var(--article-cream);
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+html.blog-article .prose h3 {
+  margin-top: 2.1rem;
+  margin-bottom: 0.75rem;
+  color: rgba(255, 247, 240, 0.94);
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+}
+
+html.blog-article .prose p,
+html.blog-article .prose li {
+  color: rgba(235, 228, 249, 0.84);
+}
+
+html.blog-article .prose strong {
+  color: #fff4ed;
+}
+
+html.blog-article .prose a {
+  color: var(--article-salmon);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+html.blog-article .prose blockquote {
+  margin: clamp(2rem, 4vw, 3rem) 0;
+  padding: 1.2rem 1.4rem;
+  color: rgba(255, 247, 240, 0.9);
+  border-left: 3px solid var(--article-salmon);
+  border-radius: 0 8px 8px 0;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+html.blog-article main > article > div.grid {
+  order: 8;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  margin-top: clamp(2rem, 5vw, 4rem);
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+html.blog-article main > article > div.grid > * {
+  min-width: 0;
+  border-radius: 8px !important;
+}
+
+html.blog-article main > article > div.glass-panel,
+html.blog-article main > article > aside,
+html.blog-article main > aside[role="note"] {
+  order: 9;
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+  margin-bottom: 0;
+  padding: clamp(1.2rem, 2.4vw, 2rem) !important;
+  border-radius: 8px !important;
+}
+
+@media (max-width: 900px) {
+  html.blog-article main > article > nav.glass-panel ol {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --article-edge: clamp(1rem, 5vw, 1.25rem);
+  }
+
+  html.blog-article main > article > nav[aria-label="Breadcrumb"] {
+    padding-top: 5.75rem;
+  }
+
+  html.blog-article main > article > nav[aria-label="Breadcrumb"] ol {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  html.blog-article main > article > header {
+    min-height: auto;
+    padding-top: 1.5rem;
+    padding-bottom: 2.1rem;
+  }
+
+  html.blog-article main > article > header .flex {
+    gap: 0.55rem;
+  }
+
+  html.blog-article main > article > header h1 {
+    width: min(100%, 12ch);
+    font-size: clamp(2.45rem, 10.8vw, 3.65rem) !important;
+    line-height: 0.96 !important;
+  }
+
+  html.blog-article main > article > header p {
+    font-size: 1.02rem !important;
+  }
+
+  html.blog-article main > article > .flex.items-center.gap-3 {
+    align-items: flex-start;
+    padding-top: 0.5rem;
+  }
+
+  html.blog-article main > article > figure {
+    height: clamp(7.25rem, 30vw, 11rem);
+    margin-bottom: 1.5rem !important;
+  }
+
+  html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {
+    grid-template-columns: 1fr;
+  }
+
+  html.blog-article main > article > .prose {
+    font-size: 1rem;
+    line-height: 1.78;
+  }
+
+  html.blog-article .prose h2 {
+    font-size: clamp(1.8rem, 9vw, 2.55rem);
+  }
+}
+
+@media (max-width: 520px) {
+  html.blog-article main > article > nav[aria-label="Breadcrumb"] {
+    display: none;
+  }
+
+  html.blog-article main > article > header {
+    padding-top: 6rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  html.blog-article main > article {
+    display: grid;
+    grid-template-columns:
+      minmax(var(--article-edge), 1fr)
+      minmax(13rem, 18rem)
+      minmax(0, var(--article-reading))
+      minmax(13rem, 18rem)
+      minmax(var(--article-edge), 1fr);
+    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    align-items: start;
+  }
+
+  html.blog-article main > article > * {
+    grid-column: 3 / 4;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  html.blog-article main > article > nav[aria-label="Breadcrumb"],
+  html.blog-article main > article > header {
+    grid-column: 2 / 5;
+  }
+
+  html.blog-article main > article > header {
+    min-height: clamp(31rem, 43vw, 39rem);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  html.blog-article main > article > header > * {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  html.blog-article main > article > header h1,
+  html.blog-article main > article > header p {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {
+    grid-column: 3 / 4;
+    grid-row: 4;
+    margin-top: 0;
+  }
+
+  html.blog-article main > article > nav.glass-panel {
+    grid-column: 2 / 3;
+    grid-row: 4 / span 3;
+    position: sticky;
+    top: 7rem;
+    margin-top: 0;
+    margin-bottom: 0 !important;
+    padding: 1.1rem !important;
+  }
+
+  html.blog-article main > article > nav.glass-panel h2 {
+    font-size: 1.15rem;
+  }
+
+  html.blog-article main > article > nav.glass-panel ol {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  html.blog-article main > article > .flex.items-center.gap-3 {
+    grid-column: 4 / 5;
+    grid-row: 4;
+    align-self: stretch;
+    margin: 0 !important;
+    padding: 1.1rem !important;
+    border: 1px solid var(--article-border);
+    border-radius: 8px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.068), rgba(255, 255, 255, 0.02)),
+      rgba(22, 12, 39, 0.54);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.2);
+  }
+
+  html.blog-article main > article > div.grid,
+  html.blog-article main > article > div.glass-panel,
+  html.blog-article main > article > section[aria-label="Related dream symbols"],
+  html.blog-article main > article > section[aria-label="Article navigation"],
+  html.blog-article main > article > section[aria-label="Read next"] {
+    grid-column: 3 / 5;
+  }
+}

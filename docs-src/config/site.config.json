@@ -2,7 +2,13 @@
   "name": "Noctalia",
   "domain": "https://noctalia.app",
   "defaultLanguage": "en",
-  "languages": ["en", "fr", "es", "de", "it"],
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it"
+  ],
   "localeCodes": {
     "en": "en_US",
     "fr": "fr_FR",
@@ -48,6 +54,7 @@
   },
   "seoLinking": {
     "featuredBlogEntries": [
+      "blog.exam-dreams-meaning",
       "blog.how-to-remember-dreams",
       "blog.dream-journal-guide",
       "blog.lucid-dreaming-beginners-guide",
@@ -72,6 +79,7 @@
     "stylesCss": "/css/styles.min.css",
     "languageDropdownCss": "/css/language-dropdown.css",
     "blogCss": "/css/blog.min.css",
+    "blogArticleCss": "/css/blog-article.css",
     "lucideJs": "/js/lucide.min.js",
     "gsapJs": "/js/gsap.min.js",
     "scrollTriggerJs": "/js/ScrollTrigger.min.js",

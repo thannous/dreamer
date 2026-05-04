@@ -23,6 +23,12 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 const SITE_ORIGIN = 'https://noctalia.app';
 const LANGS = ['en', 'fr', 'es', 'de', 'it'];
 const LANG_DIRS = new Set(LANGS);
+let decodeHtmlEntities = null;
+try {
+  ({ decodeHTML: decodeHtmlEntities } = require('entities'));
+} catch {
+  decodeHtmlEntities = null;
+}
 const SYMBOLS_PATH_SEGMENT = {
   en: 'symbols',
   fr: 'symboles',
@@ -37,6 +43,10 @@ function toPosix(p) {
 
 function decodeEntities(str) {
   if (!str) return '';
+  if (typeof decodeHtmlEntities === 'function') {
+    return decodeHtmlEntities(String(str));
+  }
+
   const named = {
     '&nbsp;': ' ',
     '&amp;': '&',
@@ -309,6 +319,13 @@ function isFaqPageObject(o) {
   return String(t) === 'FAQPage';
 }
 
+function isItemListObject(o) {
+  const t = o?.['@type'];
+  if (!t) return false;
+  if (Array.isArray(t)) return t.map((x) => String(x)).includes('ItemList');
+  return String(t) === 'ItemList';
+}
+
 function extractHreflangAlternates(html) {
   const out = [];
   for (const attrs of extractLinkTags(html)) {
@@ -492,6 +509,40 @@ function main() {
                 detail: `"${qName}" not found in visible content`
               });
             }
+          }
+        }
+      }
+    }
+
+    // Validate internal ItemList JSON-LD URLs resolve to canonical pages.
+    if (!noindex && !isKnownUtilityPage(relHtml)) {
+      const jsonLdBlocks = extractJsonLdObjects(html).flatMap(flattenJsonLd);
+      const itemLists = jsonLdBlocks.filter(isItemListObject);
+      for (const itemList of itemLists) {
+        const entities = Array.isArray(itemList.itemListElement) ? itemList.itemListElement : [];
+        for (const entity of entities) {
+          const itemUrl = entity?.url || entity?.item?.['@id'] || entity?.item?.url || entity?.item;
+          if (!itemUrl || typeof itemUrl !== 'string') continue;
+          const itemPath = normalizeUrlToPathMaybe(itemUrl);
+          if (!itemPath) continue;
+          const targetRel = resolveUrlPathToFileRel(itemPath);
+          if (!targetRel || !existsRel(targetRel)) {
+            warnings.push({
+              type: 'itemlist-url-missing',
+              file: relHtml,
+              detail: `"${itemUrl}" does not resolve to a generated page`
+            });
+            continue;
+          }
+
+          const targetHtml = readText(targetRel);
+          const canonical = extractCanonicalUrl(targetHtml);
+          if (canonical && canonical !== itemUrl.replace(/\/$/, '')) {
+            warnings.push({
+              type: 'itemlist-url-noncanonical',
+              file: relHtml,
+              detail: `"${itemUrl}" should use canonical "${canonical}"`
+            });
           }
         }
       }

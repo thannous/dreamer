@@ -16,6 +16,12 @@ const fs = require('fs');
 const path = require('path');
 
 const DOCS_ROOT = path.resolve(__dirname, '..');
+let decodeHtmlEntities = null;
+try {
+  ({ decodeHTML: decodeHtmlEntities } = require('entities'));
+} catch {
+  decodeHtmlEntities = null;
+}
 
 const args = process.argv.slice(2).reduce((acc, raw) => {
   const arg = raw.startsWith('--') ? raw.slice(2) : raw;
@@ -29,6 +35,10 @@ const LANG_FILTER = args.lang ? args.lang.toString().split(',').map((s) => s.tri
 
 function decodeEntities(str) {
   if (!str) return '';
+  if (typeof decodeHtmlEntities === 'function') {
+    return decodeHtmlEntities(String(str));
+  }
+
   const named = {
     '&nbsp;': ' ',
     '&amp;': '&',
@@ -263,4 +273,3 @@ function main() {
 }
 
 main();
-

@@ -104,6 +104,10 @@ function renderStyles(meta, assetVersion) {
     lines.push(`    <link rel="stylesheet" href="${assets.blogCss}?v=${assetVersion}">`);
   }
 
+  if (meta.layout === 'blogArticle' && assets.blogArticleCss) {
+    lines.push(`    <link rel="stylesheet" href="${assets.blogArticleCss}?v=${assetVersion}">`);
+  }
+
   if (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium')) {
     lines.push(`    <link rel="stylesheet" href="/css/blog-premium.css?v=${assetVersion}">`);
   }
@@ -266,8 +270,12 @@ function renderContent(meta, bodyHtml, heroHtml = '') {
   }
 
   const classAttr = meta.mainClass ? ` class="${escapeHtml(meta.mainClass)}"` : '';
+  const styleAttr =
+    meta.layout === 'blogArticle' && meta.preloadImage
+      ? ` style="--article-bg-image: url('${escapeHtml(meta.preloadImage)}');"`
+      : '';
   const sections = [heroHtml, bodyHtml].filter(Boolean).join('\n');
-  return `    <main${classAttr}>\n${sections}\n    </main>`;
+  return `    <main${classAttr}${styleAttr}>\n${sections}\n    </main>`;
 }
 
 function renderScripts(meta, assetVersion) {
