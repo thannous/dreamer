@@ -18,7 +18,14 @@
 - Android emulator/device: `npm run android` (standard `expo run:android`, cross-platform, no Windows-specific wrapper)
 - iOS simulator: `npm run ios`
 - Lint: `npm run lint` (ESLint via `eslint-config-expo`)
+- Typecheck app: `npm run typecheck:app`
+- Unit/integration tests: `npm test` (Jest)
+- E2E Android suites: `npm run test:e2e:smoke`, `npm run test:e2e:mock`, or `npm run test:e2e:android:all`
 - Reset starter code: `npm run reset-project`
+- Codex Run button: `./script/build_and_run.sh`
+- Codex Run Android button: `./script/build_and_run.sh --android`
+- Codex Run Web button: `./script/build_and_run.sh --web`
+- Codex Expo Doctor button: `./script/build_and_run.sh --doctor`
 - API base URL (example):
   - macOS/Linux: `EXPO_PUBLIC_API_URL=http://localhost:3000 npm run web`
   - Windows PowerShell: `$Env:EXPO_PUBLIC_API_URL='http://localhost:3000'; npm run web`
@@ -33,7 +40,8 @@
 
 ## Testing Guidelines
 
-- No test runner is configured yet. If adding tests, prefer Jest + `@testing-library/react-native`.
+- Jest is configured. Use `npm test` for unit/integration coverage and keep tests compatible with `jest.setup.ts`.
+- `@testing-library/react-native` is the preferred UI testing layer for React Native components.
 - Name tests `*.test.ts`/`*.test.tsx` next to source or in `__tests__/`.
 - Keep tests fast, deterministic, and focused on UI behavior and hooks.
 
@@ -56,6 +64,18 @@
 ### Project Overview
 
 This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+
+### Codex App Run Actions
+
+This project is wired into the Codex app action bar through `.codex/environments/environment.toml`.
+The project-local entrypoint is `script/build_and_run.sh`.
+
+- Use `Run` for the default Expo dev server (`expo start`).
+- Use `Run Android` to start Expo and open Android (`expo start --android`).
+- Use `Run Web` to start Expo for web (`expo start --web`).
+- Use `Expo Doctor` for local Expo diagnostics.
+
+The run script intentionally keeps Metro in the foreground so the Codex action terminal owns logs and Ctrl-C behavior. Do not replace these actions with `eas build`, store submission, or native prebuild commands unless explicitly requested.
 
 ### Documentation Resources
 
