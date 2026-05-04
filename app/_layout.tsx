@@ -57,7 +57,7 @@ import { getFirstLaunchCompleted, getLanguagePreference, saveFirstLaunchComplete
 if (__DEV__) {
   void (async () => {
     try {
-      const { requireOptionalNativeModule } = await import('expo-modules-core');
+      const { requireOptionalNativeModule } = await import('expo');
       const nativeKeepAwake = requireOptionalNativeModule<{
         activate?: (...args: unknown[]) => Promise<void>;
       }>('ExpoKeepAwake');

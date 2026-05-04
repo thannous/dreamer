@@ -102,8 +102,7 @@
         {
           "android": {
             "minSdkVersion": 33,
-            "enableMinifyInReleaseBuilds": true,
-            "reactNativeReleaseLevel": "experimental"
+            "enableMinifyInReleaseBuilds": true
           }
         }
       ],
