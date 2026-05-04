@@ -3,6 +3,7 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useFadeInUp } from '@/hooks/useJournalAnimations';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
@@ -31,9 +32,10 @@ function MoonStarsIcon({ size = 64, color = '#a097b8' }) {
 interface EmptyStateProps {
   /** Whether a filter is currently active (shows different message) */
   hasActiveFilter: boolean;
+  onClearFilters?: () => void;
 }
 
-export function EmptyState({ hasActiveFilter }: EmptyStateProps) {
+export function EmptyState({ hasActiveFilter, onClearFilters }: EmptyStateProps) {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const animatedStyle = useFadeInUp(100);
@@ -44,6 +46,18 @@ export function EmptyState({ hasActiveFilter }: EmptyStateProps) {
       <Text style={[styles.title, { color: colors.textPrimary }]}>
         {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
       </Text>
+      {hasActiveFilter && onClearFilters ? (
+        <Pressable
+          style={[styles.secondaryButton, { borderColor: colors.accent }]}
+          onPress={onClearFilters}
+          accessibilityRole="button"
+          testID={TID.Button.EmptyClearFilters}
+        >
+          <Text style={[styles.secondaryText, { color: colors.accent }]}>
+            {t('journal.filter.clear')}
+          </Text>
+        </Pressable>
+      ) : null}
       {!hasActiveFilter && (
         <Pressable
           style={[styles.ctaButton, { backgroundColor: colors.accent }]}
@@ -80,6 +94,18 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
   },
   ctaText: {
+    fontSize: 16,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  secondaryButton: {
+    marginTop: ThemeLayout.spacing.sm,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: ThemeLayout.borderRadius.full,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+  },
+  secondaryText: {
     fontSize: 16,
     fontFamily: Fonts.spaceGrotesk.bold,
   },
