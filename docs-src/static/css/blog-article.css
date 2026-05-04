@@ -73,19 +73,17 @@ html.blog-article main::after {
 html.blog-article main > article {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
   width: 100%;
   max-width: none !important;
   margin: 0 !important;
   padding: 0;
 }
 
-html.blog-article main > article > * {
-  order: 20;
+html.blog-article main > article [id] {
+  scroll-margin-top: clamp(5.75rem, 8vw, 7.5rem);
 }
 
-html.blog-article main > article > nav[aria-label="Breadcrumb"],
+html.blog-article main > article > nav:first-child:not(.glass-panel),
 html.blog-article main > article > .flex.items-center.gap-3,
 html.blog-article main > article > .glass-panel,
 html.blog-article main > article > .prose,
@@ -108,14 +106,13 @@ html.blog-article main > article > section[aria-label="Read next"] {
   margin-right: auto;
 }
 
-html.blog-article main > article > nav[aria-label="Breadcrumb"] {
-  order: 1;
+html.blog-article main > article > nav:first-child:not(.glass-panel) {
   padding-top: clamp(6.75rem, 8vw, 8rem);
   margin-bottom: 0;
   color: rgba(231, 220, 255, 0.58);
 }
 
-html.blog-article main > article > nav[aria-label="Breadcrumb"] ol {
+html.blog-article main > article > nav:first-child:not(.glass-panel) ol {
   gap: 0.55rem;
   font-size: 0.74rem;
   font-weight: 800;
@@ -124,11 +121,10 @@ html.blog-article main > article > nav[aria-label="Breadcrumb"] ol {
 }
 
 html.blog-article main > article > header {
-  order: 2;
   width: 100%;
   max-width: none;
-  margin: 0 0 clamp(1.8rem, 4vw, 3.5rem) !important;
-  min-height: clamp(29rem, 47vw, 42rem);
+  margin: 0 0 clamp(1.25rem, 3vw, 2.5rem) !important;
+  min-height: clamp(24rem, 34vw, 34rem);
   padding: clamp(2.2rem, 5vw, 4.5rem) var(--article-edge) clamp(2.5rem, 5vw, 5rem);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -151,11 +147,11 @@ html.blog-article main > article > header a {
 }
 
 html.blog-article main > article > header h1 {
-  width: min(100%, 13ch);
+  width: min(100%, 12.5ch);
   margin: 0 auto 0 0;
   color: var(--article-cream) !important;
-  font-size: clamp(3.4rem, 5.4vw, 6.6rem) !important;
-  line-height: 0.94 !important;
+  font-size: clamp(3.1rem, 4.8vw, 5.8rem) !important;
+  line-height: 0.96 !important;
   letter-spacing: 0;
   text-wrap: balance;
   background: none !important;
@@ -173,14 +169,12 @@ html.blog-article main > article > header p {
 }
 
 html.blog-article main > article > .flex.items-center.gap-3 {
-  order: 6;
-  margin-bottom: 0 !important;
+  margin-bottom: clamp(1.25rem, 3vw, 2.5rem) !important;
   padding: 1rem 0;
   color: var(--article-soft);
 }
 
 html.blog-article main > article > figure {
-  order: 3;
   position: relative;
   display: none;
   width: 100% !important;
@@ -222,7 +216,6 @@ html.blog-article .glass-panel {
 }
 
 html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {
-  order: 4;
   display: grid;
   grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
   gap: clamp(1.25rem, 2.5vw, 2rem);
@@ -248,7 +241,6 @@ html.blog-article main > article > section[aria-labelledby="quick-answer-title"]
 }
 
 html.blog-article main > article > nav.glass-panel {
-  order: 5;
   margin-top: clamp(2rem, 5vw, 4rem);
   margin-bottom: clamp(2.5rem, 6vw, 5.5rem) !important;
   padding: clamp(1.2rem, 2.2vw, 1.75rem) !important;
@@ -276,7 +268,6 @@ html.blog-article .toc-link:hover {
 }
 
 html.blog-article main > article > .prose {
-  order: 7;
   max-width: var(--article-reading) !important;
   color: rgba(235, 228, 249, 0.86);
   font-size: clamp(1.04rem, 1vw, 1.12rem);
@@ -325,7 +316,6 @@ html.blog-article .prose blockquote {
 }
 
 html.blog-article main > article > div.grid {
-  order: 8;
   gap: clamp(1rem, 2vw, 1.5rem);
   margin-top: clamp(2rem, 5vw, 4rem);
   margin-bottom: clamp(2.5rem, 6vw, 5rem);
@@ -339,7 +329,6 @@ html.blog-article main > article > div.grid > * {
 html.blog-article main > article > div.glass-panel,
 html.blog-article main > article > aside,
 html.blog-article main > aside[role="note"] {
-  order: 9;
   margin-top: clamp(2.5rem, 6vw, 5rem);
   margin-bottom: 0;
   padding: clamp(1.2rem, 2.4vw, 2rem) !important;
@@ -357,11 +346,11 @@ html.blog-article main > aside[role="note"] {
     --article-edge: clamp(1rem, 5vw, 1.25rem);
   }
 
-  html.blog-article main > article > nav[aria-label="Breadcrumb"] {
+  html.blog-article main > article > nav:first-child:not(.glass-panel) {
     padding-top: 5.75rem;
   }
 
-  html.blog-article main > article > nav[aria-label="Breadcrumb"] ol {
+  html.blog-article main > article > nav:first-child:not(.glass-panel) ol {
     font-size: 0.68rem;
     letter-spacing: 0.08em;
   }
@@ -411,7 +400,7 @@ html.blog-article main > aside[role="note"] {
 }
 
 @media (max-width: 520px) {
-  html.blog-article main > article > nav[aria-label="Breadcrumb"] {
+  html.blog-article main > article > nav:first-child:not(.glass-panel) {
     display: none;
   }
 
@@ -421,31 +410,19 @@ html.blog-article main > aside[role="note"] {
 }
 
 @media (min-width: 1100px) {
-  html.blog-article main > article {
-    display: grid;
-    grid-template-columns:
-      minmax(var(--article-edge), 1fr)
-      minmax(13rem, 18rem)
-      minmax(0, var(--article-reading))
-      minmax(13rem, 18rem)
-      minmax(var(--article-edge), 1fr);
-    column-gap: clamp(1.5rem, 3vw, 3.5rem);
-    align-items: start;
-  }
-
-  html.blog-article main > article > * {
-    grid-column: 3 / 4;
-    width: auto !important;
-    max-width: none !important;
-  }
-
-  html.blog-article main > article > nav[aria-label="Breadcrumb"],
+  html.blog-article main > article > nav:first-child:not(.glass-panel),
   html.blog-article main > article > header {
-    grid-column: 2 / 5;
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  html.blog-article main > article > nav:first-child:not(.glass-panel) {
+    margin-bottom: 0;
   }
 
   html.blog-article main > article > header {
-    min-height: clamp(31rem, 43vw, 39rem);
+    min-height: clamp(21rem, 29vw, 30rem);
     padding-left: 0;
     padding-right: 0;
   }
@@ -462,19 +439,20 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > section[aria-labelledby="quick-answer-title"] {
-    grid-column: 3 / 4;
-    grid-row: 4;
-    margin-top: 0;
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+    margin-top: clamp(1rem, 3vw, 2rem);
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
   }
 
   html.blog-article main > article > nav.glass-panel {
-    grid-column: 2 / 3;
-    grid-row: 4 / span 3;
-    position: sticky;
-    top: 7rem;
-    margin-top: 0;
-    margin-bottom: 0 !important;
-    padding: 1.1rem !important;
+    position: static;
+    top: auto;
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+    margin-top: clamp(1.5rem, 4vw, 3rem);
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: clamp(2rem, 5vw, 4rem) !important;
+    padding: clamp(1.2rem, 2.2vw, 1.75rem) !important;
   }
 
   html.blog-article main > article > nav.glass-panel h2 {
@@ -482,22 +460,21 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > nav.glass-panel ol {
-    grid-template-columns: 1fr;
-    gap: 0.15rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 1.25rem;
   }
 
   html.blog-article main > article > .flex.items-center.gap-3 {
-    grid-column: 4 / 5;
-    grid-row: 4;
+    position: static;
+    top: auto;
     align-self: stretch;
-    margin: 0 !important;
-    padding: 1.1rem !important;
-    border: 1px solid var(--article-border);
-    border-radius: 8px;
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.068), rgba(255, 255, 255, 0.02)),
-      rgba(22, 12, 39, 0.54);
-    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.2);
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-reading));
+    margin: 0 auto clamp(1.25rem, 3vw, 2.5rem) !important;
+    padding: 1rem 0 !important;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   html.blog-article main > article > div.grid,
@@ -505,6 +482,14 @@ html.blog-article main > aside[role="note"] {
   html.blog-article main > article > section[aria-label="Related dream symbols"],
   html.blog-article main > article > section[aria-label="Article navigation"],
   html.blog-article main > article > section[aria-label="Read next"] {
-    grid-column: 3 / 5;
+    width: min(calc(100% - (var(--article-edge) * 2)), var(--article-wide));
+  }
+
+  html.blog-article main > article > .prose,
+  html.blog-article main > article > div.grid,
+  html.blog-article main > article > aside,
+  html.blog-article main > article > section {
+    position: static;
+    clear: both;
   }
 }
