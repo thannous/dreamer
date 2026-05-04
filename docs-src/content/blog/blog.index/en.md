@@ -37,22 +37,6 @@
 }
 ---
 <div class="blog-premium-shell max-w-6xl mx-auto">
-<!-- Breadcrumb -->
-<nav aria-label="Breadcrumb" class="text-sm text-purple-200/60 mb-8">
-<ol class="flex items-center gap-2" itemscope="" itemtype="https://schema.org/BreadcrumbList">
-<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<a class="hover:text-dream-salmon transition-colors" href="/en/" itemprop="item">
-<span itemprop="name">Home</span>
-</a>
-<meta content="1" itemprop="position">
-</li>
-<li class="text-purple-400">/</li>
-<li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
-<span class="hidden sm:inline-flex text-dream-cream" itemprop="name">Resources</span>
-<meta content="2" itemprop="position">
-</li>
-</ol>
-</nav>
 <!-- Header -->
 <header class="blog-premium-hero mb-12">
 <div class="blog-premium-hero-inner">
