@@ -6,7 +6,10 @@
   "build": {
     "release": {
       "android": { "buildType": "app-bundle" },
-      "environment": "production"
+      "environment": "production",
+      "env": {
+        "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023"
+      }
     },
     "development": {
       "developmentClient": true,
@@ -16,7 +19,10 @@
     "preview": {
       "channel": "preview",
       "android": { "buildType": "apk" },
-      "environment": "preview"
+      "environment": "preview",
+      "env": {
+        "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023"
+      }
     },
     "production-apk": {
       "channel": "production",
@@ -24,6 +30,7 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://usuyppgsmmowzizhaoqj.functions.supabase.co/api",
         "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "359653779023-6hivlgk9tpgq9g8ng5qpoipjjs780m8h.apps.googleusercontent.com",
+        "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023",
         "EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED": "false"
       }
     },
@@ -39,6 +46,9 @@
       "channel": "production",
       "autoIncrement": true,
       "environment": "production",
+      "env": {
+        "EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER": "359653779023"
+      },
       "android": {
         "buildType": "app-bundle",
         "credentialsSource": "remote"

@@ -4,24 +4,32 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/open-mock-app.yml
 - tapOn:
       id: btn.mockNav.journal
-- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: screen.journal
+      timeout: 30000
+- runFlow: subflows/clear-journal-filters.yml
 # Switch to existing user profile to load predefined dreams
-- tapOn:
-      id: btn.mockNav.settings
-- tapOn:
-      id: btn.mockProfile.existing
-- assertVisible: "mock.existing@dreamer.app"
+- runFlow: subflows/select-existing-mock-profile.yml
 - tapOn:
       id: btn.mockNav.journal
-- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: screen.journal
+      timeout: 30000
+- runFlow: subflows/clear-journal-filters.yml
 # Apply explored-only filter (chat bubble icon)
 - tapOn:
       id: btn.filterExplored
-- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible: "Ocean of Stars"
+      timeout: 10000
 - assertVisible: "Ocean of Stars"
 - assertNotVisible: "The Infinite Library"
 # Combine with analyzed filter (sparkles icon) – should still show the explored dream
 - tapOn:
       id: btn.filterAnalyzed
-- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible: "Ocean of Stars"
+      timeout: 10000
 - assertVisible: "Ocean of Stars"

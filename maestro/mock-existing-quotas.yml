@@ -9,18 +9,7 @@ appId: com.tanuki75.noctalia
     commands:
       - tapOn:
           id: btn.navigateJournal
-      - waitForAnimationToEnd
-- tapOn:
-    id: btn.mockNav.settings
-- waitForAnimationToEnd
-- scrollUntilVisible:
-    element:
-      id: btn.mockProfile.existing
-    direction: DOWN
-- tapOn:
-    id: btn.mockProfile.existing
-- waitForAnimationToEnd
-- assertVisible: "mock.existing@dreamer.app"
+- runFlow: subflows/select-existing-mock-profile.yml
 - scrollUntilVisible:
     element:
       id: quota.explorationValue
@@ -28,7 +17,7 @@ appId: com.tanuki75.noctalia
 - assertVisible: "Dream analyses: 2 / 3|Analyses de rêves: 2 / 3|Análisis de sueños: 2 / 3"
 - assertVisible: "Dream explorations: 2 / 2|Explorations de rêves: 2 / 2|Exploraciones de sueños: 2 / 2"
 - tapOn:
-    id: btn.mockNav.stats
+    point: "62%,92%"
 - waitForAnimationToEnd
 - swipe:
     start: 50%, 78%

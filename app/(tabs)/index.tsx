@@ -757,6 +757,7 @@ const RitualScrollSection = memo(function RitualScrollSection({
           return (
             <FlatGlassCard
               key={ritual.id}
+              testID={TID.Button.InspirationRitualVariant(ritual.id)}
               intensity="subtle"
               style={ritualCardStyle}
               animationDelay={120 * index}

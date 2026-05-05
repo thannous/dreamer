@@ -17,6 +17,7 @@ import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
 import { getUserErrorMessage, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getImageConfig } from '@/lib/imageUtils';
 import { getTranscriptionLocale } from '@/lib/locale';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } from '@/lib/types';
 import { startOrContinueChat } from '@/services/geminiService';
@@ -821,7 +822,7 @@ export default function DreamChatScreen() {
           </Text>
           <Pressable
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: colors.accent }]}
-            onPress={() => router.push('/paywall')}
+            onPress={() => router.push(buildPaywallHref('exploration_limit'))}
           >
             <IconSymbol name="arrow.up.circle" size={24} color={colors.textPrimary} />
             <Text style={[styles.upgradeButtonText, { color: colors.textPrimary }]}>

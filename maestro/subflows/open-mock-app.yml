@@ -2,8 +2,8 @@ appId: com.tanuki75.noctalia
 env:
   DEV_CLIENT_URL: exp+noctalia://expo-development-client/?url=http%3A%2F%2F10.0.2.2%3A8081
 ---
+- launchApp
 - openLink: ${DEV_CLIENT_URL}
-- waitForAnimationToEnd
 - runFlow:
     when:
       visible: "http://10.0.2.2:8081"
@@ -11,6 +11,7 @@ env:
       - tapOn:
           text: "http://10.0.2.2:8081"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -19,6 +20,7 @@ env:
       - tapOn:
           text: "Continue"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -33,6 +35,7 @@ env:
       - tapOn:
           text: "Dismiss"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -41,6 +44,7 @@ env:
       - tapOn:
           text: "Minimize"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -62,8 +66,8 @@ env:
         id: screen.recording
     commands:
       - pressKey: back
+      - launchApp
       - openLink: ${DEV_CLIENT_URL}
-      - waitForAnimationToEnd
       - runFlow:
           when:
             visible: "http://10.0.2.2:8081"
@@ -71,6 +75,7 @@ env:
             - tapOn:
                 text: "http://10.0.2.2:8081"
                 retryTapIfNoChange: true
+                optional: true
             - waitForAnimationToEnd
       - runFlow:
           when:
@@ -79,6 +84,7 @@ env:
             - tapOn:
                 text: "Continue"
                 retryTapIfNoChange: true
+                optional: true
             - waitForAnimationToEnd
       - runFlow:
           when:
@@ -93,6 +99,7 @@ env:
             - tapOn:
                 text: "Dismiss"
                 retryTapIfNoChange: true
+                optional: true
             - waitForAnimationToEnd
       - runFlow:
           when:
@@ -101,6 +108,7 @@ env:
             - tapOn:
                 text: "Minimize"
                 retryTapIfNoChange: true
+                optional: true
             - waitForAnimationToEnd
       - runFlow:
           when:
@@ -123,6 +131,7 @@ env:
       - tapOn:
           text: "Continue"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -137,6 +146,7 @@ env:
       - tapOn:
           text: "Dismiss"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - runFlow:
     when:
@@ -145,6 +155,7 @@ env:
       - tapOn:
           text: "Minimize"
           retryTapIfNoChange: true
+          optional: true
       - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:

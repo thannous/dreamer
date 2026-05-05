@@ -94,9 +94,10 @@ jest.doMock('@/components/journal/FilterBar', () => ({
     items: { id: string; onPress: () => void }[];
   }) {
     const themeItem = items.find((item) => item.id === 'theme');
+    const advancedItem = items.find((item) => item.id === 'more') ?? themeItem;
     return (
-      <button data-testid="open-theme-modal" onClick={themeItem?.onPress}>
-        Open theme modal
+      <button data-testid="open-theme-modal" onClick={advancedItem?.onPress}>
+        Open filters
       </button>
     );
   },
@@ -162,6 +163,7 @@ jest.doMock('react-native', () => {
       onMomentumScrollEnd,
       contentContainerStyle,
       contentInsetAdjustmentBehavior,
+      showsVerticalScrollIndicator,
       ...rest
     } = props;
     return {
@@ -281,7 +283,7 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 
 const { default: JournalListScreen } = require('@/app/(tabs)/journal');
 
-describe('Journal theme modal', () => {
+describe('Journal advanced filter sheet', () => {
   it('shows a checkmark for the selected theme', () => {
     render(<JournalListScreen />);
 
@@ -309,4 +311,3 @@ describe('Journal theme modal', () => {
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
   });
 });
-

@@ -35,6 +35,7 @@ la piste Internal Testing.
 - RevenueCat: `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_REVENUECAT_WEB_KEY` (+ iOS si publication App Store).
 - Guest sessions Android: `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER` côté app, puis `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`, `PLAY_INTEGRITY_PACKAGE_NAME`, `GUEST_SESSION_SECRET` côté Supabase Functions.
 - Obligatoire prod: `EXPO_PUBLIC_MOCK_MODE=false` pour éviter un build store en mode mock.
+- Checklist opérationnelle Android: `doc_web_interne/docs/android-release-checklist.md`.
 
 ## Sécurité & conformité
 - Aucun fichier `.jks` / `.keystore` n'est actuellement tracké par git, et `.gitignore` couvre ces extensions. Avant release, confirmer que les credentials Android prod sont bien gérés par EAS remote credentials ou Play App Signing.

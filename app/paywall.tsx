@@ -1,5 +1,5 @@
-import { router } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -15,8 +15,10 @@ import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { createScopedLogger } from '@/lib/logger';
 import { calculateAnnualDiscount, sortPackages } from '@/lib/paywallUtils';
+import { getPaywallVariant } from '@/lib/paywallVariants';
 import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[Paywall]');
@@ -24,6 +26,7 @@ const log = createScopedLogger('[Paywall]');
 export default function PaywallScreen() {
   const { colors } = useTheme();
   const { t, translationRevision } = useTranslation();
+  const params = useLocalSearchParams<{ trigger?: string }>();
   useClearWebFocus();
   const {
     status: subscriptionStatus,
@@ -43,6 +46,7 @@ export default function PaywallScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showErrorSheet, setShowErrorSheet] = useState(false);
+  const viewedAnalyticsKeyRef = useRef<string | null>(null);
 
   const rootStyle = useMemo(
     () => [styles.root, { backgroundColor: colors.backgroundDark }],
@@ -54,6 +58,9 @@ export default function PaywallScreen() {
   );
 
   const isDeviceUpgraded = requiresAuth && quotaStatus?.isUpgraded === true;
+  const routeTrigger = getPaywallTrigger(params.trigger);
+  const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
+  const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
 
   useEffect(() => {
     log.debug('error state changed', error?.message);
@@ -62,6 +69,25 @@ export default function PaywallScreen() {
       setShowErrorSheet(true);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    const offeringId = sortedPackages[0]?.id ?? null;
+    const usageCount = quotaStatus?.usage.analysis.used ?? null;
+    const analyticsKey = `${paywallTrigger}:${subscriptionStatus?.tier ?? 'free'}:${usageCount ?? 'none'}:${offeringId ?? 'none'}`;
+    if (viewedAnalyticsKeyRef.current === analyticsKey) {
+      return;
+    }
+    viewedAnalyticsKeyRef.current = analyticsKey;
+    void trackProductEvent('paywall_viewed', {
+      trigger: paywallTrigger,
+      tier: subscriptionStatus?.tier ?? 'free',
+      usage_count: usageCount,
+      offering_id: offeringId,
+    });
+  }, [loading, paywallTrigger, quotaStatus?.usage.analysis.used, sortedPackages, subscriptionStatus?.tier]);
 
   const effectiveSelectedId = selectedId ?? (sortedPackages[0]?.id ?? null);
   const canPurchase =
@@ -109,14 +135,6 @@ export default function PaywallScreen() {
     setShowErrorSheet(false);
   }, []);
 
-  const activeTierKey = 'plus';
-  const headerTitle = isActive
-    ? t(`subscription.paywall.header.${activeTierKey}` as const)
-    : t('subscription.paywall.header.free');
-  const headerSubtitle = isActive
-    ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
-    : t('subscription.paywall.header.subtitle.free');
-
   const translateWithFallback = useCallback((key: string, fallback?: string) => {
     void translationRevision;
     const translated = t(key);
@@ -125,6 +143,14 @@ export default function PaywallScreen() {
     }
     return translated;
   }, [t, translationRevision]);
+
+  const activeTierKey = 'plus';
+  const headerTitle = isActive
+    ? t(`subscription.paywall.header.${activeTierKey}` as const)
+    : translateWithFallback(paywallVariant.headerTitleKey);
+  const headerSubtitle = isActive
+    ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
+    : translateWithFallback(paywallVariant.headerSubtitleKey);
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -150,6 +176,9 @@ export default function PaywallScreen() {
   const subscriptionFeatures = useMemo(
     () => {
       void translationRevision;
+      if (!isActive) {
+        return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
+      }
       return [
         t('subscription.paywall.card.feature.unlimited_analyses'),
         t('subscription.paywall.card.feature.unlimited_explorations'),
@@ -157,7 +186,7 @@ export default function PaywallScreen() {
         t('subscription.paywall.card.feature.priority'),
       ];
     },
-    [t, translationRevision]
+    [isActive, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
   );
 
   const packageOptions = useMemo(
@@ -201,7 +230,7 @@ export default function PaywallScreen() {
         <ScreenContainer style={headerContainerStyle}>
           <View style={styles.headerRow}>
             <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
-              {t('subscription.paywall.header.free')}
+              {translateWithFallback(paywallVariant.headerTitleKey)}
             </Text>
             <Pressable
               onPress={handleClose}
@@ -220,10 +249,10 @@ export default function PaywallScreen() {
           <ScreenContainer>
             <View style={styles.upgradedMessageContainer}>
               <Text style={[styles.upgradedTitle, { color: colors.textPrimary }]}>
-                {"Vous avez déjà utilisé l'application !"}
+                {translateWithFallback(paywallVariant.cardTitleKey)}
               </Text>
               <Text style={[styles.upgradedSubtitle, { color: colors.textSecondary }]}>
-                Connectez-vous pour retrouver vos rêves et analyses étendues.
+                {translateWithFallback(paywallVariant.cardSubtitleKey)}
               </Text>
 
               <Pressable
@@ -236,7 +265,7 @@ export default function PaywallScreen() {
                 testID={TID.Button.PaywallPurchase}
               >
                 <Text style={[styles.primaryLabel, { color: colors.textOnAccentSurface }]}>
-                  Se connecter
+                  {translateWithFallback(paywallVariant.primaryLabelKey)}
                 </Text>
               </Pressable>
 
@@ -271,6 +300,13 @@ export default function PaywallScreen() {
             </Text>
           </Pressable>
         </View>
+        {!isActive ? (
+          <View style={[styles.triggerChip, { backgroundColor: colors.backgroundSecondary }]}>
+            <Text style={[styles.triggerChipText, { color: colors.textSecondary }]}>
+              {translateWithFallback(paywallVariant.chipKey)}
+            </Text>
+          </View>
+        ) : null}
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>{headerSubtitle}</Text>
         {isActive && formattedExpiryDate ? (
           <Text style={[styles.expiryDate, { color: colors.textSecondary }]}>
@@ -297,8 +333,8 @@ export default function PaywallScreen() {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <ScreenContainer>
           <SubscriptionCard
-            title={t('subscription.paywall.card.title')}
-            subtitle={t('subscription.paywall.card.subtitle')}
+            title={isActive ? t('subscription.paywall.card.title') : translateWithFallback(paywallVariant.cardTitleKey)}
+            subtitle={isActive ? t('subscription.paywall.card.subtitle') : translateWithFallback(paywallVariant.cardSubtitleKey)}
             badge={isActive ? t(`subscription.paywall.card.badge.${activeTierKey}` as const) : undefined}
             features={subscriptionFeatures}
             status={processing ? 'loading' : 'idle'}
@@ -369,11 +405,23 @@ export default function PaywallScreen() {
                     : t(
                       isActive
                         ? (`subscription.paywall.button.primary.${activeTierKey}` as const)
-                        : 'subscription.paywall.button.primary.free'
+                        : paywallVariant.primaryLabelKey
                     )}
                 </Text>
               )}
             </Pressable>
+
+            {!isActive ? (
+              <Pressable
+                style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
+                onPress={handleClose}
+                disabled={processing}
+              >
+                <Text style={[styles.secondaryLabel, { color: colors.textSecondary }]}>
+                  {t('subscription.paywall.button.continue_free')}
+                </Text>
+              </Pressable>
+            ) : null}
 
             {!requiresAuth ? (
               <Pressable
@@ -443,6 +491,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.spaceGrotesk.regular,
     marginBottom: 8,
+  },
+  triggerChip: {
+    alignSelf: 'flex-start',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginBottom: 8,
+  },
+  triggerChipText: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.medium,
   },
   expiryDate: {
     fontSize: 13,

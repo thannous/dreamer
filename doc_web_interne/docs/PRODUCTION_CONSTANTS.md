@@ -33,11 +33,12 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
   - Gate release : vérifier dans les logs du build que le service mock n'est pas sélectionné.
 
 ## Guest sessions (Play Integrity – v1)
-- [ ] `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER`  
+- [x] `EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER`
   - Pourquoi : initialiser le provider Play Integrity côté app (Android).  
   - Où récupérer : Google Cloud Console → Project number (pas Project ID).  
-  - Où placer : variable EAS en `plaintext` (`eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER --value <project_number>`).
-  - Gate release : les warnings `Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER` doivent disparaître en build Internal Testing/prod.
+  - Valeur locale câblée : `359653779023` dans `eas.json` (`preview`, `release`, `production`, `production-apk`) et `.env.teststore`.
+  - Où placer : variable EAS en `plaintext` (`eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER --value 359653779023`).
+  - Gate release : confirmer que `359653779023` est bien le Project number Google Cloud, puis vérifier que les warnings `Missing EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER` disparaissent en build Internal Testing/prod.
 - [ ] `PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64`  
   - Pourquoi : vérifier les tokens Play Integrity côté Edge Function.  
   - Où récupérer : Service account JSON (Google Cloud Console).  
@@ -120,6 +121,7 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
   - Où placer : app/website + liens Play Console.
 
 ## Validation release à noter
+- [ ] Checklist Android détaillée : `doc_web_interne/docs/android-release-checklist.md`
 - [ ] `npm run typecheck:app`
 - [ ] `npm run lint`
 - [ ] `npm test -- --runInBand --watchman=false`

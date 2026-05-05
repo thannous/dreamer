@@ -7,6 +7,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
 import { TID } from '@/lib/testIDs';
 import { getGuestDreamRecordingLimit } from '@/lib/guestLimits';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { router } from 'expo-router';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { Fonts, GlassCardTokens } from '@/constants/theme';
@@ -137,7 +138,7 @@ export const QuotaStatusCard: React.FC<Props> = ({ onUpgradePress }) => {
       router.push('/(tabs)/settings?section=account');
       return;
     }
-    router.push('/paywall' as any);
+    router.push(buildPaywallHref('settings_quota'));
   };
 
   return (

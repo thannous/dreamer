@@ -34,6 +34,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
 import { MotiView } from '@/lib/moti';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 
 // ─── Section Divider ──────────────────────────────────────────────────────────
@@ -164,7 +165,7 @@ export default function SettingsScreen() {
   );
 
   const handleOpenPaywall = useCallback(() => {
-    router.push('/paywall');
+    router.push(buildPaywallHref('settings'));
   }, []);
 
   // When returning guest is blocked, show only the auth hub

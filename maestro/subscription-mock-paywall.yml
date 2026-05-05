@@ -14,34 +14,23 @@ appId: com.tanuki75.noctalia
                 id: btn.paywall.close
           - waitForAnimationToEnd
 
-# Go to Settings tab
-- tapOn:
-      id: btn.mockNav.settings
-- waitForAnimationToEnd
-
-# If already signed in, sign out to reset to free state
-- runFlow:
-      when:
-          visible:
-              id: btn.auth.signOut
-      commands:
-          - tapOn:
-                id: btn.auth.signOut
-          - waitForAnimationToEnd
-
 # Quick sign-in (mock mode) as an existing free user
-- tapOn:
-      id: btn.mockProfile.existing
-- waitForAnimationToEnd
+- runFlow: subflows/select-existing-mock-profile.yml
 
 # Open the paywall from the subscription card (free or premium copy)
+- scrollUntilVisible:
+      element:
+          id: btn.subscription.settingsCta
+      direction: DOWN
+      visibilityPercentage: 30
+      centerElement: true
 - tapOn:
       id: btn.subscription.settingsCta
 - waitForAnimationToEnd
 
-# Paywall screen should be visible (free or premium header)
-- assertVisible: "Unlock Dreamer Premium|You are Premium|Vous êtes en Premium|Desbloquea Dreamer Premium|Ya eres Premium"
-- assertVisible: "Premium dream analysis|Analyse de rêves premium|Análisis de sueños premium"
+# Paywall screen should be visible (settings variant, free header, or active header)
+- assertVisible: "Noctalia Plus for deeper nights|Noctalia Plus pour des nuits plus profondes|Unlock Noctalia Plus|Débloquer Noctalia Plus|Desbloquea Noctalia Plus|Noctalia Plus is active|Noctalia Plus est actif|Noctalia Plus está activo|Premium is active|Premium est actif|Premium está activo"
+- assertVisible: "Noctalia Plus dream analysis|Analyse de rêves Noctalia Plus|Análisis de sueños Noctalia Plus|Premium dream analysis|Analyse de rêves premium|Análisis de sueños premium"
 - assertVisible: "Monthly|Mensuel|Mensual"
 - assertVisible: "Annual|Annuel|Anual"
 
@@ -53,10 +42,15 @@ appId: com.tanuki75.noctalia
 - waitForAnimationToEnd
 
 # After mock purchase, header should reflect premium state
-- assertVisible: "Premium|Already active|Déjà actif|Ya activo"
+- assertVisible: "Noctalia Plus is active|Noctalia Plus est actif|Noctalia Plus está activo|Premium is active|Premium est actif|Premium está activo|Already active|Déjà actif|Ya activo"
 
 # Close paywall and verify subscription card reflects active state
-- tapOn:
-      id: btn.paywall.close
+- pressKey: back
 - waitForAnimationToEnd
-- assertVisible: "Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."
+- scrollUntilVisible:
+      element:
+          text: "Noctalia Plus is active on your account.|Noctalia Plus est actif sur votre compte.|Noctalia Plus está activo en tu cuenta.|Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."
+      direction: DOWN
+      visibilityPercentage: 50
+      centerElement: true
+- assertVisible: "Noctalia Plus is active on your account.|Noctalia Plus est actif sur votre compte.|Noctalia Plus está activo en tu cuenta.|Premium is active on your account.|Le premium est actif sur votre compte.|Premium está activo en tu cuenta."
