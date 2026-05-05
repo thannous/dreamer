@@ -1327,11 +1327,9 @@ function renderLayoutCss() {
         }
         .symbol-card-desc {
           color: rgba(226,218,255,0.84);
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-          min-height: 3.05rem;
+          display: block;
+          overflow: visible;
+          min-height: 0;
         }
         .symbol-card-question {
           margin-top: auto;
