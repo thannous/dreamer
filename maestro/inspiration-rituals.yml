@@ -4,19 +4,52 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/open-mock-app.yml
 - tapOn:
       id: btn.mockNav.home
+- scrollUntilVisible:
+      element:
+          text: "Rituel du jour|Ritual de hoy|Today's ritual"
+      direction: DOWN
+      visibilityPercentage: 50
+      centerElement: true
 - assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
 
-# Switch to the memory / recall ritual and verify one of its steps
-- tapOn:
-      id: btn.inspiration.ritual.memory
-- assertVisible: "Préparer la mémoire|Prime your recall|Preparar el recuerdo"
-
-# Switch to lucid dream ritual and verify a lucid-specific step
+# Open the lucid dream ritual and verify a lucid-specific step
 - tapOn:
       id: btn.inspiration.ritual.lucid
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          text: "Intention lucide|Lucid intention|Intención lúcida"
+      direction: DOWN
 - assertVisible: "Intention lucide|Lucid intention|Intención lúcida"
 
-# Switch back to starter ritual and ensure the calm evening step is shown
+- pressKey: back
+- waitForAnimationToEnd
+- assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
+
+# Open the starter ritual and ensure the calm evening step is shown
 - tapOn:
       id: btn.inspiration.ritual.starter
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          text: "Soir calme|Calm evening|Noche tranquila"
+      direction: DOWN
 - assertVisible: "Soir calme|Calm evening|Noche tranquila"
+
+- pressKey: back
+- waitForAnimationToEnd
+- assertVisible: "Rituel du jour|Ritual de hoy|Today's ritual"
+
+# Swipe the horizontal ritual carousel, open the recall ritual, and verify one step
+- swipe:
+      start: 86%, 58%
+      end: 16%, 58%
+- waitForAnimationToEnd
+- tapOn:
+      id: btn.inspiration.ritual.memory
+- waitForAnimationToEnd
+- scrollUntilVisible:
+      element:
+          text: "Préparer la mémoire|Prime your recall|Preparar el recuerdo"
+      direction: DOWN
+- assertVisible: "Préparer la mémoire|Prime your recall|Preparar el recuerdo"

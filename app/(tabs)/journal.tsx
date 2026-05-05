@@ -2,6 +2,7 @@ import { UpsellCard } from '@/components/guest/UpsellCard';
 import { AtmosphericBackground } from '@/components/inspiration/AtmosphericBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
+import { AdvancedFilterSheet } from '@/components/journal/AdvancedFilterSheet';
 import { DateRangePicker } from '@/components/journal/DateRangePicker';
 import { DreamCard } from '@/components/journal/DreamCard';
 import { EmptyState } from '@/components/journal/EmptyState';
@@ -65,11 +66,12 @@ export default function JournalListScreen() {
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
   const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
+  const isCompactJournalFilters = !isDesktopLayout && !isTabletLayout;
   const desktopColumns = width >= 1440 ? 4 : 3;
 
   const [showHeaderAnimations, setShowHeaderAnimations] = useState(false);
@@ -100,11 +102,12 @@ export default function JournalListScreen() {
   // Modal states
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showDateModal, setShowDateModal] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   useEffect(() => {
-    if (showThemeModal || showDateModal) {
+    if (showThemeModal || showDateModal || showAdvancedFilters) {
       blurActiveElement();
     }
-  }, [showDateModal, showThemeModal]);
+  }, [showAdvancedFilters, showDateModal, showThemeModal]);
 
   const prefetchedImageUrisRef = useRef(new Set<string>());
   const isNavigatingRef = useRef(false);
@@ -221,15 +224,23 @@ export default function JournalListScreen() {
     setShowExploredOnly(false);
   }, []);
 
-  const handleThemeSelect = useCallback((theme: DreamTheme) => {
+  const toggleThemeFilter = useCallback((theme: DreamTheme) => {
     setSelectedTheme(theme === selectedTheme ? null : theme);
-    setShowThemeModal(false);
   }, [selectedTheme]);
 
-  const handleDreamTypeSelect = useCallback((dreamType: DreamType) => {
+  const toggleDreamTypeFilter = useCallback((dreamType: DreamType) => {
     setSelectedDreamType((current) => (dreamType === current ? null : dreamType));
-    setShowThemeModal(false);
   }, []);
+
+  const handleThemeSelect = useCallback((theme: DreamTheme) => {
+    toggleThemeFilter(theme);
+    setShowThemeModal(false);
+  }, [toggleThemeFilter]);
+
+  const handleDreamTypeSelect = useCallback((dreamType: DreamType) => {
+    toggleDreamTypeFilter(dreamType);
+    setShowThemeModal(false);
+  }, [toggleDreamTypeFilter]);
 
   const handleDateRangeChange = useCallback((start: Date | null, end: Date | null) => {
     setDateRange({ start, end });
@@ -448,6 +459,98 @@ export default function JournalListScreen() {
   }, [desktopDateTextStyle, formatDreamListDate, t, handleDreamPress, isScrolling]);
 
   const hasActiveFilter = !!(searchQuery || selectedTheme || selectedDreamType || dateRange.start || dateRange.end || showFavoritesOnly || showAnalyzedOnly || showExploredOnly);
+  const advancedFilterCount = Number(Boolean(selectedTheme)) + Number(Boolean(selectedDreamType)) + Number(Boolean(dateRange.start || dateRange.end));
+  const advancedFilterLabel = advancedFilterCount > 0
+    ? t('journal.filter.more_count', { count: advancedFilterCount })
+    : t('journal.filter.more');
+  const advancedFiltersMaxHeight = Math.min(760, Math.max(420, Math.round(height * 0.86)));
+  const journalFilterItems = useMemo(() => {
+    if (isCompactJournalFilters) {
+      return [
+        {
+          id: 'favorites' as const,
+          label: t('journal.filter.favorites'),
+          active: showFavoritesOnly,
+          onPress: handleFavoritesToggle,
+          testID: TID.Button.FilterFavorites,
+        },
+        {
+          id: 'analyzed' as const,
+          label: t('journal.filter.analyzed'),
+          active: showAnalyzedOnly,
+          onPress: handleAnalyzedToggle,
+          testID: TID.Button.FilterAnalyzed,
+        },
+        {
+          id: 'explored' as const,
+          label: t('journal.filter.explored'),
+          active: showExploredOnly,
+          onPress: handleExploredToggle,
+          testID: TID.Button.FilterExplored,
+        },
+        {
+          id: 'more' as const,
+          label: advancedFilterLabel,
+          active: advancedFilterCount > 0,
+          onPress: () => setShowAdvancedFilters(true),
+          testID: TID.Button.FilterMore,
+        },
+      ];
+    }
+
+    return [
+      {
+        id: 'theme' as const,
+        label: t('journal.filter.theme'),
+        active: selectedTheme !== null || selectedDreamType !== null,
+        onPress: () => setShowThemeModal(true),
+        testID: TID.Button.FilterTheme,
+      },
+      {
+        id: 'date' as const,
+        label: t('journal.filter.date'),
+        active: dateRange.start !== null || dateRange.end !== null,
+        onPress: () => setShowDateModal(true),
+        testID: TID.Button.FilterDate,
+      },
+      {
+        id: 'favorites' as const,
+        label: t('journal.filter.favorites'),
+        active: showFavoritesOnly,
+        onPress: handleFavoritesToggle,
+        testID: TID.Button.FilterFavorites,
+      },
+      {
+        id: 'analyzed' as const,
+        label: t('journal.filter.analyzed'),
+        active: showAnalyzedOnly,
+        onPress: handleAnalyzedToggle,
+        testID: TID.Button.FilterAnalyzed,
+      },
+      {
+        id: 'explored' as const,
+        label: t('journal.filter.explored'),
+        active: showExploredOnly,
+        onPress: handleExploredToggle,
+        testID: TID.Button.FilterExplored,
+      },
+    ];
+  }, [
+    advancedFilterCount,
+    advancedFilterLabel,
+    dateRange.end,
+    dateRange.start,
+    handleAnalyzedToggle,
+    handleExploredToggle,
+    handleFavoritesToggle,
+    isCompactJournalFilters,
+    selectedDreamType,
+    selectedTheme,
+    showAnalyzedOnly,
+    showExploredOnly,
+    showFavoritesOnly,
+    t,
+  ]);
   const renderEmptyState = useCallback(() => (
     <EmptyState
       hasActiveFilter={hasActiveFilter}
@@ -496,41 +599,7 @@ export default function JournalListScreen() {
             placeholder={t('journal.search_placeholder')}
           />
           <FilterBar
-            items={[
-              {
-                id: 'theme',
-                label: t('journal.filter.theme'),
-                active: selectedTheme !== null || selectedDreamType !== null,
-                onPress: () => setShowThemeModal(true),
-                testID: TID.Button.FilterTheme,
-              },
-              {
-                id: 'date',
-                label: t('journal.filter.date'),
-                active: dateRange.start !== null || dateRange.end !== null,
-                onPress: () => setShowDateModal(true),
-                testID: TID.Button.FilterDate,
-              },
-              {
-                id: 'favorites',
-                label: t('journal.filter.favorites'),
-                active: showFavoritesOnly,
-                onPress: handleFavoritesToggle,
-                testID: TID.Button.FilterFavorites,
-              },
-              {
-                id: 'analyzed',
-                active: showAnalyzedOnly,
-                onPress: handleAnalyzedToggle,
-                testID: TID.Button.FilterAnalyzed,
-              },
-              {
-                id: 'explored',
-                active: showExploredOnly,
-                onPress: handleExploredToggle,
-                testID: TID.Button.FilterExplored,
-              },
-            ]}
+            items={journalFilterItems}
             onClear={handleClearFilters}
             dateRange={dateRange}
             selectedTheme={selectedTheme}
@@ -608,6 +677,21 @@ export default function JournalListScreen() {
           testID={TID.Button.AddDream}
         />
       )}
+
+      <AdvancedFilterSheet
+        visible={showAdvancedFilters}
+        onClose={() => setShowAdvancedFilters(false)}
+        onClear={handleClearFilters}
+        maxHeight={advancedFiltersMaxHeight}
+        availableThemes={availableThemes}
+        availableDreamTypes={availableDreamTypes}
+        selectedTheme={selectedTheme}
+        selectedDreamType={selectedDreamType}
+        dateRange={dateRange}
+        onThemeSelect={toggleThemeFilter}
+        onDreamTypeSelect={toggleDreamTypeFilter}
+        onDateRangeChange={handleDateRangeChange}
+      />
 
       {/* Theme Selection BottomSheet */}
       <BottomSheet

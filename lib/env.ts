@@ -5,6 +5,7 @@
  */
 export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_API_URL'
+  | 'EXPO_PUBLIC_ANALYTICS_DEBUG'
   | 'EXPO_PUBLIC_DEBUG_CHAT'
   | 'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID'
   | 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID'
@@ -23,6 +24,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
   switch (key) {
     case 'EXPO_PUBLIC_API_URL':
       return process.env.EXPO_PUBLIC_API_URL;
+    case 'EXPO_PUBLIC_ANALYTICS_DEBUG':
+      return process.env.EXPO_PUBLIC_ANALYTICS_DEBUG;
     case 'EXPO_PUBLIC_DEBUG_CHAT':
       return process.env.EXPO_PUBLIC_DEBUG_CHAT;
     case 'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID':
@@ -62,6 +65,10 @@ export function isMockModeEnabled(): boolean {
 
 export function isChatDebugEnabled(): boolean {
   return (getExpoPublicEnvValue('EXPO_PUBLIC_DEBUG_CHAT') ?? '').toLowerCase() === 'true';
+}
+
+export function isAnalyticsDebugEnabled(): boolean {
+  return (getExpoPublicEnvValue('EXPO_PUBLIC_ANALYTICS_DEBUG') ?? '').toLowerCase() === 'true';
 }
 
 export function isReferenceImagesEnabled(): boolean {

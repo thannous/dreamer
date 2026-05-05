@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { getTranslator, loadTranslations } from '../i18n';
 
-const languages: ('en' | 'fr' | 'es')[] = ['en', 'fr', 'es'];
+const languages: ('en' | 'fr' | 'es' | 'de' | 'it')[] = ['en', 'fr', 'es', 'de', 'it'];
 
 const firstDreamSheetKeys = [
   'guest.first_dream.sheet.title',
@@ -18,6 +18,36 @@ const analyzePromptSheetKeys = [
   'recording.analyze_prompt.sheet.analyze',
   'recording.analyze_prompt.sheet.journal',
   'recording.analyze_prompt.sheet.dismiss',
+] as const;
+
+const recordingStatusKeys = [
+  'recording.status.ready.title',
+  'recording.status.ready.detail',
+  'recording.status.preparing.title',
+  'recording.status.preparing.detail',
+  'recording.status.recording.title',
+  'recording.status.recording.detail',
+  'recording.status.busy.title',
+  'recording.status.busy.detail',
+  'recording.status.duration',
+  'recording.status.fallback.permission_denied',
+  'recording.status.fallback.stt_unavailable',
+  'recording.status.fallback.language_pack_missing',
+  'recording.status.fallback.no_speech',
+  'recording.status.fallback.start_failed',
+  'recording.status.retry_voice',
+] as const;
+
+const firstUseGuideKeys = [
+  'recording.first_use.eyebrow',
+  'recording.first_use.title',
+  'recording.first_use.step.value.title',
+  'recording.first_use.step.value.body',
+  'recording.first_use.step.privacy.title',
+  'recording.first_use.step.privacy.body',
+  'recording.first_use.step.backup.title',
+  'recording.first_use.step.backup.body',
+  'recording.first_use.type_instead',
 ] as const;
 
 describe('Recording i18n - bottom sheets', () => {
@@ -43,6 +73,36 @@ describe('Recording i18n - bottom sheets', () => {
       const t = getTranslator(lang);
 
       for (const key of analyzePromptSheetKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for recording status and fallback copy in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of recordingStatusKeys) {
+        const value = t(key, { duration: '0:05' });
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for the first-use recording guide in all supported languages', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of firstUseGuideKeys) {
         const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');

@@ -256,7 +256,7 @@ export const DreamCard = memo(function DreamCard({
                           color={isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary}
                         />
                       )}
-                      {!badge.icon && badge.label && (
+                      {badge.label && (
                         <Text
                           style={[
                             styles.stateBadgeText,
@@ -341,7 +341,7 @@ export const DreamCard = memo(function DreamCard({
                       color={isAccent ? colors.textOnAccentSurface : isDanger ? '#991B1B' : isWarning ? '#92400E' : colors.textPrimary}
                     />
                   )}
-                    {!badge.icon && badge.label && (
+                    {badge.label && (
                       <Text
                         style={[
                           styles.stateBadgeText,
@@ -488,6 +488,7 @@ const styles = StyleSheet.create({
     borderCurve: 'continuous',
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
   },
   stateBadgeText: {
     fontSize: 11,

@@ -11,7 +11,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } fr
 import Svg, { Path } from 'react-native-svg';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored';
+type FilterItemId = 'theme' | 'date' | 'favorites' | 'analyzed' | 'explored' | 'more';
 
 export type FilterBarItem = {
   id: FilterItemId;
@@ -50,6 +50,10 @@ function AnalyzedIcon({ size = 16, color = '#FFFFFF' }) {
 
 function ExploredIcon({ size = 16, color = '#FFFFFF' }) {
   return <IconSymbol name="bubble.left.and.bubble.right" size={size} color={color} />;
+}
+
+function MoreIcon({ size = 16, color = '#FFFFFF' }) {
+  return <IconSymbol name="slider.horizontal.3" size={size} color={color} />;
 }
 
 function FavoriteIcon({ size = 16, color = '#FFFFFF' }) {
@@ -124,6 +128,8 @@ const renderIcon = (id: FilterItemId, color: string) => {
       return <AnalyzedIcon size={16} color={color} />;
     case 'explored':
       return <ExploredIcon size={16} color={color} />;
+    case 'more':
+      return <MoreIcon size={16} color={color} />;
   }
 };
 
@@ -139,6 +145,8 @@ const getAccessibilityLabel = (id: FilterItemId, t: (key: string) => string) => 
       return t('journal.filter.accessibility.analyzed');
     case 'explored':
       return t('journal.filter.accessibility.explored');
+    case 'more':
+      return t('journal.filter.accessibility.more');
   }
 };
 

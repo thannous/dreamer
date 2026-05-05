@@ -42,6 +42,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { initializeGoogleSignIn } from '@/lib/auth';
+import { configureAnalyticsProvider } from '@/lib/analytics';
 import { initGuestSession } from '@/lib/guestSession';
 import { loadTranslations } from '@/lib/i18n';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
@@ -467,6 +468,7 @@ export default function RootLayout() {
   useEffect(() => {
     // Configure notification handler on app startup
     configureNotificationHandler();
+    configureAnalyticsProvider();
     // Initialize Google Sign-In configuration early (native platforms)
     initializeGoogleSignIn();
   }, []);

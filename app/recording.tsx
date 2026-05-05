@@ -2,12 +2,14 @@ import { AnalysisProgress } from '@/components/analysis/AnalysisProgress';
 import { MockNavigationRail } from '@/components/dev/MockNavigationRail';
 import { SubjectProposition } from '@/components/journal/SubjectProposition';
 import { AtmosphereBackground } from '@/components/recording/AtmosphereBackground';
+import { FirstUseGuideCard } from '@/components/recording/FirstUseGuideCard';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import {
   AnalyzePromptSheet,
   FirstDreamSheet,
   GuestLimitSheet,
+  MicPermissionRationaleSheet,
   QuotaLimitSheet,
   ReferenceImageSheet,
 } from '@/components/recording/RecordingSheets';
@@ -15,6 +17,7 @@ import { RecordingTextInput } from '@/components/recording/RecordingTextInput';
 import { RecordingVoiceInput } from '@/components/recording/RecordingVoiceInput';
 import { RECORDING } from '@/constants/appConfig';
 import { GradientColors } from '@/constants/gradients';
+import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useDreams } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -24,12 +27,18 @@ import { useQuota } from '@/hooks/useQuota';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
+import {
+  getRecordingDurationBucket,
+  getTranscriptLengthBucket,
+  trackProductEvent,
+} from '@/lib/analytics';
 import { buildDraftDream as buildDraftDreamPure } from '@/lib/dreamUtils';
-import { isReferenceImagesEnabled } from '@/lib/env';
+import { isMockModeEnabled, isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { isGuestDreamLimitReached } from '@/lib/guestLimits';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { createScopedLogger } from '@/lib/logger';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { combineTranscript as combineTranscriptPure } from '@/lib/transcriptMerge';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, ReferenceImage } from '@/lib/types';
@@ -45,16 +54,34 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
   AppState,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const log = createScopedLogger('[Recording]');
+const isMockMode = isMockModeEnabled();
+
+type VoiceFallbackReason =
+  | 'permission_denied'
+  | 'stt_unavailable'
+  | 'language_pack_missing'
+  | 'no_speech'
+  | 'start_failed'
+  | null;
+
+const formatRecordingDuration = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
 
 export default function RecordingScreen() {
   const { addDream, updateDream, dreams, analyzeDream } = useDreams();
@@ -83,11 +110,16 @@ export default function RecordingScreen() {
   const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
   const [quotaSheetMode, setQuotaSheetMode] = useState<'limit' | 'error' | 'login'>('limit');
   const [quotaSheetMessage, setQuotaSheetMessage] = useState('');
+  const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
   const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
   const offlineModelSheetVisibleRef = useRef(false);
+  const hasSeenMicRationaleRef = useRef(false);
+  const recordingStartedAtRef = useRef<number | null>(null);
+  const [recordingDurationSeconds, setRecordingDurationSeconds] = useState(0);
+  const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
 
   // Subject detection for reference image generation
   const [showSubjectProposition, setShowSubjectProposition] = useState(false);
@@ -152,6 +184,7 @@ export default function RecordingScreen() {
   const isSaveDisabled = !trimmedTranscript || interactionDisabled;
   const textInputRef = useRef<TextInput | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
+  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
   const lengthLimitMessage = useCallback(
     () =>
       t('recording.alert.length_limit', { limit: RECORDING.MAX_TRANSCRIPT_CHARS }) ||
@@ -197,6 +230,12 @@ export default function RecordingScreen() {
     [clampTranscript, lengthLimitMessage]
   );
 
+  const handleMockFillTranscript = useCallback(() => {
+    handleTranscriptChange('Fallback text dream');
+    textInputRef.current?.blur();
+    Keyboard.dismiss();
+  }, [handleTranscriptChange]);
+
   const stopRecordingFromPartialRef = useRef<(() => void) | null>(null);
 
   const recordingSession = useRecordingSession({
@@ -220,6 +259,22 @@ export default function RecordingScreen() {
     stopRecording: stopSessionRecording,
     forceStopRecording,
   } = recordingSession;
+
+  useEffect(() => {
+    if (!isRecording) {
+      setRecordingDurationSeconds(0);
+      return;
+    }
+
+    const updateDuration = () => {
+      const startedAt = recordingStartedAtRef.current;
+      setRecordingDurationSeconds(startedAt ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000)) : 0);
+    };
+
+    updateDuration();
+    const interval = setInterval(updateDuration, 1000);
+    return () => clearInterval(interval);
+  }, [isRecording]);
 
   useEffect(() => {
     offlineModelSheetVisibleRef.current = showOfflineModelSheet;
@@ -272,12 +327,14 @@ export default function RecordingScreen() {
     setDraftDream(null);
     analysisProgress.reset();
     setLengthWarning('');
+    setVoiceFallbackReason(null);
     baseTranscriptRef.current = '';
   }, [analysisProgress]);
 
   const handleClearTranscript = useCallback(() => {
     setTranscript('');
     setLengthWarning('');
+    setVoiceFallbackReason(null);
     baseTranscriptRef.current = '';
   }, []);
 
@@ -404,6 +461,7 @@ export default function RecordingScreen() {
           setTranscript((prev) => (prev.trim() === combined.trim() ? prev : combined));
         }
       } else {
+        recordingStartedAtRef.current = null;
         if (silent) {
           return;
         }
@@ -412,13 +470,13 @@ export default function RecordingScreen() {
           return;
         }
         if (result.error === 'stt_unavailable') {
-          Alert.alert(
-            t('recording.alert.stt_unavailable.title'),
-            t('recording.alert.stt_unavailable.message')
-          );
+          setVoiceFallbackReason('stt_unavailable');
+          setInputMode('text');
           return;
         }
         if (result.error === 'language_pack_missing') {
+          setVoiceFallbackReason('language_pack_missing');
+          setInputMode('text');
           return;
         }
         if (result.error === 'no_recording') {
@@ -432,7 +490,8 @@ export default function RecordingScreen() {
           Alert.alert(t('recording.alert.transcription_failed.title'), result.error);
           return;
         }
-        showQuotaSheet({ mode: 'error', message: t('recording.alert.no_speech.message') });
+        setVoiceFallbackReason('no_speech');
+        setInputMode('text');
       }
     } catch (err) {
       log.error('Failed to stop recording:', err);
@@ -461,20 +520,40 @@ export default function RecordingScreen() {
   const startRecording = useCallback(async () => {
     try {
       setIsPreparingRecording(true);
+      setVoiceFallbackReason(null);
       baseTranscriptRef.current = transcript;
 
       const response = await startSessionRecording(transcript);
       if (response.success) {
+        recordingStartedAtRef.current = Date.now();
+        void trackProductEvent('recording_started', {
+          input_mode: 'voice',
+          language,
+          speech_available: true,
+          offline_model_state: 'unknown',
+        });
         return;
       }
+      recordingStartedAtRef.current = null;
       if (response.error === 'offline_model_not_ready') {
         return;
       }
+      if (
+        response.error === 'permission_denied' ||
+        response.error === 'stt_unavailable' ||
+        response.error === 'language_pack_missing'
+      ) {
+        setVoiceFallbackReason(response.error);
+        setInputMode('text');
+        return;
+      }
+      setVoiceFallbackReason('start_failed');
+      setInputMode('text');
       Alert.alert(t('common.error_title'), t('recording.alert.start_failed'));
     } finally {
       setIsPreparingRecording(false);
     }
-  }, [startSessionRecording, t, transcript]);
+  }, [language, startSessionRecording, t, transcript]);
 
   const toggleRecording = useCallback(async () => {
     if (recordingTransitionRef.current) {
@@ -485,6 +564,10 @@ export default function RecordingScreen() {
       if (isRecordingRef.current) {
         await stopRecording();
       } else {
+        if (Platform.OS === 'android' && !hasSeenMicRationaleRef.current) {
+          setShowMicRationaleSheet(true);
+          return;
+        }
         await startRecording();
       }
     } finally {
@@ -575,6 +658,14 @@ export default function RecordingScreen() {
 
       const savedDream = await addDream(dreamToSave);
       setDraftDream(savedDream);
+      void trackProductEvent('recording_saved', {
+        input_mode: inputMode,
+        duration_bucket: getRecordingDurationBucket(
+          recordingStartedAtRef.current ? Date.now() - recordingStartedAtRef.current : null
+        ),
+        transcript_length_bucket: getTranscriptLengthBucket(latestTranscript),
+      });
+      recordingStartedAtRef.current = null;
 
       resetComposer();
       navigateAfterSave(savedDream, preCount);
@@ -598,6 +689,7 @@ export default function RecordingScreen() {
 		    buildDraftDream,
 		    dreams.length,
 		    draftDream,
+        inputMode,
         isRecordingRef,
 		    language,
 		    navigateAfterSave,
@@ -671,7 +763,7 @@ export default function RecordingScreen() {
       router.push('/(tabs)/settings');
       return;
     }
-    router.push('/paywall');
+    router.push(buildPaywallHref('analysis_limit'));
   }, [quotaSheetMode, tier]);
 
   const handleQuotaLimitJournal = useCallback(() => {
@@ -702,6 +794,7 @@ export default function RecordingScreen() {
       const analyzedDream = await analyzeDream(dream.id, dream.transcript, {
         replaceExistingImage: true,
         lang: language,
+        analyticsSource: 'recording_flow',
         onProgress: (step) => {
           // Update progress as each phase completes
           analysisProgress.setStep(step);
@@ -923,7 +1016,6 @@ export default function RecordingScreen() {
     [insets.bottom]
   );
 
-  const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
     requestAnimationFrame(() => {
@@ -938,6 +1030,55 @@ export default function RecordingScreen() {
     });
   }, []);
   const analyzePromptTranscript = analyzePromptDream?.transcript?.trim();
+  const voiceStatus = useMemo(() => {
+    if (isRecording) {
+      return {
+        title: t('recording.status.recording.title'),
+        detail: t('recording.status.recording.detail'),
+        tone: 'active' as const,
+      };
+    }
+
+    if (isPreparingRecording) {
+      return {
+        title: t('recording.status.preparing.title'),
+        detail: t('recording.status.preparing.detail'),
+        tone: 'neutral' as const,
+      };
+    }
+
+    if (interactionDisabled) {
+      return {
+        title: t('recording.status.busy.title'),
+        detail: t('recording.status.busy.detail'),
+        tone: 'neutral' as const,
+      };
+    }
+
+    return {
+      title: t('recording.status.ready.title'),
+      detail: t('recording.status.ready.detail'),
+      tone: 'neutral' as const,
+    };
+  }, [interactionDisabled, isPreparingRecording, isRecording, t]);
+  const recordingDurationLabel = isRecording
+    ? t('recording.status.duration', { duration: formatRecordingDuration(recordingDurationSeconds) })
+    : undefined;
+  const textFallbackNotice = useMemo(() => {
+    if (!voiceFallbackReason) {
+      return '';
+    }
+
+    const fallbackKeyByReason: Record<Exclude<VoiceFallbackReason, null>, string> = {
+      permission_denied: 'recording.status.fallback.permission_denied',
+      stt_unavailable: 'recording.status.fallback.stt_unavailable',
+      language_pack_missing: 'recording.status.fallback.language_pack_missing',
+      no_speech: 'recording.status.fallback.no_speech',
+      start_failed: 'recording.status.fallback.start_failed',
+    };
+
+    return t(fallbackKeyByReason[voiceFallbackReason]);
+  }, [t, voiceFallbackReason]);
 
   const switchToTextMode = useCallback(async () => {
     if (isRecordingRef.current) {
@@ -948,10 +1089,12 @@ export default function RecordingScreen() {
         recordingTransitionRef.current = false;
       }
     }
+    setVoiceFallbackReason(null);
     setInputMode('text');
   }, [isRecordingRef, stopRecording]);
 
   const switchToVoiceMode = useCallback(async () => {
+    setVoiceFallbackReason(null);
     setInputMode('voice');
     if (isRecordingRef.current) {
       return;
@@ -964,8 +1107,16 @@ export default function RecordingScreen() {
     }
   }, [isRecordingRef, startRecording]);
 
+  const showFirstUseGuide = dreams.length === 0
+    && !trimmedTranscript
+    && !draftDream
+    && !firstDreamPrompt
+    && !analyzePromptDream
+    && !pendingAnalysisDream
+    && !isAnalyzing;
+
   useEffect(() => {
-    if (inputMode === 'text') {
+    if (inputMode === 'text' && !isMockMode) {
       focusTranscriptEnd(baseTranscriptRef.current || transcript);
     }
   }, [focusTranscriptEnd, inputMode, transcript]);
@@ -979,6 +1130,28 @@ export default function RecordingScreen() {
     setShowGuestLimitSheet(false);
     router.push('/(tabs)/settings');
   }, []);
+
+  const handleMicRationaleClose = useCallback(() => {
+    hasSeenMicRationaleRef.current = true;
+    setShowMicRationaleSheet(false);
+  }, []);
+
+  const handleMicRationaleAllow = useCallback(async () => {
+    hasSeenMicRationaleRef.current = true;
+    setShowMicRationaleSheet(false);
+    recordingTransitionRef.current = true;
+    try {
+      await startRecording();
+    } finally {
+      recordingTransitionRef.current = false;
+    }
+  }, [startRecording]);
+
+  const handleMicRationaleUseText = useCallback(async () => {
+    hasSeenMicRationaleRef.current = true;
+    setShowMicRationaleSheet(false);
+    await switchToTextMode();
+  }, [switchToTextMode]);
 
   const analysisRetryHandler = pendingAnalysisDream
     ? handleFirstDreamAnalyze
@@ -1006,14 +1179,26 @@ export default function RecordingScreen() {
             testID={TID.Screen.Recording}
           >
             <MockNavigationRail />
+            <MockRecordingTools onFillTranscript={handleMockFillTranscript} />
             <View style={mainContentStyle}>
               <View style={styles.bodySection}>
+                {showFirstUseGuide ? (
+                  <FirstUseGuideCard
+                    onUseText={switchToTextMode}
+                    showUseTextAction={inputMode === 'voice'}
+                  />
+                ) : null}
+
                 {inputMode === 'voice' ? (
                   <RecordingVoiceInput
                     status={isPreparingRecording ? 'preparing' : isRecording ? 'recording' : 'idle'}
                     transcript={transcript}
                     instructionText={t('recording.instructions')}
                     interaction={interactionDisabled || isPreparingRecording ? 'disabled' : 'enabled'}
+                    voiceStatusTitle={voiceStatus.title}
+                    voiceStatusDetail={voiceStatus.detail}
+                    voiceStatusTone={voiceStatus.tone}
+                    recordingDurationLabel={recordingDurationLabel}
                     onToggleRecording={toggleRecording}
                     onSwitchToText={switchToTextMode}
                   />
@@ -1025,6 +1210,9 @@ export default function RecordingScreen() {
                     disabled={interactionDisabled}
                     lengthWarning={lengthWarning}
                     instructionText={t('recording.instructions.text') || "Ou transcris ici les murmures de ton subconscient..."}
+                    fallbackNotice={textFallbackNotice}
+                    switchToVoiceLabel={voiceFallbackReason ? t('recording.status.retry_voice') : undefined}
+                    autoFocus={!isMockMode}
                     onSwitchToVoice={switchToVoiceMode}
                     onClear={handleClearTranscript}
                   />
@@ -1068,6 +1256,10 @@ export default function RecordingScreen() {
         guestLimitVisible={showGuestLimitSheet}
         onGuestLimitClose={handleGuestLimitDismiss}
         onGuestLimitCta={handleGuestLimitCta}
+        micRationaleVisible={showMicRationaleSheet}
+        onMicRationaleClose={handleMicRationaleClose}
+        onMicRationaleAllow={handleMicRationaleAllow}
+        onMicRationaleUseText={handleMicRationaleUseText}
         quotaLimitVisible={showQuotaLimitSheet}
         onQuotaLimitClose={handleQuotaLimitDismiss}
         onQuotaLimitPrimary={quotaSheetMode === 'error' ? handleQuotaLimitDismiss : handleQuotaLimitPrimary}
@@ -1098,6 +1290,33 @@ export default function RecordingScreen() {
   );
 }
 
+function MockRecordingTools({ onFillTranscript }: { onFillTranscript: () => void }) {
+  const { colors } = useTheme();
+
+  if (!isMockMode) {
+    return null;
+  }
+
+  return (
+    <View style={styles.mockTools} collapsable={false}>
+      <Pressable
+        onPress={onFillTranscript}
+        style={[
+          styles.mockToolButton,
+          { backgroundColor: colors.backgroundCard, borderColor: colors.divider },
+        ]}
+        testID={TID.Button.MockFillTranscript}
+        collapsable={false}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={TID.Button.MockFillTranscript}
+      >
+        <Text style={[styles.mockToolText, { color: colors.textSecondary }]}>Fill</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 function RecordingOverlays({
   firstDreamVisible,
   onFirstDreamDismiss,
@@ -1111,6 +1330,10 @@ function RecordingOverlays({
   guestLimitVisible,
   onGuestLimitClose,
   onGuestLimitCta,
+  micRationaleVisible,
+  onMicRationaleClose,
+  onMicRationaleAllow,
+  onMicRationaleUseText,
   quotaLimitVisible,
   onQuotaLimitClose,
   onQuotaLimitPrimary,
@@ -1149,6 +1372,10 @@ function RecordingOverlays({
   guestLimitVisible: boolean;
   onGuestLimitClose: () => void;
   onGuestLimitCta: () => void;
+  micRationaleVisible: boolean;
+  onMicRationaleClose: () => void;
+  onMicRationaleAllow: () => void;
+  onMicRationaleUseText: () => void;
   quotaLimitVisible: boolean;
   onQuotaLimitClose: () => void;
   onQuotaLimitPrimary: () => void;
@@ -1198,6 +1425,13 @@ function RecordingOverlays({
         visible={guestLimitVisible}
         onClose={onGuestLimitClose}
         onCta={onGuestLimitCta}
+      />
+
+      <MicPermissionRationaleSheet
+        visible={micRationaleVisible}
+        onClose={onMicRationaleClose}
+        onAllow={onMicRationaleAllow}
+        onUseText={onMicRationaleUseText}
       />
 
       <QuotaLimitSheet
@@ -1263,6 +1497,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 24,
     position: 'relative',
+  },
+  mockTools: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  mockToolButton: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    opacity: 0.9,
+  },
+  mockToolText: {
+    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: 12,
   },
   bodySection: {
     flex: 1,

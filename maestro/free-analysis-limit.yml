@@ -5,15 +5,7 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.navigateJournal
 - waitForAnimationToEnd
-- tapOn:
-    id: btn.mockNav.settings
-- scrollUntilVisible:
-    element:
-      id: btn.mockProfile.existing
-    direction: DOWN
-- tapOn:
-    id: btn.mockProfile.existing
-- assertVisible: "mock.existing@dreamer.app"
+- runFlow: subflows/select-existing-mock-profile.yml
 - tapOn:
     id: btn.mockNav.home
 

@@ -1,4 +1,5 @@
 import { useDreamJournal } from '@/hooks/useDreamJournal';
+import type { AnalysisSource } from '@/lib/analytics';
 import type { DreamAnalysis } from '@/lib/types';
 import { AnalysisStep } from '@/hooks/useAnalysisProgress';
 import React, { createContext, useContext, useMemo } from 'react';
@@ -29,7 +30,12 @@ export type DreamsActionsContextValue = {
   analyzeDream: (
     dreamId: number,
     transcript: string,
-    options?: { replaceExistingImage?: boolean; lang?: string; onProgress?: (step: AnalysisStep) => void }
+    options?: {
+      replaceExistingImage?: boolean;
+      lang?: string;
+      onProgress?: (step: AnalysisStep) => void;
+      analyticsSource?: AnalysisSource;
+    }
   ) => Promise<DreamAnalysis>;
 };
 

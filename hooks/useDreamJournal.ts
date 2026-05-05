@@ -13,6 +13,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import {
+  getDurationMsBucket,
+  trackProductEvent,
+  type AnalysisSource,
+} from '@/lib/analytics';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { isMockModeEnabled } from '@/lib/env';
 import { deriveUserTier } from '@/lib/quotaTier';
@@ -895,7 +900,12 @@ export const useDreamJournal = () => {
     async (
       dreamId: number,
       transcript: string,
-      options?: { replaceExistingImage?: boolean; lang?: string; onProgress?: (step: AnalysisStep) => void }
+      options?: {
+        replaceExistingImage?: boolean;
+        lang?: string;
+        onProgress?: (step: AnalysisStep) => void;
+        analyticsSource?: AnalysisSource;
+      }
     ): Promise<DreamAnalysis> => {
       // Check quota before analyzing (need details to distinguish "quota reached" vs "login required")
       const status = await quotaService.getQuotaStatus(user, tier);
@@ -913,6 +923,13 @@ export const useDreamJournal = () => {
       if (!dream) {
         throw new Error(`Dream with id ${dreamId} not found`);
       }
+
+      const analysisStartedAt = Date.now();
+      void trackProductEvent('analysis_started', {
+        source: options?.analyticsSource ?? 'unknown',
+        tier,
+        guest_status: user ? 'signed_in' : 'guest',
+      });
 
       // Generate request ID for idempotence
       const requestId = generateUUID();
@@ -1047,6 +1064,11 @@ export const useDreamJournal = () => {
             : undefined,
         };
         analysisStatusOverridesRef.current.set(dreamId, 'done');
+        void trackProductEvent('analysis_completed', {
+          duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
+          generated_image: Boolean(next.imageUrl),
+          tier,
+        });
 
         // Persist locally and best-effort sync to Supabase. updateDream intentionally falls back
         // to the offline queue for most errors, so we force a sync attempt right after.

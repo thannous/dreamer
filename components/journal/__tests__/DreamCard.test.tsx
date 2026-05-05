@@ -1,7 +1,7 @@
 /* @jest-environment jsdom */
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
 import { getDreamImageVersion, withCacheBuster } from '@/lib/imageUtils';
 import type { DreamAnalysis } from '@/lib/types';
@@ -144,5 +144,22 @@ describe('DreamCard image fallback', () => {
     render(<DreamCard dream={dream} onPress={jest.fn()} />);
 
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
+  });
+
+  it('renders state badge labels with their icons for scanability', () => {
+    const { DreamCard } = require('../DreamCard');
+    const dream: DreamAnalysis = {
+      id: 1457,
+      transcript: 'dream transcript',
+      title: 'Dream title',
+      interpretation: 'Dream interpretation',
+      chatHistory: [],
+      isAnalyzed: true,
+      analyzedAt: Date.now(),
+    };
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    expect(screen.getByText('journal.badge.analyzed')).toBeTruthy();
   });
 });

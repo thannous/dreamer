@@ -5,7 +5,6 @@ import {
   callGeminiWithFallback,
   classifyGeminiError,
   GEMINI_FLASH_LITE_MODEL,
-  GEMINI_FLASH_MODEL,
   type GeminiPart,
 } from '../services/gemini.ts';
 import { requireGuestSession } from '../lib/guards.ts';

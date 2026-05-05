@@ -32,6 +32,71 @@ appId: com.tanuki75.noctalia
     commands:
       - tapOn:
           text: Journal
+- runFlow:
+    when:
+      visible:
+        text: J
+    commands:
+      - tapOn:
+          text: J
+- runFlow:
+    when:
+      visible:
+        id: screen.recording
+    commands:
+      - swipe:
+          start: 50%, 88%
+          end: 50%, 38%
+      - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible:
+              id: btn.navigateJournal
+          commands:
+            - tapOn:
+                id: btn.navigateJournal
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: "Explore the dreamscape"
+          commands:
+            - tapOn: "Explore the dreamscape"
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible:
+              id: screen.recording
+          commands:
+            - tapOn:
+                point: "50%,92%"
+            - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: screen.recording
+    commands:
+      - tapOn:
+          point: "74%,4%"
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: Home
+    commands:
+      - runFlow:
+          when:
+            visible:
+              id: tab.journal
+          commands:
+            - tapOn:
+                id: tab.journal
+            - waitForAnimationToEnd
+      - runFlow:
+          when:
+            visible: Home
+          commands:
+            - tapOn:
+                point: "38%,92%"
+            - waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: screen.journal

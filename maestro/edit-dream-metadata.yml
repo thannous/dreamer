@@ -3,18 +3,27 @@ appId: com.tanuki75.noctalia
 - runFlow: subflows/open-mock-app.yml
 
 # Switch to existing user profile to load predefined dreams
-- tapOn:
-      id: btn.mockNav.settings
-- tapOn:
-      id: btn.mockProfile.existing
-- assertVisible: "mock.existing@dreamer.app"
+- runFlow: subflows/select-existing-mock-profile.yml
 - tapOn:
       id: btn.mockNav.journal
-- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: screen.journal
+      timeout: 30000
+- runFlow: subflows/clear-journal-filters.yml
 
 # Open a specific dream (assuming mock data "The Infinite Library")
-- tapOn: "The Infinite Library"
-- waitForAnimationToEnd
+- tapOn:
+      id: input.searchDreams
+- eraseText
+- inputText: "The Infinite Library"
+- pressKey: back
+- extendedWaitUntil:
+      visible: "The Infinite Library"
+      timeout: 10000
+- assertVisible: "The Infinite Library"
+- tapOn:
+      point: "50%,58%"
 
 # Verify initial state (Read Mode)
 - assertVisible: "Symbolic Dream"
@@ -32,6 +41,11 @@ appId: com.tanuki75.noctalia
 - tapOn: "The Infinite Library"
 - eraseText
 - inputText: "The Infinite dark"
+- pressKey: back
+- extendedWaitUntil:
+      visible:
+          id: chip.type.Symbolic Dream
+      timeout: 10000
 
 # Select new type "Nightmare"
 - swipe:
@@ -56,7 +70,11 @@ appId: com.tanuki75.noctalia
 # Navigate back to journal and verify updated title in list
 - tapOn:
       id: btn.navigateJournal
-- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: screen.journal
+      timeout: 30000
+- runFlow: subflows/clear-journal-filters.yml
 - assertVisible:
       id: screen.journal
 - assertVisible: "The Infinite dark"

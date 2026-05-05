@@ -14,13 +14,27 @@ export interface RecordingTextInputProps {
   disabled: boolean;
   lengthWarning: string;
   instructionText: string;
+  fallbackNotice?: string;
+  switchToVoiceLabel?: string;
+  autoFocus?: boolean;
   onSwitchToVoice: () => void;
   onClear?: () => void;
 }
 
 export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>(
   function RecordingTextInput(
-    { value, onChange, disabled, lengthWarning, instructionText, onSwitchToVoice, onClear },
+    {
+      value,
+      onChange,
+      disabled,
+      lengthWarning,
+      instructionText,
+      fallbackNotice,
+      switchToVoiceLabel,
+      autoFocus = true,
+      onSwitchToVoice,
+      onClear,
+    },
     ref
   ) {
     const { colors, shadows } = useTheme();
@@ -36,6 +50,25 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
         </View>
 
         <View style={styles.textInputSection}>
+          {fallbackNotice ? (
+            <View
+              style={[
+                styles.fallbackNotice,
+                {
+                  backgroundColor: colors.backgroundSecondary,
+                  borderColor: colors.divider,
+                },
+              ]}
+            >
+              <Text
+                style={[styles.fallbackNoticeText, { color: colors.textSecondary }]}
+                testID={TID.Text.RecordingFallbackNotice}
+              >
+                {fallbackNotice}
+              </Text>
+            </View>
+          ) : null}
+
           <View style={shadows.md}>
             <TextInput
               ref={ref}
@@ -54,7 +87,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               placeholderTextColor={colors.textSecondary}
               testID={TID.Input.DreamTranscript}
               accessibilityLabel={t('recording.placeholder.accessibility')}
-              autoFocus
+              autoFocus={autoFocus}
             />
           </View>
 
@@ -78,7 +111,7 @@ export const RecordingTextInput = forwardRef<TextInput, RecordingTextInputProps>
               style={styles.modeSwitchIcon}
             />
             <Text style={[styles.modeSwitchText, { color: colors.textSecondary }]}>
-              {t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave'}
+              {switchToVoiceLabel || t('recording.mode.switch_to_voice') || 'Dicter mon r\u00eave'}
             </Text>
           </Pressable>
 
@@ -129,6 +162,17 @@ const styles = StyleSheet.create({
     maxWidth: 512,
     alignSelf: 'center',
     gap: 16,
+  },
+  fallbackNotice: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  fallbackNoticeText: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   textInput: {
     minHeight: 160,

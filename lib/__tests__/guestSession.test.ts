@@ -34,7 +34,6 @@ const loadGuestSessionModule = (platform: PlatformName) => {
     },
   }));
 
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   return require('../guestSession') as typeof import('../guestSession');
 };
 

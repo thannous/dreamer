@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
 import { Fonts } from '@/constants/theme';
@@ -18,13 +19,14 @@ const ITEMS = [
 
 export function MockNavigationRail() {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   if (!isMockMode) {
     return null;
   }
 
   return (
-    <View style={styles.container} collapsable={false}>
+    <View style={[styles.container, { paddingTop: insets.top }]} collapsable={false}>
       <View
         style={[styles.rail, { backgroundColor: colors.backgroundCard, borderColor: colors.divider }]}
         collapsable={false}
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
   },
   rail: {
     flexDirection: 'row',
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
     gap: 6,
     borderWidth: 1,
     borderRadius: 16,

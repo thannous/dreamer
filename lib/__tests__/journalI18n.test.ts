@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { getTranslator, loadTranslations } from '../i18n';
 
-const languages: ('en' | 'fr' | 'es')[] = ['en', 'fr', 'es'];
+const languages: ('en' | 'fr' | 'es' | 'de' | 'it')[] = ['en', 'fr', 'es', 'de', 'it'];
 
 const badgeKeys = [
   'journal.badge.favorite',
@@ -11,8 +11,46 @@ const badgeKeys = [
 ] as const;
 
 const filterAccessibilityKeys = [
+  'journal.filter.analyzed',
+  'journal.filter.explored',
+  'journal.filter.more',
+  'journal.filter.more_count',
   'journal.filter.accessibility.analyzed',
   'journal.filter.accessibility.explored',
+  'journal.filter.accessibility.more',
+] as const;
+
+const advancedFilterSheetKeys = [
+  'journal.filter_sheet.eyebrow',
+  'journal.filter_sheet.title',
+  'journal.filter_sheet.theme_section',
+  'journal.filter_sheet.type_section',
+  'journal.filter_sheet.empty_themes',
+  'journal.filter_sheet.empty_types',
+] as const;
+
+const detailActionKeys = [
+  'journal.detail.action.analyze.step',
+  'journal.detail.action.analyze.title',
+  'journal.detail.action.analyze.message',
+  'journal.detail.action.retry.title',
+  'journal.detail.action.retry.message',
+  'journal.detail.action.pending.title',
+  'journal.detail.action.pending.message',
+  'journal.detail.action.pending.step',
+  'journal.detail.action.pending.cta',
+  'journal.detail.action.explore.step',
+  'journal.detail.action.explore.title',
+  'journal.detail.action.explore.message',
+  'journal.detail.action.continue.step',
+  'journal.detail.action.continue.title',
+  'journal.detail.action.continue.message',
+  'journal.detail.backup_prompt.title',
+  'journal.detail.backup_prompt.message',
+  'journal.detail.backup_prompt.cta',
+  'journal.detail.zone.memory',
+  'journal.detail.zone.reading',
+  'journal.detail.zone.actions',
 ] as const;
 
 describe('Journal i18n - badges & filter accessibility', () => {
@@ -31,13 +69,43 @@ describe('Journal i18n - badges & filter accessibility', () => {
     }
   });
 
-  it('has translations for analyzed/explored filter accessibility labels', async () => {
+  it('has translations for journal filter labels and accessibility copy', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     for (const lang of languages) {
       const t = getTranslator(lang);
 
       for (const key of filterAccessibilityKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for advanced filter sheet copy', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of advancedFilterSheetKeys) {
+        const value = t(key);
+        expect(value).not.toBe(key);
+        expect(typeof value).toBe('string');
+        expect(value.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('has translations for dream detail action-card copy', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      const t = getTranslator(lang);
+
+      for (const key of detailActionKeys) {
         const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');

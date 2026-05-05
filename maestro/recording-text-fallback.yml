@@ -1,0 +1,42 @@
+# Recording fallback smoke: Android mic rationale can route directly to text capture.
+appId: com.tanuki75.noctalia
+---
+- runFlow: subflows/open-mock-app.yml
+- runFlow: subflows/reset-mock-state.yml
+
+- assertVisible:
+    id: screen.recording
+- scrollUntilVisible:
+    element:
+      id: btn.recordToggle
+    direction: DOWN
+
+# First voice attempt on Android should explain the microphone path before requesting permission.
+- tapOn:
+    id: btn.recordToggle
+- waitForAnimationToEnd
+- assertVisible:
+    id: sheet.recording.micRationale
+- tapOn:
+    id: btn.recording.micRationale.useText
+- waitForAnimationToEnd
+
+# Text fallback should save a dream without requiring voice transcription.
+- assertVisible:
+    id: input.dreamTranscript
+- scrollUntilVisible:
+    element:
+      id: btn.mock.fillTranscript
+    direction: UP
+- tapOn:
+    id: btn.mock.fillTranscript
+- scrollUntilVisible:
+    element:
+      id: btn.saveDream
+    direction: DOWN
+- waitForAnimationToEnd
+- tapOn:
+    id: btn.saveDream
+- waitForAnimationToEnd
+- assertVisible:
+    id: text.firstDream.title

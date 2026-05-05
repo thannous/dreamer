@@ -14,6 +14,10 @@ export interface RecordingVoiceInputProps {
   transcript: string;
   instructionText: string;
   interaction: 'enabled' | 'disabled';
+  voiceStatusTitle: string;
+  voiceStatusDetail: string;
+  voiceStatusTone: 'neutral' | 'active' | 'warning';
+  recordingDurationLabel?: string;
   onToggleRecording: () => void;
   onSwitchToText: () => void;
 }
@@ -23,6 +27,10 @@ export function RecordingVoiceInput({
   transcript,
   instructionText,
   interaction,
+  voiceStatusTitle,
+  voiceStatusDetail,
+  voiceStatusTone,
+  recordingDurationLabel,
   onToggleRecording,
   onSwitchToText,
 }: RecordingVoiceInputProps) {
@@ -55,6 +63,40 @@ export function RecordingVoiceInput({
 
         <View style={styles.preparingSlot}>
           {isPreparing ? <ActivityIndicator size="small" color={colors.textSecondary} /> : null}
+        </View>
+
+        <View
+          style={[
+            styles.voiceStatus,
+            {
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: voiceStatusTone === 'active' ? colors.accent : colors.divider,
+            },
+          ]}
+          testID={TID.Component.RecordingVoiceStatus}
+        >
+          <View style={styles.voiceStatusHeader}>
+            <Text
+              style={[styles.voiceStatusTitle, { color: colors.textPrimary }]}
+              testID={TID.Text.RecordingVoiceStatusTitle}
+            >
+              {voiceStatusTitle}
+            </Text>
+            {recordingDurationLabel ? (
+              <Text
+                style={[styles.voiceStatusDuration, { color: colors.accent }]}
+                testID={TID.Text.RecordingVoiceStatusDuration}
+              >
+                {recordingDurationLabel}
+              </Text>
+            ) : null}
+          </View>
+          <Text
+            style={[styles.voiceStatusDetail, { color: colors.textSecondary }]}
+            testID={TID.Text.RecordingVoiceStatusDetail}
+          >
+            {voiceStatusDetail}
+          </Text>
         </View>
 
         {transcript ? (
@@ -124,6 +166,35 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 512,
     paddingHorizontal: 8,
+  },
+  voiceStatus: {
+    width: '100%',
+    maxWidth: 512,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 6,
+  },
+  voiceStatusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  voiceStatusTitle: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  voiceStatusDuration: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  voiceStatusDetail: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontFamily: Fonts.spaceGrotesk.regular,
   },
   instructionText: {
     fontSize: 24,

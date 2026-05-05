@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const net = require('node:net');
 const { spawn, spawnSync } = require('node:child_process');
+const { resolveCommand } = require('./check-android-release-gates');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_MAESTRO_BIN_WINDOWS = 'C:\\Users\\thann\\maestro\\maestro\\bin\\maestro.bat';
@@ -17,9 +18,15 @@ const SUITES = {
   ],
   core: [
     'maestro/smoke.yml',
+    'maestro/recording-text-fallback.yml',
     'maestro/recording-bottom-sheet.yml',
     'maestro/mock-existing-user.yml',
     'maestro/mock-existing-quotas.yml',
+  ],
+  canary: [
+    'maestro/mock-existing-user.yml',
+    'maestro/journal-badges-filters.yml',
+    'maestro/subscription-mock-paywall.yml',
   ],
   mock: [
     'maestro/mock-existing-user.yml',
@@ -39,6 +46,7 @@ const SUITES = {
   ],
   all: [
     'maestro/smoke.yml',
+    'maestro/recording-text-fallback.yml',
     'maestro/recording-bottom-sheet.yml',
     'maestro/mock-existing-user.yml',
     'maestro/mock-existing-quotas.yml',
@@ -144,13 +152,27 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
+  const suites = Object.entries(SUITES)
+    .map(([name, flows]) => `  ${name.padEnd(7)} ${flows.length} flow${flows.length > 1 ? 's' : ''}: ${flows.join(', ')}`)
+    .join('\n');
+
   console.log(`
 Usage:
-  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]...
+  node ./scripts/run-maestro-android.js [--suite <name>] [--parallel auto|<n>] [--retries <n>] [--device <id1,id2>] [--flow <path>]... [--no-restart-metro]
+
+Suites:
+${suites}
+
+Fast debug:
+  Use --retries 0 for fail-fast runs.
+  Use --no-restart-metro when a compatible Metro server is already warm.
 
 Examples:
   npm run test:e2e
+  npm run test:e2e:canary
+  npm run test:e2e:canary:fast
   node ./scripts/run-maestro-android.js --suite quotas --parallel auto
+  node ./scripts/run-maestro-android.js --suite canary --retries 0 --no-restart-metro
   node ./scripts/run-maestro-android.js --flow maestro/smoke.yml --flow maestro/recording-bottom-sheet.yml --retries 2
 `.trim());
 }
@@ -299,7 +321,7 @@ function stopMetro(port) {
 }
 
 function listAndroidDevices() {
-  const adbBin = process.platform === 'win32' ? 'adb.exe' : 'adb';
+  const adbBin = process.env.ADB_BIN || resolveCommand('adb') || (process.platform === 'win32' ? 'adb.exe' : 'adb');
   const result = spawnSync(adbBin, ['devices'], {
     cwd: ROOT,
     encoding: 'utf8',
@@ -368,14 +390,17 @@ function resolveMaestroInvocation() {
     return { command: 'cmd.exe', baseArgs: ['/c', DEFAULT_MAESTRO_BIN_WINDOWS] };
   }
 
-  return { command: 'maestro', baseArgs: [] };
+  return { command: resolveCommand('maestro') || 'maestro', baseArgs: [] };
 }
 
 function runCommand(command, args, options = {}) {
   return new Promise((resolve) => {
     const child = spawn(command, args, {
       cwd: options.cwd ?? ROOT,
-      env: options.env ?? process.env,
+      env: {
+        MAESTRO_CLI_NO_ANALYTICS: '1',
+        ...(options.env ?? process.env),
+      },
       shell: options.shell ?? false,
       stdio: options.stdio ?? 'inherit',
     });
@@ -410,6 +435,9 @@ async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun,
   const { command, baseArgs } = resolveMaestroInvocation();
   const outputRoot = path.resolve(ROOT, 'maestro-results', 'android', suiteName, deviceId, flowSlug(flow));
   fs.mkdirSync(outputRoot, { recursive: true });
+  if (process.env.HOME) {
+    fs.mkdirSync(path.join(process.env.HOME, '.maestro'), { recursive: true });
+  }
 
   for (let attempt = 1; attempt <= retries + 1; attempt += 1) {
     const args = [

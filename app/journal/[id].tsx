@@ -35,6 +35,7 @@ import { isReferenceImagesEnabled } from '@/lib/env';
 import { classifyError, QuotaError, QuotaErrorCode, type ClassifiedError } from '@/lib/errors';
 import { getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import { getFileExtensionFromUrl, getMimeTypeFromExtension } from '@/lib/journal/shareImageUtils';
+import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamChatCategory, DreamTheme, DreamType, ReferenceImage } from '@/lib/types';
@@ -376,6 +377,60 @@ export default function JournalDetailScreen() {
     return t('journal.detail.explore_button.new');
   }, [primaryAction, t]);
   const isPrimaryActionBusy = primaryAction === 'analyze' && (isAnalyzing || dream?.analysisStatus === 'pending');
+  const detailActionCard = useMemo(() => {
+    if (!dream) {
+      return null;
+    }
+
+    if (dream.analysisStatus === 'pending') {
+      return {
+        icon: 'sparkles' as const,
+        title: t('journal.detail.action.pending.title'),
+        message: t('journal.detail.action.pending.message'),
+        step: t('journal.detail.action.pending.step'),
+        cta: t('journal.detail.action.pending.cta'),
+        disabled: true,
+      };
+    }
+
+    if (primaryAction === 'analyze') {
+      const failed = dream.analysisStatus === 'failed';
+      return {
+        icon: failed ? 'arrow.clockwise' as const : 'sparkles' as const,
+        title: failed
+          ? t('journal.detail.action.retry.title')
+          : t('journal.detail.action.analyze.title'),
+        message: failed
+          ? t('journal.detail.action.retry.message')
+          : t('journal.detail.action.analyze.message'),
+        step: t('journal.detail.action.analyze.step'),
+        cta: failed
+          ? t('journal.detail.analyze_button.retry')
+          : t('journal.detail.analyze_button.default'),
+        disabled: false,
+      };
+    }
+
+    if (primaryAction === 'continue') {
+      return {
+        icon: 'bubble.left.and.bubble.right.fill' as const,
+        title: t('journal.detail.action.continue.title'),
+        message: t('journal.detail.action.continue.message'),
+        step: t('journal.detail.action.continue.step'),
+        cta: t('journal.detail.explore_button.continue'),
+        disabled: false,
+      };
+    }
+
+    return {
+      icon: 'bubble.left.and.bubble.right' as const,
+      title: t('journal.detail.action.explore.title'),
+      message: t('journal.detail.action.explore.message'),
+      step: t('journal.detail.action.explore.step'),
+      cta: t('journal.detail.explore_button.new'),
+      disabled: false,
+    };
+  }, [dream, primaryAction, t]);
   const isAnalysisLocked = !!dream && (dream.analysisStatus === 'pending' || isAnalyzing);
   const isAnalysisPending = dream?.analysisStatus === 'pending';
   const isImageJobPending = dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running';
@@ -856,13 +911,17 @@ export default function JournalDetailScreen() {
         router.push('/(tabs)/settings');
       }
     } else {
-      router.push('/paywall');
+      router.push(buildPaywallHref('analysis_cta'));
     }
   }, [quotaSheetMode, tier]);
 
   const handleQuotaLimitSecondary = useCallback(() => {
     setShowQuotaLimitSheet(false);
     router.push('/(tabs)/journal');
+  }, []);
+
+  const handleFirstValueBackup = useCallback(() => {
+    router.push('/(tabs)/settings?section=account');
   }, []);
 
   const runAnalyze = useCallback(
@@ -877,7 +936,11 @@ export default function JournalDetailScreen() {
       setShowReplaceImageSheet(false);
       setIsAnalyzing(true);
       try {
-        await analyzeDream(dream.id, dream.transcript, { replaceExistingImage: replaceImage, lang: language });
+        await analyzeDream(dream.id, dream.transcript, {
+          replaceExistingImage: replaceImage,
+          lang: language,
+          analyticsSource: 'journal_detail',
+        });
         setAnalysisNotice(null);
       } catch (error) {
         if (error instanceof QuotaError) {
@@ -1335,6 +1398,133 @@ export default function JournalDetailScreen() {
     );
   };
 
+  const renderDetailActionCard = () => {
+    if (!detailActionCard || isEditing || isEditingTranscript) {
+      return null;
+    }
+
+    const disabled = detailActionCard.disabled || isPrimaryActionBusy || isAnalysisLocked;
+    const onPress = primaryAction === 'analyze' ? handleAnalyze : handleExplorePress;
+
+    return (
+      <View
+        testID={TID.Component.DreamDetailActionCard}
+        style={[
+          styles.detailActionCard,
+          {
+            backgroundColor: colors.backgroundSecondary,
+            borderColor: accentSurfaceBorderColor,
+          },
+        ]}
+      >
+        <View style={styles.detailActionHeader}>
+          <View style={[styles.detailActionIcon, { backgroundColor: colors.accent }]}>
+            <IconSymbol name={detailActionCard.icon} size={18} color={colors.textPrimary} />
+          </View>
+          <View style={styles.detailActionCopy}>
+            <Text
+              style={[styles.detailActionStep, { color: colors.accent }]}
+              testID={TID.Text.DreamDetailActionStep}
+            >
+              {detailActionCard.step}
+            </Text>
+            <Text
+              style={[styles.detailActionTitle, { color: colors.textPrimary }]}
+              testID={TID.Text.DreamDetailActionTitle}
+            >
+              {detailActionCard.title}
+            </Text>
+            <Text
+              style={[styles.detailActionMessage, { color: colors.textSecondary }]}
+              testID={TID.Text.DreamDetailActionMessage}
+            >
+              {detailActionCard.message}
+            </Text>
+          </View>
+        </View>
+        <Pressable
+          testID={TID.Button.DreamDetailPrimaryCta}
+          onPress={onPress}
+          disabled={disabled}
+          style={[
+            styles.detailActionButton,
+            {
+              backgroundColor: colors.accent,
+              opacity: disabled ? 0.75 : 1,
+            },
+          ]}
+          accessibilityRole="button"
+          accessibilityState={{ disabled }}
+        >
+          {isPrimaryActionBusy ? (
+            <ActivityIndicator size="small" color={colors.textPrimary} />
+          ) : (
+            <IconSymbol
+              name={primaryAction === 'analyze' ? 'sparkles' : 'arrow.right'}
+              size={18}
+              color={colors.textPrimary}
+            />
+          )}
+          <Text style={[styles.detailActionButtonText, { color: colors.textPrimary }]}>
+            {detailActionCard.cta}
+          </Text>
+        </Pressable>
+      </View>
+    );
+  };
+
+  const renderFirstValueBackupCard = () => {
+    if (user || !dream?.isAnalyzed || isEditing || isEditingTranscript) {
+      return null;
+    }
+
+    return (
+      <View
+        testID={TID.Component.FirstValueBackupCard}
+        style={[
+          styles.firstValueBackupCard,
+          {
+            backgroundColor: colors.backgroundSecondary,
+            borderColor: accentSurfaceBorderColor,
+          },
+        ]}
+      >
+        <View style={styles.firstValueBackupHeader}>
+          <IconSymbol name="lock.shield" size={20} color={colors.accent} />
+          <Text
+            style={[styles.firstValueBackupTitle, { color: colors.textPrimary }]}
+            testID={TID.Text.FirstValueBackupTitle}
+          >
+            {t('journal.detail.backup_prompt.title')}
+          </Text>
+        </View>
+        <Text style={[styles.firstValueBackupMessage, { color: colors.textSecondary }]}>
+          {t('journal.detail.backup_prompt.message')}
+        </Text>
+        <Pressable
+          testID={TID.Button.FirstValueBackupCta}
+          onPress={handleFirstValueBackup}
+          style={[styles.firstValueBackupButton, { borderColor: colors.divider }]}
+          accessibilityRole="button"
+        >
+          <Text style={[styles.firstValueBackupButtonText, { color: colors.textPrimary }]}>
+            {t('journal.detail.backup_prompt.cta')}
+          </Text>
+          <IconSymbol name="arrow.right" size={16} color={colors.textPrimary} />
+        </Pressable>
+      </View>
+    );
+  };
+
+  const renderDetailZoneHeader = (label: string) => (
+    <View style={styles.detailZoneHeader}>
+      <Text style={[styles.detailZoneHeaderText, { color: colors.accent }]}>
+        {label}
+      </Text>
+      <View style={[styles.detailZoneRule, { backgroundColor: colors.accent }]} />
+    </View>
+  );
+
   return (
     <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
       <View style={[styles.screen, { backgroundColor: screenBackgroundColor }]}>
@@ -1517,12 +1707,17 @@ export default function JournalDetailScreen() {
           {/* Content Card - Overlaps image */}
           <View style={[styles.contentCard, shadows.xl, { backgroundColor: colors.backgroundCard }]}>
 
+            {renderDetailZoneHeader(t('journal.detail.zone.memory'))}
+
             {/* Premium Metadata Card */}
             {!isEditing && renderMetadataCard()}
+            {renderDetailActionCard()}
             {renderSyncStatusCard()}
 
             {(dream.isAnalyzed || isAnalysisPending) && (
               <>
+                {renderDetailZoneHeader(t('journal.detail.zone.reading'))}
+
                 {/* Quote */}
                 {isAnalysisPending ? (
                   <Skeleton style={{ height: 60, width: '100%', borderRadius: 8 }} />
@@ -1559,48 +1754,22 @@ export default function JournalDetailScreen() {
               </>
             )}
 
-            {/* Additional Actions */}
-            {(!dream.isAnalyzed || dream.analysisStatus !== 'done') && !isAnalysisLocked && (
-              <Pressable
-                onPress={handleAnalyze}
-                disabled={isAnalyzing || dream.analysisStatus === 'pending'}
-                style={[styles.analyzeButton, shadows.md, { backgroundColor: colors.accent }]}
+            {/* Transcript Section */}
+            {!isEditingTranscript && (
+              <View
+                style={[styles.transcriptSection, {
+                  borderTopColor: colors.divider,
+                  backgroundColor: transcriptBackgroundColor,
+                }]}
+                onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
               >
-                {isAnalyzing || dream.analysisStatus === 'pending' ? (
-                  <ActivityIndicator color={colors.textPrimary} />
-                ) : (
-                  <>
-                    <IconSymbol name="sparkles" size={20} color={colors.textPrimary} />
-                    <Text style={[styles.analyzeButtonText, { color: colors.textPrimary }]}
-                    >
-                      {dream.analysisStatus === 'failed'
-                        ? t('journal.detail.analyze_button.retry')
-                        : t('journal.detail.analyze_button.default')}
-                    </Text>
-                  </>
-                )}
-              </Pressable>
+                {renderTranscriptBody()}
+              </View>
             )}
 
-            {!shouldShowFloatingExploreButton &&
-              !isEditing &&
-              !isEditingTranscript &&
-              primaryAction !== 'analyze' &&
-              (dream.analysisStatus === 'done' || (dream.interpretation && dream.imageUrl)) && (
-              <Pressable
-                testID={TID.Button.ExploreDream}
-                onPress={handleExplorePress}
-                disabled={isAnalysisLocked}
-                style={[styles.exploreButton, shadows.md, {
-                  backgroundColor: colors.accent,
-                  borderColor: mode === 'dark' ? 'rgba(140, 158, 255, 0.3)' : 'rgba(212, 165, 116, 0.3)',
-                  opacity: isAnalysisLocked ? 0.8 : 1,
-                }]}
-              >
-                <IconSymbol name="sparkles" size={24} color={colors.textPrimary} />
-                <Text style={[styles.exploreButtonText, { color: colors.textPrimary }]}>{exploreButtonLabel}</Text>
-              </Pressable>
-            )}
+            {renderFirstValueBackupCard()}
+
+            {renderDetailZoneHeader(t('journal.detail.zone.actions'))}
 
             <View style={styles.actionsRow}>
               <Pressable
@@ -1660,19 +1829,6 @@ export default function JournalDetailScreen() {
                 </Text>
               </Pressable>
             </View>
-
-            {/* Transcript Section */}
-            {!isEditingTranscript && (
-              <View
-                style={[styles.transcriptSection, {
-                  borderTopColor: colors.divider,
-                  backgroundColor: transcriptBackgroundColor,
-                }]}
-                onLayout={(event) => setTranscriptSectionOffset(event.nativeEvent.layout.y)}
-              >
-                {renderTranscriptBody()}
-              </View>
-            )}
 
             <Pressable
               onPress={onDelete}
@@ -2257,6 +2413,23 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
+  detailZoneHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 12,
+  },
+  detailZoneHeaderText: {
+    fontSize: 12,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    letterSpacing: 0,
+    textTransform: 'uppercase',
+  },
+  detailZoneRule: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    opacity: 0.45,
+  },
   imageTopVignette: {
     position: 'absolute',
     top: 0,
@@ -2264,6 +2437,95 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     zIndex: 1,
+  },
+  detailActionCard: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 18,
+    gap: 14,
+  },
+  detailActionHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  detailActionIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  detailActionCopy: {
+    flex: 1,
+    gap: 4,
+  },
+  detailActionStep: {
+    fontSize: 11,
+    fontFamily: Fonts.spaceGrotesk.bold,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  detailActionTitle: {
+    fontSize: 17,
+    fontFamily: Fonts.fraunces.medium,
+    lineHeight: 23,
+  },
+  detailActionMessage: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 18,
+  },
+  detailActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 12,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+  },
+  detailActionButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.spaceGrotesk.bold,
+  },
+  firstValueBackupCard: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    gap: 10,
+  },
+  firstValueBackupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  firstValueBackupTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: Fonts.fraunces.medium,
+    lineHeight: 22,
+  },
+  firstValueBackupMessage: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.regular,
+    lineHeight: 18,
+  },
+  firstValueBackupButton: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+  },
+  firstValueBackupButtonText: {
+    fontSize: 13,
+    fontFamily: Fonts.spaceGrotesk.bold,
   },
   exploreButton: {
     flexDirection: 'row',

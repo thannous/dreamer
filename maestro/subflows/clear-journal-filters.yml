@@ -1,0 +1,26 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow:
+    when:
+      visible:
+        id: input.searchDreams
+    commands:
+      - tapOn:
+          id: input.searchDreams
+      - eraseText
+      - pressKey: back
+      - extendedWaitUntil:
+          visible:
+            id: screen.journal
+          timeout: 10000
+- runFlow:
+    when:
+      visible:
+        id: btn.clearFilters
+    commands:
+      - tapOn:
+          id: btn.clearFilters
+      - extendedWaitUntil:
+          visible:
+            id: screen.journal
+          timeout: 10000

@@ -135,6 +135,41 @@ export function GuestLimitSheet({
   );
 }
 
+export function MicPermissionRationaleSheet({
+  visible,
+  onClose,
+  onAllow,
+  onUseText,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onAllow: () => void;
+  onUseText: () => void;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <StandardBottomSheet
+      visible={visible}
+      onClose={onClose}
+      title={t('recording.mic_rationale.title')}
+      subtitle={t('recording.mic_rationale.message')}
+      testID={TID.Sheet.MicRationale}
+      actions={{
+        primaryLabel: t('recording.mic_rationale.allow'),
+        onPrimary: onAllow,
+        primaryTestID: TID.Button.MicRationaleAllow,
+        secondaryLabel: t('recording.mic_rationale.text_fallback'),
+        onSecondary: onUseText,
+        secondaryTestID: TID.Button.MicRationaleUseText,
+        linkLabel: t('recording.mic_rationale.dismiss'),
+        onLink: onClose,
+        linkTestID: TID.Button.MicRationaleDismiss,
+      }}
+    />
+  );
+}
+
 export function QuotaLimitSheet({
   visible,
   onClose,

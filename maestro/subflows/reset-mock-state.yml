@@ -8,8 +8,33 @@ appId: com.tanuki75.noctalia
       - tapOn:
           id: btn.navigateJournal
       - waitForAnimationToEnd
-- tapOn:
-    id: btn.mockNav.settings
+- runFlow:
+    when:
+      visible:
+        id: screen.recording
+    commands:
+      - swipe:
+          start: 50%, 88%
+          end: 50%, 38%
+      - waitForAnimationToEnd
+      - tapOn:
+          id: btn.navigateJournal
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: btn.mockNav.settings
+    commands:
+      - tapOn:
+          id: btn.mockNav.settings
+      - waitForAnimationToEnd
+- runFlow:
+    when:
+      visible: Home
+    commands:
+      - tapOn:
+          point: "88%,92%"
+      - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: btn.mock.resetState
@@ -17,9 +42,4 @@ appId: com.tanuki75.noctalia
 - tapOn:
     id: btn.mock.resetState
 - waitForAnimationToEnd
-- tapOn:
-    id: btn.mockNav.home
-- extendedWaitUntil:
-    visible:
-      id: screen.recording
-    timeout: 20000
+- runFlow: open-mock-app.yml

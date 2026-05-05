@@ -1,0 +1,35 @@
+appId: com.tanuki75.noctalia
+---
+- tapOn:
+    id: btn.mockNav.settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Reload"
+    commands:
+      - pressKey: back
+      - tapOn:
+          id: btn.mockNav.settings
+      - extendedWaitUntil:
+          visible: "Settings|Paramètres|Configuración|Ajustes"
+          timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: btn.auth.signOut
+    commands:
+      - tapOn:
+          id: btn.auth.signOut
+- scrollUntilVisible:
+    element:
+      id: btn.mockProfile.existing
+    direction: DOWN
+    visibilityPercentage: 60
+- tapOn:
+    id: btn.mockProfile.existing
+- extendedWaitUntil:
+    visible: "mock.existing@dreamer.app"
+    timeout: 30000
+- assertVisible: "mock.existing@dreamer.app"
