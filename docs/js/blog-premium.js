@@ -7,6 +7,7 @@
   const nextButton = document.querySelector('[data-carousel-next]');
   const cards = Array.from(document.querySelectorAll('.blog-premium .article-card, .blog-premium-hub-grid a'));
   const articleCards = Array.from(document.querySelectorAll('#articlesGrid .article-card'));
+  const nonArticleGridItems = Array.from(document.querySelectorAll('#articlesGrid > :not(.article-card)'));
   const carouselCards = Array.from(document.querySelectorAll('.blog-carousel-card'));
   const searchInput = document.querySelector('#blogSearch');
   const filterButtons = Array.from(document.querySelectorAll('#categoryFilters .filter-chip'));
@@ -77,10 +78,12 @@
     });
 
     sortedCards.forEach((card) => articlesGrid.appendChild(card));
+    nonArticleGridItems.forEach((item) => articlesGrid.appendChild(item));
   };
 
   const applyArticleControls = () => {
     const query = normalizeText(searchInput?.value);
+    const controlsActive = categoryGroup(activeCategory) !== 'all' || Boolean(query);
     let visibleCount = 0;
 
     articleCards.forEach((card) => {
@@ -93,13 +96,25 @@
 
       card.classList.toggle('is-hidden', !isVisible);
       card.setAttribute('aria-hidden', String(!isVisible));
-      if (isVisible) visibleCount += 1;
+      if (isVisible) {
+        card.style.opacity = '1';
+        card.style.visibility = 'visible';
+        card.style.transform = '';
+        visibleCount += 1;
+      }
+    });
+
+    nonArticleGridItems.forEach((item) => {
+      item.classList.toggle('is-hidden', controlsActive);
+      item.setAttribute('aria-hidden', String(controlsActive));
     });
 
     if (resultsCount && resultsNumber) {
       resultsNumber.textContent = String(visibleCount);
       resultsCount.classList.toggle('hidden', visibleCount === articleCards.length && activeCategory === 'all' && !query);
     }
+
+    window.requestAnimationFrame(() => ScrollTrigger?.refresh?.());
   };
 
   filterButtons.forEach((button) => {
