@@ -469,6 +469,35 @@ function renderGuideHubStyles() {
         .noctalia-premium-action { display: inline-flex; }
         .noctalia-premium-download { display: inline-flex; align-items: center; justify-content: center; color: rgba(237, 225, 255, 0.86); background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
         .noctalia-premium-download:hover { color: #fff; background: rgba(255, 255, 255, 0.10); border-color: rgba(253, 164, 129, 0.35); }
+        #mobileMenuPanel { position: relative; z-index: 60; }
+        .mobile-menu-surface {
+          background: #120720 !important;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
+        .noctalia-premium-nav.mobile-menu-open,
+        .noctalia-premium-nav:has(#mobileMenuButton[aria-expanded="true"]) {
+          background: rgba(10, 5, 20, 0.92);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+          box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+        }
+        .guides-page .nav-scroll-hidden {
+          transform: translateY(0);
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .guides-page .site-footer {
+          position: relative;
+          z-index: 2;
+          background: #05020a !important;
+        }
+        .guides-page .site-footer > .grid {
+          position: relative;
+          z-index: 1;
+        }
         .guides-page {
           position: relative;
           isolation: isolate;
@@ -753,6 +782,12 @@ function renderGuideHubStyles() {
           .guides-title { max-width: 16ch; }
         }
         @media (max-width: 980px) {
+          .noctalia-premium-nav {
+            background: rgba(10, 5, 20, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+          }
           .noctalia-premium-nav-inner { display: flex; justify-content: space-between; }
           .noctalia-premium-nav-actions { margin-left: auto; }
           .noctalia-premium-links { display: none; }
@@ -765,6 +800,60 @@ function renderGuideHubStyles() {
           #navMobileGuideLink { display: none; }
         }
         @media (max-width: 720px) {
+          .guides-page .site-footer {
+            padding: 2rem 1rem 1.75rem !important;
+          }
+          .guides-page .site-footer > .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.5rem 1rem;
+            margin-bottom: 2rem;
+          }
+          .guides-page .site-footer > .grid > :first-child {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 0.45rem 1rem;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          }
+          .guides-page .site-footer > .grid > :first-child > a {
+            grid-column: 1;
+            grid-row: 1;
+            margin-bottom: 0;
+          }
+          .guides-page .site-footer > .grid > :first-child > p {
+            grid-column: 1;
+            grid-row: 2;
+            margin-bottom: 0;
+            max-width: 17rem;
+          }
+          .guides-page .site-footer > .grid > :first-child > div.flex {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            gap: 0.45rem;
+          }
+          .guides-page .site-footer > .grid > :first-child > div.flex a {
+            width: 2.35rem;
+            height: 2.35rem;
+          }
+          .guides-page .site-footer h5 {
+            margin-bottom: 0.65rem;
+            font-size: 0.76rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 247, 240, 0.92);
+          }
+          .guides-page .site-footer ul {
+            font-size: 0.82rem;
+            line-height: 1.35;
+          }
+          .guides-page .site-footer li + li {
+            margin-top: 0.45rem;
+          }
+          .guides-page .site-footer > .border-t:last-child {
+            padding-top: 1rem;
+          }
           .guides-page { background-position: center top; }
           .guides-hero {
             min-height: 0;
@@ -1467,6 +1556,10 @@ function renderLayoutCss() {
           z-index: 2;
           background: #05020a !important;
         }
+        .dictionary-page .site-footer > .grid {
+          position: relative;
+          z-index: 1;
+        }
         .search-feedback {
           display: flex;
           align-items: center;
@@ -1530,6 +1623,60 @@ function renderLayoutCss() {
         }
         @media (max-width: 767px) {
           :root { --dictionary-edge: 1rem; }
+          .dictionary-page .site-footer {
+            padding: 2rem 1rem 1.75rem !important;
+          }
+          .dictionary-page .site-footer > .grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.5rem 1rem;
+            margin-bottom: 2rem;
+          }
+          .dictionary-page .site-footer > .grid > :first-child {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 0.45rem 1rem;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          }
+          .dictionary-page .site-footer > .grid > :first-child > a {
+            grid-column: 1;
+            grid-row: 1;
+            margin-bottom: 0;
+          }
+          .dictionary-page .site-footer > .grid > :first-child > p {
+            grid-column: 1;
+            grid-row: 2;
+            margin-bottom: 0;
+            max-width: 17rem;
+          }
+          .dictionary-page .site-footer > .grid > :first-child > div.flex {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            gap: 0.45rem;
+          }
+          .dictionary-page .site-footer > .grid > :first-child > div.flex a {
+            width: 2.35rem;
+            height: 2.35rem;
+          }
+          .dictionary-page .site-footer h5 {
+            margin-bottom: 0.65rem;
+            font-size: 0.76rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 247, 240, 0.92);
+          }
+          .dictionary-page .site-footer ul {
+            font-size: 0.82rem;
+            line-height: 1.35;
+          }
+          .dictionary-page .site-footer li + li {
+            margin-top: 0.45rem;
+          }
+          .dictionary-page .site-footer > .border-t:last-child {
+            padding-top: 1rem;
+          }
           .dictionary-header {
             grid-template-columns: 1fr;
             min-height: auto;

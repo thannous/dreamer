@@ -12,10 +12,13 @@
     const desktopLangDropdown = document.getElementById('navDesktopLangDropdown');
     const menuButton = document.getElementById('mobileMenuButton');
     const menuPanel = document.getElementById('mobileMenuPanel');
+    const navbar = document.getElementById('navbar');
     if (!menuButton || !menuPanel) return;
 
     const mql = window.matchMedia('(min-width: 768px)');
     let panelOpen = false;
+    let openedAt = 0;
+    let openedAtScrollY = 0;
 
     function show(el) { if (el) el.classList.remove('hidden'); }
     function hide(el) { if (el) el.classList.add('hidden'); }
@@ -37,7 +40,10 @@
 
     function openPanel() {
       panelOpen = true;
+      openedAt = Date.now();
+      openedAtScrollY = window.scrollY;
       show(menuPanel);
+      navbar?.classList.add('mobile-menu-open');
       swapIcon('x');
       menuButton.setAttribute('aria-expanded', 'true');
     }
@@ -45,6 +51,7 @@
     function closePanel() {
       panelOpen = false;
       hide(menuPanel);
+      navbar?.classList.remove('mobile-menu-open');
       swapIcon('menu');
       menuButton.setAttribute('aria-expanded', 'false');
     }
@@ -89,7 +96,10 @@
 
     // Close on scroll
     window.addEventListener('scroll', () => {
-      if (panelOpen) closePanel();
+      if (!panelOpen) return;
+      const openedRecently = Date.now() - openedAt < 180;
+      const movedMeaningfully = Math.abs(window.scrollY - openedAtScrollY) > 24;
+      if (!openedRecently && movedMeaningfully) closePanel();
     }, { passive: true });
 
     // React to viewport changes
