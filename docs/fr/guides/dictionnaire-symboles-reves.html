@@ -373,8 +373,8 @@
           max-width: none;
           margin-left: var(--dictionary-edge);
           margin-right: var(--dictionary-edge);
-          padding: clamp(1rem, 2vw, 1.35rem);
-          margin-bottom: 1.35rem;
+          padding: clamp(0.75rem, 1.35vw, 1rem);
+          margin-bottom: 1.15rem;
           border: 1px solid rgba(255,255,255,0.1);
           background: rgba(12, 7, 25, 0.72);
         }
@@ -419,30 +419,56 @@
           align-items: baseline;
           justify-content: space-between;
           gap: 0.75rem;
-          margin-bottom: 0.9rem;
+          margin-bottom: 0.62rem;
+        }
+        .quick-browse-copy h2 {
+          font-size: clamp(1.35rem, 2.2vw, 2rem);
+          line-height: 1.05;
         }
         .quick-browse-copy p {
           color: rgba(226,218,255,0.72);
-          font-size: 0.92rem;
+          font-size: 0.84rem;
         }
         .category-browse-grid {
-          display: grid;
-          grid-template-columns: repeat(8, minmax(0, 1fr));
-          gap: 0.85rem;
-          grid-auto-flow: dense;
+          display: flex;
+          flex-wrap: nowrap;
+          gap: 0.55rem;
+          margin-left: -0.25rem;
+          margin-right: -0.25rem;
+          padding: 0.05rem 0.25rem 0.35rem;
+          overflow-x: auto;
+          overscroll-behavior-inline: contain;
+          scroll-padding-inline: 0.25rem;
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+        }
+        .category-browse-grid::-webkit-scrollbar {
+          height: 0.35rem;
+        }
+        .category-browse-grid::-webkit-scrollbar-track {
+          background: rgba(255,255,255,0.035);
+          border-radius: 9999px;
+        }
+        .category-browse-grid::-webkit-scrollbar-thumb {
+          background: rgba(196,181,253,0.2);
+          border-radius: 9999px;
         }
         .category-browse-card {
+          position: relative;
           display: flex;
-          min-width: 0;
+          flex: 0 0 9.4rem;
+          min-width: 9.4rem;
           align-items: center;
-          gap: 0.75rem;
-          grid-column: span 2;
-          padding: 1rem 0.9rem;
-          border-radius: 0.85rem;
+          gap: 0.5rem;
+          min-height: 3.25rem;
+          padding: 0.55rem 0.7rem;
+          border-radius: 0.7rem;
           border: 1px solid color-mix(in srgb, var(--cat-color) 23%, rgba(255,255,255,0.05));
           background:
             linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 12%, transparent), rgba(255,255,255,0.028));
           text-decoration: none;
+          overflow: hidden;
+          scroll-snap-align: start;
           transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
         }
         .category-browse-card:hover {
@@ -452,35 +478,50 @@
             linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 18%, transparent), rgba(255,255,255,0.04));
         }
         .category-browse-icon {
-          width: 2.35rem;
-          height: 2.35rem;
-          border-radius: 0.72rem;
+          position: absolute;
+          right: -0.28rem;
+          top: 50%;
+          width: 3.2rem;
+          height: 3.2rem;
+          border-radius: 9999px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          background: color-mix(in srgb, var(--cat-color) 16%, rgba(255,255,255,0.04));
+          background: color-mix(in srgb, var(--cat-color) 16%, transparent);
           color: color-mix(in srgb, var(--cat-color) 84%, #fff);
           flex-shrink: 0;
+          opacity: 0.34;
+          transform: translateY(-50%);
+        }
+        .category-browse-icon .w-5 {
+          width: 1.35rem;
+          height: 1.35rem;
         }
         .category-browse-meta {
+          position: relative;
+          z-index: 1;
           min-width: 0;
           display: flex;
           flex-direction: column;
-          gap: 0.18rem;
+          gap: 0.06rem;
         }
         .category-browse-title {
           color: #f8f5ff;
           font-family: Georgia, serif;
-          font-size: 1rem;
+          font-size: 0.88rem;
+          line-height: 1.05;
+          white-space: nowrap;
         }
         .category-browse-count {
           color: rgba(196,181,253,0.72);
-          font-size: 0.8rem;
+          font-size: 0.68rem;
+          line-height: 1.1;
+          white-space: nowrap;
         }
         .symbol-card {
           position: relative;
           overflow: hidden;
-          min-height: 12.4rem;
+          min-height: 9.25rem;
           display: flex;
           flex-direction: column;
           background:
@@ -495,9 +536,10 @@
           inset: 0;
           pointer-events: none;
           background:
-            linear-gradient(90deg, color-mix(in srgb, var(--cat-color) 54%, transparent), transparent 34%),
-            linear-gradient(180deg, rgba(255,255,255,0.04), transparent 42%);
-          opacity: 0.26;
+            linear-gradient(90deg, rgba(8,4,18,0.45), rgba(8,4,18,0.94) 34%, rgba(8,4,18,0.98) 100%),
+            linear-gradient(145deg, color-mix(in srgb, var(--cat-color) 24%, transparent), transparent 46%),
+            linear-gradient(180deg, rgba(255,255,255,0.05), transparent 44%);
+          opacity: 0.96;
         }
         .symbol-card > * {
           position: relative;
@@ -516,7 +558,36 @@
           align-items: center;
           justify-content: space-between;
           gap: 0.75rem;
-          margin-bottom: 0.8rem;
+          margin-bottom: 0.55rem;
+        }
+        .symbol-card-image-layer {
+          position: absolute;
+          inset: 0;
+          display: block;
+          overflow: hidden;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .symbol-card-image {
+          display: block;
+          width: min(42%, 15rem);
+          height: 100%;
+          opacity: 0.58;
+          background-image:
+            linear-gradient(90deg, rgba(5,2,10,0), rgba(5,2,10,0.52)),
+            url('/img/symbols/dream-symbol-atlas.png');
+          background-size: 100% 100%, 800% 800%;
+          background-position: center, var(--symbol-x, 0%) var(--symbol-y, 0%);
+          background-repeat: no-repeat;
+          transform: scale(1.08);
+          transform-origin: left center;
+          filter: saturate(1.06) contrast(1.03);
+          transition: transform 0.28s ease, opacity 0.28s ease, filter 0.28s ease;
+        }
+        .symbol-card:hover .symbol-card-image {
+          opacity: 0.68;
+          transform: scale(1.12);
+          filter: saturate(1.14) brightness(1.05);
         }
         .symbol-card-tag {
           display: inline-flex;
@@ -547,20 +618,33 @@
           transform: translate(1px, -1px);
         }
         .symbol-card-title-link h3 {
-          font-size: clamp(1.24rem, 1.45vw, 1.52rem);
+          font-size: clamp(1.12rem, 1.25vw, 1.38rem);
           line-height: 1.05;
+          margin-bottom: 0.48rem;
+        }
+        .symbol-card-title-link {
+          padding-left: clamp(5.8rem, 14vw, 9.2rem);
         }
         .symbol-card-desc {
           color: rgba(226,218,255,0.84);
           display: block;
           overflow: visible;
           min-height: 0;
+          font-size: 0.86rem;
+          line-height: 1.48;
+          padding-left: clamp(5.8rem, 14vw, 9.2rem);
         }
         .symbol-card-question {
-          margin-top: auto;
-          padding-top: 0.85rem;
+          margin-top: 0.78rem;
+          padding-top: 0.72rem;
+          padding-left: clamp(5.8rem, 14vw, 9.2rem);
           border-top: 1px solid rgba(255,255,255,0.06);
           color: rgba(196,181,253,0.82);
+        }
+        #symbolsList > section > h2 {
+          margin-bottom: 1rem;
+          padding-bottom: 0.72rem;
+          border-bottom: 1px solid rgba(253,164,129,0.14);
         }
         #symbolsList > section {
           scroll-margin-top: var(--dictionary-scroll-offset, 8rem);
@@ -584,7 +668,7 @@
           padding-right: 0;
         }
         #symbolsList > section > .grid {
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 27rem), 1fr));
           grid-auto-flow: dense;
         }
         #searchFeedback, #noResults {
@@ -656,11 +740,6 @@
         }
         @media (min-width: 768px) {
           .dictionary-header { margin-bottom: 0; }
-          #symbolsList > section:nth-child(3n + 1) .symbol-card:first-child,
-          #symbolsList > section:nth-child(4n + 2) .symbol-card:nth-child(2) {
-            grid-row: span 2;
-            min-height: 18.5rem;
-          }
         }
         @media (max-width: 1180px) {
           .dictionary-header {
@@ -669,11 +748,9 @@
             min-height: auto;
             padding-top: 6.6rem;
           }
-          .category-browse-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-          }
           .category-browse-card {
-            grid-column: span 2;
+            flex-basis: 8.8rem;
+            min-width: 8.8rem;
           }
         }
         @media (max-width: 767px) {
@@ -727,10 +804,7 @@
             margin-left: 1rem;
             margin-right: 1rem;
           }
-          .category-browse-grid,
-          #symbolsList > section > .grid {
-            grid-template-columns: 1fr;
-          }
+          #symbolsList > section > .grid { grid-template-columns: 1fr; }
           .quick-browse-panel {
             padding: 1rem;
           }
@@ -747,16 +821,10 @@
             display: none;
           }
           .category-browse-grid {
-            display: flex;
-            gap: 0.7rem;
             margin-left: -1rem;
             margin-right: -1rem;
-            padding: 0 1rem 0.2rem;
-            overflow-x: auto;
-            overscroll-behavior-inline: contain;
+            padding: 0 1rem 0.35rem;
             scroll-padding-inline: 1rem;
-            scroll-snap-type: x proximity;
-            -webkit-overflow-scrolling: touch;
           }
           .quick-browse-panel::after {
             content: "";
@@ -773,29 +841,24 @@
             display: none;
           }
           .category-browse-card {
-            flex: 0 0 9rem;
-            min-height: 6.9rem;
-            align-items: flex-start;
-            gap: 0.55rem;
-            padding: 0.8rem 0.72rem;
-            border-radius: 0.78rem;
-            flex-direction: column;
-            scroll-snap-align: start;
+            flex-basis: 8.2rem;
+            min-width: 8.2rem;
+            min-height: 3.1rem;
+            padding: 0.52rem 0.64rem;
           }
           .category-browse-icon {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 0.62rem;
+            width: 2.8rem;
+            height: 2.8rem;
           }
           .category-browse-icon .w-5 {
-            width: 1rem;
-            height: 1rem;
+            width: 1.15rem;
+            height: 1.15rem;
           }
           .category-browse-title {
             font-size: 0.95rem;
           }
           .category-browse-count {
-            font-size: 0.76rem;
+            font-size: 0.66rem;
           }
           #mobileAlpha { display: none !important; }
           #searchFeedback:not([hidden]) { display: flex !important; }
@@ -805,6 +868,27 @@
           }
           .symbol-card {
             min-height: 0;
+            display: flex;
+            flex-direction: column;
+          }
+          .symbol-card-image {
+            width: min(48%, 11rem);
+            opacity: 0.5;
+          }
+          .symbol-card-title-link,
+          .symbol-card-desc,
+          .symbol-card-question {
+            padding-left: clamp(4.8rem, 24vw, 6.7rem);
+          }
+          .symbol-card-top {
+            margin-bottom: 0.72rem;
+          }
+          .symbol-card-title-link h3 {
+            font-size: 1.28rem;
+            margin-bottom: 0.72rem;
+          }
+          .symbol-card-desc {
+            font-size: 0.95rem;
           }
           .symbol-card-desc {
             display: block;
@@ -1349,7 +1433,10 @@
                         Symboles commençant par A
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abandon abandon abandon" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="abandon abandon abandon" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:100.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1364,7 +1451,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="accident accident accident" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="accident accident accident" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:100.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1379,7 +1469,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ange ange ange" style="--cat-color:#818cf8">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ange ange ange" style="--cat-color:#818cf8;--symbol-x:42.857%;--symbol-y:100.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -1394,7 +1487,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="apocalypse apocalypse apocalypse" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="apocalypse apocalypse apocalypse" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:100.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1409,7 +1505,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="araignee araignee araignee" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="araignee araignee araignee" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1424,7 +1523,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arbre arbre arbre" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arbre arbre arbre" style="--cat-color:#4ade80;--symbol-x:42.857%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1439,7 +1541,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arc-en-ciel arc-en-ciel arc-en-ciel" style="--cat-color:#818cf8">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="arc-en-ciel arc-en-ciel arc-en-ciel" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -1454,7 +1559,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="argent argent argent" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="argent argent argent" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1469,7 +1577,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ascenseur ascenseur ascenseur" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ascenseur ascenseur ascenseur" style="--cat-color:#60a5fa;--symbol-x:14.286%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1484,7 +1595,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="avion avion avion" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="avion avion avion" style="--cat-color:#c084fc;--symbol-x:71.429%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1507,7 +1621,10 @@
                         Symboles commençant par B
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bebe bebe bebe" style="--cat-color:#f472b6">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bebe bebe bebe" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1522,7 +1639,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bouche bouche bouche" style="--cat-color:#f87171">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="bouche bouche bouche" style="--cat-color:#f87171;--symbol-x:14.286%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1545,7 +1665,10 @@
                         Symboles commençant par C
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chat chat chat" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chat chat chat" style="--cat-color:#fbbf24;--symbol-x:42.857%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1560,7 +1683,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chemin chemin chemin" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chemin chemin chemin" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1575,7 +1701,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cheval cheval cheval" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cheval cheval cheval" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1590,7 +1719,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chien chien chien" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chien chien chien" style="--cat-color:#fbbf24;--symbol-x:28.571%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1605,7 +1737,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chute chute chute" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="chute chute chute" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1620,7 +1755,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cle cle cle" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="cle cle cle" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -1635,7 +1773,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="courir courir courir" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="courir courir courir" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1658,7 +1799,10 @@
                         Symboles commençant par D
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="defunt defunt defunt" style="--cat-color:#f472b6">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="defunt defunt defunt" style="--cat-color:#f472b6;--symbol-x:42.857%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1673,7 +1817,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dents dents dents" style="--cat-color:#f87171">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dents dents dents" style="--cat-color:#f87171;--symbol-x:14.286%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1688,7 +1835,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dispute dispute dispute" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="dispute dispute dispute" style="--cat-color:#fb923c;--symbol-x:57.143%;--symbol-y:100.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1711,7 +1861,10 @@
                         Symboles commençant par E
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eau eau eau" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="eau eau eau" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1726,7 +1879,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="enfant enfant enfant" style="--cat-color:#f472b6">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="enfant enfant enfant" style="--cat-color:#f472b6;--symbol-x:14.286%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1741,7 +1897,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escalier escalier escalier" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="escalier escalier escalier" style="--cat-color:#60a5fa;--symbol-x:85.714%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1756,7 +1915,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-partenaire ex-partenaire ex-partenaire" style="--cat-color:#f472b6">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ex-partenaire ex-partenaire ex-partenaire" style="--cat-color:#f472b6;--symbol-x:85.714%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f472b6"></span>
@@ -1771,7 +1933,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="examen examen examen" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="examen examen examen" style="--cat-color:#fb923c;--symbol-x:14.286%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1794,7 +1959,10 @@
                         Symboles commençant par É
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ecole ecole ecole" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="ecole ecole ecole" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1817,7 +1985,10 @@
                         Symboles commençant par Ê
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perdu perdu perdu" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="perdu perdu perdu" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -1840,7 +2011,10 @@
                         Symboles commençant par F
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="falaise falaise falaise" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="falaise falaise falaise" style="--cat-color:#60a5fa;--symbol-x:28.571%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1855,7 +2029,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="feu feu feu" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="feu feu feu" style="--cat-color:#4ade80;--symbol-x:71.429%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1870,7 +2047,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="foret foret foret" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="foret foret foret" style="--cat-color:#4ade80;--symbol-x:28.571%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1893,7 +2073,10 @@
                         Symboles commençant par G
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossesse grossesse grossesse" style="--cat-color:#f87171">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="grossesse grossesse grossesse" style="--cat-color:#f87171;--symbol-x:85.714%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -1916,7 +2099,10 @@
                         Symboles commençant par H
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hopital hopital hopital" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="hopital hopital hopital" style="--cat-color:#60a5fa;--symbol-x:42.857%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -1939,7 +2125,10 @@
                         Symboles commençant par I
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inondation inondation inondation" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="inondation inondation inondation" style="--cat-color:#4ade80;--symbol-x:85.714%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -1962,7 +2151,10 @@
                         Symboles commençant par L
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lion lion lion" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lion lion lion" style="--cat-color:#fbbf24;--symbol-x:71.429%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1977,7 +2169,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="loup loup loup" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="loup loup loup" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -1992,7 +2187,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lune lune lune" style="--cat-color:#818cf8">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="lune lune lune" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -2015,7 +2213,10 @@
                         Symboles commençant par M
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maison maison maison" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="maison maison maison" style="--cat-color:#60a5fa;--symbol-x:100.000%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -2030,7 +2231,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mariage mariage mariage" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mariage mariage mariage" style="--cat-color:#fb923c;--symbol-x:28.571%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -2045,7 +2249,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mer mer mer" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mer mer mer" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -2060,7 +2267,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="miroir miroir miroir" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="miroir miroir miroir" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -2075,7 +2285,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montagne montagne montagne" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="montagne montagne montagne" style="--cat-color:#4ade80;--symbol-x:57.143%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -2090,7 +2303,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mort mort mort" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="mort mort mort" style="--cat-color:#fb923c;--symbol-x:71.429%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -2113,7 +2329,10 @@
                         Symboles commençant par N
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nager nager nager" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nager nager nager" style="--cat-color:#fb923c;--symbol-x:100.000%;--symbol-y:71.429%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -2128,7 +2347,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nudite nudite nudite" style="--cat-color:#f87171">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nudite nudite nudite" style="--cat-color:#f87171;--symbol-x:28.571%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -2143,7 +2365,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nuit nuit nuit" style="--cat-color:#818cf8">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="nuit nuit nuit" style="--cat-color:#818cf8;--symbol-x:100.000%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -2166,7 +2391,10 @@
                         Symboles commençant par O
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="oiseau oiseau oiseau" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="oiseau oiseau oiseau" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -2181,7 +2409,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="orage orage orage" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="orage orage orage" style="--cat-color:#4ade80;--symbol-x:0.000%;--symbol-y:100.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -2204,7 +2435,10 @@
                         Symboles commençant par P
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pleurer pleurer pleurer" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pleurer pleurer pleurer" style="--cat-color:#fb923c;--symbol-x:0.000%;--symbol-y:85.714%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -2219,7 +2453,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pluie pluie pluie" style="--cat-color:#4ade80">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pluie pluie pluie" style="--cat-color:#4ade80;--symbol-x:14.286%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#4ade80"></span>
@@ -2234,7 +2471,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pont pont pont" style="--cat-color:#60a5fa">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="pont pont pont" style="--cat-color:#60a5fa;--symbol-x:71.429%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#60a5fa"></span>
@@ -2249,7 +2489,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="porte porte porte" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="porte porte porte" style="--cat-color:#c084fc;--symbol-x:0.000%;--symbol-y:28.571%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -2264,7 +2507,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="poursuite poursuite poursuite" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="poursuite poursuite poursuite" style="--cat-color:#fb923c;--symbol-x:85.714%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
@@ -2287,7 +2533,10 @@
                         Symboles commençant par S
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sang sang sang" style="--cat-color:#f87171">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="sang sang sang" style="--cat-color:#f87171;--symbol-x:0.000%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#f87171"></span>
@@ -2302,7 +2551,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="serpent serpent serpent" style="--cat-color:#fbbf24">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="serpent serpent serpent" style="--cat-color:#fbbf24;--symbol-x:57.143%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fbbf24"></span>
@@ -2317,7 +2569,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="soleil soleil soleil" style="--cat-color:#818cf8">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="soleil soleil soleil" style="--cat-color:#818cf8;--symbol-x:0.000%;--symbol-y:42.857%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#818cf8"></span>
@@ -2340,7 +2595,10 @@
                         Symboles commençant par T
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telephone telephone telephone" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="telephone telephone telephone" style="--cat-color:#c084fc;--symbol-x:57.143%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -2355,7 +2613,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="train train train" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="train train train" style="--cat-color:#c084fc;--symbol-x:85.714%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -2378,7 +2639,10 @@
                         Symboles commençant par V
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vetements vetements vetements" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="vetements vetements vetements" style="--cat-color:#c084fc;--symbol-x:28.571%;--symbol-y:57.143%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -2393,7 +2657,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voiture voiture voiture" style="--cat-color:#c084fc">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voiture voiture voiture" style="--cat-color:#c084fc;--symbol-x:100.000%;--symbol-y:14.286%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#c084fc"></span>
@@ -2408,7 +2675,10 @@
                             </div>
                         </div>
 
-                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voler voler voler" style="--cat-color:#fb923c">
+                        <div class="symbol-card glass-panel rounded-xl p-5 border border-transparent" data-symbol="voler voler voler" style="--cat-color:#fb923c;--symbol-x:42.857%;--symbol-y:0.000%">
+                            <div class="symbol-card-image-layer" aria-hidden="true">
+                                <span class="symbol-card-image" aria-hidden="true"></span>
+                            </div>
                             <div class="symbol-card-top">
                                 <span class="symbol-card-tag">
                                     <span class="sidebar-cat-dot" style="background:#fb923c"></span>
