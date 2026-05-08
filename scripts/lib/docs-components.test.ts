@@ -135,7 +135,7 @@ describe('docs shared components', () => {
     expect(html).toContain('<style>');
     expect(html).toContain('.noctalia-premium-nav');
     expect(html).toContain('.noctalia-premium-nav { background: transparent');
-    expect(html).toContain('.noctalia-premium-nav.py-2 { background: transparent');
+    expect(html).toContain('.noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78)');
     expect(html).toContain('.noctalia-premium-nav-inner');
     expect(html).toContain('.noctalia-premium-nav-actions');
     expect(html).toContain('.mobile-menu-surface { background: #120720');

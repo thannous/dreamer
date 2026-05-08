@@ -799,8 +799,8 @@
 
   .blog-premium-hero h1 {
     width: 100%;
-    max-width: 9ch;
-    font-size: clamp(3.35rem, 17vw, 5.2rem);
+    max-width: 11ch;
+    font-size: clamp(3rem, 13vw, 4.2rem);
   }
 
   .blog-premium-hero p {
@@ -879,17 +879,51 @@
     width: 100%;
   }
 
-  .blog-premium-carousel-header,
+  .blog-premium-carousel-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
   .blog-premium-latest-heading {
     display: block;
   }
 
   .blog-premium-carousel-controls {
-    display: none;
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin-top: 0.15rem;
+  }
+
+  .blog-carousel-button {
+    width: 2.35rem;
+    height: 2.35rem;
+  }
+
+  .blog-carousel-count {
+    margin-left: 0.15rem;
+    font-size: 0.8rem;
   }
 
   .blog-premium-carousel-track {
     gap: 0.9rem;
+    padding-bottom: 1.25rem;
+    scrollbar-width: thin;
+  }
+
+  .blog-premium-carousel-track::-webkit-scrollbar {
+    display: block;
+    height: 0.25rem;
+  }
+
+  .blog-premium-carousel-track::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+  }
+
+  .blog-premium-carousel-track::-webkit-scrollbar-thumb {
+    background: rgba(253, 164, 129, 0.34);
+    border-radius: 999px;
   }
 
   .blog-carousel-card,

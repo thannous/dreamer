@@ -449,7 +449,7 @@ function renderGuideHubStyles() {
         body { margin: 0; background: #0a0514; color: #f8f5ff; font-family: system-ui, sans-serif; }
         a { color: inherit; text-decoration: none; }
         .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
-        .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+        .noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24); }
         .noctalia-premium-nav-inner {
           width: 100%;
           max-width: 1720px;
@@ -1596,28 +1596,23 @@ function renderLayoutCss() {
             display: none;
           }
           .category-browse-grid {
-            margin-left: -1rem;
-            margin-right: -1rem;
-            padding: 0 1rem 0.35rem;
-            scroll-padding-inline: 1rem;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-left: 0;
+            margin-right: 0;
+            padding: 0;
+            overflow: visible;
+            scroll-snap-type: none;
           }
           .quick-browse-panel::after {
-            content: "";
-            position: absolute;
-            right: 0.25rem;
-            bottom: 1rem;
-            width: 3.25rem;
-            height: 7.5rem;
-            pointer-events: none;
-            border-radius: 1rem;
-            background: linear-gradient(90deg, transparent, rgba(12,7,25,0.88));
+            display: none;
           }
           .category-browse-grid::-webkit-scrollbar {
             display: none;
           }
           .category-browse-card {
-            flex-basis: 8.2rem;
-            min-width: 8.2rem;
+            flex-basis: auto;
+            min-width: 0;
             min-height: 3.1rem;
             padding: 0.52rem 0.64rem;
           }
@@ -2033,7 +2028,7 @@ ${renderViewTransitionHeadStyles()}
             -webkit-backdrop-filter: none !important;
         }
         .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
-        .noctalia-premium-nav.py-2 { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+        .noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24); }
         .noctalia-premium-nav-inner {
           width: 100%;
           max-width: 1720px;

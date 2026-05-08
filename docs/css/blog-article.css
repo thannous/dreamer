@@ -381,7 +381,8 @@ html.blog-article main > aside[role="note"] {
   }
 
   html.blog-article main > article > figure {
-    height: clamp(7.25rem, 30vw, 11rem);
+    display: block;
+    height: clamp(11rem, 48vw, 15rem);
     margin-bottom: 1.5rem !important;
   }
 
