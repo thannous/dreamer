@@ -66,17 +66,26 @@
 <button class="blog-carousel-button" type="button" data-carousel-next aria-label="Artículo siguiente">
 <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </button>
-<span class="blog-carousel-count">1 / 5</span>
+<span class="blog-carousel-count">1 / 6</span>
 </div>
 </div>
 <div class="blog-premium-carousel-track" data-blog-carousel>
 <article class="blog-carousel-card blog-carousel-card-large">
+<a href="sonar-con-examen-significado">
+<img src="../../img/blog/anxiety-dreams-meaning.webp" alt="Soñar con examen y ansiedad de evaluación" loading="eager">
+<div>
+<span>Guía de temporada · 5 min</span>
+<h3>Soñar con un examen en época de finales</h3>
+<p>Interpreta sueños de examen, no haber estudiado, aprobar, reprobar y sentirte evaluado.</p>
+</div>
+</a>
+</article>
+<article class="blog-carousel-card">
 <a href="como-recordar-suenos">
 <img src="../../img/blog/why-we-forget-dreams.webp" alt="Diario de sueños en la cama" loading="eager">
 <div>
 <span>Guía · 4 min</span>
 <h3>Cómo recordar tus sueños</h3>
-<p>Técnicas simples para aplicar esta noche y no perder tus sueños al despertar.</p>
 </div>
 </a>
 </article>
