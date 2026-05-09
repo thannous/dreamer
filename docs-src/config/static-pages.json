@@ -23,6 +23,17 @@
       }
     },
     {
+      "pageId": "page.press",
+      "layout": "content",
+      "slugs": {
+        "en": "press",
+        "fr": "presse",
+        "es": "prensa",
+        "de": "presse",
+        "it": "stampa"
+      }
+    },
+    {
       "pageId": "legal.notice",
       "layout": "content",
       "slugs": {

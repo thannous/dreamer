@@ -1,57 +1,65 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Follow platforms in order: AlternativeTo → Futurepedia → BetaList → Product Hunt.
+> Generated 2026-03-09. Verified 2026-05-09. Recommended order now: AlternativeTo → Product Hunt draft/launch prep → BetaList → Futurepedia only if paid listing budget is approved.
 
 ---
 
-## Assets Checklist (all verified ✓)
+## Assets Checklist (local files verified 2026-05-09)
 
-| Asset | Path | Status |
-|-------|------|--------|
-| Hero image | `docs/screenshot/demo1_cropped-1600w.jpg` | ✓ |
-| Recording screenshot | `docs/screenshot/s_enregistrement.jpg` | ✓ |
-| Dream detail screenshot | `docs/screenshot/s_fiche_reve.jpg` | ✓ |
-| Journal screenshot | `docs/screenshot/s_journal.jpg` | ✓ |
-| AI Chat screenshot | `docs/screenshot/s_conversationIA.jpg` | ✓ |
-| Themes screenshot | `docs/screenshot/s_themes.jpg` | ✓ |
-| Stats screenshot | `docs/screenshot/s_stat.jpg` | ✓ |
-| Articles screenshot | `docs/screenshot/s_articles.jpg` | ✓ |
-| Logo (full) | `docs/logo/logo_noctalia.png` | ✓ |
-| Icon 512px | `docs/logo512.png` | ✓ |
-| Icon 192px | `docs/logo192.png` | ✓ |
-| OG English | `docs/img/og/noctalia-en-1200x630.jpg` | ✓ |
-| OG French | `docs/img/og/noctalia-fr-1200x630.jpg` | ✓ |
-| How-it-works: Recording | `docs/img/en/recording-800w.jpg` | ✓ |
-| How-it-works: Analyzing | `docs/img/en/analizing-800w.jpg` | ✓ |
-| How-it-works: Exploring | `docs/img/en/exploring-800w.jpg` | ✓ |
+
+| Asset                   | Path                                      | Status                                                                                            |
+| ----------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Hero image              | `docs/screenshot/demo1_cropped-1600w.jpg` | ✓                                                                                                 |
+| Recording screenshot    | `docs/screenshot/s_enregistrement.jpg`    | ✓                                                                                                 |
+| Dream detail screenshot | `docs/screenshot/s_fiche_reve.jpg`        | ✓                                                                                                 |
+| Journal screenshot      | `docs/screenshot/s_journal.jpg`           | ✓                                                                                                 |
+| AI Chat screenshot      | `docs/screenshot/s_conversationIA.jpg`    | ✓                                                                                                 |
+| Themes screenshot       | `docs/screenshot/s_themes.jpg`            | ✓                                                                                                 |
+| Stats screenshot        | `docs/screenshot/s_stat.jpg`              | ✓                                                                                                 |
+| Articles screenshot     | `docs/screenshot/s_articles.jpg`          | ✓                                                                                                 |
+| Logo (full)             | `docs/logo/logo_noctalia.png`             | ✓                                                                                                 |
+| Icon 512px              | `docs/logo512.png`                        | ✓                                                                                                 |
+| Icon 192px              | `docs/logo192.png`                        | ✓                                                                                                 |
+| OG English              | `docs/img/og/noctalia-en-1200x630.jpg`    | ⚠ Exists, but actual size is 1312x2730; regenerate/crop to 1200x630 before using as OG/social art |
+| OG French               | `docs/img/og/noctalia-fr-1200x630.jpg`    | ⚠ Exists, but actual size is 1312x2730; regenerate/crop to 1200x630 before using as OG/social art |
+| How-it-works: Recording | `docs/img/en/recording-800w.jpg`          | ✓                                                                                                 |
+| How-it-works: Analyzing | `docs/img/en/analizing-800w.jpg`          | ✓                                                                                                 |
+| How-it-works: Exploring | `docs/img/en/exploring-800w.jpg`          | ✓                                                                                                 |
+
 
 ---
 
 ## Common Info (copy-paste ready)
 
-**Website:** https://noctalia.app
-**Google Play:** https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
-**Contact:** contact@noctalia.app
+**Website:** [https://noctalia.app](https://noctalia.app)
+**Google Play:** [https://play.google.com/store/apps/details?id=com.tanuki75.noctalia](https://play.google.com/store/apps/details?id=com.tanuki75.noctalia)
+**Contact:** [contact@noctalia.app](mailto:contact@noctalia.app)
 **Maker:** Thanh Chau
-**Pricing:** Freemium — Free (Dreamer) + Premium Onironaut (€2.99/month or €19/year)
+**Pricing:** Freemium — Free plan + Noctalia Plus (€2.99/month or €19/year)  
 **Languages:** English, Français, Español, Deutsch, Italiano
 
+**Subscription source of truth:** use `Noctalia Plus` in public submissions. The app tier is `plus`, with Play product IDs `noctalia_plus:monthly` and `noctalia_plus:annual`; avoid legacy `Onironaut` or generic `Premium` labels.
+
 **Tagline (≤60 chars):**
+
 ```
 Your AI dream companion — capture, interpret, explore
 ```
 
 **Short Description:**
+
 ```
 Your AI dream companion. Capture dreams by voice, get instant interpretations, and explore what your nights are telling you.
 ```
 
 **Long Description (EN):**
+
 ```
-Noctalia is an AI-powered dream journal app that turns your sleepy whispers into structured insights. Just speak your dream upon waking — Noctalia transcribes it, generates a unique illustration, and delivers an instant interpretation inspired by Jungian and Freudian psychology. Ask follow-up questions to your dream companion, track emotional patterns over time, and discover recurring themes across your nights. Available in 5 languages with a privacy-first approach — your data stays encrypted and only you can access it. Free to start, with a premium tier for unlimited AI sessions and HD dream visuals.
+Noctalia is an AI-powered dream journal app that turns the fragile moment after waking into a clear record of your inner world. Record a dream by voice or text, then get automatic transcription, guided interpretation, recurring symbols, dream type, dominant themes, and a unique generated image for each entry. You can ask follow-up questions in Dream Chat, track emotions and patterns over time, explore a dream symbol dictionary, and use lucid dreaming rituals to build a stronger recall habit. Available in 5 languages with a privacy-first approach: voice recordings are used for transcription and are not stored, and journal data is hosted securely in the European Union. Free to start, with Noctalia Plus for unlimited dream companion sessions, HD image generation, advanced stats, and dream chat.
 ```
 
 **Tags:**
+
 ```
 Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Personal Development, Voice Journal, Lucid Dreaming, Psychology, Mental Health
 ```
@@ -60,57 +68,67 @@ Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Personal
 
 ## 1. AlternativeTo
 
-**URL:** https://alternativeto.net/contribute/new-app/
-**Effort:** Low | **Review time:** ~1-3 days | **Backlink:** dofollow
+**URL:** [https://alternativeto.net/contribute/new-app/](https://alternativeto.net/contribute/new-app/)
+**Effort:** Low | **Review time:** community/editorial review, timing not guaranteed | **Backlink:** verify on the live listing; do not assume dofollow before inspection
 
 ### Form Fields
 
-| Field | Value |
-|-------|-------|
-| App Name | `Noctalia` |
-| URL | `https://noctalia.app` |
-| Description | *(long description EN above)* |
-| Category | `Lifestyle` > `Health & Wellness` |
-| Platform | `Android` |
-| License | `Freemium` |
-| Tags | `Dream Journal`, `AI`, `Dream Interpretation`, `Voice Recording`, `Sleep` |
+
+| Field       | Value                                                                     |
+| ----------- | ------------------------------------------------------------------------- |
+| App Name    | `Noctalia`                                                                |
+| URL         | `https://noctalia.app`                                                    |
+| Description | *(long description EN above)*                                             |
+| Category    | `Sport & Health` / `Journaling App` if available                          |
+| Platform    | `Android`                                                                 |
+| License     | `Freemium`                                                                |
+| Tags        | `Dream Journal`, `AI`, `Dream Interpretation`, `Voice Recording`, `Sleep` |
+
 
 ### After Approval — Add as Alternative To:
 
 Submit Noctalia as alternative to each of these (one at a time):
 
-1. **Dream Journal Ultimate** — https://alternativeto.net/software/dream-journal-ultimate/
-2. **Lucidity** — https://alternativeto.net/software/lucidity-lucid-dreaming/
-3. **Shadow** — https://alternativeto.net/software/shadow-dream-journal/
-4. **DreamApp** — https://alternativeto.net/software/dreamapp/
-5. **Reflectly** — https://alternativeto.net/software/reflectly/
-6. **Calm** — https://alternativeto.net/software/calm/
+1. **Dream Journal Ultimate** — [https://alternativeto.net/software/dream-journal-ultimate/](https://alternativeto.net/software/dream-journal-ultimate/)
+2. **Lucidity** — [https://alternativeto.net/software/lucidity/about/](https://alternativeto.net/software/lucidity/about/)
+3. **Shadow** — [https://alternativeto.net/software/shadow-dream-journal/](https://alternativeto.net/software/shadow-dream-journal/)
+4. **DreamApp** — [https://alternativeto.net/software/dreamapp/](https://alternativeto.net/software/dreamapp/)
+5. **DreamNotes** — [https://alternativeto.net/software/dreamnotes/about/](https://alternativeto.net/software/dreamnotes/about/)
+6. **Dreamly** — [https://alternativeto.net/software/dreamly-dream-interpretation/about/](https://alternativeto.net/software/dreamly-dream-interpretation/about/)
+7. **Reverie: Dream Diary** — [https://alternativeto.net/software/reverie-dream-diary/about/](https://alternativeto.net/software/reverie-dream-diary/about/)
+8. **Reflectly** — [https://alternativeto.net/software/reflectly/](https://alternativeto.net/software/reflectly/) *(secondary fit: journaling/mindfulness, less dream-specific)*
+9. **Calm** — [https://alternativeto.net/software/calm/](https://alternativeto.net/software/calm/) *(secondary fit: sleep/wellness, not direct dream journal)*
 
 ### Steps:
-- [ ] Go to https://alternativeto.net/contribute/new-app/
-- [ ] Fill form with info above
-- [ ] Upload logo (`docs/logo512.png`)
-- [ ] Submit
-- [ ] Wait for approval (~1-3 days)
-- [ ] Once approved, add as alternative to each app listed above
-- [ ] Verify listing is live and backlink to noctalia.app is active
+
+- Go to [https://alternativeto.net/contribute/new-app/](https://alternativeto.net/contribute/new-app/)
+- Fill form with info above
+- Upload logo (`docs/logo512.png`)
+- Submit
+- Wait for approval / community review
+- Once approved, add as alternative to each app listed above
+- Verify listing is live and backlink to noctalia.app is active
 
 ---
 
 ## 2. Futurepedia
 
-**URL:** https://www.futurepedia.io/submit-tool
-**Effort:** Low | **Review time:** ~1-2 weeks | **Backlink:** dofollow
+**URL:** [https://www.futurepedia.io/submit-tool](https://www.futurepedia.io/submit-tool)
+**Effort:** Medium / paid | **Review time:** published within 7 days for Basic when available, 2 business days for Verified | **Backlink:** verify on the live listing; do not assume dofollow before inspection
+
+**2026-05-09 status:** Basic Listing is shown at `$247` but marked sold out. Verified Listing is `$497` one time fee. Treat Futurepedia as optional paid distribution, not a low-effort free backlink.
 
 ### Form Fields
 
-| Field | Value |
-|-------|-------|
-| Tool Name | `Noctalia` |
-| URL | `https://noctalia.app` |
-| Description | *(long description EN above)* |
-| Category | `AI Lifestyle` / `AI Health` |
-| Pricing | `Free + Paid (from €2.99/month)` |
+
+| Field       | Value                            |
+| ----------- | -------------------------------- |
+| Tool Name   | `Noctalia`                       |
+| URL         | `https://noctalia.app`           |
+| Description | *(long description EN above)*    |
+| Category    | `AI Lifestyle` / `AI Health`     |
+| Pricing     | `Freemium — Free plan + Noctalia Plus (from €2.99/month)` |
+
 
 ### AI Features to Highlight
 
@@ -125,71 +143,82 @@ Copy-paste these as bullet points if the form allows:
 ```
 
 ### Steps:
-- [ ] Go to https://www.futurepedia.io/submit-tool
-- [ ] Fill form with info above
-- [ ] Upload logo (`docs/logo512.png`)
-- [ ] Add 2-3 screenshots (hero + dream detail + AI chat)
-- [ ] Submit
-- [ ] Wait for review (~1-2 weeks)
-- [ ] Verify listing is live and backlink is active
+
+- Go to [https://www.futurepedia.io/submit-tool](https://www.futurepedia.io/submit-tool)
+- Fill form with info above
+- Upload logo (`docs/logo512.png`)
+- Add 2-3 screenshots (hero + dream detail + AI chat)
+- Submit
+- Wait for editorial review according to the paid listing tier
+- Verify listing is live and backlink is active
 
 ---
 
 ## 3. BetaList
 
-**URL:** https://betalist.com/submit
-**Effort:** Medium | **Review time:** ~2 weeks (free) or faster (paid) | **Backlink:** dofollow
+**URL:** [https://betalist.com/submit](https://betalist.com/submit)
+**Effort:** Medium | **Review time:** up to a few weeks; if selected, regular features can take about two months, priority review takes a few days | **Backlink:** verify on the live listing; do not assume dofollow before inspection
 
 ### Form Fields
 
-| Field | Value |
-|-------|-------|
-| Startup Name | `Noctalia` |
-| URL | `https://noctalia.app` |
-| Tagline | `AI-powered dream journal — capture by voice, interpret, explore` |
-| Description | *(long description EN above)* |
-| Category | `AI` / `Health & Wellness` |
-| Maker Email | `contact@noctalia.app` |
-| Status | `Launched (v1.1.0) — iOS coming soon` |
+
+| Field        | Value                                                                                |
+| ------------ | ------------------------------------------------------------------------------------ |
+| Startup Name | `Noctalia`                                                                           |
+| URL          | `https://noctalia.app`                                                               |
+| Tagline      | `AI-powered dream journal — capture by voice, interpret, explore`                    |
+| Description  | *(long description EN above)*                                                        |
+| Category     | `AI` / `Health & Wellness`                                                           |
+| Maker Email  | `contact@noctalia.app`                                                               |
+| Status       | `Launched on Android (v1.2.0 repo version; Google Play listing updated Feb 1, 2026)` |
+
 
 ### Images to Upload
+
 1. Logo: `docs/logo512.png`
 2. Screenshot 1: `docs/screenshot/demo1_cropped-1600w.jpg` (hero)
 3. Screenshot 2: `docs/screenshot/s_fiche_reve.jpg` (dream detail)
 
 ### Angle
-Product launched v1.1 on Android. iOS expansion underway + premium features rolling out. Positioned as the AI-first dream journal — voice-to-insight in seconds.
+
+Product is live on Android with Google Play in-app purchases and a public landing page on its own domain. Position as an AI-first dream journal: voice/text capture, instant interpretation, generated dream art, dream chat, emotion/pattern tracking, symbol dictionary, and lucid dreaming rituals.
 
 ### Steps:
-- [ ] Go to https://betalist.com/submit
-- [ ] Fill form with info above
-- [ ] Upload logo + 2 screenshots
-- [ ] Choose free or paid submission
-- [ ] Submit
-- [ ] Wait for review
-- [ ] Verify listing is live and backlink is active
+
+- Go to [https://betalist.com/submit](https://betalist.com/submit)
+- Fill form with info above
+- Upload logo + 2 screenshots
+- Choose free or paid submission
+- Submit
+- Wait for review
+- Verify listing is live and backlink is active
 
 ---
 
 ## 4. Product Hunt
 
-**URL:** https://www.producthunt.com/posts/new
-**Effort:** High | **Review time:** Instant (scheduled launch) | **Backlink:** dofollow
+**URL:** [https://www.producthunt.com/posts/new](https://www.producthunt.com/posts/new)
+**Effort:** High | **Review time:** scheduled launch once account can post | **Backlink:** verify on the live launch page; Product Hunt is valuable even if the outbound link is not followed
 
 ### Form Fields
 
-| Field | Value |
-|-------|-------|
-| Product Name | `Noctalia` |
-| Tagline | `Your AI dream companion — capture, interpret, explore` |
-| Description | *(long description EN above)* |
-| Website | `https://noctalia.app` |
-| Topics | `Artificial Intelligence`, `Health & Fitness`, `Productivity`, `Self Improvement` |
-| Pricing | `Freemium` |
-| Platforms | `Android` (mention iOS coming soon in description) |
-| Maker | Thanh Chau |
+
+| Field        | Value                                                                 |
+| ------------ | --------------------------------------------------------------------- |
+| Product Name | `Noctalia`                                                            |
+| Tagline      | `Your AI dream companion — capture, interpret, explore`               |
+| Description  | *(long description EN above)*                                         |
+| Website      | `https://noctalia.app`                                                |
+| Topics       | `Health & Fitness`, `Writing`, `Lifestyle`, `Artificial Intelligence` |
+| Pricing      | `Freemium`                                                            |
+| Platforms    | `Android`                                                             |
+| Maker        | Thanh Chau                                                            |
+
 
 ### Gallery (upload in this order)
+
+Product Hunt recommends gallery images around 1270x760. The current screenshots are mostly portrait mobile captures, so prepare 2-4 landscape gallery images before launch by placing the portrait screenshots into branded 1270x760 frames.
+
 1. `docs/screenshot/demo1_cropped-1600w.jpg` — Hero
 2. `docs/screenshot/s_enregistrement.jpg` — Voice Recording
 3. `docs/screenshot/s_fiche_reve.jpg` — AI Dream Analysis
@@ -218,9 +247,9 @@ What I'm most proud of:
 📊 Pattern tracking — see your recurring themes and emotional evolution
 🔐 Privacy-first — your dreams are encrypted, only you can see them
 
-It's free to start (5 dreams/month + 3 AI chats/day), with a premium tier at €2.99/month for unlimited everything.
+It's free to start with unlimited recordings and 2 full sessions with the dream companion. Noctalia Plus is €2.99/month or €19/year, with a 7-day trial, unlimited dream companion sessions, HD image generation, advanced stats, and dream chat.
 
-Currently on Android with iOS on the way. Available in 5 languages (EN, FR, ES, DE, IT).
+Currently on Android. Available in 5 languages (EN, FR, ES, DE, IT).
 
 I'd love to hear your feedback — what features would make you actually use a dream journal? 🌙
 ```
@@ -228,31 +257,37 @@ I'd love to hear your feedback — what features would make you actually use a d
 ### Launch Strategy
 
 **Timing:**
+
 - Launch on a **Tuesday, Wednesday, or Thursday** (highest PH traffic)
 - Avoid holidays and major tech announcement days
-- Schedule launch for **00:01 PT** (Product Hunt resets at midnight Pacific)
+- Schedule launch for **12:01 AM Pacific Time** if planning ahead
 
 **Pre-launch (1-2 weeks before):**
-- [ ] Create/verify Product Hunt maker account
-- [ ] Follow relevant makers and upvote other products to build presence
-- [ ] Prepare social media posts announcing the launch
-- [ ] Draft DMs to friends/contacts asking for support on launch day
-- [ ] Optional: record 30-60s demo video
+
+- Create/verify Product Hunt maker account
+- If the personal account is new, create it at least 1 week before launch or verify posting access earlier
+- Follow relevant makers and upvote other products to build presence
+- Prepare social media posts announcing the launch
+- Confirm X, Instagram, and TikTok profiles are public and accessible from a logged-out browser before launch
+- Draft DMs to friends/contacts asking for support on launch day
+- Optional: record 30-60s demo video
 
 **Launch day:**
-- [ ] Schedule the post for 00:01 PT
-- [ ] Post maker comment immediately
-- [ ] Share on Twitter/X: https://x.com/NoctaliaDreams
-- [ ] Share on Instagram stories: https://www.instagram.com/noctaliadreams/
-- [ ] Share on TikTok: https://www.tiktok.com/@noctaliadreams
-- [ ] Respond to every comment within 1 hour
-- [ ] Cross-post to relevant subreddits (r/luciddreaming, r/dreams, r/sideproject)
-- [ ] Share in relevant Discord/Slack communities
+
+- Schedule the post for 12:01 AM Pacific Time
+- Post maker comment immediately
+- Share on Twitter/X: [https://x.com/NoctaliaDreams](https://x.com/NoctaliaDreams)
+- Share on Instagram stories: [https://www.instagram.com/noctaliadreams/](https://www.instagram.com/noctaliadreams/)
+- Share on TikTok: [https://www.tiktok.com/@noctaliadreams](https://www.tiktok.com/@noctaliadreams)
+- Respond to every comment within 1 hour
+- Cross-post only where community rules allow it (e.g. r/luciddreaming, r/dreams, r/sideproject); ask for feedback/comments, not direct upvotes
+- Share in relevant Discord/Slack communities
 
 **Post-launch:**
-- [ ] Thank supporters
-- [ ] Update the product page with any new features mentioned in comments
-- [ ] Add the Product Hunt badge to noctalia.app
+
+- Thank supporters
+- Update the product page with any new features mentioned in comments
+- Add the Product Hunt badge to noctalia.app
 
 ---
 
@@ -260,25 +295,29 @@ I'd love to hear your feedback — what features would make you actually use a d
 
 ### Verification Checklist
 
-| Platform | Submitted | Approved | Backlink Live | Notes |
-|----------|-----------|----------|---------------|-------|
-| AlternativeTo | ☐ | ☐ | ☐ | |
-| Futurepedia | ☐ | ☐ | ☐ | |
-| BetaList | ☐ | ☐ | ☐ | |
-| Product Hunt | ☐ | ☐ | ☐ | |
+
+| Platform      | Submitted | Approved | Backlink Live | Notes                                       |
+| ------------- | --------- | -------- | ------------- | ------------------------------------------- |
+| AlternativeTo | ☐         | ☐        | ☐             |                                             |
+| BetaList      | ☐         | ☐        | ☐             |                                             |
+| Product Hunt  | ☐         | ☐        | ☐             |                                             |
+| Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
+
 
 ### Monitoring
 
 After each approval:
+
 1. Verify the listing page is publicly accessible
-2. Check the backlink to https://noctalia.app is active (use browser inspector or ahrefs)
-3. Check if the link is dofollow (`rel` attribute should NOT contain `nofollow`)
+2. Check the backlink to [https://noctalia.app](https://noctalia.app) is active (use browser inspector or ahrefs)
+3. Check the link attributes on the live listing (`rel` should not contain `nofollow`, `ugc`, or `sponsored` if the goal is a followed SEO link)
 4. Monitor Google Search Console for new backlink detection (can take days/weeks)
 5. Track referral traffic in analytics dashboard
 
 ### Product Hunt Badge (add after launch)
 
-Add to `docs/en/index.html` and other pages:
+Add to `docs/en/index.html`, `docs/index.html`, and other relevant localized pages only after the Product Hunt post is live:
+
 ```html
 <a href="https://www.producthunt.com/posts/noctalia?utm_source=badge-featured" target="_blank">
   <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=YOUR_POST_ID&theme=light"
@@ -286,4 +325,5 @@ Add to `docs/en/index.html` and other pages:
        width="250" height="54" />
 </a>
 ```
+
 Replace `YOUR_POST_ID` with the actual post ID after launch.

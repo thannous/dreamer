@@ -1,0 +1,80 @@
+---
+{
+  "pageId": "page.press",
+  "layout": "content",
+  "lang": "fr",
+  "slug": "presse",
+  "title": "Kit presse Noctalia | Journal de rêves IA",
+  "description": "Kit presse de Noctalia, l'application de journal de rêves IA pour enregistrer, transcrire, interpréter et explorer ses rêves.",
+  "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  "themeColor": "#0a0514",
+  "htmlClass": "",
+  "bodyClass": "bg-dream-dark text-white font-sans antialiased selection:bg-dream-salmon selection:text-dream-dark",
+  "bodyStyle": "",
+  "mainClass": "pt-32 pb-20 px-6 max-w-5xl mx-auto",
+  "ogType": "website",
+  "ogTitle": "Kit presse Noctalia",
+  "ogDescription": "Infos produit, descriptions, liens et assets pour presenter Noctalia.",
+  "ogImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
+  "ogImageAlt": "Application de journal de reves IA Noctalia",
+  "twitterCard": "summary_large_image",
+  "twitterTitle": "Kit presse Noctalia",
+  "twitterDescription": "Infos produit, descriptions, liens et assets pour presenter Noctalia.",
+  "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
+  "twitterImageAlt": "Application de journal de reves IA Noctalia",
+  "publishedTime": "2026-05-09T00:00:00+02:00",
+  "modifiedTime": "2026-05-09T00:00:00+02:00",
+  "author": "Thanh Chau",
+  "prevPath": "",
+  "nextPath": "",
+  "preloadImage": "",
+  "jsonLd": [
+    "{\n      \"@context\": \"https://schema.org\",\n      \"@type\": \"WebPage\",\n      \"name\": \"Kit presse Noctalia\",\n      \"url\": \"https://noctalia.app/fr/presse\",\n      \"inLanguage\": \"fr\",\n      \"about\": { \"@id\": \"https://noctalia.app/#software\" },\n      \"publisher\": { \"@id\": \"https://noctalia.app/#organization\" }\n    }"
+  ],
+  "activeNav": null
+}
+---
+<h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Kit presse Noctalia</h1>
+<p class="text-lg text-purple-200/80 leading-relaxed mb-10">Noctalia est un journal de rêves assisté par IA pour capturer, interpréter et explorer ses rêves avec notes vocales, transcription automatique, symboles récurrents, thèmes, images générées et Dream Chat.</p>
+
+<div class="space-y-8 text-gray-300 leading-relaxed">
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Infos clés</h2>
+    <dl class="grid gap-4 md:grid-cols-2">
+      <div><dt class="text-sm text-purple-200/70">Produit</dt><dd class="text-white">Noctalia</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Catégorie</dt><dd class="text-white">Journal de rêves IA, bien-être sommeil, lifestyle</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Plateforme</dt><dd class="text-white">Android</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Tarif</dt><dd class="text-white">Freemium, avec Noctalia Plus à 2,99 EUR/mois ou 19 EUR/an</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Langues</dt><dd class="text-white">Français, anglais, espagnol, allemand, italien</dd></div>
+      <div><dt class="text-sm text-purple-200/70">Fondateur</dt><dd class="text-white">Thanh Chau</dd></div>
+    </dl>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Descriptions</h2>
+    <h3 class="text-white font-medium mb-2">Description courte</h3>
+    <p>Journal de rêves IA avec capture vocale, transcription, interprétation, symboles, thèmes, images et Dream Chat.</p>
+    <h3 class="text-white font-medium mt-6 mb-2">Description longue</h3>
+    <p>Noctalia aide à enregistrer ses rêves par voix ou texte, recevoir des interprétations structurées, suivre les symboles et émotions récurrents, créer des images inspirées des rêves et poser des questions de suivi via Dream Chat.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Liens utiles</h2>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><a href="https://noctalia.app" class="text-dream-salmon hover:underline">Site officiel</a></li>
+      <li><a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia" class="text-dream-salmon hover:underline" rel="nofollow noopener noreferrer" target="_blank">Fiche Google Play</a></li>
+      <li><a href="/logo512.png" class="text-dream-salmon hover:underline">Icône de l'app</a></li>
+      <li><a href="/fr/a-propos" class="text-dream-salmon hover:underline">À propos de Noctalia</a></li>
+    </ul>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Note éditoriale</h2>
+    <p>Noctalia est conçu pour le journaling, la réflexion personnelle et le bien-être. Ce n'est pas un dispositif médical et il ne remplace pas l'avis d'un professionnel de santé.</p>
+  </section>
+
+  <section class="glass-panel p-8 rounded-2xl border border-white/10 bg-white/5">
+    <h2 class="text-2xl font-serif text-white mb-4">Contact</h2>
+    <p>Presse, annuaires, partenariats ou questions produit : <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>.</p>
+  </section>
+</div>
