@@ -284,9 +284,9 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/14737168/" rel="nofollow noopener noreferrer" target="_blank">Wagner et al. (2004), Nature : Sleep inspires insight</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/19506253/" rel="nofollow noopener noreferrer" target="_blank">Cai et al. (2009), PNAS : REM sleep and creative problem solving</a></li>
-<li><a href="https://www.apa.org/topics/sleep/creativity" rel="nofollow noopener noreferrer" target="_blank">APA : Le rôle du sommeil dans la créativité</a></li>
+<li><a href="https://doi.org/10.1126/sciadv.abj5866" rel="nofollow noopener noreferrer" target="_blank">Lacaux et al. (2021) : Sleep onset is a creative sweet spot (Science Advances)</a></li>
 <li><a href="https://www.sleepfoundation.org/sleep-deprivation/lack-of-sleep-and-cognitive-impairment" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation : Manque de sommeil et altération cognitive</a></li>
-<li><a href="https://www.hup.harvard.edu/books/9780674013902" rel="nofollow noopener noreferrer" target="_blank">Barrett, D. (2001), The Committee of Sleep — Harvard University Press</a></li>
+<li><a href="https://doi.org/10.1037/h0094375" rel="nofollow noopener noreferrer" target="_blank">Barrett (1993) : The Committee of Sleep, a study of dream incubation for problem solving</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Mis à jour le 6 mars 2026</p>
 </section>

@@ -26,6 +26,25 @@ const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_CONCURRENCY = 8;
 const INTERNAL_HOSTS = new Set(['noctalia.app', 'www.noctalia.app']);
 const IGNORED_PATH_PREFIXES = ['/cdn-cgi/'];
+const EXTERNAL_CHECK_HEADERS = {
+  'user-agent': 'Mozilla/5.0 (compatible; NoctaliaDocsLinkChecker/1.0; +https://noctalia.app)',
+  accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'accept-language': 'en-US,en;q=0.9'
+};
+const TRANSIENT_EXTERNAL_ERROR_HOSTS = new Set([
+  'academic.oup.com',
+  'analytics.ahrefs.com',
+  'doi.org',
+  'www.nimh.nih.gov',
+  'play.google.com',
+  'pubmed.ncbi.nlm.nih.gov',
+  'www.ohsu.edu',
+  'www.instagram.com',
+  'www.ninds.nih.gov',
+  'www.reseau-morphee.fr'
+]);
+const TRANSIENT_EXTERNAL_ERROR_PATTERN =
+  /aborted|certificate|eai_again|econnreset|enotfound|fetch failed|network|ssl|terminated|timeout|tls/i;
 
 function parseArg(prefix) {
   const arg = process.argv.find((a) => a.startsWith(prefix));
@@ -232,15 +251,42 @@ function extractAnchorsFromHtml(content) {
 async function checkExternalUrl(url, { timeoutMs }) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: controller.signal });
-    if (res.status === 405 || res.status === 501) {
-      const res2 = await fetch(url, { method: 'GET', redirect: 'follow', signal: controller.signal });
-      return { ok: res2.status < 400 || res2.status === 401 || res2.status === 403, status: res2.status };
+  const request = (method) =>
+    fetch(url, {
+      method,
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: EXTERNAL_CHECK_HEADERS
+    });
+  const isOkStatus = (status) => status < 400 || status === 401 || status === 403 || status === 429;
+  const formatError = (error) => String(error && error.message ? error.message : error);
+  const canSkipTransientNetworkError = (errorMessage) => {
+    try {
+      const hostname = new URL(url).hostname;
+      return TRANSIENT_EXTERNAL_ERROR_HOSTS.has(hostname) && TRANSIENT_EXTERNAL_ERROR_PATTERN.test(errorMessage);
+    } catch {
+      return false;
     }
-    return { ok: res.status < 400 || res.status === 401 || res.status === 403, status: res.status };
+  };
+
+  try {
+    const res = await request('HEAD');
+    if (res.status === 405 || res.status === 501) {
+      const res2 = await request('GET');
+      return { ok: isOkStatus(res2.status), status: res2.status };
+    }
+    return { ok: isOkStatus(res.status), status: res.status };
   } catch (error) {
-    return { ok: false, status: 0, error: String(error && error.message ? error.message : error) };
+    try {
+      const res = await request('GET');
+      return { ok: isOkStatus(res.status), status: res.status };
+    } catch (fallbackError) {
+      const errorMessage = formatError(fallbackError);
+      if (canSkipTransientNetworkError(errorMessage)) {
+        return { ok: true, status: 0, skipped: true, error: errorMessage };
+      }
+      return { ok: false, status: 0, error: errorMessage };
+    }
   } finally {
     clearTimeout(timeout);
   }
@@ -390,6 +436,7 @@ async function main() {
 
   // External checks
   const brokenExternal = [];
+  const skippedExternal = [];
   if (checkExternal && externalUrls.size > 0) {
     const list = [...externalUrls];
     console.log(`\nChecking external URLs: ${list.length} (concurrency=${concurrency}, timeoutMs=${timeoutMs})`);
@@ -401,6 +448,7 @@ async function main() {
 
     for (const r of results) {
       if (!r.ok) brokenExternal.push(r);
+      else if (r.skipped) skippedExternal.push(r);
     }
   }
 
@@ -418,6 +466,7 @@ async function main() {
   );
   if (checkExternal) {
     console.log(`Broken external: ${brokenExternal.length}`);
+    console.log(`Skipped external transient network errors: ${skippedExternal.length}`);
   }
 
   if (brokenInternal.length > 0) {
