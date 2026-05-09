@@ -236,7 +236,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lecturas adicionales</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.5665/sleep/zsz120" rel="nofollow noopener noreferrer" target="_blank">de Zambotti et al. (2019): Wearable sleep technology in clinical and research settings (Medicine &amp; Science in Sports &amp; Exercise)</a></li>
+<li><a href="https://doi.org/10.1249/MSS.0000000000001947" rel="nofollow noopener noreferrer" target="_blank">de Zambotti et al. (2019): Wearable sleep technology in clinical and research settings (Medicine &amp; Science in Sports &amp; Exercise)</a></li>
 <li><a href="https://doi.org/10.1093/sleep/zsaa170" rel="nofollow noopener noreferrer" target="_blank">Menghini et al. (2021): A standardized framework for testing the performance of sleep-tracking technology (Sleep)</a></li>
 <li><a href="https://doi.org/10.1038/s41746-019-0126-9" rel="nofollow noopener noreferrer" target="_blank">Perez-Pozuelo et al. (2020): The future of sleep health: a data-driven revolution (npj Digital Medicine)</a></li>
 <li><a href="https://doi.org/10.1111/jsr.12929" rel="nofollow noopener noreferrer" target="_blank">Baron et al. (2017): Orthosomnia: are some patients taking the quantified self too far? (Journal of Clinical Sleep Medicine)</a></li>

@@ -267,7 +267,7 @@
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">Fuentes / Lecturas adicionales</h2>
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
-<li><a href="https://doi.org/10.1001/archpsyc.55.7.632" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1998): Effect of photoperiod on the human circadian pacemaker (Archives of General Psychiatry)</a></li>
+<li><a href="https://doi.org/10.1152/ajpregu.1993.265.4.R846" rel="nofollow noopener noreferrer" target="_blank">Wehr et al. (1993): Conservation of photoperiod-responsive mechanisms in humans (American Journal of Physiology)</a></li>
 <li><a href="https://doi.org/10.1177/0748730419854197" rel="nofollow noopener noreferrer" target="_blank">Roenneberg et al. (2019): Why should we abolish daylight saving time? (Journal of Biological Rhythms)</a></li>
 <li><a href="https://doi.org/10.1016/j.cub.2007.10.025" rel="nofollow noopener noreferrer" target="_blank">Kantermann et al. (2007): The human circadian clock's seasonal adjustment is disrupted by daylight saving time (Current Biology)</a></li>
 <li><a href="https://doi.org/10.1111/jpi.12098" rel="nofollow noopener noreferrer" target="_blank">Stothard et al. (2017): Circadian entrainment to the natural light-dark cycle across seasons (Journal of Pineal Research)</a></li>

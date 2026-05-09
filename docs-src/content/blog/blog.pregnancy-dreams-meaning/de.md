@@ -398,7 +398,7 @@
 <li><a href="https://dictionary.apa.org/dream" rel="nofollow noopener noreferrer" target="_blank">APA Dictionary of Psychology: Dream</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/17689042/" rel="nofollow noopener noreferrer" target="_blank">Nielsen &amp; Paquette (2007) — Traumhaufigkeit und -inhalt bei schwangeren und nicht schwangeren Frauen (PubMed)</a></li>
 <li><a href="https://pubmed.ncbi.nlm.nih.gov/24135556/" rel="nofollow noopener noreferrer" target="_blank">Lara-Carrasco et al. (2014) — Mutterliche Darstellungen in den Traumen schwangerer Frauen (PubMed)</a></li>
-<li><a href="https://www.sleepfoundation.org/pregnancy/dreaming-during-pregnancy" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Traume wahrend der Schwangerschaft</a></li>
+<li><a href="https://www.sleepfoundation.org/pregnancy/how-pregnancy-affects-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation — Traume wahrend der Schwangerschaft</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Zuletzt aktualisiert: 6. Januar 2026</p>
 </section>

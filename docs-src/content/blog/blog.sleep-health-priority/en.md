@@ -277,8 +277,8 @@
 <ul class="mt-6 space-y-2 text-sm text-gray-400">
 <li><a href="https://www.ohsu.edu/" rel="nofollow noopener noreferrer" target="_blank">Oregon Health &amp; Science University (2025): Sleep insufficiency and all-cause mortality, NHANES longitudinal analysis</a></li>
 <li><a href="https://doi.org/10.1126/science.1241224" rel="nofollow noopener noreferrer" target="_blank">Xie et al. (2013): Sleep drives metabolite clearance from the adult brain (Science)</a></li>
-<li><a href="https://doi.org/10.1016/j.cub.2009.10.044" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009): Overnight therapy? The role of sleep in emotional brain processing (Psychological Bulletin)</a></li>
-<li><a href="https://doi.org/10.1523/JNEUROSCI.2830-14.2014" rel="nofollow noopener noreferrer" target="_blank">Goldstein &amp; Walker (2014): The role of sleep in emotional brain function (Annual Review of Clinical Psychology)</a></li>
+<li><a href="https://doi.org/10.1037/a0016570" rel="nofollow noopener noreferrer" target="_blank">Walker &amp; van der Helm (2009): Overnight therapy? The role of sleep in emotional brain processing (Psychological Bulletin)</a></li>
+<li><a href="https://doi.org/10.1146/annurev-clinpsy-032813-153716" rel="nofollow noopener noreferrer" target="_blank">Goldstein &amp; Walker (2014): The role of sleep in emotional brain function (Annual Review of Clinical Psychology)</a></li>
 <li><a href="https://doi.org/10.1093/sleep/33.5.585" rel="nofollow noopener noreferrer" target="_blank">Cappuccio et al. (2010): Sleep duration and all-cause mortality: a systematic review and meta-analysis (Sleep)</a></li>
 </ul>
 <p class="mt-6 text-xs text-purple-200/60">Last updated: March 24, 2026</p>
