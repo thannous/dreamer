@@ -94,10 +94,190 @@
         .glass-button:hover { background: rgba(255, 255, 255, 0.15); }
         @keyframes aurora { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         html, body { overflow-x: hidden; }
+        .symbol-page .aurora-bg {
+            background:
+                radial-gradient(circle at 82% 18%, rgba(253, 164, 129, 0.10), transparent 22rem),
+                radial-gradient(circle at 18% 0%, rgba(167, 139, 250, 0.12), transparent 24rem),
+                linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+                #08030f;
+            background-size: auto, auto, 5rem 5rem, 5rem 5rem, auto;
+            animation: none;
+        }
+        .symbol-page-main { position: relative; }
+        .symbol-breadcrumb { letter-spacing: 0.01em; }
+        .symbol-hero { position: relative; }
+        .symbol-hero-top {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .symbol-orbit-mark {
+            width: clamp(6rem, 16vw, 8rem);
+            aspect-ratio: 1;
+            display: grid;
+            place-items: center;
+            color: rgba(216, 180, 254, 0.86);
+            border: 1px solid rgba(253, 164, 129, 0.22);
+            border-radius: 999px;
+            background:
+                radial-gradient(circle, rgba(216, 180, 254, 0.13), transparent 58%),
+                rgba(255, 255, 255, 0.025);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+        }
+        .symbol-quick-card {
+            margin-top: 1.35rem;
+            border: 1px solid rgba(253, 164, 129, 0.16);
+            border-radius: 1.25rem;
+            background: linear-gradient(145deg, rgba(20, 10, 40, 0.72), rgba(9, 4, 18, 0.76));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 18px 48px rgba(0, 0, 0, 0.16);
+        }
+        .symbol-quick-label {
+            color: #fda481;
+            letter-spacing: 0.01em;
+        }
+        .symbol-jump-nav { display: none; }
+        .symbol-meaning,
+        .symbol-variations,
+        #questions {
+            scroll-margin-top: 7rem;
+        }
         .variation-card { transition: all 0.3s ease; }
         .variation-card:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
         .symbol-link { transition: all 0.3s ease; }
         .symbol-link:hover { transform: translateY(-2px); border-color: rgba(253, 164, 129, 0.3); }
+        @media (max-width: 767px) {
+            .symbol-page-main {
+                padding-top: 5.4rem !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+                padding-bottom: 3.5rem !important;
+            }
+            .symbol-page .orb { display: none; }
+            .symbol-breadcrumb {
+                margin-bottom: 1.1rem !important;
+                font-size: 0.8rem !important;
+            }
+            .symbol-hero {
+                margin-bottom: 1rem !important;
+            }
+            .symbol-hero-top {
+                display: block;
+            }
+            .symbol-hero-chips {
+                gap: 0.55rem !important;
+                margin-bottom: 1rem !important;
+            }
+            .symbol-hero-chips span,
+            .symbol-hero-chips a {
+                padding: 0.48rem 0.74rem !important;
+                font-size: 0.68rem !important;
+            }
+            .symbol-category-chip { display: none !important; }
+            .symbol-orbit-mark { display: none; }
+            .symbol-heading {
+                margin-bottom: 0.8rem !important;
+                font-size: clamp(2.65rem, 13vw, 3.45rem) !important;
+                line-height: 0.95 !important;
+                letter-spacing: 0 !important;
+            }
+            .symbol-h1-prefix { display: none; }
+            .symbol-summary {
+                font-size: 1rem !important;
+                line-height: 1.6 !important;
+                max-width: 30rem;
+            }
+            .symbol-quick-card {
+                margin-top: 1rem;
+                padding: 1.05rem 1.1rem !important;
+                border-radius: 1.05rem;
+            }
+            .symbol-quick-card p {
+                margin-top: 0.55rem;
+                font-size: 1rem;
+                line-height: 1.55;
+            }
+            .symbol-jump-nav {
+                position: sticky;
+                top: 4.65rem;
+                z-index: 25;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                overflow: hidden;
+                margin: 0.95rem -0.1rem 1.45rem;
+                border: 1px solid rgba(255, 255, 255, 0.10);
+                border-radius: 1.15rem;
+                background: rgba(13, 6, 24, 0.94);
+                backdrop-filter: blur(18px);
+                -webkit-backdrop-filter: blur(18px);
+                box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28);
+            }
+            .symbol-jump-link {
+                min-height: 4.35rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 0.35rem;
+                color: rgba(237, 225, 255, 0.72);
+                font-size: 0.78rem;
+                border-left: 1px solid rgba(255, 255, 255, 0.075);
+            }
+            .symbol-jump-link:first-child { border-left: 0; }
+            .symbol-jump-link:focus { outline: none; }
+            .symbol-jump-link:focus-visible {
+                outline: 2px solid rgba(253, 164, 129, 0.64);
+                outline-offset: -4px;
+            }
+            .symbol-jump-link.is-active {
+                color: #fff7ed;
+                box-shadow: inset 0 -3px 0 #fda481;
+            }
+            .symbol-jump-link.is-active svg { color: #fda481; }
+            body.symbol-jump-fixed .symbol-jump-nav {
+                position: fixed;
+                left: 1rem;
+                right: 1rem;
+                top: 4.65rem;
+                margin: 0;
+                max-width: calc(100vw - 2rem);
+            }
+            body.symbol-jump-fixed .symbol-jump-nav + .symbol-meaning {
+                margin-top: 6rem !important;
+            }
+            .symbol-meaning,
+            #questions {
+                padding: 1.25rem !important;
+                border-radius: 1.15rem !important;
+                margin-bottom: 1.75rem !important;
+            }
+            .symbol-meaning h2,
+            .symbol-variations h2,
+            #questions h2 {
+                font-size: 1.25rem !important;
+                margin-bottom: 1rem !important;
+            }
+            .symbol-meaning .prose {
+                font-size: 0.98rem;
+                line-height: 1.68;
+            }
+            .symbol-meaning .prose p + p {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.055);
+            }
+            .symbol-variations {
+                margin-bottom: 1.75rem !important;
+            }
+            .variation-card {
+                padding: 1rem !important;
+                border-radius: 1rem !important;
+            }
+            .variation-card p {
+                line-height: 1.55;
+            }
+        }
     </style>
 
     <!-- Schema.org DefinedTerm -->
@@ -201,7 +381,7 @@
     </script>
 </head>
 
-<body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
+<body class="symbol-page bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden" style="background-color: #0a0514;">
     <div class="aurora-bg"></div>
     <div class="orb w-[70vw] h-[70vw] md:w-[40rem] md:h-[40rem] bg-purple-900/30 top-0 left-0"></div>
     <div class="orb w-[90vw] h-[90vw] md:w-[50rem] md:h-[50rem] bg-blue-900/20 bottom-0 right-0"></div>
@@ -273,11 +453,11 @@
         </div>
     </nav>
 
-    <main class="pt-32 pb-20 px-4">
+    <main class="symbol-page-main pt-32 pb-20 px-4">
         <article class="max-w-3xl mx-auto">
 
             <!-- Breadcrumb -->
-            <nav class="text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
+            <nav class="symbol-breadcrumb text-sm text-purple-200/60 mb-8" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
                         <a href="/it/" class="hover:text-dream-salmon transition-colors">Home</a>
@@ -294,29 +474,60 @@
             </nav>
 
             <!-- Header -->
-            <header class="mb-12">
-                <div class="flex flex-wrap gap-3 mb-6">
-                    <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        SIMBOLO ONIRICO
-                    </span>
-                    <a href="/it/simboli/corpo"
-                       class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
-                        Corpo
-                    </a>
+            <header class="symbol-hero mb-12">
+                <div class="symbol-hero-top">
+                    <div>
+                        <div class="symbol-hero-chips flex flex-wrap gap-3 mb-6">
+                            <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                SIMBOLO ONIRICO
+                            </span>
+                            <a href="/it/simboli/corpo"
+                               class="symbol-category-chip inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2 hover:text-white hover:border-dream-salmon/30 transition-colors">
+                                Corpo
+                            </a>
+                        </div>
+
+                        <h1 class="symbol-heading font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
+                            <span class="symbol-h1-prefix">Significato:</span> <span>Gravidanza</span>
+                        </h1>
+
+                        <p class="symbol-summary text-lg text-purple-200/80 leading-relaxed">
+                            La gravidanza simboleggia creatività, nuove idee e lo sviluppo di qualcosa di nuovo nella vita. Può rappresentare progetti, relazioni o crescita personale.
+                        </p>
+                    </div>
+
+                    <div class="symbol-orbit-mark" aria-hidden="true">
+                        <i data-lucide="sparkles" class="w-12 h-12"></i>
+                    </div>
                 </div>
 
-                <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Significato: Gravidanza
-                </h1>
-
-                <p class="text-lg text-purple-200/80 leading-relaxed">
-                    La gravidanza simboleggia creatività, nuove idee e lo sviluppo di qualcosa di nuovo nella vita. Può rappresentare progetti, relazioni o crescita personale.
-                </p>
+                <div class="symbol-quick-card p-5">
+                    <div class="symbol-quick-label flex items-center gap-2 text-sm font-bold">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                        In una frase
+                    </div>
+                    <p class="text-dream-cream">La gravidanza simboleggia creatività, nuove idee e lo sviluppo di qualcosa di nuovo nella vita.</p>
+                </div>
             </header>
 
+            <nav class="symbol-jump-nav" aria-label="Sezioni del simbolo" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                    <a href="#meaning" class="symbol-jump-link is-active">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                        <span>Significato</span>
+                    </a>
+                    <a href="#variations" class="symbol-jump-link ">
+                        <i data-lucide="waves" class="w-5 h-5"></i>
+                        <span>Varianti</span>
+                    </a>
+                    <a href="#questions" class="symbol-jump-link ">
+                        <i data-lucide="help-circle" class="w-5 h-5"></i>
+                        <span>Domande</span>
+                    </a>
+            </nav>
+
             <!-- Main Interpretation -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10">
+            <section id="meaning" class="symbol-meaning glass-panel rounded-2xl p-6 md:p-8 mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
                     <i data-lucide="eye" class="w-6 h-6 text-dream-salmon"></i>
                     Cosa significa?
@@ -330,7 +541,7 @@
             </section>
 
             <!-- Variations -->
-            <section class="mb-10">
+            <section id="variations" class="symbol-variations mb-10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-6 flex items-center gap-3">
                     <i data-lucide="layers" class="w-6 h-6 text-dream-salmon"></i>
                     Variazioni comuni
@@ -374,7 +585,7 @@
             </section>
 
             <!-- Ask Yourself -->
-            <section class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/20">
+            <section id="questions" class="glass-panel rounded-2xl p-6 md:p-8 mb-10 border border-dream-salmon/20">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
                     <i data-lucide="help-circle" class="w-6 h-6 text-dream-salmon"></i>
                     Domande da porsi
@@ -554,6 +765,82 @@
                     navbar.classList.toggle('py-6', window.scrollY <= 50);
                 }
             });
+
+            const jumpLinks = Array.from(document.querySelectorAll('.symbol-jump-link'));
+            const jumpNav = document.querySelector('.symbol-jump-nav');
+            const jumpTargets = jumpLinks
+                .map((link) => {
+                    const hash = link.getAttribute('href');
+                    return hash ? { hash, section: document.querySelector(hash) } : null;
+                })
+                .filter((item) => item && item.section);
+            let jumpStart = 0;
+            const refreshJumpStart = () => {
+                if (!jumpNav) return;
+                document.body.classList.remove('symbol-jump-fixed');
+                jumpStart = jumpNav.getBoundingClientRect().top + window.scrollY;
+            };
+            const updateJumpPosition = () => {
+                if (!jumpNav || window.innerWidth >= 768) {
+                    document.body.classList.remove('symbol-jump-fixed');
+                    return;
+                }
+                document.body.classList.toggle('symbol-jump-fixed', window.scrollY > jumpStart - 76);
+            };
+            const setActiveJumpLink = (hash) => {
+                if (!jumpLinks.length) return;
+                const normalized = hash || jumpLinks[0].getAttribute('href');
+                jumpLinks.forEach((link) => {
+                    link.classList.toggle('is-active', link.getAttribute('href') === normalized);
+                });
+            };
+            const getScrollSpyOffset = () => window.innerWidth < 768 ? 176 : 112;
+            const updateActiveJumpLink = () => {
+                if (!jumpTargets.length) return;
+                const probeY = getScrollSpyOffset();
+                let activeHash = jumpTargets[0].hash;
+                for (const target of jumpTargets) {
+                    const rect = target.section.getBoundingClientRect();
+                    if (rect.top <= probeY) {
+                        activeHash = target.hash;
+                    }
+                    if (rect.top <= probeY && rect.bottom > probeY) break;
+                }
+                setActiveJumpLink(activeHash);
+            };
+            jumpLinks.forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    const hash = link.getAttribute('href');
+                    const target = hash ? document.querySelector(hash) : null;
+                    if (!hash || !target) {
+                        setActiveJumpLink(hash);
+                        return;
+                    }
+                    event.preventDefault();
+                    setActiveJumpLink(hash);
+                    const offset = window.innerWidth < 768 ? 188 : 96;
+                    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.history.pushState(null, '', hash);
+                    window.scrollTo({ top, behavior: 'smooth' });
+                });
+            });
+            window.addEventListener('hashchange', () => setActiveJumpLink(window.location.hash));
+            window.addEventListener('resize', () => {
+                refreshJumpStart();
+                updateJumpPosition();
+                updateActiveJumpLink();
+            });
+            window.addEventListener('scroll', () => {
+                updateJumpPosition();
+                updateActiveJumpLink();
+            }, { passive: true });
+            refreshJumpStart();
+            updateJumpPosition();
+            if (window.location.hash) {
+                setActiveJumpLink(window.location.hash);
+            } else {
+                updateActiveJumpLink();
+            }
         });
     </script>
     <script src="/js/language-dropdown.js?v=38457cccb5c9" defer></script>
