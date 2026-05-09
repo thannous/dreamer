@@ -68,6 +68,34 @@
             }
           }
         },
+        "page.press": {
+          "id": "page.press",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "press",
+          "locales": {
+            "en": {
+              "slug": "press",
+              "path": "/en/press"
+            },
+            "fr": {
+              "slug": "presse",
+              "path": "/fr/presse"
+            },
+            "es": {
+              "slug": "prensa",
+              "path": "/es/prensa"
+            },
+            "de": {
+              "slug": "presse",
+              "path": "/de/presse"
+            },
+            "it": {
+              "slug": "stampa",
+              "path": "/it/stampa"
+            }
+          }
+        },
         "legal.notice": {
           "id": "legal.notice",
           "type": "content",

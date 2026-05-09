@@ -15,6 +15,14 @@ function stripSiteSuffix(title) {
   return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
 }
 
+function pressKitLabel(lang) {
+  if (lang === 'fr') return 'Presse';
+  if (lang === 'es') return 'Prensa';
+  if (lang === 'de') return 'Presse';
+  if (lang === 'it') return 'Stampa';
+  return 'Press kit';
+}
+
 function loadFeaturedBlogTitles() {
   const titles = new Map();
   const featuredEntries = siteConfig.seoLinking?.featuredBlogEntries || [];
@@ -148,6 +156,7 @@ function renderFooter(context) {
     `                <h5 class="font-bold mb-4 text-white">${escapeHtml(locale.footerLegal)}</h5>`,
     '                <ul class="space-y-2 text-sm text-gray-500 mb-4">',
     `                    <li><a href="${routePath('page.about')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.about)}</a></li>`,
+    `                    <li><a href="${routePath('page.press')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(pressKitLabel(lang))}</a></li>`,
     `                    <li><a href="${routePath('legal.notice')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.legalNotice)}</a></li>`,
     `                    <li><a href="${routePath('legal.privacy')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.privacy)}</a></li>`,
     `                    <li><a href="${routePath('legal.terms')}" class="hover:text-dream-salmon transition-colors">${escapeHtml(locale.terms)}</a></li>`,
