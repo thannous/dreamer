@@ -252,6 +252,51 @@ const GUIDE_HUB_BENTO_COPY = {
   ]
 };
 
+const GUIDE_HUB_DEPTH_COPY = {
+  en: {
+    title: 'How to use these guides',
+    paragraphs: [
+      'A dream guide works best when you start from the exact image that stayed with you after waking: a place, an animal, a person, a sensation, or a repeated action. Open the dictionary when you need a precise symbol, then use the themed guides when the dream belongs to a wider pattern such as fear, transformation, water, people, or familiar locations.',
+      'Read each interpretation as a map, not a verdict. The same symbol can point to different meanings depending on your emotion in the dream, the role you played, and what is happening in your waking life. A dream about water, for example, can suggest emotional overload, renewal, memory, or uncertainty depending on whether you were swimming, drowning, watching waves, or crossing a river.',
+      'For stronger results, compare the guide with a short dream journal entry. Note the date, the main feeling, the strongest image, and one real-life situation that might echo the dream. Patterns become clearer over several nights, especially for recurring dreams, nightmares, or dreams that appear during stress, exams, grief, relationship change, or creative work.',
+      'Move from broad to specific: choose a theme first, then open the symbol page that matches the detail you remember most clearly. This keeps interpretation grounded and helps you avoid forcing one fixed meaning onto every dream.'
+    ]
+  },
+  fr: {
+    title: 'Comment utiliser ces guides',
+    paragraphs: [
+      "Un guide des rêves devient plus utile lorsque vous partez de l'image exacte qui reste au réveil : un lieu, un animal, une personne, une sensation ou une action répétée. Utilisez le dictionnaire pour un symbole précis, puis les guides thématiques quand le rêve appartient à un motif plus large comme la peur, la transformation, l'eau, les personnes ou les lieux familiers.",
+      "Lisez chaque interprétation comme une carte, pas comme un verdict. Un même symbole peut changer de sens selon l'émotion ressentie, votre rôle dans la scène et ce qui se passe dans votre vie éveillée. Rêver d'eau peut par exemple évoquer une surcharge émotionnelle, un renouveau, un souvenir ou une incertitude selon que vous nagez, coulez, regardez des vagues ou traversez une rivière.",
+      "Pour obtenir une lecture plus juste, comparez le guide avec une courte note de journal de rêves. Notez la date, l'émotion principale, l'image la plus forte et une situation réelle qui pourrait faire écho au rêve. Les motifs deviennent plus lisibles sur plusieurs nuits, surtout pour les rêves récurrents, les cauchemars ou les rêves liés au stress, aux examens, au deuil, aux changements relationnels ou à la créativité."
+    ]
+  },
+  es: {
+    title: 'Cómo usar estas guías',
+    paragraphs: [
+      'Una guía de sueños funciona mejor cuando empiezas por la imagen exacta que recuerdas al despertar: un lugar, un animal, una persona, una sensación o una acción repetida. Abre el diccionario cuando necesites un símbolo concreto y usa las guías temáticas cuando el sueño pertenezca a un patrón más amplio, como miedo, transformación, agua, personas o lugares familiares.',
+      'Lee cada interpretación como un mapa, no como una sentencia. El mismo símbolo puede tener sentidos distintos según la emoción del sueño, el papel que tenías en la escena y lo que ocurre en tu vida despierta. Soñar con agua, por ejemplo, puede señalar carga emocional, renovación, memoria o incertidumbre según si nadabas, te hundías, mirabas olas o cruzabas un río.',
+      'Para una lectura más precisa, compara la guía con una breve entrada de diario de sueños. Anota la fecha, la emoción principal, la imagen más intensa y una situación real que pueda resonar con el sueño. Los patrones aparecen con más claridad durante varias noches, sobre todo en sueños recurrentes, pesadillas o sueños que llegan con estrés, exámenes, duelo, cambios de relación o trabajo creativo.'
+    ]
+  },
+  de: {
+    title: 'So nutzen Sie diese Ratgeber',
+    paragraphs: [
+      'Ein Traumratgeber hilft am meisten, wenn Sie mit dem genauen Bild beginnen, das nach dem Aufwachen geblieben ist: ein Ort, ein Tier, eine Person, ein Gefühl oder eine wiederholte Handlung. Öffnen Sie das Lexikon für ein einzelnes Symbol und nutzen Sie die thematischen Ratgeber, wenn der Traum zu einem größeren Muster gehört, etwa Angst, Wandel, Wasser, Menschen oder vertrauten Orten.',
+      'Lesen Sie jede Deutung als Orientierung, nicht als endgültiges Urteil. Dasselbe Symbol kann je nach Traumgefühl, Ihrer Rolle in der Szene und Ihrer aktuellen Lebenslage Unterschiedliches bedeuten. Wasser kann zum Beispiel emotionale Überforderung, Erneuerung, Erinnerung oder Unsicherheit anzeigen, je nachdem ob Sie schwimmen, untergehen, Wellen beobachten oder einen Fluss überqueren.',
+      'Noch genauer wird die Deutung, wenn Sie den Ratgeber mit einem kurzen Traumtagebuch verbinden. Notieren Sie Datum, Hauptgefühl, stärkstes Bild und eine reale Situation, die zum Traum passen könnte. Muster werden über mehrere Nächte sichtbar, besonders bei wiederkehrenden Träumen, Albträumen oder Träumen, die während Stress, Prüfungen, Trauer, Beziehungswechseln oder kreativer Arbeit auftreten.',
+      'Gehen Sie vom Allgemeinen zum Konkreten: Wählen Sie zuerst ein Thema und öffnen Sie danach die Symbolseite, die zum stärksten Detail passt. So bleibt die Deutung geerdet und Sie vermeiden, jedem Traum dieselbe feste Bedeutung aufzuzwingen. Wenn ein Symbol mehrdeutig bleibt, vergleichen Sie es mit einem zweiten Motiv aus demselben Traum, statt sofort eine einzige Erklärung zu wählen. Das macht die Auswertung stabiler.'
+    ]
+  },
+  it: {
+    title: 'Come usare queste guide',
+    paragraphs: [
+      "Una guida ai sogni è più utile quando parti dall'immagine precisa rimasta al risveglio: un luogo, un animale, una persona, una sensazione o un'azione ripetuta. Apri il dizionario quando ti serve un simbolo specifico e usa le guide tematiche quando il sogno fa parte di uno schema più ampio, come paura, trasformazione, acqua, persone o luoghi familiari.",
+      "Leggi ogni interpretazione come una mappa, non come una sentenza. Lo stesso simbolo può cambiare significato in base all'emozione provata, al ruolo che avevi nella scena e a ciò che accade nella vita da sveglio. Sognare acqua, per esempio, può indicare sovraccarico emotivo, rinnovamento, memoria o incertezza a seconda che tu stia nuotando, affondando, guardando onde o attraversando un fiume.",
+      'Per una lettura più precisa, confronta la guida con una breve nota nel diario dei sogni. Segna la data, l’emozione principale, l’immagine più forte e una situazione reale che potrebbe risuonare con il sogno. I pattern diventano più chiari su più notti, soprattutto con sogni ricorrenti, incubi o sogni legati a stress, esami, lutti, cambiamenti nelle relazioni o lavoro creativo.'
+    ]
+  }
+};
+
 const GUIDE_CARD_META = {
   'most-common-dream-symbols': { icon: 'sparkles', tone: 'salmon' },
   'scary-dream-symbols': { icon: 'moon', tone: 'violet' },
@@ -775,11 +820,38 @@ function renderGuideHubStyles() {
         .guides-trust-icon { width: 3.1rem; height: 3.1rem; flex: 0 0 auto; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: #fda481; border: 1px solid rgba(226,138,255,0.36); background: rgba(253,164,129,0.07); }
         .guides-trust strong { display: block; color: #fff7f0; font-weight: 600; margin-bottom: 0.25rem; }
         .guides-trust span { color: rgba(226,218,255,0.7); font-size: 0.86rem; line-height: 1.35; }
+        .guides-depth {
+          margin-top: 1.4rem;
+          padding: clamp(1.35rem, 2.4vw, 2rem);
+          border-radius: 10px;
+          border: 1px solid rgba(226,218,255,0.14);
+          background: rgba(9, 4, 20, 0.58);
+          backdrop-filter: blur(14px);
+        }
+        .guides-depth h2 {
+          margin: 0 0 1rem;
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(1.65rem, 2vw, 2.35rem);
+          line-height: 1.02;
+          color: #fff7f0;
+        }
+        .guides-depth-copy {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 1rem;
+        }
+        .guides-depth-copy p {
+          margin: 0;
+          color: rgba(226,218,255,0.78);
+          font-size: 0.95rem;
+          line-height: 1.65;
+        }
         @media (max-width: 1180px) {
           .guides-hero { grid-template-columns: 1fr; min-height: auto; padding-top: 7rem; }
           .guides-entry-layout { grid-template-columns: 1fr; }
           .guides-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .guides-title { max-width: 16ch; }
+          .guides-depth-copy { grid-template-columns: 1fr; }
         }
         @media (max-width: 980px) {
           .noctalia-premium-nav {
@@ -982,6 +1054,16 @@ function renderHubBentoCard(lang, t, pages, card) {
                 </a>`;
 }
 
+function renderGuideDepthSection(lang) {
+  const copy = GUIDE_HUB_DEPTH_COPY[lang] || GUIDE_HUB_DEPTH_COPY.en;
+  return `            <section class="guides-depth" aria-labelledby="guidesDepthTitle">
+                <h2 id="guidesDepthTitle">${escapeHtml(copy.title)}</h2>
+                <div class="guides-depth-copy">
+${copy.paragraphs.map((paragraph) => `                    <p>${escapeHtml(paragraph)}</p>`).join('\n')}
+                </div>
+            </section>`;
+}
+
 function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
   const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
@@ -1068,6 +1150,7 @@ ${cards}
                     <span><strong>${escapeHtml(ui.trustAccessible)}</strong><span>${escapeHtml(ui.trustAccessibleDesc)}</span></span>
                 </div>
             </div>
+${renderGuideDepthSection(lang)}
         </section>
     </main>
 ${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}

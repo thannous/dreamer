@@ -65,6 +65,10 @@
 <h2 class="font-serif text-xl text-dream-cream mb-3" id="quick-answer-title">Kurze Antwort</h2>
 <p class="text-purple-100/80 leading-relaxed">Von einer Prüfung zu träumen weist meist auf Bewertungsangst, Leistungsdruck, Perfektionismus oder das Gefühl hin, nicht vorbereitet zu sein. In der Prüfungszeit kann sich dieser Traum verstärken. Bestehen steht für Erleichterung; Durchfallen zeigt eher Angst vor Urteil als reales Scheitern.</p>
 </section>
+<section class="glass-panel rounded-2xl p-6 mb-10 border border-white/10">
+<h2 class="font-serif text-2xl text-dream-cream mb-4">Warum gerade jetzt ein Prüfungstraum auftaucht</h2>
+<p class="text-purple-100/80 leading-relaxed">Ein Prüfungstraum muss nicht bedeuten, dass eine echte Prüfung bevorsteht. Häufig erscheint er, wenn Sie sich in einer Situation bewähren müssen: ein Gespräch, eine Entscheidung, ein Projekt, eine Beziehungsklärung oder ein Moment, in dem andere Ihre Leistung beurteilen. Fragen Sie deshalb nicht nur, ob Sie gelernt haben, sondern wer im Traum prüft, welches Fach vorkommt und welches Gefühl nach dem Aufwachen bleibt. Diese Details zeigen, ob der Traum eher von Vorbereitung, Selbstvertrauen, Angst vor Kritik oder einem zu strengen inneren Maßstab erzählt.</p>
+</section>
 <figure class="mb-12 rounded-2xl overflow-hidden">
 <img alt="Prüfungstraum Bedeutung: nicht gelernt, bestanden oder durchgefallen" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="1200">
 </figure>
