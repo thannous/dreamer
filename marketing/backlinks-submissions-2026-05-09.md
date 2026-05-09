@@ -24,7 +24,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | --- | --- | --- | --- |
 | AppBrain Featured Apps | https://www.appbrain.com/product/featured | Blocked — account prerequisite | Verified 2026-05-09: free, no credit card, but requires the app to be live on Google Play and the developer account to be claimed in AppBrain before submission. |
 | AlternativeTo | https://alternativeto.net/contribute/new-app/ | Blocked — Cloudflare / account flow | Free community/editorial submission; current direct check returned Cloudflare challenge on 2026-05-09, so it needs interactive browser completion and likely account/community flow. Backlink attributes must be checked after approval. |
-| SaaSHub | https://www.saashub.com/services/submit | Blocked — name collision | Verified 2026-05-09: free submission accepts mobile apps with decent English websites. Attempted free submission for `https://noctalia.app`; SaaSHub rejected the product name because an unrelated `Noctalia` listing already exists on SaaSHub for a Linux/Wayland desktop shell. Do not create a confusing duplicate; next move is to contact SaaSHub or use a disambiguated name only if approved. |
+| SaaSHub | https://www.saashub.com/noctalia-dream-journal | Created — pending approval | Created on 2026-05-09 as `Noctalia Dream Journal` after the plain `Noctalia` name collided with an unrelated SaaSHub listing for a Linux/Wayland desktop shell. Public profile is live but marked `Pending approval...`; outbound `noctalia.app` backlink is not visible yet, so re-check after moderation. |
 | Digital.Health | https://digital.health/add_a_digital_health_company | Blocked — account prerequisite | Verified 2026-05-09: free listing, but requires Digital.Health account, company creation/claim, then product creation. Phrase Noctalia as sleep wellness/dream journaling, not a medical product. |
 | The Next AI | https://www.thenextai.com/submit-ai-tool/ | Submitted | Submitted free listing via the site's Google Apps Script form endpoint on 2026-05-09; endpoint returned the expected Google temporary redirect. Watch `contact@noctalia.app` for approval/live-listing email. |
 | SearchGun | https://searchgun.com/ | Blocked — account prerequisite | Verified 2026-05-09: free Google Play app review; requests are accepted from the developer or official marketing person and require a SearchGun account. Guest post/interview can be submitted without account via their write-for-us/contact route. |
@@ -43,7 +43,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | Zearches | Live listing created | https://zearches.com/directory.php?slug=software-saas listing links to https://noctalia.app | Nofollow | Keep for discovery/indexation value; check later if an individual listing URL appears. |
 | The Next AI | Submission sent | https://www.thenextai.com/submit-ai-tool/ | Pending approval; unknown until live page exists | Watch `contact@noctalia.app` / Gmail for approval, then record live listing URL and link attributes. |
 | OpenAIToolsHub | Submission sent | https://www.openaitoolshub.org/submit | Pending approval; site claims dofollow if approved | Watch `contact@noctalia.app` / Gmail for approval within ~48h, then record live listing URL and verify dofollow. |
-| SaaSHub | Blocked after submission attempt | https://www.saashub.com/services/submit | No new backlink | Free form opened and accepted categories/contact data, but rejected `Noctalia` because an unrelated existing listing already uses that name. Avoid duplicate until SaaSHub support can correct or disambiguate it. |
+| SaaSHub | Public profile created, pending approval | https://www.saashub.com/noctalia-dream-journal | Pending approval; outbound site link not visible yet | Submitted as `Noctalia Dream Journal`; SaaSHub confirmed competitor placement against Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, and Rosebud App. Re-check after moderation for live `noctalia.app` backlink and follow attributes. |
 
 ## Yield improvements made in this run
 
@@ -77,6 +77,16 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Website URL: https://noctalia.app
 - Logo URL: https://noctalia.app/logo512.png
 - Email: contact@noctalia.app
+
+### SaaSHub
+
+- Submitted name: Noctalia Dream Journal
+- Public profile: https://www.saashub.com/noctalia-dream-journal
+- Status: Pending approval
+- Website URL submitted: https://noctalia.app
+- Tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.
+- Categories selected: AI, Tech, Web App, Health And Fitness, Note Taking, iPhone.
+- Competitors selected: Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, Rosebud App.
 
 ### Remaining free-platform packet
 
