@@ -43,6 +43,11 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /fr/conditions-utilisation /fr/cgu 301
 /fr/conditions-utilisation.html /fr/cgu 301
 
+# Legacy/unknown entrypoints
+/fr/conditions.html /fr/cgu 301
+/fr/conditions /fr/cgu 301
+/waitlist /en/ 301
+
 # Redirect all .html pages to clean URLs (301 permanent)
 # Pattern-based redirects for blog, guides, and localized pages
 /:lang/blog/:slug.html /:lang/blog/:slug 301
@@ -61,8 +66,3 @@ https://www.noctalia.app/* https://noctalia.app/:splat 301
 /politique-confidentialite /fr/politique-confidentialite 301
 /suppression-compte.html /fr/suppression-compte 301
 /suppression-compte /fr/suppression-compte 301
-
-# Legacy/unknown entrypoints
-/fr/conditions.html /fr/cgu 301
-/fr/conditions /fr/cgu 301
-/waitlist /en/ 301
