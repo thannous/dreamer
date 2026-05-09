@@ -31,18 +31,6 @@ const EXTERNAL_CHECK_HEADERS = {
   accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   'accept-language': 'en-US,en;q=0.9'
 };
-const TRANSIENT_EXTERNAL_ERROR_HOSTS = new Set([
-  'academic.oup.com',
-  'analytics.ahrefs.com',
-  'doi.org',
-  'www.nimh.nih.gov',
-  'play.google.com',
-  'pubmed.ncbi.nlm.nih.gov',
-  'www.ohsu.edu',
-  'www.instagram.com',
-  'www.ninds.nih.gov',
-  'www.reseau-morphee.fr'
-]);
 const TRANSIENT_EXTERNAL_ERROR_PATTERN =
   /aborted|certificate|eai_again|econnreset|enotfound|fetch failed|network|ssl|terminated|timeout|tls/i;
 
@@ -260,14 +248,8 @@ async function checkExternalUrl(url, { timeoutMs }) {
     });
   const isOkStatus = (status) => status < 400 || status === 401 || status === 403 || status === 429;
   const formatError = (error) => String(error && error.message ? error.message : error);
-  const canSkipTransientNetworkError = (errorMessage) => {
-    try {
-      const hostname = new URL(url).hostname;
-      return TRANSIENT_EXTERNAL_ERROR_HOSTS.has(hostname) && TRANSIENT_EXTERNAL_ERROR_PATTERN.test(errorMessage);
-    } catch {
-      return false;
-    }
-  };
+  const canSkipTransientNetworkError = (errorMessage) =>
+    TRANSIENT_EXTERNAL_ERROR_PATTERN.test(errorMessage);
 
   try {
     const res = await request('HEAD');

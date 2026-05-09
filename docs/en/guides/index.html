@@ -361,11 +361,38 @@
         .guides-trust-icon { width: 3.1rem; height: 3.1rem; flex: 0 0 auto; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; color: #fda481; border: 1px solid rgba(226,138,255,0.36); background: rgba(253,164,129,0.07); }
         .guides-trust strong { display: block; color: #fff7f0; font-weight: 600; margin-bottom: 0.25rem; }
         .guides-trust span { color: rgba(226,218,255,0.7); font-size: 0.86rem; line-height: 1.35; }
+        .guides-depth {
+          margin-top: 1.4rem;
+          padding: clamp(1.35rem, 2.4vw, 2rem);
+          border-radius: 10px;
+          border: 1px solid rgba(226,218,255,0.14);
+          background: rgba(9, 4, 20, 0.58);
+          backdrop-filter: blur(14px);
+        }
+        .guides-depth h2 {
+          margin: 0 0 1rem;
+          font-family: Georgia, 'Times New Roman', serif;
+          font-size: clamp(1.65rem, 2vw, 2.35rem);
+          line-height: 1.02;
+          color: #fff7f0;
+        }
+        .guides-depth-copy {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 1rem;
+        }
+        .guides-depth-copy p {
+          margin: 0;
+          color: rgba(226,218,255,0.78);
+          font-size: 0.95rem;
+          line-height: 1.65;
+        }
         @media (max-width: 1180px) {
           .guides-hero { grid-template-columns: 1fr; min-height: auto; padding-top: 7rem; }
           .guides-entry-layout { grid-template-columns: 1fr; }
           .guides-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .guides-title { max-width: 16ch; }
+          .guides-depth-copy { grid-template-columns: 1fr; }
         }
         @media (max-width: 980px) {
           .noctalia-premium-nav {
@@ -780,6 +807,15 @@
                     <span><strong>Accessible to all</strong><span>Clear, practical content for every level.</span></span>
                 </div>
             </div>
+            <section class="guides-depth" aria-labelledby="guidesDepthTitle">
+                <h2 id="guidesDepthTitle">How to use these guides</h2>
+                <div class="guides-depth-copy">
+                    <p>A dream guide works best when you start from the exact image that stayed with you after waking: a place, an animal, a person, a sensation, or a repeated action. Open the dictionary when you need a precise symbol, then use the themed guides when the dream belongs to a wider pattern such as fear, transformation, water, people, or familiar locations.</p>
+                    <p>Read each interpretation as a map, not a verdict. The same symbol can point to different meanings depending on your emotion in the dream, the role you played, and what is happening in your waking life. A dream about water, for example, can suggest emotional overload, renewal, memory, or uncertainty depending on whether you were swimming, drowning, watching waves, or crossing a river.</p>
+                    <p>For stronger results, compare the guide with a short dream journal entry. Note the date, the main feeling, the strongest image, and one real-life situation that might echo the dream. Patterns become clearer over several nights, especially for recurring dreams, nightmares, or dreams that appear during stress, exams, grief, relationship change, or creative work.</p>
+                    <p>Move from broad to specific: choose a theme first, then open the symbol page that matches the detail you remember most clearly. This keeps interpretation grounded and helps you avoid forcing one fixed meaning onto every dream.</p>
+                </div>
+            </section>
         </section>
     </main>
     <footer class="site-footer pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
