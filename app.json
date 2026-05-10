@@ -83,6 +83,7 @@
           "microphonePermission": "Allow Noctalia to access your microphone to record your dreams."
         }
       ],
+      "./plugins/withOptionalAndroidHardwareFeatures",
       "expo-font",
       "expo-web-browser",
       "expo-asset",
