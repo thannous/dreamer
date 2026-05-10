@@ -264,6 +264,52 @@ describe('subscriptionServiceMock', () => {
     });
   });
 
+  describe('QA scenarios', () => {
+    it('given initialized service when applying cancelled scenario then keeps plus active without renewal', async () => {
+      const service = require('./subscriptionServiceMock');
+      await service.initialize();
+
+      const status = await service.applyMockScenario('cancelled');
+
+      expect(status.tier).toBe('plus');
+      expect(status.isActive).toBe(true);
+      expect(status.productId).toBe('mock_monthly');
+      expect(status.willRenew).toBe(false);
+      expect(status.expiryDate).toBeTruthy();
+    });
+
+    it('given initialized service when applying expired scenario then returns free inactive status', async () => {
+      const service = require('./subscriptionServiceMock');
+      await service.initialize();
+
+      const status = await service.applyMockScenario('expired');
+
+      expect(status.tier).toBe('free');
+      expect(status.isActive).toBe(false);
+      expect(status.productId).toBe('mock_monthly');
+      expect(status.willRenew).toBe(false);
+      expect(new Date(status.expiryDate).getTime()).toBeLessThan(Date.now());
+    });
+
+    it('given status listener when applying QA scenario then emits updated status', async () => {
+      const service = require('./subscriptionServiceMock');
+      await service.initialize();
+      const listener = jest.fn();
+      const unsubscribe = service.addStatusUpdateListener(listener);
+
+      await service.applyMockScenario('annual');
+      unsubscribe();
+      await service.applyMockScenario('free');
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener.mock.calls[0][0]).toMatchObject({
+        tier: 'plus',
+        isActive: true,
+        productId: 'mock_annual',
+      });
+    });
+  });
+
   describe('logout behavior', () => {
     it('given initialized service when logging out then clears initialization state', async () => {
       const service = require('./subscriptionServiceMock');

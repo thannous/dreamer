@@ -1,0 +1,57 @@
+{
+  "notes": "Copy this file to revenuecat-qa-evidence.local.json after manual Test Store or Play validation. Do not commit the local file.",
+  "gates": {
+    "test_store_monthly": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "evidence": "QA Lab shows monthly purchase completed, product monthly, plus / active, quotas unlimited"
+    },
+    "test_store_annual": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "evidence": "QA Lab shows annual purchase completed, product yearly, plus / active, quotas unlimited"
+    },
+    "restore_after_reinstall": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "evidence": "Restore completed with the same app user id and plus / active state"
+    },
+    "account_switch": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "evidence": "Paid account remains plus while second account remains free / inactive"
+    },
+    "play_monthly": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "easBuildId": "",
+      "evidence": "Play Internal Testing build purchases noctalia_plus:monthly and backend converges"
+    },
+    "play_annual": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "easBuildId": "",
+      "evidence": "Play Internal Testing build purchases noctalia_plus:annual and backend converges"
+    },
+    "play_cancellation_and_expiry": {
+      "status": "pending",
+      "testedAt": "",
+      "tester": "",
+      "appUserId": "",
+      "easBuildId": "",
+      "evidence": "RevenueCat webhook and backend state converge after Play cancellation or expiry"
+    }
+  }
+}

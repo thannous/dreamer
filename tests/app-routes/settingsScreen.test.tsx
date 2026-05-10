@@ -197,6 +197,10 @@ jest.doMock('@/components/quota/QuotaStatusCard', () => ({
   QuotaStatusCard: () => <div data-testid="quota-status-card" />,
 }));
 
+jest.doMock('@/components/subscription/SubscriptionQALab', () => ({
+  SubscriptionQALab: () => <div data-testid="subscription-qa-lab" />,
+}));
+
 jest.doMock('@/components/ThemeSettingsCard', () => ({
   __esModule: true,
   default: () => <div data-testid="theme-settings-card" />,
@@ -288,4 +292,3 @@ describe('Settings screen', () => {
     expect(capturedSubscriptionProps?.expiryLabel).toBeUndefined();
   });
 });
-
