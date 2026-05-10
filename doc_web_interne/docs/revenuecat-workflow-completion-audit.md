@@ -47,7 +47,7 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 | Preflight achat | `npm run test:e2e:subscription-teststore:purchase:preflight -- --plan monthly --device emulator-5554` | Ne necessite pas `REVENUECAT_QA_APPROVAL`, ne lance pas Maestro, valide les prerequisites locaux |
 | Verification locale rapide | `npm run subscription:qa:verify-local` | Regroupe syntax checks, tests scripts QA, rapport de couverture, blocage attendu de la release gate sans preuve pour la bonne raison et preflights d'achat monthly/annual sans ouvrir le Store |
 | Build EAS Android existant | Expo MCP `build_info 310244ed-027b-4028-8522-70c0f676a0e9` | Build fini, STORE, production, AAB disponible, mais date/commit avant le workflow QA RevenueCat courant |
-| Build EAS Android utilisable pour Play | EAS CLI depuis worktree propre + Expo MCP `build_info cbbf745a-0e76-4488-a365-ba180a903e90` | Build Store Android `cbbf745a-0e76-4488-a365-ba180a903e90` fini le 2026-05-10, versionCode 22, commit `723e6deb0524e3b49e33045d2298da918404e40f`, AAB `https://expo.dev/artifacts/eas/rag5GTaMLdJ4HAYpS4vqDo.aab`; auto-submit Internal Testing planifie sous submission `6d4630b0-33e1-48d7-a8f1-687206b2fe8f`, statut de soumission non confirme par MCP | Fait, soumission a confirmer |
+| Build EAS Android utilisable pour Play | EAS CLI depuis worktree propre + Expo MCP `build_info cbbf745a-0e76-4488-a365-ba180a903e90` + page Expo Submission Details | Build Store Android `cbbf745a-0e76-4488-a365-ba180a903e90` fini le 2026-05-10, versionCode 22, commit `723e6deb0524e3b49e33045d2298da918404e40f`, AAB `https://expo.dev/artifacts/eas/rag5GTaMLdJ4HAYpS4vqDo.aab`; auto-submit Internal Testing `6d4630b0-33e1-48d7-a8f1-687206b2fe8f` confirme `Success` sur Expo, soumis le 2026-05-10 a 23:29 | Fait |
 | Scope commit pour build Play | `git add --dry-run ...` sur la liste du runbook | Valide le 2026-05-10; tous les chemins RevenueCat QA existent et aucun fichier n'a ete stage pendant le dry-run |
 
 ## Commandes de verification actuelles
@@ -77,7 +77,7 @@ Resultat attendu au 2026-05-10:
 - MCP RevenueCat live: la session courante renvoie `403 access token has been revoked`, mais un nouveau `codex exec` le 2026-05-10 voit `Noctalia` (`proje6db7596`) et confirme l'offering `default` actif
 - MCP RevenueCat entitlement: `Noctalia Plus` (`entla0745c9b44`) attache les quatre produits attendus
 - Expo MCP build Android: verification relancee le 2026-05-10; dernier Store build fini `310244ed-027b-4028-8522-70c0f676a0e9`, mais insuffisant pour valider Play Internal Testing du workflow actuel
-- Play Internal Testing: build Android Store `cbbf745a-0e76-4488-a365-ba180a903e90` cree depuis `723e6deb` avec la cle `goog_`; auto-submit Internal Testing planifie, mais il faut confirmer la disponibilite Play avant de remplir les gates `play_*`
+- Play Internal Testing: build Android Store `cbbf745a-0e76-4488-a365-ba180a903e90` cree depuis `723e6deb` avec la cle `goog_`; auto-submit Internal Testing `6d4630b0-33e1-48d7-a8f1-687206b2fe8f` confirme `Success` cote Expo, puis il faut installer le build via Play Internal Testing avant de remplir les gates `play_*`
 - scope de commit Play: `git add --dry-run` sur la liste du runbook passe; `git diff --cached --name-only` reste vide apres verification
 - preuve locale: `doc_web_interne/docs/revenuecat-qa-evidence.local.json` absent; `subscription:qa:release-gate` doit donc rester rouge avec 7 portes restantes
 
