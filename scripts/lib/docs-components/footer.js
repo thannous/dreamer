@@ -23,6 +23,14 @@ function pressKitLabel(lang) {
   return 'Press kit';
 }
 
+function alternativesLabel(lang) {
+  if (lang === 'fr') return 'Applications de reves';
+  if (lang === 'es') return 'Apps de suenos';
+  if (lang === 'de') return 'Traumtagebuch-Apps';
+  if (lang === 'it') return 'App diario dei sogni';
+  return 'Dream journal apps';
+}
+
 function loadFeaturedBlogTitles() {
   const titles = new Map();
   const featuredEntries = siteConfig.seoLinking?.featuredBlogEntries || [];
@@ -48,6 +56,10 @@ function buildSeoFooterLinks(context) {
     {
       href: routePath('blog.index'),
       label: locale.resources,
+    },
+    {
+      href: routePath('page.alternatives'),
+      label: alternativesLabel(lang),
     },
     ...(siteConfig.seoLinking?.featuredBlogEntries || [])
       .map((entryId) => {

@@ -6,6 +6,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 
 - Website: https://noctalia.app
 - Press / directory kit: https://noctalia.app/en/press
+- Comparison / alternatives page: https://noctalia.app/en/dream-journal-apps
 - Google Play: https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
 - Contact: contact@noctalia.app
 - Maker: Thanh Chau
@@ -31,8 +32,8 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | GitHub README | https://github.com/thannous/dreamer | Live | Replaced the stale Supabase README with a Noctalia README linking to `https://noctalia.app` and the Google Play listing. Commit: `3e96bfba88226782aceff8512bc36d48942562c2`. |
 | Zearches | https://zearches.com/directory.php?slug=software-saas | Live | Submitted to Software & SaaS Tools. Live listing links to `https://noctalia.app`; links are marked `nofollow`, so treat as discovery/indexing value rather than ranking equity. |
 | Chrome-Stats | https://chrome-stats.com/d/com.tanuki75.noctalia | Existing live | Existing indexed app profile already links to the website and Google Play listing. Keep as discovered backlink, not created in this run. |
-| SaaSCity | https://saascity.io/submit | Candidate | Free indexed listing reviewed within ~24h, but the free tier is indexation/traffic first; dofollow requires upgrade according to current page copy. Submission flow is client-side/account-like, not completed yet. |
-| BetterLaunch | https://www.betterlaunch.co/submit-your-startup | Candidate | Free editorial listing, DR51 claim, nofollow by default; free listing becomes dofollow only if a BetterLaunch badge is added to the site. Requires login via Clerk. |
+| SaaSCity | https://saascity.io/submit | Attempted — account creation required | Attempted 2026-05-10 in Chrome. Form accepted product copy for `Noctalia Dream Journal`, `Health & Wellness` / `Mobile Apps`, `https://noctalia.app`, and `@NoctaliaDreams`, but submission opened a sign-up modal. Google sign-up did not progress, and no separate password account was created. |
+| BetterLaunch | https://www.betterlaunch.co/submit-your-startup | Attempted — Google auth blocked | Attempted 2026-05-10 in Chrome. The free page still claims an editorial listing with backlink. Submission requires Clerk login; Google OAuth reached `thannous@gmail.com`, profile/email consent was granted, then BetterLaunch returned `The External Account was not found.` No form submission was possible. |
 | OpenAIToolsHub | https://www.openaitoolshub.org/submit | Submitted | Free AI directory, DR30/dofollow claim, no signup required, reviewed within 48h. Submitted in Chrome on 2026-05-09 after captcha/user validation; page confirmed `Submission Received!`. Watch `contact@noctalia.app` for approval/live-listing email. |
 
 ## Backlinks created or submitted in this run
@@ -49,6 +50,13 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | AlternativeTo | Submission-path request sent by email | hello@alternativeto.net, requesting current new-app submission path for https://noctalia.app | Pending response; account creation still needed unless they accept manual suggestion | Sent 2026-05-09 from Gmail. Gmail sent message id: `19e0ce8c93973faa`. Browser evidence: legacy submit URL is 404 and Google signup is disabled for new accounts. |
 | AppBrain Featured Apps | Developer-claim guidance request sent by email | contact@appbrain.com, asking how to claim/submit Google Play app `com.tanuki75.noctalia` | Pending response; claim in AppBrain dashboard still required | Sent 2026-05-09 from Gmail. Gmail sent message id: `19e0ce905094e82d`. Browser reached Featured Apps signup; submission requires claimed developer account. |
 
+## Other free-platform attempts on 2026-05-10
+
+| Platform | Outcome | Evidence | Next action |
+| --- | --- | --- | --- |
+| SaaSCity | Not submitted | Product form was filled, but the final submit step required account creation. Google sign-up button did not advance past the sign-up modal. | Retry only if willing to create a SaaSCity account with email/password, or if Google sign-up starts working. |
+| BetterLaunch | Not submitted | Google OAuth for `thannous@gmail.com` reached the consent screen, then BetterLaunch/Clerk returned `The External Account was not found.` | Retry later or use a dedicated email/password account. Avoid adding the badge unless dofollow value is worth a site-change decision. |
+
 ## Yield improvements made in this run
 
 | Improvement | Status | Why it improves backlink yield |
@@ -56,11 +64,14 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | Press / directory kit page | Built and validated | Added `https://noctalia.app/en/press` plus FR/ES/DE/IT equivalents. Gives directories a concise product facts page with pricing, category, descriptions, official links, contact, and schema markup. |
 | Footer crawl path | Built and validated | Added a footer link to the press kit across generated docs pages so crawlers and reviewers can discover it without relying only on direct submission URLs. |
 | Sitemap/docs validation | Passed | `npm run docs:build` and `npm run docs:check` passed; sitemap now includes the new localized press pages. |
+| Dream journal apps / alternatives page | Built and validated | Added a localized comparison page cluster for `dream journal apps`, `Noctalia alternatives`, DreamApp, Oniri, DreamKit, and Rosebud. This gives future AlternativeTo/SaaSHub/editorial submissions a relevant internal destination and creates an SEO landing page for comparison-intent searches. |
 
 ## Confirmation notes
 
 - Gmail connector verified on 2026-05-09 as `thannous@gmail.com` for Thanh Chau.
-- Outbound Gmail messages sent on 2026-05-09 for SearchGun, Digital.Health, AlternativeTo, and AppBrain. No inbound approval confirmation found yet for Noctalia, The Next AI, Zearches, SaaSHub, AlternativeTo, AppBrain, Digital.Health, NavTools, or OpenAIToolsHub.
+- Gmail checked again on 2026-05-10. Search for Noctalia/backlink platform terms over the last 7 days found only the sent outreach messages plus unrelated Ahrefs email; no inbound approval or rejection found yet.
+- Zimbra `contact@noctalia.app` checked on 2026-05-10. Targeted searches for SaaSHub, AlternativeTo, AppBrain, Digital.Health, SearchGun, Zearches, SaaSCity, and BetterLaunch returned no results. A broad Noctalia search mostly surfaced social notifications, not backlink approvals.
+- Outbound Gmail messages sent on 2026-05-09 for SearchGun, Digital.Health, AlternativeTo, and AppBrain. No inbound approval confirmation found yet for Noctalia, The Next AI, Zearches, SaaSHub, AlternativeTo, AppBrain, Digital.Health, SaaSCity, BetterLaunch, or OpenAIToolsHub.
 - Avoid paid upgrades, badges requiring site changes, or sponsored placements unless explicitly approved.
 
 ## Submitted copy
@@ -137,6 +148,7 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 ### Remaining free-platform packet
 
 - Preferred product URL when accepted: https://noctalia.app/en/press
+- Comparison URL for alternative/comparison directories: https://noctalia.app/en/dream-journal-apps
 - Website URL: https://noctalia.app
 - Google Play URL: https://play.google.com/store/apps/details?id=com.tanuki75.noctalia
 - Contact email: contact@noctalia.app

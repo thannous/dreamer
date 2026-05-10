@@ -96,6 +96,34 @@
             }
           }
         },
+        "page.alternatives": {
+          "id": "page.alternatives",
+          "type": "content",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dream-journal-apps",
+          "locales": {
+            "en": {
+              "slug": "dream-journal-apps",
+              "path": "/en/dream-journal-apps"
+            },
+            "fr": {
+              "slug": "applications-journal-de-reves",
+              "path": "/fr/applications-journal-de-reves"
+            },
+            "es": {
+              "slug": "apps-diario-de-suenos",
+              "path": "/es/apps-diario-de-suenos"
+            },
+            "de": {
+              "slug": "traumtagebuch-apps",
+              "path": "/de/traumtagebuch-apps"
+            },
+            "it": {
+              "slug": "app-diario-dei-sogni",
+              "path": "/it/app-diario-dei-sogni"
+            }
+          }
+        },
         "legal.notice": {
           "id": "legal.notice",
           "type": "content",
