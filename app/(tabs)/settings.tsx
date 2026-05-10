@@ -22,6 +22,7 @@ import NotificationSettingsCard from '@/components/NotificationSettingsCard';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
+import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
 import ThemeSettingsCard from '@/components/ThemeSettingsCard';
 import { DecoLines, ThemeLayout } from '@/constants/journalTheme';
 import { Fonts } from '@/constants/theme';
@@ -33,6 +34,7 @@ import { useScrollIdle } from '@/hooks/useScrollIdle';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
+import { isSubscriptionQaLabEnabled } from '@/lib/env';
 import { MotiView } from '@/lib/moti';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
@@ -154,6 +156,7 @@ export default function SettingsScreen() {
 
   const isCompactLayout = width <= 375;
   const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
+  const showSubscriptionQaLab = isSubscriptionQaLabEnabled();
   const keyboardBehavior = Platform.OS === 'ios' ? 'padding' : undefined;
   const scrollContentStyle = useMemo(
     () => [styles.scrollContent, { paddingBottom: ThemeLayout.spacing.xl }],
@@ -330,6 +333,17 @@ export default function SettingsScreen() {
                     <QuotaStatusCard />
                   </View>
                 </MotiView>
+                {showSubscriptionQaLab ? (
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 560 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <SubscriptionQALab />
+                    </View>
+                  </MotiView>
+                ) : null}
               </View>
             </View>
 

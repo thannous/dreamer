@@ -1,0 +1,283 @@
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { spawnSync } = require('child_process');
+
+const ROOT = path.resolve(__dirname, '..');
+const SCRIPT = path.join(ROOT, 'scripts/subscription-qa-report.js');
+const EXAMPLE = JSON.parse(
+  fs.readFileSync(path.join(ROOT, 'doc_web_interne/docs/revenuecat-qa-evidence.example.json'), 'utf8')
+);
+
+const MANUAL_GATE_KEYS = [
+  'test_store_monthly',
+  'test_store_annual',
+  'restore_after_reinstall',
+  'account_switch',
+  'play_monthly',
+  'play_annual',
+  'play_cancellation_and_expiry',
+];
+
+function runReport(args = [], env = {}) {
+  return spawnSync(process.execPath, [SCRIPT, ...args], {
+    cwd: ROOT,
+    env: { ...process.env, ...env },
+    encoding: 'utf8',
+  });
+}
+
+function writeEvidenceFile(gates) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-qa-evidence-'));
+  const filePath = path.join(dir, 'evidence.json');
+  fs.writeFileSync(filePath, JSON.stringify({ gates }, null, 2), 'utf8');
+  return filePath;
+}
+
+function writeInvalidEvidenceFile() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'subscription-qa-evidence-invalid-'));
+  const filePath = path.join(dir, 'evidence.json');
+  fs.writeFileSync(filePath, '{ invalid json', 'utf8');
+  return filePath;
+}
+
+describe('subscription QA report release gate', () => {
+  it('keeps the full release gate blocked when manual evidence is missing', () => {
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-evidence.json'),
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('OK | EAS Play Store profiles use Google Play key');
+    expect(result.stdout).toContain('preview:goog_B...sanw');
+    expect(result.stdout).toContain('OK | Test Store purchase preflight exists');
+    expect(result.stdout).toContain('npm run test:e2e:subscription-teststore:purchase:preflight');
+    expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
+    expect(result.stdout).toContain('npm run subscription:qa:verify-local');
+    expect(result.stdout).toContain('OK | Evidence template covers all release gates');
+    expect(result.stdout).toContain('OK | Local evidence file is gitignored');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
+  });
+
+  it('keeps the full release gate blocked when the local evidence file is invalid JSON', () => {
+    const evidencePath = writeInvalidEvidenceFile();
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('BLOCKED | Local evidence file parses');
+    expect(result.stdout).toContain('Manual evidence: local file present');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stderr).toBe('');
+  });
+
+  it('passes the full release gate when every manual and external gate has evidence', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Manual evidence: local file present');
+    expect(result.stdout).toContain('Verified manual/external scenarios: 7');
+    expect(result.stdout).toContain('Manual or external gates remaining: 0');
+    expect(result.stdout).not.toContain('Full RevenueCat workflow is not complete');
+  });
+
+  it('keeps the full release gate blocked when identity evidence is incomplete', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          evidence: `${key} verified by manual QA`,
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 0');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('## Evidence Diagnostics');
+    expect(result.stdout).toContain('Test Store monthly: tester is missing');
+  });
+
+  it('keeps the full release gate blocked when identity evidence is whitespace only', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: '   ',
+          appUserId: '   ',
+          evidence: `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 0');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('Test Store monthly: tester is missing');
+  });
+
+  it('keeps the full release gate blocked when appUserId is not a UUID', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: 'tester@example.com',
+          evidence: `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 0');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('Test Store monthly: appUserId must be a UUID');
+  });
+
+  it('keeps the full release gate blocked when testedAt is not a valid date', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: 'not-a-date',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 0');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('Test Store monthly: testedAt is not a valid date');
+  });
+
+  it('keeps Play gates blocked when EAS build evidence is missing', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: `${key} verified by manual QA`,
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Play monthly');
+    expect(result.stdout).toContain('Play monthly: easBuildId must be an EAS build UUID');
+  });
+
+  it('keeps Play gates blocked when EAS build evidence is not a UUID', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: 'build-20' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Play monthly');
+    expect(result.stdout).toContain('Play monthly: easBuildId must be an EAS build UUID');
+  });
+
+  it('keeps gates blocked when evidence text is still the example placeholder', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          ...EXAMPLE.gates[key],
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 0');
+    expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('Test Store monthly: evidence still uses the template text');
+  });
+});

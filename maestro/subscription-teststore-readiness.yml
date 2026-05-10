@@ -1,0 +1,31 @@
+appId: com.tanuki75.noctalia
+---
+- runFlow: subflows/open-mock-app.yml
+- openLink: noctalia://settings
+- extendedWaitUntil:
+    visible: "Settings|Paramètres|Configuración|Ajustes"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: screen.subscription.qaLab
+    direction: DOWN
+    visibilityPercentage: 40
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.mode
+- assertVisible: "RevenueCat Test Store"
+- scrollUntilVisible:
+    element:
+      id: btn.subscription.qa.probe
+    direction: DOWN
+    visibilityPercentage: 80
+    timeout: 30000
+- tapOn:
+    id: btn.subscription.qa.probe
+- extendedWaitUntil:
+    visible: "SDK probe completed"
+    timeout: 60000
+- assertVisible:
+    id: text.subscription.qa.action
+- assertVisible: ".*packages 2.*"
+- assertVisible: ".*\\$rc_monthly.*\\$rc_annual.*"

@@ -16,6 +16,7 @@ export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY'
   | 'EXPO_PUBLIC_REVENUECAT_IOS_KEY'
   | 'EXPO_PUBLIC_REVENUECAT_WEB_KEY'
+  | 'EXPO_PUBLIC_SUBSCRIPTION_QA_LAB'
   | 'EXPO_PUBLIC_SUPABASE_ANON_KEY'
   | 'EXPO_PUBLIC_SUPABASE_FUNCTION_JWT'
   | 'EXPO_PUBLIC_SUPABASE_URL';
@@ -46,6 +47,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
     case 'EXPO_PUBLIC_REVENUECAT_WEB_KEY':
       return process.env.EXPO_PUBLIC_REVENUECAT_WEB_KEY;
+    case 'EXPO_PUBLIC_SUBSCRIPTION_QA_LAB':
+      return process.env.EXPO_PUBLIC_SUBSCRIPTION_QA_LAB;
     case 'EXPO_PUBLIC_SUPABASE_ANON_KEY':
       return process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
     case 'EXPO_PUBLIC_SUPABASE_FUNCTION_JWT':
@@ -75,4 +78,8 @@ export function isReferenceImagesEnabled(): boolean {
   // Hard-disabled in code so production bundles cannot re-enable the feature
   // via environment configuration.
   return false;
+}
+
+export function isSubscriptionQaLabEnabled(): boolean {
+  return __DEV__ || (getExpoPublicEnvValue('EXPO_PUBLIC_SUBSCRIPTION_QA_LAB') ?? '').toLowerCase() === 'true';
 }

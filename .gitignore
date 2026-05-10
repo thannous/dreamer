@@ -85,4 +85,8 @@ docs-src/img-tmp/*
 marketing/seo/search-console/*_to_*/
 
 # Maestro generated outputs
+.maestro-home/
 maestro-results/
+
+# Local RevenueCat QA evidence can contain tester ids, emails or screenshots paths
+doc_web_interne/docs/revenuecat-qa-evidence.local.json

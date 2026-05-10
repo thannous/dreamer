@@ -4,11 +4,13 @@ import { getCurrentUser } from '@/lib/auth';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
 type SubscriptionStatusListener = (status: SubscriptionStatus) => void;
+export type MockSubscriptionScenario = 'free' | 'monthly' | 'annual' | 'cancelled' | 'expired';
 
 let initialized = false;
 let currentStatus: SubscriptionStatus | null = null;
 let currentStatusUserId: string | null = null;
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
+const listeners = new Set<SubscriptionStatusListener>();
 
 const mockPackages: PurchasePackage[] = [
   {
@@ -122,6 +124,68 @@ function setTier(tier: SubscriptionTier, productId: string | null, userId: strin
   };
   currentStatus = status;
   currentStatusUserId = userId;
+  emitStatus(status);
+  return status;
+}
+
+function emitStatus(status: SubscriptionStatus): void {
+  listeners.forEach((listener) => {
+    try {
+      listener(status);
+    } catch {
+      // Keep one QA listener from breaking the mock service.
+    }
+  });
+}
+
+function buildMockScenarioStatus(scenario: MockSubscriptionScenario): SubscriptionStatus {
+  const now = Date.now();
+  if (scenario === 'monthly') {
+    return {
+      tier: 'plus',
+      isActive: true,
+      expiryDate: new Date(now + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      productId: 'mock_monthly',
+      willRenew: true,
+    };
+  }
+  if (scenario === 'annual') {
+    return {
+      tier: 'plus',
+      isActive: true,
+      expiryDate: new Date(now + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      productId: 'mock_annual',
+      willRenew: true,
+    };
+  }
+  if (scenario === 'cancelled') {
+    return {
+      tier: 'plus',
+      isActive: true,
+      expiryDate: new Date(now + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      productId: 'mock_monthly',
+      willRenew: false,
+    };
+  }
+  if (scenario === 'expired') {
+    return {
+      tier: 'free',
+      isActive: false,
+      expiryDate: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+      productId: 'mock_monthly',
+      willRenew: false,
+    };
+  }
+  return getDefaultStatus();
+}
+
+export async function applyMockScenario(scenario: MockSubscriptionScenario): Promise<SubscriptionStatus> {
+  const user = await getCurrentUser();
+  initialized = true;
+  const status = buildMockScenarioStatus(scenario);
+  currentStatus = status;
+  currentStatusUserId = user?.id ?? null;
+  emitStatus(status);
   return status;
 }
 
@@ -154,11 +218,15 @@ export async function syncPurchases(): Promise<void> {
 }
 
 export function addStatusUpdateListener(_listener: SubscriptionStatusListener): () => void {
-  return () => {};
+  listeners.add(_listener);
+  return () => {
+    listeners.delete(_listener);
+  };
 }
 
 export async function logOutUser(): Promise<void> {
   initialized = false;
   currentStatus = null;
   currentStatusUserId = null;
+  listeners.clear();
 }
