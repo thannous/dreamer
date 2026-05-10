@@ -1,6 +1,6 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Verified 2026-05-09. Recommended order now: AlternativeTo → Product Hunt draft/launch prep → BetaList → Futurepedia only if paid listing budget is approved.
+> Generated 2026-03-09. Verified 2026-05-10. Recommended order now: Product Hunt draft/launch prep -> BetaList -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
 
 ---
 
@@ -33,6 +33,8 @@
 
 **Website:** [https://noctalia.app](https://noctalia.app)
 **Google Play:** [https://play.google.com/store/apps/details?id=com.tanuki75.noctalia](https://play.google.com/store/apps/details?id=com.tanuki75.noctalia)
+**Press / directory kit:** [https://noctalia.app/en/press](https://noctalia.app/en/press)
+**Comparison / alternatives page:** [https://noctalia.app/en/dream-journal-apps](https://noctalia.app/en/dream-journal-apps)
 **Contact:** [contact@noctalia.app](mailto:contact@noctalia.app)
 **Maker:** Thanh Chau
 **Pricing:** Freemium — Free plan + Noctalia Plus (€2.99/month or €19/year)  
@@ -68,8 +70,10 @@ Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Personal
 
 ## 1. AlternativeTo
 
-**URL:** [https://alternativeto.net/contribute/new-app/](https://alternativeto.net/contribute/new-app/)
+**URL:** [https://alternativeto.net/browse/new-apps/](https://alternativeto.net/browse/new-apps/)
 **Effort:** Low | **Review time:** community/editorial review, timing not guaranteed | **Backlink:** verify on the live listing; do not assume dofollow before inspection
+
+**2026-05-10 status:** Legacy submission URL `/contribute/new-app/` returns 404. Google signup reached `thannous@gmail.com` but AlternativeTo returned `access_denied` because Google signup is disabled for new accounts. Outreach email was sent to `hello@alternativeto.net` on 2026-05-09; wait for reply or create a manual username/password account if needed.
 
 ### Form Fields
 
@@ -101,13 +105,30 @@ Submit Noctalia as alternative to each of these (one at a time):
 
 ### Steps:
 
-- Go to [https://alternativeto.net/contribute/new-app/](https://alternativeto.net/contribute/new-app/)
+- Go to [https://alternativeto.net/browse/new-apps/](https://alternativeto.net/browse/new-apps/) or use the submission path AlternativeTo provides by email
 - Fill form with info above
 - Upload logo (`docs/logo512.png`)
 - Submit
 - Wait for approval / community review
 - Once approved, add as alternative to each app listed above
 - Verify listing is live and backlink to noctalia.app is active
+
+---
+
+## Free Directory Attempts Already Completed / Blocked
+
+| Platform | 2026-05-10 status | Next action |
+| --- | --- | --- |
+| GitHub README | Live backlink to `https://noctalia.app` and Google Play listing. | Keep indexed; no action unless README content changes. |
+| Zearches | Live nofollow listing in Software & SaaS Tools. | Keep as discovery/indexation value. |
+| The Next AI | Submitted 2026-05-09; approval pending. | Watch Gmail and `contact@noctalia.app`. |
+| OpenAIToolsHub | Submitted 2026-05-09; approval pending. | Watch Gmail and `contact@noctalia.app`. |
+| SaaSHub | Public profile `https://www.saashub.com/noctalia-dream-journal`, pending approval. | Re-check after moderation for visible outbound link and follow attribute. |
+| SearchGun | Guest post submitted by email. | Watch for editorial acceptance/revision. |
+| AppBrain | Outreach sent; developer claim needed before featured submission. | Wait for AppBrain reply or claim the app in their dashboard. |
+| Digital.Health | Outreach sent; company/account flow needed. | Wait for reply; keep positioning as sleep wellness / dream journaling, not medical. |
+| SaaSCity | Product form filled 2026-05-10 but final submit required account creation; Google sign-up did not progress. | Retry only if creating an email/password SaaSCity account is approved. |
+| BetterLaunch | Google OAuth consent reached `thannous@gmail.com`, then Clerk returned `The External Account was not found.` | Retry later or create a dedicated account; do not add their badge without an explicit site-change decision. |
 
 ---
 
