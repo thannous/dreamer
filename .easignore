@@ -41,6 +41,7 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+metro-mock.log
 docs/docs-server.*.log
 docs/*.bak
 docs/**/*.bak
@@ -79,6 +80,12 @@ coverage/
 *.lcov
 upload_cert.der
 docs-src/img-tmp/*
+
+# Local test/agent artifacts
+.maestro-home/
+maestro-results/
+tmp-stage/
+tmp-stage-index/
 
 # Exclude web-only docs from mobile EAS uploads
 docs/
