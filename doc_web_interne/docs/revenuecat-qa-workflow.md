@@ -59,6 +59,13 @@ le chemin CLI garde, mais ne lance pas Maestro et ne peut pas ouvrir le Store sa
 reste bloquee quand aucune preuve manuelle n'est fournie, et que ce blocage vient bien des preuves
 manquantes, pas d'un check local casse.
 
+`npm run subscription:qa:report` affiche aussi `Current Session Readiness`. Cette section est le
+premier diagnostic a lire avant de reprendre les tests reels: elle indique si les variables
+`REVENUECAT_QA_EMAIL` / `REVENUECAT_QA_PASSWORD` sont presentes, si l'approbation d'achat Test Store
+est definie, rappelle de verifier `npm run android:device` jusqu'a `ADB: READY`, et bloque
+mentalement `play_monthly` tant que RevenueCat/Play ne renvoie pas un base plan mensuel `P1M` pour
+`prodfce10ef2a8`.
+
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
