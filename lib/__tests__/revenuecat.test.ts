@@ -240,6 +240,14 @@ describe('revenuecat utils', () => {
       // ID suggests annual but packageType is MONTHLY
       expect(mapIntervalFromId('annual_plan', 'MONTHLY')).toBe('monthly');
     });
+
+    it('given subscriptionPeriod P1Y returns annual before packageType', () => {
+      expect(mapIntervalFromId('monthly_plan', 'MONTHLY', 'P1Y')).toBe('annual');
+    });
+
+    it('given subscriptionPeriod P1M returns monthly before packageType', () => {
+      expect(mapIntervalFromId('annual_plan', 'ANNUAL', 'P1M')).toBe('monthly');
+    });
   });
 
   describe('mapPackage', () => {
@@ -331,6 +339,24 @@ describe('revenuecat utils', () => {
           currencyCode: 'USD',
           title: 'Yearly',
           description: 'Yearly subscription',
+        },
+      };
+
+      const result = mapPackage(pkg);
+
+      expect(result.interval).toBe('annual');
+    });
+
+    it('given store subscriptionPeriod conflicts with packageType uses billing period', () => {
+      const pkg: PurchasesPackageLike = {
+        identifier: 'noctalia_plus:monthly',
+        packageType: 'MONTHLY',
+        product: {
+          subscriptionPeriod: 'P1Y',
+          priceString: '$39.99',
+          currencyCode: 'USD',
+          title: 'Monthly configured as yearly',
+          description: 'Store period is authoritative',
         },
       };
 

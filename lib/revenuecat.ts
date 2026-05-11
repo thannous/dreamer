@@ -35,6 +35,7 @@ export interface PurchasesPackageLike {
     currencyCode?: string;
     title?: string;
     description?: string;
+    subscriptionPeriod?: string | null;
   };
 }
 
@@ -154,8 +155,16 @@ export function mapStatus(info: CustomerInfoLike | null): SubscriptionStatus {
  */
 export function mapIntervalFromId(
   id: string,
-  packageType?: string
+  packageType?: string,
+  subscriptionPeriod?: string | null
 ): PurchasePackage['interval'] {
+  if (subscriptionPeriod === 'P1Y') {
+    return 'annual';
+  }
+  if (subscriptionPeriod === 'P1M') {
+    return 'monthly';
+  }
+
   if (packageType === 'ANNUAL') {
     return 'annual';
   }
@@ -176,7 +185,7 @@ export function mapIntervalFromId(
 export function mapPackage(pkg: PurchasesPackageLike): PurchasePackage {
   const id = pkg.identifier;
   const product = pkg.product;
-  const interval = mapIntervalFromId(id, pkg.packageType);
+  const interval = mapIntervalFromId(id, pkg.packageType, product.subscriptionPeriod);
   return {
     id,
     interval,

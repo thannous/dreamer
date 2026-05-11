@@ -244,6 +244,16 @@ Configuration attendue:
 - produits Google Play RevenueCat:
   - `noctalia_plus:monthly`
   - `noctalia_plus:annual`
+- etat Store live attendu avant achat:
+  - monthly: base plan mensuel, periode `P1M`
+  - annual: base plan annuel, periode `P1Y`
+
+Le 2026-05-11, RevenueCat MCP a confirme `status=ok` pour les deux produits Play, mais
+`prodfce10ef2a8` (`noctalia_plus:monthly`) renvoie encore `base_plan_id=annual` et
+`billing_period=P1Y`. Ne pas valider `play_monthly` tant que ce produit n'a pas ete corrige
+cote Play Console/RevenueCat. L'app utilise `product.subscriptionPeriod` comme garde locale
+pour eviter d'afficher un produit `P1Y` comme mensuel, mais cette garde ne remplace pas la
+configuration Store correcte.
 
 Scenarios a valider sur un build installe via Play Internal Testing:
 
