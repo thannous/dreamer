@@ -255,6 +255,20 @@ cote Play Console/RevenueCat. L'app utilise `product.subscriptionPeriod` comme g
 pour eviter d'afficher un produit `P1Y` comme mensuel, mais cette garde ne remplace pas la
 configuration Store correcte.
 
+Correction Play Console a faire avant de reprendre `play_monthly`:
+
+1. Ouvrir Play Console -> `Monetize with Play` -> `Products` -> `Subscriptions`.
+2. Ouvrir la subscription correspondant a `noctalia_plus:monthly`.
+3. Verifier les `Base plans and offers`.
+4. Le base plan utilise par `noctalia_plus:monthly` doit etre auto-renewing avec billing period mensuel (`P1M` cote API/RevenueCat), pas `annual`/`P1Y`.
+5. Si le base plan active est deja `annual`, creer ou selectionner un base plan mensuel dedie, verifier disponibilite regionale/prix, puis reactiver/sauvegarder.
+6. Relancer une lecture RevenueCat MCP `get_product_store_state` sur `prodfce10ef2a8` et ne continuer que si `billing_period=P1M`.
+
+References officielles Google Play: `Create and manage subscriptions` explique que les base plan IDs
+doivent etre planifies car ils ne peuvent plus etre changes/reutilises apres activation, et
+`Understanding subscriptions` rappelle qu'un base plan definit la periode de facturation, le type de
+renouvellement et le prix.
+
 Scenarios a valider sur un build installe via Play Internal Testing:
 
 - achat mensuel
