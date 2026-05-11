@@ -24,6 +24,11 @@ const commands = [
     args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
   },
   {
+    label: 'syntax: Android ADB device diagnostic',
+    command: process.execPath,
+    args: ['--check', 'scripts/check-android-adb-device.js'],
+  },
+  {
     label: 'unit: subscription QA scripts',
     command: npmCommand,
     args: [
@@ -33,6 +38,7 @@ const commands = [
       'scripts/update-subscription-qa-evidence.test.js',
       'scripts/run-subscription-teststore-purchase.test.js',
       'scripts/verify-subscription-qa-local.test.js',
+      'scripts/check-android-adb-device.test.js',
       '--runInBand',
       '--watchman=false',
     ],
