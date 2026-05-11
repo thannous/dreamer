@@ -27,6 +27,7 @@ if (unknownArgs.length > 0) {
 }
 
 const EXPECTED = {
+  purchaseApproval: 'I_APPROVE_TEST_STORE_PURCHASE',
   testStoreKey: 'test_zqltcBoDiTWPWmuyXTXTbYkJPrz',
   playStoreKey: 'goog_BFWJqTqAtQUnwYisczZcZrnsanw',
   entitlement: 'Noctalia Plus',
@@ -92,6 +93,10 @@ function check(label, ok, detail) {
 
 function renderCheck(item) {
   return `| ${item.ok ? 'OK' : 'BLOCKED'} | ${item.label} | ${item.detail} |`;
+}
+
+function envState(name) {
+  return process.env[name] ? 'set' : 'missing';
 }
 
 function slugify(value) {
@@ -439,6 +444,37 @@ if (evidenceIssues.length > 0) {
 }
 
 const failed = checks.filter((item) => !item.ok);
+
+const runtimeReadiness = [
+  [
+    process.env.REVENUECAT_QA_EMAIL && process.env.REVENUECAT_QA_PASSWORD ? 'READY' : 'MISSING',
+    'Test Store signed-in account env',
+    `REVENUECAT_QA_EMAIL=${envState('REVENUECAT_QA_EMAIL')}, REVENUECAT_QA_PASSWORD=${envState(
+      'REVENUECAT_QA_PASSWORD'
+    )}`,
+  ],
+  [
+    process.env.REVENUECAT_QA_APPROVAL === EXPECTED.purchaseApproval ? 'READY' : 'NOT SET',
+    'Test Store purchase approval',
+    'Required only before a real purchase; preflight must not require approval',
+  ],
+  ['CHECK', 'Android device visibility', 'Run npm run android:device and require ADB: READY before device flows'],
+  [
+    'CHECK LIVE',
+    'Play monthly base plan',
+    'RevenueCat product prodfce10ef2a8 must expose billing period P1M before play_monthly evidence',
+  ],
+];
+
+console.log('');
+console.log('## Current Session Readiness');
+console.log('');
+console.log('| Status | Gate | Detail |');
+console.log('| --- | --- | --- |');
+runtimeReadiness.forEach(([status, label, detail]) => {
+  console.log(`| ${status} | ${label} | ${detail} |`);
+});
+
 if (failed.length > 0) {
   console.log('');
   console.log(`Blocked checks: ${failed.length}`);

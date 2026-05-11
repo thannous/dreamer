@@ -52,6 +52,8 @@ describe('subscription QA report release gate', () => {
   it('keeps the full release gate blocked when manual evidence is missing', () => {
     const result = runReport(['--require-full'], {
       REVENUECAT_QA_EVIDENCE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-evidence.json'),
+      REVENUECAT_QA_EMAIL: '',
+      REVENUECAT_QA_PASSWORD: '',
     });
 
     expect(result.status).toBe(1);
@@ -63,6 +65,10 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
     expect(result.stdout).toContain('OK | Android device diagnostic exists');
     expect(result.stdout).toContain('npm run android:device');
+    expect(result.stdout).toContain('## Current Session Readiness');
+    expect(result.stdout).toContain('Test Store signed-in account env');
+    expect(result.stdout).toContain('REVENUECAT_QA_EMAIL=missing, REVENUECAT_QA_PASSWORD=missing');
+    expect(result.stdout).toContain('RevenueCat product prodfce10ef2a8 must expose billing period P1M');
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
