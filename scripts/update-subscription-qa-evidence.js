@@ -105,6 +105,13 @@ function requireNonTemplateEvidence(options) {
   }
 }
 
+function requirePlayMonthlyBasePlanEvidence(options) {
+  if (options.gate !== 'play_monthly') return;
+  if (!/\bP1M\b/i.test(options.evidence.trim())) {
+    throw new Error('Play monthly evidence must confirm base plan P1M.');
+  }
+}
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -140,6 +147,7 @@ function updateEvidence(options) {
     throw new Error(`Unknown gate "${options.gate}". Run with --help for valid keys.`);
   }
   requireNonTemplateEvidence(options);
+  requirePlayMonthlyBasePlanEvidence(options);
 
   document.gates[options.gate] = {
     ...gate,
