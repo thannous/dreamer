@@ -26,6 +26,10 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | AppBrain Featured Apps | https://www.appbrain.com/product/featured | Outreach sent — developer claim needed | Verified 2026-05-09: free, no credit card, app must be live on Google Play and developer account must be claimed in AppBrain. Browser reached AppBrain signup for Featured Apps; Google signup stalled in the Google OAuth page, so a guidance email was sent to `contact@appbrain.com` on 2026-05-09. |
 | AlternativeTo | https://alternativeto.net/browse/new-apps/ | Outreach sent — account flow blocked | Retried 2026-05-09 in Chrome. Legacy submit URL `/contribute/new-app/` now returns 404. Google OAuth reached `thannous@gmail.com`, but AlternativeTo returned `access_denied`: Google signup is disabled for new accounts. Email sent to `hello@alternativeto.net` requesting the current submission path. |
 | SaaSHub | https://www.saashub.com/noctalia-dream-journal | Created — pending approval | Created on 2026-05-09 as `Noctalia Dream Journal` after the plain `Noctalia` name collided with an unrelated SaaSHub listing for a Linux/Wayland desktop shell. Public profile is live but marked `Pending approval...`; outbound `noctalia.app` backlink is not visible yet, so re-check after moderation. |
+| SaaSHub alternatives article | https://www.saashub.com/alternatives | Submitted — pending approval | Submitted on 2026-05-12 as `Best dream journal apps and Noctalia alternatives`, targeting `https://noctalia.app/en/dream-journal-apps`. SaaSHub confirmed: `Thanks for contributing. Once we have approved the post, it will appear online.` |
+| Crunchbase | https://www.crunchbase.com/add-new | Submitted — pending publication | Submitted on 2026-05-12 from the `thannous@gmail.com` Google account. Crunchbase confirmed: `Edit successfully made! Your edits have been submitted. They may take a few minutes to appear.` No public profile URL was shown yet. |
+| GoodAITools | https://goodaitools.com/submit | Submitted — pending review | Submitted on 2026-05-12 via Google sign-in. Final page confirmed `AI tool Submitted Successfully!`. Candidate listing URL shown by the badge flow: `https://goodaitools.com/ai/noctalia`. Free plan claims one dofollow link only when their badge/backlink is added; badge was skipped because it requires an explicit Noctalia site change. |
+| FutureTools | https://futuretools.io/submit-a-tool | Submitted — pending review | Submitted on 2026-05-12. Turnstile completed, final page confirmed `Tool Submitted!` and said Matt will review it before publication. |
 | Digital.Health | https://digital.health/add_a_digital_health_company | Outreach sent — account/company flow needed | Verified 2026-05-09: free listing, but requires Digital.Health account, company creation/claim, then product creation. Email sent to `info@digital.health` positioning Noctalia as sleep wellness / dream journaling, not a medical product. |
 | The Next AI | https://www.thenextai.com/submit-ai-tool/ | Submitted | Submitted free listing via the site's Google Apps Script form endpoint on 2026-05-09; endpoint returned the expected Google temporary redirect. Watch `contact@noctalia.app` for approval/live-listing email. |
 | SearchGun | https://searchgun.com/write-for-us/ | Submitted — guest post email sent | Verified 2026-05-09: free Google Play app review requires a SearchGun account, but guest posts can be submitted without an account. Sent an original guest post submission to `guestpost@searchgun.com` with an allowed author-bio link to `https://noctalia.app`. |
@@ -45,6 +49,10 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 | The Next AI | Submission sent | https://www.thenextai.com/submit-ai-tool/ | Pending approval; unknown until live page exists | Watch `contact@noctalia.app` / Gmail for approval, then record live listing URL and link attributes. |
 | OpenAIToolsHub | Submission sent | https://www.openaitoolshub.org/submit | Pending approval; site claims dofollow if approved | Watch `contact@noctalia.app` / Gmail for approval within ~48h, then record live listing URL and verify dofollow. |
 | SaaSHub | Public profile created, pending approval | https://www.saashub.com/noctalia-dream-journal | Pending approval; outbound site link not visible yet | Submitted as `Noctalia Dream Journal`; SaaSHub confirmed competitor placement against Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, and Rosebud App. Re-check after moderation for live `noctalia.app` backlink and follow attributes. |
+| SaaSHub alternatives article | Alternatives article submitted, pending approval | Submitted from https://www.saashub.com/alternatives with target `https://noctalia.app/en/dream-journal-apps` | Pending approval; unknown until article is live | Re-check SaaSHub recent submissions and the eventual article URL. Submitted with competitors DreamApp, Oniri, and Rosebud App, plus AI/Productivity/Health And Fitness categories. |
+| Crunchbase | Company profile edits submitted, pending appearance | No public profile URL yet; created through https://www.crunchbase.com/add-new | Pending publication; Crunchbase links must be verified once profile appears | Re-check Crunchbase search for `Noctalia` after propagation. Submitted only factual known fields; legal name, founded date, HQ, funding, employees, and phone were left blank. |
+| GoodAITools | AI tool submitted, pending review | Candidate listing URL from badge flow: https://goodaitools.com/ai/noctalia | Pending review; dofollow only if approved and reciprocal badge/backlink is added | Decide whether to add the GoodAITools badge to Noctalia. Without badge, treat it as pending/no guaranteed dofollow. |
+| FutureTools | Tool submitted, pending review | https://futuretools.io/submit-a-tool | Pending approval; unknown until live page exists | Watch `contact@noctalia.app` and re-check FutureTools for `Noctalia`. Final page said Matt will review before publication. |
 | SearchGun | Guest post submission sent by email | guestpost@searchgun.com, requesting author-bio link to https://noctalia.app | Pending editorial acceptance | Sent 2026-05-09 from Gmail. Gmail sent message id: `19e0ce7bbf6acd28`. Watch for acceptance or revision request. |
 | Digital.Health | Listing guidance request sent by email | info@digital.health, requesting free listing path for https://noctalia.app | Pending response; likely reviewed account/company flow | Sent 2026-05-09 from Gmail. Gmail sent message id: `19e0ce87822df5bb`. Positioned as sleep wellness / dream journaling, not medical. |
 | AlternativeTo | Submission-path request sent by email | hello@alternativeto.net, requesting current new-app submission path for https://noctalia.app | Pending response; account creation still needed unless they accept manual suggestion | Sent 2026-05-09 from Gmail. Gmail sent message id: `19e0ce8c93973faa`. Browser evidence: legacy submit URL is 404 and Google signup is disabled for new accounts. |
@@ -72,6 +80,8 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Gmail checked again on 2026-05-10. Search for Noctalia/backlink platform terms over the last 7 days found only the sent outreach messages plus unrelated Ahrefs email; no inbound approval or rejection found yet.
 - Zimbra `contact@noctalia.app` checked on 2026-05-10. Targeted searches for SaaSHub, AlternativeTo, AppBrain, Digital.Health, SearchGun, Zearches, SaaSCity, and BetterLaunch returned no results. A broad Noctalia search mostly surfaced social notifications, not backlink approvals.
 - Outbound Gmail messages sent on 2026-05-09 for SearchGun, Digital.Health, AlternativeTo, and AppBrain. No inbound approval confirmation found yet for Noctalia, The Next AI, Zearches, SaaSHub, AlternativeTo, AppBrain, Digital.Health, SaaSCity, BetterLaunch, or OpenAIToolsHub.
+- High-priority pass completed on 2026-05-12: SaaSHub alternatives article submitted, Crunchbase company profile submitted, GoodAITools submitted, and FutureTools submitted. All four need later live-page verification before claiming final backlink value.
+- GoodAITools explicitly offered a `Get a Do-Follow Backlink` badge step with link `https://goodaitools.com/ai/noctalia`; skipped for now because it requires adding their reciprocal badge to Noctalia.
 - Avoid paid upgrades, badges requiring site changes, or sponsored placements unless explicitly approved.
 
 ## Submitted copy
@@ -102,6 +112,68 @@ Goal: create free SEO backlinks for Noctalia by submitting the site/app to relev
 - Tagline: AI dream journal for voice capture, transcription, dream interpretation, symbols, themes, images, and follow-up Dream Chat.
 - Categories selected: AI, Tech, Web App, Health And Fitness, Note Taking, iPhone.
 - Competitors selected: Daylio, dreambox.one, DreamMuse, Dream Oracle AI, DreamStory, Lucid Dreaming Journal, REFLECTLY, Rosebud App.
+
+### SaaSHub alternatives article
+
+- Submitted title: Best dream journal apps and Noctalia alternatives
+- Submitted target URL: https://noctalia.app/en/dream-journal-apps
+- SaaSHub submission URL: https://www.saashub.com/alternatives
+- Status: Pending approval
+- Products selected: Noctalia, Android, DreamApp, Oniri, Rosebud App
+- Categories selected: AI, Productivity, Health And Fitness
+- Date field used by SaaSHub: 2026-05-09
+- Confirmation: `Thanks for contributing. Once we have approved the post, it will appear online.`
+
+### Crunchbase
+
+- Submitted name: Noctalia
+- Submitted website: https://noctalia.app
+- Submitted contact email: contact@noctalia.app
+- Submitted short description: AI-powered dream journal and dream interpretation app
+- Submitted full description: Noctalia is an AI-powered dream journal app for Android. Users can record dreams by voice or text, get automatic transcription, guided AI interpretation, recurring symbols, emotional themes, generated dream images, and Dream Chat for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
+- Industries selected: Software, Mobile Apps
+- Account used: Google sign-in with `thannous@gmail.com`
+- Confirmation: `Edit successfully made! Your edits have been submitted. They may take a few minutes to appear.`
+- Fields intentionally left blank: legal name, founded date, headquarters, employee count, company type, phone, founders, funding, IPO, acquisitions.
+
+### GoodAITools
+
+- Submitted name: Noctalia
+- Submitted website: https://noctalia.app
+- Status: Pending review
+- Candidate listing URL shown in badge flow: https://goodaitools.com/ai/noctalia
+- Screenshot uploaded: `docs/screenshot/demo1_cropped-1600w.jpg`
+- Icon uploaded: `docs/logo512.png`
+- Categories selected: Health, Mobile Apps, Personal Development
+- Pricing: Freemium
+- Short description: AI dream journal for voice capture, interpretation, symbols, themes, images, and Dream Chat.
+- About: Noctalia is an AI-powered dream journal app for Android. Users can record dreams by voice or text, get automatic transcription, guided AI interpretation, recurring symbols, emotional themes, generated dream images, and Dream Chat for follow-up questions. It is built for dream journaling, sleep reflection, personal development, and lucid dreaming practice.
+- Final confirmation: `AI tool Submitted Successfully!`
+- Badge note: GoodAITools showed a dofollow option only if adding their reciprocal badge. Badge was skipped; do not count a followed backlink until approved and the badge decision is made.
+- Light badge code if approved later:
+
+```html
+<a target="_blank" href="https://goodaitools.com/ai/noctalia"><img src="https://goodaitools.com/assets/images/badge.png" alt="Badge" height="54"></a>
+```
+
+- Dark badge code if approved later:
+
+```html
+<a target="_blank" href="https://goodaitools.com/ai/noctalia"><img src="https://goodaitools.com/assets/images/badge-dark.png" alt="Badge" height="54"></a>
+```
+
+### FutureTools
+
+- Submitted name: Noctalia
+- Submitted URL: https://noctalia.app
+- Submitted email: contact@noctalia.app
+- Submitted maker name: Thanh Chau
+- Category selected: Healthcare
+- Pricing selected: Freemium
+- Newsletter: unchecked
+- Short description: Noctalia is an AI dream journal that turns voice or text dream entries into structured interpretations, recurring symbols, emotional themes, dream images, and follow-up Dream Chat.
+- Captcha/Turnstile state: success
+- Final confirmation: `Tool Submitted! Thanks for submitting your tool. Matt will review it and, if approved, it will appear in the database soon.`
 
 ### SearchGun guest post outreach
 

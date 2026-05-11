@@ -1,6 +1,6 @@
 # Noctalia — Backlinks Submission Guide
 
-> Generated 2026-03-09. Verified 2026-05-10. Recommended order now: Product Hunt draft/launch prep -> BetaList -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
+> Generated 2026-03-09. Verified 2026-05-12. Recommended order now: re-check GoodAITools/FutureTools/SaaSHub/Crunchbase approvals -> decide whether the GoodAITools reciprocal badge is worth a Noctalia site change -> Product Hunt draft/launch prep -> BetaList -> retry AlternativeTo/AppBrain after account replies -> Futurepedia only if paid listing budget is approved.
 
 ---
 
@@ -66,6 +66,15 @@ Noctalia is an AI-powered dream journal app that turns the fragile moment after 
 Dream Journal, AI Dream Analysis, Dream Interpretation, Sleep Wellness, Personal Development, Voice Journal, Lucid Dreaming, Psychology, Mental Health
 ```
 
+## High-Priority Platforms Checked 2026-05-12
+
+| Platform | 2026-05-12 outcome | Next action |
+| --- | --- | --- |
+| Crunchbase | Submitted a new company profile with known factual fields only: Noctalia, `https://noctalia.app`, `contact@noctalia.app`, Software, Mobile Apps, and product descriptions. Crunchbase confirmed edits were submitted and may take a few minutes to appear. | Re-check Crunchbase search for `Noctalia`; record the public profile URL and verify the outbound website link once visible. |
+| GoodAITools | Submitted free AI tool listing. Confirmation page showed the candidate URL `https://goodaitools.com/ai/noctalia`. Free plan claims one dofollow link only if their reciprocal badge/backlink is added. | Watch for approval, then decide explicitly whether to add the badge. Do not claim a followed backlink before approval plus badge decision. |
+| FutureTools | Submitted free tool listing. Turnstile passed and final page confirmed Matt will review it before publication. | Re-check FutureTools for `Noctalia` and watch `contact@noctalia.app` for review status. |
+| SaaSHub alternatives article | Submitted `Best dream journal apps and Noctalia alternatives` for `https://noctalia.app/en/dream-journal-apps`, with DreamApp, Oniri, and Rosebud App as alternatives. | Re-check SaaSHub recent submissions and approval state; record the final article URL when live. |
+
 ---
 
 ## 1. AlternativeTo
@@ -117,13 +126,16 @@ Submit Noctalia as alternative to each of these (one at a time):
 
 ## Free Directory Attempts Already Completed / Blocked
 
-| Platform | 2026-05-10 status | Next action |
+| Platform | Current status | Next action |
 | --- | --- | --- |
 | GitHub README | Live backlink to `https://noctalia.app` and Google Play listing. | Keep indexed; no action unless README content changes. |
 | Zearches | Live nofollow listing in Software & SaaS Tools. | Keep as discovery/indexation value. |
 | The Next AI | Submitted 2026-05-09; approval pending. | Watch Gmail and `contact@noctalia.app`. |
 | OpenAIToolsHub | Submitted 2026-05-09; approval pending. | Watch Gmail and `contact@noctalia.app`. |
-| SaaSHub | Public profile `https://www.saashub.com/noctalia-dream-journal`, pending approval. | Re-check after moderation for visible outbound link and follow attribute. |
+| SaaSHub | Public profile `https://www.saashub.com/noctalia-dream-journal`, pending approval; alternatives article submitted 2026-05-12, also pending approval. | Re-check after moderation for visible outbound links and follow attributes. |
+| Crunchbase | New company profile submitted 2026-05-12; public profile URL not visible yet. | Re-check Crunchbase search for `Noctalia` and verify the website backlink once the profile appears. |
+| GoodAITools | Submitted 2026-05-12; candidate listing URL `https://goodaitools.com/ai/noctalia`. | Watch for approval. Dofollow requires a reciprocal GoodAITools badge/backlink on Noctalia, so decide before adding. |
+| FutureTools | Submitted 2026-05-12; editorial review pending. | Watch for approval and re-check live directory search. |
 | SearchGun | Guest post submitted by email. | Watch for editorial acceptance/revision. |
 | AppBrain | Outreach sent; developer claim needed before featured submission. | Wait for AppBrain reply or claim the app in their dashboard. |
 | Digital.Health | Outreach sent; company/account flow needed. | Wait for reply; keep positioning as sleep wellness / dream journaling, not medical. |
@@ -320,6 +332,10 @@ I'd love to hear your feedback — what features would make you actually use a d
 | Platform      | Submitted | Approved | Backlink Live | Notes                                       |
 | ------------- | --------- | -------- | ------------- | ------------------------------------------- |
 | AlternativeTo | ☐         | ☐        | ☐             |                                             |
+| Crunchbase    | ✓         | ☐        | ☐             | Submitted 2026-05-12; waiting for public profile URL |
+| GoodAITools   | ✓         | ☐        | ☐             | Submitted 2026-05-12; dofollow requires badge decision |
+| FutureTools   | ✓         | ☐        | ☐             | Submitted 2026-05-12; waiting for review |
+| SaaSHub       | ✓         | ☐        | ☐             | Profile plus alternatives article pending approval |
 | BetaList      | ☐         | ☐        | ☐             |                                             |
 | Product Hunt  | ☐         | ☐        | ☐             |                                             |
 | Futurepedia   | ☐         | ☐        | ☐             | Paid listing only unless free/basic reopens |
