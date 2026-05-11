@@ -460,6 +460,34 @@
             }
           }
         },
+        "blog.dreams-not-random-ai-study": {
+          "id": "blog.dreams-not-random-ai-study",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "dreams-not-random-ai-study",
+          "locales": {
+            "en": {
+              "slug": "dreams-not-random-ai-study",
+              "path": "/en/blog/dreams-not-random-ai-study"
+            },
+            "fr": {
+              "slug": "reves-pas-aleatoires-etude-ia",
+              "path": "/fr/blog/reves-pas-aleatoires-etude-ia"
+            },
+            "es": {
+              "slug": "suenos-no-son-aleatorios-estudio-ia",
+              "path": "/es/blog/suenos-no-son-aleatorios-estudio-ia"
+            },
+            "de": {
+              "slug": "traeume-nicht-zufaellig-ki-studie",
+              "path": "/de/blog/traeume-nicht-zufaellig-ki-studie"
+            },
+            "it": {
+              "slug": "sogni-non-casuali-studio-ia",
+              "path": "/it/blog/sogni-non-casuali-studio-ia"
+            }
+          }
+        },
         "blog.exam-dreams-meaning": {
           "id": "blog.exam-dreams-meaning",
           "type": "blogArticle",
@@ -989,6 +1017,34 @@
             "it": {
               "slug": "sogni-di-denti-che-cadono-significato-e-interpretazione",
               "path": "/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione"
+            }
+          }
+        },
+        "blog.vivid-dreams-restful-sleep": {
+          "id": "blog.vivid-dreams-restful-sleep",
+          "type": "blogArticle",
+          "canonicalLanguage": "en",
+          "canonicalSlug": "vivid-dreams-restful-sleep",
+          "locales": {
+            "en": {
+              "slug": "vivid-dreams-restful-sleep",
+              "path": "/en/blog/vivid-dreams-restful-sleep"
+            },
+            "fr": {
+              "slug": "reves-vivaces-sommeil-reparateur",
+              "path": "/fr/blog/reves-vivaces-sommeil-reparateur"
+            },
+            "es": {
+              "slug": "suenos-vividos-sueno-reparador",
+              "path": "/es/blog/suenos-vividos-sueno-reparador"
+            },
+            "de": {
+              "slug": "lebendige-traeume-erholsamer-schlaf",
+              "path": "/de/blog/lebendige-traeume-erholsamer-schlaf"
+            },
+            "it": {
+              "slug": "sogni-vividi-sonno-riparatore",
+              "path": "/it/blog/sogni-vividi-sonno-riparatore"
             }
           }
         },
