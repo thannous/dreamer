@@ -61,6 +61,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run test:e2e:subscription-teststore:purchase:preflight');
     expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
+    expect(result.stdout).toContain('OK | Android device diagnostic exists');
+    expect(result.stdout).toContain('npm run android:device');
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');

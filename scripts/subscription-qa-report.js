@@ -242,6 +242,12 @@ const checks = [
     'npm run subscription:qa:verify-local'
   ),
   check(
+    'Android device diagnostic exists',
+    fs.existsSync(path.join(ROOT, 'scripts/check-android-adb-device.js')) &&
+      pkg.scripts['android:device'] === 'node ./scripts/check-android-adb-device.js --report-only',
+    'npm run android:device'
+  ),
+  check(
     'Evidence template covers all release gates',
     EXPECTED.manualGateKeys.every((key) => evidenceExample.gates?.[key]),
     EXPECTED.manualGateKeys.join(', ')
