@@ -19,6 +19,13 @@ const MANUAL_GATE_KEYS = [
   'play_cancellation_and_expiry',
 ];
 
+function evidenceForKey(key) {
+  if (key === 'play_monthly') {
+    return 'play_monthly verified by manual QA with base plan P1M confirmed';
+  }
+  return `${key} verified by manual QA`;
+}
+
 function runReport(args = [], env = {}) {
   return spawnSync(process.execPath, [SCRIPT, ...args], {
     cwd: ROOT,
@@ -82,7 +89,7 @@ describe('subscription QA report release gate', () => {
           testedAt: '2026-05-09T12:00:00.000Z',
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
-          evidence: `${key} verified by manual QA`,
+          evidence: evidenceForKey(key),
           ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
         },
       ])
@@ -253,6 +260,32 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Manual or external gates remaining: 3');
     expect(result.stdout).toContain('Play monthly');
     expect(result.stdout).toContain('Play monthly: easBuildId must be an EAS build UUID');
+  });
+
+  it('keeps Play monthly blocked when base plan P1M is not confirmed', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 6');
+    expect(result.stdout).toContain('Manual or external gates remaining: 1');
+    expect(result.stdout).toContain('Play monthly: monthly base plan P1M must be confirmed');
   });
 
   it('keeps gates blocked when evidence text is still the example placeholder', () => {

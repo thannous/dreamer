@@ -143,6 +143,9 @@ function getGateEvidenceIssue(evidence, scenario) {
   ) {
     return 'easBuildId must be an EAS build UUID';
   }
+  if (key === 'play_monthly' && !/\bP1M\b/i.test(evidenceText)) {
+    return 'monthly base plan P1M must be confirmed';
+  }
 
   return null;
 }
