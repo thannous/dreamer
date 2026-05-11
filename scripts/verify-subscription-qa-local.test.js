@@ -1,4 +1,5 @@
 const {
+  commands,
   exitCodeForUnexpectedStatus,
   getResultError,
   runCommands,
@@ -17,6 +18,18 @@ function memoryStream() {
 }
 
 describe('subscription QA local verifier', () => {
+  it('requires the QA report to surface current session readiness blockers', () => {
+    const reportCommand = commands.find((command) => command.label === 'report: subscription QA coverage');
+
+    expect(reportCommand.expectedStdoutIncludes).toEqual(
+      expect.arrayContaining([
+        '## Current Session Readiness',
+        'Test Store signed-in account env',
+        'RevenueCat product prodfce10ef2a8 must expose billing period P1M',
+      ])
+    );
+  });
+
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {
     expect(exitCodeForUnexpectedStatus({ status: 0 })).toBe(1);
     expect(
