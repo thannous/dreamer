@@ -1,6 +1,6 @@
 # RevenueCat Workflow Completion Audit
 
-Date: 2026-05-10
+Date: 2026-05-12
 
 Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents profils utilisateurs et abonnements, du mock valide au Test Store puis Play autant que possible localement.
 
@@ -21,6 +21,9 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 | Revalider le harnais local sans Store | `npm run subscription:qa:verify-local` | Lance les checks syntaxiques, les tests du harnais QA, `subscription:qa:report`, une verification que la release gate bloque sans preuve pour la bonne raison, et les preflights d'achat monthly/annual avec compte factice sans achat ni Metro; le verificateur a ses propres tests et `subscription:qa:report` verifie aussi que cette commande existe | Fait |
 | Diagnostiquer les preuves invalides | `scripts/subscription-qa-report.js` | Si un fichier de preuve locale est present, le rapport affiche `Evidence Diagnostics` pour les gates mal remplies | Fait |
 | Bloquer un fichier de preuve illisible | `scripts/subscription-qa-report.js` | Un JSON local invalide ne crashe pas le rapport; il bloque sur `Local evidence file parses` | Fait |
+| Surfacer les pre-requis de session | `scripts/subscription-qa-report.js` | Le rapport affiche `Current Session Readiness`: variables Test Store presentes/manquantes, approbation d'achat, besoin `ADB: READY`, et correction `P1M` pour `prodfce10ef2a8` | Fait |
+| Verrouiller le signal readiness dans le verificateur | `scripts/verify-subscription-qa-local.js` | `npm run subscription:qa:verify-local` echoue si `subscription:qa:report` n'affiche plus `Current Session Readiness`, le compte Test Store env ou le rappel `P1M` | Fait |
+| Diagnostiquer l'appareil Android physique | `npm run android:device` | Dernier check le 2026-05-12: `ADB: MISSING` et `USB: NOT VISIBLE`; macOS ne voit pas de device Android/POCO, donc les flows sur telephone reel restent bloques avant meme RevenueCat/Play | Bloque appareil |
 | Valider achat Test Store monthly | `test:e2e:subscription-teststore:purchase -- --plan monthly` | Necessite accord explicite et compte test | Manquant |
 | Valider achat Test Store annual | `test:e2e:subscription-teststore:purchase -- --plan annual` | Necessite accord explicite et compte test | Manquant |
 | Valider restore apres achat | QA Lab Restore + evidence gate `restore_after_reinstall` | Necessite achat deja realise | Manquant |
@@ -57,6 +60,8 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 | Revalidation live RevenueCat | MCP RevenueCat `list_projects` puis offerings/packages via nouveau `codex exec` | `Noctalia` = `proje6db7596`; offering `default` actif; `$rc_monthly` -> `monthly` + `noctalia_plus:monthly`; `$rc_annual` -> `yearly` + `noctalia_plus:annual` |
 | Preflight achat | `npm run test:e2e:subscription-teststore:purchase:preflight -- --plan monthly --device emulator-5554` | Ne necessite pas `REVENUECAT_QA_APPROVAL`, ne lance pas Maestro, valide les prerequisites locaux |
 | Verification locale rapide | `npm run subscription:qa:verify-local` | Regroupe syntax checks, tests scripts QA, rapport de couverture, blocage attendu de la release gate sans preuve pour la bonne raison et preflights d'achat monthly/annual sans ouvrir le Store |
+| Readiness de la session courante | `npm run subscription:qa:report` | Section `Current Session Readiness` affiche actuellement `REVENUECAT_QA_EMAIL=missing`, `REVENUECAT_QA_PASSWORD=missing`, approbation Test Store `NOT SET`, besoin `ADB: READY`, et besoin RevenueCat/Play `P1M` pour le mensuel |
+| Appareil physique Android | `npm run android:device` | `ADB: MISSING`, `USB: NOT VISIBLE`; aucun achat Test Store/Play sur appareil physique ne peut etre execute tant que le POCO n'est pas reconnecte en mode transfert de fichiers avec USB debugging/RSA |
 | Build EAS Android existant | Expo MCP `build_info 310244ed-027b-4028-8522-70c0f676a0e9` | Build fini, STORE, production, AAB disponible, mais date/commit avant le workflow QA RevenueCat courant |
 | Build EAS Android utilisable pour Play | EAS CLI depuis worktree propre + Expo MCP `build_info cbbf745a-0e76-4488-a365-ba180a903e90` + page Expo Submission Details | Build Store Android `cbbf745a-0e76-4488-a365-ba180a903e90` fini le 2026-05-10, versionCode 22, commit `723e6deb0524e3b49e33045d2298da918404e40f`, AAB `https://expo.dev/artifacts/eas/rag5GTaMLdJ4HAYpS4vqDo.aab`; auto-submit Internal Testing `6d4630b0-33e1-48d7-a8f1-687206b2fe8f` confirme `Success` sur Expo, soumis le 2026-05-10 a 23:29 | Fait |
 | Inscription Play Testing | Chrome avec `thannous@gmail.com` sur `play.google.com/apps/testing/com.tanuki75.noctalia/join?hl=en-US` | Page affiche `You are a tester`; la fiche Play sur l'emulateur affiche aussi Noctalia Beta et `You're a beta tester for this app` | Fait |
@@ -78,10 +83,11 @@ npm run lint
 npm run typecheck:app
 ```
 
-Resultat attendu au 2026-05-10:
+Resultat attendu au 2026-05-12:
 
 - `subscription:qa:report`: passe
-- `subscription:qa:verify-local`: passe
+- `subscription:qa:report`: affiche `Current Session Readiness`; au dernier check, les variables Test Store sont absentes, l'approbation d'achat n'est pas definie, l'appareil doit encore etre `ADB: READY`, et le mensuel Play doit encore exposer `P1M`
+- `subscription:qa:verify-local`: passe, avec 5 suites et 34 tests du harnais QA scripts
 - `subscription:qa:release-gate`: echoue volontairement avec 7 portes restantes
 - tests scripts QA: passent, dont le refus des preuves qui gardent le texte du template, une date invalide, une identite vide/en espaces, un `appUserId` non UUID ou un `easBuildId` non UUID dans le report et le helper d'ecriture
 - tests cibles abonnement: `services/__tests__/revenuecatUI.test.ts`, `services/__tests__/subscriptionService.test.ts`, `services/subscriptionSyncService.test.ts`, `services/mocks/subscriptionServiceMock.test.ts`, `hooks/useSubscription.test.tsx`, `lib/__tests__/revenuecat.test.ts`, `lib/__tests__/revenuecatSubscriber.test.ts`, `tests/app-routes/settingsScreen.test.tsx` passent (8 suites, 90 tests)
@@ -96,7 +102,8 @@ Resultat attendu au 2026-05-10:
 - Expo MCP build Android: verification relancee le 2026-05-10; dernier Store build fini `310244ed-027b-4028-8522-70c0f676a0e9`, mais insuffisant pour valider Play Internal Testing du workflow actuel
 - Play Internal Testing: build Android Store `ddbc756d-8db6-4337-80fa-68cc86f8b62a` cree depuis `c19bf249` avec la cle `goog_`; auto-submit Internal Testing `99d2a4b1-3eac-4479-850f-bf179c13af91` confirme `FINISHED`, track `internal`, release `COMPLETED`; le manifest du build 24 marque camera/micro optionnels et bundletool genere des splits APK pour l'emulateur, mais Google Play affiche encore `Your device isn't compatible with this version` sur `Pixel_8_Play_API_36`, y compris apres recheck de propagation le 2026-05-11; le blocage restant est donc cote Play/device catalog et la validation Play doit passer par un appareil physique compatible ou par correction Play Console device catalog si un filtre y apparait
 - Sideload build 24: les splits generes depuis l'AAB `ddbc756d-8db6-4337-80fa-68cc86f8b62a` doivent etre signes pour un sideload local; avec une keystore debug temporaire, `bundletool install-apks --apks=/private/tmp/noctalia-ddbc756d-signed.apks --device-id=emulator-5554` installe l'app, `dumpsys package` confirme `versionCode=24`, et `am start` affiche l'ecran Noctalia. Cette preuve confirme le lancement du binaire, pas l'installation Play ni les achats Play.
-- RevenueCat MCP store state: lecture fraiche le 2026-05-11 avec `get_product_store_state` sur `prodfce10ef2a8` et `prod98337b31be`; les deux renvoient `store=play_store`, `status=ok`, `base_plan_id=annual`, `billing_period=P1Y`, `grace_period=P14D`. Le produit mensuel est donc incoherent cote store live; le code local evite de l'afficher comme mensuel si `subscriptionPeriod=P1Y`, mais la configuration Play/RevenueCat doit etre corrigee avant de valider `play_monthly`.
+- Android physique: `npm run android:device` relance le 2026-05-12 renvoie `ADB: MISSING` et `USB: NOT VISIBLE`; le Mac ne voit pas le POCO en USB, donc il faut rebrancher/changer cable ou port, choisir `Transfert de fichiers / Android Auto`, activer USB debugging et accepter la popup RSA avant de reprendre les validations appareil.
+- RevenueCat MCP store state: lecture fraiche le 2026-05-12 avec `get_product_store_state` sur `prodfce10ef2a8`; le produit mensuel renvoie toujours `store=play_store`, `status=ok`, `base_plan_id=annual`, `billing_period=P1Y`, `grace_period=P14D`. Le produit mensuel est donc incoherent cote store live; le code local evite de l'afficher comme mensuel si `subscriptionPeriod=P1Y`, mais la configuration Play/RevenueCat doit etre corrigee avant de valider `play_monthly`.
 - scope de commit Play: `git add --dry-run` sur la liste du runbook passe; `git diff --cached --name-only` reste vide apres verification
 - preuve locale: `doc_web_interne/docs/revenuecat-qa-evidence.local.json` absent; `subscription:qa:release-gate` doit donc rester rouge avec 7 portes restantes
 
