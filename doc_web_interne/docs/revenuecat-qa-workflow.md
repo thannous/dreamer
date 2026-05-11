@@ -264,6 +264,27 @@ Preuve attendue:
 - `app_metadata.subscription_version` correspond au retour `/subscription/refresh`
 - les quotas backend acceptent les usages plus sans 429
 
+Diagnostic local utile si Play Store affiche `Your device isn't compatible with this version`:
+
+```bash
+bundletool build-apks \
+  --bundle=/private/tmp/noctalia-ddbc756d.aab \
+  --output=/private/tmp/noctalia-ddbc756d-signed.apks \
+  --device-spec=/private/tmp/noctalia-device-spec.json \
+  --ks=/private/tmp/noctalia-debug.keystore \
+  --ks-key-alias=androiddebugkey \
+  --ks-pass=pass:android \
+  --key-pass=pass:android
+bundletool install-apks --apks=/private/tmp/noctalia-ddbc756d-signed.apks --device-id=emulator-5554
+adb shell dumpsys package com.tanuki75.noctalia | rg -n "versionName|versionCode|installerPackageName"
+adb shell am start -n com.tanuki75.noctalia/.MainActivity
+```
+
+Le 2026-05-11, ce diagnostic a installe et lance le build 24 sur `Pixel_8_Play_API_36`
+avec `installerPackageName=null`. C'est une preuve que le binaire se lance sur l'emulateur,
+mais pas une preuve Play Billing: les gates Play exigent toujours une installation dont
+`installerPackageName` vaut `com.android.vending`.
+
 ## Garde-fous
 
 - Ne jamais publier un build store avec la cle `test_`.
