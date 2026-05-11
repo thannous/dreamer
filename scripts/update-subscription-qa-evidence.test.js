@@ -115,8 +115,8 @@ describe('subscription QA evidence updater', () => {
       'tester@example.com',
       '--app-user-id',
       '00000000-0000-4000-8000-000000000000',
-      '--evidence',
-      'monthly purchase completed through Play Internal Testing',
+	  '--evidence',
+	  'monthly purchase completed through Play Internal Testing with base plan P1M confirmed',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -228,7 +228,7 @@ describe('subscription QA evidence updater', () => {
       '--app-user-id',
       '00000000-0000-4000-8000-000000000000',
       '--evidence',
-      'monthly purchase completed through Play Internal Testing',
+      'monthly purchase completed through Play Internal Testing with base plan P1M confirmed',
       '--eas-build-id',
       '310244ed-027b-4028-8522-70c0f676a0e9',
       '--tested-at',
@@ -240,8 +240,32 @@ describe('subscription QA evidence updater', () => {
     expect(evidence.gates.play_monthly).toMatchObject({
       status: 'passed',
       easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
-      evidence: 'monthly purchase completed through Play Internal Testing',
+      evidence: 'monthly purchase completed through Play Internal Testing with base plan P1M confirmed',
     });
+  });
+
+  it('rejects Play monthly evidence that does not confirm base plan P1M', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'play_monthly',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'monthly purchase completed through Play Internal Testing',
+      '--eas-build-id',
+      '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Play monthly evidence must confirm base plan P1M');
+    expect(fs.existsSync(file)).toBe(false);
   });
 
   it('rejects a Play EAS build id that is not a UUID', () => {
