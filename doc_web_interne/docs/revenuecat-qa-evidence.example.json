@@ -35,7 +35,7 @@
       "tester": "",
       "appUserId": "",
       "easBuildId": "",
-      "evidence": "Play Internal Testing build purchases noctalia_plus:monthly and backend converges"
+      "evidence": "Play Internal Testing build purchases noctalia_plus:monthly after confirming base plan P1M and backend converges"
     },
     "play_annual": {
       "status": "pending",

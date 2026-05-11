@@ -85,7 +85,7 @@ npm run subscription:qa:evidence -- \
   --tester tester@example.com \
   --app-user-id 00000000-0000-4000-8000-000000000000 \
   --eas-build-id 310244ed-027b-4028-8522-70c0f676a0e9 \
-  --evidence "Play purchase completed, product noctalia_plus:monthly, backend converged"
+  --evidence "Play purchase completed, product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.

@@ -349,8 +349,8 @@ const scenarios = [
     'External store gate',
     'Play monthly',
     'Google Play Internal Testing',
-    'Product noctalia_plus:monthly',
-    'Requires Play-installed internal testing build',
+    'Product noctalia_plus:monthly with base plan P1M',
+    'Requires corrected Play monthly base plan and Play-installed internal testing build',
   ],
   [
     'External store gate',
