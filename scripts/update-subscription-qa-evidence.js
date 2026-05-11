@@ -72,6 +72,7 @@ Options:
   --file <path>        Evidence file to update. Defaults to doc_web_interne/docs/revenuecat-qa-evidence.local.json
   --tested-at <iso>    Override timestamp. Defaults to now.
   --eas-build-id <id>  Required for play_* gates; records the installed EAS build id.
+                       play_monthly evidence must also confirm base plan P1M.
 
 Gate keys:
   test_store_monthly, test_store_annual, restore_after_reinstall, account_switch,
