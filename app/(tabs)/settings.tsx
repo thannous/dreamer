@@ -304,6 +304,17 @@ export default function SettingsScreen() {
                 />
               </MotiView>
               <View style={styles.settingsSectionCards}>
+                {showSubscriptionQaLab ? (
+                  <MotiView
+                    from={{ opacity: 1, translateY: 16 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500, delay: 360 }}
+                  >
+                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
+                      <SubscriptionQALab />
+                    </View>
+                  </MotiView>
+                ) : null}
                 <MotiView
                   from={{ opacity: 1, translateY: 16 }}
                   animate={{ opacity: 1, translateY: 0 }}
@@ -333,17 +344,6 @@ export default function SettingsScreen() {
                     <QuotaStatusCard />
                   </View>
                 </MotiView>
-                {showSubscriptionQaLab ? (
-                  <MotiView
-                    from={{ opacity: 1, translateY: 16 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    transition={{ type: 'timing', duration: 500, delay: 560 }}
-                  >
-                    <View style={isDesktopLayout ? styles.sectionItemDesktop : undefined}>
-                      <SubscriptionQALab />
-                    </View>
-                  </MotiView>
-                ) : null}
               </View>
             </View>
 
