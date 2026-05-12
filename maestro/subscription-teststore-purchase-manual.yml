@@ -27,22 +27,22 @@ appId: com.tanuki75.noctalia
     visible:
       id: text.auth.email
     timeout: 45000
-
 - scrollUntilVisible:
     element:
-      id: screen.subscription.qaLab
+      text: "Subscription QA Lab"
     direction: DOWN
     visibilityPercentage: 40
     timeout: 30000
 - assertVisible: "RevenueCat Test Store"
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.probe
-    direction: DOWN
-    visibilityPercentage: 80
-    timeout: 30000
+- swipe:
+    start: 50%, 78%
+    end: 50%, 28%
+- swipe:
+    start: 50%, 78%
+    end: 50%, 28%
+- assertVisible: "Probe SDK"
 - tapOn:
-    id: btn.subscription.qa.probe
+    text: "Probe SDK"
 - extendedWaitUntil:
     visible: "SDK probe completed"
     timeout: 60000
