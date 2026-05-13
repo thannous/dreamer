@@ -3,6 +3,7 @@
 # dependencies
 node_modules/
 .cache/
+.npm-cache/
 .gradle-user-home/
 
 # Expo
