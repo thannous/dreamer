@@ -71,7 +71,6 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/css/styles.min.css?v={{css_version}}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v={{css_version}}">
-    <script src="/js/lucide.min.js?v={{css_version}}" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -313,8 +312,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-
             // Navbar scroll effect
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');

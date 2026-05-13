@@ -1,6 +1,14 @@
 (() => {
-  const gsapLib = window.gsap;
-  const ScrollTrigger = window.ScrollTrigger;
+  let gsapLib = window.gsap;
+  let ScrollTrigger = window.ScrollTrigger;
+  let desktopInitialized = false;
+  let lightInitialized = false;
+
+  const moduleScript = document.querySelector('script[data-animation-module="landing"]');
+  const gsapSrc = moduleScript?.dataset.gsapSrc || '/js/gsap.min.js';
+  const scrollTriggerSrc = moduleScript?.dataset.scrollTriggerSrc || '/js/ScrollTrigger.min.js';
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktopMotion = window.matchMedia('(min-width: 768px)');
 
   const stepSectionSelector = [
     '#how-it-works',
@@ -27,6 +35,8 @@
   const getHeroItems = () => Array.from(document.querySelectorAll('.hero-anim'));
   const getRevealItems = () => Array.from(document.querySelectorAll('.reveal'));
 
+  const shouldUseDesktopMotion = () => desktopMotion.matches && !prefersReducedMotion.matches;
+
   const showStaticState = () => {
     getHeroItems().forEach((el) => {
       el.classList.remove('opacity-0');
@@ -43,17 +53,113 @@
     });
   };
 
-  const shouldAnimate = () => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return !!(gsapLib && ScrollTrigger && !prefersReducedMotion);
-  };
-
-  const scheduleInit = (callback) => {
+  const scheduleIdle = (callback) => {
     if (typeof window.requestIdleCallback === 'function') {
-      window.requestIdleCallback(callback, { timeout: 1500 });
+      window.requestIdleCallback(callback, { timeout: 1600 });
     } else {
       window.setTimeout(callback, 180);
     }
+  };
+
+  const loadScript = (src) => {
+    const absoluteSrc = new URL(src, window.location.href).href;
+    const existing = Array.from(document.scripts).find((script) => script.src === absoluteSrc);
+
+    if (existing) {
+      if (existing.dataset.loaded === 'true') return Promise.resolve();
+      return new Promise((resolve, reject) => {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', reject, { once: true });
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.defer = true;
+      script.dataset.dynamicAnimation = 'true';
+      script.addEventListener(
+        'load',
+        () => {
+          script.dataset.loaded = 'true';
+          resolve();
+        },
+        { once: true }
+      );
+      script.addEventListener('error', reject, { once: true });
+      document.head.appendChild(script);
+    });
+  };
+
+  const loadAnimationLibraries = async () => {
+    if (!window.gsap) {
+      await loadScript(gsapSrc);
+    }
+    gsapLib = window.gsap;
+
+    if (!window.ScrollTrigger) {
+      await loadScript(scrollTriggerSrc);
+    }
+    ScrollTrigger = window.ScrollTrigger;
+
+    return Boolean(gsapLib && ScrollTrigger);
+  };
+
+  const initLightMotion = () => {
+    if (prefersReducedMotion.matches) {
+      showStaticState();
+      return;
+    }
+
+    if (lightInitialized) return;
+    lightInitialized = true;
+
+    getHeroItems().forEach((el, index) => {
+      el.classList.remove('opacity-0');
+      el.style.opacity = '0';
+      el.style.visibility = 'visible';
+      el.style.transform = 'translate3d(0, 14px, 0)';
+      el.style.transition = 'opacity 700ms ease, transform 700ms ease';
+      el.style.transitionDelay = `${Math.min(index * 90, 360)}ms`;
+    });
+
+    window.requestAnimationFrame(() => {
+      getHeroItems().forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'translate3d(0, 0, 0)';
+      });
+    });
+
+    const revealItems = getRevealItems();
+    if (!revealItems.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      showStaticState();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries, activeObserver) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('active');
+          entry.target.style.opacity = '1';
+          entry.target.style.visibility = 'visible';
+          entry.target.style.transform = 'translate3d(0, 0, 0)';
+          activeObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.12 }
+    );
+
+    revealItems.forEach((el) => {
+      if (el.classList.contains('active')) return;
+      el.style.opacity = '0';
+      el.style.visibility = 'visible';
+      el.style.transform = 'translate3d(0, 18px, 0)';
+      el.style.transition = 'opacity 650ms ease, transform 650ms ease';
+      observer.observe(el);
+    });
   };
 
   const initHero = () => {
@@ -79,7 +185,7 @@
         duration: 1.2,
         ease: 'power2.out',
         delay: 0.35,
-      },
+      }
     );
   };
 
@@ -100,14 +206,14 @@
             toggleActions: 'play none none none',
             once: true,
           },
-        },
+        }
       );
     });
   };
 
   const initPinnedSteps = () => {
     const stepSection = document.querySelector(stepSectionSelector);
-    if (!stepSection || !window.matchMedia('(min-width: 768px)').matches) return;
+    if (!stepSection || !desktopMotion.matches) return;
 
     const heading = stepSection.querySelector('.text-center.mb-16');
     const galleryItems = gsapLib.utils.toArray(withSuffix(stepSectionSelector, '[data-step]'));
@@ -137,14 +243,14 @@
             scrub: true,
           },
           delay: index * 0.04,
-        },
+        }
       );
     });
   };
 
   const initMediaScroll = () => {
     const mediaItems = gsapLib.utils.toArray(
-      '.noctalia-observatory picture img, .noctalia-observatory [data-phone]',
+      '.noctalia-observatory picture img, .noctalia-observatory [data-phone]'
     );
 
     mediaItems.forEach((item) => {
@@ -161,14 +267,14 @@
             end: 'center 48%',
             scrub: true,
           },
-        },
+        }
       );
     });
   };
 
   const initCardPhysics = () => {
     const cards = gsapLib.utils.toArray(
-      `${withSuffix(featureSectionSelector, '.glass-panel')}, .noctalia-observatory a.glass-panel`,
+      `${withSuffix(featureSectionSelector, '.glass-panel')}, .noctalia-observatory a.glass-panel`
     );
 
     cards.forEach((card) => {
@@ -182,6 +288,12 @@
   };
 
   const initAnimations = () => {
+    if (!gsapLib || !ScrollTrigger || desktopInitialized || !shouldUseDesktopMotion()) {
+      if (!shouldUseDesktopMotion()) initLightMotion();
+      return;
+    }
+
+    desktopInitialized = true;
     gsapLib.registerPlugin(ScrollTrigger);
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
@@ -195,17 +307,29 @@
   };
 
   const boot = (forceImmediate = false) => {
-    if (!shouldAnimate()) {
-      showStaticState();
+    if (!shouldUseDesktopMotion()) {
+      initLightMotion();
       return;
     }
+
+    const start = async () => {
+      try {
+        const loaded = await loadAnimationLibraries();
+        if (!loaded) {
+          initLightMotion();
+          return;
+        }
+        initAnimations();
+      } catch {
+        initLightMotion();
+      }
+    };
 
     if (forceImmediate) {
-      initAnimations();
-      return;
+      start();
+    } else {
+      scheduleIdle(start);
     }
-
-    scheduleInit(initAnimations);
   };
 
   boot();
@@ -213,20 +337,16 @@
   window.addEventListener('pageshow', (event) => {
     if (!event.persisted) return;
 
-    const heroHidden = getHeroItems().some((el) => window.getComputedStyle(el).opacity === '0');
-    if (heroHidden) {
-      boot(true);
-      return;
-    }
-
-    const revealHidden = getRevealItems().some((el) => window.getComputedStyle(el).opacity === '0');
-    if (revealHidden) {
-      showStaticState();
+    if (!shouldUseDesktopMotion()) {
+      initLightMotion();
       return;
     }
 
     if (ScrollTrigger) {
       ScrollTrigger.refresh(true);
+      return;
     }
+
+    boot(true);
   });
 })();

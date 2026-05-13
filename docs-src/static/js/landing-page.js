@@ -18,16 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  document.addEventListener('mousemove', (event) => {
-    const orbs = document.querySelectorAll('.orb');
-    if (orbs.length === 0) return;
+  const canTrackPointer =
+    window.matchMedia('(min-width: 768px)').matches &&
+    window.matchMedia('(pointer: fine)').matches;
+  const orbs = canTrackPointer ? Array.from(document.querySelectorAll('.orb')) : [];
+  let pointerFrame = 0;
+  let pointerX = 0;
+  let pointerY = 0;
 
-    const x = event.clientX / window.innerWidth;
-    const y = event.clientY / window.innerHeight;
+  if (orbs.length > 0) {
+    document.addEventListener(
+      'mousemove',
+      (event) => {
+        pointerX = event.clientX / window.innerWidth;
+        pointerY = event.clientY / window.innerHeight;
 
-    orbs.forEach((orb, index) => {
-      const speed = (index + 1) * 15;
-      orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
-    });
-  });
+        if (pointerFrame) return;
+        pointerFrame = window.requestAnimationFrame(() => {
+          orbs.forEach((orb, index) => {
+            const speed = (index + 1) * 15;
+            orb.style.transform = `translate(${pointerX * speed}px, ${pointerY * speed}px)`;
+          });
+          pointerFrame = 0;
+        });
+      },
+      { passive: true }
+    );
+  }
 });

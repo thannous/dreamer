@@ -4,7 +4,6 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { JSDOM } = require('jsdom');
 const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 const { normalizePrettyPath, readJson, walkFiles } = require('./lib/docs-source-utils');
@@ -42,21 +41,69 @@ function resolveInternalHref(currentPath, href) {
   }
 }
 
+function decodeHtmlAttribute(value) {
+  return String(value || '')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
+}
+
+function parseTagAttributes(rawTag) {
+  const attributes = new Map();
+  const pattern = /([:@\w.-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
+  let match;
+
+  while ((match = pattern.exec(rawTag))) {
+    attributes.set(match[1].toLowerCase(), decodeHtmlAttribute(match[2] ?? match[3] ?? match[4] ?? ''));
+  }
+
+  return attributes;
+}
+
+function matchTags(html, tagName) {
+  return html.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) || [];
+}
+
+function findMetaContent(html, attr, value) {
+  const expected = String(value).toLowerCase();
+  for (const tag of matchTags(html, 'meta')) {
+    const attrs = parseTagAttributes(tag);
+    if (String(attrs.get(attr) || '').toLowerCase() === expected) {
+      return attrs.get('content') || '';
+    }
+  }
+  return '';
+}
+
+function extractHrefValues(html) {
+  return matchTags(html, 'a')
+    .map((tag) => parseTagAttributes(tag).get('href'))
+    .filter(Boolean);
+}
+
+function countTagsWithAttribute(html, tagName, attr, value) {
+  const expected = String(value).toLowerCase();
+  return matchTags(html, tagName).filter((tag) => {
+    const attrs = parseTagAttributes(tag);
+    return String(attrs.get(attr) || '').toLowerCase() === expected;
+  }).length;
+}
+
 function loadIndexablePages() {
   const htmlFiles = walkFiles(DOCS_DIR, (filePath) => filePath.endsWith('.html'));
   const pages = [];
 
   for (const filePath of htmlFiles) {
     const html = fs.readFileSync(filePath, 'utf8');
-    const dom = new JSDOM(html);
-    const document = dom.window.document;
-    const robots = (document.querySelector('meta[name="robots"]')?.getAttribute('content') || '').toLowerCase();
+    const robots = findMetaContent(html, 'name', 'robots').toLowerCase();
     if (robots.includes('noindex')) continue;
 
     pages.push({
       filePath,
       path: htmlFileToPath(filePath),
-      document,
+      hrefs: extractHrefValues(html),
     });
   }
 
@@ -66,26 +113,25 @@ function loadIndexablePages() {
 function assertNoDuplicateCriticalMeta() {
   const files = walkFiles(DOCS_DIR, (filePath) => filePath.endsWith('.html'));
   const selectors = [
-    'meta[name="robots"]',
-    'link[rel="canonical"]',
-    'meta[property="og:title"]',
-    'meta[property="og:description"]',
-    'meta[property="og:image"]',
-    'meta[name="twitter:title"]',
-    'meta[name="twitter:description"]',
-    'meta[name="twitter:image"]',
+    { label: 'meta[name="robots"]', tag: 'meta', attr: 'name', value: 'robots' },
+    { label: 'link[rel="canonical"]', tag: 'link', attr: 'rel', value: 'canonical' },
+    { label: 'meta[property="og:title"]', tag: 'meta', attr: 'property', value: 'og:title' },
+    { label: 'meta[property="og:description"]', tag: 'meta', attr: 'property', value: 'og:description' },
+    { label: 'meta[property="og:image"]', tag: 'meta', attr: 'property', value: 'og:image' },
+    { label: 'meta[name="twitter:title"]', tag: 'meta', attr: 'name', value: 'twitter:title' },
+    { label: 'meta[name="twitter:description"]', tag: 'meta', attr: 'name', value: 'twitter:description' },
+    { label: 'meta[name="twitter:image"]', tag: 'meta', attr: 'name', value: 'twitter:image' },
   ];
 
   const errors = [];
 
   for (const filePath of files) {
-    const dom = new JSDOM(fs.readFileSync(filePath, 'utf8'));
-    const document = dom.window.document;
+    const html = fs.readFileSync(filePath, 'utf8');
 
     for (const selector of selectors) {
-      const count = document.querySelectorAll(selector).length;
+      const count = countTagsWithAttribute(html, selector.tag, selector.attr, selector.value);
       if (count > 1) {
-        errors.push(`[duplicate critical meta] ${path.relative(ROOT_DIR, filePath)} selector=${selector} count=${count}`);
+        errors.push(`[duplicate critical meta] ${path.relative(ROOT_DIR, filePath)} selector=${selector.label} count=${count}`);
       }
     }
   }
@@ -138,11 +184,7 @@ function assertNoOrphans(manifest) {
   }
 
   for (const page of pages) {
-    const hrefs = Array.from(page.document.querySelectorAll('a[href]')).map((node) =>
-      node.getAttribute('href')
-    );
-
-    for (const href of hrefs) {
+    for (const href of page.hrefs) {
       const resolved = resolveInternalHref(page.path, href);
       if (!resolved || !knownPaths.has(resolved) || resolved === page.path) continue;
       if (!inbound.has(resolved)) inbound.set(resolved, new Set());
