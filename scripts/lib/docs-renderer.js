@@ -12,6 +12,7 @@ const { renderFooter: renderSharedFooter } = require('./docs-components/footer')
 const { renderPageHero } = require('./docs-components/hero');
 const { renderNavigation } = require('./docs-components/navigation');
 const { renderSharedComponentStyles } = require('./docs-components/styles');
+const { inlineLucideIcons } = require('./lucide-inline');
 
 const shellTemplate = fs.readFileSync(path.join(DOCS_SRC_DIR, 'templates', 'base.html'), 'utf8');
 const AHREFS_ANALYTICS_KEY = 'qDwc7i0RM0aLBY/cZLkOxA';
@@ -121,18 +122,8 @@ function renderStyles(meta, assetVersion) {
   return lines.join('\n');
 }
 
-function renderHeadScripts(meta, assetVersion) {
-  const assets = siteConfig.assetPaths;
-  const lines = [`    <script src="${assets.lucideJs}?v=${assetVersion}" defer></script>`];
-
-  if (meta.layout === 'landing' || (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium'))) {
-    lines.push(`    <script src="${assets.gsapJs}?v=${assetVersion}" defer></script>`);
-    lines.push(
-      `    <script src="${assets.scrollTriggerJs}?v=${assetVersion}" defer></script>`
-    );
-  }
-
-  return lines.join('\n');
+function renderHeadScripts() {
+  return '';
 }
 
 function renderAnalyticsHeadScript() {
@@ -288,11 +279,31 @@ function renderScripts(meta, assetVersion) {
 
   if (meta.layout === 'landing') {
     lines.push(`    <script src="${assets.landingPageJs}?v=${assetVersion}" defer></script>`);
-    lines.push('    <script type="module" src="/js/landing-animations.js"></script>');
+    lines.push(
+      [
+        '    <script',
+        '      type="module"',
+        `      src="/js/landing-animations.js?v=${assetVersion}"`,
+        '      data-animation-module="landing"',
+        `      data-gsap-src="${assets.gsapJs}?v=${assetVersion}"`,
+        `      data-scroll-trigger-src="${assets.scrollTriggerJs}?v=${assetVersion}"`,
+        '    ></script>',
+      ].join('\n')
+    );
   }
 
   if (meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium')) {
-    lines.push(`    <script type="module" src="/js/blog-premium.js?v=${assetVersion}"></script>`);
+    lines.push(
+      [
+        '    <script',
+        '      type="module"',
+        `      src="/js/blog-premium.js?v=${assetVersion}"`,
+        '      data-animation-module="blog-premium"',
+        `      data-gsap-src="${assets.gsapJs}?v=${assetVersion}"`,
+        `      data-scroll-trigger-src="${assets.scrollTriggerJs}?v=${assetVersion}"`,
+        '    ></script>',
+      ].join('\n')
+    );
   }
 
   if (meta.layout === 'blogArticle') {
@@ -308,7 +319,7 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
   const entry = context.entry;
   const navHtml = renderNavigation(context);
 
-  return renderTemplate({
+  const html = renderTemplate({
     HTML_ATTRS: htmlAttributes(meta),
     BODY_ATTRS: bodyAttributes(meta),
     HEAD_HTML: renderCommonHead(meta, entry, assetVersion),
@@ -318,6 +329,8 @@ function renderManagedPage({ manifest, entryId, meta, bodyHtml, entryOverride = 
     FOOTER_HTML: renderSharedFooter(context),
     SCRIPTS_HTML: renderScripts(meta, assetVersion),
   });
+
+  return inlineLucideIcons(html);
 }
 
 module.exports = {

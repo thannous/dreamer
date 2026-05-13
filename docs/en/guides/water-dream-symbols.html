@@ -51,8 +51,8 @@
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=38457cccb5c9">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=38457cccb5c9">
+    <link rel="stylesheet" href="/css/styles.min.css?v=4a3b7dd0ac82">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=4a3b7dd0ac82">
     <style>
       .noctalia-premium-nav { background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
       .noctalia-premium-nav.py-2 { background: rgba(10, 5, 20, 0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24); }
@@ -70,7 +70,6 @@
       @media (max-width: 767px) { .site-footer { padding: 2rem 1rem 1.75rem !important; } .site-footer > .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem; margin-bottom: 2rem; } .site-footer > .grid > :first-child { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.45rem 1rem; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); } .site-footer > .grid > :first-child > a { grid-column: 1; grid-row: 1; margin-bottom: 0; } .site-footer > .grid > :first-child > p { grid-column: 1; grid-row: 2; margin-bottom: 0; max-width: 17rem; } .site-footer > .grid > :first-child > div.flex { grid-column: 2; grid-row: 1 / span 2; gap: 0.45rem; } .site-footer > .grid > :first-child > div.flex a { width: 2.35rem; height: 2.35rem; } .site-footer h5 { margin-bottom: 0.65rem; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 247, 240, 0.92); } .site-footer ul { font-size: 0.82rem; line-height: 1.35; } .site-footer li + li { margin-top: 0.45rem; } .site-footer > .border-t:last-child { padding-top: 1rem; } }
       @media (max-width: 520px) { .noctalia-premium-nav-inner { padding-left: 1rem; padding-right: 1rem; } .noctalia-premium-brand-text { font-size: 1.35rem; } #navMobileGuideLink { display: none; } }
     </style>
-    <script src="/js/lucide.min.js?v=38457cccb5c9" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -214,7 +213,7 @@
     <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
         <div class="noctalia-premium-nav-inner px-4 sm:px-8">
             <a href="/en/" class="flex items-center gap-2 min-w-max">
-                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                 <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
             <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
@@ -226,36 +225,36 @@
             <div class="noctalia-premium-nav-actions flex items-center gap-3">
                 <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
-                        <i data-lucide="languages" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="languages" class="lucide lucide-languages w-4 h-4" aria-hidden="true" focusable="false"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>
                         <span>EN</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-3 h-3 transition-transform" aria-hidden="true" focusable="false" id="dropdownChevron"><path d="m6 9 6 6 6-6"></path></svg>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
                     <a href="/en/guides/water-dream-symbols" hreflang="en" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>English</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/fr/guides/symboles-reves-eau" hreflang="fr" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Français</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/es/guides/simbolos-suenos-agua" hreflang="es" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Español</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/de/guides/wasser-traumsymbole" hreflang="de" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Deutsch</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/it/guides/simboli-sogni-acqua" hreflang="it" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Italiano</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     </div>
                 </div>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Download app</a>
                 <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
-                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" class="lucide lucide-menu w-5 h-5" aria-hidden="true" focusable="false" id="mobileMenuIcon"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
                 </button>
             </div>
         </div>
@@ -301,7 +300,7 @@
             <header class="mb-12 text-center">
                 <div class="flex justify-center gap-3 mb-6">
                     <span class="inline-flex items-center gap-2 text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-4 py-2">
-                        <i data-lucide="list" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="list" class="lucide lucide-list w-4 h-4" aria-hidden="true" focusable="false"><path d="M3 5h.01"></path><path d="M3 12h.01"></path><path d="M3 19h.01"></path><path d="M8 5h13"></path><path d="M8 12h13"></path><path d="M8 19h13"></path></svg>
                         CURATED GUIDE
                     </span>
                     <span class="inline-flex items-center gap-2 text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-4 py-2">
@@ -322,7 +321,7 @@
             <!-- How to use -->
             <section class="glass-panel rounded-2xl p-6 md:p-8 mb-12 border border-dream-salmon/10">
                 <h2 class="font-serif text-xl md:text-2xl text-dream-cream mb-4 flex items-center gap-3">
-                    <i data-lucide="map" class="w-6 h-6 text-dream-salmon"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="map" class="lucide lucide-map w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"></path><path d="M15 5.764v15"></path><path d="M9 3.236v15"></path></svg>
                     How to use this guide
                 </h2>
                 <div class="prose prose-invert prose-purple max-w-none text-gray-300 leading-relaxed space-y-4">
@@ -341,7 +340,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">Water represents emotions and the subconscious. Calm water suggests inner peace, while turbulent water indicates emotional turmoil.</p>
                         <p class="text-xs text-purple-300/60 italic mb-3"><strong>Calm, Clear Water:</strong> Symbolizes emotional clarity, inner peace, and mental tranquility. You may be in a period of emotional balance and self-...</p>
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            Read full interpretation <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            Read full interpretation <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-3 h-3" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
 
@@ -352,7 +351,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">The ocean represents the collective unconscious and deep emotions. Swimming in the ocean can indicate self-exploration, while drowning suggests being overwhelmed by emotions.</p>
                         <p class="text-xs text-purple-300/60 italic mb-3"><strong>Calm, peaceful ocean:</strong> Suggests emotional equilibrium, inner peace, and harmony with the deeper aspects of yourself and life&#039;s flow.</p>
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            Read full interpretation <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            Read full interpretation <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-3 h-3" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
 
@@ -363,7 +362,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">Rain can symbolize purification, renewal, or sadness. A gentle rain suggests healing, while a storm indicates intense emotions.</p>
                         <p class="text-xs text-purple-300/60 italic mb-3"><strong>Gentle, warm rain:</strong> Often represents blessing, gentle emotional release, peaceful cleansing, or nourishing energy for growth and creativity.</p>
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            Read full interpretation <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            Read full interpretation <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-3 h-3" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
 
@@ -374,7 +373,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">Swimming in dreams represents navigating through emotions and life&#039;s challenges. Ease or difficulty swimming reflects your emotional coping abilities.</p>
                         <p class="text-xs text-purple-300/60 italic mb-3"><strong>Swimming effortlessly:</strong> Indicates emotional mastery, confidence in handling feelings, successful navigation of challenges, or being in your elem...</p>
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            Read full interpretation <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            Read full interpretation <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-3 h-3" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
 
@@ -385,7 +384,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">Storms symbolize emotional turbulence, dramatic change, and powerful forces beyond your control. They can represent both destruction and necessary cleansing.</p>
                         <p class="text-xs text-purple-300/60 italic mb-3"><strong>Approaching storm:</strong> May indicate awareness of impending conflict, change, or emotional upheaval that hasn&#039;t arrived yet but feels inevitable...</p>
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            Read full interpretation <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            Read full interpretation <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-3 h-3" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
 
@@ -396,7 +395,7 @@
                         <p class="text-sm text-gray-400 leading-relaxed mb-3 line-clamp-3">A flood often symbolizes overwhelming emotions, sudden change, or feeling that problems are &quot;spilling over.&quot; It can also represent cleansing and a chance to rebuild after disruption.</p>
                         <p class="text-xs text-purple-300/60 italic mb-3"><strong>A flood entering your home:</strong> May reflect emotions affecting your private life, family dynamics, or sense of safety and stability.</p>
                         <span class="inline-flex items-center gap-2 text-xs text-dream-salmon opacity-0 group-hover:opacity-100 transition-opacity">
-                            Read full interpretation <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                            Read full interpretation <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-3 h-3" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                         </span>
                     </a>
                 </div>
@@ -412,21 +411,21 @@
             <!-- CTA Section -->
             <aside class="glass-panel rounded-3xl p-8 md:p-10 text-center border border-dream-salmon/20">
                 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-8 h-8 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
                 </div>
                 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Get Personalized Dream Analysis</h3>
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia goes beyond a simple dictionary. Get your dreams analyzed in context for a personalized interpretation that considers your unique situation.
                 </p>
                 <a href="/en/" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    Try Noctalia <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    Try Noctalia <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </a>
             </aside>
 
             <!-- Back to Dictionary -->
             <div class="mt-10 text-center">
                 <a href="/en/guides/dream-symbols-dictionary" class="inline-flex items-center gap-2 text-purple-200/60 hover:text-dream-salmon transition-colors">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-left" class="lucide lucide-arrow-left w-4 h-4" aria-hidden="true" focusable="false"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
                     Back to Dream Symbols Dictionary
                 </a>
             </div>
@@ -438,19 +437,19 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/en/" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>
                 <p class="text-sm text-gray-500 max-w-xs mb-6">Your companion for better nights.</p>
                 <div class="flex gap-4">
                     <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
-                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="instagram" class="lucide lucide-instagram w-5 h-5" aria-hidden="true" focusable="false"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
                     </a>
                     <a href="https://x.com/NoctaliaDreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="X (Twitter) Noctalia">
-                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="twitter" class="lucide lucide-twitter w-5 h-5" aria-hidden="true" focusable="false"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
                     </a>
                     <a href="https://www.tiktok.com/@noctaliadreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="TikTok Noctalia">
-                        <i data-lucide="music-2" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="music-2" class="lucide lucide-music-2 w-5 h-5" aria-hidden="true" focusable="false"><circle cx="8" cy="18" r="4"></circle><path d="M12 18V2l7 4"></path></svg>
                     </a>
                 </div>
             </div>
@@ -500,7 +499,7 @@
                 <h5 class="font-bold mb-4 text-white">Download</h5>
                 <div class="flex flex-col gap-3">
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
-                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play w-5 h-5 fill-current" aria-hidden="true" focusable="false"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
                         <div class="leading-none">
                             <div class="text-[9px] uppercase">Available on</div>
                             <div class="text-sm font-bold">Google Play</div>
@@ -511,14 +510,12 @@
         </div>
         <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
             <span>© 2025 Noctalia Inc.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> for dreamers</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" class="lucide lucide-heart w-3 h-3 text-dream-salmon fill-current" aria-hidden="true" focusable="false"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg> for dreamers</span>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-
             // Navbar scroll effect
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
@@ -529,7 +526,7 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=38457cccb5c9" defer></script>
-    <script src="/js/mobile-menu.js?v=38457cccb5c9" defer></script>
+    <script src="/js/language-dropdown.js?v=4a3b7dd0ac82" defer></script>
+    <script src="/js/mobile-menu.js?v=4a3b7dd0ac82" defer></script>
 </body>
 </html>

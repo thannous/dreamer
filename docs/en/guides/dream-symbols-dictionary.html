@@ -47,8 +47,8 @@
     <link rel="preload" href="/fonts/Outfit-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/Fraunces-Variable.woff2" as="font" type="font/woff2" crossorigin>
     <!-- Compiled Tailwind CSS -->
-    <link rel="stylesheet" href="/css/styles.min.css?v=38457cccb5c9">
-    <link rel="stylesheet" href="/css/language-dropdown.css?v=38457cccb5c9">
+    <link rel="stylesheet" href="/css/styles.min.css?v=4a3b7dd0ac82">
+    <link rel="stylesheet" href="/css/language-dropdown.css?v=4a3b7dd0ac82">
     <style>
       /* @view-transition: cross-document transitions stay disabled to avoid aborted-state console errors during fast navigation. */
 
@@ -60,8 +60,6 @@
         }
       }
     </style>
-<!-- Lucide Icons (deferred) -->
-    <script src="/js/lucide.min.js?v=38457cccb5c9" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -1065,7 +1063,7 @@
     <nav class="fixed w-full z-50 top-0 left-0 transition-all duration-300 py-4 noctalia-premium-nav" id="navbar" data-shrink-on-scroll="true" data-expanded-class="py-4" data-compact-class="py-2">
         <div class="noctalia-premium-nav-inner px-4 sm:px-8">
             <a href="/en/" class="flex items-center gap-2 min-w-max">
-                <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                 <span class="noctalia-premium-brand-text font-serif text-2xl font-semibold tracking-wide text-dream-cream">Noctalia</span>
             </a>
             <div id="navDesktopLinks" class="noctalia-premium-links flex items-center text-sm font-sans text-purple-100/80">
@@ -1077,36 +1075,36 @@
             <div class="noctalia-premium-nav-actions flex items-center gap-3">
                 <div id="navDesktopLangDropdown" class="language-dropdown-wrapper relative">
                     <button type="button" class="px-3 py-2 rounded-full text-sm text-purple-100/80 hover:text-white transition-colors flex items-center gap-2" aria-haspopup="true" aria-expanded="false" aria-label="Choose language" id="languageDropdownButton">
-                        <i data-lucide="languages" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="languages" class="lucide lucide-languages w-4 h-4" aria-hidden="true" focusable="false"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg>
                         <span>EN</span>
-                        <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="dropdownChevron"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-3 h-3 transition-transform" aria-hidden="true" focusable="false" id="dropdownChevron"><path d="m6 9 6 6 6-6"></path></svg>
                     </button>
                     <div class="language-dropdown-menu absolute right-0 top-full mt-2 glass-panel rounded-2xl py-2 min-w-[160px] hidden z-50" role="menu" aria-labelledby="languageDropdownButton" id="languageDropdownMenu">
                     <a href="/en/guides/dream-symbols-dictionary" hreflang="en" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>English</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/fr/guides/dictionnaire-symboles-reves" hreflang="fr" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Français</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/es/guides/diccionario-simbolos-suenos" hreflang="es" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Español</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/de/guides/traumsymbole-lexikon" hreflang="de" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Deutsch</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     <a href="/it/guides/dizionario-simboli-sogni" hreflang="it" class="dropdown-item flex items-center justify-between px-4 py-2 text-sm text-purple-100/80 hover:bg-white/10 hover:text-white transition-colors" role="menuitem">
                         <span>Italiano</span>
-                        <i data-lucide="check" class="w-4 h-4 text-dream-salmon hidden"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check w-4 h-4 text-dream-salmon hidden" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"></path></svg>
                     </a>
                     </div>
                 </div>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="noctalia-premium-download rounded-full px-4 py-2 text-sm font-semibold transition-colors" rel="nofollow noopener noreferrer" target="_blank">Download app</a>
                 <button id="mobileMenuButton" class="hidden p-2 text-purple-100/80 hover:text-white transition-colors" aria-label="Menu" aria-expanded="false">
-                    <i data-lucide="menu" id="mobileMenuIcon" class="w-5 h-5"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="menu" class="lucide lucide-menu w-5 h-5" aria-hidden="true" focusable="false" id="mobileMenuIcon"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
                 </button>
             </div>
         </div>
@@ -1154,12 +1152,12 @@
                     <!-- Hero search -->
                     <div id="heroSearchShell" class="relative w-full">
                         <div class="dictionary-hero-search-input">
-                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" class="lucide lucide-search absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-300/50 pointer-events-none" aria-hidden="true" focusable="false"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                             <input type="text" id="heroSearch" placeholder="Search a symbol (water, snake, falling…)"
                                 class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
                         </div>
                         <button type="button" id="heroSearchClear" class="search-clear" aria-label="Clear search" title="Clear search" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
-                            <i data-lucide="x" class="w-4 h-4"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" class="lucide lucide-x w-4 h-4" aria-hidden="true" focusable="false"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -1167,7 +1165,7 @@
 
             <!-- dict-no-results -->
             <div id="noResults" style="display:none" class="text-center py-16 text-purple-200/60">
-                <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-4 opacity-40"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search-x" class="lucide lucide-search-x w-12 h-12 mx-auto mb-4 opacity-40" aria-hidden="true" focusable="false"><path d="m13.5 8.5-5 5"></path><path d="m8.5 8.5 5 5"></path><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                 <p class="text-lg">No symbols found for &laquo;<span id="noResultsQuery"></span>&raquo;</p>
             </div>
             <!-- /dict-no-results -->
@@ -1244,16 +1242,16 @@
                 <div class="sb-inner">
                     <!-- Compact search -->
                     <div class="sb-search">
-                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" class="lucide lucide-search absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none" aria-hidden="true" focusable="false"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                         <input type="text" id="stickySearch" placeholder="Search symbols…"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);outline:none;">
                         <button type="button" id="stickySearchClear" class="search-clear" aria-label="Clear search" title="Clear search" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
-                            <i data-lucide="x" class="w-4 h-4"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="x" class="lucide lucide-x w-4 h-4" aria-hidden="true" focusable="false"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                         </button>
                     </div>
                     <div id="stickySearchStatus" class="sticky-status" hidden>
-                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-3.5 h-3.5" aria-hidden="true" focusable="false"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
                         <span id="stickySearchStatusText"></span>
                     </div>
                     <!-- Alphabet -->
@@ -1278,7 +1276,7 @@
                     </div>
                     <!-- Back to top -->
                     <button id="backToTop" class="glass-button rounded-full text-purple-300/70 hover:text-white transition-colors" aria-label="Back to top" title="Back to top" style="display:none;flex-shrink:0;padding:6px;">
-                        <i data-lucide="arrow-up" class="w-4 h-4"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up" class="lucide lucide-arrow-up w-4 h-4" aria-hidden="true" focusable="false"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg>
                     </button>
                 </div>
             </div>
@@ -1380,7 +1378,7 @@
                 <div class="quick-browse-copy">
                     <div>
                         <h2 class="font-serif text-xl md:text-2xl text-dream-cream flex items-center gap-3">
-                            <i data-lucide="grid-3x3" class="w-5 h-5 text-dream-salmon"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="grid-3x3" class="lucide lucide-grid-3x3 w-5 h-5 text-dream-salmon" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg>
                             Browse by Category
                         </h2>
                     </div>
@@ -1389,7 +1387,7 @@
                 <div class="category-browse-grid">
                     <a href="/en/symbols/nature" class="category-browse-card group" style="--cat-color:#4ade80">
                         <span class="category-browse-icon">
-                            <i data-lucide="leaf" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="leaf" class="lucide lucide-leaf w-5 h-5" aria-hidden="true" focusable="false"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Nature</span>
@@ -1398,7 +1396,7 @@
                     </a>
                     <a href="/en/symbols/animals" class="category-browse-card group" style="--cat-color:#fbbf24">
                         <span class="category-browse-icon">
-                            <i data-lucide="paw-print" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="paw-print" class="lucide lucide-paw-print w-5 h-5" aria-hidden="true" focusable="false"><circle cx="11" cy="4" r="2"></circle><circle cx="18" cy="8" r="2"></circle><circle cx="20" cy="16" r="2"></circle><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"></path></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Animals</span>
@@ -1407,7 +1405,7 @@
                     </a>
                     <a href="/en/symbols/body" class="category-browse-card group" style="--cat-color:#f87171">
                         <span class="category-browse-icon">
-                            <i data-lucide="user" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="user" class="lucide lucide-user w-5 h-5" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Body</span>
@@ -1416,7 +1414,7 @@
                     </a>
                     <a href="/en/symbols/places" class="category-browse-card group" style="--cat-color:#60a5fa">
                         <span class="category-browse-icon">
-                            <i data-lucide="home" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="home" class="lucide lucide-home w-5 h-5" aria-hidden="true" focusable="false"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Places</span>
@@ -1425,7 +1423,7 @@
                     </a>
                     <a href="/en/symbols/objects" class="category-browse-card group" style="--cat-color:#c084fc">
                         <span class="category-browse-icon">
-                            <i data-lucide="package" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package" class="lucide lucide-package w-5 h-5" aria-hidden="true" focusable="false"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><path d="m7.5 4.27 9 5.15"></path></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Objects</span>
@@ -1434,7 +1432,7 @@
                     </a>
                     <a href="/en/symbols/actions" class="category-browse-card group" style="--cat-color:#fb923c">
                         <span class="category-browse-icon">
-                            <i data-lucide="zap" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" class="lucide lucide-zap w-5 h-5" aria-hidden="true" focusable="false"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Actions</span>
@@ -1443,7 +1441,7 @@
                     </a>
                     <a href="/en/symbols/people" class="category-browse-card group" style="--cat-color:#f472b6">
                         <span class="category-browse-icon">
-                            <i data-lucide="users" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" class="lucide lucide-users w-5 h-5" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">People</span>
@@ -1452,7 +1450,7 @@
                     </a>
                     <a href="/en/symbols/celestial" class="category-browse-card group" style="--cat-color:#818cf8">
                         <span class="category-browse-icon">
-                            <i data-lucide="star" class="w-5 h-5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="star" class="lucide lucide-star w-5 h-5" aria-hidden="true" focusable="false"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
                         </span>
                         <span class="category-browse-meta">
                             <span class="category-browse-title group-hover:text-dream-salmon transition-colors">Celestial</span>
@@ -2737,7 +2735,7 @@
                     <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                         <summary class="font-medium flex justify-between items-center text-dream-cream">
                             How to interpret dream symbols?
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
                         </summary>
                         <p class="mt-4 text-sm text-gray-300 leading-relaxed">
                             Dream symbol interpretation depends on the dreamer&#039;s personal context. The same symbol can have different meanings depending on each person&#039;s experiences and culture. It&#039;s important to consider your emotions in the dream and your personal associations with the symbol.
@@ -2746,7 +2744,7 @@
                     <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                         <summary class="font-medium flex justify-between items-center text-dream-cream">
                             Are dream symbols universal?
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
                         </summary>
                         <p class="mt-4 text-sm text-gray-300 leading-relaxed">
                             Some symbols have relatively universal meanings (like water for emotions), but many depend on cultural and personal context. That&#039;s why a dream dictionary should be used as a starting point, not as absolute truth.
@@ -2755,7 +2753,7 @@
                     <details class="glass-panel rounded-xl p-4 group cursor-pointer">
                         <summary class="font-medium flex justify-between items-center text-dream-cream">
                             Why do I always dream of the same symbols?
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="chevron-down" class="lucide lucide-chevron-down w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
                         </summary>
                         <p class="mt-4 text-sm text-gray-300 leading-relaxed">
                             Recurring symbols often indicate unresolved themes in your life. Your subconscious is trying to draw your attention to something. Keeping a dream journal can help you identify these patterns.
@@ -2767,14 +2765,14 @@
             <!-- CTA Section -->
             <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
                 <div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i data-lucide="sparkles" class="w-8 h-8 text-dream-salmon"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" class="lucide lucide-sparkles w-8 h-8 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
                 </div>
                 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Analyze your symbols with Noctalia</h3>
                 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia goes beyond a simple dictionary. Noctalia analyzes your symbols in the context of YOUR dream for personalized interpretation.
                 </p>
                 <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors">
-                    Try Noctalia <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    Try Noctalia <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true" focusable="false"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </a>
             </aside>
 
@@ -2808,19 +2806,19 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
             <div class="xl:col-span-2">
                 <a href="/en/" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon w-6 h-6 text-dream-salmon" aria-hidden="true" focusable="false"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
                     <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
                 </a>
                 <p class="text-sm text-gray-500 max-w-xs mb-6">Your companion for better nights.</p>
                 <div class="flex gap-4">
                     <a href="https://www.instagram.com/noctaliadreams/" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="Instagram Noctalia">
-                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="instagram" class="lucide lucide-instagram w-5 h-5" aria-hidden="true" focusable="false"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
                     </a>
                     <a href="https://x.com/NoctaliaDreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="X (Twitter) Noctalia">
-                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="twitter" class="lucide lucide-twitter w-5 h-5" aria-hidden="true" focusable="false"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
                     </a>
                     <a href="https://www.tiktok.com/@noctaliadreams" class="w-10 h-10 rounded-full glass-button flex items-center justify-center hover:text-dream-salmon" aria-label="TikTok Noctalia">
-                        <i data-lucide="music-2" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="music-2" class="lucide lucide-music-2 w-5 h-5" aria-hidden="true" focusable="false"><circle cx="8" cy="18" r="4"></circle><path d="M12 18V2l7 4"></path></svg>
                     </a>
                 </div>
             </div>
@@ -2870,7 +2868,7 @@
                 <h5 class="font-bold mb-4 text-white">Download</h5>
                 <div class="flex flex-col gap-3">
                     <a href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&hl=en" class="glass-button px-4 py-2 rounded-lg flex items-center gap-3 text-left hover:bg-white/10">
-                        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play w-5 h-5 fill-current" aria-hidden="true" focusable="false"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
                         <div class="leading-none">
                             <div class="text-[9px] uppercase">Available on</div>
                             <div class="text-sm font-bold">Google Play</div>
@@ -2881,13 +2879,12 @@
         </div>
         <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
             <span>© 2025 Noctalia Inc.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> for dreamers</span>
+            <span class="mt-2 md:mt-0 flex gap-2 items-center">Made with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" class="lucide lucide-heart w-3 h-3 text-dream-salmon fill-current" aria-hidden="true" focusable="false"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg> for dreamers</span>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
             const navbar = document.getElementById('navbar');
             const stickyBar = document.getElementById('stickyBar');
             const symbolCards = document.querySelectorAll('.symbol-card');
@@ -3234,7 +3231,7 @@
             });
         });
     </script>
-    <script src="/js/language-dropdown.js?v=38457cccb5c9" defer></script>
-    <script src="/js/mobile-menu.js?v=38457cccb5c9" defer></script>
+    <script src="/js/language-dropdown.js?v=4a3b7dd0ac82" defer></script>
+    <script src="/js/mobile-menu.js?v=4a3b7dd0ac82" defer></script>
 </body>
 </html>

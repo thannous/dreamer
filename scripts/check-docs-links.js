@@ -19,7 +19,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { JSDOM } = require('jsdom');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 
 const DEFAULT_TIMEOUT_MS = 10_000;
@@ -183,56 +182,90 @@ function classifyUrl(raw) {
   return { kind: 'internal', path: withoutQueryAndHash, fragment: hash };
 }
 
-function extractLinksFromHtml(content) {
-  const dom = new JSDOM(content);
-  const { document } = dom.window;
+function decodeHtmlAttribute(value) {
+  return String(value || '')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
+}
 
+function parseTagAttributes(rawTag) {
+  const attributes = new Map();
+  const pattern = /([:@\w.-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
+  let match;
+
+  while ((match = pattern.exec(rawTag))) {
+    attributes.set(match[1].toLowerCase(), decodeHtmlAttribute(match[2] ?? match[3] ?? match[4] ?? ''));
+  }
+
+  return attributes;
+}
+
+function matchTags(content, tagName) {
+  return content.match(new RegExp(`<${tagName}\\b[^>]*>`, 'gi')) || [];
+}
+
+function extractLinksFromHtml(content) {
   const links = [];
 
-  const pushAttr = (selector, attr) => {
-    for (const el of document.querySelectorAll(selector)) {
-      const value = el.getAttribute(attr);
-      if (value) links.push({ raw: value, tag: el.tagName.toLowerCase(), attr });
+  const pushAttr = (tagName, attr) => {
+    for (const tag of matchTags(content, tagName)) {
+      const value = parseTagAttributes(tag).get(attr);
+      if (value) links.push({ raw: value, tag: tagName, attr });
     }
   };
 
-  pushAttr('a[href]', 'href');
-  pushAttr('link[href]', 'href');
-  pushAttr('script[src]', 'src');
-  pushAttr('img[src]', 'src');
-  pushAttr('source[src]', 'src');
+  pushAttr('a', 'href');
+  pushAttr('link', 'href');
+  pushAttr('script', 'src');
+  pushAttr('img', 'src');
+  pushAttr('source', 'src');
 
-  for (const el of document.querySelectorAll('img[srcset], source[srcset]')) {
-    const srcset = el.getAttribute('srcset');
-    if (!srcset) continue;
-    const parts = srcset.split(',');
-    for (const part of parts) {
-      const candidate = part.trim().split(/\s+/)[0];
-      if (candidate) links.push({ raw: candidate, tag: el.tagName.toLowerCase(), attr: 'srcset' });
+  for (const tagName of ['img', 'source']) {
+    for (const tag of matchTags(content, tagName)) {
+      const srcset = parseTagAttributes(tag).get('srcset');
+      if (!srcset) continue;
+      const parts = srcset.split(',');
+      for (const part of parts) {
+        const candidate = part.trim().split(/\s+/)[0];
+        if (candidate) links.push({ raw: candidate, tag: tagName, attr: 'srcset' });
+      }
     }
   }
 
-  // Common social meta images
-  for (const meta of document.querySelectorAll('meta[property="og:image"][content], meta[name="twitter:image"][content]')) {
-    const value = meta.getAttribute('content');
-    if (value) links.push({ raw: value, tag: 'meta', attr: 'content' });
+  for (const tag of matchTags(content, 'meta')) {
+    const attrs = parseTagAttributes(tag);
+    const property = attrs.get('property');
+    const name = attrs.get('name');
+    const contentValue = attrs.get('content');
+    if (!contentValue) continue;
+    if (property === 'og:image' || name === 'twitter:image') {
+      links.push({ raw: contentValue, tag: 'meta', attr: 'content' });
+    }
   }
 
   return links;
 }
 
 function extractAnchorsFromHtml(content) {
-  const dom = new JSDOM(content);
-  const { document } = dom.window;
   const ids = new Set();
-  for (const el of document.querySelectorAll('[id]')) {
-    const id = el.getAttribute('id');
+  const tagPattern = /<([a-z][\w:-]*)\b[^>]*>/gi;
+  let match;
+
+  while ((match = tagPattern.exec(content))) {
+    const tagName = match[1].toLowerCase();
+    const attrs = parseTagAttributes(match[0]);
+    const id = attrs.get('id');
     if (id) ids.add(id);
+
+    if (tagName === 'a') {
+      const name = attrs.get('name');
+      if (name) ids.add(name);
+    }
   }
-  for (const el of document.querySelectorAll('a[name]')) {
-    const name = el.getAttribute('name');
-    if (name) ids.add(name);
-  }
+
   return ids;
 }
 

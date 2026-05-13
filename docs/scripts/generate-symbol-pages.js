@@ -21,6 +21,7 @@ const { createRenderContext } = require('../../scripts/lib/docs-components/conte
 const { renderFooter: renderSharedFooter } = require('../../scripts/lib/docs-components/footer');
 const { renderNavigation } = require('../../scripts/lib/docs-components/navigation');
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
+const { inlineLucideIcons } = require('../../scripts/lib/lucide-inline');
 
 function readDocsAssetVersionOrExit() {
   const versionPath = path.join(__dirname, '..', 'version.txt');
@@ -69,6 +70,10 @@ const ROOT_DIR = path.join(__dirname, '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
 const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
+
+function finalizeGeneratedHtml(html) {
+  return inlineLucideIcons(html);
+}
 
 // Configuration
 const CONFIG = {
@@ -943,7 +948,6 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
 ${renderSharedComponentStyles()}
-    <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -1297,8 +1301,6 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-
             // Navbar scroll effect
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
@@ -1455,7 +1457,7 @@ function main() {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          fs.writeFileSync(filepath, html, 'utf8');
+          fs.writeFileSync(filepath, finalizeGeneratedHtml(html), 'utf8');
           console.log(`  ✅ ${lang}/${CONFIG.symbolsPath[lang]}/${filename}`);
         }
         generated++;
@@ -1781,7 +1783,6 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
 ${renderSharedComponentStyles()}
-    <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -1912,8 +1913,6 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-
             // Navbar scroll effect
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
@@ -1990,7 +1989,7 @@ function generateCategoryPages(symbols, i18n, languages) {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          fs.writeFileSync(filepath, html, 'utf8');
+          fs.writeFileSync(filepath, finalizeGeneratedHtml(html), 'utf8');
           console.log(`  ✅ ${lang}/${CONFIG.symbolsPath[lang]}/${filename} (${symbolsInCategory.length} symbols)`);
         }
         generated++;
@@ -2263,7 +2262,6 @@ ${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:loca
     <link rel="stylesheet" href="/css/styles.min.css?v=${CONFIG.cssVersion}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${CONFIG.cssVersion}">
 ${renderSharedComponentStyles()}
-    <script src="/js/lucide.min.js?v=${CONFIG.cssVersion}" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -2392,8 +2390,6 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-
             // Navbar scroll effect
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
@@ -2443,7 +2439,7 @@ function generateCurationPages(symbols, i18n, extended, languages) {
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
         } else {
-          fs.writeFileSync(filepath, html, 'utf8');
+          fs.writeFileSync(filepath, finalizeGeneratedHtml(html), 'utf8');
           console.log(`  ✅ ${lang}/guides/${filename} (${page.symbols.length} symbols)`);
         }
         generated++;

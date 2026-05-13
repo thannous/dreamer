@@ -8,6 +8,7 @@ const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
 const { renderNavigation } = require('./lib/docs-components/navigation');
 const { renderViewTransitionHeadStyles } = require('./lib/docs-view-transitions');
+const { inlineLucideIcons } = require('./lib/lucide-inline');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -23,6 +24,10 @@ const SITE_CONFIG = fs.existsSync(path.join(DOCS_SRC_DIR, 'config', 'site.config
 const SITE_MANIFEST = fs.existsSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'))
   ? JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'), 'utf8'))
   : { collections: { blog: { entries: {} } } };
+
+function finalizeGeneratedHtml(html) {
+  return inlineLucideIcons(html);
+}
 
 const LOCALES = Object.fromEntries(
   SUPPORTED_LANGS.map((lang) => {
@@ -1098,7 +1103,6 @@ ${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${tar
     <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
 ${renderViewTransitionHeadStyles()}
-    <script src="/js/lucide.min.js?v=${version}" defer></script>
 ${renderGuideHubStyles()}
 ${renderJsonLd(collection)}
 ${renderJsonLd(itemList)}
@@ -1157,7 +1161,6 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
             window.addEventListener('scroll', () => {
                 const navbar = document.getElementById('navbar');
                 if (navbar) {
@@ -2229,8 +2232,6 @@ ${ogLocaleAlts}
     <link rel="stylesheet" href="/css/styles.min.css?v=${version}">
     <link rel="stylesheet" href="/css/language-dropdown.css?v=${version}">
 ${renderViewTransitionHeadStyles()}
-<!-- Lucide Icons (deferred) -->
-    <script src="/js/lucide.min.js?v=${version}" defer></script>
 
     <style>
         ::-webkit-scrollbar { width: 8px; }
@@ -2576,7 +2577,6 @@ ${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
             const navbar = document.getElementById('navbar');
             const stickyBar = document.getElementById('stickyBar');
             const symbolCards = document.querySelectorAll('.symbol-card');
@@ -2886,7 +2886,7 @@ function main() {
     const currentHub = fs.existsSync(hubPath) ? fs.readFileSync(hubPath, 'utf8') : null;
     if (currentHub !== hubHtml) {
       hubs += 1;
-      if (!DRY_RUN) fs.writeFileSync(hubPath, hubHtml, 'utf8');
+      if (!DRY_RUN) fs.writeFileSync(hubPath, finalizeGeneratedHtml(hubHtml), 'utf8');
       console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/index.html`);
     }
     const dictPath = path.join(DOCS_DIR, lang, 'guides', `${i18n[lang].dictionary_slug}.html`);
@@ -2894,7 +2894,7 @@ function main() {
     const currentDict = fs.existsSync(dictPath) ? fs.readFileSync(dictPath, 'utf8') : null;
     if (currentDict !== dictHtml) {
       dictionaries += 1;
-      if (!DRY_RUN) fs.writeFileSync(dictPath, dictHtml, 'utf8');
+      if (!DRY_RUN) fs.writeFileSync(dictPath, finalizeGeneratedHtml(dictHtml), 'utf8');
       console.log(`${DRY_RUN ? 'Would generate' : 'Generated'} docs/${lang}/guides/${i18n[lang].dictionary_slug}.html`);
     }
   }
