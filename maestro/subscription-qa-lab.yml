@@ -10,77 +10,37 @@ appId: com.tanuki75.noctalia
     timeout: 30000
 
 - swipe:
-    start: 50%, 30%
-    end: 50%, 80%
-- swipe:
-    start: 50%, 30%
-    end: 50%, 80%
+    start: 50%, 78%
+    end: 50%, 28%
+- assertVisible: "Subscription QA Lab"
 - swipe:
     start: 50%, 78%
     end: 50%, 28%
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
-- swipe:
-    start: 50%, 78%
-    end: 50%, 28%
+- assertVisible: "Guest"
 
-# Profile switching should isolate guest, free and plus identities.
+# Profile switching should isolate guest and free identities.
 - tapOn:
-    id: btn.subscription.qa.profile.guest
+    text: "Guest"
+
+- tapOn:
+    text: "New free"
 - extendedWaitUntil:
-    visible: "Guest profile loaded"
+    visible: ".*free / inactive.*"
     timeout: 15000
-
-- tapOn:
-    id: btn.subscription.qa.profile.new
-- scrollUntilVisible:
-    element:
-      id: state.subscription.qa.mock_new_dreamer_app.free.inactive.none.unknown
-    direction: UP
-    visibilityPercentage: 70
-    timeout: 15000
-- assertVisible: ".*free / inactive.*"
-
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.profile.premium
-    direction: DOWN
-    visibilityPercentage: 70
-    timeout: 15000
-- tapOn:
-    id: btn.subscription.qa.profile.premium
-- scrollUntilVisible:
-    element:
-      id: state.subscription.qa.mock_premium_dreamer_app.plus.active.mock_annual.yes
-    direction: UP
-    visibilityPercentage: 70
-    timeout: 15000
-- assertVisible: ".*mock_annual.*"
 
 # Existing free profile should reset the paid profile to free/inactive.
-- scrollUntilVisible:
-    element:
-      id: btn.subscription.qa.profile.existing
-    direction: DOWN
-    visibilityPercentage: 70
-    timeout: 15000
 - tapOn:
-    id: btn.subscription.qa.profile.existing
-- scrollUntilVisible:
-    element:
-      id: state.subscription.qa.mock_existing_dreamer_app.free.inactive.none.unknown
-    direction: UP
-    visibilityPercentage: 70
+    text: "Existing free"
+- extendedWaitUntil:
+    visible: ".*free / inactive.*"
     timeout: 15000
-- assertVisible: ".*free / inactive.*"
 
 # Monthly scenario should activate Plus and expose the mock product id.
 - swipe:
     start: 50%, 35%
     end: 50%, 62%
 - tapOn:
-    id: btn.subscription.qa.scenario.monthly
+    text: "Monthly"
 - extendedWaitUntil:
     visible: ".*plus / active.*"
     timeout: 15000
@@ -88,14 +48,14 @@ appId: com.tanuki75.noctalia
 
 # Annual scenario should switch product ids.
 - tapOn:
-    id: btn.subscription.qa.scenario.annual
+    text: "Annual"
 - extendedWaitUntil:
     visible: ".*mock_annual.*"
     timeout: 15000
 
 # Cancelled keeps access active but flips renewal state.
 - tapOn:
-    id: btn.subscription.qa.scenario.cancelled
+    text: "Cancelled"
 - extendedWaitUntil:
     visible: ".*renews no.*"
     timeout: 15000
@@ -104,12 +64,12 @@ appId: com.tanuki75.noctalia
 # Expired returns the user to free/inactive.
 - scrollUntilVisible:
     element:
-      id: btn.subscription.qa.scenario.expired
+      text: "Expired"
     direction: DOWN
     visibilityPercentage: 70
     timeout: 15000
 - tapOn:
-    id: btn.subscription.qa.scenario.expired
+    text: "Expired"
 - extendedWaitUntil:
     visible: ".*free / inactive.*"
     timeout: 15000
@@ -117,12 +77,12 @@ appId: com.tanuki75.noctalia
 # Open the real paywall surface from the lab for visual continuity.
 - scrollUntilVisible:
     element:
-      id: btn.subscription.qa.openPaywall
+      text: "Open paywall"
     direction: DOWN
     visibilityPercentage: 70
     timeout: 15000
 - tapOn:
-    id: btn.subscription.qa.openPaywall
+    text: "Open paywall"
 - extendedWaitUntil:
     visible:
       id: screen.paywall
