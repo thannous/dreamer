@@ -84,9 +84,10 @@ function stateSlug(value: string): string {
     .replace(/^_+|_+$/g, '') || 'none';
 }
 
-function actionStatusDetail(status: SubscriptionStatus): string {
+function actionStatusDetail(status: SubscriptionStatus, appUserId?: string | null): string {
   const renews = status.willRenew === undefined ? 'unknown' : status.willRenew ? 'yes' : 'no';
-  return `${statusLabel(status)} | product ${status.productId ?? 'none'} | renews ${renews}`;
+  const userEvidence = appUserId ? ` | appUserId ${appUserId}` : '';
+  return `${statusLabel(status)} | product ${status.productId ?? 'none'} | renews ${renews}${userEvidence}`;
 }
 
 export function SubscriptionQALab() {
@@ -168,7 +169,7 @@ export function SubscriptionQALab() {
       await syncLocalStatus(nextStatus);
       setAction({
         label: `${profile} profile loaded`,
-        detail: actionStatusDetail(nextStatus),
+        detail: actionStatusDetail(nextStatus, user?.id),
         kind: 'success',
       });
     } catch (err) {
@@ -178,7 +179,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [isMockMode, syncLocalStatus]);
+  }, [isMockMode, syncLocalStatus, user?.id]);
 
   const handleMockScenario = useCallback(async (scenario: MockSubscriptionScenario) => {
     if (!isMockMode) {
@@ -203,7 +204,7 @@ export function SubscriptionQALab() {
       await syncLocalStatus(nextStatus);
       setAction({
         label: `Mock scenario: ${scenario}`,
-        detail: actionStatusDetail(nextStatus),
+        detail: actionStatusDetail(nextStatus, user?.id),
         kind: 'success',
       });
     } catch (err) {
@@ -230,7 +231,7 @@ export function SubscriptionQALab() {
       const nextStatus = await purchase(pkg.id);
       setAction({
         label: `${interval} purchase completed`,
-        detail: actionStatusDetail(nextStatus),
+        detail: actionStatusDetail(nextStatus, user?.id),
         kind: 'success',
       });
     } catch (err) {
@@ -240,14 +241,14 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [annualPackage, monthlyPackage, purchase]);
+  }, [annualPackage, monthlyPackage, purchase, user?.id]);
 
   const handleRestore = useCallback(async () => {
     try {
       const nextStatus = await restore();
       setAction({
         label: 'Restore completed',
-        detail: actionStatusDetail(nextStatus),
+        detail: actionStatusDetail(nextStatus, user?.id),
         kind: 'success',
       });
     } catch (err) {
@@ -257,7 +258,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [restore]);
+  }, [restore, user?.id]);
 
   const handleRefresh = useCallback(async () => {
     try {
@@ -265,7 +266,7 @@ export function SubscriptionQALab() {
       await refetchQuota();
       setAction({
         label: 'Refresh completed',
-        detail: actionStatusDetail(nextStatus),
+        detail: actionStatusDetail(nextStatus, user?.id),
         kind: 'success',
       });
     } catch (err) {
@@ -275,7 +276,7 @@ export function SubscriptionQALab() {
         kind: 'error',
       });
     }
-  }, [refreshSubscription, refetchQuota]);
+  }, [refreshSubscription, refetchQuota, user?.id]);
 
   const handleProbeSdk = useCallback(async () => {
     if (isMockMode) {
@@ -293,7 +294,7 @@ export function SubscriptionQALab() {
       const packageIds = nextPackages.map((pkg) => pkg.id).join(', ') || 'none';
       setAction({
         label: 'SDK probe completed',
-        detail: `packages ${nextPackages.length} | ids ${packageIds} | ${actionStatusDetail(nextStatus)}`,
+        detail: `packages ${nextPackages.length} | ids ${packageIds} | ${actionStatusDetail(nextStatus, user?.id)}`,
         kind: nextPackages.length > 0 ? 'success' : 'warning',
       });
     } catch (err) {
