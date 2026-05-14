@@ -361,7 +361,7 @@ function checkAndroidReleaseGates({
     'manual',
     'Play-installed RevenueCat purchase and restore',
     'Purchase/restore validation requires a physical Android device with a signed build installed from Play Internal Testing and installerPackageName=com.android.vending.',
-    'Upload an AAB, connect a physical tester device, run npm run android:device:physical, install via Play Internal Testing, run npm run android:play-install-source -- --device <adb-id>, then test offering load, purchase, and restore.'
+    'Upload an AAB, connect a physical tester device, install via Play Internal Testing, run npm run android:play-qa-device -- --device <adb-id>, then test offering load, purchase, and restore.'
   );
 
   return {

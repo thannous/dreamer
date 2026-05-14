@@ -141,8 +141,7 @@ describe('android release gate preflight', () => {
           check.title === 'Play-installed RevenueCat purchase and restore' &&
           check.details.includes('physical Android device') &&
           check.details.includes('installerPackageName=com.android.vending') &&
-          check.remediation.includes('android:device:physical') &&
-          check.remediation.includes('android:play-install-source')
+          check.remediation.includes('android:play-qa-device')
       )
     ).toBe(true);
   });
