@@ -61,6 +61,12 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('preview:goog_B...sanw');
     expect(result.stdout).toContain('OK | Test Store purchase preflight exists');
     expect(result.stdout).toContain('npm run test:e2e:subscription-teststore:purchase:preflight');
+    expect(result.stdout).toContain('OK | Google Test Store purchase flow exists');
+    expect(result.stdout).toContain('REVENUECAT_QA_AUTH=google -> maestro/subscription-teststore-purchase-google-manual.yml');
+    expect(result.stdout).toContain('OK | Test Store restore flow exists');
+    expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml');
+    expect(result.stdout).toContain('OK | Test Store signout guard exists');
+    expect(result.stdout).toContain('maestro/subscription-teststore-signout-guard.yml');
     expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
     expect(result.stdout).toContain('OK | Android device diagnostic exists');
@@ -72,6 +78,9 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
+    expect(result.stdout).toContain('Offering packages and prices load without purchase');
+    expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml plus structured evidence');
+    expect(result.stdout).toContain('maestro/subscription-teststore-signout-guard.yml covers logout/no-leak');
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
 
