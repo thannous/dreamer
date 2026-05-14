@@ -27,9 +27,10 @@ describe('Play RevenueCat QA device wait helper', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('wait-for-play-qa-device');
     expect(result.stdout).toContain('play_* evidence commands');
+    expect(result.stdout).toContain('--require-ui-ready');
   });
 
-  it('parses device, package, interval, and timeout options', () => {
+  it('parses device, package, interval, timeout, and UI readiness options', () => {
     expect(
       parseArgs([
         '--device',
@@ -40,12 +41,14 @@ describe('Play RevenueCat QA device wait helper', () => {
         '1000',
         '--timeout-ms',
         '9000',
+        '--require-ui-ready',
       ])
     ).toEqual({
       device: '57275d36',
       packageName: 'com.example.app',
       intervalMs: 1000,
       timeoutMs: 9000,
+      requireUiReady: true,
     });
   });
 
@@ -76,6 +79,70 @@ describe('Play RevenueCat QA device wait helper', () => {
     expect(result.attempts).toBe(3);
     expect(stdout.value).toContain('[play-qa-device:wait] attempt 3');
     expect(stdout.value).toContain('evidenceCommands');
+    expect(stderr.value).toBe('');
+  });
+
+  it('keeps polling with --require-ui-ready until the Play-ready phone is unlocked', async () => {
+    const stdout = stream();
+    const stderr = stream();
+    const reports = [
+      {
+        ok: true,
+        packageName: 'com.tanuki75.noctalia',
+        selectedDevice: '57275d36',
+        physical: { ok: true, adb: { message: 'ready' } },
+        uiState: { ok: false, message: 'Device screen appears off or asleep.' },
+        playInstallSource: {
+          ok: true,
+          adbCommand: 'adb',
+          packageName: 'com.tanuki75.noctalia',
+          installerPackageName: 'com.android.vending',
+          versionCode: '24',
+          message: 'Play-installed',
+        },
+        evidenceArgs: '--device-id 57275d36 --installer-package-name com.android.vending --version-code 24',
+        evidenceCommands: ['npm run subscription:qa:evidence -- --gate play_monthly --version-code 24'],
+        message: '57275d36 is ready for Play RevenueCat QA.',
+      },
+      {
+        ok: true,
+        packageName: 'com.tanuki75.noctalia',
+        selectedDevice: '57275d36',
+        physical: { ok: true, adb: { message: 'ready' } },
+        uiState: { ok: true, message: 'Device screen appears awake and unlocked.' },
+        playInstallSource: {
+          ok: true,
+          adbCommand: 'adb',
+          packageName: 'com.tanuki75.noctalia',
+          installerPackageName: 'com.android.vending',
+          versionCode: '24',
+          message: 'Play-installed',
+        },
+        evidenceArgs: '--device-id 57275d36 --installer-package-name com.android.vending --version-code 24',
+        evidenceCommands: ['npm run subscription:qa:evidence -- --gate play_monthly --version-code 24'],
+        message: '57275d36 is ready for Play RevenueCat QA.',
+      },
+    ];
+    let index = 0;
+    let nowValue = 0;
+
+    const result = await waitForPlayQaDevice({
+      intervalMs: 10,
+      timeoutMs: 100,
+      requireUiReady: true,
+      stdout,
+      stderr,
+      now: () => nowValue,
+      sleepFn: async (ms) => {
+        nowValue += ms;
+      },
+      check: () => reports[index++],
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.attempts).toBe(2);
+    expect(stdout.value).toContain('waiting for unlocked awake phone');
+    expect(stdout.value).toContain('[play-qa-device:wait] ready');
     expect(stderr.value).toBe('');
   });
 
