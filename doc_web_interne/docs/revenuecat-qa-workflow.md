@@ -465,6 +465,15 @@ avec `installerPackageName=null`. C'est une preuve que le binaire se lance sur l
 mais pas une preuve Play Billing: les gates Play exigent toujours une installation dont
 `installerPackageName` vaut `com.android.vending`.
 
+Complement Play Console du 2026-05-14: dans `Catalogue d'appareils`, `emu64a` retourne
+`0 modele d'appareil` meme avec le filtre `Tous les appareils`, alors que `emu64xa` retourne
+un seul modele compatible, `google emu64xa` / `Google emulator`, Android `16 Beta`, SoC
+`Intel 3215U`. Sur ce Mac Apple Silicon, les AVD Play exposent `sdk_gphone64_arm64` /
+`device:emu64a`; le message `Your device isn't compatible with this version` vient donc tres
+probablement du catalogue Play qui ne cible pas ce modele AVD arm64. Ne pas utiliser ce
+blocage comme signal RevenueCat: il faut finir les gates `play_*` sur un telephone Android
+physique visible par ADB et installe depuis Play Internal Testing.
+
 ## Garde-fous
 
 - Ne jamais publier un build store avec la cle `test_`.
