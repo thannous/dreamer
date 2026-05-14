@@ -87,6 +87,13 @@ refuse ce scope pour le compte utilisateur configure, et l'ADC locale atteint l'
 `noctalia_plus:annual`. Sans service account Play Developer ou reauth ADC avec ce scope, la correction
 `P1M` reste a faire/verifier via Play Console puis RevenueCat MCP.
 
+Verification UI Play Console du 2026-05-14: le compte developpeur `TiMax group` ouvre l'app
+`Noctalia: Smart Dream Journal` (`com.tanuki75.noctalia`). La page `Monetiser avec Play ->
+Abonnements` liste `Noctalia Plus` / `noctalia_plus` avec 2 forfaits de base actifs et affiche
+`Probleme concernant votre profil de paiement`. Cette lecture confirme l'objet Play, mais il faut
+encore ouvrir le detail de l'abonnement ou relire via MCP/API apres correction pour prouver que le
+forfait mensuel expose bien `P1M`.
+
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
