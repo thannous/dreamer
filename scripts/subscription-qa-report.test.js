@@ -170,6 +170,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run android:play-install-source -- --device <adb-id>');
     expect(result.stdout).toContain('OK | Play QA device preflight exists');
     expect(result.stdout).toContain('npm run android:play-qa-device -- --device <adb-id>');
+    expect(result.stdout).toContain('OK | Play QA device wait helper exists');
+    expect(result.stdout).toContain('npm run android:play-qa-device:wait');
     expect(result.stdout).toContain('## Current Session Readiness');
     expect(result.stdout).toContain('Test Store signed-in account env');
     expect(result.stdout).toContain('REVENUECAT_QA_EMAIL=missing, REVENUECAT_QA_PASSWORD=missing');
@@ -181,7 +183,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('checks USB and ADB Wireless Debugging mDNS visibility');
     expect(result.stdout).toContain('Play QA device preflight');
     expect(result.stdout).toContain('npm run android:play-qa-device:wait while connecting one Play-installed tester phone');
-    expect(result.stdout).toContain('npm run android:play-qa-device:wait -- --device <adb-id>');
+    expect(result.stdout).toContain('add -- --device <adb-id> when multiple devices are ready');
     expect(result.stdout).toContain('after the device is ready');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');
     expect(result.stdout).toContain('Google Play annual base plan snapshot');
