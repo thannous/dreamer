@@ -39,7 +39,7 @@ function evidenceForKey(key) {
     return 'play_annual verified by manual QA after installed from Play (com.android.vending) with base plan P1Y confirmed';
   }
   if (key === 'play_cancellation_and_expiry') {
-    return 'play_cancellation_and_expiry verified by manual QA after installed from Play (com.android.vending)';
+    return 'play_cancellation_and_expiry verified by manual QA after installed from Play (com.android.vending); cancellation observed; RevenueCat webhook and backend state converged';
   }
   return `${key} verified by manual QA`;
 }
@@ -208,6 +208,9 @@ describe('subscription QA report release gate', () => {
     );
     expect(result.stdout).toContain(
       'npm run subscription:qa:evidence -- --gate play_annual --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"'
+    );
+    expect(result.stdout).toContain(
+      'npm run subscription:qa:evidence -- --gate play_cancellation_and_expiry --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"'
     );
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
@@ -671,9 +674,12 @@ describe('subscription QA report release gate', () => {
           testedAt: '2026-05-09T12:00:00.000Z',
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
-          evidence: key.startsWith('play_')
-            ? `${key} verified by manual QA after installed from Play (com.android.vending)`
-            : `${key} verified by manual QA`,
+          evidence:
+            key === 'play_cancellation_and_expiry'
+              ? evidenceForKey(key)
+              : key.startsWith('play_')
+                ? `${key} verified by manual QA after installed from Play (com.android.vending)`
+                : `${key} verified by manual QA`,
           ...(key.startsWith('play_') ? playEvidenceFields() : {}),
         },
       ])
@@ -718,6 +724,64 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Verified manual/external scenarios: 3');
     expect(result.stdout).toContain('Manual or external gates remaining: 4');
     expect(result.stdout).toContain('Play monthly: Play Internal Testing install source must be confirmed');
+  });
+
+  it('keeps Play cancellation blocked when cancellation or expiry is not observed', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence:
+            key === 'play_cancellation_and_expiry'
+              ? 'Play purchase verified after installed from Play (com.android.vending); RevenueCat webhook and backend state converged'
+              : evidenceForKey(key),
+          ...(key.startsWith('play_') ? playEvidenceFields() : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 6');
+    expect(result.stdout).toContain('Manual or external gates remaining: 1');
+    expect(result.stdout).toContain('Play cancellation and expiry: cancellation or expiry must be observed');
+  });
+
+  it('keeps Play cancellation blocked when webhook and backend convergence are not confirmed', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence:
+            key === 'play_cancellation_and_expiry'
+              ? 'Play cancellation observed after installed from Play (com.android.vending)'
+              : evidenceForKey(key),
+          ...(key.startsWith('play_') ? playEvidenceFields() : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 6');
+    expect(result.stdout).toContain('Manual or external gates remaining: 1');
+    expect(result.stdout).toContain('Play cancellation and expiry: RevenueCat webhook must be confirmed');
   });
 
   it('keeps Play monthly blocked when evidence says P1M but the live snapshot still says P1Y', () => {

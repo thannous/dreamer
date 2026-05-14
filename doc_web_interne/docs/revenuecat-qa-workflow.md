@@ -417,6 +417,8 @@ Preuve attendue:
 - la preuve locale de chaque gate Play contient l'id du build EAS installe
 - `subscription_state` contient `tier=plus`, `is_active=true`, `product_id` correct
 - `subscription_events` contient un evenement `purchase`, `restore`, `webhook` ou `subscription_refresh`
+- pour `play_cancellation_and_expiry`, la preuve doit mentionner l'annulation ou l'expiration
+  observee, le webhook RevenueCat et la convergence backend
 - `app_metadata.subscription_version` correspond au retour `/subscription/refresh`
 - les quotas backend acceptent les usages plus sans 429
 
