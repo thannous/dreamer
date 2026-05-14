@@ -55,7 +55,7 @@ describe('Play RevenueCat QA device wait helper', () => {
     const reports = [
       { ok: false, packageName: 'com.tanuki75.noctalia', selectedDevice: null, physical: { ok: false, adb: { message: 'missing' } }, message: 'missing' },
       { ok: false, packageName: 'com.tanuki75.noctalia', selectedDevice: '57275d36', physical: { ok: true, adb: { message: 'ready' } }, playInstallSource: { ok: false, adbCommand: 'adb', packageName: 'com.tanuki75.noctalia', installerPackageName: null, message: 'not installed' }, message: 'not installed' },
-      { ok: true, packageName: 'com.tanuki75.noctalia', selectedDevice: '57275d36', physical: { ok: true, adb: { message: 'ready' } }, playInstallSource: { ok: true, adbCommand: 'adb', packageName: 'com.tanuki75.noctalia', installerPackageName: 'com.android.vending', message: 'Play-installed' }, evidenceArgs: '--device-id 57275d36 --installer-package-name com.android.vending', evidenceCommands: ['npm run subscription:qa:evidence -- --gate play_monthly'] },
+      { ok: true, packageName: 'com.tanuki75.noctalia', selectedDevice: '57275d36', physical: { ok: true, adb: { message: 'ready' } }, playInstallSource: { ok: true, adbCommand: 'adb', packageName: 'com.tanuki75.noctalia', installerPackageName: 'com.android.vending', versionCode: '24', message: 'Play-installed' }, evidenceArgs: '--device-id 57275d36 --installer-package-name com.android.vending --version-code 24', evidenceCommands: ['npm run subscription:qa:evidence -- --gate play_monthly --version-code 24'] },
     ];
     let index = 0;
     let nowValue = 0;
