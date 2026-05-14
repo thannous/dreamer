@@ -538,6 +538,22 @@ avec `installerPackageName=null`. C'est une preuve que le binaire se lance sur l
 mais pas une preuve Play Billing: les gates Play exigent toujours une installation dont
 `installerPackageName` vaut `com.android.vending`.
 
+Sources officielles recoupees le 2026-05-14 pour interpreter le blocage emulateur:
+
+- Google Play Billing classe `BILLING_UNAVAILABLE` comme un cas ou la facturation n'est pas
+  disponible pour l'appareil, le compte, la region, le Play Store ou le moyen de paiement:
+  https://developer.android.com/google/play/billing/errors
+- Google Play Console exige une app publiee sur une piste test/prod, des testeurs eligibles et des
+  produits publies pour tester les abonnements:
+  https://support.google.com/googleplay/android-developer/answer/6062777
+- RevenueCat recommande, pour les erreurs de Store ou de produits vides sur Android, un appareil ou
+  emulateur avec Google Play installe, un compte Google connecte, et precise que le test sur device
+  reel reste plus fiable:
+  https://www.revenuecat.com/docs/test-and-launch/errors
+- Le Device Catalog Play Console est la source de verite pour voir quels modeles Google Play juge
+  compatibles avec l'app:
+  https://support.google.com/googleplay/android-developer/answer/7353455
+
 Complement Play Console du 2026-05-14: dans `Catalogue d'appareils`, `emu64a` retourne
 `0 modele d'appareil` meme avec le filtre `Tous les appareils`, alors que `emu64xa` retourne
 un seul modele compatible, `google emu64xa` / `Google emulator`, Android `16 Beta`, SoC
