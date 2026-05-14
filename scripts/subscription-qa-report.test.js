@@ -20,6 +20,9 @@ const MANUAL_GATE_KEYS = [
 ];
 
 function evidenceForKey(key) {
+  if (key === 'account_switch') {
+    return 'paid account remains plus while second account remains free / inactive after logout and login';
+  }
   if (key === 'play_monthly') {
     return 'play_monthly verified by manual QA with base plan P1M confirmed';
   }
@@ -253,8 +256,9 @@ describe('subscription QA report release gate', () => {
     });
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
-    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Verified manual/external scenarios: 3');
+    expect(result.stdout).toContain('Manual or external gates remaining: 4');
+    expect(result.stdout).toContain('Account switch: second account must be confirmed');
     expect(result.stdout).toContain('Play monthly');
     expect(result.stdout).toContain('Play monthly: easBuildId must be an EAS build UUID');
   });
@@ -280,10 +284,38 @@ describe('subscription QA report release gate', () => {
     });
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
-    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Verified manual/external scenarios: 3');
+    expect(result.stdout).toContain('Manual or external gates remaining: 4');
+    expect(result.stdout).toContain('Account switch: second account must be confirmed');
     expect(result.stdout).toContain('Play monthly');
     expect(result.stdout).toContain('Play monthly: easBuildId must be an EAS build UUID');
+  });
+
+  it('keeps account switch blocked when the second free inactive account is not explicit', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    gates.account_switch.evidence = 'paid account logout and login verified by manual QA';
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 6');
+    expect(result.stdout).toContain('Manual or external gates remaining: 1');
+    expect(result.stdout).toContain('Account switch: second account must be confirmed');
   });
 
   it('keeps Play monthly blocked when base plan P1M is not confirmed', () => {
@@ -307,8 +339,9 @@ describe('subscription QA report release gate', () => {
     });
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('Verified manual/external scenarios: 6');
-    expect(result.stdout).toContain('Manual or external gates remaining: 1');
+    expect(result.stdout).toContain('Verified manual/external scenarios: 5');
+    expect(result.stdout).toContain('Manual or external gates remaining: 2');
+    expect(result.stdout).toContain('Account switch: second account must be confirmed');
     expect(result.stdout).toContain('Play monthly: monthly base plan P1M must be confirmed');
   });
 
