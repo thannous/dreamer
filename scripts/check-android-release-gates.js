@@ -18,6 +18,9 @@ const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
 const EXPECTED_GOOGLE_CLOUD_PROJECT_ID = 'gen-lang-client-0336445544';
+const EXPECTED_GOOGLE_OAUTH_ANDROID_CLIENT_ID = '359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com';
+const EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1 = 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59';
+const EXPECTED_ANDROID_PACKAGE_NAME = 'com.tanuki75.noctalia';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
   'EXPO_PUBLIC_API_URL',
@@ -157,6 +160,29 @@ function readGoogleCloudProjectState({
   }
 }
 
+function readGoogleOAuthAndroidClientState({
+  rootDir = ROOT,
+  existsSync = fs.existsSync,
+  readFileSync = fs.readFileSync,
+  env = process.env,
+} = {}) {
+  const filePath = env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH
+    ? path.resolve(rootDir, env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH)
+    : path.join(rootDir, 'doc_web_interne/docs/google-oauth-android-client-state.local.json');
+  if (!existsSync(filePath)) {
+    return { snapshot: null, error: null, filePath };
+  }
+  try {
+    return { snapshot: JSON.parse(readFileSync(filePath, 'utf8')), error: null, filePath };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+      filePath,
+    };
+  }
+}
+
 function getGoogleCloudProjectCheck(envProjectNumber, projectStateResult) {
   const snapshot = projectStateResult.snapshot;
   if (projectStateResult.error) {
@@ -195,6 +221,54 @@ function getGoogleCloudProjectCheck(envProjectNumber, projectStateResult) {
   };
 }
 
+function normalizeSha1(value) {
+  return String(value || '').trim().toUpperCase();
+}
+
+function getGoogleOAuthAndroidClientCheck(oauthStateResult) {
+  const snapshot = oauthStateResult.snapshot;
+  if (oauthStateResult.error) {
+    return {
+      status: 'blocked',
+      details: `Google OAuth Android client snapshot is invalid: ${oauthStateResult.error}`,
+      remediation: 'Regenerate doc_web_interne/docs/google-oauth-android-client-state.local.json from Google Cloud Console.',
+    };
+  }
+  if (!snapshot) {
+    return {
+      status: 'manual',
+      details: `Play App Signing SHA-1 extracted from the Play-generated APK: ${EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1}.`,
+      remediation: 'Verify this SHA-1 exists in the Android OAuth client in Google Cloud.',
+    };
+  }
+  if (snapshot.client_id !== EXPECTED_GOOGLE_OAUTH_ANDROID_CLIENT_ID) {
+    return {
+      status: 'blocked',
+      details: `Google OAuth Android client snapshot client_id=${snapshot.client_id || 'missing'}; expected ${EXPECTED_GOOGLE_OAUTH_ANDROID_CLIENT_ID}.`,
+      remediation: 'Regenerate the OAuth Android client snapshot from the Noctalia Android Production client.',
+    };
+  }
+  if (snapshot.package_name !== EXPECTED_ANDROID_PACKAGE_NAME) {
+    return {
+      status: 'blocked',
+      details: `Google OAuth Android client snapshot package_name=${snapshot.package_name || 'missing'}; expected ${EXPECTED_ANDROID_PACKAGE_NAME}.`,
+      remediation: 'Verify the Android OAuth client package name in Google Cloud Console.',
+    };
+  }
+  if (normalizeSha1(snapshot.sha1) !== EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1) {
+    return {
+      status: 'blocked',
+      details: `Google OAuth Android client snapshot SHA-1=${snapshot.sha1 || 'missing'}; expected ${EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1}.`,
+      remediation: 'Add the Play App Signing SHA-1 to the Android OAuth client in Google Cloud, then regenerate the snapshot.',
+    };
+  }
+  return {
+    status: 'pass',
+    details: `${snapshot.client_id} contains ${snapshot.package_name} / ${EXPECTED_GOOGLE_OAUTH_ANDROID_SHA1} from ${path.relative(ROOT, oauthStateResult.filePath)}.`,
+    remediation: 'Keep the OAuth Android client snapshot fresh after Play App Signing changes.',
+  };
+}
+
 function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = process.env) {
   const result = spawn(npmCommand, ['run', 'subscription:qa:release-gate'], {
     cwd: rootDir,
@@ -229,6 +303,7 @@ function checkAndroidReleaseGates({
   const envPath = path.join(rootDir, '.env.teststore');
   const envValues = existsSync(envPath) ? parseDotEnv(readFileSync(envPath, 'utf8')) : {};
   const projectStateResult = readGoogleCloudProjectState({ rootDir, existsSync, readFileSync, env });
+  const oauthStateResult = readGoogleOAuthAndroidClientState({ rootDir, existsSync, readFileSync, env });
 
   const profilesMissingProjectNumber = REQUIRED_EAS_PROFILES.filter((profile) => {
     const value = easJson.build?.[profile]?.env?.[PLAY_INTEGRITY_PROJECT_NUMBER_KEY];
@@ -339,6 +414,8 @@ function checkAndroidReleaseGates({
 
   const projectCheck = getGoogleCloudProjectCheck(envValues[PLAY_INTEGRITY_PROJECT_NUMBER_KEY], projectStateResult);
   addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
+  const oauthCheck = getGoogleOAuthAndroidClientCheck(oauthStateResult);
+  addCheck(checks, oauthCheck.status, 'Play App Signing SHA-1 for Google OAuth', oauthCheck.details, oauthCheck.remediation);
   addCheck(
     checks,
     'manual',
@@ -352,13 +429,6 @@ function checkAndroidReleaseGates({
     'Play payments profile for Billing',
     'Play Console payments profile and payment-method verification are external to the repo, and Play Console currently needs manual confirmation before monetization release.',
     'Resolve any Play Console payments profile warnings before relying on Google Play Billing in production.'
-  );
-  addCheck(
-    checks,
-    'manual',
-    'Play App Signing SHA-1 for Google OAuth',
-    'Play App Signing SHA-1 extracted from the Play-generated APK: BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59.',
-    'Verify this SHA-1 exists in the Android OAuth client in Google Cloud.'
   );
   addCheck(
     checks,

@@ -81,6 +81,18 @@ function writeGoogleCloudProjectSnapshot(root, overrides = {}) {
   });
 }
 
+function writeGoogleOAuthAndroidClientSnapshot(root, overrides = {}) {
+  writeJson(root, 'doc_web_interne/docs/google-oauth-android-client-state.local.json', {
+    client_id: '359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok.apps.googleusercontent.com',
+    name: 'Noctalia Android Production',
+    package_name: 'com.tanuki75.noctalia',
+    sha1: 'BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59',
+    checked_at: '2026-05-14T12:00:00.000Z',
+    source: 'test',
+    ...overrides,
+  });
+}
+
 describe('android release gate preflight', () => {
   function spawnWithTools({
     subscriptionGateStatus = 0,
@@ -170,6 +182,40 @@ describe('android release gate preflight', () => {
           check.status === 'pass' &&
           check.title === 'Google Cloud project number confirmation' &&
           check.details.includes('359653779023 -> gen-lang-client-0336445544/ACTIVE')
+      )
+    ).toBe(true);
+  });
+
+  it('passes the Play App Signing OAuth SHA check from a local snapshot', () => {
+    const root = setupFixture();
+    writeGoogleOAuthAndroidClientSnapshot(root);
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'pass' &&
+          check.title === 'Play App Signing SHA-1 for Google OAuth' &&
+          check.details.includes('359653779023-5dhs012rh7l3cjf0leoknn7j0dlgq0ok') &&
+          check.details.includes('BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59')
+      )
+    ).toBe(true);
+  });
+
+  it('blocks the Play App Signing OAuth SHA check when the snapshot disagrees', () => {
+    const root = setupFixture();
+    writeGoogleOAuthAndroidClientSnapshot(root, { sha1: 'AA:BB' });
+
+    const report = checkAndroidReleaseGates({ rootDir: root, spawn: spawnWithTools() });
+
+    expect(report.ok).toBe(false);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.status === 'blocked' &&
+          check.title === 'Play App Signing SHA-1 for Google OAuth' &&
+          check.details.includes('expected BC:CF:C2:96')
       )
     ).toBe(true);
   });

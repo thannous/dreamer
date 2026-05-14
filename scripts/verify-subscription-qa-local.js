@@ -34,6 +34,11 @@ const commands = [
     args: ['--check', 'scripts/update-google-cloud-project-state.js'],
   },
   {
+    label: 'syntax: Google OAuth Android client state updater',
+    command: process.execPath,
+    args: ['--check', 'scripts/update-google-oauth-android-client-state.js'],
+  },
+  {
     label: 'syntax: Android tooling resolver',
     command: process.execPath,
     args: ['--check', 'scripts/android-tooling.js'],
@@ -89,6 +94,7 @@ const commands = [
       'scripts/update-revenuecat-play-store-state.test.js',
       'scripts/update-google-play-subscription-state.test.js',
       'scripts/update-google-cloud-project-state.test.js',
+      'scripts/update-google-oauth-android-client-state.test.js',
       'scripts/run-subscription-teststore-purchase.test.js',
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
@@ -134,6 +140,8 @@ const commands = [
       'Google Play annual base plan snapshot',
       'Play monthly base plan snapshot',
       'Play annual base plan snapshot',
+      'Google OAuth Android client snapshot parses',
+      'Google OAuth Android client state updater exists',
       'expected P1M',
       'expected P1Y',
     ],
