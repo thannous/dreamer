@@ -540,6 +540,44 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Play monthly: live snapshot still reports base plans annual/P1Y; expected P1M');
   });
 
+  it('accepts Play monthly P1M evidence when Google Play direct snapshot is ready even if RevenueCat store state lags', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+    const revenueCatSnapshotPath = writePlayStoreStateSnapshot({
+      prodfce10ef2a8: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],
+      },
+    });
+    const googlePlaySnapshotPath = writeGooglePlaySubscriptionStateSnapshot();
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+      REVENUECAT_PLAY_STORE_STATE_PATH: revenueCatSnapshotPath,
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: googlePlaySnapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 7');
+    expect(result.stdout).toContain('Manual or external gates remaining: 0');
+    expect(result.stdout).toContain('READY | Google Play monthly base plan snapshot');
+    expect(result.stdout).toContain('BLOCKED | Play monthly base plan snapshot');
+    expect(result.stdout).not.toContain('Play monthly: live snapshot still reports base plans annual/P1Y; expected P1M');
+  });
+
   it('keeps gates blocked when evidence text is still the example placeholder', () => {
     const gates = Object.fromEntries(
       MANUAL_GATE_KEYS.map((key) => [
