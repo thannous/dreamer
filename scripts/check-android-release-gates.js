@@ -287,6 +287,13 @@ function checkAndroidReleaseGates({
   addCheck(
     checks,
     'manual',
+    'Play payments profile for Billing',
+    'Play Console payments profile and payment-method verification are external to the repo, and Play Console currently needs manual confirmation before monetization release.',
+    'Resolve any Play Console payments profile warnings before relying on Google Play Billing in production.'
+  );
+  addCheck(
+    checks,
+    'manual',
     'Play App Signing SHA-1 for Google OAuth',
     'The Play App Signing certificate SHA-1 is only available after Play Console setup/upload.',
     'Copy the Play App Signing SHA-1 into the Android OAuth client in Google Cloud.'

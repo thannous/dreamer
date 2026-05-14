@@ -114,6 +114,7 @@ describe('android release gate preflight', () => {
     expect(report.counts.fail || 0).toBe(0);
     expect(report.counts.blocked || 0).toBe(0);
     expect(report.counts.manual).toBeGreaterThan(0);
+    expect(report.checks.some((check) => check.title === 'Play payments profile for Billing')).toBe(true);
   });
 
   it('fails when the RevenueCat subscription release gate is still red', () => {
