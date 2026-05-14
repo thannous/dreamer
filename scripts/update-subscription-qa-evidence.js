@@ -48,6 +48,11 @@ function parseArgs(argv) {
       i += 1;
       continue;
     }
+    if (arg === '--device-id') {
+      options.deviceId = argv[i + 1];
+      i += 1;
+      continue;
+    }
     if (arg === '--tested-at') {
       options.testedAt = argv[i + 1];
       i += 1;
@@ -72,6 +77,7 @@ Options:
   --file <path>        Evidence file to update. Defaults to doc_web_interne/docs/revenuecat-qa-evidence.local.json
   --tested-at <iso>    Override timestamp. Defaults to now.
   --eas-build-id <id>  Required for play_* gates; records the installed EAS build id.
+  --device-id <id>     Required for play_* gates; ADB serial of the physical tester device.
                        play_monthly evidence must also confirm base plan P1M.
 
 Gate keys:
@@ -118,6 +124,15 @@ function requirePlayInstalledEvidence(options) {
   const evidence = options.evidence.trim();
   if (!/(com\.android\.vending|play-installed|installed from play|installation play)/i.test(evidence)) {
     throw new Error('Play evidence must confirm the app was installed from Play Internal Testing.');
+  }
+}
+
+function requirePlayDeviceId(options) {
+  if (!options.gate?.startsWith('play_')) return;
+  requireValue(options, 'deviceId', '--device-id');
+  const deviceId = options.deviceId.trim();
+  if (/^emulator-\d+$/i.test(deviceId)) {
+    throw new Error('Play evidence device id must be a physical Android device, not an emulator.');
   }
 }
 
@@ -172,6 +187,7 @@ function updateEvidence(options) {
   requireNonTemplateEvidence(options);
   requirePlayMonthlyBasePlanEvidence(options);
   requirePlayInstalledEvidence(options);
+  requirePlayDeviceId(options);
   requireAccountSwitchEvidence(options);
 
   document.gates[options.gate] = {
@@ -182,6 +198,7 @@ function updateEvidence(options) {
     appUserId: options.appUserId,
     evidence: options.evidence,
     ...(options.easBuildId ? { easBuildId: options.easBuildId } : {}),
+    ...(options.deviceId ? { deviceId: options.deviceId } : {}),
   };
 
   writeJson(options.file, document);

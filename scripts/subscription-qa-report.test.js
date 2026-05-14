@@ -180,7 +180,7 @@ describe('subscription QA report release gate', () => {
       'npm run subscription:qa:evidence -- --gate account_switch --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --evidence "paid account remains plus while second account remains free / inactive after logout and login"'
     );
     expect(result.stdout).toContain(
-      'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
+      'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
     );
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
@@ -295,7 +295,7 @@ describe('subscription QA report release gate', () => {
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
           evidence: evidenceForKey(key),
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -346,7 +346,7 @@ describe('subscription QA report release gate', () => {
           tester: '   ',
           appUserId: '   ',
           evidence: `${key} verified by manual QA`,
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -372,7 +372,7 @@ describe('subscription QA report release gate', () => {
           tester: 'tester@example.com',
           appUserId: 'tester@example.com',
           evidence: `${key} verified by manual QA`,
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -398,7 +398,7 @@ describe('subscription QA report release gate', () => {
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
           evidence: `${key} verified by manual QA`,
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -469,7 +469,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Play monthly: easBuildId must be an EAS build UUID');
   });
 
-  it('keeps account switch blocked when the second free inactive account is not explicit', () => {
+  it('keeps Play gates blocked when physical device evidence is missing', () => {
     const gates = Object.fromEntries(
       MANUAL_GATE_KEYS.map((key) => [
         key,
@@ -480,6 +480,60 @@ describe('subscription QA report release gate', () => {
           appUserId: '00000000-0000-4000-8000-000000000000',
           evidence: evidenceForKey(key),
           ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Play monthly: deviceId is required for Play evidence');
+  });
+
+  it('keeps Play gates blocked when the device evidence is an emulator', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_')
+            ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: 'emulator-5554' }
+            : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
+    expect(result.stdout).toContain('Play monthly: deviceId must be a physical Android device, not an emulator');
+  });
+
+  it('keeps account switch blocked when the second free inactive account is not explicit', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: evidenceForKey(key),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -508,7 +562,7 @@ describe('subscription QA report release gate', () => {
           evidence: key.startsWith('play_')
             ? `${key} verified by manual QA after installed from Play (com.android.vending)`
             : `${key} verified by manual QA`,
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -537,7 +591,7 @@ describe('subscription QA report release gate', () => {
           evidence: key === 'play_monthly'
             ? 'play_monthly verified by manual QA with base plan P1M confirmed'
             : `${key} verified by manual QA`,
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -563,7 +617,7 @@ describe('subscription QA report release gate', () => {
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
           evidence: evidenceForKey(key),
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -597,7 +651,7 @@ describe('subscription QA report release gate', () => {
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
           evidence: evidenceForKey(key),
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
@@ -635,7 +689,7 @@ describe('subscription QA report release gate', () => {
           testedAt: '2026-05-09T12:00:00.000Z',
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
-          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9', deviceId: '57275d36' } : {}),
         },
       ])
     );
