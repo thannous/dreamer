@@ -172,16 +172,24 @@ function summarizeBasePlan(document, basePlanId) {
   return `${basePlanId}/${plan.billing_period_duration}/${plan.state}`;
 }
 
-function getMonthlyStatus(document) {
-  const monthly = document.base_plans?.[EXPECTED.monthlyBasePlanId];
+function getBasePlanStatus(document, basePlanId, expectedBillingPeriod) {
+  const plan = document.base_plans?.[basePlanId];
   return {
     ready:
-      monthly?.billing_period_duration === EXPECTED.monthlyBillingPeriod &&
-      monthly?.state === 'ACTIVE' &&
-      monthly?.new_subscriber_availability?.US === true &&
-      monthly?.new_subscriber_availability?.FR === true,
-    summary: summarizeBasePlan(document, EXPECTED.monthlyBasePlanId),
+      plan?.billing_period_duration === expectedBillingPeriod &&
+      plan?.state === 'ACTIVE' &&
+      plan?.new_subscriber_availability?.US === true &&
+      plan?.new_subscriber_availability?.FR === true,
+    summary: summarizeBasePlan(document, basePlanId),
   };
+}
+
+function getMonthlyStatus(document) {
+  return getBasePlanStatus(document, EXPECTED.monthlyBasePlanId, EXPECTED.monthlyBillingPeriod);
+}
+
+function getAnnualStatus(document) {
+  return getBasePlanStatus(document, EXPECTED.annualBasePlanId, EXPECTED.annualBillingPeriod);
 }
 
 if (require.main === module) {
@@ -189,10 +197,15 @@ if (require.main === module) {
     const options = parseArgs(process.argv.slice(2));
     const document = updateGooglePlaySubscriptionState(options, readInput(options));
     const monthly = getMonthlyStatus(document);
+    const annual = getAnnualStatus(document);
     console.log(`Updated ${path.relative(ROOT, options.file)}`);
     console.log(`${EXPECTED.productId}:${EXPECTED.monthlyBasePlanId}: ${monthly.summary}; expected ${EXPECTED.monthlyBillingPeriod}`);
+    console.log(`${EXPECTED.productId}:${EXPECTED.annualBasePlanId}: ${annual.summary}; expected ${EXPECTED.annualBillingPeriod}`);
     if (!monthly.ready) {
       console.log('Google Play monthly is not ready for new US/FR subscribers.');
+    }
+    if (!annual.ready) {
+      console.log('Google Play annual is not ready for new US/FR subscribers.');
     }
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
@@ -202,6 +215,7 @@ if (require.main === module) {
 
 module.exports = {
   EXPECTED,
+  getAnnualStatus,
   getMonthlyStatus,
   normalizeSnapshot,
   parseArgs,

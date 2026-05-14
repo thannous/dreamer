@@ -3,6 +3,7 @@ const os = require('os');
 const path = require('path');
 const {
   EXPECTED,
+  getAnnualStatus,
   getMonthlyStatus,
   normalizeSnapshot,
   parseArgs,
@@ -84,11 +85,16 @@ describe('Google Play subscription state updater', () => {
       ready: true,
       summary: 'monthly/P1M/ACTIVE',
     });
+    expect(getAnnualStatus(document)).toEqual({
+      ready: true,
+      summary: 'annual/P1Y/ACTIVE',
+    });
   });
 
-  it('keeps non-monthly billing periods blocked', () => {
+  it('keeps incorrect billing periods blocked', () => {
     const snapshot = apiSnapshot();
     snapshot.basePlans[0].autoRenewingBasePlanType.billingPeriodDuration = 'P1Y';
+    snapshot.basePlans[1].autoRenewingBasePlanType.billingPeriodDuration = 'P1M';
     const document = normalizeSnapshot(JSON.stringify(snapshot), {
       checkedAt: '2026-05-14T12:00:00.000Z',
       source: 'test',
@@ -97,6 +103,10 @@ describe('Google Play subscription state updater', () => {
     expect(getMonthlyStatus(document)).toEqual({
       ready: false,
       summary: 'monthly/P1Y/ACTIVE',
+    });
+    expect(getAnnualStatus(document)).toEqual({
+      ready: false,
+      summary: 'annual/P1M/ACTIVE',
     });
   });
 
@@ -110,6 +120,7 @@ describe('Google Play subscription state updater', () => {
     const written = JSON.parse(fs.readFileSync(file, 'utf8'));
     expect(written.checked_at).toBe('2026-05-14T12:00:00.000Z');
     expect(written.base_plans.monthly.billing_period_duration).toBe('P1M');
+    expect(written.base_plans.annual.billing_period_duration).toBe('P1Y');
   });
 
   it('rejects snapshots that miss the monthly base plan', () => {
@@ -117,6 +128,13 @@ describe('Google Play subscription state updater', () => {
     expect(() =>
       normalizeSnapshot(JSON.stringify(snapshot), { checkedAt: '2026-05-14T12:00:00.000Z', source: 'test' })
     ).toThrow('Google Play snapshot is missing base plan monthly.');
+  });
+
+  it('rejects snapshots that miss the annual base plan', () => {
+    const snapshot = apiSnapshot({ basePlans: [apiSnapshot().basePlans[0]] });
+    expect(() =>
+      normalizeSnapshot(JSON.stringify(snapshot), { checkedAt: '2026-05-14T12:00:00.000Z', source: 'test' })
+    ).toThrow('Google Play snapshot is missing base plan annual.');
   });
 
   it('rejects unexpected package names', () => {

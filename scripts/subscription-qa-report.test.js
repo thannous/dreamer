@@ -36,7 +36,7 @@ function evidenceForKey(key) {
     return 'play_monthly verified by manual QA after installed from Play (com.android.vending) with base plan P1M confirmed';
   }
   if (key === 'play_annual') {
-    return 'play_annual verified by manual QA after installed from Play (com.android.vending)';
+    return 'play_annual verified by manual QA after installed from Play (com.android.vending) with base plan P1Y confirmed';
   }
   if (key === 'play_cancellation_and_expiry') {
     return 'play_cancellation_and_expiry verified by manual QA after installed from Play (com.android.vending)';
@@ -96,7 +96,7 @@ function writeInvalidPlayStoreStateSnapshot() {
   return filePath;
 }
 
-function writeGooglePlaySubscriptionStateSnapshot(monthlyPlan = {}) {
+function writeGooglePlaySubscriptionStateSnapshot(monthlyPlan = {}, annualPlan = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'google-play-subscription-state-'));
   const filePath = path.join(dir, 'snapshot.json');
   fs.writeFileSync(
@@ -111,6 +111,12 @@ function writeGooglePlaySubscriptionStateSnapshot(monthlyPlan = {}) {
             billing_period_duration: 'P1M',
             new_subscriber_availability: { US: true, FR: true },
             ...monthlyPlan,
+          },
+          annual: {
+            state: 'ACTIVE',
+            billing_period_duration: 'P1Y',
+            new_subscriber_availability: { US: true, FR: true },
+            ...annualPlan,
           },
         },
       },
@@ -176,8 +182,10 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Play QA device preflight');
     expect(result.stdout).toContain('after installing the Internal Testing build from Play');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');
+    expect(result.stdout).toContain('Google Play annual base plan snapshot');
     expect(result.stdout).toContain('Run npm run subscription:qa:google-play-state');
     expect(result.stdout).toContain('Play monthly base plan snapshot');
+    expect(result.stdout).toContain('Play annual base plan snapshot');
     expect(result.stdout).toContain('RevenueCat product prodfce10ef2a8 must expose billing period P1M');
     expect(result.stdout).toContain('OK | Play store state snapshot parses');
     expect(result.stdout).toContain('OK | Play store state snapshot updater exists');
@@ -197,6 +205,9 @@ describe('subscription QA report release gate', () => {
     );
     expect(result.stdout).toContain(
       'npm run subscription:qa:evidence -- --gate play_monthly --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"'
+    );
+    expect(result.stdout).toContain(
+      'npm run subscription:qa:evidence -- --gate play_annual --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid> --device-id <physical-adb-id> --installer-package-name com.android.vending --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"'
     );
     expect(result.stdout).toContain('Full RevenueCat workflow is not complete');
   });
@@ -235,10 +246,11 @@ describe('subscription QA report release gate', () => {
     expect(result.status).toBe(1);
     expect(result.stdout).toContain('BLOCKED | Google Play subscription state snapshot parses');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');
+    expect(result.stdout).toContain('Google Play annual base plan snapshot');
     expect(result.stderr).toBe('');
   });
 
-  it('surfaces a direct Google Play monthly snapshot that is ready', () => {
+  it('surfaces direct Google Play monthly and annual snapshots that are ready', () => {
     const snapshotPath = writeGooglePlaySubscriptionStateSnapshot();
     const result = runReport([], {
       GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: snapshotPath,
@@ -248,6 +260,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Google Play subscription state snapshot: local file present');
     expect(result.stdout).toContain('READY | Google Play monthly base plan snapshot');
     expect(result.stdout).toContain('monthly/P1M/ACTIVE; expected monthly/P1M/ACTIVE with US+FR availability');
+    expect(result.stdout).toContain('READY | Google Play annual base plan snapshot');
+    expect(result.stdout).toContain('annual/P1Y/ACTIVE; expected annual/P1Y/ACTIVE with US+FR availability');
   });
 
   it('surfaces a direct Google Play monthly snapshot that is not P1M', () => {
@@ -259,6 +273,17 @@ describe('subscription QA report release gate', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('BLOCKED | Google Play monthly base plan snapshot');
     expect(result.stdout).toContain('monthly/P1Y/ACTIVE; expected monthly/P1M/ACTIVE with US+FR availability');
+  });
+
+  it('surfaces a direct Google Play annual snapshot that is not P1Y', () => {
+    const snapshotPath = writeGooglePlaySubscriptionStateSnapshot({}, { billing_period_duration: 'P1M' });
+    const result = runReport([], {
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('BLOCKED | Google Play annual base plan snapshot');
+    expect(result.stdout).toContain('annual/P1M/ACTIVE; expected annual/P1Y/ACTIVE with US+FR availability');
   });
 
   it('surfaces a Play monthly snapshot that still points at the annual base plan', () => {
@@ -282,6 +307,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Play Store state snapshot: local file present');
     expect(result.stdout).toContain('BLOCKED | Play monthly base plan snapshot');
     expect(result.stdout).toContain('prodfce10ef2a8: annual/P1Y; expected P1M');
+    expect(result.stdout).toContain('READY | Play annual base plan snapshot');
+    expect(result.stdout).toContain('prod98337b31be: annual/P1Y; expected P1Y');
   });
 
   it('accepts a Play monthly snapshot with a P1M base plan', () => {
@@ -299,6 +326,23 @@ describe('subscription QA report release gate', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('READY | Play monthly base plan snapshot');
     expect(result.stdout).toContain('prodfce10ef2a8: monthly/P1M; expected P1M');
+  });
+
+  it('blocks a Play annual snapshot that does not expose P1Y', () => {
+    const snapshotPath = writePlayStoreStateSnapshot({
+      prod98337b31be: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'monthly', billing_period_duration: 'P1M' }],
+      },
+    });
+    const result = runReport([], {
+      REVENUECAT_PLAY_STORE_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('BLOCKED | Play annual base plan snapshot');
+    expect(result.stdout).toContain('prod98337b31be: monthly/P1M; expected P1Y');
   });
 
   it('passes the full release gate when every manual and external gate has evidence', () => {
@@ -618,7 +662,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Account switch: second account must be confirmed');
   });
 
-  it('keeps Play monthly blocked when base plan P1M is not confirmed', () => {
+  it('keeps Play monthly and annual blocked when base plan durations are not confirmed', () => {
     const gates = Object.fromEntries(
       MANUAL_GATE_KEYS.map((key) => [
         key,
@@ -641,10 +685,11 @@ describe('subscription QA report release gate', () => {
     });
 
     expect(result.status).toBe(1);
-    expect(result.stdout).toContain('Verified manual/external scenarios: 5');
-    expect(result.stdout).toContain('Manual or external gates remaining: 2');
+    expect(result.stdout).toContain('Verified manual/external scenarios: 4');
+    expect(result.stdout).toContain('Manual or external gates remaining: 3');
     expect(result.stdout).toContain('Account switch: second account must be confirmed');
     expect(result.stdout).toContain('Play monthly: monthly base plan P1M must be confirmed');
+    expect(result.stdout).toContain('Play annual: annual base plan P1Y must be confirmed');
   });
 
   it('keeps Play gates blocked when the Play install source is not confirmed', () => {
@@ -692,6 +737,11 @@ describe('subscription QA report release gate', () => {
     const evidencePath = writeEvidenceFile(gates);
     const snapshotPath = writePlayStoreStateSnapshot({
       prodfce10ef2a8: {
+        store: 'play_store',
+        status: 'ok',
+        base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],
+      },
+      prod98337b31be: {
         store: 'play_store',
         status: 'ok',
         base_plans: [{ base_plan_id: 'annual', billing_period_duration: 'P1Y' }],

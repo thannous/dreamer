@@ -63,10 +63,11 @@ manquantes, pas d'un check local casse.
 premier diagnostic a lire avant de reprendre les tests reels: elle indique si les variables
 `REVENUECAT_QA_EMAIL` / `REVENUECAT_QA_PASSWORD` sont presentes, si l'approbation d'achat Test Store
 est definie, rappelle d'extraire l'app user id device avant d'enregistrer une preuve, rappelle de
-verifier `npm run android:device` jusqu'a `ADB: READY`, puis distingue le snapshot Google Play direct
-du snapshot RevenueCat store-state. Si Google Play direct est `monthly/P1M/ACTIVE` mais RevenueCat
-lit encore `prodfce10ef2a8` en `annual/P1Y`, le rapport affiche `LAGGING`; sans preuve Google Play
-directe prete, cette contradiction reste bloquante pour `play_monthly`.
+verifier `npm run android:device` jusqu'a `ADB: READY`, puis distingue les snapshots Google Play
+directs des snapshots RevenueCat store-state pour monthly et annual. Si Google Play direct est
+`monthly/P1M/ACTIVE` mais RevenueCat lit encore `prodfce10ef2a8` en `annual/P1Y`, le rapport affiche
+`LAGGING`; `play_annual` doit de son cote rester `annual/P1Y`. Sans preuve Google Play directe
+prete, une contradiction store-state reste bloquante pour la gate concernee.
 
 Pour les gates Google Play, l'emulateur ne suffit pas. Avant de reprendre `play_monthly`,
 `play_annual` ou `play_cancellation_and_expiry`, verifier qu'un vrai telephone Android est visible:
@@ -96,7 +97,8 @@ dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
 
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite pour signaler si le produit mensuel
-RevenueCat expose bien `P1M`, ou s'il est seulement `LAGGING` alors que Google Play direct est pret:
+RevenueCat expose bien `P1M`, si le produit annuel expose bien `P1Y`, ou si monthly est seulement
+`LAGGING` alors que Google Play direct est pret:
 
 ```bash
 npm run subscription:qa:play-state -- --input revenuecat-store-state.json
@@ -179,7 +181,8 @@ npm run subscription:qa:evidence -- \
 `--device-id` doit etre l'id ADB d'un telephone physique, pas un AVD `emulator-*`.
 La preuve Play doit confirmer la source d'installation Play Internal Testing: le champ structure
 `--installer-package-name` doit valoir `com.android.vending`, et le texte de preuve doit contenir
-explicitement `installed from Play` ou `com.android.vending`.
+explicitement `installed from Play` ou `com.android.vending`. Pour `play_monthly`, le texte doit
+aussi confirmer `P1M`; pour `play_annual`, il doit confirmer `P1Y`.
 
 Si un fichier de preuve locale existe mais ne passe pas la gate, `npm run subscription:qa:report`
 affiche une section `Evidence Diagnostics` avec le premier champ a corriger pour chaque scenario.
