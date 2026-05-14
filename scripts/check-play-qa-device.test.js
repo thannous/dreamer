@@ -1,5 +1,6 @@
 const {
   checkPlayQaDevice,
+  formatReport,
   getReadyPhysicalDevices,
   selectPhysicalDevice,
 } = require('./check-play-qa-device');
@@ -62,6 +63,10 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(report.ok).toBe(true);
     expect(report.selectedDevice).toBe('57275d36');
     expect(report.playInstallSource.installerPackageName).toBe('com.android.vending');
+    expect(report.evidenceArgs).toBe('--device-id 57275d36 --installer-package-name com.android.vending');
+    expect(formatReport(report)).toContain(
+      '[play-qa-device] evidenceArgs: --device-id 57275d36 --installer-package-name com.android.vending'
+    );
   });
 
   it('fails when only an emulator is ready', () => {
