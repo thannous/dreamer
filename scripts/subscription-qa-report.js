@@ -234,6 +234,23 @@ const checks = [
     'maestro/subscription-teststore-purchase-manual.yml via scripts/run-subscription-teststore-purchase.js'
   ),
   check(
+    'Google Test Store purchase flow exists',
+    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-purchase-google-manual.yml')) &&
+      purchaseRunner.includes('REVENUECAT_QA_AUTH') &&
+      purchaseRunner.includes('subscription-teststore-purchase-google-manual.yml'),
+    'REVENUECAT_QA_AUTH=google -> maestro/subscription-teststore-purchase-google-manual.yml'
+  ),
+  check(
+    'Test Store restore flow exists',
+    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-restore-google-manual.yml')),
+    'maestro/subscription-teststore-restore-google-manual.yml'
+  ),
+  check(
+    'Test Store signout guard exists',
+    fs.existsSync(path.join(ROOT, 'maestro/subscription-teststore-signout-guard.yml')),
+    'maestro/subscription-teststore-signout-guard.yml'
+  ),
+  check(
     'Test Store purchase preflight exists',
     purchaseRunner.includes('--preflight') &&
       purchaseRunner.includes('Test Store purchase preflight passed') &&
@@ -328,7 +345,7 @@ const scenarios = [
     'Automated',
     'Test Store readiness',
     'RevenueCat Test Store',
-    'SDK probe loads offering packages without purchase',
+    'Offering packages and prices load without purchase',
     'maestro/subscription-teststore-readiness.yml',
   ],
   [
@@ -350,14 +367,14 @@ const scenarios = [
     'Restore after reinstall',
     'Test Store or Play',
     'Same app user id restores entitlement',
-    'Requires a completed purchase first',
+    'maestro/subscription-teststore-restore-google-manual.yml plus structured evidence',
   ],
   [
     'Manual purchase gate',
     'Account switch',
     'Test Store or Play',
     'Plus user logout does not leak to free user',
-    'Requires two real auth accounts after purchase',
+    'maestro/subscription-teststore-signout-guard.yml covers logout/no-leak; two real auth accounts still required',
   ],
   [
     'External store gate',
