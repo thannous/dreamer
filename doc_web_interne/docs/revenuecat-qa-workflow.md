@@ -76,6 +76,16 @@ npm run android:device:physical
 Cette commande echoue volontairement si seuls des AVD `emulator-*` sont visibles, meme si ADB est
 pret pour les tests mock/Test Store.
 
+Quand le telephone est visible et que l'app est installee depuis la piste Internal Testing, utiliser
+le preflight compose:
+
+```bash
+npm run android:play-qa-device -- --device <adb-id>
+```
+
+Il verifie a la fois que `<adb-id>` est un telephone physique et que `installerPackageName` vaut
+`com.android.vending`.
+
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite et garde `play_monthly` bloque si le
 produit mensuel live contredit la preuve manuelle:
@@ -370,6 +380,7 @@ Preuve attendue:
 - avant toute preuve Play, `npm run android:device:physical` doit voir un telephone Android reel
 - avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
   `installerPackageName: com.android.vending`
+- `npm run android:play-qa-device -- --device <adb-id>` doit passer pour le telephone teste
 - `subscription:qa:evidence` doit recevoir `--device-id <adb-id>` pour lier la preuve Play au
   telephone physique utilise
 - RevenueCat Customer affiche le meme app user id que Supabase `auth.users.id`

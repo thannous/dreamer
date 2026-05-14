@@ -54,6 +54,11 @@ const commands = [
     args: ['--check', 'scripts/check-play-install-source.js'],
   },
   {
+    label: 'syntax: Play QA device preflight',
+    command: process.execPath,
+    args: ['--check', 'scripts/check-play-qa-device.js'],
+  },
+  {
     label: 'syntax: RevenueCat device app user id extractor',
     command: process.execPath,
     args: ['--check', 'scripts/extract-revenuecat-app-user-id.js'],
@@ -74,6 +79,7 @@ const commands = [
       'scripts/verify-subscription-qa-local.test.js',
       'scripts/check-android-adb-device.test.js',
       'scripts/check-play-install-source.test.js',
+      'scripts/check-play-qa-device.test.js',
       'scripts/extract-revenuecat-app-user-id.test.js',
       '--runInBand',
       '--watchman=false',
@@ -97,6 +103,8 @@ const commands = [
       'npm run android:device:physical',
       'Play install source diagnostic exists',
       'npm run android:play-install-source -- --device <adb-id>',
+      'Play QA device preflight exists',
+      'npm run android:play-qa-device -- --device <adb-id>',
       'Google Play monthly base plan snapshot',
       'Play monthly base plan snapshot',
       'expected P1M',
