@@ -66,6 +66,19 @@ est definie, rappelle d'extraire l'app user id device avant d'enregistrer une pr
 verifier `npm run android:device` jusqu'a `ADB: READY`, et bloque mentalement `play_monthly` tant
 que RevenueCat/Play ne renvoie pas un base plan mensuel `P1M` pour `prodfce10ef2a8`.
 
+Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
+snapshot local gitignore. Le rapport QA le relit ensuite et garde `play_monthly` bloque si le
+produit mensuel live contredit la preuve manuelle:
+
+```bash
+npm run subscription:qa:play-state -- --input revenuecat-store-state.json
+npm run subscription:qa:report
+```
+
+La commande accepte aussi le JSON en stdin et normalise les deux produits Play attendus
+(`prodfce10ef2a8` et `prod98337b31be`) dans
+`doc_web_interne/docs/revenuecat-play-store-state.local.json`.
+
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
