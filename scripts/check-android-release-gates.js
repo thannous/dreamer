@@ -268,7 +268,7 @@ function checkAndroidReleaseGates({
     subscriptionGate.ok ? 'pass' : 'fail',
     'RevenueCat subscription QA release gate',
     subscriptionGate.details,
-    'Run npm run subscription:qa:release-gate and close the remaining Test Store, account-switch, and Play evidence gates before Android production release.'
+    'Run npm run subscription:qa:release-gate and close the remaining evidence gates listed in the report before Android production release.'
   );
 
   const fallbackFlowPath = path.join(rootDir, 'maestro/recording-text-fallback.yml');
