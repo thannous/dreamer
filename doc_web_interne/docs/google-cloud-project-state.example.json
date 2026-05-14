@@ -1,0 +1,9 @@
+{
+  "notes": "Copy this file to google-cloud-project-state.local.json after a read-only gcloud project check. Do not commit the local file.",
+  "project_number": "359653779023",
+  "project_id": "gen-lang-client-0336445544",
+  "name": "dreamweaver",
+  "lifecycle_state": "ACTIVE",
+  "checked_at": "2026-05-14T00:00:00.000Z",
+  "source": "gcloud projects list"
+}

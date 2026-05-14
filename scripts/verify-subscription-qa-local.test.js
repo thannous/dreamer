@@ -42,12 +42,14 @@ describe('subscription QA local verifier', () => {
       expect.arrayContaining([
         'syntax: Play store state updater',
         'syntax: Google Play subscription state updater',
+        'syntax: Google Cloud project state updater',
         'unit: subscription QA scripts',
       ])
     );
     const unitCommand = commands.find((command) => command.label === 'unit: subscription QA scripts');
     expect(unitCommand.args).toContain('scripts/update-revenuecat-play-store-state.test.js');
     expect(unitCommand.args).toContain('scripts/update-google-play-subscription-state.test.js');
+    expect(unitCommand.args).toContain('scripts/update-google-cloud-project-state.test.js');
   });
 
   it('returns a non-zero exit when a command expected to fail exits successfully', () => {
