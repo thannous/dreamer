@@ -14,6 +14,7 @@ const {
   detectUsbAndroidDevice,
 } = require('./check-android-adb-device');
 const { getOpenPaymentProfileRequirements } = require('./update-google-play-payments-profile-state');
+const { getTrackStatus } = require('./update-google-play-track-state');
 const {
   getSupabasePlayIntegritySecretIssues,
 } = require('./update-supabase-play-integrity-secrets-state');
@@ -212,6 +213,29 @@ function readGooglePlayPaymentsProfileState({
   }
 }
 
+function readGooglePlayTrackState({
+  rootDir = ROOT,
+  existsSync = fs.existsSync,
+  readFileSync = fs.readFileSync,
+  env = process.env,
+} = {}) {
+  const filePath = env.GOOGLE_PLAY_TRACK_STATE_PATH
+    ? path.resolve(rootDir, env.GOOGLE_PLAY_TRACK_STATE_PATH)
+    : path.join(rootDir, 'doc_web_interne/docs/google-play-track-state.local.json');
+  if (!existsSync(filePath)) {
+    return { snapshot: null, error: null, filePath };
+  }
+  try {
+    return { snapshot: JSON.parse(readFileSync(filePath, 'utf8')), error: null, filePath };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+      filePath,
+    };
+  }
+}
+
 function readSupabasePlayIntegritySecretsState({
   rootDir = ROOT,
   existsSync = fs.existsSync,
@@ -372,6 +396,42 @@ function getPlayPaymentsProfileCheck(paymentsProfileStateResult) {
   };
 }
 
+function getGooglePlayInternalTrackCheck(trackStateResult) {
+  const snapshot = trackStateResult.snapshot;
+  if (trackStateResult.error) {
+    return {
+      status: 'blocked',
+      details: `Google Play internal track snapshot is invalid: ${trackStateResult.error}`,
+      remediation: 'Regenerate doc_web_interne/docs/google-play-track-state.local.json from Google Play Developer API edits.tracks.get.',
+    };
+  }
+  if (!snapshot) {
+    return {
+      status: 'manual',
+      details:
+        'Google Play internal track release state has not been recorded in a local snapshot.',
+      remediation:
+        'Read the internal track with Google Play Developer API edits.tracks.get, then run npm run android:google-play-track-state with the JSON output.',
+    };
+  }
+
+  const status = getTrackStatus(snapshot);
+  if (!status.ready) {
+    return {
+      status: 'blocked',
+      details: `${status.summary}; expected status ${snapshot.expected_status || 'completed'}.`,
+      remediation:
+        'Submit or complete the expected Internal Testing release in Play Console, then regenerate the track snapshot.',
+    };
+  }
+
+  return {
+    status: 'pass',
+    details: `${status.summary} from ${path.relative(ROOT, trackStateResult.filePath)}.`,
+    remediation: 'Keep the Google Play internal track snapshot fresh after Play submissions.',
+  };
+}
+
 function getSupabasePlayIntegritySecretsCheck(secretsStateResult) {
   const snapshot = secretsStateResult.snapshot;
   if (secretsStateResult.error) {
@@ -452,6 +512,12 @@ function checkAndroidReleaseGates({
   const projectStateResult = readGoogleCloudProjectState({ rootDir, existsSync, readFileSync, env });
   const oauthStateResult = readGoogleOAuthAndroidClientState({ rootDir, existsSync, readFileSync, env });
   const paymentsProfileStateResult = readGooglePlayPaymentsProfileState({
+    rootDir,
+    existsSync,
+    readFileSync,
+    env,
+  });
+  const googlePlayTrackStateResult = readGooglePlayTrackState({
     rootDir,
     existsSync,
     readFileSync,
@@ -575,6 +641,14 @@ function checkAndroidReleaseGates({
   addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
   const oauthCheck = getGoogleOAuthAndroidClientCheck(oauthStateResult);
   addCheck(checks, oauthCheck.status, 'Play App Signing SHA-1 for Google OAuth', oauthCheck.details, oauthCheck.remediation);
+  const googlePlayTrackCheck = getGooglePlayInternalTrackCheck(googlePlayTrackStateResult);
+  addCheck(
+    checks,
+    googlePlayTrackCheck.status,
+    'Google Play internal track release',
+    googlePlayTrackCheck.details,
+    googlePlayTrackCheck.remediation
+  );
   const supabaseSecretsCheck = getSupabasePlayIntegritySecretsCheck(supabaseSecretsStateResult);
   addCheck(
     checks,
@@ -656,5 +730,6 @@ module.exports = {
   parseDotEnv,
   resolveCommand,
   getPlayPaymentsProfileCheck,
+  getGooglePlayInternalTrackCheck,
   getSupabasePlayIntegritySecretsCheck,
 };

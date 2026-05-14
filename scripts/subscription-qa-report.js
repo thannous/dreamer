@@ -15,6 +15,9 @@ const playStoreStatePath = process.env.REVENUECAT_PLAY_STORE_STATE_PATH
 const googlePlaySubscriptionStatePath = process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH
   ? path.resolve(ROOT, process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/google-play-subscription-state.local.json');
+const googlePlayTrackStatePath = process.env.GOOGLE_PLAY_TRACK_STATE_PATH
+  ? path.resolve(ROOT, process.env.GOOGLE_PLAY_TRACK_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/google-play-track-state.local.json');
 const googleOAuthAndroidClientStatePath = process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH
   ? path.resolve(ROOT, process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/google-oauth-android-client-state.local.json');
@@ -159,6 +162,20 @@ function readGooglePlaySubscriptionStateResult() {
   }
   try {
     return { snapshot: readJsonFile(googlePlaySubscriptionStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
+function readGooglePlayTrackStateResult() {
+  if (!fs.existsSync(googlePlayTrackStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(googlePlayTrackStatePath), error: null };
   } catch (error) {
     return {
       snapshot: null,
@@ -381,6 +398,33 @@ function isGooglePlayMonthlyReady() {
 
 function isGooglePlayAnnualReady() {
   return isGooglePlayBasePlanReady('annual', 'P1Y');
+}
+
+function getGooglePlayTrackReadinessRow() {
+  if (!fs.existsSync(googlePlayTrackStatePath)) {
+    return [
+      'CHECK LIVE',
+      'Google Play internal track snapshot',
+      'Run npm run android:google-play-track-state with edits.tracks.get JSON to confirm internal/versionCode=24/completed',
+    ];
+  }
+  if (googlePlayTrackStateResult.error) {
+    return ['BLOCKED', 'Google Play internal track snapshot', googlePlayTrackStateResult.error];
+  }
+  const snapshot = googlePlayTrackStateResult.snapshot;
+  const expectedVersionCode = String(snapshot?.expected_version_code || '24');
+  const expectedStatus = String(snapshot?.expected_status || 'completed').toLowerCase();
+  const release = (snapshot?.releases ?? []).find((item) =>
+    (item?.version_codes ?? []).map((versionCode) => String(versionCode)).includes(expectedVersionCode)
+  );
+  const summary = release
+    ? `${snapshot.track}/${release.name || 'unnamed'}/${release.status}/versionCode=${expectedVersionCode}`
+    : `${snapshot?.track || 'internal'}/missing/${expectedVersionCode}`;
+  return [
+    release?.status === expectedStatus ? 'READY' : 'BLOCKED',
+    'Google Play internal track snapshot',
+    `${summary}; expected status ${expectedStatus}`,
+  ];
 }
 
 function getPlaySnapshotIssue({ productId, expectedDuration, googlePlayReady }) {
@@ -620,6 +664,7 @@ const evidenceResult = readEvidenceResult();
 const evidence = evidenceResult.evidence;
 const playStoreStateResult = readPlayStoreStateResult();
 const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
+const googlePlayTrackStateResult = readGooglePlayTrackStateResult();
 const googleOAuthAndroidClientStateResult = readGoogleOAuthAndroidClientStateResult();
 const googlePlayPaymentsProfileStateResult = readGooglePlayPaymentsProfileStateResult();
 const supabasePlayIntegritySecretsStateResult = readSupabasePlayIntegritySecretsStateResult();
@@ -782,6 +827,11 @@ const checks = [
     'doc_web_interne/docs/google-play-subscription-state.local.json'
   ),
   check(
+    'Google Play track state snapshot is gitignored',
+    gitignore.includes('doc_web_interne/docs/google-play-track-state.local.json'),
+    'doc_web_interne/docs/google-play-track-state.local.json'
+  ),
+  check(
     'Local evidence file parses',
     !fs.existsSync(evidencePath) || !evidenceResult.error,
     fs.existsSync(evidencePath) ? evidenceResult.error || evidencePath : 'not provided'
@@ -791,6 +841,13 @@ const checks = [
     !fs.existsSync(googlePlaySubscriptionStatePath) || !googlePlaySubscriptionStateResult.error,
     fs.existsSync(googlePlaySubscriptionStatePath)
       ? googlePlaySubscriptionStateResult.error || googlePlaySubscriptionStatePath
+      : 'not provided'
+  ),
+  check(
+    'Google Play track state snapshot parses',
+    !fs.existsSync(googlePlayTrackStatePath) || !googlePlayTrackStateResult.error,
+    fs.existsSync(googlePlayTrackStatePath)
+      ? googlePlayTrackStateResult.error || googlePlayTrackStatePath
       : 'not provided'
   ),
   check(
@@ -830,6 +887,12 @@ const checks = [
     fs.existsSync(path.join(ROOT, 'scripts/update-google-play-subscription-state.js')) &&
       pkg.scripts['subscription:qa:google-play-state'] === 'node ./scripts/update-google-play-subscription-state.js',
     'npm run subscription:qa:google-play-state -- --input google-play-subscription.json'
+  ),
+  check(
+    'Google Play track state updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-google-play-track-state.js')) &&
+      pkg.scripts['android:google-play-track-state'] === 'node ./scripts/update-google-play-track-state.js',
+    'npm run android:google-play-track-state -- --input google-play-track.json'
   ),
   check(
     'Google OAuth Android client state updater exists',
@@ -983,6 +1046,11 @@ console.log(
     fs.existsSync(googlePlaySubscriptionStatePath) ? 'local file present' : 'not provided'
   }`
 );
+console.log(
+  `- Google Play internal track snapshot: ${
+    fs.existsSync(googlePlayTrackStatePath) ? 'local file present' : 'not provided'
+  }`
+);
 console.log(`- Play Store state snapshot: ${fs.existsSync(playStoreStatePath) ? 'local file present' : 'not provided'}`);
 console.log(
   `- Google OAuth Android client snapshot: ${
@@ -1097,6 +1165,7 @@ const runtimeReadiness = [
   ],
   getGooglePlayMonthlyReadinessRow(),
   getGooglePlayAnnualReadinessRow(),
+  getGooglePlayTrackReadinessRow(),
   getPaymentsProfileReadinessRow(),
   getSupabaseSecretsReadinessRow(),
   getPlayMonthlyReadinessRow(),

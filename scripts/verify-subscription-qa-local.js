@@ -29,6 +29,11 @@ const commands = [
     args: ['--check', 'scripts/update-google-play-subscription-state.js'],
   },
   {
+    label: 'syntax: Google Play track state updater',
+    command: process.execPath,
+    args: ['--check', 'scripts/update-google-play-track-state.js'],
+  },
+  {
     label: 'syntax: Google Cloud project state updater',
     command: process.execPath,
     args: ['--check', 'scripts/update-google-cloud-project-state.js'],
@@ -103,6 +108,7 @@ const commands = [
       'scripts/update-subscription-qa-evidence.test.js',
       'scripts/update-revenuecat-play-store-state.test.js',
       'scripts/update-google-play-subscription-state.test.js',
+      'scripts/update-google-play-track-state.test.js',
       'scripts/update-google-cloud-project-state.test.js',
       'scripts/update-google-oauth-android-client-state.test.js',
       'scripts/update-google-play-payments-profile-state.test.js',
@@ -150,6 +156,8 @@ const commands = [
       'after the device is ready',
       'Google Play monthly base plan snapshot',
       'Google Play annual base plan snapshot',
+      'Google Play internal track snapshot',
+      'Google Play track state updater exists',
       'Play monthly base plan snapshot',
       'Play annual base plan snapshot',
       'Google OAuth Android client snapshot parses',
