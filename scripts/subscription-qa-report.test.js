@@ -74,6 +74,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL -> maestro/subscription-teststore-account-switch-free-email-manual.yml');
     expect(result.stdout).toContain('OK | Local subscription QA verifier exists');
     expect(result.stdout).toContain('npm run subscription:qa:verify-local');
+    expect(result.stdout).toContain('OK | Production APK build is gated by subscription QA');
+    expect(result.stdout).toContain('build:apk:prod must run android:gates:strict before eas build');
     expect(result.stdout).toContain('OK | RevenueCat device app user id extractor exists');
     expect(result.stdout).toContain('npm run subscription:qa:device-app-user-id');
     expect(result.stdout).toContain('OK | Android device diagnostic exists');

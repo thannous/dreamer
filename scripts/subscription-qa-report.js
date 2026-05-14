@@ -284,6 +284,12 @@ const checks = [
     'npm run subscription:qa:verify-local'
   ),
   check(
+    'Production APK build is gated by subscription QA',
+    typeof pkg.scripts['build:apk:prod'] === 'string' &&
+      pkg.scripts['build:apk:prod'].startsWith('npm run android:gates:strict &&'),
+    'build:apk:prod must run android:gates:strict before eas build'
+  ),
+  check(
     'RevenueCat device app user id extractor exists',
     fs.existsSync(path.join(ROOT, 'scripts/extract-revenuecat-app-user-id.js')) &&
       pkg.scripts['subscription:qa:device-app-user-id'] === 'node ./scripts/extract-revenuecat-app-user-id.js',
