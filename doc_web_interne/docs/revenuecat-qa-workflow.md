@@ -89,10 +89,12 @@ refuse ce scope pour le compte utilisateur configure, et l'ADC locale atteint l'
 
 Verification UI Play Console du 2026-05-14: le compte developpeur `TiMax group` ouvre l'app
 `Noctalia: Smart Dream Journal` (`com.tanuki75.noctalia`). La page `Monetiser avec Play ->
-Abonnements` liste `Noctalia Plus` / `noctalia_plus` avec 2 forfaits de base actifs et affiche
-`Probleme concernant votre profil de paiement`. Cette lecture confirme l'objet Play, mais il faut
-encore ouvrir le detail de l'abonnement ou relire via MCP/API apres correction pour prouver que le
-forfait mensuel expose bien `P1M`.
+Abonnements -> Noctalia Plus` liste `annual` (`Annuel, renouvellement automatique`) et `monthly`
+(`Mensuel, renouvellement automatique`) comme forfaits actifs, tous deux mis a jour le
+`26 nov. 2025`; elle affiche aussi `Probleme concernant votre profil de paiement`. Cette lecture
+confirme que le forfait mensuel existe cote Play Console, mais il faut encore corriger/resynchroniser
+RevenueCat ou relire via MCP/API apres correction, car le snapshot RevenueCat actuel lit toujours
+`prodfce10ef2a8` comme `annual/P1Y`.
 
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
