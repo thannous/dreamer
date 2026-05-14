@@ -127,6 +127,21 @@ describe('android ADB device diagnostic', () => {
     expect(report.ok).toBe(false);
     expect(report.adb.status).toBe('missing');
     expect(report.usb.visible).toBe(true);
+    expect(formatReport(report)).toContain('ADB DEVICE: MISSING - No device is visible to adb.');
+    expect(formatReport(report)).not.toContain('ADB: MISSING');
+  });
+
+  it('keeps the ADB label when adb itself is unavailable', () => {
+    const report = checkAndroidAdbDevice({
+      spawn: spawnFor({ whichAdb: false }),
+      env: { HOME: '/tmp/no-such-android-sdk-for-adb-test' },
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.adb.status).toBe('missing-adb');
+    expect(formatReport(report)).toContain('adb: not found');
+    expect(formatReport(report)).toContain('ADB: MISSING-ADB - adb is not available');
   });
 
   it('surfaces wireless debugging services when no USB device is connected', () => {

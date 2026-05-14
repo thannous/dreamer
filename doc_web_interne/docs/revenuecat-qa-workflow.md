@@ -90,7 +90,7 @@ Interpretation rapide du diagnostic appareil:
 - `USB: NOT VISIBLE` veut dire que macOS ne voit pas de telephone Android-like au niveau USB: changer
   de cable/port, deverrouiller le telephone, choisir `Transfert de fichiers / Android Auto`, puis
   accepter la popup RSA de debogage USB.
-- `USB: VISIBLE` avec `ADB: MISSING` ou `ADB: UNAUTHORIZED` veut dire que le cable est bon mais que
+- `USB: VISIBLE` avec `ADB DEVICE: MISSING` ou `ADB DEVICE: UNAUTHORIZED` veut dire que le cable est bon mais que
   le debogage USB n'est pas encore autorise: deverrouiller le telephone et accepter l'empreinte RSA.
 - `WIRELESS: VISIBLE` veut dire que le telephone publie Wireless Debugging: lancer les commandes
   `adb pair` / `adb connect` affichees, puis relancer le preflight.
