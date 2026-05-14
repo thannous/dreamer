@@ -26,6 +26,7 @@ const payload = {
   args: process.argv.slice(2),
   qaEmail: process.env.QA_EMAIL,
   qaPassword: process.env.QA_PASSWORD,
+  qaAuth: process.env.QA_AUTH,
   qaPlan: process.env.QA_PLAN,
 };
 fs.writeFileSync(process.env.CAPTURE_PATH, JSON.stringify(payload, null, 2), 'utf8');
@@ -62,6 +63,7 @@ describe('guarded Test Store purchase runner', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('Test Store purchase preflight passed');
     expect(result.stdout).toContain('Plan: monthly');
+    expect(result.stdout).toContain('Auth mode: email');
     expect(result.stdout).toContain('Test account: te...@example.com');
     expect(result.stdout).not.toContain('tester@example.com');
     expect(result.stdout).toContain('Approval present: no');
@@ -84,6 +86,7 @@ describe('guarded Test Store purchase runner', () => {
     expect(payload).toMatchObject({
       qaEmail: 'tester@example.com',
       qaPassword: 'password',
+      qaAuth: 'email',
       qaPlan: 'annual',
     });
     expect(payload.args).toEqual([
@@ -97,6 +100,38 @@ describe('guarded Test Store purchase runner', () => {
       '--device',
       'emulator-5554',
       '--no-restart-metro',
+    ]);
+  });
+
+  it('runs the Google purchase flow without requiring an email password', () => {
+    const fakeNpmDir = createFakeNpm();
+    const capturePath = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'purchase-capture-')), 'capture.json');
+    const result = runWrapper(['--plan', 'monthly', '--device', 'emulator-5554'], {
+      PATH: `${fakeNpmDir}${path.delimiter}${process.env.PATH}`,
+      REVENUECAT_QA_APPROVAL: APPROVAL,
+      REVENUECAT_QA_AUTH: 'google',
+      REVENUECAT_QA_EMAIL: 'tester@example.com',
+      CAPTURE_PATH: capturePath,
+    });
+
+    expect(result.status).toBe(0);
+    const payload = JSON.parse(fs.readFileSync(capturePath, 'utf8'));
+    expect(payload).toMatchObject({
+      qaEmail: 'tester@example.com',
+      qaAuth: 'google',
+      qaPlan: 'monthly',
+    });
+    expect(payload.qaPassword).toBeUndefined();
+    expect(payload.args).toEqual([
+      'run',
+      'test:e2e:subscription-teststore',
+      '--',
+      '--flow',
+      'maestro/subscription-teststore-purchase-google-manual.yml',
+      '--retries',
+      '0',
+      '--device',
+      'emulator-5554',
     ]);
   });
 });

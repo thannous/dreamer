@@ -8,6 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { createScopedLogger } from '@/lib/logger';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TID } from '@/lib/testIDs';
 
 const log = createScopedLogger('[GoogleSignInButton]');
 
@@ -72,6 +73,7 @@ export default function GoogleSignInButton() {
         ]}
         onPress={handleGoogleSignIn}
         disabled={loading}
+        testID={TID.Button.AuthGoogle}
       >
         {loading ? (
           <ActivityIndicator color={colors.textPrimary} size="small" />

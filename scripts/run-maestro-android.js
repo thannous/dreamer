@@ -11,6 +11,7 @@ const { resolveCommand } = require('./check-android-release-gates');
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_MAESTRO_BIN_WINDOWS = 'C:\\Users\\thann\\maestro\\maestro\\bin\\maestro.bat';
 const DEFAULT_METRO_PORT = 8081;
+const MAESTRO_FLOW_ENV_KEYS = ['QA_EMAIL', 'QA_PASSWORD', 'QA_PLAN'];
 
 const SUITES = {
   smoke: [
@@ -36,6 +37,10 @@ const SUITES = {
     'maestro/edit-dream-metadata.yml',
     'maestro/inspiration-rituals.yml',
     'maestro/subscription-mock-paywall.yml',
+    'maestro/subscription-qa-lab.yml',
+  ],
+  store: [
+    'maestro/subscription-teststore-readiness.yml',
   ],
   quotas: [
     'maestro/free-analysis-limit.yml',
@@ -60,6 +65,7 @@ const SUITES = {
     'maestro/journal-dream-cta-labels.yml',
     'maestro/edit-dream-metadata.yml',
     'maestro/subscription-mock-paywall.yml',
+    'maestro/subscription-qa-lab.yml',
   ],
 };
 
@@ -340,6 +346,25 @@ function listAndroidDevices() {
     .map((parts) => parts[0]);
 }
 
+function configureAndroidInput(deviceId) {
+  const adbBin = process.env.ADB_BIN || resolveCommand('adb') || (process.platform === 'win32' ? 'adb.exe' : 'adb');
+  const commands = [
+    ['shell', 'ime', 'set', 'com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME'],
+    ['shell', 'settings', 'put', 'secure', 'stylus_handwriting_enabled', '0'],
+    ['shell', 'settings', 'put', 'secure', 'show_ime_with_hard_keyboard', '1'],
+  ];
+
+  for (const args of commands) {
+    const result = spawnSync(adbBin, ['-s', deviceId, ...args], {
+      cwd: ROOT,
+      encoding: 'utf8',
+    });
+    if (result.status !== 0) {
+      console.warn(`[${deviceId}] Android input setup warning: ${result.stderr || result.stdout || args.join(' ')}`);
+    }
+  }
+}
+
 function selectDevices(connectedDevices, requestedDevices) {
   if (!requestedDevices?.length) {
     return connectedDevices;
@@ -424,6 +449,21 @@ function runCommand(command, args, options = {}) {
   });
 }
 
+function buildMaestroEnv() {
+  const maestroHome = process.env.MAESTRO_RUNNER_HOME || path.resolve(ROOT, '.maestro-home');
+  fs.mkdirSync(path.join(maestroHome, '.maestro'), { recursive: true });
+
+  return {
+    ...process.env,
+    HOME: maestroHome,
+    JAVA_TOOL_OPTIONS: [
+      process.env.JAVA_TOOL_OPTIONS,
+      `-Duser.home=${maestroHome}`,
+    ].filter(Boolean).join(' '),
+    MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: 'true',
+  };
+}
+
 function flowSlug(flow) {
   return flow
     .replace(/^maestro\//, '')
@@ -431,18 +471,22 @@ function flowSlug(flow) {
     .replace(/[\\/]/g, '-');
 }
 
+function buildMaestroFlowEnvArgs() {
+  return MAESTRO_FLOW_ENV_KEYS
+    .filter((key) => process.env[key])
+    .flatMap((key) => ['-e', `${key}=${process.env[key]}`]);
+}
+
 async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun, suiteName }) {
   const { command, baseArgs } = resolveMaestroInvocation();
   const outputRoot = path.resolve(ROOT, 'maestro-results', 'android', suiteName, deviceId, flowSlug(flow));
   fs.mkdirSync(outputRoot, { recursive: true });
-  if (process.env.HOME) {
-    fs.mkdirSync(path.join(process.env.HOME, '.maestro'), { recursive: true });
-  }
 
   for (let attempt = 1; attempt <= retries + 1; attempt += 1) {
     const args = [
       ...baseArgs,
       'test',
+      ...buildMaestroFlowEnvArgs(),
       flow,
       '--device',
       deviceId,
@@ -460,7 +504,7 @@ async function runFlowOnDevice({ deviceId, flow, retries, installDriverFirstRun,
     }
 
     console.log(`[${deviceId}] ${flow} (attempt ${attempt}/${retries + 1})`);
-    const result = await runCommand(command, args);
+    const result = await runCommand(command, args, { env: buildMaestroEnv() });
     if (result.ok) {
       return { flow, ok: true, attempts: attempt };
     }
@@ -530,6 +574,7 @@ async function main() {
   const workerCount = resolveWorkerCount(options.parallel, devices.length, flows.length);
   const workerQueues = assignFlowsToWorkers(flows, workerCount);
   const selectedDevices = devices.slice(0, workerCount);
+  selectedDevices.forEach((deviceId) => configureAndroidInput(deviceId));
 
   console.log(`Running suite "${options.suite}" on ${workerCount} Android worker(s)`);
   selectedDevices.forEach((deviceId, index) => {
