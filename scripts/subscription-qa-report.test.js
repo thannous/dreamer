@@ -172,6 +172,7 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Device app user id extraction');
     expect(result.stdout).toContain('Physical Android device visibility');
     expect(result.stdout).toContain('before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence');
+    expect(result.stdout).toContain('checks USB and ADB Wireless Debugging mDNS visibility');
     expect(result.stdout).toContain('Play QA device preflight');
     expect(result.stdout).toContain('after installing the Internal Testing build from Play');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');

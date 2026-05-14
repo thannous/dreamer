@@ -826,7 +826,7 @@ const runtimeReadiness = [
   [
     'CHECK',
     'Physical Android device visibility',
-    'Run npm run android:device:physical before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence',
+    'Run npm run android:device:physical before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence; this checks USB and ADB Wireless Debugging mDNS visibility',
   ],
   [
     'CHECK',
