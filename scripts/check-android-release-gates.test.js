@@ -115,6 +115,14 @@ describe('android release gate preflight', () => {
     expect(report.counts.blocked || 0).toBe(0);
     expect(report.counts.manual).toBeGreaterThan(0);
     expect(report.checks.some((check) => check.title === 'Play payments profile for Billing')).toBe(true);
+    expect(
+      report.checks.some(
+        (check) =>
+          check.title === 'Play App Signing SHA-1 for Google OAuth' &&
+          check.details.includes('BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59') &&
+          check.remediation.includes('Android OAuth client')
+      )
+    ).toBe(true);
   });
 
   it('fails when the RevenueCat subscription release gate is still red', () => {

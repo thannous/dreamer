@@ -295,8 +295,8 @@ function checkAndroidReleaseGates({
     checks,
     'manual',
     'Play App Signing SHA-1 for Google OAuth',
-    'The Play App Signing certificate SHA-1 is only available after Play Console setup/upload.',
-    'Copy the Play App Signing SHA-1 into the Android OAuth client in Google Cloud.'
+    'Play App Signing SHA-1 extracted from the Play-generated APK: BC:CF:C2:96:38:47:81:D6:8C:B7:B6:5A:BA:84:CB:B3:8C:85:E0:59.',
+    'Verify this SHA-1 exists in the Android OAuth client in Google Cloud.'
   );
   addCheck(
     checks,
