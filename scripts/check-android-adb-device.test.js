@@ -133,6 +133,8 @@ describe('android ADB device diagnostic', () => {
     expect(report.usb.idProduct).toBe('65352');
     expect(formatReport(report)).toContain('ADB DEVICE: MISSING - No device is visible to adb.');
     expect(formatReport(report)).toContain('Android debug interface signature present');
+    expect(formatReport(report)).toContain('adb has no authorized transport yet');
+    expect(formatReport(report)).toContain('recreate the USB debugging RSA authorization');
     expect(formatReport(report)).not.toContain('ADB: MISSING');
   });
 

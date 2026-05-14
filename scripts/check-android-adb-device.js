@@ -278,6 +278,11 @@ function formatReport(report) {
     lines.push(
       `[android-device] USB: ${report.usb.visible ? 'VISIBLE' : 'NOT VISIBLE'} - ${report.usb.message}`
     );
+    if (report.adb.status === 'missing' && report.usb.adbLikeInterface) {
+      lines.push(
+        '  Next: The Android debug USB interface is present, but adb has no authorized transport yet. Unlock the phone, accept or recreate the USB debugging RSA authorization, or use Wireless debugging.'
+      );
+    }
   } else {
     lines.push(`[android-device] USB: SKIPPED - ${report.usb.message}`);
   }
