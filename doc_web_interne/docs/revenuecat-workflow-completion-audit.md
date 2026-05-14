@@ -1,6 +1,6 @@
 # RevenueCat Workflow Completion Audit
 
-Date: 2026-05-12
+Date: 2026-05-14
 
 Derniere mise a jour locale: 2026-05-14
 
@@ -18,7 +18,7 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 | Proteger tout achat Test Store | `scripts/run-subscription-teststore-purchase.js` | Refuse sans `REVENUECAT_QA_APPROVAL=I_APPROVE_TEST_STORE_PURCHASE` | Fait |
 | Preflight achat sans Store | `test:e2e:subscription-teststore:purchase:preflight` | Valide plan, credentials et args Maestro sans lancer Maestro ni achat | Fait |
 | Preparer le flow achat Test Store | `maestro/subscription-teststore-purchase-manual.yml`, `maestro/subscription-teststore-purchase-google-manual.yml` | Le runner accepte `REVENUECAT_QA_AUTH=email` ou `google`; le flow Google gere `Continue with Google`, le compte deja connecte, la confirmation `TEST VALID PURCHASE`, puis refresh | Fait |
-| Capturer les preuves manuelles | `scripts/update-subscription-qa-evidence.js` | Helper remplit `revenuecat-qa-evidence.local.json` avec `testedAt`, `tester`, `appUserId`, `evidence`; `appUserId` et les gates `play_*` `easBuildId` doivent etre des UUID; le texte du template, les dates invalides, les identites vides ou en espaces et les ids invalides sont refuses | Fait |
+| Capturer les preuves manuelles | `scripts/update-subscription-qa-evidence.js` | Helper remplit `revenuecat-qa-evidence.local.json` avec `testedAt`, `tester`, `appUserId`, `evidence`; `appUserId`, les gates `play_*` `easBuildId` et les `deviceId` physiques doivent etre valides; le texte du template, les dates invalides, les identites vides ou en espaces, les ids invalides et les `deviceId` emulateur sont refuses | Fait |
 | Bloquer release sans preuve complete | `scripts/subscription-qa-report.js --require-full` | `npm run subscription:qa:release-gate` reste rouge sans preuves; une preuve identique au texte du template reste aussi bloquee | Fait |
 | Bloquer release Android tant que RevenueCat/Play est rouge | `scripts/check-android-release-gates.js` | `npm run android:gates:strict` execute `subscription:qa:release-gate` et expose aussi les gates manuelles Play externes, dont le profil de paiement Play. Relance le 2026-05-14: 7 pass, 1 fail (`RevenueCat subscription QA release gate`), 1 blocked (`Android emulator or physical device`), 4 manual. | Fait |
 | Revalider le harnais local sans Store | `npm run subscription:qa:verify-local` | Lance les checks syntaxiques, les tests du harnais QA, `subscription:qa:report`, une verification que la release gate bloque sans preuve pour la bonne raison, les preflights d'achat monthly/annual et le preflight account-switch avec comptes factices sans achat ni Metro; le verificateur a ses propres tests et `subscription:qa:report` verifie aussi que cette commande existe | Fait |
@@ -107,9 +107,11 @@ Objectif utilisateur: tester et finaliser le workflow RevenueCat avec differents
 npm run subscription:qa:report
 npm run subscription:qa:verify-local
 npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore
+npm run android:device:physical
+npm run android:play-qa-device -- --device <adb-id>
 npm run subscription:qa:release-gate
 npm run android:gates:strict
-npm test -- scripts/update-subscription-qa-evidence.test.js scripts/subscription-qa-report.test.js scripts/run-subscription-teststore-purchase.test.js scripts/extract-revenuecat-app-user-id.test.js --runInBand --watchman=false
+npm test -- scripts/subscription-qa-report.test.js scripts/update-subscription-qa-evidence.test.js scripts/update-revenuecat-play-store-state.test.js scripts/update-google-play-subscription-state.test.js scripts/update-google-cloud-project-state.test.js scripts/run-subscription-teststore-purchase.test.js scripts/run-subscription-account-switch.test.js scripts/verify-subscription-qa-local.test.js scripts/check-android-adb-device.test.js scripts/check-play-install-source.test.js scripts/check-play-qa-device.test.js scripts/extract-revenuecat-app-user-id.test.js --runInBand --watchman=false
 npm run lint
 npm run typecheck:app
 ```
@@ -181,4 +183,5 @@ pour lier la preuve au build installe via Play Internal Testing. Le release gate
 
 ```bash
 npm run subscription:qa:release-gate
+npm run android:gates:strict
 ```
