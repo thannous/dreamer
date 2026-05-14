@@ -132,7 +132,8 @@ npm run subscription:qa:evidence -- \
   --evidence "monthly purchase completed, plus active, quotas unlimited"
 ```
 
-Pour une gate `play_*`, ajouter aussi le build EAS installe depuis Play Internal Testing:
+Pour une gate `play_*`, ajouter aussi le build EAS installe depuis Play Internal Testing et l'id ADB
+du telephone physique qui a passe `npm run android:device:physical`:
 
 ```bash
 npm run subscription:qa:evidence -- \
@@ -140,10 +141,12 @@ npm run subscription:qa:evidence -- \
   --tester tester@example.com \
   --app-user-id 00000000-0000-4000-8000-000000000000 \
   --eas-build-id 310244ed-027b-4028-8522-70c0f676a0e9 \
+  --device-id 57275d36 \
   --evidence "Play purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.
+`--device-id` doit etre l'id ADB d'un telephone physique, pas un AVD `emulator-*`.
 La preuve Play doit confirmer la source d'installation Play Internal Testing: `installerPackageName`
 doit valoir `com.android.vending`, ou la preuve doit contenir explicitement `installed from Play`.
 
@@ -367,6 +370,8 @@ Preuve attendue:
 - avant toute preuve Play, `npm run android:device:physical` doit voir un telephone Android reel
 - avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
   `installerPackageName: com.android.vending`
+- `subscription:qa:evidence` doit recevoir `--device-id <adb-id>` pour lier la preuve Play au
+  telephone physique utilise
 - RevenueCat Customer affiche le meme app user id que Supabase `auth.users.id`
 - la preuve locale de chaque gate Play contient l'id du build EAS installe
 - `subscription_state` contient `tier=plus`, `is_active=true`, `product_id` correct

@@ -231,6 +231,8 @@ describe('subscription QA evidence updater', () => {
       'monthly purchase completed through Play Internal Testing after installed from Play (com.android.vending) with base plan P1M confirmed',
       '--eas-build-id',
       '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--device-id',
+      '57275d36',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
@@ -240,9 +242,60 @@ describe('subscription QA evidence updater', () => {
     expect(evidence.gates.play_monthly).toMatchObject({
       status: 'passed',
       easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9',
+      deviceId: '57275d36',
       evidence:
         'monthly purchase completed through Play Internal Testing after installed from Play (com.android.vending) with base plan P1M confirmed',
     });
+  });
+
+  it('requires a physical device id for Play evidence', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'play_annual',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'annual purchase completed through Play Internal Testing after installed from Play (com.android.vending)',
+      '--eas-build-id',
+      '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Missing --device-id');
+    expect(fs.existsSync(file)).toBe(false);
+  });
+
+  it('rejects emulator ids for Play evidence', () => {
+    const file = tempFile();
+    const result = runUpdate([
+      '--file',
+      file,
+      '--gate',
+      'play_annual',
+      '--tester',
+      'tester@example.com',
+      '--app-user-id',
+      '00000000-0000-4000-8000-000000000000',
+      '--evidence',
+      'annual purchase completed through Play Internal Testing after installed from Play (com.android.vending)',
+      '--eas-build-id',
+      '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--device-id',
+      'emulator-5554',
+      '--tested-at',
+      '2026-05-09T12:00:00.000Z',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('physical Android device');
+    expect(fs.existsSync(file)).toBe(false);
   });
 
   it('rejects Play evidence that does not confirm the Play install source', () => {
@@ -260,6 +313,8 @@ describe('subscription QA evidence updater', () => {
       'annual purchase completed through Play Internal Testing and backend converged',
       '--eas-build-id',
       '310244ed-027b-4028-8522-70c0f676a0e9',
+      '--device-id',
+      '57275d36',
       '--tested-at',
       '2026-05-09T12:00:00.000Z',
     ]);
