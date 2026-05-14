@@ -14,6 +14,9 @@ const {
   detectUsbAndroidDevice,
 } = require('./check-android-adb-device');
 const { getOpenPaymentProfileRequirements } = require('./update-google-play-payments-profile-state');
+const {
+  getSupabasePlayIntegritySecretIssues,
+} = require('./update-supabase-play-integrity-secrets-state');
 
 const ROOT = path.resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
@@ -207,6 +210,29 @@ function readGooglePlayPaymentsProfileState({
   }
 }
 
+function readSupabasePlayIntegritySecretsState({
+  rootDir = ROOT,
+  existsSync = fs.existsSync,
+  readFileSync = fs.readFileSync,
+  env = process.env,
+} = {}) {
+  const filePath = env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH
+    ? path.resolve(rootDir, env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH)
+    : path.join(rootDir, 'doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json');
+  if (!existsSync(filePath)) {
+    return { snapshot: null, error: null, filePath };
+  }
+  try {
+    return { snapshot: JSON.parse(readFileSync(filePath, 'utf8')), error: null, filePath };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+      filePath,
+    };
+  }
+}
+
 function getGoogleCloudProjectCheck(envProjectNumber, projectStateResult) {
   const snapshot = projectStateResult.snapshot;
   if (projectStateResult.error) {
@@ -344,6 +370,50 @@ function getPlayPaymentsProfileCheck(paymentsProfileStateResult) {
   };
 }
 
+function getSupabasePlayIntegritySecretsCheck(secretsStateResult) {
+  const snapshot = secretsStateResult.snapshot;
+  if (secretsStateResult.error) {
+    return {
+      status: 'blocked',
+      details: `Supabase Play Integrity secrets snapshot is invalid: ${secretsStateResult.error}`,
+      remediation: 'Regenerate doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json from Supabase.',
+    };
+  }
+  if (!snapshot) {
+    return {
+      status: 'manual',
+      details: 'Supabase Edge Function secrets are intentionally not stored in the repo.',
+      remediation:
+        'Verify PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64, PLAY_INTEGRITY_PACKAGE_NAME, and GUEST_SESSION_SECRET in Supabase, then record only their presence with npm run android:supabase-play-integrity-secrets-state.',
+    };
+  }
+  let issues;
+  try {
+    issues = getSupabasePlayIntegritySecretIssues(snapshot);
+  } catch (error) {
+    return {
+      status: 'blocked',
+      details: `Supabase Play Integrity secrets snapshot contains unsupported status data: ${
+        error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error)
+      }`,
+      remediation: 'Regenerate the Supabase secrets snapshot from the current dashboard or CLI status.',
+    };
+  }
+  if (issues.length > 0) {
+    return {
+      status: 'blocked',
+      details: `Supabase Play Integrity secret issue(s): ${issues.join(', ')}.`,
+      remediation:
+        'Set or correct the Supabase Edge Function secrets, then regenerate the local secrets snapshot before Android production release.',
+    };
+  }
+  return {
+    status: 'pass',
+    details: `Required Supabase Play Integrity secrets are present in ${path.relative(ROOT, secretsStateResult.filePath)}.`,
+    remediation: 'Keep the Supabase secrets snapshot fresh after rotating secrets.',
+  };
+}
+
 function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = process.env) {
   const result = spawn(npmCommand, ['run', 'subscription:qa:release-gate'], {
     cwd: rootDir,
@@ -380,6 +450,12 @@ function checkAndroidReleaseGates({
   const projectStateResult = readGoogleCloudProjectState({ rootDir, existsSync, readFileSync, env });
   const oauthStateResult = readGoogleOAuthAndroidClientState({ rootDir, existsSync, readFileSync, env });
   const paymentsProfileStateResult = readGooglePlayPaymentsProfileState({
+    rootDir,
+    existsSync,
+    readFileSync,
+    env,
+  });
+  const supabaseSecretsStateResult = readSupabasePlayIntegritySecretsState({
     rootDir,
     existsSync,
     readFileSync,
@@ -497,12 +573,13 @@ function checkAndroidReleaseGates({
   addCheck(checks, projectCheck.status, 'Google Cloud project number confirmation', projectCheck.details, projectCheck.remediation);
   const oauthCheck = getGoogleOAuthAndroidClientCheck(oauthStateResult);
   addCheck(checks, oauthCheck.status, 'Play App Signing SHA-1 for Google OAuth', oauthCheck.details, oauthCheck.remediation);
+  const supabaseSecretsCheck = getSupabasePlayIntegritySecretsCheck(supabaseSecretsStateResult);
   addCheck(
     checks,
-    'manual',
+    supabaseSecretsCheck.status,
     'Supabase Play Integrity secrets',
-    'Supabase Edge Function secrets are intentionally not stored in the repo.',
-    'Verify PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64, PLAY_INTEGRITY_PACKAGE_NAME, and GUEST_SESSION_SECRET in Supabase.'
+    supabaseSecretsCheck.details,
+    supabaseSecretsCheck.remediation
   );
   const paymentsProfileCheck = getPlayPaymentsProfileCheck(paymentsProfileStateResult);
   addCheck(
@@ -577,4 +654,5 @@ module.exports = {
   parseDotEnv,
   resolveCommand,
   getPlayPaymentsProfileCheck,
+  getSupabasePlayIntegritySecretsCheck,
 };

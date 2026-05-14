@@ -188,6 +188,25 @@ npm run android:google-play-payments-profile-state -- \
   --source "Google Play Console payments profile read-only check"
 ```
 
+Le CLI Supabase local n'est pas authentifie actuellement: `npx supabase secrets list --project-ref
+usuyppgsmmowzizhaoqj` repond `Access token not provided`. Apres connexion Supabase ou verification
+dashboard, enregistrer uniquement la presence des secrets attendus, jamais leurs valeurs:
+
+```bash
+npm run android:supabase-play-integrity-secrets-state -- \
+  --project-ref usuyppgsmmowzizhaoqj \
+  --PLAY_INTEGRITY_SERVICE_ACCOUNT_JSON_BASE64 present \
+  --PLAY_INTEGRITY_PACKAGE_NAME present \
+  --PLAY_INTEGRITY_PACKAGE_NAME-value com.tanuki75.noctalia \
+  --GUEST_SESSION_SECRET present \
+  --source "Supabase dashboard or CLI secrets read-only check"
+```
+
+Cette commande ecrit `doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json`
+(gitignore). `android:gates:strict` peut passer le gate `Supabase Play Integrity secrets`
+uniquement si les trois secrets sont marques `present` et si `PLAY_INTEGRITY_PACKAGE_NAME` vaut
+`com.tanuki75.noctalia`.
+
 Quand une preuve manuelle existe, copier `doc_web_interne/docs/revenuecat-qa-evidence.example.json`
 vers `doc_web_interne/docs/revenuecat-qa-evidence.local.json`, puis passer le gate concerne a
 `"status": "passed"` avec un `testedAt` valide, `tester`, `appUserId` et une preuve courte. La
@@ -354,9 +373,12 @@ git add \
   scripts/update-subscription-qa-evidence.test.js \
   scripts/update-google-play-payments-profile-state.js \
   scripts/update-google-play-payments-profile-state.test.js \
+  scripts/update-supabase-play-integrity-secrets-state.js \
+  scripts/update-supabase-play-integrity-secrets-state.test.js \
   scripts/verify-subscription-qa-local.js \
   scripts/verify-subscription-qa-local.test.js \
   doc_web_interne/docs/google-play-payments-profile-state.example.json \
+  doc_web_interne/docs/supabase-play-integrity-secrets-state.example.json \
   doc_web_interne/docs/revenuecat-qa-evidence.example.json \
   doc_web_interne/docs/revenuecat-qa-workflow.md \
   doc_web_interne/docs/revenuecat-workflow-completion-audit.md \
