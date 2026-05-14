@@ -149,12 +149,16 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run subscription:qa:device-app-user-id');
     expect(result.stdout).toContain('OK | Android device diagnostic exists');
     expect(result.stdout).toContain('npm run android:device');
+    expect(result.stdout).toContain('OK | Physical Android device diagnostic exists');
+    expect(result.stdout).toContain('npm run android:device:physical');
     expect(result.stdout).toContain('## Current Session Readiness');
     expect(result.stdout).toContain('Test Store signed-in account env');
     expect(result.stdout).toContain('REVENUECAT_QA_EMAIL=missing, REVENUECAT_QA_PASSWORD=missing');
     expect(result.stdout).toContain('Account switch second account env');
     expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL=missing, REVENUECAT_QA_SWITCH_FREE_PASSWORD=missing');
     expect(result.stdout).toContain('Device app user id extraction');
+    expect(result.stdout).toContain('Physical Android device visibility');
+    expect(result.stdout).toContain('before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence');
     expect(result.stdout).toContain('Google Play monthly base plan snapshot');
     expect(result.stdout).toContain('Run npm run subscription:qa:google-play-state');
     expect(result.stdout).toContain('Play monthly base plan snapshot');

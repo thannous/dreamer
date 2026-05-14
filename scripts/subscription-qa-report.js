@@ -519,6 +519,12 @@ const checks = [
     'npm run android:device'
   ),
   check(
+    'Physical Android device diagnostic exists',
+    fs.existsSync(path.join(ROOT, 'scripts/check-android-adb-device.js')) &&
+      pkg.scripts['android:device:physical'] === 'node ./scripts/check-android-adb-device.js --require-physical',
+    'npm run android:device:physical'
+  ),
+  check(
     'Evidence template covers all release gates',
     EXPECTED.manualGateKeys.every((key) => evidenceExample.gates?.[key]),
     EXPECTED.manualGateKeys.join(', ')
@@ -780,6 +786,11 @@ const runtimeReadiness = [
     'Run npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore before recording manual evidence',
   ],
   ['CHECK', 'Android device visibility', 'Run npm run android:device and require ADB: READY before device flows'],
+  [
+    'CHECK',
+    'Physical Android device visibility',
+    'Run npm run android:device:physical before recording play_monthly, play_annual, or play_cancellation_and_expiry evidence',
+  ],
   getGooglePlayMonthlyReadinessRow(),
   getPlayMonthlyReadinessRow(),
 ];
