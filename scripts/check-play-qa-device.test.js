@@ -93,14 +93,16 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(report.ok).toBe(true);
     expect(report.selectedDevice).toBe('57275d36');
     expect(report.playInstallSource.installerPackageName).toBe('com.android.vending');
-    expect(report.evidenceArgs).toBe('--device-id 57275d36 --installer-package-name com.android.vending');
+    expect(report.evidenceArgs).toBe(
+      '--device-id 57275d36 --installer-package-name com.android.vending --version-code 24'
+    );
     expect(report.evidenceCommands).toHaveLength(3);
     expect(report.evidenceCommands[0]).toContain('--gate play_monthly');
     expect(report.evidenceCommands[0]).toContain('--device-id 57275d36');
     expect(report.evidenceCommands[1]).toContain('base plan P1Y confirmed');
     expect(report.evidenceCommands[2]).toContain('RevenueCat webhook and backend state converged');
     expect(formatReport(report)).toContain(
-      '[play-qa-device] evidenceArgs: --device-id 57275d36 --installer-package-name com.android.vending'
+      '[play-qa-device] evidenceArgs: --device-id 57275d36 --installer-package-name com.android.vending --version-code 24'
     );
     expect(formatReport(report)).toContain('[play-qa-device] evidenceCommands:');
   });
@@ -146,7 +148,9 @@ describe('Play RevenueCat QA device preflight', () => {
 
     expect(report.ok).toBe(true);
     expect(report.versionCodeMatches).toBe(true);
-    expect(report.evidenceArgs).toBe('--device-id 57275d36 --installer-package-name com.android.vending');
+    expect(report.evidenceArgs).toBe(
+      '--device-id 57275d36 --installer-package-name com.android.vending --version-code 24'
+    );
     expect(formatReport(report)).toContain('[play-qa-device] expectedVersionCode: 24 - PASS');
   });
 

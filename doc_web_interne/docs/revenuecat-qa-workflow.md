@@ -117,9 +117,9 @@ npm run android:play-qa-device -- --device <adb-id>
 ```
 
 Ces commandes verifient a la fois que `<adb-id>` est un telephone physique et que
-`installerPackageName` vaut `com.android.vending`. Quand les deux checks passent, elles impriment
-aussi des `evidenceArgs` a recopier dans les commandes `npm run subscription:qa:evidence` des gates
-`play_*`.
+`installerPackageName` vaut `com.android.vending`. Quand les checks passent, elles impriment aussi
+des `evidenceArgs` avec `--device-id`, `--installer-package-name` et `--version-code` a recopier
+dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
 
 Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
 avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire

@@ -167,7 +167,11 @@ function checkPlayQaDevice({
     : null;
   const playReady = playInstallSource.ok && versionCodeMatches;
   const evidenceArgs = playReady
-    ? `--device-id ${selection.device.id} --installer-package-name ${playInstallSource.installerPackageName}`
+    ? [
+        `--device-id ${selection.device.id}`,
+        `--installer-package-name ${playInstallSource.installerPackageName}`,
+        `--version-code ${playInstallSource.versionCode}`,
+      ].join(' ')
     : null;
   const evidenceCommands = buildPlayEvidenceCommands(evidenceArgs);
 
