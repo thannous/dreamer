@@ -535,6 +535,12 @@ const checks = [
     'npm run android:device:physical'
   ),
   check(
+    'Play install source diagnostic exists',
+    fs.existsSync(path.join(ROOT, 'scripts/check-play-install-source.js')) &&
+      pkg.scripts['android:play-install-source'] === 'node ./scripts/check-play-install-source.js',
+    'npm run android:play-install-source -- --device <adb-id>'
+  ),
+  check(
     'Evidence template covers all release gates',
     EXPECTED.manualGateKeys.every((key) => evidenceExample.gates?.[key]),
     EXPECTED.manualGateKeys.join(', ')
