@@ -147,4 +147,21 @@ describe('android ADB device diagnostic', () => {
       '[android-device] Wireless command: adb pair 192.168.1.24:37123 <pair-code>'
     );
   });
+
+  it('does not suggest adb pair for non-pairing mDNS services', () => {
+    const report = checkAndroidAdbDevice({
+      spawn: spawnFor({
+        adbStdout: 'List of devices attached\n',
+        mdnsStdout: 'List of discovered mdns services\nadb-123._adb._tcp.\t_adb._tcp.\t10.0.2.15:5555\n',
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.mdns.services).toHaveLength(1);
+    expect(report.mdns.commands).toEqual([]);
+    expect(report.mdns.message).toContain('non-pairing service');
+    expect(report.mdns.next).toContain('Wireless debugging');
+    expect(report.mdns.next).not.toContain('adb pair');
+  });
 });
