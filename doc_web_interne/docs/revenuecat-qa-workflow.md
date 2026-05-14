@@ -84,7 +84,8 @@ npm run android:play-qa-device -- --device <adb-id>
 ```
 
 Il verifie a la fois que `<adb-id>` est un telephone physique et que `installerPackageName` vaut
-`com.android.vending`.
+`com.android.vending`. Quand les deux checks passent, il imprime aussi des `evidenceArgs` a recopier
+dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
 
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite et garde `play_monthly` bloque si le
@@ -99,13 +100,24 @@ La commande accepte aussi le JSON en stdin et normalise les deux produits Play a
 (`prodfce10ef2a8` et `prod98337b31be`) dans
 `doc_web_interne/docs/revenuecat-play-store-state.local.json`.
 
-La route Google Play Developer API directe n'est exploitable que si une authentification locale porte
-le scope `https://www.googleapis.com/auth/androidpublisher`, comme demande par l'endpoint officiel
-`monetization.subscriptions.get`. Au dernier essai local du 2026-05-14, `gcloud auth print-access-token`
-refuse ce scope pour le compte utilisateur configure, et l'ADC locale atteint l'endpoint mais renvoie
-`403 PERMISSION_DENIED` / `insufficient authentication scopes` pour `noctalia_plus:monthly` et
-`noctalia_plus:annual`. Sans service account Play Developer ou reauth ADC avec ce scope, la correction
-`P1M` reste a faire/verifier via Play Console puis RevenueCat MCP.
+La route Google Play Developer API directe est exploitable avec l'ADC locale si elle porte le scope
+`https://www.googleapis.com/auth/androidpublisher` et le quota project `gen-lang-client-0336445544`.
+Au dernier refresh du 2026-05-14T15:21:48Z, l'endpoint officiel
+`/androidpublisher/v3/applications/com.tanuki75.noctalia/subscriptions/noctalia_plus` confirme
+`monthly/P1M/ACTIVE` et `annual/P1Y/ACTIVE`. Cette preuve confirme Google Play directement, mais ne
+remplace pas la relecture RevenueCat MCP ni une installation Play Internal Testing sur telephone.
+
+Pour rafraichir le snapshot Google Play local:
+
+```bash
+TOKEN=$(gcloud auth application-default print-access-token)
+curl -sS \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/subscriptions/noctalia_plus" \
+  -o /private/tmp/noctalia-google-play-subscription.json
+npm run subscription:qa:google-play-state -- --input /private/tmp/noctalia-google-play-subscription.json
+```
 
 Verification UI Play Console du 2026-05-14: le compte developpeur `TiMax group` ouvre l'app
 `Noctalia: Smart Dream Journal` (`com.tanuki75.noctalia`). La page `Monetiser avec Play ->
@@ -150,15 +162,17 @@ npm run subscription:qa:evidence -- \
   --gate play_monthly \
   --tester tester@example.com \
   --app-user-id 00000000-0000-4000-8000-000000000000 \
-  --eas-build-id 310244ed-027b-4028-8522-70c0f676a0e9 \
+  --eas-build-id 00000000-0000-4000-8000-000000000000 \
   --device-id 57275d36 \
+  --installer-package-name com.android.vending \
   --evidence "Play purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.
 `--device-id` doit etre l'id ADB d'un telephone physique, pas un AVD `emulator-*`.
-La preuve Play doit confirmer la source d'installation Play Internal Testing: `installerPackageName`
-doit valoir `com.android.vending`, ou la preuve doit contenir explicitement `installed from Play`.
+La preuve Play doit confirmer la source d'installation Play Internal Testing: le champ structure
+`--installer-package-name` doit valoir `com.android.vending`, et le texte de preuve doit contenir
+explicitement `installed from Play` ou `com.android.vending`.
 
 Si un fichier de preuve locale existe mais ne passe pas la gate, `npm run subscription:qa:report`
 affiche une section `Evidence Diagnostics` avec le premier champ a corriger pour chaque scenario.
