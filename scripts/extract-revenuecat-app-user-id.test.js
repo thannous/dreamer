@@ -3,6 +3,7 @@ const {
   formatReport,
   getRevenueCatKey,
   mask,
+  parseAppUserIdFromLogcat,
   parseAppUserIdFromPrefsXml,
   parseArgs,
 } = require('./extract-revenuecat-app-user-id');
@@ -21,12 +22,25 @@ function prefsXml({
 </map>`;
 }
 
-function spawnFor({ xml = prefsXml(), whichAdb = true, adbStatus = 0 } = {}) {
+function spawnFor({
+  xml = prefsXml(),
+  logcat = '',
+  whichAdb = true,
+  adbStatus = 0,
+} = {}) {
   return (command, args) => {
     if (command === 'which' && args[0] === 'adb') {
       return { status: whichAdb ? 0 : 1, stdout: whichAdb ? '/usr/bin/adb\n' : '', stderr: '' };
     }
     if (command === 'adb') {
+      if (args.includes('logcat')) {
+        return {
+          status: adbStatus,
+          stdout: adbStatus === 0 ? logcat : '',
+          stderr: adbStatus === 0 ? '' : 'logcat failed',
+          args,
+        };
+      }
       return {
         status: adbStatus,
         stdout: adbStatus === 0 ? xml : '',
@@ -57,6 +71,21 @@ ${prefsXml({ key: 'second_key', appUserId: '00000000-0000-4000-8000-000000000002
     expect(() => parseAppUserIdFromPrefsXml(xml, RC_KEY)).toThrow('Found 2 RevenueCat app user ids');
   });
 
+  it('parses the latest subscription user id from logcat output', () => {
+    const output = `
+05-15 00:05:22.586 I/ReactNativeJS: '[useSubscription] Purchase restore started', { userId: '00000000-0000-4000-8000-000000000001' }
+05-15 00:05:23.186 I/ReactNativeJS: '[useSubscription] Tier reconciliation successful', { userId: '${APP_USER_ID}', tier: 'free' }
+`;
+
+    expect(parseAppUserIdFromLogcat(output)).toBe(APP_USER_ID);
+  });
+
+  it('explains when no subscription identity is present in logcat', () => {
+    expect(() => parseAppUserIdFromLogcat('ReactNativeJS: unrelated log')).toThrow(
+      'No subscription userId UUID found in logcat'
+    );
+  });
+
   it('reads the SDK key from an env file', () => {
     expect(
       getRevenueCatKey('/tmp/.env.teststore', () => `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY='${RC_KEY}'\n`)
@@ -77,6 +106,27 @@ ${prefsXml({ key: 'second_key', appUserId: '00000000-0000-4000-8000-000000000002
       device: 'emulator-5554',
       envFile: '.env.teststore',
       revenueCatKeyMasked: 'test_z...JPrz',
+      source: 'prefs',
+    });
+  });
+
+  it('extracts identity from logcat for non-debuggable Play builds', () => {
+    const report = extractRevenueCatAppUserId({
+      device: '192.168.1.116:41183',
+      source: 'logcat',
+      existsSync: () => true,
+      spawn: spawnFor({
+        logcat: `05-15 00:05:22.586 I/ReactNativeJS: { userId: '${APP_USER_ID}', currentTier: 'free' }`,
+      }),
+    });
+
+    expect(report).toMatchObject({
+      appId: 'com.tanuki75.noctalia',
+      appUserId: APP_USER_ID,
+      device: '192.168.1.116:41183',
+      envFile: 'not-read',
+      revenueCatKeyMasked: 'not-read',
+      source: 'logcat',
     });
   });
 
@@ -101,6 +151,8 @@ ${prefsXml({ key: 'second_key', appUserId: '00000000-0000-4000-8000-000000000002
         'emulator-5554',
         '--env-file',
         '.env.playstore',
+        '--source',
+        'logcat',
         '--app-id',
         'com.example.app',
         '--json',
@@ -109,6 +161,7 @@ ${prefsXml({ key: 'second_key', appUserId: '00000000-0000-4000-8000-000000000002
       appId: 'com.example.app',
       device: 'emulator-5554',
       envFile: '.env.playstore',
+      source: 'logcat',
       json: true,
     });
   });
