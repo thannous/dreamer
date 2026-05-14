@@ -169,6 +169,11 @@ Ce preflight prouve que le compte testeur peut ouvrir Play Billing et que l'acha
 test non facturee. Les preuves `play_monthly` et `play_annual` doivent toutefois attendre une
 validation effective du bouton `S'abonner`, puis un refresh/convergence backend observee.
 
+Regle d'operation pour ce dernier tap: ne pas utiliser de moyen de paiement reel et ne pas appuyer
+sur `S'abonner` tant que la feuille Google Play n'affiche pas explicitement le moyen de paiement test
+et le message de non-facturation. Si la feuille n'affiche pas `Carte test, toujours approuvee` ou
+`Il ne vous sera pas facture`, fermer la feuille et ne pas enregistrer de preuve `play_*`.
+
 Apres chaque relecture live RevenueCat MCP de l'etat store Play, enregistrer le JSON compact dans le
 snapshot local gitignore. Le rapport QA le relit ensuite pour signaler si le produit mensuel
 RevenueCat expose bien `P1M`, si le produit annuel expose bien `P1Y`, ou si monthly est seulement

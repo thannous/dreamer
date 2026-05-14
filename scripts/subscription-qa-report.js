@@ -1136,7 +1136,7 @@ const runtimeReadiness = [
   [
     process.env.REVENUECAT_QA_APPROVAL === EXPECTED.purchaseApproval ? 'READY' : 'NOT SET',
     'Test Store purchase approval',
-    'Required only before a real purchase; preflight must not require approval',
+    'Required only before a guarded Test Store purchase; preflight must not require approval',
   ],
   [
     process.env.REVENUECAT_QA_SWITCH_FREE_EMAIL && process.env.REVENUECAT_QA_SWITCH_FREE_PASSWORD
