@@ -24,6 +24,11 @@ const commands = [
     args: ['--check', 'scripts/update-revenuecat-play-store-state.js'],
   },
   {
+    label: 'syntax: Google Play subscription state updater',
+    command: process.execPath,
+    args: ['--check', 'scripts/update-google-play-subscription-state.js'],
+  },
+  {
     label: 'syntax: guarded purchase runner',
     command: process.execPath,
     args: ['--check', 'scripts/run-subscription-teststore-purchase.js'],
@@ -52,6 +57,7 @@ const commands = [
       'scripts/subscription-qa-report.test.js',
       'scripts/update-subscription-qa-evidence.test.js',
       'scripts/update-revenuecat-play-store-state.test.js',
+      'scripts/update-google-play-subscription-state.test.js',
       'scripts/run-subscription-teststore-purchase.test.js',
       'scripts/run-subscription-account-switch.test.js',
       'scripts/verify-subscription-qa-local.test.js',
@@ -70,6 +76,7 @@ const commands = [
       'Test Store signed-in account env',
       'Account switch second account env',
       'Device app user id extraction',
+      'Google Play monthly base plan snapshot',
       'Play monthly base plan snapshot',
       'expected P1M',
     ],

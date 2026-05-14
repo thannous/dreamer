@@ -35,6 +35,7 @@ function runReport(args = [], env = {}) {
     env: {
       ...process.env,
       REVENUECAT_PLAY_STORE_STATE_PATH: path.join(os.tmpdir(), 'missing-revenuecat-play-store-state.local.json'),
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: path.join(os.tmpdir(), 'missing-google-play-subscription-state.local.json'),
       ...env,
     },
     encoding: 'utf8',
@@ -80,6 +81,39 @@ function writeInvalidPlayStoreStateSnapshot() {
   return filePath;
 }
 
+function writeGooglePlaySubscriptionStateSnapshot(monthlyPlan = {}) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'google-play-subscription-state-'));
+  const filePath = path.join(dir, 'snapshot.json');
+  fs.writeFileSync(
+    filePath,
+    JSON.stringify(
+      {
+        package_name: 'com.tanuki75.noctalia',
+        product_id: 'noctalia_plus',
+        base_plans: {
+          monthly: {
+            state: 'ACTIVE',
+            billing_period_duration: 'P1M',
+            new_subscriber_availability: { US: true, FR: true },
+            ...monthlyPlan,
+          },
+        },
+      },
+      null,
+      2
+    ),
+    'utf8'
+  );
+  return filePath;
+}
+
+function writeInvalidGooglePlaySubscriptionStateSnapshot() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'google-play-subscription-state-invalid-'));
+  const filePath = path.join(dir, 'snapshot.json');
+  fs.writeFileSync(filePath, '{ invalid json', 'utf8');
+  return filePath;
+}
+
 describe('subscription QA report release gate', () => {
   it('keeps the full release gate blocked when manual evidence is missing', () => {
     const result = runReport(['--require-full'], {
@@ -115,6 +149,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Account switch second account env');
     expect(result.stdout).toContain('REVENUECAT_QA_SWITCH_FREE_EMAIL=missing, REVENUECAT_QA_SWITCH_FREE_PASSWORD=missing');
     expect(result.stdout).toContain('Device app user id extraction');
+    expect(result.stdout).toContain('Google Play monthly base plan snapshot');
+    expect(result.stdout).toContain('Run npm run subscription:qa:google-play-state');
     expect(result.stdout).toContain('Play monthly base plan snapshot');
     expect(result.stdout).toContain('RevenueCat product prodfce10ef2a8 must expose billing period P1M');
     expect(result.stdout).toContain('OK | Play store state snapshot parses');
@@ -122,6 +158,9 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run subscription:qa:play-state');
     expect(result.stdout).toContain('OK | Evidence template covers all release gates');
     expect(result.stdout).toContain('OK | Local evidence file is gitignored');
+    expect(result.stdout).toContain('OK | Google Play subscription state snapshot is gitignored');
+    expect(result.stdout).toContain('OK | Google Play subscription state updater exists');
+    expect(result.stdout).toContain('npm run subscription:qa:google-play-state');
     expect(result.stdout).toContain('Manual or external gates remaining: 7');
     expect(result.stdout).toContain('Offering packages and prices load without purchase');
     expect(result.stdout).toContain('maestro/subscription-teststore-restore-google-manual.yml plus structured evidence');
@@ -152,6 +191,41 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('BLOCKED | Play store state snapshot parses');
     expect(result.stdout).toContain('Play monthly base plan snapshot');
     expect(result.stderr).toBe('');
+  });
+
+  it('blocks on an invalid Google Play subscription state snapshot file', () => {
+    const snapshotPath = writeInvalidGooglePlaySubscriptionStateSnapshot();
+    const result = runReport([], {
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('BLOCKED | Google Play subscription state snapshot parses');
+    expect(result.stdout).toContain('Google Play monthly base plan snapshot');
+    expect(result.stderr).toBe('');
+  });
+
+  it('surfaces a direct Google Play monthly snapshot that is ready', () => {
+    const snapshotPath = writeGooglePlaySubscriptionStateSnapshot();
+    const result = runReport([], {
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Google Play subscription state snapshot: local file present');
+    expect(result.stdout).toContain('READY | Google Play monthly base plan snapshot');
+    expect(result.stdout).toContain('monthly/P1M/ACTIVE; expected monthly/P1M/ACTIVE with US+FR availability');
+  });
+
+  it('surfaces a direct Google Play monthly snapshot that is not P1M', () => {
+    const snapshotPath = writeGooglePlaySubscriptionStateSnapshot({ billing_period_duration: 'P1Y' });
+    const result = runReport([], {
+      GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH: snapshotPath,
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('BLOCKED | Google Play monthly base plan snapshot');
+    expect(result.stdout).toContain('monthly/P1Y/ACTIVE; expected monthly/P1M/ACTIVE with US+FR availability');
   });
 
   it('surfaces a Play monthly snapshot that still points at the annual base plan', () => {

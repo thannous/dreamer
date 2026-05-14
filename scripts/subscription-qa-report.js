@@ -12,6 +12,9 @@ const evidencePath = process.env.REVENUECAT_QA_EVIDENCE_PATH
 const playStoreStatePath = process.env.REVENUECAT_PLAY_STORE_STATE_PATH
   ? path.resolve(ROOT, process.env.REVENUECAT_PLAY_STORE_STATE_PATH)
   : path.join(ROOT, 'doc_web_interne/docs/revenuecat-play-store-state.local.json');
+const googlePlaySubscriptionStatePath = process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH
+  ? path.resolve(ROOT, process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH)
+  : path.join(ROOT, 'doc_web_interne/docs/google-play-subscription-state.local.json');
 
 if (args.has('--help') || args.has('-h')) {
   console.log(`
@@ -141,6 +144,20 @@ function readPlayStoreStateResult() {
   }
 }
 
+function readGooglePlaySubscriptionStateResult() {
+  if (!fs.existsSync(googlePlaySubscriptionStatePath)) {
+    return { snapshot: null, error: null };
+  }
+  try {
+    return { snapshot: readJsonFile(googlePlaySubscriptionStatePath), error: null };
+  } catch (error) {
+    return {
+      snapshot: null,
+      error: error instanceof Error ? error.message.replace(/\r?\n/g, ' ') : String(error),
+    };
+  }
+}
+
 function getSnapshotProductState(snapshot, productId) {
   if (!snapshot) return null;
   if (Array.isArray(snapshot)) {
@@ -173,6 +190,43 @@ function summarizeSnapshotBasePlans(productState) {
 
 function snapshotHasBillingPeriod(productState, expectedDuration) {
   return getSnapshotBasePlans(productState).some((plan) => plan.duration === expectedDuration);
+}
+
+function getGooglePlayBasePlan(snapshot, basePlanId) {
+  return snapshot?.base_plans?.[basePlanId] ?? snapshot?.basePlans?.[basePlanId] ?? null;
+}
+
+function summarizeGooglePlayBasePlan(plan, basePlanId) {
+  if (!plan) return `${basePlanId}/missing`;
+  const duration = plan.billing_period_duration ?? plan.billingPeriodDuration ?? 'unknown';
+  const state = plan.state ?? 'unknown';
+  return `${basePlanId}/${duration}/${state}`;
+}
+
+function getGooglePlayMonthlyReadinessRow() {
+  if (!fs.existsSync(googlePlaySubscriptionStatePath)) {
+    return [
+      'CHECK LIVE',
+      'Google Play monthly base plan snapshot',
+      'Run npm run subscription:qa:google-play-state with subscriptions.get JSON to confirm noctalia_plus monthly P1M',
+    ];
+  }
+  if (googlePlaySubscriptionStateResult.error) {
+    return ['BLOCKED', 'Google Play monthly base plan snapshot', googlePlaySubscriptionStateResult.error];
+  }
+
+  const monthly = getGooglePlayBasePlan(googlePlaySubscriptionStateResult.snapshot, 'monthly');
+  const summary = summarizeGooglePlayBasePlan(monthly, 'monthly');
+  const isReady =
+    monthly?.billing_period_duration === 'P1M' &&
+    monthly?.state === 'ACTIVE' &&
+    monthly?.new_subscriber_availability?.US === true &&
+    monthly?.new_subscriber_availability?.FR === true;
+  return [
+    isReady ? 'READY' : 'BLOCKED',
+    'Google Play monthly base plan snapshot',
+    `${summary}; expected monthly/P1M/ACTIVE with US+FR availability`,
+  ];
 }
 
 function getPlayMonthlySnapshotIssue() {
@@ -283,6 +337,7 @@ const gitignore = read('.gitignore');
 const evidenceResult = readEvidenceResult();
 const evidence = evidenceResult.evidence;
 const playStoreStateResult = readPlayStoreStateResult();
+const googlePlaySubscriptionStateResult = readGooglePlaySubscriptionStateResult();
 
 const checks = [
   check(
@@ -413,9 +468,21 @@ const checks = [
     'doc_web_interne/docs/revenuecat-qa-evidence.local.json'
   ),
   check(
+    'Google Play subscription state snapshot is gitignored',
+    gitignore.includes('doc_web_interne/docs/google-play-subscription-state.local.json'),
+    'doc_web_interne/docs/google-play-subscription-state.local.json'
+  ),
+  check(
     'Local evidence file parses',
     !fs.existsSync(evidencePath) || !evidenceResult.error,
     fs.existsSync(evidencePath) ? evidenceResult.error || evidencePath : 'not provided'
+  ),
+  check(
+    'Google Play subscription state snapshot parses',
+    !fs.existsSync(googlePlaySubscriptionStatePath) || !googlePlaySubscriptionStateResult.error,
+    fs.existsSync(googlePlaySubscriptionStatePath)
+      ? googlePlaySubscriptionStateResult.error || googlePlaySubscriptionStatePath
+      : 'not provided'
   ),
   check(
     'Play store state snapshot parses',
@@ -427,6 +494,12 @@ const checks = [
     fs.existsSync(path.join(ROOT, 'scripts/update-revenuecat-play-store-state.js')) &&
       pkg.scripts['subscription:qa:play-state'] === 'node ./scripts/update-revenuecat-play-store-state.js',
     'npm run subscription:qa:play-state -- --input revenuecat-store-state.json'
+  ),
+  check(
+    'Google Play subscription state updater exists',
+    fs.existsSync(path.join(ROOT, 'scripts/update-google-play-subscription-state.js')) &&
+      pkg.scripts['subscription:qa:google-play-state'] === 'node ./scripts/update-google-play-subscription-state.js',
+    'npm run subscription:qa:google-play-state -- --input google-play-subscription.json'
   ),
   check(
     'Completion audit exists',
@@ -554,6 +627,11 @@ console.log(`- Offering: ${EXPECTED.offering}`);
 console.log(`- Test Store products: ${EXPECTED.testStoreProducts.join(', ')}`);
 console.log(`- Google Play products: ${EXPECTED.playProducts.join(', ')}`);
 console.log(`- Manual evidence: ${fs.existsSync(evidencePath) ? 'local file present' : 'not provided'}`);
+console.log(
+  `- Google Play subscription state snapshot: ${
+    fs.existsSync(googlePlaySubscriptionStatePath) ? 'local file present' : 'not provided'
+  }`
+);
 console.log(`- Play Store state snapshot: ${fs.existsSync(playStoreStatePath) ? 'local file present' : 'not provided'}`);
 console.log('');
 console.log('## Local Checks');
@@ -635,6 +713,7 @@ const runtimeReadiness = [
     'Run npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore before recording manual evidence',
   ],
   ['CHECK', 'Android device visibility', 'Run npm run android:device and require ADB: READY before device flows'],
+  getGooglePlayMonthlyReadinessRow(),
   getPlayMonthlyReadinessRow(),
 ];
 

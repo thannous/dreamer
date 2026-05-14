@@ -1,0 +1,56 @@
+{
+  "package_name": "com.tanuki75.noctalia",
+  "product_id": "noctalia_plus",
+  "base_plans": {
+    "monthly": {
+      "state": "ACTIVE",
+      "billing_period_duration": "P1M",
+      "offer_tags": [
+        "monthy"
+      ],
+      "legacy_compatible_subscription_offer_id": "",
+      "new_subscriber_availability": {
+        "US": true,
+        "FR": true
+      },
+      "prices": {
+        "US": {
+          "currency_code": "USD",
+          "units": "3",
+          "nanos": 490000000
+        },
+        "FR": {
+          "currency_code": "EUR",
+          "units": "3",
+          "nanos": 590000000
+        }
+      }
+    },
+    "annual": {
+      "state": "ACTIVE",
+      "billing_period_duration": "P1Y",
+      "offer_tags": [
+        "annual"
+      ],
+      "legacy_compatible_subscription_offer_id": "",
+      "new_subscriber_availability": {
+        "US": true,
+        "FR": true
+      },
+      "prices": {
+        "US": {
+          "currency_code": "USD",
+          "units": "21",
+          "nanos": 990000000
+        },
+        "FR": {
+          "currency_code": "EUR",
+          "units": "22",
+          "nanos": 990000000
+        }
+      }
+    }
+  },
+  "checked_at": "2026-05-14T04:10:00.000Z",
+  "source": "Google Play Developer API subscriptions.get"
+}
