@@ -17,6 +17,14 @@ appId: com.tanuki75.noctalia
     direction: DOWN
     visibilityPercentage: 40
     timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: DOWN
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.status
 - assertVisible: ".*plus / active.*"
 
 - scrollUntilVisible:
@@ -41,6 +49,25 @@ appId: com.tanuki75.noctalia
     id: input.auth.email
 - eraseText
 - inputText: ${QA_SWITCH_FREE_EMAIL}
+- runFlow:
+    when:
+      visible: "Use your saved password.*"
+    commands:
+      - tapOn:
+          text: "No thanks"
+          optional: true
+- pressKey: back
+- tapOn:
+    id: input.auth.email
+- eraseText
+- inputText: ${QA_SWITCH_FREE_EMAIL}
+- pressKey: back
+- scrollUntilVisible:
+    element:
+      id: input.auth.password
+    direction: DOWN
+    visibilityPercentage: 70
+    timeout: 30000
 - tapOn:
     id: input.auth.password
 - eraseText
@@ -83,6 +110,14 @@ appId: com.tanuki75.noctalia
 - extendedWaitUntil:
     visible: "Refresh completed"
     timeout: 60000
+- scrollUntilVisible:
+    element:
+      id: text.subscription.qa.status
+    direction: UP
+    visibilityPercentage: 60
+    timeout: 30000
+- assertVisible:
+    id: text.subscription.qa.status
 - assertVisible: ".*free / inactive.*"
 - assertNotVisible: "Noctalia Plus is active"
 - assertNotVisible: "plus / active"
