@@ -29,6 +29,21 @@ function parseAdbMdnsServices(output) {
     .filter((service) => service.instance && service.service);
 }
 
+function buildAdbMdnsCommands(services) {
+  return services
+    .filter((service) => service.address)
+    .map((service) => {
+      if (service.service === '_adb-tls-pairing._tcp.') {
+        return `adb pair ${service.address} <pair-code>`;
+      }
+      if (service.service === '_adb-tls-connect._tcp.') {
+        return `adb connect ${service.address}`;
+      }
+      return null;
+    })
+    .filter(Boolean);
+}
+
 function summarizeAdbState(devices) {
   if (devices.some((device) => device.state === 'device')) {
     return {
@@ -139,6 +154,7 @@ function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
     };
   }
   const services = parseAdbMdnsServices(result.stdout);
+  const commands = buildAdbMdnsCommands(services);
   const pairServices = services.filter((service) => service.service === '_adb-tls-pairing._tcp.');
   const connectServices = services.filter((service) => service.service === '_adb-tls-connect._tcp.');
   const parts = [];
@@ -147,6 +163,7 @@ function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
   return {
     supported: true,
     services,
+    commands,
     message:
       services.length > 0
         ? `ADB mDNS sees ${parts.join(', ') || `${services.length} service(s)`}.`
@@ -242,6 +259,9 @@ function formatReport(report) {
     for (const service of report.mdns.services) {
       lines.push(`[android-device] Wireless ${service.service}: ${service.address || service.instance}`);
     }
+    for (const command of report.mdns.commands || []) {
+      lines.push(`[android-device] Wireless command: ${command}`);
+    }
   } else {
     lines.push(`[android-device] WIRELESS: SKIPPED - ${report.mdns.message}`);
   }
@@ -264,6 +284,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  buildAdbMdnsCommands,
   checkAndroidAdbDevice,
   detectAdbMdnsServices,
   detectUsbAndroidDevice,

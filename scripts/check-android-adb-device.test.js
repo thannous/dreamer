@@ -1,5 +1,7 @@
 const {
+  buildAdbMdnsCommands,
   checkAndroidAdbDevice,
+  formatReport,
   isLikelyEmulator,
   parseAdbDevices,
   parseAdbMdnsServices,
@@ -41,11 +43,11 @@ describe('android ADB device diagnostic', () => {
   });
 
   it('parses adb mDNS wireless debugging services', () => {
-    expect(
-      parseAdbMdnsServices(
-        'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\nadb-123._adb-tls-connect._tcp.\t_adb-tls-connect._tcp.\t192.168.1.24:41235\n'
-      )
-    ).toEqual([
+    const services = parseAdbMdnsServices(
+      'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp.\t_adb-tls-pairing._tcp.\t192.168.1.24:37123\nadb-123._adb-tls-connect._tcp.\t_adb-tls-connect._tcp.\t192.168.1.24:41235\n'
+    );
+
+    expect(services).toEqual([
       {
         instance: 'adb-123._adb-tls-pairing._tcp.',
         service: '_adb-tls-pairing._tcp.',
@@ -56,6 +58,10 @@ describe('android ADB device diagnostic', () => {
         service: '_adb-tls-connect._tcp.',
         address: '192.168.1.24:41235',
       },
+    ]);
+    expect(buildAdbMdnsCommands(services)).toEqual([
+      'adb pair 192.168.1.24:37123 <pair-code>',
+      'adb connect 192.168.1.24:41235',
     ]);
   });
 
@@ -134,7 +140,11 @@ describe('android ADB device diagnostic', () => {
 
     expect(report.ok).toBe(false);
     expect(report.mdns.services).toHaveLength(1);
+    expect(report.mdns.commands).toEqual(['adb pair 192.168.1.24:37123 <pair-code>']);
     expect(report.mdns.message).toContain('pairing service');
     expect(report.mdns.next).toContain('adb pair');
+    expect(formatReport(report)).toContain(
+      '[android-device] Wireless command: adb pair 192.168.1.24:37123 <pair-code>'
+    );
   });
 });
