@@ -6,6 +6,7 @@ const {
   checkPlayQaDevice,
   formatReport,
   getReadyPhysicalDevices,
+  parseAndroidUiState,
   selectPhysicalDevice,
 } = require('./check-play-qa-device');
 
@@ -18,6 +19,12 @@ function spawnFor({
   mdnsStdout = 'List of discovered mdns services\n',
   usbStdout = '',
   whichAdb = true,
+  windowPolicyStdout = `
+    KeyguardServiceDelegate
+      showing=false
+      screenState=SCREEN_STATE_ON
+      interactiveState=INTERACTIVE_STATE_AWAKE
+  `,
 } = {}) {
   return (command, args) => {
     if (command === 'which' && args[0] === 'adb') {
@@ -29,7 +36,10 @@ function spawnFor({
     if (command === 'adb' && args[0] === 'mdns') {
       return { status: 0, stdout: mdnsStdout, stderr: '' };
     }
-    if (command === 'adb' && args.includes('dumpsys')) {
+    if (command === 'adb' && args.includes('dumpsys') && args.includes('window')) {
+      return { status: 0, stdout: windowPolicyStdout, stderr: '' };
+    }
+    if (command === 'adb' && args.includes('dumpsys') && args.includes('package')) {
       return {
         status: dumpsysStatus,
         stdout: dumpsysStdout || '',
@@ -93,6 +103,7 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(report.ok).toBe(true);
     expect(report.selectedDevice).toBe('57275d36');
     expect(report.playInstallSource.installerPackageName).toBe('com.android.vending');
+    expect(report.uiState.ok).toBe(true);
     expect(report.evidenceArgs).toBe(
       '--device-id 57275d36 --installer-package-name com.android.vending --version-code 24'
     );
@@ -104,7 +115,55 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(formatReport(report)).toContain(
       '[play-qa-device] evidenceArgs: --device-id 57275d36 --installer-package-name com.android.vending --version-code 24'
     );
+    expect(formatReport(report)).toContain('[play-qa-device] ui: READY');
     expect(formatReport(report)).toContain('[play-qa-device] evidenceCommands:');
+  });
+
+  it('warns when a Play-ready phone is locked or asleep before UI purchase flows', () => {
+    const report = checkPlayQaDevice({
+      spawn: spawnFor({
+        adbDevicesStdout: 'List of devices attached\n57275d36\tdevice product:poco model:POCO_F8\n',
+        dumpsysStdout: `
+          Package [com.tanuki75.noctalia] (abc):
+            versionCode=24 minSdk=33 targetSdk=36
+            versionName=1.2.0
+            installerPackageName=com.android.vending
+        `,
+        windowPolicyStdout: `
+          KeyguardServiceDelegate
+            showing=true
+            screenState=SCREEN_STATE_OFF
+            interactiveState=INTERACTIVE_STATE_SLEEP
+        `,
+      }),
+      platform: 'linux',
+    });
+
+    expect(report.ok).toBe(true);
+    expect(report.uiState.ok).toBe(false);
+    expect(report.uiState.keyguardShowing).toBe(true);
+    expect(formatReport(report)).toContain('[play-qa-device] ui: WARN');
+    expect(formatReport(report)).toContain('UI next: Unlock the tester phone');
+  });
+
+  it('parses Android UI lock state from dumpsys window policy output', () => {
+    expect(
+      parseAndroidUiState(`
+        KeyguardServiceDelegate
+          showing=false
+          screenState=SCREEN_STATE_ON
+          interactiveState=INTERACTIVE_STATE_AWAKE
+      `)
+    ).toMatchObject({ ok: true, screenState: 'SCREEN_STATE_ON', keyguardShowing: false });
+
+    expect(
+      parseAndroidUiState(`
+        KeyguardServiceDelegate
+          showing=true
+          screenState=SCREEN_STATE_OFF
+          interactiveState=INTERACTIVE_STATE_SLEEP
+      `)
+    ).toMatchObject({ ok: false, screenState: 'SCREEN_STATE_OFF', keyguardShowing: true });
   });
 
   it('fails when the Play-installed build is not the expected versionCode', () => {
