@@ -133,14 +133,26 @@ function detectUsbAndroidDevice(spawn = spawnSync, platform = process.platform) 
   const productMatch = output.match(/"USB Product Name"\s=\s"([^"]+)"/);
   const vendorMatch = output.match(/"USB Vendor Name"\s=\s"([^"]+)"/);
   const serialMatch = output.match(/"USB Serial Number"\s=\s"([^"]+)"/);
+  const idVendorMatch = output.match(/"idVendor"\s=\s(\d+)/);
+  const idProductMatch = output.match(/"idProduct"\s=\s(\d+)/);
+  const signatureMatch = output.match(/"UsbDeviceSignature"\s=\s<([^>]+)>/);
+  const usbSignature = signatureMatch?.[1] || '';
+  const adbLikeInterface = /ff4201/i.test(usbSignature);
   const parts = [];
   if (productMatch) parts.push(productMatch[1]);
   if (vendorMatch) parts.push(vendorMatch[1]);
   if (serialMatch) parts.push(`serial ${serialMatch[1]}`);
+  if (idVendorMatch) parts.push(`idVendor ${idVendorMatch[1]}`);
+  if (idProductMatch) parts.push(`idProduct ${idProductMatch[1]}`);
+  if (adbLikeInterface) parts.push('Android debug interface signature present');
 
   return {
     supported: true,
     visible,
+    adbLikeInterface,
+    idVendor: idVendorMatch?.[1] || null,
+    idProduct: idProductMatch?.[1] || null,
+    serial: serialMatch?.[1] || null,
     message: visible
       ? `macOS USB sees ${parts.join(', ') || 'an Android-like device'}.`
       : 'macOS USB does not show an Android-like device.',
