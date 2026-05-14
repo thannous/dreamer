@@ -24,7 +24,13 @@ function evidenceForKey(key) {
     return 'paid account remains plus while second account remains free / inactive after logout and login';
   }
   if (key === 'play_monthly') {
-    return 'play_monthly verified by manual QA with base plan P1M confirmed';
+    return 'play_monthly verified by manual QA after installed from Play (com.android.vending) with base plan P1M confirmed';
+  }
+  if (key === 'play_annual') {
+    return 'play_annual verified by manual QA after installed from Play (com.android.vending)';
+  }
+  if (key === 'play_cancellation_and_expiry') {
+    return 'play_cancellation_and_expiry verified by manual QA after installed from Play (com.android.vending)';
   }
   return `${key} verified by manual QA`;
 }
@@ -488,7 +494,9 @@ describe('subscription QA report release gate', () => {
           testedAt: '2026-05-09T12:00:00.000Z',
           tester: 'tester@example.com',
           appUserId: '00000000-0000-4000-8000-000000000000',
-          evidence: `${key} verified by manual QA`,
+          evidence: key.startsWith('play_')
+            ? `${key} verified by manual QA after installed from Play (com.android.vending)`
+            : `${key} verified by manual QA`,
           ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
         },
       ])
@@ -504,6 +512,34 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('Manual or external gates remaining: 2');
     expect(result.stdout).toContain('Account switch: second account must be confirmed');
     expect(result.stdout).toContain('Play monthly: monthly base plan P1M must be confirmed');
+  });
+
+  it('keeps Play gates blocked when the Play install source is not confirmed', () => {
+    const gates = Object.fromEntries(
+      MANUAL_GATE_KEYS.map((key) => [
+        key,
+        {
+          status: 'passed',
+          testedAt: '2026-05-09T12:00:00.000Z',
+          tester: 'tester@example.com',
+          appUserId: '00000000-0000-4000-8000-000000000000',
+          evidence: key === 'play_monthly'
+            ? 'play_monthly verified by manual QA with base plan P1M confirmed'
+            : `${key} verified by manual QA`,
+          ...(key.startsWith('play_') ? { easBuildId: '310244ed-027b-4028-8522-70c0f676a0e9' } : {}),
+        },
+      ])
+    );
+    const evidencePath = writeEvidenceFile(gates);
+
+    const result = runReport(['--require-full'], {
+      REVENUECAT_QA_EVIDENCE_PATH: evidencePath,
+    });
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('Verified manual/external scenarios: 3');
+    expect(result.stdout).toContain('Manual or external gates remaining: 4');
+    expect(result.stdout).toContain('Play monthly: Play Internal Testing install source must be confirmed');
   });
 
   it('keeps Play monthly blocked when evidence says P1M but the live snapshot still says P1Y', () => {

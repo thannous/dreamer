@@ -130,10 +130,12 @@ npm run subscription:qa:evidence -- \
   --tester tester@example.com \
   --app-user-id 00000000-0000-4000-8000-000000000000 \
   --eas-build-id 310244ed-027b-4028-8522-70c0f676a0e9 \
-  --evidence "Play purchase completed, product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
+  --evidence "Play purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"
 ```
 
 `--eas-build-id` doit etre l'UUID EAS du build installe, pas seulement le numero de build Android.
+La preuve Play doit confirmer la source d'installation Play Internal Testing: `installerPackageName`
+doit valoir `com.android.vending`, ou la preuve doit contenir explicitement `installed from Play`.
 
 Si un fichier de preuve locale existe mais ne passe pas la gate, `npm run subscription:qa:report`
 affiche une section `Evidence Diagnostics` avec le premier champ a corriger pour chaque scenario.

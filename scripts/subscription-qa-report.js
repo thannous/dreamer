@@ -310,6 +310,12 @@ function getGateEvidenceIssue(evidence, scenario) {
   ) {
     return 'easBuildId must be an EAS build UUID';
   }
+  if (
+    requiresEasBuild &&
+    !/(com\.android\.vending|play-installed|installed from play|installation play)/i.test(evidenceText)
+  ) {
+    return 'Play Internal Testing install source must be confirmed';
+  }
   if (key === 'play_monthly' && !/\bP1M\b/i.test(evidenceText)) {
     return 'monthly base plan P1M must be confirmed';
   }

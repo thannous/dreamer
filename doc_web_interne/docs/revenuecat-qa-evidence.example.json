@@ -35,7 +35,7 @@
       "tester": "",
       "appUserId": "",
       "easBuildId": "",
-      "evidence": "Play Internal Testing build purchases noctalia_plus:monthly after confirming base plan P1M and backend converges"
+      "evidence": "Play Internal Testing build installed from Play (com.android.vending) purchases noctalia_plus:monthly after confirming base plan P1M and backend converges"
     },
     "play_annual": {
       "status": "pending",
@@ -43,7 +43,7 @@
       "tester": "",
       "appUserId": "",
       "easBuildId": "",
-      "evidence": "Play Internal Testing build purchases noctalia_plus:annual and backend converges"
+      "evidence": "Play Internal Testing build installed from Play (com.android.vending) purchases noctalia_plus:annual and backend converges"
     },
     "play_cancellation_and_expiry": {
       "status": "pending",
@@ -51,7 +51,7 @@
       "tester": "",
       "appUserId": "",
       "easBuildId": "",
-      "evidence": "RevenueCat webhook and backend state converge after Play cancellation or expiry"
+      "evidence": "Play Internal Testing build installed from Play (com.android.vending) confirms RevenueCat webhook and backend state converge after Play cancellation or expiry"
     }
   }
 }
