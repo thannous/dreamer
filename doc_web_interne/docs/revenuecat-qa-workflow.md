@@ -338,6 +338,9 @@ documente est `ddbc756d-8db6-4337-80fa-68cc86f8b62a` (`versionCode=24`, `version
 La relecture Play Developer API du 2026-05-15 confirme aussi que la piste `internal` sert la release
 `1.2.0` avec `versionCodes=["24"]` et `status=completed`; si le POCO reste en v12, le blocage est
 donc cote disponibilite/update de l'appareil ou cache Play, pas cote build absent de la piste internal.
+Une verification bundletool locale sur le device spec POCO du 2026-05-15 genere aussi les splits v24
+`base-arm64_v8a`, `base-fr`, `base-master` et `base-xxhdpi`; le binaire v24 est donc techniquement
+splittable pour ce telephone, meme si cette preuve ne remplace pas une installation Google Play.
 La fiche Google Play ouverte depuis ce POCO affiche `Ouvrir` et `Desinstaller`, pas `Mettre a jour`,
 malgre le statut testeur beta; Play ne propose donc pas d'upgrade direct vers le build 24 sur cet
 appareil a ce moment. Pour une validation de release robuste, preferer mettre a jour l'app depuis
