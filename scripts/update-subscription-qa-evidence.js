@@ -90,7 +90,8 @@ Options:
                        play_cancellation_and_expiry evidence must confirm cancellation/expiry,
                        RevenueCat webhook, and backend convergence.
 
-Before recording play_* gates, run:
+Before recording play_* gates, run one of:
+  npm run android:play-qa-device:wait
   npm run android:play-qa-device:wait -- --device <adb-id>
   npm run android:play-qa-device -- --device <adb-id>
 

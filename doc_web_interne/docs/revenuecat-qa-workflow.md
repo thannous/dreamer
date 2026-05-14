@@ -85,9 +85,11 @@ VISIBLE` apparait, ouvrir Developer options -> Wireless debugging sur le telepho
 d'appairage ouvert pendant le diagnostic.
 
 Quand le telephone est visible et que l'app est installee depuis la piste Internal Testing, utiliser
-le helper d'attente pendant la connexion, puis le preflight compose si le telephone est deja pret:
+le helper d'attente pendant la connexion. Si un seul telephone physique est visible, il peut etre
+lance sans `--device`; ajouter `--device <adb-id>` seulement quand plusieurs devices sont prets:
 
 ```bash
+npm run android:play-qa-device:wait
 npm run android:play-qa-device:wait -- --device <adb-id>
 npm run android:play-qa-device -- --device <adb-id>
 ```
@@ -412,8 +414,9 @@ Preuve attendue:
   connecte en USB ou via ADB Wireless Debugging
 - avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
   `installerPackageName: com.android.vending`
-- `npm run android:play-qa-device:wait -- --device <adb-id>` peut attendre le telephone Play
-  pendant la connexion et imprimer les commandes d'evidence quand il est pret
+- `npm run android:play-qa-device:wait` peut attendre l'unique telephone Play visible pendant la
+  connexion et imprimer les commandes d'evidence quand il est pret; ajouter `-- --device <adb-id>`
+  quand plusieurs devices sont prets
 - `npm run android:play-qa-device -- --device <adb-id>` doit passer pour le telephone teste
 - `subscription:qa:evidence` doit recevoir `--device-id <adb-id>` pour lier la preuve Play au
   telephone physique utilise
