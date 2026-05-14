@@ -1,7 +1,10 @@
 const {
   buildAdbMdnsCommands,
   checkAndroidAdbDevice,
+  findLikelyAndroidUsbDeviceBlock,
   formatReport,
+  isAdbTlsConnectService,
+  isAdbTlsPairingService,
   isLikelyEmulatorMdnsService,
   isLikelyEmulator,
   parseAdbDevices,
@@ -66,6 +69,19 @@ describe('android ADB device diagnostic', () => {
     ]);
   });
 
+  it('normalizes adb mDNS service names with or without a trailing dot', () => {
+    const services = parseAdbMdnsServices(
+      'List of discovered mdns services\nadb-123._adb-tls-pairing._tcp\t_adb-tls-pairing._tcp\t192.168.1.24:37123\nadb-123._adb-tls-connect._tcp\t_adb-tls-connect._tcp\t192.168.1.24:41235\n'
+    );
+
+    expect(isAdbTlsPairingService(services[0])).toBe(true);
+    expect(isAdbTlsConnectService(services[1])).toBe(true);
+    expect(buildAdbMdnsCommands(services)).toEqual([
+      'adb pair 192.168.1.24:37123 <pair-code>',
+      'adb connect 192.168.1.24:41235',
+    ]);
+  });
+
   it('treats ready devices as ok', () => {
     const report = checkAndroidAdbDevice({
       spawn: spawnFor({
@@ -120,7 +136,7 @@ describe('android ADB device diagnostic', () => {
       spawn: spawnFor({
         adbStdout: 'List of devices attached\n',
         usbStdout:
-          '"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n"USB Serial Number" = "57275d36"\n"idVendor" = 10007\n"idProduct" = 65352\n"UsbDeviceSignature" = <172748ff12063537323735643336000000060101ff4201>\n',
+          '"idVendor" = 9999\n"idProduct" = 1111\n+-o POCO F8 Ultra@00100000  <class IOUSBHostDevice>\n  {\n"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n"USB Serial Number" = "57275d36"\n"idVendor" = 10007\n"idProduct" = 65352\n"UsbDeviceSignature" = <172748ff12063537323735643336000000060101ff4201>\n  }\n',
       }),
       platform: 'darwin',
     });
@@ -136,6 +152,17 @@ describe('android ADB device diagnostic', () => {
     expect(formatReport(report)).toContain('adb has no authorized transport yet');
     expect(formatReport(report)).toContain('recreate the USB debugging RSA authorization');
     expect(formatReport(report)).not.toContain('ADB: MISSING');
+  });
+
+  it('extracts the matching Android USB device block before parsing ids', () => {
+    const block = findLikelyAndroidUsbDeviceBlock(
+      '+-o Root\n  {\n    "idVendor" = 9999\n  }\n  +-o POCO F8 Ultra@00100000  <class IOUSBHostDevice>\n    {\n      "USB Product Name" = "POCO F8 Ultra"\n      "idVendor" = 10007\n    }\n  +-o Other Device@00200000  <class IOUSBHostDevice>\n    {\n      "USB Product Name" = "Other Device"\n      "idVendor" = 1234\n    }\n'
+    );
+
+    expect(block).toContain('POCO F8 Ultra');
+    expect(block).toContain('"idVendor" = 10007');
+    expect(block).not.toContain('"idVendor" = 9999');
+    expect(block).not.toContain('Other Device');
   });
 
   it('keeps the ADB label when adb itself is unavailable', () => {

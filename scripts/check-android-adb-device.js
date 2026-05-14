@@ -33,15 +33,27 @@ function buildAdbMdnsCommands(services) {
   return services
     .filter((service) => service.address)
     .map((service) => {
-      if (service.service === '_adb-tls-pairing._tcp.') {
+      if (isAdbTlsPairingService(service)) {
         return `adb pair ${service.address} <pair-code>`;
       }
-      if (service.service === '_adb-tls-connect._tcp.') {
+      if (isAdbTlsConnectService(service)) {
         return `adb connect ${service.address}`;
       }
       return null;
     })
     .filter(Boolean);
+}
+
+function normalizeMdnsServiceName(service) {
+  return String(service?.service || '').replace(/\.$/, '');
+}
+
+function isAdbTlsPairingService(service) {
+  return normalizeMdnsServiceName(service) === '_adb-tls-pairing._tcp';
+}
+
+function isAdbTlsConnectService(service) {
+  return normalizeMdnsServiceName(service) === '_adb-tls-connect._tcp';
 }
 
 function isLikelyEmulatorMdnsService(service) {
@@ -107,6 +119,24 @@ function summarizePhysicalDeviceState(devices) {
   return summarizeAdbState(devices);
 }
 
+function findLikelyAndroidUsbDeviceBlock(output) {
+  const lines = String(output || '').split(/\r?\n/);
+  const deviceStarts = lines
+    .map((line, index) => ({ line, index }))
+    .filter(({ line }) => /<class IOUSBHostDevice\b/.test(line));
+
+  for (let i = 0; i < deviceStarts.length; i += 1) {
+    const start = deviceStarts[i].index;
+    const end = deviceStarts[i + 1]?.index ?? lines.length;
+    const block = lines.slice(start, end).join('\n');
+    if (/\b(Android|Xiaomi|POCO|Pixel|Samsung|OnePlus|Motorola)\b/i.test(block)) {
+      return block;
+    }
+  }
+
+  return null;
+}
+
 function detectUsbAndroidDevice(spawn = spawnSync, platform = process.platform) {
   if (platform !== 'darwin') {
     return {
@@ -129,13 +159,15 @@ function detectUsbAndroidDevice(spawn = spawnSync, platform = process.platform) 
   }
 
   const output = String(result.stdout || '');
-  const visible = /\b(Android|Xiaomi|POCO|Pixel|Samsung|OnePlus|Motorola)\b/i.test(output);
-  const productMatch = output.match(/"USB Product Name"\s=\s"([^"]+)"/);
-  const vendorMatch = output.match(/"USB Vendor Name"\s=\s"([^"]+)"/);
-  const serialMatch = output.match(/"USB Serial Number"\s=\s"([^"]+)"/);
-  const idVendorMatch = output.match(/"idVendor"\s=\s(\d+)/);
-  const idProductMatch = output.match(/"idProduct"\s=\s(\d+)/);
-  const signatureMatch = output.match(/"UsbDeviceSignature"\s=\s<([^>]+)>/);
+  const deviceBlock = findLikelyAndroidUsbDeviceBlock(output);
+  const inspectedOutput = deviceBlock || output;
+  const visible = /\b(Android|Xiaomi|POCO|Pixel|Samsung|OnePlus|Motorola)\b/i.test(inspectedOutput);
+  const productMatch = inspectedOutput.match(/"USB Product Name"\s=\s"([^"]+)"/);
+  const vendorMatch = inspectedOutput.match(/"USB Vendor Name"\s=\s"([^"]+)"/);
+  const serialMatch = inspectedOutput.match(/"USB Serial Number"\s=\s"([^"]+)"/);
+  const idVendorMatch = inspectedOutput.match(/"idVendor"\s=\s(\d+)/);
+  const idProductMatch = inspectedOutput.match(/"idProduct"\s=\s(\d+)/);
+  const signatureMatch = inspectedOutput.match(/"UsbDeviceSignature"\s=\s<([^>]+)>/);
   const usbSignature = signatureMatch?.[1] || '';
   const adbLikeInterface = /ff4201/i.test(usbSignature);
   const parts = [];
@@ -175,8 +207,8 @@ function detectAdbMdnsServices(spawn = spawnSync, adbCommand = 'adb') {
   const emulatorServices = services.filter(isLikelyEmulatorMdnsService);
   const phoneServices = services.filter((service) => !isLikelyEmulatorMdnsService(service));
   const commands = buildAdbMdnsCommands(phoneServices);
-  const pairServices = phoneServices.filter((service) => service.service === '_adb-tls-pairing._tcp.');
-  const connectServices = phoneServices.filter((service) => service.service === '_adb-tls-connect._tcp.');
+  const pairServices = phoneServices.filter(isAdbTlsPairingService);
+  const connectServices = phoneServices.filter(isAdbTlsConnectService);
   const parts = [];
   if (pairServices.length > 0) parts.push(`${pairServices.length} pairing service(s)`);
   if (connectServices.length > 0) parts.push(`${connectServices.length} connect service(s)`);
@@ -327,6 +359,9 @@ module.exports = {
   detectAdbMdnsServices,
   detectUsbAndroidDevice,
   formatReport,
+  findLikelyAndroidUsbDeviceBlock,
+  isAdbTlsConnectService,
+  isAdbTlsPairingService,
   isLikelyEmulatorMdnsService,
   isLikelyEmulator,
   parseAdbDevices,
