@@ -121,6 +121,12 @@ Ces commandes verifient a la fois que `<adb-id>` est un telephone physique et qu
 des `evidenceArgs` avec `--device-id`, `--installer-package-name` et `--version-code` a recopier
 dans les commandes `npm run subscription:qa:evidence` des gates `play_*`.
 
+Le meme preflight affiche aussi un signal `ui: READY` ou `ui: WARN` lu via
+`adb shell dumpsys window policy`. `ui: WARN` ne bloque pas l'impression des `evidenceArgs`, mais il
+signale que le telephone est verrouille, endormi ou dans un etat UI inconnu. Dans ce cas, deverrouiller
+le telephone et garder l'ecran allume avant de reprendre Google Sign-In, Play Billing, Restore ou les
+flows Maestro pilotes par UI.
+
 Sur une build Play non-debuggable, `adb shell run-as com.tanuki75.noctalia ...` echoue normalement
 avec `package not debuggable`; ne pas utiliser cet echec comme signal RevenueCat. Pour extraire
 l'appUserId a reporter dans une preuve Play, vider les logs, declencher une action non payante comme

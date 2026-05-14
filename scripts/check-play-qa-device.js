@@ -64,6 +64,7 @@ Checks the two preconditions for Play RevenueCat QA evidence:
 1. a physical Android tester device is visible in ADB
 2. the app on that device was installed by Google Play
 3. optionally, the installed versionCode matches the expected Play build
+4. warn when the tester phone is locked or asleep before UI flows
 
 When both checks pass, the report prints evidenceArgs that can be copied into
 npm run subscription:qa:evidence for play_* gates.
@@ -123,6 +124,83 @@ function buildPlayEvidenceCommands(evidenceArgs) {
   ];
 }
 
+function parseAndroidUiState(output = '') {
+  const screenState = output.match(/\bscreenState=(SCREEN_STATE_[A-Z_]+)/)?.[1] || null;
+  const interactiveState = output.match(/\binteractiveState=(INTERACTIVE_STATE_[A-Z_]+)/)?.[1] || null;
+  const screenOnMatch = output.match(/\bmScreenOn=(true|false)\b/);
+  const keyguardMatch =
+    output.match(/\bmKeyguardShowing=(true|false)\b/) ||
+    output.match(/\bshowing=(true|false)\b/) ||
+    output.match(/\bkeyguardShowing=(true|false)\b/i);
+  const keyguardShowing = keyguardMatch ? keyguardMatch[1] === 'true' : null;
+  const screenOn =
+    screenState === 'SCREEN_STATE_ON' ||
+    interactiveState === 'INTERACTIVE_STATE_AWAKE' ||
+    (screenOnMatch ? screenOnMatch[1] === 'true' : false);
+  const screenOff =
+    screenState === 'SCREEN_STATE_OFF' ||
+    interactiveState === 'INTERACTIVE_STATE_SLEEP' ||
+    (screenOnMatch ? screenOnMatch[1] === 'false' : false);
+
+  if (!screenState && !interactiveState && !screenOnMatch && keyguardShowing === null) {
+    return {
+      ok: false,
+      screenState,
+      interactiveState,
+      keyguardShowing,
+      message: 'Unable to determine Android UI lock state.',
+      next: 'Before purchase or restore flows, unlock the tester phone and keep the screen awake.',
+    };
+  }
+
+  const ready = screenOn && keyguardShowing !== true;
+  if (ready) {
+    return {
+      ok: true,
+      screenState,
+      interactiveState,
+      keyguardShowing,
+      message: 'Device screen appears awake and unlocked.',
+      next: null,
+    };
+  }
+
+  return {
+    ok: false,
+    screenState,
+    interactiveState,
+    keyguardShowing,
+    message: screenOff
+      ? 'Device screen appears off or asleep; UI purchase flows need an unlocked awake phone.'
+      : 'Device appears locked by keyguard; UI purchase flows need an unlocked phone.',
+    next: 'Unlock the tester phone, keep the screen awake, then resume the Play purchase or restore flow.',
+  };
+}
+
+function checkAndroidUiState({
+  spawn = spawnSync,
+  env = process.env,
+  device,
+} = {}) {
+  const args = [];
+  if (device) {
+    args.push('-s', device);
+  }
+  args.push('shell', 'dumpsys', 'window', 'policy');
+  const result = spawn('adb', args, { encoding: 'utf8', env });
+  if (result.status !== 0) {
+    return {
+      ok: false,
+      screenState: null,
+      interactiveState: null,
+      keyguardShowing: null,
+      message: `Unable to read Android UI lock state${result.stderr ? `: ${result.stderr.trim()}` : '.'}`,
+      next: 'Before purchase or restore flows, unlock the tester phone and keep the screen awake.',
+    };
+  }
+  return parseAndroidUiState(result.stdout || '');
+}
+
 function checkPlayQaDevice({
   spawn = spawnSync,
   env = process.env,
@@ -150,6 +228,11 @@ function checkPlayQaDevice({
     };
   }
 
+  const uiState = checkAndroidUiState({
+    spawn,
+    env,
+    device: selection.device.id,
+  });
   const playInstallSource = checkPlayInstallSource({
     spawn,
     env,
@@ -181,6 +264,7 @@ function checkPlayQaDevice({
     selectedDevice: selection.device.id,
     expectedVersionCode: expectedVersionCodeText,
     physical: physicalReport,
+    uiState,
     playInstallSource,
     versionCodeMatches,
     versionCodeMessage,
@@ -218,6 +302,21 @@ function formatReport(report) {
   }
   if (report.playInstallSource) {
     lines.push(formatPlayInstallSourceReport(report.playInstallSource));
+  }
+  if (report.uiState) {
+    lines.push(`[play-qa-device] ui: ${report.uiState.ok ? 'READY' : 'WARN'} - ${report.uiState.message}`);
+    if (report.uiState.screenState) {
+      lines.push(`[play-qa-device] uiScreenState: ${report.uiState.screenState}`);
+    }
+    if (report.uiState.interactiveState) {
+      lines.push(`[play-qa-device] uiInteractiveState: ${report.uiState.interactiveState}`);
+    }
+    if (report.uiState.keyguardShowing !== null && report.uiState.keyguardShowing !== undefined) {
+      lines.push(`[play-qa-device] uiKeyguardShowing: ${report.uiState.keyguardShowing}`);
+    }
+    if (!report.uiState.ok && report.uiState.next) {
+      lines.push(`  UI next: ${report.uiState.next}`);
+    }
   }
   if (report.expectedVersionCode) {
     lines.push(
@@ -260,9 +359,11 @@ if (require.main === module) {
 
 module.exports = {
   checkPlayQaDevice,
+  checkAndroidUiState,
   buildPlayEvidenceCommands,
   formatReport,
   getReadyPhysicalDevices,
+  parseAndroidUiState,
   parseArgs,
   selectPhysicalDevice,
 };
