@@ -164,6 +164,15 @@ recevoir les paiements, et les informations fiscales pour l'Irlande. Le snapshot
 ouvertes, et `android:gates:strict` bloque `Play payments profile for Billing` tant que ce snapshot
 ne revient pas sans exigence ouverte.
 
+Actions UI exactes vues en lecture seule sur `Profil de paiement`:
+
+- `Mettez a jour vos informations fiscales` -> bouton `Mettre a jour`
+- `Ajouter un mode de paiement` -> bouton `Mettre a jour`
+- `Envoyer vos informations fiscales (Irlande)` -> bouton `Ajouter des infos fiscales`
+
+Ne pas utiliser le bouton `Fermer` de l'alerte Irlande comme preuve de resolution: il masque le
+message mais ne prouve pas que le statut fiscal est complet.
+
 Pour rafraichir le snapshot profil de paiement apres correction Play Console:
 
 ```bash
