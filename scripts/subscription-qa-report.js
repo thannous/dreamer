@@ -275,6 +275,12 @@ const checks = [
     'npm run subscription:qa:verify-local'
   ),
   check(
+    'RevenueCat device app user id extractor exists',
+    fs.existsSync(path.join(ROOT, 'scripts/extract-revenuecat-app-user-id.js')) &&
+      pkg.scripts['subscription:qa:device-app-user-id'] === 'node ./scripts/extract-revenuecat-app-user-id.js',
+    'npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore'
+  ),
+  check(
     'Android device diagnostic exists',
     fs.existsSync(path.join(ROOT, 'scripts/check-android-adb-device.js')) &&
       pkg.scripts['android:device'] === 'node ./scripts/check-android-adb-device.js --report-only',
@@ -494,6 +500,11 @@ const runtimeReadiness = [
     `REVENUECAT_QA_SWITCH_FREE_EMAIL=${envState('REVENUECAT_QA_SWITCH_FREE_EMAIL')}, REVENUECAT_QA_SWITCH_FREE_PASSWORD=${envState(
       'REVENUECAT_QA_SWITCH_FREE_PASSWORD'
     )}`,
+  ],
+  [
+    'CHECK',
+    'Device app user id extraction',
+    'Run npm run subscription:qa:device-app-user-id -- --device emulator-5554 --env-file .env.teststore before recording manual evidence',
   ],
   ['CHECK', 'Android device visibility', 'Run npm run android:device and require ADB: READY before device flows'],
   [

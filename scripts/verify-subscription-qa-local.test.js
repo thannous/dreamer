@@ -26,6 +26,7 @@ describe('subscription QA local verifier', () => {
         '## Current Session Readiness',
         'Test Store signed-in account env',
         'Account switch second account env',
+        'Device app user id extraction',
         'RevenueCat product prodfce10ef2a8 must expose billing period P1M',
       ])
     );
