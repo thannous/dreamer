@@ -111,7 +111,7 @@ Resultat attendu au 2026-05-12:
 
 - `subscription:qa:report`: passe
 - `subscription:qa:report`: affiche `Current Session Readiness`; au dernier check, les variables Test Store sont absentes, l'approbation d'achat n'est pas definie, l'appareil ADB disponible est l'emulateur `emulator-5554`, et le snapshot Play mensuel affiche encore `prodfce10ef2a8: annual/P1Y; expected P1M`
-- `subscription:qa:verify-local`: passe le 2026-05-14, avec 9 suites et 71 tests du harnais QA scripts; son sous-test release gate isole volontairement les preuves locales et attend donc encore le blocage "7 gates" sans fichier local
+- `subscription:qa:verify-local`: passe le 2026-05-14, avec 9 suites et 73 tests du harnais QA scripts; son sous-test release gate isole volontairement les preuves locales et attend donc encore le blocage "7 gates" sans fichier local
 - `subscription:qa:release-gate`: echoue volontairement avec 4 portes restantes quand lance directement avec `doc_web_interne/docs/revenuecat-qa-evidence.local.json` present apres ajout des preuves locales Test Store monthly, annual et restore
 - `android:gates:strict`: echoue volontairement tant que `subscription:qa:release-gate` est rouge; dernier resultat 2026-05-14: 7 pass, 1 fail (`RevenueCat subscription QA release gate`), 0 blocked, 5 manual, dont `Play payments profile for Billing`
 - tests scripts QA: passent, dont le refus des preuves qui gardent le texte du template, une date invalide, une identite vide/en espaces, un `appUserId` non UUID ou un `easBuildId` non UUID dans le report et le helper d'ecriture
