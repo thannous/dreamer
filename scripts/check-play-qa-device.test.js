@@ -105,6 +105,51 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(formatReport(report)).toContain('[play-qa-device] evidenceCommands:');
   });
 
+  it('fails when the Play-installed build is not the expected versionCode', () => {
+    const report = checkPlayQaDevice({
+      spawn: spawnFor({
+        adbDevicesStdout: 'List of devices attached\n57275d36\tdevice product:poco model:POCO_F8\n',
+        dumpsysStdout: `
+          Package [com.tanuki75.noctalia] (abc):
+            versionCode=12 minSdk=33 targetSdk=36
+            versionName=1.1.0
+            installerPackageName=com.android.vending
+        `,
+      }),
+      platform: 'linux',
+      expectedVersionCode: '24',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.versionCodeMatches).toBe(false);
+    expect(report.evidenceArgs).toBe(null);
+    expect(report.evidenceCommands).toEqual([]);
+    expect(report.message).toContain('does not match expected 24');
+    expect(report.next).toContain('update or reinstall');
+    expect(formatReport(report)).toContain('[play-qa-device] expectedVersionCode: 24 - FAIL');
+  });
+
+  it('passes when the expected versionCode matches the Play-installed build', () => {
+    const report = checkPlayQaDevice({
+      spawn: spawnFor({
+        adbDevicesStdout: 'List of devices attached\n57275d36\tdevice product:poco model:POCO_F8\n',
+        dumpsysStdout: `
+          Package [com.tanuki75.noctalia] (abc):
+            versionCode=24 minSdk=33 targetSdk=36
+            versionName=1.2.0
+            installerPackageName=com.android.vending
+        `,
+      }),
+      platform: 'linux',
+      expectedVersionCode: 24,
+    });
+
+    expect(report.ok).toBe(true);
+    expect(report.versionCodeMatches).toBe(true);
+    expect(report.evidenceArgs).toBe('--device-id 57275d36 --installer-package-name com.android.vending');
+    expect(formatReport(report)).toContain('[play-qa-device] expectedVersionCode: 24 - PASS');
+  });
+
   it('builds no evidence commands until Play install source has passed', () => {
     expect(buildPlayEvidenceCommands(null)).toEqual([]);
   });

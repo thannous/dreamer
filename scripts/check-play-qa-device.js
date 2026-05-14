@@ -32,6 +32,11 @@ function parseArgs(argv) {
       i += 1;
       continue;
     }
+    if (arg === '--expected-version-code') {
+      options.expectedVersionCode = argv[i + 1];
+      i += 1;
+      continue;
+    }
     if (arg === '--report-only') {
       options.reportOnly = true;
       continue;
@@ -53,11 +58,12 @@ function parseArgs(argv) {
 function printHelp() {
   console.log(`
 Usage:
-  node ./scripts/check-play-qa-device.js [--device <adb-id>] [--package <application-id>] [--report-only] [--json]
+  node ./scripts/check-play-qa-device.js [--device <adb-id>] [--package <application-id>] [--expected-version-code <code>] [--report-only] [--json]
 
 Checks the two preconditions for Play RevenueCat QA evidence:
 1. a physical Android tester device is visible in ADB
 2. the app on that device was installed by Google Play
+3. optionally, the installed versionCode matches the expected Play build
 
 When both checks pass, the report prints evidenceArgs that can be copied into
 npm run subscription:qa:evidence for play_* gates.
@@ -123,6 +129,7 @@ function checkPlayQaDevice({
   platform = process.platform,
   device,
   packageName = DEFAULT_PACKAGE,
+  expectedVersionCode,
 } = {}) {
   const physicalReport = checkAndroidAdbDevice({
     spawn,
@@ -149,23 +156,41 @@ function checkPlayQaDevice({
     device: selection.device.id,
     packageName,
   });
-  const evidenceArgs = playInstallSource.ok
+  const expectedVersionCodeText =
+    expectedVersionCode === undefined || expectedVersionCode === null ? null : String(expectedVersionCode).trim();
+  const versionCodeMatches =
+    !expectedVersionCodeText || playInstallSource.versionCode === expectedVersionCodeText;
+  const versionCodeMessage = expectedVersionCodeText
+    ? versionCodeMatches
+      ? `Installed versionCode ${playInstallSource.versionCode} matches expected ${expectedVersionCodeText}.`
+      : `Installed versionCode ${playInstallSource.versionCode || 'missing'} does not match expected ${expectedVersionCodeText}.`
+    : null;
+  const playReady = playInstallSource.ok && versionCodeMatches;
+  const evidenceArgs = playReady
     ? `--device-id ${selection.device.id} --installer-package-name ${playInstallSource.installerPackageName}`
     : null;
   const evidenceCommands = buildPlayEvidenceCommands(evidenceArgs);
 
   return {
-    ok: physicalReport.ok && playInstallSource.ok,
+    ok: physicalReport.ok && playReady,
     packageName,
     selectedDevice: selection.device.id,
+    expectedVersionCode: expectedVersionCodeText,
     physical: physicalReport,
     playInstallSource,
+    versionCodeMatches,
+    versionCodeMessage,
     evidenceArgs,
     evidenceCommands,
-    message: playInstallSource.ok
+    message: playReady
       ? `${selection.device.id} is ready for Play RevenueCat QA.`
-      : playInstallSource.message,
-    next: playInstallSource.next,
+      : versionCodeMessage && !versionCodeMatches
+        ? versionCodeMessage
+        : playInstallSource.message,
+    next:
+      versionCodeMessage && !versionCodeMatches
+        ? 'Open the Play Store listing and update or reinstall the Internal Testing build, then rerun this preflight.'
+        : playInstallSource.next,
   };
 }
 
@@ -189,6 +214,13 @@ function formatReport(report) {
   }
   if (report.playInstallSource) {
     lines.push(formatPlayInstallSourceReport(report.playInstallSource));
+  }
+  if (report.expectedVersionCode) {
+    lines.push(
+      `[play-qa-device] expectedVersionCode: ${report.expectedVersionCode} - ${
+        report.versionCodeMatches ? 'PASS' : 'FAIL'
+      } - ${report.versionCodeMessage}`
+    );
   }
   if (report.evidenceArgs) {
     lines.push(`[play-qa-device] evidenceArgs: ${report.evidenceArgs}`);
