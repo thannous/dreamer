@@ -340,6 +340,49 @@ function hasGateEvidence(evidence, scenario) {
   return getGateEvidenceIssue(evidence, scenario) === null;
 }
 
+function getEvidenceCommand(scenario) {
+  const gate = slugify(scenario);
+  const baseArgs = [
+    'npm run subscription:qa:evidence --',
+    `--gate ${gate}`,
+    '--tester <tester-email>',
+    '--app-user-id <revenuecat-app-user-uuid>',
+  ];
+
+  if (gate === 'account_switch') {
+    return [
+      ...baseArgs,
+      '--evidence "paid account remains plus while second account remains free / inactive after logout and login"',
+    ].join(' ');
+  }
+
+  if (gate === 'play_monthly') {
+    return [
+      ...baseArgs,
+      '--eas-build-id <eas-build-uuid>',
+      '--evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"',
+    ].join(' ');
+  }
+
+  if (gate === 'play_annual') {
+    return [
+      ...baseArgs,
+      '--eas-build-id <eas-build-uuid>',
+      '--evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, backend converged"',
+    ].join(' ');
+  }
+
+  if (gate === 'play_cancellation_and_expiry') {
+    return [
+      ...baseArgs,
+      '--eas-build-id <eas-build-uuid>',
+      '--evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"',
+    ].join(' ');
+  }
+
+  return [...baseArgs, '--evidence "<observed result>"'].join(' ');
+}
+
 const pkg = readJson('package.json');
 const eas = readJson('eas.json');
 const mockEnv = readEnv('.env.mock');
@@ -683,6 +726,12 @@ if (manualGates.length > 0) {
   console.log('');
   manualGates.forEach(([, scenario, layer, proof, evidence]) => {
     console.log(`- ${scenario} (${layer}): ${proof}; ${evidence}`);
+  });
+  console.log('');
+  console.log('## Evidence Commands');
+  console.log('');
+  manualGates.forEach(([, scenario]) => {
+    console.log(`- ${scenario}: \`${getEvidenceCommand(scenario)}\``);
   });
 }
 
