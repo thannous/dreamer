@@ -76,7 +76,12 @@ npm run android:device:physical
 ```
 
 Cette commande echoue volontairement si seuls des AVD `emulator-*` sont visibles, meme si ADB est
-pret pour les tests mock/Test Store.
+pret pour les tests mock/Test Store. Elle affiche aussi l'etat USB macOS et les services ADB
+Wireless Debugging visibles via mDNS. Si `WIRELESS: VISIBLE` apparait, utiliser la commande
+`adb pair <host>:<pair-port> <pair-code>` affichee par Android, puis `adb connect
+<host>:<connect-port>` avant de relancer `npm run android:device:physical`. Si `WIRELESS: NOT
+VISIBLE` apparait, ouvrir Developer options -> Wireless debugging sur le telephone et garder l'ecran
+d'appairage ouvert pendant le diagnostic.
 
 Quand le telephone est visible et que l'app est installee depuis la piste Internal Testing, utiliser
 le preflight compose:
@@ -399,6 +404,7 @@ Scenarios a valider sur un build installe via Play Internal Testing:
 Preuve attendue:
 
 - avant toute preuve Play, `npm run android:device:physical` doit voir un telephone Android reel
+  connecte en USB ou via ADB Wireless Debugging
 - avant toute preuve Play, `npm run android:play-install-source -- --device <adb-id>` doit afficher
   `installerPackageName: com.android.vending`
 - `npm run android:play-qa-device -- --device <adb-id>` doit passer pour le telephone teste
