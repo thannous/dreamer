@@ -137,6 +137,22 @@ describe('Play RevenueCat QA device preflight', () => {
     expect(formatReport(report)).toContain('wirelessCommand: adb pair 192.168.1.24:37123 <pair-code>');
   });
 
+  it('prioritizes USB debugging authorization when a phone is visible over USB but adb is empty', () => {
+    const report = checkPlayQaDevice({
+      spawn: spawnFor({
+        adbDevicesStdout: 'List of devices attached\n',
+        usbStdout: '"USB Product Name" = "POCO F8 Ultra"\n"USB Vendor Name" = "Xiaomi"\n',
+      }),
+      platform: 'darwin',
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.message).toContain('visible over USB');
+    expect(report.next).toContain('accept the RSA fingerprint prompt');
+    expect(report.next).toContain('revoke USB debugging authorizations');
+    expect(formatReport(report)).toContain('usb: VISIBLE');
+  });
+
   it('fails when the app is sideloaded on the physical device', () => {
     const report = checkPlayQaDevice({
       spawn: spawnFor({
