@@ -153,6 +153,8 @@ describe('subscription QA report release gate', () => {
     expect(result.stdout).toContain('npm run android:device:physical');
     expect(result.stdout).toContain('OK | Play install source diagnostic exists');
     expect(result.stdout).toContain('npm run android:play-install-source -- --device <adb-id>');
+    expect(result.stdout).toContain('OK | Play QA device preflight exists');
+    expect(result.stdout).toContain('npm run android:play-qa-device -- --device <adb-id>');
     expect(result.stdout).toContain('## Current Session Readiness');
     expect(result.stdout).toContain('Test Store signed-in account env');
     expect(result.stdout).toContain('REVENUECAT_QA_EMAIL=missing, REVENUECAT_QA_PASSWORD=missing');

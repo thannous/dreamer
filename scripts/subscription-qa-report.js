@@ -541,6 +541,12 @@ const checks = [
     'npm run android:play-install-source -- --device <adb-id>'
   ),
   check(
+    'Play QA device preflight exists',
+    fs.existsSync(path.join(ROOT, 'scripts/check-play-qa-device.js')) &&
+      pkg.scripts['android:play-qa-device'] === 'node ./scripts/check-play-qa-device.js',
+    'npm run android:play-qa-device -- --device <adb-id>'
+  ),
+  check(
     'Evidence template covers all release gates',
     EXPECTED.manualGateKeys.every((key) => evidenceExample.gates?.[key]),
     EXPECTED.manualGateKeys.join(', ')
