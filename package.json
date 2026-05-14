@@ -98,6 +98,7 @@
     "subscription:qa:evidence": "node ./scripts/update-subscription-qa-evidence.js",
     "subscription:qa:play-state": "node ./scripts/update-revenuecat-play-store-state.js",
     "subscription:qa:google-play-state": "node ./scripts/update-google-play-subscription-state.js",
+    "android:google-play-track-state": "node ./scripts/update-google-play-track-state.js",
     "subscription:qa:device-app-user-id": "node ./scripts/extract-revenuecat-app-user-id.js",
     "android:google-cloud-project-state": "node ./scripts/update-google-cloud-project-state.js",
     "android:google-oauth-android-client-state": "node ./scripts/update-google-oauth-android-client-state.js",

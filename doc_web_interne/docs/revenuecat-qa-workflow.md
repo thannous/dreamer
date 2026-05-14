@@ -202,6 +202,30 @@ curl -sS \
 npm run subscription:qa:google-play-state -- --input /private/tmp/noctalia-google-play-subscription.json
 ```
 
+Pour rafraichir le snapshot de piste Internal Testing, creer un edit temporaire, lire la piste, puis
+supprimer l'edit sans le commiter:
+
+```bash
+TOKEN=$(gcloud auth application-default print-access-token)
+EDIT_ID=$(curl -sS -X POST \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  -H "content-type: application/json" \
+  -d "{}" \
+  "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/edits" \
+  | node -e "process.stdin.on('data', d => console.log(JSON.parse(d).id))")
+curl -sS \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/edits/${EDIT_ID}/tracks/internal" \
+  -o /private/tmp/noctalia-google-play-track-internal.json
+curl -sS -X DELETE \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "x-goog-user-project: gen-lang-client-0336445544" \
+  "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.tanuki75.noctalia/edits/${EDIT_ID}"
+npm run android:google-play-track-state -- --input /private/tmp/noctalia-google-play-track-internal.json
+```
+
 Verification UI Play Console du 2026-05-14: le compte developpeur `TiMax group` ouvre l'app
 `Noctalia: Smart Dream Journal` (`com.tanuki75.noctalia`). La page `Monetiser avec Play ->
 Abonnements -> Noctalia Plus` liste `annual` (`Annuel, renouvellement automatique`) et `monthly`

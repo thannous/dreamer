@@ -1,0 +1,17 @@
+{
+  "package_name": "com.tanuki75.noctalia",
+  "track": "internal",
+  "expected_version_code": "24",
+  "expected_status": "completed",
+  "releases": [
+    {
+      "name": "1.2.0",
+      "status": "completed",
+      "version_codes": [
+        "24"
+      ]
+    }
+  ],
+  "checked_at": "2026-05-15T00:00:00.000Z",
+  "source": "Google Play Developer API edits.tracks.get"
+}
