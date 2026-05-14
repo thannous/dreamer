@@ -72,6 +72,9 @@ const commands = [
     command: npmCommand,
     args: ['run', 'subscription:qa:report'],
     expectedStdoutIncludes: [
+      '## Evidence Commands',
+      'npm run subscription:qa:evidence -- --gate account_switch',
+      'npm run subscription:qa:evidence -- --gate play_monthly',
       '## Current Session Readiness',
       'Test Store signed-in account env',
       'Account switch second account env',

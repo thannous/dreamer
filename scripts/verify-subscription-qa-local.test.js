@@ -23,6 +23,9 @@ describe('subscription QA local verifier', () => {
 
     expect(reportCommand.expectedStdoutIncludes).toEqual(
       expect.arrayContaining([
+        '## Evidence Commands',
+        'npm run subscription:qa:evidence -- --gate account_switch',
+        'npm run subscription:qa:evidence -- --gate play_monthly',
         '## Current Session Readiness',
         'Test Store signed-in account env',
         'Account switch second account env',
