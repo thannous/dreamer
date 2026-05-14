@@ -305,15 +305,15 @@ function checkAndroidReleaseGates({
     addCheck(
       checks,
       devices.ok && devices.devices.length > 0 ? 'pass' : 'blocked',
-      'Android emulator or physical device',
+      'Android ADB device visibility',
       devices.ok ? devices.message : devices.message || 'Unable to list adb devices.',
-      'Start an Android emulator or connect/unlock a physical Android device.'
+      'Start an Android emulator for local checks, or connect/unlock a physical Android device for Play QA.'
     );
   } else {
     addCheck(
       checks,
       'blocked',
-      'Android emulator or physical device',
+      'Android ADB device visibility',
       'Device check skipped because adb is unavailable.',
       'Install adb, then run this check again with an emulator/device connected.'
     );
