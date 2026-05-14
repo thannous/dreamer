@@ -99,6 +99,17 @@ function selectPhysicalDevice(physicalReport, requestedDevice) {
   };
 }
 
+function buildPlayEvidenceCommands(evidenceArgs) {
+  if (!evidenceArgs) return [];
+  const base =
+    'npm run subscription:qa:evidence -- --tester <tester-email> --app-user-id <revenuecat-app-user-uuid> --eas-build-id <eas-build-uuid>';
+  return [
+    `${base} --gate play_monthly ${evidenceArgs} --evidence "Play monthly purchase completed after installed from Play (com.android.vending), product noctalia_plus:monthly, base plan P1M confirmed, backend converged"`,
+    `${base} --gate play_annual ${evidenceArgs} --evidence "Play annual purchase completed after installed from Play (com.android.vending), product noctalia_plus:annual, base plan P1Y confirmed, backend converged"`,
+    `${base} --gate play_cancellation_and_expiry ${evidenceArgs} --evidence "Play cancellation or expiry observed after installed from Play (com.android.vending), RevenueCat webhook and backend state converged"`,
+  ];
+}
+
 function checkPlayQaDevice({
   spawn = spawnSync,
   env = process.env,
@@ -134,6 +145,7 @@ function checkPlayQaDevice({
   const evidenceArgs = playInstallSource.ok
     ? `--device-id ${selection.device.id} --installer-package-name ${playInstallSource.installerPackageName}`
     : null;
+  const evidenceCommands = buildPlayEvidenceCommands(evidenceArgs);
 
   return {
     ok: physicalReport.ok && playInstallSource.ok,
@@ -142,6 +154,7 @@ function checkPlayQaDevice({
     physical: physicalReport,
     playInstallSource,
     evidenceArgs,
+    evidenceCommands,
     message: playInstallSource.ok
       ? `${selection.device.id} is ready for Play RevenueCat QA.`
       : playInstallSource.message,
@@ -159,6 +172,12 @@ function formatReport(report) {
   }
   if (report.evidenceArgs) {
     lines.push(`[play-qa-device] evidenceArgs: ${report.evidenceArgs}`);
+  }
+  if (report.evidenceCommands?.length > 0) {
+    lines.push('[play-qa-device] evidenceCommands:');
+    for (const command of report.evidenceCommands) {
+      lines.push(`  ${command}`);
+    }
   }
   lines.push(`[play-qa-device] ${report.ok ? 'PASS' : 'FAIL'} - ${report.message}`);
   if (report.next) lines.push(`  Next: ${report.next}`);
@@ -185,6 +204,7 @@ if (require.main === module) {
 
 module.exports = {
   checkPlayQaDevice,
+  buildPlayEvidenceCommands,
   formatReport,
   getReadyPhysicalDevices,
   parseArgs,
