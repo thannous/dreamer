@@ -5,6 +5,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
+const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const PLAY_INTEGRITY_PROJECT_NUMBER_KEY = 'EXPO_PUBLIC_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER';
 const REQUIRED_EAS_PROFILES = ['preview', 'release', 'production-apk', 'production'];
 const REQUIRED_TESTSTORE_PUBLIC_ENV = [
@@ -118,6 +119,38 @@ function addCheck(checks, status, title, details, remediation) {
   checks.push({ status, title, details, remediation });
 }
 
+function summarizeCommandOutput(output) {
+  const lines = String(output || '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const important = lines.filter((line) =>
+    /Full RevenueCat workflow is not complete|Manual or external gates remaining|Blocked checks:/i.test(line)
+  );
+  return (important.length > 0 ? important : lines.slice(-3)).join(' ');
+}
+
+function checkSubscriptionQaReleaseGate(rootDir, spawn = spawnSync, env = process.env) {
+  const result = spawn(npmCommand, ['run', 'subscription:qa:release-gate'], {
+    cwd: rootDir,
+    env,
+    encoding: 'utf8',
+    timeout: 30000,
+    maxBuffer: 1024 * 1024 * 4,
+  });
+  if (result.status === 0) {
+    return {
+      ok: true,
+      details: 'subscription:qa:release-gate passed.',
+    };
+  }
+  const summary = summarizeCommandOutput(`${result.stdout || ''}\n${result.stderr || ''}`);
+  return {
+    ok: false,
+    details: summary || `subscription:qa:release-gate exited with status ${result.status ?? 'unknown'}.`,
+  };
+}
+
 function checkAndroidReleaseGates({
   rootDir = ROOT,
   spawn = spawnSync,
@@ -164,6 +197,15 @@ function checkAndroidReleaseGates({
       ? 'submit.internal.android.track is configured as internal.'
       : 'submit.internal.android.track is not configured as internal.',
     'Set submit.internal.android.track to internal in eas.json.'
+  );
+
+  const subscriptionGate = checkSubscriptionQaReleaseGate(rootDir, spawn, env);
+  addCheck(
+    checks,
+    subscriptionGate.ok ? 'pass' : 'fail',
+    'RevenueCat subscription QA release gate',
+    subscriptionGate.details,
+    'Run npm run subscription:qa:release-gate and close the remaining Test Store, account-switch, and Play evidence gates before Android production release.'
   );
 
   const fallbackFlowPath = path.join(rootDir, 'maestro/recording-text-fallback.yml');
