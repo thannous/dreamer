@@ -34,7 +34,9 @@ du bundle JavaScript. Référence: Expo EAS Environment Variables
 ## 3. Build et upload
 
 ```bash
-npm run android:gates
+npm run subscription:qa:verify-local
+npm run subscription:qa:release-gate
+npm run android:gates:strict
 npx expo install --check
 npx expo-doctor
 npm run typecheck:app
@@ -63,6 +65,8 @@ Installer depuis la piste Internal Testing, pas en sideload.
 - [ ] Google Sign-In.
 - [ ] RevenueCat offering load.
 - [ ] Achat test et restore.
+- [ ] Enregistrer les preuves `play_monthly`, `play_annual` et `play_cancellation_and_expiry` avec `npm run subscription:qa:evidence -- --device-id <adb-id>`.
+- [ ] Relancer `npm run subscription:qa:release-gate` puis `npm run android:gates:strict`.
 - [ ] Limite quota vers paywall.
 - [ ] Enregistrement audio et fallback texte.
 - [ ] App Links `https://dream.noctalia.app`.
